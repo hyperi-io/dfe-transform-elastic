@@ -6171,6 +6171,130 @@ fn run_contains_ladder(event: &mut Event, shape: &ContainsLadder) -> bool {
     true
 }
 
+/// How one item of a list is cut for a column.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum ItemSlice {
+    /// `item.substring(0, item.lastIndexOf('<sep>'))`
+    BeforeLast(String),
+    /// `item.substring(item.indexOf('<open>')+1, item.indexOf('<close>'))`
+    Between(String, String),
+}
+
+impl ItemSlice {
+    fn cut<'a>(&self, item: &'a str) -> Option<&'a str> {
+        match self {
+            Self::BeforeLast(sep) => item.rsplit_once(sep.as_str()).map(|(head, _)| head),
+            Self::Between(open, close) => item
+                .split_once(open.as_str())
+                .and_then(|(_, rest)| rest.split_once(close.as_str()))
+                .map(|(inside, _)| inside),
+        }
+    }
+}
+
+/// One list cut two ways: `m365_defender` splits `Valid Accounts (T1078)`
+/// into the technique's name and its id.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SliceEachItem {
+    source: String,
+    /// `(the field the column lands on, how each item is cut)`.
+    columns: Vec<(String, ItemSlice)>,
+}
+
+/// The call's arguments, split at the comma OUTSIDE any quoted literal --
+/// `indexOf('(')` puts a bracket inside quotes and depth-counting trips on it.
+fn split_call_arguments(args: &str) -> Option<(&str, &str)> {
+    let mut quote = None;
+    for (at, c) in args.char_indices() {
+        match (quote, c) {
+            (Some(open), c) if c == open => quote = None,
+            (None, '\'' | '"') => quote = Some(c),
+            (None, ',') => return Some((args[..at].trim(), args[at + 1..].trim())),
+            _ => {}
+        }
+    }
+    None
+}
+
+/// The quoted literal a one-argument call is passed.
+fn call_literal(expression: &str, call: &str) -> Option<String> {
+    let rest = expression.split_once(call)?.1;
+    let quote = rest.chars().next().filter(|c| *c == '\'' || *c == '"')?;
+    Some(rest[quote.len_utf8()..].split(quote).next()?.to_string())
+}
+
+fn parse_item_slice(expression: &str, local: &str) -> Option<ItemSlice> {
+    let args = expression.strip_prefix(&format!("{local}.substring("))?;
+    let args = args.strip_suffix(')')?;
+    let (start, end) = split_call_arguments(args)?;
+
+    if start == "0" {
+        return Some(ItemSlice::BeforeLast(call_literal(end, ".lastIndexOf(")?));
+    }
+    let open = call_literal(start.strip_suffix("+1")?, ".indexOf(")?;
+    Some(ItemSlice::Between(open, call_literal(end, ".indexOf(")?))
+}
+
+fn parse_slice_each_item(script: &str) -> Option<SliceEachItem> {
+    let (head, tail) = script.split_once(" in ctx.")?;
+    let local = head.rsplit_once("for (")?.1.trim();
+    let source = crate::painless_params::clean_path(tail.split(')').next()?);
+
+    // `<bucket>.add(<local>.substring(...));` then `ctx.<target> = <bucket>;`.
+    let mut columns = Vec::new();
+    for (at, _) in script.match_indices(".add(") {
+        let bucket = script[..at]
+            .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
+            .next()
+            .unwrap_or_default();
+        let call = script[at + ".add(".len()..].split(";\n").next()?.trim();
+        let slice = parse_item_slice(call.strip_suffix(')')?, local)?;
+        let target = ctx_path_before_assignment(script, bucket)?;
+        columns.push((target, slice));
+    }
+
+    (columns.len() > 1).then_some(SliceEachItem { source, columns })
+}
+
+/// The `ctx.` path a bucket is assigned to, from `ctx.<path> = <bucket>;`.
+fn ctx_path_before_assignment(script: &str, bucket: &str) -> Option<String> {
+    let at = script.find(&format!(" = {bucket};"))?;
+    painless_path(&script[..at])
+}
+
+/// A cut that misses on ANY item leaves every column unwritten: Painless
+/// throws on `substring(0, -1)` and the whole processor fails there.
+fn run_slice_each_item(event: &mut Event, shape: &SliceEachItem) -> bool {
+    let Some(Value::Array(items)) = event.get(&shape.source) else {
+        return true;
+    };
+    let items: Vec<String> = items
+        .iter()
+        .filter_map(|item| item.as_str().map(str::to_string))
+        .collect();
+
+    let cut_all = |slice: &ItemSlice| -> Option<Value> {
+        items
+            .iter()
+            .map(|item| slice.cut(item).map(|cut| Value::String(cut.to_string())))
+            .collect::<Option<Vec<Value>>>()
+            .map(Value::Array)
+    };
+
+    let Some(written) = shape
+        .columns
+        .iter()
+        .map(|(target, slice)| cut_all(slice).map(|column| (target, column)))
+        .collect::<Option<Vec<_>>>()
+    else {
+        return true;
+    };
+    for (target, column) in written {
+        let _ = event.set(target, column);
+    }
+    true
+}
+
 /// Parallel columns collected off a list of objects, written as one map.
 ///
 /// entra id builds a manager's direct reports this way: one column per member
@@ -6877,6 +7001,7 @@ pub(crate) enum KnownShape {
     ShareFilePath(Vec<String>),
     ObjectDn,
     CollectColumns(Box<CollectColumns>),
+    SliceEachItem(Box<SliceEachItem>),
     ContainsLadder(Box<ContainsLadder>),
     SuffixAfterSeparator {
         source: String,
@@ -7024,6 +7149,15 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_flags_present(normalised)
     {
         shapes.push(KnownShape::FlagsPresent(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: one list cut two ways, a column per cut.
+    if normalised.contains(".substring(")
+        && normalised.contains(".add(")
+        && let Some(shape) = parse_slice_each_item(normalised)
+    {
+        shapes.push(KnownShape::SliceEachItem(Box::new(shape)));
         return shapes;
     }
 
@@ -8127,6 +8261,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         }
         KnownShape::ObjectDn => crate::painless_windows::run_object_dn(event),
         KnownShape::CollectColumns(shape) => run_collect_columns(event, shape),
+        KnownShape::SliceEachItem(shape) => run_slice_each_item(event, shape),
         KnownShape::ContainsLadder(shape) => run_contains_ladder(event, shape),
         KnownShape::SuffixAfterSeparator {
             source,
@@ -9793,6 +9928,40 @@ mod tests {
         let mut empty = Event::new(json!({}));
         assert!(try_known_painless(&mut empty, script));
         assert!(!empty.has("event.duration"));
+    }
+
+    /// Verbatim from `pipelines/m365_defender/event/pipeline_alert.yml`.
+    #[test]
+    fn an_attack_technique_splits_into_a_name_and_an_id() {
+        let script = "def subtechnique_name = new ArrayList();\n\
+             def subtechnique_id = new ArrayList();\n\
+             if (!(ctx.threat instanceof HashMap)) {\n  ctx.threat = new HashMap();\n}\n\
+             for (item in ctx.m365_defender.event.attack_techniques) {\n\
+             subtechnique_name.add(item.substring(0,item.lastIndexOf(' ')));\n\
+             subtechnique_id.add(item.substring(item.indexOf('(')+1,item.indexOf(')')));\n}\n\
+             ctx.threat.technique.subtechnique.id = subtechnique_id;\n\
+             ctx.threat.technique.subtechnique.name = subtechnique_name;\n";
+
+        let mut event = Event::new(json!({ "m365_defender": { "event": {
+            "attack_techniques": ["Valid Accounts (T1078)", "Cloud Accounts (T1078.004)"]
+        }}}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("threat.technique.subtechnique.name"),
+            Some(&json!(["Valid Accounts", "Cloud Accounts"])),
+            "the loop's own order -- the pipeline sorts both lists afterwards"
+        );
+        assert_eq!(
+            event.get("threat.technique.subtechnique.id"),
+            Some(&json!(["T1078", "T1078.004"]))
+        );
+
+        // An item with no bracket throws in Painless, so nothing is written.
+        let mut ragged = Event::new(json!({ "m365_defender": { "event": {
+            "attack_techniques": ["Valid Accounts (T1078)", "no id here"]
+        }}}));
+        assert!(try_known_painless(&mut ragged, script));
+        assert!(!ragged.has("threat.technique.subtechnique.id"));
     }
 
     /// Verbatim from

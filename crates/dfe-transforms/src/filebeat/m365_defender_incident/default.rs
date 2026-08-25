@@ -132,15 +132,37 @@ impl Transform for Default {
                 event.append("event.category", json!("threat"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.event?.category != null && (ctx.event.category).contains('threat')
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("event.category")
+                    && event.get("event.category").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => {
+                            a.iter().any(|x| x.as_str() == Some("threat"))
+                        }
+                        serde_json::Value::String(s) => s.contains("threat"),
+                        _ => false,
+                    })
+            };
+            if _cond {
                 event.append("event.type", json!("indicator"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.event?.category != null && ((ctx.event.category).contains('email') || (ctx.event.category).contains('malware'))
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("event.category")
+                    && (event.get("event.category").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => {
+                            a.iter().any(|x| x.as_str() == Some("email"))
+                        }
+                        serde_json::Value::String(s) => s.contains("email"),
+                        _ => false,
+                    }) || event.get("event.category").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => {
+                            a.iter().any(|x| x.as_str() == Some("malware"))
+                        }
+                        serde_json::Value::String(s) => s.contains("malware"),
+                        _ => false,
+                    }))
+            };
+            if _cond {
                 event.append("event.type", json!("info"))?;
             }
 

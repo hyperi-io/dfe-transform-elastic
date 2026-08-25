@@ -486,9 +486,8 @@ impl Transform for Default {
                         }
                     }
                 }
-                // SKIPPED: condition not transpiled: ctx['@timestamp'] != null
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = { event.has_value("@timestamp") };
+                if _cond {
                     if let Some(v) = event.get("@timestamp").cloned() {
                         event.set("event.created", v)?;
                     }

@@ -285,9 +285,8 @@ impl Transform for AwsLambdaJson {
                 Ok(())
             })();
 
-            // SKIPPED: condition not transpiled: ctx['@timestamp'] == null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { !event.has_value("@timestamp") };
+            if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("parsed.time") {
