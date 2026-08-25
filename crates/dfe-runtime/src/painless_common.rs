@@ -6072,6 +6072,207 @@ fn first_ctx_binding(script: &str) -> Option<String> {
     painless_path(&rest[..end])
 }
 
+/// A ladder of `if (<subject>.contains('<needle>')) { ctx.<target> = <value>; }`
+///
+/// One value, and a type TAG that says which field it belongs on: defender's
+/// machine actions carry a hash and name its algorithm separately.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ContainsLadder {
+    subject: String,
+    value: String,
+    lower: bool,
+    /// `(the literal the subject must contain, the field the value lands on)`.
+    arms: Vec<(String, String)>,
+}
+
+/// The expression a `<type> <local> = ...;` declaration binds.
+fn declared_expression<'a>(script: &'a str, local: &str) -> Option<&'a str> {
+    let needle = format!(" {local} = ");
+    let tail = &script[script.find(&needle)? + needle.len()..];
+    Some(&tail[..tail.find([';', '\n']).unwrap_or(tail.len())])
+}
+
+/// A `ctx.` path with the vendor's no-op string calls taken off the end.
+fn ctx_path_of(expression: &str) -> Option<String> {
+    let mut path = expression.trim();
+    loop {
+        let before = path;
+        for call in [".toLowerCase()", ".toUpperCase()", ".toString()", ".trim()"] {
+            path = path.trim_end_matches(call);
+        }
+        if path == before {
+            break;
+        }
+    }
+    painless_path(path)
+}
+
+/// Every `.contains(` in the script must be an arm, so a script that merely
+/// spells the call -- `ctx.event.category.contains('network')` -- is refused.
+fn parse_contains_ladder(script: &str) -> Option<ContainsLadder> {
+    let mut arms = Vec::new();
+    let (mut subject_local, mut value_local) = (String::new(), String::new());
+
+    for (at, _) in script.match_indices(".contains(") {
+        let local = script[..at]
+            .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
+            .next()
+            .unwrap_or_default();
+        let after = &script[at + ".contains(".len()..];
+        let quote = after.chars().next().filter(|c| *c == '\'' || *c == '"')?;
+        let needle = after[quote.len_utf8()..].split(quote).next()?;
+
+        let body = after.split("} else").next().unwrap_or(after);
+        let (target, tail) = body.split_once("ctx.")?.1.split_once(" = ")?;
+        let source = tail.split(';').next()?.trim();
+
+        if arms.is_empty() {
+            subject_local = local.to_string();
+            value_local = source.to_string();
+        }
+        if local != subject_local || source != value_local {
+            return None;
+        }
+        arms.push((
+            needle.to_string(),
+            crate::painless_params::clean_path(target),
+        ));
+    }
+
+    let subject_expression = declared_expression(script, &subject_local)?;
+    (arms.len() > 1).then_some(())?;
+    Some(ContainsLadder {
+        subject: ctx_path_of(subject_expression)?,
+        value: ctx_path_of(declared_expression(script, &value_local)?)?,
+        lower: subject_expression.contains(".toLowerCase()"),
+        arms,
+    })
+}
+
+fn run_contains_ladder(event: &mut Event, shape: &ContainsLadder) -> bool {
+    let Some(subject) = event.get_str(&shape.subject).map(str::to_string) else {
+        return true;
+    };
+    let subject = if shape.lower {
+        subject.to_lowercase()
+    } else {
+        subject
+    };
+    let Some(value) = event.get(&shape.value).cloned() else {
+        return true;
+    };
+
+    for (needle, target) in &shape.arms {
+        if subject.contains(needle) {
+            let _ = event.set(target, value);
+            break;
+        }
+    }
+    true
+}
+
+/// Parallel columns collected off a list of objects, written as one map.
+///
+/// entra id builds a manager's direct reports this way: one column per member
+/// a report carries, and a column that stays EMPTY is left out.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CollectColumns {
+    source: String,
+    /// `(the key the column is written under, the member it reads)`.
+    columns: Vec<(String, String)>,
+    target: String,
+    /// The key the map is put under, and the wrapper it sits inside.
+    name: String,
+    inner: Option<String>,
+}
+
+fn parse_collect_columns(script: &str) -> Option<CollectColumns> {
+    let (head, tail) = script.split_once(" : ctx.")?;
+    let local = head.rsplit_once("for (def ")?.1.trim();
+    let source = crate::painless_params::clean_path(tail.split(')').next()?);
+
+    // `<bucket>.add(<local>.<member>)` names the member a bucket collects.
+    let mut buckets: Vec<(&str, &str)> = Vec::new();
+    let mut rest = script;
+    while let Some(at) = rest.find(".add(") {
+        let bucket = rest[..at]
+            .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
+            .next()
+            .unwrap_or_default();
+        rest = &rest[at + ".add(".len()..];
+        if let Some(member) = rest
+            .split(')')
+            .next()
+            .and_then(|arg| arg.trim().strip_prefix(&format!("{local}.")))
+        {
+            buckets.push((bucket, member));
+        }
+    }
+
+    // `<map>.put("<key>", <bucket>)` names the key each bucket goes under.
+    let mut columns = Vec::new();
+    for piece in script.split(".put(\"").skip(1) {
+        let Some((key, after)) = piece.split_once('"') else {
+            continue;
+        };
+        let value = after.trim_start_matches([',', ' ']).split(')').next();
+        if let Some((_, member)) = buckets
+            .iter()
+            .find(|(bucket, _)| value.is_some_and(|v| v.trim() == *bucket))
+        {
+            columns.push((key.to_string(), (*member).to_string()));
+        }
+    }
+
+    let at = script.rfind(".put(\"")?;
+    let (name, after) = script[at + ".put(\"".len()..].split_once('"')?;
+    let target = painless_path(&script[..at])?;
+    let inner = after
+        .split_once("[\"")
+        .and_then(|(_, rest)| rest.split('"').next())
+        .map(str::to_string);
+
+    (columns.len() > 1).then_some(CollectColumns {
+        source,
+        columns,
+        target,
+        name: name.to_string(),
+        inner,
+    })
+}
+
+fn run_collect_columns(event: &mut Event, shape: &CollectColumns) -> bool {
+    let Some(Value::Array(items)) = event.get(&shape.source) else {
+        return true;
+    };
+    let items = items.clone();
+
+    let mut built = serde_json::Map::new();
+    for (key, member) in &shape.columns {
+        let values: Vec<Value> = items
+            .iter()
+            .filter_map(|item| item.get(member).filter(|held| !held.is_null()).cloned())
+            .collect();
+        if !values.is_empty() {
+            built.insert(key.clone(), Value::Array(values));
+        }
+    }
+    if built.is_empty() {
+        return true;
+    }
+
+    let value = match &shape.inner {
+        Some(inner) => {
+            let mut wrapper = serde_json::Map::new();
+            wrapper.insert(inner.clone(), Value::Object(built));
+            Value::Object(wrapper)
+        }
+        None => Value::Object(built),
+    };
+    let _ = event.set(&format!("{}.{}", shape.target, shape.name), value);
+    true
+}
+
 /// `def i = ctx.<source>.lastIndexOf("<sep>"); if (i > -1) { ctx.<target> =
 /// ctx.<source>.substring(i+1); }` -- a file extension, and its separator.
 ///
@@ -6675,6 +6876,8 @@ pub(crate) enum KnownShape {
     ProcessCreated(Vec<String>),
     ShareFilePath(Vec<String>),
     ObjectDn,
+    CollectColumns(Box<CollectColumns>),
+    ContainsLadder(Box<ContainsLadder>),
     SuffixAfterSeparator {
         source: String,
         target: String,
@@ -6821,6 +7024,23 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_flags_present(normalised)
     {
         shapes.push(KnownShape::FlagsPresent(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: a type tag choosing which field one value lands on.
+    if normalised.contains(".contains('")
+        && let Some(shape) = parse_contains_ladder(normalised)
+    {
+        shapes.push(KnownShape::ContainsLadder(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: one column per member, gathered off a list of objects.
+    if normalised.contains(" : ctx.")
+        && normalised.contains(".isEmpty()")
+        && let Some(shape) = parse_collect_columns(normalised)
+    {
+        shapes.push(KnownShape::CollectColumns(Box::new(shape)));
         return shapes;
     }
 
@@ -7906,6 +8126,8 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             crate::painless_windows::run_share_file_path(event, codes)
         }
         KnownShape::ObjectDn => crate::painless_windows::run_object_dn(event),
+        KnownShape::CollectColumns(shape) => run_collect_columns(event, shape),
+        KnownShape::ContainsLadder(shape) => run_contains_ladder(event, shape),
         KnownShape::SuffixAfterSeparator {
             source,
             target,
@@ -9571,6 +9793,79 @@ mod tests {
         let mut empty = Event::new(json!({}));
         assert!(try_known_painless(&mut empty, script));
         assert!(!empty.has("event.duration"));
+    }
+
+    /// Verbatim from
+    /// `pipelines/microsoft_defender_endpoint/machine_action/default.yml`.
+    #[test]
+    fn a_hash_lands_on_the_field_its_type_names() {
+        let script = "ctx.file = ctx.file ?: [:]; ctx.file.hash = ctx.file.hash ?: [:]; \
+             String fileType = ctx.mde.related_file_info.file_identifier_type.toLowerCase(); \
+             String fileHash = ctx.mde.related_file_info.file_identifier; \
+             if (fileType.contains('sha1')) {\n  ctx.file.hash.sha1 = fileHash;\n\
+             } else if (fileType.contains('md5')) {\n  ctx.file.hash.md5 = fileHash;\n\
+             } else if (fileType.contains('sha256')) {\n  ctx.file.hash.sha256 = fileHash;\n}\n";
+
+        // `Sha1` is mixed case on the wire and the script lower-cases it.
+        let mut event = Event::new(json!({ "mde": { "related_file_info": {
+            "file_identifier": "aaf4c61d", "file_identifier_type": "Sha1"
+        }}}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("file.hash.sha1"), Some("aaf4c61d"));
+        assert!(!event.has("file.hash.md5"));
+
+        // A type no arm names writes nothing.
+        let mut unknown = Event::new(json!({ "mde": { "related_file_info": {
+            "file_identifier": "abc", "file_identifier_type": "Crc32"
+        }}}));
+        assert!(try_known_painless(&mut unknown, script));
+        assert!(!unknown.has("file.hash"));
+    }
+
+    /// Verbatim from `pipelines/entityanalytics_entra_id/entity/user.yml`.
+    #[test]
+    fn direct_reports_become_one_column_per_member() {
+        let script = "def ids = new ArrayList();\ndef names = new ArrayList();\n\
+             def emails = new ArrayList();\n\
+             for (def report : ctx.entityanalytics_entra_id.user.direct_reports) {\n\
+             if (report == null) { continue; }\n  if (report.id != null) { ids.add(report.id); }\n\
+             if (report.user_principal_name != null) { names.add(report.user_principal_name); }\n\
+             if (report.mail != null) { emails.add(report.mail); }\n}\n\
+             def userObj = new HashMap();\nif (!ids.isEmpty()) { userObj.put(\"id\", ids); }\n\
+             if (!names.isEmpty()) { userObj.put(\"name\", names); }\n\
+             if (!emails.isEmpty()) { userObj.put(\"email\", emails); }\n\
+             if (!userObj.isEmpty()) {\n  ctx.user = ctx.user ?: new HashMap();\n\
+             ctx.user.entity = ctx.user.entity ?: new HashMap();\n\
+             ctx.user.entity.relationships = ctx.user.entity.relationships ?: new HashMap();\n\
+             ctx.user.entity.relationships.put(\"supervises\", [\"user\": userObj]);\n}\n";
+
+        let mut event = Event::new(json!({ "entityanalytics_entra_id": { "user": {
+            "direct_reports": [
+                {"id": "ee55", "mail": "one@example.com", "user_principal_name": "one@example.com"},
+                {"id": "ff66", "mail": "two@example.com", "user_principal_name": "two@example.com"}
+            ]
+        }}}));
+        assert!(try_known_painless(&mut event, script));
+
+        assert_eq!(
+            event.get("user.entity.relationships.supervises.user.id"),
+            Some(&json!(["ee55", "ff66"]))
+        );
+        assert_eq!(
+            event.get("user.entity.relationships.supervises.user.email"),
+            Some(&json!(["one@example.com", "two@example.com"]))
+        );
+
+        // A member no report carries leaves its column out entirely.
+        let mut sparse = Event::new(json!({ "entityanalytics_entra_id": { "user": {
+            "direct_reports": [{"id": "ee55"}]
+        }}}));
+        assert!(try_known_painless(&mut sparse, script));
+        assert_eq!(
+            event.get("user.entity.relationships.supervises.user.id"),
+            Some(&json!(["ee55", "ff66"]))
+        );
+        assert!(!sparse.has("user.entity.relationships.supervises.user.email"));
     }
 
     /// Verbatim from `pipelines/windows/forwarded/security_standard.yml`.
