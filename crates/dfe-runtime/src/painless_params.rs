@@ -385,7 +385,7 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
     }
 
     // Pattern: scale a numeric field by a params constant.
-    if normalised.contains("* params.") {
+    if scale_marker(normalised).is_some() {
         return Some(ParamsShape::Scale);
     }
 
@@ -3238,26 +3238,39 @@ fn try_indexed_lookup(event: &mut Event, script: &str, params: &Map<String, Valu
     true
 }
 
-/// `ctx.<target> = ctx.<source> * params.<name>`
+/// How a scale script spells its multiply.
+///
+/// Both forms are in the vendored pipelines and the compound one carries no
+/// separate target: aws s3access writes `ctx.event.duration *= params.MS_TO_NS`.
+fn scale_marker(script: &str) -> Option<&'static str> {
+    ["* params.", "*= params."]
+        .into_iter()
+        .find(|marker| script.contains(marker))
+}
+
+/// `ctx.<target> = ctx.<source> * params.<name>`, or `ctx.<f> *= params.<name>`
 ///
 /// Source and target are usually the same field, but not always: cloudfront
 /// scales `_tmp.time_taken` INTO `event.duration`, and reading the last path
 /// before the multiply as both wrote the result back over the source and left
 /// `event.duration` unset on 13 events.
 fn try_scale(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
-    let Some((head, _)) = script.split_once("* params.") else {
+    let Some(marker) = scale_marker(script) else {
+        return false;
+    };
+    let Some((head, _)) = script.split_once(marker) else {
         return false;
     };
     let Some(source) = crate::painless_common::painless_path(head) else {
         return false;
     };
     // The assignment that owns the multiply. Without one the script scales in
-    // place, which is azure's spelling.
+    // place, which is azure's spelling and the compound form's only one.
     let path = crate::painless_common::last_assignment(head)
         .and_then(|at| crate::painless_common::painless_path(&head[..at]))
         .unwrap_or_else(|| source.clone());
 
-    let Some(factor) = params_ref(script, params, "* params.").and_then(Value::as_f64) else {
+    let Some(factor) = params_ref(script, params, marker).and_then(Value::as_f64) else {
         return false;
     };
     // The vendor wraps the read in `Float.parseFloat` where the field is text,
@@ -4664,6 +4677,21 @@ mod tests {
             &json!({ "param_nano": 1_000_000_000_i64 }),
         ));
         assert_eq!(event.get_i64("event.duration"), Some(42_000_000_000));
+    }
+
+    /// Verbatim from `pipelines/aws/s3access/default.yml`.
+    const SCALE_COMPOUND: &str = "ctx.event.duration *= params.MS_TO_NS;";
+
+    #[test]
+    fn scales_a_duration_written_as_a_compound_multiply() {
+        let mut event = Event::new(json!({ "event": { "duration": 17 } }));
+
+        assert!(try_params_painless(
+            &mut event,
+            SCALE_COMPOUND,
+            &json!({ "MS_TO_NS": 1_000_000_i64 }),
+        ));
+        assert_eq!(event.get_i64("event.duration"), Some(17_000_000));
     }
 
     /// Verbatim from `pipelines/azure/activitylogs/default.yml`.

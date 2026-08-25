@@ -5977,9 +5977,11 @@ pub struct ScaleField {
 /// events with no `event.duration` at all.
 fn parse_scale_field(script: &str) -> Option<ScaleField> {
     let (head, factor) = script.rsplit_once('*')?;
+    // `L` is Java's long suffix, which checkpoint writes on its 1e9 constant.
     let factor = factor
         .trim()
         .trim_end_matches([';', ')', ' '])
+        .trim_end_matches(['L', 'l'])
         .trim()
         .parse::<i64>()
         .ok()?;
@@ -6021,6 +6023,61 @@ fn run_scale_field(event: &mut Event, shape: &ScaleField) -> bool {
     if let Some(n) = event.get_as_i64(&shape.source) {
         let _ = event.set(&shape.target, json!(n.saturating_mul(shape.factor)));
     }
+    true
+}
+
+/// `ctx.<target> = ChronoUnit.NANOS.between(<start>, <end>)`, resolved once.
+///
+/// Both ends are LOCALS, each bound earlier to `ZonedDateTime.parse(ctx.<path>)`,
+/// so the paths are recovered from those declarations rather than the call.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct NanosBetween {
+    start: String,
+    end: String,
+    target: String,
+}
+
+/// The `ctx.` path a local takes its instant from.
+fn parsed_instant_source(script: &str, name: &str) -> Option<String> {
+    let needle = format!(" {name} = ");
+    let at = script.find(&needle)? + needle.len();
+    let rest = &script[at..];
+    let end = rest.find([';', '\n']).unwrap_or(rest.len());
+    painless_path(&rest[..end])
+}
+
+fn parse_nanos_between(script: &str) -> Option<NanosBetween> {
+    let (head, args) = script.split_once("ChronoUnit.NANOS.between(")?;
+    let (first, second) = args.split_once(')')?.0.split_once(',')?;
+
+    let at = last_assignment(head)?;
+    Some(NanosBetween {
+        start: parsed_instant_source(head, first.trim())?,
+        end: parsed_instant_source(head, second.trim())?,
+        target: painless_path(&head[..at])?,
+    })
+}
+
+/// Nanoseconds since the epoch, for a field holding an ISO-8601 instant.
+fn instant_nanos(event: &Event, path: &str) -> Option<i64> {
+    chrono::DateTime::parse_from_rfc3339(event.get_str(path)?)
+        .ok()?
+        .timestamp_nanos_opt()
+}
+
+/// The span between two instants, in nanoseconds.
+///
+/// Either end missing or unparseable leaves the target alone: Painless throws
+/// there and the processor carries `ignore_failure`, so the vendor writes
+/// nothing either.
+fn run_nanos_between(event: &mut Event, shape: &NanosBetween) -> bool {
+    let (Some(start), Some(end)) = (
+        instant_nanos(event, &shape.start),
+        instant_nanos(event, &shape.end),
+    ) else {
+        return true;
+    };
+    let _ = event.set(&shape.target, json!(end - start));
     true
 }
 
@@ -6456,6 +6513,7 @@ pub(crate) enum KnownShape {
     CollectMapValues,
     GuardedReplace,
     ScaleField(Box<ScaleField>),
+    NanosBetween(Box<NanosBetween>),
     GuardedDivide {
         target: String,
         absent: Option<String>,
@@ -6489,6 +6547,15 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
             .map(|(path, _)| crate::painless_params::clean_path(path))
     {
         shapes.push(KnownShape::SecondsToSpan(source));
+        return shapes;
+    }
+
+    // Pattern: the span between two parsed instants, in nanoseconds. The
+    // defender and crowdstrike pipelines derive `event.duration` this way.
+    if normalised.contains("ChronoUnit.NANOS.between(")
+        && let Some(shape) = parse_nanos_between(normalised)
+    {
+        shapes.push(KnownShape::NanosBetween(Box::new(shape)));
         return shapes;
     }
 
@@ -7634,6 +7701,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::CollectMapValues => try_collect_map_values(event, normalised),
         KnownShape::GuardedReplace => try_guarded_replace(event, normalised),
         KnownShape::ScaleField(shape) => run_scale_field(event, shape),
+        KnownShape::NanosBetween(shape) => run_nanos_between(event, shape),
         KnownShape::GuardedDivide {
             target,
             absent,
@@ -9168,6 +9236,39 @@ mod tests {
         let mut empty = Event::new(json!({}));
         assert!(try_known_painless(&mut empty, script));
         assert!(!empty.has("event.duration"));
+    }
+
+    /// Verbatim from `pipelines/microsoft_defender_endpoint/log/default.yml`.
+    #[test]
+    fn a_duration_is_the_span_between_two_parsed_instants() {
+        let script = "Instant eventstart = ZonedDateTime.parse(ctx.event.start).toInstant(); \
+             Instant eventend = ZonedDateTime.parse(ctx.event.end).toInstant(); \
+             ctx.event['duration'] = ChronoUnit.NANOS.between(eventstart, eventend);\n";
+
+        let mut event = Event::new(json!({ "event": {
+            "start": "2020-07-06T05:23:56.7191052Z",
+            "end": "2020-07-06T06:04:39.4188046Z"
+        }}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_i64("event.duration"), Some(2_442_699_699_400));
+
+        // An end Painless cannot parse throws, and the vendor writes nothing.
+        let mut unparseable = Event::new(json!({ "event": {
+            "start": "2020-07-06T05:23:56.7191052Z", "end": "not a time"
+        }}));
+        assert!(try_known_painless(&mut unparseable, script));
+        assert!(!unparseable.has("event.duration"));
+    }
+
+    /// Verbatim from `pipelines/checkpoint/firewall/default.yml`, whose factor
+    /// carries Java's long suffix.
+    #[test]
+    fn a_scale_factor_may_carry_the_java_long_suffix() {
+        let script = "ctx.event.duration = ctx.event.duration * 1000000000L";
+
+        let mut event = Event::new(json!({ "event": { "duration": 1931 } }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_i64("event.duration"), Some(1_931_000_000_000));
     }
 
     #[test]

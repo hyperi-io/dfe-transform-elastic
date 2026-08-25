@@ -482,9 +482,14 @@ fn transforms_match_elastics_confirmed_output() {
         "a lookup has already loaded the databases -- disable must come first"
     );
 
-    // Whole-diff output for one source. Printing every difference for every
-    // source buries the summary the ranking exists to give.
-    let detail = std::env::var("DFE_COMPAT_DETAIL").ok();
+    // Whole-diff output for the named sources, comma-separated. Printing every
+    // difference for every source buries the summary the ranking exists to give.
+    let detail: BTreeSet<String> = std::env::var("DFE_COMPAT_DETAIL")
+        .unwrap_or_default()
+        .split(',')
+        .filter(|name| !name.is_empty())
+        .map(str::to_owned)
+        .collect();
     let dump = std::env::var("DFE_COMPAT_DUMP").ok();
 
     let mut unmapped = Vec::new();
@@ -592,7 +597,7 @@ fn transforms_match_elastics_confirmed_output() {
                 continue;
             }
 
-            if detail.as_deref() == Some(capture.source.as_str()) {
+            if detail.contains(&capture.source) {
                 println!("  {}[{i}]: {diff}", capture.fixture);
             }
             // A diff names the fields that disagree; it does not say what ELSE
