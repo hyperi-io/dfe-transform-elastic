@@ -492,12 +492,25 @@ fn transforms_match_elastics_confirmed_output() {
         .collect();
     let dump = std::env::var("DFE_COMPAT_DUMP").ok();
 
+    // Score only the named sources, comma-separated. For the inner loop while
+    // one source is being worked on; the ratchet is SKIPPED under it, because a
+    // partial run cannot say whether another source went down.
+    let only: BTreeSet<String> = std::env::var("DFE_COMPAT_ONLY")
+        .unwrap_or_default()
+        .split(',')
+        .filter(|name| !name.is_empty())
+        .map(str::to_owned)
+        .collect();
+
     let mut unmapped = Vec::new();
     let mut by_source: BTreeMap<String, Score> = BTreeMap::new();
     let mut failures: BTreeMap<String, Vec<BTreeSet<String>>> = BTreeMap::new();
     let mut total = Score::default();
 
     for capture in &fixtures {
+        if !only.is_empty() && !only.contains(&capture.source) {
+            continue;
+        }
         let Some(transform) = transform_for(&capture.source, &capture.data_stream) else {
             unmapped.push(format!("{}/{}", capture.source, capture.data_stream));
             continue;
@@ -656,7 +669,13 @@ fn transforms_match_elastics_confirmed_output() {
         "the corpus holds sources with no transform mapped in this test: {unmapped:?}"
     );
 
-    check_baseline(&by_source, &provenance(&fixtures));
+    // A partial run cannot say whether another source went down, so it reports
+    // and never ratchets. The whole-corpus run stays the only gate.
+    if only.is_empty() {
+        check_baseline(&by_source, &provenance(&fixtures));
+    } else {
+        println!("\nDFE_COMPAT_ONLY is set, so the baseline was NOT checked");
+    }
 }
 
 /// The integrations commit and engine version the whole corpus was taken at.
