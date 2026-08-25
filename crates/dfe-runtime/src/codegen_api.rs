@@ -66,7 +66,25 @@ pub fn community_id_v1(
 /// An unlisted top-level domain gets NOTHING. Elasticsearch's processor is a
 /// list lookup and a name off the list has no answer, so `domain.tld` has no
 /// registered domain -- which is what the list is a dependency for.
+///
+/// The list is lowercase and the lookup is case-INSENSITIVE, so a DNS query
+/// name arrives as `B.ROOT-SERVERS.NET` and registers `root-servers.net`.
+/// Matching the bytes as they came found no suffix at all and wrote nothing.
+///
+/// The SUBDOMAIN is cut from the name as it arrived, though, so an uppercase
+/// name gets none: the registered domain came off the lowercase list and does
+/// not end the original text. `B.ROOT-SERVERS.NET` registers with no
+/// subdomain, which is what Elasticsearch writes.
 pub fn registered_domain_lookup(domain: &str) -> Option<RegisteredDomainResult> {
+    let original = domain;
+    let lowered;
+    let domain = if domain.bytes().any(|b| b.is_ascii_uppercase()) {
+        lowered = domain.to_ascii_lowercase();
+        lowered.as_str()
+    } else {
+        domain
+    };
+
     let parts: Vec<&str> = domain.rsplitn(3, '.').collect();
     if parts.len() < 2 {
         return None;
@@ -83,14 +101,10 @@ pub fn registered_domain_lookup(domain: &str) -> Option<RegisteredDomainResult> 
         listed.filter(|(suffix, typ)| *typ == psl::Type::Private && suffix.split('.').count() > 2)
         && let Some((_, tld)) = private.split_once('.')
     {
-        let subdomain = domain[..domain.len() - private.len()]
-            .strip_suffix('.')
-            .filter(|rest| !rest.is_empty())
-            .map(str::to_string);
         return Some(RegisteredDomainResult {
             registered_domain: Some(private.to_string()),
             top_level_domain: tld.to_string(),
-            subdomain,
+            subdomain: subdomain_of(original, private),
         });
     }
 
@@ -101,19 +115,30 @@ pub fn registered_domain_lookup(domain: &str) -> Option<RegisteredDomainResult> 
     // Everything the suffix does not cover, split at its last label.
     let suffix = icann.unwrap_or(parts[0]);
     let head = &domain[..domain.len() - suffix.len() - 1];
-    let (subdomain, label) = match head.rsplit_once('.') {
-        Some((rest, label)) => (Some(rest.to_string()), label),
-        None => (None, head),
-    };
+    let label = head.rsplit_once('.').map_or(head, |(_, label)| label);
     if label.is_empty() {
         return None;
     }
 
+    let registered = format!("{label}.{suffix}");
     Some(RegisteredDomainResult {
-        registered_domain: Some(format!("{label}.{suffix}")),
+        subdomain: subdomain_of(original, &registered),
+        registered_domain: Some(registered),
         top_level_domain: suffix.to_string(),
-        subdomain,
     })
+}
+
+/// What precedes the registered domain in the name AS IT ARRIVED.
+///
+/// Elasticsearch cuts the subdomain out of the original text, and the
+/// registered domain came off a lowercase list, so a name that does not end
+/// with it -- an uppercase DNS query, say -- gets no subdomain at all.
+fn subdomain_of(domain: &str, registered: &str) -> Option<String> {
+    domain
+        .strip_suffix(registered)
+        .and_then(|rest| rest.strip_suffix('.'))
+        .filter(|rest| !rest.is_empty())
+        .map(str::to_string)
 }
 
 /// Execute a Painless script against an event.
@@ -1572,6 +1597,27 @@ mod tests {
         assert_eq!(result.registered_domain.as_deref(), Some("akamaized.net"));
         assert_eq!(result.top_level_domain, "net");
         assert_eq!(result.subdomain.as_deref(), Some("static-s-msn-com"));
+    }
+
+    /// Verbatim from the `microsoft_dnsserver` audit corpus: a DNS query name
+    /// arrives uppercase. The list is lowercase and the lookup ignores case,
+    /// but the SUBDOMAIN is cut from the name as it arrived -- so the
+    /// registered domain, which came off the list, does not end the original
+    /// text and no subdomain is written at all.
+    #[test]
+    fn an_uppercase_name_registers_without_a_subdomain() {
+        let result = registered_domain_lookup("B.ROOT-SERVERS.NET").expect("the suffix is listed");
+        assert_eq!(
+            result.registered_domain.as_deref(),
+            Some("root-servers.net")
+        );
+        assert_eq!(result.top_level_domain, "net");
+        assert_eq!(result.subdomain, None);
+
+        // The same name in lowercase does get one.
+        let lower = registered_domain_lookup("b.root-servers.net").expect("the suffix is listed");
+        assert_eq!(lower.registered_domain.as_deref(), Some("root-servers.net"));
+        assert_eq!(lower.subdomain.as_deref(), Some("b"));
     }
 
     /// A PRIVATE entry of three labels or more IS the registered domain, with
