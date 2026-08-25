@@ -6072,6 +6072,38 @@ fn first_ctx_binding(script: &str) -> Option<String> {
     painless_path(&rest[..end])
 }
 
+/// `def i = ctx.<source>.lastIndexOf("<sep>"); if (i > -1) { ctx.<target> =
+/// ctx.<source>.substring(i+1); }` -- a file extension, and its separator.
+///
+/// Source, target and separator all come off the script. It is guarded by the
+/// parse rather than the trigger: the basename helper spells `lastIndexOf` on
+/// a PARAMETER, so no `ctx.` path precedes it and it falls through.
+fn parse_suffix_after_separator(script: &str) -> Option<(String, String, String)> {
+    let (binding, _) = script.split_once(".lastIndexOf(")?;
+    let separator = quoted_after(script, ".lastIndexOf(").into_iter().next()?;
+    let source = painless_path(binding)?;
+    let local = binding.rsplit_once(" = ")?.0.rsplit(' ').next()?.trim();
+
+    // The cut is matched WHOLE. Reading the source and the target off separate
+    // statements claimed panw's url and file scripts and cost 176 events.
+    let cut = format!("ctx.{source}.substring({local}+1)");
+    let at = script.find(&cut)?;
+    let target = painless_path(&script[..last_assignment(&script[..at])?])?;
+    (source != target && !separator.is_empty()).then_some((source, target, separator))
+}
+
+/// The text after the source's LAST separator, where there is one.
+fn run_suffix_after_separator(event: &mut Event, source: &str, target: &str, sep: &str) -> bool {
+    if let Some(text) = event.get_str(source)
+        && let Some((_, suffix)) = text.rsplit_once(sep)
+        && !suffix.is_empty()
+    {
+        let suffix = suffix.to_string();
+        let _ = event.set(target, json!(suffix));
+    }
+    true
+}
+
 /// The first bracketed list of quoted strings, as its items.
 fn first_string_list(script: &str) -> Option<Vec<String>> {
     let mut rest = script;
@@ -6641,6 +6673,13 @@ pub(crate) enum KnownShape {
     },
     RenameCommonAuth(Vec<String>),
     ProcessCreated(Vec<String>),
+    ShareFilePath(Vec<String>),
+    ObjectDn,
+    SuffixAfterSeparator {
+        source: String,
+        target: String,
+        separator: String,
+    },
     CopyTargetUser(Vec<String>),
     CopySubjectUser(Vec<String>),
     CopyMemberName(Vec<String>),
@@ -6848,6 +6887,15 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // so a script that only looks similar falls through.
     if normalised.contains("lastIndexOf(") && normalised.contains(".substring(") {
         shapes.push(KnownShape::Basename);
+        // Pattern: the same cut, but written straight onto a ctx path and
+        // landing on a DIFFERENT one -- `file.name` to `file.extension`.
+        if let Some((source, target, separator)) = parse_suffix_after_separator(normalised) {
+            shapes.push(KnownShape::SuffixAfterSeparator {
+                source,
+                target,
+                separator,
+            });
+        }
     }
 
     // Pattern: sysmon's file split -- name and directory at the last
@@ -7237,6 +7285,25 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
             base,
             sid_field,
         });
+        return shapes;
+    }
+
+    // Pattern: event 5136's `ObjectDN`, whose CN carries RFC 4514 escapes.
+    if normalised.contains("ObjectDN")
+        && normalised.contains("StringBuilder cn")
+        && normalised.contains("objectClass")
+    {
+        shapes.push(KnownShape::ObjectDn);
+        return shapes;
+    }
+
+    // Pattern: the file-share events' path block. Ahead of the basename
+    // matcher, whose `lastIndexOf`/`substring` pair this script also spells.
+    if normalised.contains("RelativeTargetName")
+        && normalised.contains("ShareLocalPath")
+        && let Some(codes) = crate::painless_windows::contained_code_list(normalised)
+    {
+        shapes.push(KnownShape::ShareFilePath(codes));
         return shapes;
     }
 
@@ -7835,6 +7902,15 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::ProcessCreated(codes) => {
             crate::painless_windows::run_process_created(event, codes)
         }
+        KnownShape::ShareFilePath(codes) => {
+            crate::painless_windows::run_share_file_path(event, codes)
+        }
+        KnownShape::ObjectDn => crate::painless_windows::run_object_dn(event),
+        KnownShape::SuffixAfterSeparator {
+            source,
+            target,
+            separator,
+        } => run_suffix_after_separator(event, source, target, separator),
         KnownShape::CopyTargetUser(codes) => {
             crate::painless_windows::run_copy_target_user(event, codes)
         }
@@ -9495,6 +9571,22 @@ mod tests {
         let mut empty = Event::new(json!({}));
         assert!(try_known_painless(&mut empty, script));
         assert!(!empty.has("event.duration"));
+    }
+
+    /// Verbatim from `pipelines/windows/forwarded/security_standard.yml`.
+    #[test]
+    fn a_file_extension_is_the_name_after_its_last_dot() {
+        let script = "def extIdx = ctx.file.name.lastIndexOf(\".\");\n\
+             if (extIdx > -1) {\n    ctx.file.extension = ctx.file.name.substring(extIdx+1);\n}";
+
+        let mut event = Event::new(json!({ "file": { "name": "summary.docx" } }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("file.extension"), Some("docx"));
+
+        // A name with no dot writes nothing.
+        let mut bare = Event::new(json!({ "file": { "name": "summary" } }));
+        assert!(try_known_painless(&mut bare, script));
+        assert!(!bare.has("file.extension"));
     }
 
     /// Verbatim from `pipelines/m365_defender/event/pipeline_device.yml`.

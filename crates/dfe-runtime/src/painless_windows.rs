@@ -632,6 +632,115 @@ pub(crate) fn run_process_created(event: &mut Event, codes: &[String]) -> bool {
     true
 }
 
+/// The first CN of a distinguished name, with RFC 4514 escapes resolved.
+///
+/// `\,` is a comma IN the name rather than the separator, and `\2C` is the same
+/// comma written as hex -- `CN=Smith\, John,OU=Users` is one person.
+fn directory_common_name(dn: &str) -> Option<String> {
+    let start = dn.to_lowercase().find("cn=")? + 3;
+    let chars: Vec<char> = dn.chars().collect();
+    let mut name = String::new();
+    let mut i = start;
+
+    while i < chars.len() {
+        let c = chars[i];
+        if c == '\\' && i + 1 < chars.len() {
+            i += 1;
+            let escaped = chars[i];
+            let high = escaped.to_digit(16);
+            let low = chars.get(i + 1).and_then(|c| c.to_digit(16));
+            match (high, low) {
+                (Some(high), Some(low)) => {
+                    name.push(char::from_u32(high * 16 + low)?);
+                    i += 1;
+                }
+                _ => name.push(escaped),
+            }
+        } else if c == ',' {
+            break;
+        } else {
+            name.push(c);
+        }
+        i += 1;
+    }
+
+    let name = name.trim().to_string();
+    (!name.is_empty()).then_some(name)
+}
+
+/// Event 5136's `ObjectDN`: its CN to the field the object's CLASS chooses.
+pub(crate) fn run_object_dn(event: &mut Event) -> bool {
+    let Some(name) = event
+        .get_str("winlog.event_data.ObjectDN")
+        .and_then(directory_common_name)
+    else {
+        return true;
+    };
+    let class = event
+        .get_str("winlog.event_data.ObjectClass")
+        .unwrap_or_default()
+        .to_lowercase();
+
+    if class.contains("user") || class.contains("group") {
+        let field = if class.contains("user") {
+            "user.target.name"
+        } else {
+            "group.name"
+        };
+        let _ = event.set(field, json!(&name));
+        let _ = event.append_unique("related.user", Value::String(name));
+    } else if class.contains("computer") && !event.has_value("host.name") {
+        let _ = event.set("host.name", json!(name));
+    }
+    true
+}
+
+/// The file-share events' path block: `ShareLocalPath` joined to
+/// `RelativeTargetName`, split again at the last separator.
+///
+/// `codes` is the list on the `target_path` clause, which is NARROWER than the
+/// processor's own gate -- 5142 reaches this script but gets no target path.
+pub(crate) fn run_share_file_path(event: &mut Event, codes: &[String]) -> bool {
+    let rel = event
+        .get_str("winlog.event_data.RelativeTargetName")
+        .unwrap_or_default();
+    let rel = rel.strip_prefix('\\').unwrap_or(rel).to_string();
+
+    let share = event
+        .get_str("winlog.event_data.ShareLocalPath")
+        .unwrap_or_default();
+    let share = share
+        .strip_prefix("\\??\\")
+        .or_else(|| share.strip_prefix("\\?\\"))
+        .unwrap_or(share);
+    let share = share.strip_suffix('\\').unwrap_or(share).to_string();
+
+    if rel.is_empty() {
+        let _ = event.set("file.directory", json!(share));
+    } else {
+        let path = format!("{share}\\{rel}");
+        match path.rfind('\\') {
+            Some(at) => {
+                let _ = event.set("file.name", json!(&path[at + 1..]));
+                let _ = event.set("file.directory", json!(&path[..at]));
+            }
+            None => {
+                let _ = event.set("file.directory", json!(&share));
+            }
+        }
+        let _ = event.set("file.path", json!(path));
+    }
+
+    let share_name = event
+        .get_str("winlog.event_data.ShareName")
+        .unwrap_or_default()
+        .to_string();
+    if !share_name.is_empty() && !rel.is_empty() && code_gated(event, codes) {
+        let _ = event.set("file.target_path", json!(format!("{share_name}\\{rel}")));
+    }
+    true
+}
+
 /// A pid the vendor reads as either a number or a `Long.decode`able string.
 fn decoded_long(held: &Value) -> Option<i64> {
     match held {
@@ -658,6 +767,26 @@ pub(crate) fn event_code_list(script: &str) -> Option<Vec<String>> {
         .filter_map(|piece| {
             let piece = piece.trim().trim_start_matches('[');
             piece
+                .strip_prefix('"')?
+                .strip_suffix('"')
+                .map(str::to_string)
+        })
+        .collect();
+    (!codes.is_empty()).then_some(codes)
+}
+
+/// The `["5140", "5145"].contains(ctx.event.code)` list of a plain guard.
+pub(crate) fn contained_code_list(script: &str) -> Option<Vec<String>> {
+    let list = script
+        .split("].contains(ctx.event.code)")
+        .next()?
+        .rsplit_once('[')?
+        .1;
+    let codes: Vec<String> = list
+        .split(',')
+        .filter_map(|piece| {
+            piece
+                .trim()
                 .strip_prefix('"')?
                 .strip_suffix('"')
                 .map(str::to_string)
@@ -1141,6 +1270,97 @@ mod tests {
 
         // `-` is the vendor's "no user", so nothing is related.
         assert!(!event.has("related.user"));
+    }
+
+    /// Verbatim from a `windows/forwarded` capture of event 5136.
+    #[test]
+    fn an_object_dn_keeps_the_comma_inside_a_name() {
+        let mut event = Event::new(json!({
+            "related": { "user": ["dadmin"] },
+            "winlog": { "event_data": {
+                "ObjectDN": "CN=Smith\\, John,OU=Users,DC=example,DC=com",
+                "ObjectClass": "user",
+            }},
+        }));
+        assert!(run_object_dn(&mut event));
+
+        assert_eq!(event.get_str("user.target.name"), Some("Smith, John"));
+        assert_eq!(
+            event.get("related.user"),
+            Some(&json!(["dadmin", "Smith, John"]))
+        );
+    }
+
+    #[test]
+    fn an_object_dn_resolves_a_hex_escape_and_picks_the_class_field() {
+        let mut group = Event::new(json!({ "winlog": { "event_data": {
+            "ObjectDN": "CN=Sales\\2C Europe,OU=Groups", "ObjectClass": "group",
+        }}}));
+        assert!(run_object_dn(&mut group));
+        assert_eq!(group.get_str("group.name"), Some("Sales, Europe"));
+        assert_eq!(group.get("related.user"), Some(&json!(["Sales, Europe"])));
+
+        // A computer only names a host that has none.
+        let mut named = Event::new(json!({
+            "host": { "name": "already" },
+            "winlog": { "event_data": {
+                "ObjectDN": "CN=WS01,OU=Computers", "ObjectClass": "computer",
+            }},
+        }));
+        assert!(run_object_dn(&mut named));
+        assert_eq!(named.get_str("host.name"), Some("already"));
+    }
+
+    /// Verbatim from a `windows/forwarded` capture of event 5145.
+    #[test]
+    fn a_share_access_joins_its_relative_target_to_the_share() {
+        let mut event = Event::new(json!({
+            "event": { "code": "5145" },
+            "winlog": { "event_data": {
+                "RelativeTargetName": "\\reports\\Q1\\summary.docx",
+                "ShareLocalPath": "C:\\Shares\\Documents",
+                "ShareName": "\\\\*\\Documents",
+            }},
+        }));
+        assert!(run_share_file_path(&mut event, &["5145".to_string()]));
+
+        assert_eq!(
+            event.get_str("file.path"),
+            Some("C:\\Shares\\Documents\\reports\\Q1\\summary.docx")
+        );
+        assert_eq!(event.get_str("file.name"), Some("summary.docx"));
+        assert_eq!(
+            event.get_str("file.directory"),
+            Some("C:\\Shares\\Documents\\reports\\Q1")
+        );
+        assert_eq!(
+            event.get_str("file.target_path"),
+            Some("\\\\*\\Documents\\reports\\Q1\\summary.docx")
+        );
+    }
+
+    /// 5142 reaches the same script and its `target_path` clause excludes it.
+    #[test]
+    fn a_share_without_a_relative_target_is_just_the_directory() {
+        let mut event = Event::new(json!({
+            "event": { "code": "5142" },
+            "winlog": { "event_data": {
+                "ShareLocalPath": "\\??\\C:\\Shares\\Documents\\",
+                "ShareName": "\\\\*\\Documents",
+            }},
+        }));
+        assert!(run_share_file_path(
+            &mut event,
+            &["5140".to_string(), "5145".to_string()]
+        ));
+
+        assert_eq!(
+            event.get_str("file.directory"),
+            Some("C:\\Shares\\Documents"),
+            "the device prefix and the trailing separator both go"
+        );
+        assert!(!event.has("file.path"));
+        assert!(!event.has("file.target_path"));
     }
 
     #[test]
