@@ -39,24 +39,60 @@ struct PolicyFile {
 struct Rule {
     #[serde(alias = "prefix")]
     path: String,
+    /// The sources this rule holds for. EMPTY means every source, which is
+    /// right for a fact about the field itself -- `event.ingested` is
+    /// nondeterministic everywhere. A rule that describes ONE source's quirk
+    /// names it, or it blinds the other twenty-one: `event.kind` and
+    /// `error.message` were excluded corpus-wide for a `cisco_nexus` date
+    /// failure, so a transform emitting `pipeline_error` anywhere else did not
+    /// show up as a difference at all.
+    #[serde(default)]
+    sources: Vec<String>,
+}
+
+impl Rule {
+    /// Whether this rule covers a path, for a comparison that may or may not
+    /// know which source it is looking at.
+    ///
+    /// A comparison with no source cannot honour scoping, so every rule
+    /// applies -- the committed-fixture tests run that way and their floors
+    /// depend on it.
+    fn covers(&self, source: Option<&str>, path: &str) -> bool {
+        let in_scope = self.sources.is_empty()
+            || source.is_none_or(|name| self.sources.iter().any(|s| s == name));
+        in_scope && prefixes(&self.path, path)
+    }
+}
+
+/// Whether `prefix` is `path` or names one of its ancestors.
+fn prefixes(prefix: &str, path: &str) -> bool {
+    path.strip_prefix(prefix)
+        .is_some_and(|rest| rest.is_empty() || rest.starts_with('.'))
 }
 
 /// The comparison policy: what to skip, and which fields are sets.
 #[derive(Debug, Default)]
 pub struct Policy {
-    /// Dotted paths whose differences are not defects, by prefix.
-    pub skip: BTreeSet<String>,
+    /// Paths whose differences are not defects, with the sources they hold for.
+    skip: Vec<Rule>,
     /// Dotted paths whose values are sets, so member order is not a difference.
+    ///
+    /// Not scoped: these are facts about the FIELD -- `event.category` is a set
+    /// in ECS whatever wrote it -- rather than one source's quirk.
     pub unordered: BTreeSet<String>,
 }
 
 impl Policy {
-    /// Whether a dotted path is excluded from comparison.
+    /// Whether a dotted path is excluded from comparison for a given source.
     #[must_use]
-    pub fn skips(&self, path: &str) -> bool {
-        self.skip
-            .iter()
-            .any(|p| path == p || path.starts_with(&format!("{p}.")))
+    pub fn skips(&self, source: Option<&str>, path: &str) -> bool {
+        self.skip.iter().any(|rule| rule.covers(source, path))
+    }
+
+    /// How many rules the file defines, for the parse check.
+    #[must_use]
+    pub fn rule_count(&self) -> usize {
+        self.skip.len()
     }
 
     /// Whether a dotted path holds a set rather than a sequence.
@@ -65,9 +101,7 @@ impl Policy {
     /// that is the file's stated position, not an oversight.
     #[must_use]
     pub fn is_unordered(&self, path: &str) -> bool {
-        self.unordered
-            .iter()
-            .any(|p| path == p || path.starts_with(&format!("{p}.")))
+        self.unordered.iter().any(|p| prefixes(p, path))
     }
 }
 
@@ -90,11 +124,10 @@ pub fn policy() -> &'static Policy {
 
         let skip = file
             .nondeterministic
-            .iter()
-            .chain(&file.not_emitted)
-            .chain(&file.known_different)
-            .chain(&file.corrected)
-            .map(|r| r.path.clone())
+            .into_iter()
+            .chain(file.not_emitted)
+            .chain(file.known_different)
+            .chain(file.corrected)
             .collect();
 
         Policy {
@@ -111,7 +144,7 @@ mod tests {
     #[test]
     fn the_policy_file_parses_and_is_not_empty() {
         let policy = policy();
-        assert!(policy.skip.len() > 20, "{} rules", policy.skip.len());
+        assert!(policy.rule_count() > 20, "{} rules", policy.rule_count());
         assert!(!policy.unordered.is_empty());
     }
 
@@ -120,15 +153,44 @@ mod tests {
     #[test]
     fn every_group_reaches_the_skip_set() {
         let policy = policy();
-        assert!(policy.skips("event.ingested"), "nondeterministic");
-        assert!(policy.skips("agent.version"), "not_emitted, by prefix");
-        assert!(policy.skips("source.geo.country_name"), "known_different");
+        assert!(policy.skips(None, "event.ingested"), "nondeterministic");
+        assert!(
+            policy.skips(None, "agent.version"),
+            "not_emitted, by prefix"
+        );
+        assert!(
+            policy.skips(None, "source.geo.country_name"),
+            "known_different"
+        );
     }
 
     #[test]
     fn a_field_the_policy_does_not_name_is_compared() {
-        assert!(!policy().skips("source.ip"));
+        assert!(!policy().skips(None, "source.ip"));
         assert!(!policy().is_unordered("network.community_id"));
+    }
+
+    /// A rule naming its sources holds for those and no others, and a rule
+    /// naming none holds everywhere.
+    #[test]
+    fn a_scoped_rule_only_covers_the_sources_it_names() {
+        let scoped = Rule {
+            path: "event.kind".to_string(),
+            sources: vec!["cisco_nexus".to_string()],
+        };
+        assert!(scoped.covers(Some("cisco_nexus"), "event.kind"));
+        assert!(!scoped.covers(Some("gcp"), "event.kind"));
+        assert!(scoped.covers(Some("cisco_nexus"), "event.kind.nested"));
+        assert!(!scoped.covers(Some("cisco_nexus"), "event.kindly"));
+
+        // A comparison that does not know its source cannot honour the scope.
+        assert!(scoped.covers(None, "event.kind"));
+
+        let global = Rule {
+            path: "event.ingested".to_string(),
+            sources: Vec::new(),
+        };
+        assert!(global.covers(Some("anything"), "event.ingested"));
     }
 
     #[test]

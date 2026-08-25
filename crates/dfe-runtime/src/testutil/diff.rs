@@ -52,10 +52,23 @@ pub struct JsonDiff {
 
 impl JsonDiff {
     /// Compare expected and actual JSON values using the given match mode.
+    ///
+    /// Knows no source, so every policy rule applies whatever it is scoped to.
+    /// [`Self::compare_for`] is the scoped form.
     pub fn compare(expected: &Value, actual: &Value, mode: MatchMode) -> Self {
+        Self::compare_for(None, expected, actual, mode)
+    }
+
+    /// Compare, naming the source so the policy's scoped rules can apply.
+    pub fn compare_for(
+        source: Option<&str>,
+        expected: &Value,
+        actual: &Value,
+        mode: MatchMode,
+    ) -> Self {
         let expected_flat = flatten_value(expected);
         let actual_flat = flatten_value(actual);
-        let diffs = compare_flat(&expected_flat, &actual_flat, mode);
+        let diffs = compare_flat(source, &expected_flat, &actual_flat, mode);
         Self { diffs, mode }
     }
 
@@ -67,7 +80,7 @@ impl JsonDiff {
         mode: MatchMode,
     ) -> Self {
         let actual_flat = flatten_value(actual);
-        let diffs = compare_flat(expected_flat, &actual_flat, mode);
+        let diffs = compare_flat(None, expected_flat, &actual_flat, mode);
         Self { diffs, mode }
     }
 
@@ -118,6 +131,7 @@ impl fmt::Display for JsonDiff {
 }
 
 fn compare_flat(
+    source: Option<&str>,
     expected: &Map<String, Value>,
     actual: &Map<String, Value>,
     mode: MatchMode,
@@ -125,7 +139,7 @@ fn compare_flat(
     let mut diffs = Vec::new();
 
     let policy = super::policy::policy();
-    let skipped = |key: &str| mode == MatchMode::Semantic && policy.skips(key);
+    let skipped = |key: &str| mode == MatchMode::Semantic && policy.skips(source, key);
 
     for (key, expected_val) in expected {
         if skipped(key) {

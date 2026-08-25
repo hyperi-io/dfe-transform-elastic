@@ -7,6 +7,16 @@
 #
 # Adding an entry hides a difference, so every entry carries a reason and every
 # run reports how many fields each rule excluded.
+#
+# An entry may carry `sources: [name, ...]`, and it then holds for those sources
+# alone. Omit it only where the reason is a fact about the FIELD rather than one
+# source's quirk -- `event.ingested` is write time everywhere. A quirk left
+# unscoped blinds every other source: `event.kind` and `error.message` were
+# excluded corpus-wide for a cisco_nexus date failure, so a transform emitting
+# `pipeline_error` anywhere else did not show up as a difference at all.
+#
+# scripts/compat.py does not read `sources` yet and applies every rule globally,
+# so its audit is the wider reading of the two.
 
 version: 1
 
@@ -90,20 +100,38 @@ known_different:
     why: A yearless syslog date, so Elastic fills in the ingesting node's current year.
   - prefix: cisco_nexus.log.syslog_time
     why: A yearless syslog date, so Elastic fills in the ingesting node's current year.
+  - prefix: dns.question.registered_domain
+    sources: [aws, cisco_umbrella]
+    why: >-
+      Our public suffix list is NEWER than the snapshot Elasticsearch 9.2.2
+      bundles, so it splits at a suffix that exists today and Elastic splits at
+      the deepest one it knows -- s3.us-east-1.amazonaws.com for aws route53,
+      servicebus.windows.net for umbrella. Debt, not a defect either side: it
+      goes away when the corpus is regenerated against an engine whose list is
+      as new as ours.
+  - prefix: dns.question.subdomain
+    sources: [aws, cisco_umbrella]
+    why: The other half of the same split.
+  - prefix: dns.question.top_level_domain
+    sources: [aws, cisco_umbrella]
+    why: The other half of the same split.
 
 # Elasticsearch is wrong here and we are right, so these never go away. Every
 # entry names the bug, because a divergence without one is indistinguishable
 # from a defect of our own.
 corrected:
   - prefix: event.duration
+    sources: [azure]
     why: >-
       Elasticsearch 9.2.2 multiplies milliseconds into a 32-bit int, so azure's
       durationMs 2826 overflows to -1468967296 where the answer is 2826000000.
   - prefix: event.kind
+    sources: [cisco_nexus]
     why: >-
       cisco_nexus ships 27 events whose timestamp its own date processor cannot
       parse, so Elastic emits pipeline_error where we emit a parsed event.
   - prefix: error.message
+    sources: [cisco_nexus]
     why: >-
       The other half of the cisco_nexus date failure -- Elastic's own error
       text, which we have nothing to report.

@@ -1,23 +1,24 @@
 {
   "_why": "Per-source scores against the compat corpus, asserted by crates/dfe-transforms/tests/compat_corpus.rs. It is a RATCHET: a source may only improve. The scores are only meaningful against the pipelines and engine named below, so the assertion is skipped when the corpus on disk was captured against anything else. Raise the numbers when they improve; lowering one needs a stated reason, the way a fixture baseline does.",
+  "_lowered": "Six sources were lowered when compare-policy.yaml gained per-source scoping. event.duration was excluded corpus-wide for an azure overflow, and event.kind and error.message for a cisco_nexus date failure, so 4,720 fields were never compared on any source. Scoping those three entries to the sources their reasons name restored them and made 54 events visibly wrong that had been passing on the strength of the blindness -- zscaler_zia 92 to 68, aws 515 to 494, m365_defender 100 to 96, microsoft_defender_endpoint 20 to 17, checkpoint 107 to 105. The transforms did not get worse; the measurement got true.",
   "integrations_sha": "2c934eb5223bdfcf0ea0db9e3230154933352bda",
   "elasticsearch_version": "9.2.2",
   "sources": {
-    "aws": { "events": 515, "events_total": 538, "fields_wrong": 27 },
+    "aws": { "events": 496, "events_total": 538, "fields_wrong": 43 },
     "azure": { "events": 26, "events_total": 26, "fields_wrong": 0 },
-    "checkpoint": { "events": 107, "events_total": 111, "fields_wrong": 5 },
-    "cisco_asa": { "events": 510, "events_total": 512, "fields_wrong": 19 },
+    "checkpoint": { "events": 105, "events_total": 111, "fields_wrong": 7 },
+    "cisco_asa": { "events": 510, "events_total": 512, "fields_wrong": 20 },
     "cisco_ftd": { "events": 432, "events_total": 432, "fields_wrong": 0 },
     "cisco_ios": { "events": 89, "events_total": 89, "fields_wrong": 0 },
     "cisco_meraki": { "events": 245, "events_total": 245, "fields_wrong": 0 },
     "cisco_nexus": { "events": 45, "events_total": 45, "fields_wrong": 0 },
-    "cisco_umbrella": { "events": 36, "events_total": 39, "fields_wrong": 5 },
+    "cisco_umbrella": { "events": 37, "events_total": 39, "fields_wrong": 3 },
     "crowdstrike": { "events": 49, "events_total": 49, "fields_wrong": 0 },
     "entityanalytics_entra_id": { "events": 6, "events_total": 7, "fields_wrong": 3 },
     "fortinet_fortigate": { "events": 185, "events_total": 185, "fields_wrong": 0 },
     "gcp": { "events": 377, "events_total": 382, "fields_wrong": 5 },
-    "m365_defender": { "events": 100, "events_total": 108, "fields_wrong": 11 },
-    "microsoft_defender_endpoint": { "events": 20, "events_total": 23, "fields_wrong": 2 },
+    "m365_defender": { "events": 96, "events_total": 108, "fields_wrong": 15 },
+    "microsoft_defender_endpoint": { "events": 17, "events_total": 23, "fields_wrong": 7 },
     "mimecast": { "events": 262, "events_total": 262, "fields_wrong": 0 },
     "microsoft_dnsserver": { "events": 14, "events_total": 14, "fields_wrong": 0 },
     "o365": { "events": 409, "events_total": 409, "fields_wrong": 0 },
@@ -26,6 +27,6 @@
     "sentinel_one": { "events": 68, "events_total": 68, "fields_wrong": 0 },
     "panw": { "events": 538, "events_total": 538, "fields_wrong": 0 },
     "windows": { "events": 592, "events_total": 596, "fields_wrong": 17 },
-    "zscaler_zia": { "events": 92, "events_total": 93, "fields_wrong": 0 }
+    "zscaler_zia": { "events": 68, "events_total": 93, "fields_wrong": 25 }
   }
 }

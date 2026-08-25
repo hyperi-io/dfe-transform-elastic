@@ -387,10 +387,10 @@ impl Score {
 ///
 /// The policy's skipped paths are not measured -- counting them would inflate
 /// every field score by the same fixed amount and hide movement.
-fn compared_field_count(expected: &Value) -> usize {
+fn compared_field_count(source: &str, expected: &Value) -> usize {
     flatten_value(expected)
         .keys()
-        .filter(|path| !policy().skips(path))
+        .filter(|path| !policy().skips(Some(source), path))
         .count()
 }
 
@@ -546,7 +546,7 @@ fn transforms_match_elastics_confirmed_output() {
             score.fields += if expected_drop {
                 1
             } else {
-                compared_field_count(expected)
+                compared_field_count(&capture.source, expected)
             };
 
             let mut event = Event::new(raw.clone());
@@ -562,7 +562,7 @@ fn transforms_match_elastics_confirmed_output() {
                 Ok(TransformResult::Drop) => {
                     // Dropped an event Elastic kept: every expected field is
                     // gone, and the ranking hears about it under one name.
-                    score.fields_wrong += compared_field_count(expected);
+                    score.fields_wrong += compared_field_count(&capture.source, expected);
                     failures
                         .entry(capture.source.clone())
                         .or_default()
@@ -581,7 +581,12 @@ fn transforms_match_elastics_confirmed_output() {
                 Ok(_) => {}
             }
 
-            let diff = JsonDiff::compare(expected, event.as_value(), MatchMode::Semantic);
+            let diff = JsonDiff::compare_for(
+                Some(&capture.source),
+                expected,
+                event.as_value(),
+                MatchMode::Semantic,
+            );
             if diff.is_match() {
                 score.events_matched += 1;
                 continue;
