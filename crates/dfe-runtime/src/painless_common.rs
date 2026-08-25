@@ -6065,6 +6065,219 @@ fn instant_nanos(event: &Event, path: &str) -> Option<i64> {
         .timestamp_nanos_opt()
 }
 
+/// The `ctx.` path the script's FIRST local is bound to.
+fn first_ctx_binding(script: &str) -> Option<String> {
+    let rest = &script[script.find("= ctx.")?..];
+    let end = rest.find([';', '\n']).unwrap_or(rest.len());
+    painless_path(&rest[..end])
+}
+
+/// The first bracketed list of quoted strings, as its items.
+fn first_string_list(script: &str) -> Option<Vec<String>> {
+    let mut rest = script;
+    while let Some(open) = rest.find('[') {
+        let body = &rest[open + 1..];
+        let close = body.find(']')?;
+        let items: Vec<String> = body[..close]
+            .split(',')
+            .filter_map(|item| {
+                let item = item.trim();
+                let quote = item.chars().next().filter(|c| *c == '"' || *c == '\'')?;
+                Some(item.trim_matches(quote).to_string())
+            })
+            .collect();
+        if !items.is_empty() {
+            return Some(items);
+        }
+        rest = &body[close..];
+    }
+    None
+}
+
+/// Which of a fixed set of keys a map marks present, collected as a list.
+///
+/// `m365_defender` reads DNS header flags this way: seven ECS names, and the ones
+/// whose value in `additional_fields` is the STRING `"true"` become the list.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FlagsPresent {
+    source: String,
+    target: String,
+    keys: Vec<String>,
+    wanted: String,
+}
+
+fn parse_flags_present(script: &str) -> Option<FlagsPresent> {
+    let at = last_assignment(script)?;
+    Some(FlagsPresent {
+        source: first_ctx_binding(script)?,
+        target: painless_path(&script[..at])?,
+        keys: first_string_list(script)?,
+        wanted: quoted_after(script, "] == ").into_iter().next()?,
+    })
+}
+
+/// The list is written even when EMPTY: the vendor's assignment is unconditional
+/// and the pipeline's own cleanup is what removes it again.
+fn run_flags_present(event: &mut Event, shape: &FlagsPresent) -> bool {
+    let Some(map) = event.get_object(&shape.source) else {
+        return true;
+    };
+    let flags: Vec<&String> = shape
+        .keys
+        .iter()
+        .filter(|key| map.get(*key).and_then(Value::as_str) == Some(shape.wanted.as_str()))
+        .collect();
+    let _ = event.set(&shape.target, json!(flags));
+    true
+}
+
+/// One column of a zip: the key it writes, the list it reads, and its cast.
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct ZipColumn {
+    key: String,
+    source: String,
+    to_long: bool,
+}
+
+/// Parallel lists zipped into a list of objects, one object per index.
+///
+/// `m365_defender` pairs the DNS answers with their TTLs this way. Lists of
+/// different lengths are the script's own error case, and it names the message.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ZipLists {
+    columns: Vec<ZipColumn>,
+    target: String,
+    mismatch: Option<String>,
+}
+
+fn parse_zip_lists(script: &str) -> Option<ZipLists> {
+    let body = script.split_once(".add([")?.1.split_once("])")?.0;
+    let mut columns = Vec::new();
+    for part in body.split(',') {
+        let (key, expr) = part.split_once(':')?;
+        let local = expr.trim().trim_start_matches("(long)").trim();
+        columns.push(ZipColumn {
+            key: key.trim().trim_matches(['"', '\'']).to_string(),
+            source: ctx_path_bound_to(script, local.split('[').next()?.trim())?,
+            to_long: expr.contains("(long)"),
+        });
+    }
+    let at = last_assignment(script)?;
+    (columns.len() > 1).then_some(ZipLists {
+        columns,
+        target: painless_path(&script[..at])?,
+        mismatch: quoted_after(script, "message.add(").into_iter().next(),
+    })
+}
+
+#[allow(clippy::cast_possible_truncation)]
+fn run_zip_lists(event: &mut Event, shape: &ZipLists) -> bool {
+    let mut lists = Vec::with_capacity(shape.columns.len());
+    for column in &shape.columns {
+        let Some(Value::Array(items)) = event.get(&column.source) else {
+            return true;
+        };
+        lists.push(items.clone());
+    }
+    if lists.iter().any(Vec::is_empty) {
+        return true;
+    }
+
+    let rows = lists[0].len();
+    if lists.iter().any(|items| items.len() != rows) {
+        if let Some(message) = &shape.mismatch {
+            let _ = event.append("error.message", json!(message));
+        }
+        // A column shorter than the first is an index Painless cannot reach, so
+        // the script throws there and writes nothing at all.
+        if lists.iter().any(|items| items.len() < rows) {
+            return true;
+        }
+    }
+
+    let mut out = Vec::with_capacity(rows);
+    for i in 0..rows {
+        let row: serde_json::Map<String, Value> = shape
+            .columns
+            .iter()
+            .zip(&lists)
+            .map(|(column, items)| {
+                let held = &items[i];
+                let value = match held.as_f64() {
+                    Some(n) if column.to_long => json!(n as i64),
+                    _ => held.clone(),
+                };
+                (column.key.clone(), value)
+            })
+            .collect();
+        out.push(Value::Object(row));
+    }
+    let _ = event.set(&shape.target, Value::Array(out));
+    true
+}
+
+/// The executable a command line starts with, as the vendor spells it.
+///
+/// First whitespace-separated token, its last `/` segment when it is a posix
+/// path, and every double quote stripped. A BACKSLASH path is left whole --
+/// the script only splits on `/`, so `C:\Windows\notepad.exe` stays as it is.
+fn command_line_executable(command: &str) -> Option<String> {
+    let first = command.trim().split(' ').next()?;
+    let first = first.rsplit('/').next()?;
+    let name = first.replace('"', "");
+    (!name.is_empty()).then_some(name)
+}
+
+/// `process.name` gathered from the names already there plus the executable of
+/// every `process.command_line`.
+///
+/// The vendor collects into a `HashSet` and writes a SCALAR when exactly one name
+/// survives and a list otherwise, so the FIELD'S SHAPE depends on the data. A
+/// list keeps insertion order here; no corpus event reaches that arm, and Java's
+/// own order is a hash order nothing outside the JVM can reproduce.
+fn run_process_name_from_command_line(event: &mut Event) -> bool {
+    let mut names: Vec<String> = Vec::new();
+    let add = |name: String, names: &mut Vec<String>| {
+        if !names.contains(&name) {
+            names.push(name);
+        }
+    };
+
+    for existing in string_values(event.get("process.name")) {
+        add(existing, &mut names);
+    }
+    for command in string_values(event.get("process.command_line")) {
+        if let Some(executable) = command_line_executable(&command) {
+            add(executable, &mut names);
+        }
+    }
+
+    // An empty set writes `[]`, which the pipeline's own drop-empty pass then
+    // removes -- so there is nothing to write.
+    match names.len() {
+        0 => {}
+        1 => {
+            let _ = event.set("process.name", json!(names.remove(0)));
+        }
+        _ => {
+            let _ = event.set("process.name", json!(names));
+        }
+    }
+    true
+}
+
+/// A field the vendor reads as "String or List of String", flattened.
+fn string_values(held: Option<&Value>) -> Vec<String> {
+    match held {
+        Some(Value::String(text)) => vec![text.clone()],
+        Some(Value::Array(items)) => items
+            .iter()
+            .filter_map(|item| item.as_str().map(str::to_string))
+            .collect(),
+        _ => Vec::new(),
+    }
+}
+
 /// The span between two instants, in nanoseconds.
 ///
 /// Either end missing or unparseable leaves the target alone: Painless throws
@@ -6514,6 +6727,9 @@ pub(crate) enum KnownShape {
     GuardedReplace,
     ScaleField(Box<ScaleField>),
     NanosBetween(Box<NanosBetween>),
+    ProcessNameFromCommandLine,
+    FlagsPresent(Box<FlagsPresent>),
+    ZipLists(Box<ZipLists>),
     GuardedDivide {
         target: String,
         absent: Option<String>,
@@ -6556,6 +6772,31 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_nanos_between(normalised)
     {
         shapes.push(KnownShape::NanosBetween(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: the keys of a fixed list that a map marks `"true"`.
+    if normalised.contains("instanceof Map")
+        && normalised.contains("] == \"true\"")
+        && let Some(shape) = parse_flags_present(normalised)
+    {
+        shapes.push(KnownShape::FlagsPresent(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: parallel lists zipped into a list of objects.
+    if normalised.contains(".add([")
+        && normalised.contains("new ArrayList()")
+        && let Some(shape) = parse_zip_lists(normalised)
+    {
+        shapes.push(KnownShape::ZipLists(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: the executables of `process.command_line` folded into
+    // `process.name`. The defender pipelines share one copy of this script.
+    if normalised.contains("currentNames") && normalised.contains("ctx.process.command_line") {
+        shapes.push(KnownShape::ProcessNameFromCommandLine);
         return shapes;
     }
 
@@ -7702,6 +7943,9 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::GuardedReplace => try_guarded_replace(event, normalised),
         KnownShape::ScaleField(shape) => run_scale_field(event, shape),
         KnownShape::NanosBetween(shape) => run_nanos_between(event, shape),
+        KnownShape::ProcessNameFromCommandLine => run_process_name_from_command_line(event),
+        KnownShape::FlagsPresent(shape) => run_flags_present(event, shape),
+        KnownShape::ZipLists(shape) => run_zip_lists(event, shape),
         KnownShape::GuardedDivide {
             target,
             absent,
@@ -9236,6 +9480,103 @@ mod tests {
         let mut empty = Event::new(json!({}));
         assert!(try_known_painless(&mut empty, script));
         assert!(!empty.has("event.duration"));
+    }
+
+    /// Verbatim from `pipelines/m365_defender/event/pipeline_device.yml`.
+    #[test]
+    fn dns_header_flags_are_the_keys_the_map_marks_true() {
+        let script = "def af = ctx.m365_defender.event.additional_fields;\n\
+             List ecs_flags = [\"AA\", \"TC\", \"RD\", \"RA\", \"AD\", \"CD\", \"DO\"];\n\
+             List flags = [];\n\
+             if (af instanceof Map) {\n    for (def flag: ecs_flags) {\n\
+             if (af[flag] != null && af[flag] == \"true\") {\n            flags.add(flag);\n\
+             }\n    }\n}\n\
+             if (!ctx.m365_defender.event.containsKey('dns')) {\n\
+             ctx.m365_defender.event.dns = new HashMap();\n}\n\
+             ctx.m365_defender.event.dns.header_flags = flags;\n";
+
+        let mut event = Event::new(json!({ "m365_defender": { "event": { "additional_fields": {
+            "AA": "false", "TC": "false", "RD": "true", "RA": "true"
+        }}}}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("m365_defender.event.dns.header_flags"),
+            Some(&json!(["RD", "RA"])),
+            "the ECS order of the literal list, not the map's"
+        );
+    }
+
+    /// Verbatim from `pipelines/m365_defender/event/pipeline_device.yml`.
+    const ZIP_ANSWERS: &str = "def answers = ctx.m365_defender.event.dns.answers; \
+         def ttls = ctx.m365_defender.event.dns.ttls; \
+         if (answers.isEmpty() || ttls.isEmpty()) {\n  return;\n} \
+         else if (answers.length != ttls.length) {\n  if (ctx.error == null) {\n\
+         ctx.error = new HashMap();\n  }\n  if (ctx.error.message == null) {\n\
+         ctx.error.message = new ArrayList();\n  }\n\
+         ctx.error.message.add('DNS answers and TTLs have a different length');\n} \
+         def lst = new ArrayList(); for (def i = 0; i < answers.length; i++) {\n\
+         lst.add([\n    \"data\": answers[i],\n    \"ttl\": (long)ttls[i]\n  ])\n} \
+         if (ctx.dns == null) {\n  ctx.dns = new HashMap();\n} ctx.dns.answers = lst;";
+
+    #[test]
+    fn dns_answers_zip_with_their_ttls() {
+        let mut event = Event::new(json!({ "m365_defender": { "event": { "dns": {
+            "answers": ["89.160.20.112", "google.com"], "ttls": [5.0, 5.0]
+        }}}}));
+        assert!(try_known_painless(&mut event, ZIP_ANSWERS));
+        assert_eq!(
+            event.get("dns.answers"),
+            Some(&json!([
+                {"data": "89.160.20.112", "ttl": 5},
+                {"data": "google.com", "ttl": 5}
+            ])),
+            "the TTL carries the script's own cast to long"
+        );
+
+        // Lists of different lengths are the script's stated error, and the one
+        // that runs short throws before anything is written.
+        let mut ragged = Event::new(json!({ "m365_defender": { "event": { "dns": {
+            "answers": ["a", "b"], "ttls": [5.0]
+        }}}}));
+        assert!(try_known_painless(&mut ragged, ZIP_ANSWERS));
+        assert!(!ragged.has("dns.answers"));
+        assert_eq!(
+            ragged.get("error.message"),
+            Some(&json!(["DNS answers and TTLs have a different length"])),
+            "the vendor's error.message is a list it appends to"
+        );
+    }
+
+    /// The shape of `pipelines/m365_defender/incident/default.yml`'s
+    /// `set_process_name_from_command_line`, which four pipelines share.
+    const PROCESS_NAME: &str = "ctx.process = ctx.process ?: [:];\n\
+         ctx.process.name = ctx.process.name ?: [];\n\
+         def currentNames = new HashSet();\n\
+         if (ctx.process.command_line != null) { ... }\n\
+         ctx.process.name = new ArrayList(currentNames);\n";
+
+    #[test]
+    fn a_process_name_comes_off_its_command_line() {
+        // One name survives, so the field is a SCALAR.
+        let mut event = Event::new(json!({ "process": { "command_line": ["\"MsSense.exe\""] } }));
+        assert!(try_known_painless(&mut event, PROCESS_NAME));
+        assert_eq!(event.get_str("process.name"), Some("MsSense.exe"));
+
+        // A posix path keeps its last segment; a windows one is left whole,
+        // because the vendor splits on `/` alone.
+        let mut paths = Event::new(json!({ "process": { "command_line": [
+            "/usr/bin/curl -s http://x", "C:\\Windows\\System32\\cmd.exe"
+        ]}}));
+        assert!(try_known_painless(&mut paths, PROCESS_NAME));
+        assert_eq!(
+            paths.get("process.name"),
+            Some(&json!(["curl", "C:\\Windows\\System32\\cmd.exe"]))
+        );
+
+        // Nothing to gather writes nothing, not an empty list.
+        let mut empty = Event::new(json!({ "process": { "pid": 4 } }));
+        assert!(try_known_painless(&mut empty, PROCESS_NAME));
+        assert!(!empty.has("process.name"));
     }
 
     /// Verbatim from `pipelines/microsoft_defender_endpoint/log/default.yml`.

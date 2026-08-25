@@ -1236,12 +1236,13 @@ fn percent_decode_strict(text: &str) -> Option<String> {
 
 /// The extension of a path, or `None` when its last segment has no dot.
 ///
-/// Read off the corpus rather than assumed: Elasticsearch 9.2.2 gives
-/// `/api/v2/cmdb/log.fortianalyzer/setting` NO extension, so the dot has to be
-/// in the LAST segment -- a dotted directory earlier in the path does not
-/// count. `/virus/eicar.com` gives `com` and `/config/` gives none.
+/// Elasticsearch takes the extension from the segment after the LAST `/` and
+/// gives a path with no slash at all none -- `elastic/elasticsearch#105689`, and
+/// the corpus agrees: `/api/v2/cmdb/log.fortianalyzer/setting` and the bare
+/// `subdomain.domain.tld` both come back without one, `/virus/eicar.com` gives
+/// `com`, and `/config/` gives none.
 fn path_extension(path: &str) -> Option<&str> {
-    let segment = path.rsplit('/').next()?;
+    let segment = &path[path.rfind('/')?..];
     let dot = segment.rfind('.')?;
     let extension = &segment[dot + 1..];
     (!extension.is_empty()).then_some(extension)
@@ -2044,6 +2045,13 @@ mod tests {
                 "/api/v2/cmdb/log.fortianalyzer/setting?vdom=root",
                 json!({ "path": "/api/v2/cmdb/log.fortianalyzer/setting", "query": "vdom=root" }),
             ),
+            // Neither must a bare hostname, which java.net.URI reads as a
+            // relative PATH. m365_defender and zscaler both ship these.
+            (
+                "subdomain.domain.tld",
+                json!({ "path": "subdomain.domain.tld" }),
+            ),
+            ("url.com", json!({ "path": "url.com" })),
             (
                 "https://172.16.200.88/dlp/files/fortiauto.pdf",
                 json!({

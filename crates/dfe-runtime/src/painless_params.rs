@@ -2063,6 +2063,19 @@ fn try_sentinel_removal(event: &mut Event, script: &str, params: &Map<String, Va
     if let Some(Value::Object(map)) = pointer_mut(event, &path) {
         remove_sentinel_values(map, &sentinels);
     }
+
+    // The defender pipelines wrap this removal in a recursive drop-empty and
+    // run `drop(ctx)` after it. The removal claims the script, so the sweep
+    // that clears what the removal just emptied has to run here too.
+    if script.contains("instanceof Map")
+        && script.contains("instanceof List")
+        && script.contains("(ctx)")
+    {
+        crate::painless_common::drop_empty_recursive(
+            event,
+            &crate::painless_common::DropPolicy::read(script),
+        );
+    }
     true
 }
 
@@ -4449,6 +4462,43 @@ mod tests {
         let obj = event.get_object("crowdstrike.metadata").unwrap();
         assert_eq!(obj.get("zero"), Some(&json!(0)));
         assert!(!obj.contains_key("dash"));
+    }
+
+    /// Verbatim from `pipelines/microsoft_defender_endpoint/log/default.yml`,
+    /// which wraps the removal in a recursive drop and runs `drop(ctx)` after.
+    const SENTINEL_WRAPPED: &str = "boolean drop(Object o) {\n  if (o == null || o == \"\") {\n\
+         return true;\n  } else if (o instanceof Map) {\n\
+         ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n\
+         } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n\
+         return (((List) o).length == 0);\n  }\n  return false;\n}\n\
+         if (!ctx.json.evidence.empty) {\n\
+         ctx.json.evidence.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n\
+         }\ndrop(ctx);\n";
+
+    #[test]
+    fn a_wrapped_sentinel_removal_still_sweeps_what_it_emptied() {
+        let mut event = Event::new(json!({ "json": {
+            "evidence": { "sha1": "abc", "url": null, "domain": "" }, "keep": "v"
+        }}));
+
+        assert!(try_params_painless(
+            &mut event,
+            SENTINEL_WRAPPED,
+            &json!({ "values": [null, ""] }),
+        ));
+        assert_eq!(event.get_str("json.evidence.sha1"), Some("abc"));
+        assert!(!event.has("json.evidence.url"));
+
+        // An evidence list the vendor ships EMPTY goes with the sweep, and
+        // leaving it behind put a stray `[]` in the output.
+        let mut empty = Event::new(json!({ "json": { "evidence": [], "keep": "v" } }));
+        assert!(try_params_painless(
+            &mut empty,
+            SENTINEL_WRAPPED,
+            &json!({ "values": [null, ""] }),
+        ));
+        assert!(!empty.has("json.evidence"));
+        assert_eq!(empty.get_str("json.keep"), Some("v"));
     }
 
     #[test]
