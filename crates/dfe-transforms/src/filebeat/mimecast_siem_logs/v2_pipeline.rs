@@ -50,7 +50,7 @@ impl Transform for V2Pipeline {
                         r#"ctx.mimecast.log_type = params.get(ctx.mimecast.type);\nctx.mimecast.type = null;\n"#
                     ),
                     cached_params!(
-                        "{\"attachment protect\":\"attachment-protect\",\"av\":\"avlog\",\"delivery\":\"delivery\",\"impersonation protect\":\"impersonation-protect\",\"internal email protect\":\"internal-email-protect\",\"journal\":\"jrnl\",\"process\":\"process\",\"receipt\":\"receipt\",\"spam\":\"spam\",\"url protect\":\"url-protect\"}"
+                        "{\"av\":\"avlog\",\"delivery\":\"delivery\",\"internal email protect\":\"internal-email-protect\",\"impersonation protect\":\"impersonation-protect\",\"journal\":\"jrnl\",\"process\":\"process\",\"receipt\":\"receipt\",\"attachment protect\":\"attachment-protect\",\"spam\":\"spam\",\"url protect\":\"url-protect\"}"
                     ),
                 )?;
             }

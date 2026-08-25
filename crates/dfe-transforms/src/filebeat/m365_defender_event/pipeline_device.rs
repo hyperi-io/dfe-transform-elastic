@@ -2234,7 +2234,7 @@ impl Transform for PipelineDevice {
                 // Painless script
                 // Source: def name = ctx._tmp.registry.hive.toUpperCase();\nif (ctx.registry == null) {\n  ctx.registry = new HashMap();\n}\nctx.registry.hive = params.getOrDefault(name, name);\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan_params(event, cached_painless!(r#"def name = ctx._tmp.registry.hive.toUpperCase();\nif (ctx.registry == null) {\n  ctx.registry = new HashMap();\n}\nctx.registry.hive = params.getOrDefault(name, name);\n"#), cached_params!("{\"HKEY_CLASSES_ROOT\":\"HKCR\",\"HKEY_CURRENT_CONFIG\":\"HKCC\",\"HKEY_CURRENT_USER\":\"HKCU\",\"HKEY_LOCAL_MACHINE\":\"HKLM\",\"HKEY_USERS\":\"HKU\"}"))?;
+                painless_exec_plan_params(event, cached_painless!(r#"def name = ctx._tmp.registry.hive.toUpperCase();\nif (ctx.registry == null) {\n  ctx.registry = new HashMap();\n}\nctx.registry.hive = params.getOrDefault(name, name);\n"#), cached_params!("{\"HKEY_CLASSES_ROOT\":\"HKCR\",\"HKEY_CURRENT_USER\":\"HKCU\",\"HKEY_LOCAL_MACHINE\":\"HKLM\",\"HKEY_USERS\":\"HKU\",\"HKEY_CURRENT_CONFIG\":\"HKCC\"}"))?;
             }
 
             if let Some(v) = event.get("m365_defender.event.registry.value_name").filter(|v| !painless_is_empty_value(v)).cloned() {

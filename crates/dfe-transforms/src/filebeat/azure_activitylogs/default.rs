@@ -555,7 +555,7 @@ impl Transform for Default {
                     r#"if (ctx?.azure?.activitylogs?.category == null) {\n  return;\n} def category = ctx.azure.activitylogs.category.toLowerCase(); if (params.get(category) == null) {\n  return;\n} def hm = new HashMap(params.get(category)); hm.forEach((k, v) -> ctx.event[k] = v);"#
                 ),
                 cached_params!(
-                    "{\"action\":{\"type\":[\"change\"]},\"delete\":{\"type\":[\"deletion\"]},\"read\":{\"type\":[\"access\"]},\"write\":{\"type\":[\"change\"]}}"
+                    "{\"write\":{\"type\":[\"change\"]},\"read\":{\"type\":[\"access\"]},\"delete\":{\"type\":[\"deletion\"]},\"action\":{\"type\":[\"change\"]}}"
                 ),
             )?;
 

@@ -854,7 +854,7 @@ impl Transform for Default {
                         cached_painless!(
                             r#"ctx.event = ctx.event ?: [:];\nctx.event.severity = params.get(ctx.sentinel_one.application_risk.severity.toLowerCase());"#
                         ),
-                        cached_params!("{\"critical\":99,\"high\":73,\"low\":21,\"medium\":47}"),
+                        cached_params!("{\"low\":21,\"medium\":47,\"high\":73,\"critical\":99}"),
                     )?;
                     Ok(())
                 })() {

@@ -7505,7 +7505,7 @@ impl Transform for Default {
                             r#"def name = ctx._tmp.registry.hive.toUpperCase();\nif (ctx.registry == null) {\n  ctx.registry = new HashMap();\n}\nctx.registry.hive = params.getOrDefault(name, name);\n"#
                         ),
                         cached_params!(
-                            "{\"HKEY_CLASSES_ROOT\":\"HKCR\",\"HKEY_CURRENT_CONFIG\":\"HKCC\",\"HKEY_CURRENT_USER\":\"HKCU\",\"HKEY_LOCAL_MACHINE\":\"HKLM\",\"HKEY_USERS\":\"HKU\"}"
+                            "{\"HKEY_CLASSES_ROOT\":\"HKCR\",\"HKEY_CURRENT_USER\":\"HKCU\",\"HKEY_LOCAL_MACHINE\":\"HKLM\",\"HKEY_USERS\":\"HKU\",\"HKEY_CURRENT_CONFIG\":\"HKCC\"}"
                         ),
                     )?;
                 }

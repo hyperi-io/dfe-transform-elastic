@@ -530,6 +530,117 @@ fn java_long_decode(text: &str) -> Option<i64> {
     Some(if negative { -value } else { value })
 }
 
+/// Split a command line the way event 4688's own script does.
+///
+/// Its own, not `commandLineToArgv`: a quote FLIPS the in-quote state and is
+/// kept in the argument, and a run of whitespace outside quotes yields an
+/// empty argument for each gap -- both are what the vendor's index arithmetic
+/// produces, and `"wevtutil.exe" cl Security` keeps its quotes because of it.
+fn split_command_line(command: &str) -> Vec<String> {
+    let chars: Vec<char> = command.chars().collect();
+    let mut args = Vec::new();
+    let (mut start, mut in_quote) = (0, false);
+
+    for (i, c) in chars.iter().enumerate() {
+        if *c == '"' {
+            in_quote = !in_quote;
+        }
+        if c.is_whitespace() && !in_quote {
+            args.push(chars[start..i].iter().collect());
+            start = i + 1;
+        }
+        if i + 1 == chars.len() {
+            args.push(chars[start..=i].iter().collect());
+        }
+    }
+    args
+}
+
+/// The last `\`-separated segment of a windows path.
+fn windows_basename(path: &str) -> &str {
+    path.rsplit('\\').next().unwrap_or(path)
+}
+
+/// Event 4688's process block: the new process, its parent, and the command
+/// line the vendor splits itself.
+///
+/// The three fields it consumes are REMOVED from `winlog.event_data` -- the
+/// parent's `ProcessId` is not, which is the script's own asymmetry.
+pub(crate) fn run_process_created(event: &mut Event, codes: &[String]) -> bool {
+    if !code_gated(event, codes) {
+        return true;
+    }
+
+    if let Some(pid) = event
+        .get("winlog.event_data.NewProcessId")
+        .and_then(decoded_long)
+    {
+        let _ = event.set("process.pid", json!(pid));
+        event.remove("winlog.event_data.NewProcessId");
+    }
+    if let Some(executable) = event
+        .get_str("winlog.event_data.NewProcessName")
+        .map(str::to_string)
+    {
+        let _ = event.set("process.executable", json!(executable));
+        event.remove("winlog.event_data.NewProcessName");
+    }
+    if let Some(executable) = event
+        .get_str("winlog.event_data.ParentProcessName")
+        .map(str::to_string)
+    {
+        let _ = event.set("process.parent.executable", json!(executable));
+        event.remove("winlog.event_data.ParentProcessName");
+    }
+
+    for (executable, name) in [
+        ("process.executable", "process.name"),
+        ("process.parent.executable", "process.parent.name"),
+    ] {
+        if !event.has_value(name)
+            && let Some(base) = event.get_str(executable).map(windows_basename)
+        {
+            let base = base.to_string();
+            let _ = event.set(name, json!(base));
+        }
+    }
+
+    if let Some(pid) = event
+        .get("winlog.event_data.ProcessId")
+        .and_then(decoded_long)
+    {
+        let _ = event.set("process.parent.pid", json!(pid));
+    }
+
+    if let Some(command) = event
+        .get_str("winlog.event_data.CommandLine")
+        .map(str::to_string)
+    {
+        let args = split_command_line(&command);
+        let _ = event.set("process.args_count", json!(args.len()));
+        let _ = event.set("process.args", json!(args));
+        let _ = event.set("process.command_line", json!(command));
+    }
+
+    if let Some(name) = event
+        .get_str("winlog.event_data.TargetUserName")
+        .filter(|name| *name != "-")
+        .map(str::to_string)
+    {
+        let _ = event.append_unique("related.user", Value::String(name));
+    }
+    true
+}
+
+/// A pid the vendor reads as either a number or a `Long.decode`able string.
+fn decoded_long(held: &Value) -> Option<i64> {
+    match held {
+        Value::Number(n) => n.as_i64(),
+        Value::String(text) => java_long_decode(text),
+        _ => None,
+    }
+}
+
 // ---------------------------------------------------------------------------
 // The security pipeline's user-copy scripts
 // ---------------------------------------------------------------------------
@@ -990,6 +1101,58 @@ mod tests {
             ctx.process.executable = ctx.process.args[0];
         }
     ";
+
+    /// Verbatim from a `windows/forwarded` capture of event 4688.
+    #[test]
+    fn event_4688_builds_the_process_block() {
+        let mut event = Event::new(json!({
+            "event": { "code": "4688" },
+            "winlog": { "event_data": {
+                "CommandLine": "\"C:\\Windows\\system32\\wevtutil.exe\" cl Security",
+                "NewProcessId": "0x11cc",
+                "NewProcessName": "C:\\Windows\\System32\\wevtutil.exe",
+                "ParentProcessName": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "ProcessId": "0x122c",
+                "TargetUserName": "-",
+            }},
+        }));
+        assert!(run_process_created(&mut event, &["4688".to_string()]));
+
+        assert_eq!(event.get("process.pid"), Some(&json!(4556)));
+        assert_eq!(event.get("process.parent.pid"), Some(&json!(4652)));
+        assert_eq!(event.get_str("process.name"), Some("wevtutil.exe"));
+        assert_eq!(event.get_str("process.parent.name"), Some("powershell.exe"));
+        assert_eq!(
+            event.get("process.args"),
+            Some(&json!([
+                "\"C:\\Windows\\system32\\wevtutil.exe\"",
+                "cl",
+                "Security"
+            ])),
+            "the quotes stay: the vendor's splitter keeps them in the argument"
+        );
+        assert_eq!(event.get("process.args_count"), Some(&json!(3)));
+
+        // The three consumed fields go; the parent's ProcessId stays.
+        assert!(!event.has("winlog.event_data.NewProcessId"));
+        assert!(!event.has("winlog.event_data.NewProcessName"));
+        assert!(!event.has("winlog.event_data.ParentProcessName"));
+        assert!(event.has("winlog.event_data.ProcessId"));
+
+        // `-` is the vendor's "no user", so nothing is related.
+        assert!(!event.has("related.user"));
+    }
+
+    #[test]
+    fn event_4688_leaves_another_code_alone() {
+        let mut event = Event::new(json!({
+            "event": { "code": "4689" },
+            "winlog": { "event_data": { "NewProcessId": "0x11cc" } },
+        }));
+        assert!(run_process_created(&mut event, &["4688".to_string()]));
+        assert!(!event.has("process.pid"));
+        assert!(event.has("winlog.event_data.NewProcessId"));
+    }
 
     #[test]
     fn the_sysmon_copy_parses_both_pairs() {

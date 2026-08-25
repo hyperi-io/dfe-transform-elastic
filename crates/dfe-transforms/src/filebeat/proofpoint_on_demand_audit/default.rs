@@ -90,7 +90,7 @@ impl Transform for Default {
                         r#"if (ctx.json?.audit?.action == null || params.get(ctx.json.audit.action.toLowerCase()) == null) {\n  return;\n}\nparams.get(ctx.json.audit.action.toLowerCase()).forEach((k, v) -> {\n  if (v instanceof List) {\n    ctx.event[k] = new ArrayList(v);\n  } else {\n    ctx.event[k] = v;\n  }\n});"#
                     ),
                     cached_params!(
-                        "{\"create\":{\"category\":[\"configuration\"],\"type\":[\"creation\"]},\"delete\":{\"category\":[\"configuration\"],\"type\":[\"deletion\"]},\"download\":{\"category\":[\"configuration\"],\"type\":[\"info\"]},\"edit\":{\"category\":[\"configuration\"],\"type\":[\"change\"]},\"execute\":{\"category\":[\"configuration\"],\"type\":[\"access\",\"info\"]},\"login\":{\"category\":[\"authentication\"],\"type\":[\"start\"]},\"logout\":{\"category\":[\"authentication\"],\"type\":[\"end\"]},\"read\":{\"category\":[\"configuration\"],\"type\":[\"access\",\"info\"]}}"
+                        "{\"login\":{\"category\":[\"authentication\"],\"type\":[\"start\"]},\"logout\":{\"category\":[\"authentication\"],\"type\":[\"end\"]},\"execute\":{\"category\":[\"configuration\"],\"type\":[\"access\",\"info\"]},\"read\":{\"category\":[\"configuration\"],\"type\":[\"access\",\"info\"]},\"create\":{\"category\":[\"configuration\"],\"type\":[\"creation\"]},\"edit\":{\"category\":[\"configuration\"],\"type\":[\"change\"]},\"delete\":{\"category\":[\"configuration\"],\"type\":[\"deletion\"]},\"download\":{\"category\":[\"configuration\"],\"type\":[\"info\"]}}"
                     ),
                 )?;
                 Ok(())

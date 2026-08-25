@@ -119,7 +119,7 @@ impl Transform for Default {
                         r#"if (params.get(ctx.microsoft_defender_endpoint.machine_action.type) == null) {\n  return;\n} params.get(ctx.microsoft_defender_endpoint.machine_action.type).forEach((k, v) -> {\n  ctx.event[k] = v\n});"#
                     ),
                     cached_params!(
-                        "{\"CollectInvestigationPackage\":{\"type\":[\"info\"]},\"Isolate\":{\"category\":[\"network\"],\"type\":[\"end\"]},\"LiveResponse\":{\"type\":[\"info\"]},\"Offboard\":{\"type\":[\"info\"]},\"RestrictCodeExecution\":{\"category\":[\"package\"],\"type\":[\"access\"]},\"RunAntiVirusScan\":{\"type\":[\"info\"]},\"StopAndQuarantineFile\":{\"category\":[\"file\"],\"type\":[\"deletion\"]},\"Unisolate\":{\"category\":[\"network\"],\"type\":[\"start\"]},\"UnrestrictCodeExecution\":{\"category\":[\"package\"],\"type\":[\"access\"]}}"
+                        "{\"RunAntiVirusScan\":{\"type\":[\"info\"]},\"Offboard\":{\"type\":[\"info\"]},\"LiveResponse\":{\"type\":[\"info\"]},\"CollectInvestigationPackage\":{\"type\":[\"info\"]},\"Isolate\":{\"category\":[\"network\"],\"type\":[\"end\"]},\"Unisolate\":{\"category\":[\"network\"],\"type\":[\"start\"]},\"StopAndQuarantineFile\":{\"category\":[\"file\"],\"type\":[\"deletion\"]},\"RestrictCodeExecution\":{\"category\":[\"package\"],\"type\":[\"access\"]},\"UnrestrictCodeExecution\":{\"category\":[\"package\"],\"type\":[\"access\"]}}"
                     ),
                 )?;
             }

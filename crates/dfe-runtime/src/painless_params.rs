@@ -493,18 +493,16 @@ pub(crate) fn run_params_shape(
             let Some(bits) = event.get(source).and_then(as_u64_flags) else {
                 return true;
             };
-            // Elasticsearch walks params in INSERTION order -- its XContent
-            // maps are LinkedHashMap -- and the vendor writes these flag
-            // tables highest bit first, which our sorted map reverses.
-            let mut matched: Vec<(u64, Value)> = params
+            // Elasticsearch walks params in INSERTION order, and the vendor's
+            // tables disagree about direction: kerberos ticket options run
+            // highest bit first, the UAC attributes lowest.
+            let names: Vec<Value> = params
                 .iter()
                 .filter_map(|(key, name)| {
                     let flag = as_u64_flags(&Value::String(key.clone()))?;
-                    (flag != 0 && bits & flag == flag).then(|| (flag, name.clone()))
+                    (flag != 0 && bits & flag == flag).then(|| name.clone())
                 })
                 .collect();
-            matched.sort_by_key(|(flag, _)| std::cmp::Reverse(*flag));
-            let names: Vec<Value> = matched.into_iter().map(|(_, name)| name).collect();
             if !names.is_empty() {
                 let _ = event.set(&format!("{container}.{member}"), Value::Array(names));
             }
@@ -1023,7 +1021,8 @@ fn parse_contains_guard(script: &str) -> Option<(String, Vec<String>)> {
 fn parse_put_flag_names(script: &str) -> Option<ParamsShape> {
     let (container, member) = parse_put_target(script)?;
     let (_, tail) = script.split_once("Long.decode(ctx.")?;
-    let source = clean_path(tail.split(')').next()?);
+    // The vendor wraps the read in `.trim()` where the field is text.
+    let source = clean_path(tail.split(')').next()?.trim_end_matches(".trim("));
     if source.is_empty()
         || !source
             .chars()
@@ -4462,6 +4461,49 @@ mod tests {
         let obj = event.get_object("crowdstrike.metadata").unwrap();
         assert_eq!(obj.get("zero"), Some(&json!(0)));
         assert!(!obj.contains_key("dash"));
+    }
+
+    /// Verbatim from `pipelines/windows/forwarded/security_standard.yml`.
+    const UAC_FLAGS: &str = "if (ctx.winlog?.event_data == null) {\n  return;\n}\n\
+         Long newUacValue;\ntry {\n\
+         newUacValue = Long.decode(ctx.winlog.event_data.NewUacValue.trim());\n\
+         } catch (Exception e) {\n  return;\n}\nArrayList uacResult = new ArrayList();\n\
+         for (entry in params.entrySet()) {\n  Long flag = Long.decode(entry.getKey());\n\
+         if ((newUacValue.longValue() & flag.longValue()) == flag.longValue()) {\n\
+         uacResult.add(entry.getValue());\n  }\n}\nif (uacResult.length == 0) {\n  return;\n}\n\
+         ctx.winlog.event_data.put(\"NewUACList\", uacResult);\n";
+
+    /// The list comes out in the PARAMS' order, and the vendor's two tables
+    /// disagree about direction -- so neither sorting nor reversing is right.
+    #[test]
+    fn a_flag_list_keeps_the_params_order() {
+        let mut event = Event::new(json!({
+            "winlog": { "event_data": { "NewUacValue": " 0x210 " } },
+        }));
+        assert!(try_params_painless(
+            &mut event,
+            UAC_FLAGS,
+            &json!({ "0x00000010": "USER_NORMAL_ACCOUNT", "0x00000200": "USER_DONT_EXPIRE_PASSWORD" }),
+        ));
+        assert_eq!(
+            event.get("winlog.event_data.NewUACList"),
+            Some(&json!(["USER_NORMAL_ACCOUNT", "USER_DONT_EXPIRE_PASSWORD"])),
+            "the UAC table runs lowest bit first"
+        );
+
+        // The kerberos table runs the other way, and its list follows.
+        let mut ticket = Event::new(json!({
+            "winlog": { "event_data": { "NewUacValue": "0x40000001" } },
+        }));
+        assert!(try_params_painless(
+            &mut ticket,
+            UAC_FLAGS,
+            &json!({ "0x40000000": "Forwardable", "0x00000001": "Validate" }),
+        ));
+        assert_eq!(
+            ticket.get("winlog.event_data.NewUACList"),
+            Some(&json!(["Forwardable", "Validate"]))
+        );
     }
 
     /// Verbatim from `pipelines/microsoft_defender_endpoint/log/default.yml`,

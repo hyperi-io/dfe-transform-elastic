@@ -91,7 +91,7 @@ impl Transform for Default {
                             r#"if (ctx.zscaler_zia.email_dlp.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message == null ? [] : ctx.error.message;\n  ctx.error.message.add('template version mismatch: ' + (ctx.zscaler_zia.email_dlp.version == null ? 'null' : ctx.zscaler_zia.email_dlp.version.toString()) + ' is not expected version (see ' + params.data_stream + ' https://epr.elastic.co/package/zscaler_zia/' + params.pkg_version + '/docs/README.md)');\n}"#
                         ),
                         cached_params!(
-                            "{\"data_stream\":\"email_dlp\",\"expect\":{\"version\":\"v1\"},\"pkg_version\":\"4.1.0\"}"
+                            "{\"pkg_version\":\"4.1.0\",\"data_stream\":\"email_dlp\",\"expect\":{\"version\":\"v1\"}}"
                         ),
                     )?;
                     Ok(())

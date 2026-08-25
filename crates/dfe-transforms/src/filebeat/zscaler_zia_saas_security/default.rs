@@ -53,7 +53,7 @@ impl Transform for Default {
                             r#"if (ctx.zscaler_zia.saas_security.version != params.expect.version) {\n  ctx.error = ctx.error ?: [:];\n  ctx.error.message = ctx.error.message ?: [];\n  ctx.error.message.add('template version mismatch: ' + (ctx.zscaler_zia.saas_security.version == null ? 'null' : ctx.zscaler_zia.saas_security.version.toString()) + ' is not expected version (see ' + params.data_stream + ' https://epr.elastic.co/package/zscaler_zia/' + params.pkg_version + '/docs/README.md)');\n}"#
                         ),
                         cached_params!(
-                            "{\"data_stream\":\"saas_security\",\"expect\":{\"version\":\"v1\"},\"pkg_version\":\"3.19.0\"}"
+                            "{\"pkg_version\":\"3.19.0\",\"data_stream\":\"saas_security\",\"expect\":{\"version\":\"v1\"}}"
                         ),
                     )?;
                     Ok(())

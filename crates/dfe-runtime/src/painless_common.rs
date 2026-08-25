@@ -6640,6 +6640,7 @@ pub(crate) enum KnownShape {
         target: String,
     },
     RenameCommonAuth(Vec<String>),
+    ProcessCreated(Vec<String>),
     CopyTargetUser(Vec<String>),
     CopySubjectUser(Vec<String>),
     CopyMemberName(Vec<String>),
@@ -7239,6 +7240,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: event 4688's process block. Ahead of the append matcher, which
+    // its closing `related.user.add` triggers -- that claimed the script and
+    // left the whole process block unwritten.
+    if normalised.contains("NewProcessId")
+        && normalised.contains("ParentProcessName")
+        && let Some(codes) = crate::painless_windows::event_code_list(normalised)
+    {
+        shapes.push(KnownShape::ProcessCreated(codes));
+        return shapes;
+    }
+
     // Pattern: the security pipeline's "Copy Target User" -- SID, username
     // and domain to `user.*` or `user.target.*`, gated on the script's own
     // event-code list. Ahead of the email-split matcher, whose trigger its
@@ -7819,6 +7831,9 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         } => run_outcome_from_tags(event, action_field, tags, target),
         KnownShape::RenameCommonAuth(codes) => {
             crate::painless_windows::run_rename_common_auth(event, codes)
+        }
+        KnownShape::ProcessCreated(codes) => {
+            crate::painless_windows::run_process_created(event, codes)
         }
         KnownShape::CopyTargetUser(codes) => {
             crate::painless_windows::run_copy_target_user(event, codes)
