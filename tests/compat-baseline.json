@@ -4,7 +4,7 @@
   "integrations_sha": "2c934eb5223bdfcf0ea0db9e3230154933352bda",
   "elasticsearch_version": "9.2.2",
   "sources": {
-    "aws": { "events": 496, "events_total": 538, "fields_wrong": 43 },
+    "aws": { "events": 509, "events_total": 538, "fields_wrong": 30 },
     "azure": { "events": 26, "events_total": 26, "fields_wrong": 0 },
     "checkpoint": { "events": 105, "events_total": 111, "fields_wrong": 7 },
     "cisco_asa": { "events": 510, "events_total": 512, "fields_wrong": 20 },
@@ -27,6 +27,6 @@
     "sentinel_one": { "events": 68, "events_total": 68, "fields_wrong": 0 },
     "panw": { "events": 538, "events_total": 538, "fields_wrong": 0 },
     "windows": { "events": 592, "events_total": 596, "fields_wrong": 17 },
-    "zscaler_zia": { "events": 68, "events_total": 93, "fields_wrong": 25 }
+    "zscaler_zia": { "events": 92, "events_total": 93, "fields_wrong": 0 }
   }
 }

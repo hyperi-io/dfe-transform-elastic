@@ -3238,18 +3238,34 @@ fn try_indexed_lookup(event: &mut Event, script: &str, params: &Map<String, Valu
     true
 }
 
-/// `ctx.<field> = ctx.<field> * params.<name>`
+/// `ctx.<target> = ctx.<source> * params.<name>`
+///
+/// Source and target are usually the same field, but not always: cloudfront
+/// scales `_tmp.time_taken` INTO `event.duration`, and reading the last path
+/// before the multiply as both wrote the result back over the source and left
+/// `event.duration` unset on 13 events.
 fn try_scale(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
     let Some((head, _)) = script.split_once("* params.") else {
         return false;
     };
-    let Some(path) = crate::painless_common::painless_path(head) else {
+    let Some(source) = crate::painless_common::painless_path(head) else {
         return false;
     };
+    // The assignment that owns the multiply. Without one the script scales in
+    // place, which is azure's spelling.
+    let path = crate::painless_common::last_assignment(head)
+        .and_then(|at| crate::painless_common::painless_path(&head[..at]))
+        .unwrap_or_else(|| source.clone());
+
     let Some(factor) = params_ref(script, params, "* params.").and_then(Value::as_f64) else {
         return false;
     };
-    let Some(current) = event.get(&path).and_then(Value::as_f64) else {
+    // The vendor wraps the read in `Float.parseFloat` where the field is text,
+    // so a numeric string counts as a number here too.
+    let Some(current) = event.get(&source).and_then(|held| {
+        held.as_f64()
+            .or_else(|| held.as_str().and_then(|text| text.trim().parse().ok()))
+    }) else {
         return true;
     };
 

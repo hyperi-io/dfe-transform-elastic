@@ -5955,20 +5955,71 @@ pub(crate) fn painless_path(fragment: &str) -> Option<String> {
     (!path.is_empty()).then(|| path.to_string())
 }
 
-/// `ctx.<path> = ctx.<path> * <literal>` -- scale a number in place.
-fn try_scale_by_literal(event: &mut Event, script: &str) -> bool {
-    let Some((head, factor)) = script.rsplit_once('*') else {
-        return false;
-    };
-    let Some(factor) = factor.trim().trim_end_matches(';').parse::<i64>().ok() else {
-        return false;
-    };
-    let Some(target) = painless_path(head.split_once('=').map_or(head, |(t, _)| t)) else {
-        return false;
-    };
+/// `ctx.<target> = ctx.<source> * <literal>`, resolved once from the script.
+///
+/// Source and target are read separately because they are usually different --
+/// zscaler scales `zscaler_zia.dns.duration.milliseconds` INTO `event.duration`
+/// rather than in place.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ScaleField {
+    source: String,
+    target: String,
+    factor: i64,
+}
 
-    if let Some(n) = event.get_as_i64(&target) {
-        let _ = event.set(&target, json!(n.saturating_mul(factor)));
+/// Read the multiply and the assignment that owns it.
+///
+/// The assignment is found by walking BACK from the multiply to the last real
+/// `=`, because the script is not reliably one statement per line -- the
+/// vendor folds it with YAML's `>-` and it arrives as a single line. Taking
+/// the FIRST `=` instead found the `==` of an `if (ctx.event == null)`
+/// preamble, so the target read as `event` and nothing was written: 25 zscaler
+/// events with no `event.duration` at all.
+fn parse_scale_field(script: &str) -> Option<ScaleField> {
+    let (head, factor) = script.rsplit_once('*')?;
+    let factor = factor
+        .trim()
+        .trim_end_matches([';', ')', ' '])
+        .trim()
+        .parse::<i64>()
+        .ok()?;
+
+    let at = last_assignment(head)?;
+    let target = painless_path(&head[..at])?;
+    let source = painless_path(&head[at + 1..])?;
+
+    // Source and target may be the SAME field: scaling in place is the older
+    // spelling and four vendored scripts still use it.
+    (!target.is_empty() && !source.is_empty()).then_some(ScaleField {
+        source,
+        target,
+        factor,
+    })
+}
+
+/// The byte offset of the last `=` that ASSIGNS, rather than compares.
+///
+/// `==`, `!=`, `<=`, `>=` and the compound arithmetic forms are all reads.
+pub(crate) fn last_assignment(text: &str) -> Option<usize> {
+    let bytes = text.as_bytes();
+    text.char_indices().rev().find_map(|(at, c)| {
+        if c != '=' {
+            return None;
+        }
+        let before = at.checked_sub(1).map(|i| bytes[i]);
+        let after = bytes.get(at + 1).copied();
+        let compares = matches!(
+            before,
+            Some(b'=' | b'!' | b'<' | b'>' | b'+' | b'-' | b'*' | b'/')
+        ) || after == Some(b'=');
+        (!compares).then_some(at)
+    })
+}
+
+/// Multiply the source into the target.
+fn run_scale_field(event: &mut Event, shape: &ScaleField) -> bool {
+    if let Some(n) = event.get_as_i64(&shape.source) {
+        let _ = event.set(&shape.target, json!(n.saturating_mul(shape.factor)));
     }
     true
 }
@@ -6404,7 +6455,7 @@ pub(crate) enum KnownShape {
     OktaTargetRename,
     CollectMapValues,
     GuardedReplace,
-    ScaleByLiteral,
+    ScaleField(Box<ScaleField>),
     GuardedDivide {
         target: String,
         absent: Option<String>,
@@ -7287,9 +7338,12 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
-    // Pattern: scale a number in place by a literal.
-    if normalised.contains(" * ") && !normalised.contains("params") {
-        shapes.push(KnownShape::ScaleByLiteral);
+    // Pattern: one field scaled by a literal into another.
+    if normalised.contains(" * ")
+        && !normalised.contains("params")
+        && let Some(shape) = parse_scale_field(normalised)
+    {
+        shapes.push(KnownShape::ScaleField(Box::new(shape)));
         return shapes;
     }
 
@@ -7579,7 +7633,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::OktaTargetRename => try_okta_target_rename(event),
         KnownShape::CollectMapValues => try_collect_map_values(event, normalised),
         KnownShape::GuardedReplace => try_guarded_replace(event, normalised),
-        KnownShape::ScaleByLiteral => try_scale_by_literal(event, normalised),
+        KnownShape::ScaleField(shape) => run_scale_field(event, shape),
         KnownShape::GuardedDivide {
             target,
             absent,
@@ -9088,6 +9142,32 @@ mod tests {
         let mut event = Event::new(json!({ "source": { "bytes": 100 } }));
         assert!(try_known_painless(&mut event, SUM_BYTES));
         assert!(!event.has("network.bytes"));
+    }
+
+    /// Verbatim from `pipelines/zscaler_zia/dns/default.yml`, folded onto one
+    /// line the way YAML's `>-` delivers it. The target comes from the
+    /// assignment that owns the multiply, not the first `=` -- that one is the
+    /// `==` of the guard, and reading it wrote nothing at all.
+    #[test]
+    fn a_scaled_field_lands_on_its_own_target() {
+        let script = "if (ctx.event == null) { ctx.put('event', new HashMap()); } \
+             ctx.event.duration = ctx.zscaler_zia.dns.duration.milliseconds * 1000000;";
+
+        let mut event = Event::new(json!({
+            "zscaler_zia": {"dns": {"duration": {"milliseconds": 1000}}}
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_i64("event.duration"), Some(1_000_000_000));
+        assert_eq!(
+            event.get_i64("zscaler_zia.dns.duration.milliseconds"),
+            Some(1000),
+            "the source is read, not consumed"
+        );
+
+        // An absent source writes nothing rather than a zero.
+        let mut empty = Event::new(json!({}));
+        assert!(try_known_painless(&mut empty, script));
+        assert!(!empty.has("event.duration"));
     }
 
     #[test]
