@@ -223,7 +223,7 @@ fn how_far_the_ladder_reaches_into_unseen_packages() {
             packages.len(),
             packages.iter().take(6).collect::<Vec<_>>()
         );
-        println!("{}", &examples[*key]);
+        println!("{}", examples[*key]);
     }
 
     println!("\n=== packages with the most unclaimed scripts ===");
