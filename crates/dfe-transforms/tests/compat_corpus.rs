@@ -47,21 +47,35 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("azure", "auditlogs") => &filebeat::azure_auditlogs::default::Default,
         ("azure", "platformlogs") => &filebeat::azure_platformlogs::default::Default,
         ("azure", "signinlogs") => &filebeat::azure_signinlogs::default::Default,
-        ("cisco_asa", _) => &filebeat::cisco_asa::default::Default,
-        ("cisco_ftd", _) => &filebeat::cisco_ftd::default::Default,
-        ("cisco_ios", _) => &filebeat::cisco_ios::default::Default,
-        ("cisco_meraki", _) => &filebeat::cisco_meraki::default::Default,
-        ("cisco_nexus", _) => &filebeat::cisco_nexus::default::Default,
-        ("cisco_umbrella", _) => &filebeat::cisco_umbrella::default::Default,
-        ("crowdstrike", _) => &filebeat::crowdstrike::default::Default,
-        ("fortinet_fortigate", _) => &filebeat::fortinet::default::Default,
+        // Every arm names its data stream; a package wildcard would swallow the
+        // next stream onboarded under it.
+        ("cisco_asa", "log") => &filebeat::cisco_asa::default::Default,
+        ("cisco_ftd", "log") => &filebeat::cisco_ftd::default::Default,
+        ("cisco_ios", "log") => &filebeat::cisco_ios::default::Default,
+        ("cisco_meraki", "log") => &filebeat::cisco_meraki::default::Default,
+        ("cisco_meraki", "events") => &filebeat::cisco_meraki_events::default::Default,
+        ("cisco_nexus", "log") => &filebeat::cisco_nexus::default::Default,
+        ("cisco_umbrella", "log") => &filebeat::cisco_umbrella::default::Default,
+        ("crowdstrike", "falcon") => &filebeat::crowdstrike::default::Default,
+        ("crowdstrike", "alert") => &filebeat::crowdstrike_alert::default::Default,
+        ("crowdstrike", "host") => &filebeat::crowdstrike_host::default::Default,
+        ("crowdstrike", "identity_protection_assessment") => {
+            &filebeat::crowdstrike_identity_protection_assessment::default::Default
+        }
+        ("crowdstrike", "identity_protection_timeline") => {
+            &filebeat::crowdstrike_identity_protection_timeline::default::Default
+        }
+        ("crowdstrike", "vulnerability") => {
+            &filebeat::crowdstrike_vulnerability::default::Default
+        }
+        ("fortinet_fortigate", "log") => &filebeat::fortinet::default::Default,
         ("microsoft_dnsserver", "analytical") => {
             &filebeat::microsoft_dnsserver_analytical::default::Default
         }
         ("microsoft_dnsserver", "audit") => &filebeat::microsoft_dnsserver_audit::default::Default,
-        ("o365", _) => &filebeat::o365::default::Default,
-        ("okta", _) => &filebeat::okta::default::Default,
-        ("panw", _) => &filebeat::panw::default::Default,
+        ("o365", "audit") => &filebeat::o365::default::Default,
+        ("okta", "system") => &filebeat::okta::default::Default,
+        ("panw", "panos") => &filebeat::panw::default::Default,
         ("entityanalytics_entra_id", "entity") => {
             &filebeat::entityanalytics_entra_id::default::Default
         }
@@ -853,4 +867,44 @@ fn every_declared_source_reaches_a_transform() {
             declared.data_stream
         );
     }
+}
+
+/// No arm of `transform_for` may match a data stream by package alone.
+///
+/// A wildcard answers for streams that do not exist yet, so a newly onboarded
+/// one is scored against the wrong transform while the checks above stay green.
+#[test]
+fn no_package_answers_for_a_stream_it_was_not_declared_with() {
+    #[derive(serde::Deserialize)]
+    struct Declaration {
+        sources: std::collections::BTreeMap<String, Declared>,
+    }
+
+    #[derive(serde::Deserialize)]
+    struct Declared {
+        package: String,
+    }
+
+    const PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../sources.yaml");
+    let text = std::fs::read_to_string(PATH).expect("read sources.yaml");
+    let declaration: Declaration = serde_yaml_ng::from_str(&text).expect("parse sources.yaml");
+
+    let packages: std::collections::BTreeSet<&str> = declaration
+        .sources
+        .values()
+        .map(|declared| declared.package.as_str())
+        .collect();
+
+    // Every offender is reported, because narrowing one arm at a time costs a
+    // build per package.
+    let wildcards: Vec<&str> = packages
+        .into_iter()
+        .filter(|package| transform_for(package, "a_data_stream_that_does_not_exist").is_some())
+        .collect();
+
+    assert!(
+        wildcards.is_empty(),
+        "these packages match ANY data stream -- narrow each arm to the streams \
+         it is really for: {wildcards:?}"
+    );
 }
