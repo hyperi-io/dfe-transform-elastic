@@ -54,6 +54,16 @@ impl PainlessPlan {
     pub fn text(&self) -> &str {
         &self.text
     }
+
+    /// Whether any matcher claims this script's text.
+    ///
+    /// Answers the question STATICALLY, so a script from a package with no
+    /// transform can be measured. Triggering is not the same as being right --
+    /// `tests/compat_corpus.rs` is what measures that.
+    #[must_use]
+    pub fn matches(&self) -> bool {
+        self.params.is_some() || !self.known.is_empty()
+    }
 }
 
 /// Execute a planned Painless script that carries no `params` block.
