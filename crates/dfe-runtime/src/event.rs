@@ -301,25 +301,20 @@ impl Event {
     pub fn append(&mut self, path: &str, value: impl Into<Value>) -> Result<()> {
         let value = value.into();
 
-        match self.get(path) {
-            None => {
-                // Create a new array with the value
-                self.set(path, Value::Array(vec![value]))?;
+        // One mutable walk answers both questions and does the work. Looking the
+        // path up first cost a second walk to reach the array, a third through
+        // `set` when the field held a scalar, and a clone of that scalar.
+        if let Some(existing) = resolve_path_mut(&mut self.inner, path) {
+            if let Value::Array(array) = existing {
+                array.push(value);
+            } else {
+                let first = std::mem::take(existing);
+                *existing = Value::Array(vec![first, value]);
             }
-            Some(existing) => {
-                if existing.is_array() {
-                    // Navigate to the array and push
-                    let target = resolve_path_mut(&mut self.inner, path).unwrap();
-                    target.as_array_mut().unwrap().push(value);
-                } else {
-                    // Wrap existing scalar in an array, then append
-                    let existing_clone = existing.clone();
-                    self.set(path, Value::Array(vec![existing_clone, value]))?;
-                }
-            }
+            return Ok(());
         }
 
-        Ok(())
+        self.set(path, Value::Array(vec![value]))
     }
 
     /// Append a value only if the array does not already hold it.
@@ -419,8 +414,8 @@ fn resolve_path<'a>(value: &'a Value, path: &str) -> Option<&'a Value> {
 
 /// Walk a dotted path to find a mutable reference to the target value.
 ///
-/// Must resolve exactly what [`resolve_path`] does, flat keys included:
-/// [`Event::append`] looks the path up with `get` and then unwraps this.
+/// Must resolve exactly what [`resolve_path`] does, flat keys included, so that
+/// a field readable through `get` is reachable for mutation.
 fn resolve_path_mut<'a>(value: &'a mut Value, path: &str) -> Option<&'a mut Value> {
     let mut current = value;
     let mut rest = path;
@@ -514,6 +509,7 @@ fn shallow_merge(target: &mut Value, source: &Value) {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
     use serde_json::json;

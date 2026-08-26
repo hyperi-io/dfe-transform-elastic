@@ -1,5 +1,11 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::panic,
+    reason = "a bench asserts its fixture by panicking rather than carrying error handling into the measured path"
+)]
 
 //! The dotted-path accessors, which every processor in every transform calls.
 //!

@@ -269,10 +269,18 @@ pub(crate) fn hash_lowercase_source(script: &str) -> Option<String> {
 // Registry fields
 // ---------------------------------------------------------------------------
 
+#[allow(
+    clippy::expect_used,
+    reason = "a literal pattern either compiles for every input or for none, so a failure here is a build-time bug the suite catches, not a runtime one"
+)]
 static QWORD: LazyLock<regex::Regex> = LazyLock::new(|| {
     regex::Regex::new(r"(?i)^QWORD \((0x[0-9A-F]{8})-(0x[0-9A-F]{8})\)$")
         .expect("a literal pattern compiles")
 });
+#[allow(
+    clippy::expect_used,
+    reason = "a literal pattern either compiles for every input or for none, so a failure here is a build-time bug the suite catches, not a runtime one"
+)]
 static DWORD: LazyLock<regex::Regex> = LazyLock::new(|| {
     regex::Regex::new(r"(?i)^DWORD \((0x[0-9A-F]{8})\)$").expect("a literal pattern compiles")
 });
@@ -1196,6 +1204,7 @@ fn is_signature_only(units: &[u16]) -> bool {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use serde_json::json;
 

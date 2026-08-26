@@ -261,6 +261,7 @@ pub(crate) fn test_guard() -> std::sync::MutexGuard<'static, ()> {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
 

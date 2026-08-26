@@ -17,6 +17,10 @@ repository.workspace = true
 rust-version.workspace = true
 publish.workspace = true
 
+# No `[lints] workspace = true` here. The crate is ~200 GENERATED modules, and
+# the workspace set flags the generator's own output rather than a defect, so
+# adopting it means changing codegen first.
+
 [dependencies]
 dfe-parse = { workspace = true }
 dfe-runtime = { workspace = true }

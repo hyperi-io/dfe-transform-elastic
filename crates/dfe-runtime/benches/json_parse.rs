@@ -4,7 +4,7 @@
 //! Reading the vendor payload, which every JSON-carrying source does first.
 //!
 //! `CLAUDE.md` records the decision to use simd-json on the grounds that it is
-//! "2-3x faster than serde_json". That was a claim about the library, not a
+//! "2-3x faster than `serde_json`". That was a claim about the library, not a
 //! measurement of this workload, and the allocation profiler puts
 //! `parse_json_str` at 357 allocations an event on okta against 179 for
 //! `serde_json::from_str` over the same document -- twice as many, for the

@@ -1054,6 +1054,7 @@ pub(crate) fn run_entity_script(
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use serde_json::json;
 

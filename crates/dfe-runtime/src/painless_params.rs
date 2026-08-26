@@ -1588,11 +1588,19 @@ fn try_threat_indicator_type(event: &mut Event, source: &str, params: &Map<Strin
 fn try_invocation_details(event: &mut Event, params: &Map<String, Value>) -> bool {
     // Site-local cells: the two patterns are literals, so they compile once
     // per process and never touch a shared map on the hot path.
+    #[allow(
+        clippy::expect_used,
+        reason = "a literal pattern either compiles for every input or for none, so a failure here is a build-time bug the suite catches, not a runtime one"
+    )]
     static DETAIL: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| {
-        regex::Regex::new(r"^([^(]+)\(([^)]+)\):\s*(.+)$").expect("detail regex")
+        regex::Regex::new(r"^([^(]+)\(([^)]+)\):\s*(.+)$").expect("a literal pattern compiles")
     });
+    #[allow(
+        clippy::expect_used,
+        reason = "a literal pattern either compiles for every input or for none, so a failure here is a build-time bug the suite catches, not a runtime one"
+    )]
     static BINDING: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| {
-        regex::Regex::new(r"^name=(.+);\s*value=(.+)$").expect("binding regex")
+        regex::Regex::new(r"^name=(.+);\s*value=(.+)$").expect("a literal pattern compiles")
     });
 
     let Some(field) = params.get("field").and_then(Value::as_str) else {
@@ -3620,6 +3628,7 @@ pub(crate) fn pointer_mut<'a>(event: &'a mut Event, path: &str) -> Option<&'a mu
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
     use serde_json::json;

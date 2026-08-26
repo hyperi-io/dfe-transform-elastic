@@ -272,6 +272,7 @@ fn split_sid_list(event: &mut Event, sids: &str, tables: &Tables<'_>) {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
     use serde_json::json;

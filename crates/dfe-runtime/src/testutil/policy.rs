@@ -113,12 +113,14 @@ impl Policy {
 /// no policy would silently compare the wrong things, which is worse than a
 /// failed test run.
 #[must_use]
+#[allow(
+    clippy::panic,
+    reason = "the panic is the contract stated above, and this is harness support behind the testutil feature rather than shipped code"
+)]
 pub fn policy() -> &'static Policy {
     static LOADED: OnceLock<Policy> = OnceLock::new();
     LOADED.get_or_init(|| {
-        #[allow(clippy::expect_used)]
         let text = std::fs::read_to_string(POLICY).unwrap_or_else(|e| panic!("read {POLICY}: {e}"));
-        #[allow(clippy::expect_used)]
         let file: PolicyFile =
             serde_yaml_ng::from_str(&text).unwrap_or_else(|e| panic!("parse {POLICY}: {e}"));
 
@@ -138,6 +140,7 @@ pub fn policy() -> &'static Policy {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
 

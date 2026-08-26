@@ -1,5 +1,12 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
+#![allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::panic,
+    clippy::format_push_string,
+    reason = "a test asserts by panicking, and this one builds its report as a string"
+)]
 
 //! The dispatch order of the shape ladders, pinned to a committed lock.
 //!
