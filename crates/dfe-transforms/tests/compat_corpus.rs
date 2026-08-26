@@ -65,9 +65,7 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("crowdstrike", "identity_protection_timeline") => {
             &filebeat::crowdstrike_identity_protection_timeline::default::Default
         }
-        ("crowdstrike", "vulnerability") => {
-            &filebeat::crowdstrike_vulnerability::default::Default
-        }
+        ("crowdstrike", "vulnerability") => &filebeat::crowdstrike_vulnerability::default::Default,
         ("fortinet_fortigate", "log") => &filebeat::fortinet::default::Default,
         ("microsoft_dnsserver", "analytical") => {
             &filebeat::microsoft_dnsserver_analytical::default::Default

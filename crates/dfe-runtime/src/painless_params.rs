@@ -109,6 +109,13 @@ pub(crate) enum ParamsShape {
         source: String,
         target: String,
     },
+    NormalisedLookup {
+        source: String,
+        target: String,
+        /// `Some(true)` uppercases the key before the lookup, `Some(false)`
+        /// lowercases it.
+        fold: Option<bool>,
+    },
     SentinelRemoval,
     FiletimeFieldList,
     BitFlags,
@@ -404,6 +411,16 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         return Some(ParamsShape::FrameworkPreference);
     }
 
+    // Pattern: a key normalised through the table onto ONE field, under the
+    // script's own null check. Above the bracket catch-all, which cannot
+    // resolve a key that still carries its normalising call and which stands an
+    // unlisted key in for its own value where this drops it.
+    if normalised.contains("params[ctx.")
+        && let Some(shape) = parse_normalised_lookup(normalised)
+    {
+        return Some(shape);
+    }
+
     // Pattern: the same normalise-through-a-table written with the bracket
     // form. LAST, so nothing that reads the brackets for its own shape --
     // `addUnique` over a row, for one -- is claimed by the general case.
@@ -553,6 +570,11 @@ pub(crate) fn run_params_shape(
         ParamsShape::ReversibleLookup => try_reversible_lookup(event, normalised, params),
         ParamsShape::LookupMerge => try_lookup_merge(event, normalised, params),
         ParamsShape::LookupColumns => try_lookup_columns(event, normalised, params),
+        ParamsShape::NormalisedLookup {
+            source,
+            target,
+            fold,
+        } => run_normalised_lookup(event, source, target, *fold, params),
         ParamsShape::LookupNormalise => try_lookup_normalise(event, normalised, params),
         ParamsShape::IndexedLookup => try_indexed_lookup(event, normalised, params),
         ParamsShape::Scale => try_scale(event, normalised, params),
@@ -924,6 +946,69 @@ impl PutWrite {
 /// A put whose value is a fresh `HashMap` is the script building its own
 /// container and is skipped -- taking it wrote a description into
 /// `winlog.logon`, the map that put was creating.
+/// `def <local> = params[ctx.<source>.toUpperCase()];` then `ctx.<target> = <local>`.
+///
+/// The lookup is bound to a local and copied out under a null check, so an
+/// unlisted key leaves the field alone.
+fn parse_normalised_lookup(script: &str) -> Option<ParamsShape> {
+    let key = ctx_path_between(script, "params[ctx.", "]")?;
+    let fold = if key.ends_with(".toUpperCase()") {
+        Some(true)
+    } else if key.ends_with(".toLowerCase()") {
+        Some(false)
+    } else {
+        None
+    };
+
+    let source = key
+        .trim_end_matches(".toUpperCase()")
+        .trim_end_matches(".toLowerCase()")
+        .trim()
+        .to_string();
+    if source.is_empty()
+        || !source
+            .chars()
+            .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_' | '-' | '@'))
+    {
+        return None;
+    }
+
+    // The local the lookup binds, and the single field it is copied onto.
+    let local = local_bound_to(script, "params[")?;
+    let target = ctx_writes(script)
+        .into_iter()
+        .find(|(_, rhs)| rhs.trim() == local)
+        .map(|(path, _)| path)?;
+
+    Some(ParamsShape::NormalisedLookup {
+        source,
+        target,
+        fold,
+    })
+}
+
+/// An unlisted key writes nothing -- the script's own `!= null` returns.
+fn run_normalised_lookup(
+    event: &mut Event,
+    source: &str,
+    target: &str,
+    fold: Option<bool>,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(raw) = event.get_as_string(source) else {
+        return true;
+    };
+    let key = match fold {
+        Some(true) => raw.to_uppercase(),
+        Some(false) => raw.to_lowercase(),
+        None => raw,
+    };
+    if let Some(value) = params.get(&key) {
+        let _ = event.set(target, value.clone());
+    }
+    true
+}
+
 fn parse_put_lookup(script: &str) -> Option<ParamsShape> {
     let mut writes = Vec::new();
     let mut cursor = 0usize;
@@ -2364,10 +2449,10 @@ fn try_first_contained_member(
     script: &str,
     params: &Map<String, Value>,
 ) -> bool {
-    let Some((subject, folded)) = subject_of_binding(script) else {
-        return false;
-    };
-    let Some(text) = event.get_as_string(&subject) else {
+    let Some((text, folded)) = subjects_of_bindings(script)
+        .into_iter()
+        .find_map(|(subject, folded)| Some((event.get_as_string(&subject)?, folded)))
+    else {
         return false;
     };
     let text = if folded {
@@ -2418,16 +2503,28 @@ fn try_first_contained_member(
 
 /// The `ctx.` path a `String x = ctx.<path>[.toLowerCase()];` binds, and
 /// whether it was folded DOWN rather than up.
-fn subject_of_binding(script: &str) -> Option<(String, bool)> {
-    let at = script.find("String ")?;
-    let statement = script[at..].split(';').next()?;
-    let (_, bound) = statement.split_once('=')?;
-    let bound = bound.trim();
-    let folded = bound.contains(".toLowerCase()");
-    let path = bound
-        .replace(".toLowerCase()", "")
-        .replace(".toUpperCase()", "");
-    Some((clean_path(path.trim().strip_prefix("ctx.")?), folded))
+/// Every `String <local> = ctx.<path>[.toLowerCase()];` binding, in order.
+///
+/// The script offers its sources as an `if / else if` chain, so all of them are
+/// read and the caller takes the first the event actually carries. A
+/// `for (String x: ...)` loop header binds nothing and is skipped.
+fn subjects_of_bindings(script: &str) -> Vec<(String, bool)> {
+    let mut subjects = Vec::new();
+    for chunk in script.split("String ").skip(1) {
+        let Some((_, bound)) = chunk.split(';').next().and_then(|s| s.split_once('=')) else {
+            continue;
+        };
+        let bound = bound.trim();
+        let folded = bound.contains(".toLowerCase()");
+        let path = bound
+            .replace(".toLowerCase()", "")
+            .replace(".toUpperCase()", "");
+        let Some(path) = path.trim().strip_prefix("ctx.") else {
+            continue;
+        };
+        subjects.push((clean_path(path), folded));
+    }
+    subjects
 }
 
 /// The field a `ctx.<path>.put('<key>', ...)` writes.
@@ -3568,6 +3665,72 @@ mod tests {
         assert!(try_params_painless(&mut determined, script, &params));
         assert_eq!(determined.get("event.category"), Some(&json!(["threat"])));
         assert_eq!(determined.get("event.type"), Some(&json!(["indicator"])));
+    }
+
+    /// Verbatim from `crowdstrike/data_stream/alert`, which offers two sources
+    /// for the platform name and takes whichever the event carries.
+    ///
+    /// Only the first binding was read, so an event carrying the fallback got
+    /// no `host.os.type` at all.
+    #[test]
+    fn the_platform_name_falls_back_to_the_operating_system() {
+        let script = "if (ctx.crowdstrike?.alert?.device?.platform_name != null) {\n  \
+             String platform_name = ctx.crowdstrike.alert.device.platform_name.toLowerCase();\n  \
+             for (String os: params.os_type) {\n    \
+             if (platform_name.contains(os)) {\n      ctx.host.os.put('type', os);\n      \
+             return;\n    }\n  }\n} else if (ctx.crowdstrike?.alert?.operating_system != null) {\n  \
+             String operating_system = ctx.crowdstrike.alert.operating_system.toLowerCase();\n  \
+             for (String os: params.os_type) {\n    \
+             if (operating_system.contains(os)) {\n      ctx.host.os.put('type', os);\n      \
+             return;\n    }\n  }\n}\n";
+        let params = json!({
+            "os_type": ["linux", "macos", "unix", "windows", "ios", "android"],
+        });
+
+        let mut primary = Event::new(json!({"crowdstrike": {"alert": {
+            "device": {"platform_name": "Windows"}
+        }}}));
+        assert!(try_params_painless(&mut primary, script, &params));
+        assert_eq!(primary.get_str("host.os.type"), Some("windows"));
+
+        // The `else if` arm: no device block, so the alert's own field is read.
+        let mut fallback = Event::new(json!({"crowdstrike": {"alert": {
+            "operating_system": "Windows Server 2019"
+        }}}));
+        assert!(try_params_painless(&mut fallback, script, &params));
+        assert_eq!(fallback.get_str("host.os.type"), Some("windows"));
+
+        // Neither source present is not this script's business.
+        let mut absent = Event::new(json!({"crowdstrike": {"alert": {}}}));
+        try_params_painless(&mut absent, script, &params);
+        assert!(!absent.has("host.os.type"));
+    }
+
+    /// Verbatim from `crowdstrike/data_stream/identity_protection_timeline`:
+    /// the family name is uppercased into the params table and the result put
+    /// on a field the script creates the parents for.
+    #[test]
+    fn an_uppercased_family_maps_through_params_onto_its_field() {
+        let script = "def os = params[ctx.crowdstrike.idp.timeline.operating_system_info.family\
+             .toUpperCase()];\nif (os != null) {\n  ctx.host = ctx.host ?: [:];\n  \
+             ctx.host.os = ctx.host.os ?: [:];\n  ctx.host.os.type = os;\n}\n";
+        let params = json!({
+            "WINDOWS": "windows", "OSX": "macos", "UNIX": "unix",
+            "LINUX": "linux", "IOS": "ios", "ANDROID": "android",
+        });
+
+        let mut event = Event::new(json!({"crowdstrike": {"idp": {"timeline": {
+            "operating_system_info": {"family": "Windows"}
+        }}}}));
+        assert!(try_params_painless(&mut event, script, &params));
+        assert_eq!(event.get_str("host.os.type"), Some("windows"));
+
+        // An unlisted family fails the script's own null check, so nothing lands.
+        let mut unlisted = Event::new(json!({"crowdstrike": {"idp": {"timeline": {
+            "operating_system_info": {"family": "Plan9"}
+        }}}}));
+        assert!(try_params_painless(&mut unlisted, script, &params));
+        assert!(!unlisted.has("host.os.type"));
     }
 
     /// proofpoint's message parts: renamed through the key map, then fanned

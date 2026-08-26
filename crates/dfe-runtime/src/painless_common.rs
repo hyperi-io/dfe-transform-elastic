@@ -6030,11 +6030,16 @@ fn run_scale_field(event: &mut Event, shape: &ScaleField) -> bool {
 ///
 /// Both ends are LOCALS, each bound earlier to `ZonedDateTime.parse(ctx.<path>)`,
 /// so the paths are recovered from those declarations rather than the call.
+///
+/// The span itself is bound to a local in half the vendored spellings, and
+/// copied onto its field afterwards under a sign guard.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NanosBetween {
     start: String,
     end: String,
     target: String,
+    /// The script's own `if (<local> >= 0)`, which suppresses a reversed span.
+    non_negative: bool,
 }
 
 /// The `ctx.` path a local takes its instant from.
@@ -6046,15 +6051,58 @@ fn parsed_instant_source(script: &str, name: &str) -> Option<String> {
     painless_path(&rest[..end])
 }
 
+/// The local a statement declares, or None when it assigns a `ctx.` path.
+fn assigned_local(fragment: &str) -> Option<&str> {
+    let statement = fragment
+        .trim_end()
+        .rsplit([';', '\n', '{', '}'])
+        .next()?
+        .trim();
+    if statement.starts_with("ctx") {
+        return None;
+    }
+    statement.split_whitespace().next_back()
+}
+
+/// The `ctx.` path a local is later copied onto: `ctx.<target> = <local>;`.
+fn local_copied_to(script: &str, local: &str) -> Option<String> {
+    let needle = format!("= {local}");
+    let mut from = 0;
+    while let Some(at) = script[from..].find(&needle) {
+        let absolute = from + at;
+        let after = script.as_bytes().get(absolute + needle.len()).copied();
+        // A longer name that merely starts with this one is a different local.
+        if !matches!(after, Some(c) if c.is_ascii_alphanumeric() || c == b'_') {
+            return painless_path(&script[..absolute]);
+        }
+        from = absolute + needle.len();
+    }
+    None
+}
+
 fn parse_nanos_between(script: &str) -> Option<NanosBetween> {
     let (head, args) = script.split_once("ChronoUnit.NANOS.between(")?;
-    let (first, second) = args.split_once(')')?.0.split_once(',')?;
+    let (call, tail) = args.split_once(')')?;
+    let (first, second) = call.split_once(',')?;
 
     let at = last_assignment(head)?;
+
+    // Reading the target with `painless_path` alone takes the last `ctx.` path
+    // ANYWHERE before the assignment, which on the local form is the `end`
+    // declaration -- crowdstrike's alert span landed on `event.end`.
+    let (target, non_negative) = match assigned_local(&head[..at]) {
+        Some(local) => (
+            local_copied_to(tail, local)?,
+            tail.contains(&format!("{local} >= 0")),
+        ),
+        None => (painless_path(&head[..at])?, false),
+    };
+
     Some(NanosBetween {
         start: parsed_instant_source(head, first.trim())?,
         end: parsed_instant_source(head, second.trim())?,
-        target: painless_path(&head[..at])?,
+        target,
+        non_negative,
     })
 }
 
@@ -6647,7 +6695,11 @@ fn run_nanos_between(event: &mut Event, shape: &NanosBetween) -> bool {
     ) else {
         return true;
     };
-    let _ = event.set(&shape.target, json!(end - start));
+    let span = end - start;
+    if shape.non_negative && span < 0 {
+        return true;
+    }
+    let _ = event.set(&shape.target, json!(span));
     true
 }
 
@@ -10170,6 +10222,41 @@ mod tests {
         }}));
         assert!(try_known_painless(&mut unparseable, script));
         assert!(!unparseable.has("event.duration"));
+    }
+
+    /// Verbatim from `crowdstrike/data_stream/alert`, which binds the span to a
+    /// local and copies it out under a sign guard.
+    ///
+    /// The target was read as `event.end` -- the last `ctx.` path before the
+    /// assignment is the `end` declaration, not the field being written -- so
+    /// the span overwrote the timestamp a `set` processor had just copied there
+    /// and `event.duration` was never written at all.
+    #[test]
+    fn a_span_bound_to_a_local_lands_on_the_field_it_is_copied_to() {
+        let script = "def start = ZonedDateTime.parse(ctx.event.start);\n\
+             def end = ZonedDateTime.parse(ctx.event.end);\n\
+             def duration = ChronoUnit.NANOS.between(start, end);\n\
+             if (duration >= 0) {\n  ctx.event.duration = duration;\n}";
+
+        let mut event = Event::new(json!({ "event": {
+            "start": "2026-05-11T05:11:47.000Z",
+            "end": "2026-05-11T05:13:20.000Z"
+        }}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_i64("event.duration"), Some(93_000_000_000));
+        assert_eq!(event.get_str("event.end"), Some("2026-05-11T05:13:20.000Z"));
+
+        // The script's own guard: a reversed span writes nothing.
+        let mut reversed = Event::new(json!({ "event": {
+            "start": "2026-05-11T05:13:20.000Z",
+            "end": "2026-05-11T05:11:47.000Z"
+        }}));
+        assert!(try_known_painless(&mut reversed, script));
+        assert!(!reversed.has("event.duration"));
+        assert_eq!(
+            reversed.get_str("event.end"),
+            Some("2026-05-11T05:11:47.000Z")
+        );
     }
 
     /// Verbatim from `pipelines/checkpoint/firewall/default.yml`, whose factor

@@ -127,6 +127,7 @@
  34 FrameworkPreference
  35 LookupNormalise
  36 UppercaseLookupDefault
- 37 PutFlagNames
- 38 ProtocolPrefix
+ 37 NormalisedLookup
+ 38 PutFlagNames
+ 39 ProtocolPrefix
 
