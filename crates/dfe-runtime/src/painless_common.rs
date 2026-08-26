@@ -4289,6 +4289,330 @@ fn run_range_ladder(event: &mut Event, shape: &RangeLadder) -> bool {
     true
 }
 
+/// `long <local> = ctx.<source>; ctx.event = ctx.event ?: [:]; ctx.event.<risk> = (double) <local>; if (<local> < <n1>) { ctx.event.<severity> = <v1>; } else if (<local> < <n2>) { ... } else { ctx.event.<severity> = <vN>; }`
+///
+/// crowdstrike's automated-lead risk score: unlike [`RangeLadder`], each arm
+/// names only a CEILING, not a band, and the final `else` has none at all.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ScoreSeverityBands {
+    source: String,
+    risk_score_target: String,
+    severity_target: String,
+    /// `(ceiling, severity)` ascending; the LAST entry's ceiling is `None`.
+    bands: Vec<(Option<i64>, i64)>,
+}
+
+fn parse_score_severity_bands(script: &str) -> Option<ScoreSeverityBands> {
+    // `long score = ctx.crowdstrike.alert.score;`
+    let (declaration, tail) = script.split_once(" = ctx.")?;
+    let local = declaration.split_whitespace().next_back()?;
+    let source = clean_path(tail.split([';', '\n']).next()?.trim());
+    if source.is_empty() {
+        return None;
+    }
+
+    // `ctx.event.risk_score = (double) score;`
+    let risk_score_target = ctx_assignment_target_before(script, &format!(" = (double) {local};"))?;
+
+    let mut bands = Vec::new();
+    let mut severity_target: Option<String> = None;
+    for block in script.split("if (").skip(1) {
+        let (guard, body) = block.split_once(") {")?;
+        let ceiling: i64 = guard
+            .trim()
+            .strip_prefix(local)?
+            .trim()
+            .strip_prefix('<')?
+            .trim()
+            .parse()
+            .ok()?;
+
+        let (lhs, rhs) = body.split(';').next()?.split_once('=')?;
+        let path = painless_path(lhs)?;
+        if severity_target.get_or_insert_with(|| path.clone()) != &path {
+            return None;
+        }
+        bands.push((Some(ceiling), rhs.trim().parse::<i64>().ok()?));
+    }
+
+    // The ladder's unconditional tail, one level below every guarded arm.
+    let (_, else_body) = script.rsplit_once("} else {")?;
+    let (lhs, rhs) = else_body.split(';').next()?.split_once('=')?;
+    if painless_path(lhs)?.as_str() != severity_target.as_deref()? {
+        return None;
+    }
+    bands.push((None, rhs.trim().parse::<i64>().ok()?));
+
+    (bands.len() > 2).then_some(ScoreSeverityBands {
+        source,
+        risk_score_target,
+        severity_target: severity_target?,
+        bands,
+    })
+}
+
+fn run_score_severity_bands(event: &mut Event, shape: &ScoreSeverityBands) -> bool {
+    let Some(score) = event.get_as_i64(&shape.source) else {
+        return true;
+    };
+    #[allow(clippy::cast_precision_loss)]
+    let _ = event.set(&shape.risk_score_target, json!(score as f64));
+    for (ceiling, severity) in &shape.bands {
+        if ceiling.is_none_or(|c| score < c) {
+            let _ = event.set(&shape.severity_target, json!(severity));
+            break;
+        }
+    }
+    true
+}
+
+/// `def <local> = ctx.<list>[<index>]; if (<local>.<member> != null && <local>.<member> != '') { ctx.<container> = ctx.<container> ?: [:]; ctx.<target> = <local>.<member>; }`, repeated per member.
+///
+/// crowdstrike copies a few fields off the FIRST threatgraph indicator this
+/// way; the null-check is [`crate::painless_helpers::painless_is_empty_value`]
+/// applied to the indexed item directly, so the guards themselves need no
+/// parsing.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct IndexedFieldCopies {
+    list: String,
+    index: usize,
+    /// (the indexed item's member, the `ctx.` path it lands on).
+    copies: Vec<(String, String)>,
+}
+
+fn parse_indexed_field_copies(script: &str) -> Option<IndexedFieldCopies> {
+    let (declaration, rest) = script.split_once(" = ctx.")?;
+    let local = declaration.split_whitespace().next_back()?;
+    let (list, rest) = rest.split_once('[')?;
+    let list = clean_path(list.trim());
+    let index: usize = rest.split(']').next()?.trim().parse().ok()?;
+
+    let prefix = format!("{local}.");
+    let copies: Vec<(String, String)> = crate::painless_params::ctx_writes(script)
+        .into_iter()
+        .filter_map(|(path, rhs)| {
+            let member = rhs.trim().strip_prefix(&prefix)?;
+            (!member.is_empty() && member.chars().all(|c| c.is_alphanumeric() || c == '_'))
+                .then(|| (member.to_string(), path))
+        })
+        .collect();
+
+    (!copies.is_empty()).then_some(IndexedFieldCopies {
+        list,
+        index,
+        copies,
+    })
+}
+
+fn run_indexed_field_copies(event: &mut Event, shape: &IndexedFieldCopies) -> bool {
+    let Some(item) = event
+        .get(&shape.list)
+        .and_then(Value::as_array)
+        .and_then(|items| items.get(shape.index))
+        .cloned()
+    else {
+        return true;
+    };
+    for (member, target) in &shape.copies {
+        if let Some(value) = item
+            .get(member)
+            .filter(|v| !crate::painless_helpers::painless_is_empty_value(v))
+            .cloned()
+        {
+            let _ = event.set(target, value);
+        }
+    }
+    true
+}
+
+/// `def <local> = new HashMap(); <local>.put('<k1>', ctx.<s1>); <local>.put('<k2>', ctx.<s2>); ... ctx.<target> = <local>;`
+///
+/// crowdstrike combines a latitude and a longitude this way; nothing about it
+/// is specific to geo, so any script assembling a local map from `ctx.`
+/// fields and assigning the WHOLE map onto one target fits.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FieldsIntoMap {
+    /// (the map key, the source `ctx.` path), in script order.
+    members: Vec<(String, String)>,
+    target: String,
+}
+
+fn parse_fields_into_map(script: &str) -> Option<FieldsIntoMap> {
+    let (before, _) = script.split_once(" = new HashMap();")?;
+    let local = before.rsplit_once("def ")?.1.trim();
+
+    let members: Vec<(String, String)> = parse_put_calls(script)
+        .into_iter()
+        .filter(|call| call.receiver == local)
+        .filter_map(|call| Some((call.key, clean_path(call.value.strip_prefix("ctx.")?))))
+        .collect();
+    if members.len() < 2 {
+        return None;
+    }
+
+    let target = ctx_assignment_target_before(script, &format!(" = {local};"))?;
+    Some(FieldsIntoMap { members, target })
+}
+
+/// Any member absent leaves the whole map unwritten -- the vendor guards the
+/// SCRIPT on every source being non-null, so this only runs when they are.
+fn run_fields_into_map(event: &mut Event, shape: &FieldsIntoMap) -> bool {
+    let mut map = Map::new();
+    for (key, source) in &shape.members {
+        let Some(value) = event.get(source).cloned() else {
+            return true;
+        };
+        map.insert(key.clone(), value);
+    }
+    let _ = event.set(&shape.target, Value::Object(map));
+    true
+}
+
+/// crowdstrike `identity_protection_timeline`, tagged
+/// `map_entity_identity_fields_by_type`: `entity.secondary_display_name`
+/// splits at its first backslash into a domain for a USER entity, or lands
+/// whole on `host.hostname` for an ENDPOINT entity with no backslash;
+/// `entity.primary_display_name` then lands on `user.full_name` or
+/// `host.name`, independent of the backslash branch above.
+fn try_crowdstrike_timeline_entity_identity(event: &mut Event) -> bool {
+    let entity_type = event
+        .get_str("crowdstrike.idp.timeline.entity.type")
+        .unwrap_or_default()
+        .to_string();
+
+    if let Some(secondary) = event
+        .get_str("crowdstrike.idp.timeline.entity.secondary_display_name")
+        .filter(|s| !s.is_empty())
+        .map(str::to_string)
+    {
+        if let Some((domain, _)) = secondary.split_once('\\') {
+            if !domain.is_empty() && entity_type == "USER" {
+                let _ = event.set("user.domain", json!(domain));
+            }
+        } else if entity_type == "ENDPOINT" {
+            let _ = event.set("host.hostname", json!(secondary));
+        }
+    }
+
+    if let Some(primary) = event
+        .get("crowdstrike.idp.timeline.entity.primary_display_name")
+        .cloned()
+    {
+        match entity_type.as_str() {
+            "ENDPOINT" => {
+                let _ = event.set("host.name", primary);
+            }
+            "USER" => {
+                let _ = event.set("user.full_name", primary);
+            }
+            _ => {}
+        }
+    }
+    true
+}
+
+/// crowdstrike `identity_protection_timeline`, tagged
+/// `map_entity_accounts_by_type`: the FIRST Active Directory account
+/// descriptor names `host.*`, `user.*` or `entity.*` depending on the
+/// entity's own type, and an ENDPOINT's SAM name loses a trailing `$` and
+/// never overwrites a `host.name` some earlier processor already set.
+fn try_crowdstrike_timeline_entity_accounts(event: &mut Event) -> bool {
+    let entity_type = event
+        .get_str("crowdstrike.idp.timeline.entity.type")
+        .unwrap_or_default()
+        .to_string();
+    let Some(Value::Object(account)) = event
+        .get("crowdstrike.idp.timeline.entity.accounts")
+        .and_then(Value::as_array)
+        .and_then(|accounts| accounts.first())
+        .cloned()
+    else {
+        return true;
+    };
+    let sam = account
+        .get("sam_account_name")
+        .and_then(Value::as_str)
+        .map(str::to_string);
+    let sid = account.get("object_sid").cloned();
+
+    match entity_type.as_str() {
+        "ENDPOINT" => {
+            if let Some(sam) = &sam
+                && !event.has_value("host.name")
+            {
+                let _ = event.set("host.name", json!(sam.strip_suffix('$').unwrap_or(sam)));
+            }
+            if let Some(sid) = sid {
+                let _ = event.set("host.id", sid);
+            }
+        }
+        "USER" => {
+            if let Some(sam) = &sam {
+                let _ = event.set("user.name", json!(sam));
+                let _ = event.set("user.target.name", json!(sam));
+            }
+            if let Some(sid) = sid {
+                let _ = event.set("user.id", sid);
+            }
+        }
+        _ => {
+            if let Some(sam) = &sam {
+                let _ = event.set("entity.target.name", json!(sam));
+            }
+            if let Some(sid) = sid {
+                let _ = event.set("entity.id", sid);
+            }
+        }
+    }
+    true
+}
+
+/// `ctx.<target> = ctx.<array>[0];`, either bare or guarded on `ctx.<target>
+/// == null || ctx.<target> == ''`.
+///
+/// crowdstrike's correlation-detection alerts take the first of several
+/// source/destination/user lists this way -- unconditionally for a target
+/// nothing else could have set yet, guarded where an earlier processor might
+/// already have written one.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FirstElement {
+    array: String,
+    target: String,
+    only_if_unset: bool,
+}
+
+fn parse_first_element(script: &str) -> Option<FirstElement> {
+    let at = script.find("[0];")?;
+    let before = &script[..at];
+    let array = clean_path(before[before.rfind("ctx.")? + "ctx.".len()..].trim());
+
+    // The marker anchors on THIS array, so an earlier statement's own `=`
+    // (the `ctx.<container> = ctx.<container> ?: [:];` init) is not mistaken
+    // for the assignment.
+    let target = ctx_assignment_target_before(script, &format!(" = ctx.{array}[0];"))?;
+
+    let only_if_unset =
+        script.contains(&format!("if (ctx.{target} == null || ctx.{target} == '')"));
+    Some(FirstElement {
+        array,
+        target,
+        only_if_unset,
+    })
+}
+
+fn run_first_element(event: &mut Event, shape: &FirstElement) -> bool {
+    if shape.only_if_unset && event.has_value(&shape.target) {
+        return true;
+    }
+    let Some(Value::Array(items)) = event.get(&shape.array) else {
+        return true;
+    };
+    if let Some(first) = items.first().cloned() {
+        let _ = event.set(&shape.target, first);
+    }
+    true
+}
+
 /// One arm of an equality ladder: the literal(s) tested, and what it assigns.
 ///
 /// More than one literal is an OR'd condition -- `u == 'LOW' || u ==
@@ -6105,6 +6429,70 @@ fn quoted_after(script: &str, after: &str) -> Vec<String> {
     found
 }
 
+/// `for (def <item>: ctx.<list>) { if (<item>.<member> == '<v1>' || <item>.<member> == '<v2>' ...) { ctx.<target> = true; return; } } ctx.<target> = false;`
+///
+/// True when any list member's field equals one of a short set of literals,
+/// false otherwise -- crowdstrike derives `has_script_or_module_ioc` from
+/// `ioc_context` this way.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ListMemberFlag {
+    list: String,
+    member: String,
+    values: Vec<String>,
+    target: String,
+}
+
+/// The loop variable here has no space before its colon (`c:` not `c :`), unlike [`for_binding`].
+fn parse_list_member_flag(script: &str) -> Option<ListMemberFlag> {
+    let (_, rest) = script.split_once("for (def ")?;
+    let (item, rest) = rest.split_once(':')?;
+    let item = item.trim();
+    let list = clean_path(
+        rest.trim_start()
+            .strip_prefix("ctx.")?
+            .split(')')
+            .next()?
+            .trim(),
+    );
+
+    // Every arm compares the SAME member; a mixed member name is not this shape.
+    let (_, after_if) = script.split_once(&format!("if ({item}."))?;
+    let (member, _) = after_if.split_once(" == ")?;
+    let member = member.trim();
+    if member.is_empty() || member.contains([' ', '(', ')']) {
+        return None;
+    }
+
+    let values = quoted_after(script, &format!("{item}.{member} == "));
+    if values.is_empty() {
+        return None;
+    }
+
+    let true_target = ctx_assignment_target_before(script, " = true;")?;
+    let false_target = ctx_assignment_target_before(script, " = false;")?;
+    (true_target == false_target).then_some(ListMemberFlag {
+        list,
+        member: member.to_string(),
+        values,
+        target: true_target,
+    })
+}
+
+/// The loop exits (`return`) on the first hit, so this is `list.any(member in
+/// values)` -- never which element or which literal, only whether one exists.
+fn run_list_member_flag(event: &mut Event, shape: &ListMemberFlag) -> bool {
+    let Some(Value::Array(items)) = event.get(&shape.list) else {
+        return true;
+    };
+    let hit = items.iter().any(|item| {
+        item.get(&shape.member)
+            .and_then(Value::as_str)
+            .is_some_and(|v| shape.values.iter().any(|want| want == v))
+    });
+    let _ = event.set(&shape.target, json!(hit));
+    true
+}
+
 /// `for (def item : ctx.<table>) { if (item.<key> == ctx.<subject>) { ... } }`
 /// followed by a chain of fallback assignments to the same target.
 ///
@@ -7614,6 +8002,12 @@ pub(crate) enum KnownShape {
     SliceEachItem(Box<SliceEachItem>),
     ContainsLadder(Box<ContainsLadder>),
     RangeLadder(Box<RangeLadder>),
+    ScoreSeverityBands(Box<ScoreSeverityBands>),
+    IndexedFieldCopies(Box<IndexedFieldCopies>),
+    FieldsIntoMap(Box<FieldsIntoMap>),
+    CrowdstrikeTimelineEntityIdentity,
+    CrowdstrikeTimelineEntityAccounts,
+    FirstElement(Box<FirstElement>),
     NamedMapEntry(Box<NamedMapEntry>),
     TitleCase(Box<TitleCase>),
     SuffixAfterSeparator {
@@ -7679,6 +8073,7 @@ pub(crate) enum KnownShape {
     CaseInsensitiveLadder,
     EqualityLadder(Ladder),
     SentinelRemovalLiteral,
+    ListMemberFlag(Box<ListMemberFlag>),
     RowLookupWithFallback,
     SchemelessUrl,
     VersionSplit,
@@ -7807,6 +8202,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_range_ladder(normalised)
     {
         shapes.push(KnownShape::RangeLadder(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: a risk score cast to double, then a ceiling-only ladder over
+    // the same source names its severity band. No `&&` in the guard, unlike
+    // `RangeLadder` above, so the two triggers never both fire.
+    if normalised.contains(" = (double) ")
+        && normalised.contains("} else {")
+        && let Some(shape) = parse_score_severity_bands(normalised)
+    {
+        shapes.push(KnownShape::ScoreSeverityBands(Box::new(shape)));
         return shapes;
     }
 
@@ -8571,6 +8977,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Checked ahead of `RowLookupWithFallback`, whose `" : ctx."` trigger needs
+    // a space before the colon this shape's loop variable never has.
+    if normalised.contains("for (def ")
+        && normalised.contains(" = true;")
+        && normalised.contains(" = false;")
+        && let Some(shape) = parse_list_member_flag(normalised)
+    {
+        shapes.push(KnownShape::ListMemberFlag(Box::new(shape)));
+        return shapes;
+    }
+
     // Pattern: look a value up in a ctx-held table of rows, else fall back.
     if normalised.contains("for (def ") && normalised.contains(" : ctx.") {
         shapes.push(KnownShape::RowLookupWithFallback);
@@ -8749,6 +9166,54 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_rounded_scale(normalised)
     {
         shapes.push(KnownShape::RoundedScale(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: a local map assembled from `ctx.` fields via `.put()`, then
+    // assigned whole onto one target.
+    if normalised.contains(" = new HashMap();")
+        && normalised.matches(".put('").count() >= 2
+        && let Some(shape) = parse_fields_into_map(normalised)
+    {
+        shapes.push(KnownShape::FieldsIntoMap(Box::new(shape)));
+        return shapes;
+    }
+
+    // crowdstrike timeline: keyed on field names, ahead of `GuardedCopy`
+    // below, whose `!= null` catch-all would otherwise claim either script
+    // and write nothing -- neither guard is on a `ctx.` path.
+    if normalised.contains("ctx.crowdstrike.idp.timeline.entity")
+        && normalised.contains("secondary_display_name")
+    {
+        shapes.push(KnownShape::CrowdstrikeTimelineEntityIdentity);
+        return shapes;
+    }
+    if normalised.contains("ctx.crowdstrike.idp.timeline.entity")
+        && normalised.contains("sam_account_name")
+    {
+        shapes.push(KnownShape::CrowdstrikeTimelineEntityAccounts);
+        return shapes;
+    }
+
+    // Pattern: the first element of a list, bare or guarded on the target
+    // being unset.
+    if normalised.contains("[0];")
+        && let Some(shape) = parse_first_element(normalised)
+    {
+        shapes.push(KnownShape::FirstElement(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: members copied off one indexed list element, each under its own
+    // guard. Ahead of `GuardedCopy` below, whose broader `!= null` catch-all
+    // cannot see that the guard is on `<local>.<member>`, not a `ctx.` path,
+    // and so claims the text and writes nothing.
+    if normalised.contains(" = ctx.")
+        && normalised.contains("!= null")
+        && !normalised.contains("for (")
+        && let Some(shape) = parse_indexed_field_copies(normalised)
+    {
+        shapes.push(KnownShape::IndexedFieldCopies(Box::new(shape)));
         return shapes;
     }
 
@@ -8950,6 +9415,16 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::SliceEachItem(shape) => run_slice_each_item(event, shape),
         KnownShape::ContainsLadder(shape) => run_contains_ladder(event, shape),
         KnownShape::RangeLadder(shape) => run_range_ladder(event, shape),
+        KnownShape::ScoreSeverityBands(shape) => run_score_severity_bands(event, shape),
+        KnownShape::IndexedFieldCopies(shape) => run_indexed_field_copies(event, shape),
+        KnownShape::FieldsIntoMap(shape) => run_fields_into_map(event, shape),
+        KnownShape::CrowdstrikeTimelineEntityIdentity => {
+            try_crowdstrike_timeline_entity_identity(event)
+        }
+        KnownShape::CrowdstrikeTimelineEntityAccounts => {
+            try_crowdstrike_timeline_entity_accounts(event)
+        }
+        KnownShape::FirstElement(shape) => run_first_element(event, shape),
         KnownShape::NamedMapEntry(shape) => run_named_map_entry(event, shape),
         KnownShape::TitleCase(shape) => run_title_case(event, shape),
         KnownShape::SuffixAfterSeparator {
@@ -9028,6 +9503,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::CaseInsensitiveLadder => try_case_insensitive_ladder(event, normalised),
         KnownShape::EqualityLadder(ladder) => try_ladder(event, ladder),
         KnownShape::SentinelRemovalLiteral => try_sentinel_removal_literal(event, normalised),
+        KnownShape::ListMemberFlag(shape) => run_list_member_flag(event, shape),
         KnownShape::RowLookupWithFallback => try_row_lookup_with_fallback(event, normalised),
         KnownShape::SchemelessUrl => try_schemeless_url(event),
         KnownShape::VersionSplit => try_version_split(event, normalised),
@@ -12094,5 +12570,223 @@ def event_timezone = get_timezone(ctx);
         keys_to_snake_case(&mut val);
         assert!(val.get("already_snake").is_some());
         assert!(val.get("alreadylower").is_some());
+    }
+
+    /// Verbatim from `crowdstrike/alert/elasticsearch/ingest_pipeline/automated_lead.yml`,
+    /// tagged `set_host_and_process_from_first_threatgraph_indicator`.
+    const THREATGRAPH_FIRST: &str = r"def indicator = ctx.crowdstrike.alert.threatgraph_indicators[0];\nif (indicator.host_id != null && indicator.host_id != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.id = indicator.host_id;\n}\nif (indicator.hostname != null && indicator.hostname != '') {\n  ctx.host = ctx.host ?: [:];\n  ctx.host.name = indicator.hostname;\n}\nif (indicator.process_id != null && indicator.process_id != '') {\n  ctx.process = ctx.process ?: [:];\n  ctx.process.entity_id = indicator.process_id;\n}";
+
+    #[test]
+    fn threatgraph_first_indicator_probe() {
+        let mut event = Event::new(json!({
+            "crowdstrike": { "alert": { "threatgraph_indicators": [
+                { "host_id": "bbb", "hostname": "host-1.example.local", "process_id": "1778476306425098436" },
+            ]}}
+        }));
+        assert!(try_known_painless(&mut event, THREATGRAPH_FIRST));
+        assert_eq!(event.get("host.id"), Some(&json!("bbb")));
+        assert_eq!(event.get("host.name"), Some(&json!("host-1.example.local")));
+        assert_eq!(
+            event.get("process.entity_id"),
+            Some(&json!("1778476306425098436"))
+        );
+    }
+
+    /// Verbatim from `crowdstrike/alert/elasticsearch/ingest_pipeline/automated_lead.yml`,
+    /// tagged `set_event_risk_score_and_severity_from_score`.
+    const SCORE_SEVERITY: &str = r"long score = ctx.crowdstrike.alert.score;\nctx.event = ctx.event ?: [:];\nctx.event.risk_score = (double) score;\nif (score < 40) {\n  ctx.event.severity = 21;\n} else if (score < 60) {\n  ctx.event.severity = 47;\n} else if (score < 80) {\n  ctx.event.severity = 73;\n} else {\n  ctx.event.severity = 99;\n}";
+
+    #[test]
+    fn score_severity_bands_cover_all_four_arms() {
+        for (score, severity) in [(21, 21), (40, 47), (65, 73), (95, 99)] {
+            let mut event = Event::new(json!({ "crowdstrike": { "alert": { "score": score } } }));
+            assert!(try_known_painless(&mut event, SCORE_SEVERITY));
+            assert_eq!(
+                event.get("event.risk_score"),
+                Some(&json!(f64::from(score))),
+                "score {score}"
+            );
+            assert_eq!(
+                event.get("event.severity"),
+                Some(&json!(severity)),
+                "score {score}"
+            );
+        }
+    }
+
+    /// Verbatim from `crowdstrike/alert/elasticsearch/ingest_pipeline/default.yml`,
+    /// tagged `reconstruct_has_script_or_module_ioc_from_ioc_context`: crowdstrike
+    /// only ships `has_script_or_module_ioc` sometimes, and this reconstructs it
+    /// from `ioc_context` the rest of the time.
+    const IOC_CONTEXT_FLAG: &str = r"if (ctx.crowdstrike == null) {\n  ctx.crowdstrike = [:];\n}\nif (ctx.crowdstrike.alert == null) {\n  ctx.crowdstrike.alert = [:];\n}\nfor (def c: ctx.crowdstrike.alert.ioc_context) {\n  if (c.type == 'module' || c.type == 'script') {\n    ctx.crowdstrike.alert.has_script_or_module_ioc = true;\n    return;\n  }\n}\nctx.crowdstrike.alert.has_script_or_module_ioc = false;\n";
+
+    #[test]
+    fn ioc_context_flag_true_on_a_script_or_module_hit() {
+        let mut event = Event::new(json!({
+            "crowdstrike": { "alert": { "ioc_context": [
+                { "type": "domain", "value": "example.com" },
+                { "type": "script", "value": "bad.ps1" },
+            ]}}
+        }));
+        assert!(try_known_painless(&mut event, IOC_CONTEXT_FLAG));
+        assert_eq!(
+            event.get("crowdstrike.alert.has_script_or_module_ioc"),
+            Some(&json!(true))
+        );
+    }
+
+    #[test]
+    fn ioc_context_flag_false_with_no_script_or_module_entry() {
+        let mut event = Event::new(json!({
+            "crowdstrike": { "alert": { "ioc_context": [
+                { "type": "domain", "value": "example.com" },
+                { "type": "ip_address", "value": "198.51.100.10" },
+            ]}}
+        }));
+        assert!(try_known_painless(&mut event, IOC_CONTEXT_FLAG));
+        assert_eq!(
+            event.get("crowdstrike.alert.has_script_or_module_ioc"),
+            Some(&json!(false))
+        );
+    }
+
+    /// Verbatim from `crowdstrike/alert/elasticsearch/ingest_pipeline/default.yml`,
+    /// tagged `script_to_combine_latitude_and_longitude`.
+    #[test]
+    fn combine_latitude_and_longitude_probe() {
+        let script = r"def location = new HashMap();\nlocation.put('lat', ctx.crowdstrike.alert.location_latitude_as_int);\nlocation.put('lon', ctx.crowdstrike.alert.location_longitude_as_int);\nif(ctx.observer == null) {\n  ctx.put('observer', new HashMap());\n}\nif(ctx.observer.geo == null){\n  ctx.observer.put('geo', new HashMap());\n}\nctx.observer.geo.location = location;";
+        let mut event = Event::new(json!({
+            "crowdstrike": { "alert": {
+                "location_latitude_as_int": 340_726,
+                "location_longitude_as_int": -1_182_610,
+            }}
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("observer.geo.location.lat"),
+            Some(&json!(340_726))
+        );
+        assert_eq!(
+            event.get("observer.geo.location.lon"),
+            Some(&json!(-1_182_610))
+        );
+    }
+
+    /// Verbatim from `crowdstrike/identity_protection_timeline/default.yml`,
+    /// tagged `map_entity_identity_fields_by_type`.
+    const TIMELINE_ENTITY_IDENTITY: &str = "def entity = ctx.crowdstrike.idp.timeline.entity;\ndef entityType = entity.type;\ndef secondary = entity.secondary_display_name;\nif (secondary != null && secondary instanceof String && secondary != '') {\n  int slash = secondary.indexOf('\\\\');\n  if (slash >= 0) {\n    def domain = secondary.substring(0, slash);\n    if (domain != null && domain != '' && entityType == 'USER') {\n      ctx.user = ctx.user ?: [:];\n      ctx.user.domain = domain;\n    }\n  } else if (entityType == 'ENDPOINT') {\n    ctx.host = ctx.host ?: [:];\n    ctx.host.hostname = secondary;\n  }\n}\nif (entityType == 'ENDPOINT') {\n  if (entity.primary_display_name != null) {\n    ctx.host = ctx.host ?: [:];\n    ctx.host.name = entity.primary_display_name;\n  }\n} else if (entityType == 'USER') {\n  if (entity.primary_display_name != null) {\n    ctx.user = ctx.user ?: [:];\n    ctx.user.full_name = entity.primary_display_name;\n  }\n}\n";
+
+    #[test]
+    fn timeline_entity_identity_splits_a_domain_backslash_user() {
+        let mut event = Event::new(json!({
+            "crowdstrike": { "idp": { "timeline": { "entity": {
+                "type": "USER",
+                "primary_display_name": "test2",
+                "secondary_display_name": "ADFSAORATO.COM\\test2",
+            }}}}
+        }));
+        assert!(try_known_painless(&mut event, TIMELINE_ENTITY_IDENTITY));
+        assert_eq!(event.get("user.domain"), Some(&json!("ADFSAORATO.COM")));
+        assert_eq!(event.get("user.full_name"), Some(&json!("test2")));
+        assert_eq!(event.get("host.hostname"), None);
+    }
+
+    #[test]
+    fn timeline_entity_identity_endpoint_with_no_backslash() {
+        let mut event = Event::new(json!({
+            "crowdstrike": { "idp": { "timeline": { "entity": {
+                "type": "ENDPOINT",
+                "primary_display_name": "DESKTOP-MF7IFEI",
+                "secondary_display_name": "desktop-mf7ifei.example.local",
+            }}}}
+        }));
+        assert!(try_known_painless(&mut event, TIMELINE_ENTITY_IDENTITY));
+        assert_eq!(
+            event.get("host.hostname"),
+            Some(&json!("desktop-mf7ifei.example.local"))
+        );
+        assert_eq!(event.get("host.name"), Some(&json!("DESKTOP-MF7IFEI")));
+        assert_eq!(event.get("user.domain"), None);
+    }
+
+    /// Verbatim from `crowdstrike/identity_protection_timeline/default.yml`,
+    /// tagged `map_entity_accounts_by_type`.
+    const TIMELINE_ENTITY_ACCOUNTS: &str = "def entity = ctx.crowdstrike.idp.timeline.entity;\ndef entityType = entity.type;\ndef accounts = entity.accounts;\nif (accounts.size() == 0 || !(accounts[0] instanceof Map)) {\n  return;\n}\ndef acc = accounts[0];\nif (entityType == 'ENDPOINT') {\n  ctx.host = ctx.host ?: [:];\n  if (acc.sam_account_name != null) {\n    def sam = acc.sam_account_name;\n    if (sam.endsWith('$')) {\n      sam = sam.substring(0, sam.length() - 1);\n    }\n    if (ctx.host.name == null) {\n      ctx.host.name = sam;\n    }\n  }\n  if (acc.object_sid != null) {\n    ctx.host.id = acc.object_sid;\n  }\n} else if (entityType == 'USER') {\n  ctx.user = ctx.user ?: [:];\n  if (acc.sam_account_name != null) {\n    ctx.user.name = acc.sam_account_name;\n    ctx.user.target = ctx.user.target ?: [:];\n    ctx.user.target.name = acc.sam_account_name;\n  }\n  if (acc.object_sid != null) {\n    ctx.user.id = acc.object_sid;\n  }\n} else {\n  ctx.entity = ctx.entity ?: [:];\n  if (acc.sam_account_name != null) {\n    ctx.entity.target = ctx.entity.target ?: [:];\n    ctx.entity.target.name = acc.sam_account_name;\n  }\n  if (acc.object_sid != null) {\n    ctx.entity.id = acc.object_sid;\n  }\n}\n";
+
+    #[test]
+    fn timeline_entity_accounts_user_branch() {
+        let mut event = Event::new(json!({
+            "crowdstrike": { "idp": { "timeline": { "entity": {
+                "type": "USER",
+                "accounts": [
+                    { "sam_account_name": "test2", "object_sid": "S-1-5-21-1050202168-3263900726-32517219-1106" },
+                ],
+            }}}}
+        }));
+        assert!(try_known_painless(&mut event, TIMELINE_ENTITY_ACCOUNTS));
+        assert_eq!(event.get("user.name"), Some(&json!("test2")));
+        assert_eq!(event.get("user.target.name"), Some(&json!("test2")));
+        assert_eq!(
+            event.get("user.id"),
+            Some(&json!("S-1-5-21-1050202168-3263900726-32517219-1106"))
+        );
+    }
+
+    /// The endpoint branch strips a trailing `$` off the SAM name, and only
+    /// fills `host.name` when nothing has set it already.
+    #[test]
+    fn timeline_entity_accounts_endpoint_branch_trims_dollar_and_defers_to_existing_name() {
+        let mut event = Event::new(json!({
+            "crowdstrike": { "idp": { "timeline": { "entity": {
+                "type": "ENDPOINT",
+                "accounts": [
+                    { "sam_account_name": "DESKTOP-MF7IFEI$", "object_sid": "S-1-5-21-1819694714-1249303988-2979750736-1104" },
+                ],
+            }}}},
+            "host": { "name": "already-set" },
+        }));
+        assert!(try_known_painless(&mut event, TIMELINE_ENTITY_ACCOUNTS));
+        assert_eq!(event.get("host.name"), Some(&json!("already-set")));
+        assert_eq!(
+            event.get("host.id"),
+            Some(&json!("S-1-5-21-1819694714-1249303988-2979750736-1104"))
+        );
+    }
+
+    /// Verbatim from `crowdstrike/alert/elasticsearch/ingest_pipeline/correlation_detection.yml`,
+    /// tagged `set_event_provider_from_first_source_product`: unconditional,
+    /// unlike the guarded siblings below.
+    #[test]
+    fn first_element_unconditional_probe() {
+        let script = r"ctx.event = ctx.event ?: [:];\nctx.event.provider = ctx.crowdstrike.alert.source_products[0];";
+        let mut event = Event::new(json!({
+            "crowdstrike": { "alert": { "source_products": ["FirewallLogs PaloAlto", "other"] } }
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("event.provider"),
+            Some(&json!("FirewallLogs PaloAlto"))
+        );
+    }
+
+    /// Verbatim from the same pipeline, tagged
+    /// `set_source_domain_from_first_source_host`: guarded, so an existing
+    /// `source.domain` must survive untouched.
+    #[test]
+    fn first_element_guarded_probe() {
+        let script = r"ctx.source = ctx.source ?: [:];\nif (ctx.source.domain == null || ctx.source.domain == '') {\n  ctx.source.domain = ctx.crowdstrike.alert.source_hosts[0];\n}";
+
+        let mut fresh = Event::new(json!({
+            "crowdstrike": { "alert": { "source_hosts": ["censys.io", "other.example"] } }
+        }));
+        assert!(try_known_painless(&mut fresh, script));
+        assert_eq!(fresh.get("source.domain"), Some(&json!("censys.io")));
+
+        let mut already_set = Event::new(json!({
+            "crowdstrike": { "alert": { "source_hosts": ["censys.io"] } },
+            "source": { "domain": "keep-me" },
+        }));
+        assert!(try_known_painless(&mut already_set, script));
+        assert_eq!(already_set.get("source.domain"), Some(&json!("keep-me")));
     }
 }

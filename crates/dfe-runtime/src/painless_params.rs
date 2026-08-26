@@ -3356,12 +3356,13 @@ fn expand_locals(script: &str) -> String {
     out
 }
 
-/// The local a `def x = <marker>...` statement binds.
+/// The local a `def x = <marker>...` or typed `Integer x = <marker>...`
+/// statement binds -- either way the name is the last word before the `=`.
 fn local_bound_to(script: &str, marker: &str) -> Option<String> {
     let head = &script[..script.find(marker)?];
-    let statement = head.rsplit(';').next()?;
-    let rest = statement.trim().strip_prefix("def ")?;
-    let name = rest.split('=').next()?.trim();
+    let statement = head.rsplit(';').next()?.trim();
+    let before_eq = statement.strip_suffix('=')?.trim();
+    let name = before_eq.rsplit(char::is_whitespace).next()?;
     (!name.is_empty() && name.chars().all(|c| c.is_alphanumeric() || c == '_'))
         .then(|| name.to_string())
 }
@@ -5191,5 +5192,36 @@ mod tests {
     fn a_script_without_params_falls_through() {
         let mut event = Event::new(json!({}));
         assert!(!try_params_painless(&mut event, SENTINEL, &Value::Null));
+    }
+
+    /// Verbatim from `crowdstrike/identity_protection_timeline/default.yml`,
+    /// tagged `map_timeline_event_severity`: a TYPED local (`Integer severity`),
+    /// not `def`, bound to the params lookup.
+    #[test]
+    fn a_typed_local_still_carries_the_params_lookup() {
+        let script = "Integer severity = params[ctx.crowdstrike.idp.timeline.event_severity.toUpperCase()];\n\
+             if (severity != null) {\n  ctx.event = ctx.event ?: [:];\n  ctx.event.severity = severity;\n}\n";
+        let params = json!({ "NEUTRAL": 21, "MODERATE": 47, "IMPORTANT": 73 });
+
+        let mut event = Event::new(json!({
+            "crowdstrike": { "idp": { "timeline": { "event_severity": "important" } } }
+        }));
+        assert!(try_params_painless(&mut event, script, &params));
+        assert_eq!(event.get("event.severity"), Some(&json!(73)));
+    }
+
+    /// A key the table does not list leaves the field unset, matching the
+    /// script's own `if (severity != null)` guard.
+    #[test]
+    fn a_typed_local_lookup_miss_writes_nothing() {
+        let script = "Integer severity = params[ctx.crowdstrike.idp.timeline.event_severity.toUpperCase()];\n\
+             if (severity != null) {\n  ctx.event = ctx.event ?: [:];\n  ctx.event.severity = severity;\n}\n";
+        let params = json!({ "NEUTRAL": 21, "MODERATE": 47, "IMPORTANT": 73 });
+
+        let mut event = Event::new(json!({
+            "crowdstrike": { "idp": { "timeline": { "event_severity": "unheard-of" } } }
+        }));
+        assert!(try_params_painless(&mut event, script, &params));
+        assert_eq!(event.get("event.severity"), None);
     }
 }

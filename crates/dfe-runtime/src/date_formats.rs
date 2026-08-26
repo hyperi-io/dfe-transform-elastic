@@ -10,7 +10,7 @@
 
 use std::borrow::Cow;
 
-use chrono::{DateTime, Datelike, FixedOffset, NaiveDateTime, TimeZone, Utc};
+use chrono::{DateTime, Datelike, FixedOffset, NaiveDate, NaiveDateTime, TimeZone, Utc};
 
 /// The output shape: ISO 8601 with milliseconds, ending in `Z`.
 ///
@@ -133,6 +133,14 @@ fn parse_iso8601(input: &str) -> Option<DateTime<FixedOffset>> {
         .or_else(|| {
             NaiveDateTime::parse_from_str(input, "%Y-%m-%dT%H:%M:%S%.f")
                 .ok()
+                .and_then(|naive| Utc.from_utc_datetime(&naive).fixed_offset().into())
+        })
+        // "optional_time": the time is optional, so a bare date is still valid
+        // ISO 8601 and Elasticsearch reads it as midnight UTC.
+        .or_else(|| {
+            NaiveDate::parse_from_str(input, "%Y-%m-%d")
+                .ok()
+                .and_then(|date| date.and_hms_opt(0, 0, 0))
                 .and_then(|naive| Utc.from_utc_datetime(&naive).fixed_offset().into())
         })
 }
@@ -624,5 +632,14 @@ mod tests {
     #[test]
     fn a_format_that_does_not_match_yields_nothing() {
         assert!(parse_date("not a date", &["yyyy MMM d HH:mm:ss"], None).is_none());
+    }
+
+    /// Verbatim from `crowdstrike/vulnerability/default.yml`, tagged
+    /// `date_cve_cisa_info_due_date`: "`optional_time`" means the time is
+    /// optional, and a bare date is valid ISO 8601 read as midnight UTC.
+    #[test]
+    fn a_bare_date_parses_as_midnight_utc() {
+        let out = parse_date("2025-03-01", &["ISO8601"], None);
+        assert_eq!(out.as_deref(), Some("2025-03-01T00:00:00.000Z"));
     }
 }
