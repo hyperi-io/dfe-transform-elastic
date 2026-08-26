@@ -301,9 +301,8 @@ impl Event {
     pub fn append(&mut self, path: &str, value: impl Into<Value>) -> Result<()> {
         let value = value.into();
 
-        // One mutable walk answers both questions and does the work. Looking the
-        // path up first cost a second walk to reach the array, a third through
-        // `set` when the field held a scalar, and a clone of that scalar.
+        // One mutable walk: it answers whether the field is already an array and
+        // yields the reference to push through, so the path is walked once.
         if let Some(existing) = resolve_path_mut(&mut self.inner, path) {
             if let Value::Array(array) = existing {
                 array.push(value);

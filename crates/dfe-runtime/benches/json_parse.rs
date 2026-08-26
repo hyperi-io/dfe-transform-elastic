@@ -3,17 +3,17 @@
 
 //! Reading the vendor payload, which every JSON-carrying source does first.
 //!
-//! `CLAUDE.md` records the decision to use simd-json on the grounds that it is
-//! "2-3x faster than `serde_json`". That was a claim about the library, not a
-//! measurement of this workload, and the allocation profiler puts
-//! `parse_json_str` at 357 allocations an event on okta against 179 for
-//! `serde_json::from_str` over the same document -- twice as many, for the
-//! same tree. Both halves are worth knowing before either is changed.
+//! A SIMD parser is the house default for this work, settled by bake-off rather
+//! than reputation. The crate is `sonic-rs`, which dfe-loader runs; simd-json
+//! was measured against it there and rejected, because parsing in place needs
+//! `&mut [u8]` and a pipeline holding payloads as `Arc<[u8]>` pays a memcpy per
+//! message for it.
 //!
-//! What differs between the two paths beyond the parser: simd-json parses IN
-//! PLACE, so the text is copied into a scratch buffer first. The buffer is
-//! thread-local and reused, so that copy is a `memcpy` rather than an
-//! allocation once warm.
+//! This bench is why the tree is still on `serde_json`: the allocation profiler
+//! puts `parse_json_str` at 357 allocations an event on okta against 179 for
+//! `serde_json::from_str` over the same document. `sonic-rs` has not been
+//! measured here yet, and preserving object insertion order decides whether it
+//! can be.
 //!
 //! The payloads are the committed fixtures, so a fresh clone measures the same
 //! documents.

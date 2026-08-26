@@ -4,8 +4,9 @@
 //! Service configuration.
 //!
 //! Loaded through scalo's config cascade under the `DFE_TRANSFORM_ELASTIC`
-//! environment prefix. Which keys hot-reload and which need a restart is
-//! recorded in CLAUDE.md.
+//! environment prefix. `retry`, `scaling` and `source.batch_size` take effect
+//! on the next batch. Transports, enrichment and the HTTP bind are read once at
+//! startup and need a restart.
 
 use scalo::config::{self, ConfigOptions};
 use schemars::JsonSchema;

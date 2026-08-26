@@ -4026,9 +4026,9 @@ fn resolve_branches(event: &Event, script: &str) -> String {
 /// `for (def d: ctx.<map>.entrySet())` scanning for one key, with a literal
 /// fall-through when it is absent.
 ///
-/// crowdstrike reconstructs a quarantine flag this way. Both the found value
-/// and the default are lost when the script does not run, so the miss shows up
-/// as the field being absent on true and false alike.
+/// crowdstrike reconstructs a quarantine flag this way. The script is the only
+/// writer of both the found value and the default, so a miss costs the field on
+/// true and false alike rather than looking like a drop-empty.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct NamedMapEntry {
     map: String,
@@ -6272,9 +6272,9 @@ fn parse_nanos_between(script: &str) -> Option<NanosBetween> {
 
     let at = last_assignment(head)?;
 
-    // Reading the target with `painless_path` alone takes the last `ctx.` path
-    // ANYWHERE before the assignment, which on the local form is the `end`
-    // declaration -- crowdstrike's alert span landed on `event.end`.
+    // `painless_path` alone takes the last `ctx.` path ANYWHERE before the
+    // assignment, which on the local form is the `end` declaration rather than
+    // the field being written.
     let (target, non_negative) = match assigned_local(&head[..at]) {
         Some(local) => (
             local_copied_to(tail, local)?,
