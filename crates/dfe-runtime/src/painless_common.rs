@@ -1551,6 +1551,45 @@ fn run_remove_list_value(event: &mut Event, field: &str, value: &str) -> bool {
     true
 }
 
+/// `for (int i=0; i<ctx.<f>.length; i++) { if (ctx.<f>[i] == '<v>') {
+/// ctx.<f>.remove(i); } }` as the same [`KnownShape::RemoveListValue`]
+/// [`parse_remove_list_value`] reads off `.removeIf(`.
+///
+/// The loop walks FORWARD while removing from the same list, so a match
+/// immediately after a removed element is skipped -- upstream's own bug.
+/// coredns only ever removes `QR`, which a DNS header carries at most once,
+/// so the skip has no visible effect and the captured Elasticsearch output
+/// matches a plain "drop every match" filter. Every literal between the
+/// extracted field and value is matched exactly, so a longer script sharing
+/// the same opening -- sysmon's V4MAPPED address conversion spells `for (def
+/// i = 0; i < ctx.dns.resolved_ip.length; i++)` -- falls through instead of
+/// losing the rest of its work.
+fn parse_indexed_list_removal(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let tail = script.strip_prefix("for (int i=0; i<ctx.")?;
+    let (path_raw, tail) = tail.split_once(".length; i++) {")?;
+    if path_raw.is_empty() {
+        return None;
+    }
+    let tail = tail.trim_start().strip_prefix("if (ctx.")?;
+    let tail = tail.strip_prefix(path_raw)?;
+    let tail = tail.strip_prefix("[i] == ")?;
+    let value = quoted_first(tail)?;
+    let tail = tail.trim_start().strip_prefix(&format!("'{value}') {{"))?;
+    let tail = tail.trim_start().strip_prefix("ctx.")?;
+    let tail = tail.strip_prefix(path_raw)?;
+    let tail = tail.trim_start().strip_prefix(".remove(i);")?;
+    let tail = tail.trim_start().strip_prefix('}')?; // closes the if
+    let tail = tail.trim_start().strip_prefix('}')?; // closes the for
+    if !tail.trim().is_empty() {
+        return None;
+    }
+
+    let field = clean_path(path_raw);
+    (!field.is_empty()).then_some(KnownShape::RemoveListValue { field, value })
+}
+
 /// gcp audit's `related.entity`, transliterated.
 ///
 /// The `isKubernetes` gate is the whole point of it: for a k8s cluster the
@@ -5591,6 +5630,102 @@ fn run_bit_flag_names(event: &mut Event, decode: &BitFlagNames) -> bool {
     true
 }
 
+/// A byte's bits named off a fixed array, tested from the high bit down.
+///
+/// netflow's TCP flags: `flags[N-i]` at loop index `i` counting from `N` down
+/// to 1, so the top bit (bit `N-1`) is `flags[0]` and bit 0 is `flags[N-1]`.
+/// Nothing is written when no bit is set, matching the script's own
+/// `if (flagsSeen.length > 0)` guard -- unlike [`BitFlagNames`], whose
+/// vpcflow script creates its target array up front and so writes it even
+/// when empty.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BitNameArray {
+    source: String,
+    target: String,
+    /// High bit first: `names[0]` fires on the top bit, `names.last()` on bit 0.
+    names: Vec<String>,
+}
+
+/// Read netflow's TCP-flags decode -- a fixed name array walked bit by bit
+/// from the top down. Every literal between the extracted fields is matched
+/// exactly, so a script that only shares the `new String[]{` opening falls
+/// through instead of losing data silently.
+fn parse_bit_name_array(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let tail = script.strip_prefix("String[] flags = new String[]{")?;
+    let (names_raw, tail) = tail.split_once("};")?;
+    let names: Vec<String> = names_raw
+        .split(',')
+        .map(|n| n.trim().trim_matches('"').to_string())
+        .collect();
+    if names.is_empty() || names.len() > 32 || names.iter().any(String::is_empty) {
+        return None;
+    }
+    let len = names.len();
+
+    let tail = tail
+        .trim_start()
+        .strip_prefix("ArrayList flagsSeen = new ArrayList();")?;
+    let tail = tail.trim_start().strip_prefix("int tcp_flags = ctx.")?;
+    let (source_raw, tail) = tail.split_once(';')?;
+    let source = clean_path(source_raw);
+
+    let tail = tail
+        .trim_start()
+        .strip_prefix(&format!("for (int i = {len}; i > 0; --i) {{"))?;
+    let tail = tail
+        .trim_start()
+        .strip_prefix("int value = (tcp_flags & (1 << (i-1))) & 0x0ff;")?;
+    let tail = tail.trim_start().strip_prefix("if (value != 0) {")?;
+    let tail = tail
+        .trim_start()
+        .strip_prefix(&format!("flagsSeen.add(flags[{len}-i]);"))?;
+    let tail = tail.trim_start().strip_prefix('}')?; // closes the if
+    let tail = tail.trim_start().strip_prefix('}')?; // closes the for
+
+    let tail = tail
+        .trim_start()
+        .strip_prefix("if (flagsSeen.length > 0) {")?;
+    let tail = tail.trim_start().strip_prefix("ctx.")?;
+    let (target_raw, tail) = tail.split_once('=')?;
+    let target = clean_path(target_raw.trim());
+    let tail = tail.trim_start().strip_prefix("flagsSeen;")?;
+    let tail = tail.trim_start().strip_prefix('}')?;
+
+    // Nothing left but trailing whitespace, or this is a longer script that
+    // only opens the same way.
+    if !tail.trim().is_empty() || source.is_empty() || target.is_empty() {
+        return None;
+    }
+
+    Some(KnownShape::BitNameArray(Box::new(BitNameArray {
+        source,
+        target,
+        names,
+    })))
+}
+
+/// Decode the bits high to low against the name array, writing nothing when
+/// none are set -- the script's own `if (flagsSeen.length > 0)` guard.
+fn run_bit_name_array(event: &mut Event, shape: &BitNameArray) -> bool {
+    let Some(bits) = event.get_as_i64(&shape.source) else {
+        return true;
+    };
+    let len = shape.names.len();
+    let mut seen = Vec::with_capacity(len);
+    for (index, name) in shape.names.iter().enumerate() {
+        let bit = (len - 1 - index) as u32;
+        if bits & (1i64 << bit) != 0 {
+            seen.push(Value::String(name.clone()));
+        }
+    }
+    if !seen.is_empty() {
+        let _ = event.set(&shape.target, Value::Array(seen));
+    }
+    true
+}
+
 /// Quote-aware key/value split of a whole vendor payload into one map.
 ///
 /// Fortinet ships `key=value key2="value with spaces"` as one syslog field and
@@ -7431,6 +7566,7 @@ pub(crate) enum KnownShape {
     CheckpointPackets,
     ConsoleLoginEventData,
     BitFlagNames(Box<BitFlagNames>),
+    BitNameArray(Box<BitNameArray>),
     PascalKeys(Box<PascalKeys>),
     SecondsToSpan(String),
     SubstringBeforeLast {
@@ -7930,6 +8066,18 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: the same drop, spelled as a loop that removes by index while
+    // walking forward instead of `.removeIf(`. coredns's own `int i=0` literal
+    // rules out sysmon's V4MAPPED script, which opens its otherwise similar
+    // loop with `def i = 0`.
+    if normalised.contains("for (int i=0; i<ctx.")
+        && normalised.contains(".remove(i)")
+        && let Some(shape) = parse_indexed_list_removal(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
     // Pattern: gcp audit's related.entity, whose `isKubernetes` gate decides
     // which three of its sources are suppressed.
     if normalised.contains("boolean isKubernetes") && normalised.contains("ctx.related.entity") {
@@ -8074,6 +8222,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_bit_flag_names(normalised)
     {
         shapes.push(KnownShape::BitFlagNames(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: the same bit decode, spelled as a fixed name array indexed off
+    // the loop counter instead of one literal `.add()` per mask. netflow's
+    // `new String[]{` opening does not appear in any other vendored pipeline.
+    if normalised.contains("new String[]{")
+        && let Some(shape) = parse_bit_name_array(normalised)
+    {
+        shapes.push(shape);
         return shapes;
     }
 
@@ -8672,6 +8830,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::CheckpointPackets => run_checkpoint_packets(event),
         KnownShape::ConsoleLoginEventData => run_console_login_event_data(event),
         KnownShape::BitFlagNames(decode) => run_bit_flag_names(event, decode),
+        KnownShape::BitNameArray(shape) => run_bit_name_array(event, shape),
         KnownShape::PascalKeys(shape) => run_pascal_keys(event, shape),
         KnownShape::SecondsToSpan(source) => run_seconds_to_span(event, source),
         KnownShape::SubstringBeforeLast {
@@ -9745,6 +9904,37 @@ mod tests {
         assert_eq!(none.get("aws.vpcflow.tcp_flags_array"), Some(&json!([])));
     }
 
+    /// Verbatim from `pipelines/netflow/log/default.yml`. Bit 8 down to 1
+    /// against `flags[8-i]`, so the top bit (0x80, CWR) is `flags[0]` and the
+    /// bottom bit (0x01, FIN) is `flags[7]`. The two masks are read straight
+    /// off `testdata/compat/netflow/log/test-netflow-log-events/expected.ndjson`.
+    #[test]
+    fn tcp_control_bits_decode_high_bit_first() {
+        let script = r#"String[] flags = new String[]{\"CWR\", \"ECE\", \"URG\", \"ACK\", \"PSH\", \"RST\", \"SYN\", \"FIN\"};\nArrayList flagsSeen = new ArrayList();\n\nint tcp_flags = ctx.netflow.tcp_control_bits;\nfor (int i = 8; i > 0; --i) {\n    int value = (tcp_flags & (1 << (i-1))) & 0x0ff;\n    if (value != 0) {\n        flagsSeen.add(flags[8-i]);\n    }\n}\n\nif (flagsSeen.length > 0) {\n    ctx.netflow.tcp_flags = flagsSeen;\n}\n"#;
+
+        // 27 = 0b00011011 = ACK|PSH|SYN|FIN.
+        let mut event = Event::new(json!({"netflow": {"tcp_control_bits": 27}}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("netflow.tcp_flags"),
+            Some(&json!(["ACK", "PSH", "SYN", "FIN"]))
+        );
+
+        // 56 = 0b00111000 = URG|ACK|PSH.
+        let mut event = Event::new(json!({"netflow": {"tcp_control_bits": 56}}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("netflow.tcp_flags"),
+            Some(&json!(["URG", "ACK", "PSH"]))
+        );
+
+        // No bit set is the script's own `if (flagsSeen.length > 0)` guard --
+        // nothing is written, not an empty list.
+        let mut none = Event::new(json!({"netflow": {"tcp_control_bits": 0}}));
+        assert!(try_known_painless(&mut none, script));
+        assert!(!none.has("netflow.tcp_flags"));
+    }
+
     /// Verbatim from `pipelines/aws/waf/default.yml`: the same name/value fold
     /// proofpoint writes with `put`, spelled as an indexed loop over a
     /// subscripted map.
@@ -10608,6 +10798,34 @@ mod tests {
             Some(&json!(["RD", "RA"])),
             "the ECS order of the literal list, not the map's"
         );
+    }
+
+    /// Verbatim from `pipelines/coredns/log/default.yml`. The loop walks
+    /// forward while removing from the list it indexes, which skips whatever
+    /// sits right after a removal, but `QR` is a one-bit DNS flag that is
+    /// never present twice, so the skip never bites. `testdata/compat/coredns`
+    /// is real Elasticsearch 9.2.2 output and shows `QR` removed on every
+    /// event that reaches this script, which rules out `.length` throwing on
+    /// a List here.
+    #[test]
+    fn qr_is_dropped_from_header_flags() {
+        let script = r"for (int i=0; i<ctx.dns.header_flags.length; i++) {\n  if (ctx.dns.header_flags[i] == 'QR') {\n    ctx.dns.header_flags.remove(i);\n  }\n}\n";
+
+        // `test-coredns/expected.ndjson` line 1: "qr,aa,rd" uppercased and
+        // split becomes ["QR","AA","RD"] before this script runs.
+        let mut event = Event::new(json!({"dns": {"header_flags": ["QR", "AA", "RD"]}}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get("dns.header_flags"), Some(&json!(["AA", "RD"])));
+
+        // `test-coredns-json/expected.ndjson` line 1: "qr,rd,ra".
+        let mut event = Event::new(json!({"dns": {"header_flags": ["QR", "RD", "RA"]}}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get("dns.header_flags"), Some(&json!(["RD", "RA"])));
+
+        // No QR present leaves the list untouched.
+        let mut none = Event::new(json!({"dns": {"header_flags": ["RD", "RA"]}}));
+        assert!(try_known_painless(&mut none, script));
+        assert_eq!(none.get("dns.header_flags"), Some(&json!(["RD", "RA"])));
     }
 
     /// Verbatim from `pipelines/m365_defender/event/pipeline_device.yml`.
