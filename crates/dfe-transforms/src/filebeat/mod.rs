@@ -3,6 +3,7 @@
 
 //! Filebeat integration transforms.
 
+pub mod auth0_logs;
 pub mod aws_apigateway_logs;
 pub mod aws_awshealth;
 pub mod aws_billing;
@@ -60,6 +61,7 @@ pub mod cisco_meraki;
 pub mod cisco_meraki_events;
 pub mod cisco_nexus;
 pub mod cisco_umbrella;
+pub mod coredns_log;
 pub mod crowdstrike;
 pub mod crowdstrike_alert;
 pub mod crowdstrike_host;
@@ -107,6 +109,7 @@ pub mod mimecast_threat_intel_malware_grid;
 pub mod mimecast_ttp_ap_logs;
 pub mod mimecast_ttp_ip_logs;
 pub mod mimecast_ttp_url_logs;
+pub mod netflow_log;
 pub mod o365;
 pub mod okta;
 pub mod panw;

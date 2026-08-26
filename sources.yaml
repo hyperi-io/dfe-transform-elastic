@@ -1247,3 +1247,37 @@ sources:
     intakes: [beats]
     transforms: [default]
 
+  # jumpcloud/events is NOT declared: codegen has no `method` parameter on the
+  # `fingerprint` processor, so its one pipeline does not generate. A source
+  # declared without a generated module stops the tree compiling.
+
+  # `default` dispatches to `json` on a payload whose first character is `{`.
+  coredns_log:
+    package: coredns
+    data_stream: log
+    pipelines: coredns/log
+    fixtures: coredns/log
+    intakes: [beats]
+    transforms: [default, json]
+
+  # The `netflow` input is a binary IPFIX decoder rather than a transport, so
+  # the pipeline enriches already-structured fields and no device pushes text.
+  netflow_log:
+    package: netflow
+    data_stream: log
+    pipelines: netflow/log
+    fixtures: netflow/log
+    intakes: [beats]
+    transforms: [default]
+
+  # The only source so far that a device pushes AND an API serves: auth0 ships
+  # both http_endpoint and cel, and both build the same `json.data` shape.
+  auth0_logs:
+    package: auth0
+    data_stream: logs
+    pipelines: auth0/logs
+    fixtures: auth0/logs
+    intakes: [beats, receiver, fetcher]
+    framing: body
+    transforms: [default]
+

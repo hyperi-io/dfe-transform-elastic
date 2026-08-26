@@ -241,6 +241,9 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("azure", "identity_protection") => &filebeat::azure_identity_protection::default::Default,
         ("azure", "provisioning") => &filebeat::azure_provisioning::default::Default,
         ("azure", "springcloudlogs") => &filebeat::azure_springcloudlogs::default::Default,
+        ("auth0", "logs") => &filebeat::auth0_logs::default::Default,
+        ("coredns", "log") => &filebeat::coredns_log::default::Default,
+        ("netflow", "log") => &filebeat::netflow_log::default::Default,
         _ => return None,
     })
 }

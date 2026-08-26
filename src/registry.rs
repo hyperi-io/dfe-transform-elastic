@@ -95,6 +95,12 @@ const fn fetched() -> Intake {
 /// modules -- so it is declared alongside the rest.
 static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
     (
+        "filebeat.auth0_logs.default",
+        &filebeat::auth0_logs::default::Default,
+        pushed(Framing::Body),
+        "auth0.logs",
+    ),
+    (
         "filebeat.aws_apigateway_logs.default",
         &filebeat::aws_apigateway_logs::default::Default,
         fetched(),
@@ -437,6 +443,18 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "cisco_umbrella.log",
     ),
     (
+        "filebeat.coredns_log.default",
+        &filebeat::coredns_log::default::Default,
+        agent_only(),
+        "coredns.log",
+    ),
+    (
+        "filebeat.coredns_log.json",
+        &filebeat::coredns_log::json::Json,
+        agent_only(),
+        "coredns.log",
+    ),
+    (
         "filebeat.crowdstrike.default",
         &filebeat::crowdstrike::default::Default,
         fetched(),
@@ -741,6 +759,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::mimecast_ttp_url_logs::default::Default,
         fetched(),
         "mimecast.ttp_url_logs",
+    ),
+    (
+        "filebeat.netflow_log.default",
+        &filebeat::netflow_log::default::Default,
+        agent_only(),
+        "netflow.log",
     ),
     (
         "filebeat.o365.default",
