@@ -4023,6 +4023,191 @@ fn resolve_branches(event: &Event, script: &str) -> String {
     out
 }
 
+/// `for (def d: ctx.<map>.entrySet())` scanning for one key, with a literal
+/// fall-through when it is absent.
+///
+/// crowdstrike reconstructs a quarantine flag this way. Both the found value
+/// and the default are lost when the script does not run, so the miss shows up
+/// as the field being absent on true and false alike.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct NamedMapEntry {
+    map: String,
+    key: String,
+    target: String,
+    fallback: Value,
+}
+
+fn parse_named_map_entry(script: &str) -> Option<NamedMapEntry> {
+    use crate::painless_params::clean_path;
+
+    let (local, rest) = script.split_once("for (def ")?.1.split_once(':')?;
+    let local = local.trim();
+    let map = clean_path(
+        rest.split_once(".entrySet()")?
+            .0
+            .trim()
+            .strip_prefix("ctx.")?,
+    );
+    if map.is_empty() {
+        return None;
+    }
+
+    let key = script
+        .split_once(&format!("{local}.getKey() =="))?
+        .1
+        .split(')')
+        .next()?
+        .trim()
+        .trim_matches(['\'', '"'])
+        .to_string();
+    if key.is_empty() {
+        return None;
+    }
+
+    let target = painless_path(script.split_once(&format!("= {local}.getValue()"))?.0)?;
+
+    // The last statement is the fall-through, and it must write the same field.
+    let (lhs, rhs) = script.trim_end().trim_end_matches(';').rsplit_once('=')?;
+    if painless_path(lhs)? != target {
+        return None;
+    }
+
+    Some(NamedMapEntry {
+        map,
+        key,
+        target,
+        fallback: painless_literal(rhs)?,
+    })
+}
+
+/// A map the event does not carry is the processor's own `instanceof Map`
+/// guard, so nothing is written.
+fn run_named_map_entry(event: &mut Event, shape: &NamedMapEntry) -> bool {
+    let found = {
+        let Some(map) = event.get(&shape.map).and_then(Value::as_object) else {
+            return true;
+        };
+        map.get(&shape.key).cloned()
+    };
+    let _ = event.set(
+        &shape.target,
+        found.unwrap_or_else(|| shape.fallback.clone()),
+    );
+    true
+}
+
+/// A numeric band and the literal it names.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct RangeArm {
+    low: i64,
+    high: i64,
+    /// The last band closes with `<=` where the rest use `<`.
+    high_inclusive: bool,
+    value: String,
+}
+
+/// An `if (0 <= n && n < 20) { ctx.t = "info" } else if ...` ladder.
+///
+/// A score becomes the name of its band. crowdstrike's alert severity is the
+/// shape, and its name then feeds a second script that scores it back, so a
+/// miss here costs both fields.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct RangeLadder {
+    source: String,
+    target: String,
+    arms: Vec<RangeArm>,
+}
+
+/// Parse a numeric-band ladder, or `None` if the script is a different shape.
+fn parse_range_ladder(script: &str) -> Option<RangeLadder> {
+    use crate::painless_params::clean_path;
+
+    // A ladder is the whole of its script; one that loops is doing other work.
+    if script.contains("for (") {
+        return None;
+    }
+
+    // `long severity = ctx.crowdstrike.alert.severity;`
+    let (declaration, tail) = script.split_once(" = ctx.")?;
+    let local = declaration.split_whitespace().next_back()?;
+    let source = clean_path(tail.split([';', '\n']).next()?.trim());
+    if source.is_empty()
+        || !source
+            .chars()
+            .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_'))
+    {
+        return None;
+    }
+
+    let mut target: Option<String> = None;
+    let mut arms = Vec::new();
+    for block in script.split("if (").skip(1) {
+        let (guard, body) = block.split_once(") {")?;
+
+        // `0 <= severity && severity < 20`
+        let (lower, upper) = guard.split_once("&&")?;
+        let (low_text, low_subject) = lower.split_once("<=")?;
+        if low_subject.trim() != local {
+            return None;
+        }
+        let low = low_text.trim().parse::<i64>().ok()?;
+
+        let upper = upper.trim().strip_prefix(local)?.trim();
+        let (high_inclusive, high_text) = match upper.strip_prefix("<=") {
+            Some(text) => (true, text),
+            None => (false, upper.strip_prefix('<')?),
+        };
+        let high = high_text.trim().parse::<i64>().ok()?;
+
+        // `ctx.<target> = "<value>";`
+        let (lhs, rhs) = body.split(';').next()?.split_once('=')?;
+        let path = painless_path(lhs)?;
+        if target.get_or_insert_with(|| path.clone()) != &path {
+            return None;
+        }
+        let value = rhs.trim().trim_matches('"').to_string();
+        if value.is_empty() {
+            return None;
+        }
+
+        arms.push(RangeArm {
+            low,
+            high,
+            high_inclusive,
+            value,
+        });
+    }
+
+    if arms.is_empty() {
+        return None;
+    }
+    Some(RangeLadder {
+        source,
+        target: target?,
+        arms,
+    })
+}
+
+/// A value outside every band writes nothing, as the script's own fall-through
+/// does.
+fn run_range_ladder(event: &mut Event, shape: &RangeLadder) -> bool {
+    let Some(value) = event.get_as_i64(&shape.source) else {
+        return true;
+    };
+    for arm in &shape.arms {
+        let within_upper = if arm.high_inclusive {
+            value <= arm.high
+        } else {
+            value < arm.high
+        };
+        if value >= arm.low && within_upper {
+            let _ = event.set(&shape.target, json!(arm.value));
+            return true;
+        }
+    }
+    true
+}
+
 /// One arm of an equality ladder: the literal tested, and what it assigns.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct LadderArm {
@@ -7055,6 +7240,8 @@ pub(crate) enum KnownShape {
     CollectColumns(Box<CollectColumns>),
     SliceEachItem(Box<SliceEachItem>),
     ContainsLadder(Box<ContainsLadder>),
+    RangeLadder(Box<RangeLadder>),
+    NamedMapEntry(Box<NamedMapEntry>),
     SuffixAfterSeparator {
         source: String,
         target: String,
@@ -7218,6 +7405,24 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_contains_ladder(normalised)
     {
         shapes.push(KnownShape::ContainsLadder(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: one named entry lifted out of a map, or a literal in its place.
+    if normalised.contains(".entrySet()")
+        && normalised.contains(".getKey()")
+        && let Some(shape) = parse_named_map_entry(normalised)
+    {
+        shapes.push(KnownShape::NamedMapEntry(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: a score named by the band it falls in.
+    if normalised.contains("<=")
+        && normalised.contains("&&")
+        && let Some(shape) = parse_range_ladder(normalised)
+    {
+        shapes.push(KnownShape::RangeLadder(Box::new(shape)));
         return shapes;
     }
 
@@ -8315,6 +8520,8 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::CollectColumns(shape) => run_collect_columns(event, shape),
         KnownShape::SliceEachItem(shape) => run_slice_each_item(event, shape),
         KnownShape::ContainsLadder(shape) => run_contains_ladder(event, shape),
+        KnownShape::RangeLadder(shape) => run_range_ladder(event, shape),
+        KnownShape::NamedMapEntry(shape) => run_named_map_entry(event, shape),
         KnownShape::SuffixAfterSeparator {
             source,
             target,
@@ -10256,6 +10463,106 @@ mod tests {
         assert_eq!(
             reversed.get_str("event.end"),
             Some("2026-05-11T05:11:47.000Z")
+        );
+    }
+
+    /// Verbatim from `crowdstrike/data_stream/alert`, whose two severity
+    /// scripts chain: a number becomes a name, and the name becomes a score.
+    #[test]
+    fn a_severity_number_becomes_a_name_and_the_name_a_score() {
+        let to_name = "long severity = ctx.crowdstrike.alert.severity;\n\
+             if (0 <= severity && severity < 20) {\n  \
+             ctx.crowdstrike.alert.severity_name = \"info\";\n\
+             } else if (20 <= severity && severity < 40) {\n  \
+             ctx.crowdstrike.alert.severity_name = \"low\";\n\
+             } else if (40 <= severity && severity < 60) {\n  \
+             ctx.crowdstrike.alert.severity_name = \"medium\";\n\
+             } else if (60 <= severity && severity < 80) {\n  \
+             ctx.crowdstrike.alert.severity_name = \"high\";\n\
+             } else if (80 <= severity && severity <= 100) {\n  \
+             ctx.crowdstrike.alert.severity_name = \"critical\";\n}";
+
+        for (severity, name) in [
+            (0, "info"),
+            (25, "low"),
+            (55, "medium"),
+            (70, "high"),
+            (100, "critical"),
+        ] {
+            let mut event = Event::new(json!({"crowdstrike": {"alert": {"severity": severity}}}));
+            assert!(
+                try_known_painless(&mut event, to_name),
+                "{severity} unmatched"
+            );
+            assert_eq!(
+                event.get_str("crowdstrike.alert.severity_name"),
+                Some(name),
+                "severity {severity}"
+            );
+        }
+
+        // Outside every band the script falls through and writes nothing.
+        let mut outside = Event::new(json!({"crowdstrike": {"alert": {"severity": 101}}}));
+        assert!(try_known_painless(&mut outside, to_name));
+        assert!(!outside.has("crowdstrike.alert.severity_name"));
+
+        let to_score = "ctx.event = ctx.event ?: [:];\n\
+             String risk_score_value = ctx.crowdstrike.alert.severity_name;\n\
+             if (risk_score_value.equalsIgnoreCase(\"low\") || \
+             risk_score_value.equalsIgnoreCase(\"info\") || \
+             risk_score_value.equalsIgnoreCase(\"informational\")) {\n  \
+             ctx.event.severity = 21;\n\
+             } else if (risk_score_value.equalsIgnoreCase(\"medium\")) {\n  \
+             ctx.event.severity = 47;\n\
+             } else if (risk_score_value.equalsIgnoreCase(\"high\")) {\n  \
+             ctx.event.severity = 73;\n\
+             } else if (risk_score_value.equalsIgnoreCase(\"critical\")) {\n  \
+             ctx.event.severity = 99;\n}";
+
+        for (name, score) in [
+            ("info", 21),
+            ("low", 21),
+            ("medium", 47),
+            ("high", 73),
+            ("critical", 99),
+        ] {
+            let mut event = Event::new(json!({"crowdstrike": {"alert": {"severity_name": name}}}));
+            assert!(try_known_painless(&mut event, to_score), "{name} unmatched");
+            assert_eq!(event.get_i64("event.severity"), Some(score), "name {name}");
+        }
+    }
+
+    /// Verbatim from `crowdstrike/data_stream/alert`: a map scanned for one
+    /// key, falling back to a literal when it is absent.
+    #[test]
+    fn a_named_map_entry_is_lifted_out_with_a_default() {
+        let script = "if (ctx.crowdstrike == null) {\n  ctx.crowdstrike = [:];\n}\n\
+             if (ctx.crowdstrike.alert == null) {\n  ctx.crowdstrike.alert = [:];\n}\n\
+             for (def d: ctx.crowdstrike.alert.pattern_disposition_details.entrySet()) {\n  \
+             if (d.getKey() == 'quarantine_file') {\n    \
+             ctx.crowdstrike.alert.is_synthetic_quarantine_disposition = d.getValue();\n    \
+             return;\n  }\n}\n\
+             ctx.crowdstrike.alert.is_synthetic_quarantine_disposition = false;\n";
+
+        for found in [true, false] {
+            let mut event = Event::new(json!({"crowdstrike": {"alert": {
+                "pattern_disposition_details": {"quarantine_file": found, "other": true}
+            }}}));
+            assert!(try_known_painless(&mut event, script), "{found} unmatched");
+            assert_eq!(
+                event.get("crowdstrike.alert.is_synthetic_quarantine_disposition"),
+                Some(&json!(found))
+            );
+        }
+
+        // The key absent takes the literal the script falls through to.
+        let mut absent = Event::new(json!({"crowdstrike": {"alert": {
+            "pattern_disposition_details": {"indicator_removed": true}
+        }}}));
+        assert!(try_known_painless(&mut absent, script));
+        assert_eq!(
+            absent.get("crowdstrike.alert.is_synthetic_quarantine_disposition"),
+            Some(&json!(false))
         );
     }
 
