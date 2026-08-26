@@ -21,6 +21,15 @@
 //! reviewable on its own, and two people doing it at once get a MERGE CONFLICT
 //! rather than a silent reorder.
 //!
+//! A dispatch site either constructs its variant inline
+//! (`shapes.push(KnownShape::Foo(...))`) or hands back a value a `parse_*`
+//! call already built (`shapes.push(shape)`). The second form names no
+//! variant at its own site, so it is resolved by finding the ONE `let
+//! Some(shape) = parse_*(...)` binding that fed it, then reading the ONE
+//! variant `parse_*`'s own body constructs -- whatever combinator it used to
+//! wrap it. A site the scanner cannot place either way is a scanner gap, not
+//! a skip: it panics rather than silently dropping a shape out of the lock.
+//!
 //! Update deliberately, never by reflex:
 //!
 //! ```text
@@ -29,23 +38,32 @@
 
 use std::path::{Path, PathBuf};
 
-/// A ladder: the file it lives in, and the text that marks a dispatch site.
+/// A ladder: the file it lives in, its dispatch functions in call order --
+/// `params_shape` falls through to `params_shape_tail`, so both are listed,
+/// in that order -- the text that opens a pushed/returned shape, and the
+/// enum's own `Name::` prefix.
 struct Ladder {
     name: &'static str,
     source: &'static str,
-    markers: &'static [&'static str],
+    functions: &'static [&'static str],
+    push_prefix: &'static str,
+    variant_prefix: &'static str,
 }
 
 const LADDERS: &[Ladder] = &[
     Ladder {
         name: "known_shapes",
         source: "src/painless_common.rs",
-        markers: &["shapes.push(KnownShape::"],
+        functions: &["known_shapes"],
+        push_prefix: "shapes.push(",
+        variant_prefix: "KnownShape::",
     },
     Ladder {
         name: "params_shape",
         source: "src/painless_params.rs",
-        markers: &["return Some(ParamsShape::", "Some(ParamsShape::"],
+        functions: &["params_shape", "params_shape_tail"],
+        push_prefix: "return Some(",
+        variant_prefix: "ParamsShape::",
     },
 ];
 
@@ -53,16 +71,177 @@ fn crate_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
 }
 
-/// The variant named at a dispatch site, or `None` when the line is not one.
-fn variant(line: &str, marker: &str) -> Option<String> {
-    let rest = line.trim().strip_prefix(marker).or_else(|| {
-        let at = line.find(marker)?;
-        Some(&line[at + marker.len()..])
-    })?;
+fn read_source(relative: &str) -> String {
+    std::fs::read_to_string(crate_root().join(relative))
+        .unwrap_or_else(|_| panic!("cannot read {relative}"))
+}
+
+/// The identifier `prefix` opens, when `text` starts with it exactly -- used
+/// at a dispatch site, where the pushed expression must begin right where the
+/// push left off.
+fn variant_leading<'a>(text: &'a str, prefix: &str) -> Option<&'a str> {
+    let rest = text.strip_prefix(prefix)?;
     let end = rest
-        .find(|c: char| !c.is_alphanumeric() && c != '_')
+        .find(|c: char| !(c.is_alphanumeric() || c == '_'))
         .unwrap_or(rest.len());
-    (end > 0).then(|| rest[..end].to_string())
+    (end > 0).then(|| &rest[..end])
+}
+
+/// The identifier after `prefix`'s first occurrence ANYWHERE in `text` --
+/// used to read a helper's own construction, which sits after whatever
+/// combinator (`Some(`, `.then(|| `, ...) the helper wrapped it in.
+fn variant_anywhere<'a>(text: &'a str, prefix: &str) -> Option<&'a str> {
+    let at = text.find(prefix)?;
+    variant_leading(&text[at..], prefix)
+}
+
+/// The body of `fn <name>(...) { ... }`, braces included.
+///
+/// Found by locating the signature, then the next line that is a bare `}` --
+/// rustfmt always closes a top-level item that way, which needs no
+/// brace-depth count and so cannot be desynced by a `'{'` or `"...{"` inside
+/// the body, both of which recur in this file's own Painless-matching code.
+fn function_body<'a>(text: &'a str, name: &str) -> &'a str {
+    let needle = format!("fn {name}(");
+    let mut at = None;
+    let mut hits = 0u32;
+    let mut from = 0usize;
+    while let Some(rel) = text[from..].find(needle.as_str()) {
+        let candidate = from + rel;
+        let line_start = text[..candidate].rfind('\n').map_or(0, |n| n + 1);
+        if !text[line_start..candidate].trim_start().starts_with("//") {
+            at = Some(candidate);
+            hits += 1;
+        }
+        from = candidate + needle.len();
+    }
+    assert!(
+        hits == 1,
+        "expected exactly one definition of `fn {name}(`, found {hits} -- \
+         the bare-dispatch resolver cannot tell which one runs"
+    );
+    let at = at.expect("hits == 1, checked above");
+
+    let open = text[at..]
+        .find('{')
+        .map_or_else(|| panic!("no body opens for fn {name}"), |rel| at + rel);
+    let close = text[open..].find("\n}").map_or_else(
+        || panic!("no top-level close found for fn {name}"),
+        |rel| open + rel + 2,
+    );
+    &text[open..close]
+}
+
+/// The one variant a helper function's own body constructs, read off its
+/// text rather than its call site -- a bare local at the call site names no
+/// variant, so the only way to know what it dispatches is to read the parser
+/// that just ran.
+fn resolve_variant(ladder: &Ladder, source_text: &str, function: &str) -> String {
+    let body = function_body(source_text, function);
+    let mut found: Option<String> = None;
+    for line in body.lines() {
+        if line.trim_start().starts_with("//") {
+            continue;
+        }
+        let Some(name) = variant_anywhere(line, ladder.variant_prefix) else {
+            continue;
+        };
+        match &found {
+            None => found = Some(name.to_string()),
+            Some(existing) if existing == name => {}
+            Some(existing) => panic!(
+                "{function}: constructs both `{existing}` and `{name}` -- a bare dispatch \
+                 site cannot be resolved to one variant. Teach the scanner which one runs."
+            ),
+        }
+    }
+    found.unwrap_or_else(|| {
+        panic!(
+            "{function}: constructs no `{}` -- teach the scanner its shape, or the lock \
+             silently drops it.",
+            ladder.variant_prefix
+        )
+    })
+}
+
+/// The variant a bare local resolves to: the nearest `let Some(<var>) =
+/// <call>(...)` above byte offset `push_at` in `body`, then whatever variant
+/// that call's own function constructs.
+fn resolve_bare(
+    ladder: &Ladder,
+    source_text: &str,
+    body: &str,
+    push_at: usize,
+    var: &str,
+    function: &str,
+) -> String {
+    let binder = format!("let Some({var}) = ");
+    let bind_at = body[..push_at].rfind(binder.as_str()).unwrap_or_else(|| {
+        panic!(
+            "{function}: bare dispatch of `{var}` has no `{binder}` binding above it in \
+             this function -- teach the scanner this shape, or it silently drops out of \
+             the lock."
+        )
+    });
+    let after = &body[bind_at + binder.len()..];
+    let call_end = after
+        .find('(')
+        .unwrap_or_else(|| panic!("{function}: binding for `{var}` is not a call: {after:?}"));
+    let call_name = after[..call_end]
+        .trim()
+        .rsplit("::")
+        .next()
+        .unwrap_or_default();
+    assert!(
+        !call_name.is_empty(),
+        "{function}: cannot read a function name out of the `{var}` binding"
+    );
+    resolve_variant(ladder, source_text, call_name)
+}
+
+/// Every dispatch site in one function's body, resolved to its variant name,
+/// in the order the source reads them.
+fn dispatch_sites(ladder: &Ladder, source_text: &str, function: &str) -> Vec<String> {
+    let body = function_body(source_text, function);
+    let mut out = Vec::new();
+    let mut line_start = 0usize;
+    loop {
+        let line_end = body[line_start..]
+            .find('\n')
+            .map_or(body.len(), |rel| line_start + rel);
+        let line = &body[line_start..line_end];
+
+        if !line.trim_start().starts_with("//")
+            && let Some(rel) = line.find(ladder.push_prefix)
+        {
+            let at = line_start + rel + ladder.push_prefix.len();
+            let after = body[at..].trim_start();
+
+            if let Some(name) = variant_leading(after, ladder.variant_prefix) {
+                out.push(name.to_string());
+            } else {
+                let end = after
+                    .find(|c: char| !(c.is_alphanumeric() || c == '_'))
+                    .unwrap_or(after.len());
+                let var = &after[..end];
+                let closes = after[end..].trim_start();
+                assert!(
+                    !var.is_empty() && closes.starts_with(')'),
+                    "{function}: dispatch site matches neither `{}<Variant>` nor a single \
+                     bare local -- teach the scanner this form, or it silently drops out of \
+                     the lock: {line:?}",
+                    ladder.variant_prefix
+                );
+                out.push(resolve_bare(ladder, source_text, body, at, var, function));
+            }
+        }
+
+        if line_end >= body.len() {
+            break;
+        }
+        line_start = line_end + 1;
+    }
+    out
 }
 
 /// Every dispatch site in every ladder, in the order the source reads them.
@@ -70,21 +249,13 @@ fn observed() -> String {
     let mut out = String::new();
     for ladder in LADDERS {
         out.push_str(&format!("[{}]\n", ladder.name));
-        let text = std::fs::read_to_string(crate_root().join(ladder.source))
-            .unwrap_or_else(|_| panic!("cannot read {}", ladder.source));
+        let text = read_source(ladder.source);
 
         let mut position = 0;
-        for line in text.lines() {
-            // A doc comment quoting a marker is prose, not a dispatch site.
-            if line.trim_start().starts_with("//") {
-                continue;
-            }
-            for marker in ladder.markers {
-                if let Some(name) = variant(line, marker) {
-                    position += 1;
-                    out.push_str(&format!("{position:3} {name}\n"));
-                    break;
-                }
+        for function in ladder.functions {
+            for name in dispatch_sites(ladder, &text, function) {
+                position += 1;
+                out.push_str(&format!("{position:3} {name}\n"));
             }
         }
         out.push('\n');
