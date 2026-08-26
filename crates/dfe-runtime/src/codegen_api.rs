@@ -704,23 +704,31 @@ pub fn grok_to_regex_with_map(
     (regex, field_map)
 }
 
-/// As [`grok_to_regex_with_map`], plus the captures Elastic types as numbers.
+/// How Elastic types a grok capture, where it types it at all.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CaptureType {
+    Number,
+    Boolean,
+}
+
+/// As [`grok_to_regex_with_map`], plus the type Elastic gives each capture
+/// that names one.
 ///
-/// A `%{NUMBER:bytes:long}` suffix is a type, not part of the field name, and
-/// dropping it leaves every numeric field a string.
+/// A `%{NUMBER:bytes:long}` or `%{WORD:flag:boolean}` suffix is a type, not
+/// part of the field name, and dropping it leaves every one of them a string.
 #[must_use]
 pub fn grok_to_regex_typed(
     pattern: &str,
 ) -> (
     String,
     std::collections::HashMap<String, String>,
-    std::collections::HashMap<String, bool>,
+    std::collections::HashMap<String, CaptureType>,
 ) {
     use std::fmt::Write as _;
 
     let mut result = String::with_capacity(pattern.len());
     let mut field_map = std::collections::HashMap::new();
-    let mut numeric = std::collections::HashMap::new();
+    let mut capture_types = std::collections::HashMap::new();
     // Every group name emitted so far. One ledger for both kinds of capture,
     // because a `%{DATA:process.name}` and a literal `(?P<process_name>)` in
     // the same pattern collide just as surely as two of either.
@@ -767,7 +775,7 @@ pub fn grok_to_regex_typed(
                 if let Some((safe, path, inner)) = grok_implicit_capture(&name) {
                     used.insert(safe.to_string());
                     field_map.insert(safe.to_string(), path.to_string());
-                    numeric.insert(safe.to_string(), true);
+                    capture_types.insert(safe.to_string(), CaptureType::Number);
                     let _ = write!(result, "{inner}");
                 } else {
                     let _ = write!(result, "({sub_pattern})");
@@ -783,8 +791,8 @@ pub fn grok_to_regex_typed(
                 // only the branch that matched writes.
                 let safe_field = unique_group_name(&sanitise_group_name(field_name), &mut used);
 
-                if matches!(parts.next(), Some("long" | "int" | "float" | "double")) {
-                    numeric.insert(safe_field.clone(), true);
+                if let Some(capture_type) = parts.next().and_then(capture_type_of) {
+                    capture_types.insert(safe_field.clone(), capture_type);
                 }
                 field_map.insert(safe_field.clone(), field_name.to_string());
                 let _ = write!(result, "(?P<{safe_field}>{sub_pattern})");
@@ -809,8 +817,8 @@ pub fn grok_to_regex_typed(
         }
     }
 
-    resolve_capture_paths(&mut field_map, &mut numeric);
-    (result, field_map, numeric)
+    resolve_capture_paths(&mut field_map, &mut capture_types);
+    (result, field_map, capture_types)
 }
 
 /// Does an opening paren begin a named capture, rather than a look-behind?
@@ -879,35 +887,53 @@ fn unique_group_name(base: &str, used: &mut std::collections::HashSet<String>) -
 /// Numeric type suffixes Elastic's grok understands.
 const NUMERIC_TYPES: [&str; 4] = ["int", "long", "float", "double"];
 
+/// The [`CaptureType`] a grok type suffix names, when it names one at all.
+///
+/// The single point where a suffix string is read against both categories,
+/// so [`grok_to_regex_typed`] and [`read_capture_name`] cannot drift apart on
+/// which suffixes count.
+fn capture_type_of(ty: &str) -> Option<CaptureType> {
+    if NUMERIC_TYPES.contains(&ty) {
+        Some(CaptureType::Number)
+    } else if ty == "boolean" {
+        Some(CaptureType::Boolean)
+    } else {
+        None
+    }
+}
+
 /// Read a grok capture name as Elastic does: `[pattern:]field[:type]`.
 ///
 /// The vendor pipelines write the internal form by hand -- `cisco_asa`'s repeat
 /// counter is `(?<INT:_temp_.cisco.message_repeats:int>\d+)` -- so the field is
 /// the middle part and the type the last, not the whole string.
 ///
-/// Returns the destination path and whether Elastic types it as a number.
+/// Returns the destination path and the type Elastic gives it, if the suffix
+/// names one it recognises.
 #[must_use]
-pub fn read_capture_name(name: &str) -> (&str, bool) {
+pub fn read_capture_name(name: &str) -> (&str, Option<CaptureType>) {
     let parts: Vec<&str> = name.split(':').collect();
     match parts.as_slice() {
-        [_, field, ty] if NUMERIC_TYPES.contains(ty) => (field, true),
-        [_, field, _] => (field, false),
-        [field, ty] if NUMERIC_TYPES.contains(ty) => (field, true),
-        _ => (name, false),
+        [_, field, ty] => (field, capture_type_of(ty)),
+        [field, ty] => match capture_type_of(ty) {
+            Some(capture_type) => (field, Some(capture_type)),
+            None => (name, None),
+        },
+        _ => (name, None),
     }
 }
 
 /// Rewrite every destination in `field_map` to the path Elastic would write,
-/// marking the numeric ones. Idempotent, so it can run again once a caller's
-/// own mapping has been substituted in.
+/// recording each capture's type. Idempotent, so it can run again once a
+/// caller's own mapping has been substituted in.
 pub fn resolve_capture_paths<S: std::hash::BuildHasher>(
     field_map: &mut std::collections::HashMap<String, String, S>,
-    numeric: &mut std::collections::HashMap<String, bool, S>,
+    capture_types: &mut std::collections::HashMap<String, CaptureType, S>,
 ) {
     for (capture, path) in field_map.iter_mut() {
-        let (field, is_numeric) = read_capture_name(path);
-        if is_numeric {
-            numeric.insert(capture.clone(), true);
+        let (field, capture_type) = read_capture_name(path);
+        if let Some(capture_type) = capture_type {
+            capture_types.insert(capture.clone(), capture_type);
         }
         if field.len() != path.len() {
             *path = field.to_string();

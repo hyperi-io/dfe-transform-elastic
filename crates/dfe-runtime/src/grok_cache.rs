@@ -99,10 +99,10 @@ pub struct CompiledGrok {
     /// contain dots, so `user.name` is captured as `user_name` and restored
     /// through this map.
     pub field_map: HashMap<String, String>,
-    /// Capture names Elastic's `:long` / `:int` / `:float` suffix types as a
-    /// number. Without this every one lands as a string and the expectations
-    /// -- and every numeric comparison downstream -- see the wrong type.
-    pub numeric: HashMap<String, bool>,
+    /// Capture names Elastic's `:long` / `:int` / `:float` / `:double` or
+    /// `:boolean` suffix types explicitly. A capture absent from the map is
+    /// untyped and lands as a string, same as the expectations would see it.
+    pub capture_types: HashMap<String, crate::codegen_api::CaptureType>,
     /// A native parser for this pattern, when one covers it exactly.
     native: Option<Native>,
 }
@@ -149,7 +149,8 @@ pub fn grok_mapped(pattern: &str, extra: &[(&str, &str)]) -> &'static CompiledGr
         return hit;
     }
 
-    let (expanded, mut field_map, mut numeric) = crate::codegen_api::grok_to_regex_typed(pattern);
+    let (expanded, mut field_map, mut capture_types) =
+        crate::codegen_api::grok_to_regex_typed(pattern);
     // The generator's mapping is keyed by the capture name AS WRITTEN, which a
     // rename has since replaced. Substituting by destination rather than by
     // key keeps every renamed twin pointed at the same field.
@@ -162,13 +163,13 @@ pub fn grok_mapped(pattern: &str, extra: &[(&str, &str)]) -> &'static CompiledGr
             *path = (*real).to_string();
         }
     }
-    crate::codegen_api::resolve_capture_paths(&mut field_map, &mut numeric);
+    crate::codegen_api::resolve_capture_paths(&mut field_map, &mut capture_types);
     let expanded = tolerate_trailing_terminator(&expanded);
 
     let compiled: &'static CompiledGrok = Box::leak(Box::new(CompiledGrok {
         regex: Pattern::compile(&expanded, pattern),
         field_map,
-        numeric,
+        capture_types,
         native: native_form(pattern),
     }));
 
@@ -315,18 +316,27 @@ impl CompiledGrok {
         event: &mut crate::Event,
     ) -> crate::Result<()> {
         let path = self.field_map.get(name).map_or(name, String::as_str);
-        // A `:float` capture is numeric too, and an i64 parse alone left
-        // every fractional value a string -- lambda's duration_ms among them.
-        if self.numeric.contains_key(name) {
-            if let Ok(n) = value.parse::<i64>() {
-                event.set(path, n)?;
-            } else if let Ok(f) = value.parse::<f64>() {
-                event.set(path, f)?;
-            } else {
-                event.set(path, value)?;
+        match self.capture_types.get(name) {
+            // A `:float` capture is numeric too, and an i64 parse alone left
+            // every fractional value a string -- lambda's duration_ms among them.
+            Some(crate::codegen_api::CaptureType::Number) => {
+                if let Ok(n) = value.parse::<i64>() {
+                    event.set(path, n)?;
+                } else if let Ok(f) = value.parse::<f64>() {
+                    event.set(path, f)?;
+                } else {
+                    event.set(path, value)?;
+                }
             }
-        } else {
-            event.set(path, value)?;
+            // Grok does not invent a value it cannot read: only the exact
+            // text "true" or "false" becomes a boolean, and anything else
+            // stays the string it was captured as.
+            Some(crate::codegen_api::CaptureType::Boolean) => match value {
+                "true" => event.set(path, true)?,
+                "false" => event.set(path, false)?,
+                _ => event.set(path, value)?,
+            },
+            None => event.set(path, value)?,
         }
         Ok(())
     }
@@ -689,6 +699,44 @@ mod tests {
         assert_eq!(event.get_str("event.action"), Some("blocked"));
     }
 
+    /// Elastic's `:boolean` is a type too, and dropping it the same way left
+    /// `coredns.log.dnssec_ok` a string that `get_bool` never matched --
+    /// coredns's own grok is `%{WORD:coredns.log.dnssec_ok:boolean}`. Grok
+    /// does not invent a value it cannot read, so a word that is not "true"
+    /// or "false" must stay the string it was captured as.
+    #[test]
+    fn a_boolean_typed_capture_lands_as_a_json_boolean() {
+        let compiled = grok("^%{WORD:coredns.log.dnssec_ok:boolean} %{WORD:event.action}$");
+
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into("true blocked", &mut event)
+                .expect("extraction")
+        );
+        assert_eq!(event.get_bool("coredns.log.dnssec_ok"), Some(true));
+
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into("false blocked", &mut event)
+                .expect("extraction")
+        );
+        assert_eq!(event.get_bool("coredns.log.dnssec_ok"), Some(false));
+
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into("maybe blocked", &mut event)
+                .expect("extraction")
+        );
+        assert!(
+            event.get_bool("coredns.log.dnssec_ok").is_none(),
+            "a word that is not true/false must not become a boolean"
+        );
+        assert_eq!(event.get_str("coredns.log.dnssec_ok"), Some("maybe"));
+    }
+
     /// `%{SYSLOG5424PRI}` is written without a field name because Elastic's
     /// own definition carries the destination -- `syslog5424_pri` in the
     /// legacy registry, which is the one that applies unless the processor
@@ -895,7 +943,7 @@ mod tests {
         let regex_only = CompiledGrok {
             regex: compiled.regex.clone(),
             field_map: compiled.field_map.clone(),
-            numeric: compiled.numeric.clone(),
+            capture_types: compiled.capture_types.clone(),
             native: None,
         };
         let mut regex_event = crate::Event::new(serde_json::json!({}));

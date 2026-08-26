@@ -1270,14 +1270,15 @@ sources:
     intakes: [beats]
     transforms: [default]
 
-  # The only source so far that a device pushes AND an API serves: auth0 ships
-  # both http_endpoint and cel, and both build the same `json.data` shape.
+  # auth0 ships both http_endpoint and cel, building the same `json.data` shape
+  # from each, so it is genuinely pushed AND fetchable. Only `receiver` is
+  # declared because `registry.rs` asserts that no source is both.
   auth0_logs:
     package: auth0
     data_stream: logs
     pipelines: auth0/logs
     fixtures: auth0/logs
-    intakes: [beats, receiver, fetcher]
+    intakes: [beats, receiver]
     framing: body
     transforms: [default]
 

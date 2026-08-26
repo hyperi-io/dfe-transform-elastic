@@ -4023,6 +4023,48 @@ fn resolve_branches(event: &Event, script: &str) -> String {
     out
 }
 
+/// `ctx.<target> = <first> + ctx.<source>.substring(1).toLowerCase()`.
+///
+/// A vendor severity arrives shouted and ECS wants it title-cased, so the
+/// script keeps the leading character and lowers the rest.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct TitleCase {
+    source: String,
+    target: String,
+}
+
+fn parse_title_case(script: &str) -> Option<TitleCase> {
+    let head = script.split_once(".substring(1).toLowerCase()")?.0;
+
+    // The nearest `ctx.` path is the one being lowered; the assignment before
+    // it names where the result lands.
+    let source = painless_path(head)?;
+    let at = last_assignment(head)?;
+    let target = painless_path(&head[..at])?;
+    (!source.is_empty() && !target.is_empty()).then_some(TitleCase { source, target })
+}
+
+/// An empty string writes nothing, as the script's own `!= ""` guard does.
+fn run_title_case(event: &mut Event, shape: &TitleCase) -> bool {
+    let titled = {
+        let Some(raw) = event.get_str(&shape.source) else {
+            return true;
+        };
+        if raw.is_empty() {
+            return true;
+        }
+        let mut out = String::with_capacity(raw.len());
+        let mut chars = raw.chars();
+        if let Some(first) = chars.next() {
+            out.push(first);
+        }
+        out.extend(chars.flat_map(char::to_lowercase));
+        out
+    };
+    let _ = event.set(&shape.target, json!(titled));
+    true
+}
+
 /// `for (def d: ctx.<map>.entrySet())` scanning for one key, with a literal
 /// fall-through when it is absent.
 ///
@@ -4208,20 +4250,30 @@ fn run_range_ladder(event: &mut Event, shape: &RangeLadder) -> bool {
     true
 }
 
-/// One arm of an equality ladder: the literal tested, and what it assigns.
+/// One arm of an equality ladder: the literal(s) tested, and what it assigns.
+///
+/// More than one literal is an OR'd condition -- `u == 'LOW' || u ==
+/// 'NEUTRAL'` -- both winning the same arm rather than only the first the
+/// script names.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct LadderArm {
-    literal: String,
+    literals: Vec<String>,
     target: String,
-    value: String,
+    /// Whatever `painless_literal` reads off the assignment -- a quoted
+    /// string in most vendored ladders, but a severity NUMBER arrives bare
+    /// (`ctx.event.severity = 21;`), which a `String` field cannot hold
+    /// without quoting it into the wrong JSON type.
+    value: Value,
 }
 
 /// An `if (x == 'a') { ctx.t = 'A' } else if (x == 'b') { ... }` ladder.
 ///
-/// The subject is read once -- either bound to a local (`def x = ctx.a.b;`)
-/// or compared inline -- and every arm assigns a string literal to a ctx
-/// path. Fortinet's 11-arm IANA-number-to-transport table is the shape;
-/// writing the table out by hand is how a mapping silently goes stale.
+/// The subject is read once -- bound to a local (`def x = ctx.a.b;`), bound
+/// through a SECOND local (`def u = level.toUpperCase();` where `level`
+/// itself reads `ctx.a.b`), or compared inline -- and every arm assigns a
+/// literal to a ctx path. Fortinet's 11-arm IANA-number-to-transport table is
+/// the shape; writing the table out by hand is how a mapping silently goes
+/// stale.
 ///
 /// Owned rather than borrowed from the script: the parse runs once per call
 /// site via [`crate::painless_plan::PainlessPlan`], so the arms are allocated
@@ -4247,10 +4299,14 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
         return None;
     }
 
-    // The subject is whatever the FIRST `if (... == ...)` compares against.
-    let first = script.find("if (")? + 4;
-    let (lhs, _) = script[first..].split_once("==")?;
-    let lhs = lhs.trim();
+    // The subject is whatever the FIRST ARM compares against -- a leading
+    // type guard such as `if (level instanceof String) { ... }` has no `==`
+    // of its own, so it is passed over rather than mistaken for the ladder.
+    let lhs = script.split("if (").skip(1).find_map(|segment| {
+        let (cond, _) = segment.split_once(')')?;
+        let (lhs, _) = cond.split_once("==")?;
+        Some(lhs.trim())
+    })?;
     let mut through_put = false;
 
     let mut arms = Vec::new();
@@ -4258,12 +4314,20 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
         let Some((cond, body)) = segment.split_once(')') else {
             continue;
         };
-        let Some((_, rhs)) = cond.split_once("==") else {
+        // Every literal an OR'd condition compares the subject against --
+        // `u == 'LOW' || u == 'NEUTRAL'` is one arm with two literals, and a
+        // plain `x == 'a'` is the same shape with one.
+        let literals: Vec<String> = cond
+            .split("||")
+            .filter_map(|piece| {
+                piece
+                    .split_once("==")
+                    .and_then(|(_, rhs)| quoted_first(rhs))
+            })
+            .collect();
+        if literals.is_empty() {
             continue;
-        };
-        let Some(literal) = quoted_first(rhs) else {
-            continue;
-        };
+        }
         // `ctx.<parent>.put('<key>', '<value>')` writes the same thing an
         // assignment does, and inspector's severity map is written that way.
         let arm = if let Some((subject, arguments)) = body.split_once(".put(") {
@@ -4283,15 +4347,15 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
             };
             through_put = true;
             LadderArm {
-                literal,
+                literals,
                 target: format!("{}.{key}", clean_path(parent.trim())),
-                value,
+                value: Value::String(value),
             }
         } else {
-            let (Some(value), Some(assign)) = (quoted_first(body), body.find('=')) else {
+            let Some((lhs, rhs)) = body.split(';').next().and_then(|s| s.split_once('=')) else {
                 continue;
             };
-            let Some(target) = body[..assign]
+            let Some(target) = lhs
                 .trim()
                 .trim_start_matches('{')
                 .trim()
@@ -4299,8 +4363,11 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
             else {
                 continue;
             };
+            let Some(value) = painless_literal(rhs.trim()) else {
+                continue;
+            };
             LadderArm {
-                literal,
+                literals,
                 target: clean_path(target.trim()),
                 value,
             }
@@ -4316,19 +4383,9 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
         return None;
     }
 
-    // A local binding resolves back to the ctx path it was read from, with any
-    // case fold the binding applied travelling with it.
-    let bound = ctx_path_bound_to(script, lhs);
-    let fold_case = bound
-        .as_deref()
-        .is_some_and(|path| path.ends_with(".toLowerCase()") || path.ends_with(".toUpperCase()"));
-    let subject = match bound {
-        Some(path) => path
-            .strip_suffix(".toLowerCase()")
-            .or_else(|| path.strip_suffix(".toUpperCase()"))
-            .unwrap_or(&path)
-            .to_string(),
-        None => clean_path(lhs.strip_prefix("ctx.")?),
+    let (subject, fold_case) = match ladder_subject(script, lhs) {
+        Some(resolved) => resolved,
+        None => (clean_path(lhs.strip_prefix("ctx.")?), false),
     };
 
     Some(Ladder {
@@ -4336,6 +4393,43 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
         fold_case,
         arms,
     })
+}
+
+/// The ctx path a subject local ultimately reads, plus whether any hop folds
+/// case with `.toLowerCase()` / `.toUpperCase()`.
+///
+/// `def u = level.toUpperCase();` binds `u` to ANOTHER local rather than to
+/// `ctx.` directly, and `crowdstrike`'s severity ladder is written exactly
+/// this way -- `level` carries the ctx path two lines up, `u` carries the
+/// fold. One extra hop covers every vendored script seen so far, so the
+/// lookup does not recurse further.
+fn ladder_subject(script: &str, name: &str) -> Option<(String, bool)> {
+    if let Some(path) = ctx_path_bound_to(script, name) {
+        return Some(strip_case_fold(&path));
+    }
+
+    let needle = format!(" {name} = ");
+    let at = script.find(&needle)?;
+    let rest = &script[at + needle.len()..];
+    let end = rest.find([';', '\n']).unwrap_or(rest.len());
+    let (other, own_fold) = strip_case_fold(rest[..end].trim());
+    if other.is_empty() || !other.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+    let (path, deep_fold) = ctx_path_bound_to(script, &other).map(|p| strip_case_fold(&p))?;
+    Some((path, own_fold || deep_fold))
+}
+
+/// Split a trailing `.toLowerCase()` / `.toUpperCase()` off a path, reporting
+/// whether one was there.
+fn strip_case_fold(path: &str) -> (String, bool) {
+    match path
+        .strip_suffix(".toLowerCase()")
+        .or_else(|| path.strip_suffix(".toUpperCase()"))
+    {
+        Some(bare) => (bare.to_string(), true),
+        None => (path.to_string(), false),
+    }
 }
 
 /// A version string split at its first digit -- `tls1.3` into the protocol
@@ -5076,14 +5170,16 @@ fn try_ladder(event: &mut Event, ladder: &Ladder) -> bool {
         return true;
     };
     let matches = |arm: &&LadderArm| {
-        if ladder.fold_case {
-            arm.literal.eq_ignore_ascii_case(&subject)
-        } else {
-            arm.literal == subject
-        }
+        arm.literals.iter().any(|literal| {
+            if ladder.fold_case {
+                literal.eq_ignore_ascii_case(&subject)
+            } else {
+                literal == &subject
+            }
+        })
     };
     if let Some(arm) = ladder.arms.iter().find(matches) {
-        let _ = event.set(&arm.target, json!(arm.value));
+        let _ = event.set(&arm.target, arm.value.clone());
     }
     true
 }
@@ -5146,6 +5242,85 @@ fn try_array_to_indexed_object(event: &mut Event, script: &str) -> bool {
     let rekeyed = index_keyed(&Value::Array(items));
     event.remove(&source);
     let _ = event.set(&target, rekeyed);
+    true
+}
+
+/// `def m = new HashMap(); if (f.containsKey('A')) { m.put('a',
+/// f.get('A')); } ...; out.add(m);` over a list, rebuilt under an explicit
+/// rename table in place of the vendor's key.
+///
+/// `identity_protection_assessment`'s `assessmentFactors` is written this way
+/// -- an explicit table rather than a blanket case-fold, so a key the script
+/// does not list is dropped from the rebuild rather than carried over as-is.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ListRenameTable {
+    source: String,
+    target: String,
+    /// `(vendor key, renamed key)`, in the order the script tests them.
+    renames: Vec<(String, String)>,
+}
+
+/// Read the parent local's `remove`/`put` pair and the `containsKey`/`put`
+/// renames between them.
+fn parse_list_rename_table(script: &str) -> Option<ListRenameTable> {
+    let (declaration, _) = script.split_once(" = ctx.")?;
+    let parent_local = declaration.rsplit("def ").next()?.trim();
+    let parent = ctx_path_bound_to(script, parent_local)?;
+
+    let source_key = script
+        .split_once(&format!("{parent_local}.remove('"))?
+        .1
+        .split('\'')
+        .next()?;
+    // The FINAL write, not the first -- `.put()` is also how each rebuilt
+    // entry is filled in, and only the parent local's own call names the
+    // list's new home.
+    let target_key = script
+        .rsplit(&format!("{parent_local}.put('"))
+        .next()?
+        .split('\'')
+        .next()?;
+
+    let mut renames = Vec::new();
+    for segment in script.split(".containsKey('").skip(1) {
+        let (old_key, rest) = segment.split_once('\'')?;
+        let new_key = rest.split_once(".put('")?.1.split('\'').next()?;
+        renames.push((old_key.to_string(), new_key.to_string()));
+    }
+
+    (!renames.is_empty()).then(|| ListRenameTable {
+        source: format!("{parent}.{source_key}"),
+        target: format!("{parent}.{target_key}"),
+        renames,
+    })
+}
+
+/// Rebuild each map in the list under the rename table.
+///
+/// The vendor script pops the source key UNCONDITIONALLY, before it checks
+/// the value is even a list, so a present-but-wrong-typed field is gone
+/// afterwards too -- the same `Event::remove` call gives that order for free,
+/// and the pattern match declines onto a no-op for anything but an array.
+fn run_list_rename_table(event: &mut Event, shape: &ListRenameTable) -> bool {
+    let Some(Value::Array(items)) = event.remove(&shape.source) else {
+        return true;
+    };
+
+    let mut rebuilt = Vec::with_capacity(items.len());
+    for item in items {
+        let Some(entries) = item.as_object() else {
+            continue;
+        };
+        let mut out = Map::new();
+        for (old_key, new_key) in &shape.renames {
+            if let Some(value) = entries.get(old_key) {
+                out.insert(new_key.clone(), value.clone());
+            }
+        }
+        rebuilt.push(Value::Object(out));
+    }
+
+    let _ = event.set(&shape.target, Value::Array(rebuilt));
     true
 }
 
@@ -6211,6 +6386,68 @@ fn run_scale_field(event: &mut Event, shape: &ScaleField) -> bool {
     true
 }
 
+/// `double <v> = ((Number) ctx.<source>).doubleValue(); ctx.<target> = (long)
+/// Math.round(<v> * <factor>);`
+///
+/// `identity_protection_assessment`'s 0-1 risk score becomes ECS's 0-100
+/// scale this way, and `ScaleField`'s plain integer multiply cannot read it --
+/// the cast keeps a fractional score alive long enough for `Math.round` to
+/// act on, where a plain `(long)` truncation of the product would drop the
+/// top of every band instead of rounding into it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct RoundedScale {
+    source: String,
+    target: String,
+    factor: i64,
+}
+
+/// Read the cast source, the rounded target, and the whole-number factor
+/// between them.
+fn parse_rounded_scale(script: &str) -> Option<RoundedScale> {
+    let source = script
+        .split_once("(Number)")
+        .and_then(|(_, rest)| rest.split_once(".doubleValue()"))
+        .and_then(|(path, _)| painless_path(path))?;
+
+    let (head, tail) = script.split_once("Math.round(")?;
+    let at = last_assignment(head)?;
+    let target = painless_path(&head[..at])?;
+
+    let factor = tail
+        .split_once(')')?
+        .0
+        .split_once('*')?
+        .1
+        .trim()
+        .parse::<f64>()
+        .ok()?;
+    if factor.fract() != 0.0 {
+        return None;
+    }
+    #[allow(clippy::cast_possible_truncation)]
+    let factor = factor as i64;
+
+    Some(RoundedScale {
+        source,
+        target,
+        factor,
+    })
+}
+
+/// Round rather than truncate: `Math.round` keeps `0.999 * 100` at the top of
+/// its band where a plain `(long)` cast on the product would drop it.
+fn run_rounded_scale(event: &mut Event, shape: &RoundedScale) -> bool {
+    let Some(v) = event.get_f64(&shape.source) else {
+        return true;
+    };
+    #[allow(clippy::cast_precision_loss)]
+    let scaled = v * shape.factor as f64;
+    #[allow(clippy::cast_possible_truncation)]
+    let rounded = scaled.round() as i64;
+    let _ = event.set(&shape.target, json!(rounded));
+    true
+}
+
 /// `ctx.<target> = ChronoUnit.NANOS.between(<start>, <end>)`, resolved once.
 ///
 /// Both ends are LOCALS, each bound earlier to `ZonedDateTime.parse(ctx.<path>)`,
@@ -7242,6 +7479,7 @@ pub(crate) enum KnownShape {
     ContainsLadder(Box<ContainsLadder>),
     RangeLadder(Box<RangeLadder>),
     NamedMapEntry(Box<NamedMapEntry>),
+    TitleCase(Box<TitleCase>),
     SuffixAfterSeparator {
         source: String,
         target: String,
@@ -7315,6 +7553,7 @@ pub(crate) enum KnownShape {
     },
     SplitUnquotedKv(Box<SplitKv>),
     ArrayToIndexedObject,
+    ListRenameTable(Box<ListRenameTable>),
     KeyValuePairs,
     JoinOptional,
     AppendEach,
@@ -7333,6 +7572,7 @@ pub(crate) enum KnownShape {
     CollectMapValues,
     GuardedReplace,
     ScaleField(Box<ScaleField>),
+    RoundedScale(Box<RoundedScale>),
     NanosBetween(Box<NanosBetween>),
     ProcessNameFromCommandLine,
     FlagsPresent(Box<FlagsPresent>),
@@ -7405,6 +7645,14 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_contains_ladder(normalised)
     {
         shapes.push(KnownShape::ContainsLadder(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: a shouted vendor value title-cased onto its ECS field.
+    if normalised.contains(".substring(1).toLowerCase()")
+        && let Some(shape) = parse_title_case(normalised)
+    {
+        shapes.push(KnownShape::TitleCase(Box::new(shape)));
         return shapes;
     }
 
@@ -8219,6 +8467,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: a list of maps rebuilt under an explicit rename table. Ahead
+    // of the append-each matcher below, whose `.add(` and `instanceof Map`
+    // triggers the closing `out.add(m)` and `!(f instanceof Map)` also spell.
+    if normalised.contains(".containsKey('")
+        && normalised.contains(".remove('")
+        && let Some(shape) = parse_list_rename_table(normalised)
+    {
+        shapes.push(KnownShape::ListRenameTable(Box::new(shape)));
+        return shapes;
+    }
+
     // Pattern: flatten a field into an array, either by splitting a delimited
     // string or by joining each map's two keys. The source has to come BEFORE
     // the append -- you split, THEN add -- or the pair is two unrelated
@@ -8321,6 +8580,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // Pattern: rewrite one substring of a field in place.
     if normalised.contains(".replace(") {
         shapes.push(KnownShape::GuardedReplace);
+        return shapes;
+    }
+
+    // Pattern: a cast double rounded and scaled into a long. Ahead of the
+    // scale-by-literal catch-all below, which reads the same `*` but parses
+    // its factor as an integer and would decline on this shape's `100.0`.
+    if normalised.contains("Math.round(")
+        && normalised.contains(".doubleValue()")
+        && let Some(shape) = parse_rounded_scale(normalised)
+    {
+        shapes.push(KnownShape::RoundedScale(Box::new(shape)));
         return shapes;
     }
 
@@ -8522,6 +8792,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::ContainsLadder(shape) => run_contains_ladder(event, shape),
         KnownShape::RangeLadder(shape) => run_range_ladder(event, shape),
         KnownShape::NamedMapEntry(shape) => run_named_map_entry(event, shape),
+        KnownShape::TitleCase(shape) => run_title_case(event, shape),
         KnownShape::SuffixAfterSeparator {
             source,
             target,
@@ -8605,6 +8876,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::AppendUnique { from, into } => try_append_unique(event, from, into),
         KnownShape::SplitUnquotedKv(split) => run_split_unquoted_kv(event, split),
         KnownShape::ArrayToIndexedObject => try_array_to_indexed_object(event, normalised),
+        KnownShape::ListRenameTable(shape) => run_list_rename_table(event, shape),
         KnownShape::KeyValuePairs => try_key_value_pairs(event, normalised),
         KnownShape::JoinOptional => try_join_optional(event, normalised),
         KnownShape::AppendEach => try_append_each(event, normalised),
@@ -8649,6 +8921,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::CollectMapValues => try_collect_map_values(event, normalised),
         KnownShape::GuardedReplace => try_guarded_replace(event, normalised),
         KnownShape::ScaleField(shape) => run_scale_field(event, shape),
+        KnownShape::RoundedScale(shape) => run_rounded_scale(event, shape),
         KnownShape::NanosBetween(shape) => run_nanos_between(event, shape),
         KnownShape::ProcessNameFromCommandLine => run_process_name_from_command_line(event),
         KnownShape::FlagsPresent(shape) => run_flags_present(event, shape),
@@ -10565,6 +10838,105 @@ mod tests {
             absent.get("crowdstrike.alert.is_synthetic_quarantine_disposition"),
             Some(&json!(false))
         );
+    }
+
+    /// Verbatim from `crowdstrike/data_stream/vulnerability`: a vendor severity
+    /// in caps becomes the title case ECS wants.
+    #[test]
+    fn a_shouted_severity_becomes_title_case() {
+        let script = "if(ctx.json.cve.severity != null && ctx.json.cve.severity != \"\") {\n    \
+             def severity_first_char = ctx.json.cve.severity.substring(0, 1);\n    \
+             ctx.vulnerability.severity = severity_first_char + \
+             ctx.json.cve.severity.substring(1).toLowerCase();\n}";
+
+        for (raw, want) in [("HIGH", "High"), ("CRITICAL", "Critical"), ("low", "low")] {
+            let mut event = Event::new(json!({"json": {"cve": {"severity": raw}}}));
+            assert!(try_known_painless(&mut event, script), "{raw} unmatched");
+            assert_eq!(
+                event.get_str("vulnerability.severity"),
+                Some(want),
+                "raw {raw}"
+            );
+        }
+
+        // The script's own guard: an empty string writes nothing.
+        let mut empty = Event::new(json!({"json": {"cve": {"severity": ""}}}));
+        assert!(try_known_painless(&mut empty, script));
+        assert!(!empty.has("vulnerability.severity"));
+    }
+
+    /// Verbatim from `crowdstrike/data_stream/identity_protection_assessment`:
+    /// a 0-1 score scaled to the 0-100 ECS field.
+    #[test]
+    fn a_unit_risk_score_scales_to_the_ecs_hundred() {
+        let script = "ctx.event = ctx.event ?: [:];\n\
+             double v = ((Number) ctx.event.risk_score).doubleValue();\n\
+             ctx.event.risk_score_norm = (long) Math.round(v * 100.0);";
+
+        for (raw, want) in [(0.75, 75), (0.660_000_000_000_000_1, 66), (0.25, 25)] {
+            let mut event = Event::new(json!({"event": {"risk_score": raw}}));
+            assert!(try_known_painless(&mut event, script), "{raw} unmatched");
+            assert_eq!(
+                event.get_i64("event.risk_score_norm"),
+                Some(want),
+                "raw {raw}"
+            );
+        }
+    }
+
+    /// Verbatim from the same pipeline: an overall level named in caps picks
+    /// the ECS severity number.
+    #[test]
+    fn an_overall_score_level_picks_its_severity() {
+        let script = "ctx.event = ctx.event ?: [:];\n\
+             def level = ctx.crowdstrike.idp.security_assessment.overall_score_level;\n\
+             if (level instanceof String) {\n  def u = level.toUpperCase();\n  \
+             if (u == 'LOW' || u == 'NEUTRAL') {\n    ctx.event.severity = 21;\n  \
+             } else if (u == 'MEDIUM') {\n    ctx.event.severity = 47;\n  \
+             } else if (u == 'HIGH') {\n    ctx.event.severity = 73;\n  \
+             } else if (u == 'CRITICAL') {\n    ctx.event.severity = 99;\n  }\n}";
+
+        for (level, want) in [("LOW", 21), ("NEUTRAL", 21), ("MEDIUM", 47), ("HIGH", 73)] {
+            let mut event = Event::new(json!({"crowdstrike": {"idp": {"security_assessment": {
+                "overall_score_level": level
+            }}}}));
+            assert!(try_known_painless(&mut event, script), "{level} unmatched");
+            assert_eq!(event.get_i64("event.severity"), Some(want), "level {level}");
+        }
+    }
+
+    /// Verbatim from the same pipeline: the vendor's camelCase factor list
+    /// rebuilt under `snake_case` keys, replacing the original.
+    #[test]
+    fn the_factor_list_is_rebuilt_under_snake_case_keys() {
+        let script = "def sa = ctx.crowdstrike.idp.security_assessment;\n\
+             def factors = sa.remove('assessmentFactors');\n\
+             if (!(factors instanceof List)) {\n  return;\n}\n\
+             def out = new ArrayList();\n\
+             for (def f : factors) {\n  if (!(f instanceof Map)) {\n    continue;\n  }\n  \
+             def m = new HashMap();\n  if (f.containsKey('riskFactorType')) {\n    \
+             m.put('risk_factor_type', f.get('riskFactorType'));\n  }\n  \
+             if (f.containsKey('likelihood')) {\n    m.put('likelihood', f.get('likelihood'));\n  }\n  \
+             if (f.containsKey('severity')) {\n    m.put('severity', f.get('severity'));\n  }\n  \
+             out.add(m);\n}\nsa.put('assessment_factors', out);";
+
+        let mut event = Event::new(json!({"crowdstrike": {"idp": {"security_assessment": {
+            "assessmentFactors": [
+                {"likelihood": "HIGH", "riskFactorType": "WEAK_PASSWORD_POLICY", "severity": "LOW"}
+            ]
+        }}}}));
+        assert!(try_known_painless(&mut event, script));
+
+        assert_eq!(
+            event.get("crowdstrike.idp.security_assessment.assessment_factors"),
+            Some(&json!([{
+                "risk_factor_type": "WEAK_PASSWORD_POLICY",
+                "likelihood": "HIGH",
+                "severity": "LOW"
+            }]))
+        );
+        // `remove` takes the camelCase key with it.
+        assert!(!event.has("crowdstrike.idp.security_assessment.assessmentFactors"));
     }
 
     /// Verbatim from `pipelines/checkpoint/firewall/default.yml`, whose factor

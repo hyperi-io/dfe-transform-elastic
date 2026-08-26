@@ -16,15 +16,19 @@ impl Transform for Json {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-                parse_json_field(event, "message", "json")?;
+            parse_json_field(event, "message", "json")?;
 
-            if let Some(v) = event.get("json.message").filter(|v| !painless_is_empty_value(v)).cloned() {
+            if let Some(v) = event
+                .get("json.message")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
                 event.set("message", v)?;
             }
 
-                if event.has_value("json.kubernetes") {
-                    event.rename("json.kubernetes", "kubernetes")?;
-                }
+            if event.has_value("json.kubernetes") {
+                event.rename("json.kubernetes", "kubernetes")?;
+            }
 
             let _cond = { event.has_value("json.time") };
             if _cond {
@@ -41,7 +45,7 @@ impl Transform for Json {
                 }
             }
 
-                event.remove("json");
+            event.remove("json");
 
             Ok(TransformResult::Continue)
         })(event);
@@ -51,7 +55,14 @@ impl Transform for Json {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.set("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string)))?;
+                event.set(
+                    "error.message",
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    ),
+                )?;
                 event.remove("_ingest.on_failure_message");
             }
         }

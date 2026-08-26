@@ -20,12 +20,20 @@ impl Transform for Default {
 
             let _cond = { !event.has_value("event.original") };
             if _cond {
-            if let Some(v) = event.get("message").filter(|v| !painless_is_empty_value(v)).cloned() {
-                event.set("event.original", v)?;
-            }
+                if let Some(v) = event
+                    .get("message")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("event.original", v)?;
+                }
             }
 
-            if let Some(v) = event.get("@timestamp").filter(|v| !painless_is_empty_value(v)).cloned() {
+            if let Some(v) = event
+                .get("@timestamp")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
                 event.set("event.created", v)?;
             }
 
@@ -34,25 +42,29 @@ impl Transform for Default {
             if false {
                 // Begin nested pipeline: "json"
                 parse_json_field(event, "message", "json")?;
-                if let Some(v) = event.get("json.message").filter(|v| !painless_is_empty_value(v)).cloned() {
-                event.set("message", v)?;
+                if let Some(v) = event
+                    .get("json.message")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("message", v)?;
                 }
                 if event.has_value("json.kubernetes") {
-                event.rename("json.kubernetes", "kubernetes")?;
+                    event.rename("json.kubernetes", "kubernetes")?;
                 }
                 let _cond = { event.has_value("json.time") };
                 if _cond {
-                if let Some(date_str) = event.get_as_string("json.time") {
-                match parse_date_out(&date_str, &["ISO8601"], None, None) {
-                Some(parsed) => event.set("@timestamp", parsed)?,
-                None => {
-                return Err(TransformError::ParseError {
-                path: "json.time".into(),
-                message: format!("unable to parse date [{date_str}]"),
-                });
-                }
-                }
-                }
+                    if let Some(date_str) = event.get_as_string("json.time") {
+                        match parse_date_out(&date_str, &["ISO8601"], None, None) {
+                            Some(parsed) => event.set("@timestamp", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "json.time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
+                        }
+                    }
                 }
                 event.remove("json");
                 // End nested pipeline: "json"
@@ -60,9 +72,9 @@ impl Transform for Default {
 
             event.set("event.kind", json!("event"))?;
 
-                event.append("event.category", json!("network"))?;
+            event.append("event.category", json!("network"))?;
 
-                event.append("event.type", json!("protocol"))?;
+            event.append("event.type", json!("protocol"))?;
 
             let _cond = { !(event.get_str("message").is_some_and(|s| s.starts_with("["))) };
             if _cond {
@@ -76,9 +88,15 @@ impl Transform for Default {
                     // Grok pattern: \\[%{LOGLEVEL:log.level}\\] %{DATA:log.logger}: %{GREEDYDATA:coredns.log.error.message}
                     let _ = extract_first_match(
                         &[
-                            cached_grok!("\\[%{LOGLEVEL:log.level}\\] \\[?%{IP:source.address}\\]?:%{POSINT:source.port:long} - %{POSINT:dns.id} \"%{WORD:dns.question.type} %{WORD:dns.question.class} %{IPORHOST:dns.question.name}\\. %{WORD:network.transport} %{POSINT:source.bytes:long} %{WORD:coredns.log.dnssec_ok:boolean} %{POSINT:coredns.log.buffer_size:long}\" %{WORD:dns.response_code} %{NOTSPACE:dns.header_flags} %{POSINT:destination.bytes:long} %{NOTSPACE:event.duration}s( \"%{NONNEGINT:dns.op_code}\")?"),
-                            cached_grok!("\\[%{LOGLEVEL:log.level}\\] %{DATA:log.logger}: (%{WORD:dns.response_code}|%{NONNEGINT:dns.response_code:long}) %{IPORHOST:dns.question.name}\\. %{WORD:dns.question.type}: %{GREEDYDATA:coredns.log.error.message}"),
-                            cached_grok!("\\[%{LOGLEVEL:log.level}\\] %{DATA:log.logger}: %{GREEDYDATA:coredns.log.error.message}"),
+                            cached_grok!(
+                                "\\[%{LOGLEVEL:log.level}\\] \\[?%{IP:source.address}\\]?:%{POSINT:source.port:long} - %{POSINT:dns.id} \"%{WORD:dns.question.type} %{WORD:dns.question.class} %{IPORHOST:dns.question.name}\\. %{WORD:network.transport} %{POSINT:source.bytes:long} %{WORD:coredns.log.dnssec_ok:boolean} %{POSINT:coredns.log.buffer_size:long}\" %{WORD:dns.response_code} %{NOTSPACE:dns.header_flags} %{POSINT:destination.bytes:long} %{NOTSPACE:event.duration}s( \"%{NONNEGINT:dns.op_code}\")?"
+                            ),
+                            cached_grok!(
+                                "\\[%{LOGLEVEL:log.level}\\] %{DATA:log.logger}: (%{WORD:dns.response_code}|%{NONNEGINT:dns.response_code:long}) %{IPORHOST:dns.question.name}\\. %{WORD:dns.question.type}: %{GREEDYDATA:coredns.log.error.message}"
+                            ),
+                            cached_grok!(
+                                "\\[%{LOGLEVEL:log.level}\\] %{DATA:log.logger}: %{GREEDYDATA:coredns.log.error.message}"
+                            ),
                         ],
                         &input,
                         event,
@@ -91,39 +109,72 @@ impl Transform for Default {
             }
 
             if event.has_value("network.transport") {
-                map_strings(event, "network.transport", "network.transport", str::to_lowercase)?;
+                map_strings(
+                    event,
+                    "network.transport",
+                    "network.transport",
+                    str::to_lowercase,
+                )?;
             }
 
-            let _cond = { event.has_value("network.transport") && event.get_str("network.transport") == Some("tcp") };
+            let _cond = {
+                event.has_value("network.transport")
+                    && event.get_str("network.transport") == Some("tcp")
+            };
             if _cond {
-            event.set("network.iana_number", json!("6"))?;
+                event.set("network.iana_number", json!("6"))?;
             }
 
-            let _cond = { event.has_value("network.transport") && event.get_str("network.transport") == Some("udp") };
+            let _cond = {
+                event.has_value("network.transport")
+                    && event.get_str("network.transport") == Some("udp")
+            };
             if _cond {
-            event.set("network.iana_number", json!("17"))?;
+                event.set("network.iana_number", json!("17"))?;
             }
 
-            let _cond = { event.has_value("source.bytes") && event.has_value("destination.bytes") && !event.has_value("network.bytes") };
+            let _cond = {
+                event.has_value("source.bytes")
+                    && event.has_value("destination.bytes")
+                    && !event.has_value("network.bytes")
+            };
             if _cond {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes"#))?;
-                Ok(())
-            })();
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    // Painless script
+                    // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
+                    // TODO: Transpile Painless to Rust (2.2.3)
+                    painless_exec_plan(
+                        event,
+                        cached_painless!(
+                            r#"ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes"#
+                        ),
+                    )?;
+                    Ok(())
+                })();
             }
 
             event.set("network.protocol", json!("dns"))?;
 
-            let _cond = { event.has_value("dns.response_code") && event.get("dns.response_code").is_some_and(|v| v.is_number()) };
+            let _cond = {
+                event.has_value("dns.response_code")
+                    && event
+                        .get("dns.response_code")
+                        .is_some_and(|v| v.is_number())
+            };
             if _cond {
                 // Painless script
                 // Source: def response_code = ctx.dns.response_code;\nctx.dns.response_code = params.codes[response_code];\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan_params(event, cached_painless!(r#"def response_code = ctx.dns.response_code;\nctx.dns.response_code = params.codes[response_code];\n"#), cached_params!("{\"codes\":[\"NOERROR\",\"FORMERR\",\"SERVFAIL\",\"NXDOMAIN\",\"NOTIMP\",\"REFUSED\",\"YXDOMAIN\",\"XRRSET\",\"NOTAUTH\",\"NOTZONE\"]}"))?;
+                painless_exec_plan_params(
+                    event,
+                    cached_painless!(
+                        r#"def response_code = ctx.dns.response_code;\nctx.dns.response_code = params.codes[response_code];\n"#
+                    ),
+                    cached_params!(
+                        "{\"codes\":[\"NOERROR\",\"FORMERR\",\"SERVFAIL\",\"NXDOMAIN\",\"NOTIMP\",\"REFUSED\",\"YXDOMAIN\",\"XRRSET\",\"NOTAUTH\",\"NOTZONE\"]}"
+                    ),
+                )?;
             }
 
             if event.has_value("dns.question.name") {
@@ -143,10 +194,15 @@ impl Transform for Default {
                 }
             }
 
-                event.remove("dns.question.domain");
+            event.remove("dns.question.domain");
 
             if event.has_value("dns.header_flags") {
-                map_strings(event, "dns.header_flags", "dns.header_flags", str::to_uppercase)?;
+                map_strings(
+                    event,
+                    "dns.header_flags",
+                    "dns.header_flags",
+                    str::to_uppercase,
+                )?;
             }
 
             if event.has_value("dns.header_flags") {
@@ -156,38 +212,60 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has_value("dns.header_flags") && event.get("dns.header_flags").is_some_and(|v| v.is_array()) };
+            let _cond = {
+                event.has_value("dns.header_flags")
+                    && event.get("dns.header_flags").is_some_and(|v| v.is_array())
+            };
             if _cond {
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                // Painless script
-                // Source: for (int i=0; i<ctx.dns.header_flags.length; i++) {\n  if (ctx.dns.header_flags[i] == 'QR') {\n    ctx.dns.header_flags.remove(i);\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"for (int i=0; i<ctx.dns.header_flags.length; i++) {\n  if (ctx.dns.header_flags[i] == 'QR') {\n    ctx.dns.header_flags.remove(i);\n  }\n}\n"#))?;
-                Ok(())
-            })();
+                // ignore_failure: true
+                let _ = (|| -> Result<()> {
+                    // Painless script
+                    // Source: for (int i=0; i<ctx.dns.header_flags.length; i++) {\n  if (ctx.dns.header_flags[i] == 'QR') {\n    ctx.dns.header_flags.remove(i);\n  }\n}\n
+                    // TODO: Transpile Painless to Rust (2.2.3)
+                    painless_exec_plan(
+                        event,
+                        cached_painless!(
+                            r#"for (int i=0; i<ctx.dns.header_flags.length; i++) {\n  if (ctx.dns.header_flags[i] == 'QR') {\n    ctx.dns.header_flags.remove(i);\n  }\n}\n"#
+                        ),
+                    )?;
+                    Ok(())
+                })();
             }
 
-            let _cond = { event.has_value("coredns.log.dnssec_ok") && event.get_bool("coredns.log.dnssec_ok") == Some(true) };
+            let _cond = {
+                event.has_value("coredns.log.dnssec_ok")
+                    && event.get_bool("coredns.log.dnssec_ok") == Some(true)
+            };
             if _cond {
                 event.append("dns.header_flags", json!("DO"))?;
             }
 
-            let _cond = { event.has_value("coredns.log.dnssec_ok") && event.get_bool("coredns.log.dnssec_ok") == Some(true) };
+            let _cond = {
+                event.has_value("coredns.log.dnssec_ok")
+                    && event.get_bool("coredns.log.dnssec_ok") == Some(true)
+            };
             if _cond {
                 if event.remove("dns.header_flags").is_none() {
-                    return Err(TransformError::FieldNotFound { path: "dns.header_flags".into() });
+                    return Err(TransformError::FieldNotFound {
+                        path: "dns.header_flags".into(),
+                    });
                 }
             }
 
-            let _cond = { event.has_value("dns.response_code") && event.get_str("dns.response_code") == Some("NOERROR") };
+            let _cond = {
+                event.has_value("dns.response_code")
+                    && event.get_str("dns.response_code") == Some("NOERROR")
+            };
             if _cond {
-            event.set("event.outcome", json!("success"))?;
+                event.set("event.outcome", json!("success"))?;
             }
 
-            let _cond = { event.has_value("dns.response_code") && event.get_str("dns.response_code") != Some("NOERROR") };
+            let _cond = {
+                event.has_value("dns.response_code")
+                    && event.get_str("dns.response_code") != Some("NOERROR")
+            };
             if _cond {
-            event.set("event.outcome", json!("failure"))?;
+                event.set("event.outcome", json!("failure"))?;
             }
 
             let _cond = { event.has_value("event.duration") };
@@ -195,21 +273,28 @@ impl Transform for Default {
                 // Painless script
                 // Source: double f = Double.parseDouble(ctx.event.duration); ctx.event.duration = f * params.S_TO_NS;
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan_params(event, cached_painless!(r#"double f = Double.parseDouble(ctx.event.duration); ctx.event.duration = f * params.S_TO_NS;"#), cached_params!("{\"S_TO_NS\":1000000000}"))?;
+                painless_exec_plan_params(
+                    event,
+                    cached_painless!(
+                        r#"double f = Double.parseDouble(ctx.event.duration); ctx.event.duration = f * params.S_TO_NS;"#
+                    ),
+                    cached_params!("{\"S_TO_NS\":1000000000}"),
+                )?;
             }
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-            if event.has_value("source.address") {
-                if let Some(val) = event.get("source.address") {
-                    let converted = convert_value(val, "ip")
-                        .map_err(|message| TransformError::ParseError {
-                            path: "source.address".into(),
-                            message,
+                if event.has_value("source.address") {
+                    if let Some(val) = event.get("source.address") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "source.address".into(),
+                                message,
+                            }
                         })?;
-                    event.set("source.ip", converted)?;
+                        event.set("source.ip", converted)?;
+                    }
                 }
-            }
                 Ok(())
             })();
 
@@ -261,36 +346,68 @@ impl Transform for Default {
                 }
             }
 
-                if event.has_value("source.as.asn") {
-                    event.rename("source.as.asn", "source.as.number")?;
-                }
+            if event.has_value("source.as.asn") {
+                event.rename("source.as.asn", "source.as.number")?;
+            }
 
-                if event.has_value("source.as.organization_name") {
-                    event.rename("source.as.organization_name", "source.as.organization.name")?;
-                }
+            if event.has_value("source.as.organization_name") {
+                event.rename("source.as.organization_name", "source.as.organization.name")?;
+            }
 
             let _cond = { event.has_value("source.ip") };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("source.ip").map_or_else(String::new, template_to_string)))?;
+                event.append_unique(
+                    "related.ip",
+                    json!(
+                        event
+                            .get("source.ip")
+                            .map_or_else(String::new, template_to_string)
+                    ),
+                )?;
             }
 
-            let _cond = { event.has_value("dns.question.name") && event.get_str("dns.question.type") != Some("PTR") };
+            let _cond = {
+                event.has_value("dns.question.name")
+                    && event.get_str("dns.question.type") != Some("PTR")
+            };
             if _cond {
-                event.append_unique("related.hosts", json!(event.get("dns.question.name").map_or_else(String::new, template_to_string)))?;
+                event.append_unique(
+                    "related.hosts",
+                    json!(
+                        event
+                            .get("dns.question.name")
+                            .map_or_else(String::new, template_to_string)
+                    ),
+                )?;
             }
 
-            let _cond = { event.has_value("dns.question.name") && event.get_str("dns.question.type") == Some("PTR") };
+            let _cond = {
+                event.has_value("dns.question.name")
+                    && event.get_str("dns.question.type") == Some("PTR")
+            };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("dns.question.name").map_or_else(String::new, template_to_string)))?;
+                event.append_unique(
+                    "related.ip",
+                    json!(
+                        event
+                            .get("dns.question.name")
+                            .map_or_else(String::new, template_to_string)
+                    ),
+                )?;
             }
 
-                event.remove("message");
-                event.remove("_tmp");
+            event.remove("message");
+            event.remove("_tmp");
 
-                // Painless script
-                // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n"#))?;
+            // Painless script
+            // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
+            // TODO: Transpile Painless to Rust (2.2.3)
+            painless_exec_plan(
+                event,
+                cached_painless!(
+                    r#"void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n"#
+                ),
+            )?;
 
             Ok(TransformResult::Continue)
         })(event);
@@ -300,7 +417,14 @@ impl Transform for Default {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.set("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string)))?;
+                event.set(
+                    "error.message",
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    ),
+                )?;
                 event.remove("_ingest.on_failure_message");
             }
         }

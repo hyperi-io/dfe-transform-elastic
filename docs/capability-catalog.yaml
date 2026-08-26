@@ -16,6 +16,10 @@
     - syslog
   children:
   - kind: service
+    name: filebeat.auth0_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
     name: filebeat.aws_apigateway_logs.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
@@ -244,6 +248,14 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.coredns_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.coredns_log.json
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
     name: filebeat.crowdstrike.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
@@ -446,6 +458,10 @@
   - kind: service
     name: filebeat.mimecast_ttp_url_logs.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.netflow_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
     name: filebeat.o365.default
