@@ -50,6 +50,12 @@ const SEND_BACKOFF_BASE: Duration = Duration::from_millis(100);
 /// and trigger a rebalance while the loop is still retrying.
 const SEND_BACKOFF_MAX: Duration = Duration::from_secs(5);
 
+/// First wait after a failed receive, doubling to [`SEND_BACKOFF_MAX`].
+///
+/// An unreachable broker fails every `recv` immediately, so without a wait the
+/// loop spins as fast as the call returns and logs an error on every turn.
+const RECV_BACKOFF_BASE: Duration = Duration::from_millis(100);
+
 /// The per-pod signals `/scaling/pressure` serves to KEDA.
 ///
 /// `None` when the scaling engine is disabled, in which case nothing is fed
@@ -143,6 +149,7 @@ pub async fn run_loop(
 
     push_scaling_signals(scaling, consumer, 0.0);
     let mut last_signal = Instant::now();
+    let mut recv_backoff = RECV_BACKOFF_BASE;
     // `painless_stats` counts cumulatively for the process; the metrics want
     // per-batch deltas.
     let mut painless_seen = (0_u64, 0_u64);
@@ -168,15 +175,25 @@ pub async fn run_loop(
             last_signal = Instant::now();
         }
 
-        let batch = tokio::select! {
+        let received = tokio::select! {
             () = shutdown.cancelled() => break,
-            result = consumer.recv(config.source.batch_size) => match result {
-                Ok(batch) => batch,
-                Err(e) => {
-                    tracing::error!(error = %e, "receive failed");
-                    continue;
+            result = consumer.recv(config.source.batch_size) => result,
+        };
+
+        let batch = match received {
+            Ok(batch) => {
+                recv_backoff = RECV_BACKOFF_BASE;
+                batch
+            }
+            Err(e) => {
+                tracing::error!(error = %e, "receive failed");
+                tokio::select! {
+                    () = shutdown.cancelled() => break,
+                    () = tokio::time::sleep(recv_backoff) => {}
                 }
-            },
+                recv_backoff = recv_backoff.saturating_mul(2).min(SEND_BACKOFF_MAX);
+                continue;
+            }
         };
 
         if batch.records.is_empty() {
