@@ -4,7 +4,7 @@
   "integrations_sha": "2c934eb5223bdfcf0ea0db9e3230154933352bda",
   "elasticsearch_version": "9.2.2",
   "sources": {
-    "auth0": { "events": 0, "events_total": 111, "fields_wrong": 674 },
+    "auth0": { "events": 111, "events_total": 111, "fields_wrong": 0 },
     "aws": { "events": 517, "events_total": 538, "fields_wrong": 21 },
     "azure": { "events": 26, "events_total": 26, "fields_wrong": 0 },
     "checkpoint": { "events": 107, "events_total": 111, "fields_wrong": 5 },

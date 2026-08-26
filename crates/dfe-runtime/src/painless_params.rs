@@ -123,6 +123,16 @@ pub(crate) enum ParamsShape {
     RenameKeys,
     ValueMaps,
     RowColumns,
+    /// A row overwrites the field it was looked up by, fans several more
+    /// columns onto ctx (one of them APPENDING rather than replacing), and a
+    /// key with no row still writes two fields rather than nothing -- auth0's
+    /// per-event-type action table.
+    KeyedActionRow {
+        /// The params key holding the lookup table.
+        table: String,
+        /// The `ctx.` path used as the lookup key.
+        source: String,
+    },
     KeyedMessageTable,
     ReversibleLookup,
     LookupMerge,
@@ -374,6 +384,19 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         return Some(ParamsShape::LookupMerge);
     }
 
+    // Pattern: auth0's per-event-type action table -- a row overwrites the
+    // field it was keyed by and derives event.outcome from its
+    // classification text. Ahead of the general column fan-out below, whose
+    // >=3 `.get(` trigger this row also spells but which cannot fan an
+    // ArrayList column or write the miss branch. `actions` and `eventType`
+    // are this script's own names, unique across every pipeline.
+    if normalised.contains("params.get('actions')")
+        && normalised.contains("actions.get(eventType)")
+        && let Some(shape) = parse_keyed_action_row(normalised)
+    {
+        return Some(shape);
+    }
+
     // Pattern: look a row up in a nested table and fan its columns out,
     // appending the list-valued ones rather than replacing them.
     if normalised.contains("params.get(") && normalised.matches(".get(").count() >= 3 {
@@ -566,6 +589,9 @@ pub(crate) fn run_params_shape(
         ParamsShape::RenameKeys => try_rename_keys(event, normalised, params),
         ParamsShape::ValueMaps => try_value_maps(event, normalised, params),
         ParamsShape::RowColumns => try_row_columns(event, normalised, params),
+        ParamsShape::KeyedActionRow { table, source } => {
+            run_keyed_action_row(event, table, source, params)
+        }
         ParamsShape::KeyedMessageTable => try_keyed_message_table(event, normalised, params),
         ParamsShape::ReversibleLookup => try_reversible_lookup(event, normalised, params),
         ParamsShape::LookupMerge => try_lookup_merge(event, normalised, params),
@@ -2683,6 +2709,77 @@ fn try_row_columns(event: &mut Event, script: &str, params: &Map<String, Value>)
     true
 }
 
+/// Read `def <t> = params.get('<table>'); def <row> = <t>.get(<key>);`, and
+/// the `ctx.` path the key local is itself bound from.
+fn parse_keyed_action_row(script: &str) -> Option<ParamsShape> {
+    let table = script
+        .split_once("params.get('")
+        .and_then(|(_, rest)| rest.split_once('\''))
+        .map(|(name, _)| name.to_string())?;
+    let table_local = local_bound_to(script, "params.get(")?;
+    let key_local = last_call_argument(script, &format!("{table_local}.get("))?;
+    let source = ctx_path_between(script, &format!("def {key_local} = ctx."), ";")?;
+
+    Some(ParamsShape::KeyedActionRow { table, source })
+}
+
+/// A key with no row still writes `event.action` and `event.type`, matching
+/// the script's own early return rather than leaving the event untouched.
+fn run_keyed_action_row(
+    event: &mut Event,
+    table: &str,
+    source: &str,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(rows) = params.get(table).and_then(Value::as_object) else {
+        return true;
+    };
+    let Some(key) = event.get_as_string(source) else {
+        return true;
+    };
+    let Some(row) = rows.get(&key).and_then(Value::as_object) else {
+        let _ = event.set("event.action", Value::String(format!("unknown-{key}")));
+        let _ = event.set("event.type", json!(["info"]));
+        return true;
+    };
+
+    if let Some(value) = row.get("value") {
+        let _ = event.set(source, value.clone());
+    }
+    if let Some(kind) = row.get("type") {
+        let _ = event.set("event.type", kind.clone());
+    }
+    if let Some(Value::Array(added)) = row.get("category") {
+        for item in added {
+            add_to_list(event, "event.category", item.clone());
+        }
+    }
+    if let Some(action) = row.get("action") {
+        let _ = event.set("event.action", action.clone());
+    }
+    // Every row in the vendor's table carries a classification, so this
+    // never meets the null the upstream script's own unguarded
+    // `.toLowerCase()` would throw on.
+    if let Some(classification) = row.get("classification").and_then(Value::as_str) {
+        let parent = source.rsplit_once('.').map_or("", |(head, _)| head);
+        let _ = event.set(
+            &format!("{parent}.classification"),
+            Value::String(classification.to_string()),
+        );
+        let lower = classification.to_lowercase();
+        let outcome = if lower.contains("success") {
+            "success"
+        } else if lower.contains("failure") {
+            "failure"
+        } else {
+            "unknown"
+        };
+        let _ = event.set("event.outcome", Value::String(outcome.to_string()));
+    }
+
+    true
+}
+
 /// Run a tail of `if (<test>) { ... }` blocks over literal appends and writes.
 ///
 /// The grammar is deliberately tiny, because that is all these tails do once
@@ -4249,6 +4346,123 @@ mod tests {
 
         assert_eq!(event.get("event.kind"), None);
         assert_eq!(event.get("event.category"), None);
+    }
+
+    /// Verbatim from `pipelines/auth0/logs/default.yml`, tagged "Sets event
+    /// type, category and action based on type".
+    const AUTH0_ACTION: &str = "def eventType = ctx.auth0.logs.data.type;\n\
+        def actions = params.get('actions');\n\
+        def actionData = actions.get(eventType);\n\
+        if (actionData == null) {\n    \
+        ctx.event.action = 'unknown-' + eventType;\n    \
+        ctx.event.type = ['info'];\n    \
+        return;\n}\n\
+        def eventTypeVal = actionData.get('value');\n\
+        if (eventTypeVal != null) {\n    \
+        ctx.auth0.logs.data.type = eventTypeVal;\n}\n\
+        def actionType = actionData.get('type');\n\
+        if (actionType != null) {\n  \
+        ctx.event.type = new ArrayList(actionType);\n}\n\
+        def actionCategory = actionData.get('category');\n\
+        if (actionCategory != null) {\n  \
+        for (def c : actionCategory) {\n    \
+        ctx.event.category.add(c);\n  }\n}\n\
+        def action = actionData.get('action');\n\
+        if (action != null) {\n  \
+        ctx.event.action = action;\n}\n\
+        def classification = actionData.get('classification');\n\
+        if (classification != null) {\n  \
+        ctx.auth0.logs.data.classification = classification;\n}\n\
+        if (classification.toLowerCase().contains(\"success\")) {\n  \
+        ctx.event.outcome = \"success\";\n} else if \
+        (classification.toLowerCase().contains(\"failure\")) {\n  \
+        ctx.event.outcome = \"failure\";\n} else {\n  \
+        ctx.event.outcome = \"unknown\";\n}";
+
+    /// Two real rows from the `actions` table, trimmed from the vendor's 105.
+    fn auth0_action_params() -> Value {
+        json!({
+            "actions": {
+                "fu": {
+                    "classification": "Login - Failure",
+                    "value": "Invalid email or username",
+                    "type": ["info", "denied"],
+                    "category": ["intrusion_detection"],
+                    "action": "invalid-username-or-email",
+                },
+                "s": {
+                    "classification": "Login - Success",
+                    "value": "Successful login",
+                    "type": ["info", "start"],
+                    "category": ["session"],
+                    "action": "successful-login",
+                },
+            }
+        })
+    }
+
+    /// A hit overwrites the field it was keyed by, fans four more columns
+    /// onto ctx -- appending `category` rather than replacing it -- and
+    /// derives `event.outcome` from the row's classification text. All six
+    /// writes, verbatim from `test-login-failure`'s "fu" event.
+    #[test]
+    fn auth0_hit_overwrites_its_key_and_fans_five_columns() {
+        let mut event = Event::new(json!({
+            "auth0": { "logs": { "data": { "type": "fu" } } },
+            "event": { "category": ["authentication"] },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            AUTH0_ACTION,
+            &auth0_action_params()
+        ));
+
+        assert_eq!(
+            event.get("auth0.logs.data.type"),
+            Some(&json!("Invalid email or username"))
+        );
+        assert_eq!(event.get("event.type"), Some(&json!(["info", "denied"])));
+        assert_eq!(
+            event.get("event.category"),
+            Some(&json!(["authentication", "intrusion_detection"]))
+        );
+        assert_eq!(
+            event.get("event.action"),
+            Some(&json!("invalid-username-or-email"))
+        );
+        assert_eq!(
+            event.get("auth0.logs.data.classification"),
+            Some(&json!("Login - Failure"))
+        );
+        assert_eq!(event.get("event.outcome"), Some(&json!("failure")));
+    }
+
+    /// A key the table has no row for still writes `event.action` (prefixed
+    /// `unknown-`) and `event.type`, and touches nothing else -- the
+    /// script's own early return.
+    #[test]
+    fn auth0_miss_writes_the_unknown_prefix_and_stops() {
+        let mut event = Event::new(json!({
+            "auth0": { "logs": { "data": { "type": "zz" } } },
+            "event": { "category": ["authentication"] },
+        }));
+
+        assert!(try_params_painless(
+            &mut event,
+            AUTH0_ACTION,
+            &auth0_action_params()
+        ));
+
+        assert_eq!(event.get("event.action"), Some(&json!("unknown-zz")));
+        assert_eq!(event.get("event.type"), Some(&json!(["info"])));
+        assert_eq!(event.get("auth0.logs.data.type"), Some(&json!("zz")));
+        assert_eq!(event.get("auth0.logs.data.classification"), None);
+        assert_eq!(event.get("event.outcome"), None);
+        assert_eq!(
+            event.get("event.category"),
+            Some(&json!(["authentication"]))
+        );
     }
 
     /// Verbatim from `pipelines/cisco_ftd/default.yml`, trimmed to the two
