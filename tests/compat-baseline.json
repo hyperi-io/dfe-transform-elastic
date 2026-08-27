@@ -5,7 +5,7 @@
   "elasticsearch_version": "9.2.2",
   "sources": {
     "amazon_security_lake": { "events": 10, "events_total": 11, "fields_wrong": 1 },
-    "anthropic": { "events": 0, "events_total": 306, "fields_wrong": 1221 },
+    "anthropic": { "events": 306, "events_total": 306, "fields_wrong": 0 },
     "arista_ngfw": { "events": 0, "events_total": 141, "fields_wrong": 1626 },
     "auth0": { "events": 111, "events_total": 111, "fields_wrong": 0 },
     "aws": { "events": 531, "events_total": 538, "fields_wrong": 7 },
@@ -31,7 +31,7 @@
     "gcp": { "events": 382, "events_total": 382, "fields_wrong": 0 },
     "jumpcloud": { "events": 4, "events_total": 4, "fields_wrong": 0 },
     "jupiter_one": { "events": 0, "events_total": 3, "fields_wrong": 6 },
-    "kolide": { "events": 29, "events_total": 276, "fields_wrong": 1382 },
+    "kolide": { "events": 259, "events_total": 276, "fields_wrong": 23 },
     "m365_defender": { "events": 108, "events_total": 108, "fields_wrong": 0 },
     "microsoft_defender_endpoint": { "events": 23, "events_total": 23, "fields_wrong": 0 },
     "microsoft_dnsserver": { "events": 14, "events_total": 14, "fields_wrong": 0 },

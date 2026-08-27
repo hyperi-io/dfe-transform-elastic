@@ -2508,14 +2508,116 @@ fn parse_token_count(script: &str) -> Option<KnownShape> {
     })
 }
 
+/// The tail of every list member whose named field carries a prefix.
+///
+/// ```painless
+/// def prefix = 'Downloaded package: ';
+/// def packages = new ArrayList();
+/// for (def ev : ctx.json.events) {
+///   def desc = ev?.event_description;
+///   if (desc instanceof String && desc.startsWith(prefix)) {
+///     packages.add(desc.substring(prefix.length()));
+///   }
+/// }
+/// if (!packages.isEmpty()) {
+///   if (ctx.kolide.auth.downloaded_packages == null) {
+///     ctx.kolide.auth.downloaded_packages = packages;
+///   } else {
+///     ctx.kolide.auth.downloaded_packages.addAll(packages);
+///   }
+/// }
+/// ```
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct SuffixesByPrefix {
+    source: String,
+    member: String,
+    prefix: String,
+    target: String,
+}
+
+/// The identifier a fragment ends on.
+fn last_identifier(text: &str) -> Option<&str> {
+    text.rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
+        .next()
+        .filter(|name| !name.is_empty())
+}
+
+fn parse_suffixes_by_prefix(script: &str) -> Option<SuffixesByPrefix> {
+    use crate::painless_params::clean_path;
+
+    let (head, tail) = script.split_once(".substring(")?;
+    let (accumulator, item) = head.rsplit_once(".add(")?;
+    let accumulator = last_identifier(accumulator)?;
+    let item = last_identifier(item)?;
+    let prefix = quoted_first(declared_expression(
+        script,
+        tail.split_once(".length()")?.0.trim(),
+    )?)?;
+
+    let source = script
+        .split_once("for (")?
+        .1
+        .split_once(" : ctx.")?
+        .1
+        .split_once(')')?
+        .0;
+    let member = declared_expression(script, item)?.trim().split_once('.')?.1;
+    let target = script
+        .split_once(&format!("= {accumulator};"))?
+        .0
+        .rsplit_once("ctx.")?
+        .1;
+
+    Some(SuffixesByPrefix {
+        source: clean_path(source.trim()),
+        member: member.trim().to_string(),
+        prefix,
+        target: clean_path(target.trim()),
+    })
+}
+
+/// Collect the tails, appending where the target already holds a list.
+fn run_suffixes_by_prefix(event: &mut Event, shape: &SuffixesByPrefix) -> bool {
+    let Some(Value::Array(items)) = event.get(&shape.source) else {
+        return true;
+    };
+    let collected: Vec<Value> = items
+        .iter()
+        .filter_map(|item| item.get(&shape.member)?.as_str())
+        .filter_map(|text| text.strip_prefix(shape.prefix.as_str()))
+        .map(|tail| Value::String(tail.to_string()))
+        .collect();
+    if collected.is_empty() {
+        return true;
+    }
+
+    let grown = match event.get(&shape.target) {
+        Some(Value::Array(existing)) => {
+            let mut grown = existing.clone();
+            grown.extend(collected);
+            Value::Array(grown)
+        }
+        _ => Value::Array(collected),
+    };
+    let _ = event.set(&shape.target, grown);
+    true
+}
+
 /// Read `def <l> = []; <l>.add(ctx.<s>); ctx.<t> = <l>;` or its one-line
 /// spelling `ctx.<t> = [ctx.<s>];` as a [`KnownShape::WrapValueInList`].
+///
+/// The literal is written with and without a space inside the bracket:
+/// `amazon_security_lake` closes it up and kolide's `osquery_status` does not.
 fn parse_wrap_value_in_list(script: &str) -> Option<KnownShape> {
     use crate::painless_params::clean_path;
 
-    let (source, target) = if let Some(at) = script.find(" = [ctx.") {
+    let literal = ["= [ctx.", "= [ ctx."]
+        .iter()
+        .find_map(|open| script.find(open).map(|at| (at, open.len())));
+
+    let (source, target) = if let Some((at, opened)) = literal {
         // The list literal holds the source outright, so there is no local.
-        let source = script[at + " = [ctx.".len()..].split(']').next()?;
+        let source = script[at + opened..].split(']').next()?;
         let head = &script[..at];
         (
             clean_path(source),
@@ -8211,6 +8313,305 @@ fn read_u16(event: &Event, field: &str) -> Option<u16> {
         .or_else(|| event.get_str(field).and_then(|s| s.parse::<u16>().ok()))
 }
 
+/// One test a classify arm makes against the subject string.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum StringTest {
+    Equals(String),
+    StartsWith(String),
+    EndsWith(String),
+    Contains(String),
+}
+
+impl StringTest {
+    /// The test, or `None` where the term is a shape this ladder is not.
+    fn parse(term: &str, subject: &str) -> Option<Self> {
+        let rest = term.trim().strip_prefix(subject)?;
+        if let Some(literal) = rest.trim_start().strip_prefix("==") {
+            return quoted_first(literal).map(Self::Equals);
+        }
+        for (call, build) in [
+            (".startsWith(", Self::StartsWith as fn(String) -> Self),
+            (".endsWith(", Self::EndsWith),
+            (".contains(", Self::Contains),
+        ] {
+            if let Some(argument) = rest.strip_prefix(call) {
+                return quoted_first(argument).map(build);
+            }
+        }
+        None
+    }
+
+    fn holds(&self, subject: &str) -> bool {
+        match self {
+            Self::Equals(literal) => subject == literal,
+            Self::StartsWith(prefix) => subject.starts_with(prefix.as_str()),
+            Self::EndsWith(suffix) => subject.ends_with(suffix.as_str()),
+            Self::Contains(needle) => subject.contains(needle.as_str()),
+        }
+    }
+}
+
+/// One arm of a classify ladder: what the subject must satisfy, and the string
+/// locals the arm assigns.
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct ClassifyArm {
+    /// `||` of `&&`, as the vendor writes it: the arm holds when any inner
+    /// group holds entirely.
+    tests: Vec<Vec<StringTest>>,
+    writes: Vec<(String, String)>,
+}
+
+impl ClassifyArm {
+    fn holds(&self, subject: &str) -> bool {
+        self.tests
+            .iter()
+            .any(|group| group.iter().all(|test| test.holds(subject)))
+    }
+}
+
+/// One string field classified by an else-if ladder of prefix, suffix and
+/// equality tests, the answers held in locals and written out at the end.
+///
+/// ```painless
+/// String m = ctx.message;
+/// String a = null;
+/// String c = null;
+/// if (m == 'Created an API key') { a = 'api_key_created'; }
+/// else if (m.startsWith('Deleted Check ')) { a = 'check_deleted'; c = 'check'; }
+/// ...
+/// if (a != null) {
+///   if (ctx.event == null) { ctx.event = new HashMap(); }
+///   ctx.event.action = a;
+/// }
+/// if (c != null) {
+///   if (ctx._tmp == null) { ctx._tmp = new HashMap(); }
+///   ctx._tmp.cat = c;
+/// }
+/// ```
+///
+/// kolide's audit descriptions are classified this way. Without the shape the
+/// `!= null` catch-all claims the script and writes nothing at all -- neither
+/// the action nor the `_tmp.cat` that gates every grok block behind it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ClassifyLadder {
+    /// The `ctx.` path the subject is read from.
+    subject: String,
+    arms: Vec<ClassifyArm>,
+    /// `(the local, the ctx path its value lands on)`.
+    outputs: Vec<(String, String)>,
+}
+
+/// Read the subject, the ladder and the trailing writes off the script.
+fn parse_classify_ladder(script: &str) -> Option<ClassifyLadder> {
+    use crate::painless_params::{clean_path, skip_trivia};
+
+    let (local, subject) = string_bindings(script).into_iter().next()?;
+    let mut rest = skip_trivia(&script[script.find("if (")?..]);
+
+    let mut arms = Vec::new();
+    loop {
+        let (test, block, after) = split_if(rest)?;
+        let mut tests = Vec::new();
+        for group in test.split("||") {
+            tests.push(
+                group
+                    .split("&&")
+                    .map(|term| StringTest::parse(term, &local))
+                    .collect::<Option<Vec<_>>>()?,
+            );
+        }
+
+        let mut writes = Vec::new();
+        for statement in block.split(';') {
+            let statement = skip_trivia(statement);
+            if statement.is_empty() {
+                continue;
+            }
+            let (name, literal) = statement.split_once('=')?;
+            writes.push((name.trim().to_string(), quoted_first(literal)?));
+        }
+        if writes.is_empty() {
+            return None;
+        }
+        arms.push(ClassifyArm { tests, writes });
+
+        let after = skip_trivia(after);
+        let Some(tail) = after.strip_prefix("else") else {
+            rest = after;
+            break;
+        };
+        rest = skip_trivia(tail);
+    }
+    // A two-arm chain is an ordinary either/or; the shape is a classification
+    // TABLE, and demanding three keeps it off the smaller scripts.
+    if arms.len() < 3 {
+        return None;
+    }
+
+    let mut outputs = Vec::new();
+    while let Some((test, block, after)) = split_if(rest) {
+        if let Some(name) = test.trim().strip_suffix("!= null").map(str::trim)
+            && let Some(target) = block
+                .split_once(&format!("= {name};"))
+                .and_then(|(head, _)| head.rsplit_once("ctx."))
+                .map(|(_, path)| clean_path(path.trim()))
+        {
+            outputs.push((name.to_string(), target));
+        }
+        rest = skip_trivia(after);
+    }
+    (!outputs.is_empty()).then_some(ClassifyLadder {
+        subject: clean_path(&subject),
+        arms,
+        outputs,
+    })
+}
+
+/// The test, the block and the tail of the `if (...) { ... }` at the head of
+/// `text`, or `None` where `text` does not open with one.
+fn split_if(text: &str) -> Option<(&str, &str, &str)> {
+    use crate::painless_params::{balanced, skip_trivia};
+
+    let after = text.strip_prefix("if")?;
+    let (guard, after) = balanced(skip_trivia(after), '(', ')')?;
+    let (block, after) = balanced(skip_trivia(after), '{', '}')?;
+    Some((guard, block, after))
+}
+
+/// Classify the subject, then write each answer to the path it names.
+fn run_classify_ladder(event: &mut Event, shape: &ClassifyLadder) -> bool {
+    // The processor's own `if` gates on the subject, so an absent one is a
+    // no-op rather than a failure.
+    let Some(subject) = event.get_string(&shape.subject) else {
+        return true;
+    };
+    let Some(arm) = shape.arms.iter().find(|arm| arm.holds(&subject)) else {
+        return true;
+    };
+
+    for (name, target) in &shape.outputs {
+        if let Some((_, literal)) = arm.writes.iter().find(|(local, _)| local == name) {
+            let _ = event.set(target, Value::String(literal.clone()));
+        }
+    }
+    true
+}
+
+/// A nested map emptied into its own parent, and the routing keys beside it
+/// dropped.
+///
+/// ```painless
+/// Map data = (Map) ctx.json.remove('data');
+/// for (def entry : data.entrySet()) {
+///   ctx.json[entry.getKey()] = entry.getValue();
+/// }
+/// ctx.json.remove('type');
+/// ```
+///
+/// kolide's Log Pipeline deliveries wrap the record in a `{type, timestamp,
+/// data}` envelope, and every field the rest of the pipeline reads is inside
+/// `data`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct MergeMapUp {
+    parent: String,
+    /// The full path of the map lifted, resolved here so the hot path
+    /// allocates nothing.
+    source: String,
+    drops: Vec<String>,
+}
+
+fn parse_merge_map_up(script: &str) -> Option<MergeMapUp> {
+    use crate::painless_params::clean_path;
+
+    let (head, tail) = script.split_once(".remove(")?;
+    let parent = clean_path(head.rsplit_once("ctx.")?.1.trim());
+    let key = quoted_first(tail)?;
+    let local = head.rsplit_once(" = ")?.0.trim().rsplit(' ').next()?;
+    if parent.is_empty() || key.contains('.') || local.is_empty() {
+        return None;
+    }
+
+    // The loop has to empty THAT local into THAT parent, or the script is
+    // doing something else with a map it happens to have removed.
+    let entry = script.split_once("for (")?.1.split_once(':')?.0;
+    let entry = entry.trim().rsplit(' ').next()?;
+    if !script.contains(&format!("{local}.entrySet()"))
+        || !script.contains(&format!(
+            "ctx.{parent}[{entry}.getKey()] = {entry}.getValue()"
+        ))
+    {
+        return None;
+    }
+
+    let dropper = format!("ctx.{parent}.remove(");
+    let drops = script
+        .match_indices(&dropper)
+        .filter_map(|(at, _)| quoted_first(&script[at + dropper.len()..]))
+        .filter(|dropped| *dropped != key)
+        .map(|dropped| format!("{parent}.{dropped}"))
+        .collect();
+
+    Some(MergeMapUp {
+        source: format!("{parent}.{key}"),
+        parent,
+        drops,
+    })
+}
+
+fn run_merge_map_up(event: &mut Event, shape: &MergeMapUp) -> bool {
+    // The processor's own `instanceof Map` guard, so anything else is a no-op.
+    let Some(Value::Object(entries)) = event.remove(&shape.source) else {
+        return true;
+    };
+    if let Some(Value::Object(parent)) = crate::painless_params::pointer_mut(event, &shape.parent) {
+        for (key, value) in entries {
+            parent.insert(key, value);
+        }
+    }
+    for path in &shape.drops {
+        event.remove(path);
+    }
+    true
+}
+
+/// Named top-level keys moved under another object.
+///
+/// ```painless
+/// if (ctx.containsKey('id')) { ctx.json.id = ctx.remove('id'); }
+/// ```
+///
+/// kolide's webhook envelope arrives beside the ECS fields and collides with
+/// them, so the whole of it is moved out of the way before anything else runs;
+/// leaving it in place strands `data` where no later processor looks.
+fn parse_move_keys(script: &str) -> Option<Vec<(String, String)>> {
+    const MOVE: &str = " = ctx.remove(";
+
+    let mut moves = Vec::new();
+    for (at, _) in script.match_indices(MOVE) {
+        let (_, target) = script[..at].rsplit_once("ctx.")?;
+        if !target
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '.' || c == '_')
+        {
+            return None;
+        }
+        let source = quoted_first(&script[at + MOVE.len()..])?;
+        moves.push((source, target.to_string()));
+    }
+    // Every removal has to be one of these moves, so a longer script that
+    // merely spells one is left to the matcher that reads the rest of it.
+    (!moves.is_empty() && moves.len() == script.matches("ctx.remove(").count()).then_some(moves)
+}
+
+fn run_move_keys(event: &mut Event, moves: &[(String, String)]) -> bool {
+    for (source, target) in moves {
+        if let Some(held) = event.remove(source) {
+            let _ = event.set(target, held);
+        }
+    }
+    true
+}
+
 /// Check if a Painless script source matches a known pattern.
 ///
 /// Returns true if the script was handled, false if it should fall through
@@ -8449,6 +8850,10 @@ pub(crate) enum KnownShape {
         divisor: i64,
     },
     GuardedCopy,
+    ClassifyLadder(Box<ClassifyLadder>),
+    MoveKeys(Vec<(String, String)>),
+    MergeMapUp(Box<MergeMapUp>),
+    SuffixesByPrefix(Box<SuffixesByPrefix>),
 }
 
 /// The matcher branches this script's text triggers, in dispatch order.
@@ -8518,6 +8923,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: the tail of every list member whose named field carries a
+    // prefix. Behind the cut above, whose `.substring(` and `.add(` triggers
+    // this also spells and which declines on it.
+    if normalised.contains(".substring(")
+        && normalised.contains(".add(")
+        && let Some(shape) = parse_suffixes_by_prefix(normalised)
+    {
+        shapes.push(KnownShape::SuffixesByPrefix(Box::new(shape)));
+        return shapes;
+    }
+
     // Pattern: a type tag choosing which field one value lands on.
     if normalised.contains(".contains('")
         && let Some(shape) = parse_contains_ladder(normalised)
@@ -8540,6 +8956,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_named_map_entry(normalised)
     {
         shapes.push(KnownShape::NamedMapEntry(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: a nested map emptied into its own parent, and the routing keys
+    // beside it dropped.
+    if normalised.contains(".entrySet()")
+        && normalised.contains(".remove('")
+        && let Some(shape) = parse_merge_map_up(normalised)
+    {
+        shapes.push(KnownShape::MergeMapUp(Box::new(shape)));
         return shapes;
     }
 
@@ -9155,12 +9581,13 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     }
 
     // Pattern: one value wrapped in a one-element list -- mimecast's
-    // attachments promotion, and amazon_security_lake's singular `resource`
-    // moved onto `resources`. No loop, or it is the prepend shape below.
-    if !normalised.contains("for (")
-        && (normalised.contains(" = [ctx.")
-            || ((normalised.contains("= [];") || normalised.contains("new ArrayList()"))
-                && normalised.contains(".add(ctx.")))
+    // attachments promotion, amazon_security_lake's singular `resource` moved
+    // onto `resources`, and kolide's osquery_status address. No loop, or it is
+    // the prepend shape below.
+    let wraps_a_new_list = (normalised.contains("= [];") || normalised.contains("new ArrayList()"))
+        && normalised.contains(".add(ctx.");
+    if (wraps_a_new_list || normalised.contains("= [ctx.") || normalised.contains("= [ ctx."))
+        && !normalised.contains("for (")
         && let Some(shape) = parse_wrap_value_in_list(normalised)
     {
         shapes.push(shape);
@@ -9577,6 +10004,25 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: named top-level keys moved under another object.
+    if normalised.contains(" = ctx.remove(")
+        && let Some(moves) = parse_move_keys(normalised)
+    {
+        shapes.push(KnownShape::MoveKeys(moves));
+        return shapes;
+    }
+
+    // Pattern: one string field classified by an else-if ladder whose answers
+    // are held in locals. Ahead of `GuardedCopy` below, whose `!= null`
+    // catch-all the trailing writes also spell and which then declines,
+    // leaving the script claimed and unrun.
+    if normalised.contains("else if (")
+        && let Some(shape) = parse_classify_ladder(normalised)
+    {
+        shapes.push(KnownShape::ClassifyLadder(Box::new(shape)));
+        return shapes;
+    }
+
     // The two catch-alls below are shapes a longer script also CONTAINS, so
     // they run only after every structural matcher has declined.
 
@@ -9932,6 +10378,10 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             divisor,
         } => run_guarded_divide(event, target, absent.as_ref(), *divisor),
         KnownShape::GuardedCopy => try_guarded_copy(event, normalised),
+        KnownShape::ClassifyLadder(shape) => run_classify_ladder(event, shape),
+        KnownShape::MoveKeys(moves) => run_move_keys(event, moves),
+        KnownShape::MergeMapUp(shape) => run_merge_map_up(event, shape),
+        KnownShape::SuffixesByPrefix(shape) => run_suffixes_by_prefix(event, shape),
     }
 }
 
@@ -10214,6 +10664,231 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
+
+    /// The arm forms `pipelines/kolide/audit/extended-mappings.yml` uses,
+    /// verbatim, around its own opening and closing lines.
+    const KOLIDE_CLASSIFY: &str = "String m = ctx.message;\n\
+        String a = null;\n\
+        String c = null;\n\
+        \n\
+        // Exact-match, fixed-description events (no extractable fields; no grok).\n\
+        if (m == 'Created an API key') { a = 'api_key_created'; }\n\
+        else if (m == \"modified the organization's extended device compliance configuration\") \
+        { a = 'extended_device_compliance_configuration_changed'; }\n\
+        \n\
+        // Checks.\n\
+        else if (m.startsWith('Deleted Check ')) { a = 'check_deleted'; c = 'check'; }\n\
+        else if (m.startsWith('Changed Fix Instructions Template ') || \
+        m.startsWith('Changed Rationale Template ')) { a = 'check_configuration_changed'; c = 'check'; }\n\
+        else if (m.startsWith('Reopened previously ') && m.contains(' device registration for ')) \
+        { a = 'device_registration_reopened'; c = 'device_reg'; }\n\
+        else if (m.contains(' registration self-approved by ')) \
+        { a = 'device_registration_self_approved'; c = 'device_reg'; }\n\
+        else if (m.startsWith('Device ') && m.endsWith(' removed')) \
+        { a = 'device_removed'; c = 'device_removal'; }\n\
+        else if (m.startsWith(\"Changed '\")) { c = 'setting_generic'; }\n\
+        \n\
+        if (a != null) {\n\
+          if (ctx.event == null) { ctx.event = new HashMap(); }\n\
+          ctx.event.action = a;\n\
+        }\n\
+        if (c != null) {\n\
+          if (ctx._tmp == null) { ctx._tmp = new HashMap(); }\n\
+          ctx._tmp.cat = c;\n\
+        }";
+
+    /// Every arm form the ladder uses lands the action AND the grok routing
+    /// key, which is what the blocks behind it are gated on.
+    #[test]
+    fn a_classify_ladder_writes_both_of_its_locals() {
+        let cases = [
+            ("Created an API key", Some("api_key_created"), None),
+            (
+                "modified the organization's extended device compliance configuration",
+                Some("extended_device_compliance_configuration_changed"),
+                None,
+            ),
+            (
+                "Deleted Check \"Firewall\"",
+                Some("check_deleted"),
+                Some("check"),
+            ),
+            (
+                "Changed Rationale Template Text for Check 'Firewall'",
+                Some("check_configuration_changed"),
+                Some("check"),
+            ),
+            (
+                "Reopened previously denied device registration for \"a@b.c\".",
+                Some("device_registration_reopened"),
+                Some("device_reg"),
+            ),
+            (
+                "Device \"host-1\" (ABC) registration self-approved by a@b.c from another trusted device",
+                Some("device_registration_self_approved"),
+                Some("device_reg"),
+            ),
+            (
+                "Device 'host-1' (ABC) removed",
+                Some("device_removed"),
+                Some("device_removal"),
+            ),
+            (
+                "Changed 'Prevent Deregistration' from 'false' to 'true'",
+                None,
+                Some("setting_generic"),
+            ),
+            ("something nothing matches", None, None),
+        ];
+
+        for (message, action, category) in cases {
+            let mut event = Event::new(json!({ "message": message }));
+            assert!(
+                try_known_painless(&mut event, KOLIDE_CLASSIFY),
+                "unclaimed: {message}"
+            );
+            assert_eq!(event.get_str("event.action"), action, "action: {message}");
+            assert_eq!(event.get_str("_tmp.cat"), category, "cat: {message}");
+        }
+    }
+
+    /// The first arm that holds claims the event, so a later arm whose test
+    /// also holds never runs.
+    #[test]
+    fn a_classify_ladder_stops_at_its_first_arm() {
+        let mut event = Event::new(json!({
+            "message": "Reopened previously denied device registration for \"a@b.c\" \
+                        registration self-approved by a@b.c",
+        }));
+        assert!(try_known_painless(&mut event, KOLIDE_CLASSIFY));
+        assert_eq!(
+            event.get_str("event.action"),
+            Some("device_registration_reopened")
+        );
+    }
+
+    /// Verbatim from `pipelines/kolide/audit/default.yml`: the webhook
+    /// envelope moved out of the way of the ECS fields it collides with.
+    #[test]
+    fn the_webhook_envelope_moves_under_the_working_object() {
+        let script = "if (ctx.containsKey('id')) { ctx.json.id = ctx.remove('id'); }\n\
+            if (ctx.containsKey('timestamp')) { ctx.json.timestamp = ctx.remove('timestamp'); }\n\
+            if (ctx.containsKey('data')) { ctx.json.data = ctx.remove('data'); }";
+
+        let mut event = Event::new(json!({
+            "id": "01JA67B1DYJCKJ1J73T0F5EWGR",
+            "timestamp": "2024-10-14T19:16:05Z",
+            "data": { "actor_name": "Alice" },
+            "json": { "event": "audit_log.recorded" },
+        }));
+        assert!(try_known_painless(&mut event, script));
+
+        assert_eq!(event.get("id"), None);
+        assert_eq!(event.get("timestamp"), None);
+        assert_eq!(event.get("data"), None);
+        assert_eq!(event.get_str("json.id"), Some("01JA67B1DYJCKJ1J73T0F5EWGR"));
+        assert_eq!(
+            event.get_str("json.timestamp"),
+            Some("2024-10-14T19:16:05Z")
+        );
+        assert_eq!(event.get_str("json.data.actor_name"), Some("Alice"));
+    }
+
+    /// Verbatim from `pipelines/kolide/osquery_status/default.yml`: one
+    /// address wrapped in the list ECS wants, under the guard Painless needs.
+    #[test]
+    fn a_list_literal_wraps_the_value_it_holds() {
+        let script = "if (ctx.host == null) { ctx.host = new HashMap(); }\n\
+            ctx.host.ip = [ ctx.json.kolide_decorations.remote_ip ];";
+
+        let mut event = Event::new(json!({
+            "json": { "kolide_decorations": { "remote_ip": "203.0.113.5" } },
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get("host.ip"), Some(&json!(["203.0.113.5"])));
+    }
+
+    /// A wrap followed by a removal of its own source is ONE move, so the
+    /// shape has to carry the removal rather than decline and drop it.
+    #[test]
+    fn a_wrap_that_removes_its_source_moves_the_value() {
+        let script = "ctx.ocsf.resources = [ctx.ocsf.resource];\nctx.ocsf.remove('resource');";
+
+        let mut event = Event::new(json!({ "ocsf": { "resource": { "uid": "r-1" } } }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("ocsf.resources"),
+            Some(&json!([{ "uid": "r-1" }]))
+        );
+        assert!(!event.has("ocsf.resource"));
+    }
+
+    /// Verbatim from `pipelines/kolide/auth/extended-mappings.yml`: the tail
+    /// of every sub-event description that carries the prefix.
+    #[test]
+    fn the_prefixed_descriptions_collect_their_tails() {
+        let script = "def prefix = 'Downloaded package: ';\ndef packages = new ArrayList();\n\
+            for (def ev : ctx.json.events) {\n  def desc = ev?.event_description;\n  \
+            if (desc instanceof String && desc.startsWith(prefix)) {\n    \
+            packages.add(desc.substring(prefix.length()));\n  }\n}\n\
+            if (!packages.isEmpty()) {\n  \
+            if (ctx.kolide.auth.downloaded_packages == null) {\n    \
+            ctx.kolide.auth.downloaded_packages = packages;\n  } else {\n    \
+            ctx.kolide.auth.downloaded_packages.addAll(packages);\n  }\n}";
+
+        let mut event = Event::new(json!({ "json": { "events": [
+            { "event_description": "Authentication succeeded" },
+            { "event_description": "Downloaded package: linux-systemd-deb" },
+            { "event_type": "no_description" },
+        ]}}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("kolide.auth.downloaded_packages"),
+            Some(&json!(["linux-systemd-deb"]))
+        );
+
+        // No description carries the prefix, so the field is not created.
+        let mut bare = Event::new(json!({ "json": { "events": [
+            { "event_description": "Authentication succeeded" },
+        ]}}));
+        assert!(try_known_painless(&mut bare, script));
+        assert_eq!(bare.get("kolide.auth.downloaded_packages"), None);
+    }
+
+    /// Verbatim from `pipelines/kolide/audit/s3.yml`: the Log Pipeline
+    /// envelope's `data` emptied into the working object beside it.
+    #[test]
+    fn the_s3_envelope_data_is_lifted_and_the_routing_key_dropped() {
+        let script = "Map data = (Map) ctx.json.remove('data');\n\
+            for (def entry : data.entrySet()) {\n  \
+            ctx.json[entry.getKey()] = entry.getValue();\n}\n\
+            ctx.json.remove('type');";
+
+        let mut event = Event::new(json!({ "json": {
+            "type": "audit_log",
+            "timestamp": "2026-06-04T19:10:55.090Z",
+            "data": { "actor_name": "Noel Vasquez", "ip_address": "81.2.69.142" },
+        }}));
+        assert!(try_known_painless(&mut event, script));
+
+        assert_eq!(event.get("json.data"), None);
+        assert_eq!(event.get("json.type"), None);
+        assert_eq!(event.get_str("json.actor_name"), Some("Noel Vasquez"));
+        assert_eq!(event.get_str("json.ip_address"), Some("81.2.69.142"));
+        assert_eq!(
+            event.get_str("json.timestamp"),
+            Some("2026-06-04T19:10:55.090Z")
+        );
+    }
+
+    /// A key the envelope did not carry leaves its target alone.
+    #[test]
+    fn an_absent_envelope_key_is_not_moved() {
+        let script = "if (ctx.containsKey('id')) { ctx.json.id = ctx.remove('id'); }";
+        let mut event = Event::new(json!({ "json": { "event": "audit_log.recorded" } }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get("json.id"), None);
+    }
 
     /// Verbatim from `pipelines/aws/cloudtrail/default.yml`, the prune half of
     /// the pair. A map that held 31 entries and keeps 24 still renders through
