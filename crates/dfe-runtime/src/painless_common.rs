@@ -2291,10 +2291,10 @@ fn run_resources_rename_dedup(event: &mut Event, source: &str) -> bool {
             continue;
         };
         let mut resource = original;
-        if let Some(value) = resource.remove("ARN") {
+        if let Some(value) = resource.shift_remove("ARN") {
             resource.insert("arn".into(), value);
         }
-        if let Some(value) = resource.remove("accountId") {
+        if let Some(value) = resource.shift_remove("accountId") {
             resource.insert("account_id".into(), value);
         }
         let part = |k: &str| resource.get(k).map(painless_to_string).unwrap_or_default();
@@ -2863,39 +2863,119 @@ fn predicate_sentinels(script: &str) -> Vec<String> {
 /// drop(ctx);
 /// ```
 pub fn drop_empty_recursive(event: &mut Event, policy: &DropPolicy) {
-    let inner = event.as_value_mut();
-    drop_value(inner, policy);
+    let mut shrunk = Vec::new();
+    drop_value(
+        event.as_value_mut(),
+        policy,
+        &mut Marks::new(String::new()),
+        &mut shrunk,
+    );
+    for (path, entries) in shrunk {
+        event.record_map_capacity(path, entries);
+    }
 }
 
-fn drop_value(value: &mut Value, policy: &DropPolicy) -> bool {
+/// Prune the subtree at `root`, which is where in the document it sits -- a
+/// recorded path has to read the same as the one a later render walks to.
+pub(crate) fn drop_subtree(event: &mut Event, policy: &DropPolicy, root: &str) {
+    let Some(value) = crate::painless_params::pointer_mut(event, root) else {
+        return;
+    };
+    let mut shrunk = Vec::new();
+    drop_value(
+        value,
+        policy,
+        &mut Marks::new(root.to_string()),
+        &mut shrunk,
+    );
+    for (path, entries) in shrunk {
+        event.record_map_capacity(path, entries);
+    }
+}
+
+/// Where the prune currently is, and whether a list stands between it and the
+/// subtree root.
+struct Marks {
+    path: String,
+    /// A list PRUNE renumbers everything after the entry it drops, so a path
+    /// through one no longer names the same value once the walk unwinds. The
+    /// capacity a render could not trust is not recorded at all, which leaves
+    /// it reading the surviving entry count as it did before.
+    through_list: bool,
+}
+
+impl Marks {
+    fn new(path: String) -> Self {
+        Self {
+            path,
+            through_list: false,
+        }
+    }
+
+    /// Replace whatever sits past `mark` with one more dotted segment.
+    fn descend(&mut self, mark: usize, segment: &str) {
+        self.path.truncate(mark);
+        if !self.path.is_empty() {
+            self.path.push('.');
+        }
+        self.path.push_str(segment);
+    }
+}
+
+fn drop_value(
+    value: &mut Value,
+    policy: &DropPolicy,
+    marks: &mut Marks,
+    shrunk: &mut Vec<(String, usize)>,
+) -> bool {
     match value {
         Value::Null => policy.nulls,
         Value::String(s) if s.is_empty() => policy.empty_strings,
         Value::String(s) if policy.sentinels.iter().any(|v| v == s) => true,
         Value::Object(map) => {
+            let built = map.len();
+            let mark = marks.path.len();
             let keys_to_remove: Vec<String> = map
                 .iter_mut()
                 .filter_map(|(k, v)| {
-                    if drop_value(v, policy) {
-                        Some(k.clone())
-                    } else {
-                        None
-                    }
+                    marks.descend(mark, k);
+                    drop_value(v, policy, marks, shrunk).then(|| k.clone())
                 })
                 .collect();
-            for key in keys_to_remove {
-                map.remove(&key);
+            marks.path.truncate(mark);
+            for key in &keys_to_remove {
+                map.shift_remove(key);
+            }
+            // Java's HashMap keeps its table across a remove, so a prune that
+            // crosses a table boundary changes the order `toString` walks.
+            if !keys_to_remove.is_empty()
+                && !marks.through_list
+                && crate::painless_helpers::java_table_size(built)
+                    != crate::painless_helpers::java_table_size(map.len())
+            {
+                shrunk.push((marks.path.clone(), built));
             }
             policy.empty_collections && map.is_empty()
         }
         Value::Array(arr) => {
+            let mark = marks.path.len();
+            let outer = marks.through_list;
             if policy.prune_lists {
-                arr.retain_mut(|v| !drop_value(v, policy));
+                marks.through_list = true;
+                let mut index = 0usize;
+                arr.retain_mut(|v| {
+                    marks.descend(mark, &index.to_string());
+                    index += 1;
+                    !drop_value(v, policy, marks, shrunk)
+                });
             } else {
-                for item in arr.iter_mut() {
-                    drop_value(item, policy);
+                for (index, item) in arr.iter_mut().enumerate() {
+                    marks.descend(mark, &index.to_string());
+                    drop_value(item, policy, marks, shrunk);
                 }
             }
+            marks.path.truncate(mark);
+            marks.through_list = outer;
             policy.empty_collections && arr.is_empty()
         }
         _ => false,
@@ -3345,7 +3425,13 @@ fn try_flattened_duplicates(event: &mut Event, script: &str) -> bool {
             continue;
         };
 
-        let rendered = crate::painless_helpers::java_to_string(&value);
+        // Rendered at the path it was pruned at: an empty-value prune that
+        // crossed a bucket-table boundary left the map iterating through the
+        // table it was BUILT with, which reorders the members.
+        let rendered =
+            crate::painless_helpers::java_to_string_sized(&value, &mut source.clone(), &|at| {
+                event.map_capacity(at)
+            });
         // Elasticsearch's keyword ceiling. Over it the rendered copy is kept
         // and the flattened one is not.
         let short_enough = rendered.len() < 32766;
@@ -5482,7 +5568,7 @@ fn try_swap_subtrees(event: &mut Event, script: &str) -> bool {
             map.insert(key.clone(), moved);
         }
         if let Some(map) = new_second.as_object_mut() {
-            map.remove(&key);
+            map.shift_remove(&key);
         }
     }
 
@@ -9367,11 +9453,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::DropEmpty { policy, root } => {
             match root {
                 None => drop_empty_recursive(event, policy),
-                Some(path) => {
-                    if let Some(subtree) = crate::painless_params::pointer_mut(event, path) {
-                        drop_value(subtree, policy);
-                    }
-                }
+                Some(path) => drop_subtree(event, policy, path),
             }
             true
         }
@@ -9954,6 +10036,64 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
+
+    /// Verbatim from `pipelines/aws/cloudtrail/default.yml`, the prune half of
+    /// the pair. A map that held 31 entries and keeps 24 still renders through
+    /// a 64-bucket table, because Java's `HashMap` does not shrink on remove.
+    #[test]
+    fn a_prune_across_a_table_boundary_records_the_built_size() {
+        let script = "void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    \
+            if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        \
+            handleList(v);\n    }\n    return v == null || v == '' || v == '-' || v == 'none' || \
+            (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\n\
+            void handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        \
+            handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    \
+            return v == null || v == '' || v == '-' || v == 'none' || (v instanceof Map && v.size() == 0) || \
+            (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n";
+
+        // 13 entries down to 12 crosses the 16-to-32 boundary, and these
+        // twelve keys render in a different order on either side of it.
+        let mut inner = serde_json::Map::new();
+        for key in [
+            "alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel", "india",
+            "juliet", "kilo", "lima",
+        ] {
+            inner.insert(key.to_string(), json!("v"));
+        }
+        inner.insert("gone".to_string(), Value::Null);
+        let mut event = Event::new(json!({
+            "json": { "responseElements": { "command": Value::Object(inner) } }
+        }));
+
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.map_capacity("json.responseElements.command"),
+            Some(13)
+        );
+        assert_eq!(event.map_capacity("json"), None, "json lost nothing");
+
+        // The render half of the pair reads that count back, so the members
+        // walk the 32 buckets the map was built with rather than 16.
+        let render = "if (ctx._conf.keep_flattened_duplicates && ctx.aws.cloudtrail?.flattened == null) \
+            {\n  ctx.aws.cloudtrail.flattened = [:];\n}\nif (ctx.json?.responseElements != null) {\n  \
+            ctx.aws.cloudtrail.response_elements = ctx.json.responseElements.toString();\n}\n";
+        assert!(try_known_painless(&mut event, render));
+        let rendered = event
+            .get_str("aws.cloudtrail.response_elements")
+            .unwrap_or_default()
+            .to_string();
+        let built = crate::painless_helpers::java_to_string_sized(
+            event.get("json.responseElements").unwrap(),
+            &mut "json.responseElements".to_string(),
+            &|at| event.map_capacity(at),
+        );
+        assert_eq!(rendered, built, "the render did not read the capacity back");
+        assert_ne!(
+            rendered,
+            crate::painless_helpers::java_to_string(event.get("json.responseElements").unwrap()),
+            "a 32-bucket walk must differ from the 16-bucket one"
+        );
+    }
 
     /// Verbatim from `pipelines/netflow/log/default.yml`. The union is over
     /// BOTH address families and the sort is lexicographic, so an IPv6 address

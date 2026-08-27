@@ -177,27 +177,66 @@ pub fn template_to_string(v: &Value) -> String {
 /// document order both diverging from it.
 #[must_use]
 pub fn java_to_string(v: &Value) -> String {
+    java_to_string_sized(v, &mut String::new(), &|_| None)
+}
+
+/// `java_to_string`, reading each map's table from the entry count it held
+/// when it was BUILT rather than the count that survives.
+///
+/// A Java `HashMap` never shrinks its table on remove, so a map a pipeline's
+/// empty-value prune shrank still renders through its original buckets --
+/// which reorders the members whenever the prune crossed a table boundary.
+/// `capacity` answers that count for a map at a document path, and `path` is
+/// where in the document `v` itself sits.
+pub fn java_to_string_sized(
+    v: &Value,
+    path: &mut String,
+    capacity: &dyn Fn(&str) -> Option<usize>,
+) -> String {
     match v {
         Value::Object(map) => {
-            let table = java_table_size(map.len());
+            let table = java_table_size(capacity(path).unwrap_or_else(|| map.len()));
             let mut entries: Vec<(usize, usize, &String, &Value)> = map
                 .iter()
                 .enumerate()
                 .map(|(position, (key, value))| (java_bucket(key, table), position, key, value))
                 .collect();
             entries.sort_by_key(|(bucket, position, ..)| (*bucket, *position));
+            let mark = path.len();
             let members: Vec<String> = entries
                 .into_iter()
-                .map(|(_, _, key, value)| format!("{key}={}", painless_to_string(value)))
+                .map(|(_, _, key, value)| {
+                    push_segment(path, mark, key);
+                    format!("{key}={}", java_to_string_sized(value, path, capacity))
+                })
                 .collect();
+            path.truncate(mark);
             format!("{{{}}}", members.join(", "))
         }
         Value::Array(items) => {
-            let members: Vec<String> = items.iter().map(painless_to_string).collect();
+            let mark = path.len();
+            let members: Vec<String> = items
+                .iter()
+                .enumerate()
+                .map(|(index, item)| {
+                    push_segment(path, mark, &index.to_string());
+                    java_to_string_sized(item, path, capacity)
+                })
+                .collect();
+            path.truncate(mark);
             format!("[{}]", members.join(", "))
         }
         other => painless_to_string(other),
     }
+}
+
+/// Replace whatever sits past `mark` with one more dotted segment.
+fn push_segment(path: &mut String, mark: usize, segment: &str) {
+    path.truncate(mark);
+    if !path.is_empty() {
+        path.push('.');
+    }
+    path.push_str(segment);
 }
 
 /// The table size a default-capacity Java `HashMap` holds `entries` in:
@@ -285,7 +324,7 @@ pub fn painless_drop_empty(v: &mut Value) -> bool {
                 })
                 .collect();
             for k in keys_to_remove {
-                map.remove(&k);
+                map.shift_remove(&k);
             }
             map.is_empty()
         }

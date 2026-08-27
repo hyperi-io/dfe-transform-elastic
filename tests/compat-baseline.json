@@ -5,7 +5,7 @@
   "elasticsearch_version": "9.2.2",
   "sources": {
     "auth0": { "events": 111, "events_total": 111, "fields_wrong": 0 },
-    "aws": { "events": 517, "events_total": 538, "fields_wrong": 21 },
+    "aws": { "events": 531, "events_total": 538, "fields_wrong": 7 },
     "azure": { "events": 181, "events_total": 182, "fields_wrong": 4 },
     "checkpoint": { "events": 107, "events_total": 111, "fields_wrong": 5 },
     "cisco_asa": { "events": 510, "events_total": 512, "fields_wrong": 20 },

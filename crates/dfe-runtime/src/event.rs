@@ -16,21 +16,25 @@ use crate::error::{Result, TransformError};
 /// All field access uses ECS-style dotted paths. For example,
 /// `event.get_str("source.geo.city_name")` navigates into
 /// `{"source": {"geo": {"city_name": "Sydney"}}}`.
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Event {
     inner: Value,
+    capacities: Vec<(String, usize)>,
 }
 
 impl Event {
     /// Construct from an owned `serde_json::Value`.
     pub fn new(value: Value) -> Self {
-        Self { inner: value }
+        Self {
+            inner: value,
+            capacities: Vec::new(),
+        }
     }
 
     /// Parse from a JSON string using `serde_json`.
     pub fn from_json(json: &str) -> Result<Self> {
         let value: Value = serde_json::from_str(json)?;
-        Ok(Self { inner: value })
+        Ok(Self::new(value))
     }
 
     /// Parse from a byte buffer. The primary Kafka ingestion path.
@@ -49,12 +53,36 @@ impl Event {
             path: String::new(),
             message: e.to_string(),
         })?;
-        Ok(Self { inner: value })
+        Ok(Self::new(value))
     }
 
     /// Borrow the inner value.
     pub fn as_value(&self) -> &Value {
         &self.inner
+    }
+
+    /// Record the entry count a map held BEFORE a prune shrank it.
+    ///
+    /// A Java `HashMap` never shrinks its table on remove, so a pruned map's
+    /// `toString` still renders through the buckets it had when it was built.
+    /// Only the maps whose table the prune actually changed are recorded -- 5
+    /// of the 1,007 in the cloudtrail corpus -- so the list is empty for
+    /// nearly every event and costs one integer compare per pruned map.
+    pub fn record_map_capacity(&mut self, path: String, entries: usize) {
+        self.capacities.push((path, entries));
+    }
+
+    /// The recorded pre-prune entry count for the map at `path`.
+    pub fn map_capacity(&self, path: &str) -> Option<usize> {
+        self.capacities
+            .iter()
+            .find(|(recorded, _)| recorded == path)
+            .map(|(_, entries)| *entries)
+    }
+
+    /// Whether any map's table survived a prune that shrank it.
+    pub fn has_map_capacities(&self) -> bool {
+        !self.capacities.is_empty()
     }
 
     /// Mutably borrow the inner value.
@@ -236,7 +264,12 @@ impl Event {
         }
 
         match current {
-            Value::Object(map) => map.remove(last),
+            // `shift_remove`, never `remove`: under `preserve_order` the plain
+            // one is `swap_remove`, which moves the LAST key into the freed
+            // slot. Insertion order is what parity rests on -- Elasticsearch's
+            // maps are insertion-ordered and Painless renders them in that
+            // order -- so a swap here reorders the document.
+            Value::Object(map) => map.shift_remove(last),
             _ => None,
         }
     }
@@ -721,6 +754,26 @@ mod tests {
         let mut event = Event::new(json!({"a": 1}));
         assert_eq!(event.remove("b"), None);
         assert_eq!(event.remove("a.b.c"), None);
+    }
+
+    /// Removing a key must not move any other key.
+    ///
+    /// `serde_json`'s own `Map::remove` is `swap_remove` under
+    /// `preserve_order`, which drops the LAST key into the freed slot. This
+    /// project runs `preserve_order` because Elasticsearch's maps are
+    /// insertion-ordered and Painless renders them in that order, so a swap
+    /// here reorders what a later `toString` writes.
+    #[test]
+    fn remove_keeps_the_order_of_what_it_leaves() {
+        let mut event = Event::new(json!({
+            "m": { "a": 1, "b": 2, "c": 3, "d": 4, "e": 5 }
+        }));
+        event.remove("m.b");
+        let Some(Value::Object(map)) = event.get("m") else {
+            panic!("m is not an object");
+        };
+        let order: Vec<&str> = map.keys().map(String::as_str).collect();
+        assert_eq!(order, ["a", "c", "d", "e"]);
     }
 
     #[test]
