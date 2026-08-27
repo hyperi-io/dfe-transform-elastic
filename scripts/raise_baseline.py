@@ -12,6 +12,11 @@ Reads the test's output on stdin, or from a file:
 
 Refuses any line that would LOWER a score: a fall needs a stated reason and is
 never mechanical.
+
+A source whose event TOTAL moved is a different measurement, so neither its
+event floor nor its field count carries across and the ratchet cannot compare
+them. The test marks those `RESIZE` and this only rewrites them under
+`--resize`, which accepts whatever they now score.
 """
 
 from __future__ import annotations
@@ -23,29 +28,39 @@ import sys
 
 BASELINE = pathlib.Path(__file__).resolve().parent.parent / "tests/compat-baseline.json"
 
-LINE = re.compile(
-    r'^\s*"(?P<source>[\w]+)":\s*\{\s*"events":\s*(?P<events>\d+),\s*'
+ENTRY = (
+    r'"(?P<source>[\w]+)":\s*\{\s*"events":\s*(?P<events>\d+),\s*'
     r'"events_total":\s*(?P<total>\d+),\s*"fields_wrong":\s*(?P<wrong>\d+)\s*\},?\s*$'
 )
+LINE = re.compile(rf"^\s*{ENTRY}")
+RESIZE = re.compile(rf"^RESIZE\s+{ENTRY}")
 
 
-def main() -> int:
-    text = (
-        pathlib.Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace")
-        if len(sys.argv) > 1
-        else sys.stdin.read()
-    )
-
-    proposed: dict[str, dict[str, int]] = {}
+def scores_in(text: str, pattern: re.Pattern[str]) -> dict[str, dict[str, int]]:
+    found: dict[str, dict[str, int]] = {}
     for line in text.splitlines():
-        match = LINE.match(line)
+        match = pattern.match(line)
         if match:
-            proposed[match["source"]] = {
+            found[match["source"]] = {
                 "events": int(match["events"]),
                 "events_total": int(match["total"]),
                 "fields_wrong": int(match["wrong"]),
             }
-    if not proposed:
+    return found
+
+
+def main() -> int:
+    argv = [a for a in sys.argv[1:] if a != "--resize"]
+    resizing = "--resize" in sys.argv
+    text = (
+        pathlib.Path(argv[0]).read_text(encoding="utf-8", errors="replace")
+        if argv
+        else sys.stdin.read()
+    )
+
+    proposed = scores_in(text, LINE)
+    resized = scores_in(text, RESIZE) if resizing else {}
+    if not proposed and not resized:
         print("nothing to raise")
         return 0
 
@@ -61,6 +76,17 @@ def main() -> int:
         baseline["sources"][source] = scores
         raised.append(
             f"{source}: {scores['events']}/{scores['events_total']} events, "
+            f"{scores['fields_wrong']} fields wrong"
+        )
+
+    # No ratchet check: the old entry counted a different set of events, so
+    # there is nothing here to compare against.
+    for source, scores in sorted(resized.items()):
+        old = baseline["sources"].get(source)
+        baseline["sources"][source] = scores
+        raised.append(
+            f"{source}: RESIZED from {old['events_total'] if old else 0} events to "
+            f"{scores['events_total']} -- {scores['events']} matched, "
             f"{scores['fields_wrong']} fields wrong"
         )
 

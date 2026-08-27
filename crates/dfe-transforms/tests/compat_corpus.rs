@@ -733,6 +733,14 @@ struct Expected {
     fields_wrong: usize,
 }
 
+/// The baseline entry a measured score is written as.
+fn entry(score: Score) -> String {
+    format!(
+        "{{ \"events\": {}, \"events_total\": {}, \"fields_wrong\": {} }}",
+        score.events_matched, score.events, score.fields_wrong
+    )
+}
+
 /// Fail if a source scores below what it scored when the baseline was written.
 ///
 /// Only asserted when the corpus on disk was captured at the same integrations
@@ -766,6 +774,7 @@ fn check_baseline(measured: &BTreeMap<String, Score>, provenance: &Option<(Strin
 
     let mut failures = Vec::new();
     let mut improved = Vec::new();
+    let mut resized = Vec::new();
     for (source, expected) in &baseline.sources {
         let Some(score) = measured.get(source) else {
             failures.push(format!(
@@ -773,11 +782,17 @@ fn check_baseline(measured: &BTreeMap<String, Score>, provenance: &Option<(Strin
             ));
             continue;
         };
+        // A different set of events is a different measurement: neither the
+        // event floor nor the field count carries across it, so the entry
+        // constrains nothing until it is rewritten -- the same consequence as
+        // a source nobody wrote down, and so the same failure.
         if score.events != expected.events_total {
-            println!(
-                "  {source}: {} events in the corpus, baseline was written against {} -- not asserted",
+            failures.push(format!(
+                "{source}: {} events in the corpus, baseline was written against {} -- \
+                 nothing constrains it until the entry is rewritten",
                 score.events, expected.events_total
-            );
+            ));
+            resized.push(format!("RESIZE  \"{source}\": {},", entry(*score)));
             continue;
         }
         if score.events_matched < expected.events {
@@ -793,10 +808,7 @@ fn check_baseline(measured: &BTreeMap<String, Score>, provenance: &Option<(Strin
             ));
         }
         if score.events_matched > expected.events || score.fields_wrong < expected.fields_wrong {
-            improved.push(format!(
-                "  \"{source}\": {{ \"events\": {}, \"events_total\": {}, \"fields_wrong\": {} }},",
-                score.events_matched, score.events, score.fields_wrong
-            ));
+            improved.push(format!("  \"{source}\": {},", entry(*score)));
         }
     }
 
@@ -806,9 +818,8 @@ fn check_baseline(measured: &BTreeMap<String, Score>, provenance: &Option<(Strin
     for (source, score) in measured {
         if !baseline.sources.contains_key(source) {
             failures.push(format!(
-                "{source}: scored and not in the baseline -- add \
-                 {{ \"events\": {}, \"events_total\": {}, \"fields_wrong\": {} }}",
-                score.events_matched, score.events, score.fields_wrong
+                "{source}: scored and not in the baseline -- add {}",
+                entry(*score)
             ));
         }
     }
@@ -816,6 +827,20 @@ fn check_baseline(measured: &BTreeMap<String, Score>, provenance: &Option<(Strin
     if !improved.is_empty() {
         println!("\nbaseline can be raised -- paste into tests/compat-baseline.json:");
         for line in &improved {
+            println!("{line}");
+        }
+    }
+
+    // Marked rather than paste-ready: rewriting one of these accepts a score
+    // nothing was holding, so it goes through `raise_baseline.py --resize`,
+    // which the plain raise run will not do for you.
+    if !resized.is_empty() {
+        println!(
+            "\nthese hold a different set of events than the baseline was written \
+             against -- rewrite with scripts/raise_baseline.py --resize once the new \
+             total is the intended one:"
+        );
+        for line in &resized {
             println!("{line}");
         }
     }
