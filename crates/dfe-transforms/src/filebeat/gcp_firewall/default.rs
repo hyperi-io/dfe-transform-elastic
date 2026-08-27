@@ -627,10 +627,10 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.get("gcp.source.instance").filter(|v| !v.is_null())
-                    == event
-                        .get("gcp.destination.instance")
-                        .filter(|v| !v.is_null())
+                condition_eq(
+                    event.get("gcp.source.instance"),
+                    event.get("gcp.destination.instance"),
+                )
             };
             if _cond {
                 event.set("network.direction", json!("internal"))?;

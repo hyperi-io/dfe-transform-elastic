@@ -3338,8 +3338,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("host.hostname")
-                    && event.get("host.hostname").filter(|v| !v.is_null())
-                        != event.get("host.name").filter(|v| !v.is_null())
+                    && !condition_eq(event.get("host.hostname"), event.get("host.name"))
             };
             if _cond {
                 event.append_unique(
@@ -3366,8 +3365,7 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("user.target.domain")
-                    && event.get("user.target.domain").filter(|v| !v.is_null())
-                        != event.get("user.domain").filter(|v| !v.is_null())
+                    && !condition_eq(event.get("user.target.domain"), event.get("user.domain"))
             };
             if _cond {
                 event.append_unique(

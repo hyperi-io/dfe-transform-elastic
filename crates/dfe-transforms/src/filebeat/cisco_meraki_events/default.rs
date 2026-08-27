@@ -19,8 +19,7 @@ impl Transform for Default {
             let _cond = {
                 event.has_value("json.sharedSecret")
                     && event.get_str("json.sharedSecret") != Some("")
-                    && event.get("_conf.secret").filter(|v| !v.is_null())
-                        != event.get("json.sharedSecret").filter(|v| !v.is_null())
+                    && !condition_eq(event.get("_conf.secret"), event.get("json.sharedSecret"))
             };
             if _cond {
                 return Ok(TransformResult::Drop);

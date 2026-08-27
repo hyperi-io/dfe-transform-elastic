@@ -344,6 +344,34 @@ pub fn parse_json_str(text: &str) -> std::result::Result<Value, String> {
     serde_json::from_str::<Value>(text).map_err(|e| format!("failed to parse JSON: {e}"))
 }
 
+/// Two `ctx` paths compared inside an ingest `if` condition.
+///
+/// A conditional gets a read-only VIEW of the document, and every read of a
+/// nested map or list builds a fresh wrapper that does not implement `equals`,
+/// so two containers never compare equal there however identical their
+/// contents. Absent and explicitly null are the same value to Painless, and
+/// two of those DO compare equal.
+///
+/// gcp's firewall pipeline rests on it: it asks whether the source and
+/// destination instances are the same to call the traffic internal, and by
+/// then `vm_name` has been renamed onto `source.domain`, leaving two different
+/// VMs holding identical `{project_id, region, zone}` maps.
+#[must_use]
+pub fn condition_eq(left: Option<&Value>, right: Option<&Value>) -> bool {
+    fn present(v: Option<&Value>) -> Option<&Value> {
+        v.filter(|v| !v.is_null())
+    }
+    match (present(left), present(right)) {
+        (None, None) => true,
+        (Some(a), Some(b))
+            if !a.is_object() && !a.is_array() && !b.is_object() && !b.is_array() =>
+        {
+            a == b
+        }
+        _ => false,
+    }
+}
+
 /// Turn keys whose NAME contains dots into the nested objects they describe.
 ///
 /// `path` names the object to work on, empty for the document root, and
@@ -1538,6 +1566,28 @@ pub fn uri_parts(
 mod tests {
     use super::*;
     use serde_json::json;
+
+    // --- condition_eq ---
+
+    /// Two maps holding the same thing are still two wrappers, so a
+    /// conditional reads them as different.
+    #[test]
+    fn two_equal_containers_are_not_equal_in_a_condition() {
+        let same = json!({ "project_id": "p", "region": "r", "zone": "z" });
+        assert!(!condition_eq(Some(&same), Some(&same.clone())));
+        assert!(!condition_eq(Some(&json!([1, 2])), Some(&json!([1, 2]))));
+    }
+
+    /// Scalars are not wrapped, so they compare on value, and Painless reads
+    /// an absent field and an explicit null as one.
+    #[test]
+    fn scalars_and_nulls_compare_on_value() {
+        assert!(condition_eq(Some(&json!("a")), Some(&json!("a"))));
+        assert!(!condition_eq(Some(&json!("a")), Some(&json!("b"))));
+        assert!(condition_eq(None, Some(&Value::Null)));
+        assert!(condition_eq(None, None));
+        assert!(!condition_eq(Some(&json!("a")), None));
+    }
 
     // --- dot_expander ---
 

@@ -676,8 +676,7 @@ impl Transform for Default {
             let _cond = {
                 event.has_value("json.operation.id")
                     && event.has_value("event.id")
-                    && event.get("event.id").filter(|v| !v.is_null())
-                        != event.get("json.operation.id").filter(|v| !v.is_null())
+                    && !condition_eq(event.get("event.id"), event.get("json.operation.id"))
             };
             if _cond {
                 if let Some(v) = event.get("json.operation.id").cloned() {

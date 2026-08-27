@@ -1549,12 +1549,10 @@ impl Transform for Default {
             let _cond = {
                 event.has_value("cisco.umbrella.identities")
                     && event.has_value("cisco.umbrella.identity_types")
-                    && event
-                        .get("cisco.umbrella.identities.length")
-                        .filter(|v| !v.is_null())
-                        == event
-                            .get("cisco.umbrella.identity_types.length")
-                            .filter(|v| !v.is_null())
+                    && condition_eq(
+                        event.get("cisco.umbrella.identities.length"),
+                        event.get("cisco.umbrella.identity_types.length"),
+                    )
             };
             if _cond {
                 // Painless script

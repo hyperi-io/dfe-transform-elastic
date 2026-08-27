@@ -9745,10 +9745,10 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event
-                    .get("_temp_.cisco.mapped_source_ip")
-                    .filter(|v| !v.is_null())
-                    != event.get("source.ip").filter(|v| !v.is_null())
+                !condition_eq(
+                    event.get("_temp_.cisco.mapped_source_ip"),
+                    event.get("source.ip"),
+                )
             };
             if _cond {
                 let v = json!(
@@ -9773,10 +9773,10 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event
-                    .get("_temp_.cisco.mapped_source_port")
-                    .filter(|v| !v.is_null())
-                    != event.get("source.port").filter(|v| !v.is_null())
+                !condition_eq(
+                    event.get("_temp_.cisco.mapped_source_port"),
+                    event.get("source.port"),
+                )
             };
             if _cond {
                 let v = json!(
@@ -9802,10 +9802,10 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event
-                    .get("_temp_.cisco.mapped_destination_ip")
-                    .filter(|v| !v.is_null())
-                    != event.get("destination.ip").filter(|v| !v.is_null())
+                !condition_eq(
+                    event.get("_temp_.cisco.mapped_destination_ip"),
+                    event.get("destination.ip"),
+                )
             };
             if _cond {
                 let v = json!(
@@ -9830,10 +9830,10 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event
-                    .get("_temp_.cisco.mapped_destination_port")
-                    .filter(|v| !v.is_null())
-                    != event.get("destination.port").filter(|v| !v.is_null())
+                !condition_eq(
+                    event.get("_temp_.cisco.mapped_destination_port"),
+                    event.get("destination.port"),
+                )
             };
             if _cond {
                 let v = json!(

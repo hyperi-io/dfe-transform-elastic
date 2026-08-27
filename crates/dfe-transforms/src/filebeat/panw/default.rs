@@ -11427,10 +11427,10 @@ impl Transform for Default {
 
             let _cond = {
                 event.has_value("panw.panos.network.nat.community_id")
-                    && event
-                        .get("panw.panos.network.nat.community_id")
-                        .filter(|v| !v.is_null())
-                        != event.get("network.community_id").filter(|v| !v.is_null())
+                    && !condition_eq(
+                        event.get("panw.panos.network.nat.community_id"),
+                        event.get("network.community_id"),
+                    )
             };
             if _cond {
                 event.append(
