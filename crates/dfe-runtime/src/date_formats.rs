@@ -10,7 +10,8 @@
 
 use std::borrow::Cow;
 
-use chrono::{DateTime, Datelike, FixedOffset, NaiveDate, NaiveDateTime, TimeZone, Utc};
+use chrono::{DateTime, Datelike, FixedOffset, NaiveDate, NaiveDateTime, Offset, TimeZone, Utc};
+use chrono_tz::Tz;
 
 /// The output shape: ISO 8601 with milliseconds, ending in `Z`.
 ///
@@ -55,7 +56,7 @@ pub fn parse_date_out(
     // which for cisco/ftd removes `event.timezone` and re-parses as UTC.
     // Falling back to UTC here instead kept a field Elasticsearch had deleted.
     if let Some(zone) = timezone.filter(|zone| !zone.trim().is_empty())
-        && processor_zone_offset(zone).is_none()
+        && resolve_zone(zone).is_none()
     {
         return None;
     }
@@ -70,9 +71,12 @@ pub fn parse_date_out(
     // UTC writes `Z` an offset out. A zone the text named rather than the
     // processor still renders in UTC, which is what the corpus carries, and a
     // configured zone that IS UTC renders `Z` rather than `+00:00`.
-    let configured = timezone.and_then(zone_offset).filter(|zone| {
-        zone.local_minus_utc() != 0 && output_format.is_none() && !offset_in_text(input)
-    });
+    let configured = timezone
+        .and_then(resolve_zone)
+        .map(|zone| zone.offset_at(parsed.to_utc()))
+        .filter(|offset| {
+            offset.local_minus_utc() != 0 && output_format.is_none() && !offset_in_text(input)
+        });
 
     if let Some(zone) = configured {
         return Some(parsed.with_timezone(&zone).format(OFFSET_OUT).to_string());
@@ -246,14 +250,12 @@ fn parse_java_exact(
     // A zone NAME cannot be resolved to an offset by chrono, so the text is
     // re-parsed without it and the trailing abbreviation is read separately.
     let (naive, named) = parse_naive(&input, &chrono)?;
-    let offset = named
+    named
         .and_then(|zone| zone_offset(&zone))
-        .or_else(|| timezone.and_then(processor_zone_offset))
-        .unwrap_or(UTC_OFFSET);
-    offset
-        .from_local_datetime(&naive)
-        .earliest()
-        .map(|dt| dt.fixed_offset())
+        .map(ProcessorZone::Fixed)
+        .or_else(|| timezone.and_then(resolve_zone))
+        .unwrap_or(ProcessorZone::Fixed(UTC_OFFSET))
+        .read_local(&naive)
 }
 
 /// A naive datetime plus the zone name the pattern asked for, if any.
@@ -338,12 +340,54 @@ const JAVA_SHORT_ZONE_IDS: [&str; 28] = [
     "SST", "VST",
 ];
 
-/// The offset a PROCESSOR's `timezone` setting names.
+/// A zone a PROCESSOR's `timezone` setting names, resolved as far as it can be
+/// without an instant.
 ///
-/// Stricter than [`zone_offset`], because this is `ZoneId.of` rather than a
-/// format's zone-name parse, and it rejects everything Java rejects.
-fn processor_zone_offset(zone: &str) -> Option<FixedOffset> {
+/// An IANA region zone has no single offset -- `America/Denver` is -07:00 in
+/// January and -06:00 in July -- so it stays a zone until an instant picks the
+/// offset. Everything else reduces to a fixed one at resolve time.
+#[derive(Clone, Copy)]
+enum ProcessorZone {
+    Fixed(FixedOffset),
+    Named(Tz),
+}
+
+impl ProcessorZone {
+    /// The offset this zone is at `instant`.
+    fn offset_at(self, instant: DateTime<Utc>) -> FixedOffset {
+        match self {
+            Self::Fixed(offset) => offset,
+            Self::Named(tz) => instant.with_timezone(&tz).offset().fix(),
+        }
+    }
+
+    /// Read `naive` as a local time IN this zone.
+    fn read_local(self, naive: &NaiveDateTime) -> Option<DateTime<FixedOffset>> {
+        match self {
+            Self::Fixed(offset) => offset.from_local_datetime(naive).earliest(),
+            Self::Named(tz) => tz.from_local_datetime(naive).earliest().map(|dt| {
+                // A local time inside a spring-forward gap does not exist and
+                // `earliest` is None there, which is Java's own behaviour too.
+                dt.fixed_offset()
+            }),
+        }
+    }
+}
+
+/// The zone a PROCESSOR's `timezone` setting names, or `None` if `ZoneId.of`
+/// would throw on it.
+///
+/// Stricter than [`zone_offset`] for the bare abbreviations, because this is
+/// `ZoneId.of` rather than a format's zone-name parse. Wider for region ids,
+/// because `ZoneId.of` accepts every IANA name and reading one as unknown
+/// failed the date and ran the processor's `on_failure` -- which for arista
+/// removes `event.timezone` and re-parses as UTC, losing the field
+/// Elasticsearch keeps.
+fn resolve_zone(zone: &str) -> Option<ProcessorZone> {
     let trimmed = zone.trim();
+    if trimmed.contains('/') {
+        return trimmed.parse::<Tz>().ok().map(ProcessorZone::Named);
+    }
     let alphabetic = trimmed.chars().all(|c| c.is_ascii_alphabetic());
     if alphabetic
         && !matches!(trimmed, "UTC" | "GMT" | "Z" | "UT" | "Zulu")
@@ -351,7 +395,7 @@ fn processor_zone_offset(zone: &str) -> Option<FixedOffset> {
     {
         return None;
     }
-    zone_offset(trimmed)
+    zone_offset(trimmed).map(ProcessorZone::Fixed)
 }
 
 /// The offset a zone spelling names, for the spellings that carry one.
@@ -518,6 +562,68 @@ mod tests {
         assert!(
             dated.starts_with("2018-10-10T12:34:56.000"),
             "the year in the text must win: {dated}"
+        );
+    }
+
+    /// `ZoneId.of` accepts every IANA region id, so a processor configured
+    /// with one must parse rather than run its `on_failure`. Verbatim from
+    /// `pipelines/arista_ngfw/log/default.yml`, whose agent config sets
+    /// `tz_offset: America/Denver`.
+    #[test]
+    fn an_iana_region_zone_resolves() {
+        const FORMATS: [&str; 2] = ["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"];
+
+        let out = parse_date_out(
+            "2023-05-22 16:32:28.771",
+            &FORMATS,
+            Some("America/Denver"),
+            None,
+        )
+        .unwrap();
+        assert_eq!(out, "2023-05-22T16:32:28.771-06:00");
+    }
+
+    /// The offset is read AT THE EVENT, which is the whole reason the zone
+    /// cannot be a table of fixed offsets: Denver is -06:00 on daylight time
+    /// in May and -07:00 on standard time in January, and both dates go
+    /// through the same configuration.
+    #[test]
+    fn a_region_zone_follows_daylight_saving() {
+        const FORMATS: [&str; 1] = ["yyyy-MM-dd HH:mm:ss.SSS"];
+
+        let summer = parse_date_out(
+            "2023-07-04 12:00:00.000",
+            &FORMATS,
+            Some("America/Denver"),
+            None,
+        )
+        .unwrap();
+        let winter = parse_date_out(
+            "2023-01-04 12:00:00.000",
+            &FORMATS,
+            Some("America/Denver"),
+            None,
+        )
+        .unwrap();
+
+        assert_eq!(summer, "2023-07-04T12:00:00.000-06:00");
+        assert_eq!(winter, "2023-01-04T12:00:00.000-07:00");
+    }
+
+    /// A region id Java does not know still fails, so the processor's
+    /// `on_failure` runs exactly where Elasticsearch runs it.
+    #[test]
+    fn an_unknown_region_zone_still_fails() {
+        const FORMATS: [&str; 1] = ["yyyy-MM-dd HH:mm:ss.SSS"];
+
+        assert!(
+            parse_date_out(
+                "2023-05-22 16:32:28.771",
+                &FORMATS,
+                Some("Middle/Earth"),
+                None
+            )
+            .is_none()
         );
     }
 

@@ -189,8 +189,11 @@ fancy-regex = ">=0.13"
 # `host.tld` got a registered domain Elasticsearch writes nothing for.
 psl = ">=2.1"
 
-# Timestamp handling
+# Timestamp handling. chrono-tz carries the IANA database, which chrono
+# deliberately does not ship: a pipeline configured with `America/Denver`
+# needs the offset AT THE EVENT, and that moves with daylight saving.
 chrono = { version = ">=0.4", features = ["serde"] }
+chrono-tz = { version = ">=0.10, <0.11" }
 
 # GeoIP enrichment (mmap for long-running apps, simdutf8 for SIMD UTF-8 validation)
 maxminddb = { version = ">=0.24", features = ["mmap", "simdutf8"] }
