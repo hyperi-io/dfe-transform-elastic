@@ -2508,26 +2508,60 @@ fn parse_token_count(script: &str) -> Option<KnownShape> {
     })
 }
 
-/// Read `def <l> = []; <l>.add(ctx.<s>); ctx.<t> = <l>;` as a
-/// [`KnownShape::WrapValueInList`].
+/// Read `def <l> = []; <l>.add(ctx.<s>); ctx.<t> = <l>;` or its one-line
+/// spelling `ctx.<t> = [ctx.<s>];` as a [`KnownShape::WrapValueInList`].
 fn parse_wrap_value_in_list(script: &str) -> Option<KnownShape> {
     use crate::painless_params::clean_path;
 
-    let add_at = script.find(".add(ctx.")?;
-    let after = &script[add_at + ".add(ctx.".len()..];
-    let (source, _) = after.split_once(')')?;
+    let (source, target) = if let Some(at) = script.find(" = [ctx.") {
+        // The list literal holds the source outright, so there is no local.
+        let source = script[at + " = [ctx.".len()..].split(']').next()?;
+        let head = &script[..at];
+        (
+            clean_path(source),
+            clean_path(&head[head.rfind("ctx.")? + 4..]),
+        )
+    } else {
+        let add_at = script.find(".add(ctx.")?;
+        let after = &script[add_at + ".add(ctx.".len()..];
+        let (source, _) = after.split_once(')')?;
 
-    let local = script[..add_at]
-        .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
-        .next()?;
-    let store = format!(" = {local};");
-    let store_at = script.rfind(&store)?;
-    let before = &script[..store_at];
-    let target = clean_path(&before[before.rfind("ctx.")? + 4..]);
+        let local = script[..add_at]
+            .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
+            .next()?;
+        let store = format!(" = {local};");
+        let store_at = script.rfind(&store)?;
+        let before = &script[..store_at];
+        (
+            clean_path(source),
+            clean_path(&before[before.rfind("ctx.")? + 4..]),
+        )
+    };
+
+    // A multi-element literal reads as one unusable path, and the runner would
+    // then claim the script and write nothing.
+    if !source
+        .chars()
+        .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_'))
+    {
+        return None;
+    }
+
+    // The removal has to name the source's OWN parent, or an unrelated field
+    // with the same leaf name would take the source's place.
+    let (parent, leaf) = source.rsplit_once('.').unwrap_or(("", source.as_str()));
+    let owner = if parent.is_empty() {
+        "ctx".to_string()
+    } else {
+        format!("ctx.{parent}")
+    };
+    let remove_source = script.contains(&format!("{owner}.remove('{leaf}')"))
+        || script.contains(&format!("{owner}.remove(\"{leaf}\")"));
 
     Some(KnownShape::WrapValueInList {
-        source: clean_path(source),
+        source,
         target,
+        remove_source,
     })
 }
 
@@ -7087,6 +7121,124 @@ fn run_scale_field(event: &mut Event, shape: &ScaleField) -> bool {
     true
 }
 
+/// A recursive walk normalising every suspected timestamp under one subtree to
+/// milliseconds, keyed on the FIELD NAME rather than on the value.
+///
+/// `amazon_security_lake` and `aws_securityhub` ship the same script over their
+/// own subtree, so both the root and the suffixes come off the text.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct MillisecondLadder {
+    root: String,
+    suffixes: Vec<String>,
+}
+
+/// Read the walk's root and the name suffixes it converts.
+///
+/// Every rung of the vendor's magnitude ladder has to be present, because the
+/// arithmetic below is hard-coded: a script laddering to different thresholds
+/// must fall through rather than have this one's conversion applied to it.
+fn parse_millisecond_ladder(script: &str) -> Option<MillisecondLadder> {
+    const RUNGS: [&str; 7] = [
+        "1e19",
+        "1e16",
+        "1e13",
+        "1e10",
+        "/ 1000000",
+        "/ 1000",
+        "* 1000",
+    ];
+    if !RUNGS.iter().all(|rung| script.contains(rung)) {
+        return None;
+    }
+
+    let mut suffixes: Vec<String> = Vec::new();
+    for tail in script.split(".endsWith(").skip(1) {
+        let rest = tail.trim_start();
+        let Some(quote) = rest.chars().next().filter(|c| matches!(c, '\'' | '"')) else {
+            continue;
+        };
+        let inner = &rest[quote.len_utf8()..];
+        let Some(end) = inner.find(quote) else {
+            continue;
+        };
+        let literal = &inner[..end];
+        if !literal.is_empty() && !suffixes.iter().any(|s| s == literal) {
+            suffixes.push(literal.to_string());
+        }
+    }
+    if suffixes.is_empty() {
+        return None;
+    }
+
+    // The walk's entry point is the LAST `(ctx.`; the helpers above it name no
+    // path at all.
+    let at = script.rfind("(ctx.")?;
+    let root = script[at + "(ctx.".len()..].split(')').next()?;
+    if root.is_empty()
+        || !root
+            .chars()
+            .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_' | '?'))
+    {
+        return None;
+    }
+
+    Some(MillisecondLadder {
+        root: crate::painless_params::clean_path(root),
+        suffixes,
+    })
+}
+
+/// Normalise every suspected timestamp under the walk's root.
+fn run_millisecond_ladder(event: &mut Event, shape: &MillisecondLadder) -> bool {
+    if let Some(root) = crate::painless_params::pointer_mut(event, &shape.root) {
+        scale_suspected_timestamps(root, &shape.suffixes);
+    }
+    true
+}
+
+/// The vendor's `processFields` recurses into Maps ONLY, which is why a
+/// `created_time` inside a list keeps whatever unit it arrived in.
+fn scale_suspected_timestamps(value: &mut Value, suffixes: &[String]) {
+    let Value::Object(entries) = value else {
+        return;
+    };
+    for (name, member) in entries {
+        if member.is_object() {
+            scale_suspected_timestamps(member, suffixes);
+        } else if suffixes
+            .iter()
+            .any(|suffix| name.ends_with(suffix.as_str()))
+            && let Some(millis) = as_milliseconds(member)
+        {
+            *member = Value::from(millis);
+        }
+    }
+}
+
+/// One number read as milliseconds from its own magnitude.
+///
+/// The vendor's `1e19` throw is unreachable: `(long)1e19` saturates to
+/// `Long.MAX_VALUE` in Java, so only that exact value trips it.
+fn as_milliseconds(value: &Value) -> Option<i64> {
+    // Painless truncates through `Number.longValue()`, so a fractional value
+    // converts as its whole part.
+    #[allow(clippy::cast_possible_truncation)]
+    let number = value
+        .as_i64()
+        .or_else(|| value.as_f64().map(|n| n as i64))?;
+
+    Some(if number >= 10_000_000_000_000_000 {
+        number / 1_000_000
+    } else if number >= 10_000_000_000_000 {
+        number / 1_000
+    } else if number >= 10_000_000_000 {
+        number
+    } else {
+        // Java's long arithmetic wraps rather than trapping.
+        number.wrapping_mul(1_000)
+    })
+}
+
 /// `double <v> = ((Number) ctx.<source>).doubleValue(); ctx.<target> = (long)
 /// Math.round(<v> * <factor>);`
 ///
@@ -8223,6 +8375,9 @@ pub(crate) enum KnownShape {
     WrapValueInList {
         source: String,
         target: String,
+        /// The script drops the source's own key once it is wrapped, which is
+        /// what MOVES a value into its plural sibling rather than copying it.
+        remove_source: bool,
     },
     LastElement {
         array: String,
@@ -8282,6 +8437,7 @@ pub(crate) enum KnownShape {
     CollectMapValues,
     GuardedReplace,
     ScaleField(Box<ScaleField>),
+    MillisecondLadder(Box<MillisecondLadder>),
     RoundedScale(Box<RoundedScale>),
     NanosBetween(Box<NanosBetween>),
     ProcessNameFromCommandLine,
@@ -8329,6 +8485,18 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_nanos_between(normalised)
     {
         shapes.push(KnownShape::NanosBetween(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: every number under one subtree whose FIELD NAME reads as a
+    // timestamp, normalised to milliseconds by magnitude. Leads with the other
+    // rescale shapes because the `GuardedDivide` and `ScaleField` catch-alls
+    // read this ladder's `/ 1000` and stop there, rescaling one field.
+    if normalised.contains("instanceof Number")
+        && normalised.contains(".endsWith(")
+        && let Some(shape) = parse_millisecond_ladder(normalised)
+    {
+        shapes.push(KnownShape::MillisecondLadder(Box::new(shape)));
         return shapes;
     }
 
@@ -8987,10 +9155,12 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     }
 
     // Pattern: one value wrapped in a one-element list -- mimecast's
-    // attachments promotion. No loop, or it is the prepend shape below.
-    if (normalised.contains("= [];") || normalised.contains("new ArrayList()"))
-        && normalised.contains(".add(ctx.")
-        && !normalised.contains("for (")
+    // attachments promotion, and amazon_security_lake's singular `resource`
+    // moved onto `resources`. No loop, or it is the prepend shape below.
+    if !normalised.contains("for (")
+        && (normalised.contains(" = [ctx.")
+            || ((normalised.contains("= [];") || normalised.contains("new ArrayList()"))
+                && normalised.contains(".add(ctx.")))
         && let Some(shape) = parse_wrap_value_in_list(normalised)
     {
         shapes.push(shape);
@@ -9649,9 +9819,16 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             separator,
             target,
         } => run_token_count(event, source, separator, target),
-        KnownShape::WrapValueInList { source, target } => {
+        KnownShape::WrapValueInList {
+            source,
+            target,
+            remove_source,
+        } => {
             if let Some(value) = event.get(source).cloned() {
                 let _ = event.set(target, Value::Array(vec![value]));
+                if *remove_source {
+                    event.remove(source);
+                }
             }
             true
         }
@@ -9743,6 +9920,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::CollectMapValues => try_collect_map_values(event, normalised),
         KnownShape::GuardedReplace => try_guarded_replace(event, normalised),
         KnownShape::ScaleField(shape) => run_scale_field(event, shape),
+        KnownShape::MillisecondLadder(shape) => run_millisecond_ladder(event, shape),
         KnownShape::RoundedScale(shape) => run_rounded_scale(event, shape),
         KnownShape::NanosBetween(shape) => run_nanos_between(event, shape),
         KnownShape::ProcessNameFromCommandLine => run_process_name_from_command_line(event),
@@ -13084,5 +13262,134 @@ def event_timezone = get_timezone(ctx);
         }));
         assert!(try_known_painless(&mut already_set, script));
         assert_eq!(already_set.get("source.domain"), Some(&json!("keep-me")));
+    }
+
+    /// Verbatim from `pipelines/amazon_security_lake/event/default.yml`, tagged
+    /// `convert_timestamps_to_milliseconds`. `aws_securityhub/finding` ships
+    /// the same script over `ctx.aws_securityhub.finding`.
+    const CONVERT_TIMESTAMPS: &str = r#"def convertToMilliseconds(long timestamp) {\n  if ((long)1e19 - 1 < timestamp) {\n    throw new IllegalArgumentException(\"Timestamp format not recognized: \" + timestamp);\n  } else if ((long)1e16 - 1 < timestamp) {\n    return timestamp / 1000000;  // Convert nanoseconds to milliseconds\n  } else if ((long)1e13 - 1 < timestamp) {\n    return timestamp / 1000;  // Convert microseconds to milliseconds\n  } else if ((long)1e10 - 1 < timestamp) {\n    return timestamp;  // Already in milliseconds, no conversion needed\n  } else {\n    return timestamp * 1000;  // Convert seconds to milliseconds\n  }\n}\ndef processFields(Map fields) {\n  if (fields == null) {\n    return null;\n  }\n  for (entry in fields.entrySet()) {\n    def fieldName = entry.getKey();\n    def fieldValue = entry.getValue();\n    // Check if the field is a nested object (Map)\n    if (fieldValue instanceof Map) {\n      // Recursively process nested objects\n      processFields((Map) fieldValue);\n    } else if (fieldName.endsWith('time') || fieldName.endsWith('_time')) {\n      // If the field name ends with \"time\" or \"_time\" and is a number, convert it\n      if (fieldValue instanceof Number) {\n        fields[fieldName] = convertToMilliseconds(((Number) fieldValue).longValue());\n      }\n    }\n  }\n  return null;\n} processFields(ctx.ocsf);"#;
+
+    /// Every magnitude band lands on milliseconds, and the walk recurses into
+    /// nested objects only -- `test-findings[1]`'s
+    /// `vulnerabilities[].cve.created_time` sits inside a list and keeps its
+    /// microseconds, which is what Elasticsearch's own output shows.
+    #[test]
+    fn suspected_timestamps_normalise_to_milliseconds_by_magnitude() {
+        let mut event = Event::new(json!({ "ocsf": {
+            "time": 1_722_327_712_967_320_i64,
+            "end_time": 1_722_327_712_967_i64,
+            "start_time": 1_722_327_712_967_320_000_i64,
+            "logged_time": 1_722_327_712_i64,
+            "metadata": { "processed_time": 1_722_327_712_967_320_i64 },
+            "original_time": "scope institutions int",
+            "timezone_offset": 17,
+            "vulnerabilities": [{ "cve": { "created_time": 1_722_327_712_965_081_i64 } }],
+        }}));
+
+        assert!(try_known_painless(&mut event, CONVERT_TIMESTAMPS));
+        assert_eq!(event.get("ocsf.time"), Some(&json!(1_722_327_712_967_i64)));
+        assert_eq!(
+            event.get("ocsf.start_time"),
+            Some(&json!(1_722_327_712_967_i64))
+        );
+        assert_eq!(
+            event.get("ocsf.metadata.processed_time"),
+            Some(&json!(1_722_327_712_967_i64))
+        );
+        assert_eq!(
+            event.get("ocsf.end_time"),
+            Some(&json!(1_722_327_712_967_i64)),
+            "already milliseconds"
+        );
+        assert_eq!(
+            event.get("ocsf.logged_time"),
+            Some(&json!(1_722_327_712_000_i64)),
+            "seconds"
+        );
+        assert_eq!(
+            event.get("ocsf.original_time"),
+            Some(&json!("scope institutions int")),
+            "a string is not a Number"
+        );
+        assert_eq!(event.get("ocsf.timezone_offset"), Some(&json!(17)));
+        assert_eq!(
+            event.get("ocsf.vulnerabilities.0.cve.created_time"),
+            Some(&json!(1_722_327_712_965_081_i64)),
+            "a list member is not walked"
+        );
+    }
+
+    /// The walk is rooted where the script says, so the securityhub copy over
+    /// its own subtree converts and nothing outside it is touched.
+    #[test]
+    fn the_walk_is_rooted_where_the_script_names() {
+        let script = CONVERT_TIMESTAMPS.replace("ctx.ocsf", "ctx.aws_securityhub.finding");
+        let mut event = Event::new(json!({
+            "aws_securityhub": { "finding": { "CreatedAt_time": 1_722_327_712_i64 } },
+            "ocsf": { "time": 1_722_327_712_i64 },
+        }));
+
+        assert!(try_known_painless(&mut event, &script));
+        assert_eq!(
+            event.get("aws_securityhub.finding.CreatedAt_time"),
+            Some(&json!(1_722_327_712_000_i64))
+        );
+        assert_eq!(event.get("ocsf.time"), Some(&json!(1_722_327_712_i64)));
+    }
+
+    /// Verbatim from the same pipeline, tagged `script_ocsf_resources`: the
+    /// singular object MOVES onto its plural sibling, so the source key goes
+    /// with it and the later `foreach ocsf.resources` has something to walk.
+    #[test]
+    fn the_singular_resource_moves_onto_the_resources_array() {
+        let script = r"ctx.ocsf.resources = [ctx.ocsf.resource];\nctx.ocsf.remove('resource');";
+        let mut event = Event::new(json!({ "ocsf": { "resource": {
+            "type": "carb le multimedia",
+            "owner": { "name": "Dude", "uid": "c6b0192a-4e4c-11ef-90f9-0242ac110005" },
+        }}}));
+
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("ocsf.resources"),
+            Some(&json!([{
+                "type": "carb le multimedia",
+                "owner": { "name": "Dude", "uid": "c6b0192a-4e4c-11ef-90f9-0242ac110005" },
+            }]))
+        );
+        assert_eq!(event.get("ocsf.resource"), None);
+    }
+
+    /// A literal holding more than one element is a different shape, and
+    /// claiming it would write an unresolvable path -- nothing at all.
+    #[test]
+    fn a_multi_element_list_literal_is_not_a_wrap() {
+        assert!(parse_wrap_value_in_list("ctx.a.list = [ctx.a.one, ctx.a.two];").is_none());
+    }
+
+    /// The removal has to be the source's own, or a same-named leaf under a
+    /// different parent would take the source's field with it.
+    #[test]
+    fn a_removal_under_another_parent_leaves_the_source() {
+        let script = r"ctx.ocsf.resources = [ctx.ocsf.resource];\nctx.other.remove('resource');";
+        let mut event = Event::new(json!({ "ocsf": { "resource": { "type": "t" } } }));
+
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get("ocsf.resource"), Some(&json!({ "type": "t" })));
+    }
+
+    /// Verbatim from `pipelines/mimecast/cloud_integrated_logs/default.yml`,
+    /// tagged `promote_email_attachments_to_array`: the local-variable spelling
+    /// removes nothing, because it wraps a field in place.
+    #[test]
+    fn the_local_variable_wrap_keeps_its_source() {
+        let script = r"def attachments = [];\nattachments.add(ctx.email.attachments);\nctx.email.attachments = attachments;\n";
+        let mut event =
+            Event::new(json!({ "email": { "attachments": { "file": { "name": "a.pdf" } } } }));
+
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("email.attachments"),
+            Some(&json!([{ "file": { "name": "a.pdf" } }]))
+        );
     }
 }
