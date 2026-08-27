@@ -116,9 +116,10 @@ known_different:
     sources: [aws, cisco_umbrella]
     why: The other half of the same split.
 
-# Elasticsearch is wrong here and we are right, so these never go away. Every
-# entry names the bug, because a divergence without one is indistinguishable
-# from a defect of our own.
+# Permanent divergences, each with its reason named -- a divergence without one
+# is indistinguishable from a defect of our own. Most are Elasticsearch being
+# wrong where we are right. The rest is text only the vendor's own runtime can
+# produce, which no amount of work here will reproduce.
 corrected:
   - prefix: event.duration
     sources: [azure]
@@ -135,6 +136,13 @@ corrected:
     why: >-
       The other half of the cisco_nexus date failure -- Elastic's own error
       text, which we have nothing to report.
+  - prefix: error.message
+    sources: [symantec_endpoint_security]
+    why: >-
+      51 events carry a non-JSON `event.original`, so both engines fail the
+      same json processor and report it in their own words: Jackson's
+      "Unrecognized token" with a source excerpt, against serde_json's. The
+      failure agrees; only the wording is the runtime's own.
 
 # ECS fields whose values are sets. Same members in a different sequence is
 # equality, not a difference.

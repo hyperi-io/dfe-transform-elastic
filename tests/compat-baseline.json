@@ -44,7 +44,7 @@
     "qualys_vmdr": { "events": 0, "events_total": 28, "fields_wrong": 226 },
     "qualys_was": { "events": 0, "events_total": 15, "fields_wrong": 101 },
     "sentinel_one": { "events": 68, "events_total": 68, "fields_wrong": 0 },
-    "symantec_endpoint_security": { "events": 1, "events_total": 58, "fields_wrong": 72 },
+    "symantec_endpoint_security": { "events": 52, "events_total": 58, "fields_wrong": 21 },
     "tenable_sc": { "events": 3, "events_total": 16, "fields_wrong": 106 },
     "ti_socradar_feeds": { "events": 0, "events_total": 5, "fields_wrong": 34 },
     "tines": { "events": 248, "events_total": 248, "fields_wrong": 0 },
