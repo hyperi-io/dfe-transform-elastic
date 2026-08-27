@@ -506,12 +506,70 @@ impl Pattern {
     }
 
     /// Replace every match, leaving the input untouched when there are none.
+    ///
+    /// The replacement is read the way Java reads it, because that is what the
+    /// vendor wrote it for: `$1` followed by another digit is group 1 and a
+    /// LITERAL digit unless a group of the longer number exists. Rust takes the
+    /// longest run of word characters as the name, so checkpoint's
+    /// `$10$2:$3` over three groups asked for group 10, got nothing, and
+    /// dropped the sign off every offset it normalised.
     #[must_use]
     pub fn replace_all<'t>(&self, text: &'t str, replacement: &str) -> std::borrow::Cow<'t, str> {
+        let bounded = self.bind_group_numbers(replacement);
         match self {
-            Self::Fast(re) => re.replace_all(text, replacement),
-            Self::Backtracking(re) => re.replace_all(text, replacement),
+            Self::Fast(re) => re.replace_all(text, bounded.as_ref()),
+            Self::Backtracking(re) => re.replace_all(text, bounded.as_ref()),
         }
+    }
+
+    /// Brace every `$N` whose digits run past the groups this pattern has.
+    ///
+    /// Borrows when no reference is ambiguous, which is every replacement bar
+    /// a handful in the whole catalogue.
+    fn bind_group_numbers<'r>(&self, replacement: &'r str) -> std::borrow::Cow<'r, str> {
+        let ambiguous = |bytes: &[u8], at: usize| {
+            bytes.get(at + 1).is_some_and(u8::is_ascii_digit)
+                && bytes.get(at + 2).is_some_and(|b| b.is_ascii_alphanumeric())
+        };
+        let bytes = replacement.as_bytes();
+        if !replacement
+            .match_indices('$')
+            .any(|(at, _)| ambiguous(bytes, at))
+        {
+            return std::borrow::Cow::Borrowed(replacement);
+        }
+
+        let groups = self.capture_names().len();
+        let mut out = String::with_capacity(replacement.len() + 8);
+        let mut rest = replacement;
+        while let Some(at) = rest.find('$') {
+            out.push_str(&rest[..at]);
+            rest = &rest[at + 1..];
+            let digits = rest
+                .find(|c: char| !c.is_ascii_digit())
+                .unwrap_or(rest.len());
+            if digits == 0 {
+                out.push('$');
+                continue;
+            }
+            // Java keeps taking digits while the number is still a group it
+            // has; the rest of them are text.
+            let mut take = 0;
+            while take < digits
+                && rest[..=take]
+                    .parse::<usize>()
+                    .is_ok_and(|number| number < groups)
+            {
+                take += 1;
+            }
+            let taken = take.max(1);
+            out.push_str("${");
+            out.push_str(&rest[..taken]);
+            out.push('}');
+            rest = &rest[taken..];
+        }
+        out.push_str(rest);
+        std::borrow::Cow::Owned(out)
     }
 
     /// Split on every match.
@@ -585,6 +643,41 @@ pub fn regex(pattern: &str) -> &'static Pattern {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
+
+    /// Verbatim from `pipelines/checkpoint/firewall/default.yml`: the offset
+    /// normaliser writes group 1 and a literal zero, which Rust would read as
+    /// group 10 and drop.
+    #[test]
+    fn a_group_reference_stops_where_the_groups_do() {
+        let compiled = grok("([+-])([0-9]):?([0-9]{2})");
+        assert_eq!(compiled.regex.replace_all("-5:00", "$10$2:$3"), "-05:00");
+        assert_eq!(compiled.regex.replace_all("+5:30", "$10$2:$3"), "+05:30");
+
+        // A reference that is not ambiguous is passed through untouched.
+        let pair = grok("([+-][0-9]{2})([0-9]{2})");
+        assert_eq!(pair.regex.replace_all("-0500", "$1:$2"), "-05:00");
+    }
+
+    /// Verbatim from `pipelines/checkpoint/firewall/default.yml`: the RFC5424
+    /// timestamp carries its offset behind an extra `-`, which the pattern
+    /// eats so the offset lands in its own field rather than in the timestamp.
+    #[test]
+    fn a_doubled_dash_leaves_the_offset_in_its_own_field() {
+        let compiled = grok(
+            "%{SYSLOG5424PRI}%{NONNEGINT:syslog5424_ver} +(?:(?:(?P<syslog5424_ts>\
+             (?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?))\
+             (?:-?%{ISO8601_TIMEZONE:_temp_.tz})?)|-) +(?:%{SYSLOG5424PRINTASCII:syslog5424_host}|-)",
+        );
+
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into("<85>1 2023-01-13T10:10:16--5:00 172.16.2.9", &mut event)
+                .expect("extraction"),
+        );
+        assert_eq!(event.get_str("syslog5424_ts"), Some("2023-01-13T10:10:16"));
+        assert_eq!(event.get_str("_temp_.tz"), Some("-5:00"));
+    }
 
     /// Java's `$` matches before a final line terminator and Rust's does not,
     /// so a vendor line still carrying its newline failed every anchored
