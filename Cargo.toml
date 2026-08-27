@@ -133,6 +133,7 @@ scalo = { version = ">=2.10.9, <3", features = [
     "metrics",
     "scaling",
     "service-metrics",
+    "version-check",
 ] }
 
 # The metric handle types (Counter/Gauge/Histogram) that MetricsManager hands
