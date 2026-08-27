@@ -594,14 +594,123 @@ fn fingerprint_bytes(value: &Value, out: &mut Vec<u8>) {
 /// and never hashes the names themselves.
 #[must_use]
 pub fn fingerprint_default(values: &[Value]) -> String {
-    use base64::Engine as _;
     use sha1::{Digest, Sha1};
 
-    let mut bytes = Vec::new();
+    encode_digest(&Sha1::digest(fingerprint_payload(values, "")))
+}
+
+/// The digest for a named `method`, with `salt` prepended to the payload.
+///
+/// The catalogue asks for `SHA-256` in 21 pipelines, `MurmurHash3` in three
+/// and `MD5` in one.
+///
+/// # Errors
+///
+/// Names a method the runtime cannot produce, which is `MD5` -- no MD5
+/// implementation is vendored, and one is not worth hand-rolling for the
+/// single pipeline that asks.
+pub fn fingerprint_with(
+    values: &[Value],
+    method: &str,
+    salt: &str,
+) -> std::result::Result<String, String> {
+    use sha1::{Digest, Sha1};
+    use sha2::{Sha256, Sha512};
+
+    let payload = fingerprint_payload(values, salt);
+    Ok(match method {
+        "SHA-1" => encode_digest(&Sha1::digest(&payload)),
+        "SHA-256" => encode_digest(&Sha256::digest(&payload)),
+        "SHA-512" => encode_digest(&Sha512::digest(&payload)),
+        "MurmurHash3" => {
+            let (high, low) = murmur3_x64_128(&payload);
+            let mut bytes = [0u8; 16];
+            bytes[..8].copy_from_slice(&high.to_be_bytes());
+            bytes[8..].copy_from_slice(&low.to_be_bytes());
+            encode_digest(&bytes)
+        }
+        other => return Err(format!("unsupported fingerprint method '{other}'")),
+    })
+}
+
+/// The bytes a fingerprint hashes: the salt, then every value in turn.
+fn fingerprint_payload(values: &[Value], salt: &str) -> Vec<u8> {
+    let mut payload = salt.as_bytes().to_vec();
     for value in values {
-        fingerprint_bytes(value, &mut bytes);
+        fingerprint_bytes(value, &mut payload);
     }
-    base64::engine::general_purpose::STANDARD.encode(Sha1::digest(&bytes))
+    payload
+}
+
+fn encode_digest(digest: &[u8]) -> String {
+    use base64::Engine as _;
+    base64::engine::general_purpose::STANDARD.encode(digest)
+}
+
+/// `MurmurHash3` x64 128-bit at seed 0, returned as its two halves in the
+/// order Elasticsearch writes them.
+///
+/// Hand-written rather than taken from `murmur3` 0.4.1, which is the only
+/// version vendored and does not build on this edition -- it spells `panic!(e)`
+/// and `9...15`. The algorithm is fixed and the engine's own digests pin it.
+fn murmur3_x64_128(data: &[u8]) -> (u64, u64) {
+    const C1: u64 = 0x87c3_7b91_1142_53d5;
+    const C2: u64 = 0x4cf5_ad43_2745_937f;
+
+    fn fmix64(mut k: u64) -> u64 {
+        k ^= k >> 33;
+        k = k.wrapping_mul(0xff51_afd7_ed55_8ccd);
+        k ^= k >> 33;
+        k = k.wrapping_mul(0xc4ce_b9fe_1a85_ec53);
+        k ^= k >> 33;
+        k
+    }
+
+    let (mut h1, mut h2) = (0u64, 0u64);
+    let (blocks, tail) = data.as_chunks::<16>();
+    for block in blocks {
+        let (first, second) = block.split_at(8);
+        let mut k1 = u64::from_le_bytes(first.try_into().unwrap_or_default());
+        let mut k2 = u64::from_le_bytes(second.try_into().unwrap_or_default());
+
+        k1 = k1.wrapping_mul(C1).rotate_left(31).wrapping_mul(C2);
+        h1 ^= k1;
+        h1 = h1.rotate_left(27).wrapping_add(h2);
+        h1 = h1.wrapping_mul(5).wrapping_add(0x52dc_e729);
+
+        k2 = k2.wrapping_mul(C2).rotate_left(33).wrapping_mul(C1);
+        h2 ^= k2;
+        h2 = h2.rotate_left(31).wrapping_add(h1);
+        h2 = h2.wrapping_mul(5).wrapping_add(0x3849_5ab5);
+    }
+
+    let (mut k1, mut k2) = (0u64, 0u64);
+    for (index, byte) in tail.iter().enumerate() {
+        if index < 8 {
+            k1 |= u64::from(*byte) << (8 * index);
+        } else {
+            k2 |= u64::from(*byte) << (8 * (index - 8));
+        }
+    }
+    if tail.len() > 8 {
+        k2 = k2.wrapping_mul(C2).rotate_left(33).wrapping_mul(C1);
+        h2 ^= k2;
+    }
+    if !tail.is_empty() {
+        k1 = k1.wrapping_mul(C1).rotate_left(31).wrapping_mul(C2);
+        h1 ^= k1;
+    }
+
+    let length = data.len() as u64;
+    h1 ^= length;
+    h2 ^= length;
+    h1 = h1.wrapping_add(h2);
+    h2 = h2.wrapping_add(h1);
+    h1 = fmix64(h1);
+    h2 = fmix64(h2);
+    h1 = h1.wrapping_add(h2);
+    h2 = h2.wrapping_add(h1);
+    (h1, h2)
 }
 
 /// Sort an array's elements, the way Elastic's `sort` processor does.
@@ -1673,6 +1782,82 @@ mod tests {
                 "{value}"
             );
         }
+    }
+
+    /// Every method the catalogue asks for, over the same six payloads, and
+    /// every digest read back off Elasticsearch 9.2.2.
+    #[test]
+    fn every_method_matches_the_engine() {
+        let probes = [
+            json!("abc"),
+            json!(""),
+            json!(42),
+            json!({ "user": { "goog-gke-node": "" } }),
+            json!(["a", "b", 1, 2.5, true]),
+            json!("the quick brown fox jumps over the lazy dog, twice over"),
+        ];
+        for (method, wanted) in [
+            (
+                "SHA-1",
+                [
+                    "3TdC7BpNKltWOitirvf8Skb6bMo=",
+                    "W6k8nbDP+T9StSHXQg5D9u2ieE8=",
+                    "/sRTDA6PwOI3ZlQA3Smv+XKzX/U=",
+                    "vP7l3YwKK9Mr+96HYpEj/Of6zVI=",
+                    "woDd6Sys2NjwMnAHPgls6Q9G5vw=",
+                    "6qWlPxLu0S4oZHkpS54dFw/JsrI=",
+                ],
+            ),
+            (
+                "SHA-256",
+                [
+                    "YJ9uNtJAVYUYjVz9dh9AfHzEan0/MUyIJwRp3eMV/NE=",
+                    "bjQLnP+zepicpUTmu3gKLHiQHT+zNzh2hRGjBhevoB0=",
+                    "8INMiB4uAAkzNgEyKXFeZ1EzBs5RBqnRqwEnMzUYU4A=",
+                    "PFusDdBOVhwfy4tmRF8BhsAPYPiiNT/iUFXkyod+nUQ=",
+                    "v6oE/OluPilqemIkARAcnDwLiGhjHTzLI1FFRRajc4U=",
+                    "em2xIq3u1Py5SElyVe5rV/U5MeZ4nXWE+4dpKdcTVvo=",
+                ],
+            ),
+            (
+                "MurmurHash3",
+                [
+                    "fLPgJ47SvqixVKJpLWJP8Q==",
+                    "RhCr5W7/XLVRYi2qePg1gw==",
+                    "sRR5d4WUqD/w5xTps9osGA==",
+                    "FjmoeN/lClaJjOJ9llCalg==",
+                    "sDEqQ+MjnXsNTNY5jvWXeA==",
+                    "TKbYelInHjaOI4MTotTy9w==",
+                ],
+            ),
+        ] {
+            for (value, want) in probes.iter().zip(wanted) {
+                assert_eq!(
+                    fingerprint_with(std::slice::from_ref(value), method, ""),
+                    Ok(want.to_string()),
+                    "{method} over {value}"
+                );
+            }
+        }
+    }
+
+    /// The salt is prepended to the payload, whatever the method.
+    #[test]
+    fn a_salt_prefixes_the_payload() {
+        assert_eq!(
+            fingerprint_with(&[json!("abc")], "SHA-256", "pepper"),
+            Ok("5mj1sW5EFQ22O56c7nfHHHJvLcf2YjtsmhatUq+Ntr0=".to_string())
+        );
+        assert_eq!(
+            fingerprint_with(&[json!("abc")], "MurmurHash3", "pepper"),
+            Ok("3g8ZwiWpayzFDS7mEm9BvQ==".to_string())
+        );
+    }
+
+    /// A method with no implementation is named rather than silently wrong.
+    #[test]
+    fn an_unsupported_method_is_an_error() {
+        assert!(fingerprint_with(&[json!("abc")], "MD5", "").is_err());
     }
 
     /// Two fields hash as one payload, so where they split does not vanish.
