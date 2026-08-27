@@ -177,6 +177,7 @@ pub(crate) enum ParamsShape {
     Replace,
     AddUniqueRow,
     FrameworkPreference,
+    RowOrDefaults(Box<RowOrDefaults>),
 }
 
 /// The one matcher this script's text triggers, or `None`.
@@ -496,6 +497,13 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         return Some(ParamsShape::LookupNormalise);
     }
 
+    // Pattern: a NAMED params table's row fanned onto ctx, with literal
+    // defaults where the key has no row. LAST, so every table matcher above
+    // keeps the scripts it already claims.
+    if let Some(shape) = parse_row_or_defaults(normalised) {
+        return Some(ParamsShape::RowOrDefaults(Box::new(shape)));
+    }
+
     None
 }
 
@@ -653,6 +661,7 @@ pub(crate) fn run_params_shape(
         ParamsShape::Replace => try_replace(event, normalised, params),
         ParamsShape::AddUniqueRow => try_add_unique_row(event, normalised, params),
         ParamsShape::FrameworkPreference => try_framework_preference(event, normalised, params),
+        ParamsShape::RowOrDefaults(shape) => run_row_or_defaults(event, shape, params),
     }
 }
 
@@ -1376,6 +1385,267 @@ fn run_mapping_row(event: &mut Event, shape: &MappingRow, params: &Map<String, V
     for (target, member) in &shape.writes {
         if let Some(held) = row.get(member).filter(|v| !v.is_null()) {
             let _ = event.set(target, held.clone());
+        }
+    }
+    true
+}
+
+/// One column a row fans out, and where it lands.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RowColumn {
+    target: String,
+    member: String,
+    /// The script guards the write on the target still being unset --
+    /// `if (m.containsKey('outcome') && ctx.event.outcome == null)`.
+    only_if_unset: bool,
+}
+
+/// A row of a NAMED params table fanned onto ctx, with a whole set of literal
+/// defaults where the key has no row.
+///
+/// ```painless
+/// def action = ctx.event.action;
+/// ctx.event.kind = 'event';
+/// def m = params.exact.get(action);
+/// if (m != null) {
+///   ctx.event.category = new ArrayList(m.category);
+///   ctx.event.type = new ArrayList(m.type);
+///   if (m.containsKey('outcome') && ctx.event.outcome == null) {
+///     ctx.event.outcome = m.outcome;
+///   }
+/// } else {
+///   ctx.event.category = ['authentication'];
+///   ctx.event.type = ['info'];
+/// }
+/// ```
+///
+/// The whole kolide package categorises this way. Without the shape the
+/// `!= null` catch-all claims the script and runs only the ELSE branch, so
+/// every event with a row comes out carrying the fallback's `kind`,
+/// `category` and `type`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RowOrDefaults {
+    /// The `ctx.` path the lookup key is read from.
+    subject: String,
+    /// The params member holding the table.
+    table: String,
+    /// Literal writes above the branch, which run whether or not the key has
+    /// a row.
+    prelude: Vec<(String, Value)>,
+    columns: Vec<RowColumn>,
+    defaults: Vec<(String, Value)>,
+}
+
+/// Whitespace and `//` comments, skipped.
+pub(crate) fn skip_trivia(mut text: &str) -> &str {
+    loop {
+        text = text.trim_start();
+        let Some(after) = text.strip_prefix("//") else {
+            return text;
+        };
+        text = after.find('\n').map_or("", |at| &after[at + 1..]);
+    }
+}
+
+/// The test and both blocks of the `if (...) { ... } else { ... }` at the head
+/// of `text`, plus whatever follows it.
+fn if_else_blocks(text: &str) -> Option<(&str, &str, &str, &str)> {
+    let (guard, after) = balanced(skip_trivia(text), '(', ')')?;
+    let (then, after) = balanced(skip_trivia(after), '{', '}')?;
+    let tail = skip_trivia(after).strip_prefix("else")?;
+    let (otherwise, after) = balanced(skip_trivia(tail), '{', '}')?;
+    Some((guard, then, otherwise, after))
+}
+
+/// Every `ctx.<path> = <literal>;` statement in a block, in source order.
+///
+/// Statement-wise rather than a text scan, so an `if` nested in the block
+/// contributes nothing -- audit's fallback derives its `event.type` from a
+/// local the ladder above it sets, and reading that as a literal would write
+/// the word `type`.
+fn literal_writes(block: &str) -> Vec<(String, Value)> {
+    let mut out = Vec::new();
+    for statement in block.split(';') {
+        let Some((subject, value)) = split_assignment(statement) else {
+            continue;
+        };
+        // The target is the last line of the subject, so a `}` closing the
+        // statement before it is not read as part of the path.
+        let Some(path) = subject
+            .rsplit(['\n', '{', '}'])
+            .next()
+            .map(str::trim)
+            .and_then(|line| line.strip_prefix("ctx."))
+        else {
+            continue;
+        };
+        if let Some(literal) = literal_value(value.trim()) {
+            out.push((clean_path(path), literal));
+        }
+    }
+    out
+}
+
+/// The `if (<row>.containsKey('<member>')...) { ctx.<t> = <row>.<member>; }`
+/// writes, and the block with those `if`s cut out.
+///
+/// Cutting them out is what stops the plain scan below reading the same
+/// assignment a second time WITHOUT its guard.
+fn guarded_columns(block: &str, row: &str) -> (Vec<RowColumn>, String) {
+    let opens = format!("if ({row}.containsKey(");
+    let mut columns = Vec::new();
+    let mut plain = String::with_capacity(block.len());
+    let mut rest = block;
+
+    while let Some(at) = rest.find(&opens) {
+        plain.push_str(&rest[..at]);
+        let head = &rest[at + "if".len()..];
+        let Some((test, after)) = balanced(skip_trivia(head), '(', ')') else {
+            break;
+        };
+        let Some((body, after)) = balanced(skip_trivia(after), '{', '}') else {
+            break;
+        };
+        if let Some(member) = quoted_after(test, "")
+            && let Some(target) = body
+                .split_once(&format!("= {row}.{member}"))
+                .and_then(|(head, _)| head.rsplit_once("ctx."))
+                .map(|(_, path)| clean_path(path.trim()))
+        {
+            columns.push(RowColumn {
+                target,
+                member,
+                only_if_unset: test.contains("== null"),
+            });
+        }
+        rest = after;
+    }
+
+    plain.push_str(rest);
+    (columns, plain)
+}
+
+/// Read the key, the table and both branches off the script.
+fn parse_row_or_defaults(script: &str) -> Option<RowOrDefaults> {
+    // Two spellings of the same lookup: bound to a local and null-tested, or
+    // tested with `containsKey` and subscripted inside the branch.
+    let (table, key, branch_at, row) = match script.split_once(".get(") {
+        Some((head, tail)) if head.contains("params.") => {
+            let table = head.rsplit_once("params.")?.1.trim().to_string();
+            let key = tail.split_once(')')?.0.trim().to_string();
+            let row = head.rsplit_once(" = ")?.0.rsplit(' ').next()?.to_string();
+            let at = script.find(&format!("if ({row} != null)"))?;
+            (table, key, at, row)
+        }
+        _ => {
+            let at = script.find("if (params.")?;
+            let head = &script[at..];
+            let table = head.split_once("params.")?.1.split_once(".containsKey(")?.0;
+            let key = head
+                .split_once(".containsKey(")?
+                .1
+                .split_once(')')?
+                .0
+                .trim();
+            let row = head
+                .split_once(&format!("params.{table}[{key}]"))?
+                .0
+                .rsplit_once(" = ")?
+                .0
+                .rsplit(' ')
+                .next()?
+                .to_string();
+            (table.to_string(), key.to_string(), at, row)
+        }
+    };
+
+    // A dotted table is a nested lookup this shape cannot resolve, and taking
+    // it would write the defaults over a key that HAS a row.
+    if !table.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+
+    let subject = crate::painless_common::ctx_path_bound_to(script, &key)?;
+    let (_, then, otherwise, after) = if_else_blocks(&script[branch_at + "if".len()..])?;
+    // The branch has to be the END of the script: kolide's issues stream adds
+    // a second lookup and a ternary after it, and claiming that text would
+    // silently drop both.
+    if !skip_trivia(after).is_empty() {
+        return None;
+    }
+
+    let (mut columns, plain) = guarded_columns(then, &row);
+    // Every conditional in the branch has to have been one of those columns,
+    // or the scan below reads a guarded write without its guard.
+    if plain.contains("if (") {
+        return None;
+    }
+
+    let member_of = format!("{row}.");
+    for (at, _) in plain.match_indices(&member_of) {
+        let head = plain[..at].trim_end();
+        let head = head
+            .strip_suffix("new ArrayList(")
+            .unwrap_or(head)
+            .trim_end();
+        let Some(head) = head.strip_suffix('=').filter(|h| !h.ends_with(['=', '!'])) else {
+            continue;
+        };
+        let Some((_, target)) = head.rsplit_once("ctx.") else {
+            continue;
+        };
+        let member: String = plain[at + member_of.len()..]
+            .chars()
+            .take_while(|c| c.is_alphanumeric() || *c == '_')
+            .collect();
+        if member.is_empty() {
+            continue;
+        }
+        columns.push(RowColumn {
+            target: clean_path(target.trim()),
+            member,
+            only_if_unset: false,
+        });
+    }
+    if columns.is_empty() {
+        return None;
+    }
+
+    Some(RowOrDefaults {
+        subject,
+        table,
+        prelude: literal_writes(&script[..branch_at]),
+        columns,
+        defaults: literal_writes(otherwise),
+    })
+}
+
+/// Fan the selected row's columns out, or write the defaults.
+fn run_row_or_defaults(
+    event: &mut Event,
+    shape: &RowOrDefaults,
+    params: &Map<String, Value>,
+) -> bool {
+    for (target, value) in &shape.prelude {
+        let _ = event.set(target, value.clone());
+    }
+
+    let row = event
+        .get_as_string(&shape.subject)
+        .and_then(|key| params.get(&shape.table)?.get(&key).cloned());
+    let Some(row) = row else {
+        for (target, value) in &shape.defaults {
+            let _ = event.set(target, value.clone());
+        }
+        return true;
+    };
+
+    for column in &shape.columns {
+        if column.only_if_unset && event.has_value(&column.target) {
+            continue;
+        }
+        if let Some(held) = row.get(&column.member).filter(|v| !v.is_null()) {
+            let _ = event.set(&column.target, held.clone());
         }
     }
     true
@@ -3844,6 +4114,112 @@ pub(crate) fn pointer_mut<'a>(event: &'a mut Event, path: &str) -> Option<&'a mu
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// Verbatim from `pipelines/kolide/auth/categorize.yml`: an unconditional
+    /// write, then the row's columns or the fallback literals.
+    #[test]
+    fn a_table_row_fans_out_and_an_unlisted_key_takes_the_defaults() {
+        let script = "def action = ctx.event.action;\nctx.event.kind = 'event';\n\n\
+            def m = params.exact.get(action);\nif (m != null) {\n  \
+            ctx.event.category = new ArrayList(m.category);\n  \
+            ctx.event.type = new ArrayList(m.type);\n  \
+            if (m.containsKey('outcome') && ctx.event.outcome == null) {\n    \
+            ctx.event.outcome = m.outcome;\n  }\n} else {\n  \
+            ctx.event.category = ['authentication'];\n  ctx.event.type = ['info'];\n}";
+        let params = json!({ "exact": {
+            "sign_in_attempt": { "category": ["authentication", "session"], "type": ["start"] },
+            "sign_in_denied": {
+                "category": ["authentication"], "type": ["info"], "outcome": "failure",
+            },
+        }});
+
+        let mut listed = Event::new(json!({ "event": { "action": "sign_in_attempt" } }));
+        assert!(try_params_painless(&mut listed, script, &params));
+        assert_eq!(listed.get_str("event.kind"), Some("event"));
+        assert_eq!(
+            listed.get("event.category"),
+            Some(&json!(["authentication", "session"]))
+        );
+        assert_eq!(listed.get("event.type"), Some(&json!(["start"])));
+        assert_eq!(listed.get("event.outcome"), None);
+
+        let mut unlisted = Event::new(json!({ "event": { "action": "auth_log" } }));
+        assert!(try_params_painless(&mut unlisted, script, &params));
+        assert_eq!(unlisted.get_str("event.kind"), Some("event"));
+        assert_eq!(
+            unlisted.get("event.category"),
+            Some(&json!(["authentication"]))
+        );
+        assert_eq!(unlisted.get("event.type"), Some(&json!(["info"])));
+
+        // The guarded column is the script's own `== null`, so an outcome the
+        // pipeline already resolved stands.
+        let mut resolved = Event::new(json!({
+            "event": { "action": "sign_in_denied", "outcome": "success" },
+        }));
+        assert!(try_params_painless(&mut resolved, script, &params));
+        assert_eq!(resolved.get_str("event.outcome"), Some("success"));
+
+        let mut denied = Event::new(json!({ "event": { "action": "sign_in_denied" } }));
+        assert!(try_params_painless(&mut denied, script, &params));
+        assert_eq!(denied.get_str("event.outcome"), Some("failure"));
+    }
+
+    /// Verbatim from `pipelines/kolide/audit/categorize.yml`: the same table
+    /// read with `containsKey` and a subscript, and a fallback whose own
+    /// `event.type` comes from a local rather than a literal.
+    #[test]
+    fn a_contains_key_lookup_reads_the_same_row() {
+        let script = "def action = ctx.event.action;\nctx.event.kind = 'event';\n\n\
+            if (params.exact.containsKey(action)) {\n  def m = params.exact[action];\n  \
+            ctx.event.category = new ArrayList(m.category);\n  \
+            ctx.event.type = new ArrayList(m.type);\n  \
+            if (m.containsKey('outcome')) {\n    ctx.event.outcome = m.outcome;\n  }\n\
+            } else {\n  String type = 'change';\n  \
+            if (action.endsWith('_created')) {\n    type = 'creation';\n  }\n  \
+            ctx.event.category = ['configuration'];\n  ctx.event.type = [type];\n}";
+        let params = json!({ "exact": {
+            "api_key_secret_viewed": {
+                "category": ["iam", "configuration"], "type": ["access"], "outcome": "success",
+            },
+        }});
+
+        let mut listed = Event::new(json!({
+            "event": { "action": "api_key_secret_viewed" },
+        }));
+        assert!(try_params_painless(&mut listed, script, &params));
+        assert_eq!(listed.get_str("event.kind"), Some("event"));
+        assert_eq!(
+            listed.get("event.category"),
+            Some(&json!(["iam", "configuration"]))
+        );
+        assert_eq!(listed.get("event.type"), Some(&json!(["access"])));
+        assert_eq!(listed.get_str("event.outcome"), Some("success"));
+
+        // The fallback's derived type is not a literal, so only the category
+        // it writes plainly is reproduced.
+        let mut unlisted = Event::new(json!({ "event": { "action": "audit_log" } }));
+        assert!(try_params_painless(&mut unlisted, script, &params));
+        assert_eq!(
+            unlisted.get("event.category"),
+            Some(&json!(["configuration"]))
+        );
+        assert_eq!(unlisted.get("event.type"), None);
+    }
+
+    /// Verbatim from `pipelines/kolide/issues/categorize.yml`: statements
+    /// after the branch mean the shape does not describe the whole script, so
+    /// it declines rather than dropping them.
+    #[test]
+    fn a_lookup_with_work_after_it_is_not_claimed() {
+        let script = "def action = ctx.event.action;\ndef m = params.exact.get(action);\n\
+            if (m != null) {\n  ctx.event.kind = m.kind;\n  \
+            ctx.event.category = new ArrayList(m.category);\n} else {\n  \
+            ctx.event.kind = 'event';\n  ctx.event.category = ['configuration'];\n}\n\n\
+            if (ctx.rule?.id != null) {\n  \
+            def domain = params.check_category.get(ctx.rule.id);\n}";
+        assert!(parse_row_or_defaults(script).is_none());
+    }
 
     /// Verbatim from `pipelines/cisco_meraki/events/default.yml`: a row whose
     /// named columns are LISTS appended to array fields, alongside one copy
