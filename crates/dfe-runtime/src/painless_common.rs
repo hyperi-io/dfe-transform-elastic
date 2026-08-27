@@ -5005,6 +5005,98 @@ fn try_collect_map_values(event: &mut Event, script: &str) -> bool {
     true
 }
 
+/// Every value under a map whose KEY ends with one of a set of suffixes,
+/// unioned with what the target already holds and sorted.
+///
+/// ```painless
+/// HashSet set = null;
+/// for (key in ctx.netflow.keySet()) {
+///     if (key.endsWith("_ipv4_address") || key.endsWith("_ipv6_address")) {
+///         if (set == null) { set = new HashSet(); }
+///         set.add(ctx.netflow[key]);
+///     }
+/// }
+/// if (set != null) {
+///     if (ctx.related?.ip != null) { for (ip in ctx.related.ip) { set.add(ip); } }
+///     ArrayList list = new ArrayList(set);
+///     Collections.sort(list);
+///     ctx.related.ip = list;
+/// }
+/// ```
+///
+/// The suffix is the whole selector: netflow names its addresses per role
+/// (`source_`, `destination_`, `post_nat_`...), so no field list would cover a
+/// template the exporter is free to extend.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct KeysBySuffix {
+    map: String,
+    target: String,
+    suffixes: Vec<String>,
+}
+
+/// Read the scanned map, the suffixes selecting its keys, and the target the
+/// sorted union lands on.
+fn parse_keys_by_suffix(script: &str) -> Option<KeysBySuffix> {
+    let map = script
+        .split_once(".keySet()")
+        .and_then(|(head, _)| painless_path(head))?;
+
+    let (_, tail) = script.rsplit_once("Collections.sort(")?;
+    let at = last_assignment(tail)?;
+    let target = painless_path(&tail[..at])?;
+
+    let mut suffixes = Vec::new();
+    for (at, opener) in script.match_indices(".endsWith(") {
+        let rest = &script[at + opener.len()..];
+        let quote = rest.chars().next().filter(|q| *q == '\'' || *q == '"')?;
+        let literal = rest[quote.len_utf8()..].split_once(quote)?.0;
+        suffixes.push(literal.to_string());
+    }
+
+    (!suffixes.is_empty()).then_some(KeysBySuffix {
+        map,
+        target,
+        suffixes,
+    })
+}
+
+/// Union into the target, sorted as STRINGS.
+///
+/// `Collections.sort` on a list of address strings is lexicographic, which is
+/// why `2a02:cf40::1` sorts between `0.0.0.0` and `81.2.69.144` rather than
+/// after both.
+fn run_keys_by_suffix(event: &mut Event, shape: &KeysBySuffix) -> bool {
+    let mut matched = false;
+    let mut collected: Vec<String> = Vec::new();
+    if let Some(Value::Object(entries)) = event.get(&shape.map) {
+        for (key, value) in entries {
+            if !shape.suffixes.iter().any(|suffix| key.ends_with(suffix)) {
+                continue;
+            }
+            matched = true;
+            if let Some(text) = value.as_str() {
+                collected.push(text.to_owned());
+            }
+        }
+    }
+    // `set == null` leaves the target alone, so a map with no matching key is
+    // not the same as one whose values are all empty.
+    if !matched {
+        return true;
+    }
+
+    if let Some(Value::Array(held)) = event.get(&shape.target) {
+        collected.extend(held.iter().filter_map(Value::as_str).map(str::to_owned));
+    }
+    collected.sort_unstable();
+    collected.dedup();
+    let _ = event.set(
+        &shape.target,
+        Value::Array(collected.into_iter().map(Value::String).collect()),
+    );
+    true
+}
+
 /// `ctx.<path> = ctx.<path>.replace(<from>, <to>)`, guarded on the field.
 ///
 /// azure's platform logs carry `properties` as a stringified object in
@@ -8100,6 +8192,7 @@ pub(crate) enum KnownShape {
     AzureEventCategory,
     ReplaceDotsInKeys,
     OktaTargetRename,
+    KeysBySuffix(Box<KeysBySuffix>),
     CollectMapValues,
     GuardedReplace,
     ScaleField(Box<ScaleField>),
@@ -9146,6 +9239,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: a map's keys selected by suffix, their values sorted onto one
+    // target. Ahead of the collect-by-key shape below, whose trigger this also
+    // satisfies and whose parse reads neither the suffix nor the sort.
+    if normalised.contains(".keySet()")
+        && normalised.contains(".endsWith(")
+        && let Some(shape) = parse_keys_by_suffix(normalised)
+    {
+        shapes.push(KnownShape::KeysBySuffix(Box::new(shape)));
+        return shapes;
+    }
+
     // Pattern: collect one nested key out of every entry of a map.
     if normalised.contains(".keySet()") && normalised.contains(".add(") {
         shapes.push(KnownShape::CollectMapValues);
@@ -9553,6 +9657,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::AzureEventCategory => try_azure_event_category(event, normalised),
         KnownShape::ReplaceDotsInKeys => try_replace_dots_in_keys(event, normalised),
         KnownShape::OktaTargetRename => try_okta_target_rename(event),
+        KnownShape::KeysBySuffix(shape) => run_keys_by_suffix(event, shape),
         KnownShape::CollectMapValues => try_collect_map_values(event, normalised),
         KnownShape::GuardedReplace => try_guarded_replace(event, normalised),
         KnownShape::ScaleField(shape) => run_scale_field(event, shape),
@@ -9849,6 +9954,57 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
+
+    /// Verbatim from `pipelines/netflow/log/default.yml`. The union is over
+    /// BOTH address families and the sort is lexicographic, so an IPv6 address
+    /// lands between two IPv4 ones.
+    #[test]
+    fn suffixed_keys_union_into_a_sorted_list() {
+        let script = "HashSet set = null;\nfor (key in ctx.netflow.keySet()) {\n    \
+            if (key.endsWith(\"_ipv4_address\") || key.endsWith(\"_ipv6_address\")) {\n        \
+            if (set == null) {\n            set = new HashSet();\n        }\n        \
+            set.add(ctx.netflow[key]);\n    }\n}\n\nif (set != null) {\n    \
+            if (ctx.related == null) {\n        ctx.related = new HashMap();\n    }\n    \
+            if (ctx.related?.ip != null) {\n        for (ip in ctx.related.ip) {\n            \
+            set.add(ip);\n        }\n    }\n\n    ArrayList list = new ArrayList(set);\n    \
+            Collections.sort(list);\n    ctx.related.ip = list;\n}\n";
+
+        let mut event = Event::new(json!({
+            "netflow": {
+                "source_ipv6_address": "2a02:cf40::2",
+                "destination_ipv6_address": "2a02:cf40::1",
+                "protocol_identifier": 6
+            },
+            "related": { "ip": ["81.2.69.144", "0.0.0.0"] }
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("related.ip"),
+            Some(&json!([
+                "0.0.0.0",
+                "2a02:cf40::1",
+                "2a02:cf40::2",
+                "81.2.69.144"
+            ]))
+        );
+    }
+
+    /// A map holding no key with a listed suffix is the script's `set == null`
+    /// branch, which leaves the target as it found it.
+    #[test]
+    fn no_suffixed_key_leaves_the_target_alone() {
+        let script = "for (key in ctx.netflow.keySet()) {\n    \
+            if (key.endsWith(\"_ipv4_address\")) {\n        set.add(ctx.netflow[key]);\n    }\n}\n\
+            ArrayList list = new ArrayList(set);\nCollections.sort(list);\n\
+            ctx.related.ip = list;\n";
+
+        let mut event = Event::new(json!({
+            "netflow": { "protocol_identifier": 6 },
+            "related": { "ip": ["81.2.69.144"] }
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get("related.ip"), Some(&json!(["81.2.69.144"])));
+    }
 
     /// Verbatim from `pipelines/zscaler_zia/email_dlp/default.yml`: the vendor
     /// ships its columns pipe-delimited in one string each.

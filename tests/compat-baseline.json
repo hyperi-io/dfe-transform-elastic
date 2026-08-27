@@ -23,7 +23,7 @@
     "microsoft_defender_endpoint": { "events": 23, "events_total": 23, "fields_wrong": 0 },
     "mimecast": { "events": 262, "events_total": 262, "fields_wrong": 0 },
     "microsoft_dnsserver": { "events": 14, "events_total": 14, "fields_wrong": 0 },
-    "netflow": { "events": 32, "events_total": 34, "fields_wrong": 2 },
+    "netflow": { "events": 34, "events_total": 34, "fields_wrong": 0 },
     "o365": { "events": 409, "events_total": 409, "fields_wrong": 0 },
     "okta": { "events": 24, "events_total": 24, "fields_wrong": 0 },
     "proofpoint_on_demand": { "events": 54, "events_total": 55, "fields_wrong": 1 },

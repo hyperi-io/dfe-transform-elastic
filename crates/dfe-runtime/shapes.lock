@@ -113,17 +113,18 @@
 112 AzureEventCategory
 113 ReplaceDotsInKeys
 114 OktaTargetRename
-115 CollectMapValues
-116 GuardedReplace
-117 RoundedScale
-118 FieldsIntoMap
-119 CrowdstrikeTimelineEntityIdentity
-120 CrowdstrikeTimelineEntityAccounts
-121 FirstElement
-122 IndexedFieldCopies
-123 GuardedDivide
-124 ScaleField
-125 GuardedCopy
+115 KeysBySuffix
+116 CollectMapValues
+117 GuardedReplace
+118 RoundedScale
+119 FieldsIntoMap
+120 CrowdstrikeTimelineEntityIdentity
+121 CrowdstrikeTimelineEntityAccounts
+122 FirstElement
+123 IndexedFieldCopies
+124 GuardedDivide
+125 ScaleField
+126 GuardedCopy
 
 [params_shape]
   1 AwsEntity
