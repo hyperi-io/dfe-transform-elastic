@@ -60,6 +60,41 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
 /// decision is a property of the script TEXT and is made once per call site by
 /// [`crate::painless_plan::PainlessPlan`] rather than once per event. A shape
 /// whose trigger is itself a parse carries the parse's result.
+/// The case a script folds a lookup key to before reading the table.
+///
+/// Painless folds the key, never the table, so a fold the parse misses does
+/// not merely mis-case a lookup -- it misses every row and the shape resolves
+/// nothing.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Fold {
+    None,
+    Lower,
+    Upper,
+}
+
+impl Fold {
+    /// The fold an expression spells, and that expression without the call.
+    fn strip(expr: &str) -> (String, Self) {
+        for (call, fold) in [
+            (".toLowerCase()", Self::Lower),
+            (".toUpperCase()", Self::Upper),
+        ] {
+            if expr.contains(call) {
+                return (expr.replace(call, ""), fold);
+            }
+        }
+        (expr.to_string(), Self::None)
+    }
+
+    fn apply(self, value: &str) -> String {
+        match self {
+            Self::None => value.to_string(),
+            Self::Lower => value.to_lowercase(),
+            Self::Upper => value.to_uppercase(),
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum ParamsShape {
     AwsEntity(Box<crate::painless_entity::EntityScript>),
@@ -112,9 +147,7 @@ pub(crate) enum ParamsShape {
     NormalisedLookup {
         source: String,
         target: String,
-        /// `Some(true)` uppercases the key before the lookup, `Some(false)`
-        /// lowercases it.
-        fold: Option<bool>,
+        fold: Fold,
     },
     SentinelRemoval,
     FiletimeFieldList,
@@ -938,8 +971,7 @@ pub(crate) struct PutWrite {
     source: String,
     /// Whether the source's value is a params KEY rather than the value.
     through_params: bool,
-    /// `Some(true)` upper-cases the key, `Some(false)` lower-cases it.
-    fold: Option<bool>,
+    fold: Fold,
 }
 
 impl PutWrite {
@@ -951,11 +983,7 @@ impl PutWrite {
         };
         let value = if self.through_params {
             let Some(key) = raw.as_str() else { return };
-            let key = match self.fold {
-                Some(true) => key.to_uppercase(),
-                Some(false) => key.to_lowercase(),
-                None => key.to_string(),
-            };
+            let key = self.fold.apply(key);
             let Some(value) = params.get(&key) else {
                 return;
             };
@@ -978,19 +1006,8 @@ impl PutWrite {
 /// unlisted key leaves the field alone.
 fn parse_normalised_lookup(script: &str) -> Option<ParamsShape> {
     let key = ctx_path_between(script, "params[ctx.", "]")?;
-    let fold = if key.ends_with(".toUpperCase()") {
-        Some(true)
-    } else if key.ends_with(".toLowerCase()") {
-        Some(false)
-    } else {
-        None
-    };
-
-    let source = key
-        .trim_end_matches(".toUpperCase()")
-        .trim_end_matches(".toLowerCase()")
-        .trim()
-        .to_string();
+    let (source, fold) = Fold::strip(&key);
+    let source = source.trim().to_string();
     if source.is_empty()
         || !source
             .chars()
@@ -1018,17 +1035,13 @@ fn run_normalised_lookup(
     event: &mut Event,
     source: &str,
     target: &str,
-    fold: Option<bool>,
+    fold: Fold,
     params: &Map<String, Value>,
 ) -> bool {
     let Some(raw) = event.get_as_string(source) else {
         return true;
     };
-    let key = match fold {
-        Some(true) => raw.to_uppercase(),
-        Some(false) => raw.to_lowercase(),
-        None => raw,
-    };
+    let key = fold.apply(&raw);
     if let Some(value) = params.get(&key) {
         let _ = event.set(target, value.clone());
     }
@@ -1064,17 +1077,8 @@ fn parse_put_lookup(script: &str) -> Option<ParamsShape> {
         let Some(key) = key.trim().strip_prefix("ctx.") else {
             continue;
         };
-        let fold = if key.ends_with(".toLowerCase()") {
-            Some(false)
-        } else if key.ends_with(".toUpperCase()") {
-            Some(true)
-        } else {
-            None
-        };
-        let source = clean_path(
-            key.trim_end_matches(".toLowerCase()")
-                .trim_end_matches(".toUpperCase()"),
-        );
+        let (source, fold) = Fold::strip(key);
+        let source = clean_path(&source);
         if source.is_empty()
             || !source
                 .chars()
@@ -3589,28 +3593,27 @@ fn quoted_after(script: &str, after: &str) -> Option<String> {
 /// Resolve the expression inside `params.get(...)` to a table key.
 ///
 /// It is either a `ctx.` path written inline or a `def` bound to one earlier in
-/// the script, and either may be lower-cased before the lookup.
+/// the script, and either may be case-folded before the lookup.
 fn resolve_key(event: &Event, script: &str, expr: &str) -> Option<String> {
-    let lower = expr.contains(".toLowerCase()");
-    let expr = expr.replace(".toLowerCase()", "");
+    let (expr, fold) = Fold::strip(expr);
     let expr = expr.trim();
 
-    let (path, lower) = if let Some(rest) = expr.strip_prefix("ctx.") {
-        (rest.to_string(), lower)
+    let (path, fold) = if let Some(rest) = expr.strip_prefix("ctx.") {
+        (rest.to_string(), fold)
     } else {
         let binding = format!("def {expr} = ctx.");
         let start = script.find(&binding)? + binding.len();
         let tail = &script[start..];
         let end = tail.find([';', '\n']).unwrap_or(tail.len());
-        let bound = &tail[..end];
-        (
-            bound.replace(".toLowerCase()", "").trim().to_string(),
-            lower || bound.contains(".toLowerCase()"),
-        )
+        let (bound, bound_fold) = Fold::strip(&tail[..end]);
+        // The call sits on whichever of the two the script spells it on, and
+        // never on both.
+        let fold = if fold == Fold::None { bound_fold } else { fold };
+        (bound.trim().to_string(), fold)
     };
 
     let value = event.get_as_string(&clean_path(&path))?;
-    Some(if lower { value.to_lowercase() } else { value })
+    Some(fold.apply(&value))
 }
 
 /// The params entry an indexed reference names, in either form Painless allows:
