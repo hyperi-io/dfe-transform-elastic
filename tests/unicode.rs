@@ -192,6 +192,10 @@ fn long_multibyte_lines_split_on_newlines_only() {
 /// partition.
 #[test]
 fn no_transform_panics_on_non_ascii_input() {
+    dfe_runtime::testutil::on_a_deep_stack(non_ascii_input_sweep);
+}
+
+fn non_ascii_input_sweep() {
     for source in registry::sources() {
         let transform = registry::lookup(source).expect("registered source resolves");
 
@@ -238,6 +242,10 @@ fn no_transform_panics_on_non_ascii_input() {
 /// control characters, which is what a truncated upstream buffer produces.
 #[test]
 fn no_transform_panics_on_degenerate_input() {
+    dfe_runtime::testutil::on_a_deep_stack(degenerate_input_sweep);
+}
+
+fn degenerate_input_sweep() {
     let degenerate = [
         ("empty", ""),
         ("single space", " "),

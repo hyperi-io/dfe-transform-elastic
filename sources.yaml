@@ -1282,3 +1282,464 @@ sources:
     framing: body
     transforms: [default]
 
+  # Onboarded once three generator gaps closed: ignore_missing_pipeline,
+  # the plain `@custom` pipeline name, and fingerprint `method`.
+  # amazon_security_lake ships application_activity, discovery, findings, iam,
+  # network_activity, system_activity as well. None of them carries an ingest
+  # pipeline, so none of them gets an entry.
+  # The manifest input is aws-s3 -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (21 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  amazon_security_lake_event:
+    package: amazon_security_lake
+    data_stream: event
+    pipelines: amazon_security_lake/event
+    fixtures: amazon_security_lake/event
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (categorize) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  anthropic_audit:
+    package: anthropic
+    data_stream: audit
+    pipelines: anthropic/audit
+    fixtures: anthropic/audit
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is tcp/udp, so a device pushes this.
+  # Framing line: a grok on message/event.original carries %{SYSLOGTIMESTAMP},
+  # so the header has to stay on.
+  # The sub-pipelines (7 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  arista_ngfw_log:
+    package: arista_ngfw
+    data_stream: log
+    pipelines: arista_ngfw/log
+    fixtures: arista_ngfw/log
+    intakes: [beats, receiver]
+    framing: line
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (9 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  # Not the same source as aws_securityhub_findings, which is the `aws`
+  # package's securityhub_findings stream. Two packages, one product.
+  # CHECK: pipeline_object_metadata generates a module that no IngestPipeline
+  # call reaches -- dead upstream, or an entry point this is missing.
+  aws_securityhub_finding:
+    package: aws_securityhub
+    data_stream: finding
+    pipelines: aws_securityhub/finding
+    fixtures: aws_securityhub/finding
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is azure-blob-storage -- a pure transport, so the
+  # pipeline does all the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (azure_shared_pipeline) are all reached from default, so
+  # default is the only entry point, as it is for okta and crowdstrike.
+  azure_network_watcher_nsg_log:
+    package: azure_network_watcher_nsg
+    data_stream: log
+    pipelines: azure_network_watcher_nsg/log
+    fixtures: azure_network_watcher_nsg/log
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is azure-blob-storage -- a pure transport, so the
+  # pipeline does all the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (azure_shared_pipeline) are all reached from default, so
+  # default is the only entry point, as it is for okta and crowdstrike.
+  azure_network_watcher_vnet_log:
+    package: azure_network_watcher_vnet
+    data_stream: log
+    pipelines: azure_network_watcher_vnet/log
+    fixtures: azure_network_watcher_vnet/log
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-s3/cel -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  carbon_black_cloud_alert_v7:
+    package: carbon_black_cloud
+    data_stream: alert_v7
+    pipelines: carbon_black_cloud/alert_v7
+    fixtures: carbon_black_cloud/alert_v7
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel/httpjson -- a pure transport, so the pipeline
+  # does all the parsing and dfe-fetcher can obtain the same bytes.
+  carbon_black_cloud_asset_vulnerability_summary:
+    package: carbon_black_cloud
+    data_stream: asset_vulnerability_summary
+    pipelines: carbon_black_cloud/asset_vulnerability_summary
+    fixtures: carbon_black_cloud/asset_vulnerability_summary
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel/httpjson -- a pure transport, so the pipeline
+  # does all the parsing and dfe-fetcher can obtain the same bytes.
+  carbon_black_cloud_audit:
+    package: carbon_black_cloud
+    data_stream: audit
+    pipelines: carbon_black_cloud/audit
+    fixtures: carbon_black_cloud/audit
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-s3 -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (process_other, process_procstart) are all reached from
+  # default, so default is the only entry point, as it is for okta and
+  # crowdstrike.
+  carbon_black_cloud_endpoint_event:
+    package: carbon_black_cloud
+    data_stream: endpoint_event
+    pipelines: carbon_black_cloud/endpoint_event
+    fixtures: carbon_black_cloud/endpoint_event
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-s3 -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  carbon_black_cloud_watchlist_hit:
+    package: carbon_black_cloud
+    data_stream: watchlist_hit
+    pipelines: carbon_black_cloud/watchlist_hit
+    fixtures: carbon_black_cloud/watchlist_hit
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-s3/cel -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (s3) are all reached from default, so default is the
+  # only entry point, as it is for okta and crowdstrike.
+  cursor_audit:
+    package: cursor
+    data_stream: audit
+    pipelines: cursor/audit
+    fixtures: cursor/audit
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  dataminr_pulse_alerts:
+    package: dataminr_pulse
+    data_stream: alerts
+    pipelines: dataminr_pulse/alerts
+    fixtures: dataminr_pulse/alerts
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is filestream, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (api) are all reached from default, so default is the
+  # only entry point, as it is for okta and crowdstrike.
+  ece_adminconsole:
+    package: ece
+    data_stream: adminconsole
+    pipelines: ece/adminconsole
+    fixtures: ece/adminconsole
+    intakes: [beats]
+    transforms: [default]
+
+  # entityanalytics_ad ships device, group, user as well. None of them carries
+  # an ingest pipeline, so none of them gets an entry.
+  # The manifest input is entity-analytics -- a pure transport, so the
+  # pipeline does all the parsing and dfe-fetcher can obtain the same bytes.
+  # device, group, user are this stream's sub-pipelines named for the streams
+  # that ship none of their own, so they are wired as entry points the way
+  # entityanalytics_entra_id's device and user are.
+  # The sub-pipelines (common, entity, marker) are all reached from default,
+  # so default is the only entry point, as it is for okta and crowdstrike.
+  entityanalytics_ad_entity:
+    package: entityanalytics_ad
+    data_stream: entity
+    pipelines: entityanalytics_ad/entity
+    fixtures: entityanalytics_ad/entity
+    intakes: [beats, fetcher]
+    transforms: [default, device, group, user]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  # Previously undeclared because the generator had no `method` on the
+  # fingerprint processor. MurmurHash3 is implemented now, so the standing
+  # comment about jumpcloud/events comes out of sources.yaml.
+  jumpcloud_events:
+    package: jumpcloud
+    data_stream: events
+    pipelines: jumpcloud/events
+    fixtures: jumpcloud/events
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # jupiter_one ships risks_and_alerts as well. None of them carries an ingest
+  # pipeline, so none of them gets an entry.
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (pipeline_risks_and_alerts) are all reached from
+  # default, so default is the only entry point, as it is for okta and
+  # crowdstrike.
+  jupiter_one_asset:
+    package: jupiter_one
+    data_stream: asset
+    pipelines: jupiter_one/asset
+    fixtures: jupiter_one/asset
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-s3/cel/gcs -- a pure transport, so the pipeline
+  # does all the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (4 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  kolide_audit:
+    package: kolide
+    data_stream: audit
+    pipelines: kolide/audit
+    fixtures: kolide/audit
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-s3/cel/gcs -- a pure transport, so the pipeline
+  # does all the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (4 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  kolide_auth:
+    package: kolide
+    data_stream: auth
+    pipelines: kolide/auth
+    fixtures: kolide/auth
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  kolide_deprovisioned_person:
+    package: kolide
+    data_stream: deprovisioned_person
+    pipelines: kolide/deprovisioned_person
+    fixtures: kolide/deprovisioned_person
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (categorize, extended_mappings, webhook) are all reached
+  # from default, so default is the only entry point, as it is for okta and
+  # crowdstrike.
+  kolide_device:
+    package: kolide
+    data_stream: device
+    pipelines: kolide/device
+    fixtures: kolide/device
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-s3/gcs -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (categorize) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  kolide_device_check:
+    package: kolide
+    data_stream: device_check
+    pipelines: kolide/device_check
+    fixtures: kolide/device_check
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (categorize, extended_mappings, webhook) are all reached
+  # from default, so default is the only entry point, as it is for okta and
+  # crowdstrike.
+  kolide_issues:
+    package: kolide
+    data_stream: issues
+    pipelines: kolide/issues
+    fixtures: kolide/issues
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-s3/gcs -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (categorize) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  kolide_osquery_result:
+    package: kolide
+    data_stream: osquery_result
+    pipelines: kolide/osquery_result
+    fixtures: kolide/osquery_result
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-s3/gcs -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (categorize) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  kolide_osquery_status:
+    package: kolide
+    data_stream: osquery_status
+    pipelines: kolide/osquery_status
+    fixtures: kolide/osquery_status
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  kolide_people:
+    package: kolide
+    data_stream: people
+    pipelines: kolide/people
+    fixtures: kolide/people
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (4 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  kolide_request:
+    package: kolide
+    data_stream: request
+    pipelines: kolide/request
+    fixtures: kolide/request
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (categorize) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  nextron_thor_thor_forwarding:
+    package: nextron_thor
+    data_stream: thor_forwarding
+    pipelines: nextron_thor/thor_forwarding
+    fixtures: nextron_thor/thor_forwarding
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (pipeline_knowledge_base) are all reached from default,
+  # so default is the only entry point, as it is for okta and crowdstrike.
+  qualys_vmdr_asset_host_detection:
+    package: qualys_vmdr
+    data_stream: asset_host_detection
+    pipelines: qualys_vmdr/asset_host_detection
+    fixtures: qualys_vmdr/asset_host_detection
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  qualys_vmdr_knowledge_base:
+    package: qualys_vmdr
+    data_stream: knowledge_base
+    pipelines: qualys_vmdr/knowledge_base
+    fixtures: qualys_vmdr/knowledge_base
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  qualys_vmdr_user_activity:
+    package: qualys_vmdr
+    data_stream: user_activity
+    pipelines: qualys_vmdr/user_activity
+    fixtures: qualys_vmdr/user_activity
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (pipeline_knowledge_base) are all reached from default,
+  # so default is the only entry point, as it is for okta and crowdstrike.
+  qualys_was_vulnerability:
+    package: qualys_was
+    data_stream: vulnerability
+    pipelines: qualys_was/vulnerability
+    fixtures: qualys_was/vulnerability
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-s3/azure-blob-storage/gcs -- a pure transport,
+  # so the pipeline does all the parsing and dfe-fetcher can obtain the same
+  # bytes.
+  # The sub-pipelines (24 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  symantec_endpoint_security_event:
+    package: symantec_endpoint_security
+    data_stream: event
+    pipelines: symantec_endpoint_security/event
+    fixtures: symantec_endpoint_security/event
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  symantec_endpoint_security_incident:
+    package: symantec_endpoint_security
+    data_stream: incident
+    pipelines: symantec_endpoint_security/incident
+    fixtures: symantec_endpoint_security/incident
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  tenable_sc_asset:
+    package: tenable_sc
+    data_stream: asset
+    pipelines: tenable_sc/asset
+    fixtures: tenable_sc/asset
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  tenable_sc_plugin:
+    package: tenable_sc
+    data_stream: plugin
+    pipelines: tenable_sc/plugin
+    fixtures: tenable_sc/plugin
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  tenable_sc_vulnerability:
+    package: tenable_sc
+    data_stream: vulnerability
+    pipelines: tenable_sc/vulnerability
+    fixtures: tenable_sc/vulnerability
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  ti_socradar_feeds_feed:
+    package: ti_socradar_feeds
+    data_stream: feed
+    pipelines: ti_socradar_feeds/feed
+    fixtures: ti_socradar_feeds/feed
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  tines_audit_logs:
+    package: tines
+    data_stream: audit_logs
+    pipelines: tines/audit_logs
+    fixtures: tines/audit_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  tines_time_saved:
+    package: tines
+    data_stream: time_saved
+    pipelines: tines/time_saved
+    fixtures: tines/time_saved
+    intakes: [beats, fetcher]
+    transforms: [default]

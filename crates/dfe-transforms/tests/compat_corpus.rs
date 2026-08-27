@@ -244,6 +244,72 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("auth0", "logs") => &filebeat::auth0_logs::default::Default,
         ("coredns", "log") => &filebeat::coredns_log::default::Default,
         ("netflow", "log") => &filebeat::netflow_log::default::Default,
+        ("amazon_security_lake", "event") => {
+            &filebeat::amazon_security_lake_event::default::Default
+        }
+        ("anthropic", "audit") => &filebeat::anthropic_audit::default::Default,
+        ("arista_ngfw", "log") => &filebeat::arista_ngfw_log::default::Default,
+        ("aws_securityhub", "finding") => &filebeat::aws_securityhub_finding::default::Default,
+        ("azure_network_watcher_nsg", "log") => {
+            &filebeat::azure_network_watcher_nsg_log::default::Default
+        }
+        ("azure_network_watcher_vnet", "log") => {
+            &filebeat::azure_network_watcher_vnet_log::default::Default
+        }
+        ("carbon_black_cloud", "alert_v7") => {
+            &filebeat::carbon_black_cloud_alert_v7::default::Default
+        }
+        ("carbon_black_cloud", "asset_vulnerability_summary") => {
+            &filebeat::carbon_black_cloud_asset_vulnerability_summary::default::Default
+        }
+        ("carbon_black_cloud", "audit") => &filebeat::carbon_black_cloud_audit::default::Default,
+        ("carbon_black_cloud", "endpoint_event") => {
+            &filebeat::carbon_black_cloud_endpoint_event::default::Default
+        }
+        ("carbon_black_cloud", "watchlist_hit") => {
+            &filebeat::carbon_black_cloud_watchlist_hit::default::Default
+        }
+        ("cursor", "audit") => &filebeat::cursor_audit::default::Default,
+        ("dataminr_pulse", "alerts") => &filebeat::dataminr_pulse_alerts::default::Default,
+        ("ece", "adminconsole") => &filebeat::ece_adminconsole::default::Default,
+        ("entityanalytics_ad", "entity") => &filebeat::entityanalytics_ad_entity::default::Default,
+        ("jumpcloud", "events") => &filebeat::jumpcloud_events::default::Default,
+        ("jupiter_one", "asset") => &filebeat::jupiter_one_asset::default::Default,
+        ("kolide", "audit") => &filebeat::kolide_audit::default::Default,
+        ("kolide", "auth") => &filebeat::kolide_auth::default::Default,
+        ("kolide", "deprovisioned_person") => {
+            &filebeat::kolide_deprovisioned_person::default::Default
+        }
+        ("kolide", "device") => &filebeat::kolide_device::default::Default,
+        ("kolide", "device_check") => &filebeat::kolide_device_check::default::Default,
+        ("kolide", "issues") => &filebeat::kolide_issues::default::Default,
+        ("kolide", "osquery_result") => &filebeat::kolide_osquery_result::default::Default,
+        ("kolide", "osquery_status") => &filebeat::kolide_osquery_status::default::Default,
+        ("kolide", "people") => &filebeat::kolide_people::default::Default,
+        ("kolide", "request") => &filebeat::kolide_request::default::Default,
+        ("nextron_thor", "thor_forwarding") => {
+            &filebeat::nextron_thor_thor_forwarding::default::Default
+        }
+        ("qualys_vmdr", "asset_host_detection") => {
+            &filebeat::qualys_vmdr_asset_host_detection::default::Default
+        }
+        ("qualys_vmdr", "knowledge_base") => {
+            &filebeat::qualys_vmdr_knowledge_base::default::Default
+        }
+        ("qualys_vmdr", "user_activity") => &filebeat::qualys_vmdr_user_activity::default::Default,
+        ("qualys_was", "vulnerability") => &filebeat::qualys_was_vulnerability::default::Default,
+        ("symantec_endpoint_security", "event") => {
+            &filebeat::symantec_endpoint_security_event::default::Default
+        }
+        ("symantec_endpoint_security", "incident") => {
+            &filebeat::symantec_endpoint_security_incident::default::Default
+        }
+        ("tenable_sc", "asset") => &filebeat::tenable_sc_asset::default::Default,
+        ("tenable_sc", "plugin") => &filebeat::tenable_sc_plugin::default::Default,
+        ("tenable_sc", "vulnerability") => &filebeat::tenable_sc_vulnerability::default::Default,
+        ("ti_socradar_feeds", "feed") => &filebeat::ti_socradar_feeds_feed::default::Default,
+        ("tines", "audit_logs") => &filebeat::tines_audit_logs::default::Default,
+        ("tines", "time_saved") => &filebeat::tines_time_saved::default::Default,
         _ => return None,
     })
 }
@@ -484,6 +550,10 @@ fn events_unlocked(failures: &[BTreeSet<String>], top: usize) -> Vec<Blocker> {
 /// is where the tracked figures live.
 #[test]
 fn transforms_match_elastics_confirmed_output() {
+    dfe_runtime::testutil::on_a_deep_stack(score_the_corpus);
+}
+
+fn score_the_corpus() {
     let fixtures = captured();
     if fixtures.is_empty() {
         println!(
@@ -815,12 +885,14 @@ fn check_baseline(measured: &BTreeMap<String, Score>, provenance: &Option<(Strin
     // A source scored and never written down is measured by nobody: it may
     // rot to zero without failing anything. Capturing one is not finished
     // until its score is a floor, so this is a failure with the line to paste.
+    let mut fresh = Vec::new();
     for (source, score) in measured {
         if !baseline.sources.contains_key(source) {
             failures.push(format!(
                 "{source}: scored and not in the baseline -- add {}",
                 entry(*score)
             ));
+            fresh.push(format!("NEW     \"{source}\": {},", entry(*score)));
         }
     }
 
@@ -841,6 +913,18 @@ fn check_baseline(measured: &BTreeMap<String, Score>, provenance: &Option<(Strin
              total is the intended one:"
         );
         for line in &resized {
+            println!("{line}");
+        }
+    }
+
+    // Marked the same way and for the same reason: a first score is whatever
+    // the transform happens to do, so writing it down is a deliberate act.
+    if !fresh.is_empty() {
+        println!(
+            "\nthese are scored and unwritten, so nothing holds them -- record \
+             their first score with scripts/raise_baseline.py --new:"
+        );
+        for line in &fresh {
             println!("{line}");
         }
     }

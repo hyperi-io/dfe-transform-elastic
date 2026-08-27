@@ -540,9 +540,15 @@ def load_pipelines(
             lambda m: _flat_name(package, data_stream, m.group(1)),
             raw.decode("utf-8"),
         )
-        definitions[_flat_name(package, data_stream, stem)] = yaml.load(
-            text, Loader=PipelineLoader
-        )
+        try:
+            definitions[_flat_name(package, data_stream, stem)] = yaml.load(
+                text, Loader=PipelineLoader
+            )
+        except yaml.YAMLError as exc:
+            # Elasticsearch rejects the same file, so a pipeline nothing
+            # references must not take the whole source down with it -- and a
+            # reference to one skipped here still fails loudly at PUT.
+            log.warning("skipping %s, which is not valid YAML: %s", name, exc)
 
     entry = _flat_name(package, data_stream, "default")
     if entry not in definitions:

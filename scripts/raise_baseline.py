@@ -34,6 +34,7 @@ ENTRY = (
 )
 LINE = re.compile(rf"^\s*{ENTRY}")
 RESIZE = re.compile(rf"^RESIZE\s+{ENTRY}")
+NEW = re.compile(rf"^NEW\s+{ENTRY}")
 
 
 def scores_in(text: str, pattern: re.Pattern[str]) -> dict[str, dict[str, int]]:
@@ -50,8 +51,8 @@ def scores_in(text: str, pattern: re.Pattern[str]) -> dict[str, dict[str, int]]:
 
 
 def main() -> int:
-    argv = [a for a in sys.argv[1:] if a != "--resize"]
-    resizing = "--resize" in sys.argv
+    flags = {"--resize", "--new"}
+    argv = [a for a in sys.argv[1:] if a not in flags]
     text = (
         pathlib.Path(argv[0]).read_text(encoding="utf-8", errors="replace")
         if argv
@@ -59,8 +60,9 @@ def main() -> int:
     )
 
     proposed = scores_in(text, LINE)
-    resized = scores_in(text, RESIZE) if resizing else {}
-    if not proposed and not resized:
+    resized = scores_in(text, RESIZE) if "--resize" in sys.argv else {}
+    fresh = scores_in(text, NEW) if "--new" in sys.argv else {}
+    if not proposed and not resized and not fresh:
         print("nothing to raise")
         return 0
 
@@ -90,12 +92,24 @@ def main() -> int:
             f"{scores['fields_wrong']} fields wrong"
         )
 
+    for source, scores in sorted(fresh.items()):
+        if source in baseline["sources"]:
+            refused.append(f"{source}: already written down, so it is not new")
+            continue
+        baseline["sources"][source] = scores
+        raised.append(
+            f"{source}: FIRST SCORE {scores['events']}/{scores['events_total']} events, "
+            f"{scores['fields_wrong']} fields wrong"
+        )
+
     # Written by hand rather than json.dump: the file keeps one source per
     # line, which a pretty-printer would explode into five.
+    # Sorted, so a new source lands where it belongs and a diff shows only the
+    # line that changed.
     body = ",\n".join(
         f'    "{name}": {{ "events": {s["events"]}, '
         f'"events_total": {s["events_total"]}, "fields_wrong": {s["fields_wrong"]} }}'
-        for name, s in baseline["sources"].items()
+        for name, s in sorted(baseline["sources"].items())
     )
     head = BASELINE.read_text(encoding="utf-8").split('  "sources": {')[0]
     BASELINE.write_text(
