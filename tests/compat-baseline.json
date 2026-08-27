@@ -4,7 +4,7 @@
   "integrations_sha": "2c934eb5223bdfcf0ea0db9e3230154933352bda",
   "elasticsearch_version": "9.2.2",
   "sources": {
-    "amazon_security_lake": { "events": 8, "events_total": 11, "fields_wrong": 5 },
+    "amazon_security_lake": { "events": 10, "events_total": 11, "fields_wrong": 1 },
     "anthropic": { "events": 0, "events_total": 306, "fields_wrong": 1221 },
     "arista_ngfw": { "events": 0, "events_total": 141, "fields_wrong": 1626 },
     "auth0": { "events": 111, "events_total": 111, "fields_wrong": 0 },
