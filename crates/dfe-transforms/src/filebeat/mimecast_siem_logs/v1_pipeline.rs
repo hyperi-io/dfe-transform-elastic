@@ -50,22 +50,22 @@ impl Transform for V1Pipeline {
 
             {
                 let mut values = Vec::new();
+                if let Some(v) = event.get("mimecast.Attempt") {
+                    values.push(v.clone());
+                }
                 if let Some(v) = event.get("mimecast.MsgId") {
+                    values.push(v.clone());
+                }
+                if let Some(v) = event.get("mimecast.Rcpt") {
+                    values.push(v.clone());
+                }
+                if let Some(v) = event.get("mimecast.Sender") {
                     values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.aCode") {
                     values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.datetime") {
-                    values.push(v.clone());
-                }
-                if let Some(v) = event.get("mimecast.Sender") {
-                    values.push(v.clone());
-                }
-                if let Some(v) = event.get("mimecast.Rcpt") {
-                    values.push(v.clone());
-                }
-                if let Some(v) = event.get("mimecast.Attempt") {
                     values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.log_type") {

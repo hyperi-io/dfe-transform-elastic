@@ -52,10 +52,10 @@ impl Transform for Default {
                 if let Some(v) = event.get("json.createdAt") {
                     values.push(v.clone());
                 }
-                if let Some(v) = event.get("json.updatedAt") {
+                if let Some(v) = event.get("json.id") {
                     values.push(v.clone());
                 }
-                if let Some(v) = event.get("json.id") {
+                if let Some(v) = event.get("json.updatedAt") {
                     values.push(v.clone());
                 }
                 if !values.is_empty() {

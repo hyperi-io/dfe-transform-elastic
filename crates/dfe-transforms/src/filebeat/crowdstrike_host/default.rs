@@ -2319,13 +2319,13 @@ impl Transform for Default {
 
             {
                 let mut values = Vec::new();
-                if let Some(v) = event.get("device.id") {
-                    values.push(v.clone());
-                }
                 if let Some(v) = event.get("crowdstrike.host.cid") {
                     values.push(v.clone());
                 }
                 if let Some(v) = event.get("crowdstrike.host.modified_timestamp") {
+                    values.push(v.clone());
+                }
+                if let Some(v) = event.get("device.id") {
                     values.push(v.clone());
                 }
                 if !values.is_empty() {

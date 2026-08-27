@@ -61,10 +61,10 @@ impl Transform for Default {
 
             {
                 let mut values = Vec::new();
-                if let Some(v) = event.get("json.id") {
+                if let Some(v) = event.get("json.createdAt") {
                     values.push(v.clone());
                 }
-                if let Some(v) = event.get("json.createdAt") {
+                if let Some(v) = event.get("json.id") {
                     values.push(v.clone());
                 }
                 if !values.is_empty() {

@@ -529,27 +529,79 @@ pub fn convert_value(value: &Value, kind: &str) -> std::result::Result<Value, St
     }
 }
 
+/// The bytes Elastic's `fingerprint` processor hashes for one value.
+///
+/// Every LEAF is preceded by a single NUL and written in the engine's own
+/// binary form, little-endian throughout: a string as its UTF-8, an integer as
+/// four bytes or eight when it will not fit, a double as eight, a boolean as 1
+/// for true and 2 for false, and a null as the delimiter alone. A container
+/// writes no marker of its own, so an empty one contributes nothing at all --
+/// an empty map and an empty list both hash to the digest of no bytes.
+///
+/// A map's keys are walked SORTED, each written as a string leaf ahead of its
+/// value, which is why two documents holding the same pairs in different order
+/// fingerprint alike.
+///
+/// Read off Elasticsearch 9.2.2 through `_ingest/pipeline/_simulate` rather
+/// than from its source: sixteen shapes, four methods and a salt, all
+/// reproduced exactly.
+fn fingerprint_bytes(value: &Value, out: &mut Vec<u8>) {
+    match value {
+        Value::Object(map) => {
+            let mut keys: Vec<&str> = map.keys().map(String::as_str).collect();
+            keys.sort_unstable();
+            for key in keys {
+                out.push(0);
+                out.extend_from_slice(key.as_bytes());
+                if let Some(nested) = map.get(key) {
+                    fingerprint_bytes(nested, out);
+                }
+            }
+            return;
+        }
+        Value::Array(items) => {
+            for item in items {
+                fingerprint_bytes(item, out);
+            }
+            return;
+        }
+        _ => {}
+    }
+
+    out.push(0);
+    match value {
+        Value::Bool(set) => out.push(if *set { 1 } else { 2 }),
+        Value::String(text) => out.extend_from_slice(text.as_bytes()),
+        Value::Number(number) => {
+            if let Some(whole) = number.as_i64() {
+                match i32::try_from(whole) {
+                    Ok(narrow) => out.extend_from_slice(&narrow.to_le_bytes()),
+                    Err(_) => out.extend_from_slice(&whole.to_le_bytes()),
+                }
+            } else if let Some(real) = number.as_f64() {
+                out.extend_from_slice(&real.to_le_bytes());
+            }
+        }
+        // A null contributes the delimiter and nothing else.
+        _ => {}
+    }
+}
+
 /// The digest Elastic's `fingerprint` processor writes at its defaults.
 ///
-/// Method `SHA-1`, no salt, and the result base64-encoded. Each value is
-/// preceded by a single NUL, which is the processor's own delimiter; a field
-/// NAME is not included for a scalar. Recovered from the corpus rather than
-/// guessed -- `m365_defender`'s `process.entity_id` carries the answer next to
-/// its inputs.
-///
-/// A value is rendered the way the document holds it: a string is its own
-/// text, not its JSON with quotes around it.
+/// Method `SHA-1`, no salt, and the result base64-encoded. `values` arrives in
+/// the order the caller's FIELD NAMES sort, because the processor sorts them
+/// and never hashes the names themselves.
 #[must_use]
 pub fn fingerprint_default(values: &[Value]) -> String {
     use base64::Engine as _;
     use sha1::{Digest, Sha1};
 
-    let mut hasher = Sha1::new();
+    let mut bytes = Vec::new();
     for value in values {
-        hasher.update([0u8]);
-        hasher.update(crate::painless_helpers::painless_to_string(value).as_bytes());
+        fingerprint_bytes(value, &mut bytes);
     }
-    base64::engine::general_purpose::STANDARD.encode(hasher.finalize())
+    base64::engine::general_purpose::STANDARD.encode(Sha1::digest(&bytes))
 }
 
 /// Sort an array's elements, the way Elastic's `sort` processor does.
@@ -1567,6 +1619,79 @@ mod tests {
     use super::*;
     use serde_json::json;
 
+    // --- fingerprint ---
+
+    /// Every digest here came back from Elasticsearch 9.2.2 over
+    /// `_ingest/pipeline/_simulate`, so the case list is the engine's answer
+    /// and not a restatement of the code below it.
+    #[test]
+    fn the_fingerprint_matches_the_engine() {
+        for (value, want) in [
+            (
+                json!({ "user": { "goog-gke-node": "" } }),
+                "vP7l3YwKK9Mr+96HYpEj/Of6zVI=",
+            ),
+            (json!("abc"), "3TdC7BpNKltWOitirvf8Skb6bMo="),
+            (json!(42), "/sRTDA6PwOI3ZlQA3Smv+XKzX/U="),
+            (json!(42.5), "aeqOWcRKjs8fMmJx9bDV3Ii13O8="),
+            (json!(true), "PylUZFNni4VZMcF0qX1sCJS49UY="),
+            (json!(false), "msUh4y+OGUc7yRThr4rkI6bYwSI="),
+            (
+                json!(["a", "b", 1, 2.5, true]),
+                "woDd6Sys2NjwMnAHPgls6Q9G5vw=",
+            ),
+            // Sorted keys, so a different insertion order is the same digest.
+            (
+                json!({ "z": 1, "a": 2, "m": 3 }),
+                "iVtWh2nj2Y2tfu/JYNpbouUPATs=",
+            ),
+            (
+                json!({ "a": { "b": { "c": "d" } } }),
+                "hFYqlDQ7WMyVT3I/OBPd9TbFOik=",
+            ),
+            (json!({ "k": null }), "yW/bSvwAiTeESSxhjDcr21ekMsM="),
+            (
+                json!({ "a": null, "b": "c" }),
+                "K3hlNi1Cczj7yiVlzt9Gjdx2hfA=",
+            ),
+            (json!(2_147_483_647), "u2sHUJ3ZGXJ0H+atgiAL4cKp9VI="),
+            // Past an int, so eight bytes rather than four.
+            (json!(2_147_483_648_i64), "7UBBR8UYA5FYijlBTjXWJjJ5tsw="),
+            (json!(-2_147_483_648_i64), "+gVtPuvxhZqLcC0lINP4eZE86Nc="),
+            (json!(1_234_567_890_123_i64), "rPjo3pVCgwPhGBtFWVE4OG1VNxE="),
+            (
+                json!({ "n": [{ "x": 1 }, { "y": "z" }] }),
+                "71TTrLlh4rOvdr2I74vczknw9H4=",
+            ),
+            // A container writes no marker, so an empty one hashes as no bytes.
+            (json!({}), "2jmj7l5rSw0yVb/vlWAYkK/YBwk="),
+            (json!([]), "2jmj7l5rSw0yVb/vlWAYkK/YBwk="),
+        ] {
+            assert_eq!(
+                fingerprint_default(std::slice::from_ref(&value)),
+                want,
+                "{value}"
+            );
+        }
+    }
+
+    /// Two fields hash as one payload, so where they split does not vanish.
+    #[test]
+    fn two_fields_are_not_one_concatenated_string() {
+        assert_eq!(
+            fingerprint_default(&[json!("ab"), json!("c")]),
+            "RJTTsHYwQbpBCX3TwVt+qKFyjSU="
+        );
+        assert_eq!(
+            fingerprint_default(&[json!("a"), json!("bc")]),
+            "fBBN16RIC/4tsZ7sbZHgFYHPJfM="
+        );
+        assert_ne!(
+            fingerprint_default(&[json!("abc")]),
+            fingerprint_default(&[json!("ab"), json!("c")])
+        );
+    }
+
     // --- condition_eq ---
 
     /// Two maps holding the same thing are still two wrappers, so a
@@ -1949,13 +2074,21 @@ mod tests {
         );
     }
 
-    /// A string is hashed as its own text. Hashing its JSON would fold the
-    /// quotes into the digest and nothing would ever match.
+    /// A string is hashed as its own text, quotes excluded -- and a NUMBER is
+    /// hashed as its bytes, so the two never collide however alike they read.
     #[test]
-    fn a_string_is_fingerprinted_without_its_quotes() {
-        assert_eq!(
+    fn a_string_and_the_number_it_spells_differ() {
+        assert_ne!(
             fingerprint_default(&[json!("4248")]),
             fingerprint_default(&[json!(4248)]),
+        );
+        assert_eq!(
+            fingerprint_default(&[json!("42")]),
+            "mV7xHXro5tXMlz9d1arNzS3QkcQ="
+        );
+        assert_eq!(
+            fingerprint_default(&[json!(42)]),
+            "/sRTDA6PwOI3ZlQA3Smv+XKzX/U="
         );
     }
 

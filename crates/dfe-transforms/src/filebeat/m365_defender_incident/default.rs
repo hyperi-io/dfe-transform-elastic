@@ -77,22 +77,22 @@ impl Transform for Default {
 
             {
                 let mut values = Vec::new();
-                if let Some(v) = event.get("json.id") {
+                if let Some(v) = event.get("json.alerts.id") {
                     values.push(v.clone());
                 }
-                if let Some(v) = event.get("json.lastUpdateDateTime") {
-                    values.push(v.clone());
-                }
-                if let Some(v) = event.get("json.incidentWebUrl") {
+                if let Some(v) = event.get("json.alerts.lastUpdateDateTime") {
                     values.push(v.clone());
                 }
                 if let Some(v) = event.get("json.createdDateTime") {
                     values.push(v.clone());
                 }
-                if let Some(v) = event.get("json.alerts.id") {
+                if let Some(v) = event.get("json.id") {
                     values.push(v.clone());
                 }
-                if let Some(v) = event.get("json.alerts.lastUpdateDateTime") {
+                if let Some(v) = event.get("json.incidentWebUrl") {
+                    values.push(v.clone());
+                }
+                if let Some(v) = event.get("json.lastUpdateDateTime") {
                     values.push(v.clone());
                 }
                 if !values.is_empty() {

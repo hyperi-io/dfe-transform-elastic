@@ -379,19 +379,19 @@ impl Transform for Default {
             if _cond {
                 {
                     let mut values = Vec::new();
-                    if let Some(v) = event.get("checkpoint.loguid") {
+                    if let Some(v) = event.get("checkpoint.lastupdatetime") {
                         values.push(v.clone());
                     }
-                    if let Some(v) = event.get("checkpoint.time") {
+                    if let Some(v) = event.get("checkpoint.loguid") {
                         values.push(v.clone());
                     }
                     if let Some(v) = event.get("checkpoint.segment_time") {
                         values.push(v.clone());
                     }
-                    if let Some(v) = event.get("checkpoint.lastupdatetime") {
+                    if let Some(v) = event.get("checkpoint.sequencenum") {
                         values.push(v.clone());
                     }
-                    if let Some(v) = event.get("checkpoint.sequencenum") {
+                    if let Some(v) = event.get("checkpoint.time") {
                         values.push(v.clone());
                     }
                     if let Some(v) = event.get("checkpoint.update_count") {

@@ -99,10 +99,10 @@ impl Transform for Default {
                 if let Some(v) = event.get("json.id") {
                     values.push(v.clone());
                 }
-                if let Some(v) = event.get("json.lastUpdateDateTime") {
+                if let Some(v) = event.get("json.incidentId") {
                     values.push(v.clone());
                 }
-                if let Some(v) = event.get("json.incidentId") {
+                if let Some(v) = event.get("json.lastUpdateDateTime") {
                     values.push(v.clone());
                 }
                 if let Some(v) = event.get("json.providerAlertId") {

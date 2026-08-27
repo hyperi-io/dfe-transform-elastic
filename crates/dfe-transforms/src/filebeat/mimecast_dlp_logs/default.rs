@@ -60,13 +60,13 @@ impl Transform for Default {
 
             {
                 let mut values = Vec::new();
-                if let Some(v) = event.get("mimecast.messageId") {
-                    values.push(v.clone());
-                }
                 if let Some(v) = event.get("mimecast.action") {
                     values.push(v.clone());
                 }
                 if let Some(v) = event.get("mimecast.eventTime") {
+                    values.push(v.clone());
+                }
+                if let Some(v) = event.get("mimecast.messageId") {
                     values.push(v.clone());
                 }
                 if !values.is_empty() {

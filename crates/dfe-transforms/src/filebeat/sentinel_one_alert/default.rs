@@ -55,13 +55,13 @@ impl Transform for Default {
 
             {
                 let mut values = Vec::new();
+                if let Some(v) = event.get("json.alertInfo.alertId") {
+                    values.push(v.clone());
+                }
                 if let Some(v) = event.get("json.alertInfo.createdAt") {
                     values.push(v.clone());
                 }
                 if let Some(v) = event.get("json.alertInfo.updatedAt") {
-                    values.push(v.clone());
-                }
-                if let Some(v) = event.get("json.alertInfo.alertId") {
                     values.push(v.clone());
                 }
                 if !values.is_empty() {

@@ -66,13 +66,13 @@ impl Transform for Default {
 
             {
                 let mut values = Vec::new();
+                if let Some(v) = event.get("json.data") {
+                    values.push(v.clone());
+                }
                 if let Some(v) = event.get("json.id") {
                     values.push(v.clone());
                 }
                 if let Some(v) = event.get("json.ts") {
-                    values.push(v.clone());
-                }
-                if let Some(v) = event.get("json.data") {
                     values.push(v.clone());
                 }
                 if !values.is_empty() {

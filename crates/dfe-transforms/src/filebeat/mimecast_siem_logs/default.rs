@@ -95,22 +95,22 @@ impl Transform for Default {
                 }
                 {
                     let mut values = Vec::new();
+                    if let Some(v) = event.get("mimecast.Attempt") {
+                        values.push(v.clone());
+                    }
                     if let Some(v) = event.get("mimecast.MsgId") {
+                        values.push(v.clone());
+                    }
+                    if let Some(v) = event.get("mimecast.Rcpt") {
+                        values.push(v.clone());
+                    }
+                    if let Some(v) = event.get("mimecast.Sender") {
                         values.push(v.clone());
                     }
                     if let Some(v) = event.get("mimecast.aCode") {
                         values.push(v.clone());
                     }
                     if let Some(v) = event.get("mimecast.datetime") {
-                        values.push(v.clone());
-                    }
-                    if let Some(v) = event.get("mimecast.Sender") {
-                        values.push(v.clone());
-                    }
-                    if let Some(v) = event.get("mimecast.Rcpt") {
-                        values.push(v.clone());
-                    }
-                    if let Some(v) = event.get("mimecast.Attempt") {
                         values.push(v.clone());
                     }
                     if let Some(v) = event.get("mimecast.log_type") {
@@ -529,28 +529,28 @@ impl Transform for Default {
                 }
                 {
                     let mut values = Vec::new();
+                    if let Some(v) = event.get("mimecast.accountId") {
+                        values.push(v.clone());
+                    }
+                    if let Some(v) = event.get("mimecast.action") {
+                        values.push(v.clone());
+                    }
+                    if let Some(v) = event.get("mimecast.aggregateId") {
+                        values.push(v.clone());
+                    }
+                    if let Some(v) = event.get("mimecast.log_type") {
+                        values.push(v.clone());
+                    }
                     if let Some(v) = event.get("mimecast.messageId") {
                         values.push(v.clone());
                     }
                     if let Some(v) = event.get("mimecast.processingId") {
                         values.push(v.clone());
                     }
-                    if let Some(v) = event.get("mimecast.aggregateId") {
-                        values.push(v.clone());
-                    }
-                    if let Some(v) = event.get("mimecast.accountId") {
+                    if let Some(v) = event.get("mimecast.subtype") {
                         values.push(v.clone());
                     }
                     if let Some(v) = event.get("mimecast.timestamp") {
-                        values.push(v.clone());
-                    }
-                    if let Some(v) = event.get("mimecast.action") {
-                        values.push(v.clone());
-                    }
-                    if let Some(v) = event.get("mimecast.log_type") {
-                        values.push(v.clone());
-                    }
-                    if let Some(v) = event.get("mimecast.subtype") {
                         values.push(v.clone());
                     }
                     if !values.is_empty() {

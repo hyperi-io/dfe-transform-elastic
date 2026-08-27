@@ -74,10 +74,10 @@ impl Transform for Default {
 
             {
                 let mut values = Vec::new();
-                if let Some(v) = event.get("mimecast.id") {
+                if let Some(v) = event.get("@timestamp") {
                     values.push(v.clone());
                 }
-                if let Some(v) = event.get("@timestamp") {
+                if let Some(v) = event.get("mimecast.id") {
                     values.push(v.clone());
                 }
                 if !values.is_empty() {

@@ -69,10 +69,10 @@ impl Transform for Default {
                 if let Some(v) = event.get("json.guid") {
                     values.push(v.clone());
                 }
-                if let Some(v) = event.get("json.ts") {
+                if let Some(v) = event.get("json.msg.header.message-id") {
                     values.push(v.clone());
                 }
-                if let Some(v) = event.get("json.msg.header.message-id") {
+                if let Some(v) = event.get("json.ts") {
                     values.push(v.clone());
                 }
                 if !values.is_empty() {

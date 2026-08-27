@@ -1239,13 +1239,13 @@ impl Transform for Default {
                 if let Some(v) = event.get("azure.graphactivitylogs.properties.request_uri") {
                     values.push(v.clone());
                 }
-                if let Some(v) = event.get("http.request.id") {
+                if let Some(v) = event.get("azure.graphactivitylogs.properties.time_generated") {
                     values.push(v.clone());
                 }
                 if let Some(v) = event.get("azure.tenant_id") {
                     values.push(v.clone());
                 }
-                if let Some(v) = event.get("azure.graphactivitylogs.properties.time_generated") {
+                if let Some(v) = event.get("http.request.id") {
                     values.push(v.clone());
                 }
                 if !values.is_empty() {

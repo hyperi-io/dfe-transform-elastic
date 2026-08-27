@@ -5640,9 +5640,6 @@ impl Transform for Default {
                 if let Some(v) = event.get("@timestamp") {
                     values.push(v.clone());
                 }
-                if let Some(v) = event.get("crowdstrike.event.SessionId") {
-                    values.push(v.clone());
-                }
                 if let Some(v) = event.get("crowdstrike.event.DetectId") {
                     values.push(v.clone());
                 }
@@ -5652,10 +5649,13 @@ impl Transform for Default {
                 if let Some(v) = event.get("crowdstrike.event.RuleId") {
                     values.push(v.clone());
                 }
-                if let Some(v) = event.get("crowdstrike.metadata.eventType") {
+                if let Some(v) = event.get("crowdstrike.event.SessionId") {
                     values.push(v.clone());
                 }
                 if let Some(v) = event.get("crowdstrike.metadata.customerIDString") {
+                    values.push(v.clone());
+                }
+                if let Some(v) = event.get("crowdstrike.metadata.eventType") {
                     values.push(v.clone());
                 }
                 if let Some(v) = event.get("crowdstrike.metadata.offset") {

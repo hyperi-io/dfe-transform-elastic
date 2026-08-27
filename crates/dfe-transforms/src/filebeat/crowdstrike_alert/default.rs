@@ -8358,9 +8358,6 @@ impl Transform for Default {
 
             {
                 let mut values = Vec::new();
-                if let Some(v) = event.get("event.id") {
-                    values.push(v.clone());
-                }
                 if let Some(v) = event.get("crowdstrike.alert.cid") {
                     values.push(v.clone());
                 }
@@ -8368,6 +8365,9 @@ impl Transform for Default {
                     values.push(v.clone());
                 }
                 if let Some(v) = event.get("crowdstrike.alert.updated_timestamp") {
+                    values.push(v.clone());
+                }
+                if let Some(v) = event.get("event.id") {
                     values.push(v.clone());
                 }
                 if !values.is_empty() {
