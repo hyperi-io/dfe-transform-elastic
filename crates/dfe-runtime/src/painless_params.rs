@@ -166,6 +166,7 @@ pub(crate) enum ParamsShape {
         /// The `ctx.` path used as the lookup key.
         source: String,
     },
+    KeyedRowAppends(Box<KeyedRowAppends>),
     KeyedMessageTable,
     ReversibleLookup,
     LookupMerge,
@@ -430,6 +431,17 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         return Some(shape);
     }
 
+    // Pattern: a row whose named columns are LISTS appended to array fields,
+    // with one copy above the early return. Ahead of the column fan-out below,
+    // whose trigger this also spells and which declines on it, so the script
+    // reached nothing at all.
+    if normalised.contains("params.get(")
+        && normalised.contains(".add(")
+        && let Some(shape) = parse_keyed_row_appends(normalised)
+    {
+        return Some(ParamsShape::KeyedRowAppends(Box::new(shape)));
+    }
+
     // Pattern: look a row up in a nested table and fan its columns out,
     // appending the list-valued ones rather than replacing them.
     if normalised.contains("params.get(") && normalised.matches(".get(").count() >= 3 {
@@ -625,6 +637,7 @@ pub(crate) fn run_params_shape(
         ParamsShape::KeyedActionRow { table, source } => {
             run_keyed_action_row(event, table, source, params)
         }
+        ParamsShape::KeyedRowAppends(shape) => run_keyed_row_appends(event, shape, params),
         ParamsShape::KeyedMessageTable => try_keyed_message_table(event, normalised, params),
         ParamsShape::ReversibleLookup => try_reversible_lookup(event, normalised, params),
         ParamsShape::LookupMerge => try_lookup_merge(event, normalised, params),
@@ -2713,6 +2726,104 @@ fn try_row_columns(event: &mut Event, script: &str, params: &Map<String, Value>)
     true
 }
 
+/// A table row whose named columns are LISTS appended to array fields, with
+/// one copy that runs whether or not the key has a row.
+///
+/// ```painless
+/// def alertTypeId = ctx.json.alertTypeId;
+/// def eventData = params.get('eventmap').get(alertTypeId);
+/// ctx.event.action = ctx.json.alertType;
+/// if (eventData == null) { return; }
+/// def eventCategory = eventData.get('category');
+/// if (eventCategory != null) { for (def c : eventCategory) { ctx.event.category.add(c); } }
+/// ```
+///
+/// The copy sits ABOVE the early return, so the eleven unclassified alert
+/// types `cisco_meraki` ships still get an `event.action`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct KeyedRowAppends {
+    table: String,
+    key: String,
+    copy: Option<(String, String)>,
+    /// Row column paired with the array field its members are appended to.
+    appends: Vec<(String, String)>,
+}
+
+/// Read the table, the key it is looked up by, the unconditional copy, and
+/// every column-to-field append.
+fn parse_keyed_row_appends(script: &str) -> Option<KeyedRowAppends> {
+    let table = script
+        .split_once("params.get('")
+        .and_then(|(_, rest)| rest.split_once('\''))
+        .map(|(name, _)| name.to_string())?;
+    let table_local = local_bound_to(script, "params.get(")?;
+    let key_local = last_call_argument(script, &format!("{table_local}.get("))?;
+    let key = ctx_path_between(script, &format!("def {key_local} = ctx."), ";")?;
+    let row_local = local_bound_to(script, &format!("{table_local}.get("))?;
+
+    // `ctx.<target> = ctx.<source>;` on its own line. An `.add(` line opens
+    // the same way and has no ` = ctx.`, so it cannot be read as one.
+    let copy = script.lines().find_map(|line| {
+        let statement = line.trim().strip_prefix("ctx.")?.split_once(';')?.0;
+        let (target, source) = statement.split_once(" = ctx.")?;
+        Some((clean_path(target), clean_path(source)))
+    });
+
+    let needle = format!("= {row_local}.get('");
+    let mut appends = Vec::new();
+    for (at, opener) in script.match_indices(needle.as_str()) {
+        let rest = &script[at + opener.len()..];
+        let Some((column, tail)) = rest.split_once('\'') else {
+            continue;
+        };
+        let Some(add_at) = tail.find(".add(") else {
+            continue;
+        };
+        let Some((_, path)) = tail[..add_at].rsplit_once("ctx.") else {
+            continue;
+        };
+        appends.push((column.to_string(), clean_path(path)));
+    }
+
+    (!appends.is_empty()).then_some(KeyedRowAppends {
+        table,
+        key,
+        copy,
+        appends,
+    })
+}
+
+/// The copy first, then each column's members appended in the row's order.
+fn run_keyed_row_appends(
+    event: &mut Event,
+    shape: &KeyedRowAppends,
+    params: &Map<String, Value>,
+) -> bool {
+    if let Some((target, source)) = &shape.copy
+        && let Some(value) = event.get(source).cloned()
+    {
+        let _ = event.set(target, value);
+    }
+
+    let Some(rows) = params.get(&shape.table).and_then(Value::as_object) else {
+        return true;
+    };
+    let Some(key) = event.get_as_string(&shape.key) else {
+        return true;
+    };
+    let Some(row) = rows.get(&key).and_then(Value::as_object) else {
+        return true;
+    };
+    for (column, field) in &shape.appends {
+        if let Some(Value::Array(items)) = row.get(column) {
+            for item in items {
+                add_to_list(event, field, item.clone());
+            }
+        }
+    }
+    true
+}
+
 /// Read `def <t> = params.get('<table>'); def <row> = <t>.get(<key>);`, and
 /// the `ctx.` path the key local is itself bound from.
 fn parse_keyed_action_row(script: &str) -> Option<ParamsShape> {
@@ -3733,6 +3844,49 @@ pub(crate) fn pointer_mut<'a>(event: &'a mut Event, path: &str) -> Option<&'a mu
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// Verbatim from `pipelines/cisco_meraki/events/default.yml`: a row whose
+    /// named columns are LISTS appended to array fields, alongside one copy
+    /// that runs whether or not the key has a row.
+    #[test]
+    fn a_rows_list_columns_append_and_the_copy_runs_regardless() {
+        let script = "def alertTypeId = ctx.json.alertTypeId;\n\
+            def eventMap = params.get('eventmap');\ndef eventData = eventMap.get(alertTypeId);\n\
+            ctx.event.action = ctx.json.alertType;\nif (eventData == null) {\n  return;\n}\n\
+            def eventCategory = eventData.get('category');\nif (eventCategory != null) {\n  \
+            for (def c : eventCategory) {\n    ctx.event.category.add(c);\n  }\n}\n\
+            def eventType = eventData.get('type');\nif (eventType != null) {\n  \
+            for (def t : eventType) {\n    ctx.event.type.add(t);\n  }\n}";
+        let params = json!({ "eventmap": {
+            "cellular_up": { "type": ["start"] },
+            "vrrp": { "category": ["configuration"], "type": ["change"] },
+        }});
+
+        let mut listed = Event::new(json!({
+            "json": { "alertTypeId": "vrrp", "alertType": "Failover event detected" },
+            "event": { "category": ["network"], "type": ["info"] }
+        }));
+        assert!(try_params_painless(&mut listed, script, &params));
+        assert_eq!(
+            listed.get_str("event.action"),
+            Some("Failover event detected")
+        );
+        assert_eq!(
+            listed.get("event.category"),
+            Some(&json!(["network", "configuration"]))
+        );
+        assert_eq!(listed.get("event.type"), Some(&json!(["info", "change"])));
+
+        // An unlisted key still gets the copy, which sits above the return.
+        let mut unlisted = Event::new(json!({
+            "json": { "alertTypeId": "mi_alert", "alertType": "Insight Alert" },
+            "event": { "category": ["network"], "type": ["info"] }
+        }));
+        assert!(try_params_painless(&mut unlisted, script, &params));
+        assert_eq!(unlisted.get_str("event.action"), Some("Insight Alert"));
+        assert_eq!(unlisted.get("event.category"), Some(&json!(["network"])));
+        assert_eq!(unlisted.get("event.type"), Some(&json!(["info"])));
+    }
 
     /// Verbatim from `pipelines/m365_defender/alert/default.yml`: the
     /// categories come off the evidence list through the params table, and the

@@ -159,13 +159,14 @@
  30 ReversibleLookup
  31 LookupMerge
  32 KeyedActionRow
- 33 LookupColumns
- 34 LookupNormalise
- 35 IndexedLookup
- 36 Scale
- 37 Replace
- 38 AddUniqueRow
- 39 FrameworkPreference
- 40 NormalisedLookup
- 41 LookupNormalise
+ 33 KeyedRowAppends
+ 34 LookupColumns
+ 35 LookupNormalise
+ 36 IndexedLookup
+ 37 Scale
+ 38 Replace
+ 39 AddUniqueRow
+ 40 FrameworkPreference
+ 41 NormalisedLookup
+ 42 LookupNormalise
 
