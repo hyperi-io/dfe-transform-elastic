@@ -8673,7 +8673,7 @@ fn run_classify_ladder(event: &mut Event, shape: &ClassifyLadder) -> bool {
     true
 }
 
-/// A nested map emptied into its own parent, and the routing keys beside it
+/// A nested map emptied into an ancestor, and the routing keys beside it
 /// dropped.
 ///
 /// ```painless
@@ -8687,66 +8687,259 @@ fn run_classify_ladder(event: &mut Event, shape: &ClassifyLadder) -> bool {
 /// kolide's Log Pipeline deliveries wrap the record in a `{type, timestamp,
 /// data}` envelope, and every field the rest of the pipeline reads is inside
 /// `data`.
+///
+/// The source is bound either by the `remove` above, which also deletes it, or
+/// by a plain read that leaves it where it is -- cursor's S3 arm lifts
+/// `json.metadata.context` into `json` and drops the whole envelope later, so
+/// consuming the map here would take the rest of it with it. That form also
+/// guards each write with `containsKey`, which is the vendor saying an
+/// envelope field already set wins over the nested copy.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct MergeMapUp {
     parent: String,
     /// The full path of the map lifted, resolved here so the hot path
     /// allocates nothing.
     source: String,
+    /// Whether the binding consumed the map. A plain read leaves it.
+    take: bool,
+    /// Whether a `containsKey` guard makes an existing key win.
+    keep_existing: bool,
     drops: Vec<String>,
 }
 
 fn parse_merge_map_up(script: &str) -> Option<MergeMapUp> {
-    use crate::painless_params::clean_path;
+    use crate::painless_params::{clean_path, ctx_path_before};
 
-    let (head, tail) = script.split_once(".remove(")?;
-    let parent = clean_path(head.rsplit_once("ctx.")?.1.trim());
-    let key = quoted_first(tail)?;
-    let local = head.rsplit_once(" = ")?.0.trim().rsplit(' ').next()?;
-    if parent.is_empty() || key.contains('.') || local.is_empty() {
-        return None;
-    }
-
-    // The loop has to empty THAT local into THAT parent, or the script is
-    // doing something else with a map it happens to have removed.
-    let entry = script.split_once("for (")?.1.split_once(':')?.0;
+    // The loop names both locals: the entry it binds, and the map it walks.
+    let (entry, after) = script.split_once("for (")?.1.split_once(':')?;
     let entry = entry.trim().rsplit(' ').next()?;
-    if !script.contains(&format!("{local}.entrySet()"))
-        || !script.contains(&format!(
-            "ctx.{parent}[{entry}.getKey()] = {entry}.getValue()"
-        ))
-    {
+    let local = after.split_once(".entrySet()")?.0.trim();
+    if entry.is_empty() || local.is_empty() {
         return None;
     }
+
+    // The parent is read from the WRITE rather than from the binding, because
+    // that is where the merge actually lands -- the two differ whenever the
+    // map is nested more than one level down.
+    let write = format!("[{entry}.getKey()] = {entry}.getValue()");
+    let parent = ctx_path_before(script, &write)?;
+    if parent.is_empty() {
+        return None;
+    }
+
+    // Either binding form, and nothing else: a local the script built itself
+    // is not a map the event carries.
+    let binding = script.split_once(&format!("{local} = "))?.1.trim();
+    let (source, take) = if let Some((head, tail)) = binding.split_once(".remove(") {
+        let holder = clean_path(head.rsplit_once("ctx.")?.1.trim());
+        let key = quoted_first(tail)?;
+        if holder.is_empty() || key.contains('.') {
+            return None;
+        }
+        (format!("{holder}.{key}"), true)
+    } else {
+        let read = binding.split([';', '\n']).next()?.trim();
+        let path = clean_path(read.strip_prefix("ctx.")?.trim());
+        if path.is_empty() || path.contains(['(', ')', ' ']) {
+            return None;
+        }
+        (path, false)
+    };
+
+    let keep_existing = script.contains(&format!("!ctx.{parent}.containsKey({entry}.getKey())"));
 
     let dropper = format!("ctx.{parent}.remove(");
     let drops = script
         .match_indices(&dropper)
         .filter_map(|(at, _)| quoted_first(&script[at + dropper.len()..]))
-        .filter(|dropped| *dropped != key)
         .map(|dropped| format!("{parent}.{dropped}"))
+        .filter(|path| *path != source)
         .collect();
 
     Some(MergeMapUp {
-        source: format!("{parent}.{key}"),
         parent,
+        source,
+        take,
+        keep_existing,
         drops,
     })
 }
 
 fn run_merge_map_up(event: &mut Event, shape: &MergeMapUp) -> bool {
     // The processor's own `instanceof Map` guard, so anything else is a no-op.
-    let Some(Value::Object(entries)) = event.remove(&shape.source) else {
-        return true;
+    let entries = if shape.take {
+        match event.remove(&shape.source) {
+            Some(Value::Object(entries)) => entries,
+            _ => return true,
+        }
+    } else {
+        match event.get(&shape.source) {
+            Some(Value::Object(entries)) => entries.clone(),
+            _ => return true,
+        }
     };
     if let Some(Value::Object(parent)) = crate::painless_params::pointer_mut(event, &shape.parent) {
         for (key, value) in entries {
+            if shape.keep_existing && parent.contains_key(&key) {
+                continue;
+            }
             parent.insert(key, value);
         }
     }
     for path in &shape.drops {
         event.remove(path);
     }
+    true
+}
+
+/// The one key of an envelope that is not envelope names the event, and its
+/// value is the payload.
+///
+/// ```painless
+/// def doc = ctx.json;
+/// Set reserved = new HashSet(['metadata', 'team_id', 'ip_address', 'user_email']);
+/// String eventKey = null;
+/// for (def k : doc.keySet()) {
+///   if (!reserved.contains(k)) { eventKey = k; break; }
+/// }
+/// if (eventKey == null) { return; }
+/// def payload = doc.remove(eventKey);
+/// doc.event_type = eventKey;
+/// if (payload instanceof Map) { doc.event_data = payload; }
+/// else if (payload != null) { def wrap = new HashMap(); wrap.put('value', payload); doc.event_data = wrap; }
+/// else { doc.event_data = new HashMap(); }
+/// ```
+///
+/// cursor's S3 deliveries carry the event type as the KEY rather than as a
+/// field. Everything after this reads `json.event_type`, so leaving the script
+/// unclaimed cost that whole arm of the source.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct UnreservedKeyPayload {
+    /// The envelope searched.
+    doc: String,
+    /// Keys that are envelope rather than payload.
+    reserved: Vec<String>,
+    /// Where the found key's NAME lands, relative to the envelope.
+    name_field: String,
+    /// Where its VALUE lands, relative to the envelope.
+    payload_field: String,
+    /// The key a payload that is not a map is wrapped under.
+    wrap_key: String,
+}
+
+fn parse_unreserved_key_payload(script: &str) -> Option<UnreservedKeyPayload> {
+    use crate::painless_params::{balanced, clean_path, skip_trivia};
+
+    // The envelope, and the local the rest of the script spells it as.
+    let (head, tail) = script.split_once(" = ctx.")?;
+    let doc_local = head.rsplit(['\n', ';', ' ']).next()?.trim();
+    let doc = clean_path(tail.split([';', '\n']).next()?.trim());
+    if doc_local.is_empty() || doc.is_empty() || doc.contains(['(', ')', ' ']) {
+        return None;
+    }
+
+    // The reserved set, and the scan that skips it.
+    let set = script.split_once("new HashSet(")?.1;
+    let (list, _) = balanced(skip_trivia(set), '[', ']')?;
+    let reserved: Vec<String> = list.split(',').filter_map(quoted_first).collect();
+    if reserved.is_empty() {
+        return None;
+    }
+    let loop_var = script
+        .split_once(&format!("{doc_local}.keySet()"))?
+        .1
+        .split_once(".contains(")?
+        .1
+        .split_once(')')?
+        .0
+        .trim();
+    if loop_var.is_empty() {
+        return None;
+    }
+    // The loop variable is not what the rest of the script spells: the body
+    // captures it into a local declared above the loop, and that is the name
+    // the write below is keyed by.
+    let key_local = script
+        .split_once(&format!("= {loop_var};"))?
+        .0
+        .trim_end()
+        .rsplit(['\n', ';', '{', ' '])
+        .next()?
+        .trim()
+        .to_string();
+    if key_local.is_empty() || key_local == loop_var {
+        return None;
+    }
+
+    // The payload local, and where the key's name and value are written.
+    let payload_local = script
+        .split_once(&format!("{doc_local}.remove("))?
+        .0
+        .rsplit_once(" = ")?
+        .0
+        .rsplit(' ')
+        .next()?
+        .to_string();
+    let name_field = script
+        .match_indices(&format!("{doc_local}."))
+        .find_map(|(at, matched)| {
+            let (field, value) = script[at + matched.len()..].split_once('=')?;
+            let field = field.trim();
+            let value = value.split([';', '\n']).next()?.trim();
+            (value == key_local && !field.contains([' ', '(', '.'])).then(|| field.to_string())
+        })?;
+    let payload_field = script
+        .split_once(&format!("{payload_local} instanceof Map"))?
+        .1
+        .split_once(&format!("{doc_local}."))?
+        .1
+        .split_once('=')?
+        .0
+        .trim()
+        .to_string();
+    if payload_field.is_empty() || payload_field.contains([' ', '(', '.']) {
+        return None;
+    }
+
+    Some(UnreservedKeyPayload {
+        doc,
+        reserved,
+        name_field,
+        payload_field,
+        wrap_key: quoted_first(script.split_once(".put(")?.1)?,
+    })
+}
+
+fn run_unreserved_key_payload(event: &mut Event, shape: &UnreservedKeyPayload) -> bool {
+    let Some(Value::Object(envelope)) = event.get(&shape.doc) else {
+        return true;
+    };
+    // Insertion order is the script's own iteration order, which is why the
+    // whole document is read under `preserve_order`.
+    let Some(key) = envelope
+        .keys()
+        .find(|key| !shape.reserved.iter().any(|held| held == *key))
+        .cloned()
+    else {
+        // The script's own `if (eventKey == null) { return; }`.
+        return true;
+    };
+
+    let payload = event.remove(&format!("{}.{key}", shape.doc));
+    let payload = match payload {
+        Some(map @ Value::Object(_)) => map,
+        Some(Value::Null) | None => Value::Object(Map::new()),
+        Some(scalar) => {
+            let mut wrap = Map::new();
+            wrap.insert(shape.wrap_key.clone(), scalar);
+            Value::Object(wrap)
+        }
+    };
+    let _ = event.set(
+        &format!("{}.{}", shape.doc, shape.name_field),
+        Value::String(key),
+    );
+    let _ = event.set(&format!("{}.{}", shape.doc, shape.payload_field), payload);
     true
 }
 
@@ -9029,6 +9222,7 @@ pub(crate) enum KnownShape {
     ClassifyLadder(Box<ClassifyLadder>),
     MoveKeys(Vec<(String, String)>),
     MergeMapUp(Box<MergeMapUp>),
+    UnreservedKeyPayload(Box<UnreservedKeyPayload>),
     SuffixesByPrefix(Box<SuffixesByPrefix>),
     BranchCopies(Vec<BranchCopy>),
     PrivateCidrDirection {
@@ -9149,10 +9343,21 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
-    // Pattern: a nested map emptied into its own parent, and the routing keys
-    // beside it dropped.
+    // Pattern: the one key of an envelope that is not envelope names the
+    // event, and its value is the payload.
+    if normalised.contains(".keySet()")
+        && normalised.contains("new HashSet(")
+        && let Some(shape) = parse_unreserved_key_payload(normalised)
+    {
+        shapes.push(KnownShape::UnreservedKeyPayload(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: a nested map emptied into an ancestor, and the routing keys
+    // beside it dropped. The trigger is the WRITE rather than the binding,
+    // because the map is bound either by a `remove` or by a plain read.
     if normalised.contains(".entrySet()")
-        && normalised.contains(".remove('")
+        && normalised.contains(".getValue()")
         && let Some(shape) = parse_merge_map_up(normalised)
     {
         shapes.push(KnownShape::MergeMapUp(Box::new(shape)));
@@ -10598,6 +10803,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::ClassifyLadder(shape) => run_classify_ladder(event, shape),
         KnownShape::MoveKeys(moves) => run_move_keys(event, moves),
         KnownShape::MergeMapUp(shape) => run_merge_map_up(event, shape),
+        KnownShape::UnreservedKeyPayload(shape) => run_unreserved_key_payload(event, shape),
         KnownShape::SuffixesByPrefix(shape) => run_suffixes_by_prefix(event, shape),
     }
 }

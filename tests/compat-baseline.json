@@ -23,7 +23,7 @@
     "cisco_umbrella": { "events": 37, "events_total": 39, "fields_wrong": 3 },
     "coredns": { "events": 20, "events_total": 20, "fields_wrong": 0 },
     "crowdstrike": { "events": 80, "events_total": 80, "fields_wrong": 0 },
-    "cursor": { "events": 0, "events_total": 30, "fields_wrong": 270 },
+    "cursor": { "events": 30, "events_total": 30, "fields_wrong": 0 },
     "dataminr_pulse": { "events": 5, "events_total": 17, "fields_wrong": 88 },
     "entityanalytics_ad": { "events": 4, "events_total": 11, "fields_wrong": 60 },
     "entityanalytics_entra_id": { "events": 7, "events_total": 7, "fields_wrong": 0 },

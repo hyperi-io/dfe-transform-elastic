@@ -188,6 +188,7 @@ pub(crate) enum ParamsShape {
     AddUniqueRow,
     FrameworkPreference,
     RowOrDefaults(Box<RowOrDefaults>),
+    MergeRowOrFallback(Box<MergeRowOrFallback>),
 }
 
 /// The one matcher this script's text triggers, or `None`.
@@ -521,6 +522,15 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         return Some(ParamsShape::LookupNormalise);
     }
 
+    // Pattern: a NAMED params table's row merged WHOLE onto ctx, with further
+    // rows of the same table standing in for a key that missed. The unnamed
+    // table is `LookupMerge` above, which this cannot reach past.
+    if normalised.contains("forEach((k, v) ->")
+        && let Some(shape) = parse_merge_row_or_fallback(normalised)
+    {
+        return Some(ParamsShape::MergeRowOrFallback(Box::new(shape)));
+    }
+
     // Pattern: a NAMED params table's row fanned onto ctx, with literal
     // defaults where the key has no row. LAST, so every table matcher above
     // keeps the scripts it already claims.
@@ -689,6 +699,7 @@ pub(crate) fn run_params_shape(
         ParamsShape::AddUniqueRow => try_add_unique_row(event, normalised, params),
         ParamsShape::FrameworkPreference => try_framework_preference(event, normalised, params),
         ParamsShape::RowOrDefaults(shape) => run_row_or_defaults(event, shape, params),
+        ParamsShape::MergeRowOrFallback(shape) => run_merge_row_or_fallback(event, shape, params),
     }
 }
 
@@ -1742,6 +1753,162 @@ fn run_row_or_defaults(
         if let Some(held) = row.get(&column.member).filter(|v| !v.is_null()) {
             let _ = event.set(&column.target, held.clone());
         }
+    }
+    true
+}
+
+/// A row of a NAMED params table merged WHOLE onto ctx, with further params
+/// rows standing in where the key has none.
+///
+/// ```painless
+/// def action = ctx.json.event_type;
+/// ctx.event.action = action;
+/// ctx.event.kind = 'event';
+/// def mapping = params.mappings.get(action);
+/// if (mapping == null && action.startsWith('bugbot_')) {
+///   mapping = params.bugbot;
+/// }
+/// mapping = mapping ?: params.defaults;
+/// def hm = new HashMap(mapping);
+/// hm.forEach((k, v) -> ctx.event[k] = v);
+/// ```
+///
+/// [`RowOrDefaults`] is the same lookup fanned COLUMN BY COLUMN with literal
+/// fallbacks; this one names its columns nowhere and its fallbacks are rows of
+/// the same table. cursor's audit stream is the whole of it, and the five
+/// `event.*` fields it writes gate almost every processor after it -- the
+/// per-action renames, the lowercase, `user.target.email` and through that
+/// `related.user` -- so an unclaimed script here cost the source all 30 events
+/// rather than five fields.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct MergeRowOrFallback {
+    /// The `ctx.` path the lookup key is read from.
+    subject: String,
+    /// The params member holding the table.
+    table: String,
+    /// Where the row's columns land.
+    target: String,
+    /// Literal writes the script makes on its own account.
+    prelude: Vec<(String, Value)>,
+    /// Fields written the KEY's own value, which a literal scan cannot see
+    /// because the right-hand side is the local the key was bound to.
+    key_writes: Vec<String>,
+    /// A params row for a key that missed but carries this prefix.
+    prefix_row: Option<(String, String)>,
+    /// A params row for a key that missed outright.
+    default_row: Option<String>,
+}
+
+fn parse_merge_row_or_fallback(script: &str) -> Option<MergeRowOrFallback> {
+    // The merge names the target, and its lambda parameter is fixed by the
+    // trigger below.
+    let (head, body) = script.split_once("forEach(")?;
+    let target = ctx_path_between(body, "ctx.", "[k] = ")?;
+    if target.is_empty() {
+        return None;
+    }
+
+    // A NAMED table only. The unnamed `params.get(` form is `LookupMerge`,
+    // which claims it above this.
+    let (before, after) = head.split_once(".get(")?;
+    let table = before.rsplit_once("params.")?.1.trim().to_string();
+    if table.is_empty() || !table.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+    let key = after.split_once(')')?.0.trim();
+    let subject = crate::painless_common::ctx_path_bound_to(head, key)?;
+    let row = before.rsplit_once(" = ")?.0.rsplit(' ').next()?;
+    if row.is_empty() {
+        return None;
+    }
+
+    // `if (<row> == null && <key>.startsWith('<prefix>')) { <row> = params.<name>; }`
+    let prefix_row = head
+        .split_once(&format!("{key}.startsWith("))
+        .and_then(|(_, tail)| {
+            let prefix = quoted_after(tail, "")?;
+            let assigned = tail.split_once(&format!("{row} = params."))?.1;
+            let name: String = assigned
+                .chars()
+                .take_while(|c| c.is_alphanumeric() || *c == '_')
+                .collect();
+            (!name.is_empty()).then_some((prefix, name))
+        });
+
+    // `<row> = <row> ?: params.<name>;` -- the last resort.
+    let default_row = head.split_once("?: params.").and_then(|(_, tail)| {
+        let name: String = tail
+            .chars()
+            .take_while(|c| c.is_alphanumeric() || *c == '_')
+            .collect();
+        (!name.is_empty()).then_some(name)
+    });
+
+    Some(MergeRowOrFallback {
+        subject,
+        table,
+        target,
+        prelude: literal_writes(head),
+        key_writes: key_written_paths(head, key),
+        prefix_row,
+        default_row,
+    })
+}
+
+/// The `ctx.<path> = <key>;` targets, which [`literal_writes`] cannot see.
+fn key_written_paths(head: &str, key: &str) -> Vec<String> {
+    let mut out = Vec::new();
+    for statement in head.split(';') {
+        let Some((subject, value)) = split_assignment(statement) else {
+            continue;
+        };
+        if value.trim() != key {
+            continue;
+        }
+        if let Some(path) = subject
+            .rsplit(['\n', '{', '}'])
+            .next()
+            .map(str::trim)
+            .and_then(|line| line.strip_prefix("ctx."))
+        {
+            out.push(clean_path(path));
+        }
+    }
+    out
+}
+
+/// Merge the row the key selects, or the first fallback row that applies.
+fn run_merge_row_or_fallback(
+    event: &mut Event,
+    shape: &MergeRowOrFallback,
+    params: &Map<String, Value>,
+) -> bool {
+    // Absent is the processor's own `if` guard, and every one of these scripts
+    // opens by reading the key.
+    let Some(key) = event.get_as_string(&shape.subject) else {
+        return true;
+    };
+    for path in &shape.key_writes {
+        let _ = event.set(path, Value::String(key.clone()));
+    }
+    for (target, value) in &shape.prelude {
+        let _ = event.set(target, value.clone());
+    }
+
+    let row = params
+        .get(&shape.table)
+        .and_then(|table| table.get(&key))
+        .or_else(|| {
+            let (prefix, name) = shape.prefix_row.as_ref()?;
+            key.starts_with(prefix.as_str()).then(|| params.get(name))?
+        })
+        .or_else(|| params.get(shape.default_row.as_ref()?));
+    let Some(Value::Object(row)) = row else {
+        return true;
+    };
+
+    for (member, value) in row.clone() {
+        let _ = event.set(&format!("{}.{member}", shape.target), value);
     }
     true
 }
