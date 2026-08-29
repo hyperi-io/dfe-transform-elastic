@@ -3943,14 +3943,26 @@ fn try_sum_directions(event: &mut Event, unit: &str) -> bool {
 fn try_sum_of_fields(event: &mut Event, script: &str) -> bool {
     use crate::painless_params::clean_path;
 
-    let Some((lhs, rhs)) = script.split_once(" = ") else {
+    // The assignment is the one whose RHS holds the addition: taking the
+    // script's FIRST `=` reads a preamble that creates the target container,
+    // and the sum is never found.
+    let Some(sum_at) = script.find(" + ctx.") else {
         return false;
     };
-    let Some(target) = lhs.trim().rsplit("ctx.").next() else {
+    let Some(assign) = script[..sum_at].rfind(" = ") else {
         return false;
     };
+    let Some(target) = script[..assign].trim().rsplit("ctx.").next() else {
+        return false;
+    };
+    let rhs = &script[assign + " = ".len()..];
     let end = rhs.find([';', '\n']).unwrap_or(rhs.len());
-    let Some((left, right)) = rhs[..end].split_once(" + ") else {
+    let rhs = rhs[..end].trim();
+    let rhs = rhs
+        .strip_prefix('(')
+        .and_then(|inner| inner.strip_suffix(')'))
+        .unwrap_or(rhs);
+    let Some((left, right)) = rhs.split_once(" + ") else {
         return false;
     };
     let (Some(left), Some(right)) = (
@@ -3961,12 +3973,22 @@ fn try_sum_of_fields(event: &mut Event, script: &str) -> bool {
     };
 
     let (Some(a), Some(b)) = (
-        event.get_i64(&clean_path(left)),
-        event.get_i64(&clean_path(right)),
+        event.get(&clean_path(left)).cloned(),
+        event.get(&clean_path(right)).cloned(),
     ) else {
         return true;
     };
-    let _ = event.set(&clean_path(target), json!(a.saturating_add(b)));
+    // Painless adds two integers as an integer and anything else as a double,
+    // so a percentage stays fractional rather than truncating to zero.
+    let total = if let (Some(x), Some(y)) = (a.as_i64(), b.as_i64()) {
+        json!(x.saturating_add(y))
+    } else {
+        let (Some(x), Some(y)) = (a.as_f64(), b.as_f64()) else {
+            return true;
+        };
+        json!(x + y)
+    };
+    let _ = event.set(&clean_path(target), total);
     true
 }
 
@@ -7039,6 +7061,160 @@ fn try_sentinel_removal_literal(event: &mut Event, script: &str) -> bool {
 /// bracket subscript rather than a dotted path; the destination is a plain
 /// ECS field. Nothing is written when the source is absent, which is what
 /// stops an explicit null propagating into the ECS field.
+/// Read the two ends and the field the direction lands on.
+///
+/// The helper's own three ranges -- 10.0.0.0/8, 172.16.0.0/12 and
+/// 192.168.0.0/16 -- are exactly the set `Ipv4Addr::is_private` answers for.
+fn parse_private_cidr_direction(script: &str) -> Option<KnownShape> {
+    let mut ends = Vec::new();
+    let mut cursor = 0usize;
+    while let Some(rel) = script[cursor..].find("isPrivateCIDR(ctx.") {
+        let at = cursor + rel + "isPrivateCIDR(ctx.".len();
+        cursor = at;
+        let path = clean_path(script[at..].split(')').next()?);
+        if !path.is_empty() && !ends.contains(&path) {
+            ends.push(path);
+        }
+    }
+    let [source, destination] = ends.as_slice() else {
+        return None;
+    };
+
+    let target = crate::painless_params::ctx_writes(script)
+        .into_iter()
+        .find(|(_, rhs)| rhs.trim().trim_matches(['\'', '"']) == "inbound")
+        .map(|(path, _)| path)?;
+
+    Some(KnownShape::PrivateCidrDirection {
+        source: source.clone(),
+        destination: destination.clone(),
+        target,
+    })
+}
+
+/// Whether an address sits in one of the three private IPv4 ranges.
+///
+/// The script's `CIDR.contains` throws on anything that is not IPv4 and its
+/// `catch` answers false, so an IPv6 address is not private rather than an
+/// error.
+fn is_private_v4(value: &str) -> bool {
+    value
+        .parse::<std::net::Ipv4Addr>()
+        .is_ok_and(|ip| ip.is_private())
+}
+
+fn run_private_cidr_direction(
+    event: &mut Event,
+    source: &str,
+    destination: &str,
+    target: &str,
+) -> bool {
+    let (Some(from), Some(to)) = (
+        event.get_as_string(source),
+        event.get_as_string(destination),
+    ) else {
+        return true;
+    };
+    let direction = match (is_private_v4(&from), is_private_v4(&to)) {
+        (false, true) => "inbound",
+        (true, false) => "outbound",
+        (true, true) => "internal",
+        (false, false) => "external",
+    };
+    let _ = event.set(target, Value::String(direction.to_string()));
+    true
+}
+
+/// Read every `if (ctx.<guard> == "<literal>") { ... }` branch and the guarded
+/// copies inside it.
+///
+/// The branches of one chain test the same field against different literals, so
+/// at most one can hold and `else if` needs no separate modelling.
+fn parse_branch_copies(script: &str) -> Option<Vec<BranchCopy>> {
+    let mut branches = Vec::new();
+    let mut cursor = 0usize;
+    while let Some(rel) = script[cursor..].find("== \"") {
+        let at = cursor + rel;
+        cursor = at + "== \"".len();
+
+        let Some(guard) = painless_path(&script[..at]) else {
+            continue;
+        };
+        let Some(literal) = script[cursor..].split('"').next().map(str::to_string) else {
+            continue;
+        };
+        let body = branch_body(&script[cursor + literal.len() + 1..]);
+        let copies = guarded_copies(body);
+        if !copies.is_empty() {
+            branches.push(BranchCopy {
+                guard,
+                literal,
+                copies,
+            });
+        }
+    }
+    (!branches.is_empty()).then_some(branches)
+}
+
+/// The text of the `{ ... }` block a branch opens.
+fn branch_body(rest: &str) -> &str {
+    let Some(open) = rest.find('{') else {
+        return "";
+    };
+    let mut depth = 0usize;
+    for (at, c) in rest[open..].char_indices() {
+        match c {
+            '{' => depth += 1,
+            '}' => {
+                depth -= 1;
+                if depth == 0 {
+                    return &rest[open + 1..open + at];
+                }
+            }
+            _ => {}
+        }
+    }
+    ""
+}
+
+/// `if (ctx.<src> != null) { ctx.<dst> = ctx.<src>; }` pairs, as (dst, src).
+fn guarded_copies(body: &str) -> Vec<(String, String)> {
+    let mut copies = Vec::new();
+    for part in body.split("!= null").skip(1) {
+        let Some((target_expr, value_expr)) = part.split_once('=') else {
+            continue;
+        };
+        // The value ends at its own statement: a body of several copies runs
+        // straight into the next guard otherwise, and the path read is the
+        // FOLLOWING field's.
+        let Some(value_expr) = value_expr.split(';').next() else {
+            continue;
+        };
+        let (Some(target), Some(value)) = (painless_path(target_expr), painless_path(value_expr))
+        else {
+            continue;
+        };
+        copies.push((target, value));
+    }
+    copies
+}
+
+fn run_branch_copies(event: &mut Event, branches: &[BranchCopy]) -> bool {
+    for branch in branches {
+        if event.get_as_string(&branch.guard).as_deref() != Some(branch.literal.as_str()) {
+            continue;
+        }
+        for (target, source) in &branch.copies {
+            if let Some(value) = event.get(source).cloned()
+                && !value.is_null()
+            {
+                let _ = event.set(target, value);
+            }
+        }
+    }
+    true
+}
+
 fn try_guarded_copy(event: &mut Event, script: &str) -> bool {
     // Every guarded copy in the script, not just the first. Windows'
     // `security_standard` is four hundred lines of them -- one per winlog
@@ -8854,6 +9030,20 @@ pub(crate) enum KnownShape {
     MoveKeys(Vec<(String, String)>),
     MergeMapUp(Box<MergeMapUp>),
     SuffixesByPrefix(Box<SuffixesByPrefix>),
+    BranchCopies(Vec<BranchCopy>),
+    PrivateCidrDirection {
+        source: String,
+        destination: String,
+        target: String,
+    },
+}
+
+/// Copies that apply only where `guard` holds `literal`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct BranchCopy {
+    guard: String,
+    literal: String,
+    copies: Vec<(String, String)>,
 }
 
 /// The matcher branches this script's text triggers, in dispatch order.
@@ -10023,6 +10213,27 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: ECS network.direction from whether each end is in a private
+    // range.
+    if normalised.contains("isPrivateCIDR")
+        && let Some(shape) = parse_private_cidr_direction(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: copies selected by a field matching a literal -- arista's
+    // interface aliases, keyed on the interface id. Ahead of `GuardedCopy`,
+    // which claims the script on its first `!= null`, applies ONE of the
+    // copies, and never reads the branch that was supposed to select it.
+    if normalised.contains("== \"")
+        && normalised.contains("!= null")
+        && let Some(branches) = parse_branch_copies(normalised)
+    {
+        shapes.push(KnownShape::BranchCopies(branches));
+        return shapes;
+    }
+
     // The two catch-alls below are shapes a longer script also CONTAINS, so
     // they run only after every structural matcher has declined.
 
@@ -10378,6 +10589,12 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             divisor,
         } => run_guarded_divide(event, target, absent.as_ref(), *divisor),
         KnownShape::GuardedCopy => try_guarded_copy(event, normalised),
+        KnownShape::BranchCopies(branches) => run_branch_copies(event, branches),
+        KnownShape::PrivateCidrDirection {
+            source,
+            destination,
+            target,
+        } => run_private_cidr_direction(event, source, destination, target),
         KnownShape::ClassifyLadder(shape) => run_classify_ladder(event, shape),
         KnownShape::MoveKeys(moves) => run_move_keys(event, moves),
         KnownShape::MergeMapUp(shape) => run_merge_map_up(event, shape),

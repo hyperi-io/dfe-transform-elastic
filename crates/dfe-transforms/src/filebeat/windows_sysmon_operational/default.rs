@@ -1249,51 +1249,91 @@ impl Transform for Default {
             }
 
             if event.has_value("dns.resolved_ip") {
-                if let Some(Value::Array(items)) = event.get("dns.resolved_ip").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                            if let Some(val) = event.get("_ingest._value") {
-                                let converted = convert_value(val, "ip").map_err(|message| {
-                                    TransformError::ParseError {
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("dns.resolved_ip").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => {
+                            fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                        }
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                                if let Some(val) = event.get("_ingest._value") {
+                                    let converted =
+                                        convert_value(val, "ip").map_err(|message| {
+                                            TransformError::ParseError {
+                                                path: "_ingest._value".into(),
+                                                message,
+                                            }
+                                        })?;
+                                    event.set("_ingest._value", converted)?;
+                                }
+                                Ok(())
+                            })() {
+                                event.set("_ingest.on_failure_message", err.to_string())?;
+                                event.set("_ingest.on_failure_processor_type", "convert")?;
+                                if event.remove("_ingest._value").is_none() {
+                                    return Err(TransformError::FieldNotFound {
                                         path: "_ingest._value".into(),
-                                        message,
+                                    });
+                                }
+                                event.remove("_ingest.on_failure_message");
+                                event.remove("_ingest.on_failure_processor_type");
+                                event.remove("_ingest.on_failure_processor_tag");
+                                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left {
+                                        fields.insert(key, value);
                                     }
-                                })?;
-                                event.set("_ingest._value", converted)?;
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
                             }
-                            Ok(())
-                        })() {
-                            event.set("_ingest.on_failure_message", err.to_string())?;
-                            event.set("_ingest.on_failure_processor_type", "convert")?;
-                            if event.remove("_ingest._value").is_none() {
-                                return Err(TransformError::FieldNotFound {
-                                    path: "_ingest._value".into(),
-                                });
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
                             }
-                            event.remove("_ingest.on_failure_message");
-                            event.remove("_ingest.on_failure_processor_type");
-                            event.remove("_ingest.on_failure_processor_tag");
-                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            None => {
                                 event.remove("_ingest");
                             }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    match enclosing {
-                        Some(previous) => {
-                            event.set("_ingest._value", previous)?;
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        None => {
-                            event.remove("_ingest");
-                        }
+                        event.set(
+                            "dns.resolved_ip",
+                            if keyed {
+                                Value::Object(fields)
+                            } else {
+                                Value::Array(list)
+                            },
+                        )?;
                     }
-                    event.set("dns.resolved_ip", Value::Array(out))?;
                 }
             }
 

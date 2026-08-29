@@ -55,24 +55,52 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.container.networks").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.container.networks").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.container.networks").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 let _cond = { event.has_value("ses.container.networks") };
                 if _cond {
                 event.append_unique("related.ip", json!(event.get("_ingest._value.gateway_ip").map_or_else(String::new, template_to_string)))?;
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.container.networks", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.container.networks", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.container.networks").is_some_and(|v| v.is_array()) };
@@ -109,24 +137,52 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.container.networks").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.container.networks").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.container.networks").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 let _cond = { event.has_value("ses.container.networks") };
                 if _cond {
                 event.append_unique("related.ip", json!(event.get("_ingest._value.ipv4").map_or_else(String::new, template_to_string)))?;
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.container.networks", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.container.networks", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.container.networks").is_some_and(|v| v.is_array()) };
@@ -163,24 +219,52 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.container.networks").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.container.networks").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.container.networks").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 let _cond = { event.has_value("ses.container.networks") };
                 if _cond {
                 event.append_unique("related.ip", json!(event.get("_ingest._value.ipv6").map_or_else(String::new, template_to_string)))?;
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.container.networks", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.container.networks", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.container.networks").is_some_and(|v| v.is_array()) };
@@ -439,12 +523,28 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.cybox.files").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.cybox.files").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.cybox.files").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -472,13 +572,25 @@ impl Transform for PipelineCategoryDiagnostic {
                 event.remove("_ingest");
                 }
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.cybox.files", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.cybox.files", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.cybox.files").is_some_and(|v| v.is_array()) };
@@ -662,12 +774,28 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.cybox.files").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.cybox.files").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.cybox.files").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -695,13 +823,25 @@ impl Transform for PipelineCategoryDiagnostic {
                 event.remove("_ingest");
                 }
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.cybox.files", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.cybox.files", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.cybox.files").is_some_and(|v| v.is_array()) };
@@ -759,12 +899,28 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.cybox.files").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.cybox.files").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.cybox.files").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -792,13 +948,25 @@ impl Transform for PipelineCategoryDiagnostic {
                 event.remove("_ingest");
                 }
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.cybox.files", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.cybox.files", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.cybox.files").is_some_and(|v| v.is_array()) };
@@ -856,12 +1024,28 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.cybox.files").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.cybox.files").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.cybox.files").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -889,13 +1073,25 @@ impl Transform for PipelineCategoryDiagnostic {
                 event.remove("_ingest");
                 }
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.cybox.files", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.cybox.files", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.cybox.files").is_some_and(|v| v.is_array()) };
@@ -1035,12 +1231,28 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.cybox.files").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.cybox.files").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.cybox.files").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
@@ -1068,13 +1280,25 @@ impl Transform for PipelineCategoryDiagnostic {
                 event.remove("_ingest");
                 }
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.cybox.files", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.cybox.files", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.cybox.files").is_some_and(|v| v.is_array()) };
@@ -1282,24 +1506,52 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.cybox.files").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.cybox.files").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.cybox.files").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 let _cond = { event.has_value("ses.cybox.files") };
                 if _cond {
                 event.append_unique("related.ip", json!(event.get("_ingest._value.src_ip").map_or_else(String::new, template_to_string)))?;
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.cybox.files", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.cybox.files", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.cybox.files").is_some_and(|v| v.is_array()) };
@@ -1528,24 +1780,52 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.cybox.ipv4s").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.cybox.ipv4s").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.cybox.ipv4s").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 let _cond = { event.has_value("ses.cybox.ipv4s") };
                 if _cond {
                 event.append_unique("related.ip", json!(event.get("_ingest._value").map_or_else(String::new, template_to_string)))?;
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.cybox.ipv4s", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.cybox.ipv4s", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.cybox.ipv6s").is_some_and(|v| v.is_array()) };
@@ -1582,24 +1862,52 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.cybox.ipv6s").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.cybox.ipv6s").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.cybox.ipv6s").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 let _cond = { event.has_value("ses.cybox.ipv6s") };
                 if _cond {
                 event.append_unique("related.ip", json!(event.get("_ingest._value").map_or_else(String::new, template_to_string)))?;
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.cybox.ipv6s", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.cybox.ipv6s", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.cybox.urls").is_some_and(|v| v.is_array()) };
@@ -2005,24 +2313,52 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.device_networks").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.device_networks").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.device_networks").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 let _cond = { event.has_value("ses.device_networks") };
                 if _cond {
                 event.append_unique("related.ip", json!(event.get("_ingest._value.gateway_ip").map_or_else(String::new, template_to_string)))?;
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.device_networks", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.device_networks", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.device_networks").is_some_and(|v| v.is_array()) };
@@ -2066,24 +2402,52 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.device_networks").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.device_networks").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.device_networks").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 let _cond = { event.has_value("ses.device_networks") };
                 if _cond {
                 event.append_unique("related.ip", json!(event.get("_ingest._value.ipv4").map_or_else(String::new, template_to_string)))?;
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.device_networks", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.device_networks", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.device_networks").is_some_and(|v| v.is_array()) };
@@ -2120,24 +2484,52 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.device_networks").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.device_networks").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.device_networks").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 let _cond = { event.has_value("ses.device_networks") };
                 if _cond {
                 event.append_unique("related.ip", json!(event.get("_ingest._value.ipv6").map_or_else(String::new, template_to_string)))?;
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.device_networks", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.device_networks", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.device_networks").is_some_and(|v| v.is_array()) };
@@ -5381,24 +5773,52 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.sessions").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.sessions").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.sessions").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 let _cond = { event.has_value("ses.sessions") };
                 if _cond {
                 event.append_unique("related.ip", json!(event.get("_ingest._value.remote_ip").map_or_else(String::new, template_to_string)))?;
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.sessions", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.sessions", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.has_value("ses.session.remote_ip") };
@@ -5415,46 +5835,102 @@ impl Transform for PipelineCategoryDiagnostic {
                 }
                 let _cond = { event.get("ses.sessions").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.sessions").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.sessions").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 let _cond = { event.has_value("ses.sessions") };
                 if _cond {
                 event.append_unique("related.user", json!(event.get("_ingest._value.user.uid").map_or_else(String::new, template_to_string)))?;
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.sessions", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.sessions", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.sessions").is_some_and(|v| v.is_array()) };
                 if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.sessions").cloned() {
-                // A NESTED loop borrows the same `_ingest._value` slot, so
-                // the enclosing element is saved and put back afterwards.
+                {
+                // A foreach walks a LIST or an OBJECT: over an object Elastic
+                // binds `_ingest._key` per entry, which is what a target of
+                // `<field>.{{{_ingest._key}}}` reads.
+                let subject = event.get("ses.sessions").cloned();
+                let keyed = matches!(subject, Some(Value::Object(_)));
+                let entries: Vec<(Option<String>, Value)> = match subject {
+                Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                _ => Vec::new(),
+                };
+                if !entries.is_empty() {
+                // A NESTED loop borrows the same slots, so the enclosing
+                // entry is saved and put back afterwards.
                 let enclosing = event.get("_ingest._value").cloned();
-                let mut out = Vec::with_capacity(items.len());
-                for item in items {
+                let enclosing_key = event.get("_ingest._key").cloned();
+                let mut list = Vec::with_capacity(entries.len());
+                let mut fields = Map::new();
+                for (key, item) in entries {
+                if let Some(key) = key.as_deref() {
+                event.set("_ingest._key", Value::String(key.to_string()))?;
+                }
                 event.set("_ingest._value", item)?;
                 let _cond = { event.has_value("ses.sessions") };
                 if _cond {
                 event.append_unique("related.user", json!(event.get("_ingest._value.user.name").map_or_else(String::new, template_to_string)))?;
                 }
-                out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                let left = event.remove("_ingest._value");
+                match key {
+                // An entry the body renamed AWAY is gone from the
+                // object, which is how a foreach lifts fields up.
+                Some(key) => {
+                if let Some(value) = left { fields.insert(key, value); }
+                }
+                None => list.push(left.unwrap_or(Value::Null)),
+                }
                 }
                 match enclosing {
                 Some(previous) => { event.set("_ingest._value", previous)?; }
                 None => { event.remove("_ingest"); }
                 }
-                event.set("ses.sessions", Value::Array(out))?;
+                if let Some(previous) = enclosing_key {
+                event.set("_ingest._key", previous)?;
+                }
+                event.set("ses.sessions", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                }
                 }
                 }
                 let _cond = { event.get("ses.sessions").is_some_and(|v| v.is_array()) };

@@ -18,65 +18,121 @@ impl Transform for PipelineObjectOsint {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.answers") {
-                        if let Some(Value::Array(items)) = event.get("_ingest._value.answers").cloned() {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
                         let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.ttl") {
-                        if let Some(val) = event.get("_ingest._value.ttl") {
-                        let converted = convert_value(val, "long")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.ttl".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.ttl", converted)?;
-                        }
-                        }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_answers_ttl_to_long")?;
-                        if event.remove("_ingest._value.ttl").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.ttl".into() });
-                        }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            if event.has_value("_ingest._value.answers") {
+                            {
+                            // A foreach walks a LIST or an OBJECT: over an object Elastic
+                            // binds `_ingest._key` per entry, which is what a target of
+                            // `<field>.{{{_ingest._key}}}` reads.
+                            let subject = event.get("_ingest._value.answers").cloned();
+                            let keyed = matches!(subject, Some(Value::Object(_)));
+                            let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                            Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                            _ => Vec::new(),
+                            };
+                            if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                            event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.ttl") {
+                            if let Some(val) = event.get("_ingest._value.ttl") {
+                            let converted = convert_value(val, "long")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.ttl".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.ttl", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_answers_ttl_to_long")?;
+                            if event.remove("_ingest._value.ttl").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.ttl".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                            // An entry the body renamed AWAY is gone from the
+                            // object, which is how a foreach lifts fields up.
+                            Some(key) => {
+                            if let Some(value) = left { fields.insert(key, value); }
+                            }
+                            None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                            }
+                            match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                            }
+                            if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                            }
+                            event.set("_ingest._value.answers", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                            }
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
                         match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        event.set("_ingest._value.answers", Value::Array(out))?;
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -126,48 +182,76 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.autonomous_system.number") {
-                        if let Some(val) = event.get("_ingest._value.autonomous_system.number") {
-                        let converted = convert_value(val, "long")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.autonomous_system.number".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.autonomous_system.number", converted)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.autonomous_system.number") {
+                            if let Some(val) = event.get("_ingest._value.autonomous_system.number") {
+                            let converted = convert_value(val, "long")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.autonomous_system.number".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.autonomous_system.number", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_autonomous_system_number_to_long")?;
+                            if event.remove("_ingest._value.autonomous_system.number").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.autonomous_system.number".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_autonomous_system_number_to_long")?;
-                        if event.remove("_ingest._value.autonomous_system.number").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.autonomous_system.number".into() });
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -190,138 +274,222 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.created_time_dt") {
-                        match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.created_time_dt", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.created_time_dt".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.created_time_dt") {
+                            match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.created_time_dt", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.created_time_dt".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_created_time_dt")?;
+                            event.remove("_ingest._value.created_time_dt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_created_time_dt")?;
-                        event.remove("_ingest._value.created_time_dt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.created_time") {
-                        match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.created_time", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.created_time".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.created_time") {
+                            match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.created_time", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.created_time".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_created_time")?;
+                            event.remove("_ingest._value.created_time");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_created_time")?;
-                        event.remove("_ingest._value.created_time");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.creator.has_mfa") {
-                        if let Some(val) = event.get("_ingest._value.creator.has_mfa") {
-                        let converted = convert_value(val, "boolean")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.creator.has_mfa".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.creator.has_mfa", converted)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.creator.has_mfa") {
+                            if let Some(val) = event.get("_ingest._value.creator.has_mfa") {
+                            let converted = convert_value(val, "boolean")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.creator.has_mfa".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.creator.has_mfa", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_creator_has_mfa_to_boolean")?;
+                            if event.remove("_ingest._value.creator.has_mfa").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.creator.has_mfa".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_creator_has_mfa_to_boolean")?;
-                        if event.remove("_ingest._value.creator.has_mfa").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.creator.has_mfa".into() });
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -344,48 +512,76 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.creator.risk_score") {
-                        if let Some(val) = event.get("_ingest._value.creator.risk_score") {
-                        let converted = convert_value(val, "long")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.creator.risk_score".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.creator.risk_score", converted)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.creator.risk_score") {
+                            if let Some(val) = event.get("_ingest._value.creator.risk_score") {
+                            let converted = convert_value(val, "long")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.creator.risk_score".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.creator.risk_score", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_creator_risk_score_to_long")?;
+                            if event.remove("_ingest._value.creator.risk_score").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.creator.risk_score".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_creator_risk_score_to_long")?;
-                        if event.remove("_ingest._value.creator.risk_score").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.creator.risk_score".into() });
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -425,95 +621,151 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.email.is_read") {
-                        if let Some(val) = event.get("_ingest._value.email.is_read") {
-                        let converted = convert_value(val, "boolean")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.email.is_read".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.email.is_read", converted)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.email.is_read") {
+                            if let Some(val) = event.get("_ingest._value.email.is_read") {
+                            let converted = convert_value(val, "boolean")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.email.is_read".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.email.is_read", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_email_is_read_to_boolean")?;
+                            if event.remove("_ingest._value.email.is_read").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.email.is_read".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_email_is_read_to_boolean")?;
-                        if event.remove("_ingest._value.email.is_read").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.email.is_read".into() });
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.email.size") {
-                        if let Some(val) = event.get("_ingest._value.email.size") {
-                        let converted = convert_value(val, "long")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.email.size".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.email.size", converted)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.email.size") {
+                            if let Some(val) = event.get("_ingest._value.email.size") {
+                            let converted = convert_value(val, "long")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.email.size".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.email.size", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_email_size_to_long")?;
+                            if event.remove("_ingest._value.email.size").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.email.size".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_email_size_to_long")?;
-                        if event.remove("_ingest._value.email.size").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.email.size".into() });
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -557,228 +809,368 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.expiration_time_dt") {
-                        match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.expiration_time_dt", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.expiration_time_dt".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.expiration_time_dt") {
+                            match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.expiration_time_dt", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.expiration_time_dt".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_expiration_time_dt")?;
+                            event.remove("_ingest._value.expiration_time_dt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_expiration_time_dt")?;
-                        event.remove("_ingest._value.expiration_time_dt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.expiration_time") {
-                        match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.expiration_time", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.expiration_time".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.expiration_time") {
+                            match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.expiration_time", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.expiration_time".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_expiration_time")?;
+                            event.remove("_ingest._value.expiration_time");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_expiration_time")?;
-                        event.remove("_ingest._value.expiration_time");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.file.accessed_time_dt") {
-                        match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.file.accessed_time_dt", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.file.accessed_time_dt".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.file.accessed_time_dt") {
+                            match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.file.accessed_time_dt", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.file.accessed_time_dt".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_file_accessed_time_dt")?;
+                            event.remove("_ingest._value.file.accessed_time_dt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_file_accessed_time_dt")?;
-                        event.remove("_ingest._value.file.accessed_time_dt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.file.accessed_time") {
-                        match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.file.accessed_time", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.file.accessed_time".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.file.accessed_time") {
+                            match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.file.accessed_time", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.file.accessed_time".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_file_accessed_time")?;
+                            event.remove("_ingest._value.file.accessed_time");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_file_accessed_time")?;
-                        event.remove("_ingest._value.file.accessed_time");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.file.attributes") {
-                        if let Some(val) = event.get("_ingest._value.file.attributes") {
-                        let converted = convert_value(val, "long")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.file.attributes".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.file.attributes", converted)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.file.attributes") {
+                            if let Some(val) = event.get("_ingest._value.file.attributes") {
+                            let converted = convert_value(val, "long")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.file.attributes".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.file.attributes", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_file_attributes_to_long")?;
+                            if event.remove("_ingest._value.file.attributes").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.file.attributes".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_file_attributes_to_long")?;
-                        if event.remove("_ingest._value.file.attributes").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.file.attributes".into() });
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -801,91 +1193,147 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.file.created_time_dt") {
-                        match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.file.created_time_dt", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.file.created_time_dt".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.file.created_time_dt") {
+                            match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.file.created_time_dt", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.file.created_time_dt".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_file_created_time_dt")?;
+                            event.remove("_ingest._value.file.created_time_dt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_file_created_time_dt")?;
-                        event.remove("_ingest._value.file.created_time_dt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.file.created_time") {
-                        match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.file.created_time", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.file.created_time".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.file.created_time") {
+                            match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.file.created_time", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.file.created_time".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_file_created_time")?;
+                            event.remove("_ingest._value.file.created_time");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_file_created_time")?;
-                        event.remove("_ingest._value.file.created_time");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -908,232 +1356,372 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.file.is_deleted") {
-                        if let Some(val) = event.get("_ingest._value.file.is_deleted") {
-                        let converted = convert_value(val, "boolean")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.file.is_deleted".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.file.is_deleted", converted)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.file.is_deleted") {
+                            if let Some(val) = event.get("_ingest._value.file.is_deleted") {
+                            let converted = convert_value(val, "boolean")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.file.is_deleted".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.file.is_deleted", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_file_is_deleted_to_boolean")?;
+                            if event.remove("_ingest._value.file.is_deleted").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.file.is_deleted".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_file_is_deleted_to_boolean")?;
-                        if event.remove("_ingest._value.file.is_deleted").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.file.is_deleted".into() });
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.file.is_encrypted") {
-                        if let Some(val) = event.get("_ingest._value.file.is_encrypted") {
-                        let converted = convert_value(val, "boolean")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.file.is_encrypted".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.file.is_encrypted", converted)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.file.is_encrypted") {
+                            if let Some(val) = event.get("_ingest._value.file.is_encrypted") {
+                            let converted = convert_value(val, "boolean")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.file.is_encrypted".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.file.is_encrypted", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_file_is_encrypted_to_boolean")?;
+                            if event.remove("_ingest._value.file.is_encrypted").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.file.is_encrypted".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_file_is_encrypted_to_boolean")?;
-                        if event.remove("_ingest._value.file.is_encrypted").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.file.is_encrypted".into() });
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.file.is_system") {
-                        if let Some(val) = event.get("_ingest._value.file.is_system") {
-                        let converted = convert_value(val, "boolean")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.file.is_system".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.file.is_system", converted)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.file.is_system") {
+                            if let Some(val) = event.get("_ingest._value.file.is_system") {
+                            let converted = convert_value(val, "boolean")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.file.is_system".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.file.is_system", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_file_is_system_to_boolean")?;
+                            if event.remove("_ingest._value.file.is_system").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.file.is_system".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_file_is_system_to_boolean")?;
-                        if event.remove("_ingest._value.file.is_system").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.file.is_system".into() });
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.file.modified_time_dt") {
-                        match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.file.modified_time_dt", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.file.modified_time_dt".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.file.modified_time_dt") {
+                            match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.file.modified_time_dt", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.file.modified_time_dt".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_file_modified_time_dt")?;
+                            event.remove("_ingest._value.file.modified_time_dt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_file_modified_time_dt")?;
-                        event.remove("_ingest._value.file.modified_time_dt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.file.modified_time") {
-                        match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.file.modified_time", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.file.modified_time".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.file.modified_time") {
+                            match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.file.modified_time", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.file.modified_time".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_file_modified_time")?;
+                            event.remove("_ingest._value.file.modified_time");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_file_modified_time")?;
-                        event.remove("_ingest._value.file.modified_time");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -1156,48 +1744,76 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.file.size") {
-                        if let Some(val) = event.get("_ingest._value.file.size") {
-                        let converted = convert_value(val, "long")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.file.size".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.file.size", converted)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.file.size") {
+                            if let Some(val) = event.get("_ingest._value.file.size") {
+                            let converted = convert_value(val, "long")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.file.size".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.file.size", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_file_size_to_long")?;
+                            if event.remove("_ingest._value.file.size").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.file.size".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_file_size_to_long")?;
-                        if event.remove("_ingest._value.file.size").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.file.size".into() });
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -1225,142 +1841,226 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.location.is_on_premises") {
-                        if let Some(val) = event.get("_ingest._value.location.is_on_premises") {
-                        let converted = convert_value(val, "boolean")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.location.is_on_premises".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.location.is_on_premises", converted)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.location.is_on_premises") {
+                            if let Some(val) = event.get("_ingest._value.location.is_on_premises") {
+                            let converted = convert_value(val, "boolean")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.location.is_on_premises".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.location.is_on_premises", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_location_is_on_premises_to_boolean")?;
+                            if event.remove("_ingest._value.location.is_on_premises").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.location.is_on_premises".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_location_is_on_premises_to_boolean")?;
-                        if event.remove("_ingest._value.location.is_on_premises").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.location.is_on_premises".into() });
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.location.lat") {
-                        if let Some(val) = event.get("_ingest._value.location.lat") {
-                        let converted = convert_value(val, "double")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.location.lat".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.location.lat", converted)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.location.lat") {
+                            if let Some(val) = event.get("_ingest._value.location.lat") {
+                            let converted = convert_value(val, "double")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.location.lat".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.location.lat", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_location_lat_to_double")?;
+                            if event.remove("_ingest._value.location.lat").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.location.lat".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_location_lat_to_double")?;
-                        if event.remove("_ingest._value.location.lat").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.location.lat".into() });
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.location.long") {
-                        if let Some(val) = event.get("_ingest._value.location.long") {
-                        let converted = convert_value(val, "double")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.location.long".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.location.long", converted)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.location.long") {
+                            if let Some(val) = event.get("_ingest._value.location.long") {
+                            let converted = convert_value(val, "double")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.location.long".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.location.long", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_location_long_to_double")?;
+                            if event.remove("_ingest._value.location.long").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.location.long".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_location_long_to_double")?;
-                        if event.remove("_ingest._value.location.long").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.location.long".into() });
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -1388,65 +2088,121 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.malware") {
-                        if let Some(Value::Array(items)) = event.get("_ingest._value.malware").cloned() {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
                         let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.num_infected") {
-                        if let Some(val) = event.get("_ingest._value.num_infected") {
-                        let converted = convert_value(val, "long")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.num_infected".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.num_infected", converted)?;
-                        }
-                        }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_malware_num_infected_to_long")?;
-                        if event.remove("_ingest._value.num_infected").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.num_infected".into() });
-                        }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            if event.has_value("_ingest._value.malware") {
+                            {
+                            // A foreach walks a LIST or an OBJECT: over an object Elastic
+                            // binds `_ingest._key` per entry, which is what a target of
+                            // `<field>.{{{_ingest._key}}}` reads.
+                            let subject = event.get("_ingest._value.malware").cloned();
+                            let keyed = matches!(subject, Some(Value::Object(_)));
+                            let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                            Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                            _ => Vec::new(),
+                            };
+                            if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                            event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.num_infected") {
+                            if let Some(val) = event.get("_ingest._value.num_infected") {
+                            let converted = convert_value(val, "long")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.num_infected".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.num_infected", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_malware_num_infected_to_long")?;
+                            if event.remove("_ingest._value.num_infected").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.num_infected".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                            // An entry the body renamed AWAY is gone from the
+                            // object, which is how a foreach lifts fields up.
+                            Some(key) => {
+                            if let Some(value) = left { fields.insert(key, value); }
+                            }
+                            None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                            }
+                            match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                            }
+                            if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                            }
+                            event.set("_ingest._value.malware", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                            }
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
                         match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        event.set("_ingest._value.malware", Value::Array(out))?;
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -1474,91 +2230,147 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.modified_time_dt") {
-                        match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.modified_time_dt", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.modified_time_dt".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.modified_time_dt") {
+                            match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.modified_time_dt", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.modified_time_dt".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_modified_time_dt")?;
+                            event.remove("_ingest._value.modified_time_dt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_modified_time_dt")?;
-                        event.remove("_ingest._value.modified_time_dt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.modified_time") {
-                        match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.modified_time", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.modified_time".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.modified_time") {
+                            match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.modified_time", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.modified_time".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_modified_time")?;
+                            event.remove("_ingest._value.modified_time");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_modified_time")?;
-                        event.remove("_ingest._value.modified_time");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -1586,48 +2398,76 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.reputation.base_score") {
-                        if let Some(val) = event.get("_ingest._value.reputation.base_score") {
-                        let converted = convert_value(val, "float")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.reputation.base_score".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.reputation.base_score", converted)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.reputation.base_score") {
+                            if let Some(val) = event.get("_ingest._value.reputation.base_score") {
+                            let converted = convert_value(val, "float")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.reputation.base_score".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.reputation.base_score", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_reputation_base_score_to_float")?;
+                            if event.remove("_ingest._value.reputation.base_score").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.reputation.base_score".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_reputation_base_score_to_float")?;
-                        if event.remove("_ingest._value.reputation.base_score").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.reputation.base_score".into() });
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -1650,48 +2490,76 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.risk_score") {
-                        if let Some(val) = event.get("_ingest._value.risk_score") {
-                        let converted = convert_value(val, "long")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.risk_score".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.risk_score", converted)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.risk_score") {
+                            if let Some(val) = event.get("_ingest._value.risk_score") {
+                            let converted = convert_value(val, "long")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.risk_score".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.risk_score", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_risk_score_to_long")?;
+                            if event.remove("_ingest._value.risk_score").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.risk_score".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_risk_score_to_long")?;
-                        if event.remove("_ingest._value.risk_score").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.risk_score".into() });
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -1753,125 +2621,237 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.signatures") {
-                        if let Some(Value::Array(items)) = event.get("_ingest._value.signatures").cloned() {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
                         let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.created_time_dt") {
-                        match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.created_time_dt", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.created_time_dt".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
-                        }
-                        }
-                        }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_signatures_created_time_dt")?;
-                        event.remove("_ingest._value.created_time_dt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            if event.has_value("_ingest._value.signatures") {
+                            {
+                            // A foreach walks a LIST or an OBJECT: over an object Elastic
+                            // binds `_ingest._key` per entry, which is what a target of
+                            // `<field>.{{{_ingest._key}}}` reads.
+                            let subject = event.get("_ingest._value.signatures").cloned();
+                            let keyed = matches!(subject, Some(Value::Object(_)));
+                            let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                            Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                            _ => Vec::new(),
+                            };
+                            if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                            event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.created_time_dt") {
+                            match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.created_time_dt", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.created_time_dt".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_signatures_created_time_dt")?;
+                            event.remove("_ingest._value.created_time_dt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                            // An entry the body renamed AWAY is gone from the
+                            // object, which is how a foreach lifts fields up.
+                            Some(key) => {
+                            if let Some(value) = left { fields.insert(key, value); }
+                            }
+                            None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                            }
+                            match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                            }
+                            if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                            }
+                            event.set("_ingest._value.signatures", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                            }
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
                         match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        event.set("_ingest._value.signatures", Value::Array(out))?;
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.signatures") {
-                        if let Some(Value::Array(items)) = event.get("_ingest._value.signatures").cloned() {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
                         let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.created_time") {
-                        match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.created_time", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.created_time".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
-                        }
-                        }
-                        }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_signatures_created_time")?;
-                        event.remove("_ingest._value.created_time");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            if event.has_value("_ingest._value.signatures") {
+                            {
+                            // A foreach walks a LIST or an OBJECT: over an object Elastic
+                            // binds `_ingest._key` per entry, which is what a target of
+                            // `<field>.{{{_ingest._key}}}` reads.
+                            let subject = event.get("_ingest._value.signatures").cloned();
+                            let keyed = matches!(subject, Some(Value::Object(_)));
+                            let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                            Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                            _ => Vec::new(),
+                            };
+                            if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                            event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.created_time") {
+                            match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.created_time", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.created_time".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_signatures_created_time")?;
+                            event.remove("_ingest._value.created_time");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                            // An entry the body renamed AWAY is gone from the
+                            // object, which is how a foreach lifts fields up.
+                            Some(key) => {
+                            if let Some(value) = left { fields.insert(key, value); }
+                            }
+                            None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                            }
+                            match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                            }
+                            if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                            }
+                            event.set("_ingest._value.signatures", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                            }
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
                         match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        event.set("_ingest._value.signatures", Value::Array(out))?;
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -1933,339 +2913,619 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.uploaded_time_dt") {
-                        match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.uploaded_time_dt", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.uploaded_time_dt".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
-                        }
-                        }
-                        }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_uploaded_time_dt")?;
-                        event.remove("_ingest._value.uploaded_time_dt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
-                }
-            }
-
-            let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
-            if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.uploaded_time") {
-                        match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.uploaded_time", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.uploaded_time".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
-                        }
-                        }
-                        }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_uploaded_time")?;
-                        event.remove("_ingest._value.uploaded_time");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                    }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
-                }
-            }
-
-            let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
-            if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.vulnerabilities") {
-                        if let Some(Value::Array(items)) = event.get("_ingest._value.vulnerabilities").cloned() {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
                         let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.exploit_last_seen_time_dt") {
-                        match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.exploit_last_seen_time_dt", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.exploit_last_seen_time_dt".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
-                        }
-                        }
-                        }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_vulnerabilities_exploit_last_seen_time_dt")?;
-                        event.remove("_ingest._value.exploit_last_seen_time_dt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.uploaded_time_dt") {
+                            match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.uploaded_time_dt", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.uploaded_time_dt".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_uploaded_time_dt")?;
+                            event.remove("_ingest._value.uploaded_time_dt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
                         match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        event.set("_ingest._value.vulnerabilities", Value::Array(out))?;
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.vulnerabilities") {
-                        if let Some(Value::Array(items)) = event.get("_ingest._value.vulnerabilities").cloned() {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
                         let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.exploit_last_seen_time") {
-                        match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.exploit_last_seen_time", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.exploit_last_seen_time".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
-                        }
-                        }
-                        }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_vulnerabilities_exploit_last_seen_time")?;
-                        event.remove("_ingest._value.exploit_last_seen_time");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.uploaded_time") {
+                            match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.uploaded_time", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.uploaded_time".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_uploaded_time")?;
+                            event.remove("_ingest._value.uploaded_time");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
                         match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        event.set("_ingest._value.vulnerabilities", Value::Array(out))?;
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.vulnerabilities") {
-                        if let Some(Value::Array(items)) = event.get("_ingest._value.vulnerabilities").cloned() {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
                         let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.first_seen_time_dt") {
-                        match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.first_seen_time_dt", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.first_seen_time_dt".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
-                        }
-                        }
-                        }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_vulnerabilities_first_seen_time_dt")?;
-                        event.remove("_ingest._value.first_seen_time_dt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            if event.has_value("_ingest._value.vulnerabilities") {
+                            {
+                            // A foreach walks a LIST or an OBJECT: over an object Elastic
+                            // binds `_ingest._key` per entry, which is what a target of
+                            // `<field>.{{{_ingest._key}}}` reads.
+                            let subject = event.get("_ingest._value.vulnerabilities").cloned();
+                            let keyed = matches!(subject, Some(Value::Object(_)));
+                            let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                            Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                            _ => Vec::new(),
+                            };
+                            if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                            event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.exploit_last_seen_time_dt") {
+                            match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.exploit_last_seen_time_dt", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.exploit_last_seen_time_dt".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_vulnerabilities_exploit_last_seen_time_dt")?;
+                            event.remove("_ingest._value.exploit_last_seen_time_dt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                            // An entry the body renamed AWAY is gone from the
+                            // object, which is how a foreach lifts fields up.
+                            Some(key) => {
+                            if let Some(value) = left { fields.insert(key, value); }
+                            }
+                            None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                            }
+                            match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                            }
+                            if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                            }
+                            event.set("_ingest._value.vulnerabilities", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                            }
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
                         match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        event.set("_ingest._value.vulnerabilities", Value::Array(out))?;
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.vulnerabilities") {
-                        if let Some(Value::Array(items)) = event.get("_ingest._value.vulnerabilities").cloned() {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
                         let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.first_seen_time") {
-                        match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.first_seen_time", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.first_seen_time".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
-                        }
-                        }
-                        }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_vulnerabilities_first_seen_time")?;
-                        event.remove("_ingest._value.first_seen_time");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            if event.has_value("_ingest._value.vulnerabilities") {
+                            {
+                            // A foreach walks a LIST or an OBJECT: over an object Elastic
+                            // binds `_ingest._key` per entry, which is what a target of
+                            // `<field>.{{{_ingest._key}}}` reads.
+                            let subject = event.get("_ingest._value.vulnerabilities").cloned();
+                            let keyed = matches!(subject, Some(Value::Object(_)));
+                            let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                            Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                            _ => Vec::new(),
+                            };
+                            if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                            event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.exploit_last_seen_time") {
+                            match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.exploit_last_seen_time", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.exploit_last_seen_time".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_vulnerabilities_exploit_last_seen_time")?;
+                            event.remove("_ingest._value.exploit_last_seen_time");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                            // An entry the body renamed AWAY is gone from the
+                            // object, which is how a foreach lifts fields up.
+                            Some(key) => {
+                            if let Some(value) = left { fields.insert(key, value); }
+                            }
+                            None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                            }
+                            match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                            }
+                            if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                            }
+                            event.set("_ingest._value.vulnerabilities", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                            }
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
                         match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        event.set("_ingest._value.vulnerabilities", Value::Array(out))?;
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
+                }
+            }
+
+            let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
+            if _cond {
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            if event.has_value("_ingest._value.vulnerabilities") {
+                            {
+                            // A foreach walks a LIST or an OBJECT: over an object Elastic
+                            // binds `_ingest._key` per entry, which is what a target of
+                            // `<field>.{{{_ingest._key}}}` reads.
+                            let subject = event.get("_ingest._value.vulnerabilities").cloned();
+                            let keyed = matches!(subject, Some(Value::Object(_)));
+                            let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                            Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                            _ => Vec::new(),
+                            };
+                            if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                            event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.first_seen_time_dt") {
+                            match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.first_seen_time_dt", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.first_seen_time_dt".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_vulnerabilities_first_seen_time_dt")?;
+                            event.remove("_ingest._value.first_seen_time_dt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                            // An entry the body renamed AWAY is gone from the
+                            // object, which is how a foreach lifts fields up.
+                            Some(key) => {
+                            if let Some(value) = left { fields.insert(key, value); }
+                            }
+                            None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                            }
+                            match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                            }
+                            if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                            }
+                            event.set("_ingest._value.vulnerabilities", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                            }
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                        }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                        }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                        }
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
+                }
+            }
+
+            let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
+            if _cond {
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            if event.has_value("_ingest._value.vulnerabilities") {
+                            {
+                            // A foreach walks a LIST or an OBJECT: over an object Elastic
+                            // binds `_ingest._key` per entry, which is what a target of
+                            // `<field>.{{{_ingest._key}}}` reads.
+                            let subject = event.get("_ingest._value.vulnerabilities").cloned();
+                            let keyed = matches!(subject, Some(Value::Object(_)));
+                            let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                            Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                            _ => Vec::new(),
+                            };
+                            if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                            event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.first_seen_time") {
+                            match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.first_seen_time", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.first_seen_time".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_vulnerabilities_first_seen_time")?;
+                            event.remove("_ingest._value.first_seen_time");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                            // An entry the body renamed AWAY is gone from the
+                            // object, which is how a foreach lifts fields up.
+                            Some(key) => {
+                            if let Some(value) = left { fields.insert(key, value); }
+                            }
+                            None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                            }
+                            match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                            }
+                            if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                            }
+                            event.set("_ingest._value.vulnerabilities", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                            }
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                        }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                        }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                        }
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                    }
                 }
             }
 
@@ -2293,343 +3553,623 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.vulnerabilities") {
-                        if let Some(Value::Array(items)) = event.get("_ingest._value.vulnerabilities").cloned() {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
                         let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.is_exploit_available") {
-                        if let Some(val) = event.get("_ingest._value.is_exploit_available") {
-                        let converted = convert_value(val, "boolean")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.is_exploit_available".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.is_exploit_available", converted)?;
-                        }
-                        }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_vulnerabilities_is_exploit_available_to_boolean")?;
-                        if event.remove("_ingest._value.is_exploit_available").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.is_exploit_available".into() });
-                        }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            if event.has_value("_ingest._value.vulnerabilities") {
+                            {
+                            // A foreach walks a LIST or an OBJECT: over an object Elastic
+                            // binds `_ingest._key` per entry, which is what a target of
+                            // `<field>.{{{_ingest._key}}}` reads.
+                            let subject = event.get("_ingest._value.vulnerabilities").cloned();
+                            let keyed = matches!(subject, Some(Value::Object(_)));
+                            let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                            Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                            _ => Vec::new(),
+                            };
+                            if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                            event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.is_exploit_available") {
+                            if let Some(val) = event.get("_ingest._value.is_exploit_available") {
+                            let converted = convert_value(val, "boolean")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.is_exploit_available".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.is_exploit_available", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_vulnerabilities_is_exploit_available_to_boolean")?;
+                            if event.remove("_ingest._value.is_exploit_available").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.is_exploit_available".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                            // An entry the body renamed AWAY is gone from the
+                            // object, which is how a foreach lifts fields up.
+                            Some(key) => {
+                            if let Some(value) = left { fields.insert(key, value); }
+                            }
+                            None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                            }
+                            match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                            }
+                            if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                            }
+                            event.set("_ingest._value.vulnerabilities", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                            }
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
                         match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        event.set("_ingest._value.vulnerabilities", Value::Array(out))?;
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.vulnerabilities") {
-                        if let Some(Value::Array(items)) = event.get("_ingest._value.vulnerabilities").cloned() {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
                         let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if event.has_value("_ingest._value.is_fix_available") {
-                        if let Some(val) = event.get("_ingest._value.is_fix_available") {
-                        let converted = convert_value(val, "boolean")
-                        .map_err(|message| TransformError::ParseError {
-                        path: "_ingest._value.is_fix_available".into(),
-                        message,
-                        })?;
-                        event.set("_ingest._value.is_fix_available", converted)?;
-                        }
-                        }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "convert")?;
-                        event.set("_ingest.on_failure_processor_tag", "convert_osint_vulnerabilities_is_fix_available_to_boolean")?;
-                        if event.remove("_ingest._value.is_fix_available").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._value.is_fix_available".into() });
-                        }
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            if event.has_value("_ingest._value.vulnerabilities") {
+                            {
+                            // A foreach walks a LIST or an OBJECT: over an object Elastic
+                            // binds `_ingest._key` per entry, which is what a target of
+                            // `<field>.{{{_ingest._key}}}` reads.
+                            let subject = event.get("_ingest._value.vulnerabilities").cloned();
+                            let keyed = matches!(subject, Some(Value::Object(_)));
+                            let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                            Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                            _ => Vec::new(),
+                            };
+                            if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                            event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if event.has_value("_ingest._value.is_fix_available") {
+                            if let Some(val) = event.get("_ingest._value.is_fix_available") {
+                            let converted = convert_value(val, "boolean")
+                            .map_err(|message| TransformError::ParseError {
+                            path: "_ingest._value.is_fix_available".into(),
+                            message,
+                            })?;
+                            event.set("_ingest._value.is_fix_available", converted)?;
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "convert")?;
+                            event.set("_ingest.on_failure_processor_tag", "convert_osint_vulnerabilities_is_fix_available_to_boolean")?;
+                            if event.remove("_ingest._value.is_fix_available").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._value.is_fix_available".into() });
+                            }
+                            event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                            // An entry the body renamed AWAY is gone from the
+                            // object, which is how a foreach lifts fields up.
+                            Some(key) => {
+                            if let Some(value) = left { fields.insert(key, value); }
+                            }
+                            None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                            }
+                            match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                            }
+                            if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                            }
+                            event.set("_ingest._value.vulnerabilities", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                            }
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
                         match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        event.set("_ingest._value.vulnerabilities", Value::Array(out))?;
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.vulnerabilities") {
-                        if let Some(Value::Array(items)) = event.get("_ingest._value.vulnerabilities").cloned() {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
                         let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.last_seen_time_dt") {
-                        match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.last_seen_time_dt", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.last_seen_time_dt".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
-                        }
-                        }
-                        }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_vulnerabilities_last_seen_time_dt")?;
-                        event.remove("_ingest._value.last_seen_time_dt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            if event.has_value("_ingest._value.vulnerabilities") {
+                            {
+                            // A foreach walks a LIST or an OBJECT: over an object Elastic
+                            // binds `_ingest._key` per entry, which is what a target of
+                            // `<field>.{{{_ingest._key}}}` reads.
+                            let subject = event.get("_ingest._value.vulnerabilities").cloned();
+                            let keyed = matches!(subject, Some(Value::Object(_)));
+                            let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                            Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                            _ => Vec::new(),
+                            };
+                            if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                            event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.last_seen_time_dt") {
+                            match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.last_seen_time_dt", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.last_seen_time_dt".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_vulnerabilities_last_seen_time_dt")?;
+                            event.remove("_ingest._value.last_seen_time_dt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                            // An entry the body renamed AWAY is gone from the
+                            // object, which is how a foreach lifts fields up.
+                            Some(key) => {
+                            if let Some(value) = left { fields.insert(key, value); }
+                            }
+                            None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                            }
+                            match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                            }
+                            if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                            }
+                            event.set("_ingest._value.vulnerabilities", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                            }
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
                         match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        event.set("_ingest._value.vulnerabilities", Value::Array(out))?;
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        if event.has_value("_ingest._value.vulnerabilities") {
-                        if let Some(Value::Array(items)) = event.get("_ingest._value.vulnerabilities").cloned() {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
                         let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.last_seen_time") {
-                        match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.last_seen_time", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.last_seen_time".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
-                        }
-                        }
-                        }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_vulnerabilities_last_seen_time")?;
-                        event.remove("_ingest._value.last_seen_time");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            if event.has_value("_ingest._value.vulnerabilities") {
+                            {
+                            // A foreach walks a LIST or an OBJECT: over an object Elastic
+                            // binds `_ingest._key` per entry, which is what a target of
+                            // `<field>.{{{_ingest._key}}}` reads.
+                            let subject = event.get("_ingest._value.vulnerabilities").cloned();
+                            let keyed = matches!(subject, Some(Value::Object(_)));
+                            let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                            Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                            _ => Vec::new(),
+                            };
+                            if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                            event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.last_seen_time") {
+                            match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.last_seen_time", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.last_seen_time".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_vulnerabilities_last_seen_time")?;
+                            event.remove("_ingest._value.last_seen_time");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                            // An entry the body renamed AWAY is gone from the
+                            // object, which is how a foreach lifts fields up.
+                            Some(key) => {
+                            if let Some(value) = left { fields.insert(key, value); }
+                            }
+                            None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                            }
+                            match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                            }
+                            if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                            }
+                            event.set("_ingest._value.vulnerabilities", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
+                            }
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
                         match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        event.set("_ingest._value.vulnerabilities", Value::Array(out))?;
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.whois.created_time_dt") {
-                        match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.whois.created_time_dt", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.whois.created_time_dt".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.whois.created_time_dt") {
+                            match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.whois.created_time_dt", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.whois.created_time_dt".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_whois_created_time_dt")?;
+                            event.remove("_ingest._value.whois.created_time_dt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_whois_created_time_dt")?;
-                        event.remove("_ingest._value.whois.created_time_dt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.whois.created_time") {
-                        match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.whois.created_time", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.whois.created_time".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.whois.created_time") {
+                            match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.whois.created_time", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.whois.created_time".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_whois_created_time")?;
+                            event.remove("_ingest._value.whois.created_time");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_whois_created_time")?;
-                        event.remove("_ingest._value.whois.created_time");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
@@ -2652,91 +4192,147 @@ impl Transform for PipelineObjectOsint {
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.whois.last_seen_time_dt") {
-                        match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.whois.last_seen_time_dt", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.whois.last_seen_time_dt".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.whois.last_seen_time_dt") {
+                            match parse_date_out(&date_str, &["ISO8601", "UNIX_MS", "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.whois.last_seen_time_dt", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.whois.last_seen_time_dt".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_whois_last_seen_time_dt")?;
+                            event.remove("_ingest._value.whois.last_seen_time_dt");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_whois_last_seen_time_dt")?;
-                        event.remove("_ingest._value.whois.last_seen_time_dt");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("aws_securityhub.finding.osint").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("aws_securityhub.finding.osint").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 1 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(date_str) = event.get_as_string("_ingest._value.whois.last_seen_time") {
-                        match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
-                        Some(parsed) => event.set("_ingest._value.whois.last_seen_time", parsed)?,
-                        None => {
-                        return Err(TransformError::ParseError {
-                        path: "_ingest._value.whois.last_seen_time".into(),
-                        message: format!("unable to parse date [{date_str}]"),
-                        });
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("aws_securityhub.finding.osint").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(date_str) = event.get_as_string("_ingest._value.whois.last_seen_time") {
+                            match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                            Some(parsed) => event.set("_ingest._value.whois.last_seen_time", parsed)?,
+                            None => {
+                            return Err(TransformError::ParseError {
+                            path: "_ingest._value.whois.last_seen_time".into(),
+                            message: format!("unable to parse date [{date_str}]"),
+                            });
+                            }
+                            }
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "date")?;
+                            event.set("_ingest.on_failure_processor_tag", "date_osint_whois_last_seen_time")?;
+                            event.remove("_ingest._value.whois.last_seen_time");
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "date")?;
-                        event.set("_ingest.on_failure_processor_tag", "date_osint_whois_last_seen_time")?;
-                        event.remove("_ingest._value.whois.last_seen_time");
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                        }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("aws_securityhub.finding.osint", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("aws_securityhub.finding.osint", Value::Array(out))?;
                 }
             }
 

@@ -698,24 +698,52 @@ impl Transform for PipelineObjectSession {
 
             let _cond = { event.get("ses.sessions").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.sessions").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        let _cond = { event.has_value("ses.sessions") };
-                        if _cond {
-                        event.append_unique("related.ip", json!(event.get("_ingest._value.remote_ip").map_or_else(String::new, template_to_string)))?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("ses.sessions").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            let _cond = { event.has_value("ses.sessions") };
+                            if _cond {
+                            event.append_unique("related.ip", json!(event.get("_ingest._value.remote_ip").map_or_else(String::new, template_to_string)))?;
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                        }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                        }
+                        event.set("ses.sessions", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("ses.sessions", Value::Array(out))?;
                 }
             }
 
@@ -736,47 +764,103 @@ impl Transform for PipelineObjectSession {
 
             let _cond = { event.get("ses.sessions").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.sessions").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        let _cond = { event.has_value("ses.sessions") };
-                        if _cond {
-                        event.append_unique("related.user", json!(event.get("_ingest._value.user.uid").map_or_else(String::new, template_to_string)))?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("ses.sessions").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            let _cond = { event.has_value("ses.sessions") };
+                            if _cond {
+                            event.append_unique("related.user", json!(event.get("_ingest._value.user.uid").map_or_else(String::new, template_to_string)))?;
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                        }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                        }
+                        event.set("ses.sessions", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("ses.sessions", Value::Array(out))?;
                 }
             }
 
             let _cond = { event.get("ses.sessions").is_some_and(|v| v.is_array()) };
             if _cond {
-                if let Some(Value::Array(items)) = event.get("ses.sessions").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        let _cond = { event.has_value("ses.sessions") };
-                        if _cond {
-                        event.append_unique("related.user", json!(event.get("_ingest._value.user.name").map_or_else(String::new, template_to_string)))?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("ses.sessions").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            let _cond = { event.has_value("ses.sessions") };
+                            if _cond {
+                            event.append_unique("related.user", json!(event.get("_ingest._value.user.name").map_or_else(String::new, template_to_string)))?;
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                        }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                        }
+                        event.set("ses.sessions", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("ses.sessions", Value::Array(out))?;
                 }
             }
 

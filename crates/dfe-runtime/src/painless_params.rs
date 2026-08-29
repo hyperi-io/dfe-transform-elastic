@@ -149,6 +149,16 @@ pub(crate) enum ParamsShape {
         target: String,
         fold: Fold,
     },
+    /// A flat table keyed by a field's STRING form, written to one sibling.
+    ///
+    /// The key expression carries its own parentheses and `.toString()`, so
+    /// every bracket trigger testing for `params[ctx.` misses it. The
+    /// `containsKey` guard means an unlisted key writes NOTHING, where the
+    /// bracket catch-all stands the key in for its own value.
+    StringifiedLookup {
+        source: String,
+        target: String,
+    },
     SentinelRemoval,
     FiletimeFieldList,
     BitFlags,
@@ -348,8 +358,11 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
     }
 
     // Pattern: params IS the table, and one row's columns are written straight
-    // onto ctx, then refined by the event's outcome.
-    if normalised.contains("params.get(ctx.") && normalised.contains(").get('") {
+    // onto ctx, then refined by the event's outcome. The key is spelled either
+    // plainly or wrapped for `.toString()`, which a numeric or boolean key is.
+    if (normalised.contains("params.get(ctx.") || normalised.contains("params.get((ctx."))
+        && normalised.contains(").get('")
+    {
         return Some(ParamsShape::RowColumns);
     }
 
@@ -486,6 +499,17 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
     // unlisted key in for its own value where this drops it.
     if normalised.contains("params[ctx.")
         && let Some(shape) = parse_normalised_lookup(normalised)
+    {
+        return Some(shape);
+    }
+
+    // Pattern: the same lookup where the key carries its own parentheses and
+    // `.toString()`, which every `params[ctx.` trigger above misses. Above the
+    // catch-all because the script's `containsKey` guard DROPS an unlisted key
+    // where the catch-all stands it in for its own value.
+    if normalised.contains("!params.containsKey(")
+        && normalised.contains("= params[")
+        && let Some(shape) = parse_stringified_lookup(normalised)
     {
         return Some(shape);
     }
@@ -655,6 +679,9 @@ pub(crate) fn run_params_shape(
             target,
             fold,
         } => run_normalised_lookup(event, source, target, *fold, params),
+        ParamsShape::StringifiedLookup { source, target } => {
+            run_stringified_lookup(event, source, target, params)
+        }
         ParamsShape::LookupNormalise => try_lookup_normalise(event, normalised, params),
         ParamsShape::IndexedLookup => try_indexed_lookup(event, normalised, params),
         ParamsShape::Scale => try_scale(event, normalised, params),
@@ -688,20 +715,24 @@ fn parse_lookup_put(script: &str) -> Option<(String, String)> {
 /// Every `ctx.<base>.remove("<key>")` in the script, as dotted paths.
 fn parse_removes(script: &str) -> Vec<String> {
     let mut removes = Vec::new();
-    for (at, _) in script.match_indices(".remove(\"") {
-        let Some(key) = script[at + ".remove(\"".len()..].split('"').next() else {
-            continue;
-        };
-        let before = &script[..at];
-        let Some(ctx_at) = before.rfind("ctx.") else {
-            continue;
-        };
-        let base = clean_path(&before[ctx_at + 4..]);
-        if base
-            .chars()
-            .all(|c| c.is_alphanumeric() || c == '.' || c == '_')
-        {
-            removes.push(format!("{base}.{key}"));
+    // Painless quotes a string either way and pipelines use both.
+    for quote in ['"', '\''] {
+        let opens = format!(".remove({quote}");
+        for (at, _) in script.match_indices(&opens) {
+            let Some(key) = script[at + opens.len()..].split(quote).next() else {
+                continue;
+            };
+            let before = &script[..at];
+            let Some(ctx_at) = before.rfind("ctx.") else {
+                continue;
+            };
+            let base = clean_path(&before[ctx_at + 4..]);
+            if base
+                .chars()
+                .all(|c| c.is_alphanumeric() || c == '.' || c == '_')
+            {
+                removes.push(format!("{base}.{key}"));
+            }
         }
     }
     removes
@@ -1064,6 +1095,70 @@ fn run_normalised_lookup(
         return true;
     };
     let key = fold.apply(&raw);
+    if let Some(value) = params.get(&key) {
+        let _ = event.set(target, value.clone());
+    }
+    true
+}
+
+/// The field a row lookup is keyed by, in either spelling.
+///
+/// `params.get(ctx.a.b)` and `params.get((ctx.a.b).toString())` name the same
+/// field, and a matcher that reads only the first misses every numeric or
+/// boolean key.
+fn row_key_path(script: &str) -> Option<String> {
+    const OPEN: &str = "params.get(";
+    let at = script.find(OPEN)? + OPEN.len();
+    key_path(&balanced_argument(&script[at..])?)
+}
+
+/// The ctx path a key expression names, with its parentheses and its
+/// `.toString()` stripped.
+///
+/// Painless writes `(ctx.a.b).toString()` where the field is numeric and the
+/// table's keys are strings; the path is the same one either way.
+fn key_path(expr: &str) -> Option<String> {
+    let expr = expr.trim();
+    let expr = expr.strip_suffix(".toString()").unwrap_or(expr).trim();
+    let expr = expr
+        .strip_prefix('(')
+        .and_then(|inner| inner.strip_suffix(')'))
+        .unwrap_or(expr)
+        .trim();
+    let path = clean_path(expr.strip_prefix("ctx.")?);
+    (!path.is_empty()
+        && path
+            .chars()
+            .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_' | '-' | '@')))
+    .then_some(path)
+}
+
+/// `if (<path> == null || !params.containsKey(<key>)) { return; }` then
+/// `ctx.<target> = params[<key>];`, where both `<key>` spellings agree.
+fn parse_stringified_lookup(script: &str) -> Option<ParamsShape> {
+    const GUARD: &str = "!params.containsKey(";
+    let at = script.find(GUARD)?;
+    let source = key_path(&balanced_argument(&script[at + GUARD.len()..])?)?;
+
+    // The write must read the SAME key, or this is a different script that
+    // happens to spell both halves.
+    let target = ctx_writes(script).into_iter().find_map(|(path, rhs)| {
+        let inner = rhs.trim().strip_prefix("params[")?.strip_suffix(']')?;
+        (key_path(inner)? == source).then_some(path)
+    })?;
+
+    Some(ParamsShape::StringifiedLookup { source, target })
+}
+
+fn run_stringified_lookup(
+    event: &mut Event,
+    source: &str,
+    target: &str,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(key) = event.get_as_string(source) else {
+        return true;
+    };
     if let Some(value) = params.get(&key) {
         let _ = event.set(target, value.clone());
     }
@@ -2955,7 +3050,7 @@ fn try_value_maps(event: &mut Event, script: &str, params: &Map<String, Value>) 
 /// into an ECS one. It is `cisco_ftd`'s remaining 398 corpus events, and the
 /// same shape appears wherever a package maps an action onto categorisation.
 fn try_row_columns(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
-    let Some(key_path) = ctx_path_between(script, "params.get(ctx.", ")") else {
+    let Some(key_path) = row_key_path(script) else {
         return false;
     };
     let Some(key) = event.get_as_string(&key_path) else {
@@ -2992,6 +3087,10 @@ fn try_row_columns(event: &mut Event, script: &str, params: &Map<String, Value>)
         if let Some((_, rest)) = tail.split_once(';') {
             run_guarded_literals(event, rest);
         }
+    }
+    // A script that drops the field it keyed by leaves it behind otherwise.
+    for removed in parse_removes(script) {
+        event.remove(&removed);
     }
     true
 }

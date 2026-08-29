@@ -30,43 +30,71 @@ impl Transform for HttpEvent {
             if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(Value::Array(items)) = event.get("arista.httpRequestEvent.sessionEvent").cloned() {
-                    // A NESTED loop borrows the same `_ingest._value` slot, so
-                    // the enclosing element is saved and put back afterwards.
-                    let enclosing = event.get("_ingest._value").cloned();
-                    let mut out = Vec::with_capacity(items.len());
-                    for item in items {
-                        event.set("_ingest._value", item)?;
-                        // on_failure: 2 handler(s)
-                        if let Err(err) = (|| -> Result<()> {
-                        if let Some(from) = resolve_path(event, "_ingest._value")
-                        && let Some(to) = resolve_path(event, "arista.{{{_ingest._key}}}")
-                        && event.has(&from)
-                        {
-                        event.rename(&from, &to)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("arista.httpRequestEvent.sessionEvent").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 2 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                            if let Some(from) = resolve_path(event, "_ingest._value")
+                            && let Some(to) = resolve_path(event, "arista.{{{_ingest._key}}}")
+                            && event.has(&from)
+                            {
+                            event.rename(&from, &to)?;
+                            }
+                            Ok(())
+                            })() {
+                            event.set("_ingest.on_failure_message", err.to_string())?;
+                            event.set("_ingest.on_failure_processor_type", "rename")?;
+                            if event.remove("_ingest._key").is_none() {
+                            return Err(TransformError::FieldNotFound { path: "_ingest._key".into() });
+                            }
+                            event.append("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string)))?;
+                            event.remove("_ingest.on_failure_message");
+                            event.remove("_ingest.on_failure_processor_type");
+                            event.remove("_ingest.on_failure_processor_tag");
+                            if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                            }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
-                        Ok(())
-                        })() {
-                        event.set("_ingest.on_failure_message", err.to_string())?;
-                        event.set("_ingest.on_failure_processor_type", "rename")?;
-                        if event.remove("_ingest._key").is_none() {
-                        return Err(TransformError::FieldNotFound { path: "_ingest._key".into() });
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
                         }
-                        event.append("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string)))?;
-                        event.remove("_ingest.on_failure_message");
-                        event.remove("_ingest.on_failure_processor_type");
-                        event.remove("_ingest.on_failure_processor_tag");
-                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
                         }
-                        }
-                        out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
+                        event.set("arista.httpRequestEvent.sessionEvent", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    match enclosing {
-                        Some(previous) => { event.set("_ingest._value", previous)?; }
-                        None => { event.remove("_ingest"); }
-                    }
-                    event.set("arista.httpRequestEvent.sessionEvent", Value::Array(out))?;
                 }
                 Ok(())
             })();

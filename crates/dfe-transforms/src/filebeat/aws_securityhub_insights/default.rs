@@ -134,47 +134,91 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Filters.CreatedAt").cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => event.set("_ingest._value.end", parsed)?,
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.End".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("json.Filters.CreatedAt").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.End")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.end", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.End".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.CreatedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set("json.Filters.CreatedAt", Value::Array(out))?;
                     }
                     Ok(())
                 })();
@@ -189,50 +233,91 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Filters.CreatedAt").cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => {
-                                            event.set("_ingest._value.start", parsed)?
-                                        }
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.Start".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("json.Filters.CreatedAt").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.Start")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.start", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.Start".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.CreatedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set("json.Filters.CreatedAt", Value::Array(out))?;
                     }
                     Ok(())
                 })();
@@ -376,48 +461,91 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.FirstObservedAt").cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => event.set("_ingest._value.end", parsed)?,
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.End".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("json.Filters.FirstObservedAt").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.End")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.end", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.End".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.FirstObservedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set("json.Filters.FirstObservedAt", Value::Array(out))?;
                     }
                     Ok(())
                 })();
@@ -432,51 +560,91 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.FirstObservedAt").cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => {
-                                            event.set("_ingest._value.start", parsed)?
-                                        }
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.Start".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("json.Filters.FirstObservedAt").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.Start")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.start", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.Start".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.FirstObservedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set("json.Filters.FirstObservedAt", Value::Array(out))?;
                     }
                     Ok(())
                 })();
@@ -578,48 +746,91 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.LastObservedAt").cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => event.set("_ingest._value.end", parsed)?,
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.End".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("json.Filters.LastObservedAt").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.End")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.end", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.End".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.LastObservedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set("json.Filters.LastObservedAt", Value::Array(out))?;
                     }
                     Ok(())
                 })();
@@ -634,51 +845,91 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.LastObservedAt").cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => {
-                                            event.set("_ingest._value.start", parsed)?
-                                        }
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.Start".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("json.Filters.LastObservedAt").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.Start")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.start", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.Start".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.LastObservedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set("json.Filters.LastObservedAt", Value::Array(out))?;
                     }
                     Ok(())
                 })();
@@ -874,48 +1125,91 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.NoteUpdatedAt").cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => event.set("_ingest._value.end", parsed)?,
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.End".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("json.Filters.NoteUpdatedAt").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.End")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.end", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.End".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.NoteUpdatedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set("json.Filters.NoteUpdatedAt", Value::Array(out))?;
                     }
                     Ok(())
                 })();
@@ -930,51 +1224,91 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.NoteUpdatedAt").cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => {
-                                            event.set("_ingest._value.start", parsed)?
-                                        }
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.Start".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("json.Filters.NoteUpdatedAt").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.Start")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.start", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.Start".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.NoteUpdatedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set("json.Filters.NoteUpdatedAt", Value::Array(out))?;
                     }
                     Ok(())
                 })();
@@ -1065,48 +1399,91 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.ProcessLaunchedAt").cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => event.set("_ingest._value.end", parsed)?,
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.End".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("json.Filters.ProcessLaunchedAt").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.End")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.end", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.End".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.ProcessLaunchedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set("json.Filters.ProcessLaunchedAt", Value::Array(out))?;
                     }
                     Ok(())
                 })();
@@ -1121,51 +1498,91 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.ProcessLaunchedAt").cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => {
-                                            event.set("_ingest._value.start", parsed)?
-                                        }
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.Start".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("json.Filters.ProcessLaunchedAt").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.Start")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.start", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.Start".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.ProcessLaunchedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set("json.Filters.ProcessLaunchedAt", Value::Array(out))?;
                     }
                     Ok(())
                 })();
@@ -1277,48 +1694,91 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.ProcessTerminatedAt").cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => event.set("_ingest._value.end", parsed)?,
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.End".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("json.Filters.ProcessTerminatedAt").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.End")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.end", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.End".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.ProcessTerminatedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set("json.Filters.ProcessTerminatedAt", Value::Array(out))?;
                     }
                     Ok(())
                 })();
@@ -1333,51 +1793,91 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) =
-                        event.get("json.Filters.ProcessTerminatedAt").cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => {
-                                            event.set("_ingest._value.start", parsed)?
-                                        }
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.Start".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("json.Filters.ProcessTerminatedAt").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.Start")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.start", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.Start".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.ProcessTerminatedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set("json.Filters.ProcessTerminatedAt", Value::Array(out))?;
                     }
                     Ok(())
                 })();
@@ -1557,52 +2057,93 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceAwsEc2InstanceLaunchedAt")
-                        .cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => event.set("_ingest._value.end", parsed)?,
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.End".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event
+                            .get("json.Filters.ResourceAwsEc2InstanceLaunchedAt")
+                            .cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.End")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.end", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.End".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set(
-                            "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
-                            Value::Array(out),
-                        )?;
                     }
                     Ok(())
                 })();
@@ -1617,55 +2158,93 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceAwsEc2InstanceLaunchedAt")
-                        .cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => {
-                                            event.set("_ingest._value.start", parsed)?
-                                        }
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.Start".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event
+                            .get("json.Filters.ResourceAwsEc2InstanceLaunchedAt")
+                            .cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.Start")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.start", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.Start".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set(
-                            "json.Filters.ResourceAwsEc2InstanceLaunchedAt",
-                            Value::Array(out),
-                        )?;
                     }
                     Ok(())
                 })();
@@ -1782,52 +2361,93 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceAwsIamAccessKeyCreatedAt")
-                        .cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => event.set("_ingest._value.end", parsed)?,
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.End".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event
+                            .get("json.Filters.ResourceAwsIamAccessKeyCreatedAt")
+                            .cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.End")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.end", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.End".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set(
-                            "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
-                            Value::Array(out),
-                        )?;
                     }
                     Ok(())
                 })();
@@ -1842,55 +2462,93 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceAwsIamAccessKeyCreatedAt")
-                        .cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => {
-                                            event.set("_ingest._value.start", parsed)?
-                                        }
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.Start".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event
+                            .get("json.Filters.ResourceAwsIamAccessKeyCreatedAt")
+                            .cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.Start")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.start", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.Start".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set(
-                            "json.Filters.ResourceAwsIamAccessKeyCreatedAt",
-                            Value::Array(out),
-                        )?;
                     }
                     Ok(())
                 })();
@@ -2034,52 +2692,93 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceContainerLaunchedAt")
-                        .cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => event.set("_ingest._value.end", parsed)?,
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.End".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event
+                            .get("json.Filters.ResourceContainerLaunchedAt")
+                            .cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.End")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.end", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.End".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.ResourceContainerLaunchedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set(
-                            "json.Filters.ResourceContainerLaunchedAt",
-                            Value::Array(out),
-                        )?;
                     }
                     Ok(())
                 })();
@@ -2094,55 +2793,93 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ResourceContainerLaunchedAt")
-                        .cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => {
-                                            event.set("_ingest._value.start", parsed)?
-                                        }
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.Start".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event
+                            .get("json.Filters.ResourceContainerLaunchedAt")
+                            .cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.Start")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.start", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.Start".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.ResourceContainerLaunchedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set(
-                            "json.Filters.ResourceContainerLaunchedAt",
-                            Value::Array(out),
-                        )?;
                     }
                     Ok(())
                 })();
@@ -2325,52 +3062,93 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ThreatIntelIndicatorLastObservedAt")
-                        .cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => event.set("_ingest._value.end", parsed)?,
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.End".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event
+                            .get("json.Filters.ThreatIntelIndicatorLastObservedAt")
+                            .cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.End")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.end", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.End".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.ThreatIntelIndicatorLastObservedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set(
-                            "json.Filters.ThreatIntelIndicatorLastObservedAt",
-                            Value::Array(out),
-                        )?;
                     }
                     Ok(())
                 })();
@@ -2385,55 +3163,93 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event
-                        .get("json.Filters.ThreatIntelIndicatorLastObservedAt")
-                        .cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => {
-                                            event.set("_ingest._value.start", parsed)?
-                                        }
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.Start".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event
+                            .get("json.Filters.ThreatIntelIndicatorLastObservedAt")
+                            .cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.Start")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.start", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.Start".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.ThreatIntelIndicatorLastObservedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set(
-                            "json.Filters.ThreatIntelIndicatorLastObservedAt",
-                            Value::Array(out),
-                        )?;
                     }
                     Ok(())
                 })();
@@ -2560,47 +3376,91 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Filters.UpdatedAt").cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.End") {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => event.set("_ingest._value.end", parsed)?,
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.End".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("json.Filters.UpdatedAt").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.End")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.end", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.End".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.UpdatedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set("json.Filters.UpdatedAt", Value::Array(out))?;
                     }
                     Ok(())
                 })();
@@ -2615,50 +3475,91 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if let Some(Value::Array(items)) = event.get("json.Filters.UpdatedAt").cloned()
                     {
-                        // A NESTED loop borrows the same `_ingest._value` slot, so
-                        // the enclosing element is saved and put back afterwards.
-                        let enclosing = event.get("_ingest._value").cloned();
-                        let mut out = Vec::with_capacity(items.len());
-                        for item in items {
-                            event.set("_ingest._value", item)?;
-                            // ignore_failure: true
-                            let _ = (|| -> Result<()> {
-                                if let Some(date_str) = event.get_as_string("_ingest._value.Start")
-                                {
-                                    match parse_date_out(
-                                        &date_str,
-                                        &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
-                                        None,
-                                        None,
-                                    ) {
-                                        Some(parsed) => {
-                                            event.set("_ingest._value.start", parsed)?
-                                        }
-                                        None => {
-                                            return Err(TransformError::ParseError {
-                                                path: "_ingest._value.Start".into(),
-                                                message: format!(
-                                                    "unable to parse date [{date_str}]"
-                                                ),
-                                            });
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("json.Filters.UpdatedAt").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(date_str) =
+                                        event.get_as_string("_ingest._value.Start")
+                                    {
+                                        match parse_date_out(
+                                            &date_str,
+                                            &["ISO8601", "yyyy-MM-dd HH:mm:ss.SSS"],
+                                            None,
+                                            None,
+                                        ) {
+                                            Some(parsed) => {
+                                                event.set("_ingest._value.start", parsed)?
+                                            }
+                                            None => {
+                                                return Err(TransformError::ParseError {
+                                                    path: "_ingest._value.Start".into(),
+                                                    message: format!(
+                                                        "unable to parse date [{date_str}]"
+                                                    ),
+                                                });
+                                            }
                                         }
                                     }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
                                 }
-                                Ok(())
-                            })();
-                            out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
-                        }
-                        match enclosing {
-                            Some(previous) => {
-                                event.set("_ingest._value", previous)?;
                             }
-                            None => {
-                                event.remove("_ingest");
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
                             }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.Filters.UpdatedAt",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        event.set("json.Filters.UpdatedAt", Value::Array(out))?;
                     }
                     Ok(())
                 })();

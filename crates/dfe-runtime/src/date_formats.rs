@@ -475,6 +475,15 @@ pub fn java_to_chrono(java: &str) -> Cow<'_, str> {
             chars.next();
             run += 1;
         }
+
+        // chrono's fixed-width fraction exists at 3, 6 and 9 digits only, so a
+        // shorter run has to take the literal dot back and use the
+        // variable-width directive instead.
+        if c == 'S' && !matches!(run, 3 | 6 | 9) && out.ends_with('.') {
+            out.pop();
+            out.push_str("%.f");
+            continue;
+        }
         out.push_str(&token(c, run));
     }
 
@@ -608,6 +617,23 @@ mod tests {
 
         assert_eq!(summer, "2023-07-04T12:00:00.000-06:00");
         assert_eq!(winter, "2023-01-04T12:00:00.000-07:00");
+    }
+
+    /// A pipeline lists `.SSS`, `.SS` and `.S` because the device writes any
+    /// of them, and each has to parse the width it names.
+    #[test]
+    fn a_short_fraction_parses_through_its_own_format() {
+        const FORMATS: [&str; 3] = [
+            "yyyy-MM-dd HH:mm:ss.SSS",
+            "yyyy-MM-dd HH:mm:ss.SS",
+            "yyyy-MM-dd HH:mm:ss.S",
+        ];
+
+        let two = parse_date_out("2023-05-21 09:58:40.25", &FORMATS, Some("UTC"), None).unwrap();
+        assert_eq!(two, "2023-05-21T09:58:40.250Z");
+
+        let three = parse_date_out("2023-05-21 09:58:40.477", &FORMATS, Some("UTC"), None).unwrap();
+        assert_eq!(three, "2023-05-21T09:58:40.477Z");
     }
 
     /// A region id Java does not know still fails, so the processor's

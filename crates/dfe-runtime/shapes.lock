@@ -127,9 +127,11 @@
 126 IndexedFieldCopies
 127 MoveKeys
 128 ClassifyLadder
-129 GuardedDivide
-130 ScaleField
-131 GuardedCopy
+129 PrivateCidrDirection
+130 BranchCopies
+131 GuardedDivide
+132 ScaleField
+133 GuardedCopy
 
 [params_shape]
   1 AwsEntity
@@ -173,6 +175,7 @@
  39 AddUniqueRow
  40 FrameworkPreference
  41 NormalisedLookup
- 42 LookupNormalise
- 43 RowOrDefaults
+ 42 StringifiedLookup
+ 43 LookupNormalise
+ 44 RowOrDefaults
 

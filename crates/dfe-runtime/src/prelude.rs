@@ -10,7 +10,7 @@ pub use crate::error::{Result, TransformError};
 pub use crate::event::Event;
 pub use crate::transform::{Transform, TransformChain, TransformResult};
 
-pub use serde_json::{Value, json};
+pub use serde_json::{Map, Value, json};
 
 pub use chrono::{DateTime, FixedOffset, NaiveDateTime, Utc};
 
