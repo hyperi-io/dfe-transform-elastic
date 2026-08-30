@@ -4573,3 +4573,1332 @@ sources:
     fixtures: jamf_pro/inventory
     intakes: [beats, fetcher]
     transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (indicator_domain_name, indicator_ip, indicator_url) are
+  # all reached from default, so default is the only entry point, as it is for
+  # okta and crowdstrike.
+  ti_anyrun_ioc:
+    package: ti_anyrun
+    data_stream: ioc
+    pipelines: ti_anyrun/ioc
+    fixtures: ti_anyrun/ioc
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is otelcol, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  claude_code_events:
+    package: claude_code
+    data_stream: events
+    pipelines: claude_code/events
+    fixtures: claude_code/events
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (cloud, self_hosted) are all reached from default, so
+  # default is the only entry point, as it is for okta and crowdstrike.
+  atlassian_jira_audit:
+    package: atlassian_jira
+    data_stream: audit
+    pipelines: atlassian_jira/audit
+    fixtures: atlassian_jira/audit
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  oracle_weblogic_access:
+    package: oracle_weblogic
+    data_stream: access
+    pipelines: oracle_weblogic/access
+    fixtures: oracle_weblogic/access
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  oracle_weblogic_admin_server:
+    package: oracle_weblogic
+    data_stream: admin_server
+    pipelines: oracle_weblogic/admin_server
+    fixtures: oracle_weblogic/admin_server
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is jolokia/metrics, which is neither a pure transport
+  # nor something a device pushes, so Beats is the only intake.
+  oracle_weblogic_deployed_application:
+    package: oracle_weblogic
+    data_stream: deployed_application
+    pipelines: oracle_weblogic/deployed_application
+    fixtures: oracle_weblogic/deployed_application
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  oracle_weblogic_domain:
+    package: oracle_weblogic
+    data_stream: domain
+    pipelines: oracle_weblogic/domain
+    fixtures: oracle_weblogic/domain
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  oracle_weblogic_managed_server:
+    package: oracle_weblogic
+    data_stream: managed_server
+    pipelines: oracle_weblogic/managed_server
+    fixtures: oracle_weblogic/managed_server
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is jolokia/metrics, which is neither a pure transport
+  # nor something a device pushes, so Beats is the only intake.
+  oracle_weblogic_threadpool:
+    package: oracle_weblogic
+    data_stream: threadpool
+    pipelines: oracle_weblogic/threadpool
+    fixtures: oracle_weblogic/threadpool
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is http_endpoint, so a device pushes this.
+  # Framing body: no pipeline groks a syslog header out of message, so a
+  # rebuilt header would only corrupt the payload.
+  opencanary_events:
+    package: opencanary
+    data_stream: events
+    pipelines: opencanary/events
+    fixtures: opencanary/events
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  ti_otx_pulses_subscribed:
+    package: ti_otx
+    data_stream: pulses_subscribed
+    pipelines: ti_otx/pulses_subscribed
+    fixtures: ti_otx/pulses_subscribed
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  ti_otx_threat:
+    package: ti_otx
+    data_stream: threat
+    pipelines: ti_otx/threat
+    fixtures: ti_otx/threat
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is azure-eventhub -- a pure transport, so the pipeline
+  # does all the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (azure_shared_pipeline) are all reached from default, so
+  # default is the only entry point, as it is for okta and crowdstrike.
+  azure_openai_logs:
+    package: azure_openai
+    data_stream: logs
+    pipelines: azure_openai/logs
+    fixtures: azure_openai/logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is azure/metrics -- a pure transport, so the pipeline
+  # does all the parsing and dfe-fetcher can obtain the same bytes.
+  azure_openai_metrics:
+    package: azure_openai
+    data_stream: metrics
+    pipelines: azure_openai/metrics
+    fixtures: azure_openai/metrics
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  proofpoint_365totalprotection_email:
+    package: proofpoint_365totalprotection
+    data_stream: email
+    pipelines: proofpoint_365totalprotection/email
+    fixtures: proofpoint_365totalprotection/email
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is gcp-pubsub -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  gcp_vertexai_auditlogs:
+    package: gcp_vertexai
+    data_stream: auditlogs
+    pipelines: gcp_vertexai/auditlogs
+    fixtures: gcp_vertexai/auditlogs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is gcp/metrics -- a pure transport, so the pipeline
+  # does all the parsing and dfe-fetcher can obtain the same bytes.
+  gcp_vertexai_metrics:
+    package: gcp_vertexai
+    data_stream: metrics
+    pipelines: gcp_vertexai/metrics
+    fixtures: gcp_vertexai/metrics
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is gcp/metrics -- a pure transport, so the pipeline
+  # does all the parsing and dfe-fetcher can obtain the same bytes.
+  gcp_vertexai_prompt_response_logs:
+    package: gcp_vertexai
+    data_stream: prompt_response_logs
+    pipelines: gcp_vertexai/prompt_response_logs
+    fixtures: gcp_vertexai/prompt_response_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is filestream, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (format_common, format_json) are all reached from
+  # default, so default is the only entry point, as it is for okta and
+  # crowdstrike.
+  istio_access_logs:
+    package: istio
+    data_stream: access_logs
+    pipelines: istio/access_logs
+    fixtures: istio/access_logs
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is prometheus/metrics, which is neither a pure
+  # transport nor something a device pushes, so Beats is the only intake.
+  istio_istiod_metrics:
+    package: istio
+    data_stream: istiod_metrics
+    pipelines: istio/istiod_metrics
+    fixtures: istio/istiod_metrics
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is prometheus/metrics, which is neither a pure
+  # transport nor something a device pushes, so Beats is the only intake.
+  istio_proxy_metrics:
+    package: istio
+    data_stream: proxy_metrics
+    pipelines: istio/proxy_metrics
+    fixtures: istio/proxy_metrics
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  ti_mandiant_advantage_threat_intelligence:
+    package: ti_mandiant_advantage
+    data_stream: threat_intelligence
+    pipelines: ti_mandiant_advantage/threat_intelligence
+    fixtures: ti_mandiant_advantage/threat_intelligence
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is azure-eventhub -- a pure transport, so the pipeline
+  # does all the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (7 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  azure_app_service_app_service_logs:
+    package: azure_app_service
+    data_stream: app_service_logs
+    pipelines: azure_app_service/app_service_logs
+    fixtures: azure_app_service/app_service_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is tcp/udp, so a device pushes this.
+  # Framing body: no pipeline groks a syslog header out of message, so a
+  # rebuilt header would only corrupt the payload.
+  # The sub-pipelines (5 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  barracuda_waf:
+    package: barracuda
+    data_stream: waf
+    pipelines: barracuda/waf
+    fixtures: barracuda/waf
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  # traefik ships health as well. None of them carries an ingest pipeline, so
+  # none of them gets an entry.
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (format_common, format_json) are all reached from
+  # default, so default is the only entry point, as it is for okta and
+  # crowdstrike.
+  traefik_access:
+    package: traefik
+    data_stream: access
+    pipelines: traefik/access
+    fixtures: traefik/access
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is filestream, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  nginx_ingress_controller_access:
+    package: nginx_ingress_controller
+    data_stream: access
+    pipelines: nginx_ingress_controller/access
+    fixtures: nginx_ingress_controller/access
+    intakes: [beats]
+    transforms: [default]
+
+  nginx_ingress_controller_error:
+    package: nginx_ingress_controller
+    data_stream: error
+    pipelines: nginx_ingress_controller/error
+    fixtures: nginx_ingress_controller/error
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  ti_cyware_intel_exchange_indicator:
+    package: ti_cyware_intel_exchange
+    data_stream: indicator
+    pipelines: ti_cyware_intel_exchange/indicator
+    fixtures: ti_cyware_intel_exchange/indicator
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-s3/cel -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  imperva_cloud_waf_event:
+    package: imperva_cloud_waf
+    data_stream: event
+    pipelines: imperva_cloud_waf/event
+    fixtures: imperva_cloud_waf/event
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # akamai ships siem_otel as well. None of them carries an ingest pipeline,
+  # so none of them gets an entry.
+  # The manifest input is gcs -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  akamai_siem:
+    package: akamai
+    data_stream: siem
+    pipelines: akamai/siem
+    fixtures: akamai/siem
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  gdacs_events:
+    package: gdacs
+    data_stream: events
+    pipelines: gdacs/events
+    fixtures: gdacs/events
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is azure-eventhub -- a pure transport, so the pipeline
+  # does all the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (azure_shared_pipeline) are all reached from default, so
+  # default is the only entry point, as it is for okta and crowdstrike.
+  azure_ai_foundry_logs:
+    package: azure_ai_foundry
+    data_stream: logs
+    pipelines: azure_ai_foundry/logs
+    fixtures: azure_ai_foundry/logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is azure/metrics -- a pure transport, so the pipeline
+  # does all the parsing and dfe-fetcher can obtain the same bytes.
+  azure_ai_foundry_metrics:
+    package: azure_ai_foundry
+    data_stream: metrics
+    pipelines: azure_ai_foundry/metrics
+    fixtures: azure_ai_foundry/metrics
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is tcp/udp, so a device pushes this.
+  # Framing body: no pipeline groks a syslog header out of message, so a
+  # rebuilt header would only corrupt the payload.
+  # The sub-pipelines (renaming_raws) are all reached from default, so default
+  # is the only entry point, as it is for okta and crowdstrike.
+  fireeye_nx:
+    package: fireeye
+    data_stream: nx
+    pipelines: fireeye/nx
+    fixtures: fireeye/nx
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  menlo_dlp:
+    package: menlo
+    data_stream: dlp
+    pipelines: menlo/dlp
+    fixtures: menlo/dlp
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  menlo_web:
+    package: menlo
+    data_stream: web
+    pipelines: menlo/web
+    fixtures: menlo/web
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # proofpoint_essentials ships clicks_blocked, clicks_permitted,
+  # message_blocked, message_delivered as well. None of them carries an ingest
+  # pipeline, so none of them gets an entry.
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  proofpoint_essentials_threat:
+    package: proofpoint_essentials
+    data_stream: threat
+    pipelines: proofpoint_essentials/threat
+    fixtures: proofpoint_essentials/threat
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (raw) are all reached from default, so default is the
+  # only entry point, as it is for okta and crowdstrike.
+  auditd_log:
+    package: auditd
+    data_stream: log
+    pipelines: auditd/log
+    fixtures: auditd/log
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  ironscales_incident:
+    package: ironscales
+    data_stream: incident
+    pipelines: ironscales/incident
+    fixtures: ironscales/incident
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is http_endpoint/tcp/udp, so a device pushes this.
+  # Framing body: no pipeline groks a syslog header out of message, so a
+  # rebuilt header would only corrupt the payload.
+  # CHECK: the agent template runs decode_json_fields before the pipeline, so
+  # the pipeline reads parsed fields and not message. Neither framing
+  # reproduces that on its own.
+  carbonblack_edr_log:
+    package: carbonblack_edr
+    data_stream: log
+    pipelines: carbonblack_edr/log
+    fixtures: carbonblack_edr/log
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  # mysql ships galera_status, slowlog, status as well. None of them carries
+  # an ingest pipeline, so none of them gets an entry.
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  mysql_error:
+    package: mysql
+    data_stream: error
+    pipelines: mysql/error
+    fixtures: mysql/error
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is mysql/metrics, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  mysql_performance:
+    package: mysql
+    data_stream: performance
+    pipelines: mysql/performance
+    fixtures: mysql/performance
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is sql/metrics, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  mysql_replica_status:
+    package: mysql
+    data_stream: replica_status
+    pipelines: mysql/replica_status
+    fixtures: mysql/replica_status
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  neon_cyber_detections:
+    package: neon_cyber
+    data_stream: detections
+    pipelines: neon_cyber/detections
+    fixtures: neon_cyber/detections
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  neon_cyber_events:
+    package: neon_cyber
+    data_stream: events
+    pipelines: neon_cyber/events
+    fixtures: neon_cyber/events
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  tenable_ot_security_assets:
+    package: tenable_ot_security
+    data_stream: assets
+    pipelines: tenable_ot_security/assets
+    fixtures: tenable_ot_security/assets
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  tenable_ot_security_events:
+    package: tenable_ot_security
+    data_stream: events
+    pipelines: tenable_ot_security/events
+    fixtures: tenable_ot_security/events
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  tenable_ot_security_system_log:
+    package: tenable_ot_security
+    data_stream: system_log
+    pipelines: tenable_ot_security/system_log
+    fixtures: tenable_ot_security/system_log
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is packet, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (compatibility, endace, geoip) are all reached from
+  # default, so default is the only entry point, as it is for okta and
+  # crowdstrike.
+  endace_flow:
+    package: endace
+    data_stream: flow
+    pipelines: endace/flow
+    fixtures: endace/flow
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is netflow, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (endace_netflow) are all reached from default, so
+  # default is the only entry point, as it is for okta and crowdstrike.
+  endace_log:
+    package: endace
+    data_stream: log
+    pipelines: endace/log
+    fixtures: endace/log
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  workday_activity:
+    package: workday
+    data_stream: activity
+    pipelines: workday/activity
+    fixtures: workday/activity
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  workday_sign_on:
+    package: workday
+    data_stream: sign_on
+    pipelines: workday/sign_on
+    fixtures: workday/sign_on
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-s3 -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  # CHECK: pipeline_extract_metadata generates a module that no IngestPipeline
+  # call reaches -- dead upstream, or an entry point this is missing.
+  aws_billing_cur:
+    package: aws_billing
+    data_stream: cur
+    pipelines: aws_billing/cur
+    fixtures: aws_billing/cur
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  ibm_qradar_offense:
+    package: ibm_qradar
+    data_stream: offense
+    pipelines: ibm_qradar/offense
+    fixtures: ibm_qradar/offense
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is winlog, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  microsoft_sqlserver_audit:
+    package: microsoft_sqlserver
+    data_stream: audit
+    pipelines: microsoft_sqlserver/audit
+    fixtures: microsoft_sqlserver/audit
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is sql/metrics, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  microsoft_sqlserver_availability_groups:
+    package: microsoft_sqlserver
+    data_stream: availability_groups
+    pipelines: microsoft_sqlserver/availability_groups
+    fixtures: microsoft_sqlserver/availability_groups
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  microsoft_sqlserver_log:
+    package: microsoft_sqlserver
+    data_stream: log
+    pipelines: microsoft_sqlserver/log
+    fixtures: microsoft_sqlserver/log
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is sql/metrics, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  microsoft_sqlserver_performance:
+    package: microsoft_sqlserver
+    data_stream: performance
+    pipelines: microsoft_sqlserver/performance
+    fixtures: microsoft_sqlserver/performance
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is sql/metrics, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  microsoft_sqlserver_transaction_log:
+    package: microsoft_sqlserver
+    data_stream: transaction_log
+    pipelines: microsoft_sqlserver/transaction_log
+    fixtures: microsoft_sqlserver/transaction_log
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  ibmmq_errorlog:
+    package: ibmmq
+    data_stream: errorlog
+    pipelines: ibmmq/errorlog
+    fixtures: ibmmq/errorlog
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is prometheus/metrics, which is neither a pure
+  # transport nor something a device pushes, so Beats is the only intake.
+  ibmmq_qmgr:
+    package: ibmmq
+    data_stream: qmgr
+    pipelines: ibmmq/qmgr
+    fixtures: ibmmq/qmgr
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is aws-cloudwatch/aws-s3 -- a pure transport, so the
+  # pipeline does all the parsing and dfe-fetcher can obtain the same bytes.
+  aws_bedrock_agentcore_gateway_application_logs:
+    package: aws_bedrock_agentcore
+    data_stream: gateway_application_logs
+    pipelines: aws_bedrock_agentcore/gateway_application_logs
+    fixtures: aws_bedrock_agentcore/gateway_application_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-cloudwatch/aws-s3 -- a pure transport, so the
+  # pipeline does all the parsing and dfe-fetcher can obtain the same bytes.
+  aws_bedrock_agentcore_memory_application_logs:
+    package: aws_bedrock_agentcore
+    data_stream: memory_application_logs
+    pipelines: aws_bedrock_agentcore/memory_application_logs
+    fixtures: aws_bedrock_agentcore/memory_application_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws/metrics -- a pure transport, so the pipeline
+  # does all the parsing and dfe-fetcher can obtain the same bytes.
+  aws_bedrock_agentcore_metrics:
+    package: aws_bedrock_agentcore
+    data_stream: metrics
+    pipelines: aws_bedrock_agentcore/metrics
+    fixtures: aws_bedrock_agentcore/metrics
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-cloudwatch/aws-s3 -- a pure transport, so the
+  # pipeline does all the parsing and dfe-fetcher can obtain the same bytes.
+  aws_bedrock_agentcore_runtime_application_logs:
+    package: aws_bedrock_agentcore
+    data_stream: runtime_application_logs
+    pipelines: aws_bedrock_agentcore/runtime_application_logs
+    fixtures: aws_bedrock_agentcore/runtime_application_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (8 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  ti_custom_indicator:
+    package: ti_custom
+    data_stream: indicator
+    pipelines: ti_custom/indicator
+    fixtures: ti_custom/indicator
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is prometheus/metrics, which is neither a pure
+  # transport nor something a device pushes, so Beats is the only intake.
+  websphere_application_server_jdbc:
+    package: websphere_application_server
+    data_stream: jdbc
+    pipelines: websphere_application_server/jdbc
+    fixtures: websphere_application_server/jdbc
+    intakes: [beats]
+    transforms: [default]
+
+  websphere_application_server_servlet:
+    package: websphere_application_server
+    data_stream: servlet
+    pipelines: websphere_application_server/servlet
+    fixtures: websphere_application_server/servlet
+    intakes: [beats]
+    transforms: [default]
+
+  websphere_application_server_session_manager:
+    package: websphere_application_server
+    data_stream: session_manager
+    pipelines: websphere_application_server/session_manager
+    fixtures: websphere_application_server/session_manager
+    intakes: [beats]
+    transforms: [default]
+
+  websphere_application_server_threadpool:
+    package: websphere_application_server
+    data_stream: threadpool
+    pipelines: websphere_application_server/threadpool
+    fixtures: websphere_application_server/threadpool
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is tcp/udp, so a device pushes this.
+  # Framing line: a grok on message/event.original carries %{SYSLOG5424PRI},
+  # so the header has to stay on.
+  symantec_endpoint_log:
+    package: symantec_endpoint
+    data_stream: log
+    pipelines: symantec_endpoint/log
+    fixtures: symantec_endpoint/log
+    intakes: [beats, receiver]
+    framing: line
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  lastpass_detailed_shared_folder:
+    package: lastpass
+    data_stream: detailed_shared_folder
+    pipelines: lastpass/detailed_shared_folder
+    fixtures: lastpass/detailed_shared_folder
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  lastpass_event_report:
+    package: lastpass
+    data_stream: event_report
+    pipelines: lastpass/event_report
+    fixtures: lastpass/event_report
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  lastpass_user:
+    package: lastpass
+    data_stream: user
+    pipelines: lastpass/user
+    fixtures: lastpass/user
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  cisco_secure_endpoint_event:
+    package: cisco_secure_endpoint
+    data_stream: event
+    pipelines: cisco_secure_endpoint/event
+    fixtures: cisco_secure_endpoint/event
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  extrahop_detection:
+    package: extrahop
+    data_stream: detection
+    pipelines: extrahop/detection
+    fixtures: extrahop/detection
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  extrahop_investigation:
+    package: extrahop
+    data_stream: investigation
+    pipelines: extrahop/investigation
+    fixtures: extrahop/investigation
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is filestream, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  oracle_database_audit:
+    package: oracle
+    data_stream: database_audit
+    pipelines: oracle/database_audit
+    fixtures: oracle/database_audit
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is sql/metrics, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  oracle_memory:
+    package: oracle
+    data_stream: memory
+    pipelines: oracle/memory
+    fixtures: oracle/memory
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is sql/metrics, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  oracle_performance:
+    package: oracle
+    data_stream: performance
+    pipelines: oracle/performance
+    fixtures: oracle/performance
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is sql/metrics, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  oracle_sysmetric:
+    package: oracle
+    data_stream: sysmetric
+    pipelines: oracle/sysmetric
+    fixtures: oracle/sysmetric
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is sql/metrics, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  oracle_system_statistics:
+    package: oracle
+    data_stream: system_statistics
+    pipelines: oracle/system_statistics
+    fixtures: oracle/system_statistics
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is sql/metrics, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  oracle_tablespace:
+    package: oracle
+    data_stream: tablespace
+    pipelines: oracle/tablespace
+    fixtures: oracle/tablespace
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is aws-s3 -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  trellix_edr_cloud_event:
+    package: trellix_edr_cloud
+    data_stream: event
+    pipelines: trellix_edr_cloud/event
+    fixtures: trellix_edr_cloud/event
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # logstash ships health_report, node, node_cel, node_stats as well. None of
+  # them carries an ingest pipeline, so none of them gets an entry.
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (pipeline_json, pipeline_plaintext) are all reached from
+  # default, so default is the only entry point, as it is for okta and
+  # crowdstrike.
+  logstash_log:
+    package: logstash
+    data_stream: log
+    pipelines: logstash/log
+    fixtures: logstash/log
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  logstash_pipeline:
+    package: logstash
+    data_stream: pipeline
+    pipelines: logstash/pipeline
+    fixtures: logstash/pipeline
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  logstash_plugins:
+    package: logstash
+    data_stream: plugins
+    pipelines: logstash/plugins
+    fixtures: logstash/plugins
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (pipeline_json, pipeline_plaintext) are all reached from
+  # default, so default is the only entry point, as it is for okta and
+  # crowdstrike.
+  logstash_slowlog:
+    package: logstash
+    data_stream: slowlog
+    pipelines: logstash/slowlog
+    fixtures: logstash/slowlog
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is aws-s3 -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  tencent_cloud_audit:
+    package: tencent_cloud
+    data_stream: audit
+    pipelines: tencent_cloud/audit
+    fixtures: tencent_cloud/audit
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  tencent_cloud_clb:
+    package: tencent_cloud
+    data_stream: clb
+    pipelines: tencent_cloud/clb
+    fixtures: tencent_cloud/clb
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  tencent_cloud_cos:
+    package: tencent_cloud
+    data_stream: cos
+    pipelines: tencent_cloud/cos
+    fixtures: tencent_cloud/cos
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  tencent_cloud_scf:
+    package: tencent_cloud
+    data_stream: scf
+    pipelines: tencent_cloud/scf
+    fixtures: tencent_cloud/scf
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is tcp/udp, so a device pushes this.
+  # Framing body: no pipeline groks a syslog header out of message, so a
+  # rebuilt header would only corrupt the payload.
+  # The sub-pipelines (count, filterstat, monitor) are all reached from
+  # default, so default is the only entry point, as it is for okta and
+  # crowdstrike.
+  # CHECK: the agent template runs syslog before the pipeline, so the pipeline
+  # reads parsed fields and not message. Neither framing reproduces that on
+  # its own.
+  stormshield_log:
+    package: stormshield
+    data_stream: log
+    pipelines: stormshield/log
+    fixtures: stormshield/log
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  authentik_event:
+    package: authentik
+    data_stream: event
+    pipelines: authentik/event
+    fixtures: authentik/event
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  authentik_group:
+    package: authentik
+    data_stream: group
+    pipelines: authentik/group
+    fixtures: authentik/group
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  authentik_user:
+    package: authentik
+    data_stream: user
+    pipelines: authentik/user
+    fixtures: authentik/user
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  box_events_events:
+    package: box_events
+    data_stream: events
+    pipelines: box_events/events
+    fixtures: box_events/events
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # falco ships alerts_agent as well. None of them carries an ingest pipeline,
+  # so none of them gets an entry.
+  # The manifest input is tcp, so a device pushes this.
+  # Framing body: no pipeline groks a syslog header out of message, so a
+  # rebuilt header would only corrupt the payload.
+  # CHECK: routing_rules.yml reroutes this stream's events into other data
+  # streams, which the generator does not reproduce.
+  falco_alerts:
+    package: falco
+    data_stream: alerts
+    pipelines: falco/alerts
+    fixtures: falco/alerts
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  # The manifest input is azure-eventhub -- a pure transport, so the pipeline
+  # does all the parsing and dfe-fetcher can obtain the same bytes.
+  microsoft_intune_audit:
+    package: microsoft_intune
+    data_stream: audit
+    pipelines: microsoft_intune/audit
+    fixtures: microsoft_intune/audit
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  microsoft_intune_managed_device:
+    package: microsoft_intune
+    data_stream: managed_device
+    pipelines: microsoft_intune/managed_device
+    fixtures: microsoft_intune/managed_device
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  ti_crowdstrike_intel:
+    package: ti_crowdstrike
+    data_stream: intel
+    pipelines: ti_crowdstrike/intel
+    fixtures: ti_crowdstrike/intel
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  ti_crowdstrike_ioc:
+    package: ti_crowdstrike
+    data_stream: ioc
+    pipelines: ti_crowdstrike/ioc
+    fixtures: ti_crowdstrike/ioc
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is filestream, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  sysmon_linux_log:
+    package: sysmon_linux
+    data_stream: log
+    pipelines: sysmon_linux/log
+    fixtures: sysmon_linux/log
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  ceph_cluster_disk:
+    package: ceph
+    data_stream: cluster_disk
+    pipelines: ceph/cluster_disk
+    fixtures: ceph/cluster_disk
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  ceph_cluster_health:
+    package: ceph
+    data_stream: cluster_health
+    pipelines: ceph/cluster_health
+    fixtures: ceph/cluster_health
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  ceph_cluster_status:
+    package: ceph
+    data_stream: cluster_status
+    pipelines: ceph/cluster_status
+    fixtures: ceph/cluster_status
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  ceph_osd_performance:
+    package: ceph
+    data_stream: osd_performance
+    pipelines: ceph/osd_performance
+    fixtures: ceph/osd_performance
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  ceph_osd_pool_stats:
+    package: ceph
+    data_stream: osd_pool_stats
+    pipelines: ceph/osd_pool_stats
+    fixtures: ceph/osd_pool_stats
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  ceph_osd_tree:
+    package: ceph
+    data_stream: osd_tree
+    pipelines: ceph/osd_tree
+    fixtures: ceph/osd_tree
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  ceph_pool_disk:
+    package: ceph
+    data_stream: pool_disk
+    pipelines: ceph/pool_disk
+    fixtures: ceph/pool_disk
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is tcp/udp, so a device pushes this.
+  # Framing line: a grok on message/event.original carries %{SYSLOGTIMESTAMP},
+  # so the header has to stay on.
+  # The sub-pipelines (audit) are all reached from default, so default is the
+  # only entry point, as it is for okta and crowdstrike.
+  # CHECK: routing_rules.yml reroutes this stream's events into other data
+  # streams, which the generator does not reproduce.
+  cyberarkpas_audit:
+    package: cyberarkpas
+    data_stream: audit
+    pipelines: cyberarkpas/audit
+    fixtures: cyberarkpas/audit
+    intakes: [beats, receiver]
+    framing: line
+    transforms: [default]
+
+  # The data stream manifest declares no input at all.
+  cyberarkpas_monitor:
+    package: cyberarkpas
+    data_stream: monitor
+    pipelines: cyberarkpas/monitor
+    fixtures: cyberarkpas/monitor
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is filestream, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (5 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  envoyproxy_log:
+    package: envoyproxy
+    data_stream: log
+    pipelines: envoyproxy/log
+    fixtures: envoyproxy/log
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is statsd/metrics, which is neither a pure transport
+  # nor something a device pushes, so Beats is the only intake.
+  envoyproxy_stats:
+    package: envoyproxy
+    data_stream: stats
+    pipelines: envoyproxy/stats
+    fixtures: envoyproxy/stats
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is aws-s3 -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  canva_audit:
+    package: canva
+    data_stream: audit
+    pipelines: canva/audit
+    fixtures: canva/audit
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  swimlane_audit_logs:
+    package: swimlane
+    data_stream: audit_logs
+    pipelines: swimlane/audit_logs
+    fixtures: swimlane/audit_logs
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is filestream, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  swimlane_swimlane_api:
+    package: swimlane
+    data_stream: swimlane_api
+    pipelines: swimlane/swimlane_api
+    fixtures: swimlane/swimlane_api
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is filestream, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  swimlane_tenant_api:
+    package: swimlane
+    data_stream: tenant_api
+    pipelines: swimlane/tenant_api
+    fixtures: swimlane/tenant_api
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is filestream, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  swimlane_turbine_api:
+    package: swimlane
+    data_stream: turbine_api
+    pipelines: swimlane/turbine_api
+    fixtures: swimlane/turbine_api
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is cel/httpjson -- a pure transport, so the pipeline
+  # does all the parsing and dfe-fetcher can obtain the same bytes.
+  cloudflare_audit:
+    package: cloudflare
+    data_stream: audit
+    pipelines: cloudflare/audit
+    fixtures: cloudflare/audit
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (http) are all reached from default, so default is the
+  # only entry point, as it is for okta and crowdstrike.
+  cloudflare_logpull:
+    package: cloudflare
+    data_stream: logpull
+    pipelines: cloudflare/logpull
+    fixtures: cloudflare/logpull
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # elasticsearch ships ccr, cluster_stats, enrich, index, index_recovery,
+  # index_summary, ml_job, node, node_stats, pending_tasks, security_stats,
+  # shard as well. None of them carries an ingest pipeline, so none of them
+  # gets an entry.
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (pipeline_json) are all reached from default, so default
+  # is the only entry point, as it is for okta and crowdstrike.
+  elasticsearch_audit:
+    package: elasticsearch
+    data_stream: audit
+    pipelines: elasticsearch/audit
+    fixtures: elasticsearch/audit
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (pipeline_json) are all reached from default, so default
+  # is the only entry point, as it is for okta and crowdstrike.
+  elasticsearch_deprecation:
+    package: elasticsearch
+    data_stream: deprecation
+    pipelines: elasticsearch/deprecation
+    fixtures: elasticsearch/deprecation
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  elasticsearch_gc:
+    package: elasticsearch
+    data_stream: gc
+    pipelines: elasticsearch/gc
+    fixtures: elasticsearch/gc
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is elasticsearch/metrics, which is neither a pure
+  # transport nor something a device pushes, so Beats is the only intake.
+  elasticsearch_ingest_pipeline:
+    package: elasticsearch
+    data_stream: ingest_pipeline
+    pipelines: elasticsearch/ingest_pipeline
+    fixtures: elasticsearch/ingest_pipeline
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (pipeline_json) are all reached from default, so default
+  # is the only entry point, as it is for okta and crowdstrike.
+  elasticsearch_querylog:
+    package: elasticsearch
+    data_stream: querylog
+    pipelines: elasticsearch/querylog
+    fixtures: elasticsearch/querylog
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (pipeline_json) are all reached from default, so default
+  # is the only entry point, as it is for okta and crowdstrike.
+  elasticsearch_server:
+    package: elasticsearch
+    data_stream: server
+    pipelines: elasticsearch/server
+    fixtures: elasticsearch/server
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (pipeline_json) are all reached from default, so default
+  # is the only entry point, as it is for okta and crowdstrike.
+  elasticsearch_slowlog:
+    package: elasticsearch
+    data_stream: slowlog
+    pipelines: elasticsearch/slowlog
+    fixtures: elasticsearch/slowlog
+    intakes: [beats]
+    transforms: [default]

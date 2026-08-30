@@ -700,6 +700,194 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("microsoft_exchange_server", "messagetracking") => {
             &filebeat::microsoft_exchange_server_messagetracking::default::Default
         }
+        ("akamai", "siem") => &filebeat::akamai_siem::default::Default,
+        ("atlassian_jira", "audit") => &filebeat::atlassian_jira_audit::default::Default,
+        ("auditd", "log") => &filebeat::auditd_log::default::Default,
+        ("authentik", "event") => &filebeat::authentik_event::default::Default,
+        ("authentik", "group") => &filebeat::authentik_group::default::Default,
+        ("authentik", "user") => &filebeat::authentik_user::default::Default,
+        ("aws_bedrock_agentcore", "gateway_application_logs") => {
+            &filebeat::aws_bedrock_agentcore_gateway_application_logs::default::Default
+        }
+        ("aws_bedrock_agentcore", "memory_application_logs") => {
+            &filebeat::aws_bedrock_agentcore_memory_application_logs::default::Default
+        }
+        ("aws_bedrock_agentcore", "metrics") => {
+            &filebeat::aws_bedrock_agentcore_metrics::default::Default
+        }
+        ("aws_bedrock_agentcore", "runtime_application_logs") => {
+            &filebeat::aws_bedrock_agentcore_runtime_application_logs::default::Default
+        }
+        ("aws_billing", "cur") => &filebeat::aws_billing_cur::default::Default,
+        ("azure_ai_foundry", "logs") => &filebeat::azure_ai_foundry_logs::default::Default,
+        ("azure_ai_foundry", "metrics") => &filebeat::azure_ai_foundry_metrics::default::Default,
+        ("azure_app_service", "app_service_logs") => {
+            &filebeat::azure_app_service_app_service_logs::default::Default
+        }
+        ("azure_openai", "logs") => &filebeat::azure_openai_logs::default::Default,
+        ("azure_openai", "metrics") => &filebeat::azure_openai_metrics::default::Default,
+        ("barracuda", "waf") => &filebeat::barracuda_waf::default::Default,
+        ("box_events", "events") => &filebeat::box_events_events::default::Default,
+        ("canva", "audit") => &filebeat::canva_audit::default::Default,
+        ("carbonblack_edr", "log") => &filebeat::carbonblack_edr_log::default::Default,
+        ("ceph", "cluster_disk") => &filebeat::ceph_cluster_disk::default::Default,
+        ("ceph", "cluster_health") => &filebeat::ceph_cluster_health::default::Default,
+        ("ceph", "cluster_status") => &filebeat::ceph_cluster_status::default::Default,
+        ("ceph", "osd_performance") => &filebeat::ceph_osd_performance::default::Default,
+        ("ceph", "osd_pool_stats") => &filebeat::ceph_osd_pool_stats::default::Default,
+        ("ceph", "osd_tree") => &filebeat::ceph_osd_tree::default::Default,
+        ("ceph", "pool_disk") => &filebeat::ceph_pool_disk::default::Default,
+        ("cisco_secure_endpoint", "event") => {
+            &filebeat::cisco_secure_endpoint_event::default::Default
+        }
+        ("claude_code", "events") => &filebeat::claude_code_events::default::Default,
+        ("cloudflare", "audit") => &filebeat::cloudflare_audit::default::Default,
+        ("cloudflare", "logpull") => &filebeat::cloudflare_logpull::default::Default,
+        ("cyberarkpas", "monitor") => &filebeat::cyberarkpas_monitor::default::Default,
+        ("elasticsearch", "audit") => &filebeat::elasticsearch_audit::default::Default,
+        ("elasticsearch", "deprecation") => &filebeat::elasticsearch_deprecation::default::Default,
+        ("elasticsearch", "gc") => &filebeat::elasticsearch_gc::default::Default,
+        ("elasticsearch", "ingest_pipeline") => {
+            &filebeat::elasticsearch_ingest_pipeline::default::Default
+        }
+        ("elasticsearch", "querylog") => &filebeat::elasticsearch_querylog::default::Default,
+        ("elasticsearch", "server") => &filebeat::elasticsearch_server::default::Default,
+        ("elasticsearch", "slowlog") => &filebeat::elasticsearch_slowlog::default::Default,
+        ("endace", "flow") => &filebeat::endace_flow::default::Default,
+        ("endace", "log") => &filebeat::endace_log::default::Default,
+        ("envoyproxy", "log") => &filebeat::envoyproxy_log::default::Default,
+        ("envoyproxy", "stats") => &filebeat::envoyproxy_stats::default::Default,
+        ("extrahop", "detection") => &filebeat::extrahop_detection::default::Default,
+        ("extrahop", "investigation") => &filebeat::extrahop_investigation::default::Default,
+        ("falco", "alerts") => &filebeat::falco_alerts::default::Default,
+        ("fireeye", "nx") => &filebeat::fireeye_nx::default::Default,
+        ("gcp_vertexai", "auditlogs") => &filebeat::gcp_vertexai_auditlogs::default::Default,
+        ("gcp_vertexai", "metrics") => &filebeat::gcp_vertexai_metrics::default::Default,
+        ("gcp_vertexai", "prompt_response_logs") => {
+            &filebeat::gcp_vertexai_prompt_response_logs::default::Default
+        }
+        ("gdacs", "events") => &filebeat::gdacs_events::default::Default,
+        ("ibm_qradar", "offense") => &filebeat::ibm_qradar_offense::default::Default,
+        ("ibmmq", "errorlog") => &filebeat::ibmmq_errorlog::default::Default,
+        ("ibmmq", "qmgr") => &filebeat::ibmmq_qmgr::default::Default,
+        ("imperva_cloud_waf", "event") => &filebeat::imperva_cloud_waf_event::default::Default,
+        ("ironscales", "incident") => &filebeat::ironscales_incident::default::Default,
+        ("istio", "access_logs") => &filebeat::istio_access_logs::default::Default,
+        ("istio", "istiod_metrics") => &filebeat::istio_istiod_metrics::default::Default,
+        ("istio", "proxy_metrics") => &filebeat::istio_proxy_metrics::default::Default,
+        ("lastpass", "detailed_shared_folder") => {
+            &filebeat::lastpass_detailed_shared_folder::default::Default
+        }
+        ("lastpass", "event_report") => &filebeat::lastpass_event_report::default::Default,
+        ("lastpass", "user") => &filebeat::lastpass_user::default::Default,
+        ("logstash", "log") => &filebeat::logstash_log::default::Default,
+        ("logstash", "pipeline") => &filebeat::logstash_pipeline::default::Default,
+        ("logstash", "plugins") => &filebeat::logstash_plugins::default::Default,
+        ("logstash", "slowlog") => &filebeat::logstash_slowlog::default::Default,
+        ("menlo", "dlp") => &filebeat::menlo_dlp::default::Default,
+        ("menlo", "web") => &filebeat::menlo_web::default::Default,
+        ("microsoft_intune", "audit") => &filebeat::microsoft_intune_audit::default::Default,
+        ("microsoft_intune", "managed_device") => {
+            &filebeat::microsoft_intune_managed_device::default::Default
+        }
+        ("microsoft_sqlserver", "audit") => &filebeat::microsoft_sqlserver_audit::default::Default,
+        ("microsoft_sqlserver", "availability_groups") => {
+            &filebeat::microsoft_sqlserver_availability_groups::default::Default
+        }
+        ("microsoft_sqlserver", "log") => &filebeat::microsoft_sqlserver_log::default::Default,
+        ("microsoft_sqlserver", "performance") => {
+            &filebeat::microsoft_sqlserver_performance::default::Default
+        }
+        ("microsoft_sqlserver", "transaction_log") => {
+            &filebeat::microsoft_sqlserver_transaction_log::default::Default
+        }
+        ("mysql", "error") => &filebeat::mysql_error::default::Default,
+        ("mysql", "performance") => &filebeat::mysql_performance::default::Default,
+        ("mysql", "replica_status") => &filebeat::mysql_replica_status::default::Default,
+        ("neon_cyber", "detections") => &filebeat::neon_cyber_detections::default::Default,
+        ("neon_cyber", "events") => &filebeat::neon_cyber_events::default::Default,
+        ("nginx_ingress_controller", "access") => {
+            &filebeat::nginx_ingress_controller_access::default::Default
+        }
+        ("nginx_ingress_controller", "error") => {
+            &filebeat::nginx_ingress_controller_error::default::Default
+        }
+        ("oracle", "database_audit") => &filebeat::oracle_database_audit::default::Default,
+        ("oracle", "memory") => &filebeat::oracle_memory::default::Default,
+        ("oracle", "performance") => &filebeat::oracle_performance::default::Default,
+        ("oracle", "sysmetric") => &filebeat::oracle_sysmetric::default::Default,
+        ("oracle", "system_statistics") => &filebeat::oracle_system_statistics::default::Default,
+        ("oracle", "tablespace") => &filebeat::oracle_tablespace::default::Default,
+        ("oracle_weblogic", "admin_server") => {
+            &filebeat::oracle_weblogic_admin_server::default::Default
+        }
+        ("oracle_weblogic", "deployed_application") => {
+            &filebeat::oracle_weblogic_deployed_application::default::Default
+        }
+        ("oracle_weblogic", "domain") => &filebeat::oracle_weblogic_domain::default::Default,
+        ("oracle_weblogic", "managed_server") => {
+            &filebeat::oracle_weblogic_managed_server::default::Default
+        }
+        ("oracle_weblogic", "threadpool") => {
+            &filebeat::oracle_weblogic_threadpool::default::Default
+        }
+        ("proofpoint_365totalprotection", "email") => {
+            &filebeat::proofpoint_365totalprotection_email::default::Default
+        }
+        ("proofpoint_essentials", "threat") => {
+            &filebeat::proofpoint_essentials_threat::default::Default
+        }
+        ("swimlane", "audit_logs") => &filebeat::swimlane_audit_logs::default::Default,
+        ("swimlane", "swimlane_api") => &filebeat::swimlane_swimlane_api::default::Default,
+        ("swimlane", "tenant_api") => &filebeat::swimlane_tenant_api::default::Default,
+        ("swimlane", "turbine_api") => &filebeat::swimlane_turbine_api::default::Default,
+        ("sysmon_linux", "log") => &filebeat::sysmon_linux_log::default::Default,
+        ("tenable_ot_security", "assets") => {
+            &filebeat::tenable_ot_security_assets::default::Default
+        }
+        ("tenable_ot_security", "events") => {
+            &filebeat::tenable_ot_security_events::default::Default
+        }
+        ("tenable_ot_security", "system_log") => {
+            &filebeat::tenable_ot_security_system_log::default::Default
+        }
+        ("tencent_cloud", "audit") => &filebeat::tencent_cloud_audit::default::Default,
+        ("tencent_cloud", "clb") => &filebeat::tencent_cloud_clb::default::Default,
+        ("tencent_cloud", "cos") => &filebeat::tencent_cloud_cos::default::Default,
+        ("tencent_cloud", "scf") => &filebeat::tencent_cloud_scf::default::Default,
+        ("ti_anyrun", "ioc") => &filebeat::ti_anyrun_ioc::default::Default,
+        ("ti_crowdstrike", "intel") => &filebeat::ti_crowdstrike_intel::default::Default,
+        ("ti_crowdstrike", "ioc") => &filebeat::ti_crowdstrike_ioc::default::Default,
+        ("ti_custom", "indicator") => &filebeat::ti_custom_indicator::default::Default,
+        ("ti_cyware_intel_exchange", "indicator") => {
+            &filebeat::ti_cyware_intel_exchange_indicator::default::Default
+        }
+        ("ti_mandiant_advantage", "threat_intelligence") => {
+            &filebeat::ti_mandiant_advantage_threat_intelligence::default::Default
+        }
+        ("ti_otx", "pulses_subscribed") => &filebeat::ti_otx_pulses_subscribed::default::Default,
+        ("ti_otx", "threat") => &filebeat::ti_otx_threat::default::Default,
+        ("traefik", "access") => &filebeat::traefik_access::default::Default,
+        ("trellix_edr_cloud", "event") => &filebeat::trellix_edr_cloud_event::default::Default,
+        ("websphere_application_server", "jdbc") => {
+            &filebeat::websphere_application_server_jdbc::default::Default
+        }
+        ("websphere_application_server", "servlet") => {
+            &filebeat::websphere_application_server_servlet::default::Default
+        }
+        ("websphere_application_server", "session_manager") => {
+            &filebeat::websphere_application_server_session_manager::default::Default
+        }
+        ("websphere_application_server", "threadpool") => {
+            &filebeat::websphere_application_server_threadpool::default::Default
+        }
+        ("workday", "activity") => &filebeat::workday_activity::default::Default,
+        ("workday", "sign_on") => &filebeat::workday_sign_on::default::Default,
+        ("cyberarkpas", "audit") => &filebeat::cyberarkpas_audit::default::Default,
+        ("opencanary", "events") => &filebeat::opencanary_events::default::Default,
+        ("oracle_weblogic", "access") => &filebeat::oracle_weblogic_access::default::Default,
+        ("stormshield", "log") => &filebeat::stormshield_log::default::Default,
+        ("symantec_endpoint", "log") => &filebeat::symantec_endpoint_log::default::Default,
         _ => return None,
     })
 }

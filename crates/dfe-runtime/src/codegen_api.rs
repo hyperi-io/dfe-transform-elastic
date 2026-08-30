@@ -1326,6 +1326,10 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // so `/providers/Microsoft.aadiam` yielded "M".
         "GROUPID" | "PROVIDERNAME" | "PROVIDER" | "NAMESPACE" | "RULE" | "NAME" => r"[^/]+",
         "MONTHDAY" | "MONTHNUM" => r"\d{1,2}",
+        // Elastic's own: the ZERO-PADDED month, two digits always. Grouped,
+        // because an inlined alternation would reach past whatever sits either
+        // side of it in the pattern.
+        "MONTHNUM2" => r"(?:0[1-9]|1[0-2])",
         "YEAR" => r"\d{4}",
         // Elastic's own, and each part earns its shape. HOUR takes one digit
         // or two, because an offset is written `-5:00` as often as `-05:00`.
@@ -1410,6 +1414,88 @@ pub fn is_internal_ip(ip: &str) -> bool {
         Ok(IpAddr::V6(v6)) => v6.is_loopback(),
         Err(_) => false,
     }
+}
+
+/// Whether an address falls in any of the ranges `network_direction` names.
+///
+/// Elastic takes either a CIDR or one of its own range NAMES, and a pipeline
+/// that lists several means the union of them. `unicast` and `global_unicast`
+/// are almost everything, so a list carrying one calls nearly every address
+/// internal -- which is what opencanary and stormshield mean by it.
+#[must_use]
+pub fn ip_in_networks(ip: &str, networks: &[&str]) -> bool {
+    use std::net::IpAddr;
+
+    let Ok(address) = ip.parse::<IpAddr>() else {
+        return false;
+    };
+    networks.iter().any(|network| match *network {
+        "loopback" => address.is_loopback(),
+        "unspecified" => address.is_unspecified(),
+        "multicast" => address.is_multicast(),
+        "private" => match address {
+            IpAddr::V4(v4) => v4.is_private(),
+            // The v6 unique-local block, which `Ipv6Addr::is_unique_local` is
+            // still unstable for.
+            IpAddr::V6(v6) => (v6.segments()[0] & 0xfe00) == 0xfc00,
+        },
+        "link_local_unicast" => match address {
+            IpAddr::V4(v4) => v4.is_link_local(),
+            IpAddr::V6(v6) => (v6.segments()[0] & 0xffc0) == 0xfe80,
+        },
+        "link_local_multicast" => match address {
+            IpAddr::V4(v4) => v4.is_multicast() && v4.octets()[..3] == [224, 0, 0],
+            IpAddr::V6(v6) => v6.is_multicast() && (v6.segments()[0] & 0x000f) == 2,
+        },
+        "interface_local_multicast" => match address {
+            IpAddr::V4(_) => false,
+            IpAddr::V6(v6) => v6.is_multicast() && (v6.segments()[0] & 0x000f) == 1,
+        },
+        // `unicast` is anything that is not multicast; `global_unicast` also
+        // excludes the addresses that never leave the host or the link.
+        "unicast" => !address.is_multicast(),
+        "global_unicast" => {
+            !address.is_multicast() && !address.is_loopback() && !address.is_unspecified()
+        }
+        "public" => !ip_in_networks(ip, &["private", "loopback", "link_local_unicast"]),
+        cidr => cidr_contains(cidr, address),
+    })
+}
+
+/// Whether `address` falls in a `<network>/<bits>` block.
+fn cidr_contains(cidr: &str, address: std::net::IpAddr) -> bool {
+    use std::net::IpAddr;
+
+    let Some((network, bits)) = cidr.split_once('/') else {
+        return network_equals(cidr, address);
+    };
+    let Ok(bits) = bits.parse::<u32>() else {
+        return false;
+    };
+    match (network.parse::<IpAddr>(), address) {
+        (Ok(IpAddr::V4(network)), IpAddr::V4(address)) if bits <= 32 => {
+            let mask = if bits == 0 {
+                0
+            } else {
+                u32::MAX << (32 - bits)
+            };
+            u32::from(network) & mask == u32::from(address) & mask
+        }
+        (Ok(IpAddr::V6(network)), IpAddr::V6(address)) if bits <= 128 => {
+            let mask = if bits == 0 {
+                0
+            } else {
+                u128::MAX << (128 - bits)
+            };
+            u128::from(network) & mask == u128::from(address) & mask
+        }
+        _ => false,
+    }
+}
+
+/// A bare address in the list, which Elastic reads as a single-host range.
+fn network_equals(network: &str, address: std::net::IpAddr) -> bool {
+    network.parse::<std::net::IpAddr>() == Ok(address)
 }
 
 /// Resolve a field PATH that carries mustache references, against the event.

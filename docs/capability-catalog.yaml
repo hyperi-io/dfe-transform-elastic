@@ -88,6 +88,10 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.akamai_siem.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
     name: filebeat.amazon_security_lake_event.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
@@ -132,12 +136,32 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.atlassian_jira_audit.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.auditd_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
     name: filebeat.auditd_manager_auditd.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
     name: filebeat.auth0_logs.default
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.authentik_event.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.authentik_group.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.authentik_user.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
     name: filebeat.aws_apigateway_logs.default
@@ -148,7 +172,27 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.aws_bedrock_agentcore_gateway_application_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.aws_bedrock_agentcore_memory_application_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.aws_bedrock_agentcore_metrics.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.aws_bedrock_agentcore_runtime_application_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
     name: filebeat.aws_billing.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.aws_billing_cur.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
@@ -324,6 +368,18 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.azure_ai_foundry_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.azure_ai_foundry_metrics.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.azure_app_service_app_service_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
     name: filebeat.azure_application_gateway.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
@@ -400,6 +456,14 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.azure_openai_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.azure_openai_metrics.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
     name: filebeat.azure_platformlogs.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
@@ -422,6 +486,10 @@
   - kind: service
     name: filebeat.barracuda_cloudgen_firewall_log.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.barracuda_waf.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
     maturity: beta
   - kind: service
     name: filebeat.bbot_asm_intel.default
@@ -448,6 +516,14 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.box_events_events.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.canva_audit.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
     name: filebeat.carbon_black_cloud_alert_v7.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
@@ -468,6 +544,10 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.carbonblack_edr_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
     name: filebeat.cassandra_log.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
@@ -478,6 +558,34 @@
   - kind: service
     name: filebeat.cef_log.default
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ceph_cluster_disk.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ceph_cluster_health.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ceph_cluster_status.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ceph_osd_performance.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ceph_osd_pool_stats.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ceph_osd_tree.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ceph_pool_disk.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
     name: filebeat.checkpoint.default
@@ -560,12 +668,20 @@
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
     maturity: beta
   - kind: service
+    name: filebeat.cisco_secure_endpoint_event.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
     name: filebeat.cisco_umbrella.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
     name: filebeat.citrix_waf_log.default
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.claude_code_events.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
     name: filebeat.claude_cowork_events.default
@@ -578,6 +694,14 @@
   - kind: service
     name: filebeat.cloud_security_posture_vulnerabilities.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.cloudflare_audit.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.cloudflare_logpull.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
     name: filebeat.contrast_security_attack_event.default
@@ -636,6 +760,14 @@
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
     maturity: beta
   - kind: service
+    name: filebeat.cyberarkpas_audit.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.cyberarkpas_monitor.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
     name: filebeat.cylance_protect.default
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
     maturity: beta
@@ -666,6 +798,42 @@
   - kind: service
     name: filebeat.elastic_security_alert.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.elasticsearch_audit.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.elasticsearch_deprecation.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.elasticsearch_gc.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.elasticsearch_ingest_pipeline.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.elasticsearch_querylog.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.elasticsearch_server.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.elasticsearch_slowlog.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.endace_flow.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.endace_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
     name: filebeat.entityanalytics_ad_entity.default
@@ -700,6 +868,14 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.envoyproxy_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.envoyproxy_stats.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
     name: filebeat.ess_billing_billing.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
@@ -708,8 +884,24 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.extrahop_detection.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.extrahop_investigation.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.falco_alerts.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
     name: filebeat.fim_event.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.fireeye_nx.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
     maturity: beta
   - kind: service
     name: filebeat.first_epss_vulnerability.default
@@ -808,7 +1000,23 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.gcp_vertexai_auditlogs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.gcp_vertexai_metrics.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.gcp_vertexai_prompt_response_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
     name: filebeat.gcp_vpcflow.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.gdacs_events.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
@@ -968,12 +1176,28 @@
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
+    name: filebeat.ibm_qradar_offense.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ibmmq_errorlog.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ibmmq_qmgr.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
     name: filebeat.iis_access.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
     name: filebeat.iis_error.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.imperva_cloud_waf_event.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
     name: filebeat.imperva_securesphere.default
@@ -986,6 +1210,22 @@
   - kind: service
     name: filebeat.iptables_log.default
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ironscales_incident.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.istio_access_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.istio_istiod_metrics.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.istio_proxy_metrics.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
     name: filebeat.jamf_pro_events.default
@@ -1080,6 +1320,34 @@
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
+    name: filebeat.lastpass_detailed_shared_folder.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.lastpass_event_report.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.lastpass_user.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.logstash_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.logstash_pipeline.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.logstash_plugins.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.logstash_slowlog.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
     name: filebeat.lumos_activity_logs.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
@@ -1136,6 +1404,14 @@
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
+    name: filebeat.menlo_dlp.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.menlo_web.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
     name: filebeat.microsoft_defender_endpoint_log.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
@@ -1181,6 +1457,34 @@
     maturity: beta
   - kind: service
     name: filebeat.microsoft_exchange_server_smtp.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.microsoft_intune_audit.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.microsoft_intune_managed_device.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.microsoft_sqlserver_audit.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.microsoft_sqlserver_availability_groups.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.microsoft_sqlserver_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.microsoft_sqlserver_performance.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.microsoft_sqlserver_transaction_log.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
@@ -1252,8 +1556,28 @@
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
+    name: filebeat.mysql_error.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.mysql_performance.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.mysql_replica_status.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
     name: filebeat.nats_log.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.neon_cyber_detections.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.neon_cyber_events.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
     name: filebeat.netbox_devices.default
@@ -1284,12 +1608,72 @@
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
+    name: filebeat.nginx_ingress_controller_access.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.nginx_ingress_controller_error.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
     name: filebeat.o365.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
     name: filebeat.okta.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.opencanary_events.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.oracle_database_audit.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.oracle_memory.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.oracle_performance.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.oracle_sysmetric.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.oracle_system_statistics.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.oracle_tablespace.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.oracle_weblogic_access.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.oracle_weblogic_admin_server.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.oracle_weblogic_deployed_application.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.oracle_weblogic_domain.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.oracle_weblogic_managed_server.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.oracle_weblogic_threadpool.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
     name: filebeat.osquery_result.default
@@ -1402,6 +1786,14 @@
   - kind: service
     name: filebeat.prisma_access_event.default
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.proofpoint_365totalprotection_email.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.proofpoint_essentials_threat.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
     name: filebeat.proofpoint_itm_report.default
@@ -1560,8 +1952,32 @@
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
+    name: filebeat.stormshield_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
     name: filebeat.suricata_eve.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.swimlane_audit_logs.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.swimlane_swimlane_api.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.swimlane_tenant_api.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.swimlane_turbine_api.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.symantec_endpoint_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
     maturity: beta
   - kind: service
     name: filebeat.symantec_endpoint_security_event.default
@@ -1576,8 +1992,24 @@
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
     maturity: beta
   - kind: service
+    name: filebeat.sysmon_linux_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
     name: filebeat.system_audit_package.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.tenable_ot_security_assets.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.tenable_ot_security_events.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.tenable_ot_security_system_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
     name: filebeat.tenable_sc_asset.default
@@ -1592,6 +2024,22 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.tencent_cloud_audit.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.tencent_cloud_clb.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.tencent_cloud_cos.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.tencent_cloud_scf.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
     name: filebeat.tetragon_log.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
@@ -1600,11 +2048,31 @@
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
     maturity: beta
   - kind: service
+    name: filebeat.ti_anyrun_ioc.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
     name: filebeat.ti_cif3_feed.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.ti_crowdstrike_intel.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ti_crowdstrike_ioc.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ti_custom_indicator.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
     name: filebeat.ti_cybersixgill_threat.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ti_cyware_intel_exchange_indicator.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
@@ -1644,6 +2112,18 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.ti_mandiant_advantage_threat_intelligence.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ti_otx_pulses_subscribed.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ti_otx_threat.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
     name: filebeat.ti_socradar_feeds_feed.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
@@ -1668,6 +2148,14 @@
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
     maturity: beta
   - kind: service
+    name: filebeat.traefik_access.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.trellix_edr_cloud_event.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
     name: filebeat.trendmicro_deep_security.default
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
     maturity: beta
@@ -1678,6 +2166,22 @@
   - kind: service
     name: filebeat.watchguard_firebox_log.default
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.websphere_application_server_jdbc.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.websphere_application_server_servlet.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.websphere_application_server_session_manager.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.websphere_application_server_threadpool.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
     name: filebeat.windows_applocker_exe_and_dll.default
@@ -1721,6 +2225,14 @@
     maturity: beta
   - kind: service
     name: filebeat.withsecure_elements_security_events.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.workday_activity.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.workday_sign_on.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service

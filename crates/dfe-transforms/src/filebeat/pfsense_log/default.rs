@@ -129,19 +129,21 @@ impl Transform for Default {
                 if _cond {
                     event.remove("ack_number");
                 }
-                // Classify network direction based on internal network ranges
+                // Classify network direction against the internal network ranges
                 if let (Some(src), Some(dst)) = (
                     event.get_string("source.ip"),
                     event.get_string("destination.ip"),
                 ) {
-                    if let Some(networks) = event.get_array("_tmp.internal_networks") {
-                        let networks: Vec<String> = networks
+                    if let Some(listed) = event.get_array("_tmp.internal_networks") {
+                        let listed: Vec<String> = listed
                             .iter()
-                            .filter_map(|v| v.as_str().map(|s| s.to_string()))
+                            .filter_map(|v| v.as_str().map(str::to_string))
                             .collect();
-                        let src_internal = is_internal_ip(&src);
-                        let dst_internal = is_internal_ip(&dst);
-                        let direction = match (src_internal, dst_internal) {
+                        let networks: Vec<&str> = listed.iter().map(String::as_str).collect();
+                        let direction = match (
+                            ip_in_networks(&src, &networks),
+                            ip_in_networks(&dst, &networks),
+                        ) {
                             (true, false) => "outbound",
                             (false, true) => "inbound",
                             (true, true) => "internal",
