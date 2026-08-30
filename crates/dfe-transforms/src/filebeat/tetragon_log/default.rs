@@ -49,11 +49,14 @@ impl Transform for Default {
 
             if event.has_value("process.args") {
                 if let Some(s) = event.get_string("process.args") {
-                    let parts: Vec<Value> = cached_regex!("\\s+")
+                    let mut parts: Vec<Value> = cached_regex!("\\s+")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("process.args", Value::Array(parts))?;
                 }
             }
@@ -124,11 +127,14 @@ impl Transform for Default {
 
             if event.has_value("process.parent.args") {
                 if let Some(s) = event.get_string("process.parent.args") {
-                    let parts: Vec<Value> = cached_regex!("\\s+")
+                    let mut parts: Vec<Value> = cached_regex!("\\s+")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("process.parent.args", Value::Array(parts))?;
                 }
             }

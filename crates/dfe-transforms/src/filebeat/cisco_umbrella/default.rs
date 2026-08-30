@@ -1298,11 +1298,14 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("cisco.umbrella.audit.before") {
                     if let Some(s) = event.get_string("cisco.umbrella.audit.before") {
-                        let parts: Vec<Value> = cached_regex!("\\n")
+                        let mut parts: Vec<Value> = cached_regex!("\\n")
                             .split(&s)
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                         event.set("cisco.umbrella.audit.before", Value::Array(parts))?;
                     }
                 }
@@ -1380,11 +1383,14 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("cisco.umbrella.audit.after") {
                     if let Some(s) = event.get_string("cisco.umbrella.audit.after") {
-                        let parts: Vec<Value> = cached_regex!("\\n")
+                        let mut parts: Vec<Value> = cached_regex!("\\n")
                             .split(&s)
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                         event.set("cisco.umbrella.audit.after", Value::Array(parts))?;
                     }
                 }
@@ -1436,11 +1442,14 @@ impl Transform for Default {
             let _cond = { event.has_value("cisco.umbrella._tmp.identities_tail") };
             if _cond {
                 if let Some(s) = event.get_string("cisco.umbrella._tmp.identities_tail") {
-                    let parts: Vec<Value> = cached_regex!(",\\s*")
+                    let mut parts: Vec<Value> = cached_regex!(",\\s*")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("cisco.umbrella._tmp.identities_tail", Value::Array(parts))?;
                 }
             }
@@ -1471,11 +1480,14 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(s) = event.get_string("cisco.umbrella.identities") {
-                    let parts: Vec<Value> = cached_regex!(",\\s*")
+                    let mut parts: Vec<Value> = cached_regex!(",\\s*")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("cisco.umbrella.identities", Value::Array(parts))?;
                 }
             }
@@ -1493,11 +1505,14 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(s) = event.get_string("cisco.umbrella.categories") {
-                    let parts: Vec<Value> = cached_regex!(",\\s*")
+                    let mut parts: Vec<Value> = cached_regex!(",\\s*")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("cisco.umbrella.categories", Value::Array(parts))?;
                 }
             }
@@ -1515,11 +1530,14 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(s) = event.get_string("cisco.umbrella.blocked_categories") {
-                    let parts: Vec<Value> = cached_regex!(",\\s*")
+                    let mut parts: Vec<Value> = cached_regex!(",\\s*")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("cisco.umbrella.blocked_categories", Value::Array(parts))?;
                 }
             }
@@ -1527,11 +1545,14 @@ impl Transform for Default {
             let _cond = { event.has_value("cisco.umbrella.identity_types") };
             if _cond {
                 if let Some(s) = event.get_string("cisco.umbrella.identity_types") {
-                    let parts: Vec<Value> = cached_regex!(",\\s*")
+                    let mut parts: Vec<Value> = cached_regex!(",\\s*")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("cisco.umbrella.identity_types", Value::Array(parts))?;
                 }
             }
@@ -1539,11 +1560,14 @@ impl Transform for Default {
             let _cond = { event.has_value("cisco.umbrella.fqdns") };
             if _cond {
                 if let Some(s) = event.get_string("cisco.umbrella.fqdns") {
-                    let parts: Vec<Value> = cached_regex!(",\\s*")
+                    let mut parts: Vec<Value> = cached_regex!(",\\s*")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("cisco.umbrella.fqdns", Value::Array(parts))?;
                 }
             }

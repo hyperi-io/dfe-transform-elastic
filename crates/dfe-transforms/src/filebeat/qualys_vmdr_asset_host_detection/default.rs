@@ -3253,11 +3253,14 @@ impl Transform for Default {
                     if let Some(s) =
                         event.get_string("qualys_vmdr.asset_host_detection.vulnerability.CVE")
                     {
-                        let parts: Vec<Value> = cached_regex!(",\\s?")
+                        let mut parts: Vec<Value> = cached_regex!(",\\s?")
                             .split(&s)
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                         event.set(
                             "qualys_vmdr.asset_host_detection.vulnerability.cve",
                             Value::Array(parts),
@@ -3285,11 +3288,14 @@ impl Transform for Default {
                     if let Some(s) = event.get_string(
                         "qualys_vmdr.asset_host_detection.vulnerability.MITRE_TACTIC_NAME",
                     ) {
-                        let parts: Vec<Value> = cached_regex!(",\\s?")
+                        let mut parts: Vec<Value> = cached_regex!(",\\s?")
                             .split(&s)
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                         event.set(
                             "qualys_vmdr.asset_host_detection.vulnerability.mitre_tactic_name",
                             Value::Array(parts),
@@ -3310,11 +3316,14 @@ impl Transform for Default {
                     if let Some(s) = event.get_string(
                         "qualys_vmdr.asset_host_detection.vulnerability.MITRE_TECHNIQUE_NAME",
                     ) {
-                        let parts: Vec<Value> = cached_regex!(",\\s?")
+                        let mut parts: Vec<Value> = cached_regex!(",\\s?")
                             .split(&s)
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                         event.set(
                             "qualys_vmdr.asset_host_detection.vulnerability.mitre_technique_name",
                             Value::Array(parts),
@@ -3332,11 +3341,14 @@ impl Transform for Default {
                     if let Some(s) = event.get_string(
                         "qualys_vmdr.asset_host_detection.vulnerability.MITRE_TACTIC_ID",
                     ) {
-                        let parts: Vec<Value> = cached_regex!(",\\s?")
+                        let mut parts: Vec<Value> = cached_regex!(",\\s?")
                             .split(&s)
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                         event.set(
                             "qualys_vmdr.asset_host_detection.vulnerability.mitre_tactic_id",
                             Value::Array(parts),
@@ -3355,11 +3367,14 @@ impl Transform for Default {
                     if let Some(s) = event.get_string(
                         "qualys_vmdr.asset_host_detection.vulnerability.MITRE_TECHNIQUE_ID",
                     ) {
-                        let parts: Vec<Value> = cached_regex!(",\\s?")
+                        let mut parts: Vec<Value> = cached_regex!(",\\s?")
                             .split(&s)
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                         event.set(
                             "qualys_vmdr.asset_host_detection.vulnerability.mitre_technique_id",
                             Value::Array(parts),
@@ -3390,11 +3405,14 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("qualys_vmdr.asset_host_detection.vulnerability.VULNERABILITY_DETECTION_SOURCES") {
                 if let Some(s) = event.get_string("qualys_vmdr.asset_host_detection.vulnerability.VULNERABILITY_DETECTION_SOURCES") {
-                    let parts: Vec<Value> = cached_regex!(",\\s?")
+                    let mut parts: Vec<Value> = cached_regex!(",\\s?")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("qualys_vmdr.asset_host_detection.vulnerability.vulnerability_detection_sources", Value::Array(parts))?;
                 }
             }

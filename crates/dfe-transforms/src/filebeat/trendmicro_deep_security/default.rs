@@ -534,11 +534,14 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("event.action") {
                         if let Some(s) = event.get_string("event.action") {
-                            let parts: Vec<Value> = cached_regex!("\\s+")
+                            let mut parts: Vec<Value> = cached_regex!("\\s+")
                                 .split(&s)
                                 .into_iter()
                                 .map(|p| json!(p))
                                 .collect();
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                             event.set("event.action", Value::Array(parts))?;
                         }
                     }

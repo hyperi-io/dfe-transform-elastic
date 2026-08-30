@@ -213,7 +213,10 @@ impl Transform for Default {
 
             if event.has_value("json.dependencies") {
                 if let Some(s) = event.get_string("json.dependencies") {
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("tenable_sc.plugin.dependencies", Value::Array(parts))?;
                 }
             }
@@ -231,11 +234,14 @@ impl Transform for Default {
 
             if event.has_value("json.cpe") {
                 if let Some(s) = event.get_string("json.cpe") {
-                    let parts: Vec<Value> = cached_regex!("\\n")
+                    let mut parts: Vec<Value> = cached_regex!("\\n")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("tenable_sc.plugin.cpe", Value::Array(parts))?;
                 }
             }
@@ -279,11 +285,14 @@ impl Transform for Default {
 
             if event.has_value("json.seeAlso") {
                 if let Some(s) = event.get_string("json.seeAlso") {
-                    let parts: Vec<Value> = cached_regex!("\\n")
+                    let mut parts: Vec<Value> = cached_regex!("\\n")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("tenable_sc.plugin.see_also", Value::Array(parts))?;
                 }
             }
@@ -868,7 +877,10 @@ impl Transform for Default {
 
             if event.has_value("json.xrefs") {
                 if let Some(s) = event.get_string("json.xrefs") {
-                    let parts: Vec<Value> = s.split(", ").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(", ").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("tenable_sc.plugin.xrefs", Value::Array(parts))?;
                 }
             }

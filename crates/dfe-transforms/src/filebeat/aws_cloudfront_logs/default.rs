@@ -479,7 +479,10 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(s) = event.get_string("_tmp.x_forwarded_for") {
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("_tmp.split_x_forwarded_for", Value::Array(parts))?;
                 }
             }

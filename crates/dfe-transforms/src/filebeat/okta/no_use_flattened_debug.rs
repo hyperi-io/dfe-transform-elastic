@@ -293,11 +293,14 @@ impl Transform for NoUseFlattenedDebug {
                 if let Some(s) = event
                     .get_string("okta.debug_context.debug_data.logOnlySecurityData.risk.reasons")
                 {
-                    let parts: Vec<Value> = cached_regex!(",\\s*")
+                    let mut parts: Vec<Value> = cached_regex!(",\\s*")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set(
                         "okta.debug_context.debug_data.risk_reasons",
                         Value::Array(parts),
@@ -344,11 +347,14 @@ impl Transform for NoUseFlattenedDebug {
             };
             if _cond {
                 if let Some(s) = event.get_string("okta.debug_context.debug_data.risk.reasons") {
-                    let parts: Vec<Value> = cached_regex!(",\\s*")
+                    let mut parts: Vec<Value> = cached_regex!(",\\s*")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set(
                         "okta.debug_context.debug_data.risk_reasons",
                         Value::Array(parts),

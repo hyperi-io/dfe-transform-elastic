@@ -311,7 +311,10 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(s) = event.get_string("santa.args") {
-                    let parts: Vec<Value> = s.split(" ").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(" ").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("santa.args", Value::Array(parts))?;
                 }
                 Ok(())

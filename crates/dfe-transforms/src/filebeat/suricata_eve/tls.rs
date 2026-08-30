@@ -230,7 +230,10 @@ impl Transform for Tls {
 
             if event.has_value("tls.server.hash.sha1") {
                 if let Some(s) = event.get_string("tls.server.hash.sha1") {
-                    let parts: Vec<Value> = s.split(":").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(":").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("tls.server.hash.sha1", Value::Array(parts))?;
                 }
             }

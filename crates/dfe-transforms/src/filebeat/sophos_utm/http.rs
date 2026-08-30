@@ -215,21 +215,30 @@ impl Transform for Http {
 
             if event.has_value("sophos.utm.category") {
                 if let Some(s) = event.get_string("sophos.utm.category") {
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("sophos.utm.category", Value::Array(parts))?;
                 }
             }
 
             if event.has_value("sophos.utm.categoryname") {
                 if let Some(s) = event.get_string("sophos.utm.categoryname") {
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("sophos.utm.categoryname", Value::Array(parts))?;
                 }
             }
 
             if event.has_value("sophos.utm.exceptions") {
                 if let Some(s) = event.get_string("sophos.utm.exceptions") {
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("sophos.utm.exceptions", Value::Array(parts))?;
                 }
             }

@@ -171,11 +171,14 @@ impl Transform for Packetfilter {
 
             if event.has_value("sophos.utm.tcpflags") {
                 if let Some(s) = event.get_string("sophos.utm.tcpflags") {
-                    let parts: Vec<Value> = cached_regex!("\\s+")
+                    let mut parts: Vec<Value> = cached_regex!("\\s+")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("sophos.utm.tcpflags", Value::Array(parts))?;
                 }
             }

@@ -7774,11 +7774,14 @@ impl Transform for Default {
 
             if event.has_value("_temp_.cisco.dap_records") {
                 if let Some(s) = event.get_string("_temp_.cisco.dap_records") {
-                    let parts: Vec<Value> = cached_regex!(",\\s+")
+                    let mut parts: Vec<Value> = cached_regex!(",\\s+")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("_temp_.cisco.dap_records", Value::Array(parts))?;
                 }
             }

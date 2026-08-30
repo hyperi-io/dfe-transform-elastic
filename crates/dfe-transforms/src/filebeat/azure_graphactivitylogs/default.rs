@@ -565,7 +565,10 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(s) = event.get_string("azure.graphactivitylogs.properties.roles") {
-                        let parts: Vec<Value> = s.split(" ").map(|p| json!(p)).collect();
+                        let mut parts: Vec<Value> = s.split(" ").map(|p| json!(p)).collect();
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                         event.set(
                             "azure.graphactivitylogs.properties.roles",
                             Value::Array(parts),
@@ -610,7 +613,10 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(s) = event.get_string("azure.graphactivitylogs.properties.scopes") {
-                        let parts: Vec<Value> = s.split(" ").map(|p| json!(p)).collect();
+                        let mut parts: Vec<Value> = s.split(" ").map(|p| json!(p)).collect();
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                         event.set(
                             "azure.graphactivitylogs.properties.scopes",
                             Value::Array(parts),
@@ -655,7 +661,10 @@ impl Transform for Default {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(s) = event.get_string("azure.graphactivitylogs.properties.wids") {
-                        let parts: Vec<Value> = s.split(" ").map(|p| json!(p)).collect();
+                        let mut parts: Vec<Value> = s.split(" ").map(|p| json!(p)).collect();
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                         event.set(
                             "azure.graphactivitylogs.properties.wids",
                             Value::Array(parts),

@@ -296,7 +296,10 @@ impl Transform for Default {
                     if let Some(s) = event
                         .get_string("lyve_cloud.audit.auditEntry.requestHeader.X-Forwarded-For")
                     {
-                        let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                        let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                         event.set("related.ip", Value::Array(parts))?;
                     }
                 }

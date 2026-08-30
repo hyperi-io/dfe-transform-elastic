@@ -669,11 +669,14 @@ impl Transform for Default {
                         foreach_array(event, "json.process_publisher", |event| {
                             if event.has_value("_ingest._value.state") {
                                 if let Some(s) = event.get_string("_ingest._value.state") {
-                                    let parts: Vec<Value> = cached_regex!(" \\| ")
+                                    let mut parts: Vec<Value> = cached_regex!(" \\| ")
                                         .split(&s)
                                         .into_iter()
                                         .map(|p| json!(p))
                                         .collect();
+                                    while parts.last().and_then(Value::as_str) == Some("") {
+                                        parts.pop();
+                                    }
                                     event.set("_ingest._value.state", Value::Array(parts))?;
                                 }
                             }
@@ -956,11 +959,14 @@ impl Transform for Default {
                         foreach_array(event, "json.process_publisher", |event| {
                             if event.has_value("_ingest._value.state") {
                                 if let Some(s) = event.get_string("_ingest._value.state") {
-                                    let parts: Vec<Value> = cached_regex!(" \\| ")
+                                    let mut parts: Vec<Value> = cached_regex!(" \\| ")
                                         .split(&s)
                                         .into_iter()
                                         .map(|p| json!(p))
                                         .collect();
+                                    while parts.last().and_then(Value::as_str) == Some("") {
+                                        parts.pop();
+                                    }
                                     event.set("_ingest._value.state", Value::Array(parts))?;
                                 }
                             }
@@ -1138,11 +1144,14 @@ impl Transform for Default {
                         foreach_array(event, "json.childproc_publisher", |event| {
                             if event.has_value("_ingest._value.state") {
                                 if let Some(s) = event.get_string("_ingest._value.state") {
-                                    let parts: Vec<Value> = cached_regex!(" \\| ")
+                                    let mut parts: Vec<Value> = cached_regex!(" \\| ")
                                         .split(&s)
                                         .into_iter()
                                         .map(|p| json!(p))
                                         .collect();
+                                    while parts.last().and_then(Value::as_str) == Some("") {
+                                        parts.pop();
+                                    }
                                     event.set("_ingest._value.state", Value::Array(parts))?;
                                 }
                             }
@@ -1457,11 +1466,14 @@ impl Transform for Default {
                     foreach_array(event, "json.crossproc_publisher", |event| {
                         if event.has_value("_ingest._value.state") {
                             if let Some(s) = event.get_string("_ingest._value.state") {
-                                let parts: Vec<Value> = cached_regex!(" \\| ")
+                                let mut parts: Vec<Value> = cached_regex!(" \\| ")
                                     .split(&s)
                                     .into_iter()
                                     .map(|p| json!(p))
                                     .collect();
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                                 event.set("_ingest._value.state", Value::Array(parts))?;
                             }
                         }
@@ -1722,11 +1734,14 @@ impl Transform for Default {
                     foreach_array(event, "json.modload_publisher", |event| {
                         if event.has_value("_ingest._value.state") {
                             if let Some(s) = event.get_string("_ingest._value.state") {
-                                let parts: Vec<Value> = cached_regex!(" \\| ")
+                                let mut parts: Vec<Value> = cached_regex!(" \\| ")
                                     .split(&s)
                                     .into_iter()
                                     .map(|p| json!(p))
                                     .collect();
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                                 event.set("_ingest._value.state", Value::Array(parts))?;
                             }
                         }
@@ -1834,11 +1849,14 @@ impl Transform for Default {
                     foreach_array(event, "json.scriptload_publisher", |event| {
                         if event.has_value("_ingest._value.state") {
                             if let Some(s) = event.get_string("_ingest._value.state") {
-                                let parts: Vec<Value> = cached_regex!(" \\| ")
+                                let mut parts: Vec<Value> = cached_regex!(" \\| ")
                                     .split(&s)
                                     .into_iter()
                                     .map(|p| json!(p))
                                     .collect();
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                                 event.set("_ingest._value.state", Value::Array(parts))?;
                             }
                         }

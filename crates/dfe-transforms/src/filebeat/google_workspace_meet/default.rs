@@ -3377,11 +3377,14 @@ impl Transform for Default {
                         if let Some(s) =
                             event.get_string("google_workspace.meet.target_display_names")
                         {
-                            let parts: Vec<Value> = cached_regex!(",\\s*")
+                            let mut parts: Vec<Value> = cached_regex!(",\\s*")
                                 .split(&s)
                                 .into_iter()
                                 .map(|p| json!(p))
                                 .collect();
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                             event.set(
                                 "google_workspace.meet.target.display_names",
                                 Value::Array(parts),

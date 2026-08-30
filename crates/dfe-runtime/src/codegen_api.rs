@@ -1331,7 +1331,7 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // or two, because an offset is written `-5:00` as often as `-05:00`.
         // SECOND carries an optional fraction, without which checkpoint's
         // `16:39:12.000Z` leaves `.000Z` for the next literal to fail on.
-        "HOUR" => r"(?:2[0-3]|[01]?\d)",
+        "HOUR" | "ISO8601_HOUR" => r"(?:2[0-3]|[01]?\d)",
         "MINUTE" => r"[0-5]\d",
         "SECOND" => r"(?:[0-5]?\d|60)(?:[:.,]\d+)?",
         "ISO8601_TIMEZONE" => r"(?:Z|[+-](?:2[0-3]|[01]?\d)(?::?[0-5]\d))",
@@ -1351,6 +1351,15 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         "PROG" => r"[\x21-\x5a\x5c\x5e-\x7e]+",
         // RFC 5424 structured data, one or more bracketed elements.
         "SYSLOG5424SD" => r"(?:\[.*?\]+)",
+        "UUID" => r"[A-Fa-f0-9]{8}-(?:[A-Fa-f0-9]{4}-){3}[A-Fa-f0-9]{12}",
+        // Elastic's own, and each is GROUPED: an inlined alternation would
+        // otherwise reach past whatever sits either side of it in the pattern.
+        "BASE16FLOAT" => {
+            r"(?:\b(?<![0-9A-Fa-f.])(?:[+-]?(?:0x)?(?:(?:[0-9A-Fa-f]+(?:\.[0-9A-Fa-f]*)?)|(?:\.[0-9A-Fa-f]+)))\b)"
+        }
+        "JAVACLASS" => r"(?:(?:[a-zA-Z$_][a-zA-Z$_0-9]*\.)*[a-zA-Z$_][a-zA-Z$_0-9]*)",
+        // The facility half of a syslog priority: a name or a number.
+        "SYSLOGFACILITY" => r"(?:<\d+\.\d+>)",
         // Elastic's own, grouped: an inlined alternation would otherwise reach
         // past whatever sits either side of it in the pattern.
         "MONGO3_SEVERITY" => r"\w",

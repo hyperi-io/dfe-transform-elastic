@@ -154,7 +154,10 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("pfsense.tcp.options") {
                         if let Some(s) = event.get_string("pfsense.tcp.options") {
-                            let parts: Vec<Value> = s.split(";").map(|p| json!(p)).collect();
+                            let mut parts: Vec<Value> = s.split(";").map(|p| json!(p)).collect();
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                             event.set("pfsense.tcp.options", Value::Array(parts))?;
                         }
                     }
@@ -722,11 +725,14 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("haproxy.http.request.captured_headers") {
                         if let Some(s) = event.get_string("haproxy.http.request.captured_headers") {
-                            let parts: Vec<Value> = cached_regex!("\\|")
+                            let mut parts: Vec<Value> = cached_regex!("\\|")
                                 .split(&s)
                                 .into_iter()
                                 .map(|p| json!(p))
                                 .collect();
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                             event.set(
                                 "haproxy.http.request.captured_headers",
                                 Value::Array(parts),
@@ -740,11 +746,14 @@ impl Transform for Default {
                     if event.has_value("haproxy.http.response.captured_headers") {
                         if let Some(s) = event.get_string("haproxy.http.response.captured_headers")
                         {
-                            let parts: Vec<Value> = cached_regex!("\\|")
+                            let mut parts: Vec<Value> = cached_regex!("\\|")
                                 .split(&s)
                                 .into_iter()
                                 .map(|p| json!(p))
                                 .collect();
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                             event.set(
                                 "haproxy.http.response.captured_headers",
                                 Value::Array(parts),

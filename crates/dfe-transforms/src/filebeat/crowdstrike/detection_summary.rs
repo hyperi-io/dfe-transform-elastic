@@ -122,7 +122,10 @@ impl Transform for DetectionSummary {
 
             if event.has_value("crowdstrike.event.HostGroups") {
                 if let Some(s) = event.get_string("crowdstrike.event.HostGroups") {
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("crowdstrike.event.HostGroups", Value::Array(parts))?;
                 }
             }

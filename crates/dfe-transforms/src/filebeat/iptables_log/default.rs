@@ -702,22 +702,28 @@ impl Transform for Default {
 
             if event.has_value("iptables.tcp.flags") {
                 if let Some(s) = event.get_string("iptables.tcp.flags") {
-                    let parts: Vec<Value> = cached_regex!("\\s+")
+                    let mut parts: Vec<Value> = cached_regex!("\\s+")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("iptables.tcp.flags", Value::Array(parts))?;
                 }
             }
 
             if event.has_value("iptables.fragment_flags") {
                 if let Some(s) = event.get_string("iptables.fragment_flags") {
-                    let parts: Vec<Value> = cached_regex!("\\s+")
+                    let mut parts: Vec<Value> = cached_regex!("\\s+")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("iptables.fragment_flags", Value::Array(parts))?;
                 }
             }

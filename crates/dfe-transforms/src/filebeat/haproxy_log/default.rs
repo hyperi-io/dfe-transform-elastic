@@ -353,11 +353,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(s) = event.get_string("haproxy.http.request.captured_headers") {
-                    let parts: Vec<Value> = cached_regex!("\\|")
+                    let mut parts: Vec<Value> = cached_regex!("\\|")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("haproxy.http.request.captured_headers", Value::Array(parts))?;
                 }
                 Ok(())
@@ -366,11 +369,14 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(s) = event.get_string("haproxy.http.response.captured_headers") {
-                    let parts: Vec<Value> = cached_regex!("\\|")
+                    let mut parts: Vec<Value> = cached_regex!("\\|")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set(
                         "haproxy.http.response.captured_headers",
                         Value::Array(parts),

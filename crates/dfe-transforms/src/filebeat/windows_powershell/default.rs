@@ -244,11 +244,14 @@ impl Transform for Default {
             let _cond = { event.has_value("winlog.event_data.UserId") };
             if _cond {
                 if let Some(s) = event.get_string("winlog.event_data.UserId") {
-                    let parts: Vec<Value> = cached_regex!("\\\\")
+                    let mut parts: Vec<Value> = cached_regex!("\\\\")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("_temp.user_parts", Value::Array(parts))?;
                 }
             }
@@ -551,7 +554,10 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("winlog.event_data.param3") {
                         if let Some(s) = event.get_string("winlog.event_data.param3") {
-                            let parts: Vec<Value> = s.split("\n").map(|p| json!(p)).collect();
+                            let mut parts: Vec<Value> = s.split("\n").map(|p| json!(p)).collect();
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                             event.set("winlog.event_data.param3", Value::Array(parts))?;
                         }
                     }

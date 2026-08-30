@@ -168,7 +168,10 @@ impl Transform for Default {
             let _cond = { event.has_value("user.email") };
             if _cond {
                 if let Some(s) = event.get_string("user.email") {
-                    let parts: Vec<Value> = s.split("@").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split("@").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("user.parts", Value::Array(parts))?;
                 }
             }

@@ -538,7 +538,10 @@ impl Transform for Default {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(s) = event.get_string("ping_federate.audit.role") {
-                        let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                        let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                         event.set("ping_federate.audit.role", Value::Array(parts))?;
                     }
                     Ok(())

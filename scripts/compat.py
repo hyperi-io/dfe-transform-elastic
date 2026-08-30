@@ -557,15 +557,21 @@ def load_pipelines(
     directory = (
         f"packages/{package}/data_stream/{data_stream}/elasticsearch/ingest_pipeline"
     )
-    names = list_at_ref(repo, directory, ref, ".yml")
+    names = [(Path(n).stem, n) for n in list_at_ref(repo, directory, ref, ".yml")]
+    # A `.yml.link` is Elastic's own indirection: the file names a path
+    # relative to this directory, and the pipeline lives under the package's
+    # `_dev/shared/`. macos's seven data streams are all served by one.
+    for link in list_at_ref(repo, directory, ref, ".yml.link"):
+        target = read_at_ref(repo, link, ref).decode("utf-8").split()[0]
+        resolved = os.path.normpath(f"{directory}/{target}").replace(os.sep, "/")
+        names.append((Path(link).name.removesuffix(".yml.link"), resolved))
     if not names:
         where = ref or "the working tree"
         raise CompatError(f"no ingest_pipeline directory at {directory} in {where}")
 
     definitions: dict[str, dict[str, Any]] = {}
     digests: dict[str, str] = {}
-    for name in names:
-        stem = Path(name).stem
+    for stem, name in sorted(names):
         raw = read_at_ref(repo, name, ref)
         digests[Path(name).name] = hashlib.sha256(raw).hexdigest()
         text = INGEST_PIPELINE_REF.sub(

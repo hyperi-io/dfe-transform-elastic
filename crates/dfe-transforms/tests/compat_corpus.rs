@@ -573,6 +573,133 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("zeronetworks", "audit") => &filebeat::zeronetworks_audit::default::Default,
         ("ess_billing", "billing") => &filebeat::ess_billing_billing::default::Default,
         ("lyve_cloud", "audit") => &filebeat::lyve_cloud_audit::default::Default,
+        ("1password", "audit_events") => &filebeat::_1password_audit_events::default::Default,
+        ("1password", "item_usages") => &filebeat::_1password_item_usages::default::Default,
+        ("1password", "signin_attempts") => &filebeat::_1password_signin_attempts::default::Default,
+        ("activemq", "audit") => &filebeat::activemq_audit::default::Default,
+        ("activemq", "broker") => &filebeat::activemq_broker::default::Default,
+        ("activemq", "log") => &filebeat::activemq_log::default::Default,
+        ("activemq", "queue") => &filebeat::activemq_queue::default::Default,
+        ("activemq", "topic") => &filebeat::activemq_topic::default::Default,
+        ("admin_by_request_epm", "auditlog") => {
+            &filebeat::admin_by_request_epm_auditlog::default::Default
+        }
+        ("admin_by_request_epm", "events") => {
+            &filebeat::admin_by_request_epm_events::default::Default
+        }
+        ("anthropic_metrics", "cost") => &filebeat::anthropic_metrics_cost::default::Default,
+        ("anthropic_metrics", "rate_limit") => {
+            &filebeat::anthropic_metrics_rate_limit::default::Default
+        }
+        ("anthropic_metrics", "usage") => &filebeat::anthropic_metrics_usage::default::Default,
+        ("apache", "access") => &filebeat::apache_access::default::Default,
+        ("apache", "error") => &filebeat::apache_error::default::Default,
+        ("atlassian_bitbucket", "audit") => &filebeat::atlassian_bitbucket_audit::default::Default,
+        ("atlassian_cloud", "audit") => &filebeat::atlassian_cloud_audit::default::Default,
+        ("atlassian_confluence", "audit") => {
+            &filebeat::atlassian_confluence_audit::default::Default
+        }
+        ("aws_mq", "activemq_audit_logs") => {
+            &filebeat::aws_mq_activemq_audit_logs::default::Default
+        }
+        ("aws_mq", "activemq_general_logs") => {
+            &filebeat::aws_mq_activemq_general_logs::default::Default
+        }
+        ("aws_mq", "activemq_metrics") => &filebeat::aws_mq_activemq_metrics::default::Default,
+        ("aws_mq", "rabbitmq_general_logs") => {
+            &filebeat::aws_mq_rabbitmq_general_logs::default::Default
+        }
+        ("aws_mq", "rabbitmq_metrics") => &filebeat::aws_mq_rabbitmq_metrics::default::Default,
+        ("backstage", "logs") => &filebeat::backstage_logs::default::Default,
+        ("cef", "log") => &filebeat::cef_log::default::Default,
+        ("checkpoint_email", "event") => &filebeat::checkpoint_email_event::default::Default,
+        ("cisco_aironet", "log") => &filebeat::cisco_aironet_log::default::Default,
+        ("claude_cowork", "events") => &filebeat::claude_cowork_events::default::Default,
+        ("contrast_security", "attack_event") => {
+            &filebeat::contrast_security_attack_event::default::Default
+        }
+        ("contrast_security", "incident") => {
+            &filebeat::contrast_security_incident::default::Default
+        }
+        ("contrast_security", "issue") => &filebeat::contrast_security_issue::default::Default,
+        ("digital_guardian", "arc") => &filebeat::digital_guardian_arc::default::Default,
+        ("forescout", "event") => &filebeat::forescout_event::default::Default,
+        ("forescout", "host") => &filebeat::forescout_host::default::Default,
+        ("hackerone", "report") => &filebeat::hackerone_report::default::Default,
+        ("hid_bravura_monitor", "log") => &filebeat::hid_bravura_monitor_log::default::Default,
+        ("iis", "access") => &filebeat::iis_access::default::Default,
+        ("iis", "error") => &filebeat::iis_error::default::Default,
+        ("imperva", "securesphere") => &filebeat::imperva_securesphere::default::Default,
+        ("jamf_pro", "events") => &filebeat::jamf_pro_events::default::Default,
+        ("jamf_pro", "inventory") => &filebeat::jamf_pro_inventory::default::Default,
+        ("keycloak", "log") => &filebeat::keycloak_log::default::Default,
+        ("mattermost", "audit") => &filebeat::mattermost_audit::default::Default,
+        ("microsoft_exchange_server", "httpproxy") => {
+            &filebeat::microsoft_exchange_server_httpproxy::default::Default
+        }
+        ("microsoft_exchange_server", "imap4_pop3") => {
+            &filebeat::microsoft_exchange_server_imap4_pop3::default::Default
+        }
+        ("microsoft_exchange_server", "smtp") => {
+            &filebeat::microsoft_exchange_server_smtp::default::Default
+        }
+        ("miniflux", "feed_entry") => &filebeat::miniflux_feed_entry::default::Default,
+        ("modsecurity", "auditlog") => &filebeat::modsecurity_auditlog::default::Default,
+        ("mysql_enterprise", "audit") => &filebeat::mysql_enterprise_audit::default::Default,
+        ("netbox", "devices") => &filebeat::netbox_devices::default::Default,
+        ("netbox", "ips") => &filebeat::netbox_ips::default::Default,
+        ("nginx", "access") => &filebeat::nginx_access::default::Default,
+        ("nginx", "error") => &filebeat::nginx_error::default::Default,
+        ("postgresql", "activity") => &filebeat::postgresql_activity::default::Default,
+        ("postgresql", "log") => &filebeat::postgresql_log::default::Default,
+        ("proofpoint_itm", "report") => &filebeat::proofpoint_itm_report::default::Default,
+        ("slack", "audit") => &filebeat::slack_audit::default::Default,
+        ("snort", "log") => &filebeat::snort_log::default::Default,
+        ("snyk", "audit_logs") => &filebeat::snyk_audit_logs::default::Default,
+        ("snyk", "issues") => &filebeat::snyk_issues::default::Default,
+        ("spring_boot", "audit_events") => &filebeat::spring_boot_audit_events::default::Default,
+        ("spring_boot", "gc") => &filebeat::spring_boot_gc::default::Default,
+        ("spring_boot", "http_trace") => &filebeat::spring_boot_http_trace::default::Default,
+        ("spring_boot", "memory") => &filebeat::spring_boot_memory::default::Default,
+        ("spring_boot", "threading") => &filebeat::spring_boot_threading::default::Default,
+        ("ti_cif3", "feed") => &filebeat::ti_cif3_feed::default::Default,
+        ("ti_cybersixgill", "threat") => &filebeat::ti_cybersixgill_threat::default::Default,
+        ("ti_domaintools", "domaindiscovery_feed") => {
+            &filebeat::ti_domaintools_domaindiscovery_feed::default::Default
+        }
+        ("ti_domaintools", "domainhotlist_feed") => {
+            &filebeat::ti_domaintools_domainhotlist_feed::default::Default
+        }
+        ("ti_domaintools", "domainrdap_feed") => {
+            &filebeat::ti_domaintools_domainrdap_feed::default::Default
+        }
+        ("ti_domaintools", "domainrisk_feed") => {
+            &filebeat::ti_domaintools_domainrisk_feed::default::Default
+        }
+        ("ti_domaintools", "nad_feed") => &filebeat::ti_domaintools_nad_feed::default::Default,
+        ("ti_domaintools", "nod_feed") => &filebeat::ti_domaintools_nod_feed::default::Default,
+        ("ti_eclecticiq", "threat") => &filebeat::ti_eclecticiq_threat::default::Default,
+        ("ti_greynoise", "ip") => &filebeat::ti_greynoise_ip::default::Default,
+        ("ti_ticura", "indicator") => &filebeat::ti_ticura_indicator::default::Default,
+        ("bbot", "asm_intel") => &filebeat::bbot_asm_intel::default::Default,
+        ("beelzebub", "logs") => &filebeat::beelzebub_logs::default::Default,
+        ("hid_bravura_monitor", "winlog") => {
+            &filebeat::hid_bravura_monitor_winlog::default::Default
+        }
+        ("macos", "advanced_monitoring") => &filebeat::macos_advanced_monitoring::default::Default,
+        ("macos", "authentication") => &filebeat::macos_authentication::default::Default,
+        ("macos", "file_read_write") => &filebeat::macos_file_read_write::default::Default,
+        ("macos", "network_activity") => &filebeat::macos_network_activity::default::Default,
+        ("macos", "process_execution_monitoring") => {
+            &filebeat::macos_process_execution_monitoring::default::Default
+        }
+        ("macos", "system_change") => &filebeat::macos_system_change::default::Default,
+        ("macos", "user_and_account_management") => {
+            &filebeat::macos_user_and_account_management::default::Default
+        }
+        ("microsoft_exchange_server", "messagetracking") => {
+            &filebeat::microsoft_exchange_server_messagetracking::default::Default
+        }
         _ => return None,
     })
 }

@@ -3630,11 +3630,14 @@ impl Transform for Default {
             let _cond = { event.get_bool("_temp.dnsResponseIsArray") == Some(true) };
             if _cond {
                 if let Some(s) = event.get_string("cef.extensions.PanOSDNSResponse") {
-                    let parts: Vec<Value> = cached_regex!(",\\s*")
+                    let mut parts: Vec<Value> = cached_regex!(",\\s*")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("cef.extensions.PanOSDNSResponse", Value::Array(parts))?;
                 }
             }
@@ -10798,7 +10801,10 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(s) = event.get_string("prisma_access.event.record_type") {
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("_temp.dns_answers", Value::Array(parts))?;
                 }
             }

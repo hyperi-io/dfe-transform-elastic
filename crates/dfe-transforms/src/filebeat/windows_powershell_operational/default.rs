@@ -327,11 +327,14 @@ impl Transform for Default {
             let _cond = { event.has_value("winlog.event_data.ConnectedUser") };
             if _cond {
                 if let Some(s) = event.get_string("winlog.event_data.ConnectedUser") {
-                    let parts: Vec<Value> = cached_regex!("\\\\")
+                    let mut parts: Vec<Value> = cached_regex!("\\\\")
                         .split(&s)
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("_temp.connected_user_parts", Value::Array(parts))?;
                 }
             }
@@ -735,7 +738,10 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if event.has_value("winlog.event_data.Payload") {
                         if let Some(s) = event.get_string("winlog.event_data.Payload") {
-                            let parts: Vec<Value> = s.split("\n").map(|p| json!(p)).collect();
+                            let mut parts: Vec<Value> = s.split("\n").map(|p| json!(p)).collect();
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                             event.set("winlog.event_data.Payload", Value::Array(parts))?;
                         }
                     }

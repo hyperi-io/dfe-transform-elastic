@@ -158,21 +158,30 @@ impl Transform for Default {
 
             if event.has_value("_tmp.actions_executed") {
                 if let Some(s) = event.get_string("_tmp.actions_executed") {
-                    let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("aws.elb.action_executed", Value::Array(parts))?;
                 }
             }
 
             if event.has_value("_tmp.target_port") {
                 if let Some(s) = event.get_string("_tmp.target_port") {
-                    let parts: Vec<Value> = s.split(" ").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(" ").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("aws.elb.target_port", Value::Array(parts))?;
                 }
             }
 
             if event.has_value("_tmp.target_status_code") {
                 if let Some(s) = event.get_string("_tmp.target_status_code") {
-                    let parts: Vec<Value> = s.split(" ").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(" ").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("aws.elb.target_status_code", Value::Array(parts))?;
                 }
             }

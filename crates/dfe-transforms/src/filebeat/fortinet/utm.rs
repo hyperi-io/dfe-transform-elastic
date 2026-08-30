@@ -399,7 +399,10 @@ impl Transform for Utm {
 
             if event.has_value("dns.resolved_ip") {
                 if let Some(s) = event.get_string("dns.resolved_ip") {
-                    let parts: Vec<Value> = s.split(", ").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(", ").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("dns.resolved_ip", Value::Array(parts))?;
                 }
             }
@@ -732,7 +735,10 @@ impl Transform for Utm {
 
             if event.has_value("fortinet.firewall.san") {
                 if let Some(s) = event.get_string("fortinet.firewall.san") {
-                    let parts: Vec<Value> = s.split(";").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(";").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("tls.server.x509.alternative_names", Value::Array(parts))?;
                 }
             }

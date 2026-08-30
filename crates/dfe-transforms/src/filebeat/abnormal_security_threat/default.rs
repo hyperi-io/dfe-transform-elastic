@@ -1023,7 +1023,10 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.toAddresses") {
                         if let Some(s) = event.get_string("json.toAddresses") {
-                            let parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                            let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                             event.set(
                                 "abnormal_security.threat.to_addresses",
                                 Value::Array(parts),

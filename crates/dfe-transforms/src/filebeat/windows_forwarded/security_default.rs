@@ -102,11 +102,14 @@ impl Transform for SecurityDefault {
                 if _cond {
                 if event.has_value("winlog.event_data.MemberName") {
                 if let Some(s) = event.get_string("winlog.event_data.MemberName") {
-                let parts: Vec<Value> = cached_regex!("(?<!\\\\),")
+                let mut parts: Vec<Value> = cached_regex!("(?<!\\\\),")
                 .split(&s)
                 .into_iter()
                 .map(|p| json!(p))
                 .collect();
+                while parts.last().and_then(Value::as_str) == Some("") {
+                parts.pop();
+                }
                 event.set("_temp.MemberNameParts", Value::Array(parts))?;
                 }
                 }
@@ -181,11 +184,14 @@ impl Transform for SecurityDefault {
                 let _cond = { event.has_value("event.code") && ["4672", "4673", "4674", "4741", "4742", "4743"].contains(&event.get_str("event.code").unwrap_or("")) && event.has_value("winlog.event_data.PrivilegeList") };
                 if _cond {
                 if let Some(s) = event.get_string("winlog.event_data.PrivilegeList") {
-                let parts: Vec<Value> = cached_regex!("\\s+")
+                let mut parts: Vec<Value> = cached_regex!("\\s+")
                 .split(&s)
                 .into_iter()
                 .map(|p| json!(p))
                 .collect();
+                while parts.last().and_then(Value::as_str) == Some("") {
+                parts.pop();
+                }
                 event.set("winlog.event_data.PrivilegeList", Value::Array(parts))?;
                 }
                 }
