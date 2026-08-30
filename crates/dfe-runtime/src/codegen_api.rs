@@ -1072,6 +1072,18 @@ pub fn grok_to_regex_typed(
             result.push(c);
             if let Some(escaped) = chars.next() {
                 result.push(escaped);
+                // `\p{L}` names a Unicode general category, and its brace is
+                // part of the escape. Left to the arm below it became `\p\{L}`,
+                // which is not a class at all -- hpe_aruba_cx is the first
+                // vendor pattern to reach for one.
+                if matches!(escaped, 'p' | 'P') && chars.peek() == Some(&'{') {
+                    for ch in chars.by_ref() {
+                        result.push(ch);
+                        if ch == '}' {
+                            break;
+                        }
+                    }
+                }
             }
         } else if c == '{' && !opens_repetition(&chars) {
             // Elasticsearch groks with Oniguruma, which reads a brace that is
@@ -1362,6 +1374,7 @@ fn grok_pattern_regex(name: &str) -> &'static str {
             r"(?:\b(?<![0-9A-Fa-f.])(?:[+-]?(?:0x)?(?:(?:[0-9A-Fa-f]+(?:\.[0-9A-Fa-f]*)?)|(?:\.[0-9A-Fa-f]+)))\b)"
         }
         "JAVACLASS" => r"(?:(?:[a-zA-Z$_][a-zA-Z$_0-9]*\.)*[a-zA-Z$_][a-zA-Z$_0-9]*)",
+        "JAVALOGMESSAGE" => r"(?s).*",
         // The facility half of a syslog priority: a name or a number.
         "SYSLOGFACILITY" => r"(?:<\d+\.\d+>)",
         // Elastic's own, grouped: an inlined alternation would otherwise reach
@@ -1413,6 +1426,30 @@ pub fn is_internal_ip(ip: &str) -> bool {
         Ok(IpAddr::V4(v4)) => v4.is_private() || v4.is_loopback() || v4.is_link_local(),
         Ok(IpAddr::V6(v6)) => v6.is_loopback(),
         Err(_) => false,
+    }
+}
+
+#[cfg(test)]
+mod unicode_class_tests {
+    /// The brace of `\p{L}` belongs to the escape, not to a repetition.
+    /// Escaping it gave `\p\{L}`, which is not a class at all, and a pattern
+    /// that will not compile matches nothing rather than failing loudly.
+    /// `hpe_aruba_cx` is the first vendor pattern to reach for one.
+    #[test]
+    fn a_unicode_general_category_survives_expansion() {
+        let site = r#"is (?P<aruba_status>(?:[\p{L},":;\s\-]*)). %{GREEDYDATA:event.reason}"#;
+        let (expanded, _, _) = super::grok_to_regex_typed(site);
+        assert!(expanded.contains(r"\p{L}"), "{expanded}");
+        assert!(regex::Regex::new(&expanded).is_ok(), "{expanded}");
+    }
+
+    /// A brace that is NOT part of an escape is still ordinary text, which is
+    /// what Elastic's own `(?:{DATA})?` relies on.
+    #[test]
+    fn a_bare_brace_is_still_escaped() {
+        let (expanded, _, _) = super::grok_to_regex_typed("(?:{DATA})?");
+        assert!(expanded.contains(r"\{DATA"), "{expanded}");
+        assert!(regex::Regex::new(&expanded).is_ok(), "{expanded}");
     }
 }
 
