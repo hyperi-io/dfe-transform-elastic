@@ -8856,6 +8856,99 @@ fn run_merge_map_up(event: &mut Event, shape: &MergeMapUp) -> bool {
     true
 }
 
+/// One entry of a map retyped from its digit spelling to a boolean, in place.
+///
+/// ```painless
+/// def obj = ctx.json.DETECTION_LIST;
+/// if (obj.containsKey("IS_IGNORED") && obj.get("IS_IGNORED").equals('0')) {
+///   obj.remove("IS_IGNORED");
+///   obj.put("IS_IGNORED", false);
+/// } else if (obj.containsKey("IS_IGNORED") && obj.get("IS_IGNORED").equals('1')) {
+///   obj.remove("IS_IGNORED");
+///   obj.put("IS_IGNORED", true);
+/// }
+/// ```
+///
+/// Qualys ships its flags as `"0"` and `"1"`, and the `convert` to boolean
+/// after this one throws on both -- so leaving the script unclaimed does not
+/// cost one field, it fails the processor and stamps `pipeline_error` over the
+/// whole document.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct MapEntryToBoolean {
+    /// The map holding the entry, as a `ctx.` path.
+    parent: String,
+    /// The entry retyped.
+    key: String,
+    /// Each spelling and the boolean it means.
+    values: Vec<(String, bool)>,
+}
+
+fn parse_map_entry_to_boolean(script: &str) -> Option<MapEntryToBoolean> {
+    use crate::painless_params::clean_path;
+
+    let (head, rest) = script.split_once(" = ctx.")?;
+    let local = head.rsplit(['\n', ';', ' ']).next()?.trim();
+    let parent = clean_path(rest.split([';', '\n']).next()?.trim());
+    if local.is_empty() || parent.is_empty() || parent.contains(['(', ')', ' ']) {
+        return None;
+    }
+
+    let test = format!("{local}.get(");
+    let write = format!("{local}.put(");
+    let mut key = String::new();
+    let mut values = Vec::new();
+    for (arm, _) in script.match_indices(&test) {
+        let arm = &script[arm + test.len()..];
+        let (Some(named), Some(spelling)) = (
+            quoted_first(arm),
+            arm.split_once(".equals(")
+                .and_then(|(_, tail)| quoted_first(tail)),
+        ) else {
+            continue;
+        };
+        // The write has to name the SAME entry, and carry a bare boolean.
+        let put = arm.split_once(&write)?.1;
+        if quoted_first(put)? != named {
+            return None;
+        }
+        let written = put.split_once(',')?.1.trim();
+        let flag = if written.starts_with("true") {
+            true
+        } else if written.starts_with("false") {
+            false
+        } else {
+            return None;
+        };
+        if !key.is_empty() && key != named {
+            return None;
+        }
+        key = named;
+        values.push((spelling, flag));
+    }
+    (!key.is_empty() && !values.is_empty()).then_some(MapEntryToBoolean {
+        parent,
+        key,
+        values,
+    })
+}
+
+fn run_map_entry_to_boolean(event: &mut Event, shape: &MapEntryToBoolean) -> bool {
+    let path = format!("{}.{}", shape.parent, shape.key);
+    let Some(Value::String(held)) = event.get(&path) else {
+        return true;
+    };
+    let Some((_, flag)) = shape
+        .values
+        .iter()
+        .find(|(spelling, _)| spelling == held)
+        .map(|(s, f)| (s, *f))
+    else {
+        return true;
+    };
+    let _ = event.set(&path, Value::Bool(flag));
+    true
+}
+
 /// A list of hashes split into typed fields by the LENGTH of each one.
 ///
 /// ```painless
@@ -9397,6 +9490,7 @@ pub(crate) enum KnownShape {
     ClassifyLadder(Box<ClassifyLadder>),
     MoveKeys(Vec<(String, String)>),
     MergeMapUp(Box<MergeMapUp>),
+    MapEntryToBoolean(Box<MapEntryToBoolean>),
     HashesByLength(Box<HashesByLength>),
     UnreservedKeyPayload(Box<UnreservedKeyPayload>),
     SuffixesByPrefix(Box<SuffixesByPrefix>),
@@ -9516,6 +9610,15 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_named_map_entry(normalised)
     {
         shapes.push(KnownShape::NamedMapEntry(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: one entry of a map retyped from its digit spelling to a boolean.
+    if normalised.contains(".containsKey(")
+        && normalised.contains(".equals(")
+        && let Some(shape) = parse_map_entry_to_boolean(normalised)
+    {
+        shapes.push(KnownShape::MapEntryToBoolean(Box::new(shape)));
         return shapes;
     }
 
@@ -11004,6 +11107,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::MergeMapUp(shape) => run_merge_map_up(event, shape),
         KnownShape::UnreservedKeyPayload(shape) => run_unreserved_key_payload(event, shape),
         KnownShape::HashesByLength(shape) => run_hashes_by_length(event, shape),
+        KnownShape::MapEntryToBoolean(shape) => run_map_entry_to_boolean(event, shape),
         KnownShape::SuffixesByPrefix(shape) => run_suffixes_by_prefix(event, shape),
     }
 }
