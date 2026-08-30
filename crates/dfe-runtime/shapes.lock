@@ -168,23 +168,24 @@
  25 MessageTable
  26 FirstAsset
  27 MatcherKv
- 28 LookupPut
- 29 LookupWrapList
- 30 ProtocolPrefix
- 31 ReversibleLookup
- 32 LookupMerge
- 33 KeyedActionRow
- 34 KeyedRowAppends
- 35 LookupColumns
- 36 LookupNormalise
- 37 IndexedLookup
- 38 Scale
- 39 Replace
- 40 AddUniqueRow
- 41 FrameworkPreference
- 42 NormalisedLookup
- 43 StringifiedLookup
- 44 LookupNormalise
- 45 MergeRowOrFallback
- 46 RowOrDefaults
+ 28 IndexedRowColumns
+ 29 LookupPut
+ 30 LookupWrapList
+ 31 ProtocolPrefix
+ 32 ReversibleLookup
+ 33 LookupMerge
+ 34 KeyedActionRow
+ 35 KeyedRowAppends
+ 36 LookupColumns
+ 37 LookupNormalise
+ 38 IndexedLookup
+ 39 Scale
+ 40 Replace
+ 41 AddUniqueRow
+ 42 FrameworkPreference
+ 43 NormalisedLookup
+ 44 StringifiedLookup
+ 45 LookupNormalise
+ 46 MergeRowOrFallback
+ 47 RowOrDefaults
 

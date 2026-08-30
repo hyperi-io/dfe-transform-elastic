@@ -150,7 +150,7 @@
     "haproxy": { "events": 7, "events_total": 15, "fields_wrong": 10 },
     "hashicorp_vault": { "events": 25, "events_total": 25, "fields_wrong": 0 },
     "hid_bravura_monitor": { "events": 4, "events_total": 4, "fields_wrong": 0 },
-    "hpe_aruba_cx": { "events": 1, "events_total": 1871, "fields_wrong": 5569 },
+    "hpe_aruba_cx": { "events": 1870, "events_total": 1871, "fields_wrong": 1 },
     "ibm_qradar": { "events": 0, "events_total": 3, "fields_wrong": 6 },
     "ibmmq": { "events": 8, "events_total": 8, "fields_wrong": 0 },
     "iis": { "events": 62, "events_total": 68, "fields_wrong": 30 },

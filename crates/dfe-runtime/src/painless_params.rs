@@ -102,6 +102,10 @@ pub(crate) enum ParamsShape {
         parent: String,
         list: String,
     },
+    IndexedRowColumns {
+        subject: String,
+        columns: Vec<(usize, String)>,
+    },
     SysmonQueryResults,
     SysmonRegistry,
     MessageTable,
@@ -404,6 +408,16 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         return Some(ParamsShape::MatcherKv);
     }
 
+    // Pattern: a params row whose members are selected by INDEX, one field
+    // each. Ahead of the lookup-put below, whose `= params.get(ctx.` trigger
+    // this also spells and which writes the WHOLE row into the last field the
+    // script names.
+    if normalised.contains("= params.get(ctx.")
+        && let Some(shape) = parse_indexed_row_columns(normalised)
+    {
+        return Some(shape);
+    }
+
     // Pattern: look one field up in the table and `.put` the row somewhere
     // ELSE -- the security pipeline's logon type, dnsserver's QTYPE with its
     // trailing `.remove`. Ahead of the normalise shape, which writes back to
@@ -568,6 +582,9 @@ pub(crate) fn run_params_shape(
         }
         ParamsShape::DropEmptyMembers { parent, list } => {
             run_drop_empty_members(event, parent, list, params)
+        }
+        ParamsShape::IndexedRowColumns { subject, columns } => {
+            run_indexed_row_columns(event, subject, columns, params)
         }
         ParamsShape::SysmonQueryResults => try_sysmon_query_results(event, normalised, params),
         ParamsShape::SysmonRegistry => crate::painless_windows::run_registry(event, params),
@@ -1583,6 +1600,82 @@ fn null_branch_at(script: &str, row: &str) -> Option<usize> {
     script
         .find(&format!("if ({row} != null)"))
         .or_else(|| script.find(&format!("if ({row} == null)")))
+}
+
+/// A params row whose members are selected by INDEX, one field each.
+///
+/// ```painless
+/// def settings = params.get(ctx.event.code);
+/// if (settings != null) {
+///   if (settings[0] != null) { ctx.event.type = settings[0]; }
+///   if (settings[1] != null) { ctx.event.kind = settings[1]; }
+///   if (settings[2] != null) { ctx.event.outcome = settings[2]; }
+/// }
+/// ```
+///
+/// `hpe_aruba_cx` classifies 1,871 events this way, and read as a plain
+/// lookup-put the WHOLE row landed in the last field the script names --
+/// `event.outcome` holding the type and the kind as well.
+fn parse_indexed_row_columns(script: &str) -> Option<ParamsShape> {
+    let (head, rest) = script.split_once("= params.get(ctx.")?;
+    let row = head
+        .trim_end()
+        .rsplit([' ', '\n'])
+        .next()?
+        .trim()
+        .to_string();
+    let subject = clean_path(rest.split_once(')')?.0.trim());
+    if row.is_empty() || subject.is_empty() {
+        return None;
+    }
+
+    // Each write names its index twice -- once in the guard, once in the value
+    // -- and only a pair that agrees is this shape.
+    let mut columns = Vec::new();
+    let marker = format!("{row}[");
+    for (at, _) in rest.match_indices(&marker) {
+        let after = &rest[at + marker.len()..];
+        let Some((index, after)) = after.split_once(']') else {
+            continue;
+        };
+        let Ok(index) = index.trim().parse::<usize>() else {
+            continue;
+        };
+        let Some((assignment, _)) = after.split_once(&format!("= {row}[{index}]")) else {
+            continue;
+        };
+        let Some(target) = assignment.rsplit_once("ctx.").map(|(_, path)| path.trim()) else {
+            continue;
+        };
+        if target.is_empty() || target.contains(['(', ' ', '[']) {
+            continue;
+        }
+        columns.push((index, clean_path(target)));
+    }
+
+    (!columns.is_empty()).then_some(ParamsShape::IndexedRowColumns { subject, columns })
+}
+
+fn run_indexed_row_columns(
+    event: &mut Event,
+    subject: &str,
+    columns: &[(usize, String)],
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(row) = event
+        .get_as_string(subject)
+        .and_then(|key| params.get(&key))
+        .and_then(Value::as_array)
+        .cloned()
+    else {
+        return true;
+    };
+    for (index, target) in columns {
+        if let Some(held) = row.get(*index).filter(|v| !v.is_null()) {
+            let _ = event.set(target, held.clone());
+        }
+    }
+    true
 }
 
 /// Empty-string members dropped from each sub-map params names.
