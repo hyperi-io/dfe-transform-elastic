@@ -445,6 +445,76 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("zeek", "tunnel") => &filebeat::zeek_tunnel::default::Default,
         ("zeek", "weird") => &filebeat::zeek_weird::default::Default,
         ("zeek", "x509") => &filebeat::zeek_x509::default::Default,
+        ("agentless_hello_world", "generic") => {
+            &filebeat::agentless_hello_world_generic::default::Default
+        }
+        ("agentless_hello_world", "mock_counter") => {
+            &filebeat::agentless_hello_world_mock_counter::default::Default
+        }
+        ("azure_metrics", "compute_vm") => &filebeat::azure_metrics_compute_vm::default::Default,
+        ("azure_metrics", "compute_vm_scaleset") => {
+            &filebeat::azure_metrics_compute_vm_scaleset::default::Default
+        }
+        ("azure_metrics", "container_instance") => {
+            &filebeat::azure_metrics_container_instance::default::Default
+        }
+        ("azure_metrics", "container_registry") => {
+            &filebeat::azure_metrics_container_registry::default::Default
+        }
+        ("azure_metrics", "container_service") => {
+            &filebeat::azure_metrics_container_service::default::Default
+        }
+        ("azure_metrics", "database_account") => {
+            &filebeat::azure_metrics_database_account::default::Default
+        }
+        ("azure_metrics", "monitor") => &filebeat::azure_metrics_monitor::default::Default,
+        ("azure_metrics", "storage_account") => {
+            &filebeat::azure_metrics_storage_account::default::Default
+        }
+        ("blacklens", "alerts") => &filebeat::blacklens_alerts::default::Default,
+        ("cisco_meraki_metrics", "device_health") => {
+            &filebeat::cisco_meraki_metrics_device_health::default::Default
+        }
+        ("cloud_security_posture", "findings") => {
+            &filebeat::cloud_security_posture_findings::default::Default
+        }
+        ("cloud_security_posture", "vulnerabilities") => {
+            &filebeat::cloud_security_posture_vulnerabilities::default::Default
+        }
+        ("cylance", "protect") => &filebeat::cylance_protect::default::Default,
+        ("elastic_agent", "elastic_agent_logs") => {
+            &filebeat::elastic_agent_elastic_agent_logs::default::Default
+        }
+        ("elastic_agent", "status_change_logs") => {
+            &filebeat::elastic_agent_status_change_logs::default::Default
+        }
+        ("elastic_package_registry", "metrics") => {
+            &filebeat::elastic_package_registry_metrics::default::Default
+        }
+        ("entro", "audit") => &filebeat::entro_audit::default::Default,
+        ("first_epss", "vulnerability") => &filebeat::first_epss_vulnerability::default::Default,
+        ("fortinet_forticlient", "log") => &filebeat::fortinet_forticlient_log::default::Default,
+        ("juniper_junos", "log") => &filebeat::juniper_junos_log::default::Default,
+        ("juniper_netscreen", "log") => &filebeat::juniper_netscreen_log::default::Default,
+        ("keeper_security_siem_integration", "audit") => {
+            &filebeat::keeper_security_siem_integration_audit::default::Default
+        }
+        ("lumos", "activity_logs") => &filebeat::lumos_activity_logs::default::Default,
+        ("netscout", "sightline") => &filebeat::netscout_sightline::default::Default,
+        ("panw_metrics", "system") => &filebeat::panw_metrics_system::default::Default,
+        ("pulse_connect_secure", "log") => &filebeat::pulse_connect_secure_log::default::Default,
+        ("rabbitmq", "log") => &filebeat::rabbitmq_log::default::Default,
+        ("redis", "log") => &filebeat::redis_log::default::Default,
+        ("system_audit", "package") => &filebeat::system_audit_package::default::Default,
+        ("tomcat", "log") => &filebeat::tomcat_log::default::Default,
+        ("kibana", "audit") => &filebeat::kibana_audit::default::Default,
+        ("kibana", "log") => &filebeat::kibana_log::default::Default,
+        ("platform_observability", "kibana_audit") => {
+            &filebeat::platform_observability_kibana_audit::default::Default
+        }
+        ("platform_observability", "kibana_log") => {
+            &filebeat::platform_observability_kibana_log::default::Default
+        }
         _ => return None,
     })
 }

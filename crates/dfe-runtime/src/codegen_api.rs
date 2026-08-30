@@ -11,7 +11,7 @@
 use std::collections::HashMap;
 use std::sync::LazyLock;
 
-use serde_json::Value;
+use serde_json::{Map, Value};
 use tracing::debug;
 
 use crate::enrichment::user_agent;
@@ -324,6 +324,69 @@ pub fn parse_json_field(event: &mut Event, field: &str, target: &str) -> Result<
     })?;
     event.set(target, parsed)?;
     Ok(())
+}
+
+/// Parse a JSON field and add its members to the document ROOT.
+///
+/// Elastic's `add_to_root`. The parsed value must be an object -- anything
+/// else throws, which is what hands the document to `on_failure`. `merge`
+/// recursively merges an incoming object into an existing one of the same
+/// name and throws where either side is not an object; `replace`, the
+/// default, overwrites whatever was there.
+///
+/// Kibana's ECS log line is the whole reason: the message IS the document,
+/// and without this its four packages parse nothing at all.
+///
+/// # Errors
+///
+/// Returns a `ParseError` naming the field when the text is not JSON, when it
+/// is not an object, or when `merge` meets a conflict it cannot merge.
+pub fn parse_json_field_to_root(event: &mut Event, field: &str, merge: bool) -> Result<()> {
+    let Some(text) = event.get_string(field) else {
+        return Ok(());
+    };
+    let fail = |message: String| crate::TransformError::ParseError {
+        path: field.into(),
+        message,
+    };
+    let parsed = parse_json_str(&text).map_err(fail)?;
+    let Value::Object(members) = parsed else {
+        return Err(fail(
+            "cannot add non-object root to the document".to_string(),
+        ));
+    };
+
+    let Some(root) = event.as_value_mut().as_object_mut() else {
+        return Err(fail("the document is not an object".to_string()));
+    };
+    for (key, value) in members {
+        match (merge.then(|| root.get_mut(&key)).flatten(), value) {
+            (Some(Value::Object(held)), Value::Object(incoming)) => {
+                merge_object(held, incoming);
+            }
+            // `merge` against a non-object on either side is a conflict
+            // Elastic refuses rather than resolving.
+            (Some(held), incoming) if !held.is_null() && !incoming.is_null() => {
+                return Err(fail(format!("cannot merge non-map fields at key {key}")));
+            }
+            (_, incoming) => {
+                root.insert(key, incoming);
+            }
+        }
+    }
+    Ok(())
+}
+
+/// Merge `incoming` into `held`, recursing where both sides hold an object.
+fn merge_object(held: &mut Map<String, Value>, incoming: Map<String, Value>) {
+    for (key, value) in incoming {
+        match (held.get_mut(&key), value) {
+            (Some(Value::Object(nested)), Value::Object(value)) => merge_object(nested, value),
+            (_, value) => {
+                held.insert(key, value);
+            }
+        }
+    }
 }
 
 /// Parse a JSON string into the document's own value type.

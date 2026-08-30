@@ -9,6 +9,11 @@
       "events_total": 29,
       "fields_wrong": 11
     },
+    "agentless_hello_world": {
+      "events": 2,
+      "events_total": 2,
+      "fields_wrong": 0
+    },
     "amazon_security_lake": {
       "events": 10,
       "events_total": 11,
@@ -44,6 +49,11 @@
       "events_total": 182,
       "fields_wrong": 4
     },
+    "azure_metrics": {
+      "events": 4,
+      "events_total": 4,
+      "fields_wrong": 0
+    },
     "azure_network_watcher_nsg": {
       "events": 0,
       "events_total": 1,
@@ -63,6 +73,11 @@
       "events": 0,
       "events_total": 2,
       "fields_wrong": 2
+    },
+    "blacklens": {
+      "events": 1,
+      "events_total": 1,
+      "fields_wrong": 0
     },
     "carbon_black_cloud": {
       "events": 50,
@@ -99,6 +114,11 @@
       "events_total": 249,
       "fields_wrong": 0
     },
+    "cisco_meraki_metrics": {
+      "events": 0,
+      "events_total": 2,
+      "fields_wrong": 13
+    },
     "cisco_nexus": {
       "events": 45,
       "events_total": 45,
@@ -113,6 +133,11 @@
       "events": 37,
       "events_total": 39,
       "fields_wrong": 3
+    },
+    "cloud_security_posture": {
+      "events": 11,
+      "events_total": 11,
+      "fields_wrong": 0
     },
     "coredns": {
       "events": 20,
@@ -129,10 +154,25 @@
       "events_total": 30,
       "fields_wrong": 0
     },
+    "cylance": {
+      "events": 101,
+      "events_total": 101,
+      "fields_wrong": 0
+    },
     "dataminr_pulse": {
       "events": 5,
       "events_total": 17,
       "fields_wrong": 88
+    },
+    "elastic_agent": {
+      "events": 3,
+      "events_total": 11,
+      "fields_wrong": 8
+    },
+    "elastic_package_registry": {
+      "events": 2,
+      "events_total": 3,
+      "fields_wrong": 1
     },
     "entityanalytics_ad": {
       "events": 4,
@@ -144,9 +184,24 @@
       "events_total": 7,
       "fields_wrong": 0
     },
+    "entro": {
+      "events": 4,
+      "events_total": 4,
+      "fields_wrong": 0
+    },
     "fim": {
       "events": 8,
       "events_total": 8,
+      "fields_wrong": 0
+    },
+    "first_epss": {
+      "events": 0,
+      "events_total": 9,
+      "fields_wrong": 45
+    },
+    "fortinet_forticlient": {
+      "events": 100,
+      "events_total": 100,
       "fields_wrong": 0
     },
     "fortinet_fortigate": {
@@ -179,6 +234,16 @@
       "events_total": 4,
       "fields_wrong": 0
     },
+    "juniper_junos": {
+      "events": 100,
+      "events_total": 100,
+      "fields_wrong": 0
+    },
+    "juniper_netscreen": {
+      "events": 100,
+      "events_total": 100,
+      "fields_wrong": 0
+    },
     "juniper_srx": {
       "events": 12,
       "events_total": 99,
@@ -189,10 +254,25 @@
       "events_total": 3,
       "fields_wrong": 0
     },
+    "keeper_security_siem_integration": {
+      "events": 0,
+      "events_total": 4,
+      "fields_wrong": 4
+    },
+    "kibana": {
+      "events": 7,
+      "events_total": 7,
+      "fields_wrong": 0
+    },
     "kolide": {
       "events": 262,
       "events_total": 276,
       "fields_wrong": 20
+    },
+    "lumos": {
+      "events": 2,
+      "events_total": 2,
+      "fields_wrong": 0
     },
     "m365_defender": {
       "events": 108,
@@ -224,6 +304,11 @@
       "events_total": 34,
       "fields_wrong": 0
     },
+    "netscout": {
+      "events": 100,
+      "events_total": 100,
+      "fields_wrong": 0
+    },
     "o365": {
       "events": 409,
       "events_total": 409,
@@ -238,6 +323,11 @@
       "events": 538,
       "events_total": 538,
       "fields_wrong": 0
+    },
+    "panw_metrics": {
+      "events": 0,
+      "events_total": 1,
+      "fields_wrong": 9
     },
     "pfsense": {
       "events": 28,
@@ -254,6 +344,11 @@
       "events_total": 99,
       "fields_wrong": 95
     },
+    "platform_observability": {
+      "events": 3,
+      "events_total": 3,
+      "fields_wrong": 0
+    },
     "prisma_access": {
       "events": 21,
       "events_total": 23,
@@ -264,6 +359,11 @@
       "events_total": 55,
       "fields_wrong": 1
     },
+    "pulse_connect_secure": {
+      "events": 38,
+      "events_total": 38,
+      "fields_wrong": 0
+    },
     "qualys_vmdr": {
       "events": 2,
       "events_total": 28,
@@ -273,6 +373,16 @@
       "events": 0,
       "events_total": 15,
       "fields_wrong": 101
+    },
+    "rabbitmq": {
+      "events": 0,
+      "events_total": 157,
+      "fields_wrong": 471
+    },
+    "redis": {
+      "events": 3,
+      "events_total": 71,
+      "fields_wrong": 86
     },
     "sentinel_one": {
       "events": 68,
@@ -314,6 +424,11 @@
       "events_total": 2,
       "fields_wrong": 0
     },
+    "system_audit": {
+      "events": 2,
+      "events_total": 2,
+      "fields_wrong": 0
+    },
     "tenable_sc": {
       "events": 3,
       "events_total": 16,
@@ -327,6 +442,11 @@
     "tines": {
       "events": 248,
       "events_total": 248,
+      "fields_wrong": 0
+    },
+    "tomcat": {
+      "events": 100,
+      "events_total": 100,
       "fields_wrong": 0
     },
     "trendmicro": {
