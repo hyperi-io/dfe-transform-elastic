@@ -30,6 +30,7 @@ impl Transform for PowershellOperational {
                             });
                         };
                         {
+                            let key = &key[..];
                             let key = key.trim_matches(|c| " \n\t".contains(c));
                             let value = value.trim_matches(|c| " \n\t".contains(c));
                             if !key.is_empty() {

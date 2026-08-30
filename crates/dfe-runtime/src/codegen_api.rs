@@ -1240,6 +1240,14 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // Without the guard `deadbeef` would match starting at `eadbeef`.
         "BASE16NUM" => r"(?<![0-9A-Fa-f])(?:[+-]?(?:0x)?(?:[0-9A-Fa-f]+))",
         "NOTSPACE" | "URI" | "URIPROTO" => r"\S+",
+        // Elastic's own URI parts, verbatim. On the catch-all `URIPATHPARAM`
+        // captured arbitrary text, so pfsense's haproxy line read the whole
+        // request target AND the `HTTP/1.1` after it into `url.original`.
+        "URIPATH" => r"(?:/[A-Za-z0-9$.+!*'(){},~:;=@#%&_\-]*)+",
+        "URIPARAM" => r"\?[A-Za-z0-9$.+!*'|(){},~@#%&/=:;_?\-\[\]<>]*",
+        "URIPATHPARAM" => {
+            r"(?:/[A-Za-z0-9$.+!*'(){},~:;=@#%&_\-]*)+(?:\?[A-Za-z0-9$.+!*'|(){},~@#%&/=:;_?\-\[\]<>]*)?"
+        }
         "GREEDYDATA" => r".*",
         "DATA" => r".*?",
         "WORD" => r"\w+",

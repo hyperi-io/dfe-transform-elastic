@@ -431,6 +431,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "azure.springcloudlogs",
     ),
     (
+        "filebeat.barracuda_cloudgen_firewall_log.default",
+        &filebeat::barracuda_cloudgen_firewall_log::default::Default,
+        agent_only(),
+        "barracuda_cloudgen_firewall.log",
+    ),
+    (
         "filebeat.carbon_black_cloud_alert_v7.default",
         &filebeat::carbon_black_cloud_alert_v7::default::Default,
         fetched(),
@@ -501,6 +507,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::cisco_nexus::default::Default,
         pushed(Framing::Line),
         "cisco_nexus.log",
+    ),
+    (
+        "filebeat.cisco_secure_email_gateway_log.default",
+        &filebeat::cisco_secure_email_gateway_log::default::Default,
+        pushed(Framing::Line),
+        "cisco_secure_email_gateway.log",
     ),
     (
         "filebeat.cisco_umbrella.default",
@@ -731,6 +743,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "gcp.vpcflow",
     ),
     (
+        "filebeat.infoblox_nios_log.default",
+        &filebeat::infoblox_nios_log::default::Default,
+        pushed(Framing::Line),
+        "infoblox_nios.log",
+    ),
+    (
         "filebeat.jumpcloud_events.default",
         &filebeat::jumpcloud_events::default::Default,
         fetched(),
@@ -861,6 +879,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::microsoft_dnsserver_audit::default::Default,
         agent_only(),
         "microsoft_dnsserver.audit",
+    ),
+    (
+        "filebeat.microsoft_exchange_online_message_trace_log.default",
+        &filebeat::microsoft_exchange_online_message_trace_log::default::Default,
+        fetched(),
+        "microsoft_exchange_online_message_trace.log",
     ),
     (
         "filebeat.mimecast_archive_search_logs.default",
@@ -1052,6 +1076,30 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "panw.panos",
     ),
     (
+        "filebeat.pfsense_log.default",
+        &filebeat::pfsense_log::default::Default,
+        pushed(Framing::Line),
+        "pfsense.log",
+    ),
+    (
+        "filebeat.ping_federate_admin.default",
+        &filebeat::ping_federate_admin::default::Default,
+        agent_only(),
+        "ping_federate.admin",
+    ),
+    (
+        "filebeat.ping_federate_audit.default",
+        &filebeat::ping_federate_audit::default::Default,
+        pushed(Framing::Body),
+        "ping_federate.audit",
+    ),
+    (
+        "filebeat.ping_one_audit.default",
+        &filebeat::ping_one_audit::default::Default,
+        pushed(Framing::Body),
+        "ping_one.audit",
+    ),
+    (
         "filebeat.proofpoint_on_demand_audit.default",
         &filebeat::proofpoint_on_demand_audit::default::Default,
         fetched(),
@@ -1148,6 +1196,36 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "sentinel_one.unified_alert",
     ),
     (
+        "filebeat.sonicwall_firewall_log.default",
+        &filebeat::sonicwall_firewall_log::default::Default,
+        pushed(Framing::Body),
+        "sonicwall_firewall.log",
+    ),
+    (
+        "filebeat.sophos_central_alert.default",
+        &filebeat::sophos_central_alert::default::Default,
+        fetched(),
+        "sophos_central.alert",
+    ),
+    (
+        "filebeat.sophos_central_event.default",
+        &filebeat::sophos_central_event::default::Default,
+        fetched(),
+        "sophos_central.event",
+    ),
+    (
+        "filebeat.squid_log.default",
+        &filebeat::squid_log::default::Default,
+        pushed(Framing::Body),
+        "squid.log",
+    ),
+    (
+        "filebeat.suricata_eve.default",
+        &filebeat::suricata_eve::default::Default,
+        agent_only(),
+        "suricata.eve",
+    ),
+    (
         "filebeat.symantec_endpoint_security_event.default",
         &filebeat::symantec_endpoint_security_event::default::Default,
         fetched(),
@@ -1194,6 +1272,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::tines_time_saved::default::Default,
         fetched(),
         "tines.time_saved",
+    ),
+    (
+        "filebeat.trendmicro_deep_security.default",
+        &filebeat::trendmicro_deep_security::default::Default,
+        pushed(Framing::Line),
+        "trendmicro.deep_security",
     ),
     (
         "filebeat.windows_applocker_exe_and_dll.default",

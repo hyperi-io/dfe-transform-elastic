@@ -240,6 +240,10 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.barracuda_cloudgen_firewall_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
     name: filebeat.carbon_black_cloud_alert_v7.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
@@ -285,6 +289,10 @@
     maturity: beta
   - kind: service
     name: filebeat.cisco_nexus.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.cisco_secure_email_gateway_log.default
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
     maturity: beta
   - kind: service
@@ -440,6 +448,10 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.infoblox_nios_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
     name: filebeat.jumpcloud_events.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
@@ -526,6 +538,10 @@
   - kind: service
     name: filebeat.microsoft_dnsserver_audit.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.microsoft_exchange_online_message_trace_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
     name: filebeat.mimecast_archive_search_logs.default
@@ -652,6 +668,22 @@
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
     maturity: beta
   - kind: service
+    name: filebeat.pfsense_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ping_federate_admin.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ping_federate_audit.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.ping_one_audit.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
     name: filebeat.proofpoint_on_demand_audit.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
@@ -716,6 +748,26 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.sonicwall_firewall_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.sophos_central_alert.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.sophos_central_event.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.squid_log.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
+    name: filebeat.suricata_eve.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
     name: filebeat.symantec_endpoint_security_event.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
@@ -746,6 +798,10 @@
   - kind: service
     name: filebeat.tines_time_saved.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.trendmicro_deep_security.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
     maturity: beta
   - kind: service
     name: filebeat.windows_applocker_exe_and_dll.default

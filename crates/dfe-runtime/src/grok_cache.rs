@@ -427,6 +427,44 @@ pub fn extract_first_match(
     patterns[index].extract_into(input, event)
 }
 
+/// [`extract_first_match`], recording WHICH pattern won.
+///
+/// Elastic's `trace_match: true` puts the winning index in
+/// `_ingest._grok_match_index`, and a pipeline that asks for it BRANCHES on it:
+/// `cisco_secure_email_gateway`'s AMP stream splits the same field with two
+/// different `kv` field separators depending on whether pattern 1 was the one
+/// that matched. Without the index both `kv` processors run on every document.
+///
+/// The index is ingest metadata and never reaches the output document, so the
+/// generated transform clears it before returning.
+///
+/// # Errors
+///
+/// Propagates a failure to set a field on the event.
+pub fn extract_first_match_traced(
+    patterns: &[&CompiledGrok],
+    input: &str,
+    event: &mut crate::Event,
+) -> crate::Result<bool> {
+    let mut best: Option<(usize, usize)> = None;
+    for (index, pattern) in patterns.iter().enumerate() {
+        let Some(start) = pattern.match_start(input) else {
+            continue;
+        };
+        if best.is_none_or(|(best_start, _)| start < best_start) {
+            best = Some((start, index));
+        }
+        if start == 0 {
+            break;
+        }
+    }
+    let Some((_, index)) = best else {
+        return Ok(false);
+    };
+    event.set("_ingest._grok_match_index", index)?;
+    patterns[index].extract_into(input, event)
+}
+
 /// Let a trailing `$` match before a final line terminator, as Java's does.
 ///
 /// Rust's `$` is the end of the haystack and Java's is the end but for one

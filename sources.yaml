@@ -1743,3 +1743,179 @@ sources:
     fixtures: tines/time_saved
     intakes: [beats, fetcher]
     transforms: [default]
+
+  # The manifest input is lumberjack, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (firewall, threat, web) are all reached from default, so
+  # default is the only entry point, as it is for okta and crowdstrike.
+  barracuda_cloudgen_firewall_log:
+    package: barracuda_cloudgen_firewall
+    data_stream: log
+    pipelines: barracuda_cloudgen_firewall/log
+    fixtures: barracuda_cloudgen_firewall/log
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is tcp/udp, so a device pushes this.
+  # Framing line: a grok on message/event.original carries %{SYSLOGTIMESTAMP},
+  # so the header has to stay on.
+  # The sub-pipelines (12 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  cisco_secure_email_gateway_log:
+    package: cisco_secure_email_gateway
+    data_stream: log
+    pipelines: cisco_secure_email_gateway/log
+    fixtures: cisco_secure_email_gateway/log
+    intakes: [beats, receiver]
+    framing: line
+    transforms: [default]
+
+  # The manifest input is tcp/udp, so a device pushes this.
+  # Framing line: a grok on message/event.original carries %{SYSLOGTIMESTAMP},
+  # so the header has to stay on.
+  # The sub-pipelines (pipeline_audit, pipeline_dhcp, pipeline_dns) are all
+  # reached from default, so default is the only entry point, as it is for
+  # okta and crowdstrike.
+  infoblox_nios_log:
+    package: infoblox_nios
+    data_stream: log
+    pipelines: infoblox_nios/log
+    fixtures: infoblox_nios/log
+    intakes: [beats, receiver]
+    framing: line
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  microsoft_exchange_online_message_trace_log:
+    package: microsoft_exchange_online_message_trace
+    data_stream: log
+    pipelines: microsoft_exchange_online_message_trace/log
+    fixtures: microsoft_exchange_online_message_trace/log
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is tcp/udp, so a device pushes this.
+  # Framing line: a grok on message/event.original carries %{SYSLOGTIMESTAMP},
+  # so the header has to stay on.
+  # The sub-pipelines (9 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  pfsense_log:
+    package: pfsense
+    data_stream: log
+    pipelines: pfsense/log
+    fixtures: pfsense/log
+    intakes: [beats, receiver]
+    framing: line
+    transforms: [default]
+
+  # The manifest input is filestream, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  ping_federate_admin:
+    package: ping_federate
+    data_stream: admin
+    pipelines: ping_federate/admin
+    fixtures: ping_federate/admin
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is tcp/udp, so a device pushes this.
+  # Framing body: no pipeline groks a syslog header out of message, so a
+  # rebuilt header would only corrupt the payload.
+  # UNSETTLED: the agent template runs decode_cef BEFORE the pipeline, so the
+  # pipeline reads parsed fields rather than message and neither framing
+  # reproduces that on its own. It costs the receiver intake, not the Beats
+  # one the corpus scores.
+  ping_federate_audit:
+    package: ping_federate
+    data_stream: audit
+    pipelines: ping_federate/audit
+    fixtures: ping_federate/audit
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  # Ships http_endpoint AND httpjson, so it is genuinely pushed and fetchable.
+  # Only the push is declared, because registry.rs asserts no source is both.
+  # Framing body: no pipeline groks a syslog header out of message, so a
+  # rebuilt header would only corrupt the payload.
+  ping_one_audit:
+    package: ping_one
+    data_stream: audit
+    pipelines: ping_one/audit
+    fixtures: ping_one/audit
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  # The manifest input is udp, so a device pushes this.
+  # Framing body: no pipeline groks a syslog header out of message, so a
+  # rebuilt header would only corrupt the payload.
+  sonicwall_firewall_log:
+    package: sonicwall_firewall
+    data_stream: log
+    pipelines: sonicwall_firewall/log
+    fixtures: sonicwall_firewall/log
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  sophos_central_alert:
+    package: sophos_central
+    data_stream: alert
+    pipelines: sophos_central/alert
+    fixtures: sophos_central/alert
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  sophos_central_event:
+    package: sophos_central
+    data_stream: event
+    pipelines: sophos_central/event
+    fixtures: sophos_central/event
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is tcp/udp, so a device pushes this.
+  # Framing body: no pipeline groks a syslog header out of message, so a
+  # rebuilt header would only corrupt the payload.
+  squid_log:
+    package: squid
+    data_stream: log
+    pipelines: squid/log
+    fixtures: squid/log
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  # The sub-pipelines (dns, dns_answer_v1, dns_answer_v2, tls) are all reached
+  # from default, so default is the only entry point.
+  suricata_eve:
+    package: suricata
+    data_stream: eve
+    pipelines: suricata/eve
+    fixtures: suricata/eve
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is tcp/udp, so a device pushes this.
+  # Framing line: a grok on message/event.original carries %{SYSLOGTIMESTAMP},
+  # so the header has to stay on.
+  # The sub-pipelines (9 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  # UNSETTLED: the agent template runs decode_cef BEFORE the pipeline, so the
+  # pipeline reads parsed fields rather than message and neither framing
+  # reproduces that on its own. It costs the receiver intake, not the Beats
+  # one the corpus scores.
+  trendmicro_deep_security:
+    package: trendmicro
+    data_stream: deep_security
+    pipelines: trendmicro/deep_security
+    fixtures: trendmicro/deep_security
+    intakes: [beats, receiver]
+    framing: line
+    transforms: [default]

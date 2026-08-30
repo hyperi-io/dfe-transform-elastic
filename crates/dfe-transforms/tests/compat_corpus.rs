@@ -310,6 +310,26 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("ti_socradar_feeds", "feed") => &filebeat::ti_socradar_feeds_feed::default::Default,
         ("tines", "audit_logs") => &filebeat::tines_audit_logs::default::Default,
         ("tines", "time_saved") => &filebeat::tines_time_saved::default::Default,
+        ("barracuda_cloudgen_firewall", "log") => {
+            &filebeat::barracuda_cloudgen_firewall_log::default::Default
+        }
+        ("infoblox_nios", "log") => &filebeat::infoblox_nios_log::default::Default,
+        ("microsoft_exchange_online_message_trace", "log") => {
+            &filebeat::microsoft_exchange_online_message_trace_log::default::Default
+        }
+        ("ping_federate", "admin") => &filebeat::ping_federate_admin::default::Default,
+        ("ping_federate", "audit") => &filebeat::ping_federate_audit::default::Default,
+        ("ping_one", "audit") => &filebeat::ping_one_audit::default::Default,
+        ("sonicwall_firewall", "log") => &filebeat::sonicwall_firewall_log::default::Default,
+        ("sophos_central", "alert") => &filebeat::sophos_central_alert::default::Default,
+        ("sophos_central", "event") => &filebeat::sophos_central_event::default::Default,
+        ("squid", "log") => &filebeat::squid_log::default::Default,
+        ("suricata", "eve") => &filebeat::suricata_eve::default::Default,
+        ("trendmicro", "deep_security") => &filebeat::trendmicro_deep_security::default::Default,
+        ("cisco_secure_email_gateway", "log") => {
+            &filebeat::cisco_secure_email_gateway_log::default::Default
+        }
+        ("pfsense", "log") => &filebeat::pfsense_log::default::Default,
         _ => return None,
     })
 }

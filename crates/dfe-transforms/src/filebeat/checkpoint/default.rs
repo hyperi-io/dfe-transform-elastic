@@ -89,6 +89,7 @@ impl Transform for Default {
                             });
                         };
                         {
+                            let key = &key[..];
                             let key = key.trim_matches(|c| " ".contains(c));
                             let value = match (value.chars().next(), value.chars().last()) {
                                 (Some('('), Some(')'))
@@ -157,6 +158,7 @@ impl Transform for Default {
                                 });
                             };
                             {
+                                let key = &key[..];
                                 let key = key.trim_matches(|c| " ".contains(c));
                                 let value = match (value.chars().next(), value.chars().last()) {
                                     (Some('('), Some(')'))

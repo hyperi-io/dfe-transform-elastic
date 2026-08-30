@@ -1249,6 +1249,7 @@ impl Transform for Default {
                                     });
                                 };
                                 {
+                                    let key = &key[..];
                                     let key = key.trim_matches(|c| " ".contains(c));
                                     if !key.is_empty() {
                                         kv_put(
@@ -1330,6 +1331,7 @@ impl Transform for Default {
                                     });
                                 };
                                 {
+                                    let key = &key[..];
                                     let key = key.trim_matches(|c| " ".contains(c));
                                     if !key.is_empty() {
                                         kv_put(

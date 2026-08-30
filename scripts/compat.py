@@ -184,6 +184,24 @@ PipelineLoader.add_constructor(
 )
 
 
+def _bool_or_text(loader: yaml.Loader, node: yaml.Node) -> bool | str:
+    """Read a YAML 1.1-only boolean spelling as the string it is in 1.2.
+
+    Elasticsearch parses these pipelines with a YAML 1.2 reader, where only
+    `true` and `false` are booleans. PyYAML is 1.1 and also takes `on`, `off`,
+    `yes` and `no`, so pfsense's grok pattern named `ON` arrived as the key
+    `True` and the pipeline would not install: `[MIDDLE] is referencing a
+    non-existent pattern [ON]`.
+    """
+    text = loader.construct_scalar(node)
+    if text.lower() in {"true", "false"}:
+        return text.lower() == "true"
+    return text
+
+
+PipelineLoader.add_constructor("tag:yaml.org,2002:bool", _bool_or_text)
+
+
 # --------------------------------------------------------------------------
 # Container lifecycle
 # --------------------------------------------------------------------------
