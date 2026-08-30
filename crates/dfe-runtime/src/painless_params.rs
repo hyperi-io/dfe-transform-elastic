@@ -1553,6 +1553,21 @@ pub(crate) fn skip_trivia(mut text: &str) -> &str {
     }
 }
 
+/// The test and block of the `if (...) { ... }` at the head of `text`, plus
+/// whatever follows it.
+fn guard_and_block(text: &str) -> Option<(&str, &str, &str)> {
+    let (guard, after) = balanced(skip_trivia(text), '(', ')')?;
+    let (block, after) = balanced(skip_trivia(after), '{', '}')?;
+    Some((guard, block, after))
+}
+
+/// Where the script branches on the row being absent, in either polarity.
+fn null_branch_at(script: &str, row: &str) -> Option<usize> {
+    script
+        .find(&format!("if ({row} != null)"))
+        .or_else(|| script.find(&format!("if ({row} == null)")))
+}
+
 /// The test and both blocks of the `if (...) { ... } else { ... }` at the head
 /// of `text`, plus whatever follows it.
 fn if_else_blocks(text: &str) -> Option<(&str, &str, &str, &str)> {
@@ -1633,15 +1648,24 @@ fn guarded_columns(block: &str, row: &str) -> (Vec<RowColumn>, String) {
 
 /// Read the key, the table and both branches off the script.
 fn parse_row_or_defaults(script: &str) -> Option<RowOrDefaults> {
-    // Two spellings of the same lookup: bound to a local and null-tested, or
-    // tested with `containsKey` and subscripted inside the branch.
+    // Three spellings of the same lookup: bound to a local and null-tested,
+    // bound by BRACKET subscript and null-tested, or tested with `containsKey`
+    // and subscripted inside the branch.
     let (table, key, branch_at, row) = match script.split_once(".get(") {
         Some((head, tail)) if head.contains("params.") => {
             let table = head.rsplit_once("params.")?.1.trim().to_string();
             let key = tail.split_once(')')?.0.trim().to_string();
             let row = head.rsplit_once(" = ")?.0.rsplit(' ').next()?.to_string();
-            let at = script.find(&format!("if ({row} != null)"))?;
+            let at = null_branch_at(script, &row)?;
             (table, key, at, row)
+        }
+        _ if script.contains("params.") && !script.contains("if (params.") => {
+            let (head, tail) = script.split_once("params.")?;
+            let (table, tail) = tail.split_once('[')?;
+            let (key, _) = tail.split_once(']')?;
+            let row = head.rsplit_once(" = ")?.0.rsplit(' ').next()?.to_string();
+            let at = null_branch_at(script, &row)?;
+            (table.trim().to_string(), key.trim().to_string(), at, row)
         }
         _ => {
             let at = script.find("if (params.")?;
@@ -1671,8 +1695,24 @@ fn parse_row_or_defaults(script: &str) -> Option<RowOrDefaults> {
         return None;
     }
 
-    let subject = crate::painless_common::ctx_path_bound_to(script, &key)?;
-    let (_, then, otherwise, after) = if_else_blocks(&script[branch_at + "if".len()..])?;
+    // The key is a local bound to a `ctx.` path, or the path written inline.
+    let subject = match key.strip_prefix("ctx.") {
+        Some(path) => clean_path(path),
+        None => crate::painless_common::ctx_path_bound_to(script, &key)?,
+    };
+    let branch = &script[branch_at + "if".len()..];
+    let (then, otherwise, after) = if let Some((_, then, otherwise, after)) = if_else_blocks(branch)
+    {
+        (then, otherwise, after)
+    } else {
+        // `if (<row> == null) { return; }` and then the body: the same shape
+        // spelled as an early return, with nothing written for a miss.
+        let (_, block, rest) = guard_and_block(branch)?;
+        if !block.contains("return") {
+            return None;
+        }
+        (rest, "", "")
+    };
     // The branch has to be the END of the script: kolide's issues stream adds
     // a second lookup and a ternary after it, and claiming that text would
     // silently drop both.
@@ -3442,6 +3482,114 @@ pub(crate) fn run_guarded_literals(event: &mut Event, body: &str) -> bool {
     walk_statements(event, body).0
 }
 
+/// Whether one comparison is a form [`term_holds`] resolves rather than
+/// answering `false` by default.
+fn readable_term(term: &str) -> bool {
+    let term = term.trim().trim_start_matches('!').trim();
+    if term.starts_with('[') {
+        // A literal list's `.contains`, which reads its argument itself.
+        return term.contains(".contains(");
+    }
+    let Some((subject, wanted)) = term
+        .split_once("==")
+        .or_else(|| term.split_once("!="))
+        .or_else(|| term.split_once(".contains("))
+    else {
+        return false;
+    };
+    let wanted = wanted.trim().trim_end_matches(')').trim();
+    subject_path(subject).trim().starts_with("ctx.")
+        && (wanted.starts_with("ctx.")
+            || wanted == "null"
+            || crate::painless_common::painless_literal(wanted).is_some())
+}
+
+/// Whether EVERY statement in a script is one [`walk_statements`] can run.
+///
+/// Running the readable statements of ANY script was tried as a last-resort
+/// catch-all and rejected: a partial read writes a value where the vendor's
+/// whole script would have written a different one, and the corpus said that
+/// is worse than writing nothing. This is the same walk with the hole closed
+/// -- a script qualifies only when nothing in it would be silently skipped,
+/// so what runs is the whole of what the vendor wrote.
+///
+/// Container allocation (`ctx.a = new HashMap()`) counts as runnable and does
+/// nothing: `Event::set` builds the parents a later write needs.
+pub(crate) fn every_statement_is_runnable(body: &str) -> bool {
+    let mut rest = body;
+    while let Some(offset) = rest.find(|c: char| !c.is_whitespace()) {
+        rest = &rest[offset..];
+
+        if let Some(after) = rest.strip_prefix("//") {
+            rest = after.find('\n').map_or("", |at| &after[at + 1..]);
+            continue;
+        }
+        if let Some(after) = rest.strip_prefix("/*") {
+            rest = after.find("*/").map_or("", |at| &after[at + 2..]);
+            continue;
+        }
+        if let Some(after) = rest.strip_prefix("if") {
+            let Some((test, after)) = balanced(after.trim_start(), '(', ')') else {
+                return false;
+            };
+            let Some((block, after)) = balanced(after.trim_start(), '{', '}') else {
+                return false;
+            };
+            // Every comparison has to be one `term_holds` can decide, or the
+            // walk takes an arm on a coin toss.
+            let readable = test
+                .split("||")
+                .flat_map(|clause| clause.split("&&"))
+                .all(readable_term);
+            if !readable || !every_statement_is_runnable(block) {
+                return false;
+            }
+            let after = match after.trim_start().strip_prefix("else") {
+                Some(tail) => {
+                    let Some((alternative, after)) = balanced(tail.trim_start(), '{', '}') else {
+                        return false;
+                    };
+                    if !every_statement_is_runnable(alternative) {
+                        return false;
+                    }
+                    after
+                }
+                None => after,
+            };
+            rest = after;
+            continue;
+        }
+
+        let end = rest.find(';').unwrap_or(rest.len());
+        let statement = rest[..end].trim();
+        rest = &rest[(end + 1).min(rest.len())..];
+        if statement.is_empty() {
+            continue;
+        }
+        let Some((subject, value)) = split_assignment(statement) else {
+            return false;
+        };
+        if subject.trim().strip_prefix("ctx.").is_none() {
+            return false;
+        }
+        let value = value.trim().trim_end_matches(';').trim();
+        // An allocation is a no-op; anything else has to be a value the walk
+        // can actually resolve.
+        if value.starts_with("new HashMap(") || value.starts_with("new ArrayList(") {
+            continue;
+        }
+        if literal_value(value).is_none()
+            && !value.strip_prefix("ctx.").is_some_and(|path| {
+                path.chars()
+                    .all(|c| c.is_alphanumeric() || "._?['\"]".contains(c))
+            })
+        {
+            return false;
+        }
+    }
+    true
+}
+
 /// As [`run_guarded_literals`], also reporting whether a `return` was reached.
 ///
 /// The flag has to travel out of the recursion: a `return` inside a block ends
@@ -3538,7 +3686,7 @@ pub(crate) fn balanced(text: &str, open: char, close: char) -> Option<(&str, &st
 ///
 /// Only where it is subscripting with a literal: `ctx['@timestamp']` is a path
 /// and `params[net.transport]` is a lookup, and the difference is the quotes.
-fn subject_path(term: &str) -> String {
+pub(crate) fn subject_path(term: &str) -> String {
     // Null-safe navigation goes too: `ctx?.event` is `ctx.event`, and leaving
     // the `?` on defeats the `ctx.` prefix every reader below strips.
     term.replace("?.", ".")
@@ -3615,11 +3763,20 @@ fn term_holds(event: &Event, term: &str) -> bool {
         };
         let held = event.get(&clean_path(path));
         let wanted = wanted.trim();
+        // A bare `true` / `false` / number is as common a right-hand side as a
+        // quoted string, and reading only the quoted form made every one of
+        // them compare FALSE -- carbon_black's netconn direction takes the
+        // wrong arm of its `== true` and writes source and destination the
+        // wrong way round.
         let matched = if wanted == "null" {
             held.is_none_or(Value::is_null)
+        } else if let Some(literal) = quoted_after(wanted, "") {
+            held.and_then(Value::as_str) == Some(literal.as_str())
         } else {
-            quoted_after(wanted, "")
-                .is_some_and(|literal| held.and_then(Value::as_str) == Some(literal.as_str()))
+            // `literal_value` reads strings and lists only, so a bare `true`
+            // or a number needs the wider reader or every such test is false.
+            crate::painless_common::painless_literal(wanted)
+                .is_some_and(|literal| held == Some(&literal))
         };
         return matched != negated;
     }

@@ -13,7 +13,7 @@
     "azure": { "events": 181, "events_total": 182, "fields_wrong": 4 },
     "azure_network_watcher_nsg": { "events": 0, "events_total": 1, "fields_wrong": 12 },
     "azure_network_watcher_vnet": { "events": 0, "events_total": 1, "fields_wrong": 12 },
-    "carbon_black_cloud": { "events": 7, "events_total": 50, "fields_wrong": 368 },
+    "carbon_black_cloud": { "events": 50, "events_total": 50, "fields_wrong": 0 },
     "checkpoint": { "events": 109, "events_total": 111, "fields_wrong": 3 },
     "cisco_asa": { "events": 510, "events_total": 512, "fields_wrong": 20 },
     "cisco_ftd": { "events": 432, "events_total": 432, "fields_wrong": 0 },

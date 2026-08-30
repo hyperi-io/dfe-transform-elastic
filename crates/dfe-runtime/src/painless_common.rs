@@ -5840,7 +5840,7 @@ fn try_case_insensitive_ladder(event: &mut Event, script: &str) -> bool {
 /// A Painless literal as the JSON value it stands for.
 ///
 /// A trailing `L` is Painless's long suffix and is not part of the number.
-fn painless_literal(text: &str) -> Option<Value> {
+pub(crate) fn painless_literal(text: &str) -> Option<Value> {
     if let Some(quoted) = quoted_first(text) {
         return Some(Value::String(quoted));
     }
@@ -8018,6 +8018,64 @@ fn parse_suffix_after_separator(script: &str) -> Option<(String, String, String)
     (source != target && !separator.is_empty()).then_some((source, target, separator))
 }
 
+/// The same cut written INLINE -- the path repeated rather than bound to a
+/// local, and landing back on the field it read.
+///
+/// ```painless
+/// ctx.process.name = ctx.process.name.substring(ctx.process.name.lastIndexOf('\\') + 1);
+/// ```
+///
+/// Neither matcher beside this one reaches it: [`parse_suffix_after_separator`]
+/// wants a local and rejects a target equal to its source, and the helper form
+/// wants a `def`. Carbon Black spells every basename this way.
+fn parse_inline_suffix_cut(script: &str) -> Option<(String, String, String)> {
+    // ONE statement, so a longer script that merely contains this text is not
+    // claimed on the strength of it.
+    let statement = script.trim().trim_end_matches([';', '\n']).trim();
+    if statement.contains(';') {
+        return None;
+    }
+    let (assigned, cut) = statement.split_once(" = ")?;
+    let target = painless_path(assigned)?;
+    let (subject, argument) = cut.split_once(".substring(")?;
+    let source = painless_path(subject)?;
+
+    // The cut has to start one past THAT field's own last separator.
+    let (indexed, offset) = argument.split_once(".lastIndexOf(")?;
+    if painless_path(indexed)? != source {
+        return None;
+    }
+    let separator = painless_unescape(&quoted_first(offset)?);
+    let rest = offset.split_once(')')?.1;
+    if separator.is_empty() || rest.trim().trim_end_matches(')').trim() != "+ 1" {
+        return None;
+    }
+    Some((source, target, separator))
+}
+
+/// A Painless string literal's escapes, resolved.
+///
+/// A Windows path separator reaches us as `'\\'` and is ONE backslash; cutting
+/// on the two characters matches nothing.
+fn painless_unescape(literal: &str) -> String {
+    let mut out = String::with_capacity(literal.len());
+    let mut chars = literal.chars();
+    while let Some(c) = chars.next() {
+        if c != '\\' {
+            out.push(c);
+            continue;
+        }
+        match chars.next() {
+            Some('n') => out.push('\n'),
+            Some('t') => out.push('\t'),
+            Some('r') => out.push('\r'),
+            Some(escaped) => out.push(escaped),
+            None => out.push('\\'),
+        }
+    }
+    out
+}
+
 /// The text after the source's LAST separator, where there is one.
 fn run_suffix_after_separator(event: &mut Event, source: &str, target: &str, sep: &str) -> bool {
     if let Some(text) = event.get_str(source)
@@ -8727,24 +8785,30 @@ fn parse_merge_map_up(script: &str) -> Option<MergeMapUp> {
         return None;
     }
 
-    // Either binding form, and nothing else: a local the script built itself
-    // is not a map the event carries.
-    let binding = script.split_once(&format!("{local} = "))?.1.trim();
-    let (source, take) = if let Some((head, tail)) = binding.split_once(".remove(") {
-        let holder = clean_path(head.rsplit_once("ctx.")?.1.trim());
-        let key = quoted_first(tail)?;
-        if holder.is_empty() || key.contains('.') {
-            return None;
-        }
-        (format!("{holder}.{key}"), true)
+    // Three ways the loop names the map, and nothing else: the path itself, a
+    // local bound to a `remove` that also consumes it, or a local bound to a
+    // plain read that leaves it. A local the script BUILT is not a map the
+    // event carries, so anything else declines here.
+    let (source, take) = if let Some(path) = local.strip_prefix("ctx.") {
+        (clean_path(path), false)
     } else {
-        let read = binding.split([';', '\n']).next()?.trim();
-        let path = clean_path(read.strip_prefix("ctx.")?.trim());
-        if path.is_empty() || path.contains(['(', ')', ' ']) {
-            return None;
+        let binding = script.split_once(&format!("{local} = "))?.1.trim();
+        if let Some((head, tail)) = binding.split_once(".remove(") {
+            let holder = clean_path(head.rsplit_once("ctx.")?.1.trim());
+            let key = quoted_first(tail)?;
+            if holder.is_empty() || key.contains('.') {
+                return None;
+            }
+            (format!("{holder}.{key}"), true)
+        } else {
+            let read = binding.split([';', '\n']).next()?.trim();
+            (clean_path(read.strip_prefix("ctx.")?.trim()), false)
         }
-        (path, false)
     };
+    // Merging a map into itself is not this shape whatever the text says.
+    if source.is_empty() || source == parent || source.contains(['(', ')', ' ']) {
+        return None;
+    }
 
     let keep_existing = script.contains(&format!("!ctx.{parent}.containsKey({entry}.getKey())"));
 
@@ -8788,6 +8852,116 @@ fn run_merge_map_up(event: &mut Event, shape: &MergeMapUp) -> bool {
     }
     for path in &shape.drops {
         event.remove(path);
+    }
+    true
+}
+
+/// A list of hashes split into typed fields by the LENGTH of each one.
+///
+/// ```painless
+/// void mapHashField(def ctx, def hashes, def key) {
+///     for (hash in hashes) {
+///         if (hash.length() == 32) {ctx.json[key + '_md5'] = hash;}
+///         if (hash.length() == 64) {ctx.json[key + '_sha256'] = hash;}
+///     }
+/// }
+/// if (ctx.json?.process_hash instanceof List) {
+///     mapHashField(ctx, ctx.json?.process_hash, 'process_hash');
+/// }
+/// ```
+///
+/// Carbon Black ships every hash as an untyped list and leaves the algorithm
+/// to be inferred from the width. The renames after it read the typed keys,
+/// so an unclaimed script here costs `process.hash.*`,
+/// `process.parent.hash.*` and everything `related.hash` collects.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct HashesByLength {
+    /// Where the typed keys land.
+    parent: String,
+    /// Each list's `ctx.` path, and the key its typed fields are named for.
+    lists: Vec<(String, String)>,
+    /// Hex width to key suffix, in the order the script tests them.
+    widths: Vec<(usize, String)>,
+}
+
+fn parse_hashes_by_length(script: &str) -> Option<HashesByLength> {
+    use crate::painless_params::{balanced, clean_path, skip_trivia, subject_path};
+
+    // The helper's declaration names all three of the locals its body spells.
+    let declaration = script.split_once("void ")?.1;
+    let open = declaration.find('(')?;
+    let name = declaration[..open].trim();
+    let (arguments, after) = balanced(&declaration[open..], '(', ')')?;
+    let parameters: Vec<&str> = arguments
+        .split(',')
+        .filter_map(|argument| argument.trim().rsplit(' ').next())
+        .collect();
+    let [_, hashes, key] = parameters[..] else {
+        return None;
+    };
+    let (body, _) = balanced(skip_trivia(after), '{', '}')?;
+
+    let item = body.split_once(" in ")?.0.trim().rsplit(' ').next()?;
+    if !body.contains(&format!("{item} in {hashes}")) {
+        return None;
+    }
+
+    let test = format!("{item}.length() == ");
+    let mut widths = Vec::new();
+    let mut parent = String::new();
+    for segment in body.split(&test).skip(1) {
+        let (digits, tail) = segment.split_once(')')?;
+        let width: usize = digits.trim().parse().ok()?;
+        let (holder, suffix) = tail.split_once(&format!("[{key} + "))?;
+        widths.push((width, quoted_first(suffix)?));
+        // The holder is written either dotted or subscripted with a literal,
+        // and `ctx['json']` names the same map as `ctx.json`.
+        parent = clean_path(subject_path(holder).rsplit_once("ctx.")?.1.trim());
+    }
+    if widths.is_empty() || parent.is_empty() {
+        return None;
+    }
+
+    // Every call site, each naming one list and the key it is typed under.
+    let call = format!("{name}(");
+    let lists: Vec<(String, String)> = script
+        .match_indices(&call)
+        .skip(1)
+        .filter_map(|(at, matched)| {
+            let arguments = &script[at + matched.len()..];
+            let (_, tail) = arguments.split_once("ctx.")?;
+            let path = clean_path(tail.split(',').next()?.trim());
+            let typed_as = quoted_first(arguments.split(')').next()?)?;
+            (!path.is_empty()).then_some((path, typed_as))
+        })
+        .collect();
+    (!lists.is_empty()).then_some(HashesByLength {
+        parent,
+        lists,
+        widths,
+    })
+}
+
+fn run_hashes_by_length(event: &mut Event, shape: &HashesByLength) -> bool {
+    for (path, key) in &shape.lists {
+        // Anything but a list is the script's own `instanceof List` guard.
+        let Some(Value::Array(hashes)) = event.get(path) else {
+            continue;
+        };
+        let typed: Vec<(String, String)> = hashes
+            .iter()
+            .filter_map(Value::as_str)
+            .filter_map(|hash| {
+                let (_, suffix) = shape
+                    .widths
+                    .iter()
+                    .find(|(width, _)| hash.chars().count() == *width)?;
+                Some((format!("{}.{key}{suffix}", shape.parent), hash.to_string()))
+            })
+            .collect();
+        for (target, hash) in typed {
+            let _ = event.set(&target, Value::String(hash));
+        }
     }
     true
 }
@@ -9219,9 +9393,11 @@ pub(crate) enum KnownShape {
         divisor: i64,
     },
     GuardedCopy,
+    PlainAssignments,
     ClassifyLadder(Box<ClassifyLadder>),
     MoveKeys(Vec<(String, String)>),
     MergeMapUp(Box<MergeMapUp>),
+    HashesByLength(Box<HashesByLength>),
     UnreservedKeyPayload(Box<UnreservedKeyPayload>),
     SuffixesByPrefix(Box<SuffixesByPrefix>),
     BranchCopies(Vec<BranchCopy>),
@@ -9343,6 +9519,15 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: a list of hashes split into typed fields by the LENGTH of each.
+    if normalised.contains(".length() == ")
+        && normalised.contains("instanceof List")
+        && let Some(shape) = parse_hashes_by_length(normalised)
+    {
+        shapes.push(KnownShape::HashesByLength(Box::new(shape)));
+        return shapes;
+    }
+
     // Pattern: the one key of an envelope that is not envelope names the
     // event, and its value is the payload.
     if normalised.contains(".keySet()")
@@ -9457,8 +9642,11 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains("lastIndexOf(") && normalised.contains(".substring(") {
         shapes.push(KnownShape::Basename);
         // Pattern: the same cut, but written straight onto a ctx path and
-        // landing on a DIFFERENT one -- `file.name` to `file.extension`.
-        if let Some((source, target, separator)) = parse_suffix_after_separator(normalised) {
+        // landing on a DIFFERENT one -- `file.name` to `file.extension` -- or
+        // written inline and landing back on the field it read.
+        if let Some((source, target, separator)) =
+            parse_suffix_after_separator(normalised).or_else(|| parse_inline_suffix_cut(normalised))
+        {
             shapes.push(KnownShape::SuffixAfterSeparator {
                 source,
                 target,
@@ -10466,11 +10654,19 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
-    // Running the statements a script writes that CAN be read, as a last
-    // resort, was tried and is NOT here: it moved nothing and cost gcp eight
-    // fields. A partial read writes a value where Elastic's whole script
-    // would have written a different one, and the corpus says that is worse
-    // than writing nothing.
+    // Pattern: nothing BUT statements the walk can run -- allocations, copies,
+    // literals, and branches on comparisons it can decide. Running the
+    // readable statements of ANY script was tried as a catch-all and rejected,
+    // because a partial read writes a value where the vendor's whole script
+    // would have written a different one. This is that walk with the hole
+    // closed: a script qualifies only when nothing in it is skipped, so what
+    // runs is the whole of what the vendor wrote. carbon_black's netconn
+    // direction is the shape.
+    if crate::painless_params::every_statement_is_runnable(normalised) {
+        shapes.push(KnownShape::PlainAssignments);
+        return shapes;
+    }
+
     shapes
 }
 
@@ -10794,6 +10990,9 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             divisor,
         } => run_guarded_divide(event, target, absent.as_ref(), *divisor),
         KnownShape::GuardedCopy => try_guarded_copy(event, normalised),
+        KnownShape::PlainAssignments => {
+            crate::painless_params::run_guarded_literals(event, normalised)
+        }
         KnownShape::BranchCopies(branches) => run_branch_copies(event, branches),
         KnownShape::PrivateCidrDirection {
             source,
@@ -10804,6 +11003,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::MoveKeys(moves) => run_move_keys(event, moves),
         KnownShape::MergeMapUp(shape) => run_merge_map_up(event, shape),
         KnownShape::UnreservedKeyPayload(shape) => run_unreserved_key_payload(event, shape),
+        KnownShape::HashesByLength(shape) => run_hashes_by_length(event, shape),
         KnownShape::SuffixesByPrefix(shape) => run_suffixes_by_prefix(event, shape),
     }
 }
@@ -14473,6 +14673,37 @@ def event_timezone = get_timezone(ctx);
 
         assert!(try_known_painless(&mut event, script));
         assert_eq!(event.get("ocsf.resource"), Some(&json!({ "type": "t" })));
+    }
+
+    /// Verbatim from `pipelines/carbon_black_cloud/endpoint_event/default.yml`:
+    /// allocate the containers, copy the local address, then pick source and
+    /// destination by the inbound flag. Every statement is one the walk can
+    /// run, so the whole of it runs rather than none of it.
+    #[test]
+    fn a_script_of_only_runnable_statements_runs_whole() {
+        let script = "// These allocations may be futile.\n\
+            if (ctx.client == null) {\n  ctx.client = new HashMap();\n}\n\
+            if (ctx.source == null) {\n  ctx.source = new HashMap();\n}\n\
+            if (ctx.destination == null) {\n  ctx.destination = new HashMap();\n}\n\
+            ctx.client.ip = ctx.json.local_ip;\n\
+            ctx.client.port = ctx.json.local_port;\n\
+            if (ctx.json?.netconn_inbound == true) {\n  \
+            ctx.destination.ip = ctx.json?.local_ip;\n  \
+            ctx.source.ip = ctx.json?.remote_ip;\n\
+            } else {\n  \
+            ctx.source.ip = ctx.json?.local_ip;\n  \
+            ctx.destination.ip = ctx.json?.remote_ip;\n}\n";
+        let mut event = Event::new(json!({
+            "json": { "local_ip": "127.0.0.1", "local_port": 62909,
+                      "remote_ip": "67.43.156.14", "netconn_inbound": true }
+        }));
+
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get("client.ip"), Some(&json!("127.0.0.1")));
+        assert_eq!(event.get("client.port"), Some(&json!(62909)));
+        // The inbound arm, which the bare `== true` comparison decides.
+        assert_eq!(event.get("destination.ip"), Some(&json!("127.0.0.1")));
+        assert_eq!(event.get("source.ip"), Some(&json!("67.43.156.14")));
     }
 
     /// Verbatim from `pipelines/mimecast/cloud_integrated_logs/default.yml`,
