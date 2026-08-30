@@ -8,7 +8,7 @@
     "anthropic": { "events": 306, "events_total": 306, "fields_wrong": 0 },
     "arista_ngfw": { "events": 137, "events_total": 141, "fields_wrong": 5 },
     "auth0": { "events": 111, "events_total": 111, "fields_wrong": 0 },
-    "aws": { "events": 531, "events_total": 538, "fields_wrong": 7 },
+    "aws": { "events": 532, "events_total": 538, "fields_wrong": 6 },
     "aws_securityhub": { "events": 0, "events_total": 10, "fields_wrong": 164 },
     "azure": { "events": 181, "events_total": 182, "fields_wrong": 4 },
     "azure_network_watcher_nsg": { "events": 0, "events_total": 1, "fields_wrong": 12 },

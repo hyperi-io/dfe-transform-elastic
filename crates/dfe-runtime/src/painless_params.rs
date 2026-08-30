@@ -3583,6 +3583,15 @@ pub(crate) fn every_statement_is_runnable(body: &str) -> bool {
         if value.starts_with("new HashMap(") || value.starts_with("new ArrayList(") {
             continue;
         }
+        if let Some(inner) = value
+            .strip_prefix("String.valueOf(")
+            .and_then(|rest| rest.strip_suffix(')'))
+        {
+            if inner.trim().starts_with("ctx.") {
+                continue;
+            }
+            return false;
+        }
         if literal_value(value).is_none()
             && !value.strip_prefix("ctx.").is_some_and(|path| {
                 path.chars()
@@ -3843,7 +3852,20 @@ fn run_literal_statement(event: &mut Event, statement: &str) -> bool {
 /// The value a statement writes: a literal, or a `ctx.` field read off the
 /// event.
 fn written_value(event: &Event, text: &str) -> Option<Value> {
-    let text = text.trim().trim_end_matches([')', ';']).trim();
+    let text = text.trim().trim_end_matches(';').trim();
+    // `String.valueOf(ctx.a.b)` is the vendors' spelling of "write this as
+    // text", and aws stamps `management_event` with it.
+    if let Some(inner) = text
+        .strip_prefix("String.valueOf(")
+        .and_then(|rest| rest.strip_suffix(')'))
+    {
+        let path = inner.trim().strip_prefix("ctx.")?;
+        return event
+            .get(&clean_path(path))
+            .and_then(scalar_text)
+            .map(Value::String);
+    }
+    let text = text.trim_end_matches(')').trim();
     if let Some(path) = text.strip_prefix("ctx.") {
         // A source path and nothing else. `ctx.a + ctx.b` and a method call
         // on one are different shapes with their own matchers.
