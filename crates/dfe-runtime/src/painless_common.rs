@@ -3148,34 +3148,41 @@ pub fn keys_to_snake_case(value: &mut Value) {
     }
 }
 
-/// The `convertToSnakeCase` helper the integrations copy verbatim between
-/// packages -- `sentinel_one`'s `unified_alert` and `entityanalytics_entra_id`'s
-/// user and device all carry the same twenty lines.
+/// The `convertToSnakeCase` helper the integrations copy between packages.
 ///
-/// Two details separate it from [`keys_to_snake_case`], and both are visible
-/// in the fixtures. A key holding an `@` is DROPPED rather than renamed, which
-/// is how Microsoft's `@odata.*` metadata stays out of the document. And the
-/// underscore goes in wherever the previous character was not itself
-/// uppercase, digits included, so `cve2021Id` becomes `cve2021_id`.
+/// It is copied, not shared, so the copies have DIVERGED and the two
+/// differences both change the output. `sentinel_one`'s `unified_alert` and
+/// `entityanalytics_entra_id` break the word wherever the previous character
+/// was not itself uppercase -- digits and dots included, so `cve2021Id` becomes
+/// `cve2021_id` -- and DROP a key holding an `@`, which is how Microsoft's
+/// `@odata.*` metadata stays out of the document. `jupiter_one`'s breaks only
+/// after a lowercase character and keeps every key, so its literal `tag.`-dotted
+/// keys stay `tag.account_name` where the other rule writes `tag._account_name`.
+/// [`snake_case_apply`] reads which is which off the script.
 ///
 /// Returns a new value; the script assigns the result rather than mutating.
 #[must_use]
-pub fn camel_map_to_snake(value: &Value) -> Value {
+pub fn camel_map_to_snake(value: &Value, rule: SnakeRule, drop_at_keys: bool) -> Value {
     match value {
         Value::Object(map) => {
             let mut out = serde_json::Map::with_capacity(map.len());
             for (key, inner) in map {
-                if key.contains('@') {
+                if drop_at_keys && key.contains('@') {
                     continue;
                 }
                 out.insert(
-                    to_snake_case(key, SnakeRule::AfterNonUpper),
-                    camel_map_to_snake(inner),
+                    to_snake_case(key, rule),
+                    camel_map_to_snake(inner, rule, drop_at_keys),
                 );
             }
             Value::Object(out)
         }
-        Value::Array(items) => Value::Array(items.iter().map(camel_map_to_snake).collect()),
+        Value::Array(items) => Value::Array(
+            items
+                .iter()
+                .map(|item| camel_map_to_snake(item, rule, drop_at_keys))
+                .collect(),
+        ),
         other => other.clone(),
     }
 }
@@ -3798,12 +3805,26 @@ fn try_answers_from_resolved_ip(event: &mut Event) -> bool {
     true
 }
 
-/// The `ctx.<target> = <fn>(ctx.<source>)` line the converter is applied by.
+/// The `ctx.<target> = <fn>(ctx.<source>)` line the converter is applied by,
+/// plus the two ways the copies of the helper disagree.
 ///
-/// The two spellings differ only in whether the target is the source: `entra_id`
-/// rewrites its own object in place, `sentinel_one` writes the converted `json`
-/// somewhere new. Both are one assignment, so one reader covers them.
-fn snake_case_apply(script: &str) -> Option<(String, String)> {
+/// The spellings differ in whether the target is the source: `entra_id`
+/// rewrites its own object in place, `sentinel_one` and `jupiter_one` write the
+/// converted `json` somewhere new. Both are one assignment, so one reader
+/// covers them. `jupiter_one` then REMOVES the source, and reading that off the
+/// script is what keeps its whole `json` tree out of the document.
+fn snake_case_apply(script: &str) -> Option<KnownShape> {
+    // Which word-break rule the copied helper implements. `lastCharWasUpperCase`
+    // is cleared by any non-uppercase character, a dot included; the other guard
+    // asks about the previous character directly and breaks only after a
+    // lowercase one. See [`camel_map_to_snake`].
+    let rule = if script.contains("Character.isLowerCase(str.charAt(i - 1))") {
+        SnakeRule::OnWordBreak
+    } else {
+        SnakeRule::AfterNonUpper
+    };
+    let drop_at_keys = script.contains(".contains(\"@\")") || script.contains(".contains('@')");
+
     for line in script.lines().rev() {
         let line = line.trim().trim_end_matches(';');
         let Some((target, rhs)) = line.split_once(" = ") else {
@@ -3822,9 +3843,28 @@ fn snake_case_apply(script: &str) -> Option<(String, String)> {
         if !argument.starts_with("ctx.") {
             continue;
         }
-        return Some((target[4..].to_string(), argument[4..].to_string()));
+        return Some(KnownShape::CamelToSnake {
+            target: target[4..].to_string(),
+            source: argument[4..].to_string(),
+            rule,
+            drop_at_keys,
+            removes: ctx_removes(script),
+        });
     }
     None
+}
+
+/// Every top-level `ctx.remove('<field>')` the script makes, in order.
+fn ctx_removes(script: &str) -> Vec<String> {
+    script
+        .match_indices("ctx.remove(")
+        .filter_map(|(at, marker)| {
+            let rest = &script[at + marker.len()..];
+            let (name, _) = rest.split_once(')')?;
+            let name = name.trim().trim_matches(['\'', '"']);
+            (!name.is_empty()).then(|| clean_path(name))
+        })
+        .collect()
 }
 
 /// Extract process fields from a command line string.
@@ -8856,6 +8896,126 @@ fn run_merge_map_up(event: &mut Event, shape: &MergeMapUp) -> bool {
     true
 }
 
+/// The value the document's POSITION in a list decides -- first, last, or
+/// somewhere between.
+///
+/// ```painless
+/// def evs = ctx.json.events;
+/// def ts = ctx.json.timestamp;
+/// int idx = -1;
+/// for (int i = 0; i < evs.size(); i++) {
+///   if (evs[i] instanceof Map && evs[i].timestamp == ts) { idx = i; break; }
+/// }
+/// if (idx != -1) {
+///   if (ctx.event == null) { ctx.event = [:]; }
+///   if (idx == evs.size() - 1) { ctx.event.type = ['end']; }
+///   else if (idx == 0) { ctx.event.type = ['start']; }
+///   else { ctx.event.type = ['info']; }
+/// }
+/// ```
+///
+/// kolide's auth stream repeats the whole session in `json.events` on every
+/// document, so this is what says which of them this one is. The LAST test wins
+/// a single-entry list, which is the case the ordering exists for: index 0 is
+/// also index `size - 1` there, and the session ended.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct PositionInList {
+    /// The list this document is looked for in.
+    list: String,
+    /// The document's own copy of what the entries are matched on.
+    key: String,
+    /// The member of each entry compared against `key`.
+    member: String,
+    /// Where the decided value lands.
+    target: String,
+    /// Written for the last entry, the first entry, and anything between.
+    last: Value,
+    first: Value,
+    middle: Value,
+}
+
+fn parse_position_in_list(script: &str) -> Option<PositionInList> {
+    use crate::painless_params::{balanced, clean_path, literal_writes, skip_trivia};
+
+    // `def evs = ctx.json.events;` and then `def ts = ctx.json.timestamp;`.
+    let (head, rest) = script.split_once(" = ctx.")?;
+    let items = head.rsplit(' ').next()?.trim().to_string();
+    let (walked, rest) = rest.split_once(';')?;
+    let (head, rest) = rest.split_once(" = ctx.")?;
+    let wanted = head.rsplit(' ').next()?.trim().to_string();
+    let (key, rest) = rest.split_once(';')?;
+    if items.is_empty() || wanted.is_empty() {
+        return None;
+    }
+
+    // The member each entry is matched on, and the local it is matched against.
+    let (_, test) = rest.split_once(&format!("{items}[i]."))?;
+    let (member, against) = test.split_once("==")?;
+    let matched = against.split([')', '&', '|', ';']).next()?.trim();
+    if matched != wanted || member.trim().is_empty() {
+        return None;
+    }
+
+    // The three-armed ladder over the index, in the order the script tests it.
+    let at = script.find(&format!("{items}.size() - 1"))?;
+    let opens = script[..at].rfind("if")? + "if".len();
+    let (_, after) = balanced(skip_trivia(&script[opens..]), '(', ')')?;
+    let (last, after) = balanced(skip_trivia(after), '{', '}')?;
+    let after = skip_trivia(after).strip_prefix("else")?;
+    let after = skip_trivia(after).strip_prefix("if")?;
+    let (_, after) = balanced(skip_trivia(after), '(', ')')?;
+    let (first, after) = balanced(skip_trivia(after), '{', '}')?;
+    let after = skip_trivia(after).strip_prefix("else")?;
+    let (middle, _) = balanced(skip_trivia(after), '{', '}')?;
+
+    // One write per arm, all three onto the same field, or this is a ladder
+    // that means something else.
+    let [last, first, middle] = [last, first, middle].map(literal_writes);
+    let ([(target, last)], [(first_at, first)], [(middle_at, middle)]) =
+        (last.as_slice(), first.as_slice(), middle.as_slice())
+    else {
+        return None;
+    };
+    (target == first_at && target == middle_at).then(|| PositionInList {
+        list: clean_path(walked.trim()),
+        key: clean_path(key.trim()),
+        member: member.trim().to_string(),
+        target: target.clone(),
+        last: last.clone(),
+        first: first.clone(),
+        middle: middle.clone(),
+    })
+}
+
+fn run_position_in_list(event: &mut Event, shape: &PositionInList) -> bool {
+    let found = {
+        let (Some(items), Some(wanted)) = (
+            event.get(&shape.list).and_then(Value::as_array),
+            event.get(&shape.key),
+        ) else {
+            return true;
+        };
+        items
+            .iter()
+            .position(|item| item.is_object() && item.get(&shape.member) == Some(wanted))
+            .map(|at| (at, items.len()))
+    };
+    let Some((at, len)) = found else {
+        return true;
+    };
+
+    let value = if at + 1 == len {
+        &shape.last
+    } else if at == 0 {
+        &shape.first
+    } else {
+        &shape.middle
+    };
+    let value = value.clone();
+    let _ = event.set(&shape.target, value);
+    true
+}
+
 /// A dotted name split into its FIRST label and the rest of it.
 ///
 /// ```painless
@@ -9507,6 +9667,9 @@ pub(crate) enum KnownShape {
     CamelToSnake {
         target: String,
         source: String,
+        rule: SnakeRule,
+        drop_at_keys: bool,
+        removes: Vec<String>,
     },
     SplitTrimCollect,
     SumDirections(&'static str),
@@ -9568,6 +9731,7 @@ pub(crate) enum KnownShape {
     MoveKeys(Vec<(String, String)>),
     MergeMapUp(Box<MergeMapUp>),
     MapEntryToBoolean(Box<MapEntryToBoolean>),
+    PositionInList(Box<PositionInList>),
     SplitFirstLabel(Box<SplitFirstLabel>),
     HashesByLength(Box<HashesByLength>),
     UnreservedKeyPayload(Box<UnreservedKeyPayload>),
@@ -9643,6 +9807,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_flags_present(normalised)
     {
         shapes.push(KnownShape::FlagsPresent(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: the value this document's POSITION in a list decides. Early,
+    // beside the other `instanceof Map` walks, so nothing downstream reads its
+    // three-armed index ladder as a value table over a field.
+    if normalised.contains("instanceof Map")
+        && normalised.contains(".size() - 1")
+        && let Some(shape) = parse_position_in_list(normalised)
+    {
+        shapes.push(KnownShape::PositionInList(Box::new(shape)));
         return shapes;
     }
 
@@ -10426,9 +10601,9 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // then does nothing with.
     if normalised.contains("Character.isUpperCase(")
         && normalised.contains("instanceof Map")
-        && let Some((target, source)) = snake_case_apply(normalised)
+        && let Some(shape) = snake_case_apply(normalised)
     {
-        shapes.push(KnownShape::CamelToSnake { target, source });
+        shapes.push(shape);
         return shapes;
     }
 
@@ -11095,10 +11270,20 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::StructuredRdataAnswers => try_structured_rdata_answers(event),
         KnownShape::RelatedFromDnsAnswers => try_related_from_dns_answers(event),
         KnownShape::AnswersFromResolvedIp => try_answers_from_resolved_ip(event),
-        KnownShape::CamelToSnake { target, source } => {
+        KnownShape::CamelToSnake {
+            target,
+            source,
+            rule,
+            drop_at_keys,
+            removes,
+        } => {
             if let Some(value) = event.get(source) {
-                let converted = camel_map_to_snake(value);
+                let converted = camel_map_to_snake(value, *rule, *drop_at_keys);
                 let _ = event.set(target, converted);
+            }
+            // Outside the null guard, exactly as the script writes it.
+            for path in removes {
+                event.remove(path);
             }
             true
         }
@@ -11195,6 +11380,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::UnreservedKeyPayload(shape) => run_unreserved_key_payload(event, shape),
         KnownShape::HashesByLength(shape) => run_hashes_by_length(event, shape),
         KnownShape::MapEntryToBoolean(shape) => run_map_entry_to_boolean(event, shape),
+        KnownShape::PositionInList(shape) => run_position_in_list(event, shape),
         KnownShape::SplitFirstLabel(shape) => run_split_first_label(event, shape),
         KnownShape::SuffixesByPrefix(shape) => run_suffixes_by_prefix(event, shape),
     }
@@ -14096,13 +14282,145 @@ def event_timezone = get_timezone(ctx);
         );
     }
 
-    /// The integrations' own rule breaks the word wherever the PREVIOUS
-    /// character was not uppercase, which a digit satisfies.
+    /// Verbatim from kolide's auth stream. A single-entry list is BOTH the
+    /// first and the last entry, and the script's own order says last.
+    #[test]
+    fn a_lone_list_entry_is_the_last_one() {
+        let script = "def evs = ctx.json.events;\n\
+             def ts = ctx.json.timestamp;\n\
+             int idx = -1;\n\
+             for (int i = 0; i < evs.size(); i++) {\n\
+             if (evs[i] instanceof Map && evs[i].timestamp == ts) { idx = i; break; }\n\
+             }\n\
+             if (idx != -1) {\n\
+             if (ctx.event == null) { ctx.event = [:]; }\n\
+             if (idx == evs.size() - 1) {\n\
+             ctx.event.type = ['end'];\n\
+             } else if (idx == 0) {\n\
+             ctx.event.type = ['start'];\n\
+             } else {\n\
+             ctx.event.type = ['info'];\n\
+             }\n\
+             }";
+
+        for (timestamp, wanted) in [("a", "end"), ("b", "start"), ("c", "info"), ("d", "end")] {
+            let mut event = Event::new(json!({
+                "json": {
+                    "timestamp": timestamp,
+                    "events": if timestamp == "a" {
+                        json!([{"timestamp": "a"}])
+                    } else {
+                        json!([{"timestamp": "b"}, {"timestamp": "c"}, {"timestamp": "d"}])
+                    },
+                }
+            }));
+            assert!(try_known_painless(&mut event, script));
+            assert_eq!(
+                event.get("event.type"),
+                Some(&json!([wanted])),
+                "entry {timestamp}",
+            );
+        }
+    }
+
+    /// A document whose own key is in no entry of the list leaves the field
+    /// alone -- the script's `idx != -1` guard.
+    #[test]
+    fn a_document_outside_the_list_writes_nothing() {
+        let script = "def evs = ctx.json.events;\n\
+             def ts = ctx.json.timestamp;\n\
+             int idx = -1;\n\
+             for (int i = 0; i < evs.size(); i++) {\n\
+             if (evs[i] instanceof Map && evs[i].timestamp == ts) { idx = i; break; }\n\
+             }\n\
+             if (idx != -1) {\n\
+             if (idx == evs.size() - 1) {\n\
+             ctx.event.type = ['end'];\n\
+             } else if (idx == 0) {\n\
+             ctx.event.type = ['start'];\n\
+             } else {\n\
+             ctx.event.type = ['info'];\n\
+             }\n\
+             }";
+        let mut event = Event::new(json!({
+            "event": {"type": ["info"]},
+            "json": {"timestamp": "z", "events": [{"timestamp": "a"}]},
+        }));
+
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get("event.type"), Some(&json!(["info"])));
+    }
+
+    /// `sentinel_one`'s rule breaks the word wherever the PREVIOUS character was
+    /// not uppercase, which a digit satisfies.
     #[test]
     fn camel_to_snake_breaks_after_a_digit() {
-        let converted = camel_map_to_snake(&json!({"cve2021Id": 1, "HTTPServer": 2}));
+        let converted = camel_map_to_snake(
+            &json!({"cve2021Id": 1, "HTTPServer": 2}),
+            SnakeRule::AfterNonUpper,
+            true,
+        );
         assert!(converted.get("cve2021_id").is_some(), "{converted}");
         assert!(converted.get("httpserver").is_some(), "{converted}");
+    }
+
+    /// `jupiter_one`'s copy of the helper diverged: it breaks only after a
+    /// LOWERCASE character and removes the object it converted. Its payload
+    /// carries keys with a literal dot, so under the other rule every one of
+    /// them gained an underscore Elastic does not write.
+    #[test]
+    fn camel_to_snake_after_a_lowercase_only_and_removes_the_source() {
+        let script = "String camelToSnake(String str) {\n\
+             def result = \"\";\n\
+             for (int i = 0; i < str.length(); i++) {\n\
+             char c = str.charAt(i);\n\
+             if (Character.isUpperCase(c)) {\n\
+             if (i > 0 && Character.isLowerCase(str.charAt(i - 1))) {\n\
+             result += \"_\";\n\
+             }\n\
+             result += Character.toLowerCase(c);\n\
+             } else {\n\
+             result += c;\n\
+             }\n\
+             }\n\
+             return result;\n\
+             }\n\
+             def convertToSnakeCase(def obj) {\n\
+             if (obj instanceof Map) {\n\
+             def newObj = [:];\n\
+             for (entry in obj.entrySet()) {\n\
+             String newKey = camelToSnake(entry.getKey());\n\
+             newObj[newKey] = convertToSnakeCase(entry.getValue());\n\
+             }\n\
+             return newObj;\n\
+             } else if (obj instanceof List) {\n\
+             def newList = [];\n\
+             for (item in obj) {\n\
+             newList.add(convertToSnakeCase(item));\n\
+             }\n\
+             return newList;\n\
+             } else {\n\
+             return obj;\n\
+             }\n\
+             }\n\
+             ctx.jupiter_one = ctx.jupiter_one ?: [:];\n\
+             if (ctx.json != null) {\n\
+             ctx.jupiter_one.asset = convertToSnakeCase(ctx.json);\n\
+             }\n\
+             ctx.remove('json');";
+        let mut event = Event::new(json!({
+            "json": {"properties": {"tag.AccountName": ["test"], "webLink": "u"}}
+        }));
+
+        assert!(try_known_painless(&mut event, script));
+        let properties = event.get("jupiter_one.asset.properties").unwrap();
+        assert_eq!(
+            properties.get("tag.account_name"),
+            Some(&json!(["test"])),
+            "a dot is not a lowercase character, so the word does not break there: {properties}",
+        );
+        assert_eq!(properties.get("web_link"), Some(&json!("u")));
+        assert!(!event.has("json"), "the script removes what it converted");
     }
 
     /// A value map written as an if/else-if chain with `.put()` as the write.

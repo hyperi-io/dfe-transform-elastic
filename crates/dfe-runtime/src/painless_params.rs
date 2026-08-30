@@ -1584,7 +1584,7 @@ fn if_else_blocks(text: &str) -> Option<(&str, &str, &str, &str)> {
 /// contributes nothing -- audit's fallback derives its `event.type` from a
 /// local the ladder above it sets, and reading that as a literal would write
 /// the word `type`.
-fn literal_writes(block: &str) -> Vec<(String, Value)> {
+pub(crate) fn literal_writes(block: &str) -> Vec<(String, Value)> {
     let mut out = Vec::new();
     for statement in block.split(';') {
         let Some((subject, value)) = split_assignment(statement) else {
