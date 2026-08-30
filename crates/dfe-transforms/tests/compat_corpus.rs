@@ -515,6 +515,64 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("platform_observability", "kibana_log") => {
             &filebeat::platform_observability_kibana_log::default::Default
         }
+        ("auditd_manager", "auditd") => &filebeat::auditd_manager_auditd::default::Default,
+        ("awsfirehose", "logs") => &filebeat::awsfirehose_logs::default::Default,
+        ("awsfirehose", "metrics") => &filebeat::awsfirehose_metrics::default::Default,
+        ("azure_functions", "functionapplogs") => {
+            &filebeat::azure_functions_functionapplogs::default::Default
+        }
+        ("azure_functions", "metrics") => &filebeat::azure_functions_metrics::default::Default,
+        ("beyondtrust_isi", "incident") => &filebeat::beyondtrust_isi_incident::default::Default,
+        ("bitsight", "vulnerability") => &filebeat::bitsight_vulnerability::default::Default,
+        ("cassandra", "log") => &filebeat::cassandra_log::default::Default,
+        ("cassandra", "metrics") => &filebeat::cassandra_metrics::default::Default,
+        ("cisa_kevs", "vulnerability") => &filebeat::cisa_kevs_vulnerability::default::Default,
+        ("citrix_waf", "log") => &filebeat::citrix_waf_log::default::Default,
+        ("couchdb", "server") => &filebeat::couchdb_server::default::Default,
+        ("cyberark_pta", "events") => &filebeat::cyberark_pta_events::default::Default,
+        ("elastic_security", "alert") => &filebeat::elastic_security_alert::default::Default,
+        ("ess_billing", "credits") => &filebeat::ess_billing_credits::default::Default,
+        ("forcepoint_web", "logs") => &filebeat::forcepoint_web_logs::default::Default,
+        ("fortinet_fortiedr", "log") => &filebeat::fortinet_fortiedr_log::default::Default,
+        ("goflow2", "sflow") => &filebeat::goflow2_sflow::default::Default,
+        ("golang", "expvar") => &filebeat::golang_expvar::default::Default,
+        ("golang", "heap") => &filebeat::golang_heap::default::Default,
+        ("greenhouse", "audit") => &filebeat::greenhouse_audit::default::Default,
+        ("haproxy", "log") => &filebeat::haproxy_log::default::Default,
+        ("hashicorp_vault", "audit") => &filebeat::hashicorp_vault_audit::default::Default,
+        ("hashicorp_vault", "log") => &filebeat::hashicorp_vault_log::default::Default,
+        ("hashicorp_vault", "metrics") => &filebeat::hashicorp_vault_metrics::default::Default,
+        ("iptables", "log") => &filebeat::iptables_log::default::Default,
+        ("kubernetes", "audit_logs") => &filebeat::kubernetes_audit_logs::default::Default,
+        ("kubernetes", "container_logs") => &filebeat::kubernetes_container_logs::default::Default,
+        ("microsoft_dhcp", "log") => &filebeat::microsoft_dhcp_log::default::Default,
+        ("mongodb", "log") => &filebeat::mongodb_log::default::Default,
+        ("nats", "log") => &filebeat::nats_log::default::Default,
+        ("osquery", "result") => &filebeat::osquery_result::default::Default,
+        ("php_fpm", "pool") => &filebeat::php_fpm_pool::default::Default,
+        ("php_fpm", "process") => &filebeat::php_fpm_process::default::Default,
+        ("pps", "log") => &filebeat::pps_log::default::Default,
+        ("qnap_nas", "log") => &filebeat::qnap_nas_log::default::Default,
+        ("sailpoint_identity_sc", "events") => {
+            &filebeat::sailpoint_identity_sc_events::default::Default
+        }
+        ("santa", "log") => &filebeat::santa_log::default::Default,
+        ("stan", "log") => &filebeat::stan_log::default::Default,
+        ("tetragon", "log") => &filebeat::tetragon_log::default::Default,
+        ("thycotic_ss", "logs") => &filebeat::thycotic_ss_logs::default::Default,
+        ("ti_maltiverse", "indicator") => &filebeat::ti_maltiverse_indicator::default::Default,
+        ("ti_strider", "indicator") => &filebeat::ti_strider_indicator::default::Default,
+        ("varonis", "logs") => &filebeat::varonis_logs::default::Default,
+        ("withsecure_elements", "incidents") => {
+            &filebeat::withsecure_elements_incidents::default::Default
+        }
+        ("withsecure_elements", "security_events") => {
+            &filebeat::withsecure_elements_security_events::default::Default
+        }
+        ("zerofox", "alerts") => &filebeat::zerofox_alerts::default::Default,
+        ("zeronetworks", "audit") => &filebeat::zeronetworks_audit::default::Default,
+        ("ess_billing", "billing") => &filebeat::ess_billing_billing::default::Default,
+        ("lyve_cloud", "audit") => &filebeat::lyve_cloud_audit::default::Default,
         _ => return None,
     })
 }

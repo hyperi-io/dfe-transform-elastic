@@ -98,6 +98,10 @@ impl Fold {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum ParamsShape {
     AwsEntity(Box<crate::painless_entity::EntityScript>),
+    DropEmptyMembers {
+        parent: String,
+        list: String,
+    },
     SysmonQueryResults,
     SysmonRegistry,
     MessageTable,
@@ -225,6 +229,15 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // Pattern: strip the vendor's sentinel values out of a map.
     if normalised.contains(".entrySet().removeIf(") && normalised.contains("entry.getValue()") {
         return Some(ParamsShape::SentinelRemoval);
+    }
+
+    // Pattern: empty-string members dropped from each of the sub-maps params
+    // names. Ahead of every table matcher, whose `params.<name>` trigger this
+    // also spells and which reads the list as a lookup table.
+    if normalised.contains("entry.getValue() != ''")
+        && let Some(shape) = parse_drop_empty_members(normalised)
+    {
+        return Some(shape);
     }
 
     // Pattern: windows security's decoded scheduled-task XML, normalised
@@ -542,6 +555,7 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
 }
 
 /// Run the matcher a shape names, against one event.
+#[allow(clippy::too_many_lines)] // One arm per shape; splitting it would hide which matcher runs.
 pub(crate) fn run_params_shape(
     event: &mut Event,
     normalised: &str,
@@ -551,6 +565,9 @@ pub(crate) fn run_params_shape(
     match shape {
         ParamsShape::AwsEntity(script) => {
             crate::painless_entity::run_entity_script(event, script, params)
+        }
+        ParamsShape::DropEmptyMembers { parent, list } => {
+            run_drop_empty_members(event, parent, list, params)
         }
         ParamsShape::SysmonQueryResults => try_sysmon_query_results(event, normalised, params),
         ParamsShape::SysmonRegistry => crate::painless_windows::run_registry(event, params),
@@ -1566,6 +1583,66 @@ fn null_branch_at(script: &str, row: &str) -> Option<usize> {
     script
         .find(&format!("if ({row} != null)"))
         .or_else(|| script.find(&format!("if ({row} == null)")))
+}
+
+/// Empty-string members dropped from each sub-map params names.
+///
+/// ```painless
+/// for (key in params.keys) {
+///   if (ctx['osquery']['result'][key] == null) { continue; }
+///   def dict = new HashMap();
+///   for (entry in ctx['osquery']['result'][key].entrySet()) {
+///     if (entry.getValue() != '') { dict[entry.getKey()] = entry.getValue(); }
+///   }
+///   ctx['osquery']['result'][key] = dict;
+/// }
+/// ```
+///
+/// osquery ships one column per table field whether the row filled it or not,
+/// so the empty ones are the difference between 666 matching events and 2,213.
+fn parse_drop_empty_members(script: &str) -> Option<ParamsShape> {
+    // `for (key in params.keys)` names the loop variable and the params member.
+    let (head, rest) = script.split_once(" in params.")?;
+    let variable = head.rsplit(['(', ' ']).next()?.trim().to_string();
+    let list = rest.split_once(')')?.0.trim().to_string();
+    if variable.is_empty() || !list.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+
+    // The map the loop subscripts, with the loop variable cut off the end.
+    let (head, _) = rest.split_once(&format!("[{variable}]"))?;
+    let parent = clean_path(
+        subject_path(head.rsplit_once("ctx")?.1)
+            .trim_start_matches('.')
+            .trim(),
+    );
+    (!parent.is_empty()).then_some(ParamsShape::DropEmptyMembers { parent, list })
+}
+
+fn run_drop_empty_members(
+    event: &mut Event,
+    parent: &str,
+    list: &str,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(keys) = params.get(list).and_then(Value::as_array) else {
+        return false;
+    };
+    for key in keys.iter().filter_map(Value::as_str) {
+        let path = format!("{parent}.{key}");
+        let Some(Value::Object(members)) = event.get(&path) else {
+            continue;
+        };
+        let kept: Map<String, Value> = members
+            .iter()
+            .filter(|(_, value)| value.as_str() != Some(""))
+            .map(|(key, value)| (key.clone(), value.clone()))
+            .collect();
+        if kept.len() != members.len() {
+            let _ = event.set(&path, Value::Object(kept));
+        }
+    }
+    true
 }
 
 /// The test and both blocks of the `if (...) { ... } else { ... }` at the head

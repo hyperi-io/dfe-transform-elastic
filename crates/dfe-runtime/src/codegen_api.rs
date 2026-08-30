@@ -1349,6 +1349,12 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // Elastic's own: a syslog program name is any printable character but
         // a `[`, which is what ends it before the pid.
         "PROG" => r"[\x21-\x5a\x5c\x5e-\x7e]+",
+        // RFC 5424 structured data, one or more bracketed elements.
+        "SYSLOG5424SD" => r"(?:\[.*?\]+)",
+        // Elastic's own, grouped: an inlined alternation would otherwise reach
+        // past whatever sits either side of it in the pattern.
+        "MONGO3_SEVERITY" => r"\w",
+        "MONGO3_COMPONENT" => r"(?:\w+|-)",
         "SYSLOG5424PRI" => r"<\d{1,5}>",
         // Printable ASCII minus space, `=`, `]` and `"` -- RFC 5424's own
         // definition, which is what bounds a structured-data name.

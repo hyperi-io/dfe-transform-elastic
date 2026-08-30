@@ -161,6 +161,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "arista_ngfw.log",
     ),
     (
+        "filebeat.auditd_manager_auditd.default",
+        &filebeat::auditd_manager_auditd::default::Default,
+        agent_only(),
+        "auditd_manager.auditd",
+    ),
+    (
         "filebeat.auth0_logs.default",
         &filebeat::auth0_logs::default::Default,
         pushed(Framing::Body),
@@ -395,6 +401,18 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "aws.waf",
     ),
     (
+        "filebeat.awsfirehose_logs.default",
+        &filebeat::awsfirehose_logs::default::Default,
+        agent_only(),
+        "awsfirehose.logs",
+    ),
+    (
+        "filebeat.awsfirehose_metrics.default",
+        &filebeat::awsfirehose_metrics::default::Default,
+        agent_only(),
+        "awsfirehose.metrics",
+    ),
+    (
         "filebeat.azure_activitylogs.default",
         &filebeat::azure_activitylogs::default::Default,
         fetched(),
@@ -429,6 +447,18 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::azure_firewall_logs::default::Default,
         fetched(),
         "azure.firewall_logs",
+    ),
+    (
+        "filebeat.azure_functions_functionapplogs.default",
+        &filebeat::azure_functions_functionapplogs::default::Default,
+        fetched(),
+        "azure_functions.functionapplogs",
+    ),
+    (
+        "filebeat.azure_functions_metrics.default",
+        &filebeat::azure_functions_metrics::default::Default,
+        fetched(),
+        "azure_functions.metrics",
     ),
     (
         "filebeat.azure_graphactivitylogs.default",
@@ -533,10 +563,22 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "barracuda_cloudgen_firewall.log",
     ),
     (
+        "filebeat.beyondtrust_isi_incident.default",
+        &filebeat::beyondtrust_isi_incident::default::Default,
+        pushed(Framing::Body),
+        "beyondtrust_isi.incident",
+    ),
+    (
         "filebeat.beyondtrust_pra_access_session.default",
         &filebeat::beyondtrust_pra_access_session::default::Default,
         fetched(),
         "beyondtrust_pra.access_session",
+    ),
+    (
+        "filebeat.bitsight_vulnerability.default",
+        &filebeat::bitsight_vulnerability::default::Default,
+        fetched(),
+        "bitsight.vulnerability",
     ),
     (
         "filebeat.blacklens_alerts.default",
@@ -575,10 +617,28 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "carbon_black_cloud.watchlist_hit",
     ),
     (
+        "filebeat.cassandra_log.default",
+        &filebeat::cassandra_log::default::Default,
+        agent_only(),
+        "cassandra.log",
+    ),
+    (
+        "filebeat.cassandra_metrics.default",
+        &filebeat::cassandra_metrics::default::Default,
+        agent_only(),
+        "cassandra.metrics",
+    ),
+    (
         "filebeat.checkpoint.default",
         &filebeat::checkpoint::default::Default,
         pushed(Framing::Line),
         "checkpoint.firewall",
+    ),
+    (
+        "filebeat.cisa_kevs_vulnerability.default",
+        &filebeat::cisa_kevs_vulnerability::default::Default,
+        fetched(),
+        "cisa_kevs.vulnerability",
     ),
     (
         "filebeat.cisco_asa.default",
@@ -683,6 +743,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "cisco_umbrella.log",
     ),
     (
+        "filebeat.citrix_waf_log.default",
+        &filebeat::citrix_waf_log::default::Default,
+        pushed(Framing::Line),
+        "citrix_waf.log",
+    ),
+    (
         "filebeat.cloud_security_posture_findings.default",
         &filebeat::cloud_security_posture_findings::default::Default,
         agent_only(),
@@ -705,6 +771,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::coredns_log::json::Json,
         agent_only(),
         "coredns.log",
+    ),
+    (
+        "filebeat.couchdb_server.default",
+        &filebeat::couchdb_server::default::Default,
+        agent_only(),
+        "couchdb.server",
     ),
     (
         "filebeat.crowdstrike.default",
@@ -749,6 +821,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "cursor.audit",
     ),
     (
+        "filebeat.cyberark_pta_events.default",
+        &filebeat::cyberark_pta_events::default::Default,
+        pushed(Framing::Line),
+        "cyberark_pta.events",
+    ),
+    (
         "filebeat.cylance_protect.default",
         &filebeat::cylance_protect::default::Default,
         pushed(Framing::Body),
@@ -783,6 +861,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::elastic_package_registry_metrics::default::Default,
         agent_only(),
         "elastic_package_registry.metrics",
+    ),
+    (
+        "filebeat.elastic_security_alert.default",
+        &filebeat::elastic_security_alert::default::Default,
+        fetched(),
+        "elastic_security.alert",
     ),
     (
         "filebeat.entityanalytics_ad_entity.default",
@@ -833,6 +917,18 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "entro.audit",
     ),
     (
+        "filebeat.ess_billing_billing.default",
+        &filebeat::ess_billing_billing::default::Default,
+        fetched(),
+        "ess_billing.billing",
+    ),
+    (
+        "filebeat.ess_billing_credits.default",
+        &filebeat::ess_billing_credits::default::Default,
+        fetched(),
+        "ess_billing.credits",
+    ),
+    (
         "filebeat.fim_event.default",
         &filebeat::fim_event::default::Default,
         agent_only(),
@@ -845,6 +941,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "first_epss.vulnerability",
     ),
     (
+        "filebeat.forcepoint_web_logs.default",
+        &filebeat::forcepoint_web_logs::default::Default,
+        agent_only(),
+        "forcepoint_web.logs",
+    ),
+    (
         "filebeat.fortinet.default",
         &filebeat::fortinet::default::Default,
         pushed(Framing::Line),
@@ -855,6 +957,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::fortinet_forticlient_log::default::Default,
         pushed(Framing::Body),
         "fortinet_forticlient.log",
+    ),
+    (
+        "filebeat.fortinet_fortiedr_log.default",
+        &filebeat::fortinet_fortiedr_log::default::Default,
+        pushed(Framing::Line),
+        "fortinet_fortiedr.log",
     ),
     (
         "filebeat.gcp_audit.default",
@@ -1001,6 +1109,24 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "github.security_advisories",
     ),
     (
+        "filebeat.goflow2_sflow.default",
+        &filebeat::goflow2_sflow::default::Default,
+        agent_only(),
+        "goflow2.sflow",
+    ),
+    (
+        "filebeat.golang_expvar.default",
+        &filebeat::golang_expvar::default::Default,
+        fetched(),
+        "golang.expvar",
+    ),
+    (
+        "filebeat.golang_heap.default",
+        &filebeat::golang_heap::default::Default,
+        fetched(),
+        "golang.heap",
+    ),
+    (
         "filebeat.google_workspace_access_transparency.default",
         &filebeat::google_workspace_access_transparency::default::Default,
         fetched(),
@@ -1133,10 +1259,46 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "google_workspace.vault",
     ),
     (
+        "filebeat.greenhouse_audit.default",
+        &filebeat::greenhouse_audit::default::Default,
+        fetched(),
+        "greenhouse.audit",
+    ),
+    (
+        "filebeat.haproxy_log.default",
+        &filebeat::haproxy_log::default::Default,
+        agent_only(),
+        "haproxy.log",
+    ),
+    (
+        "filebeat.hashicorp_vault_audit.default",
+        &filebeat::hashicorp_vault_audit::default::Default,
+        pushed(Framing::Body),
+        "hashicorp_vault.audit",
+    ),
+    (
+        "filebeat.hashicorp_vault_log.default",
+        &filebeat::hashicorp_vault_log::default::Default,
+        agent_only(),
+        "hashicorp_vault.log",
+    ),
+    (
+        "filebeat.hashicorp_vault_metrics.default",
+        &filebeat::hashicorp_vault_metrics::default::Default,
+        agent_only(),
+        "hashicorp_vault.metrics",
+    ),
+    (
         "filebeat.infoblox_nios_log.default",
         &filebeat::infoblox_nios_log::default::Default,
         pushed(Framing::Line),
         "infoblox_nios.log",
+    ),
+    (
+        "filebeat.iptables_log.default",
+        &filebeat::iptables_log::default::Default,
+        pushed(Framing::Line),
+        "iptables.log",
     ),
     (
         "filebeat.jumpcloud_events.default",
@@ -1247,10 +1409,28 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "kolide.request",
     ),
     (
+        "filebeat.kubernetes_audit_logs.default",
+        &filebeat::kubernetes_audit_logs::default::Default,
+        fetched(),
+        "kubernetes.audit_logs",
+    ),
+    (
+        "filebeat.kubernetes_container_logs.default",
+        &filebeat::kubernetes_container_logs::default::Default,
+        agent_only(),
+        "kubernetes.container_logs",
+    ),
+    (
         "filebeat.lumos_activity_logs.default",
         &filebeat::lumos_activity_logs::default::Default,
         fetched(),
         "lumos.activity_logs",
+    ),
+    (
+        "filebeat.lyve_cloud_audit.default",
+        &filebeat::lyve_cloud_audit::default::Default,
+        fetched(),
+        "lyve_cloud.audit",
     ),
     (
         "filebeat.m365_defender_alert.default",
@@ -1299,6 +1479,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::microsoft_defender_endpoint_vulnerability::default::Default,
         fetched(),
         "microsoft_defender_endpoint.vulnerability",
+    ),
+    (
+        "filebeat.microsoft_dhcp_log.default",
+        &filebeat::microsoft_dhcp_log::default::Default,
+        agent_only(),
+        "microsoft_dhcp.log",
     ),
     (
         "filebeat.microsoft_dnsserver_analytical.default",
@@ -1397,6 +1583,18 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "mimecast.ttp_url_logs",
     ),
     (
+        "filebeat.mongodb_log.default",
+        &filebeat::mongodb_log::default::Default,
+        agent_only(),
+        "mongodb.log",
+    ),
+    (
+        "filebeat.nats_log.default",
+        &filebeat::nats_log::default::Default,
+        agent_only(),
+        "nats.log",
+    ),
+    (
         "filebeat.netflow_log.default",
         &filebeat::netflow_log::default::Default,
         agent_only(),
@@ -1429,6 +1627,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
     // `panw.default` routes on log type and holds the CSV parse and converts
     // the per-type entries depend on. The per-type entries suit a feed already
     // narrowed to one log type.
+    (
+        "filebeat.osquery_result.default",
+        &filebeat::osquery_result::default::Default,
+        agent_only(),
+        "osquery.result",
+    ),
     (
         "filebeat.panw.audit",
         &filebeat::panw::audit::Audit,
@@ -1526,6 +1730,18 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "pfsense.log",
     ),
     (
+        "filebeat.php_fpm_pool.default",
+        &filebeat::php_fpm_pool::default::Default,
+        fetched(),
+        "php_fpm.pool",
+    ),
+    (
+        "filebeat.php_fpm_process.default",
+        &filebeat::php_fpm_process::default::Default,
+        fetched(),
+        "php_fpm.process",
+    ),
+    (
         "filebeat.ping_federate_admin.default",
         &filebeat::ping_federate_admin::default::Default,
         agent_only(),
@@ -1556,6 +1772,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "platform_observability.kibana_log",
     ),
     (
+        "filebeat.pps_log.default",
+        &filebeat::pps_log::default::Default,
+        pushed(Framing::Line),
+        "pps.log",
+    ),
+    (
         "filebeat.prisma_access_event.default",
         &filebeat::prisma_access_event::default::Default,
         pushed(Framing::Body),
@@ -1584,6 +1806,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::pulse_connect_secure_log::default::Default,
         pushed(Framing::Line),
         "pulse_connect_secure.log",
+    ),
+    (
+        "filebeat.qnap_nas_log.default",
+        &filebeat::qnap_nas_log::default::Default,
+        pushed(Framing::Line),
+        "qnap_nas.log",
     ),
     (
         "filebeat.qualys_vmdr_asset_host_detection.default",
@@ -1620,6 +1848,18 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::redis_log::default::Default,
         agent_only(),
         "redis.log",
+    ),
+    (
+        "filebeat.sailpoint_identity_sc_events.default",
+        &filebeat::sailpoint_identity_sc_events::default::Default,
+        fetched(),
+        "sailpoint_identity_sc.events",
+    ),
+    (
+        "filebeat.santa_log.default",
+        &filebeat::santa_log::default::Default,
+        agent_only(),
+        "santa.log",
     ),
     (
         "filebeat.sentinel_one_activity.default",
@@ -1712,6 +1952,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "squid.log",
     ),
     (
+        "filebeat.stan_log.default",
+        &filebeat::stan_log::default::Default,
+        agent_only(),
+        "stan.log",
+    ),
+    (
         "filebeat.suricata_eve.default",
         &filebeat::suricata_eve::default::Default,
         agent_only(),
@@ -1760,10 +2006,34 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "tenable_sc.vulnerability",
     ),
     (
+        "filebeat.tetragon_log.default",
+        &filebeat::tetragon_log::default::Default,
+        agent_only(),
+        "tetragon.log",
+    ),
+    (
+        "filebeat.thycotic_ss_logs.default",
+        &filebeat::thycotic_ss_logs::default::Default,
+        pushed(Framing::Body),
+        "thycotic_ss.logs",
+    ),
+    (
+        "filebeat.ti_maltiverse_indicator.default",
+        &filebeat::ti_maltiverse_indicator::default::Default,
+        fetched(),
+        "ti_maltiverse.indicator",
+    ),
+    (
         "filebeat.ti_socradar_feeds_feed.default",
         &filebeat::ti_socradar_feeds_feed::default::Default,
         fetched(),
         "ti_socradar_feeds.feed",
+    ),
+    (
+        "filebeat.ti_strider_indicator.default",
+        &filebeat::ti_strider_indicator::default::Default,
+        fetched(),
+        "ti_strider.indicator",
     ),
     (
         "filebeat.tines_audit_logs.default",
@@ -1788,6 +2058,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::trendmicro_deep_security::default::Default,
         pushed(Framing::Line),
         "trendmicro.deep_security",
+    ),
+    (
+        "filebeat.varonis_logs.default",
+        &filebeat::varonis_logs::default::Default,
+        pushed(Framing::Body),
+        "varonis.logs",
     ),
     (
         "filebeat.watchguard_firebox_log.default",
@@ -1848,6 +2124,18 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::windows_windows_defender::default::Default,
         agent_only(),
         "windows.windows_defender",
+    ),
+    (
+        "filebeat.withsecure_elements_incidents.default",
+        &filebeat::withsecure_elements_incidents::default::Default,
+        fetched(),
+        "withsecure_elements.incidents",
+    ),
+    (
+        "filebeat.withsecure_elements_security_events.default",
+        &filebeat::withsecure_elements_security_events::default::Default,
+        fetched(),
+        "withsecure_elements.security_events",
     ),
     (
         "filebeat.zeek_capture_loss.default",
@@ -2106,6 +2394,18 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::zeek_x509::default::Default,
         agent_only(),
         "zeek.x509",
+    ),
+    (
+        "filebeat.zerofox_alerts.default",
+        &filebeat::zerofox_alerts::default::Default,
+        fetched(),
+        "zerofox.alerts",
+    ),
+    (
+        "filebeat.zeronetworks_audit.default",
+        &filebeat::zeronetworks_audit::default::Default,
+        fetched(),
+        "zeronetworks.audit",
     ),
     (
         "filebeat.zscaler_zia_alerts.default",

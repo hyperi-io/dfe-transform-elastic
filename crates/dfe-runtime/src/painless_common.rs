@@ -8896,6 +8896,87 @@ fn run_merge_map_up(event: &mut Event, shape: &MergeMapUp) -> bool {
     true
 }
 
+/// A whole map moved beneath a NEW parent, and the source removed.
+///
+/// ```painless
+/// def dict = ['result': new HashMap()];
+/// for (entry in ctx['json'].entrySet()) {
+///   dict['result'][entry.getKey()] = entry.getValue();
+/// }
+/// ctx['osquery'] = dict;
+/// ctx.remove('json');
+/// ```
+///
+/// The loop copies every member, so the whole map lands under
+/// `<target>.<member>` and the source goes. It is a rename spelled out
+/// entry by entry, and osquery's result stream is gated on it: unclaimed, all
+/// 2,213 of its events keep the raw `json` tree and reach none of the
+/// forty-odd processors that read `osquery.result.*`.
+///
+/// [`MergeMapUp`] is the opposite move -- a map's members lifted INTO an
+/// existing parent rather than nested under a new one.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct NestUnder {
+    /// The map that moves.
+    source: String,
+    /// Where it lands, parent and member already joined.
+    target: String,
+    /// What the script removes afterwards.
+    removes: Vec<String>,
+}
+
+fn parse_nest_under(script: &str) -> Option<NestUnder> {
+    use crate::painless_params::{clean_path, subject_path};
+
+    // `def dict = ['result': new HashMap()];` names the local and the member.
+    let (head, rest) = script.split_once(": new HashMap()]")?;
+    let (head, member) = head.rsplit_once("['")?;
+    let local = head.rsplit_once(" = ")?.0.rsplit(' ').next()?.trim();
+    let member = member.trim_end_matches('\'').trim();
+    if local.is_empty() || member.is_empty() {
+        return None;
+    }
+
+    // The loop has to copy EVERY entry across, or this is a filter and not a
+    // move.
+    let (loop_head, loop_body) = rest.split_once(".entrySet()")?;
+    let source = clean_path(subject_path(loop_head.rsplit_once("ctx")?.1).trim_start_matches('.'));
+    if source.is_empty()
+        || !loop_body.contains("entry.getKey()")
+        || !loop_body.contains("entry.getValue()")
+    {
+        return None;
+    }
+
+    // Where the local lands.
+    let (head, _) = rest.split_once(&format!("= {local};"))?;
+    let parent = clean_path(
+        subject_path(head.rsplit_once("ctx")?.1)
+            .trim_start_matches('.')
+            .trim(),
+    );
+    if parent.is_empty() {
+        return None;
+    }
+
+    Some(NestUnder {
+        source,
+        target: format!("{parent}.{member}"),
+        removes: ctx_removes(script),
+    })
+}
+
+fn run_nest_under(event: &mut Event, shape: &NestUnder) -> bool {
+    let Some(moved) = event.get(&shape.source).cloned() else {
+        return true;
+    };
+    let _ = event.set(&shape.target, moved);
+    for path in &shape.removes {
+        event.remove(path);
+    }
+    true
+}
+
 /// The value the document's POSITION in a list decides -- first, last, or
 /// somewhere between.
 ///
@@ -9731,6 +9812,7 @@ pub(crate) enum KnownShape {
     MoveKeys(Vec<(String, String)>),
     MergeMapUp(Box<MergeMapUp>),
     MapEntryToBoolean(Box<MapEntryToBoolean>),
+    NestUnder(Box<NestUnder>),
     PositionInList(Box<PositionInList>),
     SplitFirstLabel(Box<SplitFirstLabel>),
     HashesByLength(Box<HashesByLength>),
@@ -9807,6 +9889,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_flags_present(normalised)
     {
         shapes.push(KnownShape::FlagsPresent(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: a whole map moved beneath a NEW parent. Ahead of the merge
+    // shapes, whose `entrySet()` and `getKey()` triggers this also spells and
+    // which would lift its members to the wrong level.
+    if normalised.contains(": new HashMap()]")
+        && normalised.contains(".entrySet()")
+        && let Some(shape) = parse_nest_under(normalised)
+    {
+        shapes.push(KnownShape::NestUnder(Box::new(shape)));
         return shapes;
     }
 
@@ -11380,6 +11473,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::UnreservedKeyPayload(shape) => run_unreserved_key_payload(event, shape),
         KnownShape::HashesByLength(shape) => run_hashes_by_length(event, shape),
         KnownShape::MapEntryToBoolean(shape) => run_map_entry_to_boolean(event, shape),
+        KnownShape::NestUnder(shape) => run_nest_under(event, shape),
         KnownShape::PositionInList(shape) => run_position_in_list(event, shape),
         KnownShape::SplitFirstLabel(shape) => run_split_first_label(event, shape),
         KnownShape::SuffixesByPrefix(shape) => run_suffixes_by_prefix(event, shape),
@@ -14280,6 +14374,34 @@ def event_timezone = get_timezone(ctx);
             1,
             "the @odata key is dropped, not renamed: {user}"
         );
+    }
+
+    /// Verbatim from osquery's result stream. The loop is a rename spelled out
+    /// entry by entry, and every processor after it reads the new path.
+    #[test]
+    fn a_map_moves_whole_beneath_a_new_parent() {
+        let script = "def dict = ['result': new HashMap()];\n\
+             for (entry in ctx['json'].entrySet()) {\n\
+             dict['result'][entry.getKey()] = entry.getValue();\n\
+             }\n\
+             ctx['osquery'] = dict;\n\
+             ctx.remove('json');";
+        let mut event = Event::new(json!({
+            "json": {"action": "removed", "columns": {"device": "/dev/disk1s4"}}
+        }));
+
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("osquery.result.action"),
+            Some(&json!("removed")),
+            "{:?}",
+            event.as_value(),
+        );
+        assert_eq!(
+            event.get("osquery.result.columns.device"),
+            Some(&json!("/dev/disk1s4"))
+        );
+        assert!(!event.has("json"), "the script removes what it moved");
     }
 
     /// Verbatim from kolide's auth stream. A single-entry list is BOTH the
