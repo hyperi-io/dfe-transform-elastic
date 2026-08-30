@@ -3495,7 +3495,12 @@ fn readable_term(term: &str) -> bool {
         .or_else(|| term.split_once("!="))
         .or_else(|| term.split_once(".contains("))
     else {
-        return false;
+        // A bare field, whose boolean value is the test.
+        let path = subject_path(term);
+        return path.starts_with("ctx.")
+            && path[4..]
+                .chars()
+                .all(|c| c.is_alphanumeric() || "._?".contains(c));
     };
     let wanted = wanted.trim().trim_end_matches(')').trim();
     subject_path(subject).trim().starts_with("ctx.")
@@ -3779,6 +3784,12 @@ fn term_holds(event: &Event, term: &str) -> bool {
                 .is_some_and(|literal| held == Some(&literal))
         };
         return matched != negated;
+    }
+    // A BARE field is the test: Painless reads its boolean value. arista gates
+    // its whole outcome ladder on `if (ctx.arista.blocked)`, and answering
+    // false here took the else arm on every event.
+    if let Some(path) = subject_path(term).strip_prefix("ctx.") {
+        return event.get(&clean_path(path)).and_then(Value::as_bool) == Some(true);
     }
     false
 }

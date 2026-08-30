@@ -495,17 +495,34 @@ pub fn convert_value(value: &Value, kind: &str) -> std::result::Result<Value, St
             Value::Bool(b) => Ok(Value::from(i64::from(*b))),
             _ => Err(cannot("integer")),
         },
-        "float" | "double" => match value {
-            Value::String(s) => s
-                .trim()
-                .parse::<f64>()
-                .ok()
-                .map(Value::from)
-                .ok_or_else(|| cannot("float")),
-            Value::Number(n) => Ok(Value::from(n.as_f64().unwrap_or(0.0))),
-            Value::Bool(b) => Ok(Value::from(if *b { 1.0 } else { 0.0 })),
-            _ => Err(cannot("float")),
-        },
+        // `float` is 32-bit in the convert processor and `double` is the
+        // 64-bit one, so a rate converted as `float` keeps only the digits a
+        // single carries. The route is the shortest decimal that names the
+        // f32; widening the f32 back to binary lands further out than the
+        // input was.
+        "float" | "double" => {
+            let narrow = kind == "float";
+            let widened = |f: f64| {
+                if narrow {
+                    #[allow(clippy::cast_possible_truncation)]
+                    let single = f as f32;
+                    single.to_string().parse::<f64>().unwrap_or(f)
+                } else {
+                    f
+                }
+            };
+            match value {
+                Value::String(s) => s
+                    .trim()
+                    .parse::<f64>()
+                    .ok()
+                    .map(|f| Value::from(widened(f)))
+                    .ok_or_else(|| cannot("float")),
+                Value::Number(n) => Ok(Value::from(widened(n.as_f64().unwrap_or(0.0)))),
+                Value::Bool(b) => Ok(Value::from(if *b { 1.0 } else { 0.0 })),
+                _ => Err(cannot("float")),
+            }
+        }
         "string" => match value {
             Value::String(_) => Ok(value.clone()),
             Value::Number(n) => Ok(Value::from(n.to_string())),

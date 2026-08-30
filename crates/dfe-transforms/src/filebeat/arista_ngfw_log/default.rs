@@ -1726,8 +1726,7 @@ impl Transform for Default {
             event.remove("arista.tagsString");
             event.remove("arista.timeStamp");
 
-            let _cond =
-                { event.has_value("arista") && event.get_bool("arista.empty") == Some(true) };
+            let _cond = { event.has_value("arista") && event.is_empty_container("arista") };
             if _cond {
                 if event.remove("arista").is_none() {
                     return Err(TransformError::FieldNotFound {

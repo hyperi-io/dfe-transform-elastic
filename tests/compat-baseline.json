@@ -6,7 +6,7 @@
   "sources": {
     "amazon_security_lake": { "events": 10, "events_total": 11, "fields_wrong": 1 },
     "anthropic": { "events": 306, "events_total": 306, "fields_wrong": 0 },
-    "arista_ngfw": { "events": 110, "events_total": 141, "fields_wrong": 39 },
+    "arista_ngfw": { "events": 137, "events_total": 141, "fields_wrong": 5 },
     "auth0": { "events": 111, "events_total": 111, "fields_wrong": 0 },
     "aws": { "events": 531, "events_total": 538, "fields_wrong": 7 },
     "aws_securityhub": { "events": 0, "events_total": 10, "fields_wrong": 164 },

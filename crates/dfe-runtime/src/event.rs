@@ -185,6 +185,22 @@ impl Event {
         !matches!(self.get(path), None | Some(Value::Null))
     }
 
+    /// Whether the container at the path holds nothing.
+    ///
+    /// This is Painless `map.empty` / `list.isEmpty()`, a PROPERTY of the
+    /// container rather than a field called `empty`. An absent path is not an
+    /// empty container and answers false, which the `!= null` these conditions
+    /// pair it with has already decided.
+    #[must_use]
+    pub fn is_empty_container(&self, path: &str) -> bool {
+        match self.get(path) {
+            Some(Value::Object(entries)) => entries.is_empty(),
+            Some(Value::Array(items)) => items.is_empty(),
+            Some(Value::String(text)) => text.is_empty(),
+            _ => false,
+        }
+    }
+
     // -- Setters --------------------------------------------------------
 
     /// Set a value at a dotted path, creating intermediate objects as needed.
