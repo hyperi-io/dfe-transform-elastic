@@ -8856,6 +8856,83 @@ fn run_merge_map_up(event: &mut Event, shape: &MergeMapUp) -> bool {
     true
 }
 
+/// A dotted name split into its FIRST label and the rest of it.
+///
+/// ```painless
+/// def domain = '';
+/// def nameArray = ctx.json.dnsName.toString().splitOnToken('.');
+/// if (nameArray?.length != null && nameArray.length > 0) {
+///   for (int i = 1; i < nameArray.length; i++) {
+///     domain += nameArray[i] + (i < nameArray.length - 1 ? '.' : '');
+///   }
+///   ctx.host.name = nameArray[0];
+///   ctx.host.domain = domain;
+/// }
+/// ```
+///
+/// A one-label name leaves the tail EMPTY rather than unset, which is what the
+/// vendor's accumulator starts at and what the drop-empty after it then takes.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct SplitFirstLabel {
+    source: String,
+    separator: String,
+    head: String,
+    tail: String,
+}
+
+fn parse_split_first_label(script: &str) -> Option<SplitFirstLabel> {
+    use crate::painless_params::{clean_path, ctx_path_before};
+
+    let (bound, rest) = script.split_once(".splitOnToken(")?;
+    let separator = quoted_first(rest)?;
+    let source = clean_path(
+        bound
+            .rsplit_once("ctx.")?
+            .1
+            .trim()
+            .trim_end_matches(".toString()"),
+    );
+    let parts = bound.rsplit_once(" = ")?.0.rsplit(' ').next()?.trim();
+    if source.is_empty() || separator.is_empty() || parts.is_empty() {
+        return None;
+    }
+
+    // The first element lands on one field; the accumulator the loop built
+    // lands on the other.
+    let head = ctx_path_before(script, &format!(" = {parts}[0]"))?;
+    let accumulator = script
+        .split_once(&format!("+= {parts}["))?
+        .0
+        .rsplit(['\n', ';', '{'])
+        .next()?
+        .trim()
+        .to_string();
+    if accumulator.is_empty() {
+        return None;
+    }
+    let tail = ctx_path_before(script, &format!(" = {accumulator};"))?;
+    (!head.is_empty() && !tail.is_empty() && head != tail).then_some(SplitFirstLabel {
+        source,
+        separator,
+        head,
+        tail,
+    })
+}
+
+fn run_split_first_label(event: &mut Event, shape: &SplitFirstLabel) -> bool {
+    let Some(name) = event.get_str(&shape.source).map(str::to_owned) else {
+        return true;
+    };
+    let mut labels = name.split(shape.separator.as_str());
+    let Some(first) = labels.next() else {
+        return true;
+    };
+    let rest = labels.collect::<Vec<_>>().join(&shape.separator);
+    let _ = event.set(&shape.head, Value::String(first.to_string()));
+    let _ = event.set(&shape.tail, Value::String(rest));
+    true
+}
+
 /// One entry of a map retyped from its digit spelling to a boolean, in place.
 ///
 /// ```painless
@@ -9491,6 +9568,7 @@ pub(crate) enum KnownShape {
     MoveKeys(Vec<(String, String)>),
     MergeMapUp(Box<MergeMapUp>),
     MapEntryToBoolean(Box<MapEntryToBoolean>),
+    SplitFirstLabel(Box<SplitFirstLabel>),
     HashesByLength(Box<HashesByLength>),
     UnreservedKeyPayload(Box<UnreservedKeyPayload>),
     SuffixesByPrefix(Box<SuffixesByPrefix>),
@@ -9610,6 +9688,15 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_named_map_entry(normalised)
     {
         shapes.push(KnownShape::NamedMapEntry(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: a dotted name split into its first label and the rest of it.
+    if normalised.contains(".splitOnToken(")
+        && normalised.contains("[0]")
+        && let Some(shape) = parse_split_first_label(normalised)
+    {
+        shapes.push(KnownShape::SplitFirstLabel(Box::new(shape)));
         return shapes;
     }
 
@@ -11108,6 +11195,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::UnreservedKeyPayload(shape) => run_unreserved_key_payload(event, shape),
         KnownShape::HashesByLength(shape) => run_hashes_by_length(event, shape),
         KnownShape::MapEntryToBoolean(shape) => run_map_entry_to_boolean(event, shape),
+        KnownShape::SplitFirstLabel(shape) => run_split_first_label(event, shape),
         KnownShape::SuffixesByPrefix(shape) => run_suffixes_by_prefix(event, shape),
     }
 }
