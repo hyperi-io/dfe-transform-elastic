@@ -1312,6 +1312,10 @@
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service
+    name: filebeat.doppler_activity.default
+    description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
+    maturity: beta
+  - kind: service
     name: filebeat.doppler_secret_read.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
@@ -3100,6 +3104,14 @@
     description: 'Compiled transform. Accepts the envelopes: beats, receiver.'
     maturity: beta
   - kind: service
+    name: filebeat.rapid7_insightvm_asset.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.rapid7_insightvm_asset_vulnerability.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
     name: filebeat.rapid7_insightvm_vulnerability.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
@@ -3172,6 +3184,10 @@
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
   - kind: service
+    name: filebeat.salesforce_login.default
+    description: 'Compiled transform. Accepts the envelopes: beats.'
+    maturity: beta
+  - kind: service
     name: filebeat.salesforce_logout.default
     description: 'Compiled transform. Accepts the envelopes: beats.'
     maturity: beta
@@ -3221,6 +3237,10 @@
     maturity: beta
   - kind: service
     name: filebeat.sentinel_one_unified_alert.default
+    description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
+    maturity: beta
+  - kind: service
+    name: filebeat.servicenow_event.default
     description: 'Compiled transform. Accepts the envelopes: beats, fetcher.'
     maturity: beta
   - kind: service

@@ -1453,6 +1453,38 @@ mod unicode_class_tests {
     }
 }
 
+/// The text of an HTML fragment, with its tags removed.
+///
+/// Elastic's `html_strip` runs Lucene's `HTMLStripCharFilter`, which drops
+/// everything between `<` and the matching `>` and decodes the five predefined
+/// entities. A `<` with no `>` after it is not a tag and stands for itself.
+/// `rapid7_insightvm` writes its remediation as markup, and `doppler` and
+/// `servicenow` each carry one field of it.
+#[must_use]
+pub fn html_strip(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    let mut rest = text;
+
+    while let Some(open) = rest.find('<') {
+        let Some(close) = rest[open..].find('>') else {
+            break;
+        };
+        out.push_str(&rest[..open]);
+        rest = &rest[open + close + 1..];
+    }
+    out.push_str(rest);
+
+    if out.contains('&') {
+        out = out
+            .replace("&lt;", "<")
+            .replace("&gt;", ">")
+            .replace("&quot;", "\"")
+            .replace("&apos;", "'")
+            .replace("&amp;", "&");
+    }
+    out
+}
+
 /// Whether an address falls in any of the ranges `network_direction` names.
 ///
 /// Elastic takes either a CIDR or one of its own range NAMES, and a pipeline

@@ -4,1650 +4,335 @@
   "integrations_sha": "2c934eb5223bdfcf0ea0db9e3230154933352bda",
   "elasticsearch_version": "9.2.2",
   "sources": {
-    "1password": {
-      "events": 6,
-      "events_total": 6,
-      "fields_wrong": 0
-    },
-    "abnormal_security": {
-      "events": 23,
-      "events_total": 29,
-      "fields_wrong": 11
-    },
-    "activemq": {
-      "events": 3,
-      "events_total": 24,
-      "fields_wrong": 21
-    },
-    "admin_by_request_epm": {
-      "events": 0,
-      "events_total": 2,
-      "fields_wrong": 5
-    },
-    "agentless_hello_world": {
-      "events": 2,
-      "events_total": 2,
-      "fields_wrong": 0
-    },
-    "airlock_digital": {
-      "events": 2,
-      "events_total": 6,
-      "fields_wrong": 4
-    },
-    "akamai": {
-      "events": 0,
-      "events_total": 2,
-      "fields_wrong": 6
-    },
-    "amazon_security_lake": {
-      "events": 10,
-      "events_total": 11,
-      "fields_wrong": 1
-    },
-    "anthropic": {
-      "events": 306,
-      "events_total": 306,
-      "fields_wrong": 0
-    },
-    "anthropic_metrics": {
-      "events": 3,
-      "events_total": 11,
-      "fields_wrong": 11
-    },
-    "apache": {
-      "events": 32,
-      "events_total": 54,
-      "fields_wrong": 22
-    },
-    "apache_tomcat": {
-      "events": 25,
-      "events_total": 30,
-      "fields_wrong": 15
-    },
-    "arista_ngfw": {
-      "events": 137,
-      "events_total": 141,
-      "fields_wrong": 5
-    },
-    "armis": {
-      "events": 6,
-      "events_total": 6,
-      "fields_wrong": 0
-    },
-    "atlassian_bitbucket": {
-      "events": 257,
-      "events_total": 281,
-      "fields_wrong": 83
-    },
-    "atlassian_cloud": {
-      "events": 0,
-      "events_total": 10,
-      "fields_wrong": 10
-    },
-    "atlassian_confluence": {
-      "events": 234,
-      "events_total": 286,
-      "fields_wrong": 212
-    },
-    "atlassian_jira": {
-      "events": 176,
-      "events_total": 271,
-      "fields_wrong": 220
-    },
-    "auditd": {
-      "events": 8,
-      "events_total": 83,
-      "fields_wrong": 519
-    },
-    "auditd_manager": {
-      "events": 53,
-      "events_total": 56,
-      "fields_wrong": 5
-    },
-    "auth0": {
-      "events": 111,
-      "events_total": 111,
-      "fields_wrong": 0
-    },
-    "authentik": {
-      "events": 55,
-      "events_total": 55,
-      "fields_wrong": 0
-    },
-    "aws": {
-      "events": 532,
-      "events_total": 538,
-      "fields_wrong": 6
-    },
-    "aws_bedrock": {
-      "events": 0,
-      "events_total": 18,
-      "fields_wrong": 212
-    },
-    "aws_bedrock_agentcore": {
-      "events": 0,
-      "events_total": 7,
-      "fields_wrong": 17
-    },
-    "aws_billing": {
-      "events": 1,
-      "events_total": 8,
-      "fields_wrong": 13
-    },
-    "aws_mq": {
-      "events": 0,
-      "events_total": 12,
-      "fields_wrong": 32
-    },
-    "aws_securityhub": {
-      "events": 0,
-      "events_total": 10,
-      "fields_wrong": 164
-    },
-    "awsfirehose": {
-      "events": 0,
-      "events_total": 42,
-      "fields_wrong": 42
-    },
-    "axonius": {
-      "events": 10,
-      "events_total": 89,
-      "fields_wrong": 2353
-    },
-    "azure": {
-      "events": 181,
-      "events_total": 182,
-      "fields_wrong": 4
-    },
-    "azure_ai_foundry": {
-      "events": 5,
-      "events_total": 10,
-      "fields_wrong": 5
-    },
-    "azure_app_service": {
-      "events": 11,
-      "events_total": 11,
-      "fields_wrong": 0
-    },
-    "azure_frontdoor": {
-      "events": 11,
-      "events_total": 18,
-      "fields_wrong": 87
-    },
-    "azure_functions": {
-      "events": 4,
-      "events_total": 4,
-      "fields_wrong": 0
-    },
-    "azure_metrics": {
-      "events": 4,
-      "events_total": 4,
-      "fields_wrong": 0
-    },
-    "azure_network_watcher_nsg": {
-      "events": 0,
-      "events_total": 1,
-      "fields_wrong": 12
-    },
-    "azure_network_watcher_vnet": {
-      "events": 0,
-      "events_total": 1,
-      "fields_wrong": 12
-    },
-    "azure_openai": {
-      "events": 5,
-      "events_total": 7,
-      "fields_wrong": 2
-    },
-    "barracuda": {
-      "events": 40,
-      "events_total": 48,
-      "fields_wrong": 10
-    },
-    "barracuda_cloudgen_firewall": {
-      "events": 5,
-      "events_total": 6,
-      "fields_wrong": 0
-    },
-    "bbot": {
-      "events": 797,
-      "events_total": 805,
-      "fields_wrong": 10
-    },
-    "beelzebub": {
-      "events": 1,
-      "events_total": 5,
-      "fields_wrong": 30
-    },
-    "beyondinsight_password_safe": {
-      "events": 0,
-      "events_total": 7,
-      "fields_wrong": 197
-    },
-    "beyondtrust_epm": {
-      "events": 0,
-      "events_total": 4,
-      "fields_wrong": 95
-    },
-    "beyondtrust_isi": {
-      "events": 0,
-      "events_total": 4,
-      "fields_wrong": 5
-    },
-    "beyondtrust_pra": {
-      "events": 0,
-      "events_total": 2,
-      "fields_wrong": 2
-    },
-    "bitdefender": {
-      "events": 3,
-      "events_total": 69,
-      "fields_wrong": 355
-    },
-    "bitsight": {
-      "events": 0,
-      "events_total": 1,
-      "fields_wrong": 1
-    },
-    "bitwarden": {
-      "events": 7,
-      "events_total": 20,
-      "fields_wrong": 30
-    },
-    "blacklens": {
-      "events": 1,
-      "events_total": 1,
-      "fields_wrong": 0
-    },
-    "bluecoat": {
-      "events": 100,
-      "events_total": 100,
-      "fields_wrong": 0
-    },
-    "box_events": {
-      "events": 1,
-      "events_total": 148,
-      "fields_wrong": 339
-    },
-    "canva": {
-      "events": 0,
-      "events_total": 1,
-      "fields_wrong": 3
-    },
-    "carbon_black_cloud": {
-      "events": 50,
-      "events_total": 50,
-      "fields_wrong": 0
-    },
-    "carbonblack_edr": {
-      "events": 0,
-      "events_total": 99,
-      "fields_wrong": 417
-    },
-    "cassandra": {
-      "events": 0,
-      "events_total": 3,
-      "fields_wrong": 3
-    },
-    "cato_networks": {
-      "events": 4,
-      "events_total": 11,
-      "fields_wrong": 26
-    },
-    "cef": {
-      "events": 33,
-      "events_total": 36,
-      "fields_wrong": 24
-    },
-    "ceph": {
-      "events": 8,
-      "events_total": 9,
-      "fields_wrong": 1
-    },
-    "checkpoint": {
-      "events": 109,
-      "events_total": 111,
-      "fields_wrong": 3
-    },
-    "checkpoint_email": {
-      "events": 0,
-      "events_total": 18,
-      "fields_wrong": 18
-    },
-    "checkpoint_harmony_endpoint": {
-      "events": 0,
-      "events_total": 19,
-      "fields_wrong": 19
-    },
-    "cisa_kevs": {
-      "events": 0,
-      "events_total": 3,
-      "fields_wrong": 33
-    },
-    "cisco_aironet": {
-      "events": 74,
-      "events_total": 116,
-      "fields_wrong": 196
-    },
-    "cisco_asa": {
-      "events": 510,
-      "events_total": 512,
-      "fields_wrong": 20
-    },
-    "cisco_duo": {
-      "events": 59,
-      "events_total": 60,
-      "fields_wrong": 0
-    },
-    "cisco_ftd": {
-      "events": 432,
-      "events_total": 432,
-      "fields_wrong": 0
-    },
-    "cisco_ios": {
-      "events": 89,
-      "events_total": 89,
-      "fields_wrong": 0
-    },
-    "cisco_ise": {
-      "events": 161,
-      "events_total": 249,
-      "fields_wrong": 249
-    },
-    "cisco_meraki": {
-      "events": 249,
-      "events_total": 249,
-      "fields_wrong": 0
-    },
-    "cisco_meraki_metrics": {
-      "events": 0,
-      "events_total": 2,
-      "fields_wrong": 13
-    },
-    "cisco_nexus": {
-      "events": 45,
-      "events_total": 45,
-      "fields_wrong": 0
-    },
-    "cisco_secure_email_gateway": {
-      "events": 164,
-      "events_total": 166,
-      "fields_wrong": 2
-    },
-    "cisco_secure_endpoint": {
-      "events": 1,
-      "events_total": 408,
-      "fields_wrong": 1658
-    },
-    "cisco_umbrella": {
-      "events": 38,
-      "events_total": 39,
-      "fields_wrong": 1
-    },
-    "citrix_adc": {
-      "events": 167,
-      "events_total": 189,
-      "fields_wrong": 57
-    },
-    "citrix_waf": {
-      "events": 22,
-      "events_total": 22,
-      "fields_wrong": 0
-    },
-    "claroty_ctd": {
-      "events": 11,
-      "events_total": 29,
-      "fields_wrong": 98
-    },
-    "claroty_xdome": {
-      "events": 15,
-      "events_total": 15,
-      "fields_wrong": 0
-    },
-    "claude_code": {
-      "events": 0,
-      "events_total": 16,
-      "fields_wrong": 20
-    },
-    "claude_cowork": {
-      "events": 0,
-      "events_total": 8,
-      "fields_wrong": 11
-    },
-    "cloud_security_posture": {
-      "events": 11,
-      "events_total": 11,
-      "fields_wrong": 0
-    },
-    "cloudflare": {
-      "events": 48,
-      "events_total": 52,
-      "fields_wrong": 208
-    },
-    "cloudflare_logpush": {
-      "events": 30,
-      "events_total": 81,
-      "fields_wrong": 123
-    },
-    "contrast_security": {
-      "events": 6,
-      "events_total": 9,
-      "fields_wrong": 0
-    },
-    "coredns": {
-      "events": 20,
-      "events_total": 20,
-      "fields_wrong": 0
-    },
-    "couchbase": {
-      "events": 8,
-      "events_total": 12,
-      "fields_wrong": 13
-    },
-    "couchdb": {
-      "events": 1,
-      "events_total": 1,
-      "fields_wrong": 0
-    },
-    "crowdstrike": {
-      "events": 80,
-      "events_total": 80,
-      "fields_wrong": 0
-    },
-    "cursor": {
-      "events": 30,
-      "events_total": 30,
-      "fields_wrong": 0
-    },
-    "cyberark_epm": {
-      "events": 11,
-      "events_total": 31,
-      "fields_wrong": 89
-    },
-    "cyberark_pta": {
-      "events": 3,
-      "events_total": 4,
-      "fields_wrong": 1
-    },
-    "cyberarkpas": {
-      "events": 0,
-      "events_total": 374,
-      "fields_wrong": 12014
-    },
-    "cybereason": {
-      "events": 1,
-      "events_total": 6,
-      "fields_wrong": 31
-    },
-    "cyera": {
-      "events": 17,
-      "events_total": 22,
-      "fields_wrong": 12
-    },
-    "cylance": {
-      "events": 101,
-      "events_total": 101,
-      "fields_wrong": 0
-    },
-    "darktrace": {
-      "events": 0,
-      "events_total": 13,
-      "fields_wrong": 46
-    },
-    "dataminr_pulse": {
-      "events": 5,
-      "events_total": 17,
-      "fields_wrong": 88
-    },
-    "digital_guardian": {
-      "events": 0,
-      "events_total": 4,
-      "fields_wrong": 18
-    },
-    "doppel": {
-      "events": 0,
-      "events_total": 1,
-      "fields_wrong": 2
-    },
-    "doppler": {
-      "events": 0,
-      "events_total": 2,
-      "fields_wrong": 12
-    },
-    "elastic_agent": {
-      "events": 3,
-      "events_total": 11,
-      "fields_wrong": 8
-    },
-    "elastic_package_registry": {
-      "events": 2,
-      "events_total": 3,
-      "fields_wrong": 1
-    },
-    "elasticsearch": {
-      "events": 18,
-      "events_total": 23,
-      "fields_wrong": 51
-    },
-    "endace": {
-      "events": 29,
-      "events_total": 64,
-      "fields_wrong": 70
-    },
-    "entityanalytics_ad": {
-      "events": 4,
-      "events_total": 11,
-      "fields_wrong": 60
-    },
-    "entityanalytics_entra_id": {
-      "events": 7,
-      "events_total": 7,
-      "fields_wrong": 0
-    },
-    "entityanalytics_okta": {
-      "events": 2,
-      "events_total": 9,
-      "fields_wrong": 30
-    },
-    "entro": {
-      "events": 4,
-      "events_total": 4,
-      "fields_wrong": 0
-    },
-    "envoyproxy": {
-      "events": 0,
-      "events_total": 7,
-      "fields_wrong": 137
-    },
-    "eset_protect": {
-      "events": 13,
-      "events_total": 47,
-      "fields_wrong": 1198
-    },
-    "ess_billing": {
-      "events": 1,
-      "events_total": 2,
-      "fields_wrong": 3
-    },
-    "extrahop": {
-      "events": 3,
-      "events_total": 7,
-      "fields_wrong": 6
-    },
-    "f5_bigip": {
-      "events": 0,
-      "events_total": 25,
-      "fields_wrong": 1252
-    },
-    "falco": {
-      "events": 0,
-      "events_total": 22,
-      "fields_wrong": 109
-    },
-    "fim": {
-      "events": 8,
-      "events_total": 8,
-      "fields_wrong": 0
-    },
-    "fireeye": {
-      "events": 8,
-      "events_total": 8,
-      "fields_wrong": 0
-    },
-    "first_epss": {
-      "events": 0,
-      "events_total": 9,
-      "fields_wrong": 45
-    },
-    "forcepoint_web": {
-      "events": 0,
-      "events_total": 1,
-      "fields_wrong": 8
-    },
-    "forescout": {
-      "events": 14,
-      "events_total": 17,
-      "fields_wrong": 3
-    },
-    "forgerock": {
-      "events": 73,
-      "events_total": 73,
-      "fields_wrong": 0
-    },
-    "fortinet_forticlient": {
-      "events": 100,
-      "events_total": 100,
-      "fields_wrong": 0
-    },
-    "fortinet_fortiedr": {
-      "events": 2,
-      "events_total": 2,
-      "fields_wrong": 0
-    },
-    "fortinet_fortigate": {
-      "events": 185,
-      "events_total": 185,
-      "fields_wrong": 0
-    },
-    "fortinet_fortimail": {
-      "events": 32,
-      "events_total": 34,
-      "fields_wrong": 4
-    },
-    "fortinet_fortimanager": {
-      "events": 0,
-      "events_total": 31,
-      "fields_wrong": 65
-    },
-    "fortinet_fortiproxy": {
-      "events": 0,
-      "events_total": 33,
-      "fields_wrong": 1175
-    },
-    "gcp": {
-      "events": 382,
-      "events_total": 382,
-      "fields_wrong": 0
-    },
-    "gcp_vertexai": {
-      "events": 5,
-      "events_total": 5,
-      "fields_wrong": 0
-    },
-    "gdacs": {
-      "events": 0,
-      "events_total": 42,
-      "fields_wrong": 666
-    },
-    "gigamon": {
-      "events": 20,
-      "events_total": 78,
-      "fields_wrong": 303
-    },
-    "github": {
-      "events": 216,
-      "events_total": 237,
-      "fields_wrong": 37
-    },
-    "gitlab": {
-      "events": 10,
-      "events_total": 68,
-      "fields_wrong": 891
-    },
-    "goflow2": {
-      "events": 0,
-      "events_total": 12,
-      "fields_wrong": 235
-    },
-    "golang": {
-      "events": 2,
-      "events_total": 2,
-      "fields_wrong": 0
-    },
-    "google_scc": {
-      "events": 19,
-      "events_total": 24,
-      "fields_wrong": 15
-    },
-    "google_secops": {
-      "events": 0,
-      "events_total": 5,
-      "fields_wrong": 6
-    },
-    "google_workspace": {
-      "events": 15,
-      "events_total": 543,
-      "fields_wrong": 4406
-    },
-    "grafana": {
-      "events": 12,
-      "events_total": 15,
-      "fields_wrong": 3
-    },
-    "greenhouse": {
-      "events": 5,
-      "events_total": 5,
-      "fields_wrong": 0
-    },
-    "hackerone": {
-      "events": 0,
-      "events_total": 4,
-      "fields_wrong": 38
-    },
-    "hadoop": {
-      "events": 2,
-      "events_total": 8,
-      "fields_wrong": 38
-    },
-    "haproxy": {
-      "events": 7,
-      "events_total": 15,
-      "fields_wrong": 10
-    },
-    "hashicorp_vault": {
-      "events": 25,
-      "events_total": 25,
-      "fields_wrong": 0
-    },
-    "hid_bravura_monitor": {
-      "events": 4,
-      "events_total": 4,
-      "fields_wrong": 0
-    },
-    "hpe_aruba_cx": {
-      "events": 1,
-      "events_total": 1871,
-      "fields_wrong": 5615
-    },
-    "ibm_qradar": {
-      "events": 0,
-      "events_total": 3,
-      "fields_wrong": 6
-    },
-    "ibmmq": {
-      "events": 8,
-      "events_total": 8,
-      "fields_wrong": 0
-    },
-    "iis": {
-      "events": 62,
-      "events_total": 68,
-      "fields_wrong": 30
-    },
-    "imperva": {
-      "events": 2,
-      "events_total": 5,
-      "fields_wrong": 72
-    },
-    "imperva_cloud_waf": {
-      "events": 2,
-      "events_total": 3,
-      "fields_wrong": 1
-    },
-    "infoblox_bloxone_ddi": {
-      "events": 11,
-      "events_total": 12,
-      "fields_wrong": 0
-    },
-    "infoblox_nios": {
-      "events": 104,
-      "events_total": 127,
-      "fields_wrong": 98
-    },
-    "infoblox_threat_defense": {
-      "events": 0,
-      "events_total": 24,
-      "fields_wrong": 42
-    },
-    "iptables": {
-      "events": 0,
-      "events_total": 39,
-      "fields_wrong": 424
-    },
-    "ironscales": {
-      "events": 0,
-      "events_total": 3,
-      "fields_wrong": 5
-    },
-    "island_browser": {
-      "events": 32,
-      "events_total": 42,
-      "fields_wrong": 16
-    },
-    "istio": {
-      "events": 21,
-      "events_total": 21,
-      "fields_wrong": 0
-    },
-    "jamf_compliance_reporter": {
-      "events": 40,
-      "events_total": 53,
-      "fields_wrong": 15
-    },
-    "jamf_pro": {
-      "events": 5,
-      "events_total": 31,
-      "fields_wrong": 58
-    },
-    "jamf_protect": {
-      "events": 14,
-      "events_total": 64,
-      "fields_wrong": 1389
-    },
-    "jumpcloud": {
-      "events": 4,
-      "events_total": 4,
-      "fields_wrong": 0
-    },
-    "juniper_junos": {
-      "events": 100,
-      "events_total": 100,
-      "fields_wrong": 0
-    },
-    "juniper_netscreen": {
-      "events": 100,
-      "events_total": 100,
-      "fields_wrong": 0
-    },
-    "juniper_srx": {
-      "events": 12,
-      "events_total": 99,
-      "fields_wrong": 1866
-    },
-    "jupiter_one": {
-      "events": 3,
-      "events_total": 3,
-      "fields_wrong": 0
-    },
-    "kafka": {
-      "events": 0,
-      "events_total": 229,
-      "fields_wrong": 232
-    },
-    "keeper_security_siem_integration": {
-      "events": 0,
-      "events_total": 4,
-      "fields_wrong": 4
-    },
-    "keycloak": {
-      "events": 25,
-      "events_total": 26,
-      "fields_wrong": 27
-    },
-    "kibana": {
-      "events": 7,
-      "events_total": 7,
-      "fields_wrong": 0
-    },
-    "kolide": {
-      "events": 262,
-      "events_total": 276,
-      "fields_wrong": 20
-    },
-    "kubernetes": {
-      "events": 4,
-      "events_total": 10,
-      "fields_wrong": 15
-    },
-    "lastpass": {
-      "events": 94,
-      "events_total": 96,
-      "fields_wrong": 4
-    },
-    "logstash": {
-      "events": 13,
-      "events_total": 13,
-      "fields_wrong": 0
-    },
-    "lumos": {
-      "events": 2,
-      "events_total": 2,
-      "fields_wrong": 0
-    },
-    "lyve_cloud": {
-      "events": 0,
-      "events_total": 10,
-      "fields_wrong": 30
-    },
-    "m365_defender": {
-      "events": 108,
-      "events_total": 108,
-      "fields_wrong": 0
-    },
-    "macos": {
-      "events": 0,
-      "events_total": 23,
-      "fields_wrong": 23
-    },
-    "mattermost": {
-      "events": 23,
-      "events_total": 32,
-      "fields_wrong": 18
-    },
-    "menlo": {
-      "events": 5,
-      "events_total": 6,
-      "fields_wrong": 0
-    },
-    "microsoft_defender_cloud": {
-      "events": 7,
-      "events_total": 18,
-      "fields_wrong": 151
-    },
-    "microsoft_defender_endpoint": {
-      "events": 23,
-      "events_total": 23,
-      "fields_wrong": 0
-    },
-    "microsoft_dnsserver": {
-      "events": 14,
-      "events_total": 14,
-      "fields_wrong": 0
-    },
-    "microsoft_exchange_online_message_trace": {
-      "events": 8,
-      "events_total": 8,
-      "fields_wrong": 0
-    },
-    "microsoft_exchange_server": {
-      "events": 5,
-      "events_total": 21,
-      "fields_wrong": 166
-    },
-    "microsoft_intune": {
-      "events": 4,
-      "events_total": 7,
-      "fields_wrong": 10
-    },
-    "microsoft_sentinel": {
-      "events": 4,
-      "events_total": 4,
-      "fields_wrong": 0
-    },
-    "microsoft_sqlserver": {
-      "events": 104,
-      "events_total": 108,
-      "fields_wrong": 32
-    },
-    "mimecast": {
-      "events": 262,
-      "events_total": 262,
-      "fields_wrong": 0
-    },
-    "miniflux": {
-      "events": 5,
-      "events_total": 5,
-      "fields_wrong": 0
-    },
-    "modsecurity": {
-      "events": 9,
-      "events_total": 12,
-      "fields_wrong": 6
-    },
-    "mongodb": {
-      "events": 44,
-      "events_total": 44,
-      "fields_wrong": 0
-    },
-    "mongodb_atlas": {
-      "events": 7,
-      "events_total": 16,
-      "fields_wrong": 65
-    },
-    "mysql": {
-      "events": 440,
-      "events_total": 440,
-      "fields_wrong": 0
-    },
-    "mysql_enterprise": {
-      "events": 1,
-      "events_total": 34,
-      "fields_wrong": 672
-    },
-    "nagios_xi": {
-      "events": 12,
-      "events_total": 15,
-      "fields_wrong": 3
-    },
-    "nats": {
-      "events": 0,
-      "events_total": 19,
-      "fields_wrong": 47
-    },
-    "neon_cyber": {
-      "events": 9,
-      "events_total": 9,
-      "fields_wrong": 0
-    },
-    "netbox": {
-      "events": 2,
-      "events_total": 4,
-      "fields_wrong": 2
-    },
-    "netflow": {
-      "events": 34,
-      "events_total": 34,
-      "fields_wrong": 0
-    },
-    "netscout": {
-      "events": 100,
-      "events_total": 100,
-      "fields_wrong": 0
-    },
-    "netskope": {
-      "events": 5,
-      "events_total": 57,
-      "fields_wrong": 446
-    },
-    "network_traffic": {
-      "events": 0,
-      "events_total": 2,
-      "fields_wrong": 104
-    },
-    "nginx": {
-      "events": 23,
-      "events_total": 25,
-      "fields_wrong": 4
-    },
-    "nginx_ingress_controller": {
-      "events": 2,
-      "events_total": 32,
-      "fields_wrong": 140
-    },
-    "nozomi_networks": {
-      "events": 10,
-      "events_total": 16,
-      "fields_wrong": 116
-    },
-    "o365": {
-      "events": 409,
-      "events_total": 409,
-      "fields_wrong": 0
-    },
-    "o365_metrics": {
-      "events": 4,
-      "events_total": 28,
-      "fields_wrong": 352
-    },
-    "okta": {
-      "events": 24,
-      "events_total": 24,
-      "fields_wrong": 0
-    },
-    "openai": {
-      "events": 5,
-      "events_total": 5,
-      "fields_wrong": 0
-    },
-    "opencanary": {
-      "events": 1,
-      "events_total": 35,
-      "fields_wrong": 88
-    },
-    "oracle": {
-      "events": 1,
-      "events_total": 29,
-      "fields_wrong": 330
-    },
-    "oracle_weblogic": {
-      "events": 46,
-      "events_total": 46,
-      "fields_wrong": 0
-    },
-    "osquery": {
-      "events": 2213,
-      "events_total": 2213,
-      "fields_wrong": 0
-    },
-    "panw": {
-      "events": 538,
-      "events_total": 538,
-      "fields_wrong": 0
-    },
-    "panw_cortex_xdr": {
-      "events": 10,
-      "events_total": 22,
-      "fields_wrong": 60
-    },
-    "panw_metrics": {
-      "events": 0,
-      "events_total": 1,
-      "fields_wrong": 9
-    },
-    "pfsense": {
-      "events": 28,
-      "events_total": 131,
-      "fields_wrong": 148
-    },
-    "php_fpm": {
-      "events": 2,
-      "events_total": 2,
-      "fields_wrong": 0
-    },
-    "ping_federate": {
-      "events": 4,
-      "events_total": 5,
-      "fields_wrong": 0
-    },
-    "ping_one": {
-      "events": 4,
-      "events_total": 99,
-      "fields_wrong": 95
-    },
-    "platform_observability": {
-      "events": 3,
-      "events_total": 3,
-      "fields_wrong": 0
-    },
-    "postgresql": {
-      "events": 0,
-      "events_total": 284,
-      "fields_wrong": 286
-    },
-    "pps": {
-      "events": 18,
-      "events_total": 18,
-      "fields_wrong": 0
-    },
-    "prisma_access": {
-      "events": 21,
-      "events_total": 23,
-      "fields_wrong": 2
-    },
-    "prisma_cloud": {
-      "events": 5,
-      "events_total": 19,
-      "fields_wrong": 30
-    },
-    "proofpoint_365totalprotection": {
-      "events": 0,
-      "events_total": 3,
-      "fields_wrong": 46
-    },
-    "proofpoint_essentials": {
-      "events": 8,
-      "events_total": 14,
-      "fields_wrong": 18
-    },
-    "proofpoint_itm": {
-      "events": 1,
-      "events_total": 1,
-      "fields_wrong": 0
-    },
-    "proofpoint_on_demand": {
-      "events": 54,
-      "events_total": 55,
-      "fields_wrong": 1
-    },
-    "proofpoint_tap": {
-      "events": 27,
-      "events_total": 27,
-      "fields_wrong": 0
-    },
-    "proxysg": {
-      "events": 22,
-      "events_total": 22,
-      "fields_wrong": 0
-    },
-    "pulse_connect_secure": {
-      "events": 38,
-      "events_total": 38,
-      "fields_wrong": 0
-    },
-    "qnap_nas": {
-      "events": 32,
-      "events_total": 32,
-      "fields_wrong": 0
-    },
-    "qualys_gav": {
-      "events": 0,
-      "events_total": 5,
-      "fields_wrong": 606
-    },
-    "qualys_vmdr": {
-      "events": 2,
-      "events_total": 28,
-      "fields_wrong": 193
-    },
-    "qualys_was": {
-      "events": 0,
-      "events_total": 15,
-      "fields_wrong": 101
-    },
-    "rabbitmq": {
-      "events": 0,
-      "events_total": 157,
-      "fields_wrong": 471
-    },
-    "rapid7_insightvm": {
-      "events": 1,
-      "events_total": 3,
-      "fields_wrong": 2
-    },
-    "redis": {
-      "events": 3,
-      "events_total": 71,
-      "fields_wrong": 86
-    },
-    "rubrik": {
-      "events": 14,
-      "events_total": 15,
-      "fields_wrong": 2
-    },
-    "sailpoint_identity_sc": {
-      "events": 4,
-      "events_total": 4,
-      "fields_wrong": 0
-    },
-    "salesforce": {
-      "events": 4,
-      "events_total": 10,
-      "fields_wrong": 110
-    },
-    "santa": {
-      "events": 17,
-      "events_total": 17,
-      "fields_wrong": 0
-    },
-    "sentinel_one": {
-      "events": 68,
-      "events_total": 68,
-      "fields_wrong": 0
-    },
-    "sentinel_one_cloud_funnel": {
-      "events": 0,
-      "events_total": 18,
-      "fields_wrong": 207
-    },
-    "slack": {
-      "events": 6,
-      "events_total": 6,
-      "fields_wrong": 0
-    },
-    "snort": {
-      "events": 21,
-      "events_total": 36,
-      "fields_wrong": 30
-    },
-    "snyk": {
-      "events": 7,
-      "events_total": 27,
-      "fields_wrong": 31
-    },
-    "sonicwall_firewall": {
-      "events": 0,
-      "events_total": 220,
-      "fields_wrong": 6207
-    },
-    "sophos": {
-      "events": 22,
-      "events_total": 293,
-      "fields_wrong": 639
-    },
-    "sophos_central": {
-      "events": 4,
-      "events_total": 8,
-      "fields_wrong": 60
-    },
-    "splunk": {
-      "events": 1,
-      "events_total": 7,
-      "fields_wrong": 27
-    },
-    "spring_boot": {
-      "events": 5,
-      "events_total": 5,
-      "fields_wrong": 0
-    },
-    "spycloud": {
-      "events": 2,
-      "events_total": 4,
-      "fields_wrong": 2
-    },
-    "squid": {
-      "events": 0,
-      "events_total": 112,
-      "fields_wrong": 552
-    },
-    "stan": {
-      "events": 0,
-      "events_total": 69,
-      "fields_wrong": 119
-    },
-    "stormshield": {
-      "events": 0,
-      "events_total": 44,
-      "fields_wrong": 1274
-    },
-    "sublime_security": {
-      "events": 2,
-      "events_total": 6,
-      "fields_wrong": 8
-    },
-    "suricata": {
-      "events": 0,
-      "events_total": 64,
-      "fields_wrong": 525
-    },
-    "swimlane": {
-      "events": 4,
-      "events_total": 7,
-      "fields_wrong": 3
-    },
-    "symantec_endpoint": {
-      "events": 0,
-      "events_total": 33,
-      "fields_wrong": 1021
-    },
-    "symantec_endpoint_security": {
-      "events": 52,
-      "events_total": 58,
-      "fields_wrong": 21
-    },
-    "sysdig": {
-      "events": 8,
-      "events_total": 38,
-      "fields_wrong": 421
-    },
-    "syslog_router": {
-      "events": 2,
-      "events_total": 2,
-      "fields_wrong": 0
-    },
-    "sysmon_linux": {
-      "events": 2,
-      "events_total": 2,
-      "fields_wrong": 0
-    },
-    "system": {
-      "events": 227,
-      "events_total": 821,
-      "fields_wrong": 255
-    },
-    "system_audit": {
-      "events": 2,
-      "events_total": 2,
-      "fields_wrong": 0
-    },
-    "tanium": {
-      "events": 6,
-      "events_total": 54,
-      "fields_wrong": 1968
-    },
-    "teleport": {
-      "events": 243,
-      "events_total": 260,
-      "fields_wrong": 68
-    },
-    "tenable_io": {
-      "events": 9,
-      "events_total": 27,
-      "fields_wrong": 50
-    },
-    "tenable_ot_security": {
-      "events": 1,
-      "events_total": 3,
-      "fields_wrong": 19
-    },
-    "tenable_sc": {
-      "events": 3,
-      "events_total": 16,
-      "fields_wrong": 86
-    },
-    "tencent_cloud": {
-      "events": 26,
-      "events_total": 26,
-      "fields_wrong": 0
-    },
-    "tetragon": {
-      "events": 0,
-      "events_total": 14,
-      "fields_wrong": 300
-    },
-    "thycotic_ss": {
-      "events": 2,
-      "events_total": 2,
-      "fields_wrong": 0
-    },
-    "ti_abusech": {
-      "events": 0,
-      "events_total": 142,
-      "fields_wrong": 236
-    },
-    "ti_anomali": {
-      "events": 0,
-      "events_total": 131,
-      "fields_wrong": 525
-    },
-    "ti_anyrun": {
-      "events": 0,
-      "events_total": 4,
-      "fields_wrong": 12
-    },
-    "ti_cif3": {
-      "events": 0,
-      "events_total": 2,
-      "fields_wrong": 6
-    },
-    "ti_crowdstrike": {
-      "events": 1,
-      "events_total": 11,
-      "fields_wrong": 10
-    },
-    "ti_custom": {
-      "events": 0,
-      "events_total": 18,
-      "fields_wrong": 43
-    },
-    "ti_cybersixgill": {
-      "events": 0,
-      "events_total": 4,
-      "fields_wrong": 29
-    },
-    "ti_cyware_intel_exchange": {
-      "events": 0,
-      "events_total": 3,
-      "fields_wrong": 6
-    },
-    "ti_domaintools": {
-      "events": 16,
-      "events_total": 16,
-      "fields_wrong": 0
-    },
-    "ti_eclecticiq": {
-      "events": 6,
-      "events_total": 33,
-      "fields_wrong": 241
-    },
-    "ti_eset": {
-      "events": 0,
-      "events_total": 81,
-      "fields_wrong": 81
-    },
-    "ti_flashpoint": {
-      "events": 0,
-      "events_total": 9,
-      "fields_wrong": 278
-    },
-    "ti_google_threat_intelligence": {
-      "events": 60,
-      "events_total": 60,
-      "fields_wrong": 0
-    },
-    "ti_greynoise": {
-      "events": 0,
-      "events_total": 1,
-      "fields_wrong": 2
-    },
-    "ti_maltiverse": {
-      "events": 5,
-      "events_total": 5,
-      "fields_wrong": 0
-    },
-    "ti_mandiant_advantage": {
-      "events": 0,
-      "events_total": 5,
-      "fields_wrong": 46
-    },
-    "ti_misp": {
-      "events": 1,
-      "events_total": 59,
-      "fields_wrong": 81
-    },
-    "ti_opencti": {
-      "events": 0,
-      "events_total": 31,
-      "fields_wrong": 241
-    },
-    "ti_otx": {
-      "events": 96,
-      "events_total": 96,
-      "fields_wrong": 0
-    },
-    "ti_rapid7_threat_command": {
-      "events": 5,
-      "events_total": 12,
-      "fields_wrong": 32
-    },
-    "ti_recordedfuture": {
-      "events": 6,
-      "events_total": 98,
-      "fields_wrong": 572
-    },
-    "ti_socradar_feeds": {
-      "events": 0,
-      "events_total": 5,
-      "fields_wrong": 34
-    },
-    "ti_socradar_taxii": {
-      "events": 0,
-      "events_total": 14,
-      "fields_wrong": 43
-    },
-    "ti_strider": {
-      "events": 0,
-      "events_total": 6,
-      "fields_wrong": 9
-    },
-    "ti_threatconnect": {
-      "events": 0,
-      "events_total": 2,
-      "fields_wrong": 10
-    },
-    "ti_threatq": {
-      "events": 0,
-      "events_total": 15,
-      "fields_wrong": 31
-    },
-    "ti_ticura": {
-      "events": 1,
-      "events_total": 13,
-      "fields_wrong": 313
-    },
-    "tines": {
-      "events": 248,
-      "events_total": 248,
-      "fields_wrong": 0
-    },
-    "tomcat": {
-      "events": 100,
-      "events_total": 100,
-      "fields_wrong": 0
-    },
-    "traefik": {
-      "events": 9,
-      "events_total": 15,
-      "fields_wrong": 19
-    },
-    "trellix_edr_cloud": {
-      "events": 0,
-      "events_total": 1,
-      "fields_wrong": 2
-    },
-    "trellix_epo_cloud": {
-      "events": 7,
-      "events_total": 9,
-      "fields_wrong": 0
-    },
-    "trend_micro_vision_one": {
-      "events": 4,
-      "events_total": 46,
-      "fields_wrong": 264
-    },
-    "trendmicro": {
-      "events": 4,
-      "events_total": 6,
-      "fields_wrong": 6
-    },
-    "tychon": {
-      "events": 0,
-      "events_total": 20,
-      "fields_wrong": 75
-    },
-    "varonis": {
-      "events": 0,
-      "events_total": 2,
-      "fields_wrong": 14
-    },
-    "vectra_detect": {
-      "events": 0,
-      "events_total": 57,
-      "fields_wrong": 11
-    },
-    "vectra_rux": {
-      "events": 8,
-      "events_total": 8,
-      "fields_wrong": 0
-    },
-    "vsphere": {
-      "events": 125,
-      "events_total": 173,
-      "fields_wrong": 251
-    },
-    "watchguard_firebox": {
-      "events": 0,
-      "events_total": 637,
-      "fields_wrong": 3415
-    },
-    "websphere_application_server": {
-      "events": 31,
-      "events_total": 31,
-      "fields_wrong": 0
-    },
-    "windows": {
-      "events": 596,
-      "events_total": 596,
-      "fields_wrong": 0
-    },
-    "withsecure_elements": {
-      "events": 2,
-      "events_total": 2,
-      "fields_wrong": 0
-    },
-    "wiz": {
-      "events": 13,
-      "events_total": 27,
-      "fields_wrong": 18
-    },
-    "workday": {
-      "events": 5,
-      "events_total": 15,
-      "fields_wrong": 61
-    },
-    "xm_cyber": {
-      "events": 18,
-      "events_total": 22,
-      "fields_wrong": 10
-    },
-    "zeek": {
-      "events": 27,
-      "events_total": 125,
-      "fields_wrong": 443
-    },
-    "zerofox": {
-      "events": 0,
-      "events_total": 3,
-      "fields_wrong": 0
-    },
-    "zeronetworks": {
-      "events": 1,
-      "events_total": 1,
-      "fields_wrong": 0
-    },
-    "zoom": {
-      "events": 81,
-      "events_total": 100,
-      "fields_wrong": 25
-    },
-    "zscaler_zia": {
-      "events": 93,
-      "events_total": 93,
-      "fields_wrong": 0
-    },
-    "zscaler_zpa": {
-      "events": 1,
-      "events_total": 9,
-      "fields_wrong": 26
-    }
+    "1password": { "events": 6, "events_total": 6, "fields_wrong": 0 },
+    "abnormal_security": { "events": 23, "events_total": 29, "fields_wrong": 11 },
+    "activemq": { "events": 3, "events_total": 24, "fields_wrong": 21 },
+    "admin_by_request_epm": { "events": 0, "events_total": 2, "fields_wrong": 5 },
+    "agentless_hello_world": { "events": 2, "events_total": 2, "fields_wrong": 0 },
+    "airlock_digital": { "events": 2, "events_total": 6, "fields_wrong": 4 },
+    "akamai": { "events": 0, "events_total": 2, "fields_wrong": 6 },
+    "amazon_security_lake": { "events": 10, "events_total": 11, "fields_wrong": 1 },
+    "anthropic": { "events": 306, "events_total": 306, "fields_wrong": 0 },
+    "anthropic_metrics": { "events": 3, "events_total": 11, "fields_wrong": 11 },
+    "apache": { "events": 32, "events_total": 54, "fields_wrong": 22 },
+    "apache_tomcat": { "events": 25, "events_total": 30, "fields_wrong": 15 },
+    "arista_ngfw": { "events": 137, "events_total": 141, "fields_wrong": 5 },
+    "armis": { "events": 6, "events_total": 6, "fields_wrong": 0 },
+    "atlassian_bitbucket": { "events": 257, "events_total": 281, "fields_wrong": 83 },
+    "atlassian_cloud": { "events": 0, "events_total": 10, "fields_wrong": 10 },
+    "atlassian_confluence": { "events": 234, "events_total": 286, "fields_wrong": 212 },
+    "atlassian_jira": { "events": 176, "events_total": 271, "fields_wrong": 220 },
+    "auditd": { "events": 8, "events_total": 83, "fields_wrong": 519 },
+    "auditd_manager": { "events": 53, "events_total": 56, "fields_wrong": 5 },
+    "auth0": { "events": 111, "events_total": 111, "fields_wrong": 0 },
+    "authentik": { "events": 55, "events_total": 55, "fields_wrong": 0 },
+    "aws": { "events": 532, "events_total": 538, "fields_wrong": 6 },
+    "aws_bedrock": { "events": 0, "events_total": 18, "fields_wrong": 212 },
+    "aws_bedrock_agentcore": { "events": 0, "events_total": 7, "fields_wrong": 17 },
+    "aws_billing": { "events": 1, "events_total": 8, "fields_wrong": 13 },
+    "aws_mq": { "events": 0, "events_total": 12, "fields_wrong": 32 },
+    "aws_securityhub": { "events": 0, "events_total": 10, "fields_wrong": 164 },
+    "awsfirehose": { "events": 0, "events_total": 42, "fields_wrong": 42 },
+    "axonius": { "events": 10, "events_total": 89, "fields_wrong": 2353 },
+    "azure": { "events": 181, "events_total": 182, "fields_wrong": 4 },
+    "azure_ai_foundry": { "events": 5, "events_total": 10, "fields_wrong": 5 },
+    "azure_app_service": { "events": 11, "events_total": 11, "fields_wrong": 0 },
+    "azure_frontdoor": { "events": 11, "events_total": 18, "fields_wrong": 87 },
+    "azure_functions": { "events": 4, "events_total": 4, "fields_wrong": 0 },
+    "azure_metrics": { "events": 4, "events_total": 4, "fields_wrong": 0 },
+    "azure_network_watcher_nsg": { "events": 0, "events_total": 1, "fields_wrong": 12 },
+    "azure_network_watcher_vnet": { "events": 0, "events_total": 1, "fields_wrong": 12 },
+    "azure_openai": { "events": 5, "events_total": 7, "fields_wrong": 2 },
+    "barracuda": { "events": 40, "events_total": 48, "fields_wrong": 10 },
+    "barracuda_cloudgen_firewall": { "events": 5, "events_total": 6, "fields_wrong": 0 },
+    "bbot": { "events": 797, "events_total": 805, "fields_wrong": 10 },
+    "beelzebub": { "events": 1, "events_total": 5, "fields_wrong": 30 },
+    "beyondinsight_password_safe": { "events": 0, "events_total": 7, "fields_wrong": 197 },
+    "beyondtrust_epm": { "events": 0, "events_total": 4, "fields_wrong": 95 },
+    "beyondtrust_isi": { "events": 0, "events_total": 4, "fields_wrong": 5 },
+    "beyondtrust_pra": { "events": 0, "events_total": 2, "fields_wrong": 2 },
+    "bitdefender": { "events": 3, "events_total": 69, "fields_wrong": 355 },
+    "bitsight": { "events": 0, "events_total": 1, "fields_wrong": 1 },
+    "bitwarden": { "events": 7, "events_total": 20, "fields_wrong": 30 },
+    "blacklens": { "events": 1, "events_total": 1, "fields_wrong": 0 },
+    "bluecoat": { "events": 100, "events_total": 100, "fields_wrong": 0 },
+    "box_events": { "events": 1, "events_total": 148, "fields_wrong": 339 },
+    "canva": { "events": 0, "events_total": 1, "fields_wrong": 3 },
+    "carbon_black_cloud": { "events": 50, "events_total": 50, "fields_wrong": 0 },
+    "carbonblack_edr": { "events": 0, "events_total": 99, "fields_wrong": 417 },
+    "cassandra": { "events": 0, "events_total": 3, "fields_wrong": 3 },
+    "cato_networks": { "events": 4, "events_total": 11, "fields_wrong": 26 },
+    "cef": { "events": 33, "events_total": 36, "fields_wrong": 24 },
+    "ceph": { "events": 8, "events_total": 9, "fields_wrong": 1 },
+    "checkpoint": { "events": 109, "events_total": 111, "fields_wrong": 3 },
+    "checkpoint_email": { "events": 0, "events_total": 18, "fields_wrong": 18 },
+    "checkpoint_harmony_endpoint": { "events": 0, "events_total": 19, "fields_wrong": 19 },
+    "cisa_kevs": { "events": 0, "events_total": 3, "fields_wrong": 33 },
+    "cisco_aironet": { "events": 74, "events_total": 116, "fields_wrong": 196 },
+    "cisco_asa": { "events": 510, "events_total": 512, "fields_wrong": 20 },
+    "cisco_duo": { "events": 59, "events_total": 60, "fields_wrong": 0 },
+    "cisco_ftd": { "events": 432, "events_total": 432, "fields_wrong": 0 },
+    "cisco_ios": { "events": 89, "events_total": 89, "fields_wrong": 0 },
+    "cisco_ise": { "events": 161, "events_total": 249, "fields_wrong": 249 },
+    "cisco_meraki": { "events": 249, "events_total": 249, "fields_wrong": 0 },
+    "cisco_meraki_metrics": { "events": 0, "events_total": 2, "fields_wrong": 13 },
+    "cisco_nexus": { "events": 45, "events_total": 45, "fields_wrong": 0 },
+    "cisco_secure_email_gateway": { "events": 164, "events_total": 166, "fields_wrong": 2 },
+    "cisco_secure_endpoint": { "events": 1, "events_total": 408, "fields_wrong": 1658 },
+    "cisco_umbrella": { "events": 38, "events_total": 39, "fields_wrong": 1 },
+    "citrix_adc": { "events": 167, "events_total": 189, "fields_wrong": 57 },
+    "citrix_waf": { "events": 22, "events_total": 22, "fields_wrong": 0 },
+    "claroty_ctd": { "events": 11, "events_total": 29, "fields_wrong": 98 },
+    "claroty_xdome": { "events": 15, "events_total": 15, "fields_wrong": 0 },
+    "claude_code": { "events": 0, "events_total": 16, "fields_wrong": 20 },
+    "claude_cowork": { "events": 0, "events_total": 8, "fields_wrong": 11 },
+    "cloud_security_posture": { "events": 11, "events_total": 11, "fields_wrong": 0 },
+    "cloudflare": { "events": 48, "events_total": 52, "fields_wrong": 208 },
+    "cloudflare_logpush": { "events": 30, "events_total": 81, "fields_wrong": 123 },
+    "contrast_security": { "events": 6, "events_total": 9, "fields_wrong": 0 },
+    "coredns": { "events": 20, "events_total": 20, "fields_wrong": 0 },
+    "couchbase": { "events": 8, "events_total": 12, "fields_wrong": 13 },
+    "couchdb": { "events": 1, "events_total": 1, "fields_wrong": 0 },
+    "crowdstrike": { "events": 80, "events_total": 80, "fields_wrong": 0 },
+    "cursor": { "events": 30, "events_total": 30, "fields_wrong": 0 },
+    "cyberark_epm": { "events": 11, "events_total": 31, "fields_wrong": 89 },
+    "cyberark_pta": { "events": 3, "events_total": 4, "fields_wrong": 1 },
+    "cyberarkpas": { "events": 0, "events_total": 374, "fields_wrong": 12014 },
+    "cybereason": { "events": 1, "events_total": 6, "fields_wrong": 31 },
+    "cyera": { "events": 17, "events_total": 22, "fields_wrong": 12 },
+    "cylance": { "events": 101, "events_total": 101, "fields_wrong": 0 },
+    "darktrace": { "events": 0, "events_total": 13, "fields_wrong": 46 },
+    "dataminr_pulse": { "events": 5, "events_total": 17, "fields_wrong": 88 },
+    "digital_guardian": { "events": 0, "events_total": 4, "fields_wrong": 18 },
+    "doppel": { "events": 0, "events_total": 1, "fields_wrong": 2 },
+    "doppler": { "events": 0, "events_total": 14, "fields_wrong": 44 },
+    "elastic_agent": { "events": 3, "events_total": 11, "fields_wrong": 8 },
+    "elastic_package_registry": { "events": 2, "events_total": 3, "fields_wrong": 1 },
+    "elasticsearch": { "events": 18, "events_total": 23, "fields_wrong": 51 },
+    "endace": { "events": 29, "events_total": 64, "fields_wrong": 70 },
+    "entityanalytics_ad": { "events": 4, "events_total": 11, "fields_wrong": 60 },
+    "entityanalytics_entra_id": { "events": 7, "events_total": 7, "fields_wrong": 0 },
+    "entityanalytics_okta": { "events": 2, "events_total": 9, "fields_wrong": 30 },
+    "entro": { "events": 4, "events_total": 4, "fields_wrong": 0 },
+    "envoyproxy": { "events": 0, "events_total": 7, "fields_wrong": 137 },
+    "eset_protect": { "events": 13, "events_total": 47, "fields_wrong": 1198 },
+    "ess_billing": { "events": 1, "events_total": 2, "fields_wrong": 3 },
+    "extrahop": { "events": 3, "events_total": 7, "fields_wrong": 6 },
+    "f5_bigip": { "events": 0, "events_total": 25, "fields_wrong": 1252 },
+    "falco": { "events": 0, "events_total": 22, "fields_wrong": 109 },
+    "fim": { "events": 8, "events_total": 8, "fields_wrong": 0 },
+    "fireeye": { "events": 8, "events_total": 8, "fields_wrong": 0 },
+    "first_epss": { "events": 0, "events_total": 9, "fields_wrong": 45 },
+    "forcepoint_web": { "events": 0, "events_total": 1, "fields_wrong": 8 },
+    "forescout": { "events": 14, "events_total": 17, "fields_wrong": 3 },
+    "forgerock": { "events": 73, "events_total": 73, "fields_wrong": 0 },
+    "fortinet_forticlient": { "events": 100, "events_total": 100, "fields_wrong": 0 },
+    "fortinet_fortiedr": { "events": 2, "events_total": 2, "fields_wrong": 0 },
+    "fortinet_fortigate": { "events": 185, "events_total": 185, "fields_wrong": 0 },
+    "fortinet_fortimail": { "events": 32, "events_total": 34, "fields_wrong": 4 },
+    "fortinet_fortimanager": { "events": 0, "events_total": 31, "fields_wrong": 65 },
+    "fortinet_fortiproxy": { "events": 0, "events_total": 33, "fields_wrong": 1175 },
+    "gcp": { "events": 382, "events_total": 382, "fields_wrong": 0 },
+    "gcp_vertexai": { "events": 5, "events_total": 5, "fields_wrong": 0 },
+    "gdacs": { "events": 0, "events_total": 42, "fields_wrong": 666 },
+    "gigamon": { "events": 20, "events_total": 78, "fields_wrong": 303 },
+    "github": { "events": 216, "events_total": 237, "fields_wrong": 37 },
+    "gitlab": { "events": 10, "events_total": 68, "fields_wrong": 891 },
+    "goflow2": { "events": 0, "events_total": 12, "fields_wrong": 235 },
+    "golang": { "events": 2, "events_total": 2, "fields_wrong": 0 },
+    "google_scc": { "events": 19, "events_total": 24, "fields_wrong": 15 },
+    "google_secops": { "events": 0, "events_total": 5, "fields_wrong": 6 },
+    "google_workspace": { "events": 15, "events_total": 543, "fields_wrong": 4406 },
+    "grafana": { "events": 12, "events_total": 15, "fields_wrong": 3 },
+    "greenhouse": { "events": 5, "events_total": 5, "fields_wrong": 0 },
+    "hackerone": { "events": 0, "events_total": 4, "fields_wrong": 38 },
+    "hadoop": { "events": 2, "events_total": 8, "fields_wrong": 38 },
+    "haproxy": { "events": 7, "events_total": 15, "fields_wrong": 10 },
+    "hashicorp_vault": { "events": 25, "events_total": 25, "fields_wrong": 0 },
+    "hid_bravura_monitor": { "events": 4, "events_total": 4, "fields_wrong": 0 },
+    "hpe_aruba_cx": { "events": 1, "events_total": 1871, "fields_wrong": 5569 },
+    "ibm_qradar": { "events": 0, "events_total": 3, "fields_wrong": 6 },
+    "ibmmq": { "events": 8, "events_total": 8, "fields_wrong": 0 },
+    "iis": { "events": 62, "events_total": 68, "fields_wrong": 30 },
+    "imperva": { "events": 2, "events_total": 5, "fields_wrong": 72 },
+    "imperva_cloud_waf": { "events": 2, "events_total": 3, "fields_wrong": 1 },
+    "infoblox_bloxone_ddi": { "events": 11, "events_total": 12, "fields_wrong": 0 },
+    "infoblox_nios": { "events": 104, "events_total": 127, "fields_wrong": 98 },
+    "infoblox_threat_defense": { "events": 0, "events_total": 24, "fields_wrong": 42 },
+    "iptables": { "events": 0, "events_total": 39, "fields_wrong": 424 },
+    "ironscales": { "events": 0, "events_total": 3, "fields_wrong": 5 },
+    "island_browser": { "events": 32, "events_total": 42, "fields_wrong": 16 },
+    "istio": { "events": 21, "events_total": 21, "fields_wrong": 0 },
+    "jamf_compliance_reporter": { "events": 40, "events_total": 53, "fields_wrong": 15 },
+    "jamf_pro": { "events": 5, "events_total": 31, "fields_wrong": 58 },
+    "jamf_protect": { "events": 14, "events_total": 64, "fields_wrong": 1389 },
+    "jumpcloud": { "events": 4, "events_total": 4, "fields_wrong": 0 },
+    "juniper_junos": { "events": 100, "events_total": 100, "fields_wrong": 0 },
+    "juniper_netscreen": { "events": 100, "events_total": 100, "fields_wrong": 0 },
+    "juniper_srx": { "events": 12, "events_total": 99, "fields_wrong": 1866 },
+    "jupiter_one": { "events": 3, "events_total": 3, "fields_wrong": 0 },
+    "kafka": { "events": 1, "events_total": 229, "fields_wrong": 29 },
+    "keeper_security_siem_integration": { "events": 0, "events_total": 4, "fields_wrong": 4 },
+    "keycloak": { "events": 25, "events_total": 26, "fields_wrong": 27 },
+    "kibana": { "events": 7, "events_total": 7, "fields_wrong": 0 },
+    "kolide": { "events": 262, "events_total": 276, "fields_wrong": 20 },
+    "kubernetes": { "events": 4, "events_total": 10, "fields_wrong": 15 },
+    "lastpass": { "events": 94, "events_total": 96, "fields_wrong": 4 },
+    "logstash": { "events": 13, "events_total": 13, "fields_wrong": 0 },
+    "lumos": { "events": 2, "events_total": 2, "fields_wrong": 0 },
+    "lyve_cloud": { "events": 0, "events_total": 10, "fields_wrong": 30 },
+    "m365_defender": { "events": 108, "events_total": 108, "fields_wrong": 0 },
+    "macos": { "events": 0, "events_total": 23, "fields_wrong": 23 },
+    "mattermost": { "events": 23, "events_total": 32, "fields_wrong": 18 },
+    "menlo": { "events": 5, "events_total": 6, "fields_wrong": 0 },
+    "microsoft_defender_cloud": { "events": 7, "events_total": 18, "fields_wrong": 151 },
+    "microsoft_defender_endpoint": { "events": 23, "events_total": 23, "fields_wrong": 0 },
+    "microsoft_dnsserver": { "events": 14, "events_total": 14, "fields_wrong": 0 },
+    "microsoft_exchange_online_message_trace": { "events": 8, "events_total": 8, "fields_wrong": 0 },
+    "microsoft_exchange_server": { "events": 5, "events_total": 21, "fields_wrong": 166 },
+    "microsoft_intune": { "events": 4, "events_total": 7, "fields_wrong": 10 },
+    "microsoft_sentinel": { "events": 4, "events_total": 4, "fields_wrong": 0 },
+    "microsoft_sqlserver": { "events": 104, "events_total": 108, "fields_wrong": 32 },
+    "mimecast": { "events": 262, "events_total": 262, "fields_wrong": 0 },
+    "miniflux": { "events": 5, "events_total": 5, "fields_wrong": 0 },
+    "modsecurity": { "events": 9, "events_total": 12, "fields_wrong": 6 },
+    "mongodb": { "events": 44, "events_total": 44, "fields_wrong": 0 },
+    "mongodb_atlas": { "events": 7, "events_total": 16, "fields_wrong": 65 },
+    "mysql": { "events": 440, "events_total": 440, "fields_wrong": 0 },
+    "mysql_enterprise": { "events": 1, "events_total": 34, "fields_wrong": 672 },
+    "nagios_xi": { "events": 12, "events_total": 15, "fields_wrong": 3 },
+    "nats": { "events": 0, "events_total": 19, "fields_wrong": 47 },
+    "neon_cyber": { "events": 9, "events_total": 9, "fields_wrong": 0 },
+    "netbox": { "events": 2, "events_total": 4, "fields_wrong": 2 },
+    "netflow": { "events": 34, "events_total": 34, "fields_wrong": 0 },
+    "netscout": { "events": 100, "events_total": 100, "fields_wrong": 0 },
+    "netskope": { "events": 5, "events_total": 57, "fields_wrong": 446 },
+    "network_traffic": { "events": 0, "events_total": 2, "fields_wrong": 104 },
+    "nginx": { "events": 23, "events_total": 25, "fields_wrong": 4 },
+    "nginx_ingress_controller": { "events": 2, "events_total": 32, "fields_wrong": 140 },
+    "nozomi_networks": { "events": 10, "events_total": 16, "fields_wrong": 116 },
+    "o365": { "events": 409, "events_total": 409, "fields_wrong": 0 },
+    "o365_metrics": { "events": 4, "events_total": 28, "fields_wrong": 352 },
+    "okta": { "events": 24, "events_total": 24, "fields_wrong": 0 },
+    "openai": { "events": 5, "events_total": 5, "fields_wrong": 0 },
+    "opencanary": { "events": 1, "events_total": 35, "fields_wrong": 88 },
+    "oracle": { "events": 1, "events_total": 29, "fields_wrong": 330 },
+    "oracle_weblogic": { "events": 46, "events_total": 46, "fields_wrong": 0 },
+    "osquery": { "events": 2213, "events_total": 2213, "fields_wrong": 0 },
+    "panw": { "events": 538, "events_total": 538, "fields_wrong": 0 },
+    "panw_cortex_xdr": { "events": 10, "events_total": 22, "fields_wrong": 60 },
+    "panw_metrics": { "events": 0, "events_total": 1, "fields_wrong": 9 },
+    "pfsense": { "events": 28, "events_total": 131, "fields_wrong": 148 },
+    "php_fpm": { "events": 2, "events_total": 2, "fields_wrong": 0 },
+    "ping_federate": { "events": 4, "events_total": 5, "fields_wrong": 0 },
+    "ping_one": { "events": 4, "events_total": 99, "fields_wrong": 95 },
+    "platform_observability": { "events": 3, "events_total": 3, "fields_wrong": 0 },
+    "postgresql": { "events": 0, "events_total": 284, "fields_wrong": 286 },
+    "pps": { "events": 18, "events_total": 18, "fields_wrong": 0 },
+    "prisma_access": { "events": 21, "events_total": 23, "fields_wrong": 2 },
+    "prisma_cloud": { "events": 5, "events_total": 19, "fields_wrong": 30 },
+    "proofpoint_365totalprotection": { "events": 0, "events_total": 3, "fields_wrong": 46 },
+    "proofpoint_essentials": { "events": 8, "events_total": 14, "fields_wrong": 18 },
+    "proofpoint_itm": { "events": 1, "events_total": 1, "fields_wrong": 0 },
+    "proofpoint_on_demand": { "events": 54, "events_total": 55, "fields_wrong": 1 },
+    "proofpoint_tap": { "events": 27, "events_total": 27, "fields_wrong": 0 },
+    "proxysg": { "events": 22, "events_total": 22, "fields_wrong": 0 },
+    "pulse_connect_secure": { "events": 38, "events_total": 38, "fields_wrong": 0 },
+    "qnap_nas": { "events": 32, "events_total": 32, "fields_wrong": 0 },
+    "qualys_gav": { "events": 0, "events_total": 5, "fields_wrong": 606 },
+    "qualys_vmdr": { "events": 2, "events_total": 28, "fields_wrong": 193 },
+    "qualys_was": { "events": 0, "events_total": 15, "fields_wrong": 101 },
+    "rabbitmq": { "events": 0, "events_total": 157, "fields_wrong": 471 },
+    "rapid7_insightvm": { "events": 4, "events_total": 31, "fields_wrong": 64 },
+    "redis": { "events": 3, "events_total": 71, "fields_wrong": 86 },
+    "rubrik": { "events": 14, "events_total": 15, "fields_wrong": 2 },
+    "sailpoint_identity_sc": { "events": 4, "events_total": 4, "fields_wrong": 0 },
+    "salesforce": { "events": 7, "events_total": 13, "fields_wrong": 110 },
+    "santa": { "events": 17, "events_total": 17, "fields_wrong": 0 },
+    "sentinel_one": { "events": 68, "events_total": 68, "fields_wrong": 0 },
+    "sentinel_one_cloud_funnel": { "events": 0, "events_total": 18, "fields_wrong": 207 },
+    "servicenow": { "events": 31, "events_total": 54, "fields_wrong": 170 },
+    "slack": { "events": 6, "events_total": 6, "fields_wrong": 0 },
+    "snort": { "events": 21, "events_total": 36, "fields_wrong": 30 },
+    "snyk": { "events": 7, "events_total": 27, "fields_wrong": 31 },
+    "sonicwall_firewall": { "events": 0, "events_total": 220, "fields_wrong": 6207 },
+    "sophos": { "events": 22, "events_total": 293, "fields_wrong": 639 },
+    "sophos_central": { "events": 4, "events_total": 8, "fields_wrong": 60 },
+    "splunk": { "events": 1, "events_total": 7, "fields_wrong": 27 },
+    "spring_boot": { "events": 5, "events_total": 5, "fields_wrong": 0 },
+    "spycloud": { "events": 2, "events_total": 4, "fields_wrong": 2 },
+    "squid": { "events": 0, "events_total": 112, "fields_wrong": 552 },
+    "stan": { "events": 0, "events_total": 69, "fields_wrong": 119 },
+    "stormshield": { "events": 0, "events_total": 44, "fields_wrong": 1274 },
+    "sublime_security": { "events": 2, "events_total": 6, "fields_wrong": 8 },
+    "suricata": { "events": 0, "events_total": 64, "fields_wrong": 525 },
+    "swimlane": { "events": 4, "events_total": 7, "fields_wrong": 3 },
+    "symantec_endpoint": { "events": 0, "events_total": 33, "fields_wrong": 1021 },
+    "symantec_endpoint_security": { "events": 52, "events_total": 58, "fields_wrong": 21 },
+    "sysdig": { "events": 8, "events_total": 38, "fields_wrong": 421 },
+    "syslog_router": { "events": 2, "events_total": 2, "fields_wrong": 0 },
+    "sysmon_linux": { "events": 2, "events_total": 2, "fields_wrong": 0 },
+    "system": { "events": 227, "events_total": 821, "fields_wrong": 255 },
+    "system_audit": { "events": 2, "events_total": 2, "fields_wrong": 0 },
+    "tanium": { "events": 6, "events_total": 54, "fields_wrong": 1968 },
+    "teleport": { "events": 243, "events_total": 260, "fields_wrong": 68 },
+    "tenable_io": { "events": 9, "events_total": 27, "fields_wrong": 50 },
+    "tenable_ot_security": { "events": 1, "events_total": 3, "fields_wrong": 19 },
+    "tenable_sc": { "events": 3, "events_total": 16, "fields_wrong": 86 },
+    "tencent_cloud": { "events": 26, "events_total": 26, "fields_wrong": 0 },
+    "tetragon": { "events": 0, "events_total": 14, "fields_wrong": 300 },
+    "thycotic_ss": { "events": 2, "events_total": 2, "fields_wrong": 0 },
+    "ti_abusech": { "events": 0, "events_total": 142, "fields_wrong": 236 },
+    "ti_anomali": { "events": 0, "events_total": 131, "fields_wrong": 525 },
+    "ti_anyrun": { "events": 0, "events_total": 4, "fields_wrong": 12 },
+    "ti_cif3": { "events": 0, "events_total": 2, "fields_wrong": 6 },
+    "ti_crowdstrike": { "events": 1, "events_total": 11, "fields_wrong": 10 },
+    "ti_custom": { "events": 0, "events_total": 18, "fields_wrong": 43 },
+    "ti_cybersixgill": { "events": 0, "events_total": 4, "fields_wrong": 29 },
+    "ti_cyware_intel_exchange": { "events": 0, "events_total": 3, "fields_wrong": 6 },
+    "ti_domaintools": { "events": 16, "events_total": 16, "fields_wrong": 0 },
+    "ti_eclecticiq": { "events": 6, "events_total": 33, "fields_wrong": 241 },
+    "ti_eset": { "events": 0, "events_total": 81, "fields_wrong": 81 },
+    "ti_flashpoint": { "events": 0, "events_total": 9, "fields_wrong": 278 },
+    "ti_google_threat_intelligence": { "events": 60, "events_total": 60, "fields_wrong": 0 },
+    "ti_greynoise": { "events": 0, "events_total": 1, "fields_wrong": 2 },
+    "ti_maltiverse": { "events": 5, "events_total": 5, "fields_wrong": 0 },
+    "ti_mandiant_advantage": { "events": 0, "events_total": 5, "fields_wrong": 46 },
+    "ti_misp": { "events": 1, "events_total": 59, "fields_wrong": 81 },
+    "ti_opencti": { "events": 0, "events_total": 31, "fields_wrong": 241 },
+    "ti_otx": { "events": 96, "events_total": 96, "fields_wrong": 0 },
+    "ti_rapid7_threat_command": { "events": 5, "events_total": 12, "fields_wrong": 32 },
+    "ti_recordedfuture": { "events": 6, "events_total": 98, "fields_wrong": 572 },
+    "ti_socradar_feeds": { "events": 0, "events_total": 5, "fields_wrong": 34 },
+    "ti_socradar_taxii": { "events": 0, "events_total": 14, "fields_wrong": 43 },
+    "ti_strider": { "events": 0, "events_total": 6, "fields_wrong": 9 },
+    "ti_threatconnect": { "events": 0, "events_total": 2, "fields_wrong": 10 },
+    "ti_threatq": { "events": 0, "events_total": 15, "fields_wrong": 31 },
+    "ti_ticura": { "events": 1, "events_total": 13, "fields_wrong": 313 },
+    "tines": { "events": 248, "events_total": 248, "fields_wrong": 0 },
+    "tomcat": { "events": 100, "events_total": 100, "fields_wrong": 0 },
+    "traefik": { "events": 9, "events_total": 15, "fields_wrong": 19 },
+    "trellix_edr_cloud": { "events": 0, "events_total": 1, "fields_wrong": 2 },
+    "trellix_epo_cloud": { "events": 7, "events_total": 9, "fields_wrong": 0 },
+    "trend_micro_vision_one": { "events": 4, "events_total": 46, "fields_wrong": 264 },
+    "trendmicro": { "events": 4, "events_total": 6, "fields_wrong": 6 },
+    "tychon": { "events": 0, "events_total": 20, "fields_wrong": 75 },
+    "varonis": { "events": 0, "events_total": 2, "fields_wrong": 14 },
+    "vectra_detect": { "events": 0, "events_total": 57, "fields_wrong": 11 },
+    "vectra_rux": { "events": 8, "events_total": 8, "fields_wrong": 0 },
+    "vsphere": { "events": 125, "events_total": 173, "fields_wrong": 251 },
+    "watchguard_firebox": { "events": 0, "events_total": 637, "fields_wrong": 3415 },
+    "websphere_application_server": { "events": 31, "events_total": 31, "fields_wrong": 0 },
+    "windows": { "events": 596, "events_total": 596, "fields_wrong": 0 },
+    "withsecure_elements": { "events": 2, "events_total": 2, "fields_wrong": 0 },
+    "wiz": { "events": 13, "events_total": 27, "fields_wrong": 18 },
+    "workday": { "events": 5, "events_total": 15, "fields_wrong": 61 },
+    "xm_cyber": { "events": 18, "events_total": 22, "fields_wrong": 10 },
+    "zeek": { "events": 27, "events_total": 125, "fields_wrong": 443 },
+    "zerofox": { "events": 0, "events_total": 3, "fields_wrong": 0 },
+    "zeronetworks": { "events": 1, "events_total": 1, "fields_wrong": 0 },
+    "zoom": { "events": 81, "events_total": 100, "fields_wrong": 25 },
+    "zscaler_zia": { "events": 93, "events_total": 93, "fields_wrong": 0 },
+    "zscaler_zpa": { "events": 1, "events_total": 9, "fields_wrong": 26 }
   }
 }

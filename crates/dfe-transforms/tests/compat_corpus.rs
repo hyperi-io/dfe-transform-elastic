@@ -1361,6 +1361,11 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
         ("zscaler_zpa", "browser_access") => &filebeat::zscaler_zpa_browser_access::default::Default,
         ("zscaler_zpa", "user_activity") => &filebeat::zscaler_zpa_user_activity::default::Default,
         ("zscaler_zpa", "user_status") => &filebeat::zscaler_zpa_user_status::default::Default,
+        ("doppler", "activity") => &filebeat::doppler_activity::default::Default,
+        ("rapid7_insightvm", "asset") => &filebeat::rapid7_insightvm_asset::default::Default,
+        ("rapid7_insightvm", "asset_vulnerability") => &filebeat::rapid7_insightvm_asset_vulnerability::default::Default,
+        ("salesforce", "login") => &filebeat::salesforce_login::default::Default,
+        ("servicenow", "event") => &filebeat::servicenow_event::default::Default,
         _ => return None,
     })
 }

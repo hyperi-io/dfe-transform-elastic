@@ -2039,6 +2039,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "doppel.alerts",
     ),
     (
+        "filebeat.doppler_activity.default",
+        &filebeat::doppler_activity::default::Default,
+        pushed(Framing::Body),
+        "doppler.activity",
+    ),
+    (
         "filebeat.doppler_secret_read.default",
         &filebeat::doppler_secret_read::default::Default,
         agent_only(),
@@ -4724,6 +4730,18 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "radware.defensepro",
     ),
     (
+        "filebeat.rapid7_insightvm_asset.default",
+        &filebeat::rapid7_insightvm_asset::default::Default,
+        fetched(),
+        "rapid7_insightvm.asset",
+    ),
+    (
+        "filebeat.rapid7_insightvm_asset_vulnerability.default",
+        &filebeat::rapid7_insightvm_asset_vulnerability::default::Default,
+        fetched(),
+        "rapid7_insightvm.asset_vulnerability",
+    ),
+    (
         "filebeat.rapid7_insightvm_vulnerability.default",
         &filebeat::rapid7_insightvm_vulnerability::default::Default,
         fetched(),
@@ -4832,6 +4850,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         "salesforce.apex",
     ),
     (
+        "filebeat.salesforce_login.default",
+        &filebeat::salesforce_login::default::Default,
+        agent_only(),
+        "salesforce.login",
+    ),
+    (
         "filebeat.salesforce_logout.default",
         &filebeat::salesforce_logout::default::Default,
         agent_only(),
@@ -4908,6 +4932,12 @@ static TRANSFORMS: &[(&str, &(dyn Transform + Sync), Intake, &str)] = &[
         &filebeat::sentinel_one_unified_alert::default::Default,
         fetched(),
         "sentinel_one.unified_alert",
+    ),
+    (
+        "filebeat.servicenow_event.default",
+        &filebeat::servicenow_event::default::Default,
+        fetched(),
+        "servicenow.event",
     ),
     (
         "filebeat.slack_audit.default",

@@ -10494,3 +10494,61 @@ sources:
     intakes: [beats, receiver]
     framing: body
     transforms: [default]
+
+  # The manifest input is http_endpoint, so a device pushes this.
+  # Framing body: no pipeline groks a syslog header out of message, so a
+  # rebuilt header would only corrupt the payload.
+  # The sub-pipelines (activity_enrich) are all reached from default, so
+  # default is the only entry point, as it is for okta and crowdstrike.
+  # CHECK: routing_rules.yml reroutes this stream's events into other data
+  # streams, which the generator does not reproduce.
+  doppler_activity:
+    package: doppler
+    data_stream: activity
+    pipelines: doppler/activity
+    fixtures: doppler/activity
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  rapid7_insightvm_asset:
+    package: rapid7_insightvm
+    data_stream: asset
+    pipelines: rapid7_insightvm/asset
+    fixtures: rapid7_insightvm/asset
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  rapid7_insightvm_asset_vulnerability:
+    package: rapid7_insightvm
+    data_stream: asset_vulnerability
+    pipelines: rapid7_insightvm/asset_vulnerability
+    fixtures: rapid7_insightvm/asset_vulnerability
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-s3/cel -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  # The sub-pipelines (10 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  servicenow_event:
+    package: servicenow
+    data_stream: event
+    pipelines: servicenow/event
+    fixtures: servicenow/event
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The sub-pipelines (eventlogfile, object) are all reached from default, so
+  # default is the only entry point, as it is for okta and crowdstrike.
+  salesforce_login:
+    package: salesforce
+    data_stream: login
+    pipelines: salesforce/login
+    fixtures: salesforce/login
+    intakes: [beats]
+    transforms: [default]
