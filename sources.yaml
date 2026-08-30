@@ -1919,3 +1919,864 @@ sources:
     intakes: [beats, receiver]
     framing: line
     transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  cisco_duo_activity:
+    package: cisco_duo
+    data_stream: activity
+    pipelines: cisco_duo/activity
+    fixtures: cisco_duo/activity
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  cisco_duo_admin:
+    package: cisco_duo
+    data_stream: admin
+    pipelines: cisco_duo/admin
+    fixtures: cisco_duo/admin
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  cisco_duo_auth:
+    package: cisco_duo
+    data_stream: auth
+    pipelines: cisco_duo/auth
+    fixtures: cisco_duo/auth
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  cisco_duo_offline_enrollment:
+    package: cisco_duo
+    data_stream: offline_enrollment
+    pipelines: cisco_duo/offline_enrollment
+    fixtures: cisco_duo/offline_enrollment
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  cisco_duo_summary:
+    package: cisco_duo
+    data_stream: summary
+    pipelines: cisco_duo/summary
+    fixtures: cisco_duo/summary
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  cisco_duo_telephony:
+    package: cisco_duo
+    data_stream: telephony
+    pipelines: cisco_duo/telephony
+    fixtures: cisco_duo/telephony
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  cisco_duo_telephony_v2:
+    package: cisco_duo
+    data_stream: telephony_v2
+    pipelines: cisco_duo/telephony_v2
+    fixtures: cisco_duo/telephony_v2
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  cisco_duo_trust_monitor:
+    package: cisco_duo
+    data_stream: trust_monitor
+    pipelines: cisco_duo/trust_monitor
+    fixtures: cisco_duo/trust_monitor
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  abnormal_security_ai_security_mailbox:
+    package: abnormal_security
+    data_stream: ai_security_mailbox
+    pipelines: abnormal_security/ai_security_mailbox
+    fixtures: abnormal_security/ai_security_mailbox
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  abnormal_security_ai_security_mailbox_not_analyzed:
+    package: abnormal_security
+    data_stream: ai_security_mailbox_not_analyzed
+    pipelines: abnormal_security/ai_security_mailbox_not_analyzed
+    fixtures: abnormal_security/ai_security_mailbox_not_analyzed
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  abnormal_security_audit:
+    package: abnormal_security
+    data_stream: audit
+    pipelines: abnormal_security/audit
+    fixtures: abnormal_security/audit
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  abnormal_security_case:
+    package: abnormal_security
+    data_stream: case
+    pipelines: abnormal_security/case
+    fixtures: abnormal_security/case
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  abnormal_security_threat:
+    package: abnormal_security
+    data_stream: threat
+    pipelines: abnormal_security/threat
+    fixtures: abnormal_security/threat
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  abnormal_security_vendor_case:
+    package: abnormal_security
+    data_stream: vendor_case
+    pipelines: abnormal_security/vendor_case
+    fixtures: abnormal_security/vendor_case
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is aws-s3/azure-blob-storage/azure-
+  # eventhub/gcs/httpjson -- a pure transport, so the pipeline does all the
+  # parsing and dfe-fetcher can obtain the same bytes.
+  github_audit:
+    package: github
+    data_stream: audit
+    pipelines: github/audit
+    fixtures: github/audit
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  github_code_scanning:
+    package: github
+    data_stream: code_scanning
+    pipelines: github/code_scanning
+    fixtures: github/code_scanning
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  github_dependabot:
+    package: github
+    data_stream: dependabot
+    pipelines: github/dependabot
+    fixtures: github/dependabot
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  github_issues:
+    package: github
+    data_stream: issues
+    pipelines: github/issues
+    fixtures: github/issues
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  github_secret_scanning:
+    package: github
+    data_stream: secret_scanning
+    pipelines: github/secret_scanning
+    fixtures: github/secret_scanning
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  github_security_advisories:
+    package: github
+    data_stream: security_advisories
+    pipelines: github/security_advisories
+    fixtures: github/security_advisories
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is tcp/udp, so a device pushes this.
+  # Framing body: no pipeline groks a syslog header out of message, so a
+  # rebuilt header would only corrupt the payload.
+  # The sub-pipelines (7 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  juniper_srx_log:
+    package: juniper_srx
+    data_stream: log
+    pipelines: juniper_srx/log
+    fixtures: juniper_srx/log
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  # The manifest input is tcp/udp, so a device pushes this.
+  # Framing line: a grok on message/event.original carries
+  # %{log.syslog.priority}, so the header has to stay on.
+  # The sub-pipelines (4 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  sophos_utm:
+    package: sophos
+    data_stream: utm
+    pipelines: sophos/utm
+    fixtures: sophos/utm
+    intakes: [beats, receiver]
+    framing: line
+    transforms: [default]
+
+  # Framing line: a grok on message/event.original carries %{SYSLOG5424PRI},
+  # so the header has to stay on.
+  # The sub-pipelines (11 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  sophos_xg:
+    package: sophos
+    data_stream: xg
+    pipelines: sophos/xg
+    fixtures: sophos/xg
+    intakes: [beats, receiver]
+    framing: line
+    transforms: [default]
+
+  # The manifest input is udp, so a device pushes this.
+  # Framing line: a grok on message/event.original carries %{SYSLOGTIMESTAMP},
+  # so the header has to stay on.
+  # The sub-pipelines (4 of them) are all reached from default, so default is
+  # the only entry point, as it is for okta and crowdstrike.
+  watchguard_firebox_log:
+    package: watchguard_firebox
+    data_stream: log
+    pipelines: watchguard_firebox/log
+    fixtures: watchguard_firebox/log
+    intakes: [beats, receiver]
+    framing: line
+    transforms: [default]
+
+  # The manifest input is tcp, so a device pushes this.
+  # Framing body: no pipeline groks a syslog header out of message, so a
+  # rebuilt header would only corrupt the payload.
+  # CHECK: the agent template runs decode_cef before the pipeline, so the
+  # pipeline reads parsed fields and not message. Neither framing reproduces
+  # that on its own.
+  prisma_access_event:
+    package: prisma_access
+    data_stream: event
+    pipelines: prisma_access/event
+    fixtures: prisma_access/event
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]
+
+  # The manifest input is logfile, which is neither a pure transport nor
+  # something a device pushes, so Beats is the only intake.
+  zeek_capture_loss:
+    package: zeek
+    data_stream: capture_loss
+    pipelines: zeek/capture_loss
+    fixtures: zeek/capture_loss
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_connection:
+    package: zeek
+    data_stream: connection
+    pipelines: zeek/connection
+    fixtures: zeek/connection
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_dce_rpc:
+    package: zeek
+    data_stream: dce_rpc
+    pipelines: zeek/dce_rpc
+    fixtures: zeek/dce_rpc
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_dhcp:
+    package: zeek
+    data_stream: dhcp
+    pipelines: zeek/dhcp
+    fixtures: zeek/dhcp
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_dnp3:
+    package: zeek
+    data_stream: dnp3
+    pipelines: zeek/dnp3
+    fixtures: zeek/dnp3
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_dns:
+    package: zeek
+    data_stream: dns
+    pipelines: zeek/dns
+    fixtures: zeek/dns
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_dpd:
+    package: zeek
+    data_stream: dpd
+    pipelines: zeek/dpd
+    fixtures: zeek/dpd
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_files:
+    package: zeek
+    data_stream: files
+    pipelines: zeek/files
+    fixtures: zeek/files
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_ftp:
+    package: zeek
+    data_stream: ftp
+    pipelines: zeek/ftp
+    fixtures: zeek/ftp
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_http:
+    package: zeek
+    data_stream: http
+    pipelines: zeek/http
+    fixtures: zeek/http
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_intel:
+    package: zeek
+    data_stream: intel
+    pipelines: zeek/intel
+    fixtures: zeek/intel
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_irc:
+    package: zeek
+    data_stream: irc
+    pipelines: zeek/irc
+    fixtures: zeek/irc
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_kerberos:
+    package: zeek
+    data_stream: kerberos
+    pipelines: zeek/kerberos
+    fixtures: zeek/kerberos
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_known_certs:
+    package: zeek
+    data_stream: known_certs
+    pipelines: zeek/known_certs
+    fixtures: zeek/known_certs
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_known_hosts:
+    package: zeek
+    data_stream: known_hosts
+    pipelines: zeek/known_hosts
+    fixtures: zeek/known_hosts
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_known_services:
+    package: zeek
+    data_stream: known_services
+    pipelines: zeek/known_services
+    fixtures: zeek/known_services
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_modbus:
+    package: zeek
+    data_stream: modbus
+    pipelines: zeek/modbus
+    fixtures: zeek/modbus
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_mysql:
+    package: zeek
+    data_stream: mysql
+    pipelines: zeek/mysql
+    fixtures: zeek/mysql
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_notice:
+    package: zeek
+    data_stream: notice
+    pipelines: zeek/notice
+    fixtures: zeek/notice
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_ntlm:
+    package: zeek
+    data_stream: ntlm
+    pipelines: zeek/ntlm
+    fixtures: zeek/ntlm
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_ntp:
+    package: zeek
+    data_stream: ntp
+    pipelines: zeek/ntp
+    fixtures: zeek/ntp
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_ocsp:
+    package: zeek
+    data_stream: ocsp
+    pipelines: zeek/ocsp
+    fixtures: zeek/ocsp
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_pe:
+    package: zeek
+    data_stream: pe
+    pipelines: zeek/pe
+    fixtures: zeek/pe
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_radius:
+    package: zeek
+    data_stream: radius
+    pipelines: zeek/radius
+    fixtures: zeek/radius
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_rdp:
+    package: zeek
+    data_stream: rdp
+    pipelines: zeek/rdp
+    fixtures: zeek/rdp
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_rfb:
+    package: zeek
+    data_stream: rfb
+    pipelines: zeek/rfb
+    fixtures: zeek/rfb
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_signature:
+    package: zeek
+    data_stream: signature
+    pipelines: zeek/signature
+    fixtures: zeek/signature
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_sip:
+    package: zeek
+    data_stream: sip
+    pipelines: zeek/sip
+    fixtures: zeek/sip
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_smb_cmd:
+    package: zeek
+    data_stream: smb_cmd
+    pipelines: zeek/smb_cmd
+    fixtures: zeek/smb_cmd
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_smb_files:
+    package: zeek
+    data_stream: smb_files
+    pipelines: zeek/smb_files
+    fixtures: zeek/smb_files
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_smb_mapping:
+    package: zeek
+    data_stream: smb_mapping
+    pipelines: zeek/smb_mapping
+    fixtures: zeek/smb_mapping
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_smtp:
+    package: zeek
+    data_stream: smtp
+    pipelines: zeek/smtp
+    fixtures: zeek/smtp
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_snmp:
+    package: zeek
+    data_stream: snmp
+    pipelines: zeek/snmp
+    fixtures: zeek/snmp
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_socks:
+    package: zeek
+    data_stream: socks
+    pipelines: zeek/socks
+    fixtures: zeek/socks
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_software:
+    package: zeek
+    data_stream: software
+    pipelines: zeek/software
+    fixtures: zeek/software
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_ssh:
+    package: zeek
+    data_stream: ssh
+    pipelines: zeek/ssh
+    fixtures: zeek/ssh
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_ssl:
+    package: zeek
+    data_stream: ssl
+    pipelines: zeek/ssl
+    fixtures: zeek/ssl
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_stats:
+    package: zeek
+    data_stream: stats
+    pipelines: zeek/stats
+    fixtures: zeek/stats
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_syslog:
+    package: zeek
+    data_stream: syslog
+    pipelines: zeek/syslog
+    fixtures: zeek/syslog
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_traceroute:
+    package: zeek
+    data_stream: traceroute
+    pipelines: zeek/traceroute
+    fixtures: zeek/traceroute
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_tunnel:
+    package: zeek
+    data_stream: tunnel
+    pipelines: zeek/tunnel
+    fixtures: zeek/tunnel
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_weird:
+    package: zeek
+    data_stream: weird
+    pipelines: zeek/weird
+    fixtures: zeek/weird
+    intakes: [beats]
+    transforms: [default]
+
+  zeek_x509:
+    package: zeek
+    data_stream: x509
+    pipelines: zeek/x509
+    fixtures: zeek/x509
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_access_transparency:
+    package: google_workspace
+    data_stream: access_transparency
+    pipelines: google_workspace/access_transparency
+    fixtures: google_workspace/access_transparency
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_admin:
+    package: google_workspace
+    data_stream: admin
+    pipelines: google_workspace/admin
+    fixtures: google_workspace/admin
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_alert:
+    package: google_workspace
+    data_stream: alert
+    pipelines: google_workspace/alert
+    fixtures: google_workspace/alert
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_calendar:
+    package: google_workspace
+    data_stream: calendar
+    pipelines: google_workspace/calendar
+    fixtures: google_workspace/calendar
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_chat:
+    package: google_workspace
+    data_stream: chat
+    pipelines: google_workspace/chat
+    fixtures: google_workspace/chat
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_chrome:
+    package: google_workspace
+    data_stream: chrome
+    pipelines: google_workspace/chrome
+    fixtures: google_workspace/chrome
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_context_aware_access:
+    package: google_workspace
+    data_stream: context_aware_access
+    pipelines: google_workspace/context_aware_access
+    fixtures: google_workspace/context_aware_access
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_data_studio:
+    package: google_workspace
+    data_stream: data_studio
+    pipelines: google_workspace/data_studio
+    fixtures: google_workspace/data_studio
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_device:
+    package: google_workspace
+    data_stream: device
+    pipelines: google_workspace/device
+    fixtures: google_workspace/device
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_drive:
+    package: google_workspace
+    data_stream: drive
+    pipelines: google_workspace/drive
+    fixtures: google_workspace/drive
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_gcp:
+    package: google_workspace
+    data_stream: gcp
+    pipelines: google_workspace/gcp
+    fixtures: google_workspace/gcp
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_gmail:
+    package: google_workspace
+    data_stream: gmail
+    pipelines: google_workspace/gmail
+    fixtures: google_workspace/gmail
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_group_enterprise:
+    package: google_workspace
+    data_stream: group_enterprise
+    pipelines: google_workspace/group_enterprise
+    fixtures: google_workspace/group_enterprise
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_groups:
+    package: google_workspace
+    data_stream: groups
+    pipelines: google_workspace/groups
+    fixtures: google_workspace/groups
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_keep:
+    package: google_workspace
+    data_stream: keep
+    pipelines: google_workspace/keep
+    fixtures: google_workspace/keep
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_login:
+    package: google_workspace
+    data_stream: login
+    pipelines: google_workspace/login
+    fixtures: google_workspace/login
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_meet:
+    package: google_workspace
+    data_stream: meet
+    pipelines: google_workspace/meet
+    fixtures: google_workspace/meet
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_rules:
+    package: google_workspace
+    data_stream: rules
+    pipelines: google_workspace/rules
+    fixtures: google_workspace/rules
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_saml:
+    package: google_workspace
+    data_stream: saml
+    pipelines: google_workspace/saml
+    fixtures: google_workspace/saml
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_token:
+    package: google_workspace
+    data_stream: token
+    pipelines: google_workspace/token
+    fixtures: google_workspace/token
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is httpjson -- a pure transport, so the pipeline does
+  # all the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_user_accounts:
+    package: google_workspace
+    data_stream: user_accounts
+    pipelines: google_workspace/user_accounts
+    fixtures: google_workspace/user_accounts
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  google_workspace_vault:
+    package: google_workspace
+    data_stream: vault
+    pipelines: google_workspace/vault
+    fixtures: google_workspace/vault
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is cel -- a pure transport, so the pipeline does all
+  # the parsing and dfe-fetcher can obtain the same bytes.
+  beyondtrust_pra_access_session:
+    package: beyondtrust_pra
+    data_stream: access_session
+    pipelines: beyondtrust_pra/access_session
+    fixtures: beyondtrust_pra/access_session
+    intakes: [beats, fetcher]
+    transforms: [default]
+
+  # The manifest input is audit/file_integrity, which is neither a pure
+  # transport nor something a device pushes, so Beats is the only intake.
+  fim_event:
+    package: fim
+    data_stream: event
+    pipelines: fim/event
+    fixtures: fim/event
+    intakes: [beats]
+    transforms: [default]
+
+  # The manifest input is tcp/udp, so a device pushes this.
+  # Framing body: no pipeline groks a syslog header out of message, so a
+  # rebuilt header would only corrupt the payload.
+  # CHECK: routing_rules.yml reroutes this stream's events into other data
+  # streams, which the generator does not reproduce.
+  syslog_router_log:
+    package: syslog_router
+    data_stream: log
+    pipelines: syslog_router/log
+    fixtures: syslog_router/log
+    intakes: [beats, receiver]
+    framing: body
+    transforms: [default]

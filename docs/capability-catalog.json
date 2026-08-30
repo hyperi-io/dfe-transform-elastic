@@ -25,6 +25,42 @@
     "children": [
       {
         "kind": "service",
+        "name": "filebeat.abnormal_security_ai_security_mailbox.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.abnormal_security_ai_security_mailbox_not_analyzed.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.abnormal_security_audit.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.abnormal_security_case.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.abnormal_security_threat.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.abnormal_security_vendor_case.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
         "name": "filebeat.amazon_security_lake_event.default",
         "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"
@@ -367,6 +403,12 @@
       },
       {
         "kind": "service",
+        "name": "filebeat.beyondtrust_pra_access_session.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
         "name": "filebeat.carbon_black_cloud_alert_v7.default",
         "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"
@@ -405,6 +447,54 @@
         "kind": "service",
         "name": "filebeat.cisco_asa.default",
         "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.cisco_duo_activity.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.cisco_duo_admin.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.cisco_duo_auth.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.cisco_duo_offline_enrollment.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.cisco_duo_summary.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.cisco_duo_telephony.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.cisco_duo_telephony_v2.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.cisco_duo_trust_monitor.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"
       },
       {
@@ -559,6 +649,12 @@
       },
       {
         "kind": "service",
+        "name": "filebeat.fim_event.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
         "name": "filebeat.fortinet.default",
         "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
@@ -673,6 +769,174 @@
       },
       {
         "kind": "service",
+        "name": "filebeat.github_audit.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.github_code_scanning.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.github_dependabot.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.github_issues.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.github_secret_scanning.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.github_security_advisories.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_access_transparency.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_admin.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_alert.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_calendar.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_chat.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_chrome.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_context_aware_access.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_data_studio.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_device.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_drive.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_gcp.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_gmail.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_group_enterprise.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_groups.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_keep.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_login.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_meet.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_rules.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_saml.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_token.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_user_accounts.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.google_workspace_vault.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
         "name": "filebeat.infoblox_nios_log.default",
         "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
@@ -681,6 +945,12 @@
         "kind": "service",
         "name": "filebeat.jumpcloud_events.default",
         "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.juniper_srx_log.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
@@ -1027,6 +1297,12 @@
       },
       {
         "kind": "service",
+        "name": "filebeat.prisma_access_event.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
         "name": "filebeat.proofpoint_on_demand_audit.default",
         "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
         "maturity": "beta"
@@ -1141,6 +1417,18 @@
       },
       {
         "kind": "service",
+        "name": "filebeat.sophos_utm.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.sophos_xg.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
         "name": "filebeat.squid_log.default",
         "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
@@ -1161,6 +1449,12 @@
         "kind": "service",
         "name": "filebeat.symantec_endpoint_security_incident.default",
         "description": "Compiled transform. Accepts the envelopes: beats, fetcher.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.syslog_router_log.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
       {
@@ -1202,6 +1496,12 @@
       {
         "kind": "service",
         "name": "filebeat.trendmicro_deep_security.default",
+        "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.watchguard_firebox_log.default",
         "description": "Compiled transform. Accepts the envelopes: beats, receiver.",
         "maturity": "beta"
       },
@@ -1256,6 +1556,264 @@
       {
         "kind": "service",
         "name": "filebeat.windows_windows_defender.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_capture_loss.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_connection.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_dce_rpc.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_dhcp.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_dnp3.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_dns.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_dpd.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_files.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_ftp.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_http.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_intel.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_irc.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_kerberos.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_known_certs.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_known_hosts.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_known_services.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_modbus.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_mysql.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_notice.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_ntlm.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_ntp.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_ocsp.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_pe.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_radius.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_rdp.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_rfb.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_signature.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_sip.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_smb_cmd.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_smb_files.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_smb_mapping.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_smtp.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_snmp.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_socks.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_software.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_ssh.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_ssl.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_stats.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_syslog.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_traceroute.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_tunnel.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_weird.default",
+        "description": "Compiled transform. Accepts the envelopes: beats.",
+        "maturity": "beta"
+      },
+      {
+        "kind": "service",
+        "name": "filebeat.zeek_x509.default",
         "description": "Compiled transform. Accepts the envelopes: beats.",
         "maturity": "beta"
       },

@@ -330,6 +330,121 @@ fn transform_for(package: &str, data_stream: &str) -> Option<&'static dyn Transf
             &filebeat::cisco_secure_email_gateway_log::default::Default
         }
         ("pfsense", "log") => &filebeat::pfsense_log::default::Default,
+        ("abnormal_security", "ai_security_mailbox") => {
+            &filebeat::abnormal_security_ai_security_mailbox::default::Default
+        }
+        ("abnormal_security", "ai_security_mailbox_not_analyzed") => {
+            &filebeat::abnormal_security_ai_security_mailbox_not_analyzed::default::Default
+        }
+        ("abnormal_security", "audit") => &filebeat::abnormal_security_audit::default::Default,
+        ("abnormal_security", "case") => &filebeat::abnormal_security_case::default::Default,
+        ("abnormal_security", "threat") => &filebeat::abnormal_security_threat::default::Default,
+        ("abnormal_security", "vendor_case") => {
+            &filebeat::abnormal_security_vendor_case::default::Default
+        }
+        ("beyondtrust_pra", "access_session") => {
+            &filebeat::beyondtrust_pra_access_session::default::Default
+        }
+        ("cisco_duo", "activity") => &filebeat::cisco_duo_activity::default::Default,
+        ("cisco_duo", "admin") => &filebeat::cisco_duo_admin::default::Default,
+        ("cisco_duo", "auth") => &filebeat::cisco_duo_auth::default::Default,
+        ("cisco_duo", "offline_enrollment") => {
+            &filebeat::cisco_duo_offline_enrollment::default::Default
+        }
+        ("cisco_duo", "summary") => &filebeat::cisco_duo_summary::default::Default,
+        ("cisco_duo", "telephony") => &filebeat::cisco_duo_telephony::default::Default,
+        ("cisco_duo", "telephony_v2") => &filebeat::cisco_duo_telephony_v2::default::Default,
+        ("cisco_duo", "trust_monitor") => &filebeat::cisco_duo_trust_monitor::default::Default,
+        ("fim", "event") => &filebeat::fim_event::default::Default,
+        ("github", "audit") => &filebeat::github_audit::default::Default,
+        ("github", "code_scanning") => &filebeat::github_code_scanning::default::Default,
+        ("github", "dependabot") => &filebeat::github_dependabot::default::Default,
+        ("github", "issues") => &filebeat::github_issues::default::Default,
+        ("github", "secret_scanning") => &filebeat::github_secret_scanning::default::Default,
+        ("github", "security_advisories") => {
+            &filebeat::github_security_advisories::default::Default
+        }
+        ("google_workspace", "access_transparency") => {
+            &filebeat::google_workspace_access_transparency::default::Default
+        }
+        ("google_workspace", "admin") => &filebeat::google_workspace_admin::default::Default,
+        ("google_workspace", "alert") => &filebeat::google_workspace_alert::default::Default,
+        ("google_workspace", "calendar") => &filebeat::google_workspace_calendar::default::Default,
+        ("google_workspace", "chat") => &filebeat::google_workspace_chat::default::Default,
+        ("google_workspace", "chrome") => &filebeat::google_workspace_chrome::default::Default,
+        ("google_workspace", "context_aware_access") => {
+            &filebeat::google_workspace_context_aware_access::default::Default
+        }
+        ("google_workspace", "data_studio") => {
+            &filebeat::google_workspace_data_studio::default::Default
+        }
+        ("google_workspace", "device") => &filebeat::google_workspace_device::default::Default,
+        ("google_workspace", "drive") => &filebeat::google_workspace_drive::default::Default,
+        ("google_workspace", "gcp") => &filebeat::google_workspace_gcp::default::Default,
+        ("google_workspace", "gmail") => &filebeat::google_workspace_gmail::default::Default,
+        ("google_workspace", "group_enterprise") => {
+            &filebeat::google_workspace_group_enterprise::default::Default
+        }
+        ("google_workspace", "groups") => &filebeat::google_workspace_groups::default::Default,
+        ("google_workspace", "keep") => &filebeat::google_workspace_keep::default::Default,
+        ("google_workspace", "login") => &filebeat::google_workspace_login::default::Default,
+        ("google_workspace", "meet") => &filebeat::google_workspace_meet::default::Default,
+        ("google_workspace", "rules") => &filebeat::google_workspace_rules::default::Default,
+        ("google_workspace", "saml") => &filebeat::google_workspace_saml::default::Default,
+        ("google_workspace", "token") => &filebeat::google_workspace_token::default::Default,
+        ("google_workspace", "user_accounts") => {
+            &filebeat::google_workspace_user_accounts::default::Default
+        }
+        ("google_workspace", "vault") => &filebeat::google_workspace_vault::default::Default,
+        ("juniper_srx", "log") => &filebeat::juniper_srx_log::default::Default,
+        ("prisma_access", "event") => &filebeat::prisma_access_event::default::Default,
+        ("sophos", "utm") => &filebeat::sophos_utm::default::Default,
+        ("sophos", "xg") => &filebeat::sophos_xg::default::Default,
+        ("syslog_router", "log") => &filebeat::syslog_router_log::default::Default,
+        ("watchguard_firebox", "log") => &filebeat::watchguard_firebox_log::default::Default,
+        ("zeek", "capture_loss") => &filebeat::zeek_capture_loss::default::Default,
+        ("zeek", "connection") => &filebeat::zeek_connection::default::Default,
+        ("zeek", "dce_rpc") => &filebeat::zeek_dce_rpc::default::Default,
+        ("zeek", "dhcp") => &filebeat::zeek_dhcp::default::Default,
+        ("zeek", "dnp3") => &filebeat::zeek_dnp3::default::Default,
+        ("zeek", "dns") => &filebeat::zeek_dns::default::Default,
+        ("zeek", "dpd") => &filebeat::zeek_dpd::default::Default,
+        ("zeek", "files") => &filebeat::zeek_files::default::Default,
+        ("zeek", "ftp") => &filebeat::zeek_ftp::default::Default,
+        ("zeek", "http") => &filebeat::zeek_http::default::Default,
+        ("zeek", "intel") => &filebeat::zeek_intel::default::Default,
+        ("zeek", "irc") => &filebeat::zeek_irc::default::Default,
+        ("zeek", "kerberos") => &filebeat::zeek_kerberos::default::Default,
+        ("zeek", "known_certs") => &filebeat::zeek_known_certs::default::Default,
+        ("zeek", "known_hosts") => &filebeat::zeek_known_hosts::default::Default,
+        ("zeek", "known_services") => &filebeat::zeek_known_services::default::Default,
+        ("zeek", "modbus") => &filebeat::zeek_modbus::default::Default,
+        ("zeek", "mysql") => &filebeat::zeek_mysql::default::Default,
+        ("zeek", "notice") => &filebeat::zeek_notice::default::Default,
+        ("zeek", "ntlm") => &filebeat::zeek_ntlm::default::Default,
+        ("zeek", "ntp") => &filebeat::zeek_ntp::default::Default,
+        ("zeek", "ocsp") => &filebeat::zeek_ocsp::default::Default,
+        ("zeek", "pe") => &filebeat::zeek_pe::default::Default,
+        ("zeek", "radius") => &filebeat::zeek_radius::default::Default,
+        ("zeek", "rdp") => &filebeat::zeek_rdp::default::Default,
+        ("zeek", "rfb") => &filebeat::zeek_rfb::default::Default,
+        ("zeek", "signature") => &filebeat::zeek_signature::default::Default,
+        ("zeek", "sip") => &filebeat::zeek_sip::default::Default,
+        ("zeek", "smb_cmd") => &filebeat::zeek_smb_cmd::default::Default,
+        ("zeek", "smb_files") => &filebeat::zeek_smb_files::default::Default,
+        ("zeek", "smb_mapping") => &filebeat::zeek_smb_mapping::default::Default,
+        ("zeek", "smtp") => &filebeat::zeek_smtp::default::Default,
+        ("zeek", "snmp") => &filebeat::zeek_snmp::default::Default,
+        ("zeek", "socks") => &filebeat::zeek_socks::default::Default,
+        ("zeek", "software") => &filebeat::zeek_software::default::Default,
+        ("zeek", "ssh") => &filebeat::zeek_ssh::default::Default,
+        ("zeek", "ssl") => &filebeat::zeek_ssl::default::Default,
+        ("zeek", "stats") => &filebeat::zeek_stats::default::Default,
+        ("zeek", "syslog") => &filebeat::zeek_syslog::default::Default,
+        ("zeek", "traceroute") => &filebeat::zeek_traceroute::default::Default,
+        ("zeek", "tunnel") => &filebeat::zeek_tunnel::default::Default,
+        ("zeek", "weird") => &filebeat::zeek_weird::default::Default,
+        ("zeek", "x509") => &filebeat::zeek_x509::default::Default,
         _ => return None,
     })
 }

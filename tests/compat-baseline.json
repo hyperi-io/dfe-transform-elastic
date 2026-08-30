@@ -4,6 +4,11 @@
   "integrations_sha": "2c934eb5223bdfcf0ea0db9e3230154933352bda",
   "elasticsearch_version": "9.2.2",
   "sources": {
+    "abnormal_security": {
+      "events": 23,
+      "events_total": 29,
+      "fields_wrong": 11
+    },
     "amazon_security_lake": {
       "events": 10,
       "events_total": 11,
@@ -54,6 +59,11 @@
       "events_total": 6,
       "fields_wrong": 0
     },
+    "beyondtrust_pra": {
+      "events": 0,
+      "events_total": 2,
+      "fields_wrong": 2
+    },
     "carbon_black_cloud": {
       "events": 50,
       "events_total": 50,
@@ -68,6 +78,11 @@
       "events": 510,
       "events_total": 512,
       "fields_wrong": 20
+    },
+    "cisco_duo": {
+      "events": 59,
+      "events_total": 60,
+      "fields_wrong": 0
     },
     "cisco_ftd": {
       "events": 432,
@@ -129,6 +144,11 @@
       "events_total": 7,
       "fields_wrong": 0
     },
+    "fim": {
+      "events": 8,
+      "events_total": 8,
+      "fields_wrong": 0
+    },
     "fortinet_fortigate": {
       "events": 185,
       "events_total": 185,
@@ -139,6 +159,16 @@
       "events_total": 382,
       "fields_wrong": 0
     },
+    "github": {
+      "events": 216,
+      "events_total": 237,
+      "fields_wrong": 37
+    },
+    "google_workspace": {
+      "events": 15,
+      "events_total": 543,
+      "fields_wrong": 4406
+    },
     "infoblox_nios": {
       "events": 104,
       "events_total": 127,
@@ -148,6 +178,11 @@
       "events": 4,
       "events_total": 4,
       "fields_wrong": 0
+    },
+    "juniper_srx": {
+      "events": 12,
+      "events_total": 99,
+      "fields_wrong": 1866
     },
     "jupiter_one": {
       "events": 3,
@@ -219,6 +254,11 @@
       "events_total": 99,
       "fields_wrong": 95
     },
+    "prisma_access": {
+      "events": 21,
+      "events_total": 23,
+      "fields_wrong": 2
+    },
     "proofpoint_on_demand": {
       "events": 54,
       "events_total": 55,
@@ -244,6 +284,11 @@
       "events_total": 220,
       "fields_wrong": 6207
     },
+    "sophos": {
+      "events": 22,
+      "events_total": 293,
+      "fields_wrong": 639
+    },
     "sophos_central": {
       "events": 4,
       "events_total": 8,
@@ -263,6 +308,11 @@
       "events": 52,
       "events_total": 58,
       "fields_wrong": 21
+    },
+    "syslog_router": {
+      "events": 2,
+      "events_total": 2,
+      "fields_wrong": 0
     },
     "tenable_sc": {
       "events": 3,
@@ -284,10 +334,20 @@
       "events_total": 6,
       "fields_wrong": 6
     },
+    "watchguard_firebox": {
+      "events": 0,
+      "events_total": 637,
+      "fields_wrong": 3415
+    },
     "windows": {
       "events": 596,
       "events_total": 596,
       "fields_wrong": 0
+    },
+    "zeek": {
+      "events": 27,
+      "events_total": 125,
+      "fields_wrong": 443
     },
     "zscaler_zia": {
       "events": 93,

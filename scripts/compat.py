@@ -201,6 +201,20 @@ def _bool_or_text(loader: yaml.Loader, node: yaml.Node) -> bool | str:
 
 PipelineLoader.add_constructor("tag:yaml.org,2002:bool", _bool_or_text)
 
+TRAILING_TAB = re.compile(r"\t+$", re.MULTILINE)
+
+
+def _drop_trailing_tabs(text: str) -> str:
+    """Drop a TAB left at the end of a line.
+
+    A tab is not valid YAML whitespace and PyYAML refuses the whole file for
+    one, where Elastic's own Go reader ignores it. `beyondtrust_pra`'s
+    `access_session` and `aws_securityhub`'s `pipeline_object_metadata` each
+    carry exactly one, and each cost its source the whole capture. Only a
+    trailing tab goes, so nothing inside a block scalar's content moves.
+    """
+    return TRAILING_TAB.sub("", text)
+
 
 # --------------------------------------------------------------------------
 # Container lifecycle
@@ -560,7 +574,7 @@ def load_pipelines(
         )
         try:
             definitions[_flat_name(package, data_stream, stem)] = yaml.load(
-                text, Loader=PipelineLoader
+                _drop_trailing_tabs(text), Loader=PipelineLoader
             )
         except yaml.YAMLError as exc:
             # Elasticsearch rejects the same file, so a pipeline nothing
@@ -617,7 +631,7 @@ def load_beats_pipelines(
             lambda m: _flat_name(module, fileset, m.group(1)), raw.decode("utf-8")
         )
         definitions[_flat_name(module, fileset, Path(name).stem)] = yaml.load(
-            text, Loader=PipelineLoader
+            _drop_trailing_tabs(text), Loader=PipelineLoader
         )
 
     entry = _flat_name(module, fileset, "pipeline")

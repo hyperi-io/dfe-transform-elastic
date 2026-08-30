@@ -1283,6 +1283,9 @@ fn grok_pattern_regex(name: &str) -> &'static str {
             r"(?i:Mon(?:day)?|Tue(?:sday)?|Wed(?:nesday)?|Thu(?:rsday)?|Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)"
         }
         "SYSLOGPRI" => r"<\d+>",
+        // Elastic's own: a syslog program name is any printable character but
+        // a `[`, which is what ends it before the pid.
+        "PROG" => r"[\x21-\x5a\x5c\x5e-\x7e]+",
         "SYSLOG5424PRI" => r"<\d{1,5}>",
         // Printable ASCII minus space, `=`, `]` and `"` -- RFC 5424's own
         // definition, which is what bounds a structured-data name.
