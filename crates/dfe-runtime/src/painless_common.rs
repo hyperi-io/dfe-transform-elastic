@@ -9889,7 +9889,7 @@ pub(crate) enum KnownShape {
         parent: bool,
     },
     ProcessStartTime,
-    EmailSplit,
+    EmailSplit(Box<EmailSplit>),
     RiskBehaviors,
     AzureCategoryEventType,
     AzureEventCategory,
@@ -11034,10 +11034,13 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
-    // Pattern: email split — splitOnToken("@") → user.email, user.domain, user.name
-    // Used in Okta, O365, Azure, and many other sources
-    if normalised.contains("splitOnToken") && normalised.contains('@') {
-        shapes.push(KnownShape::EmailSplit);
+    // Pattern: an address split on `@`, each half written where the script
+    // says. Used by okta, o365, azure and many others.
+    if normalised.contains("splitOnToken")
+        && normalised.contains('@')
+        && let Some(shape) = parse_email_split(normalised)
+    {
+        shapes.push(KnownShape::EmailSplit(Box::new(shape)));
         return shapes;
     }
 
@@ -11554,7 +11557,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
                 epoch_to_timestamp(event, "crowdstrike.event.ProcessStartTime", "process.start");
             true
         }
-        KnownShape::EmailSplit => try_email_split(event, normalised),
+        KnownShape::EmailSplit(shape) => run_email_split(event, shape),
         KnownShape::RiskBehaviors => try_risk_behaviors(event),
         KnownShape::AzureCategoryEventType => try_azure_category_to_event_type(event),
         KnownShape::AzureEventCategory => try_azure_event_category(event, normalised),
@@ -11599,9 +11602,8 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
     }
 }
 
-/// Handle the email split Painless pattern.
+/// An address split on `@`, and every path each half is written to.
 ///
-/// Painless patterns like:
 /// ```painless
 /// String[] splitmail = ctx.user.id.splitOnToken("@");
 /// if (splitmail.length != 2) { return; }
@@ -11609,36 +11611,94 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
 /// ctx.user.domain = splitmail[1];
 /// ctx.user.name = splitmail[0];
 /// ```
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct EmailSplit {
+    /// The field holding the address.
+    source: String,
+    /// Paths taking the part before the `@`.
+    names: Vec<String>,
+    /// Paths taking the part after it.
+    domains: Vec<String>,
+    /// Paths taking the whole address back.
+    emails: Vec<String>,
+}
+
+/// Read the split's source and targets off the script.
 ///
-/// Also handles prefixed variants: user.target, source.user, destination.user
-fn try_email_split(event: &mut Event, script: &str) -> bool {
-    // Detect which field prefix this script operates on
-    let prefix = if script.contains("ctx.user.target.id") {
-        "user.target"
-    } else if script.contains("ctx.source.user.id") {
-        "source.user"
-    } else if script.contains("ctx.destination.user.id") {
-        "destination.user"
-    } else if script.contains("ctx.user.id") {
-        "user"
-    } else {
-        return false;
+/// Four hard-coded `<prefix>.id` cases used to stand for this, and
+/// `google_workspace` fits none of them: it reads `source.user.email` and
+/// writes BOTH `user.*` and `source.user.*`, which cost it `user.name` on 437
+/// of its 543 events and `related.hosts` with it.
+fn parse_email_split(script: &str) -> Option<EmailSplit> {
+    use crate::painless_params::{clean_path, ctx_path_before};
+
+    let source = ctx_path_before(script, ".splitOnToken(")?;
+    let mut split = EmailSplit {
+        source,
+        names: Vec::new(),
+        domains: Vec::new(),
+        emails: Vec::new(),
     };
 
-    let id_field = format!("{prefix}.id");
-    let email_val = match event.get_string(&id_field) {
-        Some(v) if v.contains('@') => v,
-        _ => return true, // Field missing or not an email — script returns early
-    };
-
-    let parts: Vec<&str> = email_val.split('@').collect();
-    if parts.len() != 2 {
-        return true; // Script returns early on non-standard email
+    for statement in script.split(';') {
+        let Some((lhs, rhs)) = statement.split_once('=') else {
+            continue;
+        };
+        // The statement carries whatever block punctuation preceded it, so the
+        // target is the last thing on the line rather than the whole left side.
+        let Some(target) = lhs
+            .rsplit(['\n', '{', '}'])
+            .next()
+            .map(str::trim)
+            .and_then(|last| last.strip_prefix("ctx."))
+            .map(clean_path)
+        else {
+            continue;
+        };
+        let rhs = rhs.trim();
+        if rhs.ends_with("[0]") {
+            split.names.push(target);
+        } else if rhs.ends_with("[1]") {
+            split.domains.push(target);
+        } else if rhs
+            .strip_prefix("ctx.")
+            .map(clean_path)
+            .is_some_and(|read| read == split.source)
+        {
+            split.emails.push(target);
+        }
     }
 
-    let _ = event.set(&format!("{prefix}.email"), json!(email_val));
-    let _ = event.set(&format!("{prefix}.name"), json!(parts[0]));
-    let _ = event.set(&format!("{prefix}.domain"), json!(parts[1]));
+    // A script that names neither half is one of the truncated forms, and both
+    // land beside the address -- where every spelled-out variant puts them.
+    if split.names.is_empty() && split.domains.is_empty() {
+        let parent = split.source.rsplit_once('.').map_or("", |(head, _)| head);
+        split.names.push(format!("{parent}.name"));
+        split.domains.push(format!("{parent}.domain"));
+    }
+    Some(split)
+}
+
+fn run_email_split(event: &mut Event, split: &EmailSplit) -> bool {
+    let Some(address) = event.get_string(&split.source) else {
+        // The script's own guard: no address, nothing to split.
+        return true;
+    };
+    let parts: Vec<&str> = address.split('@').collect();
+    if parts.len() != 2 {
+        // `if (splitmail.length != 2) { return; }`
+        return true;
+    }
+
+    for path in &split.emails {
+        let _ = event.set(path, json!(address));
+    }
+    for path in &split.names {
+        let _ = event.set(path, json!(parts[0]));
+    }
+    for path in &split.domains {
+        let _ = event.set(path, json!(parts[1]));
+    }
     true
 }
 
@@ -14975,6 +15035,29 @@ def event_timezone = get_timezone(ctx);
         assert!(try_known_painless(&mut event, script));
         assert_eq!(event.get_str("user.target.email"), Some("admin@corp.io"));
         assert_eq!(event.get_str("user.target.name"), Some("admin"));
+    }
+
+    /// Verbatim from `pipelines/google_workspace/access_transparency/default.yml`:
+    /// the address is read from `.email`, and each half lands under TWO
+    /// prefixes rather than the source's own.
+    #[test]
+    fn an_email_split_writes_every_target_its_script_names() {
+        let script = "String[] splitmail = ctx.source.user.email.splitOnToken('@');\n\
+            if (splitmail.length != 2) {\n  return;\n}\n\
+            if (ctx.user == null) {\n  ctx.user = new HashMap();\n}\n\
+            ctx.user.name = splitmail[0];\nctx.source.user.name = splitmail[0];\n\
+            ctx.user.domain = splitmail[1];\nctx.source.user.domain = splitmail[1];";
+        let mut event = Event::new(json!({
+            "source": { "user": { "email": "foo@bar.com" } }
+        }));
+
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("user.name"), Some("foo"));
+        assert_eq!(event.get_str("source.user.name"), Some("foo"));
+        assert_eq!(event.get_str("user.domain"), Some("bar.com"));
+        assert_eq!(event.get_str("source.user.domain"), Some("bar.com"));
+        // The script never writes one, so neither do we.
+        assert!(!event.has("user.email"));
     }
 
     #[test]

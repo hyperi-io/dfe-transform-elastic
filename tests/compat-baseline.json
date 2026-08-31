@@ -142,7 +142,7 @@
     "golang": { "events": 2, "events_total": 2, "fields_wrong": 0 },
     "google_scc": { "events": 19, "events_total": 24, "fields_wrong": 15 },
     "google_secops": { "events": 0, "events_total": 5, "fields_wrong": 6 },
-    "google_workspace": { "events": 15, "events_total": 543, "fields_wrong": 4406 },
+    "google_workspace": { "events": 347, "events_total": 543, "fields_wrong": 1885 },
     "grafana": { "events": 12, "events_total": 15, "fields_wrong": 3 },
     "greenhouse": { "events": 5, "events_total": 5, "fields_wrong": 0 },
     "hackerone": { "events": 0, "events_total": 4, "fields_wrong": 38 },
