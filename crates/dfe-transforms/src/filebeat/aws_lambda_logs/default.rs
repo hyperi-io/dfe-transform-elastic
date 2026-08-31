@@ -34,7 +34,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: ^(?P<first_char>(?:.))
-                let _ = cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)?;
+                if !cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             let _cond = { event.get_str("first_char") != Some("{") };
@@ -60,7 +62,7 @@ impl Transform for Default {
                             // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+%{WORD:aws.lambda.event_type}\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))
                             // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<message>(?:(.|\n|\t)*))
                             // Grok pattern: ^(?i)(?:%{LOGLEVEL:log.level}:?\\s*)?(?P<message>(?:(.|\n|\t)*))
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok_mapped!(
                                         "^(?P<aws_lambda_event_type>START)\\s+RequestId:\\s+%{DATA:aws.lambda.request_id}\\s+Version:\\s+(?P<aws_lambda_version>\\$LATEST|[^\\s]+)\\s+(?P<message>(?:(.|\n|\t)*))",
@@ -186,7 +188,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

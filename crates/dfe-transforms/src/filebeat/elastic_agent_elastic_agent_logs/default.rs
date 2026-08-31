@@ -30,8 +30,11 @@ impl Transform for Default {
                     if event.has_value("message") {
                         if let Some(input) = event.get_string("message") {
                             // Grok pattern: ^%{TIMESTAMP_ISO8601}: %{LOGLEVEL:log.level}:
-                            let _ = cached_grok!("^%{TIMESTAMP_ISO8601}: %{LOGLEVEL:log.level}: ")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("^%{TIMESTAMP_ISO8601}: %{LOGLEVEL:log.level}: ")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

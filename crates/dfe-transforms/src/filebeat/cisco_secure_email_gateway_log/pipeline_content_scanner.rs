@@ -22,7 +22,7 @@ impl Transform for PipelineContentScanner {
                     // Grok pattern: ^PF: %{WORD:cisco_secure_email_gateway.log.vendor_action} %{WORD:cisco_secure_email_gateway.log.object} %{GREEDYDATA:cisco_secure_email_gateway.log.object_category}$
                     // Grok pattern: ^PF: %{WORD:cisco_secure_email_gateway.log.vendor_action} %{GREEDYDATA:cisco_secure_email_gateway.log.object_category} \\(pid=%{NUMBER:process.pid:long}\\)$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^PF: %{WORD:cisco_secure_email_gateway.log.vendor_action} %{WORD:cisco_secure_email_gateway.log.object} %{GREEDYDATA:cisco_secure_email_gateway.log.object_category}$"),
                             cached_grok!("^PF: %{WORD:cisco_secure_email_gateway.log.vendor_action} %{GREEDYDATA:cisco_secure_email_gateway.log.object_category} \\(pid=%{NUMBER:process.pid:long}\\)$"),
@@ -30,7 +30,9 @@ impl Transform for PipelineContentScanner {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             Ok(TransformResult::Continue)

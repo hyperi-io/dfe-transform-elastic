@@ -439,7 +439,7 @@ impl Transform for Default {
                             // Grok pattern: ^User%{SPACE}\"%{USERNAME:user.name}\"%{SPACE}\\(%{EMAILADDRESS:user.email}\\)%{SPACE}was%{SPACE}removed$
                             // Grok pattern: ^Group%{SPACE}\"%{USERNAME:group.name}\"%{SPACE}was%{SPACE}created$
                             // Grok pattern: ^Group%{SPACE}\"%{USERNAME:group.name}\"%{SPACE}was%{SPACE}removed$
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!(
                                         "^Failed%{SPACE}Login:%{SPACE}username=%{USERNAME:user.name}%{SPACE}ip=%{IP:source.ip}$"
@@ -471,7 +471,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

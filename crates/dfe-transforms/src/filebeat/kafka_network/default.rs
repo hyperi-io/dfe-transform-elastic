@@ -27,7 +27,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.network:type=Acceptor,name=AcceptorBlockedPercent,listener=%{WORD:listener}
-                        let _ = cached_grok!("kafka.network:type=Acceptor,name=AcceptorBlockedPercent,listener=%{WORD:listener}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.network:type=Acceptor,name=AcceptorBlockedPercent,listener=%{WORD:listener}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -57,7 +59,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.network:type=Processor,name=IdlePercent,networkProcessor=%{WORD:network_processor}
-                        let _ = cached_grok!("kafka.network:type=Processor,name=IdlePercent,networkProcessor=%{WORD:network_processor}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.network:type=Processor,name=IdlePercent,networkProcessor=%{WORD:network_processor}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -91,7 +95,9 @@ impl Transform for Default {
                     if event.has_value("jolokia.metrics.mbean") {
                         if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                             // Grok pattern: kafka.network:type=RequestChannel,name=ResponseQueueSize,processor=%{WORD:processor}
-                            let _ = cached_grok!("kafka.network:type=RequestChannel,name=ResponseQueueSize,processor=%{WORD:processor}").extract_into(&input, event)?;
+                            if !cached_grok!("kafka.network:type=RequestChannel,name=ResponseQueueSize,processor=%{WORD:processor}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                         }
                     }
                     Ok(())
@@ -125,7 +131,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.network:type=RequestMetrics,name=ErrorsPerSec,request=%{WORD:request_type},error=%{WORD:error_type}
-                        let _ = cached_grok!("kafka.network:type=RequestMetrics,name=ErrorsPerSec,request=%{WORD:request_type},error=%{WORD:error_type}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.network:type=RequestMetrics,name=ErrorsPerSec,request=%{WORD:request_type},error=%{WORD:error_type}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -164,7 +172,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.network:type=RequestMetrics,name=LocalTimeMs,request=%{WORD:local_request_type}
-                        let _ = cached_grok!("kafka.network:type=RequestMetrics,name=LocalTimeMs,request=%{WORD:local_request_type}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.network:type=RequestMetrics,name=LocalTimeMs,request=%{WORD:local_request_type}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -213,7 +223,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.network:type=RequestMetrics,name=MessageConversionsTimeMs,request=%{WORD:message_conversions_request_type}
-                        let _ = cached_grok!("kafka.network:type=RequestMetrics,name=MessageConversionsTimeMs,request=%{WORD:message_conversions_request_type}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.network:type=RequestMetrics,name=MessageConversionsTimeMs,request=%{WORD:message_conversions_request_type}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -262,7 +274,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.network:type=RequestMetrics,name=RemoteTimeMs,request=%{WORD:remote_request_type}
-                        let _ = cached_grok!("kafka.network:type=RequestMetrics,name=RemoteTimeMs,request=%{WORD:remote_request_type}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.network:type=RequestMetrics,name=RemoteTimeMs,request=%{WORD:remote_request_type}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -311,7 +325,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.network:type=RequestMetrics,name=RequestBytes,request=%{WORD:request_bytes_type}
-                        let _ = cached_grok!("kafka.network:type=RequestMetrics,name=RequestBytes,request=%{WORD:request_bytes_type}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.network:type=RequestMetrics,name=RequestBytes,request=%{WORD:request_bytes_type}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -360,7 +376,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.network:type=RequestMetrics,name=RequestQueueTimeMs,request=%{WORD:request_queue_type}
-                        let _ = cached_grok!("kafka.network:type=RequestMetrics,name=RequestQueueTimeMs,request=%{WORD:request_queue_type}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.network:type=RequestMetrics,name=RequestQueueTimeMs,request=%{WORD:request_queue_type}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -409,7 +427,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.network:type=RequestMetrics,name=ResponseQueueTimeMs,request=%{WORD:response_queue_type}
-                        let _ = cached_grok!("kafka.network:type=RequestMetrics,name=ResponseQueueTimeMs,request=%{WORD:response_queue_type}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.network:type=RequestMetrics,name=ResponseQueueTimeMs,request=%{WORD:response_queue_type}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -458,7 +478,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.network:type=RequestMetrics,name=ResponseSendTimeMs,request=%{WORD:response_send_type}
-                        let _ = cached_grok!("kafka.network:type=RequestMetrics,name=ResponseSendTimeMs,request=%{WORD:response_send_type}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.network:type=RequestMetrics,name=ResponseSendTimeMs,request=%{WORD:response_send_type}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -507,7 +529,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.network:type=RequestMetrics,name=TemporaryMemoryBytes,request=%{WORD:temp_memory_type}
-                        let _ = cached_grok!("kafka.network:type=RequestMetrics,name=TemporaryMemoryBytes,request=%{WORD:temp_memory_type}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.network:type=RequestMetrics,name=TemporaryMemoryBytes,request=%{WORD:temp_memory_type}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -556,7 +580,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.network:type=RequestMetrics,name=ThrottleTimeMs,request=%{WORD:throttle_type}
-                        let _ = cached_grok!("kafka.network:type=RequestMetrics,name=ThrottleTimeMs,request=%{WORD:throttle_type}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.network:type=RequestMetrics,name=ThrottleTimeMs,request=%{WORD:throttle_type}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -605,7 +631,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.network:type=RequestMetrics,name=TotalTimeMs,request=%{WORD:total_time_type}
-                        let _ = cached_grok!("kafka.network:type=RequestMetrics,name=TotalTimeMs,request=%{WORD:total_time_type}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.network:type=RequestMetrics,name=TotalTimeMs,request=%{WORD:total_time_type}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();

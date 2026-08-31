@@ -63,7 +63,7 @@ impl Transform for Default {
                 // Grok pattern: %{GREEDYDATA:tmp_timestamp}\\nLENGTH : '%{GREEDYDATA:LENGTH}'\\nACTION :\\[\\d+\\] (?m)%{GREEDYDATA:action}(DATABASE USER):\\S+ '(?P<db_user>(?:[^']+))'\\n(?m)%{GREEDYDATA:audit}
                 // Grok pattern: %{GREEDYDATA:tmp_timestamp}\\nLENGTH : '%{GREEDYDATA:LENGTH}'\\nACTION :\\[\\d+\\] (?m)%{GREEDYDATA:action}
                 // Grok pattern: %{GREEDYDATA:tmp_timestamp}\\nLENGTH: \"%{GREEDYDATA:LENGTH}\"\\n%{GREEDYDATA:audit}
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!(
                             "%{GREEDYDATA:tmp_timestamp}\\nLENGTH : '%{GREEDYDATA:LENGTH}'\\nACTION :\\[\\d+\\] (?m)%{GREEDYDATA:action}(DATABASE USER):\\S+ '(?P<db_user>(?:[^']+))'\\n(?m)%{GREEDYDATA:audit}"
@@ -77,7 +77,9 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             // SKIPPED: condition not transpiled: ctx.oracle_event_type == "database" && ctx?.audit != null && ctx?.audit.length() != 0
@@ -158,8 +160,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("log.file.path") {
                     // Grok pattern: %{BASE10NUM:process.pid}\\_%{BASE10NUM}\\.aud(\\.log)?$
-                    let _ = cached_grok!("%{BASE10NUM:process.pid}\\_%{BASE10NUM}\\.aud(\\.log)?$")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("%{BASE10NUM:process.pid}\\_%{BASE10NUM}\\.aud(\\.log)?$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -266,8 +271,11 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("tmp_timestamp") {
                 // Grok pattern: %{ISO8601_TIMEZONE:event.timezone}$
-                let _ = cached_grok!("%{ISO8601_TIMEZONE:event.timezone}$")
-                    .extract_into(&input, event)?;
+                if !cached_grok!("%{ISO8601_TIMEZONE:event.timezone}$")
+                    .extract_into(&input, event)?
+                {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             // ignore_failure: true
@@ -372,8 +380,11 @@ impl Transform for Default {
                 if event.has_value("client.address") {
                     if let Some(input) = event.get_string("client.address") {
                         // Grok pattern: (?:%{IP:client.ip}|%{GREEDYDATA:client.domain})
-                        let _ = cached_grok!("(?:%{IP:client.ip}|%{GREEDYDATA:client.domain})")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("(?:%{IP:client.ip}|%{GREEDYDATA:client.domain})")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())
@@ -384,8 +395,11 @@ impl Transform for Default {
                 if event.has_value("server.address") {
                     if let Some(input) = event.get_string("server.address") {
                         // Grok pattern: (?:%{IP:server.ip}|%{GREEDYDATA:server.domain})
-                        let _ = cached_grok!("(?:%{IP:server.ip}|%{GREEDYDATA:server.domain})")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("(?:%{IP:server.ip}|%{GREEDYDATA:server.domain})")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

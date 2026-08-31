@@ -191,14 +191,16 @@ impl Transform for Default {
                 {
                     // Grok pattern: ^%{EMAILADDRESS:user.email}$
                     // Grok pattern: ^%{DATA:user.name}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{EMAILADDRESS:user.email}$"),
                             cached_grok!("^%{DATA:user.name}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -480,14 +482,16 @@ impl Transform for Default {
                 {
                     // Grok pattern: ^%{EMAILADDRESS:destination.user.email}$
                     // Grok pattern: ^%{DATA:destination.user.name}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{EMAILADDRESS:destination.user.email}$"),
                             cached_grok!("^%{DATA:destination.user.name}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

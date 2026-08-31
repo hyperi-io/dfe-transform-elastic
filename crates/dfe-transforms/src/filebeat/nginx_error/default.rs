@@ -37,7 +37,9 @@ impl Transform for Default {
             if event.has_value("event.original") {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: %{DATA:nginx.error.time} \\[%{DATA:log.level}\\] %{NUMBER:process.pid:long}#%{NUMBER:process.thread.id:long}: (\\*%{NUMBER:nginx.error.connection_id:long} )?(?P<message>(?:(.|\n|\t)*))
-                    let _ = cached_grok!("%{DATA:nginx.error.time} \\[%{DATA:log.level}\\] %{NUMBER:process.pid:long}#%{NUMBER:process.thread.id:long}: (\\*%{NUMBER:nginx.error.connection_id:long} )?(?P<message>(?:(.|\n|\t)*))").extract_into(&input, event)?;
+                    if !cached_grok!("%{DATA:nginx.error.time} \\[%{DATA:log.level}\\] %{NUMBER:process.pid:long}#%{NUMBER:process.thread.id:long}: (\\*%{NUMBER:nginx.error.connection_id:long} )?(?P<message>(?:(.|\n|\t)*))").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

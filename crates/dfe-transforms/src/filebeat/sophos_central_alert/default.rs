@@ -390,7 +390,9 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("json.source") {
                         // Grok pattern: ^(?:%{DATA:sophos_central.alert.source.domain.name}\\\\)?%{GREEDYDATA:sophos_central.alert.source.user.name}$
-                        let _ = cached_grok!("^(?:%{DATA:sophos_central.alert.source.domain.name}\\\\)?%{GREEDYDATA:sophos_central.alert.source.user.name}$").extract_into(&input, event)?;
+                        if !cached_grok!("^(?:%{DATA:sophos_central.alert.source.domain.name}\\\\)?%{GREEDYDATA:sophos_central.alert.source.user.name}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })() {
@@ -842,7 +844,7 @@ impl Transform for Default {
                         // Grok pattern: ^Message\\s*%{GREEDYDATA:sophos_central.alert.data.ips_threat.raw_data.message}\\nReference\\s*%{DATA:sophos_central.alert.data.ips_threat.raw_data.reference}\\nPacket type\\s*%{DATA:sophos_central.alert.data.ips_threat.raw_data.packet_type}\\nLocal IP:\\s*%{IP:sophos_central.alert.data.ips_threat.raw_data.local.ip}\\nLocal Port:\\s*%{NUMBER:sophos_central.alert.data.ips_threat.raw_data.local.port:long}\\nLocal MAC:\\s*%{MAC:temp.local_mac}\\nRemote IP:\\s*%{IP:sophos_central.alert.data.ips_threat.raw_data.remote.ip}\\nRemote Port:\\s*%{NUMBER:sophos_central.alert.data.ips_threat.raw_data.remote.port:long}\\nRemote MAC:\\s*%{MAC:temp.remote_mac}$
                         // Grok pattern: ^Message\\s*%{GREEDYDATA:sophos_central.alert.data.ips_threat.raw_data.message}\\nPacket type\\s*%{DATA:sophos_central.alert.data.ips_threat.raw_data.packet_type}\\nLocal IP:\\s*%{IP:sophos_central.alert.data.ips_threat.raw_data.local.ip}(\\nLocal Port:\\s*%{NUMBER:sophos_central.alert.data.ips_threat.raw_data.local.port:long})?(\\nLocal MAC:\\s*%{MAC:temp.local_mac})?(\\n)?(Remote IP:\\s*%{IP:sophos_central.alert.data.ips_threat.raw_data.remote.ip})?(\\n)?(Remote Port:\\s*%{NUMBER:sophos_central.alert.data.ips_threat.raw_data.remote.port:long})?(\\n)?(Remote MAC:\\s*%{MAC:temp.remote_mac})?$
                         // Grok pattern: ^%{GREEDYDATA:sophos_central.alert.data.ips_threat.raw_data.message}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^Message\\s*%{GREEDYDATA:sophos_central.alert.data.ips_threat.raw_data.message}\\nReference\\s*%{DATA:sophos_central.alert.data.ips_threat.raw_data.reference}\\nPacket type\\s*%{DATA:sophos_central.alert.data.ips_threat.raw_data.packet_type}\\nLocal IP:\\s*%{IP:sophos_central.alert.data.ips_threat.raw_data.local.ip}(\\nLocal Port:\\s*%{NUMBER:sophos_central.alert.data.ips_threat.raw_data.local.port:long})?(\\nLocal MAC:\\s*%{MAC:temp.local_mac})?(\\n)?(Remote IP:\\s*%{IP:sophos_central.alert.data.ips_threat.raw_data.remote.ip})?(\\n)?(Remote Port:\\s*%{NUMBER:sophos_central.alert.data.ips_threat.raw_data.remote.port:long})?(\\n)?(Remote MAC:\\s*%{MAC:temp.remote_mac})?(\\n)?(PID:\\s*%{NUMBER:sophos_central.alert.data.ips_threat.raw_data.pid})?(\\n)?(Executable:\\s*%{PATH:sophos_central.alert.data.ips_threat.raw_data.executable})?\\n(Version:\\s*%{DATA:sophos_central.alert.data.ips_threat.raw_data.version})?\\n+(Signer:\\s*%{DATA:sophos_central.alert.data.ips_threat.raw_data.signer})?\\n(SHA-256:\\s*%{WORD:sophos_central.alert.data.ips_threat.raw_data.sha_256})?$"
@@ -859,7 +861,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })() {

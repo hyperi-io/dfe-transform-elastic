@@ -20,7 +20,9 @@ impl Transform for Unbound {
             if let Err(err) = (|| -> Result<()> {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: %{LOGLEVEL:log.level}: %{IP:source.address} %{HOSTNAME:_tmp.question.name}(\\.) %{WORD:_tmp.question.type} %{WORD:_tmp.question.class}
-                    let _ = cached_grok!("%{LOGLEVEL:log.level}: %{IP:source.address} %{HOSTNAME:_tmp.question.name}(\\.) %{WORD:_tmp.question.type} %{WORD:_tmp.question.class}").extract_into(&input, event)?;
+                    if !cached_grok!("%{LOGLEVEL:log.level}: %{IP:source.address} %{HOSTNAME:_tmp.question.name}(\\.) %{WORD:_tmp.question.type} %{WORD:_tmp.question.class}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })() {

@@ -86,7 +86,7 @@ impl Transform for Default {
                     // Grok pattern: \\[%{LOGLEVEL:log.level}\\] \\[?%{IP:source.address}\\]?:%{POSINT:source.port:long} - %{POSINT:dns.id} \"%{WORD:dns.question.type} %{WORD:dns.question.class} %{IPORHOST:dns.question.name}\\. %{WORD:network.transport} %{POSINT:source.bytes:long} %{WORD:coredns.log.dnssec_ok:boolean} %{POSINT:coredns.log.buffer_size:long}\" %{WORD:dns.response_code} %{NOTSPACE:dns.header_flags} %{POSINT:destination.bytes:long} %{NOTSPACE:event.duration}s( \"%{NONNEGINT:dns.op_code}\")?
                     // Grok pattern: \\[%{LOGLEVEL:log.level}\\] %{DATA:log.logger}: (%{WORD:dns.response_code}|%{NONNEGINT:dns.response_code:long}) %{IPORHOST:dns.question.name}\\. %{WORD:dns.question.type}: %{GREEDYDATA:coredns.log.error.message}
                     // Grok pattern: \\[%{LOGLEVEL:log.level}\\] %{DATA:log.logger}: %{GREEDYDATA:coredns.log.error.message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "\\[%{LOGLEVEL:log.level}\\] \\[?%{IP:source.address}\\]?:%{POSINT:source.port:long} - %{POSINT:dns.id} \"%{WORD:dns.question.type} %{WORD:dns.question.class} %{IPORHOST:dns.question.name}\\. %{WORD:network.transport} %{POSINT:source.bytes:long} %{WORD:coredns.log.dnssec_ok:boolean} %{POSINT:coredns.log.buffer_size:long}\" %{WORD:dns.response_code} %{NOTSPACE:dns.header_flags} %{POSINT:destination.bytes:long} %{NOTSPACE:event.duration}s( \"%{NONNEGINT:dns.op_code}\")?"
@@ -100,7 +100,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

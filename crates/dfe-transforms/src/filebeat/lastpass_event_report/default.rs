@@ -1026,9 +1026,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^%{GREEDYDATA:lastpass.event_report.data.login_site}$
-                        let _ =
-                            cached_grok!("^%{GREEDYDATA:lastpass.event_report.data.login_site}$")
-                                .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:lastpass.event_report.data.login_site}$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -1048,9 +1050,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^%{GREEDYDATA:lastpass.event_report.data.saml_login}$
-                        let _ =
-                            cached_grok!("^%{GREEDYDATA:lastpass.event_report.data.saml_login}$")
-                                .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:lastpass.event_report.data.saml_login}$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -1070,9 +1074,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^%{GREEDYDATA:lastpass.event_report.data.failed_login}$
-                        let _ =
-                            cached_grok!("^%{GREEDYDATA:lastpass.event_report.data.failed_login}$")
-                                .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:lastpass.event_report.data.failed_login}$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -1119,9 +1125,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^%{EMAILADDRESS:lastpass.event_report.data.user_email}$
-                        let _ =
-                            cached_grok!("^%{EMAILADDRESS:lastpass.event_report.data.user_email}$")
-                                .extract_into(&input, event)?;
+                        if !cached_grok!("^%{EMAILADDRESS:lastpass.event_report.data.user_email}$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -1141,9 +1149,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^%{GREEDYDATA:lastpass.event_report.data.added_site}$
-                        let _ =
-                            cached_grok!("^%{GREEDYDATA:lastpass.event_report.data.added_site}$")
-                                .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:lastpass.event_report.data.added_site}$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -1170,9 +1180,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^%{DATA:lastpass.event_report.data.shared_folder_name}$
-                        let _ =
-                            cached_grok!("^%{DATA:lastpass.event_report.data.shared_folder_name}$")
-                                .extract_into(&input, event)?;
+                        if !cached_grok!("^%{DATA:lastpass.event_report.data.shared_folder_name}$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -1200,7 +1212,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^Secure Note\\s+\\(%{DATA:lastpass.event_report.data.secure_note}\\)$
                         // Grok pattern: ^Secure Note\\s+\\(%{DATA:lastpass.event_report.data.secure_note}\\)\\s+from\\s+%{DATA:lastpass.event_report.data.shared_folder_name}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^Secure Note\\s+\\(%{DATA:lastpass.event_report.data.secure_note}\\)$"
@@ -1211,7 +1223,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -1231,10 +1245,13 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^Secure Note\\s+\\(%{DATA:lastpass.event_report.data.secure_note}\\)$
-                        let _ = cached_grok!(
+                        if !cached_grok!(
                             "^Secure Note\\s+\\(%{DATA:lastpass.event_report.data.secure_note}\\)$"
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -1254,7 +1271,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^'%{DATA:lastpass.event_report.data.shared_folder_name}'\\s+'%{EMAILADDRESS:lastpass.event_report.data.user_email}'$
-                        let _ = cached_grok!("^'%{DATA:lastpass.event_report.data.shared_folder_name}'\\s+'%{EMAILADDRESS:lastpass.event_report.data.user_email}'$").extract_into(&input, event)?;
+                        if !cached_grok!("^'%{DATA:lastpass.event_report.data.shared_folder_name}'\\s+'%{EMAILADDRESS:lastpass.event_report.data.user_email}'$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -1274,8 +1293,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^'%{DATA:lastpass.event_report.data.group_name}'$
-                        let _ = cached_grok!("^'%{DATA:lastpass.event_report.data.group_name}'$")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^'%{DATA:lastpass.event_report.data.group_name}'$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -1295,7 +1317,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^%{EMAILADDRESS:lastpass.event_report.data.user_email}\\s+\\-\\s+%{DATA:lastpass.event_report.data.group_name}$
-                        let _ = cached_grok!("^%{EMAILADDRESS:lastpass.event_report.data.user_email}\\s+\\-\\s+%{DATA:lastpass.event_report.data.group_name}$").extract_into(&input, event)?;
+                        if !cached_grok!("^%{EMAILADDRESS:lastpass.event_report.data.user_email}\\s+\\-\\s+%{DATA:lastpass.event_report.data.group_name}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -1315,7 +1339,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^%{EMAILADDRESS:lastpass.event_report.data.user_email}\\s*-Shared-\\s*%{DATA:lastpass.event_report.data.shared_folder_name}$
-                        let _ = cached_grok!("^%{EMAILADDRESS:lastpass.event_report.data.user_email}\\s*-Shared-\\s*%{DATA:lastpass.event_report.data.shared_folder_name}$").extract_into(&input, event)?;
+                        if !cached_grok!("^%{EMAILADDRESS:lastpass.event_report.data.user_email}\\s*-Shared-\\s*%{DATA:lastpass.event_report.data.shared_folder_name}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -1335,7 +1361,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^'%{DATA:lastpass.event_report.data.shared_folder_name}'\\s+'%{EMAILADDRESS:lastpass.event_report.data.user_email}'\\s+'Read only:%{DATA:lastpass.event_report.data.shared_folder_user_permissions.read_only}\\s+Admin:%{DATA:lastpass.event_report.data.shared_folder_user_permissions.admin}\\s+Hide PW:%{DATA:lastpass.event_report.data.shared_folder_user_permissions.hide_password}'$
-                        let _ = cached_grok!("^'%{DATA:lastpass.event_report.data.shared_folder_name}'\\s+'%{EMAILADDRESS:lastpass.event_report.data.user_email}'\\s+'Read only:%{DATA:lastpass.event_report.data.shared_folder_user_permissions.read_only}\\s+Admin:%{DATA:lastpass.event_report.data.shared_folder_user_permissions.admin}\\s+Hide PW:%{DATA:lastpass.event_report.data.shared_folder_user_permissions.hide_password}'$").extract_into(&input, event)?;
+                        if !cached_grok!("^'%{DATA:lastpass.event_report.data.shared_folder_name}'\\s+'%{EMAILADDRESS:lastpass.event_report.data.user_email}'\\s+'Read only:%{DATA:lastpass.event_report.data.shared_folder_user_permissions.read_only}\\s+Admin:%{DATA:lastpass.event_report.data.shared_folder_user_permissions.admin}\\s+Hide PW:%{DATA:lastpass.event_report.data.shared_folder_user_permissions.hide_password}'$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -1355,7 +1383,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^'%{DATA:lastpass.event_report.data.shared_folder_name}'\\s+'%{DATA:lastpass.event_report.data.renamed_shared_folder_name}'$
-                        let _ = cached_grok!("^'%{DATA:lastpass.event_report.data.shared_folder_name}'\\s+'%{DATA:lastpass.event_report.data.renamed_shared_folder_name}'$").extract_into(&input, event)?;
+                        if !cached_grok!("^'%{DATA:lastpass.event_report.data.shared_folder_name}'\\s+'%{DATA:lastpass.event_report.data.renamed_shared_folder_name}'$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -1376,7 +1406,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^\\s+to\\s+%{DATA:lastpass.event_report.data.shared_folder_name}$
                         // Grok pattern: ^%{GREEDYDATA:lastpass.event_report.data.site}\\s+to\\s+%{DATA:lastpass.event_report.data.shared_folder_name}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^\\s+to\\s+%{DATA:lastpass.event_report.data.shared_folder_name}$"
@@ -1387,7 +1417,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -1409,7 +1441,7 @@ impl Transform for Default {
                         // Grok pattern: ^ from INVALID SHARED FOLDER$
                         // Grok pattern: ^\\s+from\\s+%{DATA:lastpass.event_report.data.shared_folder_name}$
                         // Grok pattern: ^%{GREEDYDATA:lastpass.event_report.data.site}\\s+from\\s+%{DATA:lastpass.event_report.data.shared_folder_name}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!("^ from INVALID SHARED FOLDER$"),
                                 cached_grok!(
@@ -1421,7 +1453,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -1442,7 +1476,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^\\s+from\\s+%{DATA:lastpass.event_report.data.shared_folder_name}$
                         // Grok pattern: ^%{GREEDYDATA:lastpass.event_report.data.deleted_site}\\s+from\\s+%{DATA:lastpass.event_report.data.shared_folder_name}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^\\s+from\\s+%{DATA:lastpass.event_report.data.shared_folder_name}$"
@@ -1453,7 +1487,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -1473,7 +1509,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("_temp") {
                         // Grok pattern: ^%{DATA:lastpass.event_report.data.shared_folder_name},%{EMAILADDRESS:lastpass.event_report.data.user_email}$
-                        let _ = cached_grok!("^%{DATA:lastpass.event_report.data.shared_folder_name},%{EMAILADDRESS:lastpass.event_report.data.user_email}$").extract_into(&input, event)?;
+                        if !cached_grok!("^%{DATA:lastpass.event_report.data.shared_folder_name},%{EMAILADDRESS:lastpass.event_report.data.user_email}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -1493,7 +1531,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("lastpass.event_report.data.original") {
                         // Grok pattern: ^'%{DATA:lastpass.event_report.data.shared_folder_name}'\\s+'%{EMAILADDRESS:lastpass.event_report.data.user_email}'$
-                        let _ = cached_grok!("^'%{DATA:lastpass.event_report.data.shared_folder_name}'\\s+'%{EMAILADDRESS:lastpass.event_report.data.user_email}'$").extract_into(&input, event)?;
+                        if !cached_grok!("^'%{DATA:lastpass.event_report.data.shared_folder_name}'\\s+'%{EMAILADDRESS:lastpass.event_report.data.user_email}'$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();

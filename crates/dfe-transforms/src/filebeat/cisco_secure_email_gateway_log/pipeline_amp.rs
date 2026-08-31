@@ -27,7 +27,7 @@ impl Transform for PipelineAmp {
                     // Grok pattern: ^SHA256: %{GREEDYDATA:email.attachments.file.hash.sha256},Timestamp\\[%{GREEDYDATA:_tmp.submit.timestamp}\\] details\\[%{GREEDYDATA:cisco_secure_email_gateway.log.server_error_details}\\]$
                     // Grok pattern: ^Retrospective verdict received. %{GREEDYDATA:_tmp.new_message}$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match_traced(
+                    if !extract_first_match_traced(
                         &[
                             cached_grok!("^File reputation query initiating. %{GREEDYDATA:_tmp.new_message}$"),
                             cached_grok!("^Response received for file reputation query from (Cloud|Cache). %{GREEDYDATA:_tmp.new_message}$"),
@@ -40,7 +40,9 @@ impl Transform for PipelineAmp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             event.set("_tmp.grok_match_index", json!(event.get("_ingest._grok_match_index").map_or_else(String::new, template_to_string)))?;
@@ -95,7 +97,9 @@ impl Transform for PipelineAmp {
             if _cond {
                 if let Some(input) = event.get_string("_tmp.cisco_secure_email_gateway.log.remaining_details") {
                     // Grok pattern: ^File SHA256\\[%{GREEDYDATA:email.attachments.file.hash.sha256}\\] file mime\\[%{GREEDYDATA:email.attachments.file.mime_type}\\], upload priority\\[%{GREEDYDATA:cisco_secure_email_gateway.log.upload.priority}\\] not uploaded, re-tries\\[%{GREEDYDATA:cisco_secure_email_gateway.log.retries:long}\\], backoff\\[%{GREEDYDATA:cisco_secure_email_gateway.log.backoff:long}\\] %{GREEDYDATA:cisco_secure_email_gateway.log.details}$
-                    let _ = cached_grok!("^File SHA256\\[%{GREEDYDATA:email.attachments.file.hash.sha256}\\] file mime\\[%{GREEDYDATA:email.attachments.file.mime_type}\\], upload priority\\[%{GREEDYDATA:cisco_secure_email_gateway.log.upload.priority}\\] not uploaded, re-tries\\[%{GREEDYDATA:cisco_secure_email_gateway.log.retries:long}\\], backoff\\[%{GREEDYDATA:cisco_secure_email_gateway.log.backoff:long}\\] %{GREEDYDATA:cisco_secure_email_gateway.log.details}$").extract_into(&input, event)?;
+                    if !cached_grok!("^File SHA256\\[%{GREEDYDATA:email.attachments.file.hash.sha256}\\] file mime\\[%{GREEDYDATA:email.attachments.file.mime_type}\\], upload priority\\[%{GREEDYDATA:cisco_secure_email_gateway.log.upload.priority}\\] not uploaded, re-tries\\[%{GREEDYDATA:cisco_secure_email_gateway.log.retries:long}\\], backoff\\[%{GREEDYDATA:cisco_secure_email_gateway.log.backoff:long}\\] %{GREEDYDATA:cisco_secure_email_gateway.log.details}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

@@ -457,8 +457,11 @@ impl Transform for Default {
                 if event.has_value("microsoft.exchange.authenticateduser") {
                     if let Some(input) = event.get_string("microsoft.exchange.authenticateduser") {
                         // Grok pattern: %{DATA}\\\\%{NOTSPACE:user.name}
-                        let _ = cached_grok!("%{DATA}\\\\%{NOTSPACE:user.name}")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("%{DATA}\\\\%{NOTSPACE:user.name}")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())
@@ -469,7 +472,9 @@ impl Transform for Default {
                 if event.has_value("microsoft.exchange.clientipaddress") {
                     if let Some(input) = event.get_string("microsoft.exchange.clientipaddress") {
                         // Grok pattern: ^%{IP:microsoft.exchange.clientipaddress_external}%{SPACE}%{IP:microsoft.exchange.clientipaddress_internal}$
-                        let _ = cached_grok!("^%{IP:microsoft.exchange.clientipaddress_external}%{SPACE}%{IP:microsoft.exchange.clientipaddress_internal}$").extract_into(&input, event)?;
+                        if !cached_grok!("^%{IP:microsoft.exchange.clientipaddress_external}%{SPACE}%{IP:microsoft.exchange.clientipaddress_internal}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                 }
                 Ok(())

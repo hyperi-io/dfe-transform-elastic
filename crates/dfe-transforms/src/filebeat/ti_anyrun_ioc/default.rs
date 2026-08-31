@@ -394,103 +394,164 @@ impl Transform for Default {
             let _cond = { event.get_str("threat.indicator.type") == Some("domain-name") };
             if _cond {
                 if event.has_value("stix._patterns") {
-                    foreach_array(event, "stix._patterns", |event| {
-                        // Begin nested pipeline: "indicator-domain-name"
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(input) = event.get_string("_ingest._value") {
-                                // Grok pattern: ^\\[?domain-name:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?
-                                // Grok pattern: ^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?
-                                // Grok pattern: ^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?
-                                // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?
-                                // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?
-                                // Grok pattern: ^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?
-                                let _ = extract_first_match(
-                                    &[
-                                        cached_grok!(
-                                            "^\\[?domain-name:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?"
-                                        ),
-                                    ],
-                                    &input,
-                                    event,
-                                )?;
+                    {
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("stix._patterns").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
                             }
-                            Ok(())
-                        })();
-                        let _cond = { event.has_value("_tmp.url") };
-                        if _cond {
-                            event.append(
-                                "threat.indicator.url.original",
-                                json!(
-                                    event
-                                        .get("_tmp.url")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // Begin nested pipeline: "indicator-domain-name"
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(input) = event.get_string("_ingest._value") {
+                                        // Grok pattern: ^\\[?domain-name:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?
+                                        // Grok pattern: ^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?
+                                        // Grok pattern: ^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?
+                                        // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?
+                                        // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?
+                                        // Grok pattern: ^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?
+                                        if !extract_first_match(
+                                            &[
+                                                cached_grok!(
+                                                    "^\\[?domain-name:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?"
+                                                ),
+                                            ],
+                                            &input,
+                                            event,
+                                        )? {
+                                            return Err(TransformError::GrokNoMatch {
+                                                value: input,
+                                            });
+                                        }
+                                    }
+                                    Ok(())
+                                })();
+                                let _cond = { event.has_value("_tmp.url") };
+                                if _cond {
+                                    event.append(
+                                        "threat.indicator.url.original",
+                                        json!(
+                                            event
+                                                .get("_tmp.url")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.url") };
+                                if _cond {
+                                    event.append(
+                                        "threat.indicator.url.domain",
+                                        json!(
+                                            event
+                                                .get("_tmp.url")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.ip") };
+                                if _cond {
+                                    event.append(
+                                        "threat.indicator.ip",
+                                        json!(
+                                            event
+                                                .get("_tmp.ip")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.url") };
+                                if _cond {
+                                    event.append(
+                                        "threat.indicator.name",
+                                        json!(
+                                            event
+                                                .get("_tmp.url")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.ip") };
+                                if _cond {
+                                    event.append_unique(
+                                        "related.ip",
+                                        json!(
+                                            event
+                                                .get("_tmp.ip")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                event.remove("_tmp");
+                                // End nested pipeline: "indicator-domain-name"
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
+                                }
+                            }
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "stix._patterns",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
                             )?;
                         }
-                        let _cond = { event.has_value("_tmp.url") };
-                        if _cond {
-                            event.append(
-                                "threat.indicator.url.domain",
-                                json!(
-                                    event
-                                        .get("_tmp.url")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.ip") };
-                        if _cond {
-                            event.append(
-                                "threat.indicator.ip",
-                                json!(
-                                    event
-                                        .get("_tmp.ip")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.url") };
-                        if _cond {
-                            event.append(
-                                "threat.indicator.name",
-                                json!(
-                                    event
-                                        .get("_tmp.url")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.ip") };
-                        if _cond {
-                            event.append_unique(
-                                "related.ip",
-                                json!(
-                                    event
-                                        .get("_tmp.ip")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        event.remove("_tmp");
-                        // End nested pipeline: "indicator-domain-name"
-                        Ok(())
-                    })?;
+                    }
                 }
             }
 
@@ -501,125 +562,248 @@ impl Transform for Default {
             };
             if _cond {
                 if event.has_value("stix._patterns") {
-                    foreach_array(event, "stix._patterns", |event| {
-                        // Begin nested pipeline: "indicator-ip"
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(input) = event.get_string("_ingest._value") {
-                                // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?
-                                // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?
-                                // Grok pattern: ^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?
-                                let _ = extract_first_match(
-                                    &[
-                                        cached_grok!(
-                                            "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?"
-                                        ),
-                                    ],
-                                    &input,
-                                    event,
-                                )?;
+                    {
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("stix._patterns").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
                             }
-                            Ok(())
-                        })();
-                        let _cond = { event.has_value("_tmp.ip") };
-                        if _cond {
-                            event.append(
-                                "threat.indicator.ip",
-                                json!(
-                                    event
-                                        .get("_tmp.ip")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // Begin nested pipeline: "indicator-ip"
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(input) = event.get_string("_ingest._value") {
+                                        // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?
+                                        // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?
+                                        // Grok pattern: ^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?
+                                        if !extract_first_match(
+                                            &[
+                                                cached_grok!(
+                                                    "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?"
+                                                ),
+                                            ],
+                                            &input,
+                                            event,
+                                        )? {
+                                            return Err(TransformError::GrokNoMatch {
+                                                value: input,
+                                            });
+                                        }
+                                    }
+                                    Ok(())
+                                })();
+                                let _cond = { event.has_value("_tmp.ip") };
+                                if _cond {
+                                    event.append(
+                                        "threat.indicator.ip",
+                                        json!(
+                                            event
+                                                .get("_tmp.ip")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.ip") };
+                                if _cond {
+                                    event.append(
+                                        "threat.indicator.name",
+                                        json!(
+                                            event
+                                                .get("_tmp.ip")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.ip") };
+                                if _cond {
+                                    event.append_unique(
+                                        "related.ip",
+                                        json!(
+                                            event
+                                                .get("_tmp.ip")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                event.remove("_tmp");
+                                // End nested pipeline: "indicator-ip"
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
+                                }
+                            }
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "stix._patterns",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
                             )?;
                         }
-                        let _cond = { event.has_value("_tmp.ip") };
-                        if _cond {
-                            event.append(
-                                "threat.indicator.name",
-                                json!(
-                                    event
-                                        .get("_tmp.ip")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.ip") };
-                        if _cond {
-                            event.append_unique(
-                                "related.ip",
-                                json!(
-                                    event
-                                        .get("_tmp.ip")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        event.remove("_tmp");
-                        // End nested pipeline: "indicator-ip"
-                        Ok(())
-                    })?;
+                    }
                 }
             }
 
             let _cond = { event.get_str("threat.indicator.type") == Some("url") };
             if _cond {
                 if event.has_value("stix._patterns") {
-                    foreach_array(event, "stix._patterns", |event| {
-                        // Begin nested pipeline: "indicator-url"
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(input) = event.get_string("_ingest._value") {
-                                // Grok pattern: ^\\[?url:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?
-                                let _ = cached_grok!(
-                                    "^\\[?url:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?"
-                                )
-                                .extract_into(&input, event)?;
+                    {
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("stix._patterns").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
                             }
-                            Ok(())
-                        })();
-                        let _cond = { event.has_value("_tmp.url") };
-                        if _cond {
-                            event.append(
-                                "threat.indicator.url.original",
-                                json!(
-                                    event
-                                        .get("_tmp.url")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // Begin nested pipeline: "indicator-url"
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(input) = event.get_string("_ingest._value") {
+                                        // Grok pattern: ^\\[?url:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?
+                                        if !cached_grok!(
+                                            "^\\[?url:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?"
+                                        )
+                                        .extract_into(&input, event)?
+                                        {
+                                            return Err(TransformError::GrokNoMatch {
+                                                value: input,
+                                            });
+                                        }
+                                    }
+                                    Ok(())
+                                })();
+                                let _cond = { event.has_value("_tmp.url") };
+                                if _cond {
+                                    event.append(
+                                        "threat.indicator.url.original",
+                                        json!(
+                                            event
+                                                .get("_tmp.url")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.url") };
+                                if _cond {
+                                    event.append(
+                                        "threat.indicator.name",
+                                        json!(
+                                            event
+                                                .get("_tmp.url")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.url") };
+                                if _cond {
+                                    event.append(
+                                        "threat.indicator.url.full",
+                                        json!(
+                                            event
+                                                .get("_tmp.url")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                event.remove("_tmp");
+                                // End nested pipeline: "indicator-url"
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
+                                }
+                            }
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "stix._patterns",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
                             )?;
                         }
-                        let _cond = { event.has_value("_tmp.url") };
-                        if _cond {
-                            event.append(
-                                "threat.indicator.name",
-                                json!(
-                                    event
-                                        .get("_tmp.url")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.url") };
-                        if _cond {
-                            event.append(
-                                "threat.indicator.url.full",
-                                json!(
-                                    event
-                                        .get("_tmp.url")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        event.remove("_tmp");
-                        // End nested pipeline: "indicator-url"
-                        Ok(())
-                    })?;
+                    }
                 }
             }
 

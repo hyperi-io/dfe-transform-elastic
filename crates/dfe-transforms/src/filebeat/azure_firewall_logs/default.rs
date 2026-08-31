@@ -270,7 +270,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{DATA:azure.firewall.proto} request from %{IPORHOST:source.address}:%{NUMBER:source.port:long} to %{IPORHOST:destination.address}:%{NUMBER:destination.port:long} was DNAT'ed to %{IP:destination.nat.ip}:%{NUMBER:destination.nat.port:long}. Rule Collection: %{DATA:rule.ruleset}. Rule: %{DATA:rule.name}$
                     // Grok pattern: ^%{DATA:azure.firewall.proto} request from %{IPORHOST:source.address}:(%{NUMBER:source.port:long})? to %{IPORHOST:destination.address}:(%{NUMBER:destination.port:long})?. Action: %{DATA:azure.firewall.action}. Signature: %{DATA:rule.id}. IDS: %{DATA:rule.name}. Priority: %{NUMBER:event.risk_score:long}. Classification: %{DATA:rule.category}$
                     // Grok pattern: ^%{DATA:azure.firewall.proto} request from %{IPORHOST:source.address}:%{NUMBER:source.port:long} to %{IPORHOST:destination.address}:%{NUMBER:destination.port:long}. Url: %{HOSTNAME:url.original}. Action: %{DATA:azure.firewall.action}. ThreatIntel: %{DATA:rule.name}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:azure.firewall.proto} request from %{IPORHOST:source.address}:%{NUMBER:source.port:long} to %{IPORHOST:destination.address}:%{NUMBER:destination.port:long}. Action: %{DATA:azure.firewall.action}. $"
@@ -302,7 +302,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -311,7 +313,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("json.properties.msg") {
                     // Grok pattern: ^%{DATA:azure.firewall.proto} request from %{IPORHOST:source.address}:%{NUMBER:source.port:long} to %{IPORHOST:destination.address}:%{NUMBER:destination.port:long}. Action: %{DATA:azure.firewall.action}. ThreatIntel: %{DATA:rule.name}$
-                    let _ = cached_grok!("^%{DATA:azure.firewall.proto} request from %{IPORHOST:source.address}:%{NUMBER:source.port:long} to %{IPORHOST:destination.address}:%{NUMBER:destination.port:long}. Action: %{DATA:azure.firewall.action}. ThreatIntel: %{DATA:rule.name}$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:azure.firewall.proto} request from %{IPORHOST:source.address}:%{NUMBER:source.port:long} to %{IPORHOST:destination.address}:%{NUMBER:destination.port:long}. Action: %{DATA:azure.firewall.action}. ThreatIntel: %{DATA:rule.name}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -325,7 +329,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{DATA:azure.firewall.proto} request from %{IPORHOST:source.address}:%{NUMBER:source.port:long} to %{IPORHOST:destination.address}:%{NUMBER:destination.port:long}. Action: %{DATA:azure.firewall.action}. Rule Collection: %{DATA:rule.ruleset}. Rule: %{DATA:rule.name}$
                     // Grok pattern: ^%{DATA:azure.firewall.proto} request from %{IPORHOST:source.address}:%{NUMBER:source.port:long} to %{IPORHOST:destination.address}:%{NUMBER:destination.port:long}. Action: %{DATA:azure.firewall.action}. %{DATA:event.reason}$
                     // Grok pattern: ^%{DATA:azure.firewall.proto} request from %{IPORHOST:source.address}:%{NUMBER:source.port:long}. Action: %{DATA:azure.firewall.action}. Reason: %{DATA:event.reason}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:azure.firewall.proto} request from %{IPORHOST:source.address}:%{NUMBER:source.port:long} to %{IPORHOST:destination.address}:%{NUMBER:destination.port:long}. Action: %{DATA:azure.firewall.action}. Policy: %{DATA:azure.firewall.policy}. Rule Collection Group: %{DATA:azure.firewall.rule_collection_group}. Rule Collection: %{DATA:rule.ruleset}. Rule: %{DATA:rule.name}. Web Category: %{DATA:rule.category}$"
@@ -348,7 +352,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -356,7 +362,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("json.properties.msg") {
                     // Grok pattern: ^DNS Request: %{IPORHOST:source.address}:%{NUMBER:source.port:long} - %{DATA:azure.firewall.event_original_uid} %{DATA:dns.question.type} %{DATA:dns.question.class} %{DATA:dns.question.name}. %{DATA:network.transport} %{NUMBER:source.bytes:long} %{DATA:azure.firewall.dnssec_bool_flag:boolean} %{NUMBER:azure.firewall.dnssec_buffer_size:long} %{DATA:dns.response_code} %{DATA:dns.header_flags} %{NUMBER:destination.bytes:long} %{DATA:azure.firewall.duration}$
-                    let _ = cached_grok!("^DNS Request: %{IPORHOST:source.address}:%{NUMBER:source.port:long} - %{DATA:azure.firewall.event_original_uid} %{DATA:dns.question.type} %{DATA:dns.question.class} %{DATA:dns.question.name}. %{DATA:network.transport} %{NUMBER:source.bytes:long} %{DATA:azure.firewall.dnssec_bool_flag:boolean} %{NUMBER:azure.firewall.dnssec_buffer_size:long} %{DATA:dns.response_code} %{DATA:dns.header_flags} %{NUMBER:destination.bytes:long} %{DATA:azure.firewall.duration}$").extract_into(&input, event)?;
+                    if !cached_grok!("^DNS Request: %{IPORHOST:source.address}:%{NUMBER:source.port:long} - %{DATA:azure.firewall.event_original_uid} %{DATA:dns.question.type} %{DATA:dns.question.class} %{DATA:dns.question.name}. %{DATA:network.transport} %{NUMBER:source.bytes:long} %{DATA:azure.firewall.dnssec_bool_flag:boolean} %{NUMBER:azure.firewall.dnssec_buffer_size:long} %{DATA:dns.response_code} %{DATA:dns.header_flags} %{NUMBER:destination.bytes:long} %{DATA:azure.firewall.duration}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -404,14 +412,16 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("source.address") {
                     // Grok pattern: %{IP:source.ip}
                     // Grok pattern: %{HOSTNAME:source.domain}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("%{IP:source.ip}"),
                             cached_grok!("%{HOSTNAME:source.domain}"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -430,14 +440,16 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("destination.address") {
                     // Grok pattern: %{IP:destination.ip}
                     // Grok pattern: %{HOSTNAME:destination.domain}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("%{IP:destination.ip}"),
                             cached_grok!("%{HOSTNAME:destination.domain}"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -826,7 +838,9 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("azure.resource_id") {
                     // Grok pattern: (?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))/resourceGroups/(?P<azure_resource_group>(?:.+))/providers/(?P<azure_resource_provider>(?:.+))/namespaces/(?P<azure_resource_namespace>(?:.+))/authorizationRules/(?P<azure_resource_authorization_rule>(?:.+))
-                    let _ = cached_grok_mapped!("(?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))/resourceGroups/(?P<azure_resource_group>(?:.+))/providers/(?P<azure_resource_provider>(?:.+))/namespaces/(?P<azure_resource_namespace>(?:.+))/authorizationRules/(?P<azure_resource_authorization_rule>(?:.+))", [("azure_subscription_id", "azure.subscription_id"), ("azure_resource_group", "azure.resource.group"), ("azure_resource_provider", "azure.resource.provider"), ("azure_resource_namespace", "azure.resource.namespace"), ("azure_resource_authorization_rule", "azure.resource.authorization_rule")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("(?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))/resourceGroups/(?P<azure_resource_group>(?:.+))/providers/(?P<azure_resource_provider>(?:.+))/namespaces/(?P<azure_resource_namespace>(?:.+))/authorizationRules/(?P<azure_resource_authorization_rule>(?:.+))", [("azure_subscription_id", "azure.subscription_id"), ("azure_resource_group", "azure.resource.group"), ("azure_resource_provider", "azure.resource.provider"), ("azure_resource_namespace", "azure.resource.namespace"), ("azure_resource_authorization_rule", "azure.resource.authorization_rule")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 Ok(())
             })();
@@ -836,7 +850,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("azure.resource_id") {
                         // Grok pattern: (?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))/resourceGroups/(?P<azure_resource_group>(?:.+))/providers/(?P<azure_resource_provider>(?:([A-Za-z])\\w+.([A-Za-z])\\w+/([A-Za-z])\\w+.))/(?P<azure_resource_name>(?:((?!AUTHORIZATIONRULES).)*$))
-                        let _ = cached_grok_mapped!("(?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))/resourceGroups/(?P<azure_resource_group>(?:.+))/providers/(?P<azure_resource_provider>(?:([A-Za-z])\\w+.([A-Za-z])\\w+/([A-Za-z])\\w+.))/(?P<azure_resource_name>(?:((?!AUTHORIZATIONRULES).)*$))", [("azure_subscription_id", "azure.subscription_id"), ("azure_resource_group", "azure.resource.group"), ("azure_resource_provider", "azure.resource.provider"), ("azure_resource_name", "azure.resource.name")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))/resourceGroups/(?P<azure_resource_group>(?:.+))/providers/(?P<azure_resource_provider>(?:([A-Za-z])\\w+.([A-Za-z])\\w+/([A-Za-z])\\w+.))/(?P<azure_resource_name>(?:((?!AUTHORIZATIONRULES).)*$))", [("azure_subscription_id", "azure.subscription_id"), ("azure_resource_group", "azure.resource.group"), ("azure_resource_provider", "azure.resource.provider"), ("azure_resource_name", "azure.resource.name")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                     Ok(())
                 })();
@@ -847,7 +863,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("azure.resource_id") {
                         // Grok pattern: (?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))/resourceGroups/(?P<azure_resource_group>(?:.+))/providers/(?P<azure_resource_provider>(?:([A-Za-z])\\w+.([A-Za-z])\\w+\\/([A-Za-z][^\\/])\\w+))/(?P<azure_resource_name>(?:.+))
-                        let _ = cached_grok_mapped!("(?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))/resourceGroups/(?P<azure_resource_group>(?:.+))/providers/(?P<azure_resource_provider>(?:([A-Za-z])\\w+.([A-Za-z])\\w+\\/([A-Za-z][^\\/])\\w+))/(?P<azure_resource_name>(?:.+))", [("azure_subscription_id", "azure.subscription_id"), ("azure_resource_group", "azure.resource.group"), ("azure_resource_provider", "azure.resource.provider"), ("azure_resource_name", "azure.resource.name")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))/resourceGroups/(?P<azure_resource_group>(?:.+))/providers/(?P<azure_resource_provider>(?:([A-Za-z])\\w+.([A-Za-z])\\w+\\/([A-Za-z][^\\/])\\w+))/(?P<azure_resource_name>(?:.+))", [("azure_subscription_id", "azure.subscription_id"), ("azure_resource_group", "azure.resource.group"), ("azure_resource_provider", "azure.resource.provider"), ("azure_resource_name", "azure.resource.name")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                     Ok(())
                 })();
@@ -858,11 +876,14 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("azure.resource_id") {
                         // Grok pattern: (?i)/providers/(?P<azure_resource_provider>(?:.+))
-                        let _ = cached_grok_mapped!(
+                        if !cached_grok_mapped!(
                             "(?i)/providers/(?P<azure_resource_provider>(?:.+))",
                             [("azure_resource_provider", "azure.resource.provider")]
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -873,7 +894,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("azure.resource_id") {
                         // Grok pattern: (?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))/providers/(?P<azure_resource_provider>(?:([A-Za-z])\\w+.([A-Za-z])\\w+\\/([A-Za-z][^\\/])\\w+))
-                        let _ = cached_grok_mapped!("(?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))/providers/(?P<azure_resource_provider>(?:([A-Za-z])\\w+.([A-Za-z])\\w+\\/([A-Za-z][^\\/])\\w+))", [("azure_subscription_id", "azure.subscription_id"), ("azure_resource_provider", "azure.resource.provider")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))/providers/(?P<azure_resource_provider>(?:([A-Za-z])\\w+.([A-Za-z])\\w+\\/([A-Za-z][^\\/])\\w+))", [("azure_subscription_id", "azure.subscription_id"), ("azure_resource_provider", "azure.resource.provider")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                     Ok(())
                 })();
@@ -884,7 +907,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("azure.resource_id") {
                         // Grok pattern: (?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))/resourceGroups/(?P<azure_resource_group>(?:.+))
-                        let _ = cached_grok_mapped!("(?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))/resourceGroups/(?P<azure_resource_group>(?:.+))", [("azure_subscription_id", "azure.subscription_id"), ("azure_resource_group", "azure.resource.group")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))/resourceGroups/(?P<azure_resource_group>(?:.+))", [("azure_subscription_id", "azure.subscription_id"), ("azure_resource_group", "azure.resource.group")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                     Ok(())
                 })();
@@ -895,7 +920,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("azure.resource_id") {
                         // Grok pattern: (?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))
-                        let _ = cached_grok_mapped!("(?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))", [("azure_subscription_id", "azure.subscription_id")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?i)/subscriptions/(?P<azure_subscription_id>(?:(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}))", [("azure_subscription_id", "azure.subscription_id")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                     Ok(())
                 })();

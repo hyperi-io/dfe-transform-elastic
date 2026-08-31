@@ -534,10 +534,13 @@ impl Transform for Default {
                     if event.has_value("o365audit.Parameters._raw") {
                         if let Some(input) = event.get_string("o365audit.Parameters._raw") {
                             // Grok pattern: ^-?Identity\\s\"?%{DATA:o365audit.NetworkMessageId}\"?$
-                            let _ = cached_grok!(
+                            if !cached_grok!(
                                 "^-?Identity\\s\"?%{DATA:o365audit.NetworkMessageId}\"?$"
                             )
-                            .extract_into(&input, event)?;
+                            .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())
@@ -1776,7 +1779,7 @@ impl Transform for Default {
                     // Grok pattern: ^\\[(?:%{NOTSPACE:client.domain} \\((?P<client_address>(?:[^)]*))\\))\\]$
                     // Grok pattern: ^(?:%{NOTSPACE:client.domain} \\((?P<client_address>(?:[^)]*))\\))$
                     // Grok pattern: %{GREEDYDATA:client.address}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("(?:^\\[%{IP:client.address}\\]:%{POSINT:client._port})"),
                             cached_grok!("^%{IP:client.address}$"),
@@ -1799,7 +1802,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1830,7 +1835,7 @@ impl Transform for Default {
                         // Grok pattern: ^\\[(?:%{NOTSPACE:server.domain} \\((?P<server_address>(?:[^)]*))\\))\\]$
                         // Grok pattern: (?:%{NOTSPACE:server.domain} \\((?P<server_address>(?:[^)]*))\\))
                         // Grok pattern: %{GREEDYDATA:server.address}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok_mapped!(
                                     "^\\[(?:%{NOTSPACE:server.domain} \\((?P<server_address>(?:[^)]*))\\))\\]$",
@@ -1844,7 +1849,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();

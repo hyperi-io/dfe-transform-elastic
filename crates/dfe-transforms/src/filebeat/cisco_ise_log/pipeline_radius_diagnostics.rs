@@ -23,14 +23,16 @@ impl Transform for PipelineRadiusDiagnostics {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} RADIUS: An Access-Request MUST contain at least a NAS-IP-Address, NAS-IPv6-Address, or a NAS-Identifier; Continue processing, %{GREEDYDATA:cisco_ise.log.log_details_raw},
                     // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} RADIUS: An Access-Request MUST contain at least a NAS-IP-Address, NAS-IPv6-Address, or a NAS-Identifier; Continue processing, %{GREEDYDATA:cisco_ise.log.log_details_raw},"),
                             cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -38,7 +40,9 @@ impl Transform for PipelineRadiusDiagnostics {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                    let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                    if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -112,7 +116,9 @@ impl Transform for PipelineRadiusDiagnostics {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("cisco_ise.log.message.description") {
                     // Grok pattern: ^%{DATA:event.action}:
-                    let _ = cached_grok!("^%{DATA:event.action}:").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:event.action}:").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

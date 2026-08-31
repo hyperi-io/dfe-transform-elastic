@@ -444,7 +444,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("m365_defender.incident.assigned_to") {
                         // Grok pattern: %{USERNAME:source.user.name}@%{HOSTNAME:source.user.domain}
                         // Grok pattern: %{GREEDYDATA:source.user.name}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "%{USERNAME:source.user.name}@%{HOSTNAME:source.user.domain}"
@@ -453,7 +453,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

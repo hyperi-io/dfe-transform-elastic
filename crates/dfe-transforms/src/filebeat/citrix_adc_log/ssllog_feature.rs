@@ -27,7 +27,7 @@ impl Transform for SsllogFeature {
                     // Grok pattern: ^Domainname %{DATA:citrix_adc.log.domain_name} Ipaddress %{IP:citrix_adc.log.ip_address}$
                     // Grok pattern: ^SPCBId %{NUMBER:citrix_adc.log.spcb_id:int} - ClientIP %{IP:citrix_adc.log.client_ip} - ClientPort %{NUMBER:citrix_adc.log.client_port} - VserverServiceIP %{IP:citrix_adc.log.vserver.ip} - VserverServicePort %{NUMBER:citrix_adc.log.vserver.port} - ClientVersion %{DATA:citrix_adc.log.client_version} - CipherSuite \\\"%{GREEDYDATA:citrix_adc.log.cipher_suite}\\\"( - )?Session %{WORD:citrix_adc.log.session}(%{SPACE}- HandshakeTime %{INT:citrix_adc.log.handshake_time} ms)?( - Reason \\\"%{GREEDYDATA:citrix_adc.log.reason}\\\")?$
                     // Grok pattern: ^%{GREEDYDATA:citrix_adc.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Backend%{SPACE}SPCBId %{NUMBER:citrix_adc.log.spcb_id:int} - Server%{SPACE}IP %{IP:citrix_adc.log.server.ip} - Server%{SPACE}Port %{NUMBER:citrix_adc.log.server.port:int} - Protocol%{SPACE}Version %{DATA:citrix_adc.log.protocol_version} - Cipher%{SPACE}Suite \\\"%{DATA:citrix_adc.log.cipher_suite}\\\" - Session %{DATA:citrix_adc.log.session}(%{SPACE}- %{WORD:citrix_adc.log.server_authentication} -%{SPACE}SerialNumber \\\"%{DATA:citrix_adc.log.serial_number}\\\" - SignatureAlgorithm \\\"%{DATA:citrix_adc.log.signature_algorithm}\\\" - ValidFrom \\\"%{DATA:citrix_adc.log.valid_from}\\\" - ValidTo \\\"%{DATA:citrix_adc.log.valid_to}\\\" - HandshakeTime %{INT:citrix_adc.log.handshake_time} ms)?$"),
                             cached_grok!("^Certificate%{SPACE}Key%{SPACE}Pair %{DATA:citrix_adc.log.certificate_key_pair} - Days%{SPACE}To%{SPACE}Expire %{NUMBER:citrix_adc.log.days_to_expire:int}$"),
@@ -40,7 +40,9 @@ impl Transform for SsllogFeature {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -427,7 +429,9 @@ impl Transform for SsllogFeature {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("citrix_adc.log.protocol_version") {
                     // Grok pattern: ^%{DATA:tls.version_protocol}v%{DATA:tls.version}$
-                    let _ = cached_grok!("^%{DATA:tls.version_protocol}v%{DATA:tls.version}$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:tls.version_protocol}v%{DATA:tls.version}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -439,7 +443,9 @@ impl Transform for SsllogFeature {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("citrix_adc.log.client_version") {
                     // Grok pattern: ^%{DATA:tls.version_protocol}v%{DATA:tls.version}$
-                    let _ = cached_grok!("^%{DATA:tls.version_protocol}v%{DATA:tls.version}$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:tls.version_protocol}v%{DATA:tls.version}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

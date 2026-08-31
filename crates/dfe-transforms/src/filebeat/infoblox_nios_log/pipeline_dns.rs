@@ -33,7 +33,7 @@ impl Transform for PipelineDns {
                     // Grok pattern: ^(%{NOTSPACE:infoblox_nios.log.dns.category}:)?\\s*%{GREEDYDATA:_tmp.timestamp} (?:client (?:%{DATA} )?%{IP:client.ip}#%{NUMBER:client.port:long}:?) %{DATA:network.transport}: (?:view %{DATA:infoblox_nios.log.view}: )?query: %{DATA:dns.question.name} %{DATA:dns.question.class} %{WORD:dns.question.type} response: %{DATA:dns.response_code} %{DATA:infoblox_nios.log.dns.header_flags}$
                     // Grok pattern: ^(%{NOTSPACE:infoblox_nios.log.dns.category}:)?\\s*(?:client (?:%{DATA} )?%{IP:client.ip}#%{NUMBER:client.port:long}:?) %{GREEDYDATA:infoblox_nios.log.dns.message}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dns.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^zone %{DATA:dns.question.name}/%{DATA:dns.question.class}: notify from %{IP:client.ip}#%{NUMBER:client.port:long}:? %{GREEDYDATA:infoblox_nios.log.dns.message}$"),
                             cached_grok!("^transfer of '%{DATA:dns.question.name}/%{DATA:dns.question.class}' from %{IP:client.ip}#%{NUMBER:client.port:long}:? %{GREEDYDATA:infoblox_nios.log.dns.message}$"),
@@ -52,7 +52,9 @@ impl Transform for PipelineDns {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             let _cond = { event.has_value("_tmp.timestamp") && event.has_value("event.timezone") };
@@ -216,25 +218,67 @@ impl Transform for PipelineDns {
 
             let _cond = { event.has_value("dns.answers.data") };
             if _cond {
-                foreach_array(event, "dns.answers.data", |event| {
-                    // ignore_failure: true
-                    let _ = (|| -> Result<()> {
-                    if let Some(input) = event.get_string("_ingest._value") {
-                    // Grok pattern: ^%{IP:related.ip}$
-                    // Grok pattern: ^%{HOSTNAME:related.hosts}$
-                    let _ = extract_first_match(
-                    &[
-                    cached_grok!("^%{IP:related.ip}$"),
-                    cached_grok!("^%{HOSTNAME:related.hosts}$"),
-                    ],
-                    &input,
-                    event,
-                    )?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("dns.answers.data").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => fields.into_iter().map(|(k, v)| (Some(k), v)).collect(),
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                            if let Some(input) = event.get_string("_ingest._value") {
+                            // Grok pattern: ^%{IP:related.ip}$
+                            // Grok pattern: ^%{HOSTNAME:related.hosts}$
+                            if !extract_first_match(
+                            &[
+                            cached_grok!("^%{IP:related.ip}$"),
+                            cached_grok!("^%{HOSTNAME:related.hosts}$"),
+                            ],
+                            &input,
+                            event,
+                            )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                            }
+                            }
+                            Ok(())
+                            })();
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left { fields.insert(key, value); }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                        }
+                        match enclosing {
+                            Some(previous) => { event.set("_ingest._value", previous)?; }
+                            None => { event.remove("_ingest"); }
+                        }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                        }
+                        event.set("dns.answers.data", if keyed { Value::Object(fields) } else { Value::Array(list) })?;
                     }
-                    Ok(())
-                    })();
-                    Ok(())
-                })?;
+                }
             }
 
             let _cond = { event.has_value("client.ip") && event.get_str("client.ip") != Some("") };

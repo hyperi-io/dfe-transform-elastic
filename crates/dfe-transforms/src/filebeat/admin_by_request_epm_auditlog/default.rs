@@ -247,7 +247,9 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("admin_by_request_epm.auditlog.response_time")
                 {
                     // Grok pattern: %{HOUR:hours}:%{MINUTE:minutes}:%{SECOND:seconds}.(?P<nanoseconds>(?:\\d{7}))
-                    let _ = cached_grok!("%{HOUR:hours}:%{MINUTE:minutes}:%{SECOND:seconds}.(?P<nanoseconds>(?:\\d{7}))").extract_into(&input, event)?;
+                    if !cached_grok!("%{HOUR:hours}:%{MINUTE:minutes}:%{SECOND:seconds}.(?P<nanoseconds>(?:\\d{7}))").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

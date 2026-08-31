@@ -107,7 +107,9 @@ impl Transform for EventGroups {
             if event.has_value("teleport.audit.server_addr") {
                 if let Some(input) = event.get_string("teleport.audit.server_addr") {
                     // Grok pattern: ^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$
-                    let _ = cached_grok!("^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$").extract_into(&input, event)?;
+                    if !cached_grok!("^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())
@@ -143,7 +145,9 @@ impl Transform for EventGroups {
             if event.has_value("teleport.audit.addr.local") {
                 if let Some(input) = event.get_string("teleport.audit.addr.local") {
                     // Grok pattern: ^(%{IPORHOST:destination.address}|\\[%{IP:destination.ip}\\])(:%{POSINT:destination.port:long})?$
-                    let _ = cached_grok!("^(%{IPORHOST:destination.address}|\\[%{IP:destination.ip}\\])(:%{POSINT:destination.port:long})?$").extract_into(&input, event)?;
+                    if !cached_grok!("^(%{IPORHOST:destination.address}|\\[%{IP:destination.ip}\\])(:%{POSINT:destination.port:long})?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())
@@ -157,7 +161,9 @@ impl Transform for EventGroups {
             if event.has_value("teleport.audit.addr.local") {
                 if let Some(input) = event.get_string("teleport.audit.addr.local") {
                     // Grok pattern: ^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$
-                    let _ = cached_grok!("^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$").extract_into(&input, event)?;
+                    if !cached_grok!("^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())
@@ -173,7 +179,9 @@ impl Transform for EventGroups {
             if event.has_value("teleport.audit.addr.remote") {
                 if let Some(input) = event.get_string("teleport.audit.addr.remote") {
                     // Grok pattern: ^(%{IPORHOST:client.address}|\\[%{IP:client.ip}\\])(:%{POSINT:client.port:long})?$
-                    let _ = cached_grok!("^(%{IPORHOST:client.address}|\\[%{IP:client.ip}\\])(:%{POSINT:client.port:long})?$").extract_into(&input, event)?;
+                    if !cached_grok!("^(%{IPORHOST:client.address}|\\[%{IP:client.ip}\\])(:%{POSINT:client.port:long})?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())
@@ -362,7 +370,9 @@ impl Transform for EventGroups {
             if event.has_value("teleport.audit.session.terminal_size") {
                 if let Some(input) = event.get_string("teleport.audit.session.terminal_size") {
                     // Grok pattern: %{NUMBER:process.tty.columns:int}:%{NUMBER:process.tty.rows:int}
-                    let _ = cached_grok!("%{NUMBER:process.tty.columns:int}:%{NUMBER:process.tty.rows:int}").extract_into(&input, event)?;
+                    if !cached_grok!("%{NUMBER:process.tty.columns:int}:%{NUMBER:process.tty.rows:int}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())
@@ -1067,7 +1077,9 @@ impl Transform for EventGroups {
             if event.has_value("teleport.audit.database.uri") {
                 if let Some(input) = event.get_string("teleport.audit.database.uri") {
                     // Grok pattern: ^(%{IPORHOST:url.domain})(:%{POSINT:url.port:long})?$
-                    let _ = cached_grok!("^(%{IPORHOST:url.domain})(:%{POSINT:url.port:long})?$").extract_into(&input, event)?;
+                    if !cached_grok!("^(%{IPORHOST:url.domain})(:%{POSINT:url.port:long})?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())
@@ -1216,7 +1228,9 @@ impl Transform for EventGroups {
             if event.has_value("teleport.audit.desktop_addr") {
                 if let Some(input) = event.get_string("teleport.audit.desktop_addr") {
                     // Grok pattern: ^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$
-                    let _ = cached_grok!("^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$").extract_into(&input, event)?;
+                    if !cached_grok!("^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())

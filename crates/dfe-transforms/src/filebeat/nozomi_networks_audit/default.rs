@@ -490,8 +490,11 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("nozomi_networks.audit.username") {
                     // Grok pattern: ^%{EMAILADDRESS:user.email} %{DATA}$
-                    let _ = cached_grok!("^%{EMAILADDRESS:user.email} %{DATA}$")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^%{EMAILADDRESS:user.email} %{DATA}$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

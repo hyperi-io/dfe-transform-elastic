@@ -24,7 +24,7 @@ impl Transform for PipelineProcessIp {
                     // Grok pattern: ^%{IPV6:_tmp.valid_ip}$
                     // Grok pattern: ^(?P<_tmp_valid_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}))$
                     // Grok pattern: ^\\[%{IPV6:_tmp.valid_ip}\\]$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{IPV4:_tmp.valid_ip}$"),
                             cached_grok!("^%{IPV6:_tmp.valid_ip}$"),
@@ -33,7 +33,9 @@ impl Transform for PipelineProcessIp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())

@@ -23,14 +23,16 @@ impl Transform for PipelineEvent {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^Feature key does not support the feature %{GREEDYDATA:watchguard_firebox.log.feature_name}.$
                     // Grok pattern: ^No valid %{DATA:watchguard_firebox.log.feature_name} feature$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Feature key does not support the feature %{GREEDYDATA:watchguard_firebox.log.feature_name}.$"),
                             cached_grok!("^No valid %{DATA:watchguard_firebox.log.feature_name} feature$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -127,7 +129,9 @@ impl Transform for PipelineEvent {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^ARP spoofing attack detected, ip=%{IP:watchguard_firebox.log.ip_address}, mac=%{MAC:watchguard_firebox.log.mac_address}, interface=%{NUMBER:watchguard_firebox.log.interface_id}$
-                    let _ = cached_grok!("^ARP spoofing attack detected, ip=%{IP:watchguard_firebox.log.ip_address}, mac=%{MAC:watchguard_firebox.log.mac_address}, interface=%{NUMBER:watchguard_firebox.log.interface_id}$").extract_into(&input, event)?;
+                    if !cached_grok!("^ARP spoofing attack detected, ip=%{IP:watchguard_firebox.log.ip_address}, mac=%{MAC:watchguard_firebox.log.mac_address}, interface=%{NUMBER:watchguard_firebox.log.interface_id}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -1194,7 +1198,9 @@ impl Transform for PipelineEvent {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^Member %{DATA:watchguard_firebox.log.member_id} took over as master from member %{DATA:watchguard_firebox.log.member_id}.$
-                    let _ = cached_grok!("^Member %{DATA:watchguard_firebox.log.member_id} took over as master from member %{DATA:watchguard_firebox.log.member_id}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Member %{DATA:watchguard_firebox.log.member_id} took over as master from member %{DATA:watchguard_firebox.log.member_id}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -1839,7 +1845,9 @@ impl Transform for PipelineEvent {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^%{DATA:watchguard_firebox.log.user_type} %{WORD:watchguard_firebox.log.user_name}(?:@%{DATA:watchguard_firebox.log.authentication_server})? from %{IP:watchguard_firebox.log.ip_address} logged in(?: %{IP:watchguard_firebox.log.virtual_ip} %{GREEDYDATA:watchguard_firebox.log.message})?$
-                    let _ = cached_grok!("^%{DATA:watchguard_firebox.log.user_type} %{WORD:watchguard_firebox.log.user_name}(?:@%{DATA:watchguard_firebox.log.authentication_server})? from %{IP:watchguard_firebox.log.ip_address} logged in(?: %{IP:watchguard_firebox.log.virtual_ip} %{GREEDYDATA:watchguard_firebox.log.message})?$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:watchguard_firebox.log.user_type} %{WORD:watchguard_firebox.log.user_name}(?:@%{DATA:watchguard_firebox.log.authentication_server})? from %{IP:watchguard_firebox.log.ip_address} logged in(?: %{IP:watchguard_firebox.log.virtual_ip} %{GREEDYDATA:watchguard_firebox.log.message})?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -1851,7 +1859,9 @@ impl Transform for PipelineEvent {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^%{DATA:watchguard_firebox.log.user_type} %{WORD:watchguard_firebox.log.user_name}(?:@%{DATA:watchguard_firebox.log.authentication_server})? from %{IP:watchguard_firebox.log.ip_address} log in attempt was rejected(?: %{IP:watchguard_firebox.log.virtual_ip} %{GREEDYDATA:watchguard_firebox.log.message})?.$
-                    let _ = cached_grok!("^%{DATA:watchguard_firebox.log.user_type} %{WORD:watchguard_firebox.log.user_name}(?:@%{DATA:watchguard_firebox.log.authentication_server})? from %{IP:watchguard_firebox.log.ip_address} log in attempt was rejected(?: %{IP:watchguard_firebox.log.virtual_ip} %{GREEDYDATA:watchguard_firebox.log.message})?.$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:watchguard_firebox.log.user_type} %{WORD:watchguard_firebox.log.user_name}(?:@%{DATA:watchguard_firebox.log.authentication_server})? from %{IP:watchguard_firebox.log.ip_address} log in attempt was rejected(?: %{IP:watchguard_firebox.log.virtual_ip} %{GREEDYDATA:watchguard_firebox.log.message})?.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -1863,7 +1873,9 @@ impl Transform for PipelineEvent {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^%{DATA:watchguard_firebox.log.user_type} %{WORD:watchguard_firebox.log.user_name}(?:@%{DATA:watchguard_firebox.log.authentication_server})? from %{IP:watchguard_firebox.log.ip_address} logged out(?: %{IP:watchguard_firebox.log.virtual_ip} %{GREEDYDATA:watchguard_firebox.log.message})?$
-                    let _ = cached_grok!("^%{DATA:watchguard_firebox.log.user_type} %{WORD:watchguard_firebox.log.user_name}(?:@%{DATA:watchguard_firebox.log.authentication_server})? from %{IP:watchguard_firebox.log.ip_address} logged out(?: %{IP:watchguard_firebox.log.virtual_ip} %{GREEDYDATA:watchguard_firebox.log.message})?$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:watchguard_firebox.log.user_type} %{WORD:watchguard_firebox.log.user_name}(?:@%{DATA:watchguard_firebox.log.authentication_server})? from %{IP:watchguard_firebox.log.ip_address} logged out(?: %{IP:watchguard_firebox.log.virtual_ip} %{GREEDYDATA:watchguard_firebox.log.message})?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -1875,7 +1887,9 @@ impl Transform for PipelineEvent {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^Updated the value of %{DATA:watchguard_firebox.log.property_name} from %{DATA:watchguard_firebox.log.previous_system_time} %{DATA:watchguard_firebox.log.unit} to %{DATA:watchguard_firebox.log.new_system_time} %{DATA:watchguard_firebox.log.unit}$
-                    let _ = cached_grok!("^Updated the value of %{DATA:watchguard_firebox.log.property_name} from %{DATA:watchguard_firebox.log.previous_system_time} %{DATA:watchguard_firebox.log.unit} to %{DATA:watchguard_firebox.log.new_system_time} %{DATA:watchguard_firebox.log.unit}$").extract_into(&input, event)?;
+                    if !cached_grok!("^Updated the value of %{DATA:watchguard_firebox.log.property_name} from %{DATA:watchguard_firebox.log.previous_system_time} %{DATA:watchguard_firebox.log.unit} to %{DATA:watchguard_firebox.log.new_system_time} %{DATA:watchguard_firebox.log.unit}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -1887,7 +1901,9 @@ impl Transform for PipelineEvent {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^CA certificate updated successfully to version %{DATA:watchguard_firebox.log.new_ca_certificate_version}.$
-                    let _ = cached_grok!("^CA certificate updated successfully to version %{DATA:watchguard_firebox.log.new_ca_certificate_version}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^CA certificate updated successfully to version %{DATA:watchguard_firebox.log.new_ca_certificate_version}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -1899,7 +1915,9 @@ impl Transform for PipelineEvent {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^CA certificate update failed. Current CA certificate version: %{DATA:watchguard_firebox.log.current_ca_certificate_version}.$
-                    let _ = cached_grok!("^CA certificate update failed. Current CA certificate version: %{DATA:watchguard_firebox.log.current_ca_certificate_version}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^CA certificate update failed. Current CA certificate version: %{DATA:watchguard_firebox.log.current_ca_certificate_version}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -1984,7 +2002,9 @@ impl Transform for PipelineEvent {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^%{DATA:watchguard_firebox.log.ui_type} %{NOTSPACE:_tmp_user} from %{IP:watchguard_firebox.log.ip_address} log in attempt was rejected - %{GREEDYDATA:watchguard_firebox.log.message}.$
-                    let _ = cached_grok!("^%{DATA:watchguard_firebox.log.ui_type} %{NOTSPACE:_tmp_user} from %{IP:watchguard_firebox.log.ip_address} log in attempt was rejected - %{GREEDYDATA:watchguard_firebox.log.message}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:watchguard_firebox.log.ui_type} %{NOTSPACE:_tmp_user} from %{IP:watchguard_firebox.log.ip_address} log in attempt was rejected - %{GREEDYDATA:watchguard_firebox.log.message}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -2200,7 +2220,9 @@ impl Transform for PipelineEvent {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^LIVESECURITY' feature will expire on %{GREEDYDATA:watchguard_firebox.log.feature_expiration_date}.$
-                    let _ = cached_grok!("^LIVESECURITY' feature will expire on %{GREEDYDATA:watchguard_firebox.log.feature_expiration_date}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^LIVESECURITY' feature will expire on %{GREEDYDATA:watchguard_firebox.log.feature_expiration_date}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -2589,7 +2611,7 @@ impl Transform for PipelineEvent {
                     // Grok pattern: ^%{HOSTNAME:watchguard_firebox.log.user_domain}\\\\\\\\%{USERNAME:watchguard_firebox.log.user_name}$
                     // Grok pattern: ^%{USERNAME:watchguard_firebox.log.user_name}@%{HOSTNAME:watchguard_firebox.log.user_domain}$
                     // Grok pattern: ^%{USERNAME:watchguard_firebox.log.user_name}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{HOSTNAME:watchguard_firebox.log.user_domain}\\\\%{USERNAME:watchguard_firebox.log.user_name}$"),
                             cached_grok!("^%{HOSTNAME:watchguard_firebox.log.user_domain}\\\\\\\\%{USERNAME:watchguard_firebox.log.user_name}$"),
@@ -2598,7 +2620,9 @@ impl Transform for PipelineEvent {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

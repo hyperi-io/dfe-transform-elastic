@@ -24,7 +24,7 @@ impl Transform for PitbossFeature {
                     // Grok pattern: ^proc \\(%{INT:citrix_adc.log.process.id}\\) \\(%{DATA:citrix_adc.log.process.name}\\) has had its maximum number of restarts \\(%{INT:citrix_adc.log.max_restarts}\\), rebooting the system$
                     // Grok pattern: ^Restarting process old pid \\(%{INT:citrix_adc.log.old_pid}\\) action \\(%{DATA:citrix_adc.log.action}\\)$
                     // Grok pattern: %{GREEDYDATA:citrix_adc.log.message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Adding pitboss watch on \\(%{INT:citrix_adc.log.watch_id}\\)$"),
                             cached_grok!("^Deleting watch on \\(%{INT:citrix_adc.log.watch_id}\\)$"),
@@ -34,7 +34,9 @@ impl Transform for PitbossFeature {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

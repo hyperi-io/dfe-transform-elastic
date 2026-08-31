@@ -365,7 +365,7 @@ impl Transform for Default {
                         // Grok pattern: ^User #%{DATA:_temp.destination_user} reported a phishing email #%{DATA:_temp.email_subject}$
                         // Grok pattern: ^Unusual geo activity for #%{DATA:_temp.user_address}: #%{DATA:_temp.user_action} for the first time from %{DATA:checkpoint_email.event.user.country}$
                         // Grok pattern: ^%{GREEDYDATA}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^#%{DATA:_temp.scan_information} attempt detected in an email from #%{DATA:_temp.source_user} - '#%{DATA:_temp.email_subject}' \\(#%{DATA:_temp.destination_user}'s mailbox\\)$"
@@ -386,7 +386,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

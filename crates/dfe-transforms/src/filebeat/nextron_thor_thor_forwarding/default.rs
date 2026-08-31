@@ -1409,7 +1409,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("file.path") {
                         // Grok pattern: ^(?:[A-Za-z]:\\\\|\\\\)(?:.*\\\\)?(?P<file_name>(?:[^\\\\]+))$
                         // Grok pattern: ^/(?:.*/)?(?P<file_name>(?:[^/]+))$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok_mapped!(
                                     "^(?:[A-Za-z]:\\\\|\\\\)(?:.*\\\\)?(?P<file_name>(?:[^\\\\]+))$",
@@ -1422,7 +1422,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

@@ -30,7 +30,7 @@ impl Transform for PipelineAuthentication {
                     // Grok pattern: ^User %{USERNAME:user.name} was %{WORD:cisco_secure_email_gateway.log.action} %{WORD:cisco_secure_email_gateway.log.outcome}\\.$
                     // Grok pattern: ^User %{USERNAME:user.name} %{WORD:cisco_secure_email_gateway.log.outcome} %{WORD:cisco_secure_email_gateway.log.action}$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^GUI: User %{USERNAME:user.name} %{GREEDYDATA:cisco_secure_email_gateway.log.action} from session %{GREEDYDATA:cisco_secure_email_gateway.log.session} because of inactivity timeout$"),
                             cached_grok!("^CLI: User %{USERNAME:user.name} %{GREEDYDATA:cisco_secure_email_gateway.log.action} from %{GREEDYDATA:cisco_secure_email_gateway.log.session} because of inactivity timeout$"),
@@ -44,7 +44,9 @@ impl Transform for PipelineAuthentication {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             // ignore_failure: true

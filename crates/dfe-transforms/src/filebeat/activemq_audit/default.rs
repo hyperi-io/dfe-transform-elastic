@@ -53,7 +53,9 @@ impl Transform for Default {
             if event.has_value("message") {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: %{LOGLEVEL:log.level}%{SPACE}\\|%{SPACE}%{WORD:user.name}%{SPACE}(?P<message>(?:(\\n|(?! \\|).)*))%{SPACE}\\|%{SPACE}(?P<activemq_audit_thread>(?:((?! \n).)*))
-                    let _ = cached_grok_mapped!("%{LOGLEVEL:log.level}%{SPACE}\\|%{SPACE}%{WORD:user.name}%{SPACE}(?P<message>(?:(\\n|(?! \\|).)*))%{SPACE}\\|%{SPACE}(?P<activemq_audit_thread>(?:((?! \n).)*))", [("activemq_audit_thread", "activemq.audit.thread")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("%{LOGLEVEL:log.level}%{SPACE}\\|%{SPACE}%{WORD:user.name}%{SPACE}(?P<message>(?:(\\n|(?! \\|).)*))%{SPACE}\\|%{SPACE}(?P<activemq_audit_thread>(?:((?! \n).)*))", [("activemq_audit_thread", "activemq.audit.thread")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

@@ -482,7 +482,7 @@ impl Transform for Default {
                     // Grok pattern: ^-\\[%{WORD} %{WORD}\\] \\|%{SPACE}final sessionDictionary:\\{(?:%{SPACE}DirectLogoutType = %{NUMBER:macos.event.message.direct_logout_type:int};)?(?:%{SPACE}GroupID = %{NUMBER:group.id};)?(?:%{SPACE}GuestAccount = %{NUMBER:macos.event.message.guest_account:int};)?(?:%{SPACE}HomeDirectoryPath = %{DATA:macos.event.message.home_directory_path};)?(?:%{SPACE}SessionAgentPID = %{NUMBER:macos.event.message.session_agent_pid};)?(?:%{SPACE}UserGUID = %{DATA:user.group.id};)?(?:%{SPACE}UserID = %{NUMBER:user.id};)?(?:%{SPACE}UserLongName = %{DATA:user.full_name};)?(?:%{SPACE}UserName = %{DATA:user.name};)?\\n\\}
                     // Grok pattern: ^-\\[%{WORD} %{WORD}\\] \\|(?:%{SPACE}shortUsername = %{WORD:user.name},)?(?:%{SPACE}userID = %{NUMBER:user.id},)?(?:%{SPACE}groupID = %{NUMBER:group.id})
                     // Grok pattern: %{GREEDYDATA:macos.event.message.original}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^-\\[%{WORD} %{WORD}\\] \\|%{SPACE}final sessionDictionary:\\{(?:%{SPACE}DirectLogoutType = %{NUMBER:macos.event.message.direct_logout_type:int};)?(?:%{SPACE}GroupID = %{NUMBER:group.id};)?(?:%{SPACE}GuestAccount = %{NUMBER:macos.event.message.guest_account:int};)?(?:%{SPACE}HomeDirectoryPath = %{DATA:macos.event.message.home_directory_path};)?(?:%{SPACE}SessionAgentPID = %{NUMBER:macos.event.message.session_agent_pid};)?(?:%{SPACE}UserGUID = %{DATA:user.group.id};)?(?:%{SPACE}UserID = %{NUMBER:user.id};)?(?:%{SPACE}UserLongName = %{DATA:user.full_name};)?(?:%{SPACE}UserName = %{DATA:user.name};)?\\n\\}"
@@ -494,7 +494,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

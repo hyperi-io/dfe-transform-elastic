@@ -25,7 +25,7 @@ impl Transform for IndicatorFile {
                     // Grok pattern: (?i:^\\[?file:hashes\\.'?SHA-?384'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha384}'\\]?$)
                     // Grok pattern: (?i:^\\[?file:hashes\\.'?SHA-?512'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha512}'\\]?$)
                     // Grok pattern: ^\\[?file:name%{SPACE}=%{SPACE}'%{DATA:_tmp.filename}'\\]?$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("(?i:^\\[?file:hashes\\.'?MD5'?%{SPACE}=%{SPACE}'%{DATA:_tmp.md5}'\\]?$)"),
                             cached_grok!("(?i:^\\[?file:hashes\\.'?SHA-?1'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha1}'\\]?$)"),
@@ -36,7 +36,9 @@ impl Transform for IndicatorFile {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

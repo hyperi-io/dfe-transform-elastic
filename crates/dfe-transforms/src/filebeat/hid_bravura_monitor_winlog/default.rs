@@ -37,8 +37,11 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: %{DATA:winlog.event_data.Message}\\|%{GREEDYDATA:kvpairs}
-                let _ = cached_grok!("%{DATA:winlog.event_data.Message}\\|%{GREEDYDATA:kvpairs}")
-                    .extract_into(&input, event)?;
+                if !cached_grok!("%{DATA:winlog.event_data.Message}\\|%{GREEDYDATA:kvpairs}")
+                    .extract_into(&input, event)?
+                {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             if let Some(kv_str) = event.get_string("kvpairs") {

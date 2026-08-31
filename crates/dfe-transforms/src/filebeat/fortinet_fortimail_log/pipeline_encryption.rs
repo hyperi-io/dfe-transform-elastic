@@ -27,7 +27,7 @@ impl Transform for PipelineEncryption {
                     // Grok pattern: ^%{DATA}(?i)user %{NOTSPACE:temp.user} %{DATA}%{IP:fortinet_fortimail.log.ip}%{GREEDYDATA:temp.msg}$
                     // Grok pattern: ^%{DATA}(?i)user %{NOTSPACE:temp.user} %{GREEDYDATA:temp.msg},%{SPACE}sent from:%{SPACE}\\'%{DATA:fortinet_fortimail.log.sent_from}\\',%{SPACE}subject:%{SPACE}\\'%{GREEDYDATA:temp.subject}\\'(?:%{SPACE}%{GREEDYDATA:temp.msg2})$
                     // Grok pattern: ^%{DATA}(?i)user %{NOTSPACE:temp.user} %{GREEDYDATA:temp.msg}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{DATA}(?i)user %{NOTSPACE:temp.user} %{DATA}%{IP:fortinet_fortimail.log.ip}%{GREEDYDATA:temp.msg}$"),
                             cached_grok!("^%{DATA}(?i)user %{NOTSPACE:temp.user} %{GREEDYDATA:temp.msg},%{SPACE}sent from:%{SPACE}\\'%{DATA:fortinet_fortimail.log.sent_from}\\',%{SPACE}subject:%{SPACE}\\'%{GREEDYDATA:temp.subject}\\'(?:%{SPACE}%{GREEDYDATA:temp.msg2})$"),
@@ -35,7 +35,9 @@ impl Transform for PipelineEncryption {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())

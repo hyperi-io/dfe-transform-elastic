@@ -231,8 +231,11 @@ impl Transform for UseFlattenedDebug {
                         event.get_string("okta.debug_context.debug_data.flattened.risk")
                     {
                         // Grok pattern: level=%{NOTSPACE:_risk_object.level}
-                        let _ = cached_grok!("level=%{NOTSPACE:_risk_object.level}")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("level=%{NOTSPACE:_risk_object.level}")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -250,7 +253,7 @@ impl Transform for UseFlattenedDebug {
                     {
                         // Grok pattern: reasons=%{DATA:_risk_object.reasons}, (?:%{NOTSPACE}=)
                         // Grok pattern: reasons=%{DATA:_risk_object.reasons}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "reasons=%{DATA:_risk_object.reasons}, (?:%{NOTSPACE}=)"
@@ -259,7 +262,9 @@ impl Transform for UseFlattenedDebug {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();

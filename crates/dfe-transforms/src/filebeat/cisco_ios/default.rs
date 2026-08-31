@@ -39,7 +39,7 @@ impl Transform for Default {
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: ^<%{NONNEGINT:log.syslog.priority:long}>Original Address=(?:%{DATA} ){7}%{GREEDYDATA:_temp_.message}$
                 // Grok pattern: ^%{GREEDYDATA:_temp_.message}$
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!(
                             "^<%{NONNEGINT:log.syslog.priority:long}>Original Address=(?:%{DATA} ){7}%{GREEDYDATA:_temp_.message}$"
@@ -48,7 +48,9 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             if let Some(input) = event.get_string("_temp_.message") {
@@ -61,7 +63,7 @@ impl Transform for Default {
                 // Grok pattern: ^%{SYSLOGTIMESTAMP} (?:%{IP}|%{HOSTNAME:log.syslog.hostname}) (?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?:%{NUMBER:cisco.ios.sequence}: )(?:(?:(?P<cisco_ios_uptime>(?:(?:\\d{1,4}:\\d{2}:\\d{2}|(?:(\\d+)y)?(?:(\\d+)w)?(?:(\\d+)d)?(?:(\\d+)h)?(?:(\\d+)m)?(?:(\\d+)s)?)))|(?:[*]?(?P<_temp__cisco_timestamp>(?:(%{CISCOTIMESTAMP})|(%{YEAR} %{MONTH} %{MONTHDAY} %{TIME})))(?: (?P<_temp__tz>(?:[a-zA-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): )?%{GREEDYDATA:_temp_.message}$
                 // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?%{SYSLOGTIMESTAMP} (?:%{IP:log.syslog.hostname}|(?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?))) %{GREEDYDATA:_temp_.message}$
                 // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)%{GREEDYDATA:_temp_.message}$
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok_mapped!(
                             "^(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT:cisco.ios.message_count})?(?:: )?)?(?P<_temp__cisco_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?(?P<_temp__tz>(?:(?:Z|[+-]%{HOUR}(?::?%{MINUTE}))))?)) (?P<log_syslog_hostname>(?:[0-9a-zA-Z][.0-9a-zA-Z_-]{0,253}[0-9a-zA-Z]?)) %{GREEDYDATA:_temp_.message}$",
@@ -133,14 +135,16 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             if let Some(input) = event.get_string("_temp_.message") {
                 // Grok pattern: ^%%{GREEDYDATA:message}$
                 // Grok pattern: ^%{GREEDYDATA}%%{GREEDYDATA:message}$
                 // Grok pattern: ^%{GREEDYDATA:_temp_.generic_message}$
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!("^%%{GREEDYDATA:message}$"),
                         cached_grok!("^%{GREEDYDATA}%%{GREEDYDATA:message}$"),
@@ -148,7 +152,9 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             // ignore_failure: true
@@ -156,8 +162,11 @@ impl Transform for Default {
                 if event.has_value("log.syslog.hostname") {
                     if let Some(input) = event.get_string("log.syslog.hostname") {
                         // Grok pattern: ^%{NUMBER:_temp_.sequence}$
-                        let _ = cached_grok!("^%{NUMBER:_temp_.sequence}$")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{NUMBER:_temp_.sequence}$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())
@@ -284,7 +293,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: %{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}
                     // Grok pattern: %{DATA:cisco.ios.facility}-(?P<cisco_ios_mnemonic>[A-Z])-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}"
@@ -296,7 +305,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -312,7 +323,9 @@ impl Transform for Default {
                 if event.has_value("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: %%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}
-                        let _ = cached_grok!("%%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}").extract_into(&input, event)?;
+                        if !cached_grok!("%%{DATA:cisco.ios.facility}-%{POSINT:event.severity}-%{DATA:event.code}:\\s+(\\w+\\d+(/\\d+)?\\:\\s+)?([a-zA-Z0-9_]+\\:\\s+)?%{GREEDYDATA:message}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                 }
             }
@@ -325,7 +338,9 @@ impl Transform for Default {
                 if event.has_value("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: initiator \\(%{IP:source.ip}:%{NUMBER:source.port:long}\\) sent %{NUMBER:source.bytes:long} bytes -- responder \\(%{IP:destination.ip}:%{NUMBER:destination.port:long}\\) sent %{NUMBER:destination.bytes:long} bytes, from %{NOTSPACE:cisco.ios.interface.name}
-                        let _ = cached_grok!("initiator \\(%{IP:source.ip}:%{NUMBER:source.port:long}\\) sent %{NUMBER:source.bytes:long} bytes -- responder \\(%{IP:destination.ip}:%{NUMBER:destination.port:long}\\) sent %{NUMBER:destination.bytes:long} bytes, from %{NOTSPACE:cisco.ios.interface.name}").extract_into(&input, event)?;
+                        if !cached_grok!("initiator \\(%{IP:source.ip}:%{NUMBER:source.port:long}\\) sent %{NUMBER:source.bytes:long} bytes -- responder \\(%{IP:destination.ip}:%{NUMBER:destination.port:long}\\) sent %{NUMBER:destination.bytes:long} bytes, from %{NOTSPACE:cisco.ios.interface.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                 }
             }
@@ -338,7 +353,9 @@ impl Transform for Default {
                 if event.has_value("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^Dropping %{WORD} %{WORD} from %{NOTSPACE:cisco.ios.interface.name} %{IP:source.ip}:%{NUMBER:source.port:long} ?=> ?%{IP:destination.ip}:%{NUMBER:destination.port:long}
-                        let _ = cached_grok!("^Dropping %{WORD} %{WORD} from %{NOTSPACE:cisco.ios.interface.name} %{IP:source.ip}:%{NUMBER:source.port:long} ?=> ?%{IP:destination.ip}:%{NUMBER:destination.port:long}").extract_into(&input, event)?;
+                        if !cached_grok!("^Dropping %{WORD} %{WORD} from %{NOTSPACE:cisco.ios.interface.name} %{IP:source.ip}:%{NUMBER:source.port:long} ?=> ?%{IP:destination.ip}:%{NUMBER:destination.port:long}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                 }
             }
@@ -1062,7 +1079,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: %{DATA:cisco.ios.action} %{WORD:_temp_.event.action} \\[user: %{DATA:source.user.name}\\] \\[Source: %{DATA:source.address}\\]\\s*\\[localport: %{INT:destination.port}\\]
-                    let _ = cached_grok!("%{DATA:cisco.ios.action} %{WORD:_temp_.event.action} \\[user: %{DATA:source.user.name}\\] \\[Source: %{DATA:source.address}\\]\\s*\\[localport: %{INT:destination.port}\\]").extract_into(&input, event)?;
+                    if !cached_grok!("%{DATA:cisco.ios.action} %{WORD:_temp_.event.action} \\[user: %{DATA:source.user.name}\\] \\[Source: %{DATA:source.address}\\]\\s*\\[localport: %{INT:destination.port}\\]").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1190,7 +1209,9 @@ impl Transform for Default {
                 if event.has_value("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^(?:No|Invalid) MD5 digest from %{DATA:source.address}(\\(%{INT:source.port}\\)|\\:%{INT:source.port}) to %{DATA:destination.address}(\\(%{INT:destination.port}\\)|\\:%{INT:destination.port})(?:(?: \\(RST\\))? (?:tableid - %{DATA:cisco.ios.tableid}|%{GREEDYDATA:_temp_.rst}))?$
-                        let _ = cached_grok!("^(?:No|Invalid) MD5 digest from %{DATA:source.address}(\\(%{INT:source.port}\\)|\\:%{INT:source.port}) to %{DATA:destination.address}(\\(%{INT:destination.port}\\)|\\:%{INT:destination.port})(?:(?: \\(RST\\))? (?:tableid - %{DATA:cisco.ios.tableid}|%{GREEDYDATA:_temp_.rst}))?$").extract_into(&input, event)?;
+                        if !cached_grok!("^(?:No|Invalid) MD5 digest from %{DATA:source.address}(\\(%{INT:source.port}\\)|\\:%{INT:source.port}) to %{DATA:destination.address}(\\(%{INT:destination.port}\\)|\\:%{INT:destination.port})(?:(?: \\(RST\\))? (?:tableid - %{DATA:cisco.ios.tableid}|%{GREEDYDATA:_temp_.rst}))?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                 }
             }
@@ -1242,7 +1263,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Received \\((?:(%{IP:cisco.ios.pim.source.ip}|%{DATA})), %{DATA:cisco.ios.pim.group.ip}\\) %{WORD:cisco.ios.action} from %{IP:source.address} for %{DATA:cisco.ios.outcome} %{IP:destination.address}
-                    let _ = cached_grok!("Received \\((?:(%{IP:cisco.ios.pim.source.ip}|%{DATA})), %{DATA:cisco.ios.pim.group.ip}\\) %{WORD:cisco.ios.action} from %{IP:source.address} for %{DATA:cisco.ios.outcome} %{IP:destination.address}").extract_into(&input, event)?;
+                    if !cached_grok!("Received \\((?:(%{IP:cisco.ios.pim.source.ip}|%{DATA})), %{DATA:cisco.ios.pim.group.ip}\\) %{WORD:cisco.ios.action} from %{IP:source.address} for %{DATA:cisco.ios.outcome} %{IP:destination.address}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

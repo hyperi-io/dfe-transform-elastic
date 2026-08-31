@@ -800,7 +800,9 @@ impl Transform for Default {
                 if event.has_value("opencanary.logdata.MAC") {
                     if let Some(input) = event.get_string("opencanary.logdata.MAC") {
                         // Grok pattern: (?P<destination_mac>(?:(?:(?:[0-9A-F]{2}-){5}[0-9A-F]{2})))-(?P<source_mac>(?:(?:(?:[0-9A-F]{2}-){5}[0-9A-F]{2})))%{GREEDYDATA}
-                        let _ = cached_grok_mapped!("(?P<destination_mac>(?:(?:(?:[0-9A-F]{2}-){5}[0-9A-F]{2})))-(?P<source_mac>(?:(?:(?:[0-9A-F]{2}-){5}[0-9A-F]{2})))%{GREEDYDATA}", [("destination_mac", "destination.mac"), ("source_mac", "source.mac")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?P<destination_mac>(?:(?:(?:[0-9A-F]{2}-){5}[0-9A-F]{2})))-(?P<source_mac>(?:(?:(?:[0-9A-F]{2}-){5}[0-9A-F]{2})))%{GREEDYDATA}", [("destination_mac", "destination.mac"), ("source_mac", "source.mac")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                 }
                 Ok(())

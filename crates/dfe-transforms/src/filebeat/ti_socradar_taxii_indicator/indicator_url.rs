@@ -20,7 +20,9 @@ impl Transform for IndicatorUrl {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("_ingest._value") {
                     // Grok pattern: ^\\[?url:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?$
-                    let _ = cached_grok!("^\\[?url:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?$").extract_into(&input, event)?;
+                    if !cached_grok!("^\\[?url:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

@@ -409,14 +409,16 @@ impl Transform for Object {
                 if let Some(input) = event.get_string("json.TlsProtocol") {
                     // Grok pattern: ^TLS %{NUMBER:tls.version}$
                     // Grok pattern: ^%{WORD:tls.version}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^TLS %{NUMBER:tls.version}$"),
                             cached_grok!("^%{WORD:tls.version}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())

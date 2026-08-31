@@ -17,7 +17,9 @@ impl Transform for EventEnrich {
         if event.has_value("client.address") {
             if let Some(input) = event.get_string("client.address") {
                 // Grok pattern: ^(%{IP:client.ip}|%{HOSTNAME:client.domain})$
-                let _ = cached_grok!("^(%{IP:client.ip}|%{HOSTNAME:client.domain})$").extract_into(&input, event)?;
+                if !cached_grok!("^(%{IP:client.ip}|%{HOSTNAME:client.domain})$").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
         }
 
@@ -80,7 +82,9 @@ impl Transform for EventEnrich {
         if event.has_value("server.address") {
             if let Some(input) = event.get_string("server.address") {
                 // Grok pattern: ^(%{IP:server.ip}|%{HOSTNAME:server.domain})$
-                let _ = cached_grok!("^(%{IP:server.ip}|%{HOSTNAME:server.domain})$").extract_into(&input, event)?;
+                if !cached_grok!("^(%{IP:server.ip}|%{HOSTNAME:server.domain})$").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
         }
 
@@ -145,7 +149,9 @@ impl Transform for EventEnrich {
         if event.has_value("source.address") {
             if let Some(input) = event.get_string("source.address") {
                 // Grok pattern: ^(%{IP:source.ip}|%{HOSTNAME:source.domain})$
-                let _ = cached_grok!("^(%{IP:source.ip}|%{HOSTNAME:source.domain})$").extract_into(&input, event)?;
+                if !cached_grok!("^(%{IP:source.ip}|%{HOSTNAME:source.domain})$").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
         }
             Ok(())
@@ -212,7 +218,9 @@ impl Transform for EventEnrich {
         if event.has_value("destination.address") {
             if let Some(input) = event.get_string("destination.address") {
                 // Grok pattern: ^(%{IP:destination.ip}|%{HOSTNAME:destination.domain})$
-                let _ = cached_grok!("^(%{IP:destination.ip}|%{HOSTNAME:destination.domain})$").extract_into(&input, event)?;
+                if !cached_grok!("^(%{IP:destination.ip}|%{HOSTNAME:destination.domain})$").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
         }
             Ok(())

@@ -27,7 +27,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("message") {
                 // Grok pattern: ^(?P<first_char>(?:.))
-                let _ = cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)?;
+                if !cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             let _cond = { event.get_str("first_char") != Some("{") };
@@ -35,15 +37,21 @@ impl Transform for Default {
                 // Begin nested pipeline: "pipeline-plaintext"
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: \\[%{TIMESTAMP_ISO8601:logstash.slowlog.timestamp}\\]\\[(?P<log_level>(?:INFO|ERROR|DEBUG|FATAL|WARN|TRACE))\\s?\\]\\[(?P<logstash_slowlog_module>(?:[\\w\\.]+\\s*))\\] %{GREEDYDATA:message}
-                    let _ = cached_grok_mapped!("\\[%{TIMESTAMP_ISO8601:logstash.slowlog.timestamp}\\]\\[(?P<log_level>(?:INFO|ERROR|DEBUG|FATAL|WARN|TRACE))\\s?\\]\\[(?P<logstash_slowlog_module>(?:[\\w\\.]+\\s*))\\] %{GREEDYDATA:message}", [("log_level", "log.level"), ("logstash_slowlog_module", "logstash.slowlog.module")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("\\[%{TIMESTAMP_ISO8601:logstash.slowlog.timestamp}\\]\\[(?P<log_level>(?:INFO|ERROR|DEBUG|FATAL|WARN|TRACE))\\s?\\]\\[(?P<logstash_slowlog_module>(?:[\\w\\.]+\\s*))\\] %{GREEDYDATA:message}", [("log_level", "log.level"), ("logstash_slowlog_module", "logstash.slowlog.module")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 if let Some(input) = event.get_string("logstash.slowlog.module") {
                     // Grok pattern: slowlog.logstash.%{WORD:logstash.slowlog.plugin_type}.%{WORD:logstash.slowlog.plugin_name}
-                    let _ = cached_grok!("slowlog.logstash.%{WORD:logstash.slowlog.plugin_type}.%{WORD:logstash.slowlog.plugin_name}").extract_into(&input, event)?;
+                    if !cached_grok!("slowlog.logstash.%{WORD:logstash.slowlog.plugin_type}.%{WORD:logstash.slowlog.plugin_name}").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: {:plugin_params=>%{GREEDYDATA:logstash.slowlog.plugin_params}, :took_in_nanos=>%{NUMBER:event.duration}, :took_in_millis=>%{NUMBER:logstash.slowlog.took_in_millis}, :event=>%{GREEDYDATA:logstash.slowlog.event}}
-                    let _ = cached_grok!("{:plugin_params=>%{GREEDYDATA:logstash.slowlog.plugin_params}, :took_in_nanos=>%{NUMBER:event.duration}, :took_in_millis=>%{NUMBER:logstash.slowlog.took_in_millis}, :event=>%{GREEDYDATA:logstash.slowlog.event}}").extract_into(&input, event)?;
+                    if !cached_grok!("{:plugin_params=>%{GREEDYDATA:logstash.slowlog.plugin_params}, :took_in_nanos=>%{NUMBER:event.duration}, :took_in_millis=>%{NUMBER:logstash.slowlog.took_in_millis}, :event=>%{GREEDYDATA:logstash.slowlog.event}}").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 let _cond = { !event.has_value("event.timezone") };
                 if _cond {
@@ -203,7 +211,9 @@ impl Transform for Default {
                 )?;
                 if let Some(input) = event.get_string("logstash.slowlog.module") {
                     // Grok pattern: slowlog.logstash.%{WORD:logstash.slowlog.plugin_type}.%{WORD:logstash.slowlog.plugin_name}
-                    let _ = cached_grok!("slowlog.logstash.%{WORD:logstash.slowlog.plugin_type}.%{WORD:logstash.slowlog.plugin_name}").extract_into(&input, event)?;
+                    if !cached_grok!("slowlog.logstash.%{WORD:logstash.slowlog.plugin_type}.%{WORD:logstash.slowlog.plugin_name}").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 if event.remove("message").is_none() {
                     return Err(TransformError::FieldNotFound {

@@ -27,7 +27,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.cluster:type=Partition,name=%{NOTSPACE:metric_name},topic=%{NOTSPACE:topic_name},partition=%{NUMBER:partition_id}
-                        let _ = cached_grok!("kafka.cluster:type=Partition,name=%{NOTSPACE:metric_name},topic=%{NOTSPACE:topic_name},partition=%{NUMBER:partition_id}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.cluster:type=Partition,name=%{NOTSPACE:metric_name},topic=%{NOTSPACE:topic_name},partition=%{NUMBER:partition_id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -44,7 +46,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.log:type=Log,name=%{NOTSPACE:metric_name},topic=%{NOTSPACE:topic_name},partition=%{NUMBER:partition_id}
-                        let _ = cached_grok!("kafka.log:type=Log,name=%{NOTSPACE:metric_name},topic=%{NOTSPACE:topic_name},partition=%{NUMBER:partition_id}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.log:type=Log,name=%{NOTSPACE:metric_name},topic=%{NOTSPACE:topic_name},partition=%{NUMBER:partition_id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -61,7 +65,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("jolokia.metrics.mbean") {
                         // Grok pattern: kafka.server:type=BrokerTopicMetrics,name=%{NOTSPACE:metric_name},topic=%{NOTSPACE:topic_name}
-                        let _ = cached_grok!("kafka.server:type=BrokerTopicMetrics,name=%{NOTSPACE:metric_name},topic=%{NOTSPACE:topic_name}").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.server:type=BrokerTopicMetrics,name=%{NOTSPACE:metric_name},topic=%{NOTSPACE:topic_name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();

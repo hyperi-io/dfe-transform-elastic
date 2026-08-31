@@ -35,7 +35,7 @@ impl Transform for Default {
                 // Grok pattern: (?:<%{NONNEGINT:log.syslog.priority:int}>)%{INT}: AP:%{MAC:host.mac}: \\*(?:%{MONTH:_temp_.raw_date_month}\\s+%{MONTHDAY:_temp_.raw_date_monthday}(\\s+%{YEAR:_temp_.raw_date_year})?\\s+%{TIME:_temp_.raw_date_time}(\\s+%{WORD:_temp_.raw_date_timezone})?): %%{GREEDYDATA:_temp_.full_message}
                 // Grok pattern: (?:<%{NONNEGINT:log.syslog.priority:int}>)%{INT}: (?:%{MONTH:_temp_.raw_date_month}\\s+%{MONTHDAY:_temp_.raw_date_monthday}(\\s+%{YEAR:_temp_.raw_date_year})?\\s+%{TIME:_temp_.raw_date_time}(\\s+%{WORD:_temp_.raw_date_timezone})?): %%{GREEDYDATA:_temp_.full_message}
                 // Grok pattern: (?:<%{NONNEGINT:log.syslog.priority:int}>)%{DATA:host.name}: -%{GREEDYDATA:_temp_.full_message}
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!(
                             "(?:(?:<%{NONNEGINT:log.syslog.priority:int}>)%{DATA:host.name}:\\s\\*%{DATA:process.name}:\\s(?:%{MONTH:_temp_.raw_date_month}\\s+%{MONTHDAY:_temp_.raw_date_monthday}(\\s+%{YEAR:_temp_.raw_date_year})?\\s+%{TIME:_temp_.raw_date_time}(\\s+%{WORD:_temp_.raw_date_timezone})?)):\\s%%{GREEDYDATA:_temp_.full_message}"
@@ -55,7 +55,9 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             // Painless script
@@ -73,7 +75,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("_temp_.full_message") {
                     // Grok pattern: %{DATA:event.provider}-%{INT:event.severity:long}-%{DATA:event.action}: %{DATA}:%{INT} %{GREEDYDATA:message}
                     // Grok pattern: %{DATA:event.provider}-%{INT:event.severity:long}-%{DATA:event.action}: %{GREEDYDATA:message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "%{DATA:event.provider}-%{INT:event.severity:long}-%{DATA:event.action}: %{DATA}:%{INT} %{GREEDYDATA:message}"
@@ -84,7 +86,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -93,7 +97,9 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("_temp_.full_message") {
                     // Grok pattern: %{DATA:_temp_.reason}:
-                    let _ = cached_grok!("%{DATA:_temp_.reason}:").extract_into(&input, event)?;
+                    if !cached_grok!("%{DATA:_temp_.reason}:").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -242,7 +248,7 @@ impl Transform for Default {
                     // Grok pattern: A=%{IP:client.ip} V=%{INT} I=%{DATA:cisco.interface.type}:%{INT} P=%{INT} M=((%{MAC:client.mac})|$)
                     // Grok pattern: Username entry \\(%{DATA:user.name}\\)%{DATA}mobile %{MAC:client.mac}
                     // Grok pattern: Radius overrides %{WORD:cisco.radius.status}(?:, ignoring source %{INT:cisco.radius.source:int})?
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "A=%{IP:client.ip} V=%{INT} I=%{DATA:cisco.interface.type}:%{INT} P=%{INT} M=((%{MAC:client.mac})|$)"
@@ -256,7 +262,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -264,8 +272,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: for admin user '%{USER:user.name}' on %{IP:client.ip}
-                    let _ = cached_grok!("for admin user '%{USER:user.name}' on %{IP:client.ip}")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("for admin user '%{USER:user.name}' on %{IP:client.ip}")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -273,8 +284,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Port %{INT:observer.ingress.interface.id}
-                    let _ = cached_grok!("Port %{INT:observer.ingress.interface.id}")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("Port %{INT:observer.ingress.interface.id}")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -282,7 +296,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: AP %{MAC:host.mac}.*?track=%{DATA:cisco.wps.track} preced=%{INT:cisco.wps.preced:int} hits=%{INT:cisco.wps.hits:int} slot=%{INT:cisco.wps.slot:int} channel=%{INT:cisco.wps.channel:int}
-                    let _ = cached_grok!("AP %{MAC:host.mac}.*?track=%{DATA:cisco.wps.track} preced=%{INT:cisco.wps.preced:int} hits=%{INT:cisco.wps.hits:int} slot=%{INT:cisco.wps.slot:int} channel=%{INT:cisco.wps.channel:int}").extract_into(&input, event)?;
+                    if !cached_grok!("AP %{MAC:host.mac}.*?track=%{DATA:cisco.wps.track} preced=%{INT:cisco.wps.preced:int} hits=%{INT:cisco.wps.hits:int} slot=%{INT:cisco.wps.slot:int} channel=%{INT:cisco.wps.channel:int}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -290,8 +306,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: source mac= %{MAC:client.mac}
-                    let _ = cached_grok!("source mac= %{MAC:client.mac}")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("source mac= %{MAC:client.mac}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -314,7 +331,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: Signature information; AP %{MAC:destination.mac}, alarm ON, (?P<threat_indicator_description>(?:%{DATA} sig %{DATA})), track %{DATA}precedence %{INT}, hits %{INT}, slot %{INT}, channel %{INT}, most offending MAC %{MAC:source.mac}
-                        let _ = cached_grok_mapped!("Signature information; AP %{MAC:destination.mac}, alarm ON, (?P<threat_indicator_description>(?:%{DATA} sig %{DATA})), track %{DATA}precedence %{INT}, hits %{INT}, slot %{INT}, channel %{INT}, most offending MAC %{MAC:source.mac}", [("threat_indicator_description", "threat.indicator.description")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("Signature information; AP %{MAC:destination.mac}, alarm ON, (?P<threat_indicator_description>(?:%{DATA} sig %{DATA})), track %{DATA}precedence %{INT}, hits %{INT}, slot %{INT}, channel %{INT}, most offending MAC %{MAC:source.mac}", [("threat_indicator_description", "threat.indicator.description")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -337,7 +356,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: client %{MAC:client.mac}
-                    let _ = cached_grok!("client %{MAC:client.mac}").extract_into(&input, event)?;
+                    if !cached_grok!("client %{MAC:client.mac}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -346,14 +367,16 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Client not found: %{MAC:client.mac}
                     // Grok pattern: AP:\\s+%{MAC:host.mac}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("Client not found: %{MAC:client.mac}"),
                             cached_grok!("AP:\\s+%{MAC:host.mac}"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -361,9 +384,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: client %{MAC:client.mac} Abort Reason:%{DATA:event.reason}$
-                    let _ =
-                        cached_grok!("client %{MAC:client.mac} Abort Reason:%{DATA:event.reason}$")
-                            .extract_into(&input, event)?;
+                    if !cached_grok!("client %{MAC:client.mac} Abort Reason:%{DATA:event.reason}$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -377,7 +402,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: version %{INT:cisco.eapol.version:int}, type %{INT:cisco.eapol.type:int}, descriptor %{INT:cisco.eapol.descriptor:int}, client %{MAC:client.mac}
                         // Grok pattern: client %{MAC:client.mac}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "version %{INT:cisco.eapol.version:int}, type %{INT:cisco.eapol.type:int}, descriptor %{INT:cisco.eapol.descriptor:int}, client %{MAC:client.mac}"
@@ -386,7 +411,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -399,10 +426,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Username entry \\(%{DATA:user.name}\\)%{DATA}mobile %{MAC:client.mac}
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "Username entry \\(%{DATA:user.name}\\)%{DATA}mobile %{MAC:client.mac}"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -413,7 +443,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: STA\\(Target MAC Address\\) \\[%{MAC:client.mac}.*?\\] %{DATA:event.reason}\\(Source IP Address\\) %{IP:client.ip}%{DATA}\\(Destination IP Address\\) %{IP:server.ip}
-                    let _ = cached_grok!("STA\\(Target MAC Address\\) \\[%{MAC:client.mac}.*?\\] %{DATA:event.reason}\\(Source IP Address\\) %{IP:client.ip}%{DATA}\\(Destination IP Address\\) %{IP:server.ip}").extract_into(&input, event)?;
+                    if !cached_grok!("STA\\(Target MAC Address\\) \\[%{MAC:client.mac}.*?\\] %{DATA:event.reason}\\(Source IP Address\\) %{IP:client.ip}%{DATA}\\(Destination IP Address\\) %{IP:server.ip}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -424,7 +456,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: R%{INT:cisco.wps.slot}/%{INT:cisco.wps.radio}: wncd: Username entry \\(%{DATA:user.name}\\) joined with ssid \\(%{DATA:cisco.ssid}\\) for device with MAC: %{MAC:client.mac}(\\s+on channel \\(%{INT:cisco.wps.channel:int}\\))?
-                    let _ = cached_grok!("R%{INT:cisco.wps.slot}/%{INT:cisco.wps.radio}: wncd: Username entry \\(%{DATA:user.name}\\) joined with ssid \\(%{DATA:cisco.ssid}\\) for device with MAC: %{MAC:client.mac}(\\s+on channel \\(%{INT:cisco.wps.channel:int}\\))?").extract_into(&input, event)?;
+                    if !cached_grok!("R%{INT:cisco.wps.slot}/%{INT:cisco.wps.radio}: wncd: Username entry \\(%{DATA:user.name}\\) joined with ssid \\(%{DATA:cisco.ssid}\\) for device with MAC: %{MAC:client.mac}(\\s+on channel \\(%{INT:cisco.wps.channel:int}\\))?").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -434,7 +468,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: AWIPS alarm:\\(%{DATA:cisco.ap_name}\\) %{MAC:client.mac} +Radio MAC %{MAC:destination.mac} +detected %{DATA:cisco.awips.alarm_type} \\(%{INT:cisco.awips.alarm_code:int}\\)
-                    let _ = cached_grok!("Chassis %{INT} R%{INT}/%{INT}: %{WORD}: AWIPS alarm:\\(%{DATA:cisco.ap_name}\\) %{MAC:client.mac} +Radio MAC %{MAC:destination.mac} +detected %{DATA:cisco.awips.alarm_type} \\(%{INT:cisco.awips.alarm_code:int}\\)").extract_into(&input, event)?;
+                    if !cached_grok!("Chassis %{INT} R%{INT}/%{INT}: %{WORD}: AWIPS alarm:\\(%{DATA:cisco.ap_name}\\) %{MAC:client.mac} +Radio MAC %{MAC:destination.mac} +detected %{DATA:cisco.awips.alarm_type} \\(%{INT:cisco.awips.alarm_code:int}\\)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -445,7 +481,7 @@ impl Transform for Default {
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Authorization failed or unapplied for client \\(%{MAC:client.mac}\\) on Interface %{DATA:observer.ingress.interface.name} AuditSessionID %{DATA:cisco.audit_session_id}\\. Failure reason: Authc fail\\. Authc failure reason: %{DATA:event.reason}\\.
                     // Grok pattern: R%{INT}/%{INT}: %{WORD}: Authorization failed or unapplied for client \\(%{MAC:client.mac}\\) on Interface %{DATA:observer.ingress.interface.name} AuditSessionID %{DATA:cisco.audit_session_id}\\. Failure Reason: %{DATA:event.reason}\\. Failed attribute name %{INT}\\.
                     // Grok pattern: R%{INT}/%{INT}: %{WORD}: Authorization failed or unapplied for client \\(%{MAC:client.mac}\\) on Interface %{DATA:observer.ingress.interface.name} AuditSessionID %{DATA:cisco.audit_session_id}\\. Failure reason: Authc fail\\. Authc failure reason: %{DATA:event.reason}\\.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Authorization failed or unapplied for client \\(%{MAC:client.mac}\\) on Interface %{DATA:observer.ingress.interface.name} AuditSessionID %{DATA:cisco.audit_session_id}\\. Failure Reason: %{DATA:event.reason}\\. Failed attribute name %{INT}\\."
@@ -462,7 +498,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -473,7 +511,7 @@ impl Transform for Default {
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Authentication failed for client \\(%{MAC:client.mac}\\) with reason \\(%{DATA:event.reason}\\) on Interface %{DATA:observer.ingress.interface.name} AuditSessionID %{NOTSPACE:cisco.audit_session_id}
                     // Grok pattern: R%{INT}/%{INT}: %{WORD}: Authentication failed for client \\(%{MAC:client.mac}\\) with reason \\(%{DATA:event.reason}\\) on Interface %{DATA:observer.ingress.interface.name} AuditSessionID %{NOTSPACE:cisco.audit_session_id} Username: %{GREEDYDATA:user.name}
                     // Grok pattern: R%{INT}/%{INT}: %{WORD}: Authentication failed for client \\(%{MAC:client.mac}\\) with reason \\(%{DATA:event.reason}\\) on Interface %{DATA:observer.ingress.interface.name} AuditSessionID %{NOTSPACE:cisco.audit_session_id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Authentication failed for client \\(%{MAC:client.mac}\\) with reason \\(%{DATA:event.reason}\\) on Interface %{DATA:observer.ingress.interface.name} AuditSessionID %{NOTSPACE:cisco.audit_session_id} Username: %{GREEDYDATA:user.name}"
@@ -490,7 +528,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -499,7 +539,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Authentication failed for client \\(%{MAC:client.mac}\\) with reason \\(%{DATA:event.reason}\\) on Interface %{DATA:observer.ingress.interface.name} AuditSessionID %{NOTSPACE:cisco.audit_session_id}
                     // Grok pattern: R%{INT}/%{INT}: %{WORD}: Authentication failed for client \\(%{MAC:client.mac}\\) with reason \\(%{DATA:event.reason}\\) on Interface %{DATA:observer.ingress.interface.name} AuditSessionID %{NOTSPACE:cisco.audit_session_id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Authentication failed for client \\(%{MAC:client.mac}\\) with reason \\(%{DATA:event.reason}\\) on Interface %{DATA:observer.ingress.interface.name} AuditSessionID %{NOTSPACE:cisco.audit_session_id}"
@@ -510,7 +550,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -521,7 +563,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Client MAC: %{MAC:client.mac} was added to exclusion list associated with AP Name:%{DATA:cisco.ap_name}, BSSID:MAC: %{MAC:destination.mac}, reason:%{GREEDYDATA:event.reason}
-                    let _ = cached_grok!("Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Client MAC: %{MAC:client.mac} was added to exclusion list associated with AP Name:%{DATA:cisco.ap_name}, BSSID:MAC: %{MAC:destination.mac}, reason:%{GREEDYDATA:event.reason}").extract_into(&input, event)?;
+                    if !cached_grok!("Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Client MAC: %{MAC:client.mac} was added to exclusion list associated with AP Name:%{DATA:cisco.ap_name}, BSSID:MAC: %{MAC:destination.mac}, reason:%{GREEDYDATA:event.reason}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -532,7 +576,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Client MAC: %{MAC:client.mac} with IP: %{IP:client.ip} was added to exclusion list, legit Client MAC: %{MAC:destination.mac}, IP: %{IP:server.ip}, reason: %{GREEDYDATA:event.reason}
-                    let _ = cached_grok!("Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Client MAC: %{MAC:client.mac} with IP: %{IP:client.ip} was added to exclusion list, legit Client MAC: %{MAC:destination.mac}, IP: %{IP:server.ip}, reason: %{GREEDYDATA:event.reason}").extract_into(&input, event)?;
+                    if !cached_grok!("Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Client MAC: %{MAC:client.mac} with IP: %{IP:client.ip} was added to exclusion list, legit Client MAC: %{MAC:destination.mac}, IP: %{IP:server.ip}, reason: %{GREEDYDATA:event.reason}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -544,7 +590,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("_temp_.full_message") {
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Client MAC: %{MAC:client.mac} with IP: %{IP:client.ip} was added to exclusion list, legit ifid: %{DATA}, current ifid: %{DATA}, reason: %{GREEDYDATA:event.reason}
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Client MAC: %{MAC:client.mac} with IP: %{DATA:client.ip} was added to exclusion list, legit ifid: %{DATA}, current ifid: %{DATA}, reason: %{GREEDYDATA:event.reason}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Client MAC: %{MAC:client.mac} with IP: %{IP:client.ip} was added to exclusion list, legit ifid: %{DATA}, current ifid: %{DATA}, reason: %{GREEDYDATA:event.reason}"
@@ -555,7 +601,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -564,7 +612,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Chassis %{INT} F%{INT}/%{INT}: %{WORD}: list %{DATA:cisco.acl.name} %{WORD:cisco.acl.action} %{WORD:network.transport} %{IP:source.ip}\\(%{INT:source.port:int}\\) -> %{IP:destination.ip}\\(%{INT:destination.port:int}\\), %{INT} packets?
                     // Grok pattern: Chassis %{INT} F%{INT}/%{INT}: %{WORD}: list %{DATA:cisco.acl.name} %{WORD:cisco.acl.action} %{WORD:network.transport} \\[%{DATA}\\] %{IP:source.ip}\\(%{INT:source.port:int}\\) -> %{IP:destination.ip}\\(%{INT:destination.port:int}\\), %{INT} packets?
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "Chassis %{INT} F%{INT}/%{INT}: %{WORD}: list %{DATA:cisco.acl.name} %{WORD:cisco.acl.action} %{WORD:network.transport} %{IP:source.ip}\\(%{INT:source.port:int}\\) -> %{IP:destination.ip}\\(%{INT:destination.port:int}\\), %{INT} packets?"
@@ -575,7 +623,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -583,7 +633,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Chassis %{INT} F%{INT}/%{INT}: %{WORD}: list %{DATA:cisco.acl.name} %{WORD:cisco.acl.action} %{INT} %{IP:source.ip} -> %{IP:destination.ip}, %{INT} packets?
-                    let _ = cached_grok!("Chassis %{INT} F%{INT}/%{INT}: %{WORD}: list %{DATA:cisco.acl.name} %{WORD:cisco.acl.action} %{INT} %{IP:source.ip} -> %{IP:destination.ip}, %{INT} packets?").extract_into(&input, event)?;
+                    if !cached_grok!("Chassis %{INT} F%{INT}/%{INT}: %{WORD}: list %{DATA:cisco.acl.name} %{WORD:cisco.acl.action} %{INT} %{IP:source.ip} -> %{IP:destination.ip}, %{INT} packets?").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -591,7 +643,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Chassis %{INT} F%{INT}/%{INT}: %{WORD}: list %{DATA:cisco.acl.name} %{WORD:cisco.acl.action} icmp %{IP:source.ip} -> %{IP:destination.ip} \\(%{DATA}\\), %{INT} packets
-                    let _ = cached_grok!("Chassis %{INT} F%{INT}/%{INT}: %{WORD}: list %{DATA:cisco.acl.name} %{WORD:cisco.acl.action} icmp %{IP:source.ip} -> %{IP:destination.ip} \\(%{DATA}\\), %{INT} packets").extract_into(&input, event)?;
+                    if !cached_grok!("Chassis %{INT} F%{INT}/%{INT}: %{WORD}: list %{DATA:cisco.acl.name} %{WORD:cisco.acl.action} icmp %{IP:source.ip} -> %{IP:destination.ip} \\(%{DATA}\\), %{INT} packets").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -603,7 +657,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("_temp_.full_message") {
                     // Grok pattern: SEC_LOGIN-5-LOGIN_SUCCESS: Login Success \\[user: %{DATA:user.name}\\] \\[Source: %{IP:client.ip}\\] \\[localport: +%{INT:source.port:int}\\] at %{GREEDYDATA}
                     // Grok pattern: SEC_LOGIN-5-WEBLOGIN_SUCCESS: Login Success \\[user: %{DATA:user.name}\\] \\[Source: %{IP:client.ip}\\] at %{GREEDYDATA}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "SEC_LOGIN-5-LOGIN_SUCCESS: Login Success \\[user: %{DATA:user.name}\\] \\[Source: %{IP:client.ip}\\] \\[localport: +%{INT:source.port:int}\\] at %{GREEDYDATA}"
@@ -614,7 +668,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -622,7 +678,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.full_message") {
                     // Grok pattern: DMI-5-AUTH_PASSED: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: User '%{DATA:user.name}' authenticated successfully from %{IP:client.ip}:%{INT:source.port:int}  for %{NOTSPACE:cisco.auth.method} over %{WORD}\\. External groups: %{GREEDYDATA}
-                    let _ = cached_grok!("DMI-5-AUTH_PASSED: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: User '%{DATA:user.name}' authenticated successfully from %{IP:client.ip}:%{INT:source.port:int}  for %{NOTSPACE:cisco.auth.method} over %{WORD}\\. External groups: %{GREEDYDATA}").extract_into(&input, event)?;
+                    if !cached_grok!("DMI-5-AUTH_PASSED: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: User '%{DATA:user.name}' authenticated successfully from %{IP:client.ip}:%{INT:source.port:int}  for %{NOTSPACE:cisco.auth.method} over %{WORD}\\. External groups: %{GREEDYDATA}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -636,7 +694,7 @@ impl Transform for Default {
                     // Grok pattern: SSH2 Session request from %{IP:client.ip} \\(tty = %{INT}\\) using crypto cipher '%{DATA:tls.cipher}'
                     // Grok pattern: SSH2 Session from %{IP:client.ip} \\(tty = %{INT}\\) for user '%{DATA:user.name}' using crypto cipher '%{DATA:tls.cipher}'
                     // Grok pattern: User '%{DATA:user.name}' authentication for SSH2 Session from %{IP:client.ip} \\(tty = %{INT}\\) using crypto cipher '%{DATA:tls.cipher}'
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "SSH2 Session request from %{IP:client.ip} \\(tty = %{INT}\\) using crypto cipher '%{DATA:tls.cipher}'"
@@ -650,7 +708,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -662,7 +722,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: RADIUS server %{DATA:cisco.radius.server} is being marked alive\\.
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: RADIUS server %{DATA:cisco.radius.server} is not responding\\.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "Chassis %{INT} R%{INT}/%{INT}: %{WORD}: RADIUS server %{DATA:cisco.radius.server} is being marked alive\\."
@@ -673,7 +733,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -688,7 +750,7 @@ impl Transform for Default {
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: AP Event: AP Name: %{DATA:cisco.ap_name} Mac:\\s*Session-IP: %{IP:source.ip}\\[%{INT:source.port:int}\\] %{IP:destination.ip}\\[%{INT:destination.port:int}\\] %{GREEDYDATA:event.reason}
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: AP Event: AP Name:\\s*Mac: %{MAC:destination.mac} Session-IP: %{IP:source.ip}\\[%{INT:source.port:int}\\] %{GREEDYDATA:event.reason}
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: AP Event: AP Name:\\s*Mac:\\s*Session-IP: %{IP:source.ip}\\[%{INT:source.port:int}\\] %{GREEDYDATA:event.reason}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "Chassis %{INT} R%{INT}/%{INT}: %{WORD}: AP Event: AP Name: %{DATA:cisco.ap_name} Mac: %{MAC:destination.mac} Session-IP: %{IP:source.ip}\\[%{INT:source.port:int}\\] %{IP:destination.ip}\\[%{INT:destination.port:int}\\] %{GREEDYDATA:event.reason}"
@@ -708,7 +770,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -716,7 +780,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: MAC: %{MAC:client.mac}: All retries of handoff_end \\(XID: %{INT}\\) to ipv4: %{IP:destination.ip}  have been exhausted
-                    let _ = cached_grok!("Chassis %{INT} R%{INT}/%{INT}: %{WORD}: MAC: %{MAC:client.mac}: All retries of handoff_end \\(XID: %{INT}\\) to ipv4: %{IP:destination.ip}  have been exhausted").extract_into(&input, event)?;
+                    if !cached_grok!("Chassis %{INT} R%{INT}/%{INT}: %{WORD}: MAC: %{MAC:client.mac}: All retries of handoff_end \\(XID: %{INT}\\) to ipv4: %{IP:destination.ip}  have been exhausted").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -724,7 +790,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Excessive ARP activity detected for the client %{MAC:client.mac}\\. client is brought down and added to the exclusion list
-                    let _ = cached_grok!("Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Excessive ARP activity detected for the client %{MAC:client.mac}\\. client is brought down and added to the exclusion list").extract_into(&input, event)?;
+                    if !cached_grok!("Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Excessive ARP activity detected for the client %{MAC:client.mac}\\. client is brought down and added to the exclusion list").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -732,7 +800,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.full_message") {
                     // Grok pattern: SWPORT-4-MAC_CONFLICT: Chassis %{INT} F%{INT}: %{WORD}: Dynamic mac %{MAC:client.mac} from %{NOTSPACE} conflict with %{GREEDYDATA}
-                    let _ = cached_grok!("SWPORT-4-MAC_CONFLICT: Chassis %{INT} F%{INT}: %{WORD}: Dynamic mac %{MAC:client.mac} from %{NOTSPACE} conflict with %{GREEDYDATA}").extract_into(&input, event)?;
+                    if !cached_grok!("SWPORT-4-MAC_CONFLICT: Chassis %{INT} F%{INT}: %{WORD}: Dynamic mac %{MAC:client.mac} from %{NOTSPACE} conflict with %{GREEDYDATA}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -740,7 +810,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Configured programmatically by process %{DATA} from console as %{DATA:user.name} on %{DATA}
-                    let _ = cached_grok!("Configured programmatically by process %{DATA} from console as %{DATA:user.name} on %{DATA}").extract_into(&input, event)?;
+                    if !cached_grok!("Configured programmatically by process %{DATA} from console as %{DATA:user.name} on %{DATA}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -748,10 +820,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: User %{DATA:user.name} has exited tty session %{INT}\\(%{IP:client.ip}\\)
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "User %{DATA:user.name} has exited tty session %{INT}\\(%{IP:client.ip}\\)"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -761,7 +836,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Loadbalancer Log : AP \\( %{IP:source.ip} \\) : Loadbalancer algorithm assigned Instance \\(%{INT:cisco.loadbalance.instance:int}\\) for site tag \\(%{DATA:cisco.site_tag}\\)
-                    let _ = cached_grok!("Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Loadbalancer Log : AP \\( %{IP:source.ip} \\) : Loadbalancer algorithm assigned Instance \\(%{INT:cisco.loadbalance.instance:int}\\) for site tag \\(%{DATA:cisco.site_tag}\\)").extract_into(&input, event)?;
+                    if !cached_grok!("Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Loadbalancer Log : AP \\( %{IP:source.ip} \\) : Loadbalancer algorithm assigned Instance \\(%{INT:cisco.loadbalance.instance:int}\\) for site tag \\(%{DATA:cisco.site_tag}\\)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -772,7 +849,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Failed to handle IGMP join\\. No MAC address for client IP: %{IP:client.ip}, group IP: %{IP:destination.ip}, vlan: %{INT:network.vlan.id} for client %{MAC:client.mac}  multicast group %{WORD}, mgid %{INT}
-                    let _ = cached_grok!("Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Failed to handle IGMP join\\. No MAC address for client IP: %{IP:client.ip}, group IP: %{IP:destination.ip}, vlan: %{INT:network.vlan.id} for client %{MAC:client.mac}  multicast group %{WORD}, mgid %{INT}").extract_into(&input, event)?;
+                    if !cached_grok!("Chassis %{INT} R%{INT}/%{INT}: %{WORD}: Failed to handle IGMP join\\. No MAC address for client IP: %{IP:client.ip}, group IP: %{IP:destination.ip}, vlan: %{INT:network.vlan.id} for client %{MAC:client.mac}  multicast group %{WORD}, mgid %{INT}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -781,8 +860,9 @@ impl Transform for Default {
                 if event.has_value("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: client %{MAC:client.mac}
-                        let _ =
-                            cached_grok!("client %{MAC:client.mac}").extract_into(&input, event)?;
+                        if !cached_grok!("client %{MAC:client.mac}").extract_into(&input, event)? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

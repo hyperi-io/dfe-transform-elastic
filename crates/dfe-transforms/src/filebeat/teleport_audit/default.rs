@@ -1196,7 +1196,9 @@ impl Transform for Default {
                     if event.has_value("teleport.audit.server_addr") {
                         if let Some(input) = event.get_string("teleport.audit.server_addr") {
                             // Grok pattern: ^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$
-                            let _ = cached_grok!("^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$").extract_into(&input, event)?;
+                            if !cached_grok!("^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                         }
                     }
                     Ok(())
@@ -1238,7 +1240,9 @@ impl Transform for Default {
                         if event.has_value("teleport.audit.addr.local") {
                             if let Some(input) = event.get_string("teleport.audit.addr.local") {
                                 // Grok pattern: ^(%{IPORHOST:destination.address}|\\[%{IP:destination.ip}\\])(:%{POSINT:destination.port:long})?$
-                                let _ = cached_grok!("^(%{IPORHOST:destination.address}|\\[%{IP:destination.ip}\\])(:%{POSINT:destination.port:long})?$").extract_into(&input, event)?;
+                                if !cached_grok!("^(%{IPORHOST:destination.address}|\\[%{IP:destination.ip}\\])(:%{POSINT:destination.port:long})?$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                             }
                         }
                         Ok(())
@@ -1251,7 +1255,9 @@ impl Transform for Default {
                         if event.has_value("teleport.audit.addr.local") {
                             if let Some(input) = event.get_string("teleport.audit.addr.local") {
                                 // Grok pattern: ^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$
-                                let _ = cached_grok!("^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$").extract_into(&input, event)?;
+                                if !cached_grok!("^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                             }
                         }
                         Ok(())
@@ -1264,7 +1270,9 @@ impl Transform for Default {
                     if event.has_value("teleport.audit.addr.remote") {
                         if let Some(input) = event.get_string("teleport.audit.addr.remote") {
                             // Grok pattern: ^(%{IPORHOST:client.address}|\\[%{IP:client.ip}\\])(:%{POSINT:client.port:long})?$
-                            let _ = cached_grok!("^(%{IPORHOST:client.address}|\\[%{IP:client.ip}\\])(:%{POSINT:client.port:long})?$").extract_into(&input, event)?;
+                            if !cached_grok!("^(%{IPORHOST:client.address}|\\[%{IP:client.ip}\\])(:%{POSINT:client.port:long})?$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                         }
                     }
                     Ok(())
@@ -1518,10 +1526,13 @@ impl Transform for Default {
                             event.get_string("teleport.audit.session.terminal_size")
                         {
                             // Grok pattern: %{NUMBER:process.tty.columns:int}:%{NUMBER:process.tty.rows:int}
-                            let _ = cached_grok!(
+                            if !cached_grok!(
                                 "%{NUMBER:process.tty.columns:int}:%{NUMBER:process.tty.rows:int}"
                             )
-                            .extract_into(&input, event)?;
+                            .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())
@@ -2373,10 +2384,13 @@ impl Transform for Default {
                         if event.has_value("teleport.audit.database.uri") {
                             if let Some(input) = event.get_string("teleport.audit.database.uri") {
                                 // Grok pattern: ^(%{IPORHOST:url.domain})(:%{POSINT:url.port:long})?$
-                                let _ = cached_grok!(
+                                if !cached_grok!(
                                     "^(%{IPORHOST:url.domain})(:%{POSINT:url.port:long})?$"
                                 )
-                                .extract_into(&input, event)?;
+                                .extract_into(&input, event)?
+                                {
+                                    return Err(TransformError::GrokNoMatch { value: input });
+                                }
                             }
                         }
                         Ok(())
@@ -2542,7 +2556,9 @@ impl Transform for Default {
                     if event.has_value("teleport.audit.desktop_addr") {
                         if let Some(input) = event.get_string("teleport.audit.desktop_addr") {
                             // Grok pattern: ^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$
-                            let _ = cached_grok!("^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$").extract_into(&input, event)?;
+                            if !cached_grok!("^(%{IPORHOST:server.address}|\\[%{IP:server.ip}\\])(:%{POSINT:server.port:long})?$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                         }
                     }
                     Ok(())
@@ -3593,8 +3609,11 @@ impl Transform for Default {
                 if event.has_value("client.address") {
                     if let Some(input) = event.get_string("client.address") {
                         // Grok pattern: ^(%{IP:client.ip}|%{HOSTNAME:client.domain})$
-                        let _ = cached_grok!("^(%{IP:client.ip}|%{HOSTNAME:client.domain})$")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^(%{IP:client.ip}|%{HOSTNAME:client.domain})$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 if event.has_value("client.ip") {
@@ -3652,8 +3671,11 @@ impl Transform for Default {
                 if event.has_value("server.address") {
                     if let Some(input) = event.get_string("server.address") {
                         // Grok pattern: ^(%{IP:server.ip}|%{HOSTNAME:server.domain})$
-                        let _ = cached_grok!("^(%{IP:server.ip}|%{HOSTNAME:server.domain})$")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^(%{IP:server.ip}|%{HOSTNAME:server.domain})$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 if event.has_value("server.ip") {
@@ -3713,8 +3735,11 @@ impl Transform for Default {
                     if event.has_value("source.address") {
                         if let Some(input) = event.get_string("source.address") {
                             // Grok pattern: ^(%{IP:source.ip}|%{HOSTNAME:source.domain})$
-                            let _ = cached_grok!("^(%{IP:source.ip}|%{HOSTNAME:source.domain})$")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("^(%{IP:source.ip}|%{HOSTNAME:source.domain})$")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())
@@ -3776,10 +3801,13 @@ impl Transform for Default {
                     if event.has_value("destination.address") {
                         if let Some(input) = event.get_string("destination.address") {
                             // Grok pattern: ^(%{IP:destination.ip}|%{HOSTNAME:destination.domain})$
-                            let _ = cached_grok!(
+                            if !cached_grok!(
                                 "^(%{IP:destination.ip}|%{HOSTNAME:destination.domain})$"
                             )
-                            .extract_into(&input, event)?;
+                            .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

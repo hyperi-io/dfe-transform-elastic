@@ -215,8 +215,11 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("mongodb_atlas.alert.host_name_and_port")
                     {
                         // Grok pattern: %{HOSTNAME:source.address}:%{POSINT:source.port}
-                        let _ = cached_grok!("%{HOSTNAME:source.address}:%{POSINT:source.port}")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("%{HOSTNAME:source.address}:%{POSINT:source.port}")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

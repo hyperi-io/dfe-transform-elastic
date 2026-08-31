@@ -22,7 +22,7 @@ impl Transform for PipelineAudit {
                     // Grok pattern: ^%{GREEDYDATA:_tmp.timestamp} \\[%{DATA:user.name}\\]: %{DATA:event.action} %{DATA:infoblox_nios.log.audit.object.name} %{DATA:infoblox_nios.log.audit.object.value}:? %{GREEDYDATA:infoblox_nios.log.audit.message}$
                     // Grok pattern: ^%{GREEDYDATA:_tmp.timestamp} \\[%{DATA:user.name}\\]: %{DATA:event.action} %{GREEDYDATA:infoblox_nios.log.audit.message}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.audit.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{GREEDYDATA:_tmp.timestamp} \\[%{DATA:user.name}\\]: %{DATA:event.action} %{DATA:infoblox_nios.log.audit.object.name} %{DATA:infoblox_nios.log.audit.object.value}:? %{GREEDYDATA:infoblox_nios.log.audit.message}$"),
                             cached_grok!("^%{GREEDYDATA:_tmp.timestamp} \\[%{DATA:user.name}\\]: %{DATA:event.action} %{GREEDYDATA:infoblox_nios.log.audit.message}$"),
@@ -30,7 +30,9 @@ impl Transform for PipelineAudit {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -40,7 +42,7 @@ impl Transform for PipelineAudit {
                     // Grok pattern: ^%{GREEDYDATA:_tmp.timestamp} \\[%{DATA:user.name}\\]: %{DATA:event.action} - %{WORD:infoblox_nios.log.audit.object.name}:? %{GREEDYDATA:infoblox_nios.log.audit.message}$
                     // Grok pattern: ^%{GREEDYDATA:_tmp.timestamp} \\[%{DATA:user.name}\\]: %{DATA:event.action} - %{GREEDYDATA:infoblox_nios.log.audit.message}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.audit.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{GREEDYDATA:_tmp.timestamp} \\[%{DATA:user.name}\\]: %{DATA:event.action} - %{WORD:infoblox_nios.log.audit.object.name}:? %{GREEDYDATA:infoblox_nios.log.audit.message}$"),
                             cached_grok!("^%{GREEDYDATA:_tmp.timestamp} \\[%{DATA:user.name}\\]: %{DATA:event.action} - %{GREEDYDATA:infoblox_nios.log.audit.message}$"),
@@ -48,7 +50,9 @@ impl Transform for PipelineAudit {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -60,7 +64,7 @@ impl Transform for PipelineAudit {
                     // Grok pattern: ^%{IPORHOST:server.address}: AD authentication for user %{DATA:user.name} (?P<_tmp_ad_auth_failed>(?:failed))$
                     // Grok pattern: ^%{GREEDYDATA:_tmp.timestamp} %{GREEDYDATA:infoblox_nios.log.audit.message}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.audit.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{GREEDYDATA:_tmp.timestamp} \\[%{DATA:user.name}\\]: %{DATA:event.action} - - %{GREEDYDATA:details}$"),
                             cached_grok!("^%{GREEDYDATA:_tmp.timestamp} \\[%{DATA:user.name}\\]: %{DATA:event.action} %{GREEDYDATA:infoblox_nios.log.audit.message}$"),
@@ -70,7 +74,9 @@ impl Transform for PipelineAudit {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

@@ -48,7 +48,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: ^((?:<%{NONNEGINT:log.syslog.priority:long}>(\\d )?))?(?:(?:(?:%{SYSLOGTIMESTAMP:_tmp.timestamp}(%{SPACE}(?:(?:\\b(?P<process_name>(?:[[[:alnum:]]_-]+))|\\((?P<process_name>(?:[[[:alnum:]]_-]+))\\)))|%{SPACE}(?:(?:%{IP:observer.ip}|%{HOSTNAME:observer.name}))%{SPACE}(?:(?:\\b(?P<process_name>(?:[[[:alnum:]]_-]+))|\\((?P<process_name>(?:[[[:alnum:]]_-]+))\\))))(\\[%{POSINT:process.pid:long}\\])?:)|(?:(?P<_tmp_timestamp8601>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?%{ISO8601_TIMEZONE:event.timezone}?))%{SPACE}(?:(?:%{IP:observer.ip}|%{HOSTNAME:observer.name}))%{SPACE}(?:(\\(%{DATA:process.name}\\)|(?:(?:(/([\\w_%!$@:.,+~-]+|\\\\.)*)*))(?P<process_name>(?:[[[:alnum:]]_%!$@:.,+~-]+))))%{SPACE}(%{POSINT:process.pid:long}|-) - (-|(?:\\[[^\\]]*\\]))))) %{GREEDYDATA:message}
-                let _ = cached_grok_mapped!("^((?:<%{NONNEGINT:log.syslog.priority:long}>(\\d )?))?(?:(?:(?:%{SYSLOGTIMESTAMP:_tmp.timestamp}(%{SPACE}(?:(?:\\b(?P<process_name>(?:[[[:alnum:]]_-]+))|\\((?P<process_name>(?:[[[:alnum:]]_-]+))\\)))|%{SPACE}(?:(?:%{IP:observer.ip}|%{HOSTNAME:observer.name}))%{SPACE}(?:(?:\\b(?P<process_name>(?:[[[:alnum:]]_-]+))|\\((?P<process_name>(?:[[[:alnum:]]_-]+))\\))))(\\[%{POSINT:process.pid:long}\\])?:)|(?:(?P<_tmp_timestamp8601>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?%{ISO8601_TIMEZONE:event.timezone}?))%{SPACE}(?:(?:%{IP:observer.ip}|%{HOSTNAME:observer.name}))%{SPACE}(?:(\\(%{DATA:process.name}\\)|(?:(?:(/([\\w_%!$@:.,+~-]+|\\\\.)*)*))(?P<process_name>(?:[[[:alnum:]]_%!$@:.,+~-]+))))%{SPACE}(%{POSINT:process.pid:long}|-) - (-|(?:\\[[^\\]]*\\]))))) %{GREEDYDATA:message}", [("_tmp_timestamp8601", "_tmp.timestamp8601"), ("process_name", "process.name"), ("process_name", "process.name"), ("process_name", "process.name"), ("process_name", "process.name"), ("process_name", "process.name")]).extract_into(&input, event)?;
+                if !cached_grok_mapped!("^((?:<%{NONNEGINT:log.syslog.priority:long}>(\\d )?))?(?:(?:(?:%{SYSLOGTIMESTAMP:_tmp.timestamp}(%{SPACE}(?:(?:\\b(?P<process_name>(?:[[[:alnum:]]_-]+))|\\((?P<process_name>(?:[[[:alnum:]]_-]+))\\)))|%{SPACE}(?:(?:%{IP:observer.ip}|%{HOSTNAME:observer.name}))%{SPACE}(?:(?:\\b(?P<process_name>(?:[[[:alnum:]]_-]+))|\\((?P<process_name>(?:[[[:alnum:]]_-]+))\\))))(\\[%{POSINT:process.pid:long}\\])?:)|(?:(?P<_tmp_timestamp8601>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?%{ISO8601_TIMEZONE:event.timezone}?))%{SPACE}(?:(?:%{IP:observer.ip}|%{HOSTNAME:observer.name}))%{SPACE}(?:(\\(%{DATA:process.name}\\)|(?:(?:(/([\\w_%!$@:.,+~-]+|\\\\.)*)*))(?P<process_name>(?:[[[:alnum:]]_%!$@:.,+~-]+))))%{SPACE}(%{POSINT:process.pid:long}|-) - (-|(?:\\[[^\\]]*\\]))))) %{GREEDYDATA:message}", [("_tmp_timestamp8601", "_tmp.timestamp8601"), ("process_name", "process.name"), ("process_name", "process.name"), ("process_name", "process.name"), ("process_name", "process.name"), ("process_name", "process.name")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
             }
 
             let _cond = { event.has_value("_tmp.timestamp8601") };
@@ -88,11 +90,14 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("process.name") {
                 // Grok pattern: ^(?P<event_provider>(?:\\b[A-Za-z0-9_]+(-[A-Za-z_]+)*\\b))
-                let _ = cached_grok_mapped!(
+                if !cached_grok_mapped!(
                     "^(?P<event_provider>(?:\\b[A-Za-z0-9_]+(-[A-Za-z_]+)*\\b))",
                     [("event_provider", "event.provider")]
                 )
-                .extract_into(&input, event)?;
+                .extract_into(&input, event)?
+                {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             let _cond = { event.get_str("event.provider") == Some("filterlog") };
@@ -100,7 +105,9 @@ impl Transform for Default {
                 // Begin nested pipeline: "firewall"
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (?:(?:%{INT},%{INT}?,,%{DATA:rule.id},%{DATA:observer.ingress.interface.name},(?P<event_reason>(?:[a-zA-Z-]+)),%{WORD:event.action},%{WORD:network.direction},)(?:(?:(?P<network_type>(4)),%{BASE16NUM:pfsense.ip.tos},%{WORD:pfsense.ip.ecn}?,%{NONNEGINT:pfsense.ip.ttl:long},%{NONNEGINT:pfsense.ip.id:long},%{NONNEGINT:pfsense.ip.offset:long},(?:%{WORD:pfsense.ip.flags}|(?P<pfsense_ip_flags>(?:[+]))),%{INT:network.iana_number},%{WORD:network.transport},)|(?:(?P<network_type>(6)),%{BASE16NUM:pfsense.ip.tos},%{WORD:pfsense.ip.flow_label},%{WORD:pfsense.ip.flags},(?P<network_transport>(?:[0-9a-zA-Z-]+)),%{INT:network.iana_number},))(?:%{NONNEGINT:network.bytes:long},%{IP:source.address},%{IP:destination.address},)(?:(?:%{INT:source.port:long},%{INT:destination.port:long},%{NONNEGINT:pfsense.tcp.length:long},%{WORD:pfsense.tcp.flags}?,%{NONNEGINT:pfsense.tcp.seq:long}?:?%{NONNEGINT},%{NONNEGINT:pfsense.tcp.ack:long}?,%{NONNEGINT:pfsense.tcp.window:long}?,%{WORD:pfsense.tcp.urg}?,%{GREEDYDATA:pfsense.tcp.options})|(?:%{INT:source.port:long},%{INT:destination.port:long},%{NONNEGINT:pfsense.udp.length:long}$)|(?:(?:(?P<pfsense_icmp_type>(request|reply|unreachproto|unreachport|unreach|timeexceed|paramprob|redirect|maskreply|needfrag|tstamp|tstampreply)),)(?:(?:%{NONNEGINT:pfsense.icmp.id:long},%{NONNEGINT:pfsense.icmp.seq:long})|(?:\\[?%{IP:pfsense.icmp.destination.ip}\\]?,\\[?%{WORD:pfsense.icmp.unreachable.protocol_id}\\]?,\\[?%{NONNEGINT:pfsense.icmp.unreachable.port:long}\\]?)|(?:\\[?%{IP:pfsense.icmp.destination.ip}\\]?,\\[?%{WORD:pfsense.icmp.unreachable.protocol_id}\\]?)|(?:%{GREEDYDATA:pfsense.icmp.unreachable.other})|(?:%{IP:pfsense.icmp.destination.ip},%{NONNEGINT:pfsense.icmp.mtu:long})|(?:%{INT:pfsense.icmp.id},%{INT:pfsense.icmp.seq})|(?:%{INT:pfsense.icmp.id},%{INT:pfsense.icmp.seq},%{INT:pfsense.icmp.otime},%{INT:pfsense.icmp.rtime},%{INT:pfsense.icmp.ttime})))|(?:datalength=%{NONNEGINT:network.packets:long})|(?:%{GREEDYDATA})|(?:))?)%{GREEDYDATA}
-                    let _ = cached_grok_mapped!("(?:(?:%{INT},%{INT}?,,%{DATA:rule.id},%{DATA:observer.ingress.interface.name},(?P<event_reason>(?:[a-zA-Z-]+)),%{WORD:event.action},%{WORD:network.direction},)(?:(?:(?P<network_type>(4)),%{BASE16NUM:pfsense.ip.tos},%{WORD:pfsense.ip.ecn}?,%{NONNEGINT:pfsense.ip.ttl:long},%{NONNEGINT:pfsense.ip.id:long},%{NONNEGINT:pfsense.ip.offset:long},(?:%{WORD:pfsense.ip.flags}|(?P<pfsense_ip_flags>(?:[+]))),%{INT:network.iana_number},%{WORD:network.transport},)|(?:(?P<network_type>(6)),%{BASE16NUM:pfsense.ip.tos},%{WORD:pfsense.ip.flow_label},%{WORD:pfsense.ip.flags},(?P<network_transport>(?:[0-9a-zA-Z-]+)),%{INT:network.iana_number},))(?:%{NONNEGINT:network.bytes:long},%{IP:source.address},%{IP:destination.address},)(?:(?:%{INT:source.port:long},%{INT:destination.port:long},%{NONNEGINT:pfsense.tcp.length:long},%{WORD:pfsense.tcp.flags}?,%{NONNEGINT:pfsense.tcp.seq:long}?:?%{NONNEGINT},%{NONNEGINT:pfsense.tcp.ack:long}?,%{NONNEGINT:pfsense.tcp.window:long}?,%{WORD:pfsense.tcp.urg}?,%{GREEDYDATA:pfsense.tcp.options})|(?:%{INT:source.port:long},%{INT:destination.port:long},%{NONNEGINT:pfsense.udp.length:long}$)|(?:(?:(?P<pfsense_icmp_type>(request|reply|unreachproto|unreachport|unreach|timeexceed|paramprob|redirect|maskreply|needfrag|tstamp|tstampreply)),)(?:(?:%{NONNEGINT:pfsense.icmp.id:long},%{NONNEGINT:pfsense.icmp.seq:long})|(?:\\[?%{IP:pfsense.icmp.destination.ip}\\]?,\\[?%{WORD:pfsense.icmp.unreachable.protocol_id}\\]?,\\[?%{NONNEGINT:pfsense.icmp.unreachable.port:long}\\]?)|(?:\\[?%{IP:pfsense.icmp.destination.ip}\\]?,\\[?%{WORD:pfsense.icmp.unreachable.protocol_id}\\]?)|(?:%{GREEDYDATA:pfsense.icmp.unreachable.other})|(?:%{IP:pfsense.icmp.destination.ip},%{NONNEGINT:pfsense.icmp.mtu:long})|(?:%{INT:pfsense.icmp.id},%{INT:pfsense.icmp.seq})|(?:%{INT:pfsense.icmp.id},%{INT:pfsense.icmp.seq},%{INT:pfsense.icmp.otime},%{INT:pfsense.icmp.rtime},%{INT:pfsense.icmp.ttime})))|(?:datalength=%{NONNEGINT:network.packets:long})|(?:%{GREEDYDATA})|(?:))?)%{GREEDYDATA}", [("event_reason", "event.reason"), ("pfsense_ip_flags", "pfsense.ip.flags"), ("network_transport", "network.transport"), ("network_type", "network.type"), ("network_type", "network.type"), ("pfsense_icmp_type", "pfsense.icmp.type")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("(?:(?:%{INT},%{INT}?,,%{DATA:rule.id},%{DATA:observer.ingress.interface.name},(?P<event_reason>(?:[a-zA-Z-]+)),%{WORD:event.action},%{WORD:network.direction},)(?:(?:(?P<network_type>(4)),%{BASE16NUM:pfsense.ip.tos},%{WORD:pfsense.ip.ecn}?,%{NONNEGINT:pfsense.ip.ttl:long},%{NONNEGINT:pfsense.ip.id:long},%{NONNEGINT:pfsense.ip.offset:long},(?:%{WORD:pfsense.ip.flags}|(?P<pfsense_ip_flags>(?:[+]))),%{INT:network.iana_number},%{WORD:network.transport},)|(?:(?P<network_type>(6)),%{BASE16NUM:pfsense.ip.tos},%{WORD:pfsense.ip.flow_label},%{WORD:pfsense.ip.flags},(?P<network_transport>(?:[0-9a-zA-Z-]+)),%{INT:network.iana_number},))(?:%{NONNEGINT:network.bytes:long},%{IP:source.address},%{IP:destination.address},)(?:(?:%{INT:source.port:long},%{INT:destination.port:long},%{NONNEGINT:pfsense.tcp.length:long},%{WORD:pfsense.tcp.flags}?,%{NONNEGINT:pfsense.tcp.seq:long}?:?%{NONNEGINT},%{NONNEGINT:pfsense.tcp.ack:long}?,%{NONNEGINT:pfsense.tcp.window:long}?,%{WORD:pfsense.tcp.urg}?,%{GREEDYDATA:pfsense.tcp.options})|(?:%{INT:source.port:long},%{INT:destination.port:long},%{NONNEGINT:pfsense.udp.length:long}$)|(?:(?:(?P<pfsense_icmp_type>(request|reply|unreachproto|unreachport|unreach|timeexceed|paramprob|redirect|maskreply|needfrag|tstamp|tstampreply)),)(?:(?:%{NONNEGINT:pfsense.icmp.id:long},%{NONNEGINT:pfsense.icmp.seq:long})|(?:\\[?%{IP:pfsense.icmp.destination.ip}\\]?,\\[?%{WORD:pfsense.icmp.unreachable.protocol_id}\\]?,\\[?%{NONNEGINT:pfsense.icmp.unreachable.port:long}\\]?)|(?:\\[?%{IP:pfsense.icmp.destination.ip}\\]?,\\[?%{WORD:pfsense.icmp.unreachable.protocol_id}\\]?)|(?:%{GREEDYDATA:pfsense.icmp.unreachable.other})|(?:%{IP:pfsense.icmp.destination.ip},%{NONNEGINT:pfsense.icmp.mtu:long})|(?:%{INT:pfsense.icmp.id},%{INT:pfsense.icmp.seq})|(?:%{INT:pfsense.icmp.id},%{INT:pfsense.icmp.seq},%{INT:pfsense.icmp.otime},%{INT:pfsense.icmp.rtime},%{INT:pfsense.icmp.ttime})))|(?:datalength=%{NONNEGINT:network.packets:long})|(?:%{GREEDYDATA})|(?:))?)%{GREEDYDATA}", [("event_reason", "event.reason"), ("pfsense_ip_flags", "pfsense.ip.flags"), ("network_transport", "network.transport"), ("network_type", "network.type"), ("network_type", "network.type"), ("pfsense_icmp_type", "pfsense.icmp.type")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 event.set("event.kind", json!("event"))?;
                 let _cond =
@@ -223,7 +230,7 @@ impl Transform for Default {
                     // Grok pattern: (?P<user_name>(?:[a-zA-Z0-9._-]+))/(?:%{IP:source.address}:%{NONNEGINT:source.port:long})%{DATA}IPv4=(%{IP:source.nat.ip}|%{GREEDYDATA}),%{SPACE}IPv6=(%{IP:source.nat.ip}|%{GREEDYDATA})
                     // Grok pattern: %{GREEDYDATA}(?:%{IP:source.address}:%{NONNEGINT:source.port:long})
                     // Grok pattern: %{GREEDYDATA}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "(?:%{IP:source.address}:%{NONNEGINT:source.port:long})%{SPACE}peer%{SPACE}info:%{SPACE}%{GREEDYDATA:pfsense.openvpn.peer_info}"
@@ -247,7 +254,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 let _cond = {
                     event.get("message").is_some_and(|v| match v {
@@ -301,7 +310,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (?:\\d+\\[%{WORD}\\])%{GREEDYDATA}(?:%{IP:source.address}\\[%{NONNEGINT:source.port:long}\\]) to (?:%{IP:destination.address}\\[%{NONNEGINT:destination.port:long}\\]) \\(%{NONNEGINT:network.bytes:long} bytes\\)
                     // Grok pattern: %{GREEDYDATA}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "(?:\\d+\\[%{WORD}\\])%{GREEDYDATA}(?:%{IP:source.address}\\[%{NONNEGINT:source.port:long}\\]) to (?:%{IP:destination.address}\\[%{NONNEGINT:destination.port:long}\\]) \\(%{NONNEGINT:network.bytes:long} bytes\\)"
@@ -310,7 +319,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 let _cond = { event.has_value("source.address") };
                 if _cond {
@@ -360,7 +371,7 @@ impl Transform for Default {
                     // Grok pattern: %{WORD:event.action} (?:(?:(?:from (?P<client_mac>(?:([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))))|(?:on %{IP:client.address} to (?P<client_mac>(?:([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))) \\(%{HOSTNAME:pfsense.dhcp.hostname}\\))|(?:for %{IP:client.address} \\(%{IP:server.address}\\)? from (?P<client_mac>(?:([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))) \\(%{HOSTNAME:pfsense.dhcp.hostname}\\)))) via (?P<observer_ingress_interface_name>(?:[a-z0-9\\.]+))
                     // Grok pattern: %{DATA:_tmp.action} %{IPV6:client.address}
                     // Grok pattern: %{GREEDYDATA}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "%{DATA:_tmp.action}\\(%{DATA:observer.ingress.interface.name}\\)(?: %{IP:client.ip})? %{MAC:client.mac}(?: %{HOSTNAME:pfsense.dhcp.hostname})?"
@@ -409,7 +420,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 event.append_unique("event.type", json!("connection"))?;
                 event.append_unique("event.type", json!("protocol"))?;
@@ -534,7 +547,9 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: %{LOGLEVEL:log.level}: %{IP:source.address} %{HOSTNAME:_tmp.question.name}(\\.) %{WORD:_tmp.question.type} %{WORD:_tmp.question.class}
-                        let _ = cached_grok!("%{LOGLEVEL:log.level}: %{IP:source.address} %{HOSTNAME:_tmp.question.name}(\\.) %{WORD:_tmp.question.type} %{WORD:_tmp.question.class}").extract_into(&input, event)?;
+                        if !cached_grok!("%{LOGLEVEL:log.level}: %{IP:source.address} %{HOSTNAME:_tmp.question.name}(\\.) %{WORD:_tmp.question.type} %{WORD:_tmp.question.class}").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                     Ok(())
                 })() {
@@ -621,7 +636,7 @@ impl Transform for Default {
                         // Grok pattern: (%{IPORHOST:source.address}|-):%{POSINT:source.port:long} \\[%{NOTSPACE:haproxy.request_date}\\] %{NOTSPACE:haproxy.frontend_name} %{NOTSPACE:haproxy.backend_name}/%{NOTSPACE:haproxy.server_name} %{NUMBER:haproxy.http.request.time_wait_ms:long}/%{NUMBER:haproxy.total_waiting_time_ms:long}/%{NUMBER:haproxy.connection_wait_time_ms:long}/%{NUMBER:haproxy.http.request.time_wait_without_data_ms:long}/%{NUMBER:_temp.duration:long} %{NUMBER:http.response.status_code:long} %{NUMBER:haproxy.bytes_read:long} %{NOTSPACE:haproxy.http.request.captured_cookie} %{NOTSPACE:haproxy.http.response.captured_cookie} %{NOTSPACE:haproxy.termination_state} %{NUMBER:haproxy.connections.active:long}/%{NUMBER:haproxy.connections.frontend:long}/%{NUMBER:haproxy.connections.backend:long}/%{NUMBER:haproxy.connections.server:long}/%{NUMBER:haproxy.connections.retries:long} %{NUMBER:haproxy.server_queue:long}/%{NUMBER:haproxy.backend_queue:long} (\\{%{DATA:haproxy.http.request.captured_headers}\\} \\{%{DATA:haproxy.http.response.captured_headers}\\} |\\{%{DATA}\\} )?\"%{GREEDYDATA:haproxy.http.request.raw_request_line}\"
                         // Grok pattern: (%{IP:source.address}|-):%{POSINT:source.port:long} \\[%{NOTSPACE:haproxy.request_date}\\] %{NOTSPACE:haproxy.frontend_name} %{NOTSPACE:haproxy.backend_name}/%{NOTSPACE:haproxy.server_name} %{NUMBER:haproxy.total_waiting_time_ms:long}/%{NUMBER:haproxy.connection_wait_time_ms:long}/%{NUMBER:_temp.duration:long} %{NUMBER:haproxy.bytes_read:long} %{NOTSPACE:haproxy.termination_state} %{NUMBER:haproxy.connections.active:long}/%{NUMBER:haproxy.connections.frontend:long}/%{NUMBER:haproxy.connections.backend:long}/%{NUMBER:haproxy.connections.server:long}/%{NUMBER:haproxy.connections.retries:long} %{NUMBER:haproxy.server_queue:long}/%{NUMBER:haproxy.backend_queue:long}
                         // Grok pattern: (%{IP:source.address}|-):%{POSINT:source.port:long} \\[%{NOTSPACE:haproxy.request_date}\\] %{NOTSPACE:haproxy.frontend_name}/(?P<haproxy_bind_name>(?:((%{IP:destination.address})?(:%{POSINT:destination.port:long})?|%{NOTSPACE}))):? %{GREEDYDATA:haproxy.error_message}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "Connect from (%{IPORHOST:source.address}|-):%{POSINT:source.port:long} %{WORD} %{IPORHOST:destination.address}:%{POSINT:destination.port:long} \\(%{NOTSPACE:haproxy.frontend_name}/%{WORD:haproxy.mode}\\)"
@@ -639,7 +654,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })() {
@@ -711,7 +728,9 @@ impl Transform for Default {
                             event.get_string("haproxy.http.request.raw_request_line")
                         {
                             // Grok pattern: %{WORD:http.request.method}%{SPACE}%{URIPATHPARAM:url.original}%{SPACE}HTTP/%{NUMBER:http.version}
-                            let _ = cached_grok!("%{WORD:http.request.method}%{SPACE}%{URIPATHPARAM:url.original}%{SPACE}HTTP/%{NUMBER:http.version}").extract_into(&input, event)?;
+                            if !cached_grok!("%{WORD:http.request.method}%{SPACE}%{URIPATHPARAM:url.original}%{SPACE}HTTP/%{NUMBER:http.version}").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                         }
                     }
                 }
@@ -832,7 +851,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA}: (?:((?:(%{DATA:_tmp.action}) for user '%{USER:user.name}' from: %{IP:source.address} \\(%{DATA}\\))|(?:User (%{DATA:_tmp.action}) for user '%{USER:user.name}' from: %{IP:source.address})|(?:webConfigurator %{DATA:_tmp.action} for user '%{DATA:user.name}' from: %{IP:source.address})))
                     // Grok pattern: ^%{GREEDYDATA}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA}: (?:((?:(%{DATA:_tmp.action}) for user '%{USER:user.name}' from: %{IP:source.address} \\(%{DATA}\\))|(?:User (%{DATA:_tmp.action}) for user '%{USER:user.name}' from: %{IP:source.address})|(?:webConfigurator %{DATA:_tmp.action} for user '%{DATA:user.name}' from: %{IP:source.address})))"
@@ -841,7 +860,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 event.append_unique("event.category", json!("authentication"))?;
                 // SKIPPED: condition not transpiled: ctx._tmp?.action?.toLowerCase()?.contains("success") == true
@@ -883,7 +904,9 @@ impl Transform for Default {
                 // Begin nested pipeline: "squid"
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: %{IPORHOST:source.address} %{NOTSPACE:squid.request_status}/%{NUMBER:http.response.status_code:long} %{NUMBER:http.response.bytes:long} %{NOTSPACE:http.request.method} (?:%{URI:url.original}|(%{IPORHOST:url.domain}(?::%{DATA:url.port})?))?%{SPACE}%{NOTSPACE:http.request.referrer}%{SPACE}%{NOTSPACE:squid.hierarchy_status}/(?:%{IPORHOST:destination.address}|-)%{SPACE}%{NOTSPACE:http.response.mime_type}
-                    let _ = cached_grok!("%{IPORHOST:source.address} %{NOTSPACE:squid.request_status}/%{NUMBER:http.response.status_code:long} %{NUMBER:http.response.bytes:long} %{NOTSPACE:http.request.method} (?:%{URI:url.original}|(%{IPORHOST:url.domain}(?::%{DATA:url.port})?))?%{SPACE}%{NOTSPACE:http.request.referrer}%{SPACE}%{NOTSPACE:squid.hierarchy_status}/(?:%{IPORHOST:destination.address}|-)%{SPACE}%{NOTSPACE:http.response.mime_type}").extract_into(&input, event)?;
+                    if !cached_grok!("%{IPORHOST:source.address} %{NOTSPACE:squid.request_status}/%{NUMBER:http.response.status_code:long} %{NUMBER:http.response.bytes:long} %{NOTSPACE:http.request.method} (?:%{URI:url.original}|(%{IPORHOST:url.domain}(?::%{DATA:url.port})?))?%{SPACE}%{NOTSPACE:http.request.referrer}%{SPACE}%{NOTSPACE:squid.hierarchy_status}/(?:%{IPORHOST:destination.address}|-)%{SPACE}%{NOTSPACE:http.response.mime_type}").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 let _cond = { event.has_value("url.original") };
                 if _cond {
@@ -931,7 +954,9 @@ impl Transform for Default {
                 // Begin nested pipeline: "snort"
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: \\[%{NUMBER:snort.generator_id}:%{NUMBER:snort.signature_id}:%{NUMBER:snort.signature_revision}\\] \\(%{DATA:snort.preprocessor}\\) %{GREEDYDATA:snort.alert_message} \\[Classification: %{DATA:snort.classification}\\] \\[Priority: %{NONNEGINT:snort.priority:long}\\] \\{%{WORD:network.protocol}\\} %{IP:source.address}:%{NUMBER:source.port:long} -> %{IP:destination.address}:%{NUMBER:destination.port:long}
-                    let _ = cached_grok!("\\[%{NUMBER:snort.generator_id}:%{NUMBER:snort.signature_id}:%{NUMBER:snort.signature_revision}\\] \\(%{DATA:snort.preprocessor}\\) %{GREEDYDATA:snort.alert_message} \\[Classification: %{DATA:snort.classification}\\] \\[Priority: %{NONNEGINT:snort.priority:long}\\] \\{%{WORD:network.protocol}\\} %{IP:source.address}:%{NUMBER:source.port:long} -> %{IP:destination.address}:%{NUMBER:destination.port:long}").extract_into(&input, event)?;
+                    if !cached_grok!("\\[%{NUMBER:snort.generator_id}:%{NUMBER:snort.signature_id}:%{NUMBER:snort.signature_revision}\\] \\(%{DATA:snort.preprocessor}\\) %{GREEDYDATA:snort.alert_message} \\[Classification: %{DATA:snort.classification}\\] \\[Priority: %{NONNEGINT:snort.priority:long}\\] \\{%{WORD:network.protocol}\\} %{IP:source.address}:%{NUMBER:source.port:long} -> %{IP:destination.address}:%{NUMBER:destination.port:long}").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 if event.has_value("network.protocol") {
                     map_strings(
@@ -1182,8 +1207,11 @@ impl Transform for Default {
                 if event.has_value("observer.ingress.interface.name") {
                     if let Some(input) = event.get_string("observer.ingress.interface.name") {
                         // Grok pattern: %{DATA}.%{NONNEGINT:observer.ingress.vlan.id}
-                        let _ = cached_grok!("%{DATA}.%{NONNEGINT:observer.ingress.vlan.id}")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("%{DATA}.%{NONNEGINT:observer.ingress.vlan.id}")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

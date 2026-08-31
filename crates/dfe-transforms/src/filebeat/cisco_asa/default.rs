@@ -36,7 +36,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: (?:(?:(?:(?:<%{NONNEGINT:log.syslog.priority:int}>)\\s*)?(?:(?P<_temp__raw_date>(?:(?:(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?(?P<_temp__tz>(?:(?:Z|[+-]%{HOUR}(?::?%{MINUTE}))))?)|(?:(?:%{DAY} )?%{MONTH}  *%{MONTHDAY}(?: %{YEAR})? %{TIME}(?: (?P<_temp__tz>(?:[A-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)))):?\\s+)?(?:(?:(?:(?P<process_name>(?:(?:[^%\\s:\\[]+))):\\s%{SYSLOGHOST:host.name}))|(?:(?:%{SYSLOGHOST:host.hostname}:?\\s+)?(?:(?P<process_name>(?:(?:[^%\\s:\\[]+)))?(?:\\[%{POSINT:process.pid:long}\\])?)?))(?:{DATA})?(?:(?:(:|\\s)\\s+))?))?\\s*%{GREEDYDATA:_temp_.full_message}
-                    let _ = cached_grok_mapped!("(?:(?:(?:(?:<%{NONNEGINT:log.syslog.priority:int}>)\\s*)?(?:(?P<_temp__raw_date>(?:(?:(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?(?P<_temp__tz>(?:(?:Z|[+-]%{HOUR}(?::?%{MINUTE}))))?)|(?:(?:%{DAY} )?%{MONTH}  *%{MONTHDAY}(?: %{YEAR})? %{TIME}(?: (?P<_temp__tz>(?:[A-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)))):?\\s+)?(?:(?:(?:(?P<process_name>(?:(?:[^%\\s:\\[]+))):\\s%{SYSLOGHOST:host.name}))|(?:(?:%{SYSLOGHOST:host.hostname}:?\\s+)?(?:(?P<process_name>(?:(?:[^%\\s:\\[]+)))?(?:\\[%{POSINT:process.pid:long}\\])?)?))(?:{DATA})?(?:(?:(:|\\s)\\s+))?))?\\s*%{GREEDYDATA:_temp_.full_message}", [("_temp__raw_date", "_temp_.raw_date"), ("process_name", "process.name"), ("process_name", "process.name"), ("_temp__tz", "_temp_.tz"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("(?:(?:(?:(?:<%{NONNEGINT:log.syslog.priority:int}>)\\s*)?(?:(?P<_temp__raw_date>(?:(?:(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?(?P<_temp__tz>(?:(?:Z|[+-]%{HOUR}(?::?%{MINUTE}))))?)|(?:(?:%{DAY} )?%{MONTH}  *%{MONTHDAY}(?: %{YEAR})? %{TIME}(?: (?P<_temp__tz>(?:[A-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)))):?\\s+)?(?:(?:(?:(?P<process_name>(?:(?:[^%\\s:\\[]+))):\\s%{SYSLOGHOST:host.name}))|(?:(?:%{SYSLOGHOST:host.hostname}:?\\s+)?(?:(?P<process_name>(?:(?:[^%\\s:\\[]+)))?(?:\\[%{POSINT:process.pid:long}\\])?)?))(?:{DATA})?(?:(?:(:|\\s)\\s+))?))?\\s*%{GREEDYDATA:_temp_.full_message}", [("_temp__raw_date", "_temp_.raw_date"), ("process_name", "process.name"), ("process_name", "process.name"), ("_temp__tz", "_temp_.tz"), ("_temp__tz", "_temp_.tz")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -45,7 +47,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("_temp_.full_message") {
                     // Grok pattern: ^(?P<_temp__raw_date>(?:(?:%{DAY} )?%{MONTH}  *%{MONTHDAY}(?: %{YEAR})? %{TIME}(?: (?P<_temp__tz>(?:[A-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{DATA:_temp_.full_message}$
                     // Grok pattern: %{GREEDYDATA:_temp_.full_message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^(?P<_temp__raw_date>(?:(?:%{DAY} )?%{MONTH}  *%{MONTHDAY}(?: %{YEAR})? %{TIME}(?: (?P<_temp__tz>(?:[A-Z]{1,7}([+-]\\d{1,2}|[+-]\\d{2}:\\d{2})?)))?)): %{DATA:_temp_.full_message}$",
@@ -58,7 +60,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -85,7 +89,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.full_message") {
                     // Grok pattern: (?P<_temp__message_prefix>.*)message repeated (?P<INT:_temp__cisco_message_repeats:int>\\d+) times: \\[\\s(?P<_temp__extracted_message>.*)\\]
-                    let _ = cached_grok_mapped!("(?P<_temp__message_prefix>.*)message repeated (?P<INT:_temp__cisco_message_repeats:int>\\d+) times: \\[\\s(?P<_temp__extracted_message>.*)\\]", [("_temp__message_prefix", "_temp_.message_prefix"), ("INT:_temp__cisco_message_repeats:int", "INT:_temp_.cisco.message_repeats:int"), ("_temp__extracted_message", "_temp_.extracted_message")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("(?P<_temp__message_prefix>.*)message repeated (?P<INT:_temp__cisco_message_repeats:int>\\d+) times: \\[\\s(?P<_temp__extracted_message>.*)\\]", [("_temp__message_prefix", "_temp_.message_prefix"), ("INT:_temp__cisco_message_repeats:int", "INT:_temp_.cisco.message_repeats:int"), ("_temp__extracted_message", "_temp_.extracted_message")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -110,7 +116,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("_temp_.full_message") {
                     // Grok pattern: (?:%{DATA}%(?:[A-Z]+))-(?:(?P<_temp__cisco_suffix>(?:[^0-9-]+))-)?%{NONNEGINT:event.severity:int}-%{POSINT:_temp_.cisco.message_id}?:?\\s*%{GREEDYDATA:message}
                     // Grok pattern: %{GREEDYDATA:message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "(?:%{DATA}%(?:[A-Z]+))-(?:(?P<_temp__cisco_suffix>(?:[^0-9-]+))-)?%{NONNEGINT:event.severity:int}-%{POSINT:_temp_.cisco.message_id}?:?\\s*%{GREEDYDATA:message}",
@@ -120,7 +126,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -604,7 +612,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Deny %{NOTSPACE:network.direction} ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{POSINT:source.port} (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:%{NOTSPACE:destination.address}/%{POSINT:destination.port}(%{GREEDYDATA})?
                     // Grok pattern: Deny %{NOTSPACE:network.direction} ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}(/%{POSINT:source.port})? (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:%{NOTSPACE:destination.address}(/%{POSINT:destination.port})?(%{GREEDYDATA})?
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "Deny %{NOTSPACE:network.direction} ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{POSINT:source.port} (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:%{NOTSPACE:destination.address}/%{POSINT:destination.port}(%{GREEDYDATA})?"
@@ -615,7 +623,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -713,7 +723,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Deny %{NOTSPACE:network.direction} %{NOTSPACE:network.transport} src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address} (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:(?P<destination_address>[^ (]*)(%{GREEDYDATA})?
-                    let _ = cached_grok_mapped!("Deny %{NOTSPACE:network.direction} %{NOTSPACE:network.transport} src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address} (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:(?P<destination_address>[^ (]*)(%{GREEDYDATA})?", [("destination_address", "destination.address")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("Deny %{NOTSPACE:network.direction} %{NOTSPACE:network.transport} src %{NOTSPACE:_temp_.cisco.source_interface}:%{NOTSPACE:source.address} (%{DATA})?dst %{NOTSPACE:_temp_.cisco.destination_interface}:(?P<destination_address>[^ (]*)(%{GREEDYDATA})?", [("destination_address", "destination.address")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -721,7 +733,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Deny %{NOTSPACE:network.transport} %{NOTSPACE} %{NOTSPACE} from %{IPORHOST:source.address}/%{POSINT:source.port} to %{IPORHOST:destination.address}/%{POSINT:destination.port} flags %{DATA} on interface %{NOTSPACE:_temp_.cisco.source_interface}
-                    let _ = cached_grok!("Deny %{NOTSPACE:network.transport} %{NOTSPACE} %{NOTSPACE} from %{IPORHOST:source.address}/%{POSINT:source.port} to %{IPORHOST:destination.address}/%{POSINT:destination.port} flags %{DATA} on interface %{NOTSPACE:_temp_.cisco.source_interface}").extract_into(&input, event)?;
+                    if !cached_grok!("Deny %{NOTSPACE:network.transport} %{NOTSPACE} %{NOTSPACE} from %{IPORHOST:source.address}/%{POSINT:source.port} to %{IPORHOST:destination.address}/%{POSINT:destination.port} flags %{DATA} on interface %{NOTSPACE:_temp_.cisco.source_interface}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1035,7 +1049,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Deny ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{DATA:_temp_.cisco.source_interface}:(?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})?\\s*(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?dst %{DATA:_temp_.cisco.destination_interface}:(?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[(\\s]+%{DATA}by access-group \"%{NOTSPACE:_temp_.cisco.list_id}?\"
-                    let _ = cached_grok_mapped!("^Deny ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{DATA:_temp_.cisco.source_interface}:(?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})?\\s*(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?dst %{DATA:_temp_.cisco.destination_interface}:(?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[(\\s]+%{DATA}by access-group \"%{NOTSPACE:_temp_.cisco.list_id}?\"", [("source_address", "source.address"), ("destination_address", "destination.address"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("^Deny ((protocol %{POSINT:network.iana_number})|%{NOTSPACE:network.transport}) src %{DATA:_temp_.cisco.source_interface}:(?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})?\\s*(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?dst %{DATA:_temp_.cisco.destination_interface}:(?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[(\\s]+%{DATA}by access-group \"%{NOTSPACE:_temp_.cisco.list_id}?\"", [("source_address", "source.address"), ("destination_address", "destination.address"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1515,7 +1531,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{NOTSPACE} '%{NOTSPACE:server.user.name}' executed %{NOTSPACE} %{GREEDYDATA:_temp_.cisco.command_line_arguments}
-                    let _ = cached_grok!("^%{NOTSPACE} '%{NOTSPACE:server.user.name}' executed %{NOTSPACE} %{GREEDYDATA:_temp_.cisco.command_line_arguments}").extract_into(&input, event)?;
+                    if !cached_grok!("^%{NOTSPACE} '%{NOTSPACE:server.user.name}' executed %{NOTSPACE} %{GREEDYDATA:_temp_.cisco.command_line_arguments}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1523,7 +1541,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: User '%{NOTSPACE:server.user.name}', running %{QUOTEDSTRING} from IP %{IP:source.address}, executed %{QUOTEDSTRING:_temp_.cisco.command_line_arguments}
-                    let _ = cached_grok!("User '%{NOTSPACE:server.user.name}', running %{QUOTEDSTRING} from IP %{IP:source.address}, executed %{QUOTEDSTRING:_temp_.cisco.command_line_arguments}").extract_into(&input, event)?;
+                    if !cached_grok!("User '%{NOTSPACE:server.user.name}', running %{QUOTEDSTRING} from IP %{IP:source.address}, executed %{QUOTEDSTRING:_temp_.cisco.command_line_arguments}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1531,7 +1551,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: AAA user %{DATA:_temp_.cisco.aaa_type} Successful(%{SPACE})?: server =(%{SPACE})?%{IPORHOST:destination.address} [:,] [Uu]ser = (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))
-                    let _ = cached_grok_mapped!("AAA user %{DATA:_temp_.cisco.aaa_type} Successful(%{SPACE})?: server =(%{SPACE})?%{IPORHOST:destination.address} [:,] [Uu]ser = (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))", [("source_user_name", "source.user.name")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("AAA user %{DATA:_temp_.cisco.aaa_type} Successful(%{SPACE})?: server =(%{SPACE})?%{IPORHOST:destination.address} [:,] [Uu]ser = (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))", [("source_user_name", "source.user.name")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1539,7 +1561,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: AAA user (?:(authentication|authorization)) Rejected(%{SPACE})?: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|Account has been locked out|Users account has expired|User was not found)))(%{SPACE})?: server = %{IPORHOST:destination.address}(%{SPACE})?: user = ?((?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))|)(%{SPACE})?: user IP = (?:(%{IP:source.address}|None))
-                    let _ = cached_grok_mapped!("AAA user (?:(authentication|authorization)) Rejected(%{SPACE})?: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|Account has been locked out|Users account has expired|User was not found)))(%{SPACE})?: server = %{IPORHOST:destination.address}(%{SPACE})?: user = ?((?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))|)(%{SPACE})?: user IP = (?:(%{IP:source.address}|None))", [("_temp__cisco_rejection_reason", "_temp_.cisco.rejection_reason"), ("source_user_name", "source.user.name")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("AAA user (?:(authentication|authorization)) Rejected(%{SPACE})?: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|Account has been locked out|Users account has expired|User was not found)))(%{SPACE})?: server = %{IPORHOST:destination.address}(%{SPACE})?: user = ?((?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))|)(%{SPACE})?: user IP = (?:(%{IP:source.address}|None))", [("_temp__cisco_rejection_reason", "_temp_.cisco.rejection_reason"), ("source_user_name", "source.user.name")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1547,7 +1571,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: AAA transaction status ACCEPT(%{SPACE})?: user = %{GREEDYDATA:source.user.name}
-                    let _ = cached_grok!("AAA transaction status ACCEPT(%{SPACE})?: user = %{GREEDYDATA:source.user.name}").extract_into(&input, event)?;
+                    if !cached_grok!("AAA transaction status ACCEPT(%{SPACE})?: user = %{GREEDYDATA:source.user.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1629,7 +1655,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: AAA user authentication Successful(%{SPACE})?: local database(%{SPACE})?: [Uu]ser = (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))
-                    let _ = cached_grok_mapped!("AAA user authentication Successful(%{SPACE})?: local database(%{SPACE})?: [Uu]ser = (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))", [("source_user_name", "source.user.name")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("AAA user authentication Successful(%{SPACE})?: local database(%{SPACE})?: [Uu]ser = (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:%{HOSTNAME}\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@%{HOSTNAME})?(?:, *%{NUMBER})?))))", [("source_user_name", "source.user.name")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1638,7 +1666,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^AAA user authentication Rejected%{SPACE}: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|User was not found)))%{SPACE}: local database%{SPACE}: [Uu]ser = %{DATA:source.user.name}%{SPACE}: [Uu]ser IP = (?:(%{IP:source.address}|None))%{SPACE}$
                     // Grok pattern: ^AAA user authentication Rejected%{SPACE}: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|User was not found)))%{SPACE}: local database%{SPACE}: [Uu]ser = (?P<source_user_name>(?:[^:]+?))%{SPACE}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^AAA user authentication Rejected%{SPACE}: reason = (?P<_temp__cisco_rejection_reason>(?:(AAA failure|Account has been disabled|Invalid password|Password is expiring|Password has expired|Password malformed|Unspecified|User was not found)))%{SPACE}: local database%{SPACE}: [Uu]ser = %{DATA:source.user.name}%{SPACE}: [Uu]ser IP = (?:(%{IP:source.address}|None))%{SPACE}$",
@@ -1660,7 +1688,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2027,7 +2057,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Group <%{DATA:source.user.group.name}> User <%{DATA:source.user.name}> IP <%{IP:source.address}>
                     // Grok pattern: Group %{NOTSPACE:source.user.group.name} User (?P<source_user_name>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:, *%{NUMBER})?)))) IP %{IP:source.address}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "Group <%{DATA:source.user.group.name}> User <%{DATA:source.user.name}> IP <%{IP:source.address}>"
@@ -2039,7 +2069,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2089,10 +2121,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Built %{NOTSPACE:network.direction} %{GREEDYDATA:_temp_.var_302013_302015}
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "Built %{NOTSPACE:network.direction} %{GREEDYDATA:_temp_.var_302013_302015}"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2104,7 +2139,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.var_302013_302015") {
                     // Grok pattern: ^%{NOTSPACE:network.transport} connection %{NUMBER:_temp_.cisco.connection_id} for (?P<_temp__cisco_source_interface>(?:[^:]*)):(?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:source.port} \\((?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:_temp_.cisco.mapped_source_port}\\)(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{NOTSPACE:destination.address}/%{NUMBER:destination.port} \\(%{NOTSPACE:_temp_.natdstip}/%{NUMBER:_temp_.cisco.mapped_destination_port}\\)(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?( \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\))?%{GREEDYDATA}
-                    let _ = cached_grok_mapped!("^%{NOTSPACE:network.transport} connection %{NUMBER:_temp_.cisco.connection_id} for (?P<_temp__cisco_source_interface>(?:[^:]*)):(?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:source.port} \\((?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:_temp_.cisco.mapped_source_port}\\)(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{NOTSPACE:destination.address}/%{NUMBER:destination.port} \\(%{NOTSPACE:_temp_.natdstip}/%{NUMBER:_temp_.cisco.mapped_destination_port}\\)(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?( \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\))?%{GREEDYDATA}", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("source_address", "source.address"), ("_temp__natsrcip", "_temp_.natsrcip"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("_temp__cisco_termination_user", "_temp_.cisco.termination_user"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("^%{NOTSPACE:network.transport} connection %{NUMBER:_temp_.cisco.connection_id} for (?P<_temp__cisco_source_interface>(?:[^:]*)):(?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:source.port} \\((?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:_temp_.cisco.mapped_source_port}\\)(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{NOTSPACE:destination.address}/%{NUMBER:destination.port} \\(%{NOTSPACE:_temp_.natdstip}/%{NUMBER:_temp_.cisco.mapped_destination_port}\\)(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?( \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\))?%{GREEDYDATA}", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("source_address", "source.address"), ("_temp__natsrcip", "_temp_.natsrcip"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("_temp__cisco_termination_user", "_temp_.cisco.termination_user"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2116,7 +2153,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.var_302013_302015") {
                     // Grok pattern: ^%{NOTSPACE:network.transport} connection %{NUMBER:_temp_.cisco.connection_id} for (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:destination.port} \\((?P<_temp__natdstip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:_temp_.cisco.mapped_destination_port}\\)(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? to (?P<_temp__cisco_source_interface>(?:[^:]*)):%{NOTSPACE:source.address}/%{NUMBER:source.port} \\(%{NOTSPACE:_temp_.natsrcip}/%{NUMBER:_temp_.cisco.mapped_source_port}\\)(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?( \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\))?%{GREEDYDATA}
-                    let _ = cached_grok_mapped!("^%{NOTSPACE:network.transport} connection %{NUMBER:_temp_.cisco.connection_id} for (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:destination.port} \\((?P<_temp__natdstip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:_temp_.cisco.mapped_destination_port}\\)(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? to (?P<_temp__cisco_source_interface>(?:[^:]*)):%{NOTSPACE:source.address}/%{NUMBER:source.port} \\(%{NOTSPACE:_temp_.natsrcip}/%{NUMBER:_temp_.cisco.mapped_source_port}\\)(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?( \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\))?%{GREEDYDATA}", [("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("destination_address", "destination.address"), ("_temp__natdstip", "_temp_.natdstip"), ("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_termination_user", "_temp_.cisco.termination_user"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("^%{NOTSPACE:network.transport} connection %{NUMBER:_temp_.cisco.connection_id} for (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:destination.port} \\((?P<_temp__natdstip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER:_temp_.cisco.mapped_destination_port}\\)(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? to (?P<_temp__cisco_source_interface>(?:[^:]*)):%{NOTSPACE:source.address}/%{NUMBER:source.port} \\(%{NOTSPACE:_temp_.natsrcip}/%{NUMBER:_temp_.cisco.mapped_source_port}\\)(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?( \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\))?%{GREEDYDATA}", [("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("destination_address", "destination.address"), ("_temp__natdstip", "_temp_.natdstip"), ("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_termination_user", "_temp_.cisco.termination_user"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2226,7 +2265,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Teardown %{DATA} %{NOTSPACE:network.transport} translation from (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port}(\\s*\\((?P<_temp__cisco_source_username>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?((?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:(?:[^@$]*))\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:, *%{NUMBER})?(?:%{NUMBER}:%{DATA})?))))\\))? to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port} duration (?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND}))
-                    let _ = cached_grok_mapped!("Teardown %{DATA} %{NOTSPACE:network.transport} translation from (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port}(\\s*\\((?P<_temp__cisco_source_username>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?((?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:(?:[^@$]*))\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:, *%{NUMBER})?(?:%{NUMBER}:%{DATA})?))))\\))? to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port} duration (?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND}))", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_source_username", "_temp_.cisco.source_username"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("_temp__duration_hms", "_temp_.duration_hms")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("Teardown %{DATA} %{NOTSPACE:network.transport} translation from (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port}(\\s*\\((?P<_temp__cisco_source_username>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?((?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:(?:[^@$]*))\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:, *%{NUMBER})?(?:%{NUMBER}:%{DATA})?))))\\))? to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port} duration (?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND}))", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_source_username", "_temp_.cisco.source_username"), ("_temp__cisco_destination_interface", "_temp_.cisco.destination_interface"), ("_temp__duration_hms", "_temp_.duration_hms")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2234,7 +2275,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Built %{NOTSPACE:network.direction} %{NOTSPACE:network.type} connection for faddr (?:(?:(?:%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?gaddr (?:(?:(?:%{DATA:_temp_.natsrcip}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))|(?:[^:]*):(?:(?:%{DATA:_temp_.natsrcip}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER} laddr (?:(?:(?:%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?(type %{NUMBER:_temp_.cisco.icmp_type} code %{NUMBER:_temp_.cisco.icmp_code})?
-                    let _ = cached_grok_mapped!("Built %{NOTSPACE:network.direction} %{NOTSPACE:network.type} connection for faddr (?:(?:(?:%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?gaddr (?:(?:(?:%{DATA:_temp_.natsrcip}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))|(?:[^:]*):(?:(?:%{DATA:_temp_.natsrcip}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER} laddr (?:(?:(?:%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?(type %{NUMBER:_temp_.cisco.icmp_type} code %{NUMBER:_temp_.cisco.icmp_code})?", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("destination_domain", "destination.domain"), ("destination_domain", "destination.domain"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("source_domain", "source.domain"), ("source_domain", "source.domain"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("Built %{NOTSPACE:network.direction} %{NOTSPACE:network.type} connection for faddr (?:(?:(?:%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?gaddr (?:(?:(?:%{DATA:_temp_.natsrcip}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))|(?:[^:]*):(?:(?:%{DATA:_temp_.natsrcip}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))/%{NUMBER} laddr (?:(?:(?:%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\) )?(type %{NUMBER:_temp_.cisco.icmp_type} code %{NUMBER:_temp_.cisco.icmp_code})?", [("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("_temp__cisco_source_interface", "_temp_.cisco.source_interface"), ("destination_domain", "destination.domain"), ("destination_domain", "destination.domain"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("_temp__cisco_destination_user_or_sgt", "_temp_.cisco.destination_user_or_sgt"), ("source_domain", "source.domain"), ("source_domain", "source.domain"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt"), ("_temp__cisco_source_user_or_sgt", "_temp_.cisco.source_user_or_sgt")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2453,7 +2496,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (%{NOTSPACE:source.user.name}@)?%{IP:source.address}(\\(%{DATA}\\))? %{DATA} (%{NOTSPACE}@)?%{IPORHOST:destination.address}:%{GREEDYDATA:url.original}
-                    let _ = cached_grok!("(%{NOTSPACE:source.user.name}@)?%{IP:source.address}(\\(%{DATA}\\))? %{DATA} (%{NOTSPACE}@)?%{IPORHOST:destination.address}:%{GREEDYDATA:url.original}").extract_into(&input, event)?;
+                    if !cached_grok!("(%{NOTSPACE:source.user.name}@)?%{IP:source.address}(\\(%{DATA}\\))? %{DATA} (%{NOTSPACE}@)?%{IPORHOST:destination.address}:%{GREEDYDATA:url.original}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2522,7 +2567,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Built %{NOTSPACE} %{NOTSPACE:network.transport} translation from %{NOTSPACE:_temp_.cisco.source_interface}:%{DATA:source.address}/%{NUMBER:source.port}(\\(%{NOTSPACE:source.user.name}\\))? to %{NOTSPACE:_temp_.cisco.destination_interface}:%{DATA:destination.address}/%{NUMBER:destination.port}
-                    let _ = cached_grok!("Built %{NOTSPACE} %{NOTSPACE:network.transport} translation from %{NOTSPACE:_temp_.cisco.source_interface}:%{DATA:source.address}/%{NUMBER:source.port}(\\(%{NOTSPACE:source.user.name}\\))? to %{NOTSPACE:_temp_.cisco.destination_interface}:%{DATA:destination.address}/%{NUMBER:destination.port}").extract_into(&input, event)?;
+                    if !cached_grok!("Built %{NOTSPACE} %{NOTSPACE:network.transport} translation from %{NOTSPACE:_temp_.cisco.source_interface}:%{DATA:source.address}/%{NUMBER:source.port}(\\(%{NOTSPACE:source.user.name}\\))? to %{NOTSPACE:_temp_.cisco.destination_interface}:%{DATA:destination.address}/%{NUMBER:destination.port}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2675,7 +2722,7 @@ impl Transform for Default {
                     // Grok pattern: No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))\\((?P<source_user_domain>(?:[^:]*))\\\\%{NOTSPACE:source.user.name}\\) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?
                     // Grok pattern: No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))(\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))(\\((?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))? \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?
                     // Grok pattern: No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: <unknown>[.]?
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "No matching connection for ICMP error message: %{NOTSPACE:network.transport} src (?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) dst (?P<_temp__cisco_destination_interface>(?:[^:]*)):(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))) \\(type %{NUMBER:_temp_.cisco.icmp_type}, code %{NUMBER:_temp_.cisco.icmp_code}\\) on (?:[^:]*) interface.%{SPACE}Original IP payload: %{NOTSPACE:input.type} src (?P<source_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:source.port})? dst (?P<destination_address>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))(/%{NUMBER:destination.port})?[.]?",
@@ -2802,7 +2849,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3006,7 +3055,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: SSH session from (?:%{IP:source.ip} )?on interface %{NOTSPACE:_temp_.cisco.source_interface} for user (?:\\\"?(?:\\*{5}|%{USERNAME:source.user.name})\\\"?) disconnected by SSH server, reason: %{GREEDYDATA:event.reason}
                     // Grok pattern: SSH session from (?:%{IP:source.ip} )?on interface %{NOTSPACE:_temp_.cisco.source_interface} for user (?:\\\"?(?:\\*{5}|%{USERNAME:source.user.name})\\\"?) terminated normally
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "SSH session from (?:%{IP:source.ip} )?on interface %{NOTSPACE:_temp_.cisco.source_interface} for user (?:\\\"?(?:\\*{5}|%{USERNAME:source.user.name})\\\"?) disconnected by SSH server, reason: %{GREEDYDATA:event.reason}"
@@ -3017,7 +3066,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6637,7 +6688,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.cisco.connection_type") {
                     // Grok pattern: (?:(?:(?P<network_transport>(?:(?:UDP|TCP)))|(?P<network_protocol>(?:(?:RTP|RTCP)))))
-                    let _ = cached_grok_mapped!("(?:(?:(?P<network_transport>(?:(?:UDP|TCP)))|(?P<network_protocol>(?:(?:RTP|RTCP)))))", [("network_transport", "network.transport"), ("network_protocol", "network.protocol")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("(?:(?:(?P<network_transport>(?:(?:UDP|TCP)))|(?P<network_protocol>(?:(?:RTP|RTCP)))))", [("network_transport", "network.transport"), ("network_protocol", "network.protocol")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6692,7 +6745,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User authentication %{DATA}:(?:\\s*IP address: %{IP:source.address},)? Uname: %{DATA:server.user.name}$
-                    let _ = cached_grok!("^User authentication %{DATA}:(?:\\s*IP address: %{IP:source.address},)? Uname: %{DATA:server.user.name}$").extract_into(&input, event)?;
+                    if !cached_grok!("^User authentication %{DATA}:(?:\\s*IP address: %{IP:source.address},)? Uname: %{DATA:server.user.name}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6836,7 +6891,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Group = %{NOTSPACE}, Username = %{NOTSPACE:user.name}, IP = %{IP:source.address}, Security negotiation complete for User (%{DATA}) %{DATA}, Inbound SPI = %{DATA}, Outbound SPI = %{DATA}
                     // Grok pattern: Group = %{NOTSPACE}, IP = %{IP:source.address}, Security negotiation complete [a-z\\s]+ (%{DATA}) %{DATA}, Inbound SPI = %{DATA}, Outbound SPI = %{DATA}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "Group = %{NOTSPACE}, Username = %{NOTSPACE:user.name}, IP = %{IP:source.address}, Security negotiation complete for User (%{DATA}) %{DATA}, Inbound SPI = %{DATA}, Outbound SPI = %{DATA}"
@@ -6847,7 +6902,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6856,7 +6913,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Group <%{DATA:_temp_.cisco.webvpn.group_name}> User <%{DATA:source.user.name}> IP <%{IP:source.address}> WebVPN session terminated: %{GREEDYDATA:event.reason}.
                     // Grok pattern: Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User %{NOTSPACE:source.user.name} IP %{IP:source.address} WebVPN session terminated: %{GREEDYDATA:event.reason}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "Group <%{DATA:_temp_.cisco.webvpn.group_name}> User <%{DATA:source.user.name}> IP <%{IP:source.address}> WebVPN session terminated: %{GREEDYDATA:event.reason}."
@@ -6867,7 +6924,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6876,7 +6935,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Group <(?P<_temp__cisco_webvpn_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> WebVPN access GRANTED: \"?%{DATA:url.original}\"?$
                     // Grok pattern: ^Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address} WebVPN access GRANTED: \"?%{DATA:url.original}\"?$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^Group <(?P<_temp__cisco_webvpn_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> WebVPN access GRANTED: \"?%{DATA:url.original}\"?$",
@@ -6895,7 +6954,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6904,7 +6965,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Group <(?P<_temp__cisco_webvpn_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))>
                     // Grok pattern: ^Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^Group <(?P<_temp__cisco_webvpn_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))>",
@@ -6923,7 +6984,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6932,7 +6995,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Group <(?P<_temp__cisco_webvpn_group_name>(?:[^<>]+))> User( <(?P<source_user_name>(?:[^<>]+))>)? IP <(?P<destination_address>(?:[^<>]+))> AnyConnect session (resumed connection|resumed. Connection) from( IP)? <%{NOTSPACE:source.address}>\\.$
                     // Grok pattern: ^Group %{NOTSPACE:_temp_.cisco.webvpn.group_name} User( %{NOTSPACE:source.user.name})? IP %{NOTSPACE:destination.address} AnyConnect session (resumed connection|resumed. Connection) from( IP)? %{NOTSPACE:source.address}\\.$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^Group <(?P<_temp__cisco_webvpn_group_name>(?:[^<>]+))> User( <(?P<source_user_name>(?:[^<>]+))>)? IP <(?P<destination_address>(?:[^<>]+))> AnyConnect session (resumed connection|resumed. Connection) from( IP)? <%{NOTSPACE:source.address}>\\.$",
@@ -6951,7 +7014,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6959,7 +7024,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Certificate was successfully validated. serial number:%{SPACE}%{DATA:_temp_.cisco.serial_number}, subject name:%{SPACE}%{DATA:_temp_.cisco.distinguished_name}\\.
-                    let _ = cached_grok!("Certificate was successfully validated. serial number:%{SPACE}%{DATA:_temp_.cisco.serial_number}, subject name:%{SPACE}%{DATA:_temp_.cisco.distinguished_name}\\.").extract_into(&input, event)?;
+                    if !cached_grok!("Certificate was successfully validated. serial number:%{SPACE}%{DATA:_temp_.cisco.serial_number}, subject name:%{SPACE}%{DATA:_temp_.cisco.distinguished_name}\\.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7098,7 +7165,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Group <(?P<source_user_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> %{GREEDYDATA:event.reason}$
                     // Grok pattern: ^Group %{NOTSPACE:source.user.group.name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address} %{GREEDYDATA:event.reason}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^Group <(?P<source_user_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> %{GREEDYDATA:event.reason}$",
@@ -7114,7 +7181,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7197,7 +7266,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^TunnelGroup <(?P<_temp__cisco_tunnel_group>(?:[^<>]+))> GroupPolicy <(?P<_temp__cisco_group_policy>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> %{GREEDYDATA:event.reason}$
-                    let _ = cached_grok_mapped!("^TunnelGroup <(?P<_temp__cisco_tunnel_group>(?:[^<>]+))> GroupPolicy <(?P<_temp__cisco_group_policy>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> %{GREEDYDATA:event.reason}$", [("_temp__cisco_tunnel_group", "_temp_.cisco.tunnel_group"), ("_temp__cisco_group_policy", "_temp_.cisco.group_policy"), ("source_user_name", "source.user.name"), ("source_address", "source.address")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("^TunnelGroup <(?P<_temp__cisco_tunnel_group>(?:[^<>]+))> GroupPolicy <(?P<_temp__cisco_group_policy>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> %{GREEDYDATA:event.reason}$", [("_temp__cisco_tunnel_group", "_temp_.cisco.tunnel_group"), ("_temp__cisco_group_policy", "_temp_.cisco.group_policy"), ("source_user_name", "source.user.name"), ("source_address", "source.address")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7240,7 +7311,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Group <(?P<source_user_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> Client Type: %{GREEDYDATA:user_agent.original}$
                     // Grok pattern: ^Group %{NOTSPACE:source.user.group.name} User %{NOTSPACE:source.user.name} IP %{NOTSPACE:source.address} Client Type: %{GREEDYDATA:user_agent.original}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^Group <(?P<source_user_group_name>(?:[^<>]+))> User <(?P<source_user_name>(?:[^<>]+))> IP <(?P<source_address>(?:[^<>]+))> Client Type: %{GREEDYDATA:user_agent.original}$",
@@ -7256,7 +7327,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7265,7 +7338,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Starting SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} for %{NOTSPACE:_temp_.cisco.tls_version} session
                     // Grok pattern: ^Starting SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} for %{NOTSPACE:_temp_.cisco.tls_version} session
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Starting SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} for %{NOTSPACE:_temp_.cisco.tls_version} session"
@@ -7276,7 +7349,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7285,7 +7360,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Device completed SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} for %{NOTSPACE:_temp_.cisco.tls_version}
                     // Grok pattern: ^Device completed SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Device completed SSL handshake with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} for %{NOTSPACE:_temp_.cisco.tls_version}"
@@ -7296,7 +7371,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7304,7 +7381,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^SSL session with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} terminated
-                    let _ = cached_grok!("^SSL session with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} terminated").extract_into(&input, event)?;
+                    if !cached_grok!("^SSL session with %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port} terminated").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7312,7 +7391,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Device selects trust-point %{DATA:_temp_.cisco.trustpoint} for %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port}$
-                    let _ = cached_grok!("^Device selects trust-point %{DATA:_temp_.cisco.trustpoint} for %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port}$").extract_into(&input, event)?;
+                    if !cached_grok!("^Device selects trust-point %{DATA:_temp_.cisco.trustpoint} for %{NOTSPACE:_temp_.cisco.peer_type} %{DATA:_temp_.cisco.source_interface}:%{NOTSPACE:source.address}/%{NOTSPACE:source.port} to %{NOTSPACE:destination.address}/%{NOTSPACE:destination.port}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7320,7 +7401,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: \\[(%{SPACE})?%{DATA:_temp_.cisco.burst.object}\\] drop %{NOTSPACE:_temp_.cisco.burst.id} exceeded. Current burst rate is %{INT:_temp_.cisco.burst.current_rate} per second, max configured rate is %{INT:_temp_.cisco.burst.configured_rate}; Current average rate is %{INT:_temp_.cisco.burst.avg_rate} per second, max configured rate is %{INT:_temp_.cisco.burst.configured_avg_rate}; Cumulative total count is %{INT:_temp_.cisco.burst.cumulative_count}
-                    let _ = cached_grok!("\\[(%{SPACE})?%{DATA:_temp_.cisco.burst.object}\\] drop %{NOTSPACE:_temp_.cisco.burst.id} exceeded. Current burst rate is %{INT:_temp_.cisco.burst.current_rate} per second, max configured rate is %{INT:_temp_.cisco.burst.configured_rate}; Current average rate is %{INT:_temp_.cisco.burst.avg_rate} per second, max configured rate is %{INT:_temp_.cisco.burst.configured_avg_rate}; Cumulative total count is %{INT:_temp_.cisco.burst.cumulative_count}").extract_into(&input, event)?;
+                    if !cached_grok!("\\[(%{SPACE})?%{DATA:_temp_.cisco.burst.object}\\] drop %{NOTSPACE:_temp_.cisco.burst.id} exceeded. Current burst rate is %{INT:_temp_.cisco.burst.current_rate} per second, max configured rate is %{INT:_temp_.cisco.burst.configured_rate}; Current average rate is %{INT:_temp_.cisco.burst.avg_rate} per second, max configured rate is %{INT:_temp_.cisco.burst.configured_avg_rate}; Cumulative total count is %{INT:_temp_.cisco.burst.cumulative_count}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7386,7 +7469,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, DHCP configured, no viable servers found for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$
                     // Grok pattern: ^IPAA: DHCP configured, no viable servers found for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, DHCP configured, no viable servers found for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$"
@@ -7397,7 +7480,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7406,7 +7491,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Local pool request succeeded for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$
                     // Grok pattern: ^IPAA: Local pool request succeeded for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Local pool request succeeded for tunnel-group %{NOTSPACE:_temp_.cisco.tunnel_group}$"
@@ -7417,7 +7502,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7427,7 +7514,7 @@ impl Transform for Default {
                     // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Freeing local pool %{NOTSPACE:_temp_.cisco.pool_name} address %{NOTSPACE:_temp_.cisco.pool_address}$
                     // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Freeing local pool address %{NOTSPACE:_temp_.cisco.pool_address}$
                     // Grok pattern: ^IPAA: Freeing local pool %{NOTSPACE:_temp_.cisco.pool_name} address %{NOTSPACE:_temp_.cisco.pool_address}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Freeing local pool %{NOTSPACE:_temp_.cisco.pool_name} address %{NOTSPACE:_temp_.cisco.pool_address}$"
@@ -7441,7 +7528,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7453,7 +7542,7 @@ impl Transform for Default {
                     // Grok pattern: ^IPAA: Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool %{NOTSPACE:_temp_.cisco.pool_name}$
                     // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool$
                     // Grok pattern: ^IPAA: Client assigned %{NOTSPACE:_temp_.cisco.pool_address} from local pool$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, Client assigned from local pool %{IP:_temp_.cisco.pool_address}$"
@@ -7473,7 +7562,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7482,7 +7573,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, %{GREEDYDATA:event.reason}$
                     // Grok pattern: ^IPAA: %{GREEDYDATA:event.reason}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^IPAA: Session=%{NOTSPACE:_temp_.cisco.session_id}, %{GREEDYDATA:event.reason}$"
@@ -7491,7 +7582,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7499,10 +7592,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA} Username:%{USER:source.user.name}\\s+%{GREEDYDATA}$
-                    let _ = cached_grok!(
-                        "^%{DATA} Username:%{USER:source.user.name}\\s+%{GREEDYDATA}$"
-                    )
-                    .extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA} Username:%{USER:source.user.name}\\s+%{GREEDYDATA}$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8289,7 +8383,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Local:%{IPORHOST:source.address}:%{NUMBER:source.port} Remote:%{IPORHOST:destination.address}:%{NUMBER:destination.port} Username:%{DATA:user.name} %{GREEDYDATA:event.reason}
-                    let _ = cached_grok!("Local:%{IPORHOST:source.address}:%{NUMBER:source.port} Remote:%{IPORHOST:destination.address}:%{NUMBER:destination.port} Username:%{DATA:user.name} %{GREEDYDATA:event.reason}").extract_into(&input, event)?;
+                    if !cached_grok!("Local:%{IPORHOST:source.address}:%{NUMBER:source.port} Remote:%{IPORHOST:destination.address}:%{NUMBER:destination.port} Username:%{DATA:user.name} %{GREEDYDATA:event.reason}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8409,7 +8505,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Authentication: rejected, group = %{NOTSPACE:source.user.group.name} user = %{USER:source.user.name} , Session Type: %{NOTSPACE:_temp_.cisco.session_type}
                     // Grok pattern: Group <%{DATA:source.user.group.name}> User <%{DATA:source.user.name}> IP <%{IP:source.address}> Authentication: rejected, Session Type: %{NOTSPACE:_temp_.cisco.session_type}\\.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "Authentication: rejected, group = %{NOTSPACE:source.user.group.name} user = %{USER:source.user.name} , Session Type: %{NOTSPACE:_temp_.cisco.session_type}"
@@ -8420,7 +8516,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8428,7 +8526,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Local:%{IPORHOST:source.address}:%{NUMBER:source.port} Remote:%{IPORHOST:destination.address}:%{NUMBER:destination.port} Username:%{DATA:user.name} %{GREEDYDATA:event.reason}
-                    let _ = cached_grok!("Local:%{IPORHOST:source.address}:%{NUMBER:source.port} Remote:%{IPORHOST:destination.address}:%{NUMBER:destination.port} Username:%{DATA:user.name} %{GREEDYDATA:event.reason}").extract_into(&input, event)?;
+                    if !cached_grok!("Local:%{IPORHOST:source.address}:%{NUMBER:source.port} Remote:%{IPORHOST:destination.address}:%{NUMBER:destination.port} Username:%{DATA:user.name} %{GREEDYDATA:event.reason}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8439,7 +8539,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(Group = %{IP}, )?(IP = %{IP:source.address}, )?%{GREEDYDATA:event.reason}$
-                    let _ = cached_grok!("^(Group = %{IP}, )?(IP = %{IP:source.address}, )?%{GREEDYDATA:event.reason}$").extract_into(&input, event)?;
+                    if !cached_grok!("^(Group = %{IP}, )?(IP = %{IP:source.address}, )?%{GREEDYDATA:event.reason}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8465,7 +8567,7 @@ impl Transform for Default {
                     // Grok pattern: ^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes})
                     // Grok pattern: ^Teardown %{NOTSPACE:network.transport} connection for faddr (?:(?:(?:%{IPV6:destination.address}|%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IPV6:destination.address}|%{IP:destination.address}|(?P<destination_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?gaddr (?:(?:(?:%{IPV6:_temp_.natsrcip}|(?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))))|(?P<_temp__cisco_gaddr_interface>(?:[^:]*)):(?:(?:%{IPV6:_temp_.natsrcip}|(?P<_temp__natsrcip>(?:(?:%{IP}|(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))))/%{NUMBER} laddr (?:(?:(?:%{IPV6:source.address}|%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))))|(?P<_temp__cisco_source_interface>(?:[^:]*)):(?:(?:%{IPV6:source.address}|%{IP:source.address}|(?P<source_domain>(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))))))/%{NUMBER}\\s*(?:\\((?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\))?(\\s*type %{NUMBER:_temp_.cisco.icmp_type} code %{NUMBER:_temp_.cisco.icmp_code})?
                     // Grok pattern: ^Teardown %{NOTSPACE:network.transport} connection %{NOTSPACE:_temp_.cisco.connection_id} from (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address} to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int} duration (?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}(?:%{NUMBER} %{NUMBER})?
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^Teardown %{NOTSPACE:network.transport} (?:state-bypass )?connection %{NOTSPACE:_temp_.cisco.connection_id} (?:for|from) (?P<_temp__cisco_source_interface>(?:[^:]*)):%{DATA:source.address}/%{NUMBER:source.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_source_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_source_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?to (?P<_temp__cisco_destination_interface>(?:[^:]*)):%{DATA:destination.address}/%{NUMBER:destination.port:int}\\s*(?:\\(?(?:(?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?))|\\((?:(?P<_temp__cisco_destination_user_or_sgt>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))|(?P<_temp__cisco_destination_user_or_sgt>(?:(?:, *)?%{NUMBER}(?::%{WORD})?)))\\)))\\)? )?duration (?:(?P<_temp__duration_hms>(?:%{INT}:%{MINUTE}:%{SECOND})) bytes %{NUMBER:network.bytes}) (?P<event_reason>(?:[^:]*)) from (?P<_temp__cisco_termination_initiator>(?:[^:]*)) \\((?P<_temp__cisco_termination_user>(?:(?:\\*\\*\\*\\*\\*|(?:(?:LOCAL\\\\)?(?:(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b))\\\\)?(?:[a-zA-Z0-9._'-]+)\\$?(?:@(?:\\b(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62})(?:\\.(?:[0-9A-Za-z][0-9A-Za-z\\-_]{0,62}))*(\\.?|\\b)))?(?:(?:, *)?%{NUMBER}(?::%{WORD})?)?)|[^$]+)))\\)",
@@ -8839,7 +8941,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9085,7 +9189,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("_temp_.cisco.source_user_or_sgt") {
                     // Grok pattern: (?P<_temp__cisco_source_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?(?:(, *((?:(%{NUMBER:_temp_.cisco.source_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.source_user_security_group_tag_name}))|(?:(%{NUMBER:_temp_.cisco.source_user_security_group_tag}))))|((?:(%{NUMBER:_temp_.cisco.source_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.source_user_security_group_tag_name}))))
                     // Grok pattern: (?P<_temp__cisco_source_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "(?P<_temp__cisco_source_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?(?:(, *((?:(%{NUMBER:_temp_.cisco.source_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.source_user_security_group_tag_name}))|(?:(%{NUMBER:_temp_.cisco.source_user_security_group_tag}))))|((?:(%{NUMBER:_temp_.cisco.source_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.source_user_security_group_tag_name}))))",
@@ -9104,7 +9208,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9112,7 +9218,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.cisco.source_sgt") {
                     // Grok pattern: (?:(, *)?(%{NUMBER:_temp_.cisco.source_user_security_group_tag})?:?%{WORD:_temp_.cisco.source_user_security_group_tag_name}?)
-                    let _ = cached_grok!("(?:(, *)?(%{NUMBER:_temp_.cisco.source_user_security_group_tag})?:?%{WORD:_temp_.cisco.source_user_security_group_tag_name}?)").extract_into(&input, event)?;
+                    if !cached_grok!("(?:(, *)?(%{NUMBER:_temp_.cisco.source_user_security_group_tag})?:?%{WORD:_temp_.cisco.source_user_security_group_tag_name}?)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9133,7 +9241,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("_temp_.cisco.destination_user_or_sgt") {
                     // Grok pattern: (?P<_temp__cisco_destination_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?(?:(, *((?:(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.destination_user_security_group_tag_name}))|(?:(%{NUMBER:_temp_.cisco.destination_user_security_group_tag}))))|((?:(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.destination_user_security_group_tag_name}))))
                     // Grok pattern: (?P<_temp__cisco_destination_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "(?P<_temp__cisco_destination_username>(?:((?:(LOCAL\\\\)?(%{HOSTNAME}\\\\)?))?(?:[^,$)]*)))\\$?\\)?(?:(, *((?:(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.destination_user_security_group_tag_name}))|(?:(%{NUMBER:_temp_.cisco.destination_user_security_group_tag}))))|((?:(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})):(?:(%{WORD:_temp_.cisco.destination_user_security_group_tag_name}))))",
@@ -9152,7 +9260,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9160,7 +9270,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.cisco.destination_sgt") {
                     // Grok pattern: (?:(, *)?(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})?:?%{WORD:_temp_.cisco.destination_user_security_group_tag_name}?)
-                    let _ = cached_grok!("(?:(, *)?(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})?:?%{WORD:_temp_.cisco.destination_user_security_group_tag_name}?)").extract_into(&input, event)?;
+                    if !cached_grok!("(?:(, *)?(%{NUMBER:_temp_.cisco.destination_user_security_group_tag})?:?%{WORD:_temp_.cisco.destination_user_security_group_tag_name}?)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9244,7 +9356,7 @@ impl Transform for Default {
                     // Grok pattern: ((?:(LOCAL\\\\)?(%{HOSTNAME:source.user.domain}\\\\)?))?(?P<source_user_email>(?:(?:(?P<source_user_name>(?:[^@$]+)))@%{HOSTNAME:source.user.domain}))
                     // Grok pattern: ((?:(LOCAL\\\\)?(%{HOSTNAME:source.user.domain}\\\\)?))?(?:(?P<source_user_name>(?:[^@$]+)))
                     // Grok pattern: \\*+
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "((?:(LOCAL\\\\)?(%{HOSTNAME:source.user.domain}\\\\)?))?(?P<source_user_email>(?:(?:(?P<source_user_name>(?:[^@$]+)))@%{HOSTNAME:source.user.domain}))",
@@ -9261,7 +9373,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9270,7 +9384,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("destination.user.name") {
                     // Grok pattern: ((?:(LOCAL\\\\)?(%{HOSTNAME:destination.user.domain}\\\\)?))?(?P<destination_user_email>(?:(?:(?P<destination_user_name>(?:[^@$]+)))@%{HOSTNAME:destination.user.domain}))
                     // Grok pattern: ((?:(LOCAL\\\\)?(%{HOSTNAME:destination.user.domain}\\\\)?))?(?:(?P<destination_user_name>(?:[^@$]+)))
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "((?:(LOCAL\\\\)?(%{HOSTNAME:destination.user.domain}\\\\)?))?(?P<destination_user_email>(?:(?:(?P<destination_user_name>(?:[^@$]+)))@%{HOSTNAME:destination.user.domain}))",
@@ -9286,7 +9400,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9583,8 +9699,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("source.address") {
                     // Grok pattern: ^(?:%{IP:source.ip}|%{GREEDYDATA:source.domain})$
-                    let _ = cached_grok!("^(?:%{IP:source.ip}|%{GREEDYDATA:source.domain})$")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^(?:%{IP:source.ip}|%{GREEDYDATA:source.domain})$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9592,9 +9711,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("destination.address") {
                     // Grok pattern: ^(?:%{IP:destination.ip}|%{GREEDYDATA:destination.domain})$
-                    let _ =
-                        cached_grok!("^(?:%{IP:destination.ip}|%{GREEDYDATA:destination.domain})$")
-                            .extract_into(&input, event)?;
+                    if !cached_grok!("^(?:%{IP:destination.ip}|%{GREEDYDATA:destination.domain})$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9602,8 +9723,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("client.address") {
                     // Grok pattern: ^(?:%{IP:client.ip}|%{GREEDYDATA:client.domain})$
-                    let _ = cached_grok!("^(?:%{IP:client.ip}|%{GREEDYDATA:client.domain})$")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^(?:%{IP:client.ip}|%{GREEDYDATA:client.domain})$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9611,8 +9735,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("server.address") {
                     // Grok pattern: ^(?:%{IP:server.ip}|%{GREEDYDATA:server.domain})$
-                    let _ = cached_grok!("^(?:%{IP:server.ip}|%{GREEDYDATA:server.domain})$")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^(?:%{IP:server.ip}|%{GREEDYDATA:server.domain})$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9735,7 +9862,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.natsrcip") {
                     // Grok pattern: ^(?:%{IP:_temp_.cisco.mapped_source_ip}|%{GREEDYDATA:_temp_.cisco.mapped_source_host})$
-                    let _ = cached_grok!("^(?:%{IP:_temp_.cisco.mapped_source_ip}|%{GREEDYDATA:_temp_.cisco.mapped_source_host})$").extract_into(&input, event)?;
+                    if !cached_grok!("^(?:%{IP:_temp_.cisco.mapped_source_ip}|%{GREEDYDATA:_temp_.cisco.mapped_source_host})$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9743,7 +9872,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("_temp_.natdstip") {
                     // Grok pattern: ^(?:%{IP:_temp_.cisco.mapped_destination_ip}|%{GREEDYDATA:_temp_.cisco.mapped_destination_host})$
-                    let _ = cached_grok!("^(?:%{IP:_temp_.cisco.mapped_destination_ip}|%{GREEDYDATA:_temp_.cisco.mapped_destination_host})$").extract_into(&input, event)?;
+                    if !cached_grok!("^(?:%{IP:_temp_.cisco.mapped_destination_ip}|%{GREEDYDATA:_temp_.cisco.mapped_destination_host})$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10050,7 +10181,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("_temp_.cisco.tls_version") {
                     // Grok pattern: (?P<tls_version_protocol>(?:[A-Z]+))v%{NUMBER:tls.version}
                     // Grok pattern: (?P<tls_version_protocol>(?:[A-Z]+))
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "(?P<tls_version_protocol>(?:[A-Z]+))v%{NUMBER:tls.version}",
@@ -10063,7 +10194,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

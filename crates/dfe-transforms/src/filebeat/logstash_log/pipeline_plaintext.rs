@@ -20,7 +20,7 @@ impl Transform for PipelinePlaintext {
                     // Grok pattern: \\[%{TIMESTAMP_ISO8601:logstash.log.timestamp}\\]\\[(?P<log_level>(?:INFO|ERROR|DEBUG|FATAL|WARN|TRACE))\\s?\\]\\[(?P<logstash_log_module>(?:[\\w\\.]+))\\s*\\]\\[%{NOTSPACE:logstash.log.pipeline_id}\\]\\[%{NOTSPACE:logstash.log.plugin_id}\\] (?P<message>(?:(.|\n)*))
                     // Grok pattern: \\[%{TIMESTAMP_ISO8601:logstash.log.timestamp}\\]\\[(?P<log_level>(?:INFO|ERROR|DEBUG|FATAL|WARN|TRACE))\\s?\\]\\[(?P<logstash_log_module>(?:[\\w\\.]+))\\s*\\]\\[%{NOTSPACE:logstash.log.pipeline_id}\\] (?P<message>(?:(.|\n)*))
                     // Grok pattern: \\[%{TIMESTAMP_ISO8601:logstash.log.timestamp}\\]\\[(?P<log_level>(?:INFO|ERROR|DEBUG|FATAL|WARN|TRACE))\\s?\\]\\[(?P<logstash_log_module>(?:[\\w\\.]+))\\s*\\] (?P<message>(?:(.|\n)*))
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!("\\[%{TIMESTAMP_ISO8601:logstash.log.timestamp}\\]\\[(?P<log_level>(?:INFO|ERROR|DEBUG|FATAL|WARN|TRACE))\\s?\\]\\[(?P<logstash_log_module>(?:[\\w\\.]+))\\s*\\]\\[%{NOTSPACE:logstash.log.pipeline_id}\\]\\[%{NOTSPACE:logstash.log.plugin_id}\\] (?P<message>(?:(.|\n)*))", [("log_level", "log.level"), ("logstash_log_module", "logstash.log.module")]),
                             cached_grok_mapped!("\\[%{TIMESTAMP_ISO8601:logstash.log.timestamp}\\]\\[(?P<log_level>(?:INFO|ERROR|DEBUG|FATAL|WARN|TRACE))\\s?\\]\\[(?P<logstash_log_module>(?:[\\w\\.]+))\\s*\\]\\[%{NOTSPACE:logstash.log.pipeline_id}\\] (?P<message>(?:(.|\n)*))", [("log_level", "log.level"), ("logstash_log_module", "logstash.log.module")]),
@@ -28,7 +28,9 @@ impl Transform for PipelinePlaintext {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             let _cond = { !event.has_value("event.timezone") };

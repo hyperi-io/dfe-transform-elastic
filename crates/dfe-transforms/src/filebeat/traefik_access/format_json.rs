@@ -118,7 +118,9 @@ impl Transform for FormatJson {
             if event.has_value("source.address") {
                 if let Some(input) = event.get_string("source.address") {
                     // Grok pattern: ^\\\\[?%{IP:source.ip}\\\\]?:%{POSINT:source.port}$
-                    let _ = cached_grok!("^\\\\[?%{IP:source.ip}\\\\]?:%{POSINT:source.port}$").extract_into(&input, event)?;
+                    if !cached_grok!("^\\\\[?%{IP:source.ip}\\\\]?:%{POSINT:source.port}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())

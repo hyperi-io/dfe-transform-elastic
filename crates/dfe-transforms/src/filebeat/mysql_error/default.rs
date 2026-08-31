@@ -43,7 +43,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (?:(?:(?P<_tmp_local_timestamp>(?:(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}|%{NUMBER})%{SPACE}%{TIME}))|%{TIMESTAMP_ISO8601:_tmp.timestamp}))%{SPACE}(%{NUMBER:mysql.thread_id:long}%{SPACE})?(\\[%{DATA:log.level}\\]%{SPACE})?(?P<message>(?:(.|\n)+))
                     // Grok pattern: %{GREEDYDATA:message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "(?:(?:(?P<_tmp_local_timestamp>(?:(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}|%{NUMBER})%{SPACE}%{TIME}))|%{TIMESTAMP_ISO8601:_tmp.timestamp}))%{SPACE}(%{NUMBER:mysql.thread_id:long}%{SPACE})?(\\[%{DATA:log.level}\\]%{SPACE})?(?P<message>(?:(.|\n)+))",
@@ -53,7 +53,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -63,7 +65,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: (\\[%{DATA:event.code}\\])%{SPACE}(\\[%{DATA:event.provider}\\])%{SPACE}(?:(.|\n)+)
                         // Grok pattern: %{GREEDYDATA}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "(\\[%{DATA:event.code}\\])%{SPACE}(\\[%{DATA:event.provider}\\])%{SPACE}(?:(.|\n)+)"
@@ -72,7 +74,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

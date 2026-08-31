@@ -33,7 +33,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: ^((?:<%{NONNEGINT:log.syslog.priority:long}>))?%{SYSLOGTIMESTAMP:_tmp.timestamp} (?:(?:%{IP:host.ip}|%{HOSTNAME:host.name})) (?:%{PROG:process.name}(?:\\[%{POSINT:process.pid:int}\\])?): (?P<event_provider>(?:(event log|conn log))): %{GREEDYDATA:_tmp.message}
-                let _ = cached_grok_mapped!("^((?:<%{NONNEGINT:log.syslog.priority:long}>))?%{SYSLOGTIMESTAMP:_tmp.timestamp} (?:(?:%{IP:host.ip}|%{HOSTNAME:host.name})) (?:%{PROG:process.name}(?:\\[%{POSINT:process.pid:int}\\])?): (?P<event_provider>(?:(event log|conn log))): %{GREEDYDATA:_tmp.message}", [("event_provider", "event.provider")]).extract_into(&input, event)?;
+                if !cached_grok_mapped!("^((?:<%{NONNEGINT:log.syslog.priority:long}>))?%{SYSLOGTIMESTAMP:_tmp.timestamp} (?:(?:%{IP:host.ip}|%{HOSTNAME:host.name})) (?:%{PROG:process.name}(?:\\[%{POSINT:process.pid:int}\\])?): (?P<event_provider>(?:(event log|conn log))): %{GREEDYDATA:_tmp.message}", [("event_provider", "event.provider")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
             }
 
             let _cond = {
@@ -99,7 +101,7 @@ impl Transform for Default {
                 // Grok pattern: ^(?:Users: (---|(%{DATA:user.domain}\\\\)?%{DATA:user.name}), Source IP: (---|127.0.0.1|%{IP:source.address}), Computer name: (---|%{HOSTNAME:source.domain})), Application: %{DATA:qnap.nas.application}, Category: %{DATA:qnap.nas.category}, Content: %{DATA:message}$
                 // Grok pattern: ^(?:Users: (---|(%{DATA:user.domain}\\\\)?%{DATA:user.name}), Source IP: (---|127.0.0.1|%{IP:source.address}), Computer name: (---|%{HOSTNAME:source.domain})), Content: %{DATA:message}$
                 // Grok pattern: ^(?:Users: (---|(%{DATA:user.domain}\\\\)?%{DATA:user.name}), Source IP: (---|127.0.0.1|%{IP:source.address}), Computer name: (---|%{HOSTNAME:source.domain})), Connection type: %{DATA:qnap.nas.connection_type}, Accessed resources: (?:(\\[%{DATA:qnap.nas.application}\\] )?(---|(?P<qnap_nas_file_path>(?:[_%\\(\\)!$@:.,+~\\-\\s[:alnum:]]*(\\/[_%\\(\\)!$@:.,+~\\-\\s[:alnum:]]*)+))|%{DATA:qnap.nas.application})), Action: %{DATA:event.action}$
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!(
                             "^(?:Users: (---|(%{DATA:user.domain}\\\\)?%{DATA:user.name}), Source IP: (---|127.0.0.1|%{IP:source.address}), Computer name: (---|%{HOSTNAME:source.domain})), Application: %{DATA:qnap.nas.application}, Category: %{DATA:qnap.nas.category}, Content: %{DATA:message}$"
@@ -114,7 +116,9 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             // ignore_failure: true
@@ -124,7 +128,7 @@ impl Transform for Default {
                         // Grok pattern: ^\\[Shared Folders\\] (?P<event_action>(?:(Created|Deleted) %{DATA})) \"%{DATA:qnap.nas.file.path}\"\\.$
                         // Grok pattern: ^\\[User Groups\\] (?P<event_action>(?:(Created|Deleted) %{DATA})) \"%{DATA:group.name}\"\\.$
                         // Grok pattern: ^\\[Users\\] (?:((?P<event_action>(?:(Created|Deleted) %{DATA}))|%{DATA:event.action} of user)) \"%{DATA:user.target.name}\"\\.$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok_mapped!(
                                     "^\\[Shared Folders\\] (?P<event_action>(?:(Created|Deleted) %{DATA})) \"%{DATA:qnap.nas.file.path}\"\\.$",
@@ -141,7 +145,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())
@@ -220,7 +226,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("qnap.nas.file.path") {
                         // Grok pattern: (?P<file_path>(?:[_%\\(\\)!$@:.,+~\\-\\s[:alnum:]]*(\\/[_%\\(\\)!$@:.,+~\\-\\s[:alnum:]]*)*)) -> (?P<qnap_nas_file_new_path>(?:[_%\\(\\)!$@:.,+~\\-\\s[:alnum:]]*(\\/[_%\\(\\)!$@:.,+~\\-\\s[:alnum:]]*)*))
                         // Grok pattern: (?P<file_path>(?:[_%\\(\\)!$@:.,+~\\-\\s[:alnum:]]*(\\/[_%\\(\\)!$@:.,+~\\-\\s[:alnum:]]*)*))
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok_mapped!(
                                     "(?P<file_path>(?:[_%\\(\\)!$@:.,+~\\-\\s[:alnum:]]*(\\/[_%\\(\\)!$@:.,+~\\-\\s[:alnum:]]*)*)) -> (?P<qnap_nas_file_new_path>(?:[_%\\(\\)!$@:.,+~\\-\\s[:alnum:]]*(\\/[_%\\(\\)!$@:.,+~\\-\\s[:alnum:]]*)*))",
@@ -236,7 +242,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())
@@ -247,8 +255,11 @@ impl Transform for Default {
                 if event.has_value("file.path") {
                     if let Some(input) = event.get_string("file.path") {
                         // Grok pattern: \\.%{DATA:file.extension}$
-                        let _ = cached_grok!("\\.%{DATA:file.extension}$")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("\\.%{DATA:file.extension}$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

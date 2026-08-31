@@ -201,8 +201,11 @@ impl Transform for Default {
             if event.has_value("zeek.sip.seq") {
                 if let Some(input) = event.get_string("zeek.sip.seq") {
                     // Grok pattern: %{NUMBER:zeek.sip.sequence.number}
-                    let _ = cached_grok!("%{NUMBER:zeek.sip.sequence.number}")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("%{NUMBER:zeek.sip.sequence.number}")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

@@ -504,9 +504,20 @@ impl Transform for Default {
                 if _cond {
                     event.append("event.category", json!("malware"))?;
                 }
-                // SKIPPED: condition not transpiled: ctx.event?.category != null && !(ctx.event.action.contains("malware")) && (ctx.checkpoint?.protection_type != null || ctx.cef.extensions?.flexString2Label == "Attack Information")
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("event.category")
+                        && !(event.get("event.action").is_some_and(|v| match v {
+                            serde_json::Value::Array(a) => {
+                                a.iter().any(|x| x.as_str() == Some("malware"))
+                            }
+                            serde_json::Value::String(s) => s.contains("malware"),
+                            _ => false,
+                        }))
+                        && (event.has_value("checkpoint.protection_type")
+                            || event.get_str("cef.extensions.flexString2Label")
+                                == Some("Attack Information"))
+                };
+                if _cond {
                     event.append("event.category", json!("intrusion_detection"))?;
                 }
                 if event.has_value("checkpoint.event_count") {
@@ -613,7 +624,7 @@ impl Transform for Default {
                         // Grok pattern: ^(?:(?:%{SYSLOGTIMESTAMP:_tmp.timestamp}|%{TIMESTAMP_ISO8601:_tmp.timestamp8601}))
                         // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:(?:%{SYSLOGTIMESTAMP:_tmp.timestamp}|%{TIMESTAMP_ISO8601:_tmp.timestamp8601}))
                         // Grok pattern: ^(?:<%{NONNEGINT:log.syslog.priority:long}>)%{NONNEGINT} (?:(?:%{SYSLOGTIMESTAMP:_tmp.timestamp}|%{TIMESTAMP_ISO8601:_tmp.timestamp8601}))
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^(?:(?:%{SYSLOGTIMESTAMP:_tmp.timestamp}|%{TIMESTAMP_ISO8601:_tmp.timestamp8601})) "
@@ -627,7 +638,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();

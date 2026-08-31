@@ -82,14 +82,16 @@ impl Transform for PipelineJson {
                 if let Some(input) = event.get_string("elasticsearch.audit.origin.address") {
                     // Grok pattern: \\[%{IPORHOST:source.ip}\\]:%{INT:source.port:int}
                     // Grok pattern: %{IPORHOST:source.ip}:%{INT:source.port:int}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("\\[%{IPORHOST:source.ip}\\]:%{INT:source.port:int}"),
                             cached_grok!("%{IPORHOST:source.ip}:%{INT:source.port:int}"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

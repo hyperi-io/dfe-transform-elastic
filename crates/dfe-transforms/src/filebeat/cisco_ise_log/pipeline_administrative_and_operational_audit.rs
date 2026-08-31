@@ -22,7 +22,9 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                    let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                    if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -30,7 +32,9 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                    let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                    if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -40,7 +44,9 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("cisco_ise.log.log_details_raw") {
                     // Grok pattern: ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, OperationMessageText={%{DATA:cisco_ise.log.log_details.OperationMessageText}}
-                    let _ = cached_grok!("ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, OperationMessageText={%{DATA:cisco_ise.log.log_details.OperationMessageText}}").extract_into(&input, event)?;
+                    if !cached_grok!("ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, OperationMessageText={%{DATA:cisco_ise.log.log_details.OperationMessageText}}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -52,7 +58,9 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
             if let Err(err) = (|| -> Result<()> {
                 if let Some(input) = event.get_string("cisco_ise.log.log_details_raw") {
                     // Grok pattern: ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, AdminInterface=%{DATA:cisco_ise.log.log_details.AdminInterface}, AdminIPAddress=%{DATA:cisco_ise.log.log_details.AdminIPAddress}, , OperationMessageText=%{DATA:cisco_ise.log.log_details.OperationMessageText}, AcsInstance=%{GREEDYDATA:cisco_ise.log.log_details.AcsInstance}
-                    let _ = cached_grok!("ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, AdminInterface=%{DATA:cisco_ise.log.log_details.AdminInterface}, AdminIPAddress=%{DATA:cisco_ise.log.log_details.AdminIPAddress}, , OperationMessageText=%{DATA:cisco_ise.log.log_details.OperationMessageText}, AcsInstance=%{GREEDYDATA:cisco_ise.log.log_details.AcsInstance}").extract_into(&input, event)?;
+                    if !cached_grok!("ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, AdminInterface=%{DATA:cisco_ise.log.log_details.AdminInterface}, AdminIPAddress=%{DATA:cisco_ise.log.log_details.AdminIPAddress}, , OperationMessageText=%{DATA:cisco_ise.log.log_details.OperationMessageText}, AcsInstance=%{GREEDYDATA:cisco_ise.log.log_details.AcsInstance}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })() {
@@ -117,7 +125,7 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
                     // Grok pattern: ConfigChangeData=%{DATA:cisco_ise.log.log_details.ConfigChangeData}, ObjectType=%{DATA:cisco_ise.log.log_details.ObjectType}, ObjectName=%{DATA:cisco_ise.log.log_details.ObjectName}, OperationMessageText=%{GREEDYDATA:cisco_ise.log.log_details.OperationMessageText}
                     // Grok pattern: ObjectType=%{DATA:cisco_ise.log.log_details.ObjectType}, ObjectName=%{DATA:cisco_ise.log.log_details.ObjectName}, Component=%{DATA:cisco_ise.log.log_details.Component}, ObjectInternalID=%{GREEDYDATA:cisco_ise.log.log_details.ObjectInternalID}
                     // Grok pattern: ConfigChangeData=%{DATA:cisco_ise.log.log_details.ConfigChangeData}, ObjectType=%{DATA:cisco_ise.log.log_details.ObjectType}, ObjectName=%{GREEDYDATA:cisco_ise.log.log_details.ObjectName}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("ConfigChangeData=%{DATA:cisco_ise.log.log_details.ConfigChangeData}, ObjectType=%{DATA:cisco_ise.log.log_details.ObjectType}, ObjectName=%{DATA:cisco_ise.log.log_details.ObjectName}, Component=%{DATA:cisco_ise.log.log_details.Component}, ObjectInternalID=%{GREEDYDATA:cisco_ise.log.log_details.ObjectInternalID}"),
                             cached_grok!("ConfigChangeData=%{DATA:cisco_ise.log.log_details.ConfigChangeData}, ObjectType=%{DATA:cisco_ise.log.log_details.ObjectType}, ObjectName=%{DATA:cisco_ise.log.log_details.ObjectName}, OperationMessageText=%{GREEDYDATA:cisco_ise.log.log_details.OperationMessageText}"),
@@ -126,7 +134,9 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -143,7 +153,9 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("cisco_ise.log.log_details.ConfigChangeData") {
                     // Grok pattern: ^%{DATA:_tmp.temp}, Log Severity Level = %{DATA:cisco_ise.log.log_details.LogSeverityLevel}\\\\,Local Logging = %{DATA:cisco_ise.log.log_details.LocalLogging}\\\\,Assigned Targets = {%{DATA:cisco_ise.log.log_details.AssignedTargets}}
-                    let _ = cached_grok!("^%{DATA:_tmp.temp}, Log Severity Level = %{DATA:cisco_ise.log.log_details.LogSeverityLevel}\\\\,Local Logging = %{DATA:cisco_ise.log.log_details.LocalLogging}\\\\,Assigned Targets = {%{DATA:cisco_ise.log.log_details.AssignedTargets}}").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:_tmp.temp}, Log Severity Level = %{DATA:cisco_ise.log.log_details.LogSeverityLevel}\\\\,Local Logging = %{DATA:cisco_ise.log.log_details.LocalLogging}\\\\,Assigned Targets = {%{DATA:cisco_ise.log.log_details.AssignedTargets}}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -155,7 +167,9 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("cisco_ise.log.log_details_raw") {
                     // Grok pattern: ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, AdminInterface=%{DATA:cisco_ise.log.log_details.AdminInterface}, AdminIPAddress=%{DATA:cisco_ise.log.log_details.AdminIPAddress}, %{GREEDYDATA:cisco_ise.log.log_details.log_detail}
-                    let _ = cached_grok!("ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, AdminInterface=%{DATA:cisco_ise.log.log_details.AdminInterface}, AdminIPAddress=%{DATA:cisco_ise.log.log_details.AdminIPAddress}, %{GREEDYDATA:cisco_ise.log.log_details.log_detail}").extract_into(&input, event)?;
+                    if !cached_grok!("ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, AdminInterface=%{DATA:cisco_ise.log.log_details.AdminInterface}, AdminIPAddress=%{DATA:cisco_ise.log.log_details.AdminIPAddress}, %{GREEDYDATA:cisco_ise.log.log_details.log_detail}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -169,7 +183,7 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
                     // Grok pattern: AdminSession=%{DATA:cisco_ise.log.log_details.AdminSession}, AdminName=%{DATA:cisco_ise.log.log_details.AdminName}, ConfigChangeData=%{GREEDYDATA:cisco_ise.log.log_details.ConfigChangeData}
                     // Grok pattern: AdminName=%{DATA:cisco_ise.log.log_details.AdminName}, ConfigChangeData=%{GREEDYDATA:cisco_ise.log.log_details.ConfigChangeData}
                     // Grok pattern: AdminName=%{DATA:cisco_ise.log.log_details.AdminName}, %{GREEDYDATA:cisco_ise.log.log_details.log_description}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("AdminSession=%{DATA:cisco_ise.log.log_details.AdminSession}, AdminName=%{DATA:cisco_ise.log.log_details.AdminName}, ConfigChangeData=%{GREEDYDATA:cisco_ise.log.log_details.ConfigChangeData}"),
                             cached_grok!("AdminName=%{DATA:cisco_ise.log.log_details.AdminName}, ConfigChangeData=%{GREEDYDATA:cisco_ise.log.log_details.ConfigChangeData}"),
@@ -177,7 +191,9 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -233,7 +249,9 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("cisco_ise.log.log_details.ConfigChangeData") {
                     // Grok pattern: ^%{DATA:_tmp.temp}, %{GREEDYDATA:_tmp.ConfigChangeData}$
-                    let _ = cached_grok!("^%{DATA:_tmp.temp}, %{GREEDYDATA:_tmp.ConfigChangeData}$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:_tmp.temp}, %{GREEDYDATA:_tmp.ConfigChangeData}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -402,7 +420,9 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("cisco_ise.log.message.description") {
                     // Grok pattern: ^%{DATA:event.action}:
-                    let _ = cached_grok!("^%{DATA:event.action}:").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:event.action}:").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -951,14 +971,16 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
                 if let Some(input) = event.get_string("cisco_ise.log.log_details.OperationMessageText") {
                     // Grok pattern: (?:Accepted|Failed) password for (?:invalid user )?%{DATA:user.name} from %{IP:source.ip}
                     // Grok pattern: Invalid user %{DATA:user.name} from %{IP:source.ip}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("(?:Accepted|Failed) password for (?:invalid user )?%{DATA:user.name} from %{IP:source.ip}"),
                             cached_grok!("Invalid user %{DATA:user.name} from %{IP:source.ip}"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

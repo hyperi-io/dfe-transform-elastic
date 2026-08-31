@@ -38,7 +38,7 @@ impl Transform for ExtendedMappings {
                     // Grok pattern: ^Changed Rationale Template Text for Check '%{DATA:rule.name}'$
                     // Grok pattern: ^Changed Fix Instructions Template Strategy for Check '%{DATA:rule.name}' from '%{DATA:kolide.audit.change.from}' to '%{DATA:kolide.audit.change.to}'$
                     // Grok pattern: ^Changed Rationale Template Strategy for Check '%{DATA:rule.name}' from '%{DATA:kolide.audit.change.from}' to '%{DATA:kolide.audit.change.to}'$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Deleted Check \"%{DATA:rule.name}\"$"),
                             cached_grok!("^Reverted Check \"%{DATA:rule.name}\" to a prior version$"),
@@ -52,7 +52,9 @@ impl Transform for ExtendedMappings {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -65,14 +67,16 @@ impl Transform for ExtendedMappings {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Updated device trust settings for '%{DATA:rule.name}' from: %{DATA:kolide.audit.change.from} to: %{GREEDYDATA:kolide.audit.change.to}$
                     // Grok pattern: ^Updated run targets for '%{DATA:rule.name}' from: %{DATA:kolide.audit.change.from} to: %{GREEDYDATA:kolide.audit.change.to}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Updated device trust settings for '%{DATA:rule.name}' from: %{DATA:kolide.audit.change.from} to: %{GREEDYDATA:kolide.audit.change.to}$"),
                             cached_grok!("^Updated run targets for '%{DATA:rule.name}' from: %{DATA:kolide.audit.change.from} to: %{GREEDYDATA:kolide.audit.change.to}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -85,14 +89,16 @@ impl Transform for ExtendedMappings {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Paused check '%{DATA:rule.name}'$
                     // Grok pattern: ^Enabled check '%{DATA:rule.name}'$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Paused check '%{DATA:rule.name}'$"),
                             cached_grok!("^Enabled check '%{DATA:rule.name}'$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -104,7 +110,9 @@ impl Transform for ExtendedMappings {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Changed device name from '%{DATA:kolide.audit.change.from}' to '%{DATA:kolide.audit.change.to}'$
-                    let _ = cached_grok!("^Changed device name from '%{DATA:kolide.audit.change.from}' to '%{DATA:kolide.audit.change.to}'$").extract_into(&input, event)?;
+                    if !cached_grok!("^Changed device name from '%{DATA:kolide.audit.change.from}' to '%{DATA:kolide.audit.change.to}'$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -117,14 +125,16 @@ impl Transform for ExtendedMappings {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Cancelled pending deletion for '%{DATA:host.name}' \\(%{DATA:kolide.audit.target.device_serial}\\)$
                     // Grok pattern: ^Cancelled pending deletion for '%{DATA:host.name}'$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Cancelled pending deletion for '%{DATA:host.name}' \\(%{DATA:kolide.audit.target.device_serial}\\)$"),
                             cached_grok!("^Cancelled pending deletion for '%{DATA:host.name}'$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -136,7 +146,9 @@ impl Transform for ExtendedMappings {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Requested data export for device '%{DATA:host.name}' \\(id %{DATA:kolide.audit.target.device_id}\\)$
-                    let _ = cached_grok!("^Requested data export for device '%{DATA:host.name}' \\(id %{DATA:kolide.audit.target.device_id}\\)$").extract_into(&input, event)?;
+                    if !cached_grok!("^Requested data export for device '%{DATA:host.name}' \\(id %{DATA:kolide.audit.target.device_id}\\)$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -149,14 +161,16 @@ impl Transform for ExtendedMappings {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Approved pending device registration for \"%{DATA:user.target.email}\" and device \"%{DATA:host.name}\"\\. Reason: \"%{DATA:kolide.audit.reason}\"$
                     // Grok pattern: ^Denied pending device registration for \"%{DATA:user.target.email}\" and device \"%{DATA:host.name}\"\\. Reason: \"%{DATA:kolide.audit.reason}\"$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Approved pending device registration for \"%{DATA:user.target.email}\" and device \"%{DATA:host.name}\"\\. Reason: \"%{DATA:kolide.audit.reason}\"$"),
                             cached_grok!("^Denied pending device registration for \"%{DATA:user.target.email}\" and device \"%{DATA:host.name}\"\\. Reason: \"%{DATA:kolide.audit.reason}\"$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -168,7 +182,9 @@ impl Transform for ExtendedMappings {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Reopened previously %{WORD:kolide.audit.target.prev_status} device registration for \"%{DATA:user.target.email}\" and device \"%{DATA:host.name}\"\\.$
-                    let _ = cached_grok!("^Reopened previously %{WORD:kolide.audit.target.prev_status} device registration for \"%{DATA:user.target.email}\" and device \"%{DATA:host.name}\"\\.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Reopened previously %{WORD:kolide.audit.target.prev_status} device registration for \"%{DATA:user.target.email}\" and device \"%{DATA:host.name}\"\\.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -180,7 +196,9 @@ impl Transform for ExtendedMappings {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Device \"%{DATA:host.name}\" \\(%{DATA:kolide.audit.target.device_serial}\\) registration self-approved by %{DATA:user.target.email} from another trusted device$
-                    let _ = cached_grok!("^Device \"%{DATA:host.name}\" \\(%{DATA:kolide.audit.target.device_serial}\\) registration self-approved by %{DATA:user.target.email} from another trusted device$").extract_into(&input, event)?;
+                    if !cached_grok!("^Device \"%{DATA:host.name}\" \\(%{DATA:kolide.audit.target.device_serial}\\) registration self-approved by %{DATA:user.target.email} from another trusted device$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -193,14 +211,16 @@ impl Transform for ExtendedMappings {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Removed device registration for \"%{DATA:host.name}\" that was registered to \"%{DATA:user.target.email}\"$
                     // Grok pattern: ^Removed device registration for \"%{DATA:host.name}\" that was registered to %{GREEDYDATA:user.target.email}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Removed device registration for \"%{DATA:host.name}\" that was registered to \"%{DATA:user.target.email}\"$"),
                             cached_grok!("^Removed device registration for \"%{DATA:host.name}\" that was registered to %{GREEDYDATA:user.target.email}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -212,7 +232,9 @@ impl Transform for ExtendedMappings {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^TOFU device registration re-enabled for '%{DATA:host.name}'$
-                    let _ = cached_grok!("^TOFU device registration re-enabled for '%{DATA:host.name}'$").extract_into(&input, event)?;
+                    if !cached_grok!("^TOFU device registration re-enabled for '%{DATA:host.name}'$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -225,14 +247,16 @@ impl Transform for ExtendedMappings {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Updated device registration for \"%{DATA:host.name}\" changed auth mode from \"%{DATA:kolide.audit.change.from}\" to \"%{DATA:kolide.audit.change.to}\" and changed allowed groups from %{DATA:kolide.audit.change.groups_from} to %{GREEDYDATA:kolide.audit.change.groups_to}$
                     // Grok pattern: ^Updated device registration for \"%{DATA:host.name}\" changed auth mode from \"%{DATA:kolide.audit.change.from}\" to \"%{GREEDYDATA:kolide.audit.change.to}\"$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Updated device registration for \"%{DATA:host.name}\" changed auth mode from \"%{DATA:kolide.audit.change.from}\" to \"%{DATA:kolide.audit.change.to}\" and changed allowed groups from %{DATA:kolide.audit.change.groups_from} to %{GREEDYDATA:kolide.audit.change.groups_to}$"),
                             cached_grok!("^Updated device registration for \"%{DATA:host.name}\" changed auth mode from \"%{DATA:kolide.audit.change.from}\" to \"%{GREEDYDATA:kolide.audit.change.to}\"$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -247,7 +271,7 @@ impl Transform for ExtendedMappings {
                     // Grok pattern: ^Changed 'Allows %{DATA:kolide.audit.target.platform} device registration' from %{DATA:kolide.audit.change.from} to %{GREEDYDATA:kolide.audit.change.to}$
                     // Grok pattern: ^Set 'Required %{DATA:kolide.audit.target.platform} checks' to %{GREEDYDATA:kolide.audit.target.check_names}$
                     // Grok pattern: ^Updated device registration configuration: %{GREEDYDATA:kolide.audit.target.config_type}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Changed Default Authentication Mode changed who can authenticate from %{DATA:kolide.audit.change.from} to %{GREEDYDATA:kolide.audit.change.to}$"),
                             cached_grok!("^Changed 'Allows %{DATA:kolide.audit.target.platform} device registration' from %{DATA:kolide.audit.change.from} to %{GREEDYDATA:kolide.audit.change.to}$"),
@@ -256,7 +280,9 @@ impl Transform for ExtendedMappings {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -268,7 +294,9 @@ impl Transform for ExtendedMappings {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Changed Default Authentication Mode\" who can authenticate from \"%{DATA:kolide.audit.change.from}\" to \"%{GREEDYDATA:kolide.audit.change.to}\"$
-                    let _ = cached_grok!("^Changed Default Authentication Mode\" who can authenticate from \"%{DATA:kolide.audit.change.from}\" to \"%{GREEDYDATA:kolide.audit.change.to}\"$").extract_into(&input, event)?;
+                    if !cached_grok!("^Changed Default Authentication Mode\" who can authenticate from \"%{DATA:kolide.audit.change.from}\" to \"%{GREEDYDATA:kolide.audit.change.to}\"$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -283,7 +311,7 @@ impl Transform for ExtendedMappings {
                     // Grok pattern: ^Denied exemption request for \"%{DATA:user.target.email}\" for check: \"%{DATA:rule.name}\"\\. Reason: \"%{DATA:kolide.audit.reason}\"$
                     // Grok pattern: ^Reopened previously %{WORD:kolide.audit.target.prev_status} exemption for \"%{DATA:rule.name}\"\\.$
                     // Grok pattern: ^%{DATA:user.target.email} withdrew exemption request for check: \"%{DATA:rule.name}\"$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Approved exemption request for \"%{DATA:user.target.email}\" for check: \"%{DATA:rule.name}\"\\. Reason: \"%{DATA:kolide.audit.reason}\"$"),
                             cached_grok!("^Denied exemption request for \"%{DATA:user.target.email}\" for check: \"%{DATA:rule.name}\"\\. Reason: \"%{DATA:kolide.audit.reason}\"$"),
@@ -292,7 +320,9 @@ impl Transform for ExtendedMappings {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -305,14 +335,16 @@ impl Transform for ExtendedMappings {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Exempted all future issues for \"%{DATA:rule.name}\" for device: \"%{DATA:host.name}\"\\. Reason: %{DATA:kolide.audit.reason}\\. \\(Expires %{DATA:kolide.audit.expires_at}\\)$
                     // Grok pattern: ^Exempted issue %{DATA:kolide.audit.target.issue_id}: '%{DATA:rule.name}', reason: '%{DATA:kolide.audit.reason}'$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Exempted all future issues for \"%{DATA:rule.name}\" for device: \"%{DATA:host.name}\"\\. Reason: %{DATA:kolide.audit.reason}\\. \\(Expires %{DATA:kolide.audit.expires_at}\\)$"),
                             cached_grok!("^Exempted issue %{DATA:kolide.audit.target.issue_id}: '%{DATA:rule.name}', reason: '%{DATA:kolide.audit.reason}'$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -327,7 +359,7 @@ impl Transform for ExtendedMappings {
                     // Grok pattern: ^Verified factor enrollment for '%{DATA:user.target.name}'$
                     // Grok pattern: ^Merged the person, %{DATA:kolide.audit.change.from}, with %{GREEDYDATA:kolide.audit.change.to}$
                     // Grok pattern: ^Restored the person, %{DATA:user.target.name}, to it.s original state$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Reset factor enrollment for '%{DATA:user.target.name}'$"),
                             cached_grok!("^Verified factor enrollment for '%{DATA:user.target.name}'$"),
@@ -336,7 +368,9 @@ impl Transform for ExtendedMappings {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -353,7 +387,7 @@ impl Transform for ExtendedMappings {
                     // Grok pattern: ^Sign on settings were updated for \"%{DATA:kolide.audit.target.app_name}\" from: %{DATA:kolide.audit.change.from} to: %{GREEDYDATA:kolide.audit.change.to}$
                     // Grok pattern: ^Updated managed app \"#?%{DATA:kolide.audit.target.app_name}\" directly assigned people membership from %{DATA:kolide.audit.change.from} to %{GREEDYDATA:kolide.audit.change.to}$
                     // Grok pattern: ^Updated managed app \"#?%{DATA:kolide.audit.target.app_name}\" directly assigned person groups membership from %{DATA:kolide.audit.change.from} to %{GREEDYDATA:kolide.audit.change.to}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Created managed app \"%{DATA:kolide.audit.target.app_name}\"$"),
                             cached_grok!("^Deleted managed app \"%{DATA:kolide.audit.target.app_name}\" with #?%{NUMBER:kolide.audit.target.count:long} people$"),
@@ -364,7 +398,9 @@ impl Transform for ExtendedMappings {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -378,7 +414,7 @@ impl Transform for ExtendedMappings {
                     // Grok pattern: ^Mass-Removed members from device group: \"%{DATA:kolide.audit.target.group_name}\"\\. Device ID\\(s\\) removed: %{GREEDYDATA:kolide.audit.change.to}$
                     // Grok pattern: ^Created device group \"%{DATA:kolide.audit.target.group_name}\"$
                     // Grok pattern: ^Deleted device group \"%{DATA:kolide.audit.target.group_name}\" with %{NUMBER:kolide.audit.target.count:long} members$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Mass-Removed members from device group: \"%{DATA:kolide.audit.target.group_name}\"\\. Device ID\\(s\\) removed: %{GREEDYDATA:kolide.audit.change.to}$"),
                             cached_grok!("^Created device group \"%{DATA:kolide.audit.target.group_name}\"$"),
@@ -386,7 +422,9 @@ impl Transform for ExtendedMappings {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -404,7 +442,7 @@ impl Transform for ExtendedMappings {
                     // Grok pattern: ^Deleted the log pipeline destination '%{DATA:kolide.audit.target.destination_name}'$
                     // Grok pattern: ^Updated the %{DATA:kolide.audit.target.destination_type} log destination '%{DATA:kolide.audit.target.destination_name}'$
                     // Grok pattern: ^Created a %{DATA:kolide.audit.target.destination_type} log pipeline destination named '%{DATA:kolide.audit.target.destination_name}'$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Added device property logger '%{DATA:kolide.audit.target.logger_name}'$"),
                             cached_grok!("^Removed device property logger '%{DATA:kolide.audit.target.logger_name}'$"),
@@ -416,7 +454,9 @@ impl Transform for ExtendedMappings {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -436,7 +476,7 @@ impl Transform for ExtendedMappings {
                     // Grok pattern: ^Enabled osquery FIM category '%{DATA:kolide.audit.target.fim_category}'$
                     // Grok pattern: ^Disabled osquery FIM category '%{DATA:kolide.audit.target.fim_category}'$
                     // Grok pattern: ^Deleted the osquery FIM category '%{DATA:kolide.audit.target.fim_category}'$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Updated the osquery decorator '%{DATA:kolide.audit.target.osquery_name}'$"),
                             cached_grok!("^Added an osquery decorator '%{DATA:kolide.audit.target.osquery_name}'$"),
@@ -450,7 +490,9 @@ impl Transform for ExtendedMappings {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -472,7 +514,7 @@ impl Transform for ExtendedMappings {
                     // Grok pattern: ^Enabled osquery pack '%{DATA:kolide.audit.target.pack_name}'$
                     // Grok pattern: ^Disabled osquery pack '%{DATA:kolide.audit.target.pack_name}'$
                     // Grok pattern: ^Deleted the osquery pack '%{DATA:kolide.audit.target.pack_name}'$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Created discovery query '%{DATA:kolide.audit.target.query_name}'$"),
                             cached_grok!("^Updated the osquery discovery query '%{DATA:kolide.audit.target.query_name}'$"),
@@ -488,7 +530,9 @@ impl Transform for ExtendedMappings {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -506,7 +550,7 @@ impl Transform for ExtendedMappings {
                     // Grok pattern: ^Unpublished Live Query Campaign ID %{NUMBER:kolide.audit.target.campaign_id}$
                     // Grok pattern: ^CSV Downloaded For Live Query Campaign ID %{NUMBER:kolide.audit.target.campaign_id}$
                     // Grok pattern: ^Published Live Query Campaign ID %{NUMBER:kolide.audit.target.campaign_id}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Created and ran Live Query Campaign ID %{DATA:kolide.audit.target.campaign_id} that targets %{DATA} that uses table\\(s\\): %{GREEDYDATA:kolide.audit.target.tables}$"),
                             cached_grok!("^Updated and ran Live Query Campaign ID %{DATA:kolide.audit.target.campaign_id} that targets %{DATA} that uses table\\(s\\): %{GREEDYDATA:kolide.audit.target.tables}$"),
@@ -518,7 +562,9 @@ impl Transform for ExtendedMappings {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -531,14 +577,16 @@ impl Transform for ExtendedMappings {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Okta event hook received for '%{DATA:kolide.audit.target.okta_event}'$
                     // Grok pattern: ^Okta event hooks verified$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Okta event hook received for '%{DATA:kolide.audit.target.okta_event}'$"),
                             cached_grok!("^Okta event hooks verified$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -550,7 +598,9 @@ impl Transform for ExtendedMappings {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Updated billing email to '%{DATA:kolide.audit.change.to}' from '%{DATA:kolide.audit.change.from}'$
-                    let _ = cached_grok!("^Updated billing email to '%{DATA:kolide.audit.change.to}' from '%{DATA:kolide.audit.change.from}'$").extract_into(&input, event)?;
+                    if !cached_grok!("^Updated billing email to '%{DATA:kolide.audit.change.to}' from '%{DATA:kolide.audit.change.from}'$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -563,14 +613,16 @@ impl Transform for ExtendedMappings {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Changed 'Privacy Center Access Restriction Settings' from '%{DATA:kolide.audit.change.from}' to '%{DATA:kolide.audit.change.to}'$
                     // Grok pattern: ^Changed Privacy Center Custom Resource Section visibility from %{DATA:kolide.audit.change.from} to %{GREEDYDATA:kolide.audit.change.to}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Changed 'Privacy Center Access Restriction Settings' from '%{DATA:kolide.audit.change.from}' to '%{DATA:kolide.audit.change.to}'$"),
                             cached_grok!("^Changed Privacy Center Custom Resource Section visibility from %{DATA:kolide.audit.change.from} to %{GREEDYDATA:kolide.audit.change.to}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -583,14 +635,16 @@ impl Transform for ExtendedMappings {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Device '%{DATA:host.name}' \\(%{DATA:kolide.audit.target.device_serial}\\) removed$
                     // Grok pattern: ^Device '%{DATA:host.name}' removed$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Device '%{DATA:host.name}' \\(%{DATA:kolide.audit.target.device_serial}\\) removed$"),
                             cached_grok!("^Device '%{DATA:host.name}' removed$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -603,14 +657,16 @@ impl Transform for ExtendedMappings {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^triggered device deletion for inactive device named '%{DATA:host.name}'$
                     // Grok pattern: ^Requested device deletion for '%{DATA:host.name}' \\(%{DATA:kolide.audit.target.device_serial}\\) \\(\\)$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^triggered device deletion for inactive device named '%{DATA:host.name}'$"),
                             cached_grok!("^Requested device deletion for '%{DATA:host.name}' \\(%{DATA:kolide.audit.target.device_serial}\\) \\(\\)$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -622,7 +678,9 @@ impl Transform for ExtendedMappings {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Osquery Blocklist Updated From: \"%{DATA:kolide.audit.change.from}\" To: \"%{GREEDYDATA:kolide.audit.change.to}\"$
-                    let _ = cached_grok!("^Osquery Blocklist Updated From: \"%{DATA:kolide.audit.change.from}\" To: \"%{GREEDYDATA:kolide.audit.change.to}\"$").extract_into(&input, event)?;
+                    if !cached_grok!("^Osquery Blocklist Updated From: \"%{DATA:kolide.audit.change.from}\" To: \"%{GREEDYDATA:kolide.audit.change.to}\"$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -640,7 +698,7 @@ impl Transform for ExtendedMappings {
                     // Grok pattern: ^Updated access for user '%{DATA:user.target.email}' from '%{DATA:kolide.audit.change.from}' to '%{DATA:kolide.audit.change.to}'$
                     // Grok pattern: ^Revoked invitations created by '%{DATA:user.target.email}' because admin access was removed\\. Revoked invitations with email address\\(es\\): %{GREEDYDATA:kolide.audit.change.to}$
                     // Grok pattern: ^Added EPM user '#?%{DATA:user.target.name}' to Kolide$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^user '%{DATA:user.target.email}' accepted invitation to Kolide$"),
                             cached_grok!("^Invited '%{DATA:user.target.email}' to access kolide$"),
@@ -652,7 +710,9 @@ impl Transform for ExtendedMappings {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -667,7 +727,7 @@ impl Transform for ExtendedMappings {
                     // Grok pattern: ^IdP Proxy webhook token generated for '%{DATA:kolide.audit.target.org_name}'$
                     // Grok pattern: ^Kolide IdP: Additional Factor Sequencing was '%{DATA:kolide.audit.change.to}'$
                     // Grok pattern: ^Updated SAML configuration$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Kolide IdP settings were updated from:%{GREEDYDATA}$"),
                             cached_grok!("^IdP Proxy webhook token generated for '%{DATA:kolide.audit.target.org_name}'$"),
@@ -676,7 +736,9 @@ impl Transform for ExtendedMappings {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -689,14 +751,16 @@ impl Transform for ExtendedMappings {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Identity provider '%{DATA:kolide.audit.target.idp_url}' was activated$
                     // Grok pattern: ^Updated SSO configuration for IdP: %{GREEDYDATA:kolide.audit.target.idp_url}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Identity provider '%{DATA:kolide.audit.target.idp_url}' was activated$"),
                             cached_grok!("^Updated SSO configuration for IdP: %{GREEDYDATA:kolide.audit.target.idp_url}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -708,7 +772,9 @@ impl Transform for ExtendedMappings {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^SCIM provider bearer token generated for '%{DATA:kolide.audit.target.org_name}'$
-                    let _ = cached_grok!("^SCIM provider bearer token generated for '%{DATA:kolide.audit.target.org_name}'$").extract_into(&input, event)?;
+                    if !cached_grok!("^SCIM provider bearer token generated for '%{DATA:kolide.audit.target.org_name}'$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -723,7 +789,7 @@ impl Transform for ExtendedMappings {
                     // Grok pattern: ^removed Vanta integration$
                     // Grok pattern: ^created a OAuth grant importer for a Google Workspace integration with email %{GREEDYDATA:user.target.email}$
                     // Grok pattern: ^removed a OAuth grant importer for a Google Workspace integration with email %{GREEDYDATA:user.target.email}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^created a Vanta integration$"),
                             cached_grok!("^removed Vanta integration$"),
@@ -732,7 +798,9 @@ impl Transform for ExtendedMappings {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -746,7 +814,7 @@ impl Transform for ExtendedMappings {
                     // Grok pattern: ^Added a Device Management Provider:? %{GREEDYDATA:kolide.audit.target.provider_name}$
                     // Grok pattern: ^Updated Device Management Provider: %{DATA:kolide.audit.target.provider_name} from: %{DATA:kolide.audit.change.from} to: %{GREEDYDATA:kolide.audit.change.to}$
                     // Grok pattern: ^Removed Device Management Provider: %{GREEDYDATA:kolide.audit.target.provider_name}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Added a Device Management Provider:? %{GREEDYDATA:kolide.audit.target.provider_name}$"),
                             cached_grok!("^Updated Device Management Provider: %{DATA:kolide.audit.target.provider_name} from: %{DATA:kolide.audit.change.from} to: %{GREEDYDATA:kolide.audit.change.to}$"),
@@ -754,7 +822,9 @@ impl Transform for ExtendedMappings {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -766,7 +836,9 @@ impl Transform for ExtendedMappings {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Set auto-snooze policy for org %{DATA:kolide.audit.target.org_id} to %{GREEDYDATA:kolide.audit.change.to}$
-                    let _ = cached_grok!("^Set auto-snooze policy for org %{DATA:kolide.audit.target.org_id} to %{GREEDYDATA:kolide.audit.change.to}$").extract_into(&input, event)?;
+                    if !cached_grok!("^Set auto-snooze policy for org %{DATA:kolide.audit.target.org_id} to %{GREEDYDATA:kolide.audit.change.to}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -779,14 +851,16 @@ impl Transform for ExtendedMappings {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Revealed full API Key token %{GREEDYDATA:kolide.audit.target.api_key_name}$
                     // Grok pattern: ^API Key %{DATA:kolide.audit.target.api_key_name} from: %{DATA:kolide.audit.change.from} to: %{GREEDYDATA:kolide.audit.change.to}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Revealed full API Key token %{GREEDYDATA:kolide.audit.target.api_key_name}$"),
                             cached_grok!("^API Key %{DATA:kolide.audit.target.api_key_name} from: %{DATA:kolide.audit.change.from} to: %{GREEDYDATA:kolide.audit.change.to}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -805,7 +879,7 @@ impl Transform for ExtendedMappings {
                     // Grok pattern: ^Updated webhook url from '%{DATA:kolide.audit.change.from}' to '%{DATA:kolide.audit.change.to}'$
                     // Grok pattern: ^Updated event subscriptions for webhook '%{DATA:kolide.audit.target.webhook_url}' from '%{DATA:kolide.audit.change.from}' to '%{DATA:kolide.audit.change.to}'$
                     // Grok pattern: ^Rolled signing secret for webhook with url '%{DATA:kolide.audit.target.webhook_url}'$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Created webhook with url '%{DATA:kolide.audit.target.webhook_url}'$"),
                             cached_grok!("^Deleted webhook with url '%{DATA:kolide.audit.target.webhook_url}'$"),
@@ -818,7 +892,9 @@ impl Transform for ExtendedMappings {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -831,14 +907,16 @@ impl Transform for ExtendedMappings {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Changed '%{DATA:kolide.audit.change.field}' from '%{DATA:kolide.audit.change.from}' to '%{DATA:kolide.audit.change.to}'$
                     // Grok pattern: ^Changed '%{DATA:kolide.audit.change.field}' from '%{DATA:kolide.audit.change.from}' to %{GREEDYDATA:kolide.audit.change.to}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Changed '%{DATA:kolide.audit.change.field}' from '%{DATA:kolide.audit.change.from}' to '%{DATA:kolide.audit.change.to}'$"),
                             cached_grok!("^Changed '%{DATA:kolide.audit.change.field}' from '%{DATA:kolide.audit.change.from}' to %{GREEDYDATA:kolide.audit.change.to}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

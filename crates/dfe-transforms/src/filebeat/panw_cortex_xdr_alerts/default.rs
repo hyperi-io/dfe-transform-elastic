@@ -599,7 +599,7 @@ impl Transform for Default {
                             // Grok pattern: ^%{DATA:user.domain}\\\\%{DATA:user.name}$
                             // Grok pattern: ^%{DATA:user.name}@%{DATA:user.domain}$
                             // Grok pattern: ^%{DATA:user.name}$
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!("^%{DATA:user.domain}\\\\\\\\%{DATA:user.name}$"),
                                     cached_grok!("^%{DATA:user.domain}\\\\%{DATA:user.name}$"),
@@ -608,7 +608,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                 }
@@ -2393,7 +2395,7 @@ impl Transform for Default {
                             // Grok pattern: ^%{DATA:user.domain}\\\\%{DATA:user.name}$
                             // Grok pattern: ^%{DATA:user.name}@%{DATA:user.domain}$
                             // Grok pattern: ^%{DATA:user.name}$
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!("^%{DATA:user.domain}\\\\\\\\%{DATA:user.name}$"),
                                     cached_grok!("^%{DATA:user.domain}\\\\%{DATA:user.name}$"),
@@ -2402,7 +2404,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                 }

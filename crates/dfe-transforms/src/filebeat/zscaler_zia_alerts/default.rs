@@ -45,7 +45,9 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: ^<%{NUMBER:zscaler_zia.alerts.log_syslog_priority:long}>%{SYSLOGTIMESTAMP:_tmp.timestamp} \\[%{IPORHOST:zscaler_zia.alerts.destination.address}\\] %{GREEDYDATA:zscaler_zia.alerts.message}$
-                    let _ = cached_grok!("^<%{NUMBER:zscaler_zia.alerts.log_syslog_priority:long}>%{SYSLOGTIMESTAMP:_tmp.timestamp} \\[%{IPORHOST:zscaler_zia.alerts.destination.address}\\] %{GREEDYDATA:zscaler_zia.alerts.message}$").extract_into(&input, event)?;
+                    if !cached_grok!("^<%{NUMBER:zscaler_zia.alerts.log_syslog_priority:long}>%{SYSLOGTIMESTAMP:_tmp.timestamp} \\[%{IPORHOST:zscaler_zia.alerts.destination.address}\\] %{GREEDYDATA:zscaler_zia.alerts.message}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -63,7 +65,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^ZscalerNSS: Zscaler cloud configuration connection to  %{IPORHOST:zscaler_zia.alerts.destination.address}:%{NUMBER:zscaler_zia.alerts.destination.port:long} lost and unavailable for the past %{NUMBER:zscaler_zia.alerts.connection_lost_minutes:double} minutes$
                     // Grok pattern: ^ZscalerNSS: SIEM Feed connection \"%{GREEDYDATA:zscaler_zia.alerts.log_feed_name}\" to %{IPORHOST:zscaler_zia.alerts.destination.address}:%{NUMBER:zscaler_zia.alerts.destination.port:long} lost and unavailable for the past %{NUMBER:zscaler_zia.alerts.connection_lost_minutes:double} minutes$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^ZscalerNSS: Zscaler cloud configuration connection to  %{IPORHOST:zscaler_zia.alerts.destination.address}:%{NUMBER:zscaler_zia.alerts.destination.port:long} lost and unavailable for the past %{NUMBER:zscaler_zia.alerts.connection_lost_minutes:double} minutes$"
@@ -74,7 +76,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

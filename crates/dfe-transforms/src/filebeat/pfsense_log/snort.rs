@@ -18,7 +18,9 @@ impl Transform for Snort {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: \\[%{NUMBER:snort.generator_id}:%{NUMBER:snort.signature_id}:%{NUMBER:snort.signature_revision}\\] \\(%{DATA:snort.preprocessor}\\) %{GREEDYDATA:snort.alert_message} \\[Classification: %{DATA:snort.classification}\\] \\[Priority: %{NONNEGINT:snort.priority:long}\\] \\{%{WORD:network.protocol}\\} %{IP:source.address}:%{NUMBER:source.port:long} -> %{IP:destination.address}:%{NUMBER:destination.port:long}
-                    let _ = cached_grok!("\\[%{NUMBER:snort.generator_id}:%{NUMBER:snort.signature_id}:%{NUMBER:snort.signature_revision}\\] \\(%{DATA:snort.preprocessor}\\) %{GREEDYDATA:snort.alert_message} \\[Classification: %{DATA:snort.classification}\\] \\[Priority: %{NONNEGINT:snort.priority:long}\\] \\{%{WORD:network.protocol}\\} %{IP:source.address}:%{NUMBER:source.port:long} -> %{IP:destination.address}:%{NUMBER:destination.port:long}").extract_into(&input, event)?;
+                    if !cached_grok!("\\[%{NUMBER:snort.generator_id}:%{NUMBER:snort.signature_id}:%{NUMBER:snort.signature_revision}\\] \\(%{DATA:snort.preprocessor}\\) %{GREEDYDATA:snort.alert_message} \\[Classification: %{DATA:snort.classification}\\] \\[Priority: %{NONNEGINT:snort.priority:long}\\] \\{%{WORD:network.protocol}\\} %{IP:source.address}:%{NUMBER:source.port:long} -> %{IP:destination.address}:%{NUMBER:destination.port:long}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             if event.has_value("network.protocol") {

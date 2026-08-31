@@ -256,14 +256,16 @@ impl Transform for Events {
                 if let Some(input) = event.get_string("keycloak.admin.resource.path") {
                     // Grok pattern: users/%{UUID:user.target.id}
                     // Grok pattern: groups/%{UUID:group.id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("users/%{UUID:user.target.id}"),
                             cached_grok!("groups/%{UUID:group.id}"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())

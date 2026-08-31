@@ -177,8 +177,11 @@ impl Transform for Default {
                         if event.has_value("json.author.uri") {
                             if let Some(input) = event.get_string("json.author.uri") {
                                 // Grok pattern: \\?username=%{USER:user.name}$
-                                let _ = cached_grok!("\\?username=%{USER:user.name}$")
-                                    .extract_into(&input, event)?;
+                                if !cached_grok!("\\?username=%{USER:user.name}$")
+                                    .extract_into(&input, event)?
+                                {
+                                    return Err(TransformError::GrokNoMatch { value: input });
+                                }
                             }
                         }
                         Ok(())

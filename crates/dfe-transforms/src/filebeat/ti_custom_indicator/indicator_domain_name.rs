@@ -23,7 +23,7 @@ impl Transform for IndicatorDomainName {
                 // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?
                 // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?
                 // Grok pattern: ^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!("^\\[?domain-name:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?"),
                         cached_grok!("^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?"),
@@ -34,7 +34,9 @@ impl Transform for IndicatorDomainName {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
             Ok(())
         })();

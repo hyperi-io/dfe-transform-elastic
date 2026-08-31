@@ -488,7 +488,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("_temps.date") {
                         // Grok pattern: (?:%{MONTHDAY}/%{MONTH}/(?:\\d{4}):%{TIME} (?:(?P<_temps_tz>(?:(?:[APMCE][SD]T|UTC|[-+]\\d{2}:?\\d{2})))|Z))
-                        let _ = cached_grok_mapped!("(?:%{MONTHDAY}/%{MONTH}/(?:\\d{4}):%{TIME} (?:(?P<_temps_tz>(?:(?:[APMCE][SD]T|UTC|[-+]\\d{2}:?\\d{2})))|Z))", [("_temps_tz", "_temps.tz")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?:%{MONTHDAY}/%{MONTH}/(?:\\d{4}):%{TIME} (?:(?P<_temps_tz>(?:(?:[APMCE][SD]T|UTC|[-+]\\d{2}:?\\d{2})))|Z))", [("_temps_tz", "_temps.tz")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                     Ok(())
                 })();
@@ -638,7 +640,9 @@ impl Transform for Default {
                 }
                 if let Some(input) = event.get_string("json.request.request_line") {
                     // Grok pattern: %{NOTSPACE:http.request.method} %{URIPATHPARAM:url.original}(?: HTTP/%{NUMBER:http.version})
-                    let _ = cached_grok!("%{NOTSPACE:http.request.method} %{URIPATHPARAM:url.original}(?: HTTP/%{NUMBER:http.version})").extract_into(&input, event)?;
+                    if !cached_grok!("%{NOTSPACE:http.request.method} %{URIPATHPARAM:url.original}(?: HTTP/%{NUMBER:http.version})").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 if event.has_value("json.transaction.request.headers.host") {
                     event.rename(

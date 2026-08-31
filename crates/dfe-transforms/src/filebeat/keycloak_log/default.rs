@@ -61,8 +61,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: ^\\[%{GREEDYDATA:event.original}\\]$
-                    let _ = cached_grok!("^\\[%{GREEDYDATA:event.original}\\]$")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^\\[%{GREEDYDATA:event.original}\\]$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -70,7 +73,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: %{TIMESTAMP_ISO8601:_tmp.timestamp} %{LOGLEVEL:log.level}%{SPACE}\\[%{JAVACLASS:log.logger}\\] \\(%{DATA:process.thread.name}\\) (?P<message>(.|\r|\n)*)
-                    let _ = cached_grok!("%{TIMESTAMP_ISO8601:_tmp.timestamp} %{LOGLEVEL:log.level}%{SPACE}\\[%{JAVACLASS:log.logger}\\] \\(%{DATA:process.thread.name}\\) (?P<message>(.|\r|\n)*)").extract_into(&input, event)?;
+                    if !cached_grok!("%{TIMESTAMP_ISO8601:_tmp.timestamp} %{LOGLEVEL:log.level}%{SPACE}\\[%{JAVACLASS:log.logger}\\] \\(%{DATA:process.thread.name}\\) (?P<message>(.|\r|\n)*)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -387,14 +392,16 @@ impl Transform for Default {
                         if let Some(input) = event.get_string("keycloak.admin.resource.path") {
                             // Grok pattern: users/%{UUID:user.target.id}
                             // Grok pattern: groups/%{UUID:group.id}
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!("users/%{UUID:user.target.id}"),
                                     cached_grok!("groups/%{UUID:group.id}"),
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

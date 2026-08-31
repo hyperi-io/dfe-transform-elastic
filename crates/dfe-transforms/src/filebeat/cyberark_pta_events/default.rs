@@ -107,7 +107,9 @@ impl Transform for Default {
                 if event.has_value("event.original") {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: ^%{SYSLOGTIMESTAMP} (?:%{IP:observer.ip}|%{HOSTNAME:observer.hostname}) CEF
-                        let _ = cached_grok!("^%{SYSLOGTIMESTAMP} (?:%{IP:observer.ip}|%{HOSTNAME:observer.hostname}) CEF").extract_into(&input, event)?;
+                        if !cached_grok!("^%{SYSLOGTIMESTAMP} (?:%{IP:observer.ip}|%{HOSTNAME:observer.hostname}) CEF").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                 }
                 Ok(())

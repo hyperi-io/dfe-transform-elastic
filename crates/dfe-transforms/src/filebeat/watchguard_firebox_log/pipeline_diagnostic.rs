@@ -155,7 +155,9 @@ impl Transform for PipelineDiagnostic {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^Cannot relearn system MAC address, possible loop or MAC spoofing, ip=%{IP:watchguard_firebox.log.ip_address}, mac=%{MAC:watchguard_firebox.log.mac}, interface=%{NUMBER:watchguard_firebox.log.interface_id}$
-                    let _ = cached_grok!("^Cannot relearn system MAC address, possible loop or MAC spoofing, ip=%{IP:watchguard_firebox.log.ip_address}, mac=%{MAC:watchguard_firebox.log.mac}, interface=%{NUMBER:watchguard_firebox.log.interface_id}$").extract_into(&input, event)?;
+                    if !cached_grok!("^Cannot relearn system MAC address, possible loop or MAC spoofing, ip=%{IP:watchguard_firebox.log.ip_address}, mac=%{MAC:watchguard_firebox.log.mac}, interface=%{NUMBER:watchguard_firebox.log.interface_id}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -817,14 +819,16 @@ impl Transform for PipelineDiagnostic {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^USB auto restore failed %{GREEDYDATA:watchguard_firebox.log.reason}$
                     // Grok pattern: ^USB auto restore failed due to %{GREEDYDATA:watchguard_firebox.log.reason}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^USB auto restore failed %{GREEDYDATA:watchguard_firebox.log.reason}$"),
                             cached_grok!("^USB auto restore failed due to %{GREEDYDATA:watchguard_firebox.log.reason}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -836,7 +840,9 @@ impl Transform for PipelineDiagnostic {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^Received reply: %{WORD:watchguard_firebox.log.reply_protocol}/%{NUMBER:watchguard_firebox.log.http_version} %{NUMBER:watchguard_firebox.log.http_status:long} %{DATA} Date: %{DATA:watchguard_firebox.log.reply_time} Server:%{DATA} %{IP:watchguard_firebox.log.reply_ip}$
-                    let _ = cached_grok!("^Received reply: %{WORD:watchguard_firebox.log.reply_protocol}/%{NUMBER:watchguard_firebox.log.http_version} %{NUMBER:watchguard_firebox.log.http_status:long} %{DATA} Date: %{DATA:watchguard_firebox.log.reply_time} Server:%{DATA} %{IP:watchguard_firebox.log.reply_ip}$").extract_into(&input, event)?;
+                    if !cached_grok!("^Received reply: %{WORD:watchguard_firebox.log.reply_protocol}/%{NUMBER:watchguard_firebox.log.http_version} %{NUMBER:watchguard_firebox.log.http_status:long} %{DATA} Date: %{DATA:watchguard_firebox.log.reply_time} Server:%{DATA} %{IP:watchguard_firebox.log.reply_ip}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -1051,7 +1057,9 @@ impl Transform for PipelineDiagnostic {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^A DHCP server is interfering with static address assignment of cluster IP address %{IP:watchguard_firebox.log.ip_address} on eth%{NUMBER:watchguard_firebox.log.port}. Disable DHCP server access to eth%{NUMBER:watchguard_firebox.log.port}.
-                    let _ = cached_grok!("^A DHCP server is interfering with static address assignment of cluster IP address %{IP:watchguard_firebox.log.ip_address} on eth%{NUMBER:watchguard_firebox.log.port}. Disable DHCP server access to eth%{NUMBER:watchguard_firebox.log.port}.").extract_into(&input, event)?;
+                    if !cached_grok!("^A DHCP server is interfering with static address assignment of cluster IP address %{IP:watchguard_firebox.log.ip_address} on eth%{NUMBER:watchguard_firebox.log.port}. Disable DHCP server access to eth%{NUMBER:watchguard_firebox.log.port}.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -1867,7 +1875,9 @@ impl Transform for PipelineDiagnostic {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("_tmp_msg") {
                     // Grok pattern: ^GatewayEndpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}' Reason=Received message with wrong interface IP address %{IP:watchguard_firebox.log.received_ip}. Expecting peer to use remote gateway endpoint IP address %{IP:watchguard_firebox.log.expected_ip}.$
-                    let _ = cached_grok!("^GatewayEndpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}' Reason=Received message with wrong interface IP address %{IP:watchguard_firebox.log.received_ip}. Expecting peer to use remote gateway endpoint IP address %{IP:watchguard_firebox.log.expected_ip}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^GatewayEndpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}' Reason=Received message with wrong interface IP address %{IP:watchguard_firebox.log.received_ip}. Expecting peer to use remote gateway endpoint IP address %{IP:watchguard_firebox.log.expected_ip}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -2832,14 +2842,16 @@ impl Transform for PipelineDiagnostic {
                 if let Some(input) = event.get_string("_tmp_msg") {
                     // Grok pattern: ^GatewayEndpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'. Reason=DH-Group %{NUMBER:watchguard_firebox.log.received_dh_group:long} in the KE payload does not match DH-Group %{NUMBER:watchguard_firebox.log.selected_dh_group:long} selected in the %{DATA:watchguard_firebox.log.msg_info} proposal.$
                     // Grok pattern: ^Tunnel='%{DATA:watchguard_firebox.log.tunnel_name}'. Reason=DH-Group %{NUMBER:watchguard_firebox.log.received_dh_group:long} in the KE payload does not match DH-Group %{NUMBER:watchguard_firebox.log.selected_dh_group:long} selected in the %{DATA:watchguard_firebox.log.msg_info} proposal.$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^GatewayEndpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'. Reason=DH-Group %{NUMBER:watchguard_firebox.log.received_dh_group:long} in the KE payload does not match DH-Group %{NUMBER:watchguard_firebox.log.selected_dh_group:long} selected in the %{DATA:watchguard_firebox.log.msg_info} proposal.$"),
                             cached_grok!("^Tunnel='%{DATA:watchguard_firebox.log.tunnel_name}'. Reason=DH-Group %{NUMBER:watchguard_firebox.log.received_dh_group:long} in the KE payload does not match DH-Group %{NUMBER:watchguard_firebox.log.selected_dh_group:long} selected in the %{DATA:watchguard_firebox.log.msg_info} proposal.$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -3054,14 +3066,16 @@ impl Transform for PipelineDiagnostic {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^%{DATA:watchguard_firebox.log.vpn_user_type} (?:%{USERNAME:watchguard_firebox.log.user_name}|%{EMAILADDRESS:watchguard_firebox.log.user_email}) logged in. Virtual IP address is %{IP:watchguard_firebox.log.virtual_ip_address}. Real IP address is %{IP:watchguard_firebox.log.real_ip_address}.$
                     // Grok pattern: ^%{DATA:watchguard_firebox.log.vpn_user_type} (?:%{USERNAME:watchguard_firebox.log.user_name}|%{EMAILADDRESS:watchguard_firebox.log.user_email}) logged off. Virtual IP address is %{IP:watchguard_firebox.log.virtual_ip_address}.$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{DATA:watchguard_firebox.log.vpn_user_type} (?:%{USERNAME:watchguard_firebox.log.user_name}|%{EMAILADDRESS:watchguard_firebox.log.user_email}) logged in. Virtual IP address is %{IP:watchguard_firebox.log.virtual_ip_address}. Real IP address is %{IP:watchguard_firebox.log.real_ip_address}.$"),
                             cached_grok!("^%{DATA:watchguard_firebox.log.vpn_user_type} (?:%{USERNAME:watchguard_firebox.log.user_name}|%{EMAILADDRESS:watchguard_firebox.log.user_email}) logged off. Virtual IP address is %{IP:watchguard_firebox.log.virtual_ip_address}.$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -3073,7 +3087,9 @@ impl Transform for PipelineDiagnostic {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("_tmp_msg") {
                     // Grok pattern: ^GatewayEndpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'. Reason=Received message with wrong interface IP address %{IP:watchguard_firebox.log.received_ip}. Expecting peer to use remote gateway endpoint IP address %{IP:watchguard_firebox.log.expected_ip}.$
-                    let _ = cached_grok!("^GatewayEndpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'. Reason=Received message with wrong interface IP address %{IP:watchguard_firebox.log.received_ip}. Expecting peer to use remote gateway endpoint IP address %{IP:watchguard_firebox.log.expected_ip}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^GatewayEndpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'. Reason=Received message with wrong interface IP address %{IP:watchguard_firebox.log.received_ip}. Expecting peer to use remote gateway endpoint IP address %{IP:watchguard_firebox.log.expected_ip}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -3085,7 +3101,9 @@ impl Transform for PipelineDiagnostic {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("_tmp_msg") {
                     // Grok pattern: ^Gateway-Endpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'. Reason=Received message with the wrong interface IP address %{IP:watchguard_firebox.log.received_ip}. Expecting peer to use remote gateway endpoint IP address %{IP:watchguard_firebox.log.expected_ip}.$
-                    let _ = cached_grok!("^Gateway-Endpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'. Reason=Received message with the wrong interface IP address %{IP:watchguard_firebox.log.received_ip}. Expecting peer to use remote gateway endpoint IP address %{IP:watchguard_firebox.log.expected_ip}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Gateway-Endpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'. Reason=Received message with the wrong interface IP address %{IP:watchguard_firebox.log.received_ip}. Expecting peer to use remote gateway endpoint IP address %{IP:watchguard_firebox.log.expected_ip}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -3097,7 +3115,9 @@ impl Transform for PipelineDiagnostic {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("_tmp_msg") {
                     // Grok pattern: ^(?:GatewayEndpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'.)? Reason=Remote gateway endpoint %{DATA:watchguard_firebox.log.authentication_method} authentication failed.$
-                    let _ = cached_grok!("^(?:GatewayEndpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'.)? Reason=Remote gateway endpoint %{DATA:watchguard_firebox.log.authentication_method} authentication failed.$").extract_into(&input, event)?;
+                    if !cached_grok!("^(?:GatewayEndpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'.)? Reason=Remote gateway endpoint %{DATA:watchguard_firebox.log.authentication_method} authentication failed.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -3168,7 +3188,7 @@ impl Transform for PipelineDiagnostic {
                     // Grok pattern: ^GatewayEndpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}' Reason=%{GREEDYDATA:watchguard_firebox.log.reason}
                     // Grok pattern: ^GatewayEndpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'. Reason=%{GREEDYDATA:watchguard_firebox.log.reason}
                     // Grok pattern: ^Gateway-Endpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}' Reason=%{GREEDYDATA:watchguard_firebox.log.reason}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^GatewayEndpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}' Reason=%{GREEDYDATA:watchguard_firebox.log.reason}"),
                             cached_grok!("^GatewayEndpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'. Reason=%{GREEDYDATA:watchguard_firebox.log.reason}"),
@@ -3176,7 +3196,9 @@ impl Transform for PipelineDiagnostic {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -3381,7 +3403,9 @@ impl Transform for PipelineDiagnostic {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^IKEv2 %{DATA:watchguard_firebox.log.exchange_type} exchange from %{IP:watchguard_firebox.log.local_address}:?(%{NUMBER:watchguard_firebox.log.local_address_port:long})? to %{IP:watchguard_firebox.log.peer_address}:?(%{NUMBER:watchguard_firebox.log.peer_address_port:long})? failed. Gateway-Endpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'. Reason=The Mobile VPN with IKEv2 profile is not enabled.$
-                    let _ = cached_grok!("^IKEv2 %{DATA:watchguard_firebox.log.exchange_type} exchange from %{IP:watchguard_firebox.log.local_address}:?(%{NUMBER:watchguard_firebox.log.local_address_port:long})? to %{IP:watchguard_firebox.log.peer_address}:?(%{NUMBER:watchguard_firebox.log.peer_address_port:long})? failed. Gateway-Endpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'. Reason=The Mobile VPN with IKEv2 profile is not enabled.$").extract_into(&input, event)?;
+                    if !cached_grok!("^IKEv2 %{DATA:watchguard_firebox.log.exchange_type} exchange from %{IP:watchguard_firebox.log.local_address}:?(%{NUMBER:watchguard_firebox.log.local_address_port:long})? to %{IP:watchguard_firebox.log.peer_address}:?(%{NUMBER:watchguard_firebox.log.peer_address_port:long})? failed. Gateway-Endpoint='%{DATA:watchguard_firebox.log.gateway_endpoint}'. Reason=The Mobile VPN with IKEv2 profile is not enabled.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -3394,7 +3418,7 @@ impl Transform for PipelineDiagnostic {
                     // Grok pattern: ^%{HOSTNAME:watchguard_firebox.log.user_domain}\\\\\\\\%{USERNAME:watchguard_firebox.log.user_name}$
                     // Grok pattern: ^%{USERNAME:watchguard_firebox.log.user_name}@%{HOSTNAME:watchguard_firebox.log.user_domain}$
                     // Grok pattern: ^%{USERNAME:watchguard_firebox.log.user_name}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{HOSTNAME:watchguard_firebox.log.user_domain}\\\\%{USERNAME:watchguard_firebox.log.user_name}$"),
                             cached_grok!("^%{HOSTNAME:watchguard_firebox.log.user_domain}\\\\\\\\%{USERNAME:watchguard_firebox.log.user_name}$"),
@@ -3403,7 +3427,9 @@ impl Transform for PipelineDiagnostic {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

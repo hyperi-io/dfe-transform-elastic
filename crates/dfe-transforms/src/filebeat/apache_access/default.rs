@@ -44,7 +44,7 @@ impl Transform for Default {
                     // Grok pattern: (%{IPORHOST:destination.domain}:?%{POSINT:destination.port}? )?(%{IPORHOST:source.address}:?%{POSINT:source.port}? )%{DATA:apache.access.identity} %{DATA:user.name} \\[%{HTTPDATE:apache.access.time}\\] \"(%{DATA:apache.access.tls_handshake.error})?((%{WORD:http.request.method}?) %{DATA:_tmp.url_orig}? HTTP/%{NUMBER:http.version})?(%{WORD:http.request.method}? ?%{DATA:apache.access.http.request_headers}?(-)? %{DATA:_tmp.url_orig} HTTP/%{NUMBER:http.version})?(-)?\" %{NUMBER:http.response.status_code:long} (?:%{NUMBER:http.response.body.bytes:long}|-)( %{NUMBER:apache.access.response_time})?( \"%{DATA:http.request.referrer}\")?( \"%{DATA:user_agent.original}\")?( X-Forwarded-For=\"(?P<apache_access_remote_addresses>(?:(%{IP})(\"?,?\\s*(%{IP}))*))\")?
                     // Grok pattern: %{IPORHOST:source.address} - %{DATA:user.name} \\[%{HTTPDATE:apache.access.time}\\] \"-\" %{NUMBER:http.response.status_code:long} -
                     // Grok pattern: \\[%{HTTPDATE:apache.access.time}\\] %{IPORHOST:source.address} %{DATA:apache.access.ssl.protocol} %{DATA:apache.access.ssl.cipher} \"%{WORD:http.request.method} %{DATA:_tmp.url_orig} HTTP/%{NUMBER:http.version}\" (-|%{NUMBER:http.response.body.bytes:long})
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "(%{IPORHOST:destination.domain}:?%{POSINT:destination.port}? )?(%{IPORHOST:source.address}:?%{POSINT:source.port}? )%{DATA:apache.access.identity} %{DATA:user.name} \\[%{HTTPDATE:apache.access.time}\\] \"(%{DATA:apache.access.tls_handshake.error})?((%{WORD:http.request.method}?) %{DATA:_tmp.url_orig}? HTTP/%{NUMBER:http.version})?(%{WORD:http.request.method}? ?%{DATA:apache.access.http.request_headers}?(-)? %{DATA:_tmp.url_orig} HTTP/%{NUMBER:http.version})?(-)?\" %{NUMBER:http.response.status_code:long} (?:%{NUMBER:http.response.body.bytes:long}|-)( %{NUMBER:apache.access.response_time})?( \"%{DATA:http.request.referrer}\")?( \"%{DATA:user_agent.original}\")?( X-Forwarded-For=\"(?P<apache_access_remote_addresses>(?:(%{IP})(\"?,?\\s*(%{IP}))*))\")?",
@@ -62,7 +62,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -168,8 +170,11 @@ impl Transform for Default {
             if event.has_value("source.address") {
                 if let Some(input) = event.get_string("source.address") {
                     // Grok pattern: ^(%{IP:source.ip}|%{HOSTNAME:source.domain})$
-                    let _ = cached_grok!("^(%{IP:source.ip}|%{HOSTNAME:source.domain})$")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^(%{IP:source.ip}|%{HOSTNAME:source.domain})$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

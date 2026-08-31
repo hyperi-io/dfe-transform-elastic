@@ -208,14 +208,17 @@ impl Transform for Default {
                         event.get_string("tls.server.x509.subject.distinguished_name")
                     {
                         // Grok pattern: CN=(?P<tls_server_x509_subject_common_name>(?:[^,]+))
-                        let _ = cached_grok_mapped!(
+                        if !cached_grok_mapped!(
                             "CN=(?P<tls_server_x509_subject_common_name>(?:[^,]+))",
                             [(
                                 "tls_server_x509_subject_common_name",
                                 "tls.server.x509.subject.common_name"
                             )]
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -254,14 +257,17 @@ impl Transform for Default {
                         event.get_string("tls.server.x509.issuer.distinguished_name")
                     {
                         // Grok pattern: CN=(?P<tls_server_x509_issuer_common_name>(?:[^,]+))
-                        let _ = cached_grok_mapped!(
+                        if !cached_grok_mapped!(
                             "CN=(?P<tls_server_x509_issuer_common_name>(?:[^,]+))",
                             [(
                                 "tls_server_x509_issuer_common_name",
                                 "tls.server.x509.issuer.common_name"
                             )]
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }

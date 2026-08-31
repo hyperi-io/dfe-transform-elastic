@@ -153,7 +153,7 @@ impl Transform for Default {
                     // Grok pattern: ::ffff:%{IPV4:source.ip}
                     // Grok pattern: %{IPV4:source.ip}
                     // Grok pattern: %{IPV6:source.ip}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("::ffff:%{IPV4:source.ip}"),
                             cached_grok!("%{IPV4:source.ip}"),
@@ -161,7 +161,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -249,8 +251,11 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("swimlane.audit_log.EndPoint") {
                 // Grok pattern: %{HOSTNAME:url.domain}/%{GREEDYDATA:url.path}
-                let _ = cached_grok!("%{HOSTNAME:url.domain}/%{GREEDYDATA:url.path}")
-                    .extract_into(&input, event)?;
+                if !cached_grok!("%{HOSTNAME:url.domain}/%{GREEDYDATA:url.path}")
+                    .extract_into(&input, event)?
+                {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             if event.has_value("swimlane.audit_log.EventOutcome") {

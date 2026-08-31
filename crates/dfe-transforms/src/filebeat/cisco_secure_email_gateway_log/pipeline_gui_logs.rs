@@ -29,7 +29,7 @@ impl Transform for PipelineGuiLogs {
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.subject} %{IP:source.ip} port %{NUMBER:source.port:long} - %{GREEDYDATA:cisco_secure_email_gateway.log.description}$
                     // Grok pattern: ^%{DATA:cisco_secure_email_gateway.log.object} has been %{DATA:cisco_secure_email_gateway.log.action} for user %{USERNAME:user.name}$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^req:%{DATA:client.ip:IP} user:%{DATA:user.name} id:%{DATA:event.id} %{NUMBER:http.response.status_code:long} %{WORD:http.request.method} %{DATA:url.path} HTTP/%{NUMBER:http.version} %{GREEDYDATA:user_agent.original}$"),
                             cached_grok!("^Action: User %{USERNAME:user.name} %{GREEDYDATA:cisco_secure_email_gateway.log.action} from session %{GREEDYDATA:cisco_secure_email_gateway.log.session} beacuse of inactivity timeout$"),
@@ -44,7 +44,9 @@ impl Transform for PipelineGuiLogs {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             let _cond = { event.get_str("user_agent.original") != Some("-") };

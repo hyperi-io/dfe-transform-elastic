@@ -456,11 +456,14 @@ impl Transform for Default {
             if event.has_value("event.action") {
                 if let Some(input) = event.get_string("event.action") {
                     // Grok pattern: ^(?P<github_category>(?:[a-z_]+))\\.%{GREEDYDATA:_temp.action}
-                    let _ = cached_grok_mapped!(
+                    if !cached_grok_mapped!(
                         "^(?P<github_category>(?:[a-z_]+))\\.%{GREEDYDATA:_temp.action}",
                         [("github_category", "github.category")]
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

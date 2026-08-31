@@ -16,9 +16,16 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            // SKIPPED: condition not transpiled: !ctx.message.contains('"Product":"VaultMonitor"')
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                !(event.get("message").is_some_and(|v| match v {
+                    serde_json::Value::Array(a) => a
+                        .iter()
+                        .any(|x| x.as_str() == Some("\"Product\":\"VaultMonitor\"")),
+                    serde_json::Value::String(s) => s.contains("\"Product\":\"VaultMonitor\""),
+                    _ => false,
+                }))
+            };
+            if _cond {
                 // Begin nested pipeline: "audit"
                 event.set("ecs.version", json!("8.11.0"))?;
                 let _cond = { !event.has_value("event.original") };
@@ -33,7 +40,7 @@ impl Transform for Default {
                         // Grok pattern: ^<%{NONNEGINT:log.syslog.priority:long}>%{NONNEGINT} %{TIMESTAMP_ISO8601:_tmp.syslog_ts} %{SYSLOGHOST:_tmp.hostname} (?P<_tmp_payload>(?:{\"format\":\"elastic\",\"version\":\"1.0\",.*}))
                         // Grok pattern: ^%{SYSLOGTIMESTAMP:_tmp.syslog_ts} %{SYSLOGHOST:_tmp.hostname} (?P<_tmp_payload>(?:{\"format\":\"elastic\",\"version\":\"1.0\",.*}))
                         // Grok pattern: (?P<_tmp_payload>(?:{\"format\":\"elastic\",\"version\":\"1.0\",.*}))
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok_mapped!(
                                     "^<%{NONNEGINT:log.syslog.priority:long}>%{NONNEGINT} %{TIMESTAMP_ISO8601:_tmp.syslog_ts} %{SYSLOGHOST:_tmp.hostname} (?P<_tmp_payload>(?:{\"format\":\"elastic\",\"version\":\"1.0\",.*}))",
@@ -50,7 +57,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })() {

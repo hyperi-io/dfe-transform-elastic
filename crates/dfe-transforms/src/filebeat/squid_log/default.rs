@@ -44,7 +44,7 @@ impl Transform for Default {
                 // Grok pattern: ^(?P<_tmp_time_s>(?:[0-9]+))\\.(?P<_tmp_time_ms>(?:[0-9]+))%{SPACE}(?P<_tmp_elapsed>(?:[0-9]+)) %{NOTSPACE:_tmp.source_ip} (?P<_tmp_code>(?:[^/]+))/(?P<_tmp_status>(?:[0-9]+)) (?P<_tmp_destination_bytes>(?:[0-9]+)) %{NOTSPACE:_tmp.method} %{NOTSPACE:_tmp.url} %{NOTSPACE:_tmp.user_name} (?P<_tmp_peer_status>(?:[^/]+))/%{NOTSPACE:_tmp.peer_host} %{NOTSPACE:_tmp.content_type}$
                 // Grok pattern: ^(?P<_tmp_time_s>(?:[0-9]+))\\.(?P<_tmp_time_ms>(?:[0-9]+))%{SPACE}(?P<_tmp_elapsed>(?:[0-9]+)) %{NOTSPACE:_tmp.source_ip} (?P<_tmp_source_port>(?:[0-9]+)) (?P<_tmp_code>(?:[^/]+))/(?P<_tmp_status>(?:[0-9]+)) %{NOTSPACE:_tmp.reply_size} %{NOTSPACE:_tmp.request_size} %{NOTSPACE:_tmp.reply_header_size} %{NOTSPACE:_tmp.request_header_size} %{NOTSPACE:_tmp.reply_body_size} %{NOTSPACE:_tmp.method} %{NOTSPACE:_tmp.url} %{NOTSPACE:_tmp.http_version} %{NOTSPACE:_tmp.user_name} (?P<_tmp_peer_status>(?:[^/]+))/%{NOTSPACE:_tmp.peer_host} %{NOTSPACE:_tmp.destination_port} %{NOTSPACE:_tmp.content_type} %{NOTSPACE:_tmp.err_code} %{NOTSPACE:_tmp.err_detail} \"%{DATA:_tmp.referer}\" \"%{DATA:_tmp.user_agent}\" \"%{DATA:_tmp.host_header}\" \"%{DATA:_tmp.xff}\" \"%{DATA:_tmp.sni}\" %{GREEDYDATA:_tmp.note}$
                 // Grok pattern: ^(?P<_tmp_time_s>(?:[0-9]+))\\.(?P<_tmp_time_ms>(?:[0-9]+))%{SPACE}(?P<_tmp_elapsed>(?:[0-9]+)) %{NOTSPACE:_tmp.source_ip} (?P<_tmp_source_port>(?:[0-9]+)) (?P<_tmp_code>(?:[^/]+))/(?P<_tmp_status>(?:[0-9]+)) %{NOTSPACE:_tmp.reply_size} %{NOTSPACE:_tmp.request_size} %{NOTSPACE:_tmp.reply_header_size} %{NOTSPACE:_tmp.request_header_size} %{NOTSPACE:_tmp.reply_body_size} %{NOTSPACE:_tmp.method} %{NOTSPACE:_tmp.url} %{NOTSPACE:_tmp.http_version} %{NOTSPACE:_tmp.user_name} (?P<_tmp_peer_status>(?:[^/]+))/%{NOTSPACE:_tmp.peer_host} %{NOTSPACE:_tmp.destination_port} %{NOTSPACE:_tmp.content_type} %{NOTSPACE:_tmp.err_code} %{NOTSPACE:_tmp.err_detail} \"%{DATA:_tmp.referer}\" \"%{DATA:_tmp.user_agent}\" \"%{DATA:_tmp.host_header}\" \"%{DATA:_tmp.xff}\" %{GREEDYDATA:_tmp.note}$
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok_mapped!(
                             "^(?P<_tmp_time_s>(?:[0-9]+))\\.(?P<_tmp_time_ms>(?:[0-9]+))%{SPACE}(?P<_tmp_elapsed>(?:[0-9]+)) %{NOTSPACE:_tmp.source_ip} (?P<_tmp_code>(?:[^/]+))/(?P<_tmp_status>(?:[0-9]+)) (?P<_tmp_destination_bytes>(?:[0-9]+)) %{NOTSPACE:_tmp.method} %{NOTSPACE:_tmp.url} %{NOTSPACE:_tmp.user_name} (?P<_tmp_peer_status>(?:[^/]+))/%{NOTSPACE:_tmp.peer_host} %{NOTSPACE:_tmp.content_type}$",
@@ -85,7 +85,9 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             // SKIPPED: condition not transpiled: ctx._tmp?.values() != null

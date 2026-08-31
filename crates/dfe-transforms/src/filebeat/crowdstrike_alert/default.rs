@@ -8592,10 +8592,13 @@ impl Transform for Default {
                 if event.has_value("crowdstrike.alert.name") {
                     if let Some(input) = event.get_string("crowdstrike.alert.name") {
                         // Grok pattern: %{NOTSPACE:_username_from_name} on %{NOTSPACE:_hostname_from_name}
-                        let _ = cached_grok!(
+                        if !cached_grok!(
                             "%{NOTSPACE:_username_from_name} on %{NOTSPACE:_hostname_from_name}"
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

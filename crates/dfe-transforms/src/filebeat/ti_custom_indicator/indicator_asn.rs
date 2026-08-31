@@ -19,14 +19,16 @@ impl Transform for IndicatorAsn {
             if let Some(input) = event.get_string("_ingest._value") {
                 // Grok pattern: ^\\[?autonomous-system:number%{SPACE}=%{SPACE}%{INT:_tmp.as_number}\\]?
                 // Grok pattern: ^\\[?autonomous-system:number%{SPACE}=%{SPACE}'%{INT:_tmp.as_number}'\\]?
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!("^\\[?autonomous-system:number%{SPACE}=%{SPACE}%{INT:_tmp.as_number}\\]?"),
                         cached_grok!("^\\[?autonomous-system:number%{SPACE}=%{SPACE}'%{INT:_tmp.as_number}'\\]?"),
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
             Ok(())
         })();

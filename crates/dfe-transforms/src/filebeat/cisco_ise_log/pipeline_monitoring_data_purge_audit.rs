@@ -20,7 +20,9 @@ impl Transform for PipelineMonitoringDataPurgeAudit {
 
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (?P<_tmp_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[ ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?)) %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                    let _ = cached_grok_mapped!("(?P<_tmp_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[ ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?)) %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},", [("_tmp_timestamp", "_tmp.timestamp")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("(?P<_tmp_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[ ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?)) %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},", [("_tmp_timestamp", "_tmp.timestamp")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             // ignore_failure: true
@@ -35,7 +37,9 @@ impl Transform for PipelineMonitoringDataPurgeAudit {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("cisco_ise.log.message.description") {
                     // Grok pattern: ^%{DATA:event.action}:
-                    let _ = cached_grok!("^%{DATA:event.action}:").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:event.action}:").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

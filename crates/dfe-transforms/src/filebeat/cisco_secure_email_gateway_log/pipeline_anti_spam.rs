@@ -23,7 +23,7 @@ impl Transform for PipelineAntiSpam {
                     // Grok pattern: ^case %{GREEDYDATA:cisco_secure_email_gateway.log.object_category} \\(%{NUMBER:cisco_secure_email_gateway.log.case_id}\\) : case-daemon: %{DATA:cisco_secure_email_gateway.log.object} killed by %{DATA:cisco_secure_email_gateway.log.command}, %{GREEDYDATA:cisco_secure_email_gateway.log.result}$
                     // Grok pattern: ^case %{GREEDYDATA:cisco_secure_email_gateway.log.object_category} \\(%{NUMBER:cisco_secure_email_gateway.log.case_id}\\) : case-daemon: %{GREEDYDATA:cisco_secure_email_gateway.log.result}$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^case %{GREEDYDATA:cisco_secure_email_gateway.log.object_category} \\(%{NUMBER:cisco_secure_email_gateway.log.case_id}\\) : case-daemon: all %{DATA:cisco_secure_email_gateway.log.object} killed, %{GREEDYDATA:cisco_secure_email_gateway.log.result}$"),
                             cached_grok!("^case %{GREEDYDATA:cisco_secure_email_gateway.log.object_category} \\(%{NUMBER:cisco_secure_email_gateway.log.case_id}\\) : case-daemon: %{DATA:cisco_secure_email_gateway.log.object} killed by %{DATA:cisco_secure_email_gateway.log.command}, %{GREEDYDATA:cisco_secure_email_gateway.log.result}$"),
@@ -32,7 +32,9 @@ impl Transform for PipelineAntiSpam {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             Ok(TransformResult::Continue)

@@ -21,14 +21,16 @@ impl Transform for DnsAndSsliFeature {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} User%{SPACE}:%{SPACE}%{DATA:citrix_adc.log.user} - Domain%{SPACE}:%{SPACE}%{DATA:citrix_adc.log.domain} - Category%{SPACE}:%{SPACE}%{INT:citrix_adc.log.category} Action%{SPACE}:%{SPACE}%{WORD:citrix_adc.log.action} - Reason%{SPACE}:%{SPACE}%{GREEDYDATA:citrix_adc.log.reason}$
                     // Grok pattern: %{GREEDYDATA:citrix_adc.log.message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} User%{SPACE}:%{SPACE}%{DATA:citrix_adc.log.user} - Domain%{SPACE}:%{SPACE}%{DATA:citrix_adc.log.domain} - Category%{SPACE}:%{SPACE}%{INT:citrix_adc.log.category} Action%{SPACE}:%{SPACE}%{WORD:citrix_adc.log.action} - Reason%{SPACE}:%{SPACE}%{GREEDYDATA:citrix_adc.log.reason}$"),
                             cached_grok!("%{GREEDYDATA:citrix_adc.log.message}"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

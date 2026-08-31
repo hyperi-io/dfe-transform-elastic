@@ -642,17 +642,77 @@ impl Transform for Default {
             };
             if _cond {
                 if event.has_value("json.doc.endpoint") {
-                    foreach_array(event, "json.doc.endpoint", |event| {
-                        if let Some(input) = event.get_string("_ingest._value") {
-                            // Grok pattern: ^(?P<host_name>(?:[^|]*))(?:|)
-                            let _ = cached_grok_mapped!(
-                                "^(?P<host_name>(?:[^|]*))(?:|)",
-                                [("host_name", "host.name")]
-                            )
-                            .extract_into(&input, event)?;
+                    {
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("json.doc.endpoint").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
+                            }
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                if let Some(input) = event.get_string("_ingest._value") {
+                                    // Grok pattern: ^(?P<host_name>(?:[^|]*))(?:|)
+                                    if !cached_grok_mapped!(
+                                        "^(?P<host_name>(?:[^|]*))(?:|)",
+                                        [("host_name", "host.name")]
+                                    )
+                                    .extract_into(&input, event)?
+                                    {
+                                        return Err(TransformError::GrokNoMatch { value: input });
+                                    }
+                                }
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
+                                }
+                            }
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "json.doc.endpoint",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
                         }
-                        Ok(())
-                    })?;
+                    }
                 }
             }
 
@@ -744,8 +804,11 @@ impl Transform for Default {
                     if event.has_value("json.path") {
                         if let Some(input) = event.get_string("json.path") {
                             // Grok pattern: (?i)\\\\registry\\\\%{GREEDYDATA:registry.path}
-                            let _ = cached_grok!("(?i)\\\\registry\\\\%{GREEDYDATA:registry.path}")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("(?i)\\\\registry\\\\%{GREEDYDATA:registry.path}")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

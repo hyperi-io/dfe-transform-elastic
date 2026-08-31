@@ -54,7 +54,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: ^(?P<first_char>(?:.))
-                let _ = cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)?;
+                if !cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             let _cond = { event.get_str("first_char") != Some("{") };
@@ -98,7 +100,9 @@ impl Transform for Default {
                 if event.has_value("istio.access.message") {
                     if let Some(input) = event.get_string("istio.access.message") {
                         // Grok pattern: \"(-|%{DATA:http.request.method}) (-|%{DATA:url.original}) (-|%{DATA:istio.access.protocol})\" (-|%{NUMBER:http.response.status_code}) (-|%{DATA:istio.access.response.flags}) (-|%{DATA:istio.access.response.code_details}) (-|%{DATA:istio.access.connection_termination_details}) \"(-|%{DATA:istio.access.upstream.transport_failure_reason})\" %{NUMBER:istio.access.bytes.received} %{NUMBER:istio.access.bytes.sent} (-|%{NUMBER:istio.access.duration}) (-|%{NUMBER:istio.access.upstream.service_time}) \"(-|%{DATA:istio.access.x_forwarded_for})\" \"(-|%{DATA:user_agent.original})\" \"(-|%{DATA:http.request.id})\" \"(-|%{DATA:istio.access.authority})\" \"(-|%{DATA:istio.access.upstream.host})\" (-|%{DATA:istio.access.upstream.cluster}) (-|%{DATA:istio.access.upstream.local_address}) (-|%{DATA:istio.access.downstream.local_address}) (-|%{DATA:istio.access.downstream.remote_address}) (-|%{DATA:istio.access.requested_server_name}) (-|%{GREEDYDATA:istio.access.route_name})
-                        let _ = cached_grok!("\"(-|%{DATA:http.request.method}) (-|%{DATA:url.original}) (-|%{DATA:istio.access.protocol})\" (-|%{NUMBER:http.response.status_code}) (-|%{DATA:istio.access.response.flags}) (-|%{DATA:istio.access.response.code_details}) (-|%{DATA:istio.access.connection_termination_details}) \"(-|%{DATA:istio.access.upstream.transport_failure_reason})\" %{NUMBER:istio.access.bytes.received} %{NUMBER:istio.access.bytes.sent} (-|%{NUMBER:istio.access.duration}) (-|%{NUMBER:istio.access.upstream.service_time}) \"(-|%{DATA:istio.access.x_forwarded_for})\" \"(-|%{DATA:user_agent.original})\" \"(-|%{DATA:http.request.id})\" \"(-|%{DATA:istio.access.authority})\" \"(-|%{DATA:istio.access.upstream.host})\" (-|%{DATA:istio.access.upstream.cluster}) (-|%{DATA:istio.access.upstream.local_address}) (-|%{DATA:istio.access.downstream.local_address}) (-|%{DATA:istio.access.downstream.remote_address}) (-|%{DATA:istio.access.requested_server_name}) (-|%{GREEDYDATA:istio.access.route_name})").extract_into(&input, event)?;
+                        if !cached_grok!("\"(-|%{DATA:http.request.method}) (-|%{DATA:url.original}) (-|%{DATA:istio.access.protocol})\" (-|%{NUMBER:http.response.status_code}) (-|%{DATA:istio.access.response.flags}) (-|%{DATA:istio.access.response.code_details}) (-|%{DATA:istio.access.connection_termination_details}) \"(-|%{DATA:istio.access.upstream.transport_failure_reason})\" %{NUMBER:istio.access.bytes.received} %{NUMBER:istio.access.bytes.sent} (-|%{NUMBER:istio.access.duration}) (-|%{NUMBER:istio.access.upstream.service_time}) \"(-|%{DATA:istio.access.x_forwarded_for})\" \"(-|%{DATA:user_agent.original})\" \"(-|%{DATA:http.request.id})\" \"(-|%{DATA:istio.access.authority})\" \"(-|%{DATA:istio.access.upstream.host})\" (-|%{DATA:istio.access.upstream.cluster}) (-|%{DATA:istio.access.upstream.local_address}) (-|%{DATA:istio.access.downstream.local_address}) (-|%{DATA:istio.access.downstream.remote_address}) (-|%{DATA:istio.access.requested_server_name}) (-|%{GREEDYDATA:istio.access.route_name})").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 event.remove("istio.access.message");
@@ -245,8 +249,11 @@ impl Transform for Default {
             if event.has_value("istio.access.protocol") {
                 if let Some(input) = event.get_string("istio.access.protocol") {
                     // Grok pattern: (-|HTTP/%{NUMBER:http.version})
-                    let _ = cached_grok!("(-|HTTP/%{NUMBER:http.version})")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("(-|HTTP/%{NUMBER:http.version})")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -495,7 +502,7 @@ impl Transform for Default {
                     // Grok pattern: ^(?P<destination_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):%{NUMBER:destination.port}$
                     // Grok pattern: ^%{IPV6:destination.ip}(?:(?: port |[p#.]))%{NUMBER:destination.port}$
                     // Grok pattern: ^%{IPV6:destination.ip}(?:(?: port |[p#.]))%{POSINT:destination.port}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^-$"),
                             cached_grok!("^%{HOSTNAME:destination.domain}$"),
@@ -516,7 +523,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -595,7 +604,7 @@ impl Transform for Default {
                         // Grok pattern: ^(?P<source_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):%{NUMBER:source.port}$
                         // Grok pattern: ^%{IPV6:source.ip}(?:(?: port |[p#.]))%{NUMBER:source.port}$
                         // Grok pattern: ^%{IPV6:source.ip}(?:(?: port |[p#.]))%{POSINT:source.port}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!("^-$"),
                                 cached_grok!("^%{HOSTNAME:source.domain}$"),
@@ -614,7 +623,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

@@ -19,14 +19,16 @@ impl Transform for Ipsec {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (?:\\d+\\[%{WORD}\\])%{GREEDYDATA}(?:%{IP:source.address}\\[%{NONNEGINT:source.port:long}\\]) to (?:%{IP:destination.address}\\[%{NONNEGINT:destination.port:long}\\]) \\(%{NONNEGINT:network.bytes:long} bytes\\)
                     // Grok pattern: %{GREEDYDATA}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("(?:\\d+\\[%{WORD}\\])%{GREEDYDATA}(?:%{IP:source.address}\\[%{NONNEGINT:source.port:long}\\]) to (?:%{IP:destination.address}\\[%{NONNEGINT:destination.port:long}\\]) \\(%{NONNEGINT:network.bytes:long} bytes\\)"),
                             cached_grok!("%{GREEDYDATA}"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             let _cond = { event.has_value("source.address") };

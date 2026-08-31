@@ -1395,10 +1395,13 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("imperva_cloud_waf.event.extensions.ver")
                     {
                         // Grok pattern: ^(TLSv%{GREEDYDATA:tls.version} %{GREEDYDATA:tls.cipher})$
-                        let _ = cached_grok!(
+                        if !cached_grok!(
                             "^(TLSv%{GREEDYDATA:tls.version} %{GREEDYDATA:tls.cipher})$"
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

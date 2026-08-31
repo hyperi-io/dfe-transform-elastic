@@ -23,7 +23,7 @@ impl Transform for TransformFeature {
                     // Grok pattern: ^Client %{IP:citrix_adc.log.client_ip} - Profile %{DATA:citrix_adc.log.profile} - Action %{DATA:citrix_adc.log.action} - PCRE%{SPACE}error%{SPACE}code %{INT:citrix_adc.log.pcre_error_code}$
                     // Grok pattern: ^Client %{IP:citrix_adc.log.client_ip} - Profile %{DATA:citrix_adc.log.profile} - Failed%{SPACE}to%{SPACE}write%{SPACE}%{DATA:citrix_adc.log.header}%{SPACE}request%{SPACE}header$
                     // Grok pattern: %{GREEDYDATA:citrix_adc.log.message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Client %{IP:citrix_adc.log.client_ip} - Profile %{DATA:citrix_adc.log.profile} - Action %{DATA:citrix_adc.log.action} - Value %{GREEDYDATA:citrix_adc.log.value}$"),
                             cached_grok!("^Client %{IP:citrix_adc.log.client_ip} - Profile %{DATA:citrix_adc.log.profile} - Action %{DATA:citrix_adc.log.action} - PCRE%{SPACE}error%{SPACE}code %{INT:citrix_adc.log.pcre_error_code}$"),
@@ -32,7 +32,9 @@ impl Transform for TransformFeature {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

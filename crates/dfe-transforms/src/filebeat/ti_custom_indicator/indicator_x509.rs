@@ -27,7 +27,7 @@ impl Transform for IndicatorX509 {
                 // Grok pattern: ^\\[?x509-certificate:validity_not_before%{SPACE}=%{SPACE}'%{TIMESTAMP_ISO8601:_tmp.not_before}'\\]?
                 // Grok pattern: ^\\[?x509-certificate:issuer%{SPACE}=%{SPACE}'%{DATA:_tmp.issuer}'\\]?
                 // Grok pattern: ^\\[?x509-certificate:subject%{SPACE}=%{SPACE}'%{DATA:_tmp.subject}'\\]?
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!("(?i:^\\[?x509-certificate:hashes\\.'?MD5'?%{SPACE}=%{SPACE}'%{DATA:_tmp.md5}'\\]?)"),
                         cached_grok!("(?i:^\\[?x509-certificate:hashes\\.'?SHA-?1'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha1}'\\]?)"),
@@ -42,7 +42,9 @@ impl Transform for IndicatorX509 {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
             Ok(())
         })();

@@ -35,7 +35,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: (?:(?:(?:(?:<%{NONNEGINT:log.syslog.priority:int}>)%{NONNEGINT:log.syslog.version}?\\s*)?(?:(?P<_temp__raw_date>(?:(?:(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND}(?:\\.%{NUMBER})?)?%{ISO8601_TIMEZONE}?)))):?\\s+)?(?:(?:-|%{SYSLOGHOST:log.syslog.hostname}) (?:-|(?P<log_syslog_appname>(?:(?:[^%\\s:\\[]+)))) (?:-|%{POSINT:log.syslog.procid}) (?:-|%{NOTSPACE:log.syslog.msgid})) - (?:{DATA})?(?:(?:(:|\\s)\\s+))?))?\\s*%{GREEDYDATA:_temp_.full_message}
-                let _ = cached_grok_mapped!("(?:(?:(?:(?:<%{NONNEGINT:log.syslog.priority:int}>)%{NONNEGINT:log.syslog.version}?\\s*)?(?:(?P<_temp__raw_date>(?:(?:(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND}(?:\\.%{NUMBER})?)?%{ISO8601_TIMEZONE}?)))):?\\s+)?(?:(?:-|%{SYSLOGHOST:log.syslog.hostname}) (?:-|(?P<log_syslog_appname>(?:(?:[^%\\s:\\[]+)))) (?:-|%{POSINT:log.syslog.procid}) (?:-|%{NOTSPACE:log.syslog.msgid})) - (?:{DATA})?(?:(?:(:|\\s)\\s+))?))?\\s*%{GREEDYDATA:_temp_.full_message}", [("_temp__raw_date", "_temp_.raw_date"), ("log_syslog_appname", "log.syslog.appname")]).extract_into(&input, event)?;
+                if !cached_grok_mapped!("(?:(?:(?:(?:<%{NONNEGINT:log.syslog.priority:int}>)%{NONNEGINT:log.syslog.version}?\\s*)?(?:(?P<_temp__raw_date>(?:(?:(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND}(?:\\.%{NUMBER})?)?%{ISO8601_TIMEZONE}?)))):?\\s+)?(?:(?:-|%{SYSLOGHOST:log.syslog.hostname}) (?:-|(?P<log_syslog_appname>(?:(?:[^%\\s:\\[]+)))) (?:-|%{POSINT:log.syslog.procid}) (?:-|%{NOTSPACE:log.syslog.msgid})) - (?:{DATA})?(?:(?:(:|\\s)\\s+))?))?\\s*%{GREEDYDATA:_temp_.full_message}", [("_temp__raw_date", "_temp_.raw_date"), ("log_syslog_appname", "log.syslog.appname")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
             }
 
             let _cond = { event.has_value("_temp_.raw_date") };

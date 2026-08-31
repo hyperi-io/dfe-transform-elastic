@@ -396,7 +396,9 @@ impl Transform for Login {
         if false {
             if let Some(input) = event.get_string("message") {
                 // Grok pattern: Connection %{DATA:_tmp.status} by %{IPORHOST:client.ip} port %{POSINT:client.port}( %{GREEDYDATA})?$
-                let _ = cached_grok!("Connection %{DATA:_tmp.status} by %{IPORHOST:client.ip} port %{POSINT:client.port}( %{GREEDYDATA})?$").extract_into(&input, event)?;
+                if !cached_grok!("Connection %{DATA:_tmp.status} by %{IPORHOST:client.ip} port %{POSINT:client.port}( %{GREEDYDATA})?$").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
         }
 
@@ -515,7 +517,9 @@ impl Transform for Login {
         if false {
             if let Some(input) = event.get_string("user_agent.original") {
                 // Grok pattern: %{DATA:user_agent.original}(?:\\]|\\)+)
-                let _ = cached_grok!("%{DATA:user_agent.original}(?:\\]|\\)+)").extract_into(&input, event)?;
+                if !cached_grok!("%{DATA:user_agent.original}(?:\\]|\\)+)").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
         }
 

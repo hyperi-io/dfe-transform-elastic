@@ -33,7 +33,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: ^<%{NONNEGINT:log.syslog.priority:long}>(?:%{SYSLOGTIMESTAMP:timestamp}|%{TIMESTAMP_ISO8601:timestamp})(?: %{SYSLOGFACILITY})?(?: %{SYSLOGHOST:log.syslog.hostname})?(?: (?:%{PROG:log.syslog.appname}(?:\\[%{POSINT:log.syslog.procid}\\])?):)? %{GREEDYDATA:message}
                     // Grok pattern: ^(?:(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)%{NONNEGINT:log.syslog.version} +(?:-|%{TIMESTAMP_ISO8601:timestamp}) +(?:-|%{IPORHOST:log.syslog.hostname}) +(?:-|%{SYSLOG5424PRINTASCII:log.syslog.appname}) +(?:-|%{POSINT:log.syslog.procid}) +(?:-|%{SYSLOG5424PRINTASCII:log.syslog.message_id}) +(?:-|%{SYSLOG5424SD:log.syslog.structured_data})?) +%{GREEDYDATA:message})
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^<%{NONNEGINT:log.syslog.priority:long}>(?:%{SYSLOGTIMESTAMP:timestamp}|%{TIMESTAMP_ISO8601:timestamp})(?: %{SYSLOGFACILITY})?(?: %{SYSLOGHOST:log.syslog.hostname})?(?: (?:%{PROG:log.syslog.appname}(?:\\[%{POSINT:log.syslog.procid}\\])?):)? %{GREEDYDATA:message}"
@@ -44,7 +44,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -61,7 +63,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:timestamp},(?P<log_level>(?:(?:%{LOGLEVEL}|[Cc]ritical|CRITICAL|[Mm]ajor|MAJOR|[Mm]inor|MINOR|[Ii]nfo|INFO|[Ww]arning|WARNING|[Ee]rror|ERROR|[Ff]atal|FATAL))),%{GREEDYDATA:message}
-                        let _ = cached_grok_mapped!("^%{TIMESTAMP_ISO8601:timestamp},(?P<log_level>(?:(?:%{LOGLEVEL}|[Cc]ritical|CRITICAL|[Mm]ajor|MAJOR|[Mm]inor|MINOR|[Ii]nfo|INFO|[Ww]arning|WARNING|[Ee]rror|ERROR|[Ff]atal|FATAL))),%{GREEDYDATA:message}", [("log_level", "log.level")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("^%{TIMESTAMP_ISO8601:timestamp},(?P<log_level>(?:(?:%{LOGLEVEL}|[Cc]ritical|CRITICAL|[Mm]ajor|MAJOR|[Mm]inor|MINOR|[Ii]nfo|INFO|[Ww]arning|WARNING|[Ee]rror|ERROR|[Ff]atal|FATAL))),%{GREEDYDATA:message}", [("log_level", "log.level")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();

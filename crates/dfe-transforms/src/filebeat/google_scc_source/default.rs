@@ -121,7 +121,9 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("google_scc.source.name") {
                         // Grok pattern: ^organizations/%{DATA:organization.id}/sources/%{DATA:google_scc.source.id}$
-                        let _ = cached_grok!("^organizations/%{DATA:organization.id}/sources/%{DATA:google_scc.source.id}$").extract_into(&input, event)?;
+                        if !cached_grok!("^organizations/%{DATA:organization.id}/sources/%{DATA:google_scc.source.id}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })() {

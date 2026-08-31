@@ -19,14 +19,16 @@ impl Transform for PhpFpm {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA}: (?:((?:(%{DATA:_tmp.action}) for user '%{USER:user.name}' from: %{IP:source.address} \\(%{DATA}\\))|(?:User (%{DATA:_tmp.action}) for user '%{USER:user.name}' from: %{IP:source.address})|(?:webConfigurator %{DATA:_tmp.action} for user '%{DATA:user.name}' from: %{IP:source.address})))
                     // Grok pattern: ^%{GREEDYDATA}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{DATA}: (?:((?:(%{DATA:_tmp.action}) for user '%{USER:user.name}' from: %{IP:source.address} \\(%{DATA}\\))|(?:User (%{DATA:_tmp.action}) for user '%{USER:user.name}' from: %{IP:source.address})|(?:webConfigurator %{DATA:_tmp.action} for user '%{DATA:user.name}' from: %{IP:source.address})))"),
                             cached_grok!("^%{GREEDYDATA}"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
                 event.append_unique("event.category", json!("authentication"))?;

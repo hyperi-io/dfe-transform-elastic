@@ -31,9 +31,17 @@ impl Transform for Default {
 
             event.set("cloud.provider", json!("azure"))?;
 
-            // SKIPPED: condition not transpiled: ctx.event?.original != null && ctx.event.original.contains('"records"')
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("event.original")
+                    && event.get("event.original").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => {
+                            a.iter().any(|x| x.as_str() == Some("\"records\""))
+                        }
+                        serde_json::Value::String(s) => s.contains("\"records\""),
+                        _ => false,
+                    })
+            };
+            if _cond {
                 return Ok(TransformResult::Drop);
             }
 
@@ -336,7 +344,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{IPV6:destination.ip}(?:(?: port |[p#.]))(?P<destination_port>(?:[0-9]+))$
                     // Grok pattern: ^(?P<destination_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}))$
                     // Grok pattern: ^%{IPV6:destination.ip}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{IPV4:destination.ip}$"),
                             cached_grok_mapped!(
@@ -366,7 +374,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

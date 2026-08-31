@@ -110,7 +110,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: Detection type: %{DATA:json.threat_name} Detection name: %{DATA:json.threat_name} Computer name: %{HOSTNAME:json.hostname} Logged user: %{DATA:user.domain}\\\\%{DATA:json.user} Time of occurrence: (?P<json_occurred_plaintext>(?:%{MONTHNUM}/%{MONTHDAY}/%{YEAR}, %{HOUR}:%{MINUTE}:%{SECOND} (?:AM|PM) UTC\\+%{INT})) Scanner: %{DATA:json.scanner_id} Action performed: %{DATA:json.action_taken}$
                         // Grok pattern: ^%{DATA:message}\\s+%{HOSTNAME:json.hostname} (?P<json_occurred_plaintext>(?:%{MONTHNUM}/%{MONTHDAY}/%{YEAR}, %{HOUR}:%{MINUTE}:%{SECOND} (?:AM|PM) UTC\\+%{INT})) %{DATA:eset_protect.event.threat_type} %{NOTSPACE:threat.indicator.name} (?P<json_object_type>(?:File)) %{GREEDYDATA:json.object_uri}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok_mapped!(
                                     "Detection type: %{DATA:json.threat_name} Detection name: %{DATA:json.threat_name} Computer name: %{HOSTNAME:json.hostname} Logged user: %{DATA:user.domain}\\\\%{DATA:json.user} Time of occurrence: (?P<json_occurred_plaintext>(?:%{MONTHNUM}/%{MONTHDAY}/%{YEAR}, %{HOUR}:%{MINUTE}:%{SECOND} (?:AM|PM) UTC\\+%{INT})) Scanner: %{DATA:json.scanner_id} Action performed: %{DATA:json.action_taken}$",
@@ -126,7 +126,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })() {
@@ -269,7 +271,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("eset_protect.event.hostname") {
                     // Grok pattern: (%{DATA:host.hostname}\\.%{GREEDYDATA:host.domain}|%{GREEDYDATA:host.hostname})
-                    let _ = cached_grok!("(%{DATA:host.hostname}\\.%{GREEDYDATA:host.domain}|%{GREEDYDATA:host.hostname})").extract_into(&input, event)?;
+                    if !cached_grok!("(%{DATA:host.hostname}\\.%{GREEDYDATA:host.domain}|%{GREEDYDATA:host.hostname})").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1297,7 +1301,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("file.path") {
                     // Grok pattern: ^(file:///)?(?P<file_path>(?:(?P<file_drive_letter>\\w):(?P<file_directory>/.*/|/)?(?P<file_name>.+(\\.(?P<file_extension>.+))?)?))$
                     // Grok pattern: .*/(?P<file_name>.+\\.(?P<file_extension>.+))$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^(file:///)?(?P<file_path>(?:(?P<file_drive_letter>\\w):(?P<file_directory>/.*/|/)?(?P<file_name>.+(\\.(?P<file_extension>.+))?)?))$",
@@ -1319,7 +1323,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1356,7 +1362,7 @@ impl Transform for Default {
                             // Grok pattern: ^%{GREEDYDATA:json._temp}\\\\%{DATA:process.name}$
                             // Grok pattern: ^%{GREEDYDATA:json._temp}/%{DATA:process.name}$
                             // Grok pattern: ^%{DATA:process.name}$
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!(
                                         "^%{GREEDYDATA:json._temp}\\\\%{DATA:process.name}$"
@@ -1366,7 +1372,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())
@@ -2007,7 +2015,7 @@ impl Transform for Default {
                             // Grok pattern: ^%{HOSTNAME:user.domain}\\\\\\\\%{USERNAME:user.name}$
                             // Grok pattern: ^%{USERNAME:user.name}@%{HOSTNAME:user.domain}$
                             // Grok pattern: ^%{GREEDYDATA:user.name}$
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!(
                                         "^%{HOSTNAME:user.domain}\\\\%{USERNAME:user.name}$"
@@ -2020,7 +2028,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

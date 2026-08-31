@@ -2332,7 +2332,7 @@ impl Transform for Default {
                     // Grok pattern: ^(?:%{NONNEGINT}%{SPACE})?(?:(?:%{SYSLOGTIMESTAMP:_tmp.timestamp}|%{TIMESTAMP_ISO8601:_tmp.timestamp8601}))
                     // Grok pattern: ^(?:%{NONNEGINT}%{SPACE})?(?:<%{NONNEGINT:log.syslog.priority:long}>)(?:(?:%{SYSLOGTIMESTAMP:_tmp.timestamp}|%{TIMESTAMP_ISO8601:_tmp.timestamp8601}))
                     // Grok pattern: ^(?:%{NONNEGINT}%{SPACE})?(?:<%{NONNEGINT:log.syslog.priority:long}>)%{NONNEGINT} (?:(?:%{SYSLOGTIMESTAMP:_tmp.timestamp}|%{TIMESTAMP_ISO8601:_tmp.timestamp8601}))
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^(?:%{NONNEGINT}%{SPACE})?(?:(?:%{SYSLOGTIMESTAMP:_tmp.timestamp}|%{TIMESTAMP_ISO8601:_tmp.timestamp8601})) "
@@ -2346,7 +2346,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

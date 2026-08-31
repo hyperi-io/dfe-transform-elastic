@@ -27,7 +27,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("message") {
                 // Grok pattern: ^(?P<first_char>(?:.))
-                let _ = cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)?;
+                if !cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             let _cond = { event.get_str("first_char") != Some("{") };
@@ -79,7 +81,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("elasticsearch.slowlog.message") {
                     // Grok pattern: (\\[(?P<elasticsearch_index_name>(?:[a-zA-Z0-9_.-]*))\\]\\[%{NUMBER:elasticsearch.shard.id}\\])?(%{SPACE})(\\[(?P<elasticsearch_index_name>(?:[a-zA-Z0-9_.-]*))\\/%{DATA:elasticsearch.index.id}\\])?(%{SPACE})%{SPACE}(took\\[%{DATA:elasticsearch.slowlog.took}\\],)?%{SPACE}(took_millis\\[%{NUMBER:elasticsearch.slowlog.duration:long}\\],)?%{SPACE}(type\\[%{DATA:elasticsearch.slowlog.type}\\],)?%{SPACE}(id\\[%{DATA:elasticsearch.slowlog.id}\\],)?%{SPACE}(routing\\[%{DATA:elasticsearch.slowlog.routing}\\],)?%{SPACE}(total_hits\\[%{NUMBER:elasticsearch.slowlog.total_hits:int}\\],)?%{SPACE}(types\\[%{DATA:elasticsearch.slowlog.types}\\],)?%{SPACE}(stats\\[%{DATA:elasticsearch.slowlog.stats}\\],)?%{SPACE}(search_type\\[%{DATA:elasticsearch.slowlog.search_type}\\],)?%{SPACE}(total_shards\\[%{NUMBER:elasticsearch.slowlog.total_shards:int}\\],)?%{SPACE}(source\\[(?P<elasticsearch_slowlog_source_query>(?:(.|\n)*))\\])?,?%{SPACE}(extra_source\\[%{DATA:elasticsearch.slowlog.extra_source}\\])?,?
                     // Grok pattern: \\[(?P<elasticsearch_index_name>(?:[a-zA-Z0-9_.-]*))\\]\\[%{NUMBER:elasticsearch.shard.id}\\]
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "(\\[(?P<elasticsearch_index_name>(?:[a-zA-Z0-9_.-]*))\\]\\[%{NUMBER:elasticsearch.shard.id}\\])?(%{SPACE})(\\[(?P<elasticsearch_index_name>(?:[a-zA-Z0-9_.-]*))\\/%{DATA:elasticsearch.index.id}\\])?(%{SPACE})%{SPACE}(took\\[%{DATA:elasticsearch.slowlog.took}\\],)?%{SPACE}(took_millis\\[%{NUMBER:elasticsearch.slowlog.duration:long}\\],)?%{SPACE}(type\\[%{DATA:elasticsearch.slowlog.type}\\],)?%{SPACE}(id\\[%{DATA:elasticsearch.slowlog.id}\\],)?%{SPACE}(routing\\[%{DATA:elasticsearch.slowlog.routing}\\],)?%{SPACE}(total_hits\\[%{NUMBER:elasticsearch.slowlog.total_hits:int}\\],)?%{SPACE}(types\\[%{DATA:elasticsearch.slowlog.types}\\],)?%{SPACE}(stats\\[%{DATA:elasticsearch.slowlog.stats}\\],)?%{SPACE}(search_type\\[%{DATA:elasticsearch.slowlog.search_type}\\],)?%{SPACE}(total_shards\\[%{NUMBER:elasticsearch.slowlog.total_shards:int}\\],)?%{SPACE}(source\\[(?P<elasticsearch_slowlog_source_query>(?:(.|\n)*))\\])?,?%{SPACE}(extra_source\\[%{DATA:elasticsearch.slowlog.extra_source}\\])?,?",
@@ -99,7 +101,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 let v = json!(
                     event

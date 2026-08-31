@@ -250,10 +250,13 @@ impl Transform for Default {
                 if event.has_value("aws.cloudtrail.user_identity.arn") {
                     if let Some(input) = event.get_string("aws.cloudtrail.user_identity.arn") {
                         // Grok pattern: arn:(aws|aws-us-gov):sts:.*/%{GREEDYDATA:_tmp.session_name}$
-                        let _ = cached_grok!(
+                        if !cached_grok!(
                             "arn:(aws|aws-us-gov):sts:.*/%{GREEDYDATA:_tmp.session_name}$"
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -439,7 +442,9 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("source.address") {
                     // Grok pattern: ^%{IP:source.ip}$
-                    let _ = cached_grok!("^%{IP:source.ip}$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{IP:source.ip}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

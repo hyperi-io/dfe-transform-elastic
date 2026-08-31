@@ -27,7 +27,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("message") {
                 // Grok pattern: ^(?P<first_char>(?:.))
-                let _ = cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)?;
+                if !cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             let _cond = { event.get_str("first_char") != Some("{") };
@@ -37,7 +39,7 @@ impl Transform for Default {
                     // Grok pattern: \\[%{TIMESTAMP_ISO8601:logstash.log.timestamp}\\]\\[(?P<log_level>(?:INFO|ERROR|DEBUG|FATAL|WARN|TRACE))\\s?\\]\\[(?P<logstash_log_module>(?:[\\w\\.]+))\\s*\\]\\[%{NOTSPACE:logstash.log.pipeline_id}\\]\\[%{NOTSPACE:logstash.log.plugin_id}\\] (?P<message>(?:(.|\n)*))
                     // Grok pattern: \\[%{TIMESTAMP_ISO8601:logstash.log.timestamp}\\]\\[(?P<log_level>(?:INFO|ERROR|DEBUG|FATAL|WARN|TRACE))\\s?\\]\\[(?P<logstash_log_module>(?:[\\w\\.]+))\\s*\\]\\[%{NOTSPACE:logstash.log.pipeline_id}\\] (?P<message>(?:(.|\n)*))
                     // Grok pattern: \\[%{TIMESTAMP_ISO8601:logstash.log.timestamp}\\]\\[(?P<log_level>(?:INFO|ERROR|DEBUG|FATAL|WARN|TRACE))\\s?\\]\\[(?P<logstash_log_module>(?:[\\w\\.]+))\\s*\\] (?P<message>(?:(.|\n)*))
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "\\[%{TIMESTAMP_ISO8601:logstash.log.timestamp}\\]\\[(?P<log_level>(?:INFO|ERROR|DEBUG|FATAL|WARN|TRACE))\\s?\\]\\[(?P<logstash_log_module>(?:[\\w\\.]+))\\s*\\]\\[%{NOTSPACE:logstash.log.pipeline_id}\\]\\[%{NOTSPACE:logstash.log.plugin_id}\\] (?P<message>(?:(.|\n)*))",
@@ -63,7 +65,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 let _cond = { !event.has_value("event.timezone") };
                 if _cond {

@@ -318,10 +318,11 @@ impl Transform for Default {
                 if event.has_value("host.hostname") {
                     if let Some(input) = event.get_string("host.hostname") {
                         // Grok pattern: ^(%{DATA:user.domain})\\\\(%{GREEDYDATA:host.hostname})$
-                        let _ = cached_grok!(
-                            "^(%{DATA:user.domain})\\\\(%{GREEDYDATA:host.hostname})$"
-                        )
-                        .extract_into(&input, event)?;
+                        if !cached_grok!("^(%{DATA:user.domain})\\\\(%{GREEDYDATA:host.hostname})$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())
@@ -363,7 +364,7 @@ impl Transform for Default {
                         // Grok pattern: ^%{DATA:user.domain}\\\\%{GREEDYDATA:user.name}$
                         // Grok pattern: ^%{EMAILADDRESS:user.email}$
                         // Grok pattern: ^%{GREEDYDATA:user.name}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!("^%{DATA:user.domain}\\\\%{GREEDYDATA:user.name}$"),
                                 cached_grok!("^%{EMAILADDRESS:user.email}$"),
@@ -371,7 +372,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

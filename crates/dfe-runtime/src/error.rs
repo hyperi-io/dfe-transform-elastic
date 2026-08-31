@@ -34,6 +34,14 @@ pub enum TransformError {
     #[error("parse error at '{path}': {message}")]
     ParseError { path: String, message: String },
 
+    /// No grok pattern matched the field's value.
+    ///
+    /// Elasticsearch's own wording, verbatim: a pipeline's `on_failure`
+    /// templates `{{{_ingest.on_failure_message}}}` into `error.message`, and
+    /// the corpus compares that string.
+    #[error("Provided Grok expressions do not match field value: [{value}]")]
+    GrokNoMatch { value: String },
+
     /// An enrichment module (geoip, `user_agent`, `community_id`) failed.
     #[error("enrichment '{enrichment}' failed: {message}")]
     EnrichmentError { enrichment: String, message: String },

@@ -19,7 +19,9 @@ impl Transform for PipelinePlaintext {
             if event.has_value("message") {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: %{TIMESTAMP_ISO8601:mongodb.log.timestamp}%{SPACE}%{MONGO3_SEVERITY:log.level}%{SPACE}%{MONGO3_COMPONENT:mongodb.log.component}%{SPACE}(?:\\[%{DATA:mongodb.log.context}\\])?%{SPACE}%{GREEDYDATA:message}
-                    let _ = cached_grok!("%{TIMESTAMP_ISO8601:mongodb.log.timestamp}%{SPACE}%{MONGO3_SEVERITY:log.level}%{SPACE}%{MONGO3_COMPONENT:mongodb.log.component}%{SPACE}(?:\\[%{DATA:mongodb.log.context}\\])?%{SPACE}%{GREEDYDATA:message}").extract_into(&input, event)?;
+                    if !cached_grok!("%{TIMESTAMP_ISO8601:mongodb.log.timestamp}%{SPACE}%{MONGO3_SEVERITY:log.level}%{SPACE}%{MONGO3_COMPONENT:mongodb.log.component}%{SPACE}(?:\\[%{DATA:mongodb.log.context}\\])?%{SPACE}%{GREEDYDATA:message}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

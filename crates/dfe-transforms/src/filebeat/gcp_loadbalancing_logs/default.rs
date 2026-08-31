@@ -104,8 +104,11 @@ impl Transform for Default {
             if event.has_value("json.httpRequest.remoteIp") {
                 if let Some(input) = event.get_string("json.httpRequest.remoteIp") {
                     // Grok pattern: ^%{IP:source.address}(:%{POSINT:source.port:long})?$
-                    let _ = cached_grok!("^%{IP:source.address}(:%{POSINT:source.port:long})?$")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^%{IP:source.address}(:%{POSINT:source.port:long})?$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -288,10 +291,13 @@ impl Transform for Default {
             if event.has_value("json.httpRequest.serverIp") {
                 if let Some(input) = event.get_string("json.httpRequest.serverIp") {
                     // Grok pattern: ^%{IP:destination.nat.ip}(:%{POSINT:destination.nat.port:long})?$
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^%{IP:destination.nat.ip}(:%{POSINT:destination.nat.port:long})?$"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

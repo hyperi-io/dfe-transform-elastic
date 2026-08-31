@@ -27,7 +27,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: <%{NONNEGINT:log.syslog.priority:int}>%{SYSLOGTIMESTAMP:_temp_.raw_date} %{WORD}  %{NOTSPACE}\\:[\\s]+%{GREEDYDATA:_temp_.full_message}
-                let _ = cached_grok!("<%{NONNEGINT:log.syslog.priority:int}>%{SYSLOGTIMESTAMP:_temp_.raw_date} %{WORD}  %{NOTSPACE}\\:[\\s]+%{GREEDYDATA:_temp_.full_message}").extract_into(&input, event)?;
+                if !cached_grok!("<%{NONNEGINT:log.syslog.priority:int}>%{SYSLOGTIMESTAMP:_temp_.raw_date} %{WORD}  %{NOTSPACE}\\:[\\s]+%{GREEDYDATA:_temp_.full_message}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
             }
 
             // Painless script

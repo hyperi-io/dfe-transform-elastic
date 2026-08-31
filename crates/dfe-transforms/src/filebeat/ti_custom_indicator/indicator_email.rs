@@ -21,7 +21,7 @@ impl Transform for IndicatorEmail {
                 // Grok pattern: ^\\[?email-message:value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?
                 // Grok pattern: ^\\[?email-message:from_ref.value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?
                 // Grok pattern: ^\\[?email-message:to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!("^\\[?email-addr:value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?"),
                         cached_grok!("^\\[?email-message:value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?"),
@@ -30,7 +30,9 @@ impl Transform for IndicatorEmail {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
             Ok(())
         })();

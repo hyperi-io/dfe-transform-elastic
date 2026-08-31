@@ -225,7 +225,9 @@ impl Transform for Default {
                         event.get_string("mysqlenterprise.audit.general_data.query")
                     {
                         // Grok pattern: (?i)(?:CREATE|DROP)\\s+USER(?:\\s+IF\\s+(?:NOT\\s+)?EXISTS)?\\s+(?:(?:(?P<__quote>['\"`]))(?P<user_target_name>(?:(?~\\k<__quote>)))(?:(?:\\k<__quote>))|(?P<user_target_name>(?:(?:[^\\s@;]*+))))(?:@(?:(?:(?P<__quote>['\"`]))(?P<user_target_domain>(?:(?~\\k<__quote>)))(?:(?:\\k<__quote>))|(?P<user_target_domain>(?:(?:[^\\s@;]*+)))))?
-                        let _ = cached_grok_mapped!("(?i)(?:CREATE|DROP)\\s+USER(?:\\s+IF\\s+(?:NOT\\s+)?EXISTS)?\\s+(?:(?:(?P<__quote>['\"`]))(?P<user_target_name>(?:(?~\\k<__quote>)))(?:(?:\\k<__quote>))|(?P<user_target_name>(?:(?:[^\\s@;]*+))))(?:@(?:(?:(?P<__quote>['\"`]))(?P<user_target_domain>(?:(?~\\k<__quote>)))(?:(?:\\k<__quote>))|(?P<user_target_domain>(?:(?:[^\\s@;]*+)))))?", [("user_target_name", "user.target.name"), ("user_target_name", "user.target.name"), ("user_target_domain", "user.target.domain"), ("user_target_domain", "user.target.domain")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?i)(?:CREATE|DROP)\\s+USER(?:\\s+IF\\s+(?:NOT\\s+)?EXISTS)?\\s+(?:(?:(?P<__quote>['\"`]))(?P<user_target_name>(?:(?~\\k<__quote>)))(?:(?:\\k<__quote>))|(?P<user_target_name>(?:(?:[^\\s@;]*+))))(?:@(?:(?:(?P<__quote>['\"`]))(?P<user_target_domain>(?:(?~\\k<__quote>)))(?:(?:\\k<__quote>))|(?P<user_target_domain>(?:(?:[^\\s@;]*+)))))?", [("user_target_name", "user.target.name"), ("user_target_name", "user.target.name"), ("user_target_domain", "user.target.domain"), ("user_target_domain", "user.target.domain")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();

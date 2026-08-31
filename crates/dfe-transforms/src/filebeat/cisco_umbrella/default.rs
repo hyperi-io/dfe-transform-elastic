@@ -1610,8 +1610,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("host.name") {
                         // Grok pattern: ^%{DATA:host.hostname}\\.%{GREEDYDATA:host.domain}$
-                        let _ = cached_grok!("^%{DATA:host.hostname}\\.%{GREEDYDATA:host.domain}$")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{DATA:host.hostname}\\.%{GREEDYDATA:host.domain}$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -1631,7 +1634,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("user.name") {
                         // Grok pattern: ^%{GREEDYDATA:user.full_name} (\\(\\[%{GREEDYDATA}\\]\\(mailto:(?P<user_email>%{DATA:user.name}@%{DATA:user.domain})\\)\\))?$
                         // Grok pattern: ^%{GREEDYDATA:user.full_name} (\\((?P<user_email>%{DATA:user.name}@%{DATA:user.domain})\\))?$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok_mapped!(
                                     "^%{GREEDYDATA:user.full_name} (\\(\\[%{GREEDYDATA}\\]\\(mailto:(?P<user_email>%{DATA:user.name}@%{DATA:user.domain})\\)\\))?$",
@@ -1644,7 +1647,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();

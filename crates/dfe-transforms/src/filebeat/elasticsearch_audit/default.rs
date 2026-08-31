@@ -27,7 +27,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("message") {
                 // Grok pattern: ^(?P<first_char>(?:.))
-                let _ = cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)?;
+                if !cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             let _cond = { event.get_str("first_char") != Some("{") };
@@ -118,14 +120,16 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("elasticsearch.audit.origin.address") {
                         // Grok pattern: \\[%{IPORHOST:source.ip}\\]:%{INT:source.port:int}
                         // Grok pattern: %{IPORHOST:source.ip}:%{INT:source.port:int}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!("\\[%{IPORHOST:source.ip}\\]:%{INT:source.port:int}"),
                                 cached_grok!("%{IPORHOST:source.ip}:%{INT:source.port:int}"),
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 event.remove("source.address");

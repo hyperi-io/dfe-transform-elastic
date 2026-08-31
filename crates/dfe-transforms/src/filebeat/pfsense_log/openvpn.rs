@@ -23,7 +23,7 @@ impl Transform for Openvpn {
                     // Grok pattern: (?P<user_name>(?:[a-zA-Z0-9._-]+))/(?:%{IP:source.address}:%{NONNEGINT:source.port:long})%{DATA}IPv4=(%{IP:source.nat.ip}|%{GREEDYDATA}),%{SPACE}IPv6=(%{IP:source.nat.ip}|%{GREEDYDATA})
                     // Grok pattern: %{GREEDYDATA}(?:%{IP:source.address}:%{NONNEGINT:source.port:long})
                     // Grok pattern: %{GREEDYDATA}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("(?:%{IP:source.address}:%{NONNEGINT:source.port:long})%{SPACE}peer%{SPACE}info:%{SPACE}%{GREEDYDATA:pfsense.openvpn.peer_info}"),
                             cached_grok_mapped!("(?:%{IP:source.address}:%{NONNEGINT:source.port:long})%{SPACE}\\[(?P<user_name>(?:[a-zA-Z0-9._-]+))\\]%{SPACE}%{GREEDYDATA}", [("user_name", "user.name")]),
@@ -34,7 +34,9 @@ impl Transform for Openvpn {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             let _cond = { event.get("message").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("auth")), serde_json::Value::String(s) => s.contains("auth"), _ => false }) };

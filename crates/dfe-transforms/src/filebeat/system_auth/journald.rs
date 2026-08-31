@@ -51,7 +51,7 @@ impl Transform for Journald {
                 // Grok pattern: ^%{DATA:user.name} :(?: ((?!TTY=)%{DATA:system.auth.sudo.error}) ;)?(?: TTY=%{DATA:system.auth.sudo.tty} ;)? PWD=%{DATA:system.auth.sudo.pwd} ; USER=%{DATA:system.auth.sudo.user} ; COMMAND=%{GREEDYDATA:system.auth.sudo.command}
                 // Grok pattern: ^new group: name=%{DATA:group.name}, GID=%{NUMBER:group.id}
                 // Grok pattern: ^new user: name=%{DATA:user.target.name}, UID=%{NUMBER:user.target.id}, GID=%{NUMBER:group.id}, home=%{DATA:system.auth.useradd.home}, shell=%{DATA:system.auth.useradd.shell}$
-                let _ = extract_first_match(
+                if !extract_first_match(
                 &[
                 cached_grok!("^%{DATA:system.auth.ssh.event} %{DATA:system.auth.ssh.method} for (invalid user)?%{DATA:user.name} from %{IPORHOST:source.address} port %{NUMBER:source.port:long} ssh2(: %{GREEDYDATA:system.auth.ssh.signature})?"),
                 cached_grok!("^%{DATA:system.auth.ssh.event} user %{DATA:user.name} from %{IPORHOST:source.address}"),
@@ -62,7 +62,9 @@ impl Transform for Journald {
                 ],
                 &input,
                 event,
-                )?;
+                )? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 }
                 Ok(())
@@ -94,7 +96,9 @@ impl Transform for Journald {
                 if event.has_value("message") {
                 if let Some(input) = event.get_string("message") {
                 // Grok pattern: for user %{USERNAME:_temp.pam_user}
-                let _ = cached_grok!("for user %{USERNAME:_temp.pam_user}").extract_into(&input, event)?;
+                if !cached_grok!("for user %{USERNAME:_temp.pam_user}").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 }
                 Ok(())
@@ -107,7 +111,9 @@ impl Transform for Journald {
                 if event.has_value("message") {
                 if let Some(input) = event.get_string("message") {
                 // Grok pattern: for user \\(?%{USERNAME:_temp.pam_user}\\)?
-                let _ = cached_grok!("for user \\(?%{USERNAME:_temp.pam_user}\\)?").extract_into(&input, event)?;
+                if !cached_grok!("for user \\(?%{USERNAME:_temp.pam_user}\\)?").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 }
                 Ok(())
@@ -125,7 +131,9 @@ impl Transform for Journald {
                 if event.has_value("message") {
                 if let Some(input) = event.get_string("message") {
                 // Grok pattern: user %{USERNAME:_temp.gpasswd_target} %{WORD:_temp.gpasswd_action} by %{USERNAME:_temp.pam_user} (?:to|from) group %{DATA:group.name}$
-                let _ = cached_grok!("user %{USERNAME:_temp.gpasswd_target} %{WORD:_temp.gpasswd_action} by %{USERNAME:_temp.pam_user} (?:to|from) group %{DATA:group.name}$").extract_into(&input, event)?;
+                if !cached_grok!("user %{USERNAME:_temp.gpasswd_target} %{WORD:_temp.gpasswd_action} by %{USERNAME:_temp.pam_user} (?:to|from) group %{DATA:group.name}$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 }
                 Ok(())
@@ -139,14 +147,16 @@ impl Transform for Journald {
                 if let Some(input) = event.get_string("message") {
                 // Grok pattern: ^add '%{USERNAME:_temp.usermod_user}' to (?:shadow )?group '%{DATA:_temp.usermod_group}'
                 // Grok pattern: user '%{USERNAME:_temp.usermod_user}'
-                let _ = extract_first_match(
+                if !extract_first_match(
                 &[
                 cached_grok!("^add '%{USERNAME:_temp.usermod_user}' to (?:shadow )?group '%{DATA:_temp.usermod_group}'"),
                 cached_grok!("user '%{USERNAME:_temp.usermod_user}'"),
                 ],
                 &input,
                 event,
-                )?;
+                )? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 }
                 Ok(())
@@ -161,7 +171,7 @@ impl Transform for Journald {
                 // Grok pattern: ^delete '%{USERNAME:_temp.userdel_user}' from (?:shadow )?group '%{DATA:_temp.userdel_group}'$
                 // Grok pattern: ^delete user '%{USERNAME:_temp.userdel_user}'$
                 // Grok pattern: ^removed (?:shadow )?group '%{DATA:_temp.userdel_group}'
-                let _ = extract_first_match(
+                if !extract_first_match(
                 &[
                 cached_grok!("^delete '%{USERNAME:_temp.userdel_user}' from (?:shadow )?group '%{DATA:_temp.userdel_group}'$"),
                 cached_grok!("^delete user '%{USERNAME:_temp.userdel_user}'$"),
@@ -169,7 +179,9 @@ impl Transform for Journald {
                 ],
                 &input,
                 event,
-                )?;
+                )? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 }
                 Ok(())
@@ -185,7 +197,7 @@ impl Transform for Journald {
                 // Grok pattern: for user (?:['\"])?%{DATA:_temp.foruser}(?:['\"])?$
                 // Grok pattern: by user (?:['\"])?%{DATA:_temp.byuser}(?:['\"])?$
                 // Grok pattern: (?:(?<! )) user (?:['\"])%{DATA:_temp.user}(?:['\"])
-                let _ = extract_first_match(
+                if !extract_first_match(
                 &[
                 cached_grok!("for user (?:['\"])?%{DATA:_temp.foruser}(?:['\"])? by (?:['\"])?%{DATA:_temp.byuser}(?:['\"])?(?:\\(uid=%{NUMBER:_temp.byuid}\\))?$"),
                 cached_grok!("for user (?:['\"])?%{DATA:_temp.foruser}(?:['\"])?$"),
@@ -194,7 +206,9 @@ impl Transform for Journald {
                 ],
                 &input,
                 event,
-                )?;
+                )? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 }
                 Ok(())
@@ -207,7 +221,9 @@ impl Transform for Journald {
                 if event.has_value("message") {
                 if let Some(input) = event.get_string("message") {
                 // Grok pattern: ^pam_unix(%{DATA}:%{WORD:_temp.category})
-                let _ = cached_grok!("^pam_unix(%{DATA}:%{WORD:_temp.category})").extract_into(&input, event)?;
+                if !cached_grok!("^pam_unix(%{DATA}:%{WORD:_temp.category})").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 }
                 Ok(())
@@ -305,14 +321,16 @@ impl Transform for Journald {
                 if let Some(input) = event.get_string("message") {
                 // Grok pattern: rhost=%{IPORHOST:_temp.pam_rhost}%{SPACE}(?:user=%{DATA:_temp.pam_user})?$
                 // Grok pattern: rhost=%{SPACE}user=%{DATA:_temp.pam_user}$
-                let _ = extract_first_match(
+                if !extract_first_match(
                 &[
                 cached_grok!("rhost=%{IPORHOST:_temp.pam_rhost}%{SPACE}(?:user=%{DATA:_temp.pam_user})?$"),
                 cached_grok!("rhost=%{SPACE}user=%{DATA:_temp.pam_user}$"),
                 ],
                 &input,
                 event,
-                )?;
+                )? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 }
                 Ok(())
@@ -325,7 +343,9 @@ impl Transform for Journald {
                 if event.has_value("message") {
                 if let Some(input) = event.get_string("message") {
                 // Grok pattern: password changed for %{USERNAME:_temp.pam_target}$
-                let _ = cached_grok!("password changed for %{USERNAME:_temp.pam_target}$").extract_into(&input, event)?;
+                if !cached_grok!("password changed for %{USERNAME:_temp.pam_target}$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 }
                 Ok(())
@@ -386,7 +406,9 @@ impl Transform for Journald {
                 if let Err(err) = (|| -> Result<()> {
                 if let Some(input) = event.get_string("syslog5424_sd") {
                 // Grok pattern: (?:%{NOTSPACE} +)?%{GREEDYDATA:syslog5424_sd}
-                let _ = cached_grok!("(?:%{NOTSPACE} +)?%{GREEDYDATA:syslog5424_sd}").extract_into(&input, event)?;
+                if !cached_grok!("(?:%{NOTSPACE} +)?%{GREEDYDATA:syslog5424_sd}").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 Ok(())
                 })() {

@@ -4368,8 +4368,11 @@ impl Transform for Default {
                             event.get_string("qualys_gav.asset.cloud_provider.gcp.compute.zone")
                         {
                             // Grok pattern: %{GREEDYDATA:cloud.region}-%{WORD}$
-                            let _ = cached_grok!("%{GREEDYDATA:cloud.region}-%{WORD}$")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("%{GREEDYDATA:cloud.region}-%{WORD}$")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

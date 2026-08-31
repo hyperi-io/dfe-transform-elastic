@@ -238,9 +238,11 @@ impl Transform for Default {
                     if event.has_value("host.os.full") {
                         if let Some(input) = event.get_string("host.os.full") {
                             // Grok pattern: ^%{DATA:host.os.name} %{NOTSPACE:host.os.version}$
-                            let _ =
-                                cached_grok!("^%{DATA:host.os.name} %{NOTSPACE:host.os.version}$")
-                                    .extract_into(&input, event)?;
+                            if !cached_grok!("^%{DATA:host.os.name} %{NOTSPACE:host.os.version}$")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

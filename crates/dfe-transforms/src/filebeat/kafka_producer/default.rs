@@ -38,8 +38,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("kafka.producer.mbean") {
                         // Grok pattern: client-id=(?P<kafka_producer_client_id>[^,]+)
-                        let _ = cached_grok!("client-id=(?P<kafka_producer_client_id>[^,]+)")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("client-id=(?P<kafka_producer_client_id>[^,]+)")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -51,8 +54,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("kafka.producer.mbean") {
                         // Grok pattern: node-id=(?P<kafka_producer_node_id>[^,]+)
-                        let _ = cached_grok!("node-id=(?P<kafka_producer_node_id>[^,]+)")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("node-id=(?P<kafka_producer_node_id>[^,]+)")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();

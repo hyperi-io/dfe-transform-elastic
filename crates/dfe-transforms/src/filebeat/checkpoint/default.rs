@@ -28,7 +28,9 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: %{SYSLOG5424PRI}%{NONNEGINT:syslog5424_ver} +(?:(?:(?P<syslog5424_ts>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?))(?:-?%{ISO8601_TIMEZONE:_temp_.tz})?)|-) +(?:%{SYSLOG5424PRINTASCII:syslog5424_host}|-) +(-|%{SYSLOG5424PRINTASCII:syslog5424_app}) +(-|%{SYSLOG5424PRINTASCII:syslog5424_proc}) +(?::-|%{SYSLOG5424PRINTASCII:syslog5424_msgid}) +\\[%{GREEDYDATA:syslog5424_sd}\\]
-                    let _ = cached_grok!("%{SYSLOG5424PRI}%{NONNEGINT:syslog5424_ver} +(?:(?:(?P<syslog5424_ts>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?))(?:-?%{ISO8601_TIMEZONE:_temp_.tz})?)|-) +(?:%{SYSLOG5424PRINTASCII:syslog5424_host}|-) +(-|%{SYSLOG5424PRINTASCII:syslog5424_app}) +(-|%{SYSLOG5424PRINTASCII:syslog5424_proc}) +(?::-|%{SYSLOG5424PRINTASCII:syslog5424_msgid}) +\\[%{GREEDYDATA:syslog5424_sd}\\]").extract_into(&input, event)?;
+                    if !cached_grok!("%{SYSLOG5424PRI}%{NONNEGINT:syslog5424_ver} +(?:(?:(?P<syslog5424_ts>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?))(?:-?%{ISO8601_TIMEZONE:_temp_.tz})?)|-) +(?:%{SYSLOG5424PRINTASCII:syslog5424_host}|-) +(-|%{SYSLOG5424PRINTASCII:syslog5424_app}) +(-|%{SYSLOG5424PRINTASCII:syslog5424_proc}) +(?::-|%{SYSLOG5424PRINTASCII:syslog5424_msgid}) +\\[%{GREEDYDATA:syslog5424_sd}\\]").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })() {
@@ -130,8 +132,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("syslog5424_sd") {
                     // Grok pattern: (?:%{NOTSPACE} +)?%{GREEDYDATA:syslog5424_sd}
-                    let _ = cached_grok!("(?:%{NOTSPACE} +)?%{GREEDYDATA:syslog5424_sd}")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("(?:%{NOTSPACE} +)?%{GREEDYDATA:syslog5424_sd}")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -477,7 +482,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{DATA:source.user.full_name} \\((?P<source_user_name>(?:[^()@]+))\\)$
                     // Grok pattern: ^%{EMAILADDRESS:source.user.email}$
                     // Grok pattern: ^%{DATA:source.user.name}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:source.user.full_name} \\(%{EMAILADDRESS:source.user.email}\\)$"
@@ -491,7 +496,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -506,7 +513,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{DATA:source.user.full_name} \\((?P<source_user_name>(?:[^()@]+))\\)$
                     // Grok pattern: ^%{EMAILADDRESS:source.user.email}$
                     // Grok pattern: ^%{DATA:source.user.name}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:source.user.full_name} \\(%{EMAILADDRESS:source.user.email}\\)$"
@@ -520,7 +527,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -531,7 +540,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{DATA:user.full_name} \\((?P<user_name>(?:[^()@]+))\\)$
                     // Grok pattern: ^%{EMAILADDRESS:user.email}$
                     // Grok pattern: ^%{DATA:user.name}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:user.full_name} \\(%{EMAILADDRESS:user.email}\\)$"
@@ -545,7 +554,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -766,7 +777,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{DATA:destination.user.full_name} \\((?P<destination_user_name>(?:[^()@]+))\\)$
                     // Grok pattern: ^%{EMAILADDRESS:destination.user.email}$
                     // Grok pattern: ^%{DATA:destination.user.name}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:destination.user.full_name} \\(%{EMAILADDRESS:destination.user.email}\\)$"
@@ -780,7 +791,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -812,8 +825,11 @@ impl Transform for Default {
                 if event.has_value("checkpoint.origin_sic_name") {
                     if let Some(input) = event.get_string("checkpoint.origin_sic_name") {
                         // Grok pattern: (?i)^CN=%{DATA:_temp_.sic_cn},O=%{GREEDYDATA}$
-                        let _ = cached_grok!("(?i)^CN=%{DATA:_temp_.sic_cn},O=%{GREEDYDATA}$")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("(?i)^CN=%{DATA:_temp_.sic_cn},O=%{GREEDYDATA}$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

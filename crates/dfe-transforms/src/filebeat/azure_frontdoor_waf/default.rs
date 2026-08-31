@@ -348,8 +348,11 @@ impl Transform for Default {
                         .get_string("azure.frontdoor.waf.identity.claims_initiated_by_user.name")
                     {
                         // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
-                        let _ = cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

@@ -23,7 +23,7 @@ impl Transform for PipelineTraffic {
                     // Grok pattern: ^%{WORD:watchguard_firebox.log.disposition} %{DATA:watchguard_firebox.log.in_interface_name} %{DATA:watchguard_firebox.log.out_interface_name}(?: %{NUMBER:watchguard_firebox.log.ip_packet_length:long})? %{WORD:watchguard_firebox.log.transport}(?: %{NUMBER:watchguard_firebox.log.iph_length:long} %{NUMBER:watchguard_firebox.log.ttl:long})? %{IP:watchguard_firebox.log.source_ip} %{IP:watchguard_firebox.log.destination_ip}(?: %{NUMBER:watchguard_firebox.log.source_port:long} %{NUMBER:watchguard_firebox.log.destination_port:long})?(?: offset %{NUMBER:watchguard_firebox.log.offset:long} %{DATA:watchguard_firebox.log.protocol_flags} %{NUMBER:watchguard_firebox.log.sequence_number:long} win %{NUMBER:watchguard_firebox.log.window_size:long})?(?: %{GREEDYDATA:_temp})? \\(%{DATA:watchguard_firebox.log.policy_name}\\)$
                     // Grok pattern: ^%{WORD:watchguard_firebox.log.disposition} %{DATA:watchguard_firebox.log.in_interface_name} %{DATA:watchguard_firebox.log.out_interface_name}(?: %{NUMBER:watchguard_firebox.log.ip_packet_length:long})? %{WORD:watchguard_firebox.log.transport}(?: %{NUMBER:watchguard_firebox.log.iph_length:long} %{NUMBER:watchguard_firebox.log.ttl:long})? %{IP:watchguard_firebox.log.source_ip} %{IP:watchguard_firebox.log.destination_ip}(?: %{NUMBER:watchguard_firebox.log.source_port:long} %{NUMBER:watchguard_firebox.log.destination_port:long})?(?: offset %{NUMBER:watchguard_firebox.log.offset:long} %{DATA:watchguard_firebox.log.protocol_flags} %{NUMBER:watchguard_firebox.log.sequence_number:long} win %{NUMBER:watchguard_firebox.log.window_size:long})?(?: %{GREEDYDATA:_temp})?$
                     // Grok pattern: ^%{GREEDYDATA:watchguard_firebox.log.body}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:watchguard_firebox.log.disposition} %{DATA:watchguard_firebox.log.in_interface_name} %{DATA:watchguard_firebox.log.out_interface_name}(?: %{NUMBER:watchguard_firebox.log.ip_packet_length:long})? %{WORD:watchguard_firebox.log.transport}(?: %{NUMBER:watchguard_firebox.log.iph_length:long} %{NUMBER:watchguard_firebox.log.ttl:long})? %{IP:watchguard_firebox.log.source_ip} %{IP:watchguard_firebox.log.destination_ip}(?: %{NUMBER:watchguard_firebox.log.source_port:long} %{NUMBER:watchguard_firebox.log.destination_port:long})?(?: offset %{NUMBER:watchguard_firebox.log.offset:long} %{DATA:watchguard_firebox.log.protocol_flags} %{NUMBER:watchguard_firebox.log.sequence_number:long} win %{NUMBER:watchguard_firebox.log.window_size:long})?(?: %{GREEDYDATA:_temp})? \\(%{DATA:watchguard_firebox.log.policy_name}\\)$"),
                             cached_grok!("^%{WORD:watchguard_firebox.log.disposition} %{DATA:watchguard_firebox.log.in_interface_name} %{DATA:watchguard_firebox.log.out_interface_name}(?: %{NUMBER:watchguard_firebox.log.ip_packet_length:long})? %{WORD:watchguard_firebox.log.transport}(?: %{NUMBER:watchguard_firebox.log.iph_length:long} %{NUMBER:watchguard_firebox.log.ttl:long})? %{IP:watchguard_firebox.log.source_ip} %{IP:watchguard_firebox.log.destination_ip}(?: %{NUMBER:watchguard_firebox.log.source_port:long} %{NUMBER:watchguard_firebox.log.destination_port:long})?(?: offset %{NUMBER:watchguard_firebox.log.offset:long} %{DATA:watchguard_firebox.log.protocol_flags} %{NUMBER:watchguard_firebox.log.sequence_number:long} win %{NUMBER:watchguard_firebox.log.window_size:long})?(?: %{GREEDYDATA:_temp})?$"),
@@ -31,7 +31,9 @@ impl Transform for PipelineTraffic {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())
@@ -137,7 +139,7 @@ impl Transform for PipelineTraffic {
                     // Grok pattern: ^%{USERNAME:watchguard_firebox.log.authenticated_user}@%{HOSTNAME:watchguard_firebox.log.authenticated_user_domain}$
                     // Grok pattern: ^%{USERNAME:watchguard_firebox.log.authenticated_user}$
                     // Grok pattern: ^%{GREEDYDATA:watchguard_firebox.log.body}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{HOSTNAME:watchguard_firebox.log.authenticated_user_domain}\\\\%{USERNAME:watchguard_firebox.log.authenticated_user}$"),
                             cached_grok!("^%{HOSTNAME:watchguard_firebox.log.authenticated_user_domain}\\\\\\\\%{USERNAME:watchguard_firebox.log.authenticated_user}$"),
@@ -147,7 +149,9 @@ impl Transform for PipelineTraffic {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())
@@ -414,7 +418,7 @@ impl Transform for PipelineTraffic {
                     // Grok pattern: ^%{IP:watchguard_firebox.log.ctl_dst_ip}:%{POSINT:watchguard_firebox.log.ctl_dst_port:long}$
                     // Grok pattern: ^%{IP:watchguard_firebox.log.ctl_dst_ip}$
                     // Grok pattern: ^%{GREEDYDATA:watchguard_firebox.log.body}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{IP:watchguard_firebox.log.ctl_dst_ip}:%{POSINT:watchguard_firebox.log.ctl_dst_port:long}$"),
                             cached_grok!("^%{IP:watchguard_firebox.log.ctl_dst_ip}$"),
@@ -422,7 +426,9 @@ impl Transform for PipelineTraffic {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())
@@ -450,7 +456,7 @@ impl Transform for PipelineTraffic {
                     // Grok pattern: ^%{IP:watchguard_firebox.log.ctl_src_ip}:%{POSINT:watchguard_firebox.log.ctl_src_port:long}$
                     // Grok pattern: ^%{IP:watchguard_firebox.log.ctl_src_ip}$
                     // Grok pattern: ^%{GREEDYDATA:watchguard_firebox.log.body}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{IP:watchguard_firebox.log.ctl_src_ip}:%{POSINT:watchguard_firebox.log.ctl_src_port:long}$"),
                             cached_grok!("^%{IP:watchguard_firebox.log.ctl_src_ip}$"),
@@ -458,7 +464,9 @@ impl Transform for PipelineTraffic {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())
@@ -504,7 +512,7 @@ impl Transform for PipelineTraffic {
                     // Grok pattern: ^%{USERNAME:watchguard_firebox.log.destination_user}@%{HOSTNAME:watchguard_firebox.log.destination_user_domain}$
                     // Grok pattern: ^%{USERNAME:watchguard_firebox.log.destination_user}$
                     // Grok pattern: ^%{GREEDYDATA:watchguard_firebox.log.body}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{HOSTNAME:watchguard_firebox.log.destination_user_domain}\\\\%{USERNAME:watchguard_firebox.log.destination_user}$"),
                             cached_grok!("^%{HOSTNAME:watchguard_firebox.log.destination_user_domain}\\\\\\\\%{USERNAME:watchguard_firebox.log.destination_user}$"),
@@ -514,7 +522,9 @@ impl Transform for PipelineTraffic {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())
@@ -567,7 +577,9 @@ impl Transform for PipelineTraffic {
             if event.has_value("watchguard_firebox.log.duration") {
                 if let Some(input) = event.get_string("watchguard_firebox.log.duration") {
                     // Grok pattern: %{NUMBER:watchguard_firebox.log.duration}
-                    let _ = cached_grok!("%{NUMBER:watchguard_firebox.log.duration}").extract_into(&input, event)?;
+                    if !cached_grok!("%{NUMBER:watchguard_firebox.log.duration}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())
@@ -1255,7 +1267,7 @@ impl Transform for PipelineTraffic {
                     // Grok pattern: ^%{USERNAME:watchguard_firebox.log.source_user}@%{HOSTNAME:watchguard_firebox.log.source_user_domain}$
                     // Grok pattern: ^%{USERNAME:watchguard_firebox.log.source_user}$
                     // Grok pattern: ^%{GREEDYDATA:watchguard_firebox.log.body}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{HOSTNAME:watchguard_firebox.log.source_user_domain}\\\\%{USERNAME:watchguard_firebox.log.source_user}$"),
                             cached_grok!("^%{HOSTNAME:watchguard_firebox.log.source_user_domain}\\\\\\\\%{USERNAME:watchguard_firebox.log.source_user}$"),
@@ -1265,7 +1277,9 @@ impl Transform for PipelineTraffic {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())
@@ -1419,7 +1433,7 @@ impl Transform for PipelineTraffic {
                     // Grok pattern: ^%{USERNAME:watchguard_firebox.log.user_name}@%{HOSTNAME:watchguard_firebox.log.user_domain}$
                     // Grok pattern: ^%{USERNAME:watchguard_firebox.log.user_name}$
                     // Grok pattern: ^%{GREEDYDATA:watchguard_firebox.log.body}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{HOSTNAME:watchguard_firebox.log.user_domain}\\\\%{USERNAME:watchguard_firebox.log.user_name}$"),
                             cached_grok!("^%{HOSTNAME:watchguard_firebox.log.user_domain}\\\\\\\\%{USERNAME:watchguard_firebox.log.user_name}$"),
@@ -1429,7 +1443,9 @@ impl Transform for PipelineTraffic {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())

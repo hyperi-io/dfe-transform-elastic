@@ -31,7 +31,7 @@ impl Transform for Default {
                     // Grok pattern: ^<%{NONNEGINT:log.syslog.priority:long}>%{NONNEGINT} %{TIMESTAMP_ISO8601:_tmp.syslog_ts} %{SYSLOGHOST:_tmp.hostname} (?P<_tmp_payload>(?:{\"format\":\"elastic\",\"version\":\"1.0\",.*}))
                     // Grok pattern: ^%{SYSLOGTIMESTAMP:_tmp.syslog_ts} %{SYSLOGHOST:_tmp.hostname} (?P<_tmp_payload>(?:{\"format\":\"elastic\",\"version\":\"1.0\",.*}))
                     // Grok pattern: (?P<_tmp_payload>(?:{\"format\":\"elastic\",\"version\":\"1.0\",.*}))
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^<%{NONNEGINT:log.syslog.priority:long}>%{NONNEGINT} %{TIMESTAMP_ISO8601:_tmp.syslog_ts} %{SYSLOGHOST:_tmp.hostname} (?P<_tmp_payload>(?:{\"format\":\"elastic\",\"version\":\"1.0\",.*}))",
@@ -48,7 +48,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })() {

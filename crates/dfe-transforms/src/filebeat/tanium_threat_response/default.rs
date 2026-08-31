@@ -745,7 +745,7 @@ impl Transform for Default {
                         ) {
                             // Grok pattern: ^%{DATA:tanium.threat_response.match_details.finding.system_info.os_platform} %{GREEDYDATA:tanium.threat_response.match_details.finding.system_info.os_version}$
                             // Grok pattern: ^%{GREEDYDATA:tanium.threat_response.match_details.system_info.os}$
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!(
                                         "^%{DATA:tanium.threat_response.match_details.finding.system_info.os_platform} %{GREEDYDATA:tanium.threat_response.match_details.finding.system_info.os_version}$"
@@ -756,7 +756,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

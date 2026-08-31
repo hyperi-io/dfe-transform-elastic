@@ -51,7 +51,9 @@ impl Transform for PipelineJson {
 
                 if let Some(input) = event.get_string("logstash.slowlog.module") {
                     // Grok pattern: slowlog.logstash.%{WORD:logstash.slowlog.plugin_type}.%{WORD:logstash.slowlog.plugin_name}
-                    let _ = cached_grok!("slowlog.logstash.%{WORD:logstash.slowlog.plugin_type}.%{WORD:logstash.slowlog.plugin_name}").extract_into(&input, event)?;
+                    if !cached_grok!("slowlog.logstash.%{WORD:logstash.slowlog.plugin_type}.%{WORD:logstash.slowlog.plugin_name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
                 if event.remove("message").is_none() {

@@ -2499,7 +2499,7 @@ impl Transform for Default {
                     ) {
                         // Grok pattern: ^/subscriptions/%{DATA:cloud.account.id}/%{GREEDYDATA}$
                         // Grok pattern: ^%{GREEDYDATA}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^/subscriptions/%{DATA:cloud.account.id}/%{GREEDYDATA}$"
@@ -2508,7 +2508,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())
@@ -2555,7 +2557,7 @@ impl Transform for Default {
                         {
                             // Grok pattern: ^/subscriptions/%{DATA:cloud.account.id}/%{GREEDYDATA}$
                             // Grok pattern: ^%{GREEDYDATA}$
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!(
                                         "^/subscriptions/%{DATA:cloud.account.id}/%{GREEDYDATA}$"
@@ -2564,7 +2566,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

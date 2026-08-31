@@ -14,9 +14,8 @@ impl Transform for PipelineBigipBotAndDos {
     }
 
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
-        // SKIPPED: condition not transpiled: ctx.event.original.contains('device_product="Application Security Module"')
-        #[allow(unreachable_code, unused_variables)]
-        if false {
+        let _cond = { event.get("event.original").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("device_product=\"Application Security Module\"")), serde_json::Value::String(s) => s.contains("device_product=\"Application Security Module\""), _ => false }) };
+        if _cond {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if let Some(kv_str) = event.get_string("event.original") {
@@ -51,9 +50,8 @@ impl Transform for PipelineBigipBotAndDos {
         })();
         }
 
-        // SKIPPED: condition not transpiled: ctx.event.original.contains('device_product=ASM') || ctx.event.original.contains('device_product="ASM"')
-        #[allow(unreachable_code, unused_variables)]
-        if false {
+        let _cond = { event.get("event.original").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("device_product=ASM")), serde_json::Value::String(s) => s.contains("device_product=ASM"), _ => false }) || event.get("event.original").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("device_product=\"ASM\"")), serde_json::Value::String(s) => s.contains("device_product=\"ASM\""), _ => false }) };
+        if _cond {
         // on_failure: 1 handler(s)
         if let Err(err) = (|| -> Result<()> {
             if let Some(kv_str) = event.get_string("event.original") {

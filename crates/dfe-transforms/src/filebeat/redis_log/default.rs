@@ -37,7 +37,7 @@ impl Transform for Default {
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: (%{POSINT:process.pid:long}:(?P<redis_log_role>(?:[a-zA-Z])) )?((?P<redis_log_timestamp>(?:%{MONTHDAY} %{MONTH} %{TIME}))||(?P<redis_log_timestamp>(?:%{MONTHDAY} %{MONTH} %{YEAR} %{TIME}))) (?P<log_level>(?:[.\\-*#])) %{GREEDYDATA:message}
                 // Grok pattern: %{POSINT:process.pid:long}:signal-handler \\(%{POSINT:redis.log.timestamp}\\) %{GREEDYDATA:message}
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok_mapped!(
                             "(%{POSINT:process.pid:long}:(?P<redis_log_role>(?:[a-zA-Z])) )?((?P<redis_log_timestamp>(?:%{MONTHDAY} %{MONTH} %{TIME}))||(?P<redis_log_timestamp>(?:%{MONTHDAY} %{MONTH} %{YEAR} %{TIME}))) (?P<log_level>(?:[.\\-*#])) %{GREEDYDATA:message}",
@@ -54,7 +54,9 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             let _cond = { event.has_value("log.level") };

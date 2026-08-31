@@ -43,7 +43,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: (?P<date>(?:%{DATA} %{DATA})) %{DATA:microsoft_sqlserver.log.origin} [ ]*(?P<message>(?:(.|\\n)*))
                     // Grok pattern: (?P<message>(?:(.|\\n)*))
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "(?P<date>(?:%{DATA} %{DATA})) %{DATA:microsoft_sqlserver.log.origin} [ ]*(?P<message>(?:(.|\\n)*))"
@@ -52,7 +52,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

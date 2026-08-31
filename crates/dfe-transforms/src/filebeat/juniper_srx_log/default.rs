@@ -29,7 +29,7 @@ impl Transform for Default {
                 // Grok pattern: ^(?:<%{POSINT:syslog_pri}>(?:\\d{1,3})?%{SPACE})?%{TIMESTAMP_ISO8601:_temp_.raw_date}\\s%{SYSLOGHOST:syslog_hostname}\\s(?P<syslog_program>(?:RT_FLOW|RT_UTM|RT_IDP|RT_IDS|RT_AAMW|RT_SECINTEL))\\s(?:%{POSINT:syslog_pid}|-)?\\s%{WORD:tag}\\s\\[([^=]+?\\s)?%{GREEDYDATA:_temp_.traffic_structured}\\]\\s?$
                 // Grok pattern: ^(?:<%{POSINT:syslog_pri}>(?:\\d{1,3})?%{SPACE})?(?P<_temp__raw_date>(?:%{TIMESTAMP_ISO8601}|(%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME})))\\s%{SYSLOGHOST:syslog_hostname}\\s%{PROG:syslog_program}\\s(?:%{POSINT:syslog_pid}|-)?\\s%{WORD:tag}\\s\\[([^=]+?\\s)?%{GREEDYDATA:_temp_.system_structured}\\](?!=)\\s?%{DATA:_temp_.unparsed.message}\\s?$
                 // Grok pattern: ^(?:<%{POSINT:syslog_pri}>(?:\\d{1,3})?%{SPACE})?(?P<_temp__raw_date>(?:%{TIMESTAMP_ISO8601}|(%{MONTH}%{SPACE}%{MONTHDAY}%{SPACE}%{TIME})))\\s%{SYSLOGHOST:syslog_hostname}\\s%{GREEDYDATA:_temp_.unparsed.message}$
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!(
                             "^(?:<%{POSINT:syslog_pri}>(?:\\d{1,3})?%{SPACE})?%{TIMESTAMP_ISO8601:_temp_.raw_date}\\s%{SYSLOGHOST:syslog_hostname}\\s(?P<syslog_program>(?:RT_FLOW|RT_UTM|RT_IDP|RT_IDS|RT_AAMW|RT_SECINTEL))\\s(?:%{POSINT:syslog_pid}|-)?\\s%{WORD:tag}\\s\\[([^=]+?\\s)?%{GREEDYDATA:_temp_.traffic_structured}\\]\\s?$"
@@ -45,7 +45,9 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             if event.has_value("_temp_.traffic_structured") {
@@ -4948,7 +4950,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("_temp_.unparsed.message") {
                         // Grok pattern: ^(?:%{PROG:syslog_program}|-)?\\s(?:%{POSINT:syslog_pid}|-)?\\s(?:%{WORD:tag}|-)?\\s([-]+\\s)?%{GREEDYDATA:_temp_.unparsed.system_structured_brief}\\s?$
                         // Grok pattern: ^%{GREEDYDATA:message}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^(?:%{PROG:syslog_program}|-)?\\s(?:%{POSINT:syslog_pid}|-)?\\s(?:%{WORD:tag}|-)?\\s([-]+\\s)?%{GREEDYDATA:_temp_.unparsed.system_structured_brief}\\s?$"
@@ -4957,7 +4959,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = {
@@ -4973,7 +4977,7 @@ impl Transform for Default {
                             // Grok pattern: ^%{WORD:_temp_.negotiation.type} negotiation %{GREEDYDATA:_temp_.negotiation.message}$
                             // Grok pattern: ^(%{SYSLOGHOST:syslog_hostname}\\s)?((?P<_temp__tag_brief>(?:(?!FW)[A-Za-z_]+))(\\s\\(pid=%{DATA:syslog_pid}\\))?(:\\s))?%{GREEDYDATA:_temp_.message_brief}$
                             // Grok pattern: ^%{GREEDYDATA:message}$
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!(
                                         "^%{WORD:_temp_.negotiation.type} negotiation %{GREEDYDATA:_temp_.negotiation.message}$"
@@ -4986,7 +4990,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })() {
@@ -5202,7 +5208,9 @@ impl Transform for Default {
                     if let Err(err) = (|| -> Result<()> {
                         if let Some(input) = event.get_string("_temp_.message_brief") {
                             // Grok pattern: ^FW:\\s%{NOTSPACE:_temp_.fw.interface_name}\\s%{NOTSPACE:_temp_.fw.filter_action}\\s%{NOTSPACE:_temp_.fw.packet_protocol}\\s%{NOTSPACE:_temp_.fw.src_addr}\\s%{NOTSPACE:_temp_.fw.dst_addr}\\s%{NOTSPACE:_temp_.fw.src_port}\\s%{NOTSPACE:_temp_.fw.dst_port}\\s(\\(%{NOTSPACE:_temp_.fw.packets_num} packets\\))?\\s?$
-                            let _ = cached_grok!("^FW:\\s%{NOTSPACE:_temp_.fw.interface_name}\\s%{NOTSPACE:_temp_.fw.filter_action}\\s%{NOTSPACE:_temp_.fw.packet_protocol}\\s%{NOTSPACE:_temp_.fw.src_addr}\\s%{NOTSPACE:_temp_.fw.dst_addr}\\s%{NOTSPACE:_temp_.fw.src_port}\\s%{NOTSPACE:_temp_.fw.dst_port}\\s(\\(%{NOTSPACE:_temp_.fw.packets_num} packets\\))?\\s?$").extract_into(&input, event)?;
+                            if !cached_grok!("^FW:\\s%{NOTSPACE:_temp_.fw.interface_name}\\s%{NOTSPACE:_temp_.fw.filter_action}\\s%{NOTSPACE:_temp_.fw.packet_protocol}\\s%{NOTSPACE:_temp_.fw.src_addr}\\s%{NOTSPACE:_temp_.fw.dst_addr}\\s%{NOTSPACE:_temp_.fw.src_port}\\s%{NOTSPACE:_temp_.fw.dst_port}\\s(\\(%{NOTSPACE:_temp_.fw.packets_num} packets\\))?\\s?$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                         }
                         Ok(())
                     })() {
@@ -5418,7 +5426,9 @@ impl Transform for Default {
                     if let Err(err) = (|| -> Result<()> {
                         if let Some(input) = event.get_string("_temp_.message_brief") {
                             // Grok pattern: ^port %{POSINT:_temp_.dpdk.port_number} (has already been started|ifd %{DATA:_temp_.dpdk.interface_name}), (new\\s)?dpdk_port_state=%{POSINT:_temp_.dpdk.port_state} dpdk_swt_port_state %{POSINT:_temp_.dpdk.swt_port_state}$
-                            let _ = cached_grok!("^port %{POSINT:_temp_.dpdk.port_number} (has already been started|ifd %{DATA:_temp_.dpdk.interface_name}), (new\\s)?dpdk_port_state=%{POSINT:_temp_.dpdk.port_state} dpdk_swt_port_state %{POSINT:_temp_.dpdk.swt_port_state}$").extract_into(&input, event)?;
+                            if !cached_grok!("^port %{POSINT:_temp_.dpdk.port_number} (has already been started|ifd %{DATA:_temp_.dpdk.interface_name}), (new\\s)?dpdk_port_state=%{POSINT:_temp_.dpdk.port_state} dpdk_swt_port_state %{POSINT:_temp_.dpdk.swt_port_state}$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                         }
                         Ok(())
                     })() {
@@ -5704,7 +5714,9 @@ impl Transform for Default {
                             event.get_string("juniper.srx.rtlog_conn_error.err_msg")
                         {
                             // Grok pattern: ^(status: %{DATA:juniper.srx.rtlog_conn_error.status}, )?Error code: major %{NUMBER:juniper.srx.rtlog_conn_error.major} minor %{NUMBER:juniper.srx.rtlog_conn_error.minor} code %{NUMBER:juniper.srx.rtlog_conn_error.code}, description:%{DATA:juniper.srx.rtlog_conn_error.description}$
-                            let _ = cached_grok!("^(status: %{DATA:juniper.srx.rtlog_conn_error.status}, )?Error code: major %{NUMBER:juniper.srx.rtlog_conn_error.major} minor %{NUMBER:juniper.srx.rtlog_conn_error.minor} code %{NUMBER:juniper.srx.rtlog_conn_error.code}, description:%{DATA:juniper.srx.rtlog_conn_error.description}$").extract_into(&input, event)?;
+                            if !cached_grok!("^(status: %{DATA:juniper.srx.rtlog_conn_error.status}, )?Error code: major %{NUMBER:juniper.srx.rtlog_conn_error.major} minor %{NUMBER:juniper.srx.rtlog_conn_error.minor} code %{NUMBER:juniper.srx.rtlog_conn_error.code}, description:%{DATA:juniper.srx.rtlog_conn_error.description}$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                         }
                     }
                     Ok(())

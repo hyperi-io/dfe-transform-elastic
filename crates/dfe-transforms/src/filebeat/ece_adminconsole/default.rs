@@ -380,14 +380,17 @@ impl Transform for Default {
                 if false {
                     if let Some(input) = event.get_string("url.path") {
                         // Grok pattern: \\/deployments\\/(?P<ece_adminconsole_log_deployment_id>[^\\/]+).*
-                        let _ = cached_grok_mapped!(
+                        if !cached_grok_mapped!(
                             "\\/deployments\\/(?P<ece_adminconsole_log_deployment_id>[^\\/]+).*",
                             [(
                                 "ece_adminconsole_log_deployment_id",
                                 "ece_adminconsole.log.deployment.id"
                             )]
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = {

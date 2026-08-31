@@ -55,8 +55,11 @@ impl Transform for Default {
                 if event.has_value("cloud.availability_zone") {
                     if let Some(input) = event.get_string("cloud.availability_zone") {
                         // Grok pattern: ^%{DATA:cloud.region}(?:[a-z]+)$
-                        let _ = cached_grok!("^%{DATA:cloud.region}(?:[a-z]+)$")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{DATA:cloud.region}(?:[a-z]+)$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

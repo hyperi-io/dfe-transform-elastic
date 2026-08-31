@@ -20,7 +20,9 @@ impl Transform for PipelineAlarm {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^%{GREEDYDATA:watchguard_firebox.log.body} %{SPACE}\\(%{DATA:watchguard_firebox.log.policy_name}\\)$
-                    let _ = cached_grok!("^%{GREEDYDATA:watchguard_firebox.log.body} %{SPACE}\\(%{DATA:watchguard_firebox.log.policy_name}\\)$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{GREEDYDATA:watchguard_firebox.log.body} %{SPACE}\\(%{DATA:watchguard_firebox.log.policy_name}\\)$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -31,7 +33,9 @@ impl Transform for PipelineAlarm {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("watchguard_firebox.log.body") {
                     // Grok pattern: ^%{DATA} Traffic detected from %{IP:watchguard_firebox.log.source_ip} to %{IP:watchguard_firebox.log.destination_ip}.$
-                    let _ = cached_grok!("^%{DATA} Traffic detected from %{IP:watchguard_firebox.log.source_ip} to %{IP:watchguard_firebox.log.destination_ip}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA} Traffic detected from %{IP:watchguard_firebox.log.source_ip} to %{IP:watchguard_firebox.log.destination_ip}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

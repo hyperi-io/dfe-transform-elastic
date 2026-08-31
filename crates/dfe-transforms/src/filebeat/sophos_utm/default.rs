@@ -37,7 +37,9 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: ^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)\\s*)?(?P<_tmp_timestamp>(?:(?:%{YEAR}:%{MONTHNUM}:%{MONTHDAY}-%{HOUR}:%{MINUTE}:%{SECOND}))) (?:%{HOSTNAME:host.hostname}) %{DATA:process.name}(?:\\[%{POSINT:process.pid:long}\\])?: %{GREEDYDATA:_tmp.raw_data}
-                        let _ = cached_grok_mapped!("^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)\\s*)?(?P<_tmp_timestamp>(?:(?:%{YEAR}:%{MONTHNUM}:%{MONTHDAY}-%{HOUR}:%{MINUTE}:%{SECOND}))) (?:%{HOSTNAME:host.hostname}) %{DATA:process.name}(?:\\[%{POSINT:process.pid:long}\\])?: %{GREEDYDATA:_tmp.raw_data}", [("_tmp_timestamp", "_tmp.timestamp")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)\\s*)?(?P<_tmp_timestamp>(?:(?:%{YEAR}:%{MONTHNUM}:%{MONTHDAY}-%{HOUR}:%{MINUTE}:%{SECOND}))) (?:%{HOSTNAME:host.hostname}) %{DATA:process.name}(?:\\[%{POSINT:process.pid:long}\\])?: %{GREEDYDATA:_tmp.raw_data}", [("_tmp_timestamp", "_tmp.timestamp")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })() {
@@ -188,7 +190,7 @@ impl Transform for Default {
                         // Grok pattern: ^%{WORD:event.action} on %{WORD:network.type} interface %{WORD:observer.ingress.interface.name}, %{IP:server.ip}#%{NUMBER:server.port:long}$
                         // Grok pattern: ^no longer %{WORD:event.action} on %{IP:server.ip}#%{NUMBER:server.port:long}$
                         // Grok pattern: ^%{GREEDYDATA:message}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^%{WORD:event.action} on %{WORD:network.type} interface %{WORD:observer.ingress.interface.name}, %{IP:server.ip}#%{NUMBER:server.port:long}$"
@@ -200,15 +202,18 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = { !event.has_value("event.action") };
                 if _cond {
                     if let Some(input) = event.get_string("_tmp.raw_data") {
                         // Grok pattern: ^%{GREEDYDATA:message}$
-                        let _ =
-                            cached_grok!("^%{GREEDYDATA:message}$").extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:message}$").extract_into(&input, event)? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // ignore_failure: true
@@ -332,7 +337,7 @@ impl Transform for Default {
                         // Grok pattern: ^%{WORD:event.action} from %{MAC:client.mac} via %{WORD:observer.ingress.interface.name}$
                         // Grok pattern: ^%{WORD:event.action} %{GREEDYDATA:message}$
                         // Grok pattern: ^%{GREEDYDATA:message}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^%{WORD:event.action} from %{MAC:client.mac} via %{WORD:observer.ingress.interface.name}: %{GREEDYDATA:message}$"
@@ -345,7 +350,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = {
@@ -359,7 +366,7 @@ impl Transform for Default {
                         // Grok pattern: ^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac} via %{WORD:observer.ingress.interface.name}$
                         // Grok pattern: ^%{WORD:event.action} %{GREEDYDATA:message}$
                         // Grok pattern: ^%{GREEDYDATA:message}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac} via %{WORD:observer.ingress.interface.name}$"
@@ -369,7 +376,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = {
@@ -383,7 +392,7 @@ impl Transform for Default {
                         // Grok pattern: ^%{WORD:event.action} for %{IP:client.ip}( \\(%{IP:sophos.utm.router.ip}\\))? from %{MAC:client.mac}( \\(%{DATA:sophos.utm.client.hostname}\\))? via %{WORD:observer.ingress.interface.name}(: %{GREEDYDATA:message})?$
                         // Grok pattern: ^%{WORD:event.action} %{GREEDYDATA:message}$
                         // Grok pattern: ^%{GREEDYDATA:message}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^%{WORD:event.action} for %{IP:client.ip}( \\(%{IP:sophos.utm.router.ip}\\))? from %{MAC:client.mac}( \\(%{DATA:sophos.utm.client.hostname}\\))? via %{WORD:observer.ingress.interface.name}(: %{GREEDYDATA:message})?$"
@@ -393,7 +402,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = {
@@ -408,7 +419,7 @@ impl Transform for Default {
                         // Grok pattern: ^%{WORD:event.action} to %{IP:client.ip} \\(%{MAC:client.mac}\\) via %{WORD:observer.ingress.interface.name}$
                         // Grok pattern: ^%{WORD:event.action} %{GREEDYDATA:message}$
                         // Grok pattern: ^%{GREEDYDATA:message}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac}( \\(%{DATA:sophos.utm.client.hostname}\\))? via %{WORD:observer.ingress.interface.name}$"
@@ -421,7 +432,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = {
@@ -436,7 +449,7 @@ impl Transform for Default {
                         // Grok pattern: ^%{WORD:event.action} to %{IP:client.ip} \\(%{MAC:client.mac}\\) via %{WORD:observer.ingress.interface.name}$
                         // Grok pattern: ^%{WORD:event.action} %{GREEDYDATA:message}$
                         // Grok pattern: ^%{GREEDYDATA:message}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac}( \\(%{DATA:sophos.utm.client.hostname}\\))? via %{WORD:observer.ingress.interface.name}$"
@@ -449,7 +462,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = {
@@ -464,7 +479,7 @@ impl Transform for Default {
                         // Grok pattern: ^%{WORD:event.action} from %{IP:client.ip} via %{WORD:observer.ingress.interface.name}$
                         // Grok pattern: ^%{WORD:event.action} %{GREEDYDATA:message}$
                         // Grok pattern: ^%{GREEDYDATA:message}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^%{WORD:event.action} from %{IP:client.ip} via %{WORD:observer.ingress.interface.name}: %{GREEDYDATA:message}$"
@@ -477,7 +492,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = {
@@ -491,7 +508,7 @@ impl Transform for Default {
                         // Grok pattern: ^%{WORD:event.action}[ ]+on[ ]+%{WORD:sophos.utm.socket}/%{WORD:observer.ingress.interface.name}/%{MAC:client.mac}/%{DATA:sophos.utm.subnet}$
                         // Grok pattern: ^%{WORD:event.action}[ ]+on[ ]+%{WORD:sophos.utm.socket}/%{WORD:observer.ingress.interface.name}/%{DATA:sophos.utm.subnet}$
                         // Grok pattern: ^%{GREEDYDATA:message}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^%{WORD:event.action}[ ]+on[ ]+%{WORD:sophos.utm.socket}/%{WORD:observer.ingress.interface.name}/%{MAC:client.mac}/%{DATA:sophos.utm.subnet}$"
@@ -503,7 +520,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = {
@@ -517,7 +536,7 @@ impl Transform for Default {
                         // Grok pattern: ^%{WORD:event.action}[ ]+on[ ]+%{WORD:sophos.utm.socket}/%{WORD:observer.ingress.interface.name}/%{MAC:client.mac}/%{DATA:sophos.utm.subnet}$
                         // Grok pattern: ^%{WORD:event.action}[ ]+on[ ]+%{WORD:sophos.utm.socket}/%{WORD:observer.ingress.interface.name}/%{DATA:sophos.utm.subnet}$
                         // Grok pattern: ^%{GREEDYDATA:message}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^%{WORD:event.action}[ ]+on[ ]+%{WORD:sophos.utm.socket}/%{WORD:observer.ingress.interface.name}/%{MAC:client.mac}/%{DATA:sophos.utm.subnet}$"
@@ -529,15 +548,18 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = { !event.has_value("event.action") };
                 if _cond {
                     if let Some(input) = event.get_string("_tmp.raw_data") {
                         // Grok pattern: ^%{GREEDYDATA:message}$
-                        let _ =
-                            cached_grok!("^%{GREEDYDATA:message}$").extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:message}$").extract_into(&input, event)? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // ignore_failure: true

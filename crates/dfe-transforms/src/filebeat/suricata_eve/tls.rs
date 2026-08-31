@@ -21,14 +21,16 @@ impl Transform for Tls {
                 if let Some(input) = event.get_string("suricata.eve.tls.version") {
                     // Grok pattern: %{DATA:tls.version_protocol} %{GREEDYDATA:tls.version}
                     // Grok pattern: %{DATA:tls.version_protocol}v%{GREEDYDATA:tls.version}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("%{DATA:tls.version_protocol} %{GREEDYDATA:tls.version}"),
                             cached_grok!("%{DATA:tls.version_protocol}v%{GREEDYDATA:tls.version}"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

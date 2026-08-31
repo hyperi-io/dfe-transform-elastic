@@ -29,7 +29,7 @@ impl Transform for Default {
                 // Grok pattern: ^%{SYSLOG5424PRI}%{GREEDYDATA:message}$
                 // Grok pattern: ^%{SYSLOGTIMESTAMP} %{HOSTNAME:observer.hostname} %{GREEDYDATA:message}$
                 // Grok pattern: %{GREEDYDATA:message}$
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!(
                             "^%{SYSLOG5424PRI}(%{SYSLOGTIMESTAMP} %{NOTSPACE} )?%{GREEDYDATA:message}$"
@@ -42,7 +42,9 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             if event.has_value("message") {
@@ -89,7 +91,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("sophos.xg.timestamp") {
                         // Grok pattern: %{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?%{ISO8601_TIMEZONE:_temp_.tz}?
-                        let _ = cached_grok!("%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?%{ISO8601_TIMEZONE:_temp_.tz}?").extract_into(&input, event)?;
+                        if !cached_grok!("%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?%{ISO8601_TIMEZONE:_temp_.tz}?").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();

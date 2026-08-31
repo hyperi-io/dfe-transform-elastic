@@ -33,7 +33,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: ^(<%{NONNEGINT:log.syslog.priority:long}>%{NUMBER}?|%{SYSLOGTIMESTAMP} %{SYSLOGHOST:host.hostname} %{INT}) (?P<_tmp_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?%{ISO8601_TIMEZONE:event.timezone}?)) (%{IP:observer.ip}|%{HOSTNAME:observer.hostname}) PulseSecure: - - - (?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{HOUR}:?%{MINUTE}(?::?%{SECOND})?) - %{SYSLOGHOST:observer.name} - \\[%{IPORHOST:client.address}\\] (%{DATA}::)?(%{HOSTNAME:user.domain}(?:\\\\){1,2})?%{USERNAME:user.name}?(@%{USERNAME:user.domain})?\\(%{DATA:pulse_secure.realm}?\\)\\[%{DATA:pulse_secure.role}\\](?::?\\[%{DATA:pulse_secure.session.id_short}\\])? - %{GREEDYDATA:message}
-                let _ = cached_grok_mapped!("^(<%{NONNEGINT:log.syslog.priority:long}>%{NUMBER}?|%{SYSLOGTIMESTAMP} %{SYSLOGHOST:host.hostname} %{INT}) (?P<_tmp_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?%{ISO8601_TIMEZONE:event.timezone}?)) (%{IP:observer.ip}|%{HOSTNAME:observer.hostname}) PulseSecure: - - - (?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{HOUR}:?%{MINUTE}(?::?%{SECOND})?) - %{SYSLOGHOST:observer.name} - \\[%{IPORHOST:client.address}\\] (%{DATA}::)?(%{HOSTNAME:user.domain}(?:\\\\){1,2})?%{USERNAME:user.name}?(@%{USERNAME:user.domain})?\\(%{DATA:pulse_secure.realm}?\\)\\[%{DATA:pulse_secure.role}\\](?::?\\[%{DATA:pulse_secure.session.id_short}\\])? - %{GREEDYDATA:message}", [("_tmp_timestamp", "_tmp.timestamp")]).extract_into(&input, event)?;
+                if !cached_grok_mapped!("^(<%{NONNEGINT:log.syslog.priority:long}>%{NUMBER}?|%{SYSLOGTIMESTAMP} %{SYSLOGHOST:host.hostname} %{INT}) (?P<_tmp_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?%{ISO8601_TIMEZONE:event.timezone}?)) (%{IP:observer.ip}|%{HOSTNAME:observer.hostname}) PulseSecure: - - - (?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{HOUR}:?%{MINUTE}(?::?%{SECOND})?) - %{SYSLOGHOST:observer.name} - \\[%{IPORHOST:client.address}\\] (%{DATA}::)?(%{HOSTNAME:user.domain}(?:\\\\){1,2})?%{USERNAME:user.name}?(@%{USERNAME:user.domain})?\\(%{DATA:pulse_secure.realm}?\\)\\[%{DATA:pulse_secure.role}\\](?::?\\[%{DATA:pulse_secure.session.id_short}\\])? - %{GREEDYDATA:message}", [("_tmp_timestamp", "_tmp.timestamp")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
             }
 
             let _cond = { event.has_value("event.timezone") };
@@ -99,7 +101,7 @@ impl Transform for Default {
                     // Grok pattern: Login %{WORD:_tmp.outcome}( %{GREEDYDATA})?. Reason: %{GREEDYDATA:event.reason}
                     // Grok pattern: ^Primary authentication %{WORD_tmp.outcome}
                     // Grok pattern: (?:\\(session:%{SPACE}%{NOTSPACE:pulse_secure.session.id}\\))
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "Agent login %{WORD:_tmp.outcome} for %{DATA}(?:\\(session:%{SPACE}%{NOTSPACE:pulse_secure.session.id}\\)) from %{IP} with %{GREEDYDATA:user_agent.original}."
@@ -120,7 +122,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

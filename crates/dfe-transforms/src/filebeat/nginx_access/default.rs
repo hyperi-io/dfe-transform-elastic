@@ -37,7 +37,9 @@ impl Transform for Default {
             if event.has_value("event.original") {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: ((?:(?:%{IP:destination.ip}|(?P<destination_domain>(?:[^\t ,:]+)))(:%{NUMBER:destination.port})?) )?\"?(?:(?P<nginx_access_remote_ip_list>(?:(?:%{IP}|%{WORD})(\"?,?\\s*(?:%{IP}|%{WORD}))*))|%{NOTSPACE:source.address}) - (-|%{DATA:user.name}) \\[%{HTTPDATE:nginx.access.time}\\] \"%{DATA:nginx.access.info}\" %{NUMBER:http.response.status_code:long} %{NUMBER:http.response.body.bytes:long}(?:\\s%{NUMBER:nginx.access.response_time})? \"(-|%{DATA:http.request.referrer})\" \"(-|%{DATA:user_agent.original})\"
-                    let _ = cached_grok_mapped!("((?:(?:%{IP:destination.ip}|(?P<destination_domain>(?:[^\t ,:]+)))(:%{NUMBER:destination.port})?) )?\"?(?:(?P<nginx_access_remote_ip_list>(?:(?:%{IP}|%{WORD})(\"?,?\\s*(?:%{IP}|%{WORD}))*))|%{NOTSPACE:source.address}) - (-|%{DATA:user.name}) \\[%{HTTPDATE:nginx.access.time}\\] \"%{DATA:nginx.access.info}\" %{NUMBER:http.response.status_code:long} %{NUMBER:http.response.body.bytes:long}(?:\\s%{NUMBER:nginx.access.response_time})? \"(-|%{DATA:http.request.referrer})\" \"(-|%{DATA:user_agent.original})\"", [("nginx_access_remote_ip_list", "nginx.access.remote_ip_list"), ("destination_domain", "destination.domain")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("((?:(?:%{IP:destination.ip}|(?P<destination_domain>(?:[^\t ,:]+)))(:%{NUMBER:destination.port})?) )?\"?(?:(?P<nginx_access_remote_ip_list>(?:(?:%{IP}|%{WORD})(\"?,?\\s*(?:%{IP}|%{WORD}))*))|%{NOTSPACE:source.address}) - (-|%{DATA:user.name}) \\[%{HTTPDATE:nginx.access.time}\\] \"%{DATA:nginx.access.info}\" %{NUMBER:http.response.status_code:long} %{NUMBER:http.response.body.bytes:long}(?:\\s%{NUMBER:nginx.access.response_time})? \"(-|%{DATA:http.request.referrer})\" \"(-|%{DATA:user_agent.original})\"", [("nginx_access_remote_ip_list", "nginx.access.remote_ip_list"), ("destination_domain", "destination.domain")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -45,7 +47,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("nginx.access.info") {
                     // Grok pattern: %{WORD:http.request.method} %{DATA:_tmp.url_orig} HTTP/%{NUMBER:http.version}
                     // Grok pattern:
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "%{WORD:http.request.method} %{DATA:_tmp.url_orig} HTTP/%{NUMBER:http.version}"
@@ -54,7 +56,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -141,7 +145,9 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("source.address") {
                     // Grok pattern: ^%{IP:source.ip}$
-                    let _ = cached_grok!("^%{IP:source.ip}$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{IP:source.ip}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

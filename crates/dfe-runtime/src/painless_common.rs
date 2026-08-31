@@ -8925,6 +8925,110 @@ pub(crate) struct NestUnder {
     removes: Vec<String>,
 }
 
+/// One list's members collected into deduped arrays.
+///
+/// `cisco_secure_endpoint` walks `computer.network_addresses` three times: the
+/// addresses into `host.ip` and `related.ip`, the MACs into `host.mac` and its
+/// own `related.mac`, each dash-separated and upper-cased on the way.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct CollectFromList {
+    /// The list the entries come from.
+    source: String,
+    columns: Vec<CollectedColumn>,
+}
+
+/// One member of the list's entries, and the array its values land in.
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct CollectedColumn {
+    member: String,
+    target: String,
+    /// `.replace(from, to)`, applied before the fold.
+    replace: Option<(String, String)>,
+    upper: bool,
+}
+
+/// `for (v in ctx.<list>) { if (v.<member> != null && !v.<member>.isEmpty())
+/// { ... ctx.<target>.add(...) } }`
+fn parse_collect_from_list(script: &str) -> Option<CollectFromList> {
+    use crate::painless_params::{balanced, clean_path};
+
+    let (head, rest) = script.split_once(" in ctx")?;
+    let var = head.rsplit_once('(')?.1.trim();
+    let (source, after) = rest.split_once(')')?;
+    let source = clean_path(source.trim().trim_start_matches('.'));
+    if var.is_empty() || source.is_empty() {
+        return None;
+    }
+    let (body, _) = balanced(after.trim_start(), '{', '}')?;
+
+    let mut columns = Vec::new();
+    for arm in body.split(&format!("if ({var}.")).skip(1) {
+        let member = arm
+            .split(|c: char| !c.is_alphanumeric() && c != '_')
+            .next()
+            .filter(|member| !member.is_empty())?;
+        let (head, _) = arm.split_once(".add(")?;
+        let target = clean_path(head.rsplit_once("ctx.")?.1.trim());
+        if target.is_empty() {
+            return None;
+        }
+        let replace = arm.split_once(".replace(").and_then(|(_, tail)| {
+            let (from, to) = tail.split_once(')')?.0.split_once(',')?;
+            Some((
+                from.trim().trim_matches(['\'', '"']).to_string(),
+                to.trim().trim_matches(['\'', '"']).to_string(),
+            ))
+        });
+        columns.push(CollectedColumn {
+            member: member.to_string(),
+            target,
+            replace,
+            upper: arm.contains(".toUpperCase()"),
+        });
+    }
+    (!columns.is_empty()).then_some(CollectFromList { source, columns })
+}
+
+fn run_collect_from_list(event: &mut Event, shape: &CollectFromList) -> bool {
+    let Some(Value::Array(entries)) = event.get(&shape.source).cloned() else {
+        // Every one of these scripts is gated on the list being present.
+        return true;
+    };
+
+    for column in &shape.columns {
+        let mut collected = match event.get(&column.target) {
+            Some(Value::Array(existing)) => existing.clone(),
+            _ => Vec::new(),
+        };
+        for entry in &entries {
+            let Some(raw) = entry.get(&column.member).and_then(Value::as_str) else {
+                continue;
+            };
+            if raw.is_empty() {
+                continue;
+            }
+            let mut value = raw.to_string();
+            if let Some((from, to)) = &column.replace {
+                value = value.replace(from.as_str(), to);
+            }
+            if column.upper {
+                value = value.to_uppercase();
+            }
+            // cisco's `related.mac` arm tests the RAW value for membership and
+            // adds the folded one. The fold is injective on a MAC, so deduping
+            // on the value that lands is the same answer and reads honestly.
+            let value = Value::String(value);
+            if !collected.contains(&value) {
+                collected.push(value);
+            }
+        }
+        // The script builds the array before the loop, so a list that
+        // contributes nothing still leaves an empty one behind.
+        let _ = event.set(&column.target, Value::Array(collected));
+    }
+    true
+}
+
 fn parse_nest_under(script: &str) -> Option<NestUnder> {
     use crate::painless_params::{clean_path, subject_path};
 
@@ -9813,6 +9917,7 @@ pub(crate) enum KnownShape {
     MergeMapUp(Box<MergeMapUp>),
     MapEntryToBoolean(Box<MapEntryToBoolean>),
     NestUnder(Box<NestUnder>),
+    CollectFromList(Box<CollectFromList>),
     PositionInList(Box<PositionInList>),
     SplitFirstLabel(Box<SplitFirstLabel>),
     HashesByLength(Box<HashesByLength>),
@@ -9900,6 +10005,19 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_nest_under(normalised)
     {
         shapes.push(KnownShape::NestUnder(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: one list's members collected into deduped arrays. Ahead of the
+    // copy shapes, whose `.add(` this also spells and which cannot walk a list,
+    // so cisco_secure_endpoint's `host.ip`, `host.mac` and both `related`
+    // arrays were never written on any of its 408 events.
+    if normalised.contains(" in ctx")
+        && normalised.contains(".isEmpty())")
+        && normalised.contains(".add(")
+        && let Some(shape) = parse_collect_from_list(normalised)
+    {
+        shapes.push(KnownShape::CollectFromList(Box::new(shape)));
         return shapes;
     }
 
@@ -11474,6 +11592,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::HashesByLength(shape) => run_hashes_by_length(event, shape),
         KnownShape::MapEntryToBoolean(shape) => run_map_entry_to_boolean(event, shape),
         KnownShape::NestUnder(shape) => run_nest_under(event, shape),
+        KnownShape::CollectFromList(shape) => run_collect_from_list(event, shape),
         KnownShape::PositionInList(shape) => run_position_in_list(event, shape),
         KnownShape::SplitFirstLabel(shape) => run_split_first_label(event, shape),
         KnownShape::SuffixesByPrefix(shape) => run_suffixes_by_prefix(event, shape),
@@ -15351,6 +15470,59 @@ def event_timezone = get_timezone(ctx);
         assert_eq!(
             event.get("email.attachments"),
             Some(&json!([{ "file": { "name": "a.pdf" } }]))
+        );
+    }
+
+    /// Verbatim from `pipelines/cisco_secure_endpoint/event/default.yml`: two
+    /// members of one list, one of them folded on the way out.
+    #[test]
+    fn a_list_walk_collects_both_of_its_members() {
+        let script = "if (ctx.host == null) {\n    ctx.host = new HashMap();\n}\n\
+            if (ctx.host.ip == null) {\n    ctx.host.ip = new ArrayList();\n}\n\
+            if (ctx.host.mac == null) {\n    ctx.host.mac = new ArrayList();\n}\n\
+            for (addr in ctx.cisco.secure_endpoint.computer.network_addresses) {\n    \
+            if (addr.ip != null && !addr.ip.isEmpty()) {\n        \
+            if (!ctx.host.ip.contains(addr.ip)) {\n            \
+            ctx.host.ip.add(addr.ip);\n        }\n    }\n    \
+            if (addr.mac != null && !addr.mac.isEmpty()) {\n        \
+            def mac_addr = addr.mac.replace(\":\",\"-\").toUpperCase();\n        \
+            if (!ctx.host.mac.contains(mac_addr)) {\n            \
+            ctx.host.mac.add(mac_addr);\n        }\n    }\n}";
+        let mut event = Event::new(json!({ "cisco": { "secure_endpoint": { "computer": {
+            "network_addresses": [
+                { "ip": "10.10.10.10", "mac": "f9:65:da:22:2a:41" },
+                { "ip": "10.10.10.10", "mac": "" },
+            ]
+        }}}}));
+
+        assert!(try_known_painless(&mut event, script));
+        // Deduped, and the empty member contributes nothing.
+        assert_eq!(event.get("host.ip"), Some(&json!(["10.10.10.10"])));
+        assert_eq!(event.get("host.mac"), Some(&json!(["F9-65-DA-22-2A-41"])));
+    }
+
+    /// The single-member spelling, writing into a path the script names in
+    /// full rather than a two-segment one.
+    #[test]
+    fn a_list_walk_writes_a_deep_target() {
+        let script = "if (ctx.related == null) {\n    ctx.related = new HashMap();\n}\n\
+            if (ctx.related?.ip == null) {\n    ctx.related.ip = new ArrayList();\n}\n\
+            for (addr in ctx.cisco?.secure_endpoint?.computer?.network_addresses) {\n    \
+            if (addr.ip != null && !addr.ip.isEmpty()) {\n        \
+            if (!ctx.related.ip.contains(addr.ip)) {\n            \
+            ctx.related.ip.add(addr.ip);\n        }\n    }\n}";
+        let mut event = Event::new(json!({
+            "related": { "ip": ["81.2.69.144"] },
+            "cisco": { "secure_endpoint": { "computer": {
+                "network_addresses": [{ "ip": "10.10.10.10", "mac": "" }]
+            }}},
+        }));
+
+        assert!(try_known_painless(&mut event, script));
+        // The array the pipeline already built is added to, not replaced.
+        assert_eq!(
+            event.get("related.ip"),
+            Some(&json!(["81.2.69.144", "10.10.10.10"]))
         );
     }
 }

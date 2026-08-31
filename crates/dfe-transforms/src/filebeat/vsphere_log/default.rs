@@ -31,7 +31,7 @@ impl Transform for Default {
                 // Grok pattern: ^((?:<%{NONNEGINT:log.syslog.priority:long}>(\\d )?))?%{TIMESTAMP_ISO8601:_tmp.timestamp}%{SPACE}(?:(?:%{IP:host.ip}|%{HOSTNAME:host.name}))%{SPACE}%{NOTSPACE:process.name}%{SPACE}(%{POSINT:process.pid:long}|-)( -)?%{SPACE}%{GREEDYDATA:message}
                 // Grok pattern: ^ \\(%{TIMESTAMP_ISO8601:_tmp.timestamp} %{GREEDYDATA:message}\\)%{GREEDYDATA:_tmp.drop}
                 // Grok pattern: ^((?:<%{NONNEGINT:log.syslog.priority:long}>(\\d )?))?%{SYSLOGTIMESTAMP:_tmp.timestamp}%{SPACE}(?:(?:%{IP:host.ip}|%{HOSTNAME:host.name}))%{SPACE}%{DATA:process.name}(?:\\[%{POSINT:process.pid:long}\\])?\\: %{GREEDYDATA:message}
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!(
                             "^((?:<%{NONNEGINT:log.syslog.priority:long}>(\\d )?))?%{TIMESTAMP_ISO8601:_tmp.timestamp}%{SPACE}(?:(?:%{IP:host.ip}|%{HOSTNAME:host.name}))%{SPACE}%{NOTSPACE:process.name} (%{POSINT:process.pid:long}|-) - -%{SPACE}%{GREEDYDATA:message}"
@@ -51,7 +51,9 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             // Painless script
@@ -94,7 +96,7 @@ impl Transform for Default {
                 // Grok pattern: ^(?:%{TIMESTAMP_ISO8601}(( '%{NOTSPACE:event.action}' %{POSINT})|:) %{LOGLEVEL:log.level} %{GREEDYDATA:message})
                 // Grok pattern: ^(?:Event \\[%{POSINT:event.id}\\] %{NOTSPACE} \\[%{TIMESTAMP_ISO8601}\\] \\[%{JAVACLASS:log.logger}\\] \\[%{LOGLEVEL:log.level}\\] %{GREEDYDATA:message})
                 // Grok pattern: ^%{GREEDYDATA:message}
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!(
                             "^(?:%{TIMESTAMP_ISO8601}(( '%{NOTSPACE:event.action}' %{POSINT})|:) %{LOGLEVEL:log.level} %{GREEDYDATA:message})"
@@ -106,7 +108,9 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             if let Some(date_str) = event.get_as_string("_tmp.timestamp") {
@@ -955,7 +959,9 @@ impl Transform for Default {
                 if false {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: Connection %{DATA:_tmp.status} by %{IPORHOST:client.ip} port %{POSINT:client.port}( %{GREEDYDATA})?$
-                        let _ = cached_grok!("Connection %{DATA:_tmp.status} by %{IPORHOST:client.ip} port %{POSINT:client.port}( %{GREEDYDATA})?$").extract_into(&input, event)?;
+                        if !cached_grok!("Connection %{DATA:_tmp.status} by %{IPORHOST:client.ip} port %{POSINT:client.port}( %{GREEDYDATA})?$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 // SKIPPED: condition not transpiled: ctx.message?.contains('Logged in user:') ?: false
@@ -1099,8 +1105,11 @@ impl Transform for Default {
                 if false {
                     if let Some(input) = event.get_string("user_agent.original") {
                         // Grok pattern: %{DATA:user_agent.original}(?:\\]|\\)+)
-                        let _ = cached_grok!("%{DATA:user_agent.original}(?:\\]|\\)+)")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("%{DATA:user_agent.original}(?:\\]|\\)+)")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = { event.has_value("user_agent.original") };

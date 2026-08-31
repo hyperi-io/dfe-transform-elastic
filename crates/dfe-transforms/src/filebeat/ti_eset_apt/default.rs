@@ -103,31 +103,90 @@ impl Transform for Default {
 
             let _cond = { event.has_value("eti.labels") };
             if _cond {
-                foreach_array(event, "eti.labels", |event| {
-                    // ignore_failure: true
-                    let _ = (|| -> Result<()> {
-                        if let Some(input) = event.get_string("_ingest._value") {
-                            // Grok pattern: ^misp:name=\"%{DATA:eset.name}\"
-                            // Grok pattern: ^misp:type=\"%{DATA:eset.type}\"
-                            // Grok pattern: ^misp:category=\"%{DATA:eset.category}\"
-                            // Grok pattern: ^misp:meta-category=\"%{DATA:eset.meta_category}\"
-                            let _ = extract_first_match(
-                                &[
-                                    cached_grok!("^misp:name=\"%{DATA:eset.name}\""),
-                                    cached_grok!("^misp:type=\"%{DATA:eset.type}\""),
-                                    cached_grok!("^misp:category=\"%{DATA:eset.category}\""),
-                                    cached_grok!(
-                                        "^misp:meta-category=\"%{DATA:eset.meta_category}\""
-                                    ),
-                                ],
-                                &input,
-                                event,
-                            )?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("eti.labels").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => {
+                            fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
                         }
-                        Ok(())
-                    })();
-                    Ok(())
-                })?;
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                if let Some(input) = event.get_string("_ingest._value") {
+                                    // Grok pattern: ^misp:name=\"%{DATA:eset.name}\"
+                                    // Grok pattern: ^misp:type=\"%{DATA:eset.type}\"
+                                    // Grok pattern: ^misp:category=\"%{DATA:eset.category}\"
+                                    // Grok pattern: ^misp:meta-category=\"%{DATA:eset.meta_category}\"
+                                    if !extract_first_match(
+                                        &[
+                                            cached_grok!("^misp:name=\"%{DATA:eset.name}\""),
+                                            cached_grok!("^misp:type=\"%{DATA:eset.type}\""),
+                                            cached_grok!(
+                                                "^misp:category=\"%{DATA:eset.category}\""
+                                            ),
+                                            cached_grok!(
+                                                "^misp:meta-category=\"%{DATA:eset.meta_category}\""
+                                            ),
+                                        ],
+                                        &input,
+                                        event,
+                                    )? {
+                                        return Err(TransformError::GrokNoMatch { value: input });
+                                    }
+                                }
+                                Ok(())
+                            })();
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left {
+                                        fields.insert(key, value);
+                                    }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
+                            }
+                            None => {
+                                event.remove("_ingest");
+                            }
+                        }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                        }
+                        event.set(
+                            "eti.labels",
+                            if keyed {
+                                Value::Object(fields)
+                            } else {
+                                Value::Array(list)
+                            },
+                        )?;
+                    }
+                }
             }
 
             let _cond = { event.get_str("eset.name") == Some("x509") };
@@ -183,67 +242,240 @@ impl Transform for Default {
             let _cond = { event.get_str("threat.indicator.type") == Some("file") };
             if _cond {
                 // Begin nested pipeline: "pipeline-file"
-                foreach_array(event, "eti._patterns", |event| {
-                    // ignore_failure: true
-                    let _ = (|| -> Result<()> {
-                        if let Some(input) = event.get_string("_ingest._value") {
-                            // Grok pattern: ^\\[?file:hashes.MD5%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.md5}'\\]?
-                            // Grok pattern: ^\\[?file:hashes.SHA1%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha1}'\\]?
-                            // Grok pattern: ^\\[?file:hashes.SHA256%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha256}'\\]?
-                            // Grok pattern: ^\\[?file:name%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.name}'\\]?
-                            let _ = extract_first_match(
-                                &[
-                                    cached_grok!(
-                                        "^\\[?file:hashes.MD5%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.md5}'\\]?"
-                                    ),
-                                    cached_grok!(
-                                        "^\\[?file:hashes.SHA1%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha1}'\\]?"
-                                    ),
-                                    cached_grok!(
-                                        "^\\[?file:hashes.SHA256%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha256}'\\]?"
-                                    ),
-                                    cached_grok!(
-                                        "^\\[?file:name%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.name}'\\]?"
-                                    ),
-                                ],
-                                &input,
-                                event,
-                            )?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("eti._patterns").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => {
+                            fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
                         }
-                        Ok(())
-                    })();
-                    Ok(())
-                })?;
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                if let Some(input) = event.get_string("_ingest._value") {
+                                    // Grok pattern: ^\\[?file:hashes.MD5%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.md5}'\\]?
+                                    // Grok pattern: ^\\[?file:hashes.SHA1%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha1}'\\]?
+                                    // Grok pattern: ^\\[?file:hashes.SHA256%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha256}'\\]?
+                                    // Grok pattern: ^\\[?file:name%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.name}'\\]?
+                                    if !extract_first_match(
+                                        &[
+                                            cached_grok!(
+                                                "^\\[?file:hashes.MD5%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.md5}'\\]?"
+                                            ),
+                                            cached_grok!(
+                                                "^\\[?file:hashes.SHA1%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha1}'\\]?"
+                                            ),
+                                            cached_grok!(
+                                                "^\\[?file:hashes.SHA256%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha256}'\\]?"
+                                            ),
+                                            cached_grok!(
+                                                "^\\[?file:name%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.name}'\\]?"
+                                            ),
+                                        ],
+                                        &input,
+                                        event,
+                                    )? {
+                                        return Err(TransformError::GrokNoMatch { value: input });
+                                    }
+                                }
+                                Ok(())
+                            })();
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left {
+                                        fields.insert(key, value);
+                                    }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
+                            }
+                            None => {
+                                event.remove("_ingest");
+                            }
+                        }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                        }
+                        event.set(
+                            "eti._patterns",
+                            if keyed {
+                                Value::Object(fields)
+                            } else {
+                                Value::Array(list)
+                            },
+                        )?;
+                    }
+                }
                 // End nested pipeline: "pipeline-file"
             }
 
             let _cond = { event.get_str("threat.indicator.type") == Some("email-addr") };
             if _cond {
                 // Begin nested pipeline: "pipeline-email"
-                foreach_array(event, "eti._patterns", |event| {
-                    // ignore_failure: true
-                    let _ = (|| -> Result<()> {
-                        if let Some(input) = event.get_string("_ingest._value") {
-                            // Grok pattern: ^\\[?email-message:from_ref.value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.email.address}'\\]?
-                            let _ = cached_grok!("^\\[?email-message:from_ref.value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.email.address}'\\]?").extract_into(&input, event)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("eti._patterns").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => {
+                            fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
                         }
-                        Ok(())
-                    })();
-                    Ok(())
-                })?;
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                if let Some(input) = event.get_string("_ingest._value") {
+                                    // Grok pattern: ^\\[?email-message:from_ref.value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.email.address}'\\]?
+                                    if !cached_grok!("^\\[?email-message:from_ref.value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.email.address}'\\]?").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
+                                }
+                                Ok(())
+                            })();
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left {
+                                        fields.insert(key, value);
+                                    }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
+                            }
+                            None => {
+                                event.remove("_ingest");
+                            }
+                        }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                        }
+                        event.set(
+                            "eti._patterns",
+                            if keyed {
+                                Value::Object(fields)
+                            } else {
+                                Value::Array(list)
+                            },
+                        )?;
+                    }
+                }
                 let _cond = { event.has_value("threat.indicator.email.address") };
                 if _cond {
-                    foreach_array(event, "eti._patterns", |event| {
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(input) = event.get_string("_ingest._value") {
-                                // Grok pattern: ^\\[?email-message:to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.email.address}'\\]?
-                                let _ = cached_grok!("^\\[?email-message:to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.email.address}'\\]?").extract_into(&input, event)?;
+                    {
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("eti._patterns").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
                             }
-                            Ok(())
-                        })();
-                        Ok(())
-                    })?;
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(input) = event.get_string("_ingest._value") {
+                                        // Grok pattern: ^\\[?email-message:to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.email.address}'\\]?
+                                        if !cached_grok!("^\\[?email-message:to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.email.address}'\\]?").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
+                                    }
+                                    Ok(())
+                                })();
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
+                                }
+                            }
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "eti._patterns",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
+                            )?;
+                        }
+                    }
                 }
                 let _cond = { event.has_value("threat.indicator.email.address") };
                 if _cond {
@@ -263,123 +495,294 @@ impl Transform for Default {
             let _cond = { event.get_str("threat.indicator.type") == Some("url") };
             if _cond {
                 // Begin nested pipeline: "pipeline-url"
-                foreach_array(event, "eti._patterns", |event| {
-                    // ignore_failure: true
-                    let _ = (|| -> Result<()> {
-                        if let Some(input) = event.get_string("_ingest._value") {
-                            // Grok pattern: ^\\[?url:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'\\]?
-                            // Grok pattern: ^\\[?url:x_misp_scheme%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.scheme}'\\]?
-                            // Grok pattern: ^\\[?url:x_misp_port%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.port:int}'\\]?
-                            // Grok pattern: ^\\[?url:x_misp_resource_path%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.path}'\\]?
-                            let _ = extract_first_match(
-                                &[
-                                    cached_grok!(
-                                        "^\\[?url:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'\\]?"
-                                    ),
-                                    cached_grok!(
-                                        "^\\[?url:x_misp_scheme%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.scheme}'\\]?"
-                                    ),
-                                    cached_grok!(
-                                        "^\\[?url:x_misp_port%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.port:int}'\\]?"
-                                    ),
-                                    cached_grok!(
-                                        "^\\[?url:x_misp_resource_path%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.path}'\\]?"
-                                    ),
-                                ],
-                                &input,
-                                event,
-                            )?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("eti._patterns").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => {
+                            fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
                         }
-                        Ok(())
-                    })();
-                    Ok(())
-                })?;
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                if let Some(input) = event.get_string("_ingest._value") {
+                                    // Grok pattern: ^\\[?url:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'\\]?
+                                    // Grok pattern: ^\\[?url:x_misp_scheme%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.scheme}'\\]?
+                                    // Grok pattern: ^\\[?url:x_misp_port%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.port:int}'\\]?
+                                    // Grok pattern: ^\\[?url:x_misp_resource_path%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.path}'\\]?
+                                    if !extract_first_match(
+                                        &[
+                                            cached_grok!(
+                                                "^\\[?url:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'\\]?"
+                                            ),
+                                            cached_grok!(
+                                                "^\\[?url:x_misp_scheme%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.scheme}'\\]?"
+                                            ),
+                                            cached_grok!(
+                                                "^\\[?url:x_misp_port%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.port:int}'\\]?"
+                                            ),
+                                            cached_grok!(
+                                                "^\\[?url:x_misp_resource_path%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.path}'\\]?"
+                                            ),
+                                        ],
+                                        &input,
+                                        event,
+                                    )? {
+                                        return Err(TransformError::GrokNoMatch { value: input });
+                                    }
+                                }
+                                Ok(())
+                            })();
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left {
+                                        fields.insert(key, value);
+                                    }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
+                            }
+                            None => {
+                                event.remove("_ingest");
+                            }
+                        }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                        }
+                        event.set(
+                            "eti._patterns",
+                            if keyed {
+                                Value::Object(fields)
+                            } else {
+                                Value::Array(list)
+                            },
+                        )?;
+                    }
+                }
                 // End nested pipeline: "pipeline-url"
             }
 
             let _cond = { event.get_str("threat.indicator.type") == Some("domain-name") };
             if _cond {
                 // Begin nested pipeline: "pipeline-domain-ip"
-                foreach_array(event, "eti._patterns", |event| {
-                    if let Some(input) = event.get_string("_ingest._value") {
-                        // Grok pattern: ^\\[?domain-name:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'\\]?
-                        // Grok pattern: ^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'\\]?
-                        let _ = extract_first_match(
-                            &[
-                                cached_grok!(
-                                    "^\\[?domain-name:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'\\]?"
-                                ),
-                                cached_grok!(
-                                    "^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'\\]?"
-                                ),
-                            ],
-                            &input,
-                            event,
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("eti._patterns").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => {
+                            fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                        }
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            if let Some(input) = event.get_string("_ingest._value") {
+                                // Grok pattern: ^\\[?domain-name:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'\\]?
+                                // Grok pattern: ^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'\\]?
+                                if !extract_first_match(
+                                    &[
+                                        cached_grok!(
+                                            "^\\[?domain-name:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'\\]?"
+                                        ),
+                                        cached_grok!(
+                                            "^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'\\]?"
+                                        ),
+                                    ],
+                                    &input,
+                                    event,
+                                )? {
+                                    return Err(TransformError::GrokNoMatch { value: input });
+                                }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left {
+                                        fields.insert(key, value);
+                                    }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
+                            }
+                            None => {
+                                event.remove("_ingest");
+                            }
+                        }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                        }
+                        event.set(
+                            "eti._patterns",
+                            if keyed {
+                                Value::Object(fields)
+                            } else {
+                                Value::Array(list)
+                            },
                         )?;
                     }
-                    Ok(())
-                })?;
+                }
                 // End nested pipeline: "pipeline-domain-ip"
             }
 
             let _cond = { event.get_str("threat.indicator.type") == Some("x509-certificate") };
             if _cond {
                 // Begin nested pipeline: "pipeline-cert"
-                foreach_array(event, "eti._patterns", |event| {
-                    // ignore_failure: true
-                    let _ = (|| -> Result<()> {
-                        if let Some(input) = event.get_string("_ingest._value") {
-                            // Grok pattern: ^\\[?x509-certificate:hashes.MD5%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.md5}'\\]?
-                            // Grok pattern: ^\\[?x509-certificate:hashes.SHA1%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha1}'\\]?
-                            // Grok pattern: ^\\[?x509-certificate:hashes.SHA256%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha256}'\\]?
-                            // Grok pattern: ^\\[?x509-certificate:serial_number%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.serial_number}'\\]?
-                            // Grok pattern: ^\\[?x509-certificate:signature_algorithm%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.signature_algorithm}'\\]?
-                            // Grok pattern: ^\\[?x509-certificate:version%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.version_number}'\\]?
-                            // Grok pattern: ^\\[?x509-certificate:validity_not_after%{SPACE}=%{SPACE}'%{TIMESTAMP_ISO8601:threat.indicator.x509.not_after}'\\]?
-                            // Grok pattern: ^\\[?x509-certificate:validity_not_before%{SPACE}=%{SPACE}'%{TIMESTAMP_ISO8601:threat.indicator.x509.not_before}'\\]?
-                            // Grok pattern: ^\\[?x509-certificate:issuer%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.issuer.distinguished_name}'\\]?
-                            // Grok pattern: ^\\[?x509-certificate:subject%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.subject.distinguished_name}'\\]?
-                            let _ = extract_first_match(
-                                &[
-                                    cached_grok!(
-                                        "^\\[?x509-certificate:hashes.MD5%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.md5}'\\]?"
-                                    ),
-                                    cached_grok!(
-                                        "^\\[?x509-certificate:hashes.SHA1%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha1}'\\]?"
-                                    ),
-                                    cached_grok!(
-                                        "^\\[?x509-certificate:hashes.SHA256%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha256}'\\]?"
-                                    ),
-                                    cached_grok!(
-                                        "^\\[?x509-certificate:serial_number%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.serial_number}'\\]?"
-                                    ),
-                                    cached_grok!(
-                                        "^\\[?x509-certificate:signature_algorithm%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.signature_algorithm}'\\]?"
-                                    ),
-                                    cached_grok!(
-                                        "^\\[?x509-certificate:version%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.version_number}'\\]?"
-                                    ),
-                                    cached_grok!(
-                                        "^\\[?x509-certificate:validity_not_after%{SPACE}=%{SPACE}'%{TIMESTAMP_ISO8601:threat.indicator.x509.not_after}'\\]?"
-                                    ),
-                                    cached_grok!(
-                                        "^\\[?x509-certificate:validity_not_before%{SPACE}=%{SPACE}'%{TIMESTAMP_ISO8601:threat.indicator.x509.not_before}'\\]?"
-                                    ),
-                                    cached_grok!(
-                                        "^\\[?x509-certificate:issuer%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.issuer.distinguished_name}'\\]?"
-                                    ),
-                                    cached_grok!(
-                                        "^\\[?x509-certificate:subject%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.subject.distinguished_name}'\\]?"
-                                    ),
-                                ],
-                                &input,
-                                event,
-                            )?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("eti._patterns").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => {
+                            fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
                         }
-                        Ok(())
-                    })();
-                    Ok(())
-                })?;
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                if let Some(input) = event.get_string("_ingest._value") {
+                                    // Grok pattern: ^\\[?x509-certificate:hashes.MD5%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.md5}'\\]?
+                                    // Grok pattern: ^\\[?x509-certificate:hashes.SHA1%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha1}'\\]?
+                                    // Grok pattern: ^\\[?x509-certificate:hashes.SHA256%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha256}'\\]?
+                                    // Grok pattern: ^\\[?x509-certificate:serial_number%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.serial_number}'\\]?
+                                    // Grok pattern: ^\\[?x509-certificate:signature_algorithm%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.signature_algorithm}'\\]?
+                                    // Grok pattern: ^\\[?x509-certificate:version%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.version_number}'\\]?
+                                    // Grok pattern: ^\\[?x509-certificate:validity_not_after%{SPACE}=%{SPACE}'%{TIMESTAMP_ISO8601:threat.indicator.x509.not_after}'\\]?
+                                    // Grok pattern: ^\\[?x509-certificate:validity_not_before%{SPACE}=%{SPACE}'%{TIMESTAMP_ISO8601:threat.indicator.x509.not_before}'\\]?
+                                    // Grok pattern: ^\\[?x509-certificate:issuer%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.issuer.distinguished_name}'\\]?
+                                    // Grok pattern: ^\\[?x509-certificate:subject%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.subject.distinguished_name}'\\]?
+                                    if !extract_first_match(
+                                        &[
+                                            cached_grok!(
+                                                "^\\[?x509-certificate:hashes.MD5%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.md5}'\\]?"
+                                            ),
+                                            cached_grok!(
+                                                "^\\[?x509-certificate:hashes.SHA1%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha1}'\\]?"
+                                            ),
+                                            cached_grok!(
+                                                "^\\[?x509-certificate:hashes.SHA256%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha256}'\\]?"
+                                            ),
+                                            cached_grok!(
+                                                "^\\[?x509-certificate:serial_number%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.serial_number}'\\]?"
+                                            ),
+                                            cached_grok!(
+                                                "^\\[?x509-certificate:signature_algorithm%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.signature_algorithm}'\\]?"
+                                            ),
+                                            cached_grok!(
+                                                "^\\[?x509-certificate:version%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.version_number}'\\]?"
+                                            ),
+                                            cached_grok!(
+                                                "^\\[?x509-certificate:validity_not_after%{SPACE}=%{SPACE}'%{TIMESTAMP_ISO8601:threat.indicator.x509.not_after}'\\]?"
+                                            ),
+                                            cached_grok!(
+                                                "^\\[?x509-certificate:validity_not_before%{SPACE}=%{SPACE}'%{TIMESTAMP_ISO8601:threat.indicator.x509.not_before}'\\]?"
+                                            ),
+                                            cached_grok!(
+                                                "^\\[?x509-certificate:issuer%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.issuer.distinguished_name}'\\]?"
+                                            ),
+                                            cached_grok!(
+                                                "^\\[?x509-certificate:subject%{SPACE}=%{SPACE}'%{DATA:threat.indicator.x509.subject.distinguished_name}'\\]?"
+                                            ),
+                                        ],
+                                        &input,
+                                        event,
+                                    )? {
+                                        return Err(TransformError::GrokNoMatch { value: input });
+                                    }
+                                }
+                                Ok(())
+                            })();
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left {
+                                        fields.insert(key, value);
+                                    }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
+                            }
+                            None => {
+                                event.remove("_ingest");
+                            }
+                        }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                        }
+                        event.set(
+                            "eti._patterns",
+                            if keyed {
+                                Value::Object(fields)
+                            } else {
+                                Value::Array(list)
+                            },
+                        )?;
+                    }
+                }
                 let _cond = { event.has_value("threat.indicator.x509.not_after") };
                 if _cond {
                     if let Some(date_str) = event.get_as_string("threat.indicator.x509.not_after") {

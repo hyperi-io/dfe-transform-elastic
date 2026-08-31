@@ -178,7 +178,7 @@ impl Transform for Default {
                     // Grok pattern: ::ffff:%{IPV4:source.ip}
                     // Grok pattern: %{IPV4:source.ip}
                     // Grok pattern: %{IPV6:source.ip}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("::ffff:%{IPV4:source.ip}"),
                             cached_grok!("%{IPV4:source.ip}"),
@@ -186,7 +186,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

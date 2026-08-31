@@ -229,10 +229,13 @@ impl Transform for Default {
                 if event.has_value("abusech.threatfox.ioc") {
                     if let Some(input) = event.get_string("abusech.threatfox.ioc") {
                         // Grok pattern: %{IP:threat.indicator.ip}:%{NUMBER:threat.indicator.port:long}
-                        let _ = cached_grok!(
+                        if !cached_grok!(
                             "%{IP:threat.indicator.ip}:%{NUMBER:threat.indicator.port:long}"
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -268,8 +271,11 @@ impl Transform for Default {
                 if event.has_value("abusech.threatfox.ioc_type") {
                     if let Some(input) = event.get_string("abusech.threatfox.ioc_type") {
                         // Grok pattern: %{DATA:_tmp.hashtype}_hash
-                        let _ = cached_grok!("%{DATA:_tmp.hashtype}_hash")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("%{DATA:_tmp.hashtype}_hash")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }

@@ -46,7 +46,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("stormshield.tz") {
                 // Grok pattern: (?:(?P<_temp__tz_offset>(?:[+-]?)))(?:%{HOUR:_temp_.tz_hour}):?(?:%{MINUTE:_temp_.tz_minute})
-                let _ = cached_grok_mapped!("(?:(?P<_temp__tz_offset>(?:[+-]?)))(?:%{HOUR:_temp_.tz_hour}):?(?:%{MINUTE:_temp_.tz_minute})", [("_temp__tz_offset", "_temp_.tz_offset")]).extract_into(&input, event)?;
+                if !cached_grok_mapped!("(?:(?P<_temp__tz_offset>(?:[+-]?)))(?:%{HOUR:_temp_.tz_hour}):?(?:%{MINUTE:_temp_.tz_minute})", [("_temp__tz_offset", "_temp_.tz_offset")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
             }
 
             event.remove("stormshield.tz");

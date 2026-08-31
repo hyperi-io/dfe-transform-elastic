@@ -28,7 +28,7 @@ impl Transform for PipelineErrorLogs {
                     // Grok pattern: ^%{WORD:cisco_secure_email_gateway.log.alert_category}: %{GREEDYDATA:cisco_secure_email_gateway.log.description}$
                     // Grok pattern: ^Internal %{DATA:network.protocol} system attempting to send a message to %{DATA:email.to.address} with subject %{GREEDYDATA:email.subject}\\.$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Internal %{DATA:network.protocol} giving up on message to %{DATA:email.to.address} with subject %{GREEDYDATA:email.subject}\\.$"),
                             cached_grok!("^%{GREEDYDATA:cisco_secure_email_gateway.log.description}: Unable to send System/Warning %{DATA:event.kind} to %{DATA:email.to.address} with subject \"%{GREEDYDATA:email.subject}\"\\.$"),
@@ -38,7 +38,9 @@ impl Transform for PipelineErrorLogs {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

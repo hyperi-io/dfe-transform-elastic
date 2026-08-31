@@ -60,7 +60,9 @@ impl Transform for PipelineAlarm {
             if let Err(err) = (|| -> Result<()> {
                 if let Some(input) = event.get_string("cisco_ise.log.log_details_raw.message") {
                     // Grok pattern: ^(%{DATA} )?From %{DATA:source.address} To %{DATA:destination.address}$
-                    let _ = cached_grok!("^(%{DATA} )?From %{DATA:source.address} To %{DATA:destination.address}$").extract_into(&input, event)?;
+                    if !cached_grok!("^(%{DATA} )?From %{DATA:source.address} To %{DATA:destination.address}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })() {

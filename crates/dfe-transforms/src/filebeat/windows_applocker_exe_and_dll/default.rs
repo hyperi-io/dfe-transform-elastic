@@ -493,7 +493,7 @@ impl Transform for Default {
                         // Grok pattern: ^O=(?P<tmp_file_x509_subject_organization>.*),%{SPACE}S=(?P<tmp_file_x509_subject_state_or_province>.*),%{SPACE}C=(?P<tmp_file_x509_subject_country>[^\\\\]*)\\\\(?P<file_pe_product>[^\\\\]*)\\\\(?P<file_pe_original_file_name>[^\\\\]*)\\\\(?P<file_pe_file_version>.*)$
                         // Grok pattern: ^CN=(?P<tmp_file_x509_subject_common_name>.*)\\\\(?P<file_pe_product>[^\\\\]*)\\\\(?P<file_pe_original_file_name>[^\\\\]*)\\\\(?P<file_pe_file_version>.*)$
                         // Grok pattern: ^CN=(?P<tmp_file_x509_subject_common_name>.*),%{SPACE}O=(?P<tmp_file_x509_subject_organization>.*),%{SPACE}L=(?P<file_x509_subject_locality>.*),%{SPACE}S=(?P<tmp_file_x509_subject_state_or_province>.*),%{SPACE}C=(?P<tmp_file_x509_subject_country>[^\\\\]*)\\\\(?P<file_pe_product>[^\\\\]*)\\\\(?P<file_pe_original_file_name>[^\\\\]*)\\\\(?P<file_pe_file_version>.*)$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok_mapped!(
                                     "^O=(?P<tmp_file_x509_subject_organization>.*),%{SPACE}L=(?P<file_x509_subject_locality>.*),%{SPACE}S=(?P<tmp_file_x509_subject_state_or_province>.*),%{SPACE}C=(?P<tmp_file_x509_subject_country>[^\\\\]*)\\\\(?P<file_pe_product>[^\\\\]*)\\\\(?P<file_pe_original_file_name>[^\\\\]*)\\\\(?P<file_pe_file_version>.*)$",
@@ -617,7 +617,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -681,11 +683,14 @@ impl Transform for Default {
                 if event.has_value("winlog.user_data.FullFilePath") {
                     if let Some(input) = event.get_string("winlog.user_data.FullFilePath") {
                         // Grok pattern: (?P<file_name>([^\\\\]*$))
-                        let _ = cached_grok_mapped!(
+                        if !cached_grok_mapped!(
                             "(?P<file_name>([^\\\\]*$))",
                             [("file_name", "file.name")]
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }

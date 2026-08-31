@@ -28,7 +28,9 @@ impl Transform for Default {
             if event.has_value("event.original") {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: ((?:(?:(?P<destination_ip>(?:(?:\\[?%{IPV6}\\]?|%{IPV4})))|(?P<destination_domain>(?:[^\t ,:]+)))(:%{NUMBER:destination.port})?) )?\"?(?:(?P<nginx_ingress_controller_access_remote_ip_list>(?:(?:(?:(?:\\[?%{IPV6}\\]?|%{IPV4}))|%{WORD})(\"?,?\\s*(?:(?:(?:\\[?%{IPV6}\\]?|%{IPV4}))|%{WORD}))*))|%{NOTSPACE:source.address}) - (-|%{DATA:user.name}) \\[%{HTTPDATE:nginx_ingress_controller.access.time}\\] \"%{DATA:nginx_ingress_controller.access.info}\" %{NUMBER:http.response.status_code:long} %{NUMBER:http.response.body.bytes:long} \"(-|%{DATA:http.request.referrer})\" \"(-|%{DATA:user_agent.original})\" %{NUMBER:nginx_ingress_controller.access.http.request.length:long} %{NUMBER:nginx_ingress_controller.access.http.request.time:double} \\[%{DATA:nginx_ingress_controller.access.upstream.name}\\] \\[%{DATA:nginx_ingress_controller.access.upstream.alternative_name}\\] ((?P<nginx_ingress_controller_access_upstream_address_list>(?:(?:(?:(?:\\[?%{IPV6}\\]?|%{IPV4}))(:%{NUMBER})?)(\"?,?\\s*(?:(?:(?:\\[?%{IPV6}\\]?|%{IPV4}))(:%{NUMBER})?))*))|-) ((?P<nginx_ingress_controller_access_upstream_response_length_list>(?:(?:%{NUMBER})(\"?,?\\s*(?:%{NUMBER}))*))|-) ((?P<nginx_ingress_controller_access_upstream_response_time_list>(?:(?:%{NUMBER})(\"?,?\\s*(?:%{NUMBER}))*))|-) ((?P<nginx_ingress_controller_access_upstream_response_status_code_list>(?:(?:%{NUMBER})(\"?,?\\s*(?:%{NUMBER}))*))|-) %{GREEDYDATA:nginx_ingress_controller.access.http.request.id}
-                    let _ = cached_grok_mapped!("((?:(?:(?P<destination_ip>(?:(?:\\[?%{IPV6}\\]?|%{IPV4})))|(?P<destination_domain>(?:[^\t ,:]+)))(:%{NUMBER:destination.port})?) )?\"?(?:(?P<nginx_ingress_controller_access_remote_ip_list>(?:(?:(?:(?:\\[?%{IPV6}\\]?|%{IPV4}))|%{WORD})(\"?,?\\s*(?:(?:(?:\\[?%{IPV6}\\]?|%{IPV4}))|%{WORD}))*))|%{NOTSPACE:source.address}) - (-|%{DATA:user.name}) \\[%{HTTPDATE:nginx_ingress_controller.access.time}\\] \"%{DATA:nginx_ingress_controller.access.info}\" %{NUMBER:http.response.status_code:long} %{NUMBER:http.response.body.bytes:long} \"(-|%{DATA:http.request.referrer})\" \"(-|%{DATA:user_agent.original})\" %{NUMBER:nginx_ingress_controller.access.http.request.length:long} %{NUMBER:nginx_ingress_controller.access.http.request.time:double} \\[%{DATA:nginx_ingress_controller.access.upstream.name}\\] \\[%{DATA:nginx_ingress_controller.access.upstream.alternative_name}\\] ((?P<nginx_ingress_controller_access_upstream_address_list>(?:(?:(?:(?:\\[?%{IPV6}\\]?|%{IPV4}))(:%{NUMBER})?)(\"?,?\\s*(?:(?:(?:\\[?%{IPV6}\\]?|%{IPV4}))(:%{NUMBER})?))*))|-) ((?P<nginx_ingress_controller_access_upstream_response_length_list>(?:(?:%{NUMBER})(\"?,?\\s*(?:%{NUMBER}))*))|-) ((?P<nginx_ingress_controller_access_upstream_response_time_list>(?:(?:%{NUMBER})(\"?,?\\s*(?:%{NUMBER}))*))|-) ((?P<nginx_ingress_controller_access_upstream_response_status_code_list>(?:(?:%{NUMBER})(\"?,?\\s*(?:%{NUMBER}))*))|-) %{GREEDYDATA:nginx_ingress_controller.access.http.request.id}", [("nginx_ingress_controller_access_remote_ip_list", "nginx_ingress_controller.access.remote_ip_list"), ("nginx_ingress_controller_access_upstream_address_list", "nginx_ingress_controller.access.upstream_address_list"), ("nginx_ingress_controller_access_upstream_response_length_list", "nginx_ingress_controller.access.upstream.response.length_list"), ("nginx_ingress_controller_access_upstream_response_time_list", "nginx_ingress_controller.access.upstream.response.time_list"), ("nginx_ingress_controller_access_upstream_response_status_code_list", "nginx_ingress_controller.access.upstream.response.status_code_list"), ("destination_ip", "destination.ip"), ("destination_domain", "destination.domain")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("((?:(?:(?P<destination_ip>(?:(?:\\[?%{IPV6}\\]?|%{IPV4})))|(?P<destination_domain>(?:[^\t ,:]+)))(:%{NUMBER:destination.port})?) )?\"?(?:(?P<nginx_ingress_controller_access_remote_ip_list>(?:(?:(?:(?:\\[?%{IPV6}\\]?|%{IPV4}))|%{WORD})(\"?,?\\s*(?:(?:(?:\\[?%{IPV6}\\]?|%{IPV4}))|%{WORD}))*))|%{NOTSPACE:source.address}) - (-|%{DATA:user.name}) \\[%{HTTPDATE:nginx_ingress_controller.access.time}\\] \"%{DATA:nginx_ingress_controller.access.info}\" %{NUMBER:http.response.status_code:long} %{NUMBER:http.response.body.bytes:long} \"(-|%{DATA:http.request.referrer})\" \"(-|%{DATA:user_agent.original})\" %{NUMBER:nginx_ingress_controller.access.http.request.length:long} %{NUMBER:nginx_ingress_controller.access.http.request.time:double} \\[%{DATA:nginx_ingress_controller.access.upstream.name}\\] \\[%{DATA:nginx_ingress_controller.access.upstream.alternative_name}\\] ((?P<nginx_ingress_controller_access_upstream_address_list>(?:(?:(?:(?:\\[?%{IPV6}\\]?|%{IPV4}))(:%{NUMBER})?)(\"?,?\\s*(?:(?:(?:\\[?%{IPV6}\\]?|%{IPV4}))(:%{NUMBER})?))*))|-) ((?P<nginx_ingress_controller_access_upstream_response_length_list>(?:(?:%{NUMBER})(\"?,?\\s*(?:%{NUMBER}))*))|-) ((?P<nginx_ingress_controller_access_upstream_response_time_list>(?:(?:%{NUMBER})(\"?,?\\s*(?:%{NUMBER}))*))|-) ((?P<nginx_ingress_controller_access_upstream_response_status_code_list>(?:(?:%{NUMBER})(\"?,?\\s*(?:%{NUMBER}))*))|-) %{GREEDYDATA:nginx_ingress_controller.access.http.request.id}", [("nginx_ingress_controller_access_remote_ip_list", "nginx_ingress_controller.access.remote_ip_list"), ("nginx_ingress_controller_access_upstream_address_list", "nginx_ingress_controller.access.upstream_address_list"), ("nginx_ingress_controller_access_upstream_response_length_list", "nginx_ingress_controller.access.upstream.response.length_list"), ("nginx_ingress_controller_access_upstream_response_time_list", "nginx_ingress_controller.access.upstream.response.time_list"), ("nginx_ingress_controller_access_upstream_response_status_code_list", "nginx_ingress_controller.access.upstream.response.status_code_list"), ("destination_ip", "destination.ip"), ("destination_domain", "destination.domain")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -36,7 +38,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("nginx_ingress_controller.access.info") {
                     // Grok pattern: %{WORD:http.request.method} %{DATA:url.original} HTTP/%{NUMBER:http.version}
                     // Grok pattern:
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "%{WORD:http.request.method} %{DATA:url.original} HTTP/%{NUMBER:http.version}"
@@ -45,7 +47,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -281,7 +285,7 @@ impl Transform for Default {
                         // Grok pattern: ^(?P<nginx_ingress_controller_access_upstream_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):%{NUMBER:nginx_ingress_controller.access.upstream.port}$
                         // Grok pattern: ^%{IPV6:nginx_ingress_controller.access.upstream.ip}(?:(?: port |[p#.]))%{NUMBER:nginx_ingress_controller.access.upstream.port}$
                         // Grok pattern: ^%{IPV6:nginx_ingress_controller.access.upstream.ip}(?:(?: port |[p#.]))%{POSINT:nginx_ingress_controller.access.upstream.port}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^%{IPV4:nginx_ingress_controller.access.upstream.ip}:%{NUMBER:nginx_ingress_controller.access.upstream.port}$"
@@ -305,7 +309,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

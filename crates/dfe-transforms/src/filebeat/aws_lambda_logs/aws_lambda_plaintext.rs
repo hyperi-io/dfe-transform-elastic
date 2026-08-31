@@ -36,7 +36,7 @@ impl Transform for AwsLambdaPlaintext {
                     // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+%{WORD:aws.lambda.event_type}\\s+RequestId:\\s+(?P<aws_lambda_request_id>(?:[^\\s]+))
                     // Grok pattern: ^(?P<aws_lambda_log_stream_id>(?:[^\\s]+))\\s+%{TIMESTAMP_ISO8601:timestamp}\\s+(?P<message>(?:(.|\n|\t)*))
                     // Grok pattern: ^(?i)(?:%{LOGLEVEL:log.level}:?\\s*)?(?P<message>(?:(.|\n|\t)*))
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!("^(?P<aws_lambda_event_type>START)\\s+RequestId:\\s+%{DATA:aws.lambda.request_id}\\s+Version:\\s+(?P<aws_lambda_version>\\$LATEST|[^\\s]+)\\s+(?P<message>(?:(.|\n|\t)*))", [("aws_lambda_event_type", "aws.lambda.event_type"), ("aws_lambda_version", "aws.lambda.version")]),
                             cached_grok_mapped!("^(?P<aws_lambda_event_type>INIT_START)\\s+Runtime Version: %{DATA:aws.lambda.runtime_version}\\s+Runtime Version ARN: %{GREEDYDATA:aws.lambda.arn}", [("aws_lambda_event_type", "aws.lambda.event_type")]),
@@ -57,7 +57,9 @@ impl Transform for AwsLambdaPlaintext {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())

@@ -27,7 +27,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: (^[[:cntrl:]])?%{TIMESTAMP_ISO8601:logdate}.%{NONNEGINT} - \\[(%{DATA:pslogid})?\\] %{DATA:log.logger} \\[%{NONNEGINT:process.pid},%{NONNEGINT:process.thread.id}\\] %{DATA:log.level}: (?P<msg>(?:(.|\n)*))
-                let _ = cached_grok!("(^[[:cntrl:]])?%{TIMESTAMP_ISO8601:logdate}.%{NONNEGINT} - \\[(%{DATA:pslogid})?\\] %{DATA:log.logger} \\[%{NONNEGINT:process.pid},%{NONNEGINT:process.thread.id}\\] %{DATA:log.level}: (?P<msg>(?:(.|\n)*))").extract_into(&input, event)?;
+                if !cached_grok!("(^[[:cntrl:]])?%{TIMESTAMP_ISO8601:logdate}.%{NONNEGINT} - \\[(%{DATA:pslogid})?\\] %{DATA:log.logger} \\[%{NONNEGINT:process.pid},%{NONNEGINT:process.thread.id}\\] %{DATA:log.level}: (?P<msg>(?:(.|\n)*))").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
             }
 
             let _cond = {
@@ -54,7 +56,9 @@ impl Transform for Default {
                 if event.has_value("event.original") {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: (^[[:cntrl:]])?%{TIMESTAMP_ISO8601}.%{NONNEGINT} - \\[%{DATA}\\] %{DATA} \\[%{NONNEGINT},%{NONNEGINT}\\] %{DATA}: %{NOTSPACE:hid_bravura_monitor.perf.kind}. %{GREEDYDATA:kvpairs}
-                        let _ = cached_grok!("(^[[:cntrl:]])?%{TIMESTAMP_ISO8601}.%{NONNEGINT} - \\[%{DATA}\\] %{DATA} \\[%{NONNEGINT},%{NONNEGINT}\\] %{DATA}: %{NOTSPACE:hid_bravura_monitor.perf.kind}. %{GREEDYDATA:kvpairs}").extract_into(&input, event)?;
+                        if !cached_grok!("(^[[:cntrl:]])?%{TIMESTAMP_ISO8601}.%{NONNEGINT} - \\[%{DATA}\\] %{DATA} \\[%{NONNEGINT},%{NONNEGINT}\\] %{DATA}: %{NOTSPACE:hid_bravura_monitor.perf.kind}. %{GREEDYDATA:kvpairs}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                 }
             }
@@ -151,14 +155,16 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("pslogid") {
                         // Grok pattern: %{UUID:hid_bravura_monitor.request.id}
                         // Grok pattern: %{[A-Fa-f0-9]{32}:hid_bravura_monitor.request.id}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!("%{UUID:hid_bravura_monitor.request.id}"),
                                 cached_grok!("%{[A-Fa-f0-9]{32}:hid_bravura_monitor.request.id}"),
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

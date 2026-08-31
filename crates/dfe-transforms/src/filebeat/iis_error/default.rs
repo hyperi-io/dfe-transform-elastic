@@ -29,7 +29,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: %{TIMESTAMP_ISO8601:iis.error.time} %{IPORHOST:source.address} %{NUMBER:source.port:long} %{IPORHOST:destination.address} %{IPORHOST:destination.port:long} (?:HTTP/%{NUMBER:http.version}|-) (?:-|%{NOTSPACE:http.request.method}) (?:-|%{NOTSPACE:_tmp.url_orig}) (?:%{NUMBER}|-) (?:%{NUMBER:http.response.status_code:long}|-) (?:%{NUMBER}|-) (?:-|%{NOTSPACE:iis.error.reason_phrase}) (?:-|%{NOTSPACE:iis.error.queue_name})
                     // Grok pattern: %{TIMESTAMP_ISO8601:iis.error.time} %{IPORHOST:source.address} %{NUMBER:source.port:long} %{IPORHOST:destination.address} %{IPORHOST:destination.port:long} (?:HTTP/%{NUMBER:http.version}|-) (?:-|%{NOTSPACE:http.request.method}) (?:-|%{NOTSPACE:_tmp.url_orig}) (?:%{NUMBER:http.response.status_code:long}|-) (?:%{NUMBER}|-) (?:-|%{NOTSPACE:iis.error.reason_phrase}) (?:-|%{NOTSPACE:iis.error.queue_name})
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "%{TIMESTAMP_ISO8601:iis.error.time} %{IPORHOST:source.address} %{NUMBER:source.port:long} %{IPORHOST:destination.address} %{IPORHOST:destination.port:long} (?:HTTP/%{NUMBER:http.version}|-) (?:-|%{NOTSPACE:http.request.method}) (?:-|%{NOTSPACE:_tmp.url_orig}) (?:%{NUMBER}|-) (?:%{NUMBER:http.response.status_code:long}|-) (?:%{NUMBER}|-) (?:-|%{NOTSPACE:iis.error.reason_phrase}) (?:-|%{NOTSPACE:iis.error.queue_name})"
@@ -40,7 +40,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -92,18 +94,23 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("destination.address") {
                 // Grok pattern: (?P<destination_ip>(?:[^%]*))
-                let _ = cached_grok_mapped!(
+                if !cached_grok_mapped!(
                     "(?P<destination_ip>(?:[^%]*))",
                     [("destination_ip", "destination.ip")]
                 )
-                .extract_into(&input, event)?;
+                .extract_into(&input, event)?
+                {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             if let Some(input) = event.get_string("source.address") {
                 // Grok pattern: (?P<source_ip>(?:[^%]*))
-                let _ =
-                    cached_grok_mapped!("(?P<source_ip>(?:[^%]*))", [("source_ip", "source.ip")])
-                        .extract_into(&input, event)?;
+                if !cached_grok_mapped!("(?P<source_ip>(?:[^%]*))", [("source_ip", "source.ip")])
+                    .extract_into(&input, event)?
+                {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             if let Some(ip_str) = event.get_string("source.ip") {

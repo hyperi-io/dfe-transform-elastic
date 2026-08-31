@@ -38,8 +38,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("kafka.consumer.mbean") {
                         // Grok pattern: client-id=(?P<kafka_consumer_client_id>[^,]+)
-                        let _ = cached_grok!("client-id=(?P<kafka_consumer_client_id>[^,]+)")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("client-id=(?P<kafka_consumer_client_id>[^,]+)")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();

@@ -32,7 +32,7 @@ impl Transform for Default {
                     // Grok pattern: (%{NOTSPACE:process.name}\\[%{NUMBER:process.pid:long}\\]: )?(%{IP:source.address}|-):%{NUMBER:source.port:long} \\[%{NOTSPACE:haproxy.request_date}\\] %{NOTSPACE:haproxy.frontend_name} %{NOTSPACE:haproxy.backend_name}/%{NOTSPACE:haproxy.server_name} (%{IPORHOST:destination.address} )?%{NUMBER:haproxy.http.request.time_wait_ms:long}/%{NUMBER:haproxy.total_waiting_time_ms:long}/%{NUMBER:haproxy.connection_wait_time_ms:long}/%{NUMBER:haproxy.http.request.time_wait_without_data_ms:long}/%{NUMBER:temp.duration:long} %{NUMBER:http.response.status_code:long} %{NUMBER:haproxy.bytes_read:long} %{NOTSPACE:haproxy.http.request.captured_cookie} %{NOTSPACE:haproxy.http.response.captured_cookie} %{NOTSPACE:haproxy.termination_state} %{NUMBER:haproxy.connections.active:long}/%{NUMBER:haproxy.connections.frontend:long}/%{NUMBER:haproxy.connections.backend:long}/%{NUMBER:haproxy.connections.server:long}/%{NUMBER:haproxy.connections.retries:long} %{NUMBER:haproxy.server_queue:long}/%{NUMBER:haproxy.backend_queue:long} (\\{%{DATA:haproxy.http.request.captured_headers}\\} \\{%{DATA:haproxy.http.response.captured_headers}\\} |\\{%{DATA}\\} )?\"%{GREEDYDATA:haproxy.http.request.raw_request_line}\"( (?:%{NUMBER:haproxy.connections.fc_err:long}/%{NUMBER:haproxy.connections.ssl_fc_err:long}/%{NUMBER:haproxy.connections.ssl_c_err:long}/%{NUMBER:haproxy.connections.ssl_c_ca_err:long}/%{NUMBER:temp.ssl_fc_is_resumed:long} %{HOSTNAME:tls.client.server_name}/%{DATA:tls.version_protocol}v%{NUMBER:tls.version}/%{NOTSPACE:tls.cipher}))?
                     // Grok pattern: (%{NOTSPACE:process.name}\\[%{NUMBER:process.pid:long}\\]: )?(%{IP:source.address}|-):%{NUMBER:source.port:long} \\[%{NOTSPACE:haproxy.request_date}\\] %{NOTSPACE:haproxy.frontend_name}/%{NOTSPACE:haproxy.bind_name} %{GREEDYDATA:haproxy.error_message}
                     // Grok pattern: ((?:(%{MONTH} %{MONTHDAY} %{HOUR}:%{MINUTE}:%{SECOND})|%{SYSLOGTIMESTAMP}) %{IPORHOST:haproxy.source} )?(%{NOTSPACE:process.name}\\[%{NUMBER:process.pid:long}\\]: )?(%{IP:source.address}|-):%{NUMBER:source.port:long} \\[%{NOTSPACE:haproxy.request_date}\\] %{NOTSPACE:haproxy.frontend_name} %{NOTSPACE:haproxy.backend_name}/%{NOTSPACE:haproxy.server_name} %{NUMBER:haproxy.total_waiting_time_ms:long}/%{NUMBER:haproxy.connection_wait_time_ms:long}/%{NUMBER:temp.duration:long} %{NUMBER:haproxy.bytes_read:long} %{NOTSPACE:haproxy.termination_state} %{NUMBER:haproxy.connections.active:long}/%{NUMBER:haproxy.connections.frontend:long}/%{NUMBER:haproxy.connections.backend:long}/%{NUMBER:haproxy.connections.server:long}/%{NUMBER:haproxy.connections.retries:long} %{NUMBER:haproxy.server_queue:long}/%{NUMBER:haproxy.backend_queue:long}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "(?P<haproxy_request_date>(?:(%{MONTH} %{MONTHDAY} %{HOUR}:%{MINUTE}:%{SECOND})|%{SYSLOGTIMESTAMP})) %{IPORHOST:haproxy.source} %{PROG:process.name}(?:\\[%{POSINT:process.pid:long}\\])?: %{GREEDYDATA} (%{IPORHOST:source.address}|-):%{POSINT:source.port:long} %{WORD} %{IPORHOST:destination.ip}:%{POSINT:destination.port:long} \\(%{WORD:haproxy.frontend_name}/%{WORD:haproxy.mode}\\)",
@@ -50,7 +50,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })() {
@@ -195,7 +197,9 @@ impl Transform for Default {
                             event.get_string("haproxy.http.request.raw_request_line")
                         {
                             // Grok pattern: %{WORD:http.request.method}%{SPACE}%{URIPATHPARAM:url.original}%{SPACE}HTTP/%{NUMBER:http.version}
-                            let _ = cached_grok!("%{WORD:http.request.method}%{SPACE}%{URIPATHPARAM:url.original}%{SPACE}HTTP/%{NUMBER:http.version}").extract_into(&input, event)?;
+                            if !cached_grok!("%{WORD:http.request.method}%{SPACE}%{URIPATHPARAM:url.original}%{SPACE}HTTP/%{NUMBER:http.version}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                         }
                     }
                     Ok(())

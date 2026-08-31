@@ -42,7 +42,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: ^<%{NUMBER:fortinet_fortimail.log.priority_number:long}>%{GREEDYDATA:temp.message},msg=\\\"%{DATA:fortinet_fortimail.log.message}\\\"$
                         // Grok pattern: ^<%{NUMBER:fortinet_fortimail.log.priority_number:long}>%{GREEDYDATA:temp.message}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^<%{NUMBER:fortinet_fortimail.log.priority_number:long}>%{GREEDYDATA:temp.message},msg=\\\"%{DATA:fortinet_fortimail.log.message}\\\"$"
@@ -53,7 +53,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })() {
@@ -1262,7 +1264,7 @@ impl Transform for Default {
                             // Grok pattern: ^authserver: (?P<temp_block_action>(?:(?:added|removed))) block rule for %{IP:temp.block_ip}$
                             // Grok pattern: ^authserver: (?P<temp_block_action>(?:(?:added|removed))) block rule for %{IP:temp.block_ip} until %{GREEDYDATA}$
                             // Grok pattern: ^%{DATA}(?:(?i)user %{NOTSPACE:temp.user}) %{GREEDYDATA:temp.msg}$
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!(
                                         "^(?:%{DATA}(?i)interface %{NUMBER:fortinet_fortimail.log.port:long}%{DATA} (?:(?i)user %{NOTSPACE:temp.user})) %{DATA}%{IP:fortinet_fortimail.log.ip}%{GREEDYDATA:temp.msg}$"
@@ -1287,7 +1289,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())
@@ -1411,7 +1415,7 @@ impl Transform for Default {
                             // Grok pattern: ^(?P<fortinet_fortimail_log_network>(?:(?i)(?:telnet|ssh|http)))%{SPACE}\\(%{SPACE}%{IP:fortinet_fortimail.log.ui_ip}%{SPACE}\\)$
                             // Grok pattern: ^%{WORD}%{SPACE}\\(%{SPACE}%{IP:fortinet_fortimail.log.ui_ip}%{SPACE}\\)$
                             // Grok pattern: ^%{DATA}%{IP:fortinet_fortimail.log.ui_ip}%{GREEDYDATA:temp.msg}$
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok_mapped!(
                                         "^(?P<fortinet_fortimail_log_network>(?:(?i)(?:telnet|ssh|http)))%{SPACE}\\(%{SPACE}%{IP:fortinet_fortimail.log.ui_ip}%{SPACE}\\)$",
@@ -1429,7 +1433,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())
@@ -1580,7 +1586,7 @@ impl Transform for Default {
                             if let Some(input) = event.get_string("message") {
                                 // Grok pattern: ^(?:(?:%{DATA}(?i)user %{NOTSPACE:temp.user}|%{DATA}(?i)login for \\'%{NOTSPACE:temp.user}\\')) %{DATA}%{IP:fortinet_fortimail.log.ip}%{GREEDYDATA:temp.msg}$
                                 // Grok pattern: ^%{DATA}(?i)user %{NOTSPACE:temp.user} %{GREEDYDATA:temp.msg}$
-                                let _ = extract_first_match(
+                                if !extract_first_match(
                                     &[
                                         cached_grok!(
                                             "^(?:(?:%{DATA}(?i)user %{NOTSPACE:temp.user}|%{DATA}(?i)login for \\'%{NOTSPACE:temp.user}\\')) %{DATA}%{IP:fortinet_fortimail.log.ip}%{GREEDYDATA:temp.msg}$"
@@ -1591,7 +1597,9 @@ impl Transform for Default {
                                     ],
                                     &input,
                                     event,
-                                )?;
+                                )? {
+                                    return Err(TransformError::GrokNoMatch { value: input });
+                                }
                             }
                         }
                         Ok(())
@@ -1676,7 +1684,7 @@ impl Transform for Default {
                             // Grok pattern: ^(?P<fortinet_fortimail_log_network>(?:SSH|telnet|ssh|http|HTTP))\\\\s*\\\\(\\\\s*%{IP:fortinet_fortimail.log.ui_ip}\\\\s*\\\\)$
                             // Grok pattern: ^%{WORD}\\\\s*\\\\(\\\\s*%{IP:fortinet_fortimail.log.ui_ip}\\\\s*\\\\)$
                             // Grok pattern: ^%{DATA}%{IP:fortinet_fortimail.log.ui_ip}%{GREEDYDATA:temp.msg}$
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok_mapped!(
                                         "^(?P<fortinet_fortimail_log_network>(?:SSH|telnet|ssh|http|HTTP))\\\\s*\\\\(\\\\s*%{IP:fortinet_fortimail.log.ui_ip}\\\\s*\\\\)$",
@@ -1694,7 +1702,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())
@@ -2209,7 +2219,7 @@ impl Transform for Default {
                             // Grok pattern: ^%{DATA}(?i)user %{NOTSPACE:temp.user} %{DATA}%{IP:fortinet_fortimail.log.ip}%{GREEDYDATA:temp.msg}$
                             // Grok pattern: ^%{DATA}(?i)user %{NOTSPACE:temp.user} %{GREEDYDATA:temp.msg},%{SPACE}sent from:%{SPACE}\\'%{DATA:fortinet_fortimail.log.sent_from}\\',%{SPACE}subject:%{SPACE}\\'%{GREEDYDATA:temp.subject}\\'(?:%{SPACE}%{GREEDYDATA:temp.msg2})$
                             // Grok pattern: ^%{DATA}(?i)user %{NOTSPACE:temp.user} %{GREEDYDATA:temp.msg}$
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!(
                                         "^%{DATA}(?i)user %{NOTSPACE:temp.user} %{DATA}%{IP:fortinet_fortimail.log.ip}%{GREEDYDATA:temp.msg}$"
@@ -2223,7 +2233,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

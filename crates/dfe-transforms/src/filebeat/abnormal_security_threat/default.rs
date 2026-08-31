@@ -468,14 +468,16 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("abnormal_security.threat.from_name") {
                     // Grok pattern: ^%{EMAILADDRESS:user.email}$
                     // Grok pattern: ^%{DATA:user.name}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{EMAILADDRESS:user.email}$"),
                             cached_grok!("^%{DATA:user.name}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

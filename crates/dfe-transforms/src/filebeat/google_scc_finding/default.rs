@@ -4597,14 +4597,16 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("google_scc.finding.resource.location") {
                         // Grok pattern: ^%{DATA:cloud.region}-(?P<_temp>.)$
                         // Grok pattern: ^%{DATA:cloud.region}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!("^%{DATA:cloud.region}-(?P<_temp>.)$"),
                                 cached_grok!("^%{DATA:cloud.region}$"),
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

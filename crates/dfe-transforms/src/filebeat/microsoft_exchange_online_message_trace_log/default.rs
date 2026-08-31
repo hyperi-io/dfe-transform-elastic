@@ -419,16 +419,22 @@ impl Transform for Default {
             if event.has_value("_temp_.email.from.address") {
                 if let Some(input) = event.get_string("_temp_.email.from.address") {
                     // Grok pattern: ^%{DATA}@%{DATA:source.domain}$
-                    let _ = cached_grok!("^%{DATA}@%{DATA:source.domain}$")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA}@%{DATA:source.domain}$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
             if event.has_value("_temp_.email.to.address") {
                 if let Some(input) = event.get_string("_temp_.email.to.address") {
                     // Grok pattern: ^%{DATA}@%{DATA:destination.domain}$
-                    let _ = cached_grok!("^%{DATA}@%{DATA:destination.domain}$")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA}@%{DATA:destination.domain}$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

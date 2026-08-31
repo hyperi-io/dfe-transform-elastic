@@ -114,7 +114,9 @@ impl Transform for Default {
                         event.get_string("aws.bedrock_agentcore.memory.resource_arn")
                     {
                         // Grok pattern: arn:aws:bedrock-agentcore:%{DATA}:%{DATA}:memory/%{DATA:aws.bedrock_agentcore.memory.memory_name}
-                        let _ = cached_grok!("arn:aws:bedrock-agentcore:%{DATA}:%{DATA}:memory/%{DATA:aws.bedrock_agentcore.memory.memory_name}").extract_into(&input, event)?;
+                        if !cached_grok!("arn:aws:bedrock-agentcore:%{DATA}:%{DATA}:memory/%{DATA:aws.bedrock_agentcore.memory.memory_name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                 }
                 Ok(())

@@ -50,11 +50,14 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: ^%{DATA:_temp_.header}%{SPACE}(?P<_temp__serialized_kv>(?:id=.*))
-                    let _ = cached_grok_mapped!(
+                    if !cached_grok_mapped!(
                         "^%{DATA:_temp_.header}%{SPACE}(?P<_temp__serialized_kv>(?:id=.*))",
                         [("_temp__serialized_kv", "_temp_.serialized_kv")]
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })() {
@@ -78,7 +81,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("_temp_.header") {
                 // Grok pattern: ^(?:<%{NUMBER:log.syslog.priority:long}>)?%{SYSLOGTIMESTAMP}?%{SPACE}%{DATA:_temp_.host}?$
-                let _ = cached_grok!("^(?:<%{NUMBER:log.syslog.priority:long}>)?%{SYSLOGTIMESTAMP}?%{SPACE}%{DATA:_temp_.host}?$").extract_into(&input, event)?;
+                if !cached_grok!("^(?:<%{NUMBER:log.syslog.priority:long}>)?%{SYSLOGTIMESTAMP}?%{SPACE}%{DATA:_temp_.host}?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
             }
 
             let _cond = { event.has_value("_temp_.host") };
@@ -531,7 +536,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("network.transport") {
                     // Grok pattern: ^(?P<network_transport>(?:[^/]*))/%{NUMBER}$
                     // Grok pattern: ^(?P<network_transport>(?:[^/]*))/(?P<network_protocol>(?:[^/]*))$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^(?P<network_transport>(?:[^/]*))/%{NUMBER}$",
@@ -547,7 +552,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -559,7 +566,7 @@ impl Transform for Default {
                         // Grok pattern: ^%{IPV4:source.nat.ip}(:?:%{POSINT:source.nat.port})?$
                         // Grok pattern: ^%{IPV6:source.nat.ip}$
                         // Grok pattern: ^\\[%{IPV6:source.nat.ip}\\]:%{POSINT:source.nat.port}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^%{IPV4:source.nat.ip}(:?:%{POSINT:source.nat.port})?$"
@@ -571,7 +578,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())
@@ -584,7 +593,7 @@ impl Transform for Default {
                         // Grok pattern: ^%{IPV4:destination.nat.ip}(:?:%{POSINT:destination.nat.port})?$
                         // Grok pattern: ^%{IPV6:destination.nat.ip}$
                         // Grok pattern: ^\\[%{IPV6:destination.nat.ip}\\]:%{POSINT:destination.nat.port}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^%{IPV4:destination.nat.ip}(:?:%{POSINT:destination.nat.port})?$"
@@ -596,7 +605,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

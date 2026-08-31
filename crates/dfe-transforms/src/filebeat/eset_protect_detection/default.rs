@@ -459,7 +459,7 @@ impl Transform for Default {
                             // Grok pattern: ^%{GREEDYDATA:json._temp}\\\\%{DATA:process.name}$
                             // Grok pattern: ^%{GREEDYDATA:json._temp}/%{DATA:process.name}$
                             // Grok pattern: ^%{DATA:process.name}$
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!(
                                         "^%{GREEDYDATA:json._temp}\\\\%{DATA:process.name}$"
@@ -469,7 +469,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())
@@ -526,7 +528,7 @@ impl Transform for Default {
                             // Grok pattern: ^%{HOSTNAME:user.domain}\\\\\\\\%{USERNAME:user.name}$
                             // Grok pattern: ^%{USERNAME:user.name}@%{HOSTNAME:user.domain}$
                             // Grok pattern: ^%{GREEDYDATA:user.name}$
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!(
                                         "^%{HOSTNAME:user.domain}\\\\%{USERNAME:user.name}$"
@@ -539,7 +541,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

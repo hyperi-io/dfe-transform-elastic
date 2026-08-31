@@ -23,7 +23,7 @@ impl Transform for CiFeature {
                     // Grok pattern: ^ID %{NUMBER:citrix_adc.log.id} - Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} Protocol %{WORD:citrix_adc.log.protocol} - URL %{URI:citrix_adc.log.url} - Domain %{DATA:citrix_adc.log.domain} - Service %{DATA:citrix_adc.log.service} - %{DATA}%{SPACE}%{DATA} - Action %{WORD:citrix_adc.log.action} - Bytes%{SPACE}Sent %{NUMBER:citrix_adc.log.bytes.sent} - Bytes%{SPACE}Received %{NUMBER:citrix_adc.log.bytes.received} - Origin%{SPACE}Server %{IP:citrix_adc.log.icap_server.ip}:%{INT:citrix_adc.log.icap_server.port}$
                     // Grok pattern: ^ID %{NUMBER:citrix_adc.log.id} - Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} Protocol %{WORD:citrix_adc.log.protocol} - URL %{URI:citrix_adc.log.url} - Domain %{DATA:citrix_adc.log.domain} - Service %{DATA:citrix_adc.log.service} - %{DATA}%{SPACE}%{DATA} - Action %{WORD:citrix_adc.log.action} - Request%{SPACE}Bytes%{SPACE}Sent %{NUMBER:citrix_adc.log.request.bytes_sent} - Response%{SPACE}Bytes%{SPACE}Sent %{NUMBER:citrix_adc.log.response.bytes_sent} - Origin%{SPACE}Server %{IP:citrix_adc.log.origin_server.ip}:%{INT:citrix_adc.log.origin_server.port}$
                     // Grok pattern: %{GREEDYDATA:citrix_adc.log.message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - Domain %{DATA:citrix_adc.log.domain} - Content-Type %{DATA:citrix_adc.log.content_type} - ICAP%{SPACE}Server %{IP:citrix_adc.log.icap_server.ip}:%{INT:citrix_adc.log.icap_server.port} - Mode %{WORD:citrix_adc.log.mode} - Service %{WORD:citrix_adc.log.service} - Response %{INT:citrix_adc.log.response.code} - Action %{WORD:citrix_adc.log.action}$"),
                             cached_grok!("^ID %{NUMBER:citrix_adc.log.id} - Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} Protocol %{WORD:citrix_adc.log.protocol} - URL %{URI:citrix_adc.log.url} - Domain %{DATA:citrix_adc.log.domain} - Service %{DATA:citrix_adc.log.service} - %{DATA}%{SPACE}%{DATA} - Action %{WORD:citrix_adc.log.action} - Bytes%{SPACE}Sent %{NUMBER:citrix_adc.log.bytes.sent} - Bytes%{SPACE}Received %{NUMBER:citrix_adc.log.bytes.received} - Origin%{SPACE}Server %{IP:citrix_adc.log.icap_server.ip}:%{INT:citrix_adc.log.icap_server.port}$"),
@@ -32,7 +32,9 @@ impl Transform for CiFeature {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

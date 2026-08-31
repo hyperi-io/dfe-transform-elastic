@@ -37,7 +37,9 @@ impl Transform for Default {
             if event.has_value("event.original") {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: \\[%{POSINT:process.pid}\\]( (?P<stan_log_timestamp>(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})))? \\[(?P<log_level>(?:(INF|DBG|WRN|ERR|FTL|TRC)))\\] %{GREEDYDATA:stan.log.info}
-                    let _ = cached_grok_mapped!("\\[%{POSINT:process.pid}\\]( (?P<stan_log_timestamp>(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})))? \\[(?P<log_level>(?:(INF|DBG|WRN|ERR|FTL|TRC)))\\] %{GREEDYDATA:stan.log.info}", [("stan_log_timestamp", "stan.log.timestamp"), ("log_level", "log.level")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("\\[%{POSINT:process.pid}\\]( (?P<stan_log_timestamp>(?:%{YEAR}/%{MONTHNUM}/%{MONTHDAY} %{TIME})))? \\[(?P<log_level>(?:(INF|DBG|WRN|ERR|FTL|TRC)))\\] %{GREEDYDATA:stan.log.info}", [("stan_log_timestamp", "stan.log.timestamp"), ("log_level", "log.level")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -45,7 +47,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("stan.log.info") {
                     // Grok pattern: %{IPV4:client.ip}:%{POSINT:client.port} - cid:%{POSINT:stan.log.client.id} - %{GREEDYDATA:stan.log.msg.info}
                     // Grok pattern: %{GREEDYDATA:stan.log.msg.data}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "%{IPV4:client.ip}:%{POSINT:client.port} - cid:%{POSINT:stan.log.client.id} - %{GREEDYDATA:stan.log.msg.info}"
@@ -54,7 +56,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -69,7 +73,7 @@ impl Transform for Default {
                     // Grok pattern: (?P<network_direction>(?:(<<-|->>))) \\[(?P<stan_log_msg_type>(?:(?:(?:CONNECT)|(?:INFO))))\\s+%{GREEDYDATA:stan.log.msg.data}\\]
                     // Grok pattern: (?P<network_direction>(?:(<<-|->>))) \\[(?P<stan_log_msg_type>(?:-ERROR))\\s+\\s+(?P<network_direction>(?:(<<-|->>))) \\[(?P<stan_log_msg_type>(?:-ERROR))\\s+\\s+%{GREEDYDATA:stan.log.msg.error\\]
                     // Grok pattern: %{GREEDYDATA:stan.log.msg.data}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "(?P<network_direction>(?:(<<-|->>))) (?P<stan_log_msg_type>(?:MSG_PAYLOAD)): \\[%{GREEDYDATA:stan.log.msg.payload}\\]",
@@ -131,7 +135,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

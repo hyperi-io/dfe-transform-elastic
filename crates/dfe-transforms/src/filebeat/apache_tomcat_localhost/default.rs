@@ -38,7 +38,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: ^(?P<_tmp_timestamp>(?:%{MONTHDAY}-%{MONTH}-%{YEAR} %{TIME})) %{DATA:log.level} \\[%{DATA:apache_tomcat.localhost.subsystem}\\] %{GREEDYDATA:message}(?P<error_stack_trace>(?:(.|\\n\\t|\\n\\t\\t|\\n)*))$
                     // Grok pattern: ^(?P<_tmp_timestamp>(?:%{MONTHDAY}-%{MONTH}-%{YEAR} %{TIME})) %{DATA:log.level} \\[%{DATA:apache_tomcat.localhost.subsystem}\\] %{GREEDYDATA:message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^(?P<_tmp_timestamp>(?:%{MONTHDAY}-%{MONTH}-%{YEAR} %{TIME})) %{DATA:log.level} \\[%{DATA:apache_tomcat.localhost.subsystem}\\] %{GREEDYDATA:message}(?P<error_stack_trace>(?:(.|\\n\\t|\\n\\t\\t|\\n)*))$",
@@ -54,7 +54,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })() {

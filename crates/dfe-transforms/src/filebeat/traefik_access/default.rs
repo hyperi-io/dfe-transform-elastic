@@ -40,7 +40,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: ^(?P<first_char>(?:.))
-                let _ = cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)?;
+                if !cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             let _cond = { event.get_str("first_char") != Some("{") };
@@ -150,7 +152,9 @@ impl Transform for Default {
                 if event.has_value("traefik.access.message") {
                     if let Some(input) = event.get_string("traefik.access.message") {
                         // Grok pattern: (?:%{NUMBER:http.response.body.bytes:long}|-)( (?:\"%{DATA:http.request.referrer}\"|-)?( (?:\"%{DATA:user_agent.original}\"|-)?)?( (?:%{NUMBER:traefik.access.request_count:long}|-)?)?( (?:\"%{DATA:traefik.access.router.name}\"|-)?)?( \"%{DATA:traefik.access.service.address}\")?( %{NUMBER:temp.duration:long}ms)?)?
-                        let _ = cached_grok!("(?:%{NUMBER:http.response.body.bytes:long}|-)( (?:\"%{DATA:http.request.referrer}\"|-)?( (?:\"%{DATA:user_agent.original}\"|-)?)?( (?:%{NUMBER:traefik.access.request_count:long}|-)?)?( (?:\"%{DATA:traefik.access.router.name}\"|-)?)?( \"%{DATA:traefik.access.service.address}\")?( %{NUMBER:temp.duration:long}ms)?)?").extract_into(&input, event)?;
+                        if !cached_grok!("(?:%{NUMBER:http.response.body.bytes:long}|-)( (?:\"%{DATA:http.request.referrer}\"|-)?( (?:\"%{DATA:user_agent.original}\"|-)?)?( (?:%{NUMBER:traefik.access.request_count:long}|-)?)?( (?:\"%{DATA:traefik.access.router.name}\"|-)?)?( \"%{DATA:traefik.access.service.address}\")?( %{NUMBER:temp.duration:long}ms)?)?").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 event.remove("traefik.access.message");
@@ -172,21 +176,29 @@ impl Transform for Default {
                 }
                 if let Some(input) = event.get_string("source.address") {
                     // Grok pattern: ^(%{IP:source.ip}|%{HOSTNAME:source.domain})$
-                    let _ = cached_grok!("^(%{IP:source.ip}|%{HOSTNAME:source.domain})$")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^(%{IP:source.ip}|%{HOSTNAME:source.domain})$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 if event.has_value("traefik.access.service.address") {
                     if let Some(input) = event.get_string("traefik.access.service.address") {
                         // Grok pattern: ^(https?://)?%{DATA:destination.address}$
-                        let _ = cached_grok!("^(https?://)?%{DATA:destination.address}$")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^(https?://)?%{DATA:destination.address}$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("destination.address") {
                         // Grok pattern: ^(%{IP:destination.ip}|%{HOSTNAME:destination.domain})(:%{POSINT:destination.port:long})?$
-                        let _ = cached_grok!("^(%{IP:destination.ip}|%{HOSTNAME:destination.domain})(:%{POSINT:destination.port:long})?$").extract_into(&input, event)?;
+                        if !cached_grok!("^(%{IP:destination.ip}|%{HOSTNAME:destination.domain})(:%{POSINT:destination.port:long})?$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                     Ok(())
                 })();
@@ -306,9 +318,11 @@ impl Transform for Default {
                     if event.has_value("source.address") {
                         if let Some(input) = event.get_string("source.address") {
                             // Grok pattern: ^\\\\[?%{IP:source.ip}\\\\]?:%{POSINT:source.port}$
-                            let _ =
-                                cached_grok!("^\\\\[?%{IP:source.ip}\\\\]?:%{POSINT:source.port}$")
-                                    .extract_into(&input, event)?;
+                            if !cached_grok!("^\\\\[?%{IP:source.ip}\\\\]?:%{POSINT:source.port}$")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

@@ -303,7 +303,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("winlog.event_data.Path") {
                     // Grok pattern: file:_(?P<file_path>[^;]+)(; process:_pid:%{NUMBER:process.pid})?
                     // Grok pattern: (?P<file_path>[^;]+)(; process:_pid:%{NUMBER:process.pid})?
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "file:_(?P<file_path>[^;]+)(; process:_pid:%{NUMBER:process.pid})?",
@@ -316,7 +316,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -379,7 +381,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("winlog.event_data.FileName") {
                     // Grok pattern: file:_(?P<file_path>[^;]+)(; process:_pid:%{NUMBER:process.pid})?
                     // Grok pattern: (?P<file_path>[^;]+)(; process:_pid:%{NUMBER:process.pid})?
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "file:_(?P<file_path>[^;]+)(; process:_pid:%{NUMBER:process.pid})?",
@@ -392,7 +394,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -421,11 +425,14 @@ impl Transform for Default {
                 if event.has_value("file.path") {
                     if let Some(input) = event.get_string("file.path") {
                         // Grok pattern: (?P<file_name>([^\\\\\\\\]*$))
-                        let _ = cached_grok_mapped!(
+                        if !cached_grok_mapped!(
                             "(?P<file_name>([^\\\\\\\\]*$))",
                             [("file_name", "file.name")]
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -442,8 +449,11 @@ impl Transform for Default {
                 if event.has_value("file.name") {
                     if let Some(input) = event.get_string("file.name") {
                         // Grok pattern: \\.%{GREEDYDATA:file.extension}$
-                        let _ = cached_grok!("\\.%{GREEDYDATA:file.extension}$")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("\\.%{GREEDYDATA:file.extension}$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -498,11 +508,14 @@ impl Transform for Default {
                 if event.has_value("process.executable") {
                     if let Some(input) = event.get_string("process.executable") {
                         // Grok pattern: (?P<process_name>([^\\\\]*$))
-                        let _ = cached_grok_mapped!(
+                        if !cached_grok_mapped!(
                             "(?P<process_name>([^\\\\]*$))",
                             [("process_name", "process.name")]
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }

@@ -35,7 +35,9 @@ impl Transform for Default {
             if event.has_value("event.original") {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: %{TIMESTAMP_ISO8601:timestamp} \\[%{WORD:log.level}\\] (?P<rabbitmq_log_pid>(?:\\<%{INT}\\.%{INT}\\.%{INT}\\>))\\s* (?P<message>(?:(.|\n)*))
-                    let _ = cached_grok_mapped!("%{TIMESTAMP_ISO8601:timestamp} \\[%{WORD:log.level}\\] (?P<rabbitmq_log_pid>(?:\\<%{INT}\\.%{INT}\\.%{INT}\\>))\\s* (?P<message>(?:(.|\n)*))", [("rabbitmq_log_pid", "rabbitmq.log.pid")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("%{TIMESTAMP_ISO8601:timestamp} \\[%{WORD:log.level}\\] (?P<rabbitmq_log_pid>(?:\\<%{INT}\\.%{INT}\\.%{INT}\\>))\\s* (?P<message>(?:(.|\n)*))", [("rabbitmq_log_pid", "rabbitmq.log.pid")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

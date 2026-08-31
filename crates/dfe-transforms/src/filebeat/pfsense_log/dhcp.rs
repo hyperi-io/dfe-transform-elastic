@@ -26,7 +26,7 @@ impl Transform for Dhcp {
                     // Grok pattern: %{WORD:event.action} (?:(?:(?:from (?P<client_mac>(?:([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))))|(?:on %{IP:client.address} to (?P<client_mac>(?:([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))) \\(%{HOSTNAME:pfsense.dhcp.hostname}\\))|(?:for %{IP:client.address} \\(%{IP:server.address}\\)? from (?P<client_mac>(?:([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2}))) \\(%{HOSTNAME:pfsense.dhcp.hostname}\\)))) via (?P<observer_ingress_interface_name>(?:[a-z0-9\\.]+))
                     // Grok pattern: %{DATA:_tmp.action} %{IPV6:client.address}
                     // Grok pattern: %{GREEDYDATA}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("%{DATA:_tmp.action}\\(%{DATA:observer.ingress.interface.name}\\)(?: %{IP:client.ip})? %{MAC:client.mac}(?: %{HOSTNAME:pfsense.dhcp.hostname})?"),
                             cached_grok_mapped!("%{DATA:_tmp.action}/(?P<observer_ingress_interface_name>(?:[a-z0-9\\.]+))/(?P<server_mac>(?:([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})))/%{NOTSPACE:pfsense.dhcp.subnet}", [("observer_ingress_interface_name", "observer.ingress.interface.name"), ("server_mac", "server.mac")]),
@@ -40,7 +40,9 @@ impl Transform for Dhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
                 event.append_unique("event.type", json!("connection"))?;

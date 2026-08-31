@@ -41,11 +41,14 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: ^(?P<_tmp_first_char>(?:.))
-                let _ = cached_grok_mapped!(
+                if !cached_grok_mapped!(
                     "^(?P<_tmp_first_char>(?:.))",
                     [("_tmp_first_char", "_tmp.first_char")]
                 )
-                .extract_into(&input, event)?;
+                .extract_into(&input, event)?
+                {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             let _cond = { event.get_str("_tmp.first_char") != Some("{") };
@@ -57,7 +60,7 @@ impl Transform for Default {
                     // Grok pattern: (?:(?P<_tmp_timestamp>(?:%{MONTHNUM}/%{MONTHDAY}(/%{YEAR})?-%{TIME}))(%{SPACE})?,%{NONNEGINT:snort.gid:long},%{NONNEGINT:rule.id},%{NONNEGINT:rule.version},(\"?%{DATA:rule.description}\"?|),%{WORD:network.transport},%{IP:source.address},(%{POSINT:source.port:long}|),%{IP:destination.address},(%{POSINT:destination.port:long}|)),(%{MAC:source.mac}|),(%{MAC:destination.mac}|),(%{DATA:snort.eth.length}|),(%{DATA:snort.tcp.flags}|),(%{BASE16NUM:snort.tcp.seq}|),(%{BASE16NUM:snort.tcp.ack}|),(|%{DATA:snort.tcp.length}),(%{BASE16NUM:snort.tcp.window}|),(%{NONNEGINT:snort.ip.ttl:long}|),(%{NONNEGINT:snort.ip.tos:long}|),(%{NONNEGINT:snort.ip.id:long}|),(%{NONNEGINT:snort.dgm.length:long}|),(%{NONNEGINT:snort.ip.length:long}|),(%{NONNEGINT:snort.icmp.type:long}|),(%{NONNEGINT:snort.icmp.code:long}|),(%{NONNEGINT:snort.icmp.id:long}|),(%{NONNEGINT:snort.icmp.seq:long}|)
                     // Grok pattern: (?P<_tmp_timestamp>(?:%{MONTHNUM}/%{MONTHDAY}(/%{YEAR})?-%{TIME}))%{SPACE}(?:(?:(\\[\\*\\*\\]))(?:%{SPACE}\\[%{NONNEGINT:snort.gid:long}:%{NONNEGINT:rule.id}:%{NONNEGINT:rule.version}\\]%{SPACE}%{DATA:rule.description}%{SPACE})(?:(\\[\\*\\*\\])))(?:%{SPACE}(?:(\\[Classification: %{DATA:rule.category}\\])?) (?:\\[Priority: %{NONNEGINT:event.severity:long}\\]) \\{%{WORD:network.transport}\\} %{IP:source.address}(:%{POSINT:source.port:long}|) -> %{IP:destination.address}(:%{POSINT:destination.port:long}|))
                     // Grok pattern: (?:(?:(\\[\\*\\*\\]))(?:%{SPACE}\\[%{NONNEGINT:snort.gid:long}:%{NONNEGINT:rule.id}:%{NONNEGINT:rule.version}\\]%{SPACE}%{DATA:rule.description}%{SPACE})(?:(\\[\\*\\*\\])))\\n((?:(\\[Classification: %{DATA:rule.category}\\])?) )?(?:\\[Priority: %{NONNEGINT:event.severity:long}\\]) \\n(?P<_tmp_timestamp>(?:%{MONTHNUM}/%{MONTHDAY}(/%{YEAR})?-%{TIME})) %{IP:source.address}(:%{POSINT:source.port:long}|) -> %{IP:destination.address}(:%{POSINT:destination.port:long}|)\\n%{WORD:network.transport} (TTL:%{NONNEGINT:snort.ip.ttl:long}|) (TOS:%{BASE16NUM:snort.ip.tos}|) (ID:%{NONNEGINT:snort.ip.id:long}|) (IpLen:%{NONNEGINT:snort.ip.length:long}|) (DgmLen:%{NONNEGINT:snort.dgm.length:long}|)(%{SPACE}%{NOTSPACE:snort.ip.flags})?\\n((?:(Len: %{NONNEGINT:snort.udp.length:long}))|(?:(Type:%{NONNEGINT:snort.icmp.type:long})%{SPACE}(Code:%{NONNEGINT:snort.icmp.code:long})%{SPACE}(ID:%{NONNEGINT:snort.icmp.id:long})%{SPACE}(Seq:%{NONNEGINT:snort.icmp.seq:long})%{GREEDYDATA})|(?:(%{NOTSPACE:snort.tcp.flags})%{SPACE}(Seq: %{BASE16NUM:snort.tcp.seq})%{SPACE}(Ack: %{BASE16NUM:snort.tcp.ack})%{SPACE}(Win: %{BASE16NUM:snort.tcp.window})%{SPACE}(TcpLen: %{NONNEGINT:snort.tcp.length:long})))
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^((?:<%{NONNEGINT:log.syslog.priority:long}>))?%{SYSLOGTIMESTAMP:_tmp.timestamp} (?:%{SYSLOGFACILITY} )?(?:(?:%{IP:observer.ip}|%{HOSTNAME:observer.name})) (?:%{PROG:process.name}(?:\\[%{POSINT:process.pid:int}\\])?):(?:%{SPACE}\\[%{NONNEGINT:snort.gid:long}:%{NONNEGINT:rule.id}:%{NONNEGINT:rule.version}\\]%{SPACE}%{DATA:rule.description}%{SPACE})(?:%{SPACE}(?:(\\[Classification: %{DATA:rule.category}\\])?) (?:\\[Priority: %{NONNEGINT:event.severity:long}\\]) \\{%{WORD:network.transport}\\} %{IP:source.address}(:%{POSINT:source.port:long}|) -> %{IP:destination.address}(:%{POSINT:destination.port:long}|))"
@@ -81,7 +84,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 // Painless script
                 // Source: if (ctx.snort?.ip?.tos != null && ctx.snort.ip.tos instanceof String) {\n    ctx.snort.ip.tos = Long.decode(ctx.snort.ip.tos);\n} if (ctx.snort?.eth?.length != null && ctx.snort.eth.length instanceof String) {\n    ctx.snort.eth.length = Long.decode(ctx.snort.eth.length);\n} if (ctx.snort?.tcp?.ack != null && ctx.snort.tcp.ack instanceof String) {\n    ctx.snort.tcp.ack = Long.decode(ctx.snort.tcp.ack);\n} if (ctx.snort?.tcp?.seq != null && ctx.snort.tcp.seq instanceof String) {\n    ctx.snort.tcp.seq = Long.decode(ctx.snort.tcp.seq);\n} if (ctx.snort?.tcp?.window != null && ctx.snort.tcp.window instanceof String) {\n    ctx.snort.tcp.window = Long.decode(ctx.snort.tcp.window);\n}

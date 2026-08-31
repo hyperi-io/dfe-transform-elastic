@@ -21,14 +21,16 @@ impl Transform for System {
                 if let Some(input) = event.get_string("_temp_.unparsed.message") {
                     // Grok pattern: ^(?:%{PROG:syslog_program}|-)?\\s(?:%{POSINT:syslog_pid}|-)?\\s(?:%{WORD:tag}|-)?\\s([-]+\\s)?%{GREEDYDATA:_temp_.unparsed.system_structured_brief}\\s?$
                     // Grok pattern: ^%{GREEDYDATA:message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^(?:%{PROG:syslog_program}|-)?\\s(?:%{POSINT:syslog_pid}|-)?\\s(?:%{WORD:tag}|-)?\\s([-]+\\s)?%{GREEDYDATA:_temp_.unparsed.system_structured_brief}\\s?$"),
                             cached_grok!("^%{GREEDYDATA:message}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -40,7 +42,7 @@ impl Transform for System {
                     // Grok pattern: ^%{WORD:_temp_.negotiation.type} negotiation %{GREEDYDATA:_temp_.negotiation.message}$
                     // Grok pattern: ^(%{SYSLOGHOST:syslog_hostname}\\s)?((?P<_temp__tag_brief>(?:(?!FW)[A-Za-z_]+))(\\s\\(pid=%{DATA:syslog_pid}\\))?(:\\s))?%{GREEDYDATA:_temp_.message_brief}$
                     // Grok pattern: ^%{GREEDYDATA:message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:_temp_.negotiation.type} negotiation %{GREEDYDATA:_temp_.negotiation.message}$"),
                             cached_grok_mapped!("^(%{SYSLOGHOST:syslog_hostname}\\s)?((?P<_temp__tag_brief>(?:(?!FW)[A-Za-z_]+))(\\s\\(pid=%{DATA:syslog_pid}\\))?(:\\s))?%{GREEDYDATA:_temp_.message_brief}$", [("_temp__tag_brief", "_temp_.tag_brief")]),
@@ -48,7 +50,9 @@ impl Transform for System {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })() {
@@ -171,7 +175,9 @@ impl Transform for System {
             if let Err(err) = (|| -> Result<()> {
                 if let Some(input) = event.get_string("_temp_.message_brief") {
                     // Grok pattern: ^FW:\\s%{NOTSPACE:_temp_.fw.interface_name}\\s%{NOTSPACE:_temp_.fw.filter_action}\\s%{NOTSPACE:_temp_.fw.packet_protocol}\\s%{NOTSPACE:_temp_.fw.src_addr}\\s%{NOTSPACE:_temp_.fw.dst_addr}\\s%{NOTSPACE:_temp_.fw.src_port}\\s%{NOTSPACE:_temp_.fw.dst_port}\\s(\\(%{NOTSPACE:_temp_.fw.packets_num} packets\\))?\\s?$
-                    let _ = cached_grok!("^FW:\\s%{NOTSPACE:_temp_.fw.interface_name}\\s%{NOTSPACE:_temp_.fw.filter_action}\\s%{NOTSPACE:_temp_.fw.packet_protocol}\\s%{NOTSPACE:_temp_.fw.src_addr}\\s%{NOTSPACE:_temp_.fw.dst_addr}\\s%{NOTSPACE:_temp_.fw.src_port}\\s%{NOTSPACE:_temp_.fw.dst_port}\\s(\\(%{NOTSPACE:_temp_.fw.packets_num} packets\\))?\\s?$").extract_into(&input, event)?;
+                    if !cached_grok!("^FW:\\s%{NOTSPACE:_temp_.fw.interface_name}\\s%{NOTSPACE:_temp_.fw.filter_action}\\s%{NOTSPACE:_temp_.fw.packet_protocol}\\s%{NOTSPACE:_temp_.fw.src_addr}\\s%{NOTSPACE:_temp_.fw.dst_addr}\\s%{NOTSPACE:_temp_.fw.src_port}\\s%{NOTSPACE:_temp_.fw.dst_port}\\s(\\(%{NOTSPACE:_temp_.fw.packets_num} packets\\))?\\s?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })() {
@@ -309,7 +315,9 @@ impl Transform for System {
             if let Err(err) = (|| -> Result<()> {
                 if let Some(input) = event.get_string("_temp_.message_brief") {
                     // Grok pattern: ^port %{POSINT:_temp_.dpdk.port_number} (has already been started|ifd %{DATA:_temp_.dpdk.interface_name}), (new\\s)?dpdk_port_state=%{POSINT:_temp_.dpdk.port_state} dpdk_swt_port_state %{POSINT:_temp_.dpdk.swt_port_state}$
-                    let _ = cached_grok!("^port %{POSINT:_temp_.dpdk.port_number} (has already been started|ifd %{DATA:_temp_.dpdk.interface_name}), (new\\s)?dpdk_port_state=%{POSINT:_temp_.dpdk.port_state} dpdk_swt_port_state %{POSINT:_temp_.dpdk.swt_port_state}$").extract_into(&input, event)?;
+                    if !cached_grok!("^port %{POSINT:_temp_.dpdk.port_number} (has already been started|ifd %{DATA:_temp_.dpdk.interface_name}), (new\\s)?dpdk_port_state=%{POSINT:_temp_.dpdk.port_state} dpdk_swt_port_state %{POSINT:_temp_.dpdk.swt_port_state}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })() {
@@ -478,7 +486,9 @@ impl Transform for System {
             if event.has_value("juniper.srx.rtlog_conn_error.err_msg") {
                 if let Some(input) = event.get_string("juniper.srx.rtlog_conn_error.err_msg") {
                     // Grok pattern: ^(status: %{DATA:juniper.srx.rtlog_conn_error.status}, )?Error code: major %{NUMBER:juniper.srx.rtlog_conn_error.major} minor %{NUMBER:juniper.srx.rtlog_conn_error.minor} code %{NUMBER:juniper.srx.rtlog_conn_error.code}, description:%{DATA:juniper.srx.rtlog_conn_error.description}$
-                    let _ = cached_grok!("^(status: %{DATA:juniper.srx.rtlog_conn_error.status}, )?Error code: major %{NUMBER:juniper.srx.rtlog_conn_error.major} minor %{NUMBER:juniper.srx.rtlog_conn_error.minor} code %{NUMBER:juniper.srx.rtlog_conn_error.code}, description:%{DATA:juniper.srx.rtlog_conn_error.description}$").extract_into(&input, event)?;
+                    if !cached_grok!("^(status: %{DATA:juniper.srx.rtlog_conn_error.status}, )?Error code: major %{NUMBER:juniper.srx.rtlog_conn_error.major} minor %{NUMBER:juniper.srx.rtlog_conn_error.minor} code %{NUMBER:juniper.srx.rtlog_conn_error.code}, description:%{DATA:juniper.srx.rtlog_conn_error.description}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())

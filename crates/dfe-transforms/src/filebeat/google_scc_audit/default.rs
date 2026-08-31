@@ -987,7 +987,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("json.httpRequest.remoteIp") {
                         // Grok pattern: ^%{IP:google_scc.audit.http_request.remote.ip}:%{NUMBER:google_scc.audit.http_request.remote.port:long}$
                         // Grok pattern: ^%{IP:google_scc.audit.http_request.remote.ip}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^%{IP:google_scc.audit.http_request.remote.ip}:%{NUMBER:google_scc.audit.http_request.remote.port:long}$"
@@ -996,7 +996,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())
@@ -1162,7 +1164,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("json.httpRequest.serverIp") {
                         // Grok pattern: ^%{IP:google_scc.audit.http_request.server.ip}:%{NUMBER:google_scc.audit.http_request.server.port:long}$
                         // Grok pattern: ^%{IP:google_scc.audit.http_request.server.ip}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^%{IP:google_scc.audit.http_request.server.ip}:%{NUMBER:google_scc.audit.http_request.server.port:long}$"
@@ -1171,7 +1173,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

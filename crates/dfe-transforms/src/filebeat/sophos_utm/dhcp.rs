@@ -30,7 +30,7 @@ impl Transform for Dhcp {
                     // Grok pattern: ^%{WORD:event.action} from %{MAC:client.mac} via %{WORD:observer.ingress.interface.name}$
                     // Grok pattern: ^%{WORD:event.action} %{GREEDYDATA:message}$
                     // Grok pattern: ^%{GREEDYDATA:message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} from %{MAC:client.mac} via %{WORD:observer.ingress.interface.name}: %{GREEDYDATA:message}$"),
                             cached_grok!("^%{WORD:event.action} from %{MAC:client.mac} via %{WORD:observer.ingress.interface.name}$"),
@@ -39,7 +39,9 @@ impl Transform for Dhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -49,7 +51,7 @@ impl Transform for Dhcp {
                     // Grok pattern: ^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac} via %{WORD:observer.ingress.interface.name}$
                     // Grok pattern: ^%{WORD:event.action} %{GREEDYDATA:message}$
                     // Grok pattern: ^%{GREEDYDATA:message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac} via %{WORD:observer.ingress.interface.name}$"),
                             cached_grok!("^%{WORD:event.action} %{GREEDYDATA:message}$"),
@@ -57,7 +59,9 @@ impl Transform for Dhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -67,7 +71,7 @@ impl Transform for Dhcp {
                     // Grok pattern: ^%{WORD:event.action} for %{IP:client.ip}( \\(%{IP:sophos.utm.router.ip}\\))? from %{MAC:client.mac}( \\(%{DATA:sophos.utm.client.hostname}\\))? via %{WORD:observer.ingress.interface.name}(: %{GREEDYDATA:message})?$
                     // Grok pattern: ^%{WORD:event.action} %{GREEDYDATA:message}$
                     // Grok pattern: ^%{GREEDYDATA:message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} for %{IP:client.ip}( \\(%{IP:sophos.utm.router.ip}\\))? from %{MAC:client.mac}( \\(%{DATA:sophos.utm.client.hostname}\\))? via %{WORD:observer.ingress.interface.name}(: %{GREEDYDATA:message})?$"),
                             cached_grok!("^%{WORD:event.action} %{GREEDYDATA:message}$"),
@@ -75,7 +79,9 @@ impl Transform for Dhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -86,7 +92,7 @@ impl Transform for Dhcp {
                     // Grok pattern: ^%{WORD:event.action} to %{IP:client.ip} \\(%{MAC:client.mac}\\) via %{WORD:observer.ingress.interface.name}$
                     // Grok pattern: ^%{WORD:event.action} %{GREEDYDATA:message}$
                     // Grok pattern: ^%{GREEDYDATA:message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac}( \\(%{DATA:sophos.utm.client.hostname}\\))? via %{WORD:observer.ingress.interface.name}$"),
                             cached_grok!("^%{WORD:event.action} to %{IP:client.ip} \\(%{MAC:client.mac}\\) via %{WORD:observer.ingress.interface.name}$"),
@@ -95,7 +101,9 @@ impl Transform for Dhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -106,7 +114,7 @@ impl Transform for Dhcp {
                     // Grok pattern: ^%{WORD:event.action} to %{IP:client.ip} \\(%{MAC:client.mac}\\) via %{WORD:observer.ingress.interface.name}$
                     // Grok pattern: ^%{WORD:event.action} %{GREEDYDATA:message}$
                     // Grok pattern: ^%{GREEDYDATA:message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac}( \\(%{DATA:sophos.utm.client.hostname}\\))? via %{WORD:observer.ingress.interface.name}$"),
                             cached_grok!("^%{WORD:event.action} to %{IP:client.ip} \\(%{MAC:client.mac}\\) via %{WORD:observer.ingress.interface.name}$"),
@@ -115,7 +123,9 @@ impl Transform for Dhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -126,7 +136,7 @@ impl Transform for Dhcp {
                     // Grok pattern: ^%{WORD:event.action} from %{IP:client.ip} via %{WORD:observer.ingress.interface.name}$
                     // Grok pattern: ^%{WORD:event.action} %{GREEDYDATA:message}$
                     // Grok pattern: ^%{GREEDYDATA:message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} from %{IP:client.ip} via %{WORD:observer.ingress.interface.name}: %{GREEDYDATA:message}$"),
                             cached_grok!("^%{WORD:event.action} from %{IP:client.ip} via %{WORD:observer.ingress.interface.name}$"),
@@ -135,7 +145,9 @@ impl Transform for Dhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -145,7 +157,7 @@ impl Transform for Dhcp {
                     // Grok pattern: ^%{WORD:event.action}[ ]+on[ ]+%{WORD:sophos.utm.socket}/%{WORD:observer.ingress.interface.name}/%{MAC:client.mac}/%{DATA:sophos.utm.subnet}$
                     // Grok pattern: ^%{WORD:event.action}[ ]+on[ ]+%{WORD:sophos.utm.socket}/%{WORD:observer.ingress.interface.name}/%{DATA:sophos.utm.subnet}$
                     // Grok pattern: ^%{GREEDYDATA:message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action}[ ]+on[ ]+%{WORD:sophos.utm.socket}/%{WORD:observer.ingress.interface.name}/%{MAC:client.mac}/%{DATA:sophos.utm.subnet}$"),
                             cached_grok!("^%{WORD:event.action}[ ]+on[ ]+%{WORD:sophos.utm.socket}/%{WORD:observer.ingress.interface.name}/%{DATA:sophos.utm.subnet}$"),
@@ -153,7 +165,9 @@ impl Transform for Dhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -163,7 +177,7 @@ impl Transform for Dhcp {
                     // Grok pattern: ^%{WORD:event.action}[ ]+on[ ]+%{WORD:sophos.utm.socket}/%{WORD:observer.ingress.interface.name}/%{MAC:client.mac}/%{DATA:sophos.utm.subnet}$
                     // Grok pattern: ^%{WORD:event.action}[ ]+on[ ]+%{WORD:sophos.utm.socket}/%{WORD:observer.ingress.interface.name}/%{DATA:sophos.utm.subnet}$
                     // Grok pattern: ^%{GREEDYDATA:message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action}[ ]+on[ ]+%{WORD:sophos.utm.socket}/%{WORD:observer.ingress.interface.name}/%{MAC:client.mac}/%{DATA:sophos.utm.subnet}$"),
                             cached_grok!("^%{WORD:event.action}[ ]+on[ ]+%{WORD:sophos.utm.socket}/%{WORD:observer.ingress.interface.name}/%{DATA:sophos.utm.subnet}$"),
@@ -171,7 +185,9 @@ impl Transform for Dhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -179,7 +195,9 @@ impl Transform for Dhcp {
             if _cond {
                 if let Some(input) = event.get_string("_tmp.raw_data") {
                     // Grok pattern: ^%{GREEDYDATA:message}$
-                    let _ = cached_grok!("^%{GREEDYDATA:message}$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{GREEDYDATA:message}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

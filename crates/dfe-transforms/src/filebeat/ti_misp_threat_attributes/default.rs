@@ -628,8 +628,11 @@ impl Transform for Default {
                 if event.has_value("misp.attribute.type") {
                     if let Some(input) = event.get_string("misp.attribute.type") {
                         // Grok pattern: %{WORD}\\|%{WORD:_tmp.hashtype}
-                        let _ = cached_grok!("%{WORD}\\|%{WORD:_tmp.hashtype}")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("%{WORD}\\|%{WORD:_tmp.hashtype}")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -644,10 +647,13 @@ impl Transform for Default {
                 if event.has_value("misp.attribute.value") {
                     if let Some(input) = event.get_string("misp.attribute.value") {
                         // Grok pattern: %{DATA:threat.indicator.file.name}\\|%{GREEDYDATA:_tmp.hashvalue}
-                        let _ = cached_grok!(
+                        if !cached_grok!(
                             "%{DATA:threat.indicator.file.name}\\|%{GREEDYDATA:_tmp.hashvalue}"
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -767,7 +773,9 @@ impl Transform for Default {
                 if event.has_value("misp.attribute.value") {
                     if let Some(input) = event.get_string("misp.attribute.value") {
                         // Grok pattern: %{DATA:threat.indicator.registry.key}\\|%{DATA:threat.indicator.registry.value}
-                        let _ = cached_grok!("%{DATA:threat.indicator.registry.key}\\|%{DATA:threat.indicator.registry.value}").extract_into(&input, event)?;
+                        if !cached_grok!("%{DATA:threat.indicator.registry.key}\\|%{DATA:threat.indicator.registry.value}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                 }
             }
@@ -847,10 +855,13 @@ impl Transform for Default {
                 if event.has_value("misp.attribute.value") {
                     if let Some(input) = event.get_string("misp.attribute.value") {
                         // Grok pattern: %{DATA:threat.indicator.url.domain}\\|%{IP:threat.indicator.ip}
-                        let _ = cached_grok!(
+                        if !cached_grok!(
                             "%{DATA:threat.indicator.url.domain}\\|%{IP:threat.indicator.ip}"
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -863,10 +874,13 @@ impl Transform for Default {
                 if event.has_value("misp.attribute.value") {
                     if let Some(input) = event.get_string("misp.attribute.value") {
                         // Grok pattern: %{IP:threat.indicator.ip}\\|%{NUMBER:threat.indicator.port}
-                        let _ = cached_grok!(
+                        if !cached_grok!(
                             "%{IP:threat.indicator.ip}\\|%{NUMBER:threat.indicator.port}"
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }

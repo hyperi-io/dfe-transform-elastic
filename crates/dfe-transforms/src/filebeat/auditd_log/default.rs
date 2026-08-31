@@ -48,19 +48,38 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("event.original") {
                             // Grok pattern: (?:^(?:(?:node=%{IPORHOST:auditd.log.node} ))?(?:type=%{NOTSPACE:auditd.log.record_type}) msg=audit\\(%{NUMBER:auditd.log.epoch}:%{NUMBER:auditd.log.sequence}\\):)\\s*(?P<auditd_log_kv>.*?)(?= old auid=) old auid=%{NUMBER:auditd.log.old_auid} new auid=%{NUMBER:auditd.log.new_auid} old ses=%{NUMBER:auditd.log.old_ses} new ses=%{NUMBER:auditd.log.new_ses}$
-                            let _ = cached_grok_mapped!("(?:^(?:(?:node=%{IPORHOST:auditd.log.node} ))?(?:type=%{NOTSPACE:auditd.log.record_type}) msg=audit\\(%{NUMBER:auditd.log.epoch}:%{NUMBER:auditd.log.sequence}\\):)\\s*(?P<auditd_log_kv>.*?)(?= old auid=) old auid=%{NUMBER:auditd.log.old_auid} new auid=%{NUMBER:auditd.log.new_auid} old ses=%{NUMBER:auditd.log.old_ses} new ses=%{NUMBER:auditd.log.new_ses}$", [("auditd_log_kv", "auditd.log.kv")]).extract_into(&input, event)?;
+                            if !cached_grok_mapped!("(?:^(?:(?:node=%{IPORHOST:auditd.log.node} ))?(?:type=%{NOTSPACE:auditd.log.record_type}) msg=audit\\(%{NUMBER:auditd.log.epoch}:%{NUMBER:auditd.log.sequence}\\):)\\s*(?P<auditd_log_kv>.*?)(?= old auid=) old auid=%{NUMBER:auditd.log.old_auid} new auid=%{NUMBER:auditd.log.new_auid} old ses=%{NUMBER:auditd.log.old_ses} new ses=%{NUMBER:auditd.log.new_ses}$", [("auditd_log_kv", "auditd.log.kv")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                         }
                         Ok(())
                     })();
                 }
-                // SKIPPED: condition not transpiled: ctx.auditd?.log?.record_type == null && ctx.event?.original != null && (ctx.event.original.contains(" msg='") || ctx.event.original.contains(' msg="'))
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    !event.has_value("auditd.log.record_type")
+                        && event.has_value("event.original")
+                        && (event.get("event.original").is_some_and(|v| match v {
+                            serde_json::Value::Array(a) => {
+                                a.iter().any(|x| x.as_str() == Some(" msg='"))
+                            }
+                            serde_json::Value::String(s) => s.contains(" msg='"),
+                            _ => false,
+                        }) || event.get("event.original").is_some_and(|v| match v {
+                            serde_json::Value::Array(a) => {
+                                a.iter().any(|x| x.as_str() == Some(" msg=\""))
+                            }
+                            serde_json::Value::String(s) => s.contains(" msg=\""),
+                            _ => false,
+                        }))
+                };
+                if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("event.original") {
                             // Grok pattern: (?:^(?:(?:node=%{IPORHOST:auditd.log.node} ))?(?:type=%{NOTSPACE:auditd.log.record_type}) msg=audit\\(%{NUMBER:auditd.log.epoch}:%{NUMBER:auditd.log.sequence}\\):)\\s*(?:user )?(?P<auditd_log_kv>.*?)(?= msg=) msg=(?:(?:'(?:(?:avc:%{SPACE}%{WORD:auditd.log.avc.action}%{SPACE}{%{SPACE}%{WORD:auditd.log.avc.request}%{SPACE}}%{SPACE}for%{SPACE})|[^=]*\\s)?(?P<auditd_log_sub_kv>(?:[^']*))'|\"([^=]*\\s)?(?P<auditd_log_sub_kv>(?:[^\"]*))\"))(?:(?:\\x1d)(?P<auditd_log_sub_kv_enriched>.*))?$
-                            let _ = cached_grok_mapped!("(?:^(?:(?:node=%{IPORHOST:auditd.log.node} ))?(?:type=%{NOTSPACE:auditd.log.record_type}) msg=audit\\(%{NUMBER:auditd.log.epoch}:%{NUMBER:auditd.log.sequence}\\):)\\s*(?:user )?(?P<auditd_log_kv>.*?)(?= msg=) msg=(?:(?:'(?:(?:avc:%{SPACE}%{WORD:auditd.log.avc.action}%{SPACE}{%{SPACE}%{WORD:auditd.log.avc.request}%{SPACE}}%{SPACE}for%{SPACE})|[^=]*\\s)?(?P<auditd_log_sub_kv>(?:[^']*))'|\"([^=]*\\s)?(?P<auditd_log_sub_kv>(?:[^\"]*))\"))(?:(?:\\x1d)(?P<auditd_log_sub_kv_enriched>.*))?$", [("auditd_log_sub_kv", "auditd.log.sub_kv"), ("auditd_log_sub_kv", "auditd.log.sub_kv"), ("auditd_log_kv", "auditd.log.kv"), ("auditd_log_sub_kv_enriched", "auditd.log.sub_kv_enriched")]).extract_into(&input, event)?;
+                            if !cached_grok_mapped!("(?:^(?:(?:node=%{IPORHOST:auditd.log.node} ))?(?:type=%{NOTSPACE:auditd.log.record_type}) msg=audit\\(%{NUMBER:auditd.log.epoch}:%{NUMBER:auditd.log.sequence}\\):)\\s*(?:user )?(?P<auditd_log_kv>.*?)(?= msg=) msg=(?:(?:'(?:(?:avc:%{SPACE}%{WORD:auditd.log.avc.action}%{SPACE}{%{SPACE}%{WORD:auditd.log.avc.request}%{SPACE}}%{SPACE}for%{SPACE})|[^=]*\\s)?(?P<auditd_log_sub_kv>(?:[^']*))'|\"([^=]*\\s)?(?P<auditd_log_sub_kv>(?:[^\"]*))\"))(?:(?:\\x1d)(?P<auditd_log_sub_kv_enriched>.*))?$", [("auditd_log_sub_kv", "auditd.log.sub_kv"), ("auditd_log_sub_kv", "auditd.log.sub_kv"), ("auditd_log_kv", "auditd.log.kv"), ("auditd_log_sub_kv_enriched", "auditd.log.sub_kv_enriched")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                         }
                         Ok(())
                     })();
@@ -81,7 +100,9 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("event.original") {
                             // Grok pattern: (?:^(?:(?:node=%{IPORHOST:auditd.log.node} ))?(?:type=%{NOTSPACE:auditd.log.record_type}) msg=audit\\(%{NUMBER:auditd.log.epoch}:%{NUMBER:auditd.log.sequence}\\):)\\s*(?P<auditd_log_kv>.*?)(?=\\x1d%{WORD}=\\{ )\\x1d%{WORD:auditd.log.original_field}={ (?P<auditd_log_sub_kv>.*) }$
-                            let _ = cached_grok_mapped!("(?:^(?:(?:node=%{IPORHOST:auditd.log.node} ))?(?:type=%{NOTSPACE:auditd.log.record_type}) msg=audit\\(%{NUMBER:auditd.log.epoch}:%{NUMBER:auditd.log.sequence}\\):)\\s*(?P<auditd_log_kv>.*?)(?=\\x1d%{WORD}=\\{ )\\x1d%{WORD:auditd.log.original_field}={ (?P<auditd_log_sub_kv>.*) }$", [("auditd_log_kv", "auditd.log.kv"), ("auditd_log_sub_kv", "auditd.log.sub_kv")]).extract_into(&input, event)?;
+                            if !cached_grok_mapped!("(?:^(?:(?:node=%{IPORHOST:auditd.log.node} ))?(?:type=%{NOTSPACE:auditd.log.record_type}) msg=audit\\(%{NUMBER:auditd.log.epoch}:%{NUMBER:auditd.log.sequence}\\):)\\s*(?P<auditd_log_kv>.*?)(?=\\x1d%{WORD}=\\{ )\\x1d%{WORD:auditd.log.original_field}={ (?P<auditd_log_sub_kv>.*) }$", [("auditd_log_kv", "auditd.log.kv"), ("auditd_log_sub_kv", "auditd.log.sub_kv")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                         }
                         Ok(())
                     })();
@@ -93,7 +114,7 @@ impl Transform for Default {
                         // Grok pattern: (?:^(?:(?:node=%{IPORHOST:auditd.log.node} ))?(?:type=%{NOTSPACE:auditd.log.record_type}) msg=audit\\(%{NUMBER:auditd.log.epoch}:%{NUMBER:auditd.log.sequence}\\):)\\s*.*$
                         // Grok pattern: (?:^(?:(?:node=%{IPORHOST:auditd.log.node} ))?(?:type=%{NOTSPACE:auditd.log.record_type}) msg=audit\\(%{NUMBER:auditd.log.epoch}:%{NUMBER:auditd.log.sequence}\\):)\\s*$
                         // Grok pattern: (?:type=%{NOTSPACE:auditd.log.record_type}) (?:(?:.*?)(?P<auditd_log_kv>[A-Za-z0-9_]+=[\\s\\S]*))
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok_mapped!(
                                     "(?:^(?:(?:node=%{IPORHOST:auditd.log.node} ))?(?:type=%{NOTSPACE:auditd.log.record_type}) msg=audit\\(%{NUMBER:auditd.log.epoch}:%{NUMBER:auditd.log.sequence}\\):)\\s*(?:user )?(?:avc:%{SPACE}%{WORD:auditd.log.avc.action}%{SPACE}{%{SPACE}%{WORD:auditd.log.avc.request}%{SPACE}}%{SPACE}for%{SPACE})?(?:(?:.*?)(?P<auditd_log_kv>[A-Za-z0-9_]+=[\\s\\S]*))",
@@ -112,7 +133,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // ignore_failure: true
@@ -1106,7 +1129,9 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("source.address") {
                     // Grok pattern: ^%{IP:source.ip}$
-                    let _ = cached_grok!("^%{IP:source.ip}$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{IP:source.ip}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

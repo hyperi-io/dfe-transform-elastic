@@ -62,7 +62,9 @@ impl Transform for AppserviceIpsecauditlogsInnerPipeline {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("azure.app_service.properties.client_ip") {
                     // Grok pattern: %{IPORHOST:azure.app_service.properties.client_ip}:%{POSINT:azure.app_service.properties.client_port:long}
-                    let _ = cached_grok!("%{IPORHOST:azure.app_service.properties.client_ip}:%{POSINT:azure.app_service.properties.client_port:long}").extract_into(&input, event)?;
+                    if !cached_grok!("%{IPORHOST:azure.app_service.properties.client_ip}:%{POSINT:azure.app_service.properties.client_port:long}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

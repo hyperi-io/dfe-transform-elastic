@@ -27,7 +27,7 @@ impl Transform for PipelineDhcp {
                     // Grok pattern: ^%{WORD:event.action} from %{MAC:client.mac} \\(%{DATA:infoblox_nios.log.dhcp.client_hostname}\\) via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) TransID %{DATA:infoblox_nios.log.dhcp.trans_id} uid %{GREEDYDATA:infoblox_nios.log.dhcp.uid}$
                     // Grok pattern: ^%{WORD:event.action} from %{MAC:client.mac} \\(%{DATA:infoblox_nios.log.dhcp.client_hostname}\\) via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) TransID %{GREEDYDATA:infoblox_nios.log.dhcp.trans_id}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} from %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) TransID %{DATA:infoblox_nios.log.dhcp.trans_id} uid %{GREEDYDATA:infoblox_nios.log.dhcp.uid}$"),
                             cached_grok!("^%{WORD:event.action} from %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) TransID %{DATA:infoblox_nios.log.dhcp.trans_id}: network %{DATA:infoblox_nios.log.dhcp.network}: %{GREEDYDATA:infoblox_nios.log.dhcp.discover.message}$"),
@@ -38,7 +38,9 @@ impl Transform for PipelineDhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -52,7 +54,7 @@ impl Transform for PipelineDhcp {
                     // Grok pattern: ^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) relay (%{IP:infoblox_nios.log.dhcp.relay.interface.ip}|%{WORD:infoblox_nios.log.dhcp.relay.interface.name}) lease-duration %{NUMBER:infoblox_nios.log.dhcp.lease.duration:long} uid %{GREEDYDATA:infoblox_nios.log.dhcp.uid}$
                     // Grok pattern: ^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) relay (%{IP:infoblox_nios.log.dhcp.relay.interface.ip}|%{WORD:infoblox_nios.log.dhcp.relay.interface.name}) lease-duration %{GREEDYDATA:infoblox_nios.log.dhcp.lease.duration:long}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac} \\(%{DATA:infoblox_nios.log.dhcp.client_hostname}\\) via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) relay (%{IP:infoblox_nios.log.dhcp.relay.interface.ip}|%{WORD:infoblox_nios.log.dhcp.relay.interface.name}) lease-duration %{NUMBER:infoblox_nios.log.dhcp.lease.duration:long} offered-duration %{NUMBER:infoblox_nios.log.dhcp.offered.duration:long} uid %{GREEDYDATA:infoblox_nios.log.dhcp.uid}$"),
                             cached_grok!("^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac} \\(%{DATA:infoblox_nios.log.dhcp.client_hostname}\\) via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) relay (%{IP:infoblox_nios.log.dhcp.relay.interface.ip}|%{WORD:infoblox_nios.log.dhcp.relay.interface.name}) lease-duration %{NUMBER:infoblox_nios.log.dhcp.lease.duration:long} offered-duration %{GREEDYDATA:infoblox_nios.log.dhcp.offered.duration:long}$"),
@@ -64,7 +66,9 @@ impl Transform for PipelineDhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -84,7 +88,7 @@ impl Transform for PipelineDhcp {
                     // Grok pattern: ^%{WORD:event.action} for %{IP:client.ip} from %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) TransID %{GREEDYDATA:infoblox_nios.log.dhcp.trans_id}$
                     // Grok pattern: ^%{WORD:event.action} for %{IP:client.ip} from %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name})$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} for %{IP:client.ip} \\(%{IP:infoblox_nios.log.dhcp.router.ip}\\) from %{MAC:client.mac} \\(%{DATA:infoblox_nios.log.dhcp.client_hostname}\\) via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) TransID %{DATA:infoblox_nios.log.dhcp.trans_id} uid %{DATA:infoblox_nios.log.dhcp.uid} \\(%{GREEDYDATA:infoblox_nios.log.dhcp.lease.message}\\)$"),
                             cached_grok!("^%{WORD:event.action} for %{IP:client.ip} from %{MAC:client.mac} \\(%{DATA:infoblox_nios.log.dhcp.client_hostname}\\) via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) TransID %{DATA:infoblox_nios.log.dhcp.trans_id} uid %{DATA:infoblox_nios.log.dhcp.uid} \\(%{GREEDYDATA:infoblox_nios.log.dhcp.lease.message}\\)$"),
@@ -102,7 +106,9 @@ impl Transform for PipelineDhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -122,7 +128,7 @@ impl Transform for PipelineDhcp {
                     // Grok pattern: ^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) relay (%{IP:infoblox_nios.log.dhcp.relay.interface.ip}|%{WORD:infoblox_nios.log.dhcp.relay.interface.name}) lease-duration %{GREEDYDATA:infoblox_nios.log.dhcp.lease.duration:long}$
                     // Grok pattern: ^%{WORD:event.action} to %{IP:client.ip} \\(%{MAC:client.mac}\\) via %{WORD:observer.ingress.interface.name}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac} \\(%{DATA:infoblox_nios.log.dhcp.client_hostname}\\) via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) relay (%{IP:infoblox_nios.log.dhcp.relay.interface.ip}|%{WORD:infoblox_nios.log.dhcp.relay.interface.name}) lease-duration %{NUMBER:infoblox_nios.log.dhcp.lease.duration:long} offered-duration %{NUMBER:infoblox_nios.log.dhcp.offered.duration:long} \\(%{DATA:infoblox_nios.log.dhcp.message}\\) uid %{GREEDYDATA:infoblox_nios.log.dhcp.uid}$"),
                             cached_grok!("^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) relay (%{IP:infoblox_nios.log.dhcp.relay.interface.ip}|%{WORD:infoblox_nios.log.dhcp.relay.interface.name}) lease-duration %{NUMBER:infoblox_nios.log.dhcp.lease.duration:long} offered-duration %{NUMBER:infoblox_nios.log.dhcp.offered.duration:long} \\(%{DATA:infoblox_nios.log.dhcp.message}\\) uid %{GREEDYDATA:infoblox_nios.log.dhcp.uid}$"),
@@ -140,7 +146,9 @@ impl Transform for PipelineDhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -151,7 +159,7 @@ impl Transform for PipelineDhcp {
                     // Grok pattern: ^%{WORD:event.action} of %{IP:client.ip} from %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) \\(%{DATA:infoblox_nios.log.dhcp.release.info}\\) TransID %{GREEDYDATA:infoblox_nios.log.dhcp.trans_id}$
                     // Grok pattern: ^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} of %{IP:client.ip} from %{MAC:client.mac} \\(%{DATA:infoblox_nios.log.dhcp.client_hostname}\\) via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) \\(%{DATA:infoblox_nios.log.dhcp.release.info}\\) TransID %{DATA:infoblox_nios.log.dhcp.trans_id} uid %{GREEDYDATA:infoblox_nios.log.dhcp.uid}$"),
                             cached_grok!("^%{WORD:event.action} of %{IP:client.ip} from %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) \\(%{DATA:infoblox_nios.log.dhcp.release.info}\\) TransID %{GREEDYDATA:infoblox_nios.log.dhcp.trans_id}$"),
@@ -160,7 +168,9 @@ impl Transform for PipelineDhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -169,14 +179,16 @@ impl Transform for PipelineDhcp {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{WORD:event.action} on %{IP:client.ip} to %{GREEDYDATA:client.mac}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} on %{IP:client.ip} to %{GREEDYDATA:client.mac}$"),
                             cached_grok!("^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -186,7 +198,7 @@ impl Transform for PipelineDhcp {
                     // Grok pattern: ^%{WORD:event.action} from %{IP:client.ip} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) TransID %{DATA:infoblox_nios.log.dhcp.trans_id}: %{GREEDYDATA:infoblox_nios.log.dhcp.inform.message}$
                     // Grok pattern: ^%{WORD:event.action} from %{IP:client.ip} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) TransID %{GREEDYDATA:infoblox_nios.log.dhcp.trans_id}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} from %{IP:client.ip} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) TransID %{DATA:infoblox_nios.log.dhcp.trans_id}: %{GREEDYDATA:infoblox_nios.log.dhcp.inform.message}$"),
                             cached_grok!("^%{WORD:event.action} from %{IP:client.ip} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) TransID %{GREEDYDATA:infoblox_nios.log.dhcp.trans_id}$"),
@@ -194,7 +206,9 @@ impl Transform for PipelineDhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -204,7 +218,7 @@ impl Transform for PipelineDhcp {
                     // Grok pattern: ^%{WORD:event.action} of %{IP:client.ip} from %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) TransID %{DATA:infoblox_nios.log.dhcp.trans_id}: %{GREEDYDATA:infoblox_nios.log.dhcp.decline.message}$
                     // Grok pattern: ^%{WORD:event.action} of %{IP:client.ip} from %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}): %{GREEDYDATA:infoblox_nios.log.dhcp.decline.message}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} of %{IP:client.ip} from %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}) TransID %{DATA:infoblox_nios.log.dhcp.trans_id}: %{GREEDYDATA:infoblox_nios.log.dhcp.decline.message}$"),
                             cached_grok!("^%{WORD:event.action} of %{IP:client.ip} from %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name}): %{GREEDYDATA:infoblox_nios.log.dhcp.decline.message}$"),
@@ -212,7 +226,9 @@ impl Transform for PipelineDhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -221,14 +237,16 @@ impl Transform for PipelineDhcp {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name})$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} on %{IP:client.ip} to %{MAC:client.mac} via (%{IP:infoblox_nios.log.dhcp.interface.ip}|%{WORD:observer.ingress.interface.name})$"),
                             cached_grok!("^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -237,14 +255,16 @@ impl Transform for PipelineDhcp {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{WORD:event.action} from %{IP:client.ip}: %{GREEDYDATA:infoblox_nios.log.dhcp.lease_query.message}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} from %{IP:client.ip}: %{GREEDYDATA:infoblox_nios.log.dhcp.lease_query.message}$"),
                             cached_grok!("^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -254,7 +274,7 @@ impl Transform for PipelineDhcp {
                     // Grok pattern: ^(?P<event_action>(?:(?i:reverse map update))) for %{IP:client.ip} abandoned because of non-retryable failure: %{DATA:event.outcome}$
                     // Grok pattern: ^Unable to (?P<event_action>(?:(?i:add forward map))) from %{DATA:infoblox_nios.log.dhcp.forward_name} to %{IP:infoblox_nios.log.dhcp.ip} by server %{IP:server.ip}#%{NUMBER:server.port:long}: %{DATA:event.outcome}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!("^(?P<event_action>(?:(?i:reverse map update))) for %{IP:client.ip} abandoned because of non-retryable failure: %{DATA:event.outcome}$", [("event_action", "event.action")]),
                             cached_grok_mapped!("^Unable to (?P<event_action>(?:(?i:add forward map))) from %{DATA:infoblox_nios.log.dhcp.forward_name} to %{IP:infoblox_nios.log.dhcp.ip} by server %{IP:server.ip}#%{NUMBER:server.port:long}: %{DATA:event.outcome}$", [("event_action", "event.action")]),
@@ -262,7 +282,9 @@ impl Transform for PipelineDhcp {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -281,14 +303,16 @@ impl Transform for PipelineDhcp {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:event.action} message from %{IP:client.ip} port %{NUMBER:client.port:long} from client DUID %{GREEDYDATA:infoblox_nios.log.dhcp.duid}, transaction ID %{GREEDYDATA:infoblox_nios.log.dhcp.trans_id}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{DATA:event.action} message from %{IP:client.ip} port %{NUMBER:client.port:long} from client DUID %{GREEDYDATA:infoblox_nios.log.dhcp.duid}, transaction ID %{GREEDYDATA:infoblox_nios.log.dhcp.trans_id}$"),
                             cached_grok!("^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -297,14 +321,16 @@ impl Transform for PipelineDhcp {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:event.action}: address %{IP:client.ip} to client with duid %{GREEDYDATA:infoblox_nios.log.dhcp.duid} iaid = -%{GREEDYDATA:infoblox_nios.log.dhcp.iaid} valid for %{NUMBER:infoblox_nios.log.dhcp.validation_second:long} seconds$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{DATA:event.action}: address %{IP:client.ip} to client with duid %{GREEDYDATA:infoblox_nios.log.dhcp.duid} iaid = -%{GREEDYDATA:infoblox_nios.log.dhcp.iaid} valid for %{NUMBER:infoblox_nios.log.dhcp.validation_second:long} seconds$"),
                             cached_grok!("^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -313,14 +339,16 @@ impl Transform for PipelineDhcp {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:event.action} message from %{IP:client.ip} port %{NUMBER:client.port:long}, link address %{IP:infoblox_nios.log.dhcp.link_address}, peer address %{IP:infoblox_nios.log.dhcp.peer_address}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{DATA:event.action} message from %{IP:client.ip} port %{NUMBER:client.port:long}, link address %{IP:infoblox_nios.log.dhcp.link_address}, peer address %{IP:infoblox_nios.log.dhcp.peer_address}$"),
                             cached_grok!("^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -329,14 +357,16 @@ impl Transform for PipelineDhcp {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:event.action} message to send to %{IP:client.ip} port %{NUMBER:client.port:long}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{DATA:event.action} message to send to %{IP:client.ip} port %{NUMBER:client.port:long}$"),
                             cached_grok!("^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -345,14 +375,16 @@ impl Transform for PipelineDhcp {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:event.action} message to %{IP:client.ip} port %{NUMBER:client.port:long}$
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{DATA:event.action} message to %{IP:client.ip} port %{NUMBER:client.port:long}$"),
                             cached_grok!("^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -360,7 +392,9 @@ impl Transform for PipelineDhcp {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$
-                    let _ = cached_grok!("^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{GREEDYDATA:infoblox_nios.log.dhcp.message}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

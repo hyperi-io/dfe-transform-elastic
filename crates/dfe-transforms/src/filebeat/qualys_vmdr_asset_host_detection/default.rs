@@ -5991,7 +5991,7 @@ impl Transform for Default {
                         ) {
                             // Grok pattern: ^CVSS:%{DATA:vulnerability.score.version}/%{GREEDYDATA}$
                             // Grok pattern: ^%{GREEDYDATA}$
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!(
                                         "^CVSS:%{DATA:vulnerability.score.version}/%{GREEDYDATA}$"
@@ -6000,7 +6000,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

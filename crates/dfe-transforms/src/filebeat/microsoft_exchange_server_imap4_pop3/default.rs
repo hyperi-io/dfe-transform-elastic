@@ -117,8 +117,11 @@ impl Transform for Default {
                     if event.has_value("microsoft.exchange.cip") {
                         if let Some(input) = event.get_string("microsoft.exchange.cip") {
                             // Grok pattern: %{NOTSPACE:source.ip}:%{NUMBER}
-                            let _ = cached_grok!("%{NOTSPACE:source.ip}:%{NUMBER}")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("%{NOTSPACE:source.ip}:%{NUMBER}")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

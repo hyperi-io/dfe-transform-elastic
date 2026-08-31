@@ -43,7 +43,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: \\[(?P<apache_error_timestamp>(?:((%{DAY} %{MONTH} %{MONTHDAY} %{TIME} %{YEAR})|(%{YEAR}\\-%{MONTHNUM}\\-%{MONTHDAY} %{TIME} %{ISO8601_TIMEZONE}))))\\] \\[%{LOGLEVEL:log.level}\\]( \\[client %{IPORHOST:source.address}(:%{POSINT:source.port})?\\])? %{GREEDYDATA:message}
                     // Grok pattern: (\\[(?P<apache_error_timestamp>(?:((%{DAY} %{MONTH} %{MONTHDAY} %{TIME} %{YEAR})|(%{YEAR}\\-%{MONTHNUM}\\-%{MONTHDAY} %{TIME} %{ISO8601_TIMEZONE}))))\\] )?(\\[%{DATA:apache.error.module}:(?P<log_level>(?:%{LOGLEVEL}[0-9]*))\\] \\[pid %{NUMBER:process.pid:long}(:tid %{NUMBER:process.thread.id:long})?\\]( \\[client %{IPORHOST:source.address}(:%{POSINT:source.port})?\\])? )?%{GREEDYDATA:message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "\\[(?P<apache_error_timestamp>(?:((%{DAY} %{MONTH} %{MONTHDAY} %{TIME} %{YEAR})|(%{YEAR}\\-%{MONTHNUM}\\-%{MONTHDAY} %{TIME} %{ISO8601_TIMEZONE}))))\\] \\[%{LOGLEVEL:log.level}\\]( \\[client %{IPORHOST:source.address}(:%{POSINT:source.port})?\\])? %{GREEDYDATA:message}",
@@ -59,7 +59,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -69,7 +71,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: File does not exist: %{URIPATH:file.path}, referer: %{URI:http.request.referrer}
                         // Grok pattern: File does not exist: %{URIPATH:file.path}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "File does not exist: %{URIPATH:file.path}, referer: %{URI:http.request.referrer}"
@@ -78,7 +80,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())
@@ -206,8 +210,11 @@ impl Transform for Default {
             if event.has_value("source.address") {
                 if let Some(input) = event.get_string("source.address") {
                     // Grok pattern: ^(%{IP:source.ip}|%{HOSTNAME:source.domain})$
-                    let _ = cached_grok!("^(%{IP:source.ip}|%{HOSTNAME:source.domain})$")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^(%{IP:source.ip}|%{HOSTNAME:source.domain})$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

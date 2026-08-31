@@ -3000,13 +3000,14 @@ fn try_filetime_field_list(event: &mut Event, script: &str, params: &Map<String,
 fn try_lookup_merge(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
     // The lambda is written both inline and as a braced block that branches on
     // the value's type, so the target is read from the `ctx.<path>[k] =`
-    // assignment ANYWHERE after the `forEach` rather than from its head.
+    // assignment in the lambda's LAST arm rather than from its head.
     let Some(body) = script.split_once("forEach(").map(|(_, tail)| tail) else {
         return false;
     };
-    let Some(target) = ctx_path_between(body, "ctx.", "[k] = ") else {
+    let Some(target) = merge_default_target(body) else {
         return false;
     };
+    let routes = merge_routes(body);
     let keys = get_chain(script);
     if keys.is_empty() {
         return false;
@@ -3041,9 +3042,114 @@ fn try_lookup_merge(event: &mut Event, script: &str, params: &Map<String, Value>
         return true;
     };
     for (k, v) in row.clone() {
-        let _ = event.set(&format!("{target}.{k}"), v);
+        let path = match routes.iter().find(|(key, _)| *key == k) {
+            Some((_, MergeRoute::At(path))) => path.clone(),
+            Some((_, MergeRoute::Under(path))) => format!("{path}.{k}"),
+            None => format!("{target}.{k}"),
+        };
+        let _ = event.set(&path, v);
     }
     true
+}
+
+/// The target of the LAST `ctx.<path>[k] = ` in a merge lambda.
+///
+/// That assignment is the `else` arm, where every key the branches above it do
+/// not name lands. Reading the FIRST one instead took `watchguard_firebox`'s
+/// routed arm as the target for the whole row, so `event.category`,
+/// `event.type` and `event.outcome` were written under
+/// `watchguard_firebox.log` on all 637 events.
+fn merge_default_target(body: &str) -> Option<String> {
+    let end = body.rfind("[k] = ")?;
+    let head = &body[..end];
+    let start = head.rfind("ctx.")? + "ctx.".len();
+    Some(clean_path(&head[start..]))
+}
+
+/// Where one routed key's value goes.
+enum MergeRoute {
+    /// `ctx.<path>[k] = v` -- the key itself is the last segment.
+    Under(String),
+    /// `ctx.<path> = v` -- a fixed path the arm names outright.
+    At(String),
+}
+
+/// The key-routed arms of a merge lambda, each with the path it writes.
+///
+/// A row normally merges whole into one container, but `watchguard_firebox`
+/// sends `log_type` to its own namespace and suricata sends `network_protocol`
+/// to `network.protocol`. Both spellings of the guard appear across the
+/// integrations, and so do both spellings of the write.
+///
+/// An arm that writes somewhere else entirely -- `beyondtrust_pra` collects
+/// `category` into a local list -- names no path and is left to the default,
+/// which is what the merge did with that key before routing existed.
+fn merge_routes(body: &str) -> Vec<(String, MergeRoute)> {
+    let mut routes = Vec::new();
+    let mut rest = body;
+    while let Some((key, after)) = next_routed_key(rest) {
+        // Balanced, because the arm can hold an `if`/`else` of its own and a
+        // split on the next `else` would cut it in half.
+        let Some(at) = after.find('{') else {
+            rest = after;
+            continue;
+        };
+        let Some((arm, tail)) = balanced(&after[at..], '{', '}') else {
+            rest = after;
+            continue;
+        };
+        if let Some(route) = route_target(arm) {
+            routes.push((key, route));
+        }
+        rest = tail;
+    }
+    routes
+}
+
+/// The next `k.equals('<key>')` or `'<key>' == k` guard, and the text after it.
+fn next_routed_key(body: &str) -> Option<(String, &str)> {
+    let call = body.find("k.equals(").and_then(|at| {
+        let (key, after) = body[at + "k.equals(".len()..].split_once(')')?;
+        Some((at, unquote(key), after))
+    });
+    let compare = body.find("== k").and_then(|at| {
+        let literal = body[..at].trim_end().rsplit(['(', ' ']).next()?;
+        // Only a quoted literal is a key; `ctx.network == null` is not one.
+        (literal.starts_with(['"', '\'']))
+            .then(|| (at, unquote(literal), &body[at + "== k".len()..]))
+    });
+    // Whichever guard the script spells first, so the arms are read in order.
+    let (_, key, after) = match (call, compare) {
+        (Some(by_call), Some(by_compare)) => Some(if by_call.0 <= by_compare.0 {
+            by_call
+        } else {
+            by_compare
+        }),
+        (found @ Some(_), None) | (None, found @ Some(_)) => found,
+        (None, None) => None,
+    }?;
+    Some((key, after))
+}
+
+/// The path an arm writes the routed value to.
+fn route_target(arm: &str) -> Option<MergeRoute> {
+    if let Some(end) = arm.rfind("[k] = ") {
+        let head = &arm[..end];
+        let start = head.rfind("ctx.")? + "ctx.".len();
+        return Some(MergeRoute::Under(clean_path(&head[start..])));
+    }
+    // The LAST `ctx.<path> = v`, because an arm that has to build its container
+    // first writes the same value twice -- suricata's `ctx.network` map literal
+    // then `ctx.network.protocol` -- and the second names the path in full.
+    let end = arm.rfind(" = v")?;
+    let head = &arm[..end];
+    let start = head.rfind("ctx.")? + "ctx.".len();
+    Some(MergeRoute::At(clean_path(&head[start..])))
+}
+
+/// A Painless string literal's contents.
+fn unquote(literal: &str) -> String {
+    literal.trim().trim_matches(['"', '\'']).to_string()
 }
 
 /// The arguments of a `params.get(a)[?].get(b)...` chain, outermost first.
@@ -4605,7 +4711,13 @@ fn resolve_key(event: &Event, script: &str, expr: &str) -> Option<String> {
     let (expr, fold) = Fold::strip(expr);
     let expr = expr.trim();
 
-    let (path, fold) = if let Some(rest) = expr.strip_prefix("ctx.") {
+    // Either spelling of the root. `ctx?.` reached the `def` branch below,
+    // looked for a binding named after the whole path, found none and answered
+    // "key absent" -- suricata's every lookup, on all 64 of its events.
+    let root = expr
+        .strip_prefix("ctx.")
+        .or_else(|| expr.strip_prefix("ctx?."));
+    let (path, fold) = if let Some(rest) = root {
         (rest.to_string(), fold)
     } else {
         let binding = format!("def {expr} = ctx.");
@@ -6382,5 +6494,76 @@ mod tests {
         }));
         assert!(try_params_painless(&mut event, script, &params));
         assert_eq!(event.get("event.severity"), None);
+    }
+
+    /// Verbatim from `pipelines/watchguard_firebox/log/default.yml`: the merge
+    /// lambda routes `log_type` to the vendor namespace and every other column
+    /// to `ctx.event`.
+    #[test]
+    fn a_merge_lambda_routes_the_key_its_branch_names() {
+        let script = "if (ctx.watchguard_firebox?.log?.msg_id == null || \
+            params.get(ctx.watchguard_firebox.log.msg_id) == null) {\n  return;\n}\n\
+            params.get(ctx.watchguard_firebox.log.msg_id).forEach((k, v) -> {\n  \
+            if (k.equals(\"log_type\")) {\n    ctx.watchguard_firebox.log[k] = v;\n  \
+            } else if (v instanceof List) {\n    ctx.event[k] = new ArrayList(v);\n  \
+            } else {\n    ctx.event[k] = v;\n  }\n});";
+        let params = json!({ "3000-0148": {
+            "category": ["network"], "type": ["connection"],
+            "outcome": "success", "log_type": "traffic",
+        }});
+
+        let mut event = Event::new(json!({
+            "watchguard_firebox": { "log": { "msg_id": "3000-0148" } }
+        }));
+        assert!(try_params_painless(&mut event, script, &params));
+        assert_eq!(event.get("event.category"), Some(&json!(["network"])));
+        assert_eq!(event.get("event.type"), Some(&json!(["connection"])));
+        assert_eq!(event.get_str("event.outcome"), Some("success"));
+        assert_eq!(
+            event.get_str("watchguard_firebox.log.log_type"),
+            Some("traffic")
+        );
+        // The routed arm must not take the whole row with it.
+        assert_eq!(event.get("watchguard_firebox.log.category"), None);
+        assert_eq!(event.get("watchguard_firebox.log.type"), None);
+        assert_eq!(event.get("watchguard_firebox.log.outcome"), None);
+    }
+
+    /// Verbatim from `pipelines/suricata/eve/default.yml`: the other spelling
+    /// of the guard, routing to a path the arm names in full rather than to a
+    /// container keyed by `k`.
+    #[test]
+    fn a_merge_lambda_routes_to_the_path_its_arm_names() {
+        let script = "ctx.event.kind = 'event';\nctx.event.category = ['network'];\n\
+            def type_params = params.get(ctx?.suricata?.eve?.event_type);\n\
+            if (type_params == null) {\n    return;\n}\n\
+            type_params.forEach((k, v) -> {\n    if ('network_protocol' == k) {\n        \
+            if (ctx.network == null) {\n            ctx.network = ['protocol': v];\n        \
+            } else {\n            ctx.network.protocol = v;\n        }\n    \
+            } else if (v instanceof List) {\n        ctx.event[k] = new ArrayList(v);\n    \
+            } else {\n        ctx.event[k] = v;\n    }\n});";
+        let params = json!({ "tls": { "type": ["protocol"], "network_protocol": "tls" }});
+
+        let mut event = Event::new(json!({ "suricata": { "eve": { "event_type": "tls" } } }));
+        assert!(try_params_painless(&mut event, script, &params));
+        assert_eq!(event.get_str("network.protocol"), Some("tls"));
+        assert_eq!(event.get("event.type"), Some(&json!(["protocol"])));
+        assert_eq!(event.get("event.network_protocol"), None);
+        // The literals the script writes before the lookup still land.
+        assert_eq!(event.get_str("event.kind"), Some("event"));
+        assert_eq!(event.get("event.category"), Some(&json!(["network"])));
+    }
+
+    /// The single-assignment lambda every other integration writes, which has
+    /// no routed arm and must still merge the row whole.
+    #[test]
+    fn a_merge_lambda_with_no_branch_still_merges_the_row() {
+        let script = "params.get(ctx.event.code)?.forEach((k, v) -> ctx.event[k] = v);";
+        let params = json!({ "302013": { "type": ["connection"], "outcome": "success" }});
+
+        let mut event = Event::new(json!({ "event": { "code": "302013" } }));
+        assert!(try_params_painless(&mut event, script, &params));
+        assert_eq!(event.get("event.type"), Some(&json!(["connection"])));
+        assert_eq!(event.get_str("event.outcome"), Some("success"));
     }
 }

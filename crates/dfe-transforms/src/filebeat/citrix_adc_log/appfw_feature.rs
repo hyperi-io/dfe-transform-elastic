@@ -41,7 +41,7 @@ impl Transform for AppfwFeature {
                     // Grok pattern: ^Rest%{SPACE}Validation%{SPACE}relaxation%{SPACE}rule%{SPACE}:%{SPACE}%{WORD:citrix_adc.log.rule}%{SPACE}hit%{SPACE}at%{SPACE}url%{SPACE}:%{SPACE}%{GREEDYDATA:citrix_adc.log.url}$
                     // Grok pattern: ^gRPC%{SPACE}Validation%{SPACE}relaxation%{SPACE}rule%{SPACE}:%{SPACE}%{WORD:citrix_adc.log.rule}%{SPACE}hit%{SPACE}at%{SPACE}url%{SPACE}:%{SPACE}%{GREEDYDATA:citrix_adc.log.url}$
                     // Grok pattern: %{GREEDYDATA:citrix_adc.log.message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{IP:source.ip:ip} %{NUMBER:citrix_adc.log.transaction_id}-%{DATA:citrix_adc.log.ppe} - %{NOTSPACE:citrix_adc.log.profile}(?: %{NOTSPACE:url.original})?(?: %{GREEDYDATA:citrix_adc.log.message})?$"),
                             cached_grok!("^XML%{SPACE}Mismatched%{SPACE}content-type%{SPACE}in%{SPACE}HTTP%{SPACE}header%{SPACE}detected%{SPACE}=%{SPACE}\\\"%{GREEDYDATA:citrix_adc.log.content_type_mismatch}\\\"\\.$"),
@@ -68,7 +68,9 @@ impl Transform for AppfwFeature {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

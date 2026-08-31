@@ -132,7 +132,9 @@ impl Transform for Default {
                         event.get_string("aws.bedrock_agentcore.gateway.resource_arn")
                     {
                         // Grok pattern: arn:aws:bedrock-agentcore:%{DATA}:%{DATA}:gateway/%{DATA:aws.bedrock_agentcore.gateway.gateway_name}
-                        let _ = cached_grok!("arn:aws:bedrock-agentcore:%{DATA}:%{DATA}:gateway/%{DATA:aws.bedrock_agentcore.gateway.gateway_name}").extract_into(&input, event)?;
+                        if !cached_grok!("arn:aws:bedrock-agentcore:%{DATA}:%{DATA}:gateway/%{DATA:aws.bedrock_agentcore.gateway.gateway_name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                 }
                 Ok(())
@@ -160,7 +162,9 @@ impl Transform for Default {
                         event.get_string("aws.bedrock_agentcore.gateway.payload_object.log")
                     {
                         // Grok pattern: tool %{DATA:aws.bedrock_agentcore.gateway.tool.name} from target %{DATA:aws.bedrock_agentcore.gateway.target}$
-                        let _ = cached_grok!("tool %{DATA:aws.bedrock_agentcore.gateway.tool.name} from target %{DATA:aws.bedrock_agentcore.gateway.target}$").extract_into(&input, event)?;
+                        if !cached_grok!("tool %{DATA:aws.bedrock_agentcore.gateway.tool.name} from target %{DATA:aws.bedrock_agentcore.gateway.target}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                 }
                 Ok(())

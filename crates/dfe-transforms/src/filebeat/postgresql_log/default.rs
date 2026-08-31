@@ -41,7 +41,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: ^(?P<postgresql_log_timestamp>(?:(?P<_temp__timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{ISO8601_HOUR}:?%{MINUTE}(?::?%{SECOND}))) (?P<event_timezone>(?:([a-zA-Z]{1,4})|(?:Z|[+-]%{HOUR}(?::?%{MINUTE})?)))))(?P<separator>(?:.))(?P<raw_message>(?:(.|\n|\t)*))
-                let _ = cached_grok_mapped!("^(?P<postgresql_log_timestamp>(?:(?P<_temp__timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{ISO8601_HOUR}:?%{MINUTE}(?::?%{SECOND}))) (?P<event_timezone>(?:([a-zA-Z]{1,4})|(?:Z|[+-]%{HOUR}(?::?%{MINUTE})?)))))(?P<separator>(?:.))(?P<raw_message>(?:(.|\n|\t)*))", [("postgresql_log_timestamp", "postgresql.log.timestamp"), ("_temp__timestamp", "_temp_.timestamp"), ("event_timezone", "event.timezone")]).extract_into(&input, event)?;
+                if !cached_grok_mapped!("^(?P<postgresql_log_timestamp>(?:(?P<_temp__timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{ISO8601_HOUR}:?%{MINUTE}(?::?%{SECOND}))) (?P<event_timezone>(?:([a-zA-Z]{1,4})|(?:Z|[+-]%{HOUR}(?::?%{MINUTE})?)))))(?P<separator>(?:.))(?P<raw_message>(?:(.|\n|\t)*))", [("postgresql_log_timestamp", "postgresql.log.timestamp"), ("_temp__timestamp", "_temp_.timestamp"), ("event_timezone", "event.timezone")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
             }
 
             let _cond = { event.has_value("_temp_.timestamp") };
@@ -65,7 +67,9 @@ impl Transform for Default {
                 if event.has_value("raw_message") {
                     if let Some(input) = event.get_string("raw_message") {
                         // Grok pattern: ^(\\[%{NUMBER:process.pid:long}(-%{BASE16FLOAT:postgresql.log.session_line_number:long})?\\]:? ?)?(\\[%{NUMBER:postgresql.log.session_line_number:long}(-%{BASE16FLOAT:postgresql.log.sequence_number:long})?\\] )?((\\[%{USERNAME:user.name}\\]@\\[(?P<postgresql_log_database>(?:[a-zA-Z0-9_]+[a-zA-Z0-9_\\$]*))\\]|%{USERNAME:user.name}@(?P<postgresql_log_database>(?:[a-zA-Z0-9_]+[a-zA-Z0-9_\\$]*)) )?)?(%{DATA:_temp_.database_connection_str} ?)?%{WORD:log.level}:  ?(?:(?P<postgresql_log_sql_state_code>(?:\\b[A-Z0-9]{5}\\b))|%{SPACE})(duration: %{NUMBER:temp.duration:float} ms  (?:%{WORD:postgresql.log.query_step}(?: <unnamed>| %{WORD:postgresql.log.query_name})?): (?P<postgresql_log_query>(?:(.|\n|\t)*))|: (?P<message>(?:(.|\n|\t)*))|(?P<message>(?:(.|\n|\t)*)))
-                        let _ = cached_grok_mapped!("^(\\[%{NUMBER:process.pid:long}(-%{BASE16FLOAT:postgresql.log.session_line_number:long})?\\]:? ?)?(\\[%{NUMBER:postgresql.log.session_line_number:long}(-%{BASE16FLOAT:postgresql.log.sequence_number:long})?\\] )?((\\[%{USERNAME:user.name}\\]@\\[(?P<postgresql_log_database>(?:[a-zA-Z0-9_]+[a-zA-Z0-9_\\$]*))\\]|%{USERNAME:user.name}@(?P<postgresql_log_database>(?:[a-zA-Z0-9_]+[a-zA-Z0-9_\\$]*)) )?)?(%{DATA:_temp_.database_connection_str} ?)?%{WORD:log.level}:  ?(?:(?P<postgresql_log_sql_state_code>(?:\\b[A-Z0-9]{5}\\b))|%{SPACE})(duration: %{NUMBER:temp.duration:float} ms  (?:%{WORD:postgresql.log.query_step}(?: <unnamed>| %{WORD:postgresql.log.query_name})?): (?P<postgresql_log_query>(?:(.|\n|\t)*))|: (?P<message>(?:(.|\n|\t)*))|(?P<message>(?:(.|\n|\t)*)))", [("postgresql_log_database", "postgresql.log.database"), ("postgresql_log_database", "postgresql.log.database"), ("postgresql_log_sql_state_code", "postgresql.log.sql_state_code"), ("postgresql_log_query", "postgresql.log.query")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("^(\\[%{NUMBER:process.pid:long}(-%{BASE16FLOAT:postgresql.log.session_line_number:long})?\\]:? ?)?(\\[%{NUMBER:postgresql.log.session_line_number:long}(-%{BASE16FLOAT:postgresql.log.sequence_number:long})?\\] )?((\\[%{USERNAME:user.name}\\]@\\[(?P<postgresql_log_database>(?:[a-zA-Z0-9_]+[a-zA-Z0-9_\\$]*))\\]|%{USERNAME:user.name}@(?P<postgresql_log_database>(?:[a-zA-Z0-9_]+[a-zA-Z0-9_\\$]*)) )?)?(%{DATA:_temp_.database_connection_str} ?)?%{WORD:log.level}:  ?(?:(?P<postgresql_log_sql_state_code>(?:\\b[A-Z0-9]{5}\\b))|%{SPACE})(duration: %{NUMBER:temp.duration:float} ms  (?:%{WORD:postgresql.log.query_step}(?: <unnamed>| %{WORD:postgresql.log.query_name})?): (?P<postgresql_log_query>(?:(.|\n|\t)*))|: (?P<message>(?:(.|\n|\t)*))|(?P<message>(?:(.|\n|\t)*)))", [("postgresql_log_database", "postgresql.log.database"), ("postgresql_log_database", "postgresql.log.database"), ("postgresql_log_sql_state_code", "postgresql.log.sql_state_code"), ("postgresql_log_query", "postgresql.log.query")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 // ignore_failure: true
@@ -288,7 +292,9 @@ impl Transform for Default {
                 if event.has_value("tempcsv.connection_from") {
                     if let Some(input) = event.get_string("tempcsv.connection_from") {
                         // Grok pattern: ^%{DATA:postgresql.log.client_addr}(:%{NUMBER:postgresql.log.client_port:int})?$
-                        let _ = cached_grok!("^%{DATA:postgresql.log.client_addr}(:%{NUMBER:postgresql.log.client_port:int})?$").extract_into(&input, event)?;
+                        if !cached_grok!("^%{DATA:postgresql.log.client_addr}(:%{NUMBER:postgresql.log.client_port:int})?$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 if event.has_value("postgresql.log.session_line_num") {
@@ -346,7 +352,7 @@ impl Transform for Default {
                         // Grok pattern: ^duration: %{NUMBER:temp.duration:float} ms  (?P<postgresql_log_query_step>(?:(parse|bind|statement|fastpath function call|execute|execute fetch from))) %{DATA:postgresql.log.query_name}: (?P<message>(?:(.|\n|   )*))$
                         // Grok pattern: ^duration: %{NUMBER:temp.duration:float} ms  (?P<postgresql_log_query_step>(?:(parse|bind|statement|fastpath function call|execute|execute fetch from))): (?P<message>(?:(.|\n|   )*))$
                         // Grok pattern: ^((?P<postgresql_log_query_step>(?:(parse|bind|statement|fastpath function call|execute|execute fetch from))): )?(?P<message>(?:(.|\n|   )*))$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!("^duration: %{NUMBER:temp.duration:float} ms$"),
                                 cached_grok_mapped!(
@@ -364,13 +370,17 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 if event.has_value("tempcsv.connection_from") {
                     if let Some(input) = event.get_string("tempcsv.connection_from") {
                         // Grok pattern: ^%{DATA:postgresql.log.client_addr}(:%{NUMBER:postgresql.log.client_port:int})?$
-                        let _ = cached_grok!("^%{DATA:postgresql.log.client_addr}(:%{NUMBER:postgresql.log.client_port:int})?$").extract_into(&input, event)?;
+                        if !cached_grok!("^%{DATA:postgresql.log.client_addr}(:%{NUMBER:postgresql.log.client_port:int})?$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 event.remove("tempcsv");
@@ -383,7 +393,9 @@ impl Transform for Default {
                 if event.has_value("raw_message") {
                     if let Some(input) = event.get_string("raw_message") {
                         // Grok pattern: (%{DATA:postgresql.log.client_addr}\\(%{NUMBER:postgresql.log.client_port:int}\\)|\\[%{DATA:postgresql.log.client_addr}\\])?:(%{USERNAME:user.name}?@(?P<postgresql_log_database>(?:[a-zA-Z0-9_]+[a-zA-Z0-9_\\$]*))?|\\[%{USERNAME:user.name}?\\]@\\[(?P<postgresql_log_database>(?:[a-zA-Z0-9_]+[a-zA-Z0-9_\\$]*))?\\]):(\\[%{NUMBER:process.pid:long}\\])?:%{WORD:log.level}: ((?:%{SPACE}%{WORD:postgresql.log.query_step}): (?P<postgresql_log_query>(?:(.|\\r|\\n)*))| (?P<message>(?:(.|\\r|\\n)*))|(?P<message>(?:(.|\\r|\\n)*)))
-                        let _ = cached_grok_mapped!("(%{DATA:postgresql.log.client_addr}\\(%{NUMBER:postgresql.log.client_port:int}\\)|\\[%{DATA:postgresql.log.client_addr}\\])?:(%{USERNAME:user.name}?@(?P<postgresql_log_database>(?:[a-zA-Z0-9_]+[a-zA-Z0-9_\\$]*))?|\\[%{USERNAME:user.name}?\\]@\\[(?P<postgresql_log_database>(?:[a-zA-Z0-9_]+[a-zA-Z0-9_\\$]*))?\\]):(\\[%{NUMBER:process.pid:long}\\])?:%{WORD:log.level}: ((?:%{SPACE}%{WORD:postgresql.log.query_step}): (?P<postgresql_log_query>(?:(.|\\r|\\n)*))| (?P<message>(?:(.|\\r|\\n)*))|(?P<message>(?:(.|\\r|\\n)*)))", [("postgresql_log_database", "postgresql.log.database"), ("postgresql_log_database", "postgresql.log.database"), ("postgresql_log_query", "postgresql.log.query")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(%{DATA:postgresql.log.client_addr}\\(%{NUMBER:postgresql.log.client_port:int}\\)|\\[%{DATA:postgresql.log.client_addr}\\])?:(%{USERNAME:user.name}?@(?P<postgresql_log_database>(?:[a-zA-Z0-9_]+[a-zA-Z0-9_\\$]*))?|\\[%{USERNAME:user.name}?\\]@\\[(?P<postgresql_log_database>(?:[a-zA-Z0-9_]+[a-zA-Z0-9_\\$]*))?\\]):(\\[%{NUMBER:process.pid:long}\\])?:%{WORD:log.level}: ((?:%{SPACE}%{WORD:postgresql.log.query_step}): (?P<postgresql_log_query>(?:(.|\\r|\\n)*))| (?P<message>(?:(.|\\r|\\n)*))|(?P<message>(?:(.|\\r|\\n)*)))", [("postgresql_log_database", "postgresql.log.database"), ("postgresql_log_database", "postgresql.log.database"), ("postgresql_log_query", "postgresql.log.query")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 // End nested pipeline: "pipeline-aws-log"
@@ -507,15 +519,23 @@ impl Transform for Default {
 
             event.append("event.category", json!("database"))?;
 
-            // SKIPPED: condition not transpiled: ctx?.postgresql?.log?.sql_state_code == null || (ctx.postgresql.log.sql_state_code ==~ /^0[012].*/)
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                !event.has_value("postgresql.log.sql_state_code")
+                    || (event
+                        .get_str("postgresql.log.sql_state_code")
+                        .is_some_and(|s| cached_regex!(r"^(?:^0[012].*)$").is_match(s)))
+            };
+            if _cond {
                 event.set("event.type", Value::Array(vec![json!("info")]))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx?.postgresql?.log?.sql_state_code != null && ! (ctx.postgresql.log.sql_state_code ==~ /^0[012].*/)
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("postgresql.log.sql_state_code")
+                    && !(event
+                        .get_str("postgresql.log.sql_state_code")
+                        .is_some_and(|s| cached_regex!(r"^(?:^0[012].*)$").is_match(s)))
+            };
+            if _cond {
                 event.set("event.type", Value::Array(vec![json!("error")]))?;
             }
 

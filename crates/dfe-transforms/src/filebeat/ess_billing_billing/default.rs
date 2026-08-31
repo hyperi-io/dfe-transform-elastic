@@ -118,7 +118,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("ess.billing.sku") {
                         // Grok pattern: (?:Cloud-Enterprise_)?(?P<cloud_provider>(?:aws|gcp|azure|global))\\.%{NOTSPACE:cloud.machine.type}_%{NOTSPACE:cloud.region}_%{NUMBER:ess.billing.ram_per_zone:int}_%{NUMBER:ess.billing.zone_count:int}
-                        let _ = cached_grok_mapped!("(?:Cloud-Enterprise_)?(?P<cloud_provider>(?:aws|gcp|azure|global))\\.%{NOTSPACE:cloud.machine.type}_%{NOTSPACE:cloud.region}_%{NUMBER:ess.billing.ram_per_zone:int}_%{NUMBER:ess.billing.zone_count:int}", [("cloud_provider", "cloud.provider")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?:Cloud-Enterprise_)?(?P<cloud_provider>(?:aws|gcp|azure|global))\\.%{NOTSPACE:cloud.machine.type}_%{NOTSPACE:cloud.region}_%{NUMBER:ess.billing.ram_per_zone:int}_%{NUMBER:ess.billing.zone_count:int}", [("cloud_provider", "cloud.provider")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -162,7 +164,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("ess.billing.sku") {
                         // Grok pattern: %{DATA}\\.(?P<ess_billing_cloud_service_type>[^_]+)(?:_(?P<cloud_region>.+))?
-                        let _ = cached_grok_mapped!("%{DATA}\\.(?P<ess_billing_cloud_service_type>[^_]+)(?:_(?P<cloud_region>.+))?", [("ess_billing_cloud_service_type", "ess.billing.cloud.service.type"), ("cloud_region", "cloud.region")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("%{DATA}\\.(?P<ess_billing_cloud_service_type>[^_]+)(?:_(?P<cloud_region>.+))?", [("ess_billing_cloud_service_type", "ess.billing.cloud.service.type"), ("cloud_region", "cloud.region")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();

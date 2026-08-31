@@ -57,7 +57,9 @@ impl Transform for Default {
             if event.has_value("event.original") {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: %{LOGLEVEL:log.level}%{SPACE}\\[%{GREEDYDATA:process.thread.name}\\]%{SPACE}%{TIMESTAMP_ISO8601:cassandra.log.timestamp}%{SPACE}%{DATA:log.origin.file.name}\\:%{INT:log.origin.file.line:long}%{SPACE}\\-%{SPACE}%{GREEDYDATA:message}(?P<cassandra_log_meta>(?:(.|\\n|\\t)*))
-                    let _ = cached_grok_mapped!("%{LOGLEVEL:log.level}%{SPACE}\\[%{GREEDYDATA:process.thread.name}\\]%{SPACE}%{TIMESTAMP_ISO8601:cassandra.log.timestamp}%{SPACE}%{DATA:log.origin.file.name}\\:%{INT:log.origin.file.line:long}%{SPACE}\\-%{SPACE}%{GREEDYDATA:message}(?P<cassandra_log_meta>(?:(.|\\n|\\t)*))", [("cassandra_log_meta", "cassandra.log.meta")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("%{LOGLEVEL:log.level}%{SPACE}\\[%{GREEDYDATA:process.thread.name}\\]%{SPACE}%{TIMESTAMP_ISO8601:cassandra.log.timestamp}%{SPACE}%{DATA:log.origin.file.name}\\:%{INT:log.origin.file.line:long}%{SPACE}\\-%{SPACE}%{GREEDYDATA:message}(?P<cassandra_log_meta>(?:(.|\\n|\\t)*))", [("cassandra_log_meta", "cassandra.log.meta")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

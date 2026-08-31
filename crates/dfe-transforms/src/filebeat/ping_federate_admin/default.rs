@@ -47,7 +47,9 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: %{DATA:ping_federate.admin.timestamp}\\s\\|\\s%{WORD:ping_federate.admin.user}\\s\\|\\s(%{DATA:ping_federate.admin.roles})?\\s\\|\\s(%{IP:ping_federate.admin.ip})?\\s\\|\\s(%{DATA:ping_federate.admin.event.detail_id})?\\s\\|\\s(%{WORD:ping_federate.admin.component})\\s\\|\\s(%{WORD:ping_federate.admin.event.type})?\\s\\|\\s(%{GREEDYDATA:ping_federate.admin.message})?
-                        let _ = cached_grok!("%{DATA:ping_federate.admin.timestamp}\\s\\|\\s%{WORD:ping_federate.admin.user}\\s\\|\\s(%{DATA:ping_federate.admin.roles})?\\s\\|\\s(%{IP:ping_federate.admin.ip})?\\s\\|\\s(%{DATA:ping_federate.admin.event.detail_id})?\\s\\|\\s(%{WORD:ping_federate.admin.component})\\s\\|\\s(%{WORD:ping_federate.admin.event.type})?\\s\\|\\s(%{GREEDYDATA:ping_federate.admin.message})?").extract_into(&input, event)?;
+                        if !cached_grok!("%{DATA:ping_federate.admin.timestamp}\\s\\|\\s%{WORD:ping_federate.admin.user}\\s\\|\\s(%{DATA:ping_federate.admin.roles})?\\s\\|\\s(%{IP:ping_federate.admin.ip})?\\s\\|\\s(%{DATA:ping_federate.admin.event.detail_id})?\\s\\|\\s(%{WORD:ping_federate.admin.component})\\s\\|\\s(%{WORD:ping_federate.admin.event.type})?\\s\\|\\s(%{GREEDYDATA:ping_federate.admin.message})?").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })() {

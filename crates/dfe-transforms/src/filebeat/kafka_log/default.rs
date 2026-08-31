@@ -29,7 +29,7 @@ impl Transform for Default {
                 // Grok pattern: (?m)%{TIMESTAMP_ISO8601:kafka.log.timestamp}. %{LOGLEVEL:log.level} +%{JAVALOGMESSAGE:message} \\(%{JAVACLASS:kafka.log.class}\\)$[ \\n]*(?'kafka.log.trace.full'.*)
                 // Grok pattern: (?m)%{TIMESTAMP_ISO8601:kafka.log.timestamp} %{LOGLEVEL:log.level}\\s+%{JAVACLASS:kafka.log.class}: \\[%{NOTSPACE:kafka.log.thread}\\]: %{GREEDYDATA:message}
                 // Grok pattern: (?m)\\[%{TIMESTAMP_ISO8601:kafka.log.timestamp}\\] \\[%{LOGLEVEL:log.level} ?\\] \\[%{NOTSPACE:kafka.log.thread}\\] \\[%{NOTSPACE:kafka.log.class}\\] \\- %{GREEDYDATA:message}
-                let _ = extract_first_match_traced(
+                if !extract_first_match_traced(
                     &[
                         cached_grok!(
                             "(?m)%{TIMESTAMP_ISO8601:kafka.log.timestamp}. %{LOGLEVEL:log.level} +%{JAVALOGMESSAGE:message} \\(%{JAVACLASS:kafka.log.class}\\)$[ \\n]*(?'kafka.log.trace.full'.*)"
@@ -43,14 +43,18 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: \\[(?P<kafka_log_component>(?:[^\\]]*))\\][,:.]? +%{JAVALOGMESSAGE:message}
-                    let _ = cached_grok_mapped!("\\[(?P<kafka_log_component>(?:[^\\]]*))\\][,:.]? +%{JAVALOGMESSAGE:message}", [("kafka_log_component", "kafka.log.component")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("\\[(?P<kafka_log_component>(?:[^\\]]*))\\][,:.]? +%{JAVALOGMESSAGE:message}", [("kafka_log_component", "kafka.log.component")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })() {
@@ -70,7 +74,9 @@ impl Transform for Default {
                 if event.has_value("kafka.log.trace.full") {
                     if let Some(input) = event.get_string("kafka.log.trace.full") {
                         // Grok pattern: %{JAVACLASS:kafka.log.trace.class}:\\s*%{JAVALOGMESSAGE:kafka.log.trace.message}
-                        let _ = cached_grok!("%{JAVACLASS:kafka.log.trace.class}:\\s*%{JAVALOGMESSAGE:kafka.log.trace.message}").extract_into(&input, event)?;
+                        if !cached_grok!("%{JAVACLASS:kafka.log.trace.class}:\\s*%{JAVALOGMESSAGE:kafka.log.trace.message}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                 }
                 Ok(())

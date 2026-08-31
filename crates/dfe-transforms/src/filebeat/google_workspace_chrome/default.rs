@@ -1091,7 +1091,7 @@ impl Transform for Default {
                     // Grok pattern: %{DATA:user.domain}\\\\%{GREEDYDATA:user.name}
                     // Grok pattern: %{DATA:user.name}@%{GREEDYDATA:user.domain}
                     // Grok pattern: %{GREEDYDATA:user.name}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "%{DATA:_tmp.user_leading_domain}\\\\%{DATA:user.name}@%{GREEDYDATA:user.domain}"
@@ -1102,7 +1102,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

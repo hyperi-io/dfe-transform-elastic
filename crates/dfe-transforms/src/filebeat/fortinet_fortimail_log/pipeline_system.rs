@@ -108,7 +108,7 @@ impl Transform for PipelineSystem {
                     // Grok pattern: ^authserver: (?P<temp_block_action>(?:(?:added|removed))) block rule for %{IP:temp.block_ip}$
                     // Grok pattern: ^authserver: (?P<temp_block_action>(?:(?:added|removed))) block rule for %{IP:temp.block_ip} until %{GREEDYDATA}$
                     // Grok pattern: ^%{DATA}(?:(?i)user %{NOTSPACE:temp.user}) %{GREEDYDATA:temp.msg}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^(?:%{DATA}(?i)interface %{NUMBER:fortinet_fortimail.log.port:long}%{DATA} (?:(?i)user %{NOTSPACE:temp.user})) %{DATA}%{IP:fortinet_fortimail.log.ip}%{GREEDYDATA:temp.msg}$"),
                             cached_grok!("^(?:%{DATA}(?i)interface %{NUMBER:fortinet_fortimail.log.port:long}%{DATA} (?:(?i)user %{NOTSPACE:temp.user}))%{GREEDYDATA:temp.msg}$"),
@@ -119,7 +119,9 @@ impl Transform for PipelineSystem {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())
@@ -201,7 +203,7 @@ impl Transform for PipelineSystem {
                     // Grok pattern: ^(?P<fortinet_fortimail_log_network>(?:(?i)(?:telnet|ssh|http)))%{SPACE}\\(%{SPACE}%{IP:fortinet_fortimail.log.ui_ip}%{SPACE}\\)$
                     // Grok pattern: ^%{WORD}%{SPACE}\\(%{SPACE}%{IP:fortinet_fortimail.log.ui_ip}%{SPACE}\\)$
                     // Grok pattern: ^%{DATA}%{IP:fortinet_fortimail.log.ui_ip}%{GREEDYDATA:temp.msg}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!("^(?P<fortinet_fortimail_log_network>(?:(?i)(?:telnet|ssh|http)))%{SPACE}\\(%{SPACE}%{IP:fortinet_fortimail.log.ui_ip}%{SPACE}\\)$", [("fortinet_fortimail_log_network", "fortinet_fortimail.log.network")]),
                             cached_grok!("^%{WORD}%{SPACE}\\(%{SPACE}%{IP:fortinet_fortimail.log.ui_ip}%{SPACE}\\)$"),
@@ -209,7 +211,9 @@ impl Transform for PipelineSystem {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())

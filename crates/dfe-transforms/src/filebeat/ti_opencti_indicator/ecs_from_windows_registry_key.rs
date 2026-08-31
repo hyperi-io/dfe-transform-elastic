@@ -16,7 +16,9 @@ impl Transform for EcsFromWindowsRegistryKey {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
             if let Some(input) = event.get_string("_ingest._value.attribute_key") {
                 // Grok pattern: ^((?P<_tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:_tmp_registry.key}$
-                let _ = cached_grok_mapped!("^((?P<_tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:_tmp_registry.key}$", [("_tmp_registry_hive", "_tmp_registry.hive")]).extract_into(&input, event)?;
+                if !cached_grok_mapped!("^((?P<_tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:_tmp_registry.key}$", [("_tmp_registry_hive", "_tmp_registry.hive")]).extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
         let _cond = { event.has_value("_tmp_registry.hive") };

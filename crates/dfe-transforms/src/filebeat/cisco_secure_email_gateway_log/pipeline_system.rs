@@ -25,7 +25,7 @@ impl Transform for PipelineSystem {
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.subject} to %{GREEDYDATA:cisco_secure_email_gateway.log.description} ' '$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.subject}: %{GREEDYDATA:cisco_secure_email_gateway.log.description}$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^PID %{NUMBER:process.pid:long}: User %{USERNAME:user.name} commit changes:%{GREEDYDATA:cisco_secure_email_gateway.log.commit_changes}$"),
                             cached_grok!("^%{GREEDYDATA:cisco_secure_email_gateway.log.name}: qname:%{DATA:cisco_secure_email_gateway.log.qname} ns_name:%{DATA:cisco_secure_email_gateway.log.ns_name} zone:%{DATA:cisco_secure_email_gateway.log.zone} ref_zone:%{DATA:cisco_secure_email_gateway.log.ref_zone} referrals:%{GREEDYDATA:cisco_secure_email_gateway.log.referrals}$"),
@@ -36,7 +36,9 @@ impl Transform for PipelineSystem {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             let _cond = { event.has_value("user.name") };

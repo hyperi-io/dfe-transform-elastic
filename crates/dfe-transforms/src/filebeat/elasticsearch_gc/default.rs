@@ -32,7 +32,7 @@ impl Transform for Default {
                 // Grok pattern: (?:\\[%{TIMESTAMP_ISO8601:timestamp}\\]\\[%{POSINT:process.pid}\\](\\[%{DATA:log.level}%{SPACE}\\])?\\[%{DATA:elasticsearch.gc.tags}%{SPACE}\\]) GC\\(%{BASE10NUM}\\) ParNew: %{BASE10NUM}K-\\>%{BASE10NUM:elasticsearch.gc.young_gen.used_kb}K\\(%{BASE10NUM:elasticsearch.gc.young_gen.size_kb}K\\)
                 // Grok pattern: (?:\\[%{TIMESTAMP_ISO8601:timestamp}\\]\\[%{POSINT:process.pid}\\](\\[%{DATA:log.level}%{SPACE}\\])?\\[%{DATA:elasticsearch.gc.tags}%{SPACE}\\]) GC\\(%{BASE10NUM}\\) Old: %{BASE10NUM}K-\\>%{BASE10NUM:elasticsearch.gc.old_gen.used_kb}K\\(%{BASE10NUM:elasticsearch.gc.old_gen.size_kb}K\\)
                 // Grok pattern: (?:(?:%{TIMESTAMP_ISO8601:timestamp}: %{BASE10NUM:elasticsearch.gc.jvm_runtime_sec}:)|(?:\\[%{TIMESTAMP_ISO8601:timestamp}\\]\\[%{POSINT:process.pid}\\](\\[%{DATA:log.level}%{SPACE}\\])?\\[%{DATA:elasticsearch.gc.tags}%{SPACE}\\])) (?P<message>(?:(.|\n)*))
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!(
                             "(?:(?:%{TIMESTAMP_ISO8601:timestamp}: %{BASE10NUM:elasticsearch.gc.jvm_runtime_sec}:)|(?:\\[%{TIMESTAMP_ISO8601:timestamp}\\]\\[%{POSINT:process.pid}\\](\\[%{DATA:log.level}%{SPACE}\\])?\\[%{DATA:elasticsearch.gc.tags}%{SPACE}\\])) Total time for which application threads were stopped: %{BASE10NUM:elasticsearch.gc.threads_total_stop_time_sec} seconds, Stopping threads took: %{BASE10NUM:elasticsearch.gc.stopping_threads_time_sec} seconds"
@@ -55,7 +55,9 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             if event.has_value("process.pid") {

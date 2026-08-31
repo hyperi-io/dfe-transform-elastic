@@ -29,7 +29,7 @@ impl Transform for Default {
                 // Grok pattern: ^(?:(?:%{SYSLOGTIMESTAMP:_tmp.timestamp}|(?P<_tmp_timestamp8601>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?%{ISO8601_TIMEZONE:event.timezone}?)))) (?:<?(?P<citrix_facility>(?:[a-zA-Z][a-zA-Z0-9]*))\\.(?P<citrix_priority>(?:[a-zA-Z][a-zA-Z0-9]*))>?) %{IP:client.ip:ip} %{GREEDYDATA:citrix.detail}
                 // Grok pattern: ^(?:(?:<%{NONNEGINT:log.syslog.priority:long}>)%{NONNEGINT:log.syslog.version} +(?:-|(?P<_tmp_timestamp8601>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?%{ISO8601_TIMEZONE:event.timezone}?))) +(?:-|%{IPORHOST:log.syslog.hostname}) +(?:-|%{SYSLOG5424PRINTASCII:log.syslog.appname}) +(?:-|%{SYSLOG5424PRINTASCII:log.syslog.procid}) +(?:-|%{SYSLOG5424PRINTASCII:log.syslog.msgid}) +(?:-|%{SYSLOG5424SD})?) +%{GREEDYDATA:citrix.detail}
                 // Grok pattern: ^%{GREEDYDATA:citrix.detail}
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok_mapped!(
                             "^(?:(?:%{SYSLOGTIMESTAMP:_tmp.timestamp}|(?P<_tmp_timestamp8601>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?%{ISO8601_TIMEZONE:event.timezone}?)))) (?:<?(?P<citrix_facility>(?:[a-zA-Z][a-zA-Z0-9]*))\\.(?P<citrix_priority>(?:[a-zA-Z][a-zA-Z0-9]*))>?) %{IP:client.ip:ip} %{GREEDYDATA:citrix.detail}",
@@ -47,7 +47,9 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             let _cond =
@@ -264,7 +266,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("citrix.detail") {
                     // Grok pattern: ^(?:(?:(?:<%{NUMBER}>%{SPACE})?(?P<_tmp_timestamp_native>(?:(?:%{MONTHNUM}/%{MONTHDAY}/%{YEAR}|%{YEAR}/%{MONTHNUM}/%{MONTHDAY}):%{HOUR}:%{MINUTE}:%{SECOND})) %{WORD:event.timezone} (?:%{SYSLOGHOST:citrix.host} )?%{INT}-PPE-%{INT}) : )?%{GREEDYDATA:_tmp.details} : +\"%{GREEDYDATA:citrix.extended.message}\"
                     // Grok pattern: ^(?:(?:(?:<%{NUMBER}>%{SPACE})?(?P<_tmp_timestamp_native>(?:(?:%{MONTHNUM}/%{MONTHDAY}/%{YEAR}|%{YEAR}/%{MONTHNUM}/%{MONTHDAY}):%{HOUR}:%{MINUTE}:%{SECOND})) %{WORD:event.timezone} (?:%{SYSLOGHOST:citrix.host} )?%{INT}-PPE-%{INT}) : )?%{GREEDYDATA:_tmp.details} : +%{GREEDYDATA:citrix.extended.message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^(?:(?:(?:<%{NUMBER}>%{SPACE})?(?P<_tmp_timestamp_native>(?:(?:%{MONTHNUM}/%{MONTHDAY}/%{YEAR}|%{YEAR}/%{MONTHNUM}/%{MONTHDAY}):%{HOUR}:%{MINUTE}:%{SECOND})) %{WORD:event.timezone} (?:%{SYSLOGHOST:citrix.host} )?%{INT}-PPE-%{INT}) : )?%{GREEDYDATA:_tmp.details} : +\"%{GREEDYDATA:citrix.extended.message}\"",
@@ -277,20 +279,26 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 let _cond = { !event.has_value("log.syslog.appname") };
                 if _cond {
                     if let Some(input) = event.get_string("_tmp.details") {
                         // Grok pattern: ^(?P<_tmp_default>(?:default ))?%{WORD:citrix.device_event_class_id} %{GREEDYDATA:citrix.name} %{INT:event.id} %{INT:event.severity}$
-                        let _ = cached_grok_mapped!("^(?P<_tmp_default>(?:default ))?%{WORD:citrix.device_event_class_id} %{GREEDYDATA:citrix.name} %{INT:event.id} %{INT:event.severity}$", [("_tmp_default", "_tmp.default")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("^(?P<_tmp_default>(?:default ))?%{WORD:citrix.device_event_class_id} %{GREEDYDATA:citrix.name} %{INT:event.id} %{INT:event.severity}$", [("_tmp_default", "_tmp.default")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = { event.has_value("log.syslog.appname") };
                 if _cond {
                     if let Some(input) = event.get_string("_tmp.details") {
                         // Grok pattern: ^(?P<_tmp_default>(?:default ))?%{GREEDYDATA:citrix.name} %{INT:event.id} %{INT:event.severity}$
-                        let _ = cached_grok_mapped!("^(?P<_tmp_default>(?:default ))?%{GREEDYDATA:citrix.name} %{INT:event.id} %{INT:event.severity}$", [("_tmp_default", "_tmp.default")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("^(?P<_tmp_default>(?:default ))?%{GREEDYDATA:citrix.name} %{INT:event.id} %{INT:event.severity}$", [("_tmp_default", "_tmp.default")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {

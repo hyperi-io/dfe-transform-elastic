@@ -164,7 +164,8 @@ pub fn grok_mapped(pattern: &str, extra: &[(&str, &str)]) -> &'static CompiledGr
         }
     }
     crate::codegen_api::resolve_capture_paths(&mut field_map, &mut capture_types);
-    let expanded = tolerate_trailing_terminator(&expanded);
+    let tolerant = tolerate_trailing_terminator(&expanded);
+    let expanded = line_anchored(&tolerant);
 
     let compiled: &'static CompiledGrok = Box::leak(Box::new(CompiledGrok {
         regex: Pattern::compile(&expanded, pattern),
@@ -465,6 +466,21 @@ pub fn extract_first_match_traced(
     patterns[index].extract_into(input, event)
 }
 
+/// Anchor `^` and `$` to LINES, which is what Elasticsearch's grok does.
+///
+/// Its grok is joni, not `java.util.regex`, and joni follows Ruby: `^` matches
+/// after any newline and `$` before one. Rust anchors to the haystack unless
+/// `(?m)` says otherwise, so every anchored pattern failed outright on a
+/// multi-line value where joni matches one line of it. `rapid7_insightvm`'s
+/// `^%{GREEDYDATA}$` is the clearest case -- a catch-all whose whole job is to
+/// make the processor always succeed, matching nothing.
+fn line_anchored(expanded: &str) -> Cow<'_, str> {
+    if expanded.starts_with("(?m)") {
+        return Cow::Borrowed(expanded);
+    }
+    Cow::Owned(format!("(?m){expanded}"))
+}
+
 /// Let a trailing `$` match before a final line terminator, as Java's does.
 ///
 /// Rust's `$` is the end of the haystack and Java's is the end but for one
@@ -750,6 +766,24 @@ mod tests {
         );
         assert_eq!(tolerate_trailing_terminator("^a\\$"), "^a\\$");
         assert_eq!(tolerate_trailing_terminator("^a"), "^a");
+    }
+
+    /// joni anchors to lines, so a catch-all matches the first line of a
+    /// multi-line value rather than failing the whole processor.
+    #[test]
+    fn an_anchored_pattern_matches_a_line_of_a_multiline_value() {
+        assert_eq!(line_anchored("^a$"), "(?m)^a$");
+        // Already declared by the pipeline; not declared twice.
+        assert_eq!(line_anchored("(?m)^a$"), "(?m)^a$");
+
+        let compiled = grok("^%{GREEDYDATA:first}$");
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into("Following entries\n\nttyS0\n", &mut event)
+                .expect("the catch-all compiles")
+        );
+        assert_eq!(event.get_str("first"), Some("Following entries"));
     }
 
     /// The shape that made this necessary: an ALB access log begins with the

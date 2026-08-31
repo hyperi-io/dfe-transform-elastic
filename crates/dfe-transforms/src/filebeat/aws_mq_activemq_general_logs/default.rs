@@ -35,7 +35,9 @@ impl Transform for Default {
             if event.has_value("event.original") {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: (?P<timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{HOUR}:%{MINUTE}:%{SECOND},%{NUMBER}))%{SPACE}\\|%{SPACE}%{LOGLEVEL:log.level}%{SPACE}\\|%{SPACE}(?P<message>(?:(\\n|(?! \\|).)*))%{SPACE}\\|%{SPACE}(?P<activemq_log_caller>(?:(\\n|(?! \\|).)*))%{SPACE}\\|%{SPACE}(?P<activemq_log_thread>(?:((?! \n).)*))%{SPACE}(?P<error_stack_trace>(?:(.|\\n|\\t)*))
-                    let _ = cached_grok_mapped!("(?P<timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{HOUR}:%{MINUTE}:%{SECOND},%{NUMBER}))%{SPACE}\\|%{SPACE}%{LOGLEVEL:log.level}%{SPACE}\\|%{SPACE}(?P<message>(?:(\\n|(?! \\|).)*))%{SPACE}\\|%{SPACE}(?P<activemq_log_caller>(?:(\\n|(?! \\|).)*))%{SPACE}\\|%{SPACE}(?P<activemq_log_thread>(?:((?! \n).)*))%{SPACE}(?P<error_stack_trace>(?:(.|\\n|\\t)*))", [("activemq_log_caller", "activemq.log.caller"), ("activemq_log_thread", "activemq.log.thread"), ("error_stack_trace", "error.stack_trace")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("(?P<timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY} %{HOUR}:%{MINUTE}:%{SECOND},%{NUMBER}))%{SPACE}\\|%{SPACE}%{LOGLEVEL:log.level}%{SPACE}\\|%{SPACE}(?P<message>(?:(\\n|(?! \\|).)*))%{SPACE}\\|%{SPACE}(?P<activemq_log_caller>(?:(\\n|(?! \\|).)*))%{SPACE}\\|%{SPACE}(?P<activemq_log_thread>(?:((?! \n).)*))%{SPACE}(?P<error_stack_trace>(?:(.|\\n|\\t)*))", [("activemq_log_caller", "activemq.log.caller"), ("activemq_log_thread", "activemq.log.thread"), ("error_stack_trace", "error.stack_trace")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

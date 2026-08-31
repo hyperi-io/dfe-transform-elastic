@@ -178,7 +178,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("abusech.url.host") {
                         // Grok pattern: (?:%{IP:threat.indicator.ip}|%{GREEDYDATA:threat.indicator.url.domain})
-                        let _ = cached_grok!("(?:%{IP:threat.indicator.ip}|%{GREEDYDATA:threat.indicator.url.domain})").extract_into(&input, event)?;
+                        if !cached_grok!("(?:%{IP:threat.indicator.ip}|%{GREEDYDATA:threat.indicator.url.domain})").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();

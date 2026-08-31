@@ -560,7 +560,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("suricata.eve.tls.version") {
                         // Grok pattern: %{DATA:tls.version_protocol} %{GREEDYDATA:tls.version}
                         // Grok pattern: %{DATA:tls.version_protocol}v%{GREEDYDATA:tls.version}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "%{DATA:tls.version_protocol} %{GREEDYDATA:tls.version}"
@@ -571,7 +571,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 if event.has_value("tls.version_protocol") {
@@ -1176,7 +1178,9 @@ impl Transform for Default {
             if event.has_value("suricata.eve.http.url") {
                 if let Some(input) = event.get_string("suricata.eve.http.url") {
                     // Grok pattern: (?P<url_path>(?:[^?#]*))(?:\\?(?P<url_query>(?:[^#]*)))?(?:#(?P<url_fragment>(?:.*)))?
-                    let _ = cached_grok_mapped!("(?P<url_path>(?:[^?#]*))(?:\\?(?P<url_query>(?:[^#]*)))?(?:#(?P<url_fragment>(?:.*)))?", [("url_path", "url.path"), ("url_query", "url.query"), ("url_fragment", "url.fragment")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("(?P<url_path>(?:[^?#]*))(?:\\?(?P<url_query>(?:[^#]*)))?(?:#(?P<url_fragment>(?:.*)))?", [("url_path", "url.path"), ("url_query", "url.query"), ("url_fragment", "url.fragment")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

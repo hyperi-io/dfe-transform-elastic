@@ -198,7 +198,7 @@ impl Transform for Default {
                     // Grok pattern: apis/(?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))
                     // Grok pattern: api/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))
                     // Grok pattern: (?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "%{DATA}/(?P<orchestrator_api_version>(?:(v\\d+([a-z]+)?(\\d+)?)))/namespaces/%{DATA:orchestrator.namespace}/(?P<orchestrator_resource_type>(?:([a-z]+((\\.[a-z0-9]+)+)?)))(/%{HOSTNAME:orchestrator.resource.name})?",
@@ -232,7 +232,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

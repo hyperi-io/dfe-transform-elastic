@@ -89,7 +89,9 @@ impl Transform for Webfirewall {
             if event.has_value("_temp.remMessage") {
                 if let Some(input) = event.get_string("_temp.remMessage") {
                     // Grok pattern: \\[%{DATA:barracuda.waf.attack_details}\\] %{GREEDYDATA:_temp.remMessage}
-                    let _ = cached_grok!("\\[%{DATA:barracuda.waf.attack_details}\\] %{GREEDYDATA:_temp.remMessage}").extract_into(&input, event)?;
+                    if !cached_grok!("\\[%{DATA:barracuda.waf.attack_details}\\] %{GREEDYDATA:_temp.remMessage}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -136,7 +138,9 @@ impl Transform for Webfirewall {
             if event.has_value("_temp.remMessage") {
                 if let Some(input) = event.get_string("_temp.remMessage") {
                     // Grok pattern: \\\"%{DATA:user_agent.original}\\\"%{SPACE}%{GREEDYDATA:_temp.remMessage}
-                    let _ = cached_grok!("\\\"%{DATA:user_agent.original}\\\"%{SPACE}%{GREEDYDATA:_temp.remMessage}").extract_into(&input, event)?;
+                    if !cached_grok!("\\\"%{DATA:user_agent.original}\\\"%{SPACE}%{GREEDYDATA:_temp.remMessage}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

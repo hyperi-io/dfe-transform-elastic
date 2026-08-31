@@ -32,7 +32,7 @@ impl Transform for Default {
                 // Grok pattern: ^(?:\\d+ )?<%{NUMBER:log.syslog.priority:long}>%{SYSLOGTIMESTAMP:event.created}\\s+%{NOTSPACE:host.hostname}\\s%{DATA}:%{IP:client.ip}\\s-\\s%{USERNAME:user.name}\\s%{DATA}(?P<event_outcome>(Success)|(Error))\\s-\\s%{DATA:event.reason}\\s-\\s%{GREEDYDATA:message}
                 // Grok pattern: ^(?:\\d+ )?<%{NUMBER:log.syslog.priority:long}>%{SYSLOGTIMESTAMP:event.created}\\s+%{NOTSPACE:host.domain}\\s%{DATA}:%{IP:client.ip}%{DATA}(?P<event_outcome>(Success)|(Error))\\s-\\s%{DATA:event.reason}\\s-\\s%{GREEDYDATA:message}
                 // Grok pattern: ^%{GREEDYDATA:message}$
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok_mapped!(
                             "^(?:\\d+ )?<%{NUMBER:log.syslog.priority:long}>%{SYSLOGTIMESTAMP:event.created}\\s+%{NOTSPACE:host.hostname}\\s%{DATA}:%{IP:client.ip}\\s-\\s%{USERNAME:user.name}@%{DATA:user.domain}\\s%{DATA}(?P<event_outcome>(Success)|(Error))\\s-\\s%{DATA:event.reason}\\s-\\s%{GREEDYDATA:message}",
@@ -50,7 +50,9 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             // ignore_failure: true
@@ -67,7 +69,7 @@ impl Transform for Default {
                         // Grok pattern: comment\\srequirement\\s<.*>\\s(?:from|to)\\s<%{DATA:pps.entry.path}>$
                         // Grok pattern: notification\\s.*>\\s(?:from|to)\\s<%{DATA:pps.entry.path}>$
                         // Grok pattern: updated\\sentry\\s<%{DATA:pps.entry.path}>\\schanging\\sthe\\sname\\sfrom\\s<%{DATA:pps.entry.name}>\\sto\\s<%{DATA:pps.entry.target.name}>
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "backing\\sup\\sdatabase\\sto\\s<%{DATA:pps.entry.path}>"
@@ -98,7 +100,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())
@@ -109,7 +113,9 @@ impl Transform for Default {
                 if event.has_value("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: \\schanging\\sthe\\susername\\sfrom\\s<%{DATA:pps.entry.username}>\\sto\\s<%{DATA:pps.entry.target.username}>
-                        let _ = cached_grok!("\\schanging\\sthe\\susername\\sfrom\\s<%{DATA:pps.entry.username}>\\sto\\s<%{DATA:pps.entry.target.username}>").extract_into(&input, event)?;
+                        if !cached_grok!("\\schanging\\sthe\\susername\\sfrom\\s<%{DATA:pps.entry.username}>\\sto\\s<%{DATA:pps.entry.target.username}>").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                 }
                 Ok(())

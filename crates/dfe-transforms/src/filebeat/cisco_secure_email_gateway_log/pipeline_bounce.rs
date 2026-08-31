@@ -22,7 +22,7 @@ impl Transform for PipelineBounce {
                     // Grok pattern: ^%{WORD:cisco_secure_email_gateway.log.bounce_type}: DCID %{NUMBER:cisco_secure_email_gateway.log.delivery_connection_id} MID %{NUMBER:email.message_id} From:<%{GREEDYDATA:email.from.address}> To:<%{GREEDYDATA:email.to.address}> RID %{NUMBER:cisco_secure_email_gateway.log.recipient_id} - %{DATA:cisco_secure_email_gateway.log.error_code} - %{GREEDYDATA:event.reason} \\(%{GREEDYDATA:cisco_secure_email_gateway.log.response}\\)$
                     // Grok pattern: ^%{WORD:cisco_secure_email_gateway.log.bounce_type}: %{NUMBER:email.message_id}:%{NUMBER:cisco_secure_email_gateway.log.recipient_id} From:<%{GREEDYDATA:email.from.address}> To:<%{GREEDYDATA:email.to.address}>$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:cisco_secure_email_gateway.log.bounce_type}: DCID %{NUMBER:cisco_secure_email_gateway.log.delivery_connection_id} MID %{NUMBER:email.message_id} From:<%{GREEDYDATA:email.from.address}> To:<%{GREEDYDATA:email.to.address}> RID %{NUMBER:cisco_secure_email_gateway.log.recipient_id} - %{DATA:cisco_secure_email_gateway.log.error_code} - %{GREEDYDATA:event.reason} \\(%{GREEDYDATA:cisco_secure_email_gateway.log.response}\\)$"),
                             cached_grok!("^%{WORD:cisco_secure_email_gateway.log.bounce_type}: %{NUMBER:email.message_id}:%{NUMBER:cisco_secure_email_gateway.log.recipient_id} From:<%{GREEDYDATA:email.from.address}> To:<%{GREEDYDATA:email.to.address}>$"),
@@ -30,7 +30,9 @@ impl Transform for PipelineBounce {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             Ok(TransformResult::Continue)

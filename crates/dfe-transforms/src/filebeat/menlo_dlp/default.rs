@@ -188,14 +188,16 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("user.id") {
                         // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
                         // Grok pattern: %{GREEDYDATA:user.name}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}"),
                                 cached_grok!("%{GREEDYDATA:user.name}"),
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

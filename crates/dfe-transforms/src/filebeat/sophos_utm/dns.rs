@@ -29,7 +29,7 @@ impl Transform for Dns {
                     // Grok pattern: ^%{WORD:event.action} on %{WORD:network.type} interface %{WORD:observer.ingress.interface.name}, %{IP:server.ip}#%{NUMBER:server.port:long}$
                     // Grok pattern: ^no longer %{WORD:event.action} on %{IP:server.ip}#%{NUMBER:server.port:long}$
                     // Grok pattern: ^%{GREEDYDATA:message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:event.action} on %{WORD:network.type} interface %{WORD:observer.ingress.interface.name}, %{IP:server.ip}#%{NUMBER:server.port:long}$"),
                             cached_grok!("^no longer %{WORD:event.action} on %{IP:server.ip}#%{NUMBER:server.port:long}$"),
@@ -37,7 +37,9 @@ impl Transform for Dns {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -45,7 +47,9 @@ impl Transform for Dns {
             if _cond {
                 if let Some(input) = event.get_string("_tmp.raw_data") {
                     // Grok pattern: ^%{GREEDYDATA:message}$
-                    let _ = cached_grok!("^%{GREEDYDATA:message}$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{GREEDYDATA:message}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

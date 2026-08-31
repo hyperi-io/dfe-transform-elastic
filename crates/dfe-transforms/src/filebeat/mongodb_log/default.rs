@@ -31,7 +31,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("message") {
                 // Grok pattern: ^(?P<first_char>(?:.))
-                let _ = cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)?;
+                if !cached_grok!("^(?P<first_char>(?:.))").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             let _cond = { event.get_str("first_char") != Some("{") };
@@ -40,7 +42,9 @@ impl Transform for Default {
                 if event.has_value("message") {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: %{TIMESTAMP_ISO8601:mongodb.log.timestamp}%{SPACE}%{MONGO3_SEVERITY:log.level}%{SPACE}%{MONGO3_COMPONENT:mongodb.log.component}%{SPACE}(?:\\[%{DATA:mongodb.log.context}\\])?%{SPACE}%{GREEDYDATA:message}
-                        let _ = cached_grok!("%{TIMESTAMP_ISO8601:mongodb.log.timestamp}%{SPACE}%{MONGO3_SEVERITY:log.level}%{SPACE}%{MONGO3_COMPONENT:mongodb.log.component}%{SPACE}(?:\\[%{DATA:mongodb.log.context}\\])?%{SPACE}%{GREEDYDATA:message}").extract_into(&input, event)?;
+                        if !cached_grok!("%{TIMESTAMP_ISO8601:mongodb.log.timestamp}%{SPACE}%{MONGO3_SEVERITY:log.level}%{SPACE}%{MONGO3_COMPONENT:mongodb.log.component}%{SPACE}(?:\\[%{DATA:mongodb.log.context}\\])?%{SPACE}%{GREEDYDATA:message}").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 if let Some(date_str) = event.get_as_string("mongodb.log.timestamp") {

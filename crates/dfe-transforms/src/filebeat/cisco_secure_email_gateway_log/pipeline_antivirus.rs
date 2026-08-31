@@ -25,7 +25,7 @@ impl Transform for PipelineAntivirus {
                     // Grok pattern: ^%{WORD:observer.vendor}  antivirus - MID %{NUMBER:email.message_id} %{NUMBER:cisco_secure_email_gateway.log.rank:long} - %{WORD:cisco_secure_email_gateway.log.type} - '%{GREEDYDATA:cisco_secure_email_gateway.log.antivirus_result}'$
                     // Grok pattern: ^%{WORD:observer.vendor}  antivirus - MID %{NUMBER:email.message_id} - %{GREEDYDATA:cisco_secure_email_gateway.log.antivirus_result}$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:observer.vendor}  antivirus - MID %{NUMBER:email.message_id} - %{WORD:cisco_secure_email_gateway.log.type} '%{GREEDYDATA:cisco_secure_email_gateway.log.antivirus_result}' \\(\\)$"),
                             cached_grok!("^%{WORD:observer.vendor}  antivirus - MID %{NUMBER:email.message_id} %{NUMBER:cisco_secure_email_gateway.log.rank:long} - %{WORD:cisco_secure_email_gateway.log.type} - '%{GREEDYDATA:cisco_secure_email_gateway.log.antivirus_result}' '%{GREEDYDATA:cisco_secure_email_gateway.log.encrypted_hash}'$"),
@@ -36,7 +36,9 @@ impl Transform for PipelineAntivirus {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             let _cond = { event.get_str("cisco_secure_email_gateway.log.type") == Some("Error") };

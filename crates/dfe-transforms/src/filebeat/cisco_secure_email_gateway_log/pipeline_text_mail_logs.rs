@@ -59,7 +59,7 @@ impl Transform for PipelineTextMailLogs {
                     // Grok pattern: ^MID %{NUMBER:email.message_id} %{DATA:file.extension} file %{GREEDYDATA:cisco_secure_email_gateway.log.details}$
                     // Grok pattern: \\bMID %{NUMBER:email.message_id}(?: ICID %{NUMBER:cisco_secure_email_gateway.log.injection_connection_id})?
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^graymail \\[CONFIG\\] %{WORD:cisco_secure_email_gateway.log.vendor_action} %{GREEDYDATA:cisco_secure_email_gateway.log.object}$"),
                             cached_grok!("^URL_REP_CLIENT: %{WORD:cisco_secure_email_gateway.log.object_attr} %{DATA:cisco_secure_email_gateway.log.type}. Triggering %{WORD:cisco_secure_email_gateway.log.vendor_action} of %{GREEDYDATA:cisco_secure_email_gateway.log.object}\\.$"),
@@ -104,7 +104,9 @@ impl Transform for PipelineTextMailLogs {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             // ignore_failure: true

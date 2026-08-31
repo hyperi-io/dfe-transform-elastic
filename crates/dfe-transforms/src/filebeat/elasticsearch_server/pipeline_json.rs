@@ -69,7 +69,7 @@ impl Transform for PipelineJson {
                     // Grok pattern: (?:\\[gc\\]\\[%{NUMBER:elasticsearch.server.gc.overhead_seq}\\] overhead, spent \\[%{NUMBER:elasticsearch.server.gc.collection_duration.time:float}%{DATA:elasticsearch.server.gc.collection_duration.unit}\\] collecting in the last \\[%{NUMBER:elasticsearch.server.gc.observation_duration.time:float}%{DATA:elasticsearch.server.gc.observation_duration.unit}\\])
                     // Grok pattern: (?:\\[gc\\]\\[young\\]\\[%{NUMBER:elasticsearch.server.gc.young.one}\\]\\[%{NUMBER:elasticsearch.server.gc.young.two}\\]%{SPACE}(?P<message>(?:(.|\n)*)))
                     // Grok pattern: ((\\[(?P<_parsed_index_name>(?:[a-zA-Z0-9_.-]*))\\]|\\[(?P<_parsed_index_name>(?:[a-zA-Z0-9_.-]*))\\/%{DATA:_parsed_index_id}\\]))?%{SPACE}(?:(.|\n)*)
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("(?:\\[gc\\]\\[%{NUMBER:elasticsearch.server.gc.overhead_seq}\\] overhead, spent \\[%{NUMBER:elasticsearch.server.gc.collection_duration.time:float}%{DATA:elasticsearch.server.gc.collection_duration.unit}\\] collecting in the last \\[%{NUMBER:elasticsearch.server.gc.observation_duration.time:float}%{DATA:elasticsearch.server.gc.observation_duration.unit}\\])"),
                             cached_grok!("(?:\\[gc\\]\\[young\\]\\[%{NUMBER:elasticsearch.server.gc.young.one}\\]\\[%{NUMBER:elasticsearch.server.gc.young.two}\\]%{SPACE}(?P<message>(?:(.|\n)*)))"),
@@ -77,7 +77,9 @@ impl Transform for PipelineJson {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
 
             // ignore_failure: true

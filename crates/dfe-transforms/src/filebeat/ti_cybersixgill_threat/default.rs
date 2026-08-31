@@ -158,7 +158,7 @@ impl Transform for Default {
                     // Grok pattern: ^\\[(?:%{DATA:_temp_.type}:hashes.'SHA-1'%{SPACE}=%{SPACE}'%{WORD:threat.indicator.file.hash.sha1}') OR (?:%{DATA:_temp_.type}:hashes.'SHA-256'%{SPACE}=%{SPACE}'%{WORD:threat.indicator.file.hash.sha256}')\\]
                     // Grok pattern: ^\\[(?:%{DATA:_temp_.type}:hashes.'SHA-256'%{SPACE}=%{SPACE}'%{WORD:threat.indicator.file.hash.sha256}')\\]
                     // Grok pattern: ^\\[%{DATA:_temp_.type}:value%{SPACE}=%{SPACE}'%{DATA:_temp_.threatvalue}'\\]
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^\\[(?:%{DATA:_temp_.type}:hashes.MD5%{SPACE}=%{SPACE}'%{WORD:threat.indicator.file.hash.md5}')\\]"
@@ -184,7 +184,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

@@ -26,7 +26,9 @@ impl Transform for PipelineTacacsAccounting {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                    let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                    if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -34,7 +36,9 @@ impl Transform for PipelineTacacsAccounting {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                    let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                    if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -420,7 +424,7 @@ impl Transform for PipelineTacacsAccounting {
                     // Grok pattern: ^%{IPV4:destination.ip}$
                     // Grok pattern: ^%{IPV6:destination.ip}$
                     // Grok pattern: ^\\[%{IPV6:destination.ip}\\]$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{IPV4:destination.ip}$"),
                             cached_grok!("^%{IPV6:destination.ip}$"),
@@ -428,7 +432,9 @@ impl Transform for PipelineTacacsAccounting {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())

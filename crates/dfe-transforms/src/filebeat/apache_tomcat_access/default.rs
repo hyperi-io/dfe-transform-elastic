@@ -214,8 +214,11 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if let Some(input) = event.get_string("_tmp.sourceorusername") {
                     // Grok pattern: ^(%{IP:source.ip}|%{DATA:source.user.name})$
-                    let _ = cached_grok!("^(%{IP:source.ip}|%{DATA:source.user.name})$")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^(%{IP:source.ip}|%{DATA:source.user.name})$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })() {
@@ -255,7 +258,9 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if let Some(input) = event.get_string("_tmp.dissectgrok") {
                     // Grok pattern: ^%{NUMBER:http.response.status_code} (-|%{POSINT:destination.bytes})(?: ms:%{NUMBER:apache_tomcat.access.request_process_time})?(?: %{GREEDYDATA:_tmp.grok})?$
-                    let _ = cached_grok!("^%{NUMBER:http.response.status_code} (-|%{POSINT:destination.bytes})(?: ms:%{NUMBER:apache_tomcat.access.request_process_time})?(?: %{GREEDYDATA:_tmp.grok})?$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{NUMBER:http.response.status_code} (-|%{POSINT:destination.bytes})(?: ms:%{NUMBER:apache_tomcat.access.request_process_time})?(?: %{GREEDYDATA:_tmp.grok})?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })() {
@@ -297,7 +302,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("_tmp.grok") {
                         // Grok pattern: (?:%{IP:apache_tomcat.access.ip.local}%{SPACE})?(?:(?P<apache_tomcat_access_connection_status>(?:[X+-]))%{SPACE})?(?:%{NUMBER:apache_tomcat.access.response_time}%{SPACE})?\\\"%{DATA:http.request.referrer}\\\" \\\"%{DATA:user_agent.original}\\\" X-Forwarded-For=\\\"%{DATA:_tmp.header_forwarder}(\\\")*$
                         // Grok pattern: \\\"%{DATA:http.request.referrer}\\\" \\\"%{DATA:user_agent.original}(\\\")*$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok_mapped!(
                                     "(?:%{IP:apache_tomcat.access.ip.local}%{SPACE})?(?:(?P<apache_tomcat_access_connection_status>(?:[X+-]))%{SPACE})?(?:%{NUMBER:apache_tomcat.access.response_time}%{SPACE})?\\\"%{DATA:http.request.referrer}\\\" \\\"%{DATA:user_agent.original}\\\" X-Forwarded-For=\\\"%{DATA:_tmp.header_forwarder}(\\\")*$",
@@ -312,7 +317,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

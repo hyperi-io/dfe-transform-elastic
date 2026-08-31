@@ -138,7 +138,7 @@ impl Transform for Default {
                         // Grok pattern: ^%{GREEDYDATA:mimecast.info},\\sDate:\\s(?P<mimecast_date>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY})),\\sTime:\\s%{TIME:mimecast.time}(?P<mimecast_timezone>(?:(?:[A-Z]{3,4}|(?:GMT)?[-+][0-9]{2}:?[0-9]{2}))),\\sIP:\\s%{IP:client.ip},\\sApplication:\\s%{NOTSPACE:mimecast.application},\\sRemote IP is %{IP:mimecast.remote_ip}$
                         // Grok pattern: ^%{GREEDYDATA:mimecast.info},\\s%{WORD} ?: ?%{DATA:mimecast.email.address}\\[%{DATA:mimecast.email.metadata}\\] remote IP ?: ?%{IP:mimecast.remote_ip} application ?: ?%{NOTSPACE:mimecast.application}$
                         // Grok pattern: ^%{GREEDYDATA:mimecast.info},\\sRemote IP is %{IP:mimecast.remote_ip}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok_mapped!(
                                     "^%{GREEDYDATA:mimecast.info},\\sDate:\\s(?P<mimecast_date>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY})),\\sTime:\\s%{TIME:mimecast.time} (?P<mimecast_timezone>(?:(?:[A-Z]{3,4}|(?:GMT)?[-+][0-9]{2}:?[0-9]{2}))),\\sIP:\\s%{IP:client.ip},\\sApplication:\\s%{NOTSPACE:mimecast.application},(?:\\sMethod:\\s%{DATA:mimecast.method},)?\\sReason:\\s%{DATA:event.reason}$",
@@ -163,7 +163,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -402,8 +404,9 @@ impl Transform for Default {
                 if event.has_value("mimecast.remote") {
                     if let Some(input) = event.get_string("mimecast.remote") {
                         // Grok pattern: %{IP:mimecast.remote_ip}
-                        let _ =
-                            cached_grok!("%{IP:mimecast.remote_ip}").extract_into(&input, event)?;
+                        if !cached_grok!("%{IP:mimecast.remote_ip}").extract_into(&input, event)? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())
@@ -851,7 +854,9 @@ impl Transform for Default {
                     if event.has_value("mimecast.rest_of_event_info") {
                         if let Some(input) = event.get_string("mimecast.rest_of_event_info") {
                             // Grok pattern: %{IP:client.ip}
-                            let _ = cached_grok!("%{IP:client.ip}").extract_into(&input, event)?;
+                            if !cached_grok!("%{IP:client.ip}").extract_into(&input, event)? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

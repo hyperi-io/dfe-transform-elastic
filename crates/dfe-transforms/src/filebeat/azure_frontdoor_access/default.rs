@@ -31,9 +31,17 @@ impl Transform for Default {
 
             event.set("cloud.provider", json!("azure"))?;
 
-            // SKIPPED: condition not transpiled: ctx.event?.original != null && ctx.event.original.contains('"records"')
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("event.original")
+                    && event.get("event.original").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => {
+                            a.iter().any(|x| x.as_str() == Some("\"records\""))
+                        }
+                        serde_json::Value::String(s) => s.contains("\"records\""),
+                        _ => false,
+                    })
+            };
+            if _cond {
                 return Ok(TransformResult::Drop);
             }
 
@@ -520,8 +528,11 @@ impl Transform for Default {
                         .get_string("azure.frontdoor.access.identity.claims_initiated_by_user.name")
                     {
                         // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
-                        let _ = cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

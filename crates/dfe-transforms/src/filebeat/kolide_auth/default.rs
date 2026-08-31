@@ -268,9 +268,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("json.data.auth_log_url") {
                         // Grok pattern: ^%{NOTSPACE}/auth_logs/%{DATA:kolide.auth.session_id}$
-                        let _ =
-                            cached_grok!("^%{NOTSPACE}/auth_logs/%{DATA:kolide.auth.session_id}$")
-                                .extract_into(&input, event)?;
+                        if !cached_grok!("^%{NOTSPACE}/auth_logs/%{DATA:kolide.auth.session_id}$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = { !event.has_value("kolide.auth.url") };

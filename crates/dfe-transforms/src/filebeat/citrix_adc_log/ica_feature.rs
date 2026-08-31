@@ -28,7 +28,7 @@ impl Transform for IcaFeature {
                     // Grok pattern: ^session_guid %{WORD:citrix_adc.log.session_guid} - device_serial_number %{NUMBER:citrix_adc.log.device_serial_number:int} - client_cookie %{WORD:citrix_adc.log.client_cookie} - flags %{NUMBER:citrix_adc.log.flags:int} - startup_duration %{NUMBER:citrix_adc.log.startup_duration:int} - launch_mechanism %{NUMBER:citrix_adc.log.launch_mechanism:int} - app_launch_time %{DATA:citrix_adc.log.app.launch_time} - app_process_id %{NUMBER:citrix_adc.log.app.process_id:int} - app_name %{DATA:citrix_adc.log.app.name} - module_path %{GREEDYDATA:citrix_adc.log.module_path}$
                     // Grok pattern: ^session_guid %{WORD:citrix_adc.log.session_guid} - device_serial_number %{NUMBER:citrix_adc.log.device_serial_number:int} - client_cookie %{WORD:citrix_adc.log.client_cookie} - flags %{NUMBER:citrix_adc.log.flags:int} - app_termination_type %{NUMBER:citrix_adc.log.app.termination_type:int} - app_process_id %{NUMBER:citrix_adc.log.app.process_id:int} - app_termination_time %{DATA:citrix_adc.log.app.termination_time}$
                     // Grok pattern: %{GREEDYDATA:citrix_adc.log.message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^session_guid %{WORD:citrix_adc.log.session_guid} - device_serial_number %{NUMBER:citrix_adc.log.device_serial_number:int} - client_cookie%{SPACE}:%{SPACE}%{WORD:citrix_adc.log.client_cookie} - flags %{NUMBER:citrix_adc.log.flags:int} - session_setup_time %{DATA:citrix_adc.log.session_setup_time} - client_ip %{IP:citrix_adc.log.client_ip} - client_type %{NUMBER:citrix_adc.log.client_type:int} - client_launcher %{NUMBER:citrix_adc.log.client_launcher:int} - client_version %{DATA:citrix_adc.log.client_version} - client_hostname %{DATA:citrix_adc.log.client_hostname} - domain_name %{DATA:citrix_adc.log.domain_name} - server_name %{DATA:citrix_adc.log.server.name} - connection_priority %{NUMBER:citrix_adc.log.connection_priority:int} - access_type %{NUMBER:citrix_adc.log.access_type:int} - status %{NUMBER:citrix_adc.log.status:int} - username %{USERNAME:citrix_adc.log.username}$"),
                             cached_grok!("^session_guid %{WORD:citrix_adc.log.session_guid} - device_serial_number %{NUMBER:citrix_adc.log.device_serial_number:int} - client_cookie %{WORD:citrix_adc.log.client_cookie} - flags %{NUMBER:citrix_adc.log.flags:int} - channel_update_begin %{DATA:citrix_adc.log.channel_update.begin} - channel_update_end %{DATA:citrix_adc.log.channel_update.end} - channel_id_1 %{NUMBER:citrix_adc.log.channel_id_1:int} - channel_id_1_val %{NUMBER:citrix_adc.log.channel_id_1_val:int} - channel_id_2 %{NUMBER:citrix_adc.log.channel_id_2:int} - channel_id_2_val %{NUMBER:citrix_adc.log.channel_id_2_val:int} - channel_id_3 %{NUMBER:citrix_adc.log.channel_id_3:int} - channel_id_3_val %{NUMBER:citrix_adc.log.channel_id_3_val:int} - channel_id_4 %{NUMBER:citrix_adc.log.channel_id_4:int} - channel_id_4_val %{NUMBER:citrix_adc.log.channel_id_4_val:int} - channel_id_5 %{NUMBER:citrix_adc.log.channel_id_5:int} - channel_id_5_val %{NUMBER:citrix_adc.log.channel_id_5_val:int}$"),
@@ -42,7 +42,9 @@ impl Transform for IcaFeature {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -1402,7 +1404,9 @@ impl Transform for IcaFeature {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("citrix_adc.log.client_version") {
                     // Grok pattern: ^%{DATA:tls.version_protocol}v%{DATA:tls.version}$
-                    let _ = cached_grok!("^%{DATA:tls.version_protocol}v%{DATA:tls.version}$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:tls.version_protocol}v%{DATA:tls.version}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

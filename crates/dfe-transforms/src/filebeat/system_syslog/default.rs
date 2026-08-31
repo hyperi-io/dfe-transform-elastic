@@ -24,7 +24,7 @@ impl Transform for Default {
                         // Grok pattern: %{SYSLOGTIMESTAMP:system.syslog.timestamp} (?P<system_syslog_message>(?:(.|\n)*))
                         // Grok pattern: %{TIMESTAMP_ISO8601:system.syslog.timestamp} %{SYSLOGHOST:host.hostname} %{DATA:process.name}(?:\\[%{POSINT:process.pid:long}\\])?: (?P<system_syslog_message>(?:(.|\n)*))
                         // Grok pattern: %{TIMESTAMP_ISO8601:system.syslog.timestamp} (?P<system_syslog_message>(?:(.|\n)*))
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok_mapped!(
                                     "%{SYSLOGTIMESTAMP:system.syslog.timestamp} %{SYSLOGHOST:host.hostname} %{DATA:process.name}(?:\\[%{POSINT:process.pid:long}\\])?: (?P<system_syslog_message>(?:(.|\n)*))",
@@ -45,7 +45,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }

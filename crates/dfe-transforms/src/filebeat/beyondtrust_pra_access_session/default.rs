@@ -227,7 +227,9 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("json.destination.private_ip") {
                     // Grok pattern: ^%{IP:json.destination.private_ip}:%{POSINT:json.destination.private_port}$
-                    let _ = cached_grok!("^%{IP:json.destination.private_ip}:%{POSINT:json.destination.private_port}$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{IP:json.destination.private_ip}:%{POSINT:json.destination.private_port}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -355,10 +357,13 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("json.destination.public_ip") {
                     // Grok pattern: ^%{IP:json.destination.public_ip}:%{POSINT:json.destination.public_port}$
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^%{IP:json.destination.public_ip}:%{POSINT:json.destination.public_port}$"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -1045,7 +1050,9 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("json.performed_by.private_ip") {
                     // Grok pattern: ^%{IP:json.performed_by.private_ip}:%{POSINT:json.performed_by.private_port}$
-                    let _ = cached_grok!("^%{IP:json.performed_by.private_ip}:%{POSINT:json.performed_by.private_port}$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{IP:json.performed_by.private_ip}:%{POSINT:json.performed_by.private_port}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -1173,7 +1180,9 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if let Some(input) = event.get_string("json.performed_by.public_ip") {
                     // Grok pattern: ^%{IP:json.performed_by.public_ip}:%{POSINT:json.performed_by.public_port}$
-                    let _ = cached_grok!("^%{IP:json.performed_by.public_ip}:%{POSINT:json.performed_by.public_port}$").extract_into(&input, event)?;
+                    if !cached_grok!("^%{IP:json.performed_by.public_ip}:%{POSINT:json.performed_by.public_port}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

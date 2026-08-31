@@ -528,7 +528,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{DATA:cyberark_epm.policyaudit_aggregated_event.first_event_user_domain}\\\\\\\\%{DATA:cyberark_epm.policyaudit_aggregated_event.first_event_user_name}$
                     // Grok pattern: ^%{DATA:cyberark_epm.policyaudit_aggregated_event.first_event_user_name}@%{DATA:cyberark_epm.policyaudit_aggregated_event.first_event_user_domain}$
                     // Grok pattern: ^%{DATA:cyberark_epm.policyaudit_aggregated_event.first_event_user_name}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:cyberark_epm.policyaudit_aggregated_event.first_event_user_domain}\\\\%{DATA:cyberark_epm.policyaudit_aggregated_event.first_event_user_name}$"
@@ -545,7 +545,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -838,7 +840,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{DATA:cyberark_epm.policyaudit_aggregated_event.last_event_user_domain}\\\\\\\\%{DATA:cyberark_epm.policyaudit_aggregated_event.last_event_user_name}$
                     // Grok pattern: ^%{DATA:cyberark_epm.policyaudit_aggregated_event.last_event_user_name}@%{DATA:cyberark_epm.policyaudit_aggregated_event.last_event_user_domain}$
                     // Grok pattern: ^%{DATA:cyberark_epm.policyaudit_aggregated_event.last_event_user_name}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:cyberark_epm.policyaudit_aggregated_event.last_event_user_domain}\\\\%{DATA:cyberark_epm.policyaudit_aggregated_event.last_event_user_name}$"
@@ -855,7 +857,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

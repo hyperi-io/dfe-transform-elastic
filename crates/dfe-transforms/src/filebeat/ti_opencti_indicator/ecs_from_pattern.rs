@@ -28,7 +28,7 @@ impl Transform for EcsFromPattern {
                 // Grok pattern: ipv4-addr:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.ip}'
                 // Grok pattern: ipv6-addr:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.ip}'
                 // Grok pattern: windows-registry-key:key%{SPACE}=%{SPACE}'%{DATA:_tmp_registry}'
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!("file:hashes.'?MD5'?%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.md5}'"),
                         cached_grok!("file:hashes.'?SHA-?1'?%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha1}'"),
@@ -44,7 +44,9 @@ impl Transform for EcsFromPattern {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
             Ok(())
         })();
@@ -103,7 +105,9 @@ impl Transform for EcsFromPattern {
         if event.has_value("_tmp_registry") {
             if let Some(input) = event.get_string("_tmp_registry") {
                 // Grok pattern: ^((?P<tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:tmp_registry.key}$
-                let _ = cached_grok_mapped!("^((?P<tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:tmp_registry.key}$", [("tmp_registry_hive", "tmp_registry.hive")]).extract_into(&input, event)?;
+                if !cached_grok_mapped!("^((?P<tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:tmp_registry.key}$", [("tmp_registry_hive", "tmp_registry.hive")]).extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
         }
 

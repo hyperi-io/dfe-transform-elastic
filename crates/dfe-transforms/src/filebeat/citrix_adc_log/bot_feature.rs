@@ -21,14 +21,16 @@ impl Transform for BotFeature {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^Bot%{SPACE}New%{SPACE}Signature%{SPACE}Available.%{SPACE}Newly%{SPACE}added%{SPACE}Rules%{SPACE}:%{SPACE}%{INT:citrix_adc.log.newly_added_rules}%{SPACE}Deleted%{SPACE}Rules%{SPACE}:%{SPACE}%{INT:citrix_adc.log.deleted_rules}$
                     // Grok pattern: %{GREEDYDATA:citrix_adc.log.message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Bot%{SPACE}New%{SPACE}Signature%{SPACE}Available.%{SPACE}Newly%{SPACE}added%{SPACE}Rules%{SPACE}:%{SPACE}%{INT:citrix_adc.log.newly_added_rules}%{SPACE}Deleted%{SPACE}Rules%{SPACE}:%{SPACE}%{INT:citrix_adc.log.deleted_rules}$"),
                             cached_grok!("%{GREEDYDATA:citrix_adc.log.message}"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

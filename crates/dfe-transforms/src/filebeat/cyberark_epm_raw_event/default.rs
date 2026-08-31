@@ -1554,7 +1554,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{DATA:cyberark_epm.raw_event.file_owner_domain}\\\\\\\\%{DATA:cyberark_epm.raw_event.file_owner_name}$
                     // Grok pattern: ^%{DATA:cyberark_epm.raw_event.file_owner_name}@%{DATA:cyberark_epm.raw_event.file_owner_domain}$
                     // Grok pattern: ^%{DATA:cyberark_epm.raw_event.file_owner_name}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:cyberark_epm.raw_event.file_owner_domain}\\\\%{DATA:cyberark_epm.raw_event.file_owner_name}$"
@@ -1569,7 +1569,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();
@@ -2071,7 +2073,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{DATA:cyberark_epm.raw_event.user_domain}\\\\\\\\%{DATA:cyberark_epm.raw_event.user_name}$
                     // Grok pattern: ^%{DATA:cyberark_epm.raw_event.user_name}@%{DATA:cyberark_epm.raw_event.user_domain}$
                     // Grok pattern: ^%{DATA:cyberark_epm.raw_event.user_name}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:cyberark_epm.raw_event.user_domain}\\\\%{DATA:cyberark_epm.raw_event.user_name}$"
@@ -2086,7 +2088,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

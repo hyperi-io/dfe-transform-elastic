@@ -27,7 +27,9 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("event.original") {
                 // Grok pattern: \\[%{TIMESTAMP_ISO8601:_tmp.timestamp}\\] (?P<log_level>(?:[^\\|]+)) santad: %{GREEDYDATA:_tmp.message}
-                let _ = cached_grok_mapped!("\\[%{TIMESTAMP_ISO8601:_tmp.timestamp}\\] (?P<log_level>(?:[^\\|]+)) santad: %{GREEDYDATA:_tmp.message}", [("log_level", "log.level")]).extract_into(&input, event)?;
+                if !cached_grok_mapped!("\\[%{TIMESTAMP_ISO8601:_tmp.timestamp}\\] (?P<log_level>(?:[^\\|]+)) santad: %{GREEDYDATA:_tmp.message}", [("log_level", "log.level")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
             }
 
             // on_failure: 1 handler(s)

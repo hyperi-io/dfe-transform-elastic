@@ -223,9 +223,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: (?:^|\\s)t=%{TIMESTAMP_ISO8601:_temp.logfmt_t}(?:\\s|$)
-                        let _ =
-                            cached_grok!("(?:^|\\s)t=%{TIMESTAMP_ISO8601:_temp.logfmt_t}(?:\\s|$)")
-                                .extract_into(&input, event)?;
+                        if !cached_grok!("(?:^|\\s)t=%{TIMESTAMP_ISO8601:_temp.logfmt_t}(?:\\s|$)")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -237,10 +239,13 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: (?:^|\\s)(?:level|lvl)=%{WORD:_temp.logfmt_level}(?:\\s|$)
-                        let _ = cached_grok!(
+                        if !cached_grok!(
                             "(?:^|\\s)(?:level|lvl)=%{WORD:_temp.logfmt_level}(?:\\s|$)"
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -253,14 +258,16 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: (?:^|\\s)msg=\"%{DATA:_temp.logfmt_msg}\"
                         // Grok pattern: (?:^|\\s)msg=%{NOTSPACE:_temp.logfmt_msg}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!("(?:^|\\s)msg=\"%{DATA:_temp.logfmt_msg}\""),
                                 cached_grok!("(?:^|\\s)msg=%{NOTSPACE:_temp.logfmt_msg}"),
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -272,10 +279,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: (?:^|\\s)logger=%{NOTSPACE:_temp.logfmt_logger}(?:\\s|$)
-                        let _ = cached_grok!(
-                            "(?:^|\\s)logger=%{NOTSPACE:_temp.logfmt_logger}(?:\\s|$)"
-                        )
-                        .extract_into(&input, event)?;
+                        if !cached_grok!("(?:^|\\s)logger=%{NOTSPACE:_temp.logfmt_logger}(?:\\s|$)")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -287,10 +295,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: (?:^|\\s)caller=%{NOTSPACE:_temp.logfmt_caller}(?:\\s|$)
-                        let _ = cached_grok!(
-                            "(?:^|\\s)caller=%{NOTSPACE:_temp.logfmt_caller}(?:\\s|$)"
-                        )
-                        .extract_into(&input, event)?;
+                        if !cached_grok!("(?:^|\\s)caller=%{NOTSPACE:_temp.logfmt_caller}(?:\\s|$)")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -302,9 +311,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: (?:^|\\s)method=%{WORD:_temp.logfmt_method}(?:\\s|$)
-                        let _ =
-                            cached_grok!("(?:^|\\s)method=%{WORD:_temp.logfmt_method}(?:\\s|$)")
-                                .extract_into(&input, event)?;
+                        if !cached_grok!("(?:^|\\s)method=%{WORD:_temp.logfmt_method}(?:\\s|$)")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -316,9 +327,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: (?:^|\\s)path=%{NOTSPACE:_temp.logfmt_path}(?:\\s|$)
-                        let _ =
-                            cached_grok!("(?:^|\\s)path=%{NOTSPACE:_temp.logfmt_path}(?:\\s|$)")
-                                .extract_into(&input, event)?;
+                        if !cached_grok!("(?:^|\\s)path=%{NOTSPACE:_temp.logfmt_path}(?:\\s|$)")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -330,8 +343,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: (?:^|\\s)status=%{INT:_temp.logfmt_status}(?:\\s|$)
-                        let _ = cached_grok!("(?:^|\\s)status=%{INT:_temp.logfmt_status}(?:\\s|$)")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("(?:^|\\s)status=%{INT:_temp.logfmt_status}(?:\\s|$)")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -343,10 +359,13 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: (?:^|\\s)remote_addr=%{IP:_temp.logfmt_remote_addr}(?:\\s|$)
-                        let _ = cached_grok!(
+                        if !cached_grok!(
                             "(?:^|\\s)remote_addr=%{IP:_temp.logfmt_remote_addr}(?:\\s|$)"
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -358,10 +377,13 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: (?:^|\\s)duration=%{NOTSPACE:_temp.logfmt_duration}(?:\\s|$)
-                        let _ = cached_grok!(
+                        if !cached_grok!(
                             "(?:^|\\s)duration=%{NOTSPACE:_temp.logfmt_duration}(?:\\s|$)"
                         )
-                        .extract_into(&input, event)?;
+                        .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -373,8 +395,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: (?:^|\\s)size=%{INT:_temp.logfmt_size}(?:\\s|$)
-                        let _ = cached_grok!("(?:^|\\s)size=%{INT:_temp.logfmt_size}(?:\\s|$)")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("(?:^|\\s)size=%{INT:_temp.logfmt_size}(?:\\s|$)")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -386,9 +411,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
                         // Grok pattern: (?:^|\\s)uname=%{NOTSPACE:_temp.logfmt_uname}(?:\\s|$)
-                        let _ =
-                            cached_grok!("(?:^|\\s)uname=%{NOTSPACE:_temp.logfmt_uname}(?:\\s|$)")
-                                .extract_into(&input, event)?;
+                        if !cached_grok!("(?:^|\\s)uname=%{NOTSPACE:_temp.logfmt_uname}(?:\\s|$)")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -575,10 +602,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("_temp.caller") {
                         // Grok pattern: %{DATA:log.origin.file.name}:%{INT:log.origin.file.line}
-                        let _ = cached_grok!(
-                            "%{DATA:log.origin.file.name}:%{INT:log.origin.file.line}"
-                        )
-                        .extract_into(&input, event)?;
+                        if !cached_grok!("%{DATA:log.origin.file.name}:%{INT:log.origin.file.line}")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();

@@ -627,7 +627,9 @@ impl Transform for Default {
                             // Begin nested pipeline: "ecs_from_windows_registry_key"
                             if let Some(input) = event.get_string("_ingest._value.attribute_key") {
                                 // Grok pattern: ^((?P<_tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:_tmp_registry.key}$
-                                let _ = cached_grok_mapped!("^((?P<_tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:_tmp_registry.key}$", [("_tmp_registry_hive", "_tmp_registry.hive")]).extract_into(&input, event)?;
+                                if !cached_grok_mapped!("^((?P<_tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:_tmp_registry.key}$", [("_tmp_registry_hive", "_tmp_registry.hive")]).extract_into(&input, event)? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                            }
                             }
                             let _cond = { event.has_value("_tmp_registry.hive") };
                             if _cond {
@@ -1939,178 +1941,245 @@ impl Transform for Default {
             }
 
             if event.has_value("opencti.indicator._patterns") {
-                foreach_array(event, "opencti.indicator._patterns", |event| {
-                    // Begin nested pipeline: "ecs_from_pattern"
-                    // ignore_failure: true
-                    let _ = (|| -> Result<()> {
-                        if let Some(input) = event.get_string("_ingest._value") {
-                            // Grok pattern: file:hashes.'?MD5'?%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.md5}'
-                            // Grok pattern: file:hashes.'?SHA-?1'?%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha1}'
-                            // Grok pattern: file:hashes.'?SHA-?256'?%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha256}'
-                            // Grok pattern: file:name%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.name}'
-                            // Grok pattern: domain-name:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.domain}'
-                            // Grok pattern: hostname:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.domain}'
-                            // Grok pattern: url:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'
-                            // Grok pattern: email-addr:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.email.address}'
-                            // Grok pattern: ipv4-addr:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.ip}'
-                            // Grok pattern: ipv6-addr:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.ip}'
-                            // Grok pattern: windows-registry-key:key%{SPACE}=%{SPACE}'%{DATA:_tmp_registry}'
-                            let _ = extract_first_match(
-                                &[
-                                    cached_grok!(
-                                        "file:hashes.'?MD5'?%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.md5}'"
-                                    ),
-                                    cached_grok!(
-                                        "file:hashes.'?SHA-?1'?%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha1}'"
-                                    ),
-                                    cached_grok!(
-                                        "file:hashes.'?SHA-?256'?%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha256}'"
-                                    ),
-                                    cached_grok!(
-                                        "file:name%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.name}'"
-                                    ),
-                                    cached_grok!(
-                                        "domain-name:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.domain}'"
-                                    ),
-                                    cached_grok!(
-                                        "hostname:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.domain}'"
-                                    ),
-                                    cached_grok!(
-                                        "url:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'"
-                                    ),
-                                    cached_grok!(
-                                        "email-addr:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.email.address}'"
-                                    ),
-                                    cached_grok!(
-                                        "ipv4-addr:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.ip}'"
-                                    ),
-                                    cached_grok!(
-                                        "ipv6-addr:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.ip}'"
-                                    ),
-                                    cached_grok!(
-                                        "windows-registry-key:key%{SPACE}=%{SPACE}'%{DATA:_tmp_registry}'"
-                                    ),
-                                ],
-                                &input,
-                                event,
-                            )?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("opencti.indicator._patterns").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => {
+                            fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
                         }
-                        Ok(())
-                    })();
-                    let _cond = { event.has_value("threat.indicator.file.name") };
-                    if _cond {
-                        let v = json!("file");
-                        if !painless_is_empty_value(&v) {
-                            event.set("threat.indicator.file.type", v)?;
-                        }
-                    }
-                    let _cond = { event.has_value("threat.indicator.file.name") };
-                    if _cond {
-                        // Painless script
-                        // Source: def tmp_file_name = ctx.threat.indicator.file.name;\nif (tmp_file_name != null) {\n  def parts = /[\\/\\\\]/.split(tmp_file_name);\n  def name = parts[parts.length - 1];\n  if (name.contains(\".\")) {\n    def nameParts = /\\./.split(name);\n    def extension = nameParts[nameParts.length - 1];\n    if (extension.length() > 0) {\n      ctx.threat.indicator.file.extension = extension;\n    }\n  }\n}\n
-                        // TODO: Transpile Painless to Rust (2.2.3)
-                        painless_exec_plan(
-                            event,
-                            cached_painless!(
-                                r#"def tmp_file_name = ctx.threat.indicator.file.name;\nif (tmp_file_name != null) {\n  def parts = /[\\/\\\\]/.split(tmp_file_name);\n  def name = parts[parts.length - 1];\n  if (name.contains(\".\")) {\n    def nameParts = /\\./.split(name);\n    def extension = nameParts[nameParts.length - 1];\n    if (extension.length() > 0) {\n      ctx.threat.indicator.file.extension = extension;\n    }\n  }\n}\n"#
-                            ),
-                        )?;
-                    }
-                    if event.has_value("threat.indicator.ip") {
-                        gsub_field(
-                            event,
-                            "threat.indicator.ip",
-                            "threat.indicator.ip",
-                            cached_regex!("/\\d+$"),
-                            "",
-                        )?;
-                    }
-                    // ignore_failure: true
-                    let _ = (|| -> Result<()> {
-                        uri_parts(
-                            event,
-                            "threat.indicator.url.original",
-                            "threat.indicator.url",
-                            true,
-                            false,
-                        )?;
-                        Ok(())
-                    })();
-                    if event.has_value("threat.indicator.url.domain") {
-                        if let Some(domain_str) = event.get_string("threat.indicator.url.domain") {
-                            let domain = domain_str.to_string();
-                            event.set("threat.indicator.url.domain", json!(domain.clone()))?;
-                            // Public suffix list lookup for registered domain extraction
-                            if let Some(rd) = registered_domain_lookup(&domain) {
-                                if let Some(registered) = rd.registered_domain {
-                                    event.set(
-                                        "threat.indicator.url.registered_domain",
-                                        json!(registered),
-                                    )?;
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // Begin nested pipeline: "ecs_from_pattern"
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                if let Some(input) = event.get_string("_ingest._value") {
+                                    // Grok pattern: file:hashes.'?MD5'?%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.md5}'
+                                    // Grok pattern: file:hashes.'?SHA-?1'?%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha1}'
+                                    // Grok pattern: file:hashes.'?SHA-?256'?%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha256}'
+                                    // Grok pattern: file:name%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.name}'
+                                    // Grok pattern: domain-name:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.domain}'
+                                    // Grok pattern: hostname:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.domain}'
+                                    // Grok pattern: url:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'
+                                    // Grok pattern: email-addr:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.email.address}'
+                                    // Grok pattern: ipv4-addr:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.ip}'
+                                    // Grok pattern: ipv6-addr:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.ip}'
+                                    // Grok pattern: windows-registry-key:key%{SPACE}=%{SPACE}'%{DATA:_tmp_registry}'
+                                    if !extract_first_match(
+                                        &[
+                                            cached_grok!(
+                                                "file:hashes.'?MD5'?%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.md5}'"
+                                            ),
+                                            cached_grok!(
+                                                "file:hashes.'?SHA-?1'?%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha1}'"
+                                            ),
+                                            cached_grok!(
+                                                "file:hashes.'?SHA-?256'?%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.hash.sha256}'"
+                                            ),
+                                            cached_grok!(
+                                                "file:name%{SPACE}=%{SPACE}'%{DATA:threat.indicator.file.name}'"
+                                            ),
+                                            cached_grok!(
+                                                "domain-name:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.domain}'"
+                                            ),
+                                            cached_grok!(
+                                                "hostname:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.domain}'"
+                                            ),
+                                            cached_grok!(
+                                                "url:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.url.original}'"
+                                            ),
+                                            cached_grok!(
+                                                "email-addr:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.email.address}'"
+                                            ),
+                                            cached_grok!(
+                                                "ipv4-addr:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.ip}'"
+                                            ),
+                                            cached_grok!(
+                                                "ipv6-addr:value%{SPACE}=%{SPACE}'%{DATA:threat.indicator.ip}'"
+                                            ),
+                                            cached_grok!(
+                                                "windows-registry-key:key%{SPACE}=%{SPACE}'%{DATA:_tmp_registry}'"
+                                            ),
+                                        ],
+                                        &input,
+                                        event,
+                                    )? {
+                                        return Err(TransformError::GrokNoMatch { value: input });
+                                    }
                                 }
-                                event.set(
-                                    "threat.indicator.url.top_level_domain",
-                                    json!(rd.top_level_domain),
-                                )?;
-                                if let Some(sub) = rd.subdomain {
-                                    event.set("threat.indicator.url.subdomain", json!(sub))?;
+                                Ok(())
+                            })();
+                            let _cond = { event.has_value("threat.indicator.file.name") };
+                            if _cond {
+                                let v = json!("file");
+                                if !painless_is_empty_value(&v) {
+                                    event.set("threat.indicator.file.type", v)?;
                                 }
                             }
+                            let _cond = { event.has_value("threat.indicator.file.name") };
+                            if _cond {
+                                // Painless script
+                                // Source: def tmp_file_name = ctx.threat.indicator.file.name;\nif (tmp_file_name != null) {\n  def parts = /[\\/\\\\]/.split(tmp_file_name);\n  def name = parts[parts.length - 1];\n  if (name.contains(\".\")) {\n    def nameParts = /\\./.split(name);\n    def extension = nameParts[nameParts.length - 1];\n    if (extension.length() > 0) {\n      ctx.threat.indicator.file.extension = extension;\n    }\n  }\n}\n
+                                // TODO: Transpile Painless to Rust (2.2.3)
+                                painless_exec_plan(
+                                    event,
+                                    cached_painless!(
+                                        r#"def tmp_file_name = ctx.threat.indicator.file.name;\nif (tmp_file_name != null) {\n  def parts = /[\\/\\\\]/.split(tmp_file_name);\n  def name = parts[parts.length - 1];\n  if (name.contains(\".\")) {\n    def nameParts = /\\./.split(name);\n    def extension = nameParts[nameParts.length - 1];\n    if (extension.length() > 0) {\n      ctx.threat.indicator.file.extension = extension;\n    }\n  }\n}\n"#
+                                    ),
+                                )?;
+                            }
+                            if event.has_value("threat.indicator.ip") {
+                                gsub_field(
+                                    event,
+                                    "threat.indicator.ip",
+                                    "threat.indicator.ip",
+                                    cached_regex!("/\\d+$"),
+                                    "",
+                                )?;
+                            }
+                            // ignore_failure: true
+                            let _ = (|| -> Result<()> {
+                                uri_parts(
+                                    event,
+                                    "threat.indicator.url.original",
+                                    "threat.indicator.url",
+                                    true,
+                                    false,
+                                )?;
+                                Ok(())
+                            })();
+                            if event.has_value("threat.indicator.url.domain") {
+                                if let Some(domain_str) =
+                                    event.get_string("threat.indicator.url.domain")
+                                {
+                                    let domain = domain_str.to_string();
+                                    event.set(
+                                        "threat.indicator.url.domain",
+                                        json!(domain.clone()),
+                                    )?;
+                                    // Public suffix list lookup for registered domain extraction
+                                    if let Some(rd) = registered_domain_lookup(&domain) {
+                                        if let Some(registered) = rd.registered_domain {
+                                            event.set(
+                                                "threat.indicator.url.registered_domain",
+                                                json!(registered),
+                                            )?;
+                                        }
+                                        event.set(
+                                            "threat.indicator.url.top_level_domain",
+                                            json!(rd.top_level_domain),
+                                        )?;
+                                        if let Some(sub) = rd.subdomain {
+                                            event.set(
+                                                "threat.indicator.url.subdomain",
+                                                json!(sub),
+                                            )?;
+                                        }
+                                    }
+                                }
+                            }
+                            if let Some(v) = event
+                                .get("threat.indicator.url.original")
+                                .filter(|v| !painless_is_empty_value(v))
+                                .cloned()
+                            {
+                                event.set("threat.indicator.url.full", v)?;
+                            }
+                            if event.has_value("_tmp_registry") {
+                                gsub_field(
+                                    event,
+                                    "_tmp_registry",
+                                    "_tmp_registry",
+                                    cached_regex!("\\\\\\\\"),
+                                    "\\\\",
+                                )?;
+                            }
+                            if event.has_value("_tmp_registry") {
+                                if let Some(input) = event.get_string("_tmp_registry") {
+                                    // Grok pattern: ^((?P<tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:tmp_registry.key}$
+                                    if !cached_grok_mapped!("^((?P<tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:tmp_registry.key}$", [("tmp_registry_hive", "tmp_registry.hive")]).extract_into(&input, event)? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                            }
+                                }
+                            }
+                            let _cond = { event.has_value("tmp_registry.hive") };
+                            if _cond {
+                                // Painless script
+                                // Source: def name = ctx.tmp_registry.hive.toUpperCase();\nctx.tmp_registry.hive = params.getOrDefault(name, name);\n
+                                // TODO: Transpile Painless to Rust (2.2.3)
+                                painless_exec_plan_params(
+                                    event,
+                                    cached_painless!(
+                                        r#"def name = ctx.tmp_registry.hive.toUpperCase();\nctx.tmp_registry.hive = params.getOrDefault(name, name);\n"#
+                                    ),
+                                    cached_params!(
+                                        "{\"HKEY_CLASSES_ROOT\":\"HKCR\",\"HKEY_CURRENT_USER\":\"HKCU\",\"HKEY_LOCAL_MACHINE\":\"HKLM\",\"HKEY_USERS\":\"HKU\",\"HKEY_CURRENT_CONFIG\":\"HKCC\"}"
+                                    ),
+                                )?;
+                            }
+                            if event.has_value("tmp_registry") {
+                                event.rename("tmp_registry", "threat.indicator.registry")?;
+                            }
+                            event.remove("_tmp_registry");
+                            // Painless script
+                            // Source: if (ctx.threat?.indicator?.file?.name != null && !(ctx.threat.indicator.file.name instanceof List)) {\n  ctx.threat.indicator.file.name = [ctx.threat.indicator.file.name];\n}\nif (ctx.threat?.indicator?.file?.extension != null && !(ctx.threat.indicator.file.extension instanceof List)) {\n  ctx.threat.indicator.file.extension = [ctx.threat.indicator.file.extension];\n}\nif (ctx.threat?.indicator?.email?.address != null && !(ctx.threat.indicator.email.address instanceof List)) {\n  ctx.threat.indicator.email.address = [ctx.threat.indicator.email.address];\n}\nif (ctx.threat?.indicator?.ip != null && !(ctx.threat.indicator.ip instanceof List)) {\n  ctx.threat.indicator.ip = [ctx.threat.indicator.ip];\n}\nif (ctx.threat?.indicator?.url != null && !(ctx.threat.indicator.url instanceof List)) {\n  ctx.threat.indicator.url = [ctx.threat.indicator.url];\n}\n
+                            // TODO: Transpile Painless to Rust (2.2.3)
+                            painless_exec_plan(
+                                event,
+                                cached_painless!(
+                                    r#"if (ctx.threat?.indicator?.file?.name != null && !(ctx.threat.indicator.file.name instanceof List)) {\n  ctx.threat.indicator.file.name = [ctx.threat.indicator.file.name];\n}\nif (ctx.threat?.indicator?.file?.extension != null && !(ctx.threat.indicator.file.extension instanceof List)) {\n  ctx.threat.indicator.file.extension = [ctx.threat.indicator.file.extension];\n}\nif (ctx.threat?.indicator?.email?.address != null && !(ctx.threat.indicator.email.address instanceof List)) {\n  ctx.threat.indicator.email.address = [ctx.threat.indicator.email.address];\n}\nif (ctx.threat?.indicator?.ip != null && !(ctx.threat.indicator.ip instanceof List)) {\n  ctx.threat.indicator.ip = [ctx.threat.indicator.ip];\n}\nif (ctx.threat?.indicator?.url != null && !(ctx.threat.indicator.url instanceof List)) {\n  ctx.threat.indicator.url = [ctx.threat.indicator.url];\n}\n"#
+                                ),
+                            )?;
+                            // End nested pipeline: "ecs_from_pattern"
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left {
+                                        fields.insert(key, value);
+                                    }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
                         }
-                    }
-                    if let Some(v) = event
-                        .get("threat.indicator.url.original")
-                        .filter(|v| !painless_is_empty_value(v))
-                        .cloned()
-                    {
-                        event.set("threat.indicator.url.full", v)?;
-                    }
-                    if event.has_value("_tmp_registry") {
-                        gsub_field(
-                            event,
-                            "_tmp_registry",
-                            "_tmp_registry",
-                            cached_regex!("\\\\\\\\"),
-                            "\\\\",
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
+                            }
+                            None => {
+                                event.remove("_ingest");
+                            }
+                        }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                        }
+                        event.set(
+                            "opencti.indicator._patterns",
+                            if keyed {
+                                Value::Object(fields)
+                            } else {
+                                Value::Array(list)
+                            },
                         )?;
                     }
-                    if event.has_value("_tmp_registry") {
-                        if let Some(input) = event.get_string("_tmp_registry") {
-                            // Grok pattern: ^((?P<tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:tmp_registry.key}$
-                            let _ = cached_grok_mapped!("^((?P<tmp_registry_hive>(?:(?i:HKEY_CLASSES_ROOT|HKCR|HKEY_CURRENT_USER|HKCU|HKEY_LOCAL_MACHINE|HKLM|HKEY_USERS|HKU|HKEY_CURRENT_CONFIG|HKCC)))\\\\)?%{GREEDYDATA:tmp_registry.key}$", [("tmp_registry_hive", "tmp_registry.hive")]).extract_into(&input, event)?;
-                        }
-                    }
-                    let _cond = { event.has_value("tmp_registry.hive") };
-                    if _cond {
-                        // Painless script
-                        // Source: def name = ctx.tmp_registry.hive.toUpperCase();\nctx.tmp_registry.hive = params.getOrDefault(name, name);\n
-                        // TODO: Transpile Painless to Rust (2.2.3)
-                        painless_exec_plan_params(
-                            event,
-                            cached_painless!(
-                                r#"def name = ctx.tmp_registry.hive.toUpperCase();\nctx.tmp_registry.hive = params.getOrDefault(name, name);\n"#
-                            ),
-                            cached_params!(
-                                "{\"HKEY_CLASSES_ROOT\":\"HKCR\",\"HKEY_CURRENT_USER\":\"HKCU\",\"HKEY_LOCAL_MACHINE\":\"HKLM\",\"HKEY_USERS\":\"HKU\",\"HKEY_CURRENT_CONFIG\":\"HKCC\"}"
-                            ),
-                        )?;
-                    }
-                    if event.has_value("tmp_registry") {
-                        event.rename("tmp_registry", "threat.indicator.registry")?;
-                    }
-                    event.remove("_tmp_registry");
-                    // Painless script
-                    // Source: if (ctx.threat?.indicator?.file?.name != null && !(ctx.threat.indicator.file.name instanceof List)) {\n  ctx.threat.indicator.file.name = [ctx.threat.indicator.file.name];\n}\nif (ctx.threat?.indicator?.file?.extension != null && !(ctx.threat.indicator.file.extension instanceof List)) {\n  ctx.threat.indicator.file.extension = [ctx.threat.indicator.file.extension];\n}\nif (ctx.threat?.indicator?.email?.address != null && !(ctx.threat.indicator.email.address instanceof List)) {\n  ctx.threat.indicator.email.address = [ctx.threat.indicator.email.address];\n}\nif (ctx.threat?.indicator?.ip != null && !(ctx.threat.indicator.ip instanceof List)) {\n  ctx.threat.indicator.ip = [ctx.threat.indicator.ip];\n}\nif (ctx.threat?.indicator?.url != null && !(ctx.threat.indicator.url instanceof List)) {\n  ctx.threat.indicator.url = [ctx.threat.indicator.url];\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
-                        event,
-                        cached_painless!(
-                            r#"if (ctx.threat?.indicator?.file?.name != null && !(ctx.threat.indicator.file.name instanceof List)) {\n  ctx.threat.indicator.file.name = [ctx.threat.indicator.file.name];\n}\nif (ctx.threat?.indicator?.file?.extension != null && !(ctx.threat.indicator.file.extension instanceof List)) {\n  ctx.threat.indicator.file.extension = [ctx.threat.indicator.file.extension];\n}\nif (ctx.threat?.indicator?.email?.address != null && !(ctx.threat.indicator.email.address instanceof List)) {\n  ctx.threat.indicator.email.address = [ctx.threat.indicator.email.address];\n}\nif (ctx.threat?.indicator?.ip != null && !(ctx.threat.indicator.ip instanceof List)) {\n  ctx.threat.indicator.ip = [ctx.threat.indicator.ip];\n}\nif (ctx.threat?.indicator?.url != null && !(ctx.threat.indicator.url instanceof List)) {\n  ctx.threat.indicator.url = [ctx.threat.indicator.url];\n}\n"#
-                        ),
-                    )?;
-                    // End nested pipeline: "ecs_from_pattern"
-                    Ok(())
-                })?;
+                }
             }
 
             event.remove("opencti.indicator._patterns");

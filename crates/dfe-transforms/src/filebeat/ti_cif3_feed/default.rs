@@ -271,8 +271,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("cif3.indicator") {
                         // Grok pattern: as(?:%{INT:threat.indicator.as.number})
-                        let _ = cached_grok!("as(?:%{INT:threat.indicator.as.number})")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("as(?:%{INT:threat.indicator.as.number})")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -437,7 +440,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("cif3.indicator") {
                         // Grok pattern: %{URIPROTO:threat.indicator.url.scheme}://(?:%{IPV4:threat.indicator.ip}|\\[?%{IPV6:threat.indicator.ip}\\]?|%{HOSTNAME:threat.indicator.url.domain})(?::%{POSINT:threat.indicator.url.port})?(?:%{URIPATH:threat.indicator.url.path})?.*
-                        let _ = cached_grok!("%{URIPROTO:threat.indicator.url.scheme}://(?:%{IPV4:threat.indicator.ip}|\\[?%{IPV6:threat.indicator.ip}\\]?|%{HOSTNAME:threat.indicator.url.domain})(?::%{POSINT:threat.indicator.url.port})?(?:%{URIPATH:threat.indicator.url.path})?.*").extract_into(&input, event)?;
+                        if !cached_grok!("%{URIPROTO:threat.indicator.url.scheme}://(?:%{IPV4:threat.indicator.ip}|\\[?%{IPV6:threat.indicator.ip}\\]?|%{HOSTNAME:threat.indicator.url.domain})(?::%{POSINT:threat.indicator.url.port})?(?:%{URIPATH:threat.indicator.url.path})?.*").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -461,9 +466,11 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("threat.indicator.email.address") {
                         // Grok pattern: %{USERNAME}@%{GREEDYDATA:threat.indicator.url.domain}
-                        let _ =
-                            cached_grok!("%{USERNAME}@%{GREEDYDATA:threat.indicator.url.domain}")
-                                .extract_into(&input, event)?;
+                        if !cached_grok!("%{USERNAME}@%{GREEDYDATA:threat.indicator.url.domain}")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();

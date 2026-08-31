@@ -23,7 +23,7 @@ impl Transform for CvpnFeature {
                     // Grok pattern: ^REWRITTEN_URL %{URI:citrix_adc.log.rewritten_url}$
                     // Grok pattern: ^MATCHED_URL %{URI:citrix_adc.log.matched_url}$
                     // Grok pattern: %{GREEDYDATA:citrix_adc.log.message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^HTML_URL %{URI:citrix_adc.log.html_url}$"),
                             cached_grok!("^REWRITTEN_URL %{URI:citrix_adc.log.rewritten_url}$"),
@@ -32,7 +32,9 @@ impl Transform for CvpnFeature {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

@@ -204,7 +204,7 @@ impl Transform for Default {
                         // Grok pattern: ^\\[%{IPV6:json.access_device.ip}\\]:(?P<json_access_device_port>(?:[0-9]+))$
                         // Grok pattern: ^(?P<json_access_device_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<json_access_device_port>(?:[0-9]+))$
                         // Grok pattern: ^%{IPV6:json.access_device.ip}(?:(?: port |[p#.]))(?P<json_access_device_port>(?:[0-9]+))$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok_mapped!(
                                     "^%{IPV4:json.access_device.ip}:(?P<json_access_device_port>(?:[0-9]+))$",
@@ -228,7 +228,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())
@@ -452,7 +454,7 @@ impl Transform for Default {
                         // Grok pattern: ^\\[%{IPV6:json.auth_device.ip}\\]:(?P<json_auth_device_port>(?:[0-9]+))$
                         // Grok pattern: ^(?P<json_auth_device_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<json_auth_device_port>(?:[0-9]+))$
                         // Grok pattern: ^%{IPV6:json.auth_device.ip}(?:(?: port |[p#.]))(?P<json_auth_device_port>(?:[0-9]+))$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok_mapped!(
                                     "^%{IPV4:json.auth_device.ip}:(?P<json_auth_device_port>(?:[0-9]+))$",
@@ -476,7 +478,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

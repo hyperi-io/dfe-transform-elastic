@@ -25,7 +25,7 @@ impl Transform for TcpAndAclFeature {
                     // Grok pattern: ^Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.original_destination.ip}:%{INT:citrix_adc.log.original_destination.port} - NatIP %{IP:citrix_adc.log.nat.ip}:%{INT:citrix_adc.log.nat.port} - Destination %{IP:citrix_adc.log.translated_destination.ip}:%{INT:citrix_adc.log.translated_destination.port} - Start Time %{DATA:_tmp.start_time}(?: %{DATA:citrix_adc.log.start_time_timezone})? - Delink Time %{DATA:_tmp.delink_time}(?: %{DATA:citrix_adc.log.delink_timezone})? - Total_bytes_send %{INT:citrix_adc.log.total_bytes_send:long} - Total_bytes_recv %{INT:citrix_adc.log.total_bytes_received:long} - Closure%{SPACE}Reason %{GREEDYDATA:citrix_adc.log.closure_reason}$
                     // Grok pattern: ^Source %{IP:citrix_adc.log.source.ip} --> Destination %{IP:citrix_adc.log.destination.ip} - Protocol %{WORD:citrix_adc.log.protocol} - Type %{INT:citrix_adc.log.type} - Code %{INT:citrix_adc.log.code} - Time%{SPACE}Stamp %{DATA:citrix_adc.log.timestamp}%{SPACE}\\(ms\\) - Hitcount %{INT:citrix_adc.log.hit.count:int} - Hit%{SPACE}Rule %{GREEDYDATA:citrix_adc.log.hit.rule} - Action %{WORD:citrix_adc.log.action} - Data%{SPACE}$
                     // Grok pattern: %{GREEDYDATA:citrix_adc.log.message}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - NatIP %{IP:citrix_adc.log.nat.ip}:%{INT:citrix_adc.log.nat.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - Delink Time %{DATA:_tmp.delink_time}(?: %{DATA:citrix_adc.log.delink_timezone})? - Total_bytes_send %{INT:citrix_adc.log.total_bytes_send:long} - Total_bytes_recv %{INT:citrix_adc.log.total_bytes_received:long}%{SPACE}$"),
                             cached_grok!("^Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - NatIP %{IP:citrix_adc.log.nat.ip}:%{INT:citrix_adc.log.nat.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - Delink Time %{DATA:_tmp.delink_time}(?: %{DATA:citrix_adc.log.delink_timezone})? Total_bytes_send %{INT:citrix_adc.log.total_bytes_send:long} - Total_bytes_recv %{INT:citrix_adc.log.total_bytes_received:long}%{SPACE}$"),
@@ -36,7 +36,9 @@ impl Transform for TcpAndAclFeature {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })();

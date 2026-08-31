@@ -36,7 +36,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("_tmp.filepath") {
                         // Grok pattern: ^%{DATA}[\\\\/]%{WORD:cisco_secure_email_gateway.log.category.name}(?:\\.%{HOSTNAME:cisco_secure_email_gateway.log.host})?\\.@%{GREEDYDATA}\\.s$
-                        let _ = cached_grok!("^%{DATA}[\\\\/]%{WORD:cisco_secure_email_gateway.log.category.name}(?:\\.%{HOSTNAME:cisco_secure_email_gateway.log.host})?\\.@%{GREEDYDATA}\\.s$").extract_into(&input, event)?;
+                        if !cached_grok!("^%{DATA}[\\\\/]%{WORD:cisco_secure_email_gateway.log.category.name}(?:\\.%{HOSTNAME:cisco_secure_email_gateway.log.host})?\\.@%{GREEDYDATA}\\.s$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -54,7 +56,7 @@ impl Transform for Default {
                 // Grok pattern: ^(?:<%{NUMBER:log.syslog.priority:long}>)?%{SYSLOGTIMESTAMP:_tmp.timestamp} (?:%{HOSTNAME:cisco_secure_email_gateway.log.host} )?%{NOTSPACE:cisco_secure_email_gateway.log.category.name}: %{GREEDYDATA:cisco_secure_email_gateway.log.message}$
                 // Grok pattern: ^%{DATA:_tmp.timestamp} %{WORD:log.level}: %{GREEDYDATA:cisco_secure_email_gateway.log.message}$
                 // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!(
                             "^(?:<%{NUMBER:log.syslog.priority:long}>)?%{SYSLOGTIMESTAMP:_tmp.timestamp} (?:%{HOSTNAME:cisco_secure_email_gateway.log.host} )?%{NOTSPACE:cisco_secure_email_gateway.log.category.name}: %{WORD:log.level}: %{GREEDYDATA:cisco_secure_email_gateway.log.message}$"
@@ -69,7 +71,9 @@ impl Transform for Default {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             // ignore_failure: true
@@ -208,7 +212,7 @@ impl Transform for Default {
                     // Grok pattern: ^User %{USERNAME:user.name} was %{WORD:cisco_secure_email_gateway.log.action} %{WORD:cisco_secure_email_gateway.log.outcome}\\.$
                     // Grok pattern: ^User %{USERNAME:user.name} %{WORD:cisco_secure_email_gateway.log.outcome} %{WORD:cisco_secure_email_gateway.log.action}$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^GUI: User %{USERNAME:user.name} %{GREEDYDATA:cisco_secure_email_gateway.log.action} from session %{GREEDYDATA:cisco_secure_email_gateway.log.session} because of inactivity timeout$"
@@ -238,7 +242,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -326,7 +332,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.subject} %{IP:source.ip} port %{NUMBER:source.port:long} - %{GREEDYDATA:cisco_secure_email_gateway.log.description}$
                     // Grok pattern: ^%{DATA:cisco_secure_email_gateway.log.object} has been %{DATA:cisco_secure_email_gateway.log.action} for user %{USERNAME:user.name}$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^req:%{DATA:client.ip:IP} user:%{DATA:user.name} id:%{DATA:event.id} %{NUMBER:http.response.status_code:long} %{WORD:http.request.method} %{DATA:url.path} HTTP/%{NUMBER:http.version} %{GREEDYDATA:user_agent.original}$"
@@ -359,7 +365,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 let _cond = { event.get_str("user_agent.original") != Some("-") };
                 if _cond {
@@ -517,7 +525,7 @@ impl Transform for Default {
                     // Grok pattern: ^case %{GREEDYDATA:cisco_secure_email_gateway.log.object_category} \\(%{NUMBER:cisco_secure_email_gateway.log.case_id}\\) : case-daemon: %{DATA:cisco_secure_email_gateway.log.object} killed by %{DATA:cisco_secure_email_gateway.log.command}, %{GREEDYDATA:cisco_secure_email_gateway.log.result}$
                     // Grok pattern: ^case %{GREEDYDATA:cisco_secure_email_gateway.log.object_category} \\(%{NUMBER:cisco_secure_email_gateway.log.case_id}\\) : case-daemon: %{GREEDYDATA:cisco_secure_email_gateway.log.result}$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^case %{GREEDYDATA:cisco_secure_email_gateway.log.object_category} \\(%{NUMBER:cisco_secure_email_gateway.log.case_id}\\) : case-daemon: all %{DATA:cisco_secure_email_gateway.log.object} killed, %{GREEDYDATA:cisco_secure_email_gateway.log.result}$"
@@ -532,7 +540,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 // End nested pipeline: "pipeline_anti_spam"
             }
@@ -553,7 +563,7 @@ impl Transform for Default {
                         // Grok pattern: ^%{WORD:cisco_secure_email_gateway.log.alert_category}: %{GREEDYDATA:cisco_secure_email_gateway.log.description}$
                         // Grok pattern: ^Internal %{DATA:network.protocol} system attempting to send a message to %{DATA:email.to.address} with subject %{GREEDYDATA:email.subject}\\.$
                         // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^Internal %{DATA:network.protocol} giving up on message to %{DATA:email.to.address} with subject %{GREEDYDATA:email.subject}\\.$"
@@ -573,7 +583,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })();
@@ -637,7 +649,7 @@ impl Transform for Default {
                     // Grok pattern: ^MID %{NUMBER:email.message_id} %{DATA:file.extension} file %{GREEDYDATA:cisco_secure_email_gateway.log.details}$
                     // Grok pattern: \\bMID %{NUMBER:email.message_id}(?: ICID %{NUMBER:cisco_secure_email_gateway.log.injection_connection_id})?
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^graymail \\[CONFIG\\] %{WORD:cisco_secure_email_gateway.log.vendor_action} %{GREEDYDATA:cisco_secure_email_gateway.log.object}$"
@@ -760,7 +772,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -968,7 +982,7 @@ impl Transform for Default {
                     // Grok pattern: ^PF: %{WORD:cisco_secure_email_gateway.log.vendor_action} %{WORD:cisco_secure_email_gateway.log.object} %{GREEDYDATA:cisco_secure_email_gateway.log.object_category}$
                     // Grok pattern: ^PF: %{WORD:cisco_secure_email_gateway.log.vendor_action} %{GREEDYDATA:cisco_secure_email_gateway.log.object_category} \\(pid=%{NUMBER:process.pid:long}\\)$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^PF: %{WORD:cisco_secure_email_gateway.log.vendor_action} %{WORD:cisco_secure_email_gateway.log.object} %{GREEDYDATA:cisco_secure_email_gateway.log.object_category}$"
@@ -980,7 +994,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 // End nested pipeline: "pipeline_content_scanner"
             }
@@ -997,7 +1013,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.subject} to %{GREEDYDATA:cisco_secure_email_gateway.log.description} ' '$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.subject}: %{GREEDYDATA:cisco_secure_email_gateway.log.description}$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^PID %{NUMBER:process.pid:long}: User %{USERNAME:user.name} commit changes:%{GREEDYDATA:cisco_secure_email_gateway.log.commit_changes}$"
@@ -1018,7 +1034,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 let _cond = { event.has_value("user.name") };
                 if _cond {
@@ -1048,7 +1066,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{WORD:cisco_secure_email_gateway.log.bounce_type}: DCID %{NUMBER:cisco_secure_email_gateway.log.delivery_connection_id} MID %{NUMBER:email.message_id} From:<%{GREEDYDATA:email.from.address}> To:<%{GREEDYDATA:email.to.address}> RID %{NUMBER:cisco_secure_email_gateway.log.recipient_id} - %{DATA:cisco_secure_email_gateway.log.error_code} - %{GREEDYDATA:event.reason} \\(%{GREEDYDATA:cisco_secure_email_gateway.log.response}\\)$
                     // Grok pattern: ^%{WORD:cisco_secure_email_gateway.log.bounce_type}: %{NUMBER:email.message_id}:%{NUMBER:cisco_secure_email_gateway.log.recipient_id} From:<%{GREEDYDATA:email.from.address}> To:<%{GREEDYDATA:email.to.address}>$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{WORD:cisco_secure_email_gateway.log.bounce_type}: DCID %{NUMBER:cisco_secure_email_gateway.log.delivery_connection_id} MID %{NUMBER:email.message_id} From:<%{GREEDYDATA:email.from.address}> To:<%{GREEDYDATA:email.to.address}> RID %{NUMBER:cisco_secure_email_gateway.log.recipient_id} - %{DATA:cisco_secure_email_gateway.log.error_code} - %{GREEDYDATA:event.reason} \\(%{GREEDYDATA:cisco_secure_email_gateway.log.response}\\)$"
@@ -1060,7 +1078,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 // End nested pipeline: "pipeline_bounce"
             }
@@ -1073,7 +1093,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("cisco_secure_email_gateway.log.message") {
                     // Grok pattern: ^Status: CPULd %{NUMBER:cisco_secure_email_gateway.log.cpu.utilization:long} DskIO %{NUMBER:cisco_secure_email_gateway.log.disk_io:long} RAMUtil %{NUMBER:cisco_secure_email_gateway.log.ram.utilization:long} QKUsd %{NUMBER:cisco_secure_email_gateway.log.queue_kilobytes_usd:long} QKFre %{NUMBER:cisco_secure_email_gateway.log.queue_kilobytes_free:long} CrtMID %{NUMBER:email.message_id} CrtICID %{NUMBER:cisco_secure_email_gateway.log.crt.injection_connection_id} CrtDCID %{NUMBER:cisco_secure_email_gateway.log.crt.delivery_connection_id} InjMsg %{NUMBER:cisco_secure_email_gateway.log.injected.messages:long} InjRcp %{NUMBER:cisco_secure_email_gateway.log.injected.recipients:long} GenBncRcp %{NUMBER:cisco_secure_email_gateway.log.generated_bounce_recipients:long} RejRcp %{NUMBER:cisco_secure_email_gateway.log.rejected_recipients:long} DrpMsg %{NUMBER:cisco_secure_email_gateway.log.dropped_messages:long} SftBncEvnt %{NUMBER:cisco_secure_email_gateway.log.soft_bounced_events:long} CmpRcp %{NUMBER:cisco_secure_email_gateway.log.completed_recipients:long} HrdBncRcp %{NUMBER:cisco_secure_email_gateway.log.hard_bounce_recipients:long} DnsHrdBnc %{NUMBER:cisco_secure_email_gateway.log.dns.hard_bounces:long} 5XXHrdBnc %{NUMBER:cisco_secure_email_gateway.log.5xx_hard_bounces:long} FltrHrdBnc %{NUMBER:cisco_secure_email_gateway.log.filter_hard_bounces:long} ExpHrdBnc %{NUMBER:cisco_secure_email_gateway.log.expired_hard_bounces:long} OtrHrdBnc %{NUMBER:cisco_secure_email_gateway.log.other_hard_bounces:long} DlvRcp %{NUMBER:cisco_secure_email_gateway.log.delivered_recipients:long} DelRcp %{NUMBER:cisco_secure_email_gateway.log.deleted_recipients:long} GlbUnsbHt %{NUMBER:cisco_secure_email_gateway.log.global_unsubscribe_hits:long} ActvRcp %{NUMBER:cisco_secure_email_gateway.log.active_recipients:long} UnatmptRcp %{NUMBER:cisco_secure_email_gateway.log.unattempted_recipients:long} AtmptRcp %{NUMBER:cisco_secure_email_gateway.log.attempted_recipients:long} CrtCncIn %{NUMBER:cisco_secure_email_gateway.log.current.inbound_connections:long} CrtCncOut %{NUMBER:cisco_secure_email_gateway.log.current.outbound_connections:long} DnsReq %{NUMBER:cisco_secure_email_gateway.log.dns.requests:long} NetReq %{NUMBER:cisco_secure_email_gateway.log.network_requests:long} CchHit %{NUMBER:cisco_secure_email_gateway.log.cache.hits:long} CchMis %{NUMBER:cisco_secure_email_gateway.log.cache.misses:long} CchEct %{NUMBER:cisco_secure_email_gateway.log.cache.exceptions:long} CchExp %{NUMBER:cisco_secure_email_gateway.log.cache.expired:long} CPUTTm %{NUMBER:cisco_secure_email_gateway.log.cpu.total_time:long} CPUETm %{NUMBER:cisco_secure_email_gateway.log.cpu.elapsed_time:long} MaxIO %{NUMBER:cisco_secure_email_gateway.log.max_io:long} RAMUsd %{NUMBER:cisco_secure_email_gateway.log.ram.used:long} MMLen %{NUMBER:cisco_secure_email_gateway.log.messages_length:long} DstInMem %{NUMBER:cisco_secure_email_gateway.log.destination_memory:long} ResCon %{NUMBER:cisco_secure_email_gateway.log.resource_conservation:long} WorkQ %{NUMBER:cisco_secure_email_gateway.log.work_queue:long} QuarMsgs %{NUMBER:cisco_secure_email_gateway.log.quarantine.messages:long} QuarQKUsd %{NUMBER:cisco_secure_email_gateway.log.quarantine.queue_kilobytes_used:long} LogUsd %{NUMBER:cisco_secure_email_gateway.log.log_used:long} SophLd %{NUMBER:cisco_secure_email_gateway.log.sophos_ld:long} BMLd %{NUMBER:cisco_secure_email_gateway.log.bmld:long} CASELd %{NUMBER:cisco_secure_email_gateway.log.case_ld:long} TotalLd %{NUMBER:cisco_secure_email_gateway.log.total_ld:long} LogAvail %{DATA:cisco_secure_email_gateway.log.log_available} EuQ %{NUMBER:cisco_secure_email_gateway.log.estimated.quarantine:long} EuqRls %{NUMBER:cisco_secure_email_gateway.log.estimated.quarantine_release_queue:long} CmrkLd %{NUMBER:cisco_secure_email_gateway.log.cmrkld:long} McafLd %{NUMBER:cisco_secure_email_gateway.log.mcafee_ld:long} SwIn %{NUMBER:cisco_secure_email_gateway.log.swapped.in:long} SwOut %{NUMBER:cisco_secure_email_gateway.log.swapped.out:long} SwPgIn %{NUMBER:cisco_secure_email_gateway.log.swapped.page.in:long} SwPgOut %{NUMBER:cisco_secure_email_gateway.log.swapped.page.out:long} SwapUsage %{DATA:cisco_secure_email_gateway.log.swap_usage} RptLd %{NUMBER:cisco_secure_email_gateway.log.reporting_load:long} QtnLd %{NUMBER:cisco_secure_email_gateway.log.quarantine.load:long} EncrQ %{NUMBER:cisco_secure_email_gateway.log.encryption_queue:long} InjBytes %{NUMBER:cisco_secure_email_gateway.log.injected.bytes:long}$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Status: CPULd %{NUMBER:cisco_secure_email_gateway.log.cpu.utilization:long} DskIO %{NUMBER:cisco_secure_email_gateway.log.disk_io:long} RAMUtil %{NUMBER:cisco_secure_email_gateway.log.ram.utilization:long} QKUsd %{NUMBER:cisco_secure_email_gateway.log.queue_kilobytes_usd:long} QKFre %{NUMBER:cisco_secure_email_gateway.log.queue_kilobytes_free:long} CrtMID %{NUMBER:email.message_id} CrtICID %{NUMBER:cisco_secure_email_gateway.log.crt.injection_connection_id} CrtDCID %{NUMBER:cisco_secure_email_gateway.log.crt.delivery_connection_id} InjMsg %{NUMBER:cisco_secure_email_gateway.log.injected.messages:long} InjRcp %{NUMBER:cisco_secure_email_gateway.log.injected.recipients:long} GenBncRcp %{NUMBER:cisco_secure_email_gateway.log.generated_bounce_recipients:long} RejRcp %{NUMBER:cisco_secure_email_gateway.log.rejected_recipients:long} DrpMsg %{NUMBER:cisco_secure_email_gateway.log.dropped_messages:long} SftBncEvnt %{NUMBER:cisco_secure_email_gateway.log.soft_bounced_events:long} CmpRcp %{NUMBER:cisco_secure_email_gateway.log.completed_recipients:long} HrdBncRcp %{NUMBER:cisco_secure_email_gateway.log.hard_bounce_recipients:long} DnsHrdBnc %{NUMBER:cisco_secure_email_gateway.log.dns.hard_bounces:long} 5XXHrdBnc %{NUMBER:cisco_secure_email_gateway.log.5xx_hard_bounces:long} FltrHrdBnc %{NUMBER:cisco_secure_email_gateway.log.filter_hard_bounces:long} ExpHrdBnc %{NUMBER:cisco_secure_email_gateway.log.expired_hard_bounces:long} OtrHrdBnc %{NUMBER:cisco_secure_email_gateway.log.other_hard_bounces:long} DlvRcp %{NUMBER:cisco_secure_email_gateway.log.delivered_recipients:long} DelRcp %{NUMBER:cisco_secure_email_gateway.log.deleted_recipients:long} GlbUnsbHt %{NUMBER:cisco_secure_email_gateway.log.global_unsubscribe_hits:long} ActvRcp %{NUMBER:cisco_secure_email_gateway.log.active_recipients:long} UnatmptRcp %{NUMBER:cisco_secure_email_gateway.log.unattempted_recipients:long} AtmptRcp %{NUMBER:cisco_secure_email_gateway.log.attempted_recipients:long} CrtCncIn %{NUMBER:cisco_secure_email_gateway.log.current.inbound_connections:long} CrtCncOut %{NUMBER:cisco_secure_email_gateway.log.current.outbound_connections:long} DnsReq %{NUMBER:cisco_secure_email_gateway.log.dns.requests:long} NetReq %{NUMBER:cisco_secure_email_gateway.log.network_requests:long} CchHit %{NUMBER:cisco_secure_email_gateway.log.cache.hits:long} CchMis %{NUMBER:cisco_secure_email_gateway.log.cache.misses:long} CchEct %{NUMBER:cisco_secure_email_gateway.log.cache.exceptions:long} CchExp %{NUMBER:cisco_secure_email_gateway.log.cache.expired:long} CPUTTm %{NUMBER:cisco_secure_email_gateway.log.cpu.total_time:long} CPUETm %{NUMBER:cisco_secure_email_gateway.log.cpu.elapsed_time:long} MaxIO %{NUMBER:cisco_secure_email_gateway.log.max_io:long} RAMUsd %{NUMBER:cisco_secure_email_gateway.log.ram.used:long} MMLen %{NUMBER:cisco_secure_email_gateway.log.messages_length:long} DstInMem %{NUMBER:cisco_secure_email_gateway.log.destination_memory:long} ResCon %{NUMBER:cisco_secure_email_gateway.log.resource_conservation:long} WorkQ %{NUMBER:cisco_secure_email_gateway.log.work_queue:long} QuarMsgs %{NUMBER:cisco_secure_email_gateway.log.quarantine.messages:long} QuarQKUsd %{NUMBER:cisco_secure_email_gateway.log.quarantine.queue_kilobytes_used:long} LogUsd %{NUMBER:cisco_secure_email_gateway.log.log_used:long} SophLd %{NUMBER:cisco_secure_email_gateway.log.sophos_ld:long} BMLd %{NUMBER:cisco_secure_email_gateway.log.bmld:long} CASELd %{NUMBER:cisco_secure_email_gateway.log.case_ld:long} TotalLd %{NUMBER:cisco_secure_email_gateway.log.total_ld:long} LogAvail %{DATA:cisco_secure_email_gateway.log.log_available} EuQ %{NUMBER:cisco_secure_email_gateway.log.estimated.quarantine:long} EuqRls %{NUMBER:cisco_secure_email_gateway.log.estimated.quarantine_release_queue:long} CmrkLd %{NUMBER:cisco_secure_email_gateway.log.cmrkld:long} McafLd %{NUMBER:cisco_secure_email_gateway.log.mcafee_ld:long} SwIn %{NUMBER:cisco_secure_email_gateway.log.swapped.in:long} SwOut %{NUMBER:cisco_secure_email_gateway.log.swapped.out:long} SwPgIn %{NUMBER:cisco_secure_email_gateway.log.swapped.page.in:long} SwPgOut %{NUMBER:cisco_secure_email_gateway.log.swapped.page.out:long} SwapUsage %{DATA:cisco_secure_email_gateway.log.swap_usage} RptLd %{NUMBER:cisco_secure_email_gateway.log.reporting_load:long} QtnLd %{NUMBER:cisco_secure_email_gateway.log.quarantine.load:long} EncrQ %{NUMBER:cisco_secure_email_gateway.log.encryption_queue:long} InjBytes %{NUMBER:cisco_secure_email_gateway.log.injected.bytes:long}$"
@@ -1082,7 +1102,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 // End nested pipeline: "pipeline_status"
             }
@@ -1101,7 +1123,7 @@ impl Transform for Default {
                     // Grok pattern: ^SHA256: %{GREEDYDATA:email.attachments.file.hash.sha256},Timestamp\\[%{GREEDYDATA:_tmp.submit.timestamp}\\] details\\[%{GREEDYDATA:cisco_secure_email_gateway.log.server_error_details}\\]$
                     // Grok pattern: ^Retrospective verdict received. %{GREEDYDATA:_tmp.new_message}$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match_traced(
+                    if !extract_first_match_traced(
                         &[
                             cached_grok!(
                                 "^File reputation query initiating. %{GREEDYDATA:_tmp.new_message}$"
@@ -1128,7 +1150,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 event.set(
                     "_tmp.grok_match_index",
@@ -1195,7 +1219,9 @@ impl Transform for Default {
                         event.get_string("_tmp.cisco_secure_email_gateway.log.remaining_details")
                     {
                         // Grok pattern: ^File SHA256\\[%{GREEDYDATA:email.attachments.file.hash.sha256}\\] file mime\\[%{GREEDYDATA:email.attachments.file.mime_type}\\], upload priority\\[%{GREEDYDATA:cisco_secure_email_gateway.log.upload.priority}\\] not uploaded, re-tries\\[%{GREEDYDATA:cisco_secure_email_gateway.log.retries:long}\\], backoff\\[%{GREEDYDATA:cisco_secure_email_gateway.log.backoff:long}\\] %{GREEDYDATA:cisco_secure_email_gateway.log.details}$
-                        let _ = cached_grok!("^File SHA256\\[%{GREEDYDATA:email.attachments.file.hash.sha256}\\] file mime\\[%{GREEDYDATA:email.attachments.file.mime_type}\\], upload priority\\[%{GREEDYDATA:cisco_secure_email_gateway.log.upload.priority}\\] not uploaded, re-tries\\[%{GREEDYDATA:cisco_secure_email_gateway.log.retries:long}\\], backoff\\[%{GREEDYDATA:cisco_secure_email_gateway.log.backoff:long}\\] %{GREEDYDATA:cisco_secure_email_gateway.log.details}$").extract_into(&input, event)?;
+                        if !cached_grok!("^File SHA256\\[%{GREEDYDATA:email.attachments.file.hash.sha256}\\] file mime\\[%{GREEDYDATA:email.attachments.file.mime_type}\\], upload priority\\[%{GREEDYDATA:cisco_secure_email_gateway.log.upload.priority}\\] not uploaded, re-tries\\[%{GREEDYDATA:cisco_secure_email_gateway.log.retries:long}\\], backoff\\[%{GREEDYDATA:cisco_secure_email_gateway.log.backoff:long}\\] %{GREEDYDATA:cisco_secure_email_gateway.log.details}$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 if event.has_value("Timestamp") {
@@ -1444,7 +1470,9 @@ impl Transform for Default {
                 event.set("event.kind", json!("event"))?;
                 if let Some(input) = event.get_string("cisco_secure_email_gateway.log.message") {
                     // Grok pattern: ^(?:%{DATA:_tmp.timestamp} )?CEF:%{NUMBER:cisco_secure_email_gateway.log.cef_format_version}\\|%{WORD:cisco_secure_email_gateway.log.appliance.vendor}\\|%{DATA:cisco_secure_email_gateway.log.appliance.product}\\|%{DATA:cisco_secure_email_gateway.log.appliance.version}\\|%{DATA:cisco_secure_email_gateway.log.event_class_id}\\|%{DATA:cisco_secure_email_gateway.log.event.name}\\|%{WORD:event.severity}\\|%{GREEDYDATA:_tmp.details}$
-                    let _ = cached_grok!("^(?:%{DATA:_tmp.timestamp} )?CEF:%{NUMBER:cisco_secure_email_gateway.log.cef_format_version}\\|%{WORD:cisco_secure_email_gateway.log.appliance.vendor}\\|%{DATA:cisco_secure_email_gateway.log.appliance.product}\\|%{DATA:cisco_secure_email_gateway.log.appliance.version}\\|%{DATA:cisco_secure_email_gateway.log.event_class_id}\\|%{DATA:cisco_secure_email_gateway.log.event.name}\\|%{WORD:event.severity}\\|%{GREEDYDATA:_tmp.details}$").extract_into(&input, event)?;
+                    if !cached_grok!("^(?:%{DATA:_tmp.timestamp} )?CEF:%{NUMBER:cisco_secure_email_gateway.log.cef_format_version}\\|%{WORD:cisco_secure_email_gateway.log.appliance.vendor}\\|%{DATA:cisco_secure_email_gateway.log.appliance.product}\\|%{DATA:cisco_secure_email_gateway.log.appliance.version}\\|%{DATA:cisco_secure_email_gateway.log.event_class_id}\\|%{DATA:cisco_secure_email_gateway.log.event.name}\\|%{WORD:event.severity}\\|%{GREEDYDATA:_tmp.details}$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 let _cond = { event.has_value("_tmp.details") };
                 if _cond {
@@ -2613,7 +2641,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{WORD:observer.vendor}  antivirus - MID %{NUMBER:email.message_id} %{NUMBER:cisco_secure_email_gateway.log.rank:long} - %{WORD:cisco_secure_email_gateway.log.type} - '%{GREEDYDATA:cisco_secure_email_gateway.log.antivirus_result}'$
                     // Grok pattern: ^%{WORD:observer.vendor}  antivirus - MID %{NUMBER:email.message_id} - %{GREEDYDATA:cisco_secure_email_gateway.log.antivirus_result}$
                     // Grok pattern: ^%{GREEDYDATA:cisco_secure_email_gateway.log.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{WORD:observer.vendor}  antivirus - MID %{NUMBER:email.message_id} - %{WORD:cisco_secure_email_gateway.log.type} '%{GREEDYDATA:cisco_secure_email_gateway.log.antivirus_result}' \\(\\)$"
@@ -2634,7 +2662,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 let _cond =
                     { event.get_str("cisco_secure_email_gateway.log.type") == Some("Error") };

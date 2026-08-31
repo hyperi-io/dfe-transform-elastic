@@ -497,316 +497,499 @@ impl Transform for Default {
             let _cond = { event.get_str("threat.indicator.type") == Some("domain-name") };
             if _cond {
                 if event.has_value("ti_socradar_taxii.stix._patterns") {
-                    foreach_array(event, "ti_socradar_taxii.stix._patterns", |event| {
-                        // Begin nested pipeline: "indicator-domain-name"
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(input) = event.get_string("_ingest._value") {
-                                // Grok pattern: ^\\[?domain-name:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?$
-                                // Grok pattern: ^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$
-                                // Grok pattern: ^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?$
-                                // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$
-                                // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$
-                                // Grok pattern: ^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$
-                                // Grok pattern: ^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$
-                                let _ = extract_first_match(
-                                    &[
-                                        cached_grok!(
-                                            "^\\[?domain-name:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$"
-                                        ),
-                                    ],
-                                    &input,
-                                    event,
-                                )?;
+                    {
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("ti_socradar_taxii.stix._patterns").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
                             }
-                            Ok(())
-                        })();
-                        let _cond = { event.has_value("_tmp.url") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.url.domain",
-                                json!(
-                                    event
-                                        .get("_tmp.url")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // Begin nested pipeline: "indicator-domain-name"
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(input) = event.get_string("_ingest._value") {
+                                        // Grok pattern: ^\\[?domain-name:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?$
+                                        // Grok pattern: ^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$
+                                        // Grok pattern: ^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?$
+                                        // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$
+                                        // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$
+                                        // Grok pattern: ^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$
+                                        // Grok pattern: ^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$
+                                        if !extract_first_match(
+                                            &[
+                                                cached_grok!(
+                                                    "^\\[?domain-name:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?domain-name:resolves_to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$"
+                                                ),
+                                            ],
+                                            &input,
+                                            event,
+                                        )? {
+                                            return Err(TransformError::GrokNoMatch {
+                                                value: input,
+                                            });
+                                        }
+                                    }
+                                    Ok(())
+                                })();
+                                let _cond = { event.has_value("_tmp.url") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.url.domain",
+                                        json!(
+                                            event
+                                                .get("_tmp.url")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.ip") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.ip",
+                                        json!(
+                                            event
+                                                .get("_tmp.ip")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.ip") };
+                                if _cond {
+                                    event.append_unique(
+                                        "related.ip",
+                                        json!(
+                                            event
+                                                .get("_tmp.ip")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.url") };
+                                if _cond {
+                                    event.append_unique(
+                                        "related.hosts",
+                                        json!(
+                                            event
+                                                .get("_tmp.url")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                event.remove("_tmp");
+                                // End nested pipeline: "indicator-domain-name"
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
+                                }
+                            }
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "ti_socradar_taxii.stix._patterns",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
                             )?;
                         }
-                        let _cond = { event.has_value("_tmp.ip") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.ip",
-                                json!(
-                                    event
-                                        .get("_tmp.ip")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.ip") };
-                        if _cond {
-                            event.append_unique(
-                                "related.ip",
-                                json!(
-                                    event
-                                        .get("_tmp.ip")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.url") };
-                        if _cond {
-                            event.append_unique(
-                                "related.hosts",
-                                json!(
-                                    event
-                                        .get("_tmp.url")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        event.remove("_tmp");
-                        // End nested pipeline: "indicator-domain-name"
-                        Ok(())
-                    })?;
+                    }
                 }
             }
 
             let _cond = { event.get_str("threat.indicator.type") == Some("email-addr") };
             if _cond {
                 if event.has_value("ti_socradar_taxii.stix._patterns") {
-                    foreach_array(event, "ti_socradar_taxii.stix._patterns", |event| {
-                        // Begin nested pipeline: "indicator-email"
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(input) = event.get_string("_ingest._value") {
-                                // Grok pattern: ^\\[?email-addr:value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$
-                                // Grok pattern: ^\\[?email-message:value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$
-                                // Grok pattern: ^\\[?email-message:from_ref.value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$
-                                // Grok pattern: ^\\[?email-message:to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$
-                                let _ = extract_first_match(
-                                    &[
-                                        cached_grok!(
-                                            "^\\[?email-addr:value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?email-message:value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?email-message:from_ref.value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?email-message:to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$"
-                                        ),
-                                    ],
-                                    &input,
-                                    event,
-                                )?;
+                    {
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("ti_socradar_taxii.stix._patterns").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
                             }
-                            Ok(())
-                        })();
-                        let _cond = { event.has_value("_tmp.email_addr") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.email.address",
-                                json!(
-                                    event
-                                        .get("_tmp.email_addr")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // Begin nested pipeline: "indicator-email"
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(input) = event.get_string("_ingest._value") {
+                                        // Grok pattern: ^\\[?email-addr:value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$
+                                        // Grok pattern: ^\\[?email-message:value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$
+                                        // Grok pattern: ^\\[?email-message:from_ref.value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$
+                                        // Grok pattern: ^\\[?email-message:to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$
+                                        if !extract_first_match(
+                                            &[
+                                                cached_grok!(
+                                                    "^\\[?email-addr:value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?email-message:value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?email-message:from_ref.value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?email-message:to_refs\\[\\*\\].value%{SPACE}=%{SPACE}'%{DATA:_tmp.email_addr}'\\]?$"
+                                                ),
+                                            ],
+                                            &input,
+                                            event,
+                                        )? {
+                                            return Err(TransformError::GrokNoMatch {
+                                                value: input,
+                                            });
+                                        }
+                                    }
+                                    Ok(())
+                                })();
+                                let _cond = { event.has_value("_tmp.email_addr") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.email.address",
+                                        json!(
+                                            event
+                                                .get("_tmp.email_addr")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                event.remove("_tmp");
+                                // End nested pipeline: "indicator-email"
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
+                                }
+                            }
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "ti_socradar_taxii.stix._patterns",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
                             )?;
                         }
-                        event.remove("_tmp");
-                        // End nested pipeline: "indicator-email"
-                        Ok(())
-                    })?;
+                    }
                 }
             }
 
             let _cond = { event.get_str("threat.indicator.type") == Some("file") };
             if _cond {
                 if event.has_value("ti_socradar_taxii.stix._patterns") {
-                    foreach_array(event, "ti_socradar_taxii.stix._patterns", |event| {
-                        // Begin nested pipeline: "indicator-file"
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(input) = event.get_string("_ingest._value") {
-                                // Grok pattern: (?i:^\\[?file:hashes\\.'?MD5'?%{SPACE}=%{SPACE}'%{DATA:_tmp.md5}'\\]?$)
-                                // Grok pattern: (?i:^\\[?file:hashes\\.'?SHA-?1'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha1}'\\]?$)
-                                // Grok pattern: (?i:^\\[?file:hashes\\.'?SHA-?256'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha256}'\\]?$)
-                                // Grok pattern: (?i:^\\[?file:hashes\\.'?SHA-?384'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha384}'\\]?$)
-                                // Grok pattern: (?i:^\\[?file:hashes\\.'?SHA-?512'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha512}'\\]?$)
-                                // Grok pattern: ^\\[?file:name%{SPACE}=%{SPACE}'%{DATA:_tmp.filename}'\\]?$
-                                let _ = extract_first_match(
-                                    &[
-                                        cached_grok!(
-                                            "(?i:^\\[?file:hashes\\.'?MD5'?%{SPACE}=%{SPACE}'%{DATA:_tmp.md5}'\\]?$)"
-                                        ),
-                                        cached_grok!(
-                                            "(?i:^\\[?file:hashes\\.'?SHA-?1'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha1}'\\]?$)"
-                                        ),
-                                        cached_grok!(
-                                            "(?i:^\\[?file:hashes\\.'?SHA-?256'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha256}'\\]?$)"
-                                        ),
-                                        cached_grok!(
-                                            "(?i:^\\[?file:hashes\\.'?SHA-?384'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha384}'\\]?$)"
-                                        ),
-                                        cached_grok!(
-                                            "(?i:^\\[?file:hashes\\.'?SHA-?512'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha512}'\\]?$)"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?file:name%{SPACE}=%{SPACE}'%{DATA:_tmp.filename}'\\]?$"
-                                        ),
-                                    ],
-                                    &input,
-                                    event,
-                                )?;
+                    {
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("ti_socradar_taxii.stix._patterns").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
                             }
-                            Ok(())
-                        })();
-                        let _cond = { event.has_value("_tmp.md5") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.file.hash.md5",
-                                json!(
-                                    event
-                                        .get("_tmp.md5")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // Begin nested pipeline: "indicator-file"
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(input) = event.get_string("_ingest._value") {
+                                        // Grok pattern: (?i:^\\[?file:hashes\\.'?MD5'?%{SPACE}=%{SPACE}'%{DATA:_tmp.md5}'\\]?$)
+                                        // Grok pattern: (?i:^\\[?file:hashes\\.'?SHA-?1'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha1}'\\]?$)
+                                        // Grok pattern: (?i:^\\[?file:hashes\\.'?SHA-?256'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha256}'\\]?$)
+                                        // Grok pattern: (?i:^\\[?file:hashes\\.'?SHA-?384'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha384}'\\]?$)
+                                        // Grok pattern: (?i:^\\[?file:hashes\\.'?SHA-?512'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha512}'\\]?$)
+                                        // Grok pattern: ^\\[?file:name%{SPACE}=%{SPACE}'%{DATA:_tmp.filename}'\\]?$
+                                        if !extract_first_match(
+                                            &[
+                                                cached_grok!(
+                                                    "(?i:^\\[?file:hashes\\.'?MD5'?%{SPACE}=%{SPACE}'%{DATA:_tmp.md5}'\\]?$)"
+                                                ),
+                                                cached_grok!(
+                                                    "(?i:^\\[?file:hashes\\.'?SHA-?1'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha1}'\\]?$)"
+                                                ),
+                                                cached_grok!(
+                                                    "(?i:^\\[?file:hashes\\.'?SHA-?256'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha256}'\\]?$)"
+                                                ),
+                                                cached_grok!(
+                                                    "(?i:^\\[?file:hashes\\.'?SHA-?384'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha384}'\\]?$)"
+                                                ),
+                                                cached_grok!(
+                                                    "(?i:^\\[?file:hashes\\.'?SHA-?512'?%{SPACE}=%{SPACE}'%{DATA:_tmp.sha512}'\\]?$)"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?file:name%{SPACE}=%{SPACE}'%{DATA:_tmp.filename}'\\]?$"
+                                                ),
+                                            ],
+                                            &input,
+                                            event,
+                                        )? {
+                                            return Err(TransformError::GrokNoMatch {
+                                                value: input,
+                                            });
+                                        }
+                                    }
+                                    Ok(())
+                                })();
+                                let _cond = { event.has_value("_tmp.md5") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.file.hash.md5",
+                                        json!(
+                                            event
+                                                .get("_tmp.md5")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.sha1") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.file.hash.sha1",
+                                        json!(
+                                            event
+                                                .get("_tmp.sha1")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.sha256") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.file.hash.sha256",
+                                        json!(
+                                            event
+                                                .get("_tmp.sha256")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.sha384") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.file.hash.sha384",
+                                        json!(
+                                            event
+                                                .get("_tmp.sha384")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.sha512") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.file.hash.sha512",
+                                        json!(
+                                            event
+                                                .get("_tmp.sha512")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.filename") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.file.name",
+                                        json!(
+                                            event
+                                                .get("_tmp.filename")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.md5") };
+                                if _cond {
+                                    event.append_unique(
+                                        "related.hash",
+                                        json!(
+                                            event
+                                                .get("_tmp.md5")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.sha1") };
+                                if _cond {
+                                    event.append_unique(
+                                        "related.hash",
+                                        json!(
+                                            event
+                                                .get("_tmp.sha1")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.sha256") };
+                                if _cond {
+                                    event.append_unique(
+                                        "related.hash",
+                                        json!(
+                                            event
+                                                .get("_tmp.sha256")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.sha384") };
+                                if _cond {
+                                    event.append_unique(
+                                        "related.hash",
+                                        json!(
+                                            event
+                                                .get("_tmp.sha384")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.sha512") };
+                                if _cond {
+                                    event.append_unique(
+                                        "related.hash",
+                                        json!(
+                                            event
+                                                .get("_tmp.sha512")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                event.remove("_tmp");
+                                // End nested pipeline: "indicator-file"
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
+                                }
+                            }
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "ti_socradar_taxii.stix._patterns",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
                             )?;
                         }
-                        let _cond = { event.has_value("_tmp.sha1") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.file.hash.sha1",
-                                json!(
-                                    event
-                                        .get("_tmp.sha1")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.sha256") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.file.hash.sha256",
-                                json!(
-                                    event
-                                        .get("_tmp.sha256")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.sha384") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.file.hash.sha384",
-                                json!(
-                                    event
-                                        .get("_tmp.sha384")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.sha512") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.file.hash.sha512",
-                                json!(
-                                    event
-                                        .get("_tmp.sha512")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.filename") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.file.name",
-                                json!(
-                                    event
-                                        .get("_tmp.filename")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.md5") };
-                        if _cond {
-                            event.append_unique(
-                                "related.hash",
-                                json!(
-                                    event
-                                        .get("_tmp.md5")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.sha1") };
-                        if _cond {
-                            event.append_unique(
-                                "related.hash",
-                                json!(
-                                    event
-                                        .get("_tmp.sha1")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.sha256") };
-                        if _cond {
-                            event.append_unique(
-                                "related.hash",
-                                json!(
-                                    event
-                                        .get("_tmp.sha256")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.sha384") };
-                        if _cond {
-                            event.append_unique(
-                                "related.hash",
-                                json!(
-                                    event
-                                        .get("_tmp.sha384")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.sha512") };
-                        if _cond {
-                            event.append_unique(
-                                "related.hash",
-                                json!(
-                                    event
-                                        .get("_tmp.sha512")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        event.remove("_tmp");
-                        // End nested pipeline: "indicator-file"
-                        Ok(())
-                    })?;
+                    }
                 }
             }
 
@@ -817,150 +1000,334 @@ impl Transform for Default {
             };
             if _cond {
                 if event.has_value("ti_socradar_taxii.stix._patterns") {
-                    foreach_array(event, "ti_socradar_taxii.stix._patterns", |event| {
-                        // Begin nested pipeline: "indicator-ip"
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(input) = event.get_string("_ingest._value") {
-                                // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$
-                                // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$
-                                // Grok pattern: ^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$
-                                // Grok pattern: ^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$
-                                let _ = extract_first_match(
-                                    &[
-                                        cached_grok!(
-                                            "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$"
-                                        ),
-                                    ],
-                                    &input,
-                                    event,
-                                )?;
+                    {
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("ti_socradar_taxii.stix._patterns").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
                             }
-                            Ok(())
-                        })();
-                        let _cond = { event.has_value("_tmp.ip") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.ip",
-                                json!(
-                                    event
-                                        .get("_tmp.ip")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // Begin nested pipeline: "indicator-ip"
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(input) = event.get_string("_ingest._value") {
+                                        // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$
+                                        // Grok pattern: ^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$
+                                        // Grok pattern: ^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$
+                                        // Grok pattern: ^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$
+                                        if !extract_first_match(
+                                            &[
+                                                cached_grok!(
+                                                    "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?ipv4-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}'\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?ipv6-addr:value%{SPACE}=%{SPACE}'%{IP:_tmp.ip}/%{NUMBER}'\\]?$"
+                                                ),
+                                            ],
+                                            &input,
+                                            event,
+                                        )? {
+                                            return Err(TransformError::GrokNoMatch {
+                                                value: input,
+                                            });
+                                        }
+                                    }
+                                    Ok(())
+                                })();
+                                let _cond = { event.has_value("_tmp.ip") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.ip",
+                                        json!(
+                                            event
+                                                .get("_tmp.ip")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.ip") };
+                                if _cond {
+                                    event.append_unique(
+                                        "related.ip",
+                                        json!(
+                                            event
+                                                .get("_tmp.ip")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                event.remove("_tmp");
+                                // End nested pipeline: "indicator-ip"
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
+                                }
+                            }
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "ti_socradar_taxii.stix._patterns",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
                             )?;
                         }
-                        let _cond = { event.has_value("_tmp.ip") };
-                        if _cond {
-                            event.append_unique(
-                                "related.ip",
-                                json!(
-                                    event
-                                        .get("_tmp.ip")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        event.remove("_tmp");
-                        // End nested pipeline: "indicator-ip"
-                        Ok(())
-                    })?;
+                    }
                 }
             }
 
             let _cond = { event.get_str("threat.indicator.type") == Some("url") };
             if _cond {
                 if event.has_value("ti_socradar_taxii.stix._patterns") {
-                    foreach_array(event, "ti_socradar_taxii.stix._patterns", |event| {
-                        // Begin nested pipeline: "indicator-url"
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(input) = event.get_string("_ingest._value") {
-                                // Grok pattern: ^\\[?url:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?$
-                                let _ = cached_grok!(
-                                    "^\\[?url:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?$"
-                                )
-                                .extract_into(&input, event)?;
+                    {
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("ti_socradar_taxii.stix._patterns").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
                             }
-                            Ok(())
-                        })();
-                        let _cond = { event.has_value("_tmp.url") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.url.original",
-                                json!(
-                                    event
-                                        .get("_tmp.url")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // Begin nested pipeline: "indicator-url"
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(input) = event.get_string("_ingest._value") {
+                                        // Grok pattern: ^\\[?url:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?$
+                                        if !cached_grok!(
+                                            "^\\[?url:value%{SPACE}=%{SPACE}'%{DATA:_tmp.url}'\\]?$"
+                                        )
+                                        .extract_into(&input, event)?
+                                        {
+                                            return Err(TransformError::GrokNoMatch {
+                                                value: input,
+                                            });
+                                        }
+                                    }
+                                    Ok(())
+                                })();
+                                let _cond = { event.has_value("_tmp.url") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.url.original",
+                                        json!(
+                                            event
+                                                .get("_tmp.url")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.url") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.url.full",
+                                        json!(
+                                            event
+                                                .get("_tmp.url")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                event.remove("_tmp");
+                                // End nested pipeline: "indicator-url"
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
+                                }
+                            }
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "ti_socradar_taxii.stix._patterns",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
                             )?;
                         }
-                        let _cond = { event.has_value("_tmp.url") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.url.full",
-                                json!(
-                                    event
-                                        .get("_tmp.url")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        event.remove("_tmp");
-                        // End nested pipeline: "indicator-url"
-                        Ok(())
-                    })?;
+                    }
                 }
             }
 
             let _cond = { event.get_str("threat.indicator.type") == Some("autonomous-system") };
             if _cond {
                 if event.has_value("ti_socradar_taxii.stix._patterns") {
-                    foreach_array(event, "ti_socradar_taxii.stix._patterns", |event| {
-                        // Begin nested pipeline: "indicator-asn"
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(input) = event.get_string("_ingest._value") {
-                                // Grok pattern: ^\\[?autonomous-system:number%{SPACE}=%{SPACE}%{INT:_tmp.as_number}\\]?$
-                                // Grok pattern: ^\\[?autonomous-system:number%{SPACE}=%{SPACE}'%{INT:_tmp.as_number}'\\]?$
-                                let _ = extract_first_match(
-                                    &[
-                                        cached_grok!(
-                                            "^\\[?autonomous-system:number%{SPACE}=%{SPACE}%{INT:_tmp.as_number}\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?autonomous-system:number%{SPACE}=%{SPACE}'%{INT:_tmp.as_number}'\\]?$"
-                                        ),
-                                    ],
-                                    &input,
-                                    event,
-                                )?;
+                    {
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("ti_socradar_taxii.stix._patterns").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
                             }
-                            Ok(())
-                        })();
-                        let _cond = { event.has_value("_tmp.as_number") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.as.number",
-                                json!(
-                                    event
-                                        .get("_tmp.as_number")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // Begin nested pipeline: "indicator-asn"
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(input) = event.get_string("_ingest._value") {
+                                        // Grok pattern: ^\\[?autonomous-system:number%{SPACE}=%{SPACE}%{INT:_tmp.as_number}\\]?$
+                                        // Grok pattern: ^\\[?autonomous-system:number%{SPACE}=%{SPACE}'%{INT:_tmp.as_number}'\\]?$
+                                        if !extract_first_match(
+                                            &[
+                                                cached_grok!(
+                                                    "^\\[?autonomous-system:number%{SPACE}=%{SPACE}%{INT:_tmp.as_number}\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?autonomous-system:number%{SPACE}=%{SPACE}'%{INT:_tmp.as_number}'\\]?$"
+                                                ),
+                                            ],
+                                            &input,
+                                            event,
+                                        )? {
+                                            return Err(TransformError::GrokNoMatch {
+                                                value: input,
+                                            });
+                                        }
+                                    }
+                                    Ok(())
+                                })();
+                                let _cond = { event.has_value("_tmp.as_number") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.as.number",
+                                        json!(
+                                            event
+                                                .get("_tmp.as_number")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                event.remove("_tmp");
+                                // End nested pipeline: "indicator-asn"
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
+                                }
+                            }
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "ti_socradar_taxii.stix._patterns",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
                             )?;
                         }
-                        event.remove("_tmp");
-                        // End nested pipeline: "indicator-asn"
-                        Ok(())
-                    })?;
+                    }
                 }
             }
 
@@ -987,73 +1354,134 @@ impl Transform for Default {
             let _cond = { event.get_str("threat.indicator.type") == Some("windows-registry-key") };
             if _cond {
                 if event.has_value("ti_socradar_taxii.stix._patterns") {
-                    foreach_array(event, "ti_socradar_taxii.stix._patterns", |event| {
-                        // Begin nested pipeline: "indicator-windows-registry"
-                        // ignore_failure: true
-                        let _ = (|| -> Result<()> {
-                            if let Some(input) = event.get_string("_ingest._value") {
-                                // Grok pattern: ^\\[?windows-registry-key:key%{SPACE}=%{SPACE}'%{DATA:_tmp.reg_path}'\\]?$
-                                // Grok pattern: ^\\[?windows-registry-key:key%{SPACE}LIKE%{SPACE}'%{DATA:_tmp.reg_path}'\\]?$
-                                // Grok pattern: ^\\[?windows-registry-value-type:name%{SPACE}=%{SPACE}'%{DATA:_tmp.reg_key}'\\]?$
-                                // Grok pattern: ^\\[?windows-registry-value-type:data%{SPACE}=%{SPACE}'%{DATA:_tmp.reg_value}'\\]?$
-                                let _ = extract_first_match(
-                                    &[
-                                        cached_grok!(
-                                            "^\\[?windows-registry-key:key%{SPACE}=%{SPACE}'%{DATA:_tmp.reg_path}'\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?windows-registry-key:key%{SPACE}LIKE%{SPACE}'%{DATA:_tmp.reg_path}'\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?windows-registry-value-type:name%{SPACE}=%{SPACE}'%{DATA:_tmp.reg_key}'\\]?$"
-                                        ),
-                                        cached_grok!(
-                                            "^\\[?windows-registry-value-type:data%{SPACE}=%{SPACE}'%{DATA:_tmp.reg_value}'\\]?$"
-                                        ),
-                                    ],
-                                    &input,
-                                    event,
-                                )?;
+                    {
+                        // A foreach walks a LIST or an OBJECT: over an object Elastic
+                        // binds `_ingest._key` per entry, which is what a target of
+                        // `<field>.{{{_ingest._key}}}` reads.
+                        let subject = event.get("ti_socradar_taxii.stix._patterns").cloned();
+                        let keyed = matches!(subject, Some(Value::Object(_)));
+                        let entries: Vec<(Option<String>, Value)> = match subject {
+                            Some(Value::Array(items)) => {
+                                items.into_iter().map(|v| (None, v)).collect()
                             }
-                            Ok(())
-                        })();
-                        let _cond = { event.has_value("_tmp.reg_path") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.registry.path",
-                                json!(
-                                    event
-                                        .get("_tmp.reg_path")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
+                            Some(Value::Object(fields)) => {
+                                fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                            }
+                            _ => Vec::new(),
+                        };
+                        if !entries.is_empty() {
+                            // A NESTED loop borrows the same slots, so the enclosing
+                            // entry is saved and put back afterwards.
+                            let enclosing = event.get("_ingest._value").cloned();
+                            let enclosing_key = event.get("_ingest._key").cloned();
+                            let mut list = Vec::with_capacity(entries.len());
+                            let mut fields = Map::new();
+                            for (key, item) in entries {
+                                if let Some(key) = key.as_deref() {
+                                    event.set("_ingest._key", Value::String(key.to_string()))?;
+                                }
+                                event.set("_ingest._value", item)?;
+                                // Begin nested pipeline: "indicator-windows-registry"
+                                // ignore_failure: true
+                                let _ = (|| -> Result<()> {
+                                    if let Some(input) = event.get_string("_ingest._value") {
+                                        // Grok pattern: ^\\[?windows-registry-key:key%{SPACE}=%{SPACE}'%{DATA:_tmp.reg_path}'\\]?$
+                                        // Grok pattern: ^\\[?windows-registry-key:key%{SPACE}LIKE%{SPACE}'%{DATA:_tmp.reg_path}'\\]?$
+                                        // Grok pattern: ^\\[?windows-registry-value-type:name%{SPACE}=%{SPACE}'%{DATA:_tmp.reg_key}'\\]?$
+                                        // Grok pattern: ^\\[?windows-registry-value-type:data%{SPACE}=%{SPACE}'%{DATA:_tmp.reg_value}'\\]?$
+                                        if !extract_first_match(
+                                            &[
+                                                cached_grok!(
+                                                    "^\\[?windows-registry-key:key%{SPACE}=%{SPACE}'%{DATA:_tmp.reg_path}'\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?windows-registry-key:key%{SPACE}LIKE%{SPACE}'%{DATA:_tmp.reg_path}'\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?windows-registry-value-type:name%{SPACE}=%{SPACE}'%{DATA:_tmp.reg_key}'\\]?$"
+                                                ),
+                                                cached_grok!(
+                                                    "^\\[?windows-registry-value-type:data%{SPACE}=%{SPACE}'%{DATA:_tmp.reg_value}'\\]?$"
+                                                ),
+                                            ],
+                                            &input,
+                                            event,
+                                        )? {
+                                            return Err(TransformError::GrokNoMatch {
+                                                value: input,
+                                            });
+                                        }
+                                    }
+                                    Ok(())
+                                })();
+                                let _cond = { event.has_value("_tmp.reg_path") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.registry.path",
+                                        json!(
+                                            event
+                                                .get("_tmp.reg_path")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.reg_key") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.registry.key",
+                                        json!(
+                                            event
+                                                .get("_tmp.reg_key")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                let _cond = { event.has_value("_tmp.reg_value") };
+                                if _cond {
+                                    event.append_unique(
+                                        "threat.indicator.registry.value",
+                                        json!(
+                                            event
+                                                .get("_tmp.reg_value")
+                                                .map_or_else(String::new, template_to_string)
+                                        ),
+                                    )?;
+                                }
+                                event.remove("_tmp");
+                                // End nested pipeline: "indicator-windows-registry"
+                                let left = event.remove("_ingest._value");
+                                match key {
+                                    // An entry the body renamed AWAY is gone from the
+                                    // object, which is how a foreach lifts fields up.
+                                    Some(key) => {
+                                        if let Some(value) = left {
+                                            fields.insert(key, value);
+                                        }
+                                    }
+                                    None => list.push(left.unwrap_or(Value::Null)),
+                                }
+                            }
+                            match enclosing {
+                                Some(previous) => {
+                                    event.set("_ingest._value", previous)?;
+                                }
+                                None => {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            if let Some(previous) = enclosing_key {
+                                event.set("_ingest._key", previous)?;
+                            }
+                            event.set(
+                                "ti_socradar_taxii.stix._patterns",
+                                if keyed {
+                                    Value::Object(fields)
+                                } else {
+                                    Value::Array(list)
+                                },
                             )?;
                         }
-                        let _cond = { event.has_value("_tmp.reg_key") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.registry.key",
-                                json!(
-                                    event
-                                        .get("_tmp.reg_key")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        let _cond = { event.has_value("_tmp.reg_value") };
-                        if _cond {
-                            event.append_unique(
-                                "threat.indicator.registry.value",
-                                json!(
-                                    event
-                                        .get("_tmp.reg_value")
-                                        .map_or_else(String::new, template_to_string)
-                                ),
-                            )?;
-                        }
-                        event.remove("_tmp");
-                        // End nested pipeline: "indicator-windows-registry"
-                        Ok(())
-                    })?;
+                    }
                 }
             }
 
@@ -1103,7 +1531,7 @@ impl Transform for Default {
                                         // Grok pattern: ^\\[?x509-certificate:validity_not_before%{SPACE}=%{SPACE}'%{TIMESTAMP_ISO8601:_tmp.not_before}'\\]?$
                                         // Grok pattern: ^\\[?x509-certificate:issuer%{SPACE}=%{SPACE}'%{DATA:_tmp.issuer}'\\]?$
                                         // Grok pattern: ^\\[?x509-certificate:subject%{SPACE}=%{SPACE}'%{DATA:_tmp.subject}'\\]?$
-                                        let _ = extract_first_match(
+                                        if !extract_first_match(
                                             &[
                                                 cached_grok!(
                                                     "(?i:^\\[?x509-certificate:hashes\\.'?MD5'?%{SPACE}=%{SPACE}'%{DATA:_tmp.md5}'\\]?$)"
@@ -1144,7 +1572,11 @@ impl Transform for Default {
                                             ],
                                             &input,
                                             event,
-                                        )?;
+                                        )? {
+                                            return Err(TransformError::GrokNoMatch {
+                                                value: input,
+                                            });
+                                        }
                                     }
                                     Ok(())
                                 })();

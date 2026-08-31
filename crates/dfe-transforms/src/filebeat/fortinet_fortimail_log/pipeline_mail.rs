@@ -63,14 +63,16 @@ impl Transform for PipelineMail {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(?:(?:%{DATA}(?i)user %{NOTSPACE:temp.user}|%{DATA}(?i)login for \\'%{NOTSPACE:temp.user}\\')) %{DATA}%{IP:fortinet_fortimail.log.ip}%{GREEDYDATA:temp.msg}$
                     // Grok pattern: ^%{DATA}(?i)user %{NOTSPACE:temp.user} %{GREEDYDATA:temp.msg}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^(?:(?:%{DATA}(?i)user %{NOTSPACE:temp.user}|%{DATA}(?i)login for \\'%{NOTSPACE:temp.user}\\')) %{DATA}%{IP:fortinet_fortimail.log.ip}%{GREEDYDATA:temp.msg}$"),
                             cached_grok!("^%{DATA}(?i)user %{NOTSPACE:temp.user} %{GREEDYDATA:temp.msg}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())
@@ -136,7 +138,7 @@ impl Transform for PipelineMail {
                     // Grok pattern: ^(?P<fortinet_fortimail_log_network>(?:SSH|telnet|ssh|http|HTTP))\\\\s*\\\\(\\\\s*%{IP:fortinet_fortimail.log.ui_ip}\\\\s*\\\\)$
                     // Grok pattern: ^%{WORD}\\\\s*\\\\(\\\\s*%{IP:fortinet_fortimail.log.ui_ip}\\\\s*\\\\)$
                     // Grok pattern: ^%{DATA}%{IP:fortinet_fortimail.log.ui_ip}%{GREEDYDATA:temp.msg}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!("^(?P<fortinet_fortimail_log_network>(?:SSH|telnet|ssh|http|HTTP))\\\\s*\\\\(\\\\s*%{IP:fortinet_fortimail.log.ui_ip}\\\\s*\\\\)$", [("fortinet_fortimail_log_network", "fortinet_fortimail.log.network")]),
                             cached_grok!("^%{WORD}\\\\s*\\\\(\\\\s*%{IP:fortinet_fortimail.log.ui_ip}\\\\s*\\\\)$"),
@@ -144,7 +146,9 @@ impl Transform for PipelineMail {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
                 Ok(())

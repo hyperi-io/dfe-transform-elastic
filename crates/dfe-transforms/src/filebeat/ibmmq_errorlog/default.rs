@@ -94,12 +94,16 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("message") {
                 // Grok pattern: ^%{DATA:log_timestamp} -
-                let _ = cached_grok!("^%{DATA:log_timestamp} -").extract_into(&input, event)?;
+                if !cached_grok!("^%{DATA:log_timestamp} -").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             if let Some(input) = event.get_string("message") {
                 // Grok pattern: Process\\(%{DATA:process.pid}\\) User\\(%{WORD:user.name}\\) Program\\(%{DATA:process.title}\\) Host\\(%{DATA:host.hostname}\\) Installation\\(%{WORD:ibmmq.errorlog.installation}\\) VRMF\\(%{DATA:service.version}\\)( QMgr\\(%{DATA:ibmmq.errorlog.queue_manager}\\))?( Time\\(%{TIMESTAMP_ISO8601:log_timestamp}\\))?( RemoteHost\\(%{DATA:destination.address}\\))?( ArithInsert1\\(%{DATA:ibmmq.errorlog.arithinsert1}\\))?( ArithInsert2\\(%{DATA:ibmmq.errorlog.arithinsert2}\\))?( CommentInsert1\\(%{DATA:ibmmq.errorlog.commentinsert1}\\))?( CommentInsert2\\(%{DATA:ibmmq.errorlog.commentinsert2}\\))?( CommentInsert3\\(%{DATA:ibmmq.errorlog.commentinsert3}\\))? (?=AMQ[0-9]{4})%{DATA:ibmmq.errorlog.error.code}((?<=AMQ[0-9]{4}[A-Z])%{DATA:log.level})?: %{DATA:ibmmq.errorlog.error.description}( EXPLANATION: %{DATA:ibmmq.errorlog.error.explanation})?( ACTION: %{DATA:ibmmq.errorlog.error.action})?$
-                let _ = cached_grok!("Process\\(%{DATA:process.pid}\\) User\\(%{WORD:user.name}\\) Program\\(%{DATA:process.title}\\) Host\\(%{DATA:host.hostname}\\) Installation\\(%{WORD:ibmmq.errorlog.installation}\\) VRMF\\(%{DATA:service.version}\\)( QMgr\\(%{DATA:ibmmq.errorlog.queue_manager}\\))?( Time\\(%{TIMESTAMP_ISO8601:log_timestamp}\\))?( RemoteHost\\(%{DATA:destination.address}\\))?( ArithInsert1\\(%{DATA:ibmmq.errorlog.arithinsert1}\\))?( ArithInsert2\\(%{DATA:ibmmq.errorlog.arithinsert2}\\))?( CommentInsert1\\(%{DATA:ibmmq.errorlog.commentinsert1}\\))?( CommentInsert2\\(%{DATA:ibmmq.errorlog.commentinsert2}\\))?( CommentInsert3\\(%{DATA:ibmmq.errorlog.commentinsert3}\\))? (?=AMQ[0-9]{4})%{DATA:ibmmq.errorlog.error.code}((?<=AMQ[0-9]{4}[A-Z])%{DATA:log.level})?: %{DATA:ibmmq.errorlog.error.description}( EXPLANATION: %{DATA:ibmmq.errorlog.error.explanation})?( ACTION: %{DATA:ibmmq.errorlog.error.action})?$").extract_into(&input, event)?;
+                if !cached_grok!("Process\\(%{DATA:process.pid}\\) User\\(%{WORD:user.name}\\) Program\\(%{DATA:process.title}\\) Host\\(%{DATA:host.hostname}\\) Installation\\(%{WORD:ibmmq.errorlog.installation}\\) VRMF\\(%{DATA:service.version}\\)( QMgr\\(%{DATA:ibmmq.errorlog.queue_manager}\\))?( Time\\(%{TIMESTAMP_ISO8601:log_timestamp}\\))?( RemoteHost\\(%{DATA:destination.address}\\))?( ArithInsert1\\(%{DATA:ibmmq.errorlog.arithinsert1}\\))?( ArithInsert2\\(%{DATA:ibmmq.errorlog.arithinsert2}\\))?( CommentInsert1\\(%{DATA:ibmmq.errorlog.commentinsert1}\\))?( CommentInsert2\\(%{DATA:ibmmq.errorlog.commentinsert2}\\))?( CommentInsert3\\(%{DATA:ibmmq.errorlog.commentinsert3}\\))? (?=AMQ[0-9]{4})%{DATA:ibmmq.errorlog.error.code}((?<=AMQ[0-9]{4}[A-Z])%{DATA:log.level})?: %{DATA:ibmmq.errorlog.error.description}( EXPLANATION: %{DATA:ibmmq.errorlog.error.explanation})?( ACTION: %{DATA:ibmmq.errorlog.error.action})?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
             }
 
             // ignore_failure: true

@@ -20,11 +20,14 @@ impl Transform for Default {
 
             if let Some(input) = event.get_string("message") {
                 // Grok pattern: ^(?P<log_syslog_appname>(?:[a-zA-Z]*))\\s*%{GREEDYDATA:message}$
-                let _ = cached_grok_mapped!(
+                if !cached_grok_mapped!(
                     "^(?P<log_syslog_appname>(?:[a-zA-Z]*))\\s*%{GREEDYDATA:message}$",
                     [("log_syslog_appname", "log.syslog.appname")]
                 )
-                .extract_into(&input, event)?;
+                .extract_into(&input, event)?
+                {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             let _cond = { !event.has_value("event.original") };

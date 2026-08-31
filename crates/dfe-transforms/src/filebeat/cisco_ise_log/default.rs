@@ -32,7 +32,7 @@ impl Transform for Default {
                     // Grok pattern: ^(?:<%{NUMBER:log.syslog.priority:long}>)?%{SYSLOGTIMESTAMP:_tmp.timestamp} %{DATA:host.hostname} %{DATA:cisco_ise.log.category.name} %{GREEDYDATA:_tmp.message}$
                     // Grok pattern: ^(?P<_tmp_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[T]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?))%{ISO8601_TIMEZONE:_tmp.timezone} %{DATA:host.hostname} %{DATA:cisco_ise.log.category.name} %{GREEDYDATA:_tmp.message}$
                     // Grok pattern: ^%{DATA:cisco_ise.log.category.name} %{DATA:cisco_ise.log.message.id} %{NONNEGINT:cisco_ise.log.segment.total:long} %{NONNEGINT:cisco_ise.log.segment.number:long} %{GREEDYDATA:_tmp.message}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^(?:<%{NUMBER:log.syslog.priority:long}>)?%{SYSLOGTIMESTAMP:_tmp.timestamp} %{ISO8601_TIMEZONE:_tmp.timezone} %{DATA:host.hostname} %{DATA:cisco_ise.log.category.name} %{GREEDYDATA:_tmp.message}$"
@@ -50,7 +50,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
                 Ok(())
             })() {
@@ -85,7 +87,7 @@ impl Transform for Default {
                         // Grok pattern: ^(?P<cisco_ise_log_log_severity_level>(?:[^:]*?))%{SPACE}: (?P<event_action>(?:[^:]*?))%{SPACE}: %{GREEDYDATA:message}$
                         // Grok pattern: ^%{NUMBER:cisco_ise.log.message.id} %{NUMBER:cisco_ise.log.segment.total:long} %{NUMBER:cisco_ise.log.segment.number:long} %{GREEDYDATA:message}$
                         // Grok pattern: ^%{GREEDYDATA:message}$
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok_mapped!(
                                     "^(?P<cisco_ise_log_log_severity_level>(?:[^:]*?))%{SPACE}: (?P<event_action>(?:[^:]*?))%{SPACE}: %{GREEDYDATA:message}$",
@@ -104,7 +106,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                     Ok(())
                 })() {
@@ -329,7 +333,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                        if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {
@@ -341,8 +347,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // on_failure: 2 handler(s)
@@ -477,8 +486,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("cisco_ise.log.message.description") {
                             // Grok pattern: ^%{DATA:event.action}:
-                            let _ = cached_grok!("^%{DATA:event.action}:")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("^%{DATA:event.action}:")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();
@@ -729,7 +741,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                        if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {
@@ -741,8 +755,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // on_failure: 2 handler(s)
@@ -1098,7 +1115,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                        if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {
@@ -1110,8 +1129,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // on_failure: 2 handler(s)
@@ -1524,7 +1546,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                        if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {
@@ -1536,8 +1560,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // on_failure: 2 handler(s)
@@ -1646,8 +1673,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("cisco_ise.log.message.description") {
                             // Grok pattern: ^%{DATA:event.action}:
-                            let _ = cached_grok!("^%{DATA:event.action}:")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("^%{DATA:event.action}:")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();
@@ -1781,7 +1811,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                        if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {
@@ -1793,8 +1825,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // on_failure: 2 handler(s)
@@ -1903,8 +1938,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("cisco_ise.log.message.description") {
                             // Grok pattern: ^%{DATA:event.action}:
-                            let _ = cached_grok!("^%{DATA:event.action}:")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("^%{DATA:event.action}:")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();
@@ -2034,7 +2072,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                        if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {
@@ -2046,8 +2086,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // on_failure: 2 handler(s)
@@ -2236,7 +2279,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                        if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {
@@ -2248,8 +2293,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // on_failure: 2 handler(s)
@@ -2385,8 +2433,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("cisco_ise.log.message.description") {
                             // Grok pattern: ^%{DATA:event.action}:
-                            let _ = cached_grok!("^%{DATA:event.action}:")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("^%{DATA:event.action}:")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();
@@ -3141,7 +3192,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                        if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {
@@ -3153,8 +3206,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // on_failure: 2 handler(s)
@@ -3263,8 +3319,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("cisco_ise.log.message.description") {
                             // Grok pattern: ^%{DATA:event.action}:
-                            let _ = cached_grok!("^%{DATA:event.action}:")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("^%{DATA:event.action}:")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();
@@ -5131,7 +5190,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                        if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {
@@ -5143,8 +5204,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // on_failure: 2 handler(s)
@@ -5253,8 +5317,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("cisco_ise.log.message.description") {
                             // Grok pattern: ^%{DATA:event.action}:
-                            let _ = cached_grok!("^%{DATA:event.action}:")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("^%{DATA:event.action}:")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();
@@ -6674,7 +6741,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} RADIUS: An Access-Request MUST contain at least a NAS-IP-Address, NAS-IPv6-Address, or a NAS-Identifier; Continue processing, %{GREEDYDATA:cisco_ise.log.log_details_raw},
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} RADIUS: An Access-Request MUST contain at least a NAS-IP-Address, NAS-IPv6-Address, or a NAS-Identifier; Continue processing, %{GREEDYDATA:cisco_ise.log.log_details_raw},"
@@ -6685,7 +6752,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = {
@@ -6697,8 +6766,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = { event.get_str("cisco_ise.log.message.code") == Some("11015") };
@@ -6811,8 +6883,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("cisco_ise.log.message.description") {
                             // Grok pattern: ^%{DATA:event.action}:
-                            let _ = cached_grok!("^%{DATA:event.action}:")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("^%{DATA:event.action}:")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();
@@ -7555,7 +7630,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                        if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {
@@ -7567,8 +7644,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // ignore_failure: true
@@ -7590,8 +7670,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("cisco_ise.log.message.description") {
                             // Grok pattern: ^%{DATA:event.action}:
-                            let _ = cached_grok!("^%{DATA:event.action}:")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("^%{DATA:event.action}:")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();
@@ -7976,7 +8059,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                        if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {
@@ -7988,8 +8073,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // on_failure: 2 handler(s)
@@ -8180,8 +8268,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("cisco_ise.log.message.description") {
                             // Grok pattern: ^%{DATA:event.action}:
-                            let _ = cached_grok!("^%{DATA:event.action}:")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("^%{DATA:event.action}:")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();
@@ -8546,7 +8637,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                        if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {
@@ -8558,8 +8651,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = { event.get_str("cisco_ise.log.message.code") == Some("60067") };
@@ -8568,7 +8664,9 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("cisco_ise.log.log_details_raw") {
                             // Grok pattern: ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, OperationMessageText={%{DATA:cisco_ise.log.log_details.OperationMessageText}}
-                            let _ = cached_grok!("ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, OperationMessageText={%{DATA:cisco_ise.log.log_details.OperationMessageText}}").extract_into(&input, event)?;
+                            if !cached_grok!("ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, OperationMessageText={%{DATA:cisco_ise.log.log_details.OperationMessageText}}").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                         }
                         Ok(())
                     })();
@@ -8582,7 +8680,9 @@ impl Transform for Default {
                     if let Err(err) = (|| -> Result<()> {
                         if let Some(input) = event.get_string("cisco_ise.log.log_details_raw") {
                             // Grok pattern: ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, AdminInterface=%{DATA:cisco_ise.log.log_details.AdminInterface}, AdminIPAddress=%{DATA:cisco_ise.log.log_details.AdminIPAddress}, , OperationMessageText=%{DATA:cisco_ise.log.log_details.OperationMessageText}, AcsInstance=%{GREEDYDATA:cisco_ise.log.log_details.AcsInstance}
-                            let _ = cached_grok!("ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, AdminInterface=%{DATA:cisco_ise.log.log_details.AdminInterface}, AdminIPAddress=%{DATA:cisco_ise.log.log_details.AdminIPAddress}, , OperationMessageText=%{DATA:cisco_ise.log.log_details.OperationMessageText}, AcsInstance=%{GREEDYDATA:cisco_ise.log.log_details.AcsInstance}").extract_into(&input, event)?;
+                            if !cached_grok!("ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, AdminInterface=%{DATA:cisco_ise.log.log_details.AdminInterface}, AdminIPAddress=%{DATA:cisco_ise.log.log_details.AdminIPAddress}, , OperationMessageText=%{DATA:cisco_ise.log.log_details.OperationMessageText}, AcsInstance=%{GREEDYDATA:cisco_ise.log.log_details.AcsInstance}").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                         }
                         Ok(())
                     })() {
@@ -8658,7 +8758,7 @@ impl Transform for Default {
                             // Grok pattern: ConfigChangeData=%{DATA:cisco_ise.log.log_details.ConfigChangeData}, ObjectType=%{DATA:cisco_ise.log.log_details.ObjectType}, ObjectName=%{DATA:cisco_ise.log.log_details.ObjectName}, OperationMessageText=%{GREEDYDATA:cisco_ise.log.log_details.OperationMessageText}
                             // Grok pattern: ObjectType=%{DATA:cisco_ise.log.log_details.ObjectType}, ObjectName=%{DATA:cisco_ise.log.log_details.ObjectName}, Component=%{DATA:cisco_ise.log.log_details.Component}, ObjectInternalID=%{GREEDYDATA:cisco_ise.log.log_details.ObjectInternalID}
                             // Grok pattern: ConfigChangeData=%{DATA:cisco_ise.log.log_details.ConfigChangeData}, ObjectType=%{DATA:cisco_ise.log.log_details.ObjectType}, ObjectName=%{GREEDYDATA:cisco_ise.log.log_details.ObjectName}
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!(
                                         "ConfigChangeData=%{DATA:cisco_ise.log.log_details.ConfigChangeData}, ObjectType=%{DATA:cisco_ise.log.log_details.ObjectType}, ObjectName=%{DATA:cisco_ise.log.log_details.ObjectName}, Component=%{DATA:cisco_ise.log.log_details.Component}, ObjectInternalID=%{GREEDYDATA:cisco_ise.log.log_details.ObjectInternalID}"
@@ -8675,7 +8775,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();
@@ -8692,7 +8794,9 @@ impl Transform for Default {
                             event.get_string("cisco_ise.log.log_details.ConfigChangeData")
                         {
                             // Grok pattern: ^%{DATA:_tmp.temp}, Log Severity Level = %{DATA:cisco_ise.log.log_details.LogSeverityLevel}\\\\,Local Logging = %{DATA:cisco_ise.log.log_details.LocalLogging}\\\\,Assigned Targets = {%{DATA:cisco_ise.log.log_details.AssignedTargets}}
-                            let _ = cached_grok!("^%{DATA:_tmp.temp}, Log Severity Level = %{DATA:cisco_ise.log.log_details.LogSeverityLevel}\\\\,Local Logging = %{DATA:cisco_ise.log.log_details.LocalLogging}\\\\,Assigned Targets = {%{DATA:cisco_ise.log.log_details.AssignedTargets}}").extract_into(&input, event)?;
+                            if !cached_grok!("^%{DATA:_tmp.temp}, Log Severity Level = %{DATA:cisco_ise.log.log_details.LogSeverityLevel}\\\\,Local Logging = %{DATA:cisco_ise.log.log_details.LocalLogging}\\\\,Assigned Targets = {%{DATA:cisco_ise.log.log_details.AssignedTargets}}").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                         }
                         Ok(())
                     })();
@@ -8703,7 +8807,9 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("cisco_ise.log.log_details_raw") {
                             // Grok pattern: ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, AdminInterface=%{DATA:cisco_ise.log.log_details.AdminInterface}, AdminIPAddress=%{DATA:cisco_ise.log.log_details.AdminIPAddress}, %{GREEDYDATA:cisco_ise.log.log_details.log_detail}
-                            let _ = cached_grok!("ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, AdminInterface=%{DATA:cisco_ise.log.log_details.AdminInterface}, AdminIPAddress=%{DATA:cisco_ise.log.log_details.AdminIPAddress}, %{GREEDYDATA:cisco_ise.log.log_details.log_detail}").extract_into(&input, event)?;
+                            if !cached_grok!("ConfigVersionId=%{DATA:cisco_ise.log.log_details.ConfigVersionId}, AdminInterface=%{DATA:cisco_ise.log.log_details.AdminInterface}, AdminIPAddress=%{DATA:cisco_ise.log.log_details.AdminIPAddress}, %{GREEDYDATA:cisco_ise.log.log_details.log_detail}").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                         }
                         Ok(())
                     })();
@@ -8718,7 +8824,7 @@ impl Transform for Default {
                             // Grok pattern: AdminSession=%{DATA:cisco_ise.log.log_details.AdminSession}, AdminName=%{DATA:cisco_ise.log.log_details.AdminName}, ConfigChangeData=%{GREEDYDATA:cisco_ise.log.log_details.ConfigChangeData}
                             // Grok pattern: AdminName=%{DATA:cisco_ise.log.log_details.AdminName}, ConfigChangeData=%{GREEDYDATA:cisco_ise.log.log_details.ConfigChangeData}
                             // Grok pattern: AdminName=%{DATA:cisco_ise.log.log_details.AdminName}, %{GREEDYDATA:cisco_ise.log.log_details.log_description}
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!(
                                         "AdminSession=%{DATA:cisco_ise.log.log_details.AdminSession}, AdminName=%{DATA:cisco_ise.log.log_details.AdminName}, ConfigChangeData=%{GREEDYDATA:cisco_ise.log.log_details.ConfigChangeData}"
@@ -8732,7 +8838,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();
@@ -8799,10 +8907,13 @@ impl Transform for Default {
                             event.get_string("cisco_ise.log.log_details.ConfigChangeData")
                         {
                             // Grok pattern: ^%{DATA:_tmp.temp}, %{GREEDYDATA:_tmp.ConfigChangeData}$
-                            let _ = cached_grok!(
+                            if !cached_grok!(
                                 "^%{DATA:_tmp.temp}, %{GREEDYDATA:_tmp.ConfigChangeData}$"
                             )
-                            .extract_into(&input, event)?;
+                            .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();
@@ -9026,8 +9137,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("cisco_ise.log.message.description") {
                             // Grok pattern: ^%{DATA:event.action}:
-                            let _ = cached_grok!("^%{DATA:event.action}:")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("^%{DATA:event.action}:")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();
@@ -9747,7 +9861,7 @@ impl Transform for Default {
                         {
                             // Grok pattern: (?:Accepted|Failed) password for (?:invalid user )?%{DATA:user.name} from %{IP:source.ip}
                             // Grok pattern: Invalid user %{DATA:user.name} from %{IP:source.ip}
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!(
                                         "(?:Accepted|Failed) password for (?:invalid user )?%{DATA:user.name} from %{IP:source.ip}"
@@ -9758,7 +9872,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();
@@ -9917,7 +10033,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                        if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {
@@ -9929,15 +10047,20 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 let _cond = { event.get_str("cisco_ise.log.message.code") == Some("70001") };
                 if _cond {
                     if let Some(input) = event.get_string("cisco_ise.log.log_details_raw") {
                         // Grok pattern: ^ConfigVersionId=%{INT:cisco_ise.log.log_details.ConfigVersionId}, SysStatsAcsProcessHealth= %{GREEDYDATA:_tmp.SysStatsAcsProcessHealth}
-                        let _ = cached_grok!("^ConfigVersionId=%{INT:cisco_ise.log.log_details.ConfigVersionId}, SysStatsAcsProcessHealth= %{GREEDYDATA:_tmp.SysStatsAcsProcessHealth}").extract_into(&input, event)?;
+                        if !cached_grok!("^ConfigVersionId=%{INT:cisco_ise.log.log_details.ConfigVersionId}, SysStatsAcsProcessHealth= %{GREEDYDATA:_tmp.SysStatsAcsProcessHealth}").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = { event.get_str("cisco_ise.log.message.code") == Some("70001") };
@@ -10727,7 +10850,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                        if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {
@@ -10739,8 +10864,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // on_failure: 2 handler(s)
@@ -11261,7 +11389,7 @@ impl Transform for Default {
                                 // Grok pattern: ^%{IPV4:destination.ip}$
                                 // Grok pattern: ^%{IPV6:destination.ip}$
                                 // Grok pattern: ^\\[%{IPV6:destination.ip}\\]$
-                                let _ = extract_first_match(
+                                if !extract_first_match(
                                     &[
                                         cached_grok!("^%{IPV4:destination.ip}$"),
                                         cached_grok!("^%{IPV6:destination.ip}$"),
@@ -11269,7 +11397,9 @@ impl Transform for Default {
                                     ],
                                     &input,
                                     event,
-                                )?;
+                                )? {
+                                    return Err(TransformError::GrokNoMatch { value: input });
+                                }
                             }
                         }
                         Ok(())
@@ -11784,7 +11914,9 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)?;
+                        if !cached_grok!("^%{TIMESTAMP_ISO8601:_tmp.timestamp} %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:cisco_ise.log.message.code} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                     }
                 }
                 let _cond = {
@@ -11796,8 +11928,11 @@ impl Transform for Default {
                 if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                        let _ = cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 // on_failure: 2 handler(s)
@@ -11906,8 +12041,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("cisco_ise.log.message.description") {
                             // Grok pattern: ^%{DATA:event.action}:
-                            let _ = cached_grok!("^%{DATA:event.action}:")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("^%{DATA:event.action}:")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();
@@ -12392,7 +12530,9 @@ impl Transform for Default {
                             event.get_string("cisco_ise.log.log_details_raw.message")
                         {
                             // Grok pattern: ^(%{DATA} )?From %{DATA:source.address} To %{DATA:destination.address}$
-                            let _ = cached_grok!("^(%{DATA} )?From %{DATA:source.address} To %{DATA:destination.address}$").extract_into(&input, event)?;
+                            if !cached_grok!("^(%{DATA} )?From %{DATA:source.address} To %{DATA:destination.address}$").extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                         }
                         Ok(())
                     })() {
@@ -12671,7 +12811,9 @@ impl Transform for Default {
                 event.set("event.kind", json!("event"))?;
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (?P<_tmp_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[ ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?)) %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                    let _ = cached_grok_mapped!("(?P<_tmp_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[ ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?)) %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},", [("_tmp_timestamp", "_tmp.timestamp")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("(?P<_tmp_timestamp>(?:%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[ ]%{HOUR}:?%{MINUTE}(?::?%{SECOND})?)) %{ISO8601_TIMEZONE:event.timezone} %{DATA:event.sequence:long} %{DATA:log.syslog.severity.name} %{DATA:cisco_ise.log.message.description}, %{GREEDYDATA:cisco_ise.log.log_details_raw},", [("_tmp_timestamp", "_tmp.timestamp")]).extract_into(&input, event)? {
+                return Err(TransformError::GrokNoMatch { value: input });
+                }
                 }
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -12692,8 +12834,11 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("cisco_ise.log.message.description") {
                             // Grok pattern: ^%{DATA:event.action}:
-                            let _ = cached_grok!("^%{DATA:event.action}:")
-                                .extract_into(&input, event)?;
+                            if !cached_grok!("^%{DATA:event.action}:")
+                                .extract_into(&input, event)?
+                            {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                         Ok(())
                     })();

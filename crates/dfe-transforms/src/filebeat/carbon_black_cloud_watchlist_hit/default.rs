@@ -222,10 +222,11 @@ impl Transform for Default {
                 if event.has_value("host.hostname") {
                     if let Some(input) = event.get_string("host.hostname") {
                         // Grok pattern: ^(%{DATA:user.domain})\\\\(%{GREEDYDATA:host.hostname})$
-                        let _ = cached_grok!(
-                            "^(%{DATA:user.domain})\\\\(%{GREEDYDATA:host.hostname})$"
-                        )
-                        .extract_into(&input, event)?;
+                        if !cached_grok!("^(%{DATA:user.domain})\\\\(%{GREEDYDATA:host.hostname})$")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())

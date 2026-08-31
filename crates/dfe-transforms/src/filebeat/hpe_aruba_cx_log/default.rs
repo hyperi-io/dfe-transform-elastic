@@ -43,7 +43,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: (?:(?:(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT})?\\s+)?)%{TIMESTAMP_ISO8601:@timestamp}\\s+%{USER:aruba.hardware.device}\\s+%{DATA:log.syslog.appname}(?:(\\[%{POSINT:log.syslog.procid}\\]:|\\s+%{POSINT:log.syslog.procid}\\s+- -))\\s+%{WORD:aruba.event_type}\\|(?:(?:%{POSINT:event.code}\\|%{USER:log.level}\\|(?:%{USER:aruba.component.category})?\\|(?:%{DATA:aruba.sequence})?\\|))?)%{GREEDYDATA:message}
-                    let _ = cached_grok!("(?:(?:(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT})?\\s+)?)%{TIMESTAMP_ISO8601:@timestamp}\\s+%{USER:aruba.hardware.device}\\s+%{DATA:log.syslog.appname}(?:(\\[%{POSINT:log.syslog.procid}\\]:|\\s+%{POSINT:log.syslog.procid}\\s+- -))\\s+%{WORD:aruba.event_type}\\|(?:(?:%{POSINT:event.code}\\|%{USER:log.level}\\|(?:%{USER:aruba.component.category})?\\|(?:%{DATA:aruba.sequence})?\\|))?)%{GREEDYDATA:message}").extract_into(&input, event)?;
+                    if !cached_grok!("(?:(?:(?:<%{NONNEGINT:log.syslog.priority:long}>(?:%{NONNEGINT})?\\s+)?)%{TIMESTAMP_ISO8601:@timestamp}\\s+%{USER:aruba.hardware.device}\\s+%{DATA:log.syslog.appname}(?:(\\[%{POSINT:log.syslog.procid}\\]:|\\s+%{POSINT:log.syslog.procid}\\s+- -))\\s+%{WORD:aruba.event_type}\\|(?:(?:%{POSINT:event.code}\\|%{USER:log.level}\\|(?:%{USER:aruba.component.category})?\\|(?:%{DATA:aruba.sequence})?\\|))?)%{GREEDYDATA:message}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -58,8 +60,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("aruba.sequence") {
                     // Grok pattern: %{POSINT:event.sequence:long}\\/%{POSINT}
-                    let _ = cached_grok!("%{POSINT:event.sequence:long}\\/%{POSINT}")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("%{POSINT:event.sequence:long}\\/%{POSINT}")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -78,7 +83,7 @@ impl Transform for Default {
                     // Grok pattern: ^LLDP neighbor %{DATA:aruba.instance.id} (added|updated|deleted) on %{GREEDYDATA:aruba.interface.id}
                     // Grok pattern: ^Configured LLDP ((?:tx-timer to %{NUMBER:aruba.lldp.tx_timer:long})|(?:tx-hold to %{NUMBER:aruba.lldp.tx_hold:long})|(?:tx-delay to %{NUMBER:aruba.lldp.tx_delay:long})|(?:reinit-delay to %{NUMBER:aruba.lldp.reinit_delay:long})|(?:Management IP %{IP:server.ip}))
                     // Grok pattern: ^PVID mismatch on %{DATA:aruba.interface.id} pvid = %{NUMBER:aruba.lldp.pvid:long}, Neighbor %{DATA:aruba.instance.id} port_id = %{DATA:aruba.lldp.ninterface} pvid = %{NUMBER:aruba.lldp.npvid:long}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^LLDP neighbor %{DATA:aruba.instance.id} (added|updated|deleted) on %{GREEDYDATA:aruba.interface.id}"
@@ -92,7 +97,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -100,7 +107,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^There are %{INT:aruba.fan.count:long} total fans in subsystem %{DATA:aruba.subsystem}\\.?$
-                    let _ = cached_grok!("^There are %{INT:aruba.fan.count:long} total fans in subsystem %{DATA:aruba.subsystem}\\.?$").extract_into(&input, event)?;
+                    if !cached_grok!("^There are %{INT:aruba.fan.count:long} total fans in subsystem %{DATA:aruba.subsystem}\\.?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -108,7 +117,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Subsystem %{DATA:aruba.subsystem} setting fan speed control register to %{DATA:aruba.fan.speedval}: (?P<aruba_fan_value>(?:[-_0-9a-zA-Z]+))
-                    let _ = cached_grok_mapped!("^Subsystem %{DATA:aruba.subsystem} setting fan speed control register to %{DATA:aruba.fan.speedval}: (?P<aruba_fan_value>(?:[-_0-9a-zA-Z]+))", [("aruba_fan_value", "aruba.fan.value")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("^Subsystem %{DATA:aruba.subsystem} setting fan speed control register to %{DATA:aruba.fan.speedval}: (?P<aruba_fan_value>(?:[-_0-9a-zA-Z]+))", [("aruba_fan_value", "aruba.fan.value")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -116,11 +127,14 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Air flow direction: (?P<aruba_fan_value>(?:[-_0-9a-zA-Z]+))
-                    let _ = cached_grok_mapped!(
+                    if !cached_grok_mapped!(
                         "^Air flow direction: (?P<aruba_fan_value>(?:[-_0-9a-zA-Z]+))",
                         [("aruba_fan_value", "aruba.fan.value")]
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -128,9 +142,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Fan tray %{DATA:aruba.fan.ft_name} was (removed|inserted)
-                    let _ =
-                        cached_grok!("^Fan tray %{DATA:aruba.fan.ft_name} was (removed|inserted)")
-                            .extract_into(&input, event)?;
+                    if !cached_grok!("^Fan tray %{DATA:aruba.fan.ft_name} was (removed|inserted)")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -138,7 +154,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Fan module %{DATA:aruba.fan.fmod_num}( in fan tray %{DATA:aruba.fan.ft_name})? was (removed|inserted)
-                    let _ = cached_grok!("^Fan module %{DATA:aruba.fan.fmod_num}( in fan tray %{DATA:aruba.fan.ft_name})? was (removed|inserted)").extract_into(&input, event)?;
+                    if !cached_grok!("^Fan module %{DATA:aruba.fan.fmod_num}( in fan tray %{DATA:aruba.fan.ft_name})? was (removed|inserted)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -146,7 +164,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Unsupported fan tray %{DATA:aruba.fan.ft_name} detected. Please insert a standard fan tray
-                    let _ = cached_grok!("^Unsupported fan tray %{DATA:aruba.fan.ft_name} detected. Please insert a standard fan tray").extract_into(&input, event)?;
+                    if !cached_grok!("^Unsupported fan tray %{DATA:aruba.fan.ft_name} detected. Please insert a standard fan tray").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -154,7 +174,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Shutting down system now because %{NUMBER:aruba.error.count:long} %{DATA:error.type} %{DATA:aruba.fan.compare_mode} limit of %{NUMBER:aruba.limit.threshold}
-                    let _ = cached_grok!("^Shutting down system now because %{NUMBER:aruba.error.count:long} %{DATA:error.type} %{DATA:aruba.fan.compare_mode} limit of %{NUMBER:aruba.limit.threshold}").extract_into(&input, event)?;
+                    if !cached_grok!("^Shutting down system now because %{NUMBER:aruba.error.count:long} %{DATA:error.type} %{DATA:aruba.fan.compare_mode} limit of %{NUMBER:aruba.limit.threshold}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -162,7 +184,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Shutting down system in %{NUMBER:aruba.time.seconds:long} seconds because %{NUMBER:aruba.error.count:long} %{DATA:error.type} %{DATA:aruba.fan.compare_mode} limit of %{GREEDYDATA:aruba.limit.threshold}
-                    let _ = cached_grok!("^Shutting down system in %{NUMBER:aruba.time.seconds:long} seconds because %{NUMBER:aruba.error.count:long} %{DATA:error.type} %{DATA:aruba.fan.compare_mode} limit of %{GREEDYDATA:aruba.limit.threshold}").extract_into(&input, event)?;
+                    if !cached_grok!("^Shutting down system in %{NUMBER:aruba.time.seconds:long} seconds because %{NUMBER:aruba.error.count:long} %{DATA:error.type} %{DATA:aruba.fan.compare_mode} limit of %{GREEDYDATA:aruba.limit.threshold}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -170,10 +194,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{NUMBER:aruba.error.count:long} %{DATA:error.type} in the system
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^%{NUMBER:aruba.error.count:long} %{DATA:error.type} in the system"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -182,7 +209,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.fan.function}: Fan fault in tray %{DATA:aruba.fan.tray_idx:long}, module %{NUMBER:aruba.fan.index:long}, reason: (?P<event_reason>(?:[-_0-9a-zA-Z]+))
                     // Grok pattern: ^%{DATA:aruba.fan.function}: Fan %{DATA:aruba.fan.name} faulted, reason: (?P<event_reason>(?:[-_0-9a-zA-Z]+))
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^%{DATA:aruba.fan.function}: Fan fault in tray %{DATA:aruba.fan.tray_idx:long}, module %{NUMBER:aruba.fan.index:long}, reason: (?P<event_reason>(?:[-_0-9a-zA-Z]+))",
@@ -195,7 +222,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -203,11 +232,14 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.fan.name} fan is (?P<aruba_status>(?:[-_0-9a-zA-Z]+))
-                    let _ = cached_grok_mapped!(
+                    if !cached_grok_mapped!(
                         "^%{DATA:aruba.fan.name} fan is (?P<aruba_status>(?:[-_0-9a-zA-Z]+))",
                         [("aruba_status", "aruba.status")]
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -216,7 +248,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Status of fan %{NUMBER:aruba.fan.module_idx:long} in tray %{NUMBER:aruba.fan.tray_idx:long} has changed from %{DATA:aruba.fan.old_status} to (?P<aruba_status>(?:[-_0-9a-zA-Z]+))
                     // Grok pattern: ^Status of fan %{DATA:aruba.fan.name} has changed from %{DATA:aruba.fan.old_status} to (?P<aruba_status>(?:[-_0-9a-zA-Z]+))
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^Status of fan %{NUMBER:aruba.fan.module_idx:long} in tray %{NUMBER:aruba.fan.tray_idx:long} has changed from %{DATA:aruba.fan.old_status} to (?P<aruba_status>(?:[-_0-9a-zA-Z]+))",
@@ -229,7 +261,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -237,7 +271,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Operational fan count below minimum. %{NUMBER:aruba.fan.count:long} fans operating, but %{NUMBER:aruba.fan.minimum:long} are required
-                    let _ = cached_grok!("^Operational fan count below minimum. %{NUMBER:aruba.fan.count:long} fans operating, but %{NUMBER:aruba.fan.minimum:long} are required").extract_into(&input, event)?;
+                    if !cached_grok!("^Operational fan count below minimum. %{NUMBER:aruba.fan.count:long} fans operating, but %{NUMBER:aruba.fan.minimum:long} are required").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -245,7 +281,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Fan speed index for thermal zone %{NUMBER:aruba.fan.zone_idx:long} is (?P<aruba_status>(?:[-_0-9a-zA-Z]+))
-                    let _ = cached_grok_mapped!("^Fan speed index for thermal zone %{NUMBER:aruba.fan.zone_idx:long} is (?P<aruba_status>(?:[-_0-9a-zA-Z]+))", [("aruba_status", "aruba.status")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("^Fan speed index for thermal zone %{NUMBER:aruba.fan.zone_idx:long} is (?P<aruba_status>(?:[-_0-9a-zA-Z]+))", [("aruba_status", "aruba.status")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -253,7 +291,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Fan tray %{DATA:aruba.fan.ft_name} powered (?P<aruba_status>(?:[-_0-9a-zA-Z]+))
-                    let _ = cached_grok_mapped!("^Fan tray %{DATA:aruba.fan.ft_name} powered (?P<aruba_status>(?:[-_0-9a-zA-Z]+))", [("aruba_status", "aruba.status")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("^Fan tray %{DATA:aruba.fan.ft_name} powered (?P<aruba_status>(?:[-_0-9a-zA-Z]+))", [("aruba_status", "aruba.status")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -261,7 +301,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Fan tray %{DATA:aruba.fan.ft_name} airflow is (?P<aruba_fan_ft_dir>(?:[-_0-9a-zA-Z]+))
-                    let _ = cached_grok_mapped!("^Fan tray %{DATA:aruba.fan.ft_name} airflow is (?P<aruba_fan_ft_dir>(?:[-_0-9a-zA-Z]+))", [("aruba_fan_ft_dir", "aruba.fan.ft_dir")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("^Fan tray %{DATA:aruba.fan.ft_name} airflow is (?P<aruba_fan_ft_dir>(?:[-_0-9a-zA-Z]+))", [("aruba_fan_ft_dir", "aruba.fan.ft_dir")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -320,7 +362,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{NUMBER:aruba.error.count:long} %{DATA:error.type} %{DATA:aruba.fan.compare_mode} limit of %{GREEDYDATA:aruba.limit.threshold}
-                    let _ = cached_grok!("^%{NUMBER:aruba.error.count:long} %{DATA:error.type} %{DATA:aruba.fan.compare_mode} limit of %{GREEDYDATA:aruba.limit.threshold}").extract_into(&input, event)?;
+                    if !cached_grok!("^%{NUMBER:aruba.error.count:long} %{DATA:error.type} %{DATA:aruba.fan.compare_mode} limit of %{GREEDYDATA:aruba.limit.threshold}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -414,7 +458,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Fan tray %{DATA:aruba.fan.ft_name} misconfigured; this fan tray has been (?P<aruba_status>(?:[-_0-9a-zA-Z]+))
-                    let _ = cached_grok_mapped!("^Fan tray %{DATA:aruba.fan.ft_name} misconfigured; this fan tray has been (?P<aruba_status>(?:[-_0-9a-zA-Z]+))", [("aruba_status", "aruba.status")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("^Fan tray %{DATA:aruba.fan.ft_name} misconfigured; this fan tray has been (?P<aruba_status>(?:[-_0-9a-zA-Z]+))", [("aruba_status", "aruba.status")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -502,7 +548,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PSU %{DATA:aruba.power.name} (encountered a warning|faulted). Total (warning|fault) count: %{NUMBER:aruba.count:long}
-                    let _ = cached_grok!("^PSU %{DATA:aruba.power.name} (encountered a warning|faulted). Total (warning|fault) count: %{NUMBER:aruba.count:long}").extract_into(&input, event)?;
+                    if !cached_grok!("^PSU %{DATA:aruba.power.name} (encountered a warning|faulted). Total (warning|fault) count: %{NUMBER:aruba.count:long}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -510,7 +558,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PSU %{DATA:aruba.power.name}: (Internal communication|Output current) %{GREEDYDATA:aruba.status}( threshold limit)?
-                    let _ = cached_grok!("^PSU %{DATA:aruba.power.name}: (Internal communication|Output current) %{GREEDYDATA:aruba.status}( threshold limit)?").extract_into(&input, event)?;
+                    if !cached_grok!("^PSU %{DATA:aruba.power.name}: (Internal communication|Output current) %{GREEDYDATA:aruba.status}( threshold limit)?").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -521,7 +571,7 @@ impl Transform for Default {
                     // Grok pattern: ^PSU %{DATA:aruba.power.name}: Fan-%{INT:aruba.power.fanidx:long} %{GREEDYDATA:aruba.status}
                     // Grok pattern: ^PSU %{DATA:aruba.power.name}: %{DATA:aruba.power.sensorid} sensor %{DATA:aruba.status} threshold limit
                     // Grok pattern: ^PSU %{DATA:aruba.power.name} has shutdown due to over temperature in %{DATA:aruba.power.sensorid} sensor
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^PSU %{DATA:aruba.power.name}: Fan-%{INT:aruba.power.fanidx:long} %{GREEDYDATA:aruba.status}"
@@ -535,7 +585,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -546,8 +598,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PSU %{DATA:aruba.power.name}
-                    let _ = cached_grok!("^PSU %{DATA:aruba.power.name} ")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^PSU %{DATA:aruba.power.name} ")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -555,10 +610,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PSU Redundancy (set to|operating at) %{GREEDYDATA:aruba.power.redund}
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^PSU Redundancy (set to|operating at) %{GREEDYDATA:aruba.power.redund}"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -601,7 +659,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PSU %{DATA:aruba.power.name} %{DATA:aruba.power.alert} (occurred|recovered)
-                    let _ = cached_grok!("^PSU %{DATA:aruba.power.name} %{DATA:aruba.power.alert} (occurred|recovered)").extract_into(&input, event)?;
+                    if !cached_grok!("^PSU %{DATA:aruba.power.name} %{DATA:aruba.power.alert} (occurred|recovered)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -691,7 +751,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Interface port_admin set to (up|down) for %{DATA:aruba.interface.id} interface
-                    let _ = cached_grok!("^Interface port_admin set to (up|down) for %{DATA:aruba.interface.id} interface").extract_into(&input, event)?;
+                    if !cached_grok!("^Interface port_admin set to (up|down) for %{DATA:aruba.interface.id} interface").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -699,7 +761,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Link status for interface %{DATA:aruba.interface.id} is %{GREEDYDATA:aruba.state}
-                    let _ = cached_grok!("^Link status for interface %{DATA:aruba.interface.id} is %{GREEDYDATA:aruba.state}").extract_into(&input, event)?;
+                    if !cached_grok!("^Link status for interface %{DATA:aruba.interface.id} is %{GREEDYDATA:aruba.state}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -708,7 +772,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Interface %{DATA:aruba.interface.id} (?:downshifted to speed %{NUMBER:aruba.interface.port_speed:long} Mbps because link attempt failed at higher speed)?
-                    let _ = cached_grok!("^Interface %{DATA:aruba.interface.id} (?:downshifted to speed %{NUMBER:aruba.interface.port_speed:long} Mbps because link attempt failed at higher speed)?").extract_into(&input, event)?;
+                    if !cached_grok!("^Interface %{DATA:aruba.interface.id} (?:downshifted to speed %{NUMBER:aruba.interface.port_speed:long} Mbps because link attempt failed at higher speed)?").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -720,7 +786,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Interface %{DATA:aruba.interface.id} link reset ignored. %{NUMBER:aruba.count:long} total link resets ignored for this interface
                     // Grok pattern: ^Interface %{DATA:aruba.interface.id}( cannot|: unable)
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Interface %{DATA:aruba.interface.id} link reset ignored. %{NUMBER:aruba.count:long} total link resets ignored for this interface"
@@ -729,7 +795,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -737,7 +805,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^There are %{NUMBER:aruba.count:long} LED (types|configs) in subsystem %{GREEDYDATA:aruba.subsystem}
-                    let _ = cached_grok!("^There are %{NUMBER:aruba.count:long} LED (types|configs) in subsystem %{GREEDYDATA:aruba.subsystem}").extract_into(&input, event)?;
+                    if !cached_grok!("^There are %{NUMBER:aruba.count:long} LED (types|configs) in subsystem %{GREEDYDATA:aruba.subsystem}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -745,10 +815,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Netlink socket (creation|bind) failed %{GREEDYDATA:event.reason}
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^Netlink socket (creation|bind) failed %{GREEDYDATA:event.reason}"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -756,7 +829,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Netlink failed to (set mtu %{DATA:aruba.mtu} for|bring %{DATA:aruba.status} the) interface %{GREEDYDATA:aruba.interface.id}
-                    let _ = cached_grok!("^Netlink failed to (set mtu %{DATA:aruba.mtu} for|bring %{DATA:aruba.status} the) interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)?;
+                    if !cached_grok!("^Netlink failed to (set mtu %{DATA:aruba.mtu} for|bring %{DATA:aruba.status} the) interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -847,7 +922,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Interface %{DATA:aruba.port} is (down due to|recovered from) PVLAN hardware resource allocation failure
-                    let _ = cached_grok!("^Interface %{DATA:aruba.port} is (down due to|recovered from) PVLAN hardware resource allocation failure").extract_into(&input, event)?;
+                    if !cached_grok!("^Interface %{DATA:aruba.port} is (down due to|recovered from) PVLAN hardware resource allocation failure").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -856,7 +933,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Failed to allocate memory for %{GREEDYDATA:aruba.sys.name}
                     // Grok pattern: ^Detected DDR errors during uboot BIST, module %{DATA:aruba.sys.module} reported %{GREEDYDATA:aruba.error.description}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Failed to allocate memory for %{GREEDYDATA:aruba.sys.name}"
@@ -867,7 +944,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -901,7 +980,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Module %{DATA:aruba.temp.module} shutdown initiated for sensor %{DATA:aruba.temp.name} with critical temperature, %{NUMBER:aruba.temp.celsius:long} degC.
-                    let _ = cached_grok!("^Module %{DATA:aruba.temp.module} shutdown initiated for sensor %{DATA:aruba.temp.name} with critical temperature, %{NUMBER:aruba.temp.celsius:long} degC.").extract_into(&input, event)?;
+                    if !cached_grok!("^Module %{DATA:aruba.temp.module} shutdown initiated for sensor %{DATA:aruba.temp.name} with critical temperature, %{NUMBER:aruba.temp.celsius:long} degC.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -909,7 +990,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (S|s)ensor %{DATA:aruba.temp.name}( back to safe temperature)?, %{NUMBER:aruba.temp.celsius:long} degC.
-                    let _ = cached_grok!("(S|s)ensor %{DATA:aruba.temp.name}( back to safe temperature)?, %{NUMBER:aruba.temp.celsius:long} degC.").extract_into(&input, event)?;
+                    if !cached_grok!("(S|s)ensor %{DATA:aruba.temp.name}( back to safe temperature)?, %{NUMBER:aruba.temp.celsius:long} degC.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -954,7 +1037,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Ambient temperature for sensor %{DATA:aruba.temp.name} above %{NUMBER:aruba.temp.celsius:long} degC
                     // Grok pattern: ^Ambient temperature for sensor %{DATA:aruba.temp.name} back to safe temperature, between %{NUMBER:aruba.temp.t_low:long} and %{NUMBER:aruba.temp.t_high:long} degC
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Ambient temperature for sensor %{DATA:aruba.temp.name} above %{NUMBER:aruba.temp.celsius:long} degC"
@@ -965,7 +1048,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1017,7 +1102,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Ambient temperature %{NUMBER:aruba.temp.celsius:long} degC is (above|below) the commercial grade transceiver (limit|range) of %{DATA:aruba.limit.threshold} degC
-                    let _ = cached_grok!("^Ambient temperature %{NUMBER:aruba.temp.celsius:long} degC is (above|below) the commercial grade transceiver (limit|range) of %{DATA:aruba.limit.threshold} degC").extract_into(&input, event)?;
+                    if !cached_grok!("^Ambient temperature %{NUMBER:aruba.temp.celsius:long} degC is (above|below) the commercial grade transceiver (limit|range) of %{DATA:aruba.limit.threshold} degC").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1025,7 +1112,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Ambient temperature %{NUMBER:aruba.temp.celsius:long} degC returned to within the commercial grade transceiver range of %{DATA:aruba.temp.t_low:long}-%{DATA:aruba.temp.t_high:long} degC
-                    let _ = cached_grok!("^Ambient temperature %{NUMBER:aruba.temp.celsius:long} degC returned to within the commercial grade transceiver range of %{DATA:aruba.temp.t_low:long}-%{DATA:aruba.temp.t_high:long} degC").extract_into(&input, event)?;
+                    if !cached_grok!("^Ambient temperature %{NUMBER:aruba.temp.celsius:long} degC returned to within the commercial grade transceiver range of %{DATA:aruba.temp.t_low:long}-%{DATA:aruba.temp.t_high:long} degC").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1035,7 +1124,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(Ambient |Under-)temperature for sensor %{DATA:aruba.temp.name}(,| below) %{NUMBER:aruba.temp.celsius:long} degC
                     // Grok pattern: ^Module %{DATA:aruba.temp.module} shutdown initiated for sensor %{DATA:aruba.temp.name} with low critical temperature, %{NUMBER:aruba.temp.celsius:long} degC
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^(Ambient |Under-)temperature for sensor %{DATA:aruba.temp.name}(,| below) %{NUMBER:aruba.temp.celsius:long} degC"
@@ -1046,7 +1135,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1055,7 +1146,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Loopback Interface %{DATA:aruba.interface.id}, (created|deleted|configured administratively %{GREEDYDATA:aruba.state})
-                    let _ = cached_grok!("^Loopback Interface %{DATA:aruba.interface.id}, (created|deleted|configured administratively %{GREEDYDATA:aruba.state})").extract_into(&input, event)?;
+                    if !cached_grok!("^Loopback Interface %{DATA:aruba.interface.id}, (created|deleted|configured administratively %{GREEDYDATA:aruba.state})").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1065,7 +1158,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Failed to %{DATA:aruba.sflow.operation} host sFlow (agent|configuration file %{DATA:file.name}): %{GREEDYDATA:event.reason}
                     // Grok pattern: ^Failed to %{DATA:aruba.sflow.operation} sFlow configuration from bridge %{DATA:aruba.sflow.bridge}: %{GREEDYDATA:event.reason}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Failed to %{DATA:aruba.sflow.operation} host sFlow (agent|configuration file %{DATA:file.name}): %{GREEDYDATA:event.reason}"
@@ -1076,7 +1169,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1193,8 +1288,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: port: %{GREEDYDATA:aruba.port}
-                    let _ = cached_grok!("port: %{GREEDYDATA:aruba.port}")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("port: %{GREEDYDATA:aruba.port}")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1202,8 +1300,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: : %{GREEDYDATA:event.reason}
-                    let _ =
-                        cached_grok!(": %{GREEDYDATA:event.reason}").extract_into(&input, event)?;
+                    if !cached_grok!(": %{GREEDYDATA:event.reason}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1211,7 +1310,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Failed to (get|set) sampling rate on port %{DATA:aruba.port}: %{GREEDYDATA:event.reason}
-                    let _ = cached_grok!("^Failed to (get|set) sampling rate on port %{DATA:aruba.port}: %{GREEDYDATA:event.reason}").extract_into(&input, event)?;
+                    if !cached_grok!("^Failed to (get|set) sampling rate on port %{DATA:aruba.port}: %{GREEDYDATA:event.reason}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1219,8 +1320,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: IP address: %{IP:client.ip}
-                    let _ =
-                        cached_grok!("IP address: %{IP:client.ip}").extract_into(&input, event)?;
+                    if !cached_grok!("IP address: %{IP:client.ip}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1319,9 +1421,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Set sFlow agents header len to %{NUMBER:aruba.len:long}.
-                    let _ =
-                        cached_grok!("Set sFlow agents header len to %{NUMBER:aruba.len:long}.")
-                            .extract_into(&input, event)?;
+                    if !cached_grok!("Set sFlow agents header len to %{NUMBER:aruba.len:long}.")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1329,8 +1433,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Set sFlow agents IP to %{IP:client.ip}.
-                    let _ = cached_grok!("^Set sFlow agents IP to %{IP:client.ip}.")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^Set sFlow agents IP to %{IP:client.ip}.")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1338,7 +1445,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Set max datagram size on sFlow agent to %{NUMBER:aruba.sflow.dgramsize:long}.
-                    let _ = cached_grok!("^Set max datagram size on sFlow agent to %{NUMBER:aruba.sflow.dgramsize:long}.").extract_into(&input, event)?;
+                    if !cached_grok!("^Set max datagram size on sFlow agent to %{NUMBER:aruba.sflow.dgramsize:long}.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1581,10 +1690,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: state change: %{DATA:aruba.ntp.old} -> %{GREEDYDATA:aruba.state}
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "state change: %{DATA:aruba.ntp.old} -> %{GREEDYDATA:aruba.state}"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1592,7 +1704,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^NTP primary server connection (established|lost) to %{GREEDYDATA:server.address}
-                    let _ = cached_grok!("^NTP primary server connection (established|lost) to %{GREEDYDATA:server.address}").extract_into(&input, event)?;
+                    if !cached_grok!("^NTP primary server connection (established|lost) to %{GREEDYDATA:server.address}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1601,7 +1715,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:process.name} crashed due to %{NUMBER:process.exit_code:long},%{GREEDYDATA:process.end}
                     // Grok pattern: ^%{DATA:process.name} crashed due to signal:%{NUMBER:process.exit_code:long}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:process.name} crashed due to %{NUMBER:process.exit_code:long},%{GREEDYDATA:process.end}"
@@ -1612,7 +1726,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1620,8 +1736,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Error log:%{GREEDYDATA:aruba.error.description}
-                    let _ = cached_grok!("Error log:%{GREEDYDATA:aruba.error.description}")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("Error log:%{GREEDYDATA:aruba.error.description}")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1692,7 +1811,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^RMON alarm %{DATA:aruba.supportability.alarm_index} - (Rising|Falling) threshold value of %{DATA:aruba.limit.threshold} reached for %{GREEDYDATA:aruba.supportability.oid}.
-                    let _ = cached_grok!("^RMON alarm %{DATA:aruba.supportability.alarm_index} - (Rising|Falling) threshold value of %{DATA:aruba.limit.threshold} reached for %{GREEDYDATA:aruba.supportability.oid}.").extract_into(&input, event)?;
+                    if !cached_grok!("^RMON alarm %{DATA:aruba.supportability.alarm_index} - (Rising|Falling) threshold value of %{DATA:aruba.limit.threshold} reached for %{GREEDYDATA:aruba.supportability.oid}.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1732,10 +1853,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: logging to %{DATA:client.address} over %{DATA:aruba.vrf.id} vrf
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "logging to %{DATA:client.address} over %{DATA:aruba.vrf.id} vrf"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1743,8 +1867,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^The %{DATA:aruba.supportability.log_type} buffer
-                    let _ = cached_grok!("^The %{DATA:aruba.supportability.log_type} buffer")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^The %{DATA:aruba.supportability.log_type} buffer")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1807,8 +1934,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Support-files named %{DATA:file.name} is
-                    let _ = cached_grok!("^Support-files named %{DATA:file.name} is")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^Support-files named %{DATA:file.name} is")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1818,7 +1948,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(Collection|Deletion) of support-files named %{DATA:file.name} failed due to %{GREEDYDATA:event.reason}.
                     // Grok pattern: ^Collection of support-files named %{DATA:file.name} is %{GREEDYDATA:aruba.state}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^(Collection|Deletion) of support-files named %{DATA:file.name} failed due to %{GREEDYDATA:event.reason}."
@@ -1829,7 +1959,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1867,7 +1999,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(Dynamic )?LAG %{DATA:aruba.instance.id} (created|deleted|set as VSX)
                     // Grok pattern: ^Failed to create LAG %{GREEDYDATA:aruba.instance.id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^(Dynamic )?LAG %{DATA:aruba.instance.id} (created|deleted|set as VSX)"
@@ -1876,7 +2008,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1944,7 +2078,7 @@ impl Transform for Default {
                     // Grok pattern: ^Partner is lost \\(timed out\\) for interface %{DATA:aruba.interface.id} LAG %{DATA:aruba.instance.id}. State: %{GREEDYDATA:aruba.lacp.fsm_state}
                     // Grok pattern: ^LAG %{DATA:aruba.instance.id} not sending LACPDUs through interface %{DATA:aruba.interface.id} because VSX information is not complete
                     // Grok pattern: ^Interface %{DATA:aruba.interface.id} enabled by fallback for lag %{GREEDYDATA:aruba.instance.id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Interface %{DATA:aruba.interface.id} added to LAG %{DATA:aruba.instance.id}. Existing configuration on interface %{DATA:aruba.interface.prev_id} will be removed"
@@ -1964,7 +2098,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -1979,7 +2115,7 @@ impl Transform for Default {
                     // Grok pattern: ^LACP fallback timeout( set to)? %{NUMBER:aruba.timeout:long}( expired)? for (?:(LAG|lag) %{GREEDYDATA:aruba.instance.id})
                     // Grok pattern: ^LAG load balancing mode is set to %{DATA:aruba.lacp.mode} for (?:(LAG|lag) %{GREEDYDATA:aruba.instance.id})
                     // Grok pattern: ^Fallback is %{DATA:aruba.lacp.fallback} for (?:(LAG|lag) %{GREEDYDATA:aruba.instance.id})
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^LACP (mode set to %{DATA:aruba.lacp.mode}|rate set to %{DATA:aruba.lacp.rate}) for (?:(LAG|lag) %{GREEDYDATA:aruba.instance.id})"
@@ -1999,7 +2135,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2015,7 +2153,7 @@ impl Transform for Default {
                     // Grok pattern: ^(?:(LAG|lag) %{DATA:aruba.instance.id}) State change for interface %{DATA:aruba.interface.id}: (?:Actor state: %{DATA:aruba.lacp.actor_state}), (?:(P|p)artner state %{GREEDYDATA:aruba.lacp.partner_state})
                     // Grok pattern: ^(?:(I|i)nterface %{DATA:aruba.interface.name}) cannot be part of Lag %{NUMBER:aruba.lacp.lag_number:long}. Speed mismatched \\(Interface speed %{NUMBER:aruba.lacp.port_speed:long}Mbps Lag base speed %{NUMBER:aruba.lacp.lag_speed:long}Mbps\\).
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Partner is detected for (?:(I|i)nterface %{DATA:aruba.interface.id}) (?:(LAG|lag) %{DATA:aruba.instance.id})\\s?: %{DATA:aruba.lacp.partner_sys_id}. (?:Actor state: %{DATA:aruba.lacp.actor_state}), (?:(P|p)artner state %{GREEDYDATA:aruba.lacp.partner_state})"
@@ -2036,7 +2174,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2046,7 +2186,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Interface %{DATA:aruba.interface.id} (enabled|disabled) by fallback-static for lag %{GREEDYDATA:aruba.instance.id}
                     // Grok pattern: ^Interface %{DATA:aruba.interface.id} lag %{DATA:aruba.instance.id} blocked as link partners on vsx primary and secondary mismatch
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Interface %{DATA:aruba.interface.id} (enabled|disabled) by fallback-static for lag %{GREEDYDATA:aruba.instance.id}"
@@ -2057,7 +2197,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2079,7 +2221,7 @@ impl Transform for Default {
                     // Grok pattern: ^(Remove|Add) (?:(hw_)?port %{DATA:aruba.port}) (from|to) (?:LAG( interface)? %{GREEDYDATA:aruba.interface.id})
                     // Grok pattern: ^(Remove|Add) (?:(hw_)?port %{DATA:aruba.port}) to vlan %{DATA:network.vlan.id} for L3 (?:LAG( interface)? %{GREEDYDATA:aruba.interface.id})
                     // Grok pattern: ^Destroy L3 (?:LAG( interface)? %{GREEDYDATA:aruba.interface.id})
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Trunk set succeeds (?:unit %{DATA:aruba.unit}) (?:lag_id %{GREEDYDATA:aruba.instance.id})"
@@ -2111,7 +2253,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2362,7 +2506,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Vlaninterface vlan%{DATA:network.vlan.id}, failed to create an l3 interface, error: %{GREEDYDATA:event.reason}
                     // Grok pattern: ^Vlan Interface %{DATA:aruba.interface.id}, created
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Vlaninterface vlan%{DATA:network.vlan.id}, failed to create an l3 interface, error: %{GREEDYDATA:event.reason}"
@@ -2371,7 +2515,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2379,9 +2525,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^L3-Interface %{DATA:aruba.interface.id}, (created|deleted)
-                    let _ =
-                        cached_grok!("^L3-Interface %{DATA:aruba.interface.id}, (created|deleted)")
-                            .extract_into(&input, event)?;
+                    if !cached_grok!("^L3-Interface %{DATA:aruba.interface.id}, (created|deleted)")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2460,7 +2608,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Failed to (destroy layer |delete an l)3 interface %{DATA:aruba.interface.id}( vlan %{DATA:network.vlan.id})?, error: %{GREEDYDATA:event.reason}
-                    let _ = cached_grok!("^Failed to (destroy layer |delete an l)3 interface %{DATA:aruba.interface.id}( vlan %{DATA:network.vlan.id})?, error: %{GREEDYDATA:event.reason}").extract_into(&input, event)?;
+                    if !cached_grok!("^Failed to (destroy layer |delete an l)3 interface %{DATA:aruba.interface.id}( vlan %{DATA:network.vlan.id})?, error: %{GREEDYDATA:event.reason}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2479,7 +2629,7 @@ impl Transform for Default {
                     // Grok pattern: ^(Delete|Added|Add) route (%{DATA:aruba.prefix}, (?:error: %{GREEDYDATA:event.reason})|%{GREEDYDATA:aruba.prefix})
                     // Grok pattern: ^Update: route state: %{GREEDYDATA:aruba.state}
                     // Grok pattern: ^Error (deleting|creating) egress object for port %{DATA:aruba.port}, (?:error: %{GREEDYDATA:event.reason})
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Failed to (delete|add) (?:L3 host (entry|hit) for ip %{IP:host.ip}), (?:error: %{GREEDYDATA:event.reason})"
@@ -2498,7 +2648,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2518,7 +2670,7 @@ impl Transform for Default {
                     // Grok pattern: ^(?:(I|i)nterface %{DATA:aruba.interface.id}), configured with secondary (?:(ipv6|ipv4) address( deleted)? %{IP:server.ip})
                     // Grok pattern: ^(?:(I|i)nterface %{DATA:aruba.interface.id}), secondary (?:(ipv6|ipv4) address( deleted)? %{IP:server.ip})
                     // Grok pattern: ^IP MTU %{DATA:aruba.mtu} not applied due to hardware resource limitation
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^(Delete|Added) Nexthop %{IP:aruba.l3.nexthop}(, egress_id %{DATA:observer.egress.interface.id},)? for route %{GREEDYDATA:aruba.prefix}"
@@ -2544,7 +2696,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2552,7 +2706,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^IPv6 address %{IP:server.ip} is not applied on interface %{DATA:aruba.interface.id}, as only one global ipv6 address will be in effect
-                    let _ = cached_grok!("^IPv6 address %{IP:server.ip} is not applied on interface %{DATA:aruba.interface.id}, as only one global ipv6 address will be in effect").extract_into(&input, event)?;
+                    if !cached_grok!("^IPv6 address %{IP:server.ip} is not applied on interface %{DATA:aruba.interface.id}, as only one global ipv6 address will be in effect").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2652,7 +2808,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Failed to update ecmp object for route %{DATA:aruba.ecmp.route}, error: %{DATA:aruba.ecmp.err}$
-                    let _ = cached_grok!("Failed to update ecmp object for route %{DATA:aruba.ecmp.route}, error: %{DATA:aruba.ecmp.err}$").extract_into(&input, event)?;
+                    if !cached_grok!("Failed to update ecmp object for route %{DATA:aruba.ecmp.route}, error: %{DATA:aruba.ecmp.err}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2660,8 +2818,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Update ecmp object for route %{DATA:aruba.ecmp.route}$
-                    let _ = cached_grok!("Update ecmp object for route %{DATA:aruba.ecmp.route}$")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("Update ecmp object for route %{DATA:aruba.ecmp.route}$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2669,7 +2830,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Failed to delete ecmp egress object %{DATA:aruba.ecmp.egressid}, error: %{DATA:aruba.ecmp.err}$
-                    let _ = cached_grok!("Failed to delete ecmp egress object %{DATA:aruba.ecmp.egressid}, error: %{DATA:aruba.ecmp.err}$").extract_into(&input, event)?;
+                    if !cached_grok!("Failed to delete ecmp egress object %{DATA:aruba.ecmp.egressid}, error: %{DATA:aruba.ecmp.err}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2704,8 +2867,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ECMP error: %{DATA:aruba.ecmp.err}$
-                    let _ = cached_grok!("ECMP error: %{DATA:aruba.ecmp.err}$")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("ECMP error: %{DATA:aruba.ecmp.err}$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2716,7 +2882,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^DHCP Lease (added|addition|deleted|deletion|update|updated)( failed)? (?P<event_end>(?:(?:(?:[0-9]{2}:){2}([0-9]){2}))) %{MAC:host.mac} %{IP:host.ip} %{HOSTNAME:host.name} %{DATA:user.id}$
-                    let _ = cached_grok_mapped!("^DHCP Lease (added|addition|deleted|deletion|update|updated)( failed)? (?P<event_end>(?:(?:(?:[0-9]{2}:){2}([0-9]){2}))) %{MAC:host.mac} %{IP:host.ip} %{HOSTNAME:host.name} %{DATA:user.id}$", [("event_end", "event.end")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("^DHCP Lease (added|addition|deleted|deletion|update|updated)( failed)? (?P<event_end>(?:(?:(?:[0-9]{2}:){2}([0-9]){2}))) %{MAC:host.mac} %{IP:host.ip} %{HOSTNAME:host.name} %{DATA:user.id}$", [("event_end", "event.end")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2724,9 +2892,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^DHCP server (en|dis)abled on VRF %{DATA:aruba.vrf.name}$
-                    let _ =
-                        cached_grok!("^DHCP server (en|dis)abled on VRF %{DATA:aruba.vrf.name}$")
-                            .extract_into(&input, event)?;
+                    if !cached_grok!("^DHCP server (en|dis)abled on VRF %{DATA:aruba.vrf.name}$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2782,10 +2952,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(DHCP|DHCPv6) Server Lease cleared on vrf %{DATA:aruba.vrf.name}\\.$
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^(DHCP|DHCPv6) Server Lease cleared on vrf %{DATA:aruba.vrf.name}\\.$"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2793,7 +2966,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(BPDU has )?%{DATA:aruba.mstp.config_parameter} (should be|from port) %{GREEDYDATA:aruba.mstp.config_value}
-                    let _ = cached_grok!("^(BPDU has )?%{DATA:aruba.mstp.config_parameter} (should be|from port) %{GREEDYDATA:aruba.mstp.config_value}").extract_into(&input, event)?;
+                    if !cached_grok!("^(BPDU has )?%{DATA:aruba.mstp.config_parameter} (should be|from port) %{GREEDYDATA:aruba.mstp.config_value}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2831,7 +3006,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{DATA:aruba.mstp.proto} - Root changed from %{DATA:aruba.mstp.old_priority}: %{MAC:aruba.mstp.old_mac} to %{DATA:aruba.priority}: %{MAC:source.mac}
                     // Grok pattern: ^%{DATA:aruba.mstp.proto} starved for (a)? %{DATA:aruba.mstp.pkt_type} on port %{DATA:aruba.port} from %{GREEDYDATA:aruba.mstp.priority_mac}
                     // Grok pattern: ^%{DATA:aruba.mstp.proto} Root Port changed from %{DATA:aruba.mstp.old_port} to %{GREEDYDATA:aruba.port}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:aruba.mstp.proto} - Root changed from %{DATA:aruba.mstp.old_priority}: %{MAC:aruba.mstp.old_mac} to %{DATA:aruba.priority}: %{MAC:source.mac}"
@@ -2845,7 +3020,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2865,7 +3042,7 @@ impl Transform for Default {
                     // Grok pattern: ^Port %{DATA:aruba.port} (un)?blocked on CIST
                     // Grok pattern: ^Port %{DATA:aruba.port} (un)?blocked on MST%{GREEDYDATA:aruba.instance.id}
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Port %{DATA:aruba.port} disabled - BPDU received on protected port"
@@ -2890,7 +3067,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2948,8 +3127,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: VLAN %{DATA:network.vlan.id}
-                    let _ = cached_grok!("VLAN %{DATA:network.vlan.id} ")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("VLAN %{DATA:network.vlan.id} ").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -2958,7 +3138,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Internal VLAN %{DATA:network.vlan.id} is allocated to port %{GREEDYDATA:aruba.port}
                     // Grok pattern: ^Failed to allocate internal VLAN to port %{GREEDYDATA:aruba.port}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Internal VLAN %{DATA:network.vlan.id} is allocated to port %{GREEDYDATA:aruba.port}"
@@ -2969,7 +3149,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3030,7 +3212,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(Created|Updated) (Mac|MAC) based VLAN entry. VLAN %{DATA:network.vlan.id} is mapped to client %{MAC:server.mac} on port %{GREEDYDATA:aruba.port}
-                    let _ = cached_grok!("^(Created|Updated) (Mac|MAC) based VLAN entry. VLAN %{DATA:network.vlan.id} is mapped to client %{MAC:server.mac} on port %{GREEDYDATA:aruba.port}").extract_into(&input, event)?;
+                    if !cached_grok!("^(Created|Updated) (Mac|MAC) based VLAN entry. VLAN %{DATA:network.vlan.id} is mapped to client %{MAC:server.mac} on port %{GREEDYDATA:aruba.port}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3041,7 +3225,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: based VLAN entry for %{MAC:server.mac} with VLAN %{DATA:network.vlan.id} on port %{GREEDYDATA:aruba.port}
-                    let _ = cached_grok!("based VLAN entry for %{MAC:server.mac} with VLAN %{DATA:network.vlan.id} on port %{GREEDYDATA:aruba.port}").extract_into(&input, event)?;
+                    if !cached_grok!("based VLAN entry for %{MAC:server.mac} with VLAN %{DATA:network.vlan.id} on port %{GREEDYDATA:aruba.port}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3076,7 +3262,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^VLAN %{DATA:network.vlan.id} is down due to pvlan misconfig reason %{GREEDYDATA:event.reason}
                     // Grok pattern: ^VLAN %{DATA:network.vlan.id} is recovered from pvlan misconfig
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^VLAN %{DATA:network.vlan.id} is down due to pvlan misconfig reason %{GREEDYDATA:event.reason}"
@@ -3087,7 +3273,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3095,7 +3283,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Remote node %{DATA:aruba.vlan.remote_node} (add|remove) for VLAN %{DATA:network.vlan.id} on node %{DATA:aruba.vlan.local_node} failed
-                    let _ = cached_grok!("^Remote node %{DATA:aruba.vlan.remote_node} (add|remove) for VLAN %{DATA:network.vlan.id} on node %{DATA:aruba.vlan.local_node} failed").extract_into(&input, event)?;
+                    if !cached_grok!("^Remote node %{DATA:aruba.vlan.remote_node} (add|remove) for VLAN %{DATA:network.vlan.id} on node %{DATA:aruba.vlan.local_node} failed").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3159,8 +3349,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.interface.name} is
-                    let _ = cached_grok!("^%{DATA:aruba.interface.name} is")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:aruba.interface.name} is")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3275,8 +3468,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^UUFB %{DATA:aruba.port} (enabled|disabled) in hardware
-                    let _ = cached_grok!("^UUFB %{DATA:aruba.port} (enabled|disabled) in hardware")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^UUFB %{DATA:aruba.port} (enabled|disabled) in hardware")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3311,9 +3507,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.redundant.mgmt_module} is (Active|Standby)
-                    let _ =
-                        cached_grok!("^%{DATA:aruba.redundant.mgmt_module} is (Active|Standby)")
-                            .extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:aruba.redundant.mgmt_module} is (Active|Standby)")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3321,7 +3519,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(Lost|Detected) %{DATA:aruba.redundant.mgmt_module} as Standby Management Module, redundancy (disabled|enabled)
-                    let _ = cached_grok!("^(Lost|Detected) %{DATA:aruba.redundant.mgmt_module} as Standby Management Module, redundancy (disabled|enabled)").extract_into(&input, event)?;
+                    if !cached_grok!("^(Lost|Detected) %{DATA:aruba.redundant.mgmt_module} as Standby Management Module, redundancy (disabled|enabled)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3329,7 +3529,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.redundant.mgmt_module} is (waiting for filesync|starting ISSU operation)
-                    let _ = cached_grok!("^%{DATA:aruba.redundant.mgmt_module} is (waiting for filesync|starting ISSU operation)").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:aruba.redundant.mgmt_module} is (waiting for filesync|starting ISSU operation)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3337,7 +3539,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^AAA %{DATA:aruba.aaa.config_type} update\\s?:\\s?%{GREEDYDATA:aruba.aaa.config_event}
-                    let _ = cached_grok!("^AAA %{DATA:aruba.aaa.config_type} update\\s?:\\s?%{GREEDYDATA:aruba.aaa.config_event}").extract_into(&input, event)?;
+                    if !cached_grok!("^AAA %{DATA:aruba.aaa.config_type} update\\s?:\\s?%{GREEDYDATA:aruba.aaa.config_event}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3345,7 +3549,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^TACACS %{GREEDYDATA:aruba.aaa.tacacs_type} %{DATA:aruba.aaa.tacacs_action} :\\s?%{GREEDYDATA:aruba.aaa.tacacs_event}
-                    let _ = cached_grok!("^TACACS %{GREEDYDATA:aruba.aaa.tacacs_type} %{DATA:aruba.aaa.tacacs_action} :\\s?%{GREEDYDATA:aruba.aaa.tacacs_event}").extract_into(&input, event)?;
+                    if !cached_grok!("^TACACS %{GREEDYDATA:aruba.aaa.tacacs_type} %{DATA:aruba.aaa.tacacs_action} :\\s?%{GREEDYDATA:aruba.aaa.tacacs_event}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3353,7 +3559,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^RADIUS %{GREEDYDATA:aruba.aaa.radius_type} %{DATA:aruba.aaa.radius_action}:\\s?%{GREEDYDATA:aruba.aaa.radius_event}
-                    let _ = cached_grok!("^RADIUS %{GREEDYDATA:aruba.aaa.radius_type} %{DATA:aruba.aaa.radius_action}:\\s?%{GREEDYDATA:aruba.aaa.radius_event}").extract_into(&input, event)?;
+                    if !cached_grok!("^RADIUS %{GREEDYDATA:aruba.aaa.radius_type} %{DATA:aruba.aaa.radius_action}:\\s?%{GREEDYDATA:aruba.aaa.radius_event}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3530,7 +3738,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Decrypted TACACS passkey length %{NUMBER:aruba.len:long} exceeded the maximum allowed plaintext key length %{GREEDYDATA:aruba.limit.threshold}
-                    let _ = cached_grok!("^Decrypted TACACS passkey length %{NUMBER:aruba.len:long} exceeded the maximum allowed plaintext key length %{GREEDYDATA:aruba.limit.threshold}").extract_into(&input, event)?;
+                    if !cached_grok!("^Decrypted TACACS passkey length %{NUMBER:aruba.len:long} exceeded the maximum allowed plaintext key length %{GREEDYDATA:aruba.limit.threshold}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3541,7 +3751,7 @@ impl Transform for Default {
                     // Grok pattern: (?:^AdjChg: Nbr %{DATA:aruba.ospf.router_id} on %{DATA:aruba.interface.id})(?:\\(%{DATA:aruba.ospf.area}\\)): (?:%{DATA:aruba.ospf.old_state} (->|to) %{GREEDYDATA:aruba.state})
                     // Grok pattern: (?:^AdjChg: Nbr %{DATA:aruba.ospf.router_id} on %{DATA:aruba.interface.id}): (?:%{DATA:aruba.ospf.old_state} (->|to) %{GREEDYDATA:aruba.state}) \\(%{DATA:aruba.ospf.event}\\)
                     // Grok pattern: ^Interface %{DATA:aruba.interface.id}(?:\\(%{DATA:aruba.ospf.area}\\)) changed from (?:%{DATA:aruba.ospf.old_state} (->|to) %{GREEDYDATA:aruba.state}), input: %{GREEDYDATA:aruba.ospf.input}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "(?:^AdjChg: Nbr %{DATA:aruba.ospf.router_id} on %{DATA:aruba.interface.id})(?:\\(%{DATA:aruba.ospf.area}\\)): (?:%{DATA:aruba.ospf.old_state} (->|to) %{GREEDYDATA:aruba.state})"
@@ -3555,7 +3765,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3682,7 +3894,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^OSPF (all|designated) routers field entry added: group_id=%{DATA:group.id} fp_id=%{DATA:aruba.ospf.fp_id} stat_id=%{GREEDYDATA:aruba.ospf.stats_id}
-                    let _ = cached_grok!("^OSPF (all|designated) routers field entry added: group_id=%{DATA:group.id} fp_id=%{DATA:aruba.ospf.fp_id} stat_id=%{GREEDYDATA:aruba.ospf.stats_id}").extract_into(&input, event)?;
+                    if !cached_grok!("^OSPF (all|designated) routers field entry added: group_id=%{DATA:group.id} fp_id=%{DATA:aruba.ospf.fp_id} stat_id=%{GREEDYDATA:aruba.ospf.stats_id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3770,7 +3984,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Distance External %{DATA:aruba.ospf.external}, Inter-area %{DATA:aruba.ospf.inter}, and Intra-area %{DATA:aruba.ospf.intra} applied to all the OSPF processes %{NUMBER:process.pid:long} in %{DATA:aruba.vrf.id} VRF
-                    let _ = cached_grok!("^Distance External %{DATA:aruba.ospf.external}, Inter-area %{DATA:aruba.ospf.inter}, and Intra-area %{DATA:aruba.ospf.intra} applied to all the OSPF processes %{NUMBER:process.pid:long} in %{DATA:aruba.vrf.id} VRF").extract_into(&input, event)?;
+                    if !cached_grok!("^Distance External %{DATA:aruba.ospf.external}, Inter-area %{DATA:aruba.ospf.inter}, and Intra-area %{DATA:aruba.ospf.intra} applied to all the OSPF processes %{NUMBER:process.pid:long} in %{DATA:aruba.vrf.id} VRF").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3797,7 +4013,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{DATA:aruba.mgmd.mgmd_type} is not operational on VLAN %{DATA:network.vlan.id} due to resource unavailability
                     // Grok pattern: ^Received IGMPv3 query from %{IP:client.ip} when the device is configured for IGMPv2
                     // Grok pattern: ^Flood mode is temporarily activated on ERPS ports %{DATA:aruba.port} and %{DATA:aruba.mgmd.port1} as ring state for ring id %{DATA:aruba.mgmd.ring_id} changed to %{GREEDYDATA:aruba.state}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Failed to alloc a %{DATA:aruba.mgmd.pkt_type} pkt\\((?:(vlan|VLAN|interface) %{DATA:network.vlan.id})\\)"
@@ -3844,7 +4060,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3853,7 +4071,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.mgmd.mgmd_type} is not operational on interface %{DATA:aruba.mgmd.l3_port} due to resource unavailability
                     // Grok pattern: ^%{DATA:aruba.mgmd.mgmd_type} snooping is %{DATA:aruba.status} on VLAN %{GREEDYDATA:network.vlan.id}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:aruba.mgmd.mgmd_type} is not operational on interface %{DATA:aruba.mgmd.l3_port} due to resource unavailability"
@@ -3864,7 +4082,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3874,7 +4094,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(IGMPv2|MLDv1) packet received for group address %{IP:client.ip} in SSM range which is not part of SSM map.
                     // Grok pattern: ^SSM-map %{DATA:aruba.acl.name} applied to %{DATA:aruba.mgmd.protocol} interface %{GREEDYDATA:aruba.port}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^(IGMPv2|MLDv1) packet received for group address %{IP:client.ip} in SSM range which is not part of SSM map."
@@ -3885,7 +4105,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -3940,7 +4162,7 @@ impl Transform for Default {
                     // Grok pattern: ^Port %{DATA:aruba.port} (added for|deleted from) loop-protection
                     // Grok pattern: ^Loop-Protection stats cleared for port %{GREEDYDATA:aruba.port}
                     // Grok pattern: ^Ports TX %{DATA:aruba.loop.tx_port} and RX %{DATA:aruba.loop.rx_port} are involved during TX port disabling
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Ports TX %{DATA:aruba.loop.tx_port} and RX %{DATA:aruba.loop.rx_port} are disabled by Loop-protect after loop detection on VLAN %{GREEDYDATA:network.vlan.id}"
@@ -3963,7 +4185,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4017,7 +4241,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Max vport limit %{DATA:aruba.limit.threshold} reached. Current vport %{NUMBER:aruba.limit.read_value:long}
-                    let _ = cached_grok!("^Max vport limit %{DATA:aruba.limit.threshold} reached. Current vport %{NUMBER:aruba.limit.read_value:long}").extract_into(&input, event)?;
+                    if !cached_grok!("^Max vport limit %{DATA:aruba.limit.threshold} reached. Current vport %{NUMBER:aruba.limit.read_value:long}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4105,7 +4331,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{IPORHOST:destination.address}: Peer has received prefix equal to (Maximum Prefix|Threshold) value configured. vrf-name: %{GREEDYDATA:aruba.vrf.name}
-                    let _ = cached_grok!("^%{IPORHOST:destination.address}: Peer has received prefix equal to (Maximum Prefix|Threshold) value configured. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)?;
+                    if !cached_grok!("^%{IPORHOST:destination.address}: Peer has received prefix equal to (Maximum Prefix|Threshold) value configured. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4113,7 +4341,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^BGP AS %{NUMBER:aruba.bgp.as_number:long} %{WORD}. vrf-name: %{GREEDYDATA:aruba.vrf.name}
-                    let _ = cached_grok!("^BGP AS %{NUMBER:aruba.bgp.as_number:long} %{WORD}. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)?;
+                    if !cached_grok!("^BGP AS %{NUMBER:aruba.bgp.as_number:long} %{WORD}. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4149,7 +4379,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{IPORHOST:destination.address}: Peer configured, AS %{NUMBER:destination.as.number:long}. vrf-name: %{GREEDYDATA:aruba.vrf.name}
-                    let _ = cached_grok!("^%{IPORHOST:destination.address}: Peer configured, AS %{NUMBER:destination.as.number:long}. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)?;
+                    if !cached_grok!("^%{IPORHOST:destination.address}: Peer configured, AS %{NUMBER:destination.as.number:long}. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4255,7 +4487,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{IPORHOST:destination.address}: Peer admin (dis|en)abled. vrf-name: %{GREEDYDATA:aruba.vrf.name}
-                    let _ = cached_grok!("^%{IPORHOST:destination.address}: Peer admin (dis|en)abled. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)?;
+                    if !cached_grok!("^%{IPORHOST:destination.address}: Peer admin (dis|en)abled. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4263,7 +4497,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{IPORHOST:destination.address}: Peer remote-as changed to %{NUMBER:destination.as.number:long}. vrf-name: %{GREEDYDATA:aruba.vrf.name}
-                    let _ = cached_grok!("^%{IPORHOST:destination.address}: Peer remote-as changed to %{NUMBER:destination.as.number:long}. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)?;
+                    if !cached_grok!("^%{IPORHOST:destination.address}: Peer remote-as changed to %{NUMBER:destination.as.number:long}. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4271,7 +4507,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{IPORHOST:destination.address}: Peer local-as changed to %{NUMBER:client.as.number:long}. vrf-name: %{GREEDYDATA:aruba.vrf.name}
-                    let _ = cached_grok!("^%{IPORHOST:destination.address}: Peer local-as changed to %{NUMBER:client.as.number:long}. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)?;
+                    if !cached_grok!("^%{IPORHOST:destination.address}: Peer local-as changed to %{NUMBER:client.as.number:long}. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4279,7 +4517,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{IPORHOST:destination.address}: Peer source-address changed to %{IP:source.ip}. vrf-name: %{GREEDYDATA:aruba.vrf.name}
-                    let _ = cached_grok!("^%{IPORHOST:destination.address}: Peer source-address changed to %{IP:source.ip}. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)?;
+                    if !cached_grok!("^%{IPORHOST:destination.address}: Peer source-address changed to %{IP:source.ip}. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4367,7 +4607,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^The BGP RIB has reached the threshold limit of %{DATA:aruba.limit.threshold} for VRF %{GREEDYDATA:aruba.vrf.name}
-                    let _ = cached_grok!("^The BGP RIB has reached the threshold limit of %{DATA:aruba.limit.threshold} for VRF %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)?;
+                    if !cached_grok!("^The BGP RIB has reached the threshold limit of %{DATA:aruba.limit.threshold} for VRF %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4375,7 +4617,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.bgp.pg_name}: Peer-group configured with remote-as %{NUMBER:destination.as.number:long}. vrf-name: %{GREEDYDATA:aruba.vrf.name}
-                    let _ = cached_grok!("^%{DATA:aruba.bgp.pg_name}: Peer-group configured with remote-as %{NUMBER:destination.as.number:long}. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:aruba.bgp.pg_name}: Peer-group configured with remote-as %{NUMBER:destination.as.number:long}. vrf-name: %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4385,7 +4629,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:client.address}: Peer ignore-leading-as configuration changed. vrf-name: %{GREEDYDATA:aruba.vrf.name}
                     // Grok pattern: ^%{DATA:client.address}: Neighbor (added to|deleted from) Peer group %{DATA:aruba.bgp.peer_grp} vrf-name: %{GREEDYDATA:aruba.vrf.name}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:client.address}: Peer ignore-leading-as configuration changed. vrf-name: %{GREEDYDATA:aruba.vrf.name}"
@@ -4396,7 +4640,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4407,7 +4653,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Diagnostic %{DATA:aruba.hardware.test_name} failed with error code %{DATA:error.code} on (management module|line card|fabric card|fan tray|rear display card) %{GREEDYDATA:aruba.slot:long}
-                    let _ = cached_grok!("^Diagnostic %{DATA:aruba.hardware.test_name} failed with error code %{DATA:error.code} on (management module|line card|fabric card|fan tray|rear display card) %{GREEDYDATA:aruba.slot:long}").extract_into(&input, event)?;
+                    if !cached_grok!("^Diagnostic %{DATA:aruba.hardware.test_name} failed with error code %{DATA:error.code} on (management module|line card|fabric card|fan tray|rear display card) %{GREEDYDATA:aruba.slot:long}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4493,7 +4741,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^There are (IO|unknown) errors on %{DATA:aruba.hardware.location} from ((?:%{DATA:aruba.status}:%{DATA:aruba.hardware.addr}:%{DATA:aruba.hardware.misc}:%{DATA:aruba.hardware.mcgstatus}:%{GREEDYDATA:aruba.hardware.cap})|(?:%{DATA:aruba.hardware.seg}:%{DATA:aruba.hardware.bus}:%{DATA:aruba.hardware.device}:%{GREEDYDATA:aruba.hardware.function}))
-                    let _ = cached_grok!("^There are (IO|unknown) errors on %{DATA:aruba.hardware.location} from ((?:%{DATA:aruba.status}:%{DATA:aruba.hardware.addr}:%{DATA:aruba.hardware.misc}:%{DATA:aruba.hardware.mcgstatus}:%{GREEDYDATA:aruba.hardware.cap})|(?:%{DATA:aruba.hardware.seg}:%{DATA:aruba.hardware.bus}:%{DATA:aruba.hardware.device}:%{GREEDYDATA:aruba.hardware.function}))").extract_into(&input, event)?;
+                    if !cached_grok!("^There are (IO|unknown) errors on %{DATA:aruba.hardware.location} from ((?:%{DATA:aruba.status}:%{DATA:aruba.hardware.addr}:%{DATA:aruba.hardware.misc}:%{DATA:aruba.hardware.mcgstatus}:%{GREEDYDATA:aruba.hardware.cap})|(?:%{DATA:aruba.hardware.seg}:%{DATA:aruba.hardware.bus}:%{DATA:aruba.hardware.device}:%{GREEDYDATA:aruba.hardware.function}))").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4501,7 +4751,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^CPUs %{NUMBER:aruba.hardware.cpus:long} L%{DATA:aruba.hardware.level} %{DATA:aruba.hardware.type} cache error detected. CPUs %{NUMBER:aruba.hardware.offlined:long} offlined
-                    let _ = cached_grok!("^CPUs %{NUMBER:aruba.hardware.cpus:long} L%{DATA:aruba.hardware.level} %{DATA:aruba.hardware.type} cache error detected. CPUs %{NUMBER:aruba.hardware.offlined:long} offlined").extract_into(&input, event)?;
+                    if !cached_grok!("^CPUs %{NUMBER:aruba.hardware.cpus:long} L%{DATA:aruba.hardware.level} %{DATA:aruba.hardware.type} cache error detected. CPUs %{NUMBER:aruba.hardware.offlined:long} offlined").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4512,7 +4764,7 @@ impl Transform for Default {
                     // Grok pattern: ^Socket %{DATA:aruba.hardware.socket} (?:correctable memory error count %{NUMBER:aruba.hardware.cecount:long} exceeded threshold %{NUMBER:aruba.limit.threshold}(?:(?: and %{NUMBER:aruba.hardware.offlined:long}))?)
                     // Grok pattern: ^Module %{DATA:aruba.hardware.channel} (?:correctable memory error count %{NUMBER:aruba.hardware.cecount:long} exceeded threshold %{NUMBER:aruba.limit.threshold}(?:(?: and %{NUMBER:aruba.hardware.offlined:long}))?)
                     // Grok pattern: ^Page %{DATA:aruba.hardware.page} (?:correctable memory error count %{NUMBER:aruba.hardware.cecount:long} exceeded threshold %{NUMBER:aruba.limit.threshold}(?:(?: and %{NUMBER:aruba.hardware.offlined:long}))?)
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Socket %{DATA:aruba.hardware.socket} (?:correctable memory error count %{NUMBER:aruba.hardware.cecount:long} exceeded threshold %{NUMBER:aruba.limit.threshold}(?:(?: and %{NUMBER:aruba.hardware.offlined:long}))?)"
@@ -4526,7 +4778,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4540,7 +4794,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Diagnostic %{DATA:aruba.hardware.test_name} failed with error code %{DATA:error.code} on (management module|fabric card|line card|fan tray|chassis) %{NUMBER:aruba.slot:long}
-                    let _ = cached_grok!("^Diagnostic %{DATA:aruba.hardware.test_name} failed with error code %{DATA:error.code} on (management module|fabric card|line card|fan tray|chassis) %{NUMBER:aruba.slot:long}").extract_into(&input, event)?;
+                    if !cached_grok!("^Diagnostic %{DATA:aruba.hardware.test_name} failed with error code %{DATA:error.code} on (management module|fabric card|line card|fan tray|chassis) %{NUMBER:aruba.slot:long}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4548,7 +4804,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^HW Fault \\(Error %{DATA:error.code}\\) detected on the switch. %{DATA:aruba.hardware.impact_statement}. Contact support for assistance
-                    let _ = cached_grok!("^HW Fault \\(Error %{DATA:error.code}\\) detected on the switch. %{DATA:aruba.hardware.impact_statement}. Contact support for assistance").extract_into(&input, event)?;
+                    if !cached_grok!("^HW Fault \\(Error %{DATA:error.code}\\) detected on the switch. %{DATA:aruba.hardware.impact_statement}. Contact support for assistance").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4562,7 +4820,7 @@ impl Transform for Default {
                     // Grok pattern: ^MVRP failed to create VLAN %{DATA:network.vlan.id}. Maximum VLANs %{DATA:aruba.limit.threshold} already created
                     // Grok pattern: ^MVRP statistics have been cleared for ((?:port %{GREEDYDATA:aruba.port})|(?:%{DATA:aruba.port} ports))
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^MVRP (en|dis)abled on port %{GREEDYDATA:aruba.port}"),
                             cached_grok!(
@@ -4575,7 +4833,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4590,10 +4850,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: %{DATA:aruba.module.type} module %{DATA:aruba.module.name}\\s
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "%{DATA:aruba.module.type} module %{DATA:aruba.module.name}\\s"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4614,7 +4877,7 @@ impl Transform for Default {
                     // Grok pattern: ^%{DATA:aruba.module.type} module %{DATA:aruba.module.name} is requesting to power on with priority %{GREEDYDATA:aruba.priority}
                     // Grok pattern: ^%{DATA:aruba.module.name} is starting zeroization
                     // Grok pattern: ^%{DATA:aruba.module.name} zeroization (completed|failed)
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:aruba.module.type} module %{DATA:aruba.module.name} (is down|has failed): %{GREEDYDATA:event.reason}"
@@ -4641,7 +4904,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4650,8 +4915,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.module.name}( is starting)? zeroization
-                    let _ = cached_grok!("^%{DATA:aruba.module.name}( is starting)? zeroization")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:aruba.module.name}( is starting)? zeroization")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4659,7 +4927,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.module.name} Front-panel factory-reset is (now %{GREEDYDATA:aruba.status}|NOT supported with current system recipe)
-                    let _ = cached_grok!("^%{DATA:aruba.module.name} Front-panel factory-reset is (now %{GREEDYDATA:aruba.status}|NOT supported with current system recipe)").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:aruba.module.name} Front-panel factory-reset is (now %{GREEDYDATA:aruba.status}|NOT supported with current system recipe)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4667,7 +4937,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Config (compatability|compatibility) allowed between modules %{DATA:aruba.module.old_part} and %{GREEDYDATA:aruba.module.new_part}
-                    let _ = cached_grok!("^Config (compatability|compatibility) allowed between modules %{DATA:aruba.module.old_part} and %{GREEDYDATA:aruba.module.new_part}").extract_into(&input, event)?;
+                    if !cached_grok!("^Config (compatability|compatibility) allowed between modules %{DATA:aruba.module.old_part} and %{GREEDYDATA:aruba.module.new_part}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4677,7 +4949,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^IRDP (en|dis)abled on interface %{GREEDYDATA:aruba.interface.id}
                     // Grok pattern: ^Interface: %{DATA:aruba.interface.id} has been configured with the invalid irdp holdtime or minInterval or maxInterval
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^IRDP (en|dis)abled on interface %{GREEDYDATA:aruba.interface.id}"
@@ -4688,7 +4960,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4697,7 +4971,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} on interface %{DATA:aruba.interface.id}
-                    let _ = cached_grok!("^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} on interface %{DATA:aruba.interface.id} ").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} on interface %{DATA:aruba.interface.id} ").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4705,7 +4981,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} (created on|deleted from) interface %{GREEDYDATA:aruba.interface.id}
-                    let _ = cached_grok!("^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} (created on|deleted from) interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} (created on|deleted from) interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4713,7 +4991,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.vrrp.type} address %{DATA:service.address} is (added to|deleted from) virtual router %{DATA:aruba.instance.id} on interface %{GREEDYDATA:aruba.interface.id}
-                    let _ = cached_grok!("^%{DATA:aruba.vrrp.type} address %{DATA:service.address} is (added to|deleted from) virtual router %{DATA:aruba.instance.id} on interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:aruba.vrrp.type} address %{DATA:service.address} is (added to|deleted from) virtual router %{DATA:aruba.instance.id} on interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4727,7 +5007,7 @@ impl Transform for Default {
                     // Grok pattern: (?:^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id}) advertisement interval has changed to %{NUMBER:aruba.vrrp.interval:long} milliseconds (?:on interface %{GREEDYDATA:aruba.interface.id})
                     // Grok pattern: (?:^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id}) preempt delay time has changed to %{NUMBER:aruba.vrrp.delay:long} seconds (?:on interface %{GREEDYDATA:aruba.interface.id})
                     // Grok pattern: (?:^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id}) state change from %{DATA:aruba.vrrp.old_state} to %{DATA:aruba.state} (?:on interface %{GREEDYDATA:aruba.interface.id})
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "(?:^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id}) version changed to %{DATA:service.version} (?:on interface %{GREEDYDATA:aruba.interface.id})"
@@ -4744,7 +5024,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4755,7 +5037,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: for %{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} on interface %{GREEDYDATA:aruba.interface.id}
-                    let _ = cached_grok!("for %{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} on interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)?;
+                    if !cached_grok!("for %{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} on interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4763,7 +5047,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (Enabled|Disabled) %{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} on interface %{GREEDYDATA:aruba.interface.id}
-                    let _ = cached_grok!("(Enabled|Disabled) %{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} on interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)?;
+                    if !cached_grok!("(Enabled|Disabled) %{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} on interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4771,7 +5057,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} (priority changed to %{DATA:aruba.priority}|mode changed to %{DATA:aruba.vrrp.mode}) on interface %{GREEDYDATA:aruba.interface.id}
-                    let _ = cached_grok!("^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} (priority changed to %{DATA:aruba.priority}|mode changed to %{DATA:aruba.vrrp.mode}) on interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} (priority changed to %{DATA:aruba.priority}|mode changed to %{DATA:aruba.vrrp.mode}) on interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4785,7 +5073,7 @@ impl Transform for Default {
                     // Grok pattern: ^Track object %{DATA:aruba.vrrp.track} is (created|deleted)
                     // Grok pattern: ^Track object %{DATA:aruba.vrrp.track} state changed %{DATA:aruba.vrrp.old_state} to %{GREEDYDATA:aruba.state}
                     // Grok pattern: ^Track object %{DATA:aruba.vrrp.track} associated with interface %{GREEDYDATA:aruba.interface.id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Track object %{DATA:aruba.vrrp.track} is (associated with|de-associated from) %{DATA:aruba.vrrp.inet_type} virtual router %{GREEDYDATA:aruba.instance.id}"
@@ -4802,7 +5090,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4810,7 +5100,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} (recieved|received) packet with authentication (type|key) mismatch on interface %{GREEDYDATA:aruba.interface.id}
-                    let _ = cached_grok!("^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} (recieved|received) packet with authentication (type|key) mismatch on interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} (recieved|received) packet with authentication (type|key) mismatch on interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4818,7 +5110,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(Enabled|Disabled) vrrpv3 checksum for %{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} on interface %{GREEDYDATA:aruba.interface.id}
-                    let _ = cached_grok!("^(Enabled|Disabled) vrrpv3 checksum for %{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} on interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)?;
+                    if !cached_grok!("^(Enabled|Disabled) vrrpv3 checksum for %{DATA:aruba.vrrp.inet_type} virtual router %{DATA:aruba.instance.id} on interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4850,7 +5144,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Transceiver hot-swap (insert|remove) for interface %{GREEDYDATA:aruba.interface.id}
-                    let _ = cached_grok!("^Transceiver hot-swap (insert|remove) for interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)?;
+                    if !cached_grok!("^Transceiver hot-swap (insert|remove) for interface %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4859,7 +5155,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Interface %{DATA:aruba.interface.id} transceiver attempted link recovery %{NUMBER:aruba.count:long} times
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Interface %{DATA:aruba.interface.id} transceiver attempted link recovery %{NUMBER:aruba.count:long} times"
@@ -4868,7 +5164,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4901,7 +5199,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(Transceiver|Adapter) %{DATA:aruba.xcvr.desc} inserted in %{DATA:aruba.interface.id} is (?P<aruba_status>(?:[\\p{L},\":;\\s\\-]*)). %{GREEDYDATA:event.reason}
-                    let _ = cached_grok_mapped!("^(Transceiver|Adapter) %{DATA:aruba.xcvr.desc} inserted in %{DATA:aruba.interface.id} is (?P<aruba_status>(?:[\\p{L},\":;\\s\\-]*)). %{GREEDYDATA:event.reason}", [("aruba_status", "aruba.status")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("^(Transceiver|Adapter) %{DATA:aruba.xcvr.desc} inserted in %{DATA:aruba.interface.id} is (?P<aruba_status>(?:[\\p{L},\":;\\s\\-]*)). %{GREEDYDATA:event.reason}", [("aruba_status", "aruba.status")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4912,7 +5212,7 @@ impl Transform for Default {
                     // Grok pattern: ^Transceiver in %{DATA:aruba.interface.id}
                     // Grok pattern: interface %{GREEDYDATA:aruba.interface.id}
                     // Grok pattern: ^Interface %{DATA:aruba.interface.id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Transceiver in %{DATA:aruba.interface.id} "),
                             cached_grok!("interface %{GREEDYDATA:aruba.interface.id}"),
@@ -4920,7 +5220,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -4975,7 +5277,7 @@ impl Transform for Default {
                     // Grok pattern: ^(Added|Deleted) RA Prefix: %{DATA:aruba.prefix} on interface: %{DATA:aruba.interface.id} (to|from) prefix list
                     // Grok pattern: ^default prefix is configured on interface %{GREEDYDATA:aruba.interface.id}
                     // Grok pattern: ^(RDNSS|DNSSL) is (added|deleted) on interface: %{GREEDYDATA:aruba.interface.id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^ipv6 ra (dis|en)abled on interface: %{GREEDYDATA:aruba.interface.id}"
@@ -5001,7 +5303,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5011,7 +5315,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(Added|Deleted) RA Route: %{DATA:aruba.ip_ra.route} on interface: %{DATA:aruba.interface.id} (to|from) route list
                     // Grok pattern: ^Interface: %{DATA:aruba.interface.id} has been configured with the invalid
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^(Added|Deleted) RA Route: %{DATA:aruba.ip_ra.route} on interface: %{DATA:aruba.interface.id} (to|from) route list"
@@ -5022,7 +5326,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5031,7 +5337,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^The Multicast L3 Bridge Control Forwarding entries limit was reached: %{GREEDYDATA:aruba.limit.threshold}
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^The Multicast L3 Bridge Control Forwarding entries limit was reached: %{GREEDYDATA:aruba.limit.threshold}"
@@ -5040,7 +5346,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5137,10 +5445,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^UDLD is (enabled|disabled) on interface: %{GREEDYDATA:aruba.interface.id}
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^UDLD is (enabled|disabled) on interface: %{GREEDYDATA:aruba.interface.id}"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5149,7 +5460,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^UDLD interface %{DATA:aruba.interface.id} is (unblocked|blocked|undetermined)
-                    let _ = cached_grok!("^UDLD interface %{DATA:aruba.interface.id} is (unblocked|blocked|undetermined)").extract_into(&input, event)?;
+                    if !cached_grok!("^UDLD interface %{DATA:aruba.interface.id} is (unblocked|blocked|undetermined)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5157,7 +5470,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^UDLD link is (enabled|disabled) on interface: %{GREEDYDATA:aruba.interface.id}
-                    let _ = cached_grok!("^UDLD link is (enabled|disabled) on interface: %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)?;
+                    if !cached_grok!("^UDLD link is (enabled|disabled) on interface: %{GREEDYDATA:aruba.interface.id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5247,7 +5562,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Local proxy ARP (enabled|disabled) for port %{DATA:aruba.port} on vrf %{GREEDYDATA:aruba.vrf.id}
                     // Grok pattern: ^Failed to (enable|disable) local proxy ARP for port %{DATA:aruba.port} on vrf %{GREEDYDATA:aruba.vrf.id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Local proxy ARP (enabled|disabled) for port %{DATA:aruba.port} on vrf %{GREEDYDATA:aruba.vrf.id}"
@@ -5258,7 +5573,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5266,7 +5583,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: MGMT_INTF: (Static parameter : \\[%{GREEDYDATA:_temp.config}\\]|%{GREEDYDATA:aruba.mgmt.config_param})
-                    let _ = cached_grok!("MGMT_INTF: (Static parameter : \\[%{GREEDYDATA:_temp.config}\\]|%{GREEDYDATA:aruba.mgmt.config_param})").extract_into(&input, event)?;
+                    if !cached_grok!("MGMT_INTF: (Static parameter : \\[%{GREEDYDATA:_temp.config}\\]|%{GREEDYDATA:aruba.mgmt.config_param})").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5274,7 +5593,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: MGMT_INTF: (Static parameter : \\[%{GREEDYDATA:_temp.config}\\]|%{GREEDYDATA:aruba.mgmt.config_err})
-                    let _ = cached_grok!("MGMT_INTF: (Static parameter : \\[%{GREEDYDATA:_temp.config}\\]|%{GREEDYDATA:aruba.mgmt.config_err})").extract_into(&input, event)?;
+                    if !cached_grok!("MGMT_INTF: (Static parameter : \\[%{GREEDYDATA:_temp.config}\\]|%{GREEDYDATA:aruba.mgmt.config_err})").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5282,7 +5603,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: MGMT_INTF: (Static parameter : \\[%{GREEDYDATA:_temp.config}\\]|%{GREEDYDATA:aruba.mgmt.config_crit})
-                    let _ = cached_grok!("MGMT_INTF: (Static parameter : \\[%{GREEDYDATA:_temp.config}\\]|%{GREEDYDATA:aruba.mgmt.config_crit})").extract_into(&input, event)?;
+                    if !cached_grok!("MGMT_INTF: (Static parameter : \\[%{GREEDYDATA:_temp.config}\\]|%{GREEDYDATA:aruba.mgmt.config_crit})").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5308,7 +5631,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User %{DATA:user.name}: %{DATA:aruba.firmware.image_profile} image updated via %{DATA:aruba.firmware.dnld_type}( from %{HOSTNAME:source.address})?. Firmware version, Before Update: %{DATA:aruba.firmware.before} After Update: %{DATA:aruba.firmware.after}$
-                    let _ = cached_grok!("^User %{DATA:user.name}: %{DATA:aruba.firmware.image_profile} image updated via %{DATA:aruba.firmware.dnld_type}( from %{HOSTNAME:source.address})?. Firmware version, Before Update: %{DATA:aruba.firmware.before} After Update: %{DATA:aruba.firmware.after}$").extract_into(&input, event)?;
+                    if !cached_grok!("^User %{DATA:user.name}: %{DATA:aruba.firmware.image_profile} image updated via %{DATA:aruba.firmware.dnld_type}( from %{HOSTNAME:source.address})?. Firmware version, Before Update: %{DATA:aruba.firmware.before} After Update: %{DATA:aruba.firmware.after}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5316,7 +5641,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User %{DATA:user.name}: %{DATA:aruba.firmware.image_profile} image update failed via %{DATA:aruba.firmware.dnld_type}( from %{HOSTNAME:source.address})?$
-                    let _ = cached_grok!("^User %{DATA:user.name}: %{DATA:aruba.firmware.image_profile} image update failed via %{DATA:aruba.firmware.dnld_type}( from %{HOSTNAME:source.address})?$").extract_into(&input, event)?;
+                    if !cached_grok!("^User %{DATA:user.name}: %{DATA:aruba.firmware.image_profile} image update failed via %{DATA:aruba.firmware.dnld_type}( from %{HOSTNAME:source.address})?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5327,7 +5654,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User %{DATA:user.name}: hot-patch \"%{DATA:aruba.firmware.hotpatch_name}\" (downloaded|download failed) via (%{DATA:aruba.firmware.dnld_type} from %{GREEDYDATA:source.address}|(?P<aruba_firmware_dnld_type>(?:[\\p{L},\":;\\s\\-]*))(\\.)?)
-                    let _ = cached_grok_mapped!("^User %{DATA:user.name}: hot-patch \"%{DATA:aruba.firmware.hotpatch_name}\" (downloaded|download failed) via (%{DATA:aruba.firmware.dnld_type} from %{GREEDYDATA:source.address}|(?P<aruba_firmware_dnld_type>(?:[\\p{L},\":;\\s\\-]*))(\\.)?)", [("aruba_firmware_dnld_type", "aruba.firmware.dnld_type")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("^User %{DATA:user.name}: hot-patch \"%{DATA:aruba.firmware.hotpatch_name}\" (downloaded|download failed) via (%{DATA:aruba.firmware.dnld_type} from %{GREEDYDATA:source.address}|(?P<aruba_firmware_dnld_type>(?:[\\p{L},\":;\\s\\-]*))(\\.)?)", [("aruba_firmware_dnld_type", "aruba.firmware.dnld_type")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5335,7 +5664,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Selftest has (started|completed) on subsystem %{GREEDYDATA:aruba.subsystem}
-                    let _ = cached_grok!("^Selftest has (started|completed) on subsystem %{GREEDYDATA:aruba.subsystem}").extract_into(&input, event)?;
+                    if !cached_grok!("^Selftest has (started|completed) on subsystem %{GREEDYDATA:aruba.subsystem}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5433,7 +5764,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Authentication (failed|succeeded) for user %{DATA:user.name} in session %{GREEDYDATA:aruba.session.id}
-                    let _ = cached_grok!("^Authentication (failed|succeeded) for user %{DATA:user.name} in session %{GREEDYDATA:aruba.session.id}").extract_into(&input, event)?;
+                    if !cached_grok!("^Authentication (failed|succeeded) for user %{DATA:user.name} in session %{GREEDYDATA:aruba.session.id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5505,7 +5838,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Authorization (failed|succeeded|allowed) for user %{DATA:user.name}, for resource %{DATA:aruba.rest.resource}, with action %{GREEDYDATA:event.action}
-                    let _ = cached_grok!("^Authorization (failed|succeeded|allowed) for user %{DATA:user.name}, for resource %{DATA:aruba.rest.resource}, with action %{GREEDYDATA:event.action}").extract_into(&input, event)?;
+                    if !cached_grok!("^Authorization (failed|succeeded|allowed) for user %{DATA:user.name}, for resource %{DATA:aruba.rest.resource}, with action %{GREEDYDATA:event.action}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5558,7 +5893,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User %{DATA:user.name} deleted %{GREEDYDATA:aruba.rest.deleted_user}
                     // Grok pattern: ^User %{DATA:user.name} has configured %{DATA:aruba.rest.mode} for configuration lockout
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^User %{DATA:user.name} deleted %{GREEDYDATA:aruba.rest.deleted_user}"
@@ -5569,7 +5904,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5577,7 +5914,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User %{DATA:user.name} (successfully changed password|password change failed)
-                    let _ = cached_grok!("^User %{DATA:user.name} (successfully changed password|password change failed)").extract_into(&input, event)?;
+                    if !cached_grok!("^User %{DATA:user.name} (successfully changed password|password change failed)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5591,7 +5930,7 @@ impl Transform for Default {
                     // Grok pattern: (?:^%{DATA:user.name} has) copied switch configuration %{DATA:aruba.rest.config_from_name} to %{GREEDYDATA:aruba.rest.config_to_name}
                     // Grok pattern: (?:^%{DATA:user.name} has) configured %{DATA:aruba.rest.dns_nameserver} DNS nameserver to %{GREEDYDATA:aruba.rest.dns}
                     // Grok pattern: (?:^%{DATA:user.name} has) deleted all DNS nameservers
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "(?:^%{DATA:user.name} has) written a new switch configuration to %{GREEDYDATA:aruba.rest.config_name}"
@@ -5606,7 +5945,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5615,7 +5956,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:user.name} (created|deleted|modified)( %{GREEDYDATA:url.original})?
-                    let _ = cached_grok!("^%{DATA:user.name} (created|deleted|modified)( %{GREEDYDATA:url.original})?").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:user.name} (created|deleted|modified)( %{GREEDYDATA:url.original})?").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5623,7 +5966,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User: %{DATA:user.name} (added|removed) subscriber: %{GREEDYDATA:aruba.rest.subscriber}.
-                    let _ = cached_grok!("^User: %{DATA:user.name} (added|removed) subscriber: %{GREEDYDATA:aruba.rest.subscriber}.").extract_into(&input, event)?;
+                    if !cached_grok!("^User: %{DATA:user.name} (added|removed) subscriber: %{GREEDYDATA:aruba.rest.subscriber}.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5633,7 +5978,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Subscriber: %{DATA:aruba.rest.subscriber} (added|removed) subscription: %{GREEDYDATA:aruba.rest.subscription}.
                     // Grok pattern: ^Unable to add new subscription. Max number of subscriptions for %{DATA:aruba.rest.subscriber} has been reached.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Subscriber: %{DATA:aruba.rest.subscriber} (added|removed) subscription: %{GREEDYDATA:aruba.rest.subscription}."
@@ -5644,7 +5989,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5656,7 +6003,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^NAE (Script|Agent) %{DATA:aruba.rest.name} has been (created|updated|deleted) by user %{GREEDYDATA:user.name}.
                     // Grok pattern: ^Error rebooting switch, reboot command: %{DATA:aruba.rest.command}, error received: %{GREEDYDATA:event.reason}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^NAE (Script|Agent) %{DATA:aruba.rest.name} has been (created|updated|deleted) by user %{GREEDYDATA:user.name}."
@@ -5667,7 +6014,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5680,7 +6029,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: location %{DATA:aruba.rest.central_location} on VRF %{DATA:aruba.vrf.id} (with|and) Source IP %{IP:source.ip}
-                    let _ = cached_grok!("location %{DATA:aruba.rest.central_location} on VRF %{DATA:aruba.vrf.id} (with|and) Source IP %{IP:source.ip}").extract_into(&input, event)?;
+                    if !cached_grok!("location %{DATA:aruba.rest.central_location} on VRF %{DATA:aruba.vrf.id} (with|and) Source IP %{IP:source.ip}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5688,7 +6039,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (S|s)erver %{DATA:server.address}( is reachable)? via VRF %{GREEDYDATA:aruba.vrf.id}.
-                    let _ = cached_grok!("(S|s)erver %{DATA:server.address}( is reachable)? via VRF %{GREEDYDATA:aruba.vrf.id}.").extract_into(&input, event)?;
+                    if !cached_grok!("(S|s)erver %{DATA:server.address}( is reachable)? via VRF %{GREEDYDATA:aruba.vrf.id}.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5697,14 +6050,16 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: server %{DATA:server.address}
                     // Grok pattern: Server %{GREEDYDATA:server.address}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("server %{DATA:server.address} "),
                             cached_grok!("Server %{GREEDYDATA:server.address}."),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5713,7 +6068,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: location( %{DATA:aruba.rest.central_location})? successfully fetched from %{DATA:aruba.rest.central_source} via VRF( %{GREEDYDATA:aruba.vrf.id})?
                     // Grok pattern: location( %{DATA:aruba.rest.central_location})? from %{DATA:aruba.rest.central_source} via VRF( %{GREEDYDATA:aruba.vrf.id})?.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "location( %{DATA:aruba.rest.central_location})? successfully fetched from %{DATA:aruba.rest.central_source} via VRF( %{GREEDYDATA:aruba.vrf.id})?"
@@ -5724,7 +6079,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5732,7 +6089,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Central connected, any config change through rest %{DATA:aruba.rest.operation} operation may not be persistent. If central reapplies the config, change can be overwritten
-                    let _ = cached_grok!("Central connected, any config change through rest %{DATA:aruba.rest.operation} operation may not be persistent. If central reapplies the config, change can be overwritten").extract_into(&input, event)?;
+                    if !cached_grok!("Central connected, any config change through rest %{DATA:aruba.rest.operation} operation may not be persistent. If central reapplies the config, change can be overwritten").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5740,9 +6099,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: support mode is %{DATA:aruba.rest.mode} for a vtysh session
-                    let _ =
-                        cached_grok!("support mode is %{DATA:aruba.rest.mode} for a vtysh session")
-                            .extract_into(&input, event)?;
+                    if !cached_grok!("support mode is %{DATA:aruba.rest.mode} for a vtysh session")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5752,7 +6113,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User %{DATA:user.name} (logged in|login) from %{DATA:aruba.rest.identity}
                     // Grok pattern: ^User %{DATA:user.name} logged out of REST session from %{GREEDYDATA:aruba.rest.identity}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^User %{DATA:user.name} (logged in|login) from %{DATA:aruba.rest.identity} "
@@ -5763,7 +6124,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5772,7 +6135,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^REST session from %{DATA:aruba.rest.identity} with User %{DATA:user.name} is rejected because maximum session limit is reached
                     // Grok pattern: ^%{DATA:user_agent.name:} session from %{DATA:aruba.rest.identity} with User %{DATA:user.name} timed out due to idle timeout
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^REST session from %{DATA:aruba.rest.identity} with User %{DATA:user.name} is rejected because maximum session limit is reached"
@@ -5783,7 +6146,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5793,7 +6158,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^REST server is (enabled|disabled) on VRF %{GREEDYDATA:aruba.vrf.name}
                     // Grok pattern: ^User %{DATA:user.name} login from %{IP:client.ip} for REST session has failed since the user is trying to login through an interface which is not allowed. Allowed interfaces are: %{GREEDYDATA:aruba.interface.id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^REST server is (enabled|disabled) on VRF %{GREEDYDATA:aruba.vrf.name}"
@@ -5804,7 +6169,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5903,7 +6270,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User %{DATA:user.name}
-                    let _ = cached_grok!("^User %{DATA:user.name} ").extract_into(&input, event)?;
+                    if !cached_grok!("^User %{DATA:user.name} ").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -5916,7 +6285,7 @@ impl Transform for Default {
                     // Grok pattern: ^MAC %{MAC:server.mac} moved from port %{DATA:aruba.interface.prev_id} to port %{DATA:aruba.interface.id} on VLAN %{GREEDYDATA:network.vlan.id}
                     // Grok pattern: ^All dynamic MAC addresses on VLAN %{DATA:network.vlan.id} were flushed
                     // Grok pattern: ^All dynamic MAC addresses on port %{DATA:aruba.interface.id} were flushed
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^MAC %{MAC:server.mac} moved from port %{DATA:aruba.interface.prev_id} to port %{DATA:aruba.interface.id} on VLAN %{GREEDYDATA:network.vlan.id}"
@@ -5930,7 +6299,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6024,7 +6395,7 @@ impl Transform for Default {
                     // Grok pattern: ^OSPF3 (all|designated) routers field entry added: group_id=%{DATA:group.id} fp_id=%{DATA:aruba.ospf.fp_id} stat_id=%{GREEDYDATA:aruba.ospf.stats_id}
                     // Grok pattern: ^AdjChg: Nbr%{DATA:aruba.ospf.router_id} on (?:(I|i)nterface %{DATA:aruba.ospf.link_local} on %{DATA:aruba.interface.id}\\(%{DATA:aruba.ospf.area}\\)): (?:%{DATA:aruba.ospf.old_state} (->|to) %{GREEDYDATA:aruba.state})
                     // Grok pattern: ^(?:(I|i)nterface %{DATA:aruba.ospf.link_local} on %{DATA:aruba.interface.id}\\(%{DATA:aruba.ospf.area}\\)) changed from (?:%{DATA:aruba.ospf.old_state} (->|to) %{GREEDYDATA:aruba.state}), input: %{GREEDYDATA:aruba.ospf.input}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^OSPF3 (all|designated) routers field entry added: group_id=%{DATA:group.id} fp_id=%{DATA:aruba.ospf.fp_id} stat_id=%{GREEDYDATA:aruba.ospf.stats_id}"
@@ -6038,7 +6409,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6127,7 +6500,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Distance External %{DATA:aruba.ospf.external}, Inter-area %{DATA:aruba.ospf.inter}, and Intra-area %{DATA:aruba.ospf.intra} applied to all the OSPFv3 processes %{NUMBER:process.pid:long} in %{DATA:aruba.vrf.id} VRF
                     // Grok pattern: ^Distance External %{DATA:aruba.ospf.external}, Inter-area %{DATA:aruba.ospf.inter}, and Intra-area %{DATA:aruba.ospf.intra} applied to all the %{NUMBER:process.pid:long}processes in %{DATA:aruba.vrf.id} VRF
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Distance External %{DATA:aruba.ospf.external}, Inter-area %{DATA:aruba.ospf.inter}, and Intra-area %{DATA:aruba.ospf.intra} applied to all the OSPFv3 processes %{NUMBER:process.pid:long} in %{DATA:aruba.vrf.id} VRF"
@@ -6138,7 +6511,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6330,7 +6705,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Topology change (received|generated) on port %{DATA:aruba.port}( from source: %{MAC:client.mac})? on VLAN %{DATA:network.vlan.id}.
-                    let _ = cached_grok!("^Topology change (received|generated) on port %{DATA:aruba.port}( from source: %{MAC:client.mac})? on VLAN %{DATA:network.vlan.id}.").extract_into(&input, event)?;
+                    if !cached_grok!("^Topology change (received|generated) on port %{DATA:aruba.port}( from source: %{MAC:client.mac})? on VLAN %{DATA:network.vlan.id}.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6338,7 +6715,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Port %{DATA:aruba.port} (unblocked|blocked) on RPVST %{GREEDYDATA:aruba.instance.id}
-                    let _ = cached_grok!("^Port %{DATA:aruba.port} (unblocked|blocked) on RPVST %{GREEDYDATA:aruba.instance.id}").extract_into(&input, event)?;
+                    if !cached_grok!("^Port %{DATA:aruba.port} (unblocked|blocked) on RPVST %{GREEDYDATA:aruba.instance.id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6399,7 +6778,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PVID mismatch detected on %{DATA:aruba.interface.id} with pvid = %{DATA:aruba.rpvst.pvid}, Neighbor pvid = %{GREEDYDATA:aruba.rpvst.npvid}
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^PVID mismatch detected on %{DATA:aruba.interface.id} with pvid = %{DATA:aruba.rpvst.pvid}, Neighbor pvid = %{GREEDYDATA:aruba.rpvst.npvid}"
@@ -6408,7 +6787,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6463,7 +6844,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Current Virtual Ports %{NUMBER:aruba.limit.read_value:long} exceeds the max supported limit %{GREEDYDATA:aruba.limit.threshold}
-                    let _ = cached_grok!("^Current Virtual Ports %{NUMBER:aruba.limit.read_value:long} exceeds the max supported limit %{GREEDYDATA:aruba.limit.threshold}").extract_into(&input, event)?;
+                    if !cached_grok!("^Current Virtual Ports %{NUMBER:aruba.limit.read_value:long} exceeds the max supported limit %{GREEDYDATA:aruba.limit.threshold}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6496,7 +6879,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Failed to send %{DATA:aruba.pim.pkt_type} packet on Interface %{GREEDYDATA:aruba.interface.name}
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Failed to send %{DATA:aruba.pim.pkt_type} packet on Interface %{GREEDYDATA:aruba.interface.name}"
@@ -6505,7 +6888,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6549,7 +6934,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Packet dropped from %{IP:server.ip} on interface %{DATA:aruba.interface.name} %{DATA:event.reason} %{GREEDYDATA:aruba.pim.error_value}
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Packet dropped from %{IP:server.ip} on interface %{DATA:aruba.interface.name} %{DATA:event.reason} %{GREEDYDATA:aruba.pim.error_value}"
@@ -6558,7 +6943,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6567,7 +6954,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Received packet from router %{IP:server.ip}, unkwn pkt type %{GREEDYDATA:aruba.pim.pkt_type}
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Received packet from router %{IP:server.ip}, unkwn pkt type %{GREEDYDATA:aruba.pim.pkt_type}"
@@ -6576,7 +6963,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6584,7 +6973,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Failed to add flow (?P<aruba_pim_dip0>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip1>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip2>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip3>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))), (?P<aruba_pim_sip0>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_sip1>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_sip2>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_sip3>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))) \\(%{DATA:aruba.status} %{DATA:aruba.port} %{DATA:network.vlan.id} %{NUMBER:aruba.pim.totalvid:long} %{DATA:aruba.pim.flowtype} %{DATA:aruba.pim.callerid}\\)
-                    let _ = cached_grok_mapped!("^Failed to add flow (?P<aruba_pim_dip0>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip1>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip2>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip3>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))), (?P<aruba_pim_sip0>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_sip1>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_sip2>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_sip3>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))) \\(%{DATA:aruba.status} %{DATA:aruba.port} %{DATA:network.vlan.id} %{NUMBER:aruba.pim.totalvid:long} %{DATA:aruba.pim.flowtype} %{DATA:aruba.pim.callerid}\\)", [("aruba_pim_dip0", "aruba.pim.dip0"), ("aruba_pim_dip1", "aruba.pim.dip1"), ("aruba_pim_dip2", "aruba.pim.dip2"), ("aruba_pim_dip3", "aruba.pim.dip3"), ("aruba_pim_sip0", "aruba.pim.sip0"), ("aruba_pim_sip1", "aruba.pim.sip1"), ("aruba_pim_sip2", "aruba.pim.sip2"), ("aruba_pim_sip3", "aruba.pim.sip3")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("^Failed to add flow (?P<aruba_pim_dip0>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip1>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip2>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip3>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))), (?P<aruba_pim_sip0>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_sip1>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_sip2>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_sip3>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))) \\(%{DATA:aruba.status} %{DATA:aruba.port} %{DATA:network.vlan.id} %{NUMBER:aruba.pim.totalvid:long} %{DATA:aruba.pim.flowtype} %{DATA:aruba.pim.callerid}\\)", [("aruba_pim_dip0", "aruba.pim.dip0"), ("aruba_pim_dip1", "aruba.pim.dip1"), ("aruba_pim_dip2", "aruba.pim.dip2"), ("aruba_pim_dip3", "aruba.pim.dip3"), ("aruba_pim_sip0", "aruba.pim.sip0"), ("aruba_pim_sip1", "aruba.pim.sip1"), ("aruba_pim_sip2", "aruba.pim.sip2"), ("aruba_pim_sip3", "aruba.pim.sip3")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6593,7 +6984,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Failed to remove flow g (?P<aruba_pim_dip0>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip1>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip2>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip3>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))), s (?P<aruba_pim_sip0>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))), (?P<aruba_pim_sip1>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_sip2>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).%{DATA:aruba.pim.sip3} \\(%{DATA:aruba.status} %{DATA:aruba.port} %{DATA:network.vlan.id} %{DATA:aruba.pim.flowtype} %{DATA:aruba.pim.callerid}\\)
                     // Grok pattern: ^Failed to remove flow (?P<aruba_pim_dip0>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip1>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip2>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip3>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))), (?P<aruba_pim_sip0>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_sip1>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_sip2>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_sip3>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))) \\(%{DATA:aruba.status} %{DATA:aruba.port} %{DATA:network.vlan.id} %{DATA:aruba.pim.flowtype} %{DATA:aruba.pim.callerid}\\)
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok_mapped!(
                                 "^Failed to remove flow g (?P<aruba_pim_dip0>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip1>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip2>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_dip3>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))), s (?P<aruba_pim_sip0>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))), (?P<aruba_pim_sip1>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).(?P<aruba_pim_sip2>(?:(?:[0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))).%{DATA:aruba.pim.sip3} \\(%{DATA:aruba.status} %{DATA:aruba.port} %{DATA:network.vlan.id} %{DATA:aruba.pim.flowtype} %{DATA:aruba.pim.callerid}\\)",
@@ -6623,7 +7014,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6632,7 +7025,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Failed to add a mroute for s=%{IP:source.ip}, g=%{DATA:group.name} on interface %{DATA:aruba.interface.name}
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Failed to add a mroute for s=%{IP:source.ip}, g=%{DATA:group.name} on interface %{DATA:aruba.interface.name} "
@@ -6641,7 +7034,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6753,14 +7148,16 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: OVSDB operation failed with %{GREEDYDATA:event.reason}
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("OVSDB operation failed with %{GREEDYDATA:event.reason}"),
                             cached_grok!("^Throttled %{NUMBER:aruba.throttle_count:long} Messages"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -6937,7 +7334,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{NUMBER:network.packets:long} packet is discarded on interface %{DATA:aruba.interface.name}. Reason: %{GREEDYDATA:event.reason}
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{NUMBER:network.packets:long} packet is discarded on interface %{DATA:aruba.interface.name}. Reason: %{GREEDYDATA:event.reason}"
@@ -6946,7 +7343,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7136,7 +7535,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Software Packet Queue %{DATA:aruba.limit.threshold} threshold value %{NUMBER:aruba.limit.read_value:long} reached. Queue size: %{NUMBER:aruba.pim.qsize:long}
-                    let _ = cached_grok!("^Software Packet Queue %{DATA:aruba.limit.threshold} threshold value %{NUMBER:aruba.limit.read_value:long} reached. Queue size: %{NUMBER:aruba.pim.qsize:long}").extract_into(&input, event)?;
+                    if !cached_grok!("^Software Packet Queue %{DATA:aruba.limit.threshold} threshold value %{NUMBER:aruba.limit.read_value:long} reached. Queue size: %{NUMBER:aruba.pim.qsize:long}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7216,7 +7617,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Candidate RP %{IP:server.ip} is configured on interface %{GREEDYDATA:aruba.interface.name}
-                    let _ = cached_grok!("^Candidate RP %{IP:server.ip} is configured on interface %{GREEDYDATA:aruba.interface.name}").extract_into(&input, event)?;
+                    if !cached_grok!("^Candidate RP %{IP:server.ip} is configured on interface %{GREEDYDATA:aruba.interface.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7224,7 +7627,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^BFD Session (created|deleted) for neighbor %{IP:server.ip} on interface %{GREEDYDATA:aruba.interface.name}
-                    let _ = cached_grok!("^BFD Session (created|deleted) for neighbor %{IP:server.ip} on interface %{GREEDYDATA:aruba.interface.name}").extract_into(&input, event)?;
+                    if !cached_grok!("^BFD Session (created|deleted) for neighbor %{IP:server.ip} on interface %{GREEDYDATA:aruba.interface.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7233,10 +7638,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PIM Resource utilization of %{DATA:aruba.pim.capacity_type} has
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^PIM Resource utilization of %{DATA:aruba.pim.capacity_type} has"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7244,7 +7652,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Router %{DATA:package.version} PIM-SSM( range ACL)? is %{DATA:aruba.pim.mode} on VRF %{GREEDYDATA:aruba.vrf.name}
-                    let _ = cached_grok!("^Router %{DATA:package.version} PIM-SSM( range ACL)? is %{DATA:aruba.pim.mode} on VRF %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)?;
+                    if !cached_grok!("^Router %{DATA:package.version} PIM-SSM( range ACL)? is %{DATA:aruba.pim.mode} on VRF %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7368,10 +7778,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^SSH server is (enabled|disabled) on VRF %{GREEDYDATA:aruba.vrf.name}.
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^SSH server is (enabled|disabled) on VRF %{GREEDYDATA:aruba.vrf.name}."
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7379,7 +7792,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^SSH client-public-key %{DATA:aruba.ssh.key_name} was (installed|removed) for the user %{GREEDYDATA:user.name}.
-                    let _ = cached_grok!("^SSH client-public-key %{DATA:aruba.ssh.key_name} was (installed|removed) for the user %{GREEDYDATA:user.name}.").extract_into(&input, event)?;
+                    if !cached_grok!("^SSH client-public-key %{DATA:aruba.ssh.key_name} was (installed|removed) for the user %{GREEDYDATA:user.name}.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7462,7 +7877,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User %{DATA:user.name} (logged in|login) from %{IP:client.ip}
                     // Grok pattern: ^User %{DATA:user.name} logged out of SSH session from %{IP:client.ip}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^User %{DATA:user.name} (logged in|login) from %{IP:client.ip} "
@@ -7473,7 +7888,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7483,7 +7900,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^SSH session from %{IP:client.ip}
                     // Grok pattern: ^SSH session from user %{DATA:user.name} closed because maximum number of sessions per user is reached.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^SSH session from %{IP:client.ip} "),
                             cached_grok!(
@@ -7492,7 +7909,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7501,7 +7920,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^SSH session from %{IP:client.ip} for user %{DATA:user.name} denied. The allowed user management interfaces are: %{GREEDYDATA:aruba.interface.id}.
                     // Grok pattern: ^SSH session from %{IP:client.ip} for user %{DATA:user.name} rejected due to failed public key validation
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^SSH session from %{IP:client.ip} for user %{DATA:user.name} denied. The allowed user management interfaces are: %{GREEDYDATA:aruba.interface.id}."
@@ -7512,7 +7931,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7555,7 +7976,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Converting configured SSH server allow-list entry %{IP:client.ip} to CIDR format \\(%{GREEDYDATA:aruba.ssh.new_ip}\\)
                     // Grok pattern: ^Failed to convert configured SSH server allow-list entry %{IP:client.ip} to CIDR format, using original address as-is
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Converting configured SSH server allow-list entry %{IP:client.ip} to CIDR format \\(%{GREEDYDATA:aruba.ssh.new_ip}\\)"
@@ -7566,7 +7987,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7576,7 +7999,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^RADIUS authorize-only request failed for SSH session from %{IP:client.ip} for user %{GREEDYDATA:user.name}.
                     // Grok pattern: ^SSH session from %{IP:client.ip} (denied because username|for user) %{DATA:user.name}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^RADIUS authorize-only request failed for SSH session from %{IP:client.ip} for user %{GREEDYDATA:user.name}."
@@ -7587,7 +8010,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7595,7 +8020,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^SFTP file transfer from %{DATA:source.address} to %{DATA:destination.address} (completed|failed - %{GREEDYDATA:aruba.status}).
-                    let _ = cached_grok!("^SFTP file transfer from %{DATA:source.address} to %{DATA:destination.address} (completed|failed - %{GREEDYDATA:aruba.status}).").extract_into(&input, event)?;
+                    if !cached_grok!("^SFTP file transfer from %{DATA:source.address} to %{DATA:destination.address} (completed|failed - %{GREEDYDATA:aruba.status}).").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7605,7 +8032,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(Created|Deleted) a vrf entity %{GREEDYDATA:aruba.vrf.name}
                     // Grok pattern: ^vrf entity creation failed %{GREEDYDATA:aruba.vrf.name}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^(Created|Deleted) a vrf entity %{GREEDYDATA:aruba.vrf.name}"
@@ -7616,7 +8043,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7626,7 +8055,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^NAE script %{DATA:aruba.nae.name} has been validated
                     // Grok pattern: ^Error found in NAE (Script|Agent) %{GREEDYDATA:aruba.nae.name}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^NAE script %{DATA:aruba.nae.name} has been validated"),
                             cached_grok!(
@@ -7635,7 +8064,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7705,10 +8136,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^NAE (Script|Agent) %{DATA:aruba.nae.name} has been created by the system
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^NAE (Script|Agent) %{DATA:aruba.nae.name} has been created by the system"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7719,7 +8153,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User %{DATA:server.user.name} ((?:has enabled %{DATA:aruba.server.mode} for REST mode)|(?:has %{DATA:aruba.status} HTTPS Server on VRF %{DATA:aruba.vrf.id})|(?:closed all HTTPS sessions)|(?:changed the HTTPS Server max user sessions amount to %{NUMBER:aruba.server.sessions:long})|(?:changed the HTTPS Server idle timeout to %{NUMBER:aruba.timeout:long}))$
-                    let _ = cached_grok!("^User %{DATA:server.user.name} ((?:has enabled %{DATA:aruba.server.mode} for REST mode)|(?:has %{DATA:aruba.status} HTTPS Server on VRF %{DATA:aruba.vrf.id})|(?:closed all HTTPS sessions)|(?:changed the HTTPS Server max user sessions amount to %{NUMBER:aruba.server.sessions:long})|(?:changed the HTTPS Server idle timeout to %{NUMBER:aruba.timeout:long}))$").extract_into(&input, event)?;
+                    if !cached_grok!("^User %{DATA:server.user.name} ((?:has enabled %{DATA:aruba.server.mode} for REST mode)|(?:has %{DATA:aruba.status} HTTPS Server on VRF %{DATA:aruba.vrf.id})|(?:closed all HTTPS sessions)|(?:changed the HTTPS Server max user sessions amount to %{NUMBER:aruba.server.sessions:long})|(?:changed the HTTPS Server idle timeout to %{NUMBER:aruba.timeout:long}))$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -7729,14 +8165,16 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (E|e)rror: %{GREEDYDATA:event.reason}
                     // Grok pattern: ^QoS warning: %{GREEDYDATA:event.reason}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("(E|e)rror: %{GREEDYDATA:event.reason}"),
                             cached_grok!("^QoS warning: %{GREEDYDATA:event.reason}"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8051,7 +8489,7 @@ impl Transform for Default {
                     // Grok pattern: NAE monitor %{DATA:aruba.nae.monitor_name}.
                     // Grok pattern: from NAE monitor %{GREEDYDATA:aruba.nae.monitor_name}
                     // Grok pattern: ^User %{DATA:user.name}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^NAE agent %{DATA:aruba.nae.name} with URI %{DATA:url.original} has error and cannot collect samples"
@@ -8065,7 +8503,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8074,7 +8514,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^NAE agent %{DATA:aruba.nae.name} (is watching for|stopped to watch for|generated an alert based on) condition %{GREEDYDATA:aruba.nae.condition}.
-                    let _ = cached_grok!("^NAE agent %{DATA:aruba.nae.name} (is watching for|stopped to watch for|generated an alert based on) condition %{GREEDYDATA:aruba.nae.condition}.").extract_into(&input, event)?;
+                    if !cached_grok!("^NAE agent %{DATA:aruba.nae.name} (is watching for|stopped to watch for|generated an alert based on) condition %{GREEDYDATA:aruba.nae.condition}.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8131,7 +8573,7 @@ impl Transform for Default {
                     // Grok pattern: ^Static Neighbor %{IP:client.ip} (created|deleted) on Port %{DATA:aruba.port}, VRF %{DATA:aruba.vrf.id}( and)? mac %{MAC:client.mac}
                     // Grok pattern: ^EVPN Virtual Tunnel EndPoint Neighbor %{IP:client.ip} updated on Port%{DATA:aruba.port} and VRF %{DATA:aruba.vrf.id} with mac %{MAC:client.mac}
                     // Grok pattern: ^IPDB neighbor %{IP:client.ip} added in port %{DATA:aruba.port}, VRF %{GREEDYDATA:aruba.vrf.id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Static Neighbor %{IP:client.ip} (created|deleted) on Port %{DATA:aruba.port}, VRF %{DATA:aruba.vrf.id}( and)? mac %{MAC:client.mac}"
@@ -8145,7 +8587,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8156,8 +8600,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(IPDB Neighbor|static neighbor) %{IP:client.ip}
-                    let _ = cached_grok!("^(IPDB Neighbor|static neighbor) %{IP:client.ip} ")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^(IPDB Neighbor|static neighbor) %{IP:client.ip} ")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8169,7 +8616,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Clear all (Arp|VSX Peer ARP) entries requested on Port %{DATA:aruba.port} and (VRF|vrf) %{GREEDYDATA:aruba.vrf.id}
                     // Grok pattern: ^Clear all( VSX Peer)? Arp entries requested on VRF %{GREEDYDATA:aruba.vrf.id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Clear all (Arp|VSX Peer ARP) entries requested on Port %{DATA:aruba.port} and (VRF|vrf) %{GREEDYDATA:aruba.vrf.id}"
@@ -8180,7 +8627,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8255,7 +8704,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^EVPN (Virtual Tunnel EndPoint|VTEP) Neighbor %{IP:client.ip} (added to|deleted from) Port%{DATA:aruba.port} (on|and) VRF %{GREEDYDATA:aruba.vrf.id}
                     // Grok pattern: ^VSX Peer IP %{IP:client.ip} (added|deleted from) the port %{DATA:aruba.port} and VRF %{GREEDYDATA:aruba.vrf.id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^EVPN (Virtual Tunnel EndPoint|VTEP) Neighbor %{IP:client.ip} (added to|deleted from) Port%{DATA:aruba.port} (on|and) VRF %{GREEDYDATA:aruba.vrf.id}"
@@ -8266,7 +8715,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8278,7 +8729,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Proxy arp (en|dis)abled for the port %{GREEDYDATA:aruba.port}
                     // Grok pattern: ^(IPv4|IPv6) neighbor ageout time changed to %{NUMBER:aruba.time.seconds:long} seconds on port %{GREEDYDATA:aruba.port}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Proxy arp (en|dis)abled for the port %{GREEDYDATA:aruba.port}"
@@ -8289,7 +8740,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8297,7 +8750,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(Static )?Neighbor %{IP:client.ip} modified on Port %{DATA:aruba.port} and VRF %{DATA:aruba.vrf.id} from mac %{MAC:aruba.ndm.old_mac} to new mac %{MAC:client.mac}
-                    let _ = cached_grok!("^(Static )?Neighbor %{IP:client.ip} modified on Port %{DATA:aruba.port} and VRF %{DATA:aruba.vrf.id} from mac %{MAC:aruba.ndm.old_mac} to new mac %{MAC:client.mac}").extract_into(&input, event)?;
+                    if !cached_grok!("^(Static )?Neighbor %{IP:client.ip} modified on Port %{DATA:aruba.port} and VRF %{DATA:aruba.vrf.id} from mac %{MAC:aruba.ndm.old_mac} to new mac %{MAC:client.mac}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8307,7 +8762,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Duplicate (IPv4|IPv6) address %{IP:client.ip} is detected on port %{DATA:aruba.port} with a MAC address of %{MAC:client.mac}
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Duplicate (IPv4|IPv6) address %{IP:client.ip} is detected on port %{DATA:aruba.port} with a MAC address of %{MAC:client.mac}"
@@ -8316,7 +8771,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8397,7 +8854,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^System resource utilization poll interval is changed to %{GREEDYDATA:aruba.sysmon.poll}
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^System resource utilization poll interval is changed to %{GREEDYDATA:aruba.sysmon.poll}"
@@ -8406,7 +8863,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8415,7 +8874,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Failed to read system memory usage for module %{GREEDYDATA:aruba.sysmon.module_name}
                     // Grok pattern: ^Current system memory usage for module %{DATA:aruba.sysmon.module_name} is %{NUMBER:aruba.sysmon.mem_usage:long}%
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Failed to read system memory usage for module %{GREEDYDATA:aruba.sysmon.module_name}"
@@ -8426,7 +8885,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8434,7 +8895,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Storage( utilization for)? %{DATA:aruba.sysmon.partition_name} (partition is at|partition high utilization alert. Utilization is at) %{NUMBER:aruba.sysmon.utilization:long}% in module %{GREEDYDATA:aruba.sysmon.module_name}
-                    let _ = cached_grok!("^Storage( utilization for)? %{DATA:aruba.sysmon.partition_name} (partition is at|partition high utilization alert. Utilization is at) %{NUMBER:aruba.sysmon.utilization:long}% in module %{GREEDYDATA:aruba.sysmon.module_name}").extract_into(&input, event)?;
+                    if !cached_grok!("^Storage( utilization for)? %{DATA:aruba.sysmon.partition_name} (partition is at|partition high utilization alert. Utilization is at) %{NUMBER:aruba.sysmon.utilization:long}% in module %{GREEDYDATA:aruba.sysmon.module_name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8446,7 +8909,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Excessive write to %{DATA:aruba.sysmon.partition_name} partition in module %{DATA:aruba.sysmon.module_name} observed. %{NUMBER:aruba.sysmon.mem_usage:long}GB written over past %{NUMBER:aruba.sysmon.unit_count:long} %{GREEDYDATA:aruba.sysmon.unit}
                     // Grok pattern: ^Excessive write to swap in module %{DATA:aruba.sysmon.module_name} observed. %{NUMBER:aruba.sysmon.mem_usage:long}GB written over past %{NUMBER:aruba.sysmon.unit_count:long} %{GREEDYDATA:aruba.sysmon.unit}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Excessive write to %{DATA:aruba.sysmon.partition_name} partition in module %{DATA:aruba.sysmon.module_name} observed. %{NUMBER:aruba.sysmon.mem_usage:long}GB written over past %{NUMBER:aruba.sysmon.unit_count:long} %{GREEDYDATA:aruba.sysmon.unit}"
@@ -8457,7 +8920,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8468,8 +8933,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: VRF with vrf name %{DATA:aruba.vrf.name}
-                    let _ = cached_grok!("VRF with vrf name %{DATA:aruba.vrf.name} ")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("VRF with vrf name %{DATA:aruba.vrf.name} ")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8603,7 +9071,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Failed to create layer 3 (IPv4|IPv6) (RX|TX) statistic for port:%{GREEDYDATA:aruba.port}
-                    let _ = cached_grok!("^Failed to create layer 3 (IPv4|IPv6) (RX|TX) statistic for port:%{GREEDYDATA:aruba.port}").extract_into(&input, event)?;
+                    if !cached_grok!("^Failed to create layer 3 (IPv4|IPv6) (RX|TX) statistic for port:%{GREEDYDATA:aruba.port}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8615,7 +9085,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: session %{DATA:aruba.session.id} (created|deleted|updated)
                     // Grok pattern: session %{GREEDYDATA:aruba.session.id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "session %{DATA:aruba.session.id} (created|deleted|updated)"
@@ -8624,7 +9094,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8786,7 +9258,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^VSX ISL port %{DATA:aruba.port} is (down|up|In-Sync)
                     // Grok pattern: ^VSX ISL port %{DATA:aruba.port} is Out-Of-Sync with the peer: %{GREEDYDATA:event.reason}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^VSX ISL port %{DATA:aruba.port} is (down|up|In-Sync)"),
                             cached_grok!(
@@ -8795,7 +9267,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8880,8 +9354,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^VSX %{DATA:aruba.instance.id} state local
-                    let _ = cached_grok!("^VSX %{DATA:aruba.instance.id} state local")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^VSX %{DATA:aruba.instance.id} state local")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8933,7 +9410,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^VSX primary ISL version %{DATA:aruba.vsx.primary_version} (dose|does) not match with VSX secondary ISL version %{DATA:aruba.vsx.secondary_version}. Performing a non-hitless image update.
-                    let _ = cached_grok!("^VSX primary ISL version %{DATA:aruba.vsx.primary_version} (dose|does) not match with VSX secondary ISL version %{DATA:aruba.vsx.secondary_version}. Performing a non-hitless image update.").extract_into(&input, event)?;
+                    if !cached_grok!("^VSX primary ISL version %{DATA:aruba.vsx.primary_version} (dose|does) not match with VSX secondary ISL version %{DATA:aruba.vsx.secondary_version}. Performing a non-hitless image update.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8942,7 +9421,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^VSX %{DATA:aruba.role} image update failed due to %{GREEDYDATA:event.reason}.
                     // Grok pattern: ^VSX %{DATA:aruba.role} state changed from %{DATA:aruba.vsx.prev_state} to %{GREEDYDATA:aruba.state}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^VSX %{DATA:aruba.role} image update failed due to %{GREEDYDATA:event.reason}."
@@ -8953,7 +9432,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8962,7 +9443,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^VSX %{DATA:aruba.role} state changed to %{DATA:aruba.state}-%{GREEDYDATA:aruba.vsx.sub_state}.
                     // Grok pattern: ^VSX device roles are inconsistent: local VSX device role %{DATA:aruba.vsx.local_vsx_role}, peer VSX device role %{GREEDYDATA:aruba.vsx.peer_vsx_role}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^VSX %{DATA:aruba.role} state changed to %{DATA:aruba.state}-%{GREEDYDATA:aruba.vsx.sub_state}."
@@ -8973,7 +9454,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8981,7 +9464,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Active-(gateway|forwarding) is enabled on %{DATA:aruba.port}. Cannot program Active-(forwarding|gateway)
-                    let _ = cached_grok!("^Active-(gateway|forwarding) is enabled on %{DATA:aruba.port}. Cannot program Active-(forwarding|gateway)").extract_into(&input, event)?;
+                    if !cached_grok!("^Active-(gateway|forwarding) is enabled on %{DATA:aruba.port}. Cannot program Active-(forwarding|gateway)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -8989,7 +9474,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Netdev %{DATA:aruba.interface.name} configured with (ipv4|ipv6) address %{IP:server.ip}
-                    let _ = cached_grok!("^Netdev %{DATA:aruba.interface.name} configured with (ipv4|ipv6) address %{IP:server.ip}").extract_into(&input, event)?;
+                    if !cached_grok!("^Netdev %{DATA:aruba.interface.name} configured with (ipv4|ipv6) address %{IP:server.ip}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9000,8 +9487,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: namespace %{GREEDYDATA:aruba.vrf.id}
-                    let _ = cached_grok!("namespace %{GREEDYDATA:aruba.vrf.id}")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("namespace %{GREEDYDATA:aruba.vrf.id}")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9037,7 +9527,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Internal fatal error at %{DATA:file.name}\\s?:\\s?%{NUMBER:aruba.system.line:long}
-                    let _ = cached_grok!("^Internal fatal error at %{DATA:file.name}\\s?:\\s?%{NUMBER:aruba.system.line:long}").extract_into(&input, event)?;
+                    if !cached_grok!("^Internal fatal error at %{DATA:file.name}\\s?:\\s?%{NUMBER:aruba.system.line:long}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9046,7 +9538,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Non-failsafe update needed for %{DATA:aruba.system.devicespec}. Please run the allow-unsafe-updates command
                     // Grok pattern: ^Do not interrupt non-failsafe update for %{GREEDYDATA:aruba.system.devicespec}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Non-failsafe update needed for %{DATA:aruba.system.devicespec}. Please run the allow-unsafe-updates command"
@@ -9057,7 +9549,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9065,7 +9559,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(Starting update|Update successful) for %{DATA:aruba.system.devicespec} from version %{DATA:service.version} to version %{GREEDYDATA:service.target.version}
-                    let _ = cached_grok!("^(Starting update|Update successful) for %{DATA:aruba.system.devicespec} from version %{DATA:service.version} to version %{GREEDYDATA:service.target.version}").extract_into(&input, event)?;
+                    if !cached_grok!("^(Starting update|Update successful) for %{DATA:aruba.system.devicespec} from version %{DATA:service.version} to version %{GREEDYDATA:service.target.version}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9076,7 +9572,7 @@ impl Transform for Default {
                     // Grok pattern: ^Update failed for %{GREEDYDATA:aruba.system.devicespec}
                     // Grok pattern: ^Deferred update for %{DATA:aruba.system.devicespec} will be performed after an automatic module reset
                     // Grok pattern: ^Insufficient redundant power is available to update %{GREEDYDATA:aruba.system.devicespec}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Update failed for %{GREEDYDATA:aruba.system.devicespec}"
@@ -9090,7 +9586,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9098,7 +9596,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Approximately %{NUMBER:aruba.system.time:long} minute\\(s\\) remaining to update %{NUMBER:aruba.system.numdevs:long} device\\(s\\) on %{GREEDYDATA:aruba.system.modspec}
-                    let _ = cached_grok!("^Approximately %{NUMBER:aruba.system.time:long} minute\\(s\\) remaining to update %{NUMBER:aruba.system.numdevs:long} device\\(s\\) on %{GREEDYDATA:aruba.system.modspec}").extract_into(&input, event)?;
+                    if !cached_grok!("^Approximately %{NUMBER:aruba.system.time:long} minute\\(s\\) remaining to update %{NUMBER:aruba.system.numdevs:long} device\\(s\\) on %{GREEDYDATA:aruba.system.modspec}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9149,10 +9649,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^BFD echo was (en|dis)abled on interface %{GREEDYDATA:aruba.interface.id}
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^BFD echo was (en|dis)abled on interface %{GREEDYDATA:aruba.interface.id}"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9163,7 +9666,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^BFD session is (up|down|administratively down|unidirectional). session_id=%{DATA:aruba.session.id}, vrf=%{DATA:aruba.vrf.name}, op_mode=%{DATA:aruba.bfd.op_mode}, src_port=%{DATA:aruba.port}, dest_ip=%{IP:destination.ip}, local_state=%{DATA:aruba.bfd.local_state}, local_diag=%{DATA:aruba.bfd.local_diag}, remote_state=%{DATA:aruba.bfd.remote_state}, remote_diag=%{GREEDYDATA:aruba.bfd.remote_diag}
-                    let _ = cached_grok!("^BFD session is (up|down|administratively down|unidirectional). session_id=%{DATA:aruba.session.id}, vrf=%{DATA:aruba.vrf.name}, op_mode=%{DATA:aruba.bfd.op_mode}, src_port=%{DATA:aruba.port}, dest_ip=%{IP:destination.ip}, local_state=%{DATA:aruba.bfd.local_state}, local_diag=%{DATA:aruba.bfd.local_diag}, remote_state=%{DATA:aruba.bfd.remote_state}, remote_diag=%{GREEDYDATA:aruba.bfd.remote_diag}").extract_into(&input, event)?;
+                    if !cached_grok!("^BFD session is (up|down|administratively down|unidirectional). session_id=%{DATA:aruba.session.id}, vrf=%{DATA:aruba.vrf.name}, op_mode=%{DATA:aruba.bfd.op_mode}, src_port=%{DATA:aruba.port}, dest_ip=%{IP:destination.ip}, local_state=%{DATA:aruba.bfd.local_state}, local_diag=%{DATA:aruba.bfd.local_diag}, remote_state=%{DATA:aruba.bfd.remote_state}, remote_diag=%{GREEDYDATA:aruba.bfd.remote_diag}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9171,9 +9676,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Port %{DATA:aruba.port} (can|can not) forward BFD traffic
-                    let _ =
-                        cached_grok!("^Port %{DATA:aruba.port} (can|can not) forward BFD traffic")
-                            .extract_into(&input, event)?;
+                    if !cached_grok!("^Port %{DATA:aruba.port} (can|can not) forward BFD traffic")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9241,7 +9748,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^IP Version mismatch for BFD. session_id=%{DATA:aruba.session.id}, vrf=%{DATA:aruba.vrf.name}, op_mode=%{DATA:aruba.bfd.op_mode}, src_port=%{DATA:aruba.port}, dest_ip=%{IP:destination.ip}, local_state=%{DATA:aruba.bfd.local_state}, local_diag=%{DATA:aruba.bfd.local_diag}, remote_state=%{DATA:aruba.bfd.remote_state}, remote_diag=%{GREEDYDATA:aruba.bfd.remote_diag}, from=%{DATA:aruba.bfd.from}, ip_version=%{DATA:aruba.bfd.ip_version}, Invalid IP address: %{IPORHOST:aruba.bfd.invalid_ip}
-                    let _ = cached_grok!("^IP Version mismatch for BFD. session_id=%{DATA:aruba.session.id}, vrf=%{DATA:aruba.vrf.name}, op_mode=%{DATA:aruba.bfd.op_mode}, src_port=%{DATA:aruba.port}, dest_ip=%{IP:destination.ip}, local_state=%{DATA:aruba.bfd.local_state}, local_diag=%{DATA:aruba.bfd.local_diag}, remote_state=%{DATA:aruba.bfd.remote_state}, remote_diag=%{GREEDYDATA:aruba.bfd.remote_diag}, from=%{DATA:aruba.bfd.from}, ip_version=%{DATA:aruba.bfd.ip_version}, Invalid IP address: %{IPORHOST:aruba.bfd.invalid_ip}").extract_into(&input, event)?;
+                    if !cached_grok!("^IP Version mismatch for BFD. session_id=%{DATA:aruba.session.id}, vrf=%{DATA:aruba.vrf.name}, op_mode=%{DATA:aruba.bfd.op_mode}, src_port=%{DATA:aruba.port}, dest_ip=%{IP:destination.ip}, local_state=%{DATA:aruba.bfd.local_state}, local_diag=%{DATA:aruba.bfd.local_diag}, remote_state=%{DATA:aruba.bfd.remote_state}, remote_diag=%{GREEDYDATA:aruba.bfd.remote_diag}, from=%{DATA:aruba.bfd.from}, ip_version=%{DATA:aruba.bfd.ip_version}, Invalid IP address: %{IPORHOST:aruba.bfd.invalid_ip}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9305,7 +9814,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^BFD session %{DATA:aruba.bfd.direction} interval override of %{NUMBER:aruba.bfd.requested_interval:long} ms is out of bounds for protocol %{DATA:aruba.bfd.from}, using %{NUMBER:aruba.bfd.applied_interval:long} ms instead
-                    let _ = cached_grok!("^BFD session %{DATA:aruba.bfd.direction} interval override of %{NUMBER:aruba.bfd.requested_interval:long} ms is out of bounds for protocol %{DATA:aruba.bfd.from}, using %{NUMBER:aruba.bfd.applied_interval:long} ms instead").extract_into(&input, event)?;
+                    if !cached_grok!("^BFD session %{DATA:aruba.bfd.direction} interval override of %{NUMBER:aruba.bfd.requested_interval:long} ms is out of bounds for protocol %{DATA:aruba.bfd.from}, using %{NUMBER:aruba.bfd.applied_interval:long} ms instead").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9322,7 +9833,7 @@ impl Transform for Default {
                     // Grok pattern: ^(?:IP-SLA (session:)?%{DATA:aruba.ip_sla.name}): %{GREEDYDATA:event.action}
                     // Grok pattern: ^(?:IP-SLA (session:)?%{DATA:aruba.ip_sla.name}) is incomplete to schedule
                     // Grok pattern: ^(?:IP-SLA (session:)?%{DATA:aruba.ip_sla.name}) interface %{DATA:aruba.interface.id} is( not)? ready and SLA is (disabled|enabled)
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^(?:IP-SLA (session:)?%{DATA:aruba.ip_sla.name}) state changed to( failed)? %{DATA:aruba.state} due to reason %{GREEDYDATA:event.reason}"
@@ -9342,7 +9853,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9436,9 +9949,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (error|update|persistence): %{GREEDYDATA:aruba.instance.id}
-                    let _ =
-                        cached_grok!("(error|update|persistence): %{GREEDYDATA:aruba.instance.id}")
-                            .extract_into(&input, event)?;
+                    if !cached_grok!("(error|update|persistence): %{GREEDYDATA:aruba.instance.id}")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9449,7 +9964,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(TA Profile|Leaf certificate) %{DATA:aruba.cm.cert_name} (created|deleted|imported|deleted)
-                    let _ = cached_grok!("^(TA Profile|Leaf certificate) %{DATA:aruba.cm.cert_name} (created|deleted|imported|deleted)").extract_into(&input, event)?;
+                    if !cached_grok!("^(TA Profile|Leaf certificate) %{DATA:aruba.cm.cert_name} (created|deleted|imported|deleted)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9457,7 +9974,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Certificate %{DATA:aruba.cm.cert_name} will expire within %{NUMBER:aruba.cm.days:long} days
-                    let _ = cached_grok!("^Certificate %{DATA:aruba.cm.cert_name} will expire within %{NUMBER:aruba.cm.days:long} days").extract_into(&input, event)?;
+                    if !cached_grok!("^Certificate %{DATA:aruba.cm.cert_name} will expire within %{NUMBER:aruba.cm.days:long} days").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9469,7 +9988,7 @@ impl Transform for Default {
                     // Grok pattern: ^Certificate %{DATA:aruba.cm.cert_name} has expired and can no longer be used
                     // Grok pattern: ^Certificate %{DATA:aruba.cm.cert_name} verified and accepted
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Certificate %{DATA:aruba.cm.cert_name} has not yet reached its start date"
@@ -9484,7 +10003,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9493,7 +10014,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Certificate %{DATA:aruba.cm.cert_name} rejected due to verification failure \\(%{GREEDYDATA:event.reason}\\)
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Certificate %{DATA:aruba.cm.cert_name} rejected due to verification failure \\(%{GREEDYDATA:event.reason}\\)"
@@ -9502,7 +10023,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9512,7 +10035,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(Certificate signing request|Self-signed certificate) %{DATA:aruba.cm.cert_name} created
                     // Grok pattern: ^Application association with the %{DATA:aruba.cm.cert_name} certificate is not permitted
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^(Certificate signing request|Self-signed certificate) %{DATA:aruba.cm.cert_name} created"
@@ -9523,7 +10046,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9532,7 +10057,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Certificate %{DATA:aruba.cm.cert_name} failed OCSP verification \\(%{DATA:aruba.status}\\), but was accepted because OCSP enforcement is set to optional.
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Certificate %{DATA:aruba.cm.cert_name} failed OCSP verification \\(%{DATA:aruba.status}\\), but was accepted because OCSP enforcement is set to optional."
@@ -9541,7 +10066,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9549,7 +10076,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(CA certificates successfully downloaded|Failed to download CA certificates) from EST server %{GREEDYDATA:aruba.cm.cert_name}
-                    let _ = cached_grok!("^(CA certificates successfully downloaded|Failed to download CA certificates) from EST server %{GREEDYDATA:aruba.cm.cert_name}").extract_into(&input, event)?;
+                    if !cached_grok!("^(CA certificates successfully downloaded|Failed to download CA certificates) from EST server %{GREEDYDATA:aruba.cm.cert_name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9561,7 +10090,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Certificate %{DATA:aruba.cm.cert_name} successfully (re)?enrolled by EST server %{GREEDYDATA:aruba.cm.est_name}
                     // Grok pattern: ^Failed to (re)?enroll certificate %{DATA:aruba.cm.cert_name} with EST server %{GREEDYDATA:aruba.cm.est_name}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Certificate %{DATA:aruba.cm.cert_name} successfully (re)?enrolled by EST server %{GREEDYDATA:aruba.cm.est_name}"
@@ -9572,7 +10101,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9580,7 +10111,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Certificate %{DATA:aruba.cm.cert_name} is (not set for signing purpose|invalid or malformed)
-                    let _ = cached_grok!("^Certificate %{DATA:aruba.cm.cert_name} is (not set for signing purpose|invalid or malformed)").extract_into(&input, event)?;
+                    if !cached_grok!("^Certificate %{DATA:aruba.cm.cert_name} is (not set for signing purpose|invalid or malformed)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9588,8 +10121,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Share %{DATA:aruba.storage.name} (dis)?mount failure
-                    let _ = cached_grok!("^Share %{DATA:aruba.storage.name} (dis)?mount failure")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^Share %{DATA:aruba.storage.name} (dis)?mount failure")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9597,8 +10133,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Share %{DATA:aruba.storage.name} is (dis)?mounted
-                    let _ = cached_grok!("^Share %{DATA:aruba.storage.name} is (dis)?mounted")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^Share %{DATA:aruba.storage.name} is (dis)?mounted")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9726,8 +10265,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: interface %{GREEDYDATA:aruba.interface.name}
-                    let _ = cached_grok!("interface %{GREEDYDATA:aruba.interface.name}")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("interface %{GREEDYDATA:aruba.interface.name}")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9983,7 +10525,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PoE usage (exceeded|is below) threshold( limit)? of %{GREEDYDATA:aruba.limit.threshold}
-                    let _ = cached_grok!("^PoE usage (exceeded|is below) threshold( limit)? of %{GREEDYDATA:aruba.limit.threshold}").extract_into(&input, event)?;
+                    if !cached_grok!("^PoE usage (exceeded|is below) threshold( limit)? of %{GREEDYDATA:aruba.limit.threshold}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -9991,8 +10535,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PoE controller %{DATA:aruba.poe.cntrl_name} got
-                    let _ = cached_grok!("^PoE controller %{DATA:aruba.poe.cntrl_name} got")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^PoE controller %{DATA:aruba.poe.cntrl_name} got")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10174,8 +10721,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: interface %{DATA:aruba.interface.name}
-                    let _ = cached_grok!("interface %{DATA:aruba.interface.name} ")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("interface %{DATA:aruba.interface.name} ")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10393,9 +10943,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Bluetooth (has been|adapter) %{GREEDYDATA:event.action}
-                    let _ =
-                        cached_grok!("^Bluetooth (has been|adapter) %{GREEDYDATA:event.action}")
-                            .extract_into(&input, event)?;
+                    if !cached_grok!("^Bluetooth (has been|adapter) %{GREEDYDATA:event.action}")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10403,9 +10955,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Bluetooth device %{DATA:event.action}: %{MAC:client.mac}
-                    let _ =
-                        cached_grok!("^Bluetooth device %{DATA:event.action}: %{MAC:client.mac}")
-                            .extract_into(&input, event)?;
+                    if !cached_grok!("^Bluetooth device %{DATA:event.action}: %{MAC:client.mac}")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10416,8 +10970,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^VNI id %{DATA:aruba.vxlan.vni_id}
-                    let _ = cached_grok!("^VNI id %{DATA:aruba.vxlan.vni_id} ")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^VNI id %{DATA:aruba.vxlan.vni_id} ")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10426,8 +10983,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Vtep-Peer %{DATA:aruba.vxlan.vtep_peer}
-                    let _ = cached_grok!("^Vtep-Peer %{DATA:aruba.vxlan.vtep_peer} ")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^Vtep-Peer %{DATA:aruba.vxlan.vtep_peer} ")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10436,7 +10996,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Access-Port with vlan %{DATA:network.vlan.id} and port %{DATA:aruba.port} has been created
                     // Grok pattern: ^Access-Port with port %{DATA:aruba.port} and vlan %{DATA:network.vlan.id} has been deleted
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Access-Port with vlan %{DATA:network.vlan.id} and port %{DATA:aruba.port} has been created"
@@ -10447,7 +11007,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10458,8 +11020,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Vtep-Peer %{DATA:aruba.vxlan.vtep} state is
-                    let _ = cached_grok!("^Vtep-Peer %{DATA:aruba.vxlan.vtep} state is")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^Vtep-Peer %{DATA:aruba.vxlan.vtep} state is")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10470,8 +11035,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Tunnel %{IP:client.ip} (added|deleted|delete|deferred)
-                    let _ = cached_grok!("^Tunnel %{IP:client.ip} (added|deleted|delete|deferred)")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^Tunnel %{IP:client.ip} (added|deleted|delete|deferred)")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10585,7 +11153,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Server %{IP:server.ip} packet received on untrusted port %{DATA:aruba.port} dropped.$
-                    let _ = cached_grok!("^Server %{IP:server.ip} packet received on untrusted port %{DATA:aruba.port} dropped.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Server %{IP:server.ip} packet received on untrusted port %{DATA:aruba.port} dropped.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10593,10 +11163,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Client packet destined to untrusted port %{DATA:aruba.port} dropped.$
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^Client packet destined to untrusted port %{DATA:aruba.port} dropped.$"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10604,7 +11177,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Packet received from unauthorized server %{IP:server.ip} on port %{DATA:aruba.port}.$
-                    let _ = cached_grok!("^Packet received from unauthorized server %{IP:server.ip} on port %{DATA:aruba.port}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Packet received from unauthorized server %{IP:server.ip} on port %{DATA:aruba.port}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10612,7 +11187,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Received untrusted relay info from client %{MAC:client.mac} on port %{DATA:aruba.port}.$
-                    let _ = cached_grok!("^Received untrusted relay info from client %{MAC:client.mac} on port %{DATA:aruba.port}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Received untrusted relay info from client %{MAC:client.mac} on port %{DATA:aruba.port}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10620,7 +11197,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Client address %{MAC:client.mac} not equal to source MAC %{MAC:source.mac} detected on port %{DATA:aruba.port}.$
-                    let _ = cached_grok!("^Client address %{MAC:client.mac} not equal to source MAC %{MAC:source.mac} detected on port %{DATA:aruba.port}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Client address %{MAC:client.mac} not equal to source MAC %{MAC:source.mac} detected on port %{DATA:aruba.port}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10628,7 +11207,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Binding for %{IP:client.ip}:%{MAC:client.mac} exists on port %{DATA:aruba.port}. Dropping release request received for the binding on %{DATA:aruba.dhcp.new_port}.$
-                    let _ = cached_grok!("^Binding for %{IP:client.ip}:%{MAC:client.mac} exists on port %{DATA:aruba.port}. Dropping release request received for the binding on %{DATA:aruba.dhcp.new_port}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Binding for %{IP:client.ip}:%{MAC:client.mac} exists on port %{DATA:aruba.port}. Dropping release request received for the binding on %{DATA:aruba.dhcp.new_port}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10636,7 +11217,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^The dynamic binding for %{MAC:client.mac} on port %{DATA:aruba.port} was replaced with a manual binding.$
-                    let _ = cached_grok!("^The dynamic binding for %{MAC:client.mac} on port %{DATA:aruba.port} was replaced with a manual binding.$").extract_into(&input, event)?;
+                    if !cached_grok!("^The dynamic binding for %{MAC:client.mac} on port %{DATA:aruba.port} was replaced with a manual binding.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10644,7 +11227,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Drop request from %{MAC:client.mac} for already assigned address %{IP:client.ip}.$
-                    let _ = cached_grok!("^Drop request from %{MAC:client.mac} for already assigned address %{IP:client.ip}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Drop request from %{MAC:client.mac} for already assigned address %{IP:client.ip}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10652,7 +11237,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Drop offer from %{IP:server.ip} of already assigned address %{IP:client.ip} to %{MAC:client.mac}.$
-                    let _ = cached_grok!("^Drop offer from %{IP:server.ip} of already assigned address %{IP:client.ip} to %{MAC:client.mac}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Drop offer from %{IP:server.ip} of already assigned address %{IP:client.ip} to %{MAC:client.mac}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10660,10 +11247,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Drop offer from %{IP:server.ip} of %{IP:client.ip} address is illegal.$
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^Drop offer from %{IP:server.ip} of %{IP:client.ip} address is illegal.$"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10671,7 +11261,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Maximum bindings limit reached on port %{DATA:aruba.port}, dropping request from %{MAC:client.mac}.$
-                    let _ = cached_grok!("^Maximum bindings limit reached on port %{DATA:aruba.port}, dropping request from %{MAC:client.mac}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Maximum bindings limit reached on port %{DATA:aruba.port}, dropping request from %{MAC:client.mac}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10679,10 +11271,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Dynamic binding entries on the port %{DATA:aruba.port} were cleared.$
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^Dynamic binding entries on the port %{DATA:aruba.port} were cleared.$"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10690,7 +11285,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Dynamic binding entries on the VLAN %{DATA:network.vlan.id} were cleared.$
-                    let _ = cached_grok!("^Dynamic binding entries on the VLAN %{DATA:network.vlan.id} were cleared.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Dynamic binding entries on the VLAN %{DATA:network.vlan.id} were cleared.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10698,7 +11295,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Dynamic binding entry with ip %{IP:client.ip} on the VLAN %{DATA:network.vlan.id} was cleared.$
-                    let _ = cached_grok!("^Dynamic binding entry with ip %{IP:client.ip} on the VLAN %{DATA:network.vlan.id} was cleared.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Dynamic binding entry with ip %{IP:client.ip} on the VLAN %{DATA:network.vlan.id} was cleared.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10706,7 +11305,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Failed to import dynamic ip binding entries from external storage. volume: %{DATA:aruba.dhcp.volume_name}, filename: %{DATA:file.name}.$
-                    let _ = cached_grok!("^Failed to import dynamic ip binding entries from external storage. volume: %{DATA:aruba.dhcp.volume_name}, filename: %{DATA:file.name}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Failed to import dynamic ip binding entries from external storage. volume: %{DATA:aruba.dhcp.volume_name}, filename: %{DATA:file.name}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10746,7 +11347,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Successfully imported %{DATA:aruba.dhcp.bindings_imported} dynamic ip binding entries from (external|local) storage.( volume: %{DATA:aruba.dhcp.volume_name}, filename: %{GREEDYDATA:file.name}.)?
-                    let _ = cached_grok!("^Successfully imported %{DATA:aruba.dhcp.bindings_imported} dynamic ip binding entries from (external|local) storage.( volume: %{DATA:aruba.dhcp.volume_name}, filename: %{GREEDYDATA:file.name}.)?").extract_into(&input, event)?;
+                    if !cached_grok!("^Successfully imported %{DATA:aruba.dhcp.bindings_imported} dynamic ip binding entries from (external|local) storage.( volume: %{DATA:aruba.dhcp.volume_name}, filename: %{GREEDYDATA:file.name}.)?").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10758,7 +11361,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Client %{MAC:client.mac} on vlan %{DATA:network.vlan.id}, port %{DATA:aruba.port} received %{IP:client.ip} from server %{IP:server.ip} with lease %{DATA:aruba.dhcp.lease}. Nameserver:%{IP:aruba.dhcp.nameserver_ip}, Gateway:%{IP:aruba.dhcp.gateway_ip}.
                     // Grok pattern: ^Client %{MAC:client.mac} on vlan %{DATA:network.vlan.id}, port %{DATA:aruba.port} (released|lease period expired for|with) %{IP:client.ip}.( Client attributes updated: Gateway %{IP:aruba.dhcp.gateway_ip}, Nameserver %{IP:aruba.dhcp.nameserver_ip}, Lease period %{GREEDYDATA:aruba.dhcp.lease}.)?
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Client %{MAC:client.mac} on vlan %{DATA:network.vlan.id}, port %{DATA:aruba.port} received %{IP:client.ip} from server %{IP:server.ip} with lease %{DATA:aruba.dhcp.lease}. Nameserver:%{IP:aruba.dhcp.nameserver_ip}, Gateway:%{IP:aruba.dhcp.gateway_ip}."
@@ -10769,7 +11372,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10778,7 +11383,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^DHCPv4-Snooping dropped DHCP %{DATA:aruba.dhcp.message_type} packet received on untrusted port %{DATA:aruba.port} from %{IP:server.ip}
                     // Grok pattern: ^DHCPv4-Snooping dropped DHCP %{DATA:aruba.dhcp.message_type} packet received from unauthorized server %{IP:server.ip} on trusted port %{GREEDYDATA:aruba.port}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^DHCPv4-Snooping dropped DHCP %{DATA:aruba.dhcp.message_type} packet received on untrusted port %{DATA:aruba.port} from %{IP:server.ip}"
@@ -10789,7 +11394,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10797,7 +11404,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Server %{IPV6:server.ip} packet received on untrusted port %{DATA:aruba.port} dropped.$
-                    let _ = cached_grok!("^Server %{IPV6:server.ip} packet received on untrusted port %{DATA:aruba.port} dropped.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Server %{IPV6:server.ip} packet received on untrusted port %{DATA:aruba.port} dropped.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10805,10 +11414,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Client packet destined to untrusted port %{DATA:aruba.port} dropped.$
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^Client packet destined to untrusted port %{DATA:aruba.port} dropped.$"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10816,7 +11428,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Packet received from unauthorized server %{IPV6:server.ip} on port %{DATA:aruba.port}.$
-                    let _ = cached_grok!("^Packet received from unauthorized server %{IPV6:server.ip} on port %{DATA:aruba.port}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Packet received from unauthorized server %{IPV6:server.ip} on port %{DATA:aruba.port}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10824,7 +11438,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Received untrusted relay info from client %{MAC:client.mac} on port %{DATA:aruba.port}.$
-                    let _ = cached_grok!("^Received untrusted relay info from client %{MAC:client.mac} on port %{DATA:aruba.port}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Received untrusted relay info from client %{MAC:client.mac} on port %{DATA:aruba.port}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10832,7 +11448,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Binding for %{IPV6:client.ip}:%{MAC:client.mac} exists on port %{DATA:aruba.port}. Dropping release request received for the binding on %{DATA:aruba.dhcp.new_port}.$
-                    let _ = cached_grok!("^Binding for %{IPV6:client.ip}:%{MAC:client.mac} exists on port %{DATA:aruba.port}. Dropping release request received for the binding on %{DATA:aruba.dhcp.new_port}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Binding for %{IPV6:client.ip}:%{MAC:client.mac} exists on port %{DATA:aruba.port}. Dropping release request received for the binding on %{DATA:aruba.dhcp.new_port}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10840,7 +11458,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^The dynamic binding for %{MAC:client.mac} on port %{DATA:aruba.port} was replaced with a manual binding.$
-                    let _ = cached_grok!("^The dynamic binding for %{MAC:client.mac} on port %{DATA:aruba.port} was replaced with a manual binding.$").extract_into(&input, event)?;
+                    if !cached_grok!("^The dynamic binding for %{MAC:client.mac} on port %{DATA:aruba.port} was replaced with a manual binding.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10848,7 +11468,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Drop request from %{MAC:client.mac} for already assigned address %{IPV6:client.ip}.$
-                    let _ = cached_grok!("^Drop request from %{MAC:client.mac} for already assigned address %{IPV6:client.ip}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Drop request from %{MAC:client.mac} for already assigned address %{IPV6:client.ip}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10856,7 +11478,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Maximum bindings limit reached on port %{DATA:aruba.port}, dropping request from %{MAC:client.mac}.$
-                    let _ = cached_grok!("^Maximum bindings limit reached on port %{DATA:aruba.port}, dropping request from %{MAC:client.mac}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Maximum bindings limit reached on port %{DATA:aruba.port}, dropping request from %{MAC:client.mac}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10864,10 +11488,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Dynamic binding entries on the port %{DATA:aruba.port} were cleared.$
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^Dynamic binding entries on the port %{DATA:aruba.port} were cleared.$"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10875,7 +11502,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Dynamic binding entries on the VLAN %{DATA:network.vlan.id} were cleared.$
-                    let _ = cached_grok!("^Dynamic binding entries on the VLAN %{DATA:network.vlan.id} were cleared.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Dynamic binding entries on the VLAN %{DATA:network.vlan.id} were cleared.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10883,7 +11512,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Dynamic binding entry with ip %{IP:client.ip} on the VLAN %{DATA:network.vlan.id} was cleared.$
-                    let _ = cached_grok!("^Dynamic binding entry with ip %{IP:client.ip} on the VLAN %{DATA:network.vlan.id} was cleared.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Dynamic binding entry with ip %{IP:client.ip} on the VLAN %{DATA:network.vlan.id} was cleared.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10891,7 +11522,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Failed to import dynamic ip binding entries from external storage. volume: %{DATA:aruba.dhcp.volume_name}, filename: %{DATA:file.name}.$
-                    let _ = cached_grok!("^Failed to import dynamic ip binding entries from external storage. volume: %{DATA:aruba.dhcp.volume_name}, filename: %{DATA:file.name}.$").extract_into(&input, event)?;
+                    if !cached_grok!("^Failed to import dynamic ip binding entries from external storage. volume: %{DATA:aruba.dhcp.volume_name}, filename: %{DATA:file.name}.$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10931,7 +11564,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Successfully imported %{DATA:aruba.dhcp.bindings_imported} dynamic ip binding entries from (external|local) storage.( volume: %{DATA:aruba.dhcp.volume_name}, filename: %{GREEDYDATA:file.name}.)?
-                    let _ = cached_grok!("^Successfully imported %{DATA:aruba.dhcp.bindings_imported} dynamic ip binding entries from (external|local) storage.( volume: %{DATA:aruba.dhcp.volume_name}, filename: %{GREEDYDATA:file.name}.)?").extract_into(&input, event)?;
+                    if !cached_grok!("^Successfully imported %{DATA:aruba.dhcp.bindings_imported} dynamic ip binding entries from (external|local) storage.( volume: %{DATA:aruba.dhcp.volume_name}, filename: %{GREEDYDATA:file.name}.)?").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10943,7 +11578,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Client %{MAC:client.mac} on vlan %{DATA:network.vlan.id}, port %{DATA:aruba.port} received %{IP:client.ip} from server %{IP:server.ip} with lease %{DATA:aruba.dhcp.lease}. Nameserver:%{IP:aruba.dhcp.nameserver_ip}.
                     // Grok pattern: ^Client %{MAC:client.mac} on vlan %{DATA:network.vlan.id}, port %{DATA:aruba.port} (released|lease period expired for|with) %{IP:client.ip}.( Client attributes updated: Gateway %{IP:aruba.dhcp.gateway_ip}, Nameserver %{IP:aruba.dhcp.nameserver_ip}, Lease period %{GREEDYDATA:aruba.dhcp.lease}.)?
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Client %{MAC:client.mac} on vlan %{DATA:network.vlan.id}, port %{DATA:aruba.port} received %{IP:client.ip} from server %{IP:server.ip} with lease %{DATA:aruba.dhcp.lease}. Nameserver:%{IP:aruba.dhcp.nameserver_ip}."
@@ -10954,7 +11589,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10963,7 +11600,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^DHCPv6-Snooping dropped DHCP %{DATA:aruba.dhcp.message_type} packet received on untrusted port %{DATA:aruba.port} from %{IP:server.ip}
                     // Grok pattern: ^DHCPv6-Snooping dropped DHCP %{DATA:aruba.dhcp.message_type} packet received from unauthorized server %{IP:server.ip} on trusted port %{GREEDYDATA:aruba.port}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^DHCPv6-Snooping dropped DHCP %{DATA:aruba.dhcp.message_type} packet received on untrusted port %{DATA:aruba.port} from %{IP:server.ip}"
@@ -10974,7 +11611,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -10987,7 +11626,7 @@ impl Transform for Default {
                     // Grok pattern: ^Dynamic binding entries on the (port %{DATA:aruba.port}|VLAN %{DATA:network.vlan.id}) were cleared.
                     // Grok pattern: ^Dynamic binding entry with ip %{IP:server.ip} on the VLAN %{DATA:network.vlan.id} was cleared.
                     // Grok pattern: ^ND packet of type=%{DATA:aruba.nd.type} received on port:%{DATA:aruba.port} vlan:%{DATA:network.vlan.id} with src_mac:%{MAC:source.mac} is %{DATA:aruba.status}. count=%{NUMBER:aruba.count:long}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Dynamic binding entries on the (port %{DATA:aruba.port}|VLAN %{DATA:network.vlan.id}) were cleared."
@@ -11001,7 +11640,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11055,7 +11696,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Misconfiguration detected on ring %{DATA:aruba.erps.ring_id} with control VLAN %{DATA:network.vlan.id}. Another node in the ring with mac %{MAC:client.mac} is also operating as an RPL owner
-                    let _ = cached_grok!("^Misconfiguration detected on ring %{DATA:aruba.erps.ring_id} with control VLAN %{DATA:network.vlan.id}. Another node in the ring with mac %{MAC:client.mac} is also operating as an RPL owner").extract_into(&input, event)?;
+                    if !cached_grok!("^Misconfiguration detected on ring %{DATA:aruba.erps.ring_id} with control VLAN %{DATA:network.vlan.id}. Another node in the ring with mac %{MAC:client.mac} is also operating as an RPL owner").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11510,7 +12153,7 @@ impl Transform for Default {
                     // Grok pattern: ^Start %{DATA:aruba.msdp.tcp_entity} role for MSDP peer %{IP:client.ip}
                     // Grok pattern: ^Finish packet was received on MSDP Peer %{IP:client.ip}
                     // Grok pattern: ^Failed to add SA Cache entry: S=%{IP:source.ip}, G=%{IP:aruba.msdp.grp_ip}, R=%{IP:aruba.msdp.rp_ip} for Peer %{IP:client.ip} as MSDP SA Cache Limit is reached
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Router MSDP is %{DATA:aruba.status} on VRF %{GREEDYDATA:aruba.vrf.name}"
@@ -11539,7 +12182,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11762,7 +12407,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^ZTP service status changed to failed because %{DATA:file.name} file download encountered unexpected error.( Reason: %{GREEDYDATA:event.reasonreason})?
                     // Grok pattern: ^ZTP service status changed to failed because %{DATA:file.name} file did not get downloaded.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^ZTP service status changed to failed because %{DATA:file.name} file download encountered unexpected error.( Reason: %{GREEDYDATA:event.reasonreason})?"
@@ -11773,7 +12418,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11817,7 +12464,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Physical Port %{DATA:aruba.port} is (created|deleted) (in|from) Hardware VTEP DB
-                    let _ = cached_grok!("^Physical Port %{DATA:aruba.port} is (created|deleted) (in|from) Hardware VTEP DB").extract_into(&input, event)?;
+                    if !cached_grok!("^Physical Port %{DATA:aruba.port} is (created|deleted) (in|from) Hardware VTEP DB").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11825,7 +12474,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Local MAC %{MAC:server.mac} learnt on VLAN %{DATA:network.vlan.id} is (updated in|removed from) the Hardware VTEP DB
-                    let _ = cached_grok!("^Local MAC %{MAC:server.mac} learnt on VLAN %{DATA:network.vlan.id} is (updated in|removed from) the Hardware VTEP DB").extract_into(&input, event)?;
+                    if !cached_grok!("^Local MAC %{MAC:server.mac} learnt on VLAN %{DATA:network.vlan.id} is (updated in|removed from) the Hardware VTEP DB").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11833,7 +12484,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^VXLAN IP %{IP:server.ip} is (updated in the|removed from Switch and) Hardware VTEP DB
-                    let _ = cached_grok!("^VXLAN IP %{IP:server.ip} is (updated in the|removed from Switch and) Hardware VTEP DB").extract_into(&input, event)?;
+                    if !cached_grok!("^VXLAN IP %{IP:server.ip} is (updated in the|removed from Switch and) Hardware VTEP DB").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11841,7 +12494,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Unicast Remote MAC %{MAC:destination.mac} learnt on VNI %{DATA:network.vlan.id} is (added to|removed from) the switch
-                    let _ = cached_grok!("^Unicast Remote MAC %{MAC:destination.mac} learnt on VNI %{DATA:network.vlan.id} is (added to|removed from) the switch").extract_into(&input, event)?;
+                    if !cached_grok!("^Unicast Remote MAC %{MAC:destination.mac} learnt on VNI %{DATA:network.vlan.id} is (added to|removed from) the switch").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11849,9 +12504,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Tunnel %{IP:server.ip} is removed from Hardware VTEP DB
-                    let _ =
-                        cached_grok!("^Tunnel %{IP:server.ip} is removed from Hardware VTEP DB")
-                            .extract_into(&input, event)?;
+                    if !cached_grok!("^Tunnel %{IP:server.ip} is removed from Hardware VTEP DB")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11861,7 +12518,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^CDP neighbor %{MAC:source.mac} is (added|updated|deleted) on %{GREEDYDATA:aruba.interface.name}
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^CDP neighbor %{MAC:source.mac} is (added|updated|deleted) on %{GREEDYDATA:aruba.interface.name}"
@@ -11870,7 +12527,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11880,7 +12539,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Connection to SSH server %{IP:server.ip} on VRF %{DATA:aruba.vrf.name} is (established|successfully closed) for user %{DATA:user.name} over port %{GREEDYDATA:aruba.port}
                     // Grok pattern: ^Connection to SSH server %{IP:server.ip} on VRF %{DATA:aruba.vrf.name} over port %{DATA:aruba.port} is denied
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Connection to SSH server %{IP:server.ip} on VRF %{DATA:aruba.vrf.name} is (established|successfully closed) for user %{DATA:user.name} over port %{GREEDYDATA:aruba.port}"
@@ -11891,7 +12550,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11903,7 +12564,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Failed to report storage %{DATA:aruba.storage.name} details for module %{NUMBER:aruba.slot:long}. Error: %{GREEDYDATA:event.reason}
                     // Grok pattern: ^Storage %{DATA:aruba.storage.name} (health alert. E|e)ndurance utilization at %{NUMBER:aruba.storage.usage:long}\\% in module %{NUMBER:aruba.slot:long}(. Failure is imminent. Please backup data)?
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Failed to report storage %{DATA:aruba.storage.name} details for module %{NUMBER:aruba.slot:long}. Error: %{GREEDYDATA:event.reason}"
@@ -11914,7 +12575,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11922,10 +12585,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^DCBX is (dis|en)abled on interface %{DATA:aruba.interface.name}$
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^DCBX is (dis|en)abled on interface %{DATA:aruba.interface.name}$"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11933,10 +12599,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^DCBX status (in)?active on interface %{DATA:aruba.interface.name}$
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^DCBX status (in)?active on interface %{DATA:aruba.interface.name}$"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11944,10 +12613,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PFC TLV status (in)?active on interface %{DATA:aruba.interface.name}$
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^PFC TLV status (in)?active on interface %{DATA:aruba.interface.name}$"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11955,7 +12627,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PFC TLV status priority mismatch on interface %{DATA:aruba.interface.name}$
-                    let _ = cached_grok!("^PFC TLV status priority mismatch on interface %{DATA:aruba.interface.name}$").extract_into(&input, event)?;
+                    if !cached_grok!("^PFC TLV status priority mismatch on interface %{DATA:aruba.interface.name}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11967,7 +12641,7 @@ impl Transform for Default {
                     // Grok pattern: to create the role - %{DATA:aruba.role}, maximum limit reached
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
                     // Grok pattern: ^A local user role with name %{DATA:aruba.role} already exists and conflicts with the newly inserted ClearPass role
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Failed to apply ClearPass role - %{GREEDYDATA:event.reason}"
@@ -11982,7 +12656,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -11992,7 +12668,7 @@ impl Transform for Default {
                     // Grok pattern: ^Client limit exceeded on port %{DATA:aruba.interface.name}, caused by an unauthorized client %{MAC:client.mac}
                     // Grok pattern: ^Port security sticky client move violation triggered on port %{DATA:aruba.port} for client with MAC address %{MAC:client.mac}
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Client limit exceeded on port %{DATA:aruba.interface.name}, caused by an unauthorized client %{MAC:client.mac}"
@@ -12004,7 +12680,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12012,8 +12690,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^EVPN EVI: %{DATA:network.vlan.id} (created|deleted)
-                    let _ = cached_grok!("^EVPN EVI: %{DATA:network.vlan.id} (created|deleted)")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^EVPN EVI: %{DATA:network.vlan.id} (created|deleted)")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12083,7 +12764,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^EVPN RT: %{DATA:aruba.evpn.rt} (created|deleted|updated) for EVI: %{DATA:network.vlan.id}$
-                    let _ = cached_grok!("^EVPN RT: %{DATA:aruba.evpn.rt} (created|deleted|updated) for EVI: %{DATA:network.vlan.id}$").extract_into(&input, event)?;
+                    if !cached_grok!("^EVPN RT: %{DATA:aruba.evpn.rt} (created|deleted|updated) for EVI: %{DATA:network.vlan.id}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12091,7 +12774,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^VNI: %{DATA:aruba.evpn.vni} is (added|deleted) for EVPN Peer VTEP: %{DATA:aruba.evpn.vtep_ip}$
-                    let _ = cached_grok!("^VNI: %{DATA:aruba.evpn.vni} is (added|deleted) for EVPN Peer VTEP: %{DATA:aruba.evpn.vtep_ip}$").extract_into(&input, event)?;
+                    if !cached_grok!("^VNI: %{DATA:aruba.evpn.vni} is (added|deleted) for EVPN Peer VTEP: %{DATA:aruba.evpn.vtep_ip}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12099,7 +12784,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^EVPN static MAC conflict %{DATA:event.action}, MAC: %{MAC:client.mac}, IP address: %{IP:client.ip}, VTEP: %{IP:aruba.evpn.vtep_ip}$
-                    let _ = cached_grok!("^EVPN static MAC conflict %{DATA:event.action}, MAC: %{MAC:client.mac}, IP address: %{IP:client.ip}, VTEP: %{IP:aruba.evpn.vtep_ip}$").extract_into(&input, event)?;
+                    if !cached_grok!("^EVPN static MAC conflict %{DATA:event.action}, MAC: %{MAC:client.mac}, IP address: %{IP:client.ip}, VTEP: %{IP:aruba.evpn.vtep_ip}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12107,10 +12794,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^EVPN static MAC conflict %{DATA:event.action}, MAC: %{MAC:client.mac}$
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^EVPN static MAC conflict %{DATA:event.action}, MAC: %{MAC:client.mac}$"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12118,7 +12808,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^EVPN duplicate MAC dampening %{DATA:event.action}, MAC: %{MAC:client.mac}$
-                    let _ = cached_grok!("^EVPN duplicate MAC dampening %{DATA:event.action}, MAC: %{MAC:client.mac}$").extract_into(&input, event)?;
+                    if !cached_grok!("^EVPN duplicate MAC dampening %{DATA:event.action}, MAC: %{MAC:client.mac}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12126,8 +12818,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^EVPN VRF: %{DATA:aruba.vrf.id} (created|deleted)
-                    let _ = cached_grok!("^EVPN VRF: %{DATA:aruba.vrf.id} (created|deleted)")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^EVPN VRF: %{DATA:aruba.vrf.id} (created|deleted)")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12171,7 +12866,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^EVPN RT: %{DATA:aruba.evpn.rt} (created|deleted|updated) for VRF: %{DATA:aruba.vrf.id}$
-                    let _ = cached_grok!("^EVPN RT: %{DATA:aruba.evpn.rt} (created|deleted|updated) for VRF: %{DATA:aruba.vrf.id}$").extract_into(&input, event)?;
+                    if !cached_grok!("^EVPN RT: %{DATA:aruba.evpn.rt} (created|deleted|updated) for VRF: %{DATA:aruba.vrf.id}$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12182,7 +12879,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^EVPN VLAN Aware Bundle : %{DATA:package.name} (created|deleted|disable|enabled)
-                    let _ = cached_grok!("^EVPN VLAN Aware Bundle : %{DATA:package.name} (created|deleted|disable|enabled)").extract_into(&input, event)?;
+                    if !cached_grok!("^EVPN VLAN Aware Bundle : %{DATA:package.name} (created|deleted|disable|enabled)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12332,7 +13031,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^EVPN Ethernet Segment with ESI %{DATA:aruba.evpn.esi} is (created|deleted)
-                    let _ = cached_grok!("^EVPN Ethernet Segment with ESI %{DATA:aruba.evpn.esi} is (created|deleted)").extract_into(&input, event)?;
+                    if !cached_grok!("^EVPN Ethernet Segment with ESI %{DATA:aruba.evpn.esi} is (created|deleted)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12350,7 +13051,7 @@ impl Transform for Default {
                     // Grok pattern: ^Tunnel (TTL Modified|Modification Failed) - (?:Name \\(%{DATA:aruba.tunnel.name}\\)) (?:Type \\(%{DATA:aruba.tunnel.type}\\)) (?:VRF \\(%{DATA:aruba.vrf.id}\\)) (?:Local IP \\(%{IP:source.ip}\\)) (?:Remote IP \\(%{IP:destination.ip}\\)) TTL \\(%{DATA:aruba.tunnel.ttl}\\)
                     // Grok pattern: ^Tunnel MTU (Modified|Modification Failed) - (?:Name \\(%{DATA:aruba.tunnel.name}\\)) (?:Type \\(%{DATA:aruba.tunnel.type}\\)) (?:VRF \\(%{DATA:aruba.vrf.id}\\)) (?:Local IP \\(%{IP:source.ip}\\)) (?:Remote IP \\(%{IP:destination.ip}\\)) MTU \\(%{DATA:aruba.mtu}\\)
                     // Grok pattern: ^Tunnel Nexthop (Add Failed|Added|Modify Failed|Modified|Delete Failed|Deleted) - (?:Name \\(%{DATA:aruba.tunnel.name}\\)) (?:Type \\(%{DATA:aruba.tunnel.type}\\)) (?:VRF \\(%{DATA:aruba.vrf.id}\\)) (?:Local IP \\(%{IP:source.ip}\\)) (?:Remote IP \\(%{IP:destination.ip}\\))
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Tunnel (Creation Failed|Created|Deletion Failed|Deleted) - (?:Name \\(%{DATA:aruba.tunnel.name}\\)) (?:Type \\(%{DATA:aruba.tunnel.type}\\)) (?:VRF \\(%{DATA:aruba.vrf.id}\\)) (?:Local IP \\(%{IP:source.ip}\\)) (?:Remote IP \\(%{IP:destination.ip}\\))"
@@ -12370,7 +13071,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12421,7 +13124,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Tunnel Node Server (Heartbeat|SAC bootstrapping) has (failed for SAC|reinitialized to) \\(%{IP:server.ip}\\)
-                    let _ = cached_grok!("^Tunnel Node Server (Heartbeat|SAC bootstrapping) has (failed for SAC|reinitialized to) \\(%{IP:server.ip}\\)").extract_into(&input, event)?;
+                    if !cached_grok!("^Tunnel Node Server (Heartbeat|SAC bootstrapping) has (failed for SAC|reinitialized to) \\(%{IP:server.ip}\\)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12430,7 +13135,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Tunnel Node Server keepalive has failed for UAC \\(%{IP:client.ip}\\)
                     // Grok pattern: ^Tunnel Node Server UAC node is down \\(%{IP:client.ip}\\)
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Tunnel Node Server keepalive has failed for UAC \\(%{IP:client.ip}\\)"
@@ -12441,7 +13146,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12453,7 +13160,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Gre Key \\(%{DATA:aruba.tunnel.gre_key}\\) VRF \\(%{DATA:aruba.vrf.id}\\) Source IP \\(%{IP:source.ip}\\) Destination IP \\(%{IP:destination.ip}\\)
                     // Grok pattern: Tunnel Id \\(%{DATA:aruba.instance.id}\\) Gre Key \\(%{DATA:aruba.tunnel.gre_key}\\) Source IP \\(%{IP:source.ip}\\) Destination IP \\(%{IP:destination.ip}\\)
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "Gre Key \\(%{DATA:aruba.tunnel.gre_key}\\) VRF \\(%{DATA:aruba.vrf.id}\\) Source IP \\(%{IP:source.ip}\\) Destination IP \\(%{IP:destination.ip}\\)"
@@ -12464,7 +13171,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12472,8 +13181,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Tunnel Id \\(%{DATA:aruba.instance.id}\\)
-                    let _ = cached_grok!("Tunnel Id \\(%{DATA:aruba.instance.id}\\)")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("Tunnel Id \\(%{DATA:aruba.instance.id}\\)")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12485,7 +13197,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Client \\(%{MAC:client.mac}\\) (is bound|binding|unbinding) to tunnel id \\(%{DATA:aruba.instance.id}\\)
                     // Grok pattern: ^Client \\(%{MAC:client.mac}\\) is removed from tunnel
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Client \\(%{MAC:client.mac}\\) (is bound|binding|unbinding) to tunnel id \\(%{DATA:aruba.instance.id}\\)"
@@ -12494,7 +13206,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12503,7 +13217,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Client \\(%{MAC:client.mac}\\) is getting modified to bind to tunnel id \\(%{DATA:aruba.instance.id}\\)
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Client \\(%{MAC:client.mac}\\) is getting modified to bind to tunnel id \\(%{DATA:aruba.instance.id}\\)"
@@ -12512,7 +13226,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12521,7 +13237,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Modification of Client \\(%{MAC:client.mac}\\) binded to \\(%{DATA:aruba.instance.id}\\) has failed
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Modification of Client \\(%{MAC:client.mac}\\) binded to \\(%{DATA:aruba.instance.id}\\) has failed"
@@ -12530,7 +13246,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12538,7 +13256,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^NFD port \\(%{DATA:aruba.tunnel.nfd_id}\\) (is created|creation) for client \\(%{MAC:client.mac}\\) vlan id \\(%{DATA:network.vlan.id}\\) port \\(%{DATA:aruba.port}\\) ecmp id \\(%{DATA:aruba.tunnel.ecmp_id}\\)
-                    let _ = cached_grok!("^NFD port \\(%{DATA:aruba.tunnel.nfd_id}\\) (is created|creation) for client \\(%{MAC:client.mac}\\) vlan id \\(%{DATA:network.vlan.id}\\) port \\(%{DATA:aruba.port}\\) ecmp id \\(%{DATA:aruba.tunnel.ecmp_id}\\)").extract_into(&input, event)?;
+                    if !cached_grok!("^NFD port \\(%{DATA:aruba.tunnel.nfd_id}\\) (is created|creation) for client \\(%{MAC:client.mac}\\) vlan id \\(%{DATA:network.vlan.id}\\) port \\(%{DATA:aruba.port}\\) ecmp id \\(%{DATA:aruba.tunnel.ecmp_id}\\)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12546,7 +13266,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^NFD port \\(%{DATA:aruba.tunnel.nfd_id}\\) (is deleted|deletion) for ecmp id\\s?\\(%{DATA:aruba.tunnel.ecmp_id}\\)
-                    let _ = cached_grok!("^NFD port \\(%{DATA:aruba.tunnel.nfd_id}\\) (is deleted|deletion) for ecmp id\\s?\\(%{DATA:aruba.tunnel.ecmp_id}\\)").extract_into(&input, event)?;
+                    if !cached_grok!("^NFD port \\(%{DATA:aruba.tunnel.nfd_id}\\) (is deleted|deletion) for ecmp id\\s?\\(%{DATA:aruba.tunnel.ecmp_id}\\)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12558,7 +13280,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^ECMP group is (created|deleted) for ecmp id \\(%{DATA:aruba.tunnel.ecmp_id}\\)
                     // Grok pattern: ^ECMP group (creation|deletion) for ecmp id\\s?\\(%{DATA:aruba.tunnel.ecmp_id}\\) has failed
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^ECMP group is (created|deleted) for ecmp id \\(%{DATA:aruba.tunnel.ecmp_id}\\)"
@@ -12569,7 +13291,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12577,7 +13301,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Gre Key \\(%{DATA:aruba.tunnel.gre_key}\\) VLAN \\(%{DATA:network.vlan.id}\\) VRF \\(%{DATA:aruba.vrf.id}\\) Source IP \\(%{IP:source.ip}\\) Destination IP \\(%{IP:destination.ip}\\)
-                    let _ = cached_grok!("Gre Key \\(%{DATA:aruba.tunnel.gre_key}\\) VLAN \\(%{DATA:network.vlan.id}\\) VRF \\(%{DATA:aruba.vrf.id}\\) Source IP \\(%{IP:source.ip}\\) Destination IP \\(%{IP:destination.ip}\\)").extract_into(&input, event)?;
+                    if !cached_grok!("Gre Key \\(%{DATA:aruba.tunnel.gre_key}\\) VLAN \\(%{DATA:network.vlan.id}\\) VRF \\(%{DATA:aruba.vrf.id}\\) Source IP \\(%{IP:source.ip}\\) Destination IP \\(%{IP:destination.ip}\\)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12585,8 +13311,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Tunnel Id \\(%{DATA:aruba.instance.id}\\)
-                    let _ = cached_grok!("Tunnel Id \\(%{DATA:aruba.instance.id}\\)")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("Tunnel Id \\(%{DATA:aruba.instance.id}\\)")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12594,7 +13323,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: Tunnel Id \\(%{DATA:aruba.instance.id}\\) Gre Key \\(%{DATA:aruba.tunnel.gre_key}\\) Source IP \\(%{IP:source.ip}\\) Destination IP \\(%{IP:destination.ip}\\)
-                    let _ = cached_grok!("Tunnel Id \\(%{DATA:aruba.instance.id}\\) Gre Key \\(%{DATA:aruba.tunnel.gre_key}\\) Source IP \\(%{IP:source.ip}\\) Destination IP \\(%{IP:destination.ip}\\)").extract_into(&input, event)?;
+                    if !cached_grok!("Tunnel Id \\(%{DATA:aruba.instance.id}\\) Gre Key \\(%{DATA:aruba.tunnel.gre_key}\\) Source IP \\(%{IP:source.ip}\\) Destination IP \\(%{IP:destination.ip}\\)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12602,7 +13333,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User bootstrap is failed for client \\(%{MAC:client.mac}\\) on port \\(%{DATA:aruba.port}\\) due to %{GREEDYDATA:event.reason}.
-                    let _ = cached_grok!("^User bootstrap is failed for client \\(%{MAC:client.mac}\\) on port \\(%{DATA:aruba.port}\\) due to %{GREEDYDATA:event.reason}.").extract_into(&input, event)?;
+                    if !cached_grok!("^User bootstrap is failed for client \\(%{MAC:client.mac}\\) on port \\(%{DATA:aruba.port}\\) due to %{GREEDYDATA:event.reason}.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12611,7 +13344,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Operational state of %{DATA:aruba.tunnel.zone} zone is UP.
                     // Grok pattern: ^Operational state of %{DATA:aruba.tunnel.zone} zone is DOWN due to %{GREEDYDATA:event.reason}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Operational state of %{DATA:aruba.tunnel.zone} zone is UP."
@@ -12622,7 +13355,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12705,7 +13440,7 @@ impl Transform for Default {
                     // Grok pattern: ^IP_SOURCE_LOCKDOWN resource utilization has (reached|reduced)( below)? 80 percent of the supported limit of %{DATA:aruba.limit.threshold} on the system
                     // Grok pattern: ^IP_SOURCE_LOCKDOWN resource utilization has exceeded maximum supported limit of %{DATA:aruba.limit.threshold} on the system. IP source-lockdown functionality will not work for new entries
                     // Grok pattern: ^(IPV4_SOURCE_LOCKDOWN|IPV6_SOURCE_LOCKDOWN) is (enabled|disabled) on interface %{GREEDYDATA:aruba.interface.id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^IP_SOURCE_LOCKDOWN resource utilization has (reached|reduced)( below)? 80 percent of the supported limit of %{DATA:aruba.limit.threshold} on the system"
@@ -12719,7 +13454,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12733,7 +13470,7 @@ impl Transform for Default {
                     // Grok pattern: ^Resetting member %{GREEDYDATA:aruba.vsf.member_id}
                     // Grok pattern: ^Member %{DATA:aruba.vsf.member_id} conflict detected on link %{GREEDYDATA:aruba.vsf.link}
                     // Grok pattern: ^Member %{DATA:aruba.vsf.member_id} removed
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^(Member|Standby|Conductor) %{DATA:aruba.vsf.member_id} boot complete"
@@ -12746,7 +13483,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12780,7 +13519,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Maximum number of switches in the stack has reached. Cannot add MAC %{MAC:aruba.vsf.mac_addr1} product type %{GREEDYDATA:aruba.vsf.product_type}
-                    let _ = cached_grok!("^Maximum number of switches in the stack has reached. Cannot add MAC %{MAC:aruba.vsf.mac_addr1} product type %{GREEDYDATA:aruba.vsf.product_type}").extract_into(&input, event)?;
+                    if !cached_grok!("^Maximum number of switches in the stack has reached. Cannot add MAC %{MAC:aruba.vsf.mac_addr1} product type %{GREEDYDATA:aruba.vsf.product_type}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12789,7 +13530,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Stack state is no-split with conductor id %{GREEDYDATA:aruba.vsf.member_id}
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Stack state is no-split with conductor id %{GREEDYDATA:aruba.vsf.member_id}"
@@ -12798,7 +13539,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12808,7 +13551,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Lost member %{DATA:aruba.vsf.member_id} with %{GREEDYDATA:event.reason}
                     // Grok pattern: ^Member %{DATA:aruba.vsf.member_id} elected as (conductor|standby) reason-%{GREEDYDATA:event.reason}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Lost member %{DATA:aruba.vsf.member_id} with %{GREEDYDATA:event.reason}"
@@ -12819,7 +13562,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12830,7 +13575,7 @@ impl Transform for Default {
                     // Grok pattern: ^Reboot of MAC %{MAC:aruba.vsf.mac_addr1} status-%{GREEDYDATA:aruba.status}
                     // Grok pattern: ^Switch with MAC %{MAC:aruba.vsf.mac_addr1} cannot join stack due to incorrect product id %{GREEDYDATA:aruba.vsf.product_id}
                     // Grok pattern: ^Found Unsupported switch with MAC %{MAC:aruba.vsf.mac_addr1} and Product type %{DATA:aruba.vsf.product_type}, connected to switch with MAC %{MAC:aruba.vsf.mac_addr2} on stack port %{GREEDYDATA:aruba.port}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Reboot of MAC %{MAC:aruba.vsf.mac_addr1} status-%{GREEDYDATA:aruba.status}"
@@ -12844,7 +13589,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12854,7 +13601,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: for member %{GREEDYDATA:aruba.vsf.member_id}
                     // Grok pattern: ^Attempt to connect member %{DATA:aruba.vsf.member_id} from a different stack
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("for member %{GREEDYDATA:aruba.vsf.member_id}"),
                             cached_grok!(
@@ -12863,7 +13610,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12871,8 +13620,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^VSF link %{DATA:aruba.vsf.link}
-                    let _ = cached_grok!("^VSF link %{DATA:aruba.vsf.link} ")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^VSF link %{DATA:aruba.vsf.link} ")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12880,7 +13632,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Invalid MAC %{MAC:aruba.vsf.mac_addr1} detected on link %{DATA:aruba.vsf.link} with peer MAC %{MAC:aruba.vsf.mac_addr2}
-                    let _ = cached_grok!("^Invalid MAC %{MAC:aruba.vsf.mac_addr1} detected on link %{DATA:aruba.vsf.link} with peer MAC %{MAC:aruba.vsf.mac_addr2}").extract_into(&input, event)?;
+                    if !cached_grok!("^Invalid MAC %{MAC:aruba.vsf.mac_addr1} detected on link %{DATA:aruba.vsf.link} with peer MAC %{MAC:aruba.vsf.mac_addr2}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12891,7 +13645,7 @@ impl Transform for Default {
                     // Grok pattern: ^Fragment with conductor %{DATA:aruba.vsf.member_id} is (Active|Inactive)
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
                     // Grok pattern: ^Member %{DATA:aruba.vsf.member_id} is configured as Secondary
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Fragment with conductor %{DATA:aruba.vsf.member_id} is (Active|Inactive)"
@@ -12903,7 +13657,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12911,7 +13667,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Attempt to connect a member with MAC %{MAC:aruba.vsf.mac_addr1} and product type %{DATA:aruba.vsf.product_id} having different airflows
-                    let _ = cached_grok!("^Attempt to connect a member with MAC %{MAC:aruba.vsf.mac_addr1} and product type %{DATA:aruba.vsf.product_id} having different airflows").extract_into(&input, event)?;
+                    if !cached_grok!("^Attempt to connect a member with MAC %{MAC:aruba.vsf.mac_addr1} and product type %{DATA:aruba.vsf.product_id} having different airflows").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12919,8 +13677,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: on interface %{GREEDYDATA:aruba.port}
-                    let _ = cached_grok!("on interface %{GREEDYDATA:aruba.port}")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("on interface %{GREEDYDATA:aruba.port}")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12930,7 +13691,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Interface %{DATA:aruba.port} detected a peer with a different VSF handshake version
                     // Grok pattern: ^Interface %{DATA:aruba.port} (added to|removed from) VSF link %{GREEDYDATA:aruba.vsf.link}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Interface %{DATA:aruba.port} detected a peer with a different VSF handshake version"
@@ -12941,7 +13702,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12952,7 +13715,7 @@ impl Transform for Default {
                     // Grok pattern: ^(?:^Switch with (mac|MAC) %{MAC:aruba.vsf.mac_addr1}) not able to autojoin as it is connected (on|to) interface %{DATA:aruba.port} which is (a non default autojoin VSF interface|not provisioned on the conductor for member %{DATA:aruba.vsf.member_id})
                     // Grok pattern: ^(?:^Switch with (mac|MAC) %{MAC:aruba.vsf.mac_addr1}) failed to autojoin on link %{DATA:aruba.vsf.link}, port %{GREEDYDATA:aruba.port}
                     // Grok pattern: ^(?:^Switch with (mac|MAC) %{MAC:aruba.vsf.mac_addr1}) failed to autojoin. Connect the device %{MAC:aruba.vsf.mac_addr2} to member %{DATA:aruba.vsf.mbr_id} link %{DATA:aruba.vsf.link} to proceed
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^(?:^Switch with (mac|MAC) %{MAC:aruba.vsf.mac_addr1}) not able to autojoin as it is connected (on|to) interface %{DATA:aruba.port} which is (a non default autojoin VSF interface|not provisioned on the conductor for member %{DATA:aruba.vsf.member_id})"
@@ -12966,7 +13729,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12975,8 +13740,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Switch with MAC %{MAC:aruba.vsf.mac_addr1}
-                    let _ = cached_grok!("^Switch with MAC %{MAC:aruba.vsf.mac_addr1} ")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^Switch with MAC %{MAC:aruba.vsf.mac_addr1} ")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -12984,7 +13752,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Switch with MAC %{MAC:aruba.vsf.mac_addr1} failed to autojoin. Connect the device %{MAC:aruba.vsf.mac_addr2} to member %{DATA:aruba.vsf.mbr_id} link %{DATA:aruba.vsf.link} to proceed
-                    let _ = cached_grok!("^Switch with MAC %{MAC:aruba.vsf.mac_addr1} failed to autojoin. Connect the device %{MAC:aruba.vsf.mac_addr2} to member %{DATA:aruba.vsf.mbr_id} link %{DATA:aruba.vsf.link} to proceed").extract_into(&input, event)?;
+                    if !cached_grok!("^Switch with MAC %{MAC:aruba.vsf.mac_addr1} failed to autojoin. Connect the device %{MAC:aruba.vsf.mac_addr2} to member %{DATA:aruba.vsf.mbr_id} link %{DATA:aruba.vsf.link} to proceed").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13075,7 +13845,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Switch with MAC %{MAC:aruba.vsf.mac_addr1} failed to autojoin as it is connected on interface %{DATA:aruba.port} which has MACsec configuration
-                    let _ = cached_grok!("^Switch with MAC %{MAC:aruba.vsf.mac_addr1} failed to autojoin as it is connected on interface %{DATA:aruba.port} which has MACsec configuration").extract_into(&input, event)?;
+                    if !cached_grok!("^Switch with MAC %{MAC:aruba.vsf.mac_addr1} failed to autojoin as it is connected on interface %{DATA:aruba.port} which has MACsec configuration").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13130,7 +13902,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (member|switch) %{DATA:aruba.instance.id} during ISSU operation: \"%{DATA:aruba.vsf.operation}\"
                     // Grok pattern: ^VSF member %{DATA:aruba.instance.id} going out of stack during ISSU operation: \"%{DATA:aruba.vsf.operation}\", rebooting the stack
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "(member|switch) %{DATA:aruba.instance.id} during ISSU operation: \"%{DATA:aruba.vsf.operation}\""
@@ -13141,7 +13913,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13149,10 +13923,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: detected during ISSU operation: \"%{DATA:aruba.vsf.operation}\"
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "detected during ISSU operation: \"%{DATA:aruba.vsf.operation}\""
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13160,7 +13937,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Member %{DATA:aruba.vsf.member_id} interface %{DATA:aruba.port} in VSF link %{DATA:aruba.vsf.link} detected a peer %{MAC:aruba.vsf.mac_addr1} with incompatible product type %{GREEDYDATA:aruba.vsf.product_type}
-                    let _ = cached_grok!("^Member %{DATA:aruba.vsf.member_id} interface %{DATA:aruba.port} in VSF link %{DATA:aruba.vsf.link} detected a peer %{MAC:aruba.vsf.mac_addr1} with incompatible product type %{GREEDYDATA:aruba.vsf.product_type}").extract_into(&input, event)?;
+                    if !cached_grok!("^Member %{DATA:aruba.vsf.member_id} interface %{DATA:aruba.port} in VSF link %{DATA:aruba.vsf.link} detected a peer %{MAC:aruba.vsf.mac_addr1} with incompatible product type %{GREEDYDATA:aruba.vsf.product_type}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13170,7 +13949,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Egress port shape rate %{DATA:aruba.vsf.lowest_speed}( will be)? applied for all VSF interfaces
                     // Grok pattern: ^Egress port shape rate %{DATA:aruba.vsf.lowest_speed} update is failed to apply for interface %{GREEDYDATA:aruba.interface.name}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Egress port shape rate %{DATA:aruba.vsf.lowest_speed}( will be)? applied for all VSF interfaces"
@@ -13181,7 +13960,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13190,7 +13971,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.acl.name} on %{DATA:aruba.interface.name} \\(%{DATA:aruba.acl.direction}\\): %{NUMBER:aruba.acl.hit_delta:long} %{GREEDYDATA:aruba.acl.ace_string}
                     // Grok pattern: ^ACL %{DATA:aruba.acl.name} \\(%{DATA:aruba.acl.type}\\) %{DATA:aruba.interface.name} \\(%{DATA:aruba.acl.direction}\\): %{NUMBER:aruba.acl.hit_delta:long} %{GREEDYDATA:aruba.acl.ace_string}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:aruba.acl.name} on %{DATA:aruba.interface.name} \\(%{DATA:aruba.acl.direction}\\): %{NUMBER:aruba.acl.hit_delta:long} %{GREEDYDATA:aruba.acl.ace_string}"
@@ -13201,7 +13982,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13292,14 +14075,16 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: TCAM(/LPM)? table %{DATA:aruba.tcam.table_name}
                     // Grok pattern: in table %{GREEDYDATA:aruba.tcam.table_name}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("TCAM(/LPM)? table %{DATA:aruba.tcam.table_name} "),
                             cached_grok!("in table %{GREEDYDATA:aruba.tcam.table_name}"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13308,7 +14093,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Local authorization has been %{GREEDYDATA:aruba.status}
                     // Grok pattern: ^Failed to %{DATA:aruba.status} local authorization
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Local authorization has been %{GREEDYDATA:aruba.status}"
@@ -13317,7 +14102,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13326,7 +14113,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^ARP inspection %{DATA:aruba.status} on vlan %{GREEDYDATA:network.vlan.id}.
                     // Grok pattern: ^ARP inspection %{DATA:aruba.status} on port %{GREEDYDATA:aruba.port}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^ARP inspection %{DATA:aruba.status} on vlan %{GREEDYDATA:network.vlan.id}."
@@ -13337,7 +14124,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13348,7 +14137,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Client %{MAC:client.mac} was logged-off administratively through command-line interface
                     // Grok pattern: ^Port %{DATA:aruba.port} is (blocked|unblocked) by port-access
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Client %{MAC:client.mac} was logged-off administratively through command-line interface"
@@ -13359,7 +14148,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13367,7 +14158,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Clients were logged-off on the port %{DATA:aruba.port} due to a change in ((?:authentication mode from %{DATA:aruba.port_access.old_mode} to %{GREEDYDATA:aruba.port_access.mode})|(?:client limit from %{DATA:aruba.port_access.old_limit} to %{GREEDYDATA:aruba.limit.threshold}))
-                    let _ = cached_grok!("^Clients were logged-off on the port %{DATA:aruba.port} due to a change in ((?:authentication mode from %{DATA:aruba.port_access.old_mode} to %{GREEDYDATA:aruba.port_access.mode})|(?:client limit from %{DATA:aruba.port_access.old_limit} to %{GREEDYDATA:aruba.limit.threshold}))").extract_into(&input, event)?;
+                    if !cached_grok!("^Clients were logged-off on the port %{DATA:aruba.port} due to a change in ((?:authentication mode from %{DATA:aruba.port_access.old_mode} to %{GREEDYDATA:aruba.port_access.mode})|(?:client limit from %{DATA:aruba.port_access.old_limit} to %{GREEDYDATA:aruba.limit.threshold}))").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13524,7 +14317,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^All clients except client with MAC address %{MAC:client.mac} logged-off on the port %{DATA:aruba.port} due to a (proxy-logoff request|change in authentication mode from %{DATA:aruba.port_access.old_mode} to %{GREEDYDATA:aruba.port_access.mode})
-                    let _ = cached_grok!("^All clients except client with MAC address %{MAC:client.mac} logged-off on the port %{DATA:aruba.port} due to a (proxy-logoff request|change in authentication mode from %{DATA:aruba.port_access.old_mode} to %{GREEDYDATA:aruba.port_access.mode})").extract_into(&input, event)?;
+                    if !cached_grok!("^All clients except client with MAC address %{MAC:client.mac} logged-off on the port %{DATA:aruba.port} due to a (proxy-logoff request|change in authentication mode from %{DATA:aruba.port_access.old_mode} to %{GREEDYDATA:aruba.port_access.mode})").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13532,7 +14327,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Client with MAC address %{MAC:client.mac} (learnt|deleted) on port %{GREEDYDATA:aruba.port}
-                    let _ = cached_grok!("^Client with MAC address %{MAC:client.mac} (learnt|deleted) on port %{GREEDYDATA:aruba.port}").extract_into(&input, event)?;
+                    if !cached_grok!("^Client with MAC address %{MAC:client.mac} (learnt|deleted) on port %{GREEDYDATA:aruba.port}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13546,7 +14343,7 @@ impl Transform for Default {
                     // Grok pattern: ^Client with MAC address %{MAC:client.mac} on port %{DATA:aruba.port} failed %{DATA:aruba.port_access.auth_method} authentication with reason %{GREEDYDATA:event.reason}
                     // Grok pattern: ^Client with MAC address %{MAC:client.mac} on port %{DATA:aruba.interface.name} triggered for (MAC|802.1x) authentication request with ID %{GREEDYDATA:aruba.port_access.request_id}
                     // Grok pattern: ^Client with MAC address %{MAC:client.mac} on port %{DATA:aruba.interface.name} received response for (MAC-Authentication|802.1x authentication) request ID %{DATA:aruba.port_access.request_id} as %{GREEDYDATA:event.reason}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Client with MAC address %{MAC:client.mac} authorized on port %{DATA:aruba.port} with role %{GREEDYDATA:aruba.role}"
@@ -13563,7 +14360,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13611,7 +14410,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Restored %{NUMBER:aruba.port_access.num_cached_clients:long} cached-clients from persistent-storage after reboot
-                    let _ = cached_grok!("^Restored %{NUMBER:aruba.port_access.num_cached_clients:long} cached-clients from persistent-storage after reboot").extract_into(&input, event)?;
+                    if !cached_grok!("^Restored %{NUMBER:aruba.port_access.num_cached_clients:long} cached-clients from persistent-storage after reboot").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13619,7 +14420,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Interface %{DATA:aruba.interface.name} is (flapped|disabled) by port-access as part of a CoA request
-                    let _ = cached_grok!("^Interface %{DATA:aruba.interface.name} is (flapped|disabled) by port-access as part of a CoA request").extract_into(&input, event)?;
+                    if !cached_grok!("^Interface %{DATA:aruba.interface.name} is (flapped|disabled) by port-access as part of a CoA request").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13630,7 +14433,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.port_access.request_pkt} request received for client with MAC address %{MAC:client.mac} on port %{DATA:aruba.interface.name} from dyn-authorization client %{DATA:client.address} on vrf %{GREEDYDATA:aruba.vrf.name}
                     // Grok pattern: ^%{DATA:aruba.port_access.request_pkt} request received from %{DATA:client.address} on VRF %{DATA:aruba.vrf.name} for client with MAC address %{MAC:client.mac} on port %{DATA:aruba.interface.name} (is successfully processed|failed to process with error %{GREEDYDATA:event.action})
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^%{DATA:aruba.port_access.request_pkt} request received for client with MAC address %{MAC:client.mac} on port %{DATA:aruba.interface.name} from dyn-authorization client %{DATA:client.address} on vrf %{GREEDYDATA:aruba.vrf.name}"
@@ -13641,7 +14444,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13649,7 +14454,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^MAC Authentication (triggered|succeeded) for client %{MAC:client.mac} on port %{DATA:aruba.interface.name} with ID %{DATA:aruba.port_access.request_id} (to|from) server %{IP:url.domain}:%{NUMBER:url.port:long}, %{DATA:url.scheme}, vrf %{GREEDYDATA:aruba.vrf.name}
-                    let _ = cached_grok!("^MAC Authentication (triggered|succeeded) for client %{MAC:client.mac} on port %{DATA:aruba.interface.name} with ID %{DATA:aruba.port_access.request_id} (to|from) server %{IP:url.domain}:%{NUMBER:url.port:long}, %{DATA:url.scheme}, vrf %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)?;
+                    if !cached_grok!("^MAC Authentication (triggered|succeeded) for client %{MAC:client.mac} on port %{DATA:aruba.interface.name} with ID %{DATA:aruba.port_access.request_id} (to|from) server %{IP:url.domain}:%{NUMBER:url.port:long}, %{DATA:url.scheme}, vrf %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13657,7 +14464,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(MAC|802.1x) Authentication failed with reason %{DATA:event.reason} for client %{MAC:client.mac} on port %{DATA:aruba.interface.name} with ID %{DATA:aruba.port_access.request_id} from servers %{GREEDYDATA:aruba.port_access.server_list}
-                    let _ = cached_grok!("^(MAC|802.1x) Authentication failed with reason %{DATA:event.reason} for client %{MAC:client.mac} on port %{DATA:aruba.interface.name} with ID %{DATA:aruba.port_access.request_id} from servers %{GREEDYDATA:aruba.port_access.server_list}").extract_into(&input, event)?;
+                    if !cached_grok!("^(MAC|802.1x) Authentication failed with reason %{DATA:event.reason} for client %{MAC:client.mac} on port %{DATA:aruba.interface.name} with ID %{DATA:aruba.port_access.request_id} from servers %{GREEDYDATA:aruba.port_access.server_list}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13665,7 +14474,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^802.1x Authentication (triggered|succeeded) for client %{MAC:client.mac} on port %{DATA:aruba.interface.name} with ID %{DATA:aruba.port_access.request_id} (to|from) server %{IP:url.domain}:%{NUMBER:url.port:long}, %{DATA:url.scheme}, vrf %{GREEDYDATA:aruba.vrf.name}
-                    let _ = cached_grok!("^802.1x Authentication (triggered|succeeded) for client %{MAC:client.mac} on port %{DATA:aruba.interface.name} with ID %{DATA:aruba.port_access.request_id} (to|from) server %{IP:url.domain}:%{NUMBER:url.port:long}, %{DATA:url.scheme}, vrf %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)?;
+                    if !cached_grok!("^802.1x Authentication (triggered|succeeded) for client %{MAC:client.mac} on port %{DATA:aruba.interface.name} with ID %{DATA:aruba.port_access.request_id} (to|from) server %{IP:url.domain}:%{NUMBER:url.port:long}, %{DATA:url.scheme}, vrf %{GREEDYDATA:aruba.vrf.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13673,7 +14484,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Interface %{DATA:aruba.interface.name} is (blocked|unblocked) by port-access
-                    let _ = cached_grok!("^Interface %{DATA:aruba.interface.name} is (blocked|unblocked) by port-access").extract_into(&input, event)?;
+                    if !cached_grok!("^Interface %{DATA:aruba.interface.name} is (blocked|unblocked) by port-access").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13681,7 +14494,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Policy %{DATA:aruba.policy.name} is of type %{DATA:aruba.port_access.feature} and a valid feature pack is required to use the policy
-                    let _ = cached_grok!("^Policy %{DATA:aruba.policy.name} is of type %{DATA:aruba.port_access.feature} and a valid feature pack is required to use the policy").extract_into(&input, event)?;
+                    if !cached_grok!("^Policy %{DATA:aruba.policy.name} is of type %{DATA:aruba.port_access.feature} and a valid feature pack is required to use the policy").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13749,7 +14564,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^L3 resources critical for neighbor and route forwarding are (at safe levels|low). (?:Used: %{DATA:aruba.l3.encaps_allocated}, Available: %{GREEDYDATA:aruba.l3.encaps_free})
                     // Grok pattern: ^Out of L3 resources critical for neighbor and route forwarding. (?:Used: %{DATA:aruba.l3.encaps_allocated}, Available: %{GREEDYDATA:aruba.l3.encaps_free})
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^L3 resources critical for neighbor and route forwarding are (at safe levels|low). (?:Used: %{DATA:aruba.l3.encaps_allocated}, Available: %{GREEDYDATA:aruba.l3.encaps_free})"
@@ -13760,7 +14575,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13768,10 +14585,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Router MAC limit exceeded. Failed to program MAC: %{MAC:client.mac}
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^Router MAC limit exceeded. Failed to program MAC: %{MAC:client.mac}"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13779,7 +14599,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Using configured (IPv4|IPv6) prefix-priority list %{GREEDYDATA:aruba.asic.prefix_list}.
-                    let _ = cached_grok!("^Using configured (IPv4|IPv6) prefix-priority list %{GREEDYDATA:aruba.asic.prefix_list}.").extract_into(&input, event)?;
+                    if !cached_grok!("^Using configured (IPv4|IPv6) prefix-priority list %{GREEDYDATA:aruba.asic.prefix_list}.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13787,7 +14609,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^HW programming failed for (IPv4|IPv6) prefix-priority %{GREEDYDATA:aruba.asic.route_prefix}
-                    let _ = cached_grok!("^HW programming failed for (IPv4|IPv6) prefix-priority %{GREEDYDATA:aruba.asic.route_prefix}").extract_into(&input, event)?;
+                    if !cached_grok!("^HW programming failed for (IPv4|IPv6) prefix-priority %{GREEDYDATA:aruba.asic.route_prefix}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13915,7 +14739,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^The MAC Address (configured|operational) mode changed from %{DATA:aruba.mac.old_mode} to %{GREEDYDATA:aruba.mac.new_mode}
                     // Grok pattern: ^Station MAC add failure due to hardware full, mac=%{MAC:server.mac} vlan=%{GREEDYDATA:network.vlan.id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^The MAC Address (configured|operational) mode changed from %{DATA:aruba.mac.old_mode} to %{GREEDYDATA:aruba.mac.new_mode}"
@@ -13926,7 +14750,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13934,7 +14760,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^The MAC Address operational mode changed from %{DATA:aruba.mac.old_mode} to %{DATA:aruba.mac.new_mode} due to reaching SVI threshold. Current=%{NUMBER:aruba.limit.read_value:long} Max=%{GREEDYDATA:aruba.limit.threshold}
-                    let _ = cached_grok!("^The MAC Address operational mode changed from %{DATA:aruba.mac.old_mode} to %{DATA:aruba.mac.new_mode} due to reaching SVI threshold. Current=%{NUMBER:aruba.limit.read_value:long} Max=%{GREEDYDATA:aruba.limit.threshold}").extract_into(&input, event)?;
+                    if !cached_grok!("^The MAC Address operational mode changed from %{DATA:aruba.mac.old_mode} to %{DATA:aruba.mac.new_mode} due to reaching SVI threshold. Current=%{NUMBER:aruba.limit.read_value:long} Max=%{GREEDYDATA:aruba.limit.threshold}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13942,7 +14770,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Interface %{DATA:aruba.interface.name}: %{DATA:aruba.fault.type} fault detected( and port disabled)?
-                    let _ = cached_grok!("^Interface %{DATA:aruba.interface.name}: %{DATA:aruba.fault.type} fault detected( and port disabled)?").extract_into(&input, event)?;
+                    if !cached_grok!("^Interface %{DATA:aruba.interface.name}: %{DATA:aruba.fault.type} fault detected( and port disabled)?").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13950,7 +14780,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Interface %{DATA:aruba.interface.name}: %{DATA:aruba.fault.type} fault re-enable time expired, port enabled
-                    let _ = cached_grok!("^Interface %{DATA:aruba.interface.name}: %{DATA:aruba.fault.type} fault re-enable time expired, port enabled").extract_into(&input, event)?;
+                    if !cached_grok!("^Interface %{DATA:aruba.interface.name}: %{DATA:aruba.fault.type} fault re-enable time expired, port enabled").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13958,7 +14790,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Interface %{DATA:aruba.interface.name}: %{DATA:aruba.fault.type} fault disable cancelled due to configuration change
-                    let _ = cached_grok!("^Interface %{DATA:aruba.interface.name}: %{DATA:aruba.fault.type} fault disable cancelled due to configuration change").extract_into(&input, event)?;
+                    if !cached_grok!("^Interface %{DATA:aruba.interface.name}: %{DATA:aruba.fault.type} fault disable cancelled due to configuration change").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13966,7 +14800,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Admin state changed and interface: %{DATA:aruba.interface.name} is auto-enabled
-                    let _ = cached_grok!("^Admin state changed and interface: %{DATA:aruba.interface.name} is auto-enabled").extract_into(&input, event)?;
+                    if !cached_grok!("^Admin state changed and interface: %{DATA:aruba.interface.name} is auto-enabled").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13974,7 +14810,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Interface %{DATA:aruba.interface.name}: %{DATA:aruba.fault.type} fault detected, port is already disabled by another fault
-                    let _ = cached_grok!("^Interface %{DATA:aruba.interface.name}: %{DATA:aruba.fault.type} fault detected, port is already disabled by another fault").extract_into(&input, event)?;
+                    if !cached_grok!("^Interface %{DATA:aruba.interface.name}: %{DATA:aruba.fault.type} fault detected, port is already disabled by another fault").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -13983,7 +14821,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^MAC Lockout packet drop detected for %{MAC:client.mac} as source address: %{NUMBER:aruba.fault.sa_diff_count:long}
                     // Grok pattern: ^MAC Lockout packet drop detected for %{MAC:client.mac} as destination address with packet count: %{NUMBER:aruba.fault.da_diff_count:long}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^MAC Lockout packet drop detected for %{MAC:client.mac} as source address: %{NUMBER:aruba.fault.sa_diff_count:long}"
@@ -13994,7 +14832,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14003,7 +14843,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^MAC Lockout packet drop detected for %{MAC:client.mac} as destination address: %{NUMBER:aruba.fault.da_diff_count:long}
                     // Grok pattern: ^MAC Lockout packet drop detected for %{MAC:client.mac} as destination address with packet count: %{NUMBER:aruba.fault.da_diff_count:long}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^MAC Lockout packet drop detected for %{MAC:client.mac} as destination address: %{NUMBER:aruba.fault.da_diff_count:long}"
@@ -14014,7 +14854,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14023,7 +14865,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^MAC Lockout packet drop detected for %{MAC:client.mac} as source: %{NUMBER:aruba.fault.sa_diff_count:long} and destination: %{NUMBER:aruba.fault.da_diff_count:long} address
                     // Grok pattern: ^MAC Lockout packet drop detected for %{MAC:client.mac} as source & destination address with source packet count: %{NUMBER:aruba.fault.sa_diff_count:long} and destination packet count: %{NUMBER:aruba.fault.da_diff_count:long}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^MAC Lockout packet drop detected for %{MAC:client.mac} as source: %{NUMBER:aruba.fault.sa_diff_count:long} and destination: %{NUMBER:aruba.fault.da_diff_count:long} address"
@@ -14034,7 +14876,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14048,7 +14892,7 @@ impl Transform for Default {
                     // Grok pattern: ^MKA session secured for Connectivity Association %{DATA:aruba.mac.ckn} on interface %{GREEDYDATA:aruba.interface.name}
                     // Grok pattern: ^Secure Association key updated for Connectivity Association %{DATA:aruba.mac.ckn} on interface %{DATA:aruba.interface.name} - Latest AN/KN %{DATA:aruba.mac.latest_an}/%{DATA:aruba.mac.latest_kn}, Old AN/KN %{DATA:aruba.mac.old_an}/%{GREEDYDATA:aruba.mac.old_kn}
                     // Grok pattern: ^Possible replay attempt detected on the Secure Channel %{GREEDYDATA:aruba.mac.sci}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^MACsec session established on Rx Secure Channel %{DATA:aruba.mac.sci} on interface %{GREEDYDATA:aruba.interface.name}"
@@ -14065,7 +14909,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14076,7 +14922,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^The data traffic on interface %{DATA:aruba.interface.name} is
                     // Grok pattern: ^Interface %{DATA:aruba.interface.name} MACsec selftest failed - %{GREEDYDATA:event.reason}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^The data traffic on interface %{DATA:aruba.interface.name} is "
@@ -14087,7 +14933,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14136,7 +14984,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(Suspending|Resuming) data delay protection for Connectivity Association %{DATA:aruba.mac.ckn} on interface %{DATA:aruba.interface.name} (during|post) ISSU
-                    let _ = cached_grok!("^(Suspending|Resuming) data delay protection for Connectivity Association %{DATA:aruba.mac.ckn} on interface %{DATA:aruba.interface.name} (during|post) ISSU").extract_into(&input, event)?;
+                    if !cached_grok!("^(Suspending|Resuming) data delay protection for Connectivity Association %{DATA:aruba.mac.ckn} on interface %{DATA:aruba.interface.name} (during|post) ISSU").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14145,7 +14995,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^ISSU aborted by MACsec. Reason - %{GREEDYDATA:event.reason}.
                     // Grok pattern: ^Interface %{DATA:aruba.interface.name} blocked by MACsec due to a misconfiguration. Reason - %{GREEDYDATA:event.reason}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^ISSU aborted by MACsec. Reason - %{GREEDYDATA:event.reason}."
@@ -14156,7 +15006,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14165,7 +15017,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^MACsec is disabled on port %{DATA:aruba.port}. Additional licenses are needed to enable the %{DATA:aruba.mac.feature} functionality on the port.
                     // Grok pattern: ^MACsec is operational on port %{DATA:aruba.port} without a valid license for %{GREEDYDATA:aruba.mac.feature}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^MACsec is disabled on port %{DATA:aruba.port}. Additional licenses are needed to enable the %{DATA:aruba.mac.feature} functionality on the port."
@@ -14176,7 +15028,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14187,7 +15041,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Flush message received on %{DATA:aruba.interface.name} with control VLAN %{GREEDYDATA:network.vlan.id}
                     // Grok pattern: ^(Active|Backup) link of the smartlink group %{DATA:group.id} changed to %{GREEDYDATA:aruba.interface.name}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Flush message received on %{DATA:aruba.interface.name} with control VLAN %{GREEDYDATA:network.vlan.id}"
@@ -14198,7 +15052,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14207,7 +15063,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^IPv6 route prefix %{DATA:aruba.prefix} is not supported on this platform
                     // Grok pattern: ^IPv6 route prefix %{DATA:aruba.prefix} is recommended for transit network use only. The traffic would be software routed. Routing performance to local destination addresses on this network may be impacted.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^IPv6 route prefix %{DATA:aruba.prefix} is not supported on this platform"
@@ -14218,7 +15074,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14227,7 +15085,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Exceeded resource '%{DATA:aruba.l3.resource}' capacity adding %{DATA:aruba.l3.object}. Use 'show capacities-status' for more information.
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Exceeded resource '%{DATA:aruba.l3.resource}' capacity adding %{DATA:aruba.l3.object}. Use 'show capacities-status' for more information."
@@ -14236,7 +15094,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14245,7 +15105,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Resource '%{DATA:aruba.l3.resource}' usage is at %{NUMBER:aruba.l3.percent:long}% of capacity. Use 'show capacities-status' for more information.
                     // Grok pattern: ^Throttled %{NUMBER:aruba.throttle_count:long} Messages
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Resource '%{DATA:aruba.l3.resource}' usage is at %{NUMBER:aruba.l3.percent:long}% of capacity. Use 'show capacities-status' for more information."
@@ -14254,7 +15114,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14330,7 +15192,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Tunnel %{DATA:aruba.l3.vtep} resolved nexthop %{DATA:aruba.l3.nexthop} (added|removed).
-                    let _ = cached_grok!("^Tunnel %{DATA:aruba.l3.vtep} resolved nexthop %{DATA:aruba.l3.nexthop} (added|removed).").extract_into(&input, event)?;
+                    if !cached_grok!("^Tunnel %{DATA:aruba.l3.vtep} resolved nexthop %{DATA:aruba.l3.nexthop} (added|removed).").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14534,7 +15398,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(System|Input) alarm %{DATA:aruba.alarm.name} has activated through log-and-trap(, triggered at %{GREEDYDATA:aruba.alarm.trigger})?
-                    let _ = cached_grok!("^(System|Input) alarm %{DATA:aruba.alarm.name} has activated through log-and-trap(, triggered at %{GREEDYDATA:aruba.alarm.trigger})?").extract_into(&input, event)?;
+                    if !cached_grok!("^(System|Input) alarm %{DATA:aruba.alarm.name} has activated through log-and-trap(, triggered at %{GREEDYDATA:aruba.alarm.trigger})?").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14542,7 +15408,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Snooze alarm (activated|repeats), disabling relay function for %{NUMBER:aruba.len:long} min
-                    let _ = cached_grok!("^Snooze alarm (activated|repeats), disabling relay function for %{NUMBER:aruba.len:long} min").extract_into(&input, event)?;
+                    if !cached_grok!("^Snooze alarm (activated|repeats), disabling relay function for %{NUMBER:aruba.len:long} min").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14550,7 +15418,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(System|Input) alarm %{DATA:aruba.alarm.name} has activated through relay(, triggered at %{GREEDYDATA:aruba.alarm.trigger})?
-                    let _ = cached_grok!("^(System|Input) alarm %{DATA:aruba.alarm.name} has activated through relay(, triggered at %{GREEDYDATA:aruba.alarm.trigger})?").extract_into(&input, event)?;
+                    if !cached_grok!("^(System|Input) alarm %{DATA:aruba.alarm.name} has activated through relay(, triggered at %{GREEDYDATA:aruba.alarm.trigger})?").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14601,7 +15471,7 @@ impl Transform for Default {
                     // Grok pattern: ^Endpoint has been executed for container %{DATA:container.name} (with parameters: %{GREEDYDATA:aruba.container.params}|with no parameters.)
                     // Grok pattern: ^Endpoint has been executed for container %{DATA:container.name} with no parameters.
                     // Grok pattern: ^Container %{DATA:container.name} (stopped|image)
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Endpoint has been executed for container %{DATA:container.name} (with parameters: %{GREEDYDATA:aruba.container.params}|with no parameters.)"
@@ -14613,7 +15483,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14621,10 +15493,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: %{DATA:aruba.dns.type} event for VRF %{DATA:aruba.vrf.name}$
-                    let _ = cached_grok!(
-                        "%{DATA:aruba.dns.type} event for VRF %{DATA:aruba.vrf.name}$"
-                    )
-                    .extract_into(&input, event)?;
+                    if !cached_grok!("%{DATA:aruba.dns.type} event for VRF %{DATA:aruba.vrf.name}$")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14632,7 +15505,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Uplink Failure Detection session-id %{DATA:aruba.instance.id}, state changed from %{DATA:aruba.ufd.from_state} to %{GREEDYDATA:aruba.state}.
-                    let _ = cached_grok!("^Uplink Failure Detection session-id %{DATA:aruba.instance.id}, state changed from %{DATA:aruba.ufd.from_state} to %{GREEDYDATA:aruba.state}.").extract_into(&input, event)?;
+                    if !cached_grok!("^Uplink Failure Detection session-id %{DATA:aruba.instance.id}, state changed from %{DATA:aruba.ufd.from_state} to %{GREEDYDATA:aruba.state}.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14738,7 +15613,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Interface %{DATA:aruba.interface.name} (enabled|disabled) for PTP exchange.( Reason: %{GREEDYDATA:event.reason})?
-                    let _ = cached_grok!("^Interface %{DATA:aruba.interface.name} (enabled|disabled) for PTP exchange.( Reason: %{GREEDYDATA:event.reason})?").extract_into(&input, event)?;
+                    if !cached_grok!("^Interface %{DATA:aruba.interface.name} (enabled|disabled) for PTP exchange.( Reason: %{GREEDYDATA:event.reason})?").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14891,7 +15768,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PTP operational (log_announce_interval|log_min_pdelay_request_interval|log_min_delay_request_interval|sync_request_timeout|sync_interval|announce_request_timeout) (?:is changed to %{DATA:aruba.ptp.value} on interface %{DATA:aruba.interface.name} for profile %{GREEDYDATA:aruba.ptp.profile})
-                    let _ = cached_grok!("^PTP operational (log_announce_interval|log_min_pdelay_request_interval|log_min_delay_request_interval|sync_request_timeout|sync_interval|announce_request_timeout) (?:is changed to %{DATA:aruba.ptp.value} on interface %{DATA:aruba.interface.name} for profile %{GREEDYDATA:aruba.ptp.profile})").extract_into(&input, event)?;
+                    if !cached_grok!("^PTP operational (log_announce_interval|log_min_pdelay_request_interval|log_min_delay_request_interval|sync_request_timeout|sync_interval|announce_request_timeout) (?:is changed to %{DATA:aruba.ptp.value} on interface %{DATA:aruba.interface.name} for profile %{GREEDYDATA:aruba.ptp.profile})").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -14926,7 +15805,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PTP (domain|vlan) modified from %{DATA:aruba.ptp.old} to %{DATA:aruba.ptp.new} (value|on port %{GREEDYDATA:aruba.port})
-                    let _ = cached_grok!("^PTP (domain|vlan) modified from %{DATA:aruba.ptp.old} to %{DATA:aruba.ptp.new} (value|on port %{GREEDYDATA:aruba.port})").extract_into(&input, event)?;
+                    if !cached_grok!("^PTP (domain|vlan) modified from %{DATA:aruba.ptp.old} to %{DATA:aruba.ptp.new} (value|on port %{GREEDYDATA:aruba.port})").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15004,7 +15885,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PTP offset has reached (beyond|below) the threshold %{DATA:aruba.ptp.low_limit} < %{DATA:aruba.ptp.curr_offset} < %{GREEDYDATA:aruba.ptp.high_limit}
-                    let _ = cached_grok!("^PTP offset has reached (beyond|below) the threshold %{DATA:aruba.ptp.low_limit} < %{DATA:aruba.ptp.curr_offset} < %{GREEDYDATA:aruba.ptp.high_limit}").extract_into(&input, event)?;
+                    if !cached_grok!("^PTP offset has reached (beyond|below) the threshold %{DATA:aruba.ptp.low_limit} < %{DATA:aruba.ptp.curr_offset} < %{GREEDYDATA:aruba.ptp.high_limit}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15088,7 +15971,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Schedule %{DATA:aruba.scheduler.name} triggered, trigger_count: %{NUMBER:aruba.count:long}
-                    let _ = cached_grok!("^Schedule %{DATA:aruba.scheduler.name} triggered, trigger_count: %{NUMBER:aruba.count:long}").extract_into(&input, event)?;
+                    if !cached_grok!("^Schedule %{DATA:aruba.scheduler.name} triggered, trigger_count: %{NUMBER:aruba.count:long}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15181,7 +16066,7 @@ impl Transform for Default {
                     // Grok pattern: ^802.1X supplicant has (blocked|unblocked) the interface %{GREEDYDATA:aruba.interface.id}.
                     // Grok pattern: ^802.1X supplicant PAE restarted on interface %{GREEDYDATA:aruba.interface.id} due to change in policy %{GREEDYDATA:aruba.dot1x.policy}.
                     // Grok pattern: ^802.1X supplicant is not supported on the port %{GREEDYDATA:aruba.port}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^802.1X supplicant has (blocked|unblocked) the interface %{GREEDYDATA:aruba.interface.id}."
@@ -15195,7 +16080,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15250,7 +16137,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Netvp add failed for vni_id: %{DATA:aruba.vxlan.vni_id}, tunnel_id: %{DATA:aruba.vxlan.tunnel_id}, vlan: %{GREEDYDATA:network.vlan.id}.
                     // Grok pattern: ^Tunnel add failed for tunnel_id: %{DATA:aruba.vxlan.tunnel_id}, ecmp_id: %{GREEDYDATA:aruba.vxlan.ecmp_id}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Netvp add failed for vni_id: %{DATA:aruba.vxlan.vni_id}, tunnel_id: %{DATA:aruba.vxlan.tunnel_id}, vlan: %{GREEDYDATA:network.vlan.id}."
@@ -15261,7 +16148,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15269,7 +16158,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Configuration (change|update) in the policy( due to class change)? %{DATA:aruba.pac_gbp.name} %{GREEDYDATA:aruba.pac_gbp.operation}
-                    let _ = cached_grok!("^Configuration (change|update) in the policy( due to class change)? %{DATA:aruba.pac_gbp.name} %{GREEDYDATA:aruba.pac_gbp.operation}").extract_into(&input, event)?;
+                    if !cached_grok!("^Configuration (change|update) in the policy( due to class change)? %{DATA:aruba.pac_gbp.name} %{GREEDYDATA:aruba.pac_gbp.operation}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15527,7 +16418,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Failed to enable Telnet server on VRF %{DATA:aruba.vrf.name}. Admin password is not set.
                     // Grok pattern: on VRF %{GREEDYDATA:aruba.vrf.name}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Failed to enable Telnet server on VRF %{DATA:aruba.vrf.name}. Admin password is not set."
@@ -15536,7 +16427,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15548,7 +16441,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User %{DATA:user.name} (logged in|login|logged out of TELNET session) from %{IP:client.ip}
                     // Grok pattern: ^TELNET session from %{IP:client.ip} is rejected because maximum number of TELNET sessions is reached.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^User %{DATA:user.name} (logged in|login|logged out of TELNET session) from %{IP:client.ip}"
@@ -15559,7 +16452,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15568,7 +16463,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^TELNET session from User %{DATA:user.name} is closed because maximum number of sessions per user is reached.
                     // Grok pattern: ^User %{DATA:user.name} login from %{IP:client.ip} for TELNET session has failed since the user is trying to login through an interface which is not allowed. Allowed interfaces are: %{GREEDYDATA:aruba.interface.id}.
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^TELNET session from User %{DATA:user.name} is closed because maximum number of sessions per user is reached."
@@ -15579,7 +16474,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15587,7 +16484,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User %{DATA:user.name} (logged in|login) from %{IP:client.ip} (through|for) CONSOLE
-                    let _ = cached_grok!("^User %{DATA:user.name} (logged in|login) from %{IP:client.ip} (through|for) CONSOLE").extract_into(&input, event)?;
+                    if !cached_grok!("^User %{DATA:user.name} (logged in|login) from %{IP:client.ip} (through|for) CONSOLE").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15595,7 +16494,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^User %{DATA:user.name} logged out of CONSOLE session from %{IP:client.ip}.
-                    let _ = cached_grok!("^User %{DATA:user.name} logged out of CONSOLE session from %{IP:client.ip}.").extract_into(&input, event)?;
+                    if !cached_grok!("^User %{DATA:user.name} logged out of CONSOLE session from %{IP:client.ip}.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15684,7 +16585,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^(SSH|TELNET|CONSOLE) session from %{IP:client.ip} (for|with) (U|u)ser %{DATA:user.name}
-                    let _ = cached_grok!("^(SSH|TELNET|CONSOLE) session from %{IP:client.ip} (for|with) (U|u)ser %{DATA:user.name} ").extract_into(&input, event)?;
+                    if !cached_grok!("^(SSH|TELNET|CONSOLE) session from %{IP:client.ip} (for|with) (U|u)ser %{DATA:user.name} ").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15700,8 +16603,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Hot-patch %{DATA:package.name}\\s+
-                    let _ = cached_grok!("^Hot-patch %{DATA:package.name}\\s+")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^Hot-patch %{DATA:package.name}\\s+")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15709,7 +16615,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Not enough (disk space|memory) available to install hot-patch %{GREEDYDATA:package.name}.
-                    let _ = cached_grok!("^Not enough (disk space|memory) available to install hot-patch %{GREEDYDATA:package.name}.").extract_into(&input, event)?;
+                    if !cached_grok!("^Not enough (disk space|memory) available to install hot-patch %{GREEDYDATA:package.name}.").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15769,7 +16677,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^MPLS LDP session with local identifier %{DATA:aruba.mpls.local_ldp_id} and peer identifier %{DATA:aruba.mpls.peer_ldp_id} has (come up|gone down)
-                    let _ = cached_grok!("^MPLS LDP session with local identifier %{DATA:aruba.mpls.local_ldp_id} and peer identifier %{DATA:aruba.mpls.peer_ldp_id} has (come up|gone down)").extract_into(&input, event)?;
+                    if !cached_grok!("^MPLS LDP session with local identifier %{DATA:aruba.mpls.local_ldp_id} and peer identifier %{DATA:aruba.mpls.peer_ldp_id} has (come up|gone down)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15948,7 +16858,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^ISSU %{DATA:aruba.issu.condition}: Feature \"%{DATA:aruba.issu.feature}\" (failed to prepare for ISSU|not ready: %{GREEDYDATA:event.reason})
-                    let _ = cached_grok!("^ISSU %{DATA:aruba.issu.condition}: Feature \"%{DATA:aruba.issu.feature}\" (failed to prepare for ISSU|not ready: %{GREEDYDATA:event.reason})").extract_into(&input, event)?;
+                    if !cached_grok!("^ISSU %{DATA:aruba.issu.condition}: Feature \"%{DATA:aruba.issu.feature}\" (failed to prepare for ISSU|not ready: %{GREEDYDATA:event.reason})").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -15956,7 +16868,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^ISSU rollback timer (has been started|is running), %{NUMBER:aruba.issu.wait_time:long} minutes remaining before reboot
-                    let _ = cached_grok!("^ISSU rollback timer (has been started|is running), %{NUMBER:aruba.issu.wait_time:long} minutes remaining before reboot").extract_into(&input, event)?;
+                    if !cached_grok!("^ISSU rollback timer (has been started|is running), %{NUMBER:aruba.issu.wait_time:long} minutes remaining before reboot").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -16018,7 +16932,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^ISSU rollback timer has been recreated, %{NUMBER:aruba.issu.wait_time:long} minutes remaining before reboot
-                    let _ = cached_grok!("^ISSU rollback timer has been recreated, %{NUMBER:aruba.issu.wait_time:long} minutes remaining before reboot").extract_into(&input, event)?;
+                    if !cached_grok!("^ISSU rollback timer has been recreated, %{NUMBER:aruba.issu.wait_time:long} minutes remaining before reboot").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -16158,7 +17074,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Distributed Services Admission Rejected. Reason: %{GREEDYDATA:event.reason}
                     // Grok pattern: ^FQTSS alloc requested
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Distributed Services Admission Rejected. Reason: %{GREEDYDATA:event.reason}"
@@ -16167,7 +17083,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -16176,7 +17094,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PSM coordinates mismatch. Active coordinates: %{DATA:aruba.distributed.active_coordinates}, Configured coordinates: %{GREEDYDATA:aruba.distributed.configured_coordinates}.
                     // Grok pattern: ^Event reported when FQTSS received dealloc request
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^PSM coordinates mismatch. Active coordinates: %{DATA:aruba.distributed.active_coordinates}, Configured coordinates: %{GREEDYDATA:aruba.distributed.configured_coordinates}."
@@ -16185,7 +17103,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -16446,8 +17366,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Instance %{DATA:aruba.instance.id} (created|deleted)
-                    let _ = cached_grok!("^Instance %{DATA:aruba.instance.id} (created|deleted)")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^Instance %{DATA:aruba.instance.id} (created|deleted)")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -16455,7 +17378,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Top-N flows (running|aggregate)-statistics cleared for the monitor %{DATA:aruba.traffic.monitor_name} and instance %{GREEDYDATA:aruba.instance.id}
-                    let _ = cached_grok!("^Top-N flows (running|aggregate)-statistics cleared for the monitor %{DATA:aruba.traffic.monitor_name} and instance %{GREEDYDATA:aruba.instance.id}").extract_into(&input, event)?;
+                    if !cached_grok!("^Top-N flows (running|aggregate)-statistics cleared for the monitor %{DATA:aruba.traffic.monitor_name} and instance %{GREEDYDATA:aruba.instance.id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -16463,10 +17388,13 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Traffic Insight instance %{DATA:aruba.instance.id} (enabled|disabled)
-                    let _ = cached_grok!(
+                    if !cached_grok!(
                         "^Traffic Insight instance %{DATA:aruba.instance.id} (enabled|disabled)"
                     )
-                    .extract_into(&input, event)?;
+                    .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -16475,7 +17403,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Ignoring the flow for monitor %{DATA:aruba.traffic.monitor_name} instance %{DATA:aruba.instance.id}, maximum application flow cache limit reached
                     // Grok pattern: ^DNS Average Latency statistics cache cleared for the monitor %{DATA:aruba.traffic.monitor_name} and instance %{GREEDYDATA:aruba.instance.id}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Ignoring the flow for monitor %{DATA:aruba.traffic.monitor_name} instance %{DATA:aruba.instance.id}, maximum application flow cache limit reached"
@@ -16486,7 +17414,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -16538,7 +17468,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (Linecard|LC) %{DATA:aruba.instance.id} is %{DATA:aruba.status}(.| )- event_name:
-                    let _ = cached_grok!("(Linecard|LC) %{DATA:aruba.instance.id} is %{DATA:aruba.status}(.| )- event_name:").extract_into(&input, event)?;
+                    if !cached_grok!("(Linecard|LC) %{DATA:aruba.instance.id} is %{DATA:aruba.status}(.| )- event_name:").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -16548,8 +17480,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: linecard %{DATA:aruba.instance.id} -
-                    let _ = cached_grok!("linecard %{DATA:aruba.instance.id} - ")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("linecard %{DATA:aruba.instance.id} - ")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -16557,8 +17492,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (is|been) %{DATA:aruba.status} - event_name
-                    let _ = cached_grok!("(is|been) %{DATA:aruba.status} - event_name")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("(is|been) %{DATA:aruba.status} - event_name")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -17273,7 +18211,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Client %{MAC:client.mac} on-boarded on VLAN %{DATA:aruba.insight.successfulvlan} Port %{DATA:aruba.port} (dhcpv4|dhcpv6)-status %{DATA:aruba.status} (dhcpv4|dhcpv6)-failure-reason %{DATA:event.reason} (dhcpv4|dhcpv6)-server%{DATA:aruba.insight.dhcp_server} (dhcpv4|dhcpv6)-client %{DATA:aruba.insight.dhcp_client} (dhcpv4|dhcpv6)-latency %{GREEDYDATA:aruba.insight.dhcp_latency}
-                    let _ = cached_grok!("^Client %{MAC:client.mac} on-boarded on VLAN %{DATA:aruba.insight.successfulvlan} Port %{DATA:aruba.port} (dhcpv4|dhcpv6)-status %{DATA:aruba.status} (dhcpv4|dhcpv6)-failure-reason %{DATA:event.reason} (dhcpv4|dhcpv6)-server%{DATA:aruba.insight.dhcp_server} (dhcpv4|dhcpv6)-client %{DATA:aruba.insight.dhcp_client} (dhcpv4|dhcpv6)-latency %{GREEDYDATA:aruba.insight.dhcp_latency}").extract_into(&input, event)?;
+                    if !cached_grok!("^Client %{MAC:client.mac} on-boarded on VLAN %{DATA:aruba.insight.successfulvlan} Port %{DATA:aruba.port} (dhcpv4|dhcpv6)-status %{DATA:aruba.status} (dhcpv4|dhcpv6)-failure-reason %{DATA:event.reason} (dhcpv4|dhcpv6)-server%{DATA:aruba.insight.dhcp_server} (dhcpv4|dhcpv6)-client %{DATA:aruba.insight.dhcp_client} (dhcpv4|dhcpv6)-latency %{GREEDYDATA:aruba.insight.dhcp_latency}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -17354,7 +18294,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{DATA:aruba.feature_pack.name} (installed|erased|expired on %{GREEDYDATA:aruba.feature_pack.expiry_date}.)
-                    let _ = cached_grok!("^%{DATA:aruba.feature_pack.name} (installed|erased|expired on %{GREEDYDATA:aruba.feature_pack.expiry_date}.)").extract_into(&input, event)?;
+                    if !cached_grok!("^%{DATA:aruba.feature_pack.name} (installed|erased|expired on %{GREEDYDATA:aruba.feature_pack.expiry_date}.)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -17641,8 +18583,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: from %{GREEDYDATA:url.original}
-                    let _ = cached_grok!("from %{GREEDYDATA:url.original}")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("from %{GREEDYDATA:url.original}")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -17652,8 +18597,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: to %{GREEDYDATA:url.original}
-                    let _ = cached_grok!("to %{GREEDYDATA:url.original}")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("to %{GREEDYDATA:url.original}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -17661,7 +18607,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^File (upload|download) failed (to|from) %{DATA:url.original} with error code: %{DATA:error.code}, %{GREEDYDATA:aruba.error.description}
-                    let _ = cached_grok!("^File (upload|download) failed (to|from) %{DATA:url.original} with error code: %{DATA:error.code}, %{GREEDYDATA:aruba.error.description}").extract_into(&input, event)?;
+                    if !cached_grok!("^File (upload|download) failed (to|from) %{DATA:url.original} with error code: %{DATA:error.code}, %{GREEDYDATA:aruba.error.description}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -17675,7 +18623,7 @@ impl Transform for Default {
                     // Grok pattern: ^Received certificate from Activate server, processing with certificate manager. Certificate length: %{NUMBER:aruba.len:long}.
                     // Grok pattern: Central location %{DATA:aruba.rest.central_location}( successfully fetched)? from %{DATA:aruba.rest.central_source} via VRF %{GREEDYDATA:aruba.vrf.id}.
                     // Grok pattern: ^Switch time is synced with Activate Server %{GREEDYDATA:aruba.rest.activate_address}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Activate server %{DATA:aruba.rest.activate_address} is reachable via VRF %{GREEDYDATA:aruba.vrf.id}."
@@ -17692,7 +18640,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -17704,7 +18654,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Configuration (change|update) in the policy( due to class change)? %{DATA:aruba.acc_abp.pac_abp_name} %{GREEDYDATA:aruba.acc_abp.operation}
                     // Grok pattern: ^Trigger received to %{DATA:aruba.acc_abp.operation} policy: %{DATA:aruba.acc_abp.pac_abp_name} for client: (%{GREEDYDATA:aruba.acc_abp.client}|%{DATA:aruba.acc_abp.client} is %{GREEDYDATA:aruba.acc_abp.result})
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Configuration (change|update) in the policy( due to class change)? %{DATA:aruba.acc_abp.pac_abp_name} %{GREEDYDATA:aruba.acc_abp.operation}"
@@ -17715,7 +18665,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -17725,8 +18677,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: - Tunnel( Id)? \\(%{DATA:aruba.instance.id}\\)
-                    let _ = cached_grok!("- Tunnel( Id)? \\(%{DATA:aruba.instance.id}\\)")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("- Tunnel( Id)? \\(%{DATA:aruba.instance.id}\\)")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -17737,8 +18692,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (start|stop|for) %{DATA:aruba.launchd.daemon} daemon
-                    let _ = cached_grok!("(start|stop|for) %{DATA:aruba.launchd.daemon} daemon")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("(start|stop|for) %{DATA:aruba.launchd.daemon} daemon")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -17773,7 +18731,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: (Linecard|LC) %{DATA:aruba.instance.id} is (?P<aruba_status>(?:[\\p{L},\":;\\s\\-]*))(\\.)?
-                    let _ = cached_grok_mapped!("(Linecard|LC) %{DATA:aruba.instance.id} is (?P<aruba_status>(?:[\\p{L},\":;\\s\\-]*))(\\.)?", [("aruba_status", "aruba.status")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("(Linecard|LC) %{DATA:aruba.instance.id} is (?P<aruba_status>(?:[\\p{L},\":;\\s\\-]*))(\\.)?", [("aruba_status", "aruba.status")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -17835,7 +18795,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^IP Flow table utilization (has exceeded high|back to lower) threshold on linecard %{GREEDYDATA:aruba.instance.id}
-                    let _ = cached_grok!("^IP Flow table utilization (has exceeded high|back to lower) threshold on linecard %{GREEDYDATA:aruba.instance.id}").extract_into(&input, event)?;
+                    if !cached_grok!("^IP Flow table utilization (has exceeded high|back to lower) threshold on linecard %{GREEDYDATA:aruba.instance.id}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -17846,9 +18808,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: the session %{GREEDYDATA:aruba.packet_capture.session_name}
-                    let _ =
-                        cached_grok!("the session %{GREEDYDATA:aruba.packet_capture.session_name}")
-                            .extract_into(&input, event)?;
+                    if !cached_grok!("the session %{GREEDYDATA:aruba.packet_capture.session_name}")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -17862,7 +18826,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Packet capture session %{DATA:aruba.packet_capture.session_name} (client|max)
                     // Grok pattern: ^Packet capture session %{DATA:aruba.packet_capture.session_name} hw programmed is %{GREEDYDATA:aruba.packet_capture.value}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!(
                                 "^Packet capture session %{DATA:aruba.packet_capture.session_name} (client|max)"
@@ -17873,7 +18837,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -18059,7 +19025,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^PIM Bidi Neighbor %{IP:client.ip} is %{DATA:aruba.state} on Interface %{GREEDYDATA:aruba.interface.name}
-                    let _ = cached_grok!("^PIM Bidi Neighbor %{IP:client.ip} is %{DATA:aruba.state} on Interface %{GREEDYDATA:aruba.interface.name}").extract_into(&input, event)?;
+                    if !cached_grok!("^PIM Bidi Neighbor %{IP:client.ip} is %{DATA:aruba.state} on Interface %{GREEDYDATA:aruba.interface.name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -18067,7 +19035,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^MSRP stream %{DATA:aruba.instance.id} (created on port %{GREEDYDATA:aruba.port}|deleted)
-                    let _ = cached_grok!("^MSRP stream %{DATA:aruba.instance.id} (created on port %{GREEDYDATA:aruba.port}|deleted)").extract_into(&input, event)?;
+                    if !cached_grok!("^MSRP stream %{DATA:aruba.instance.id} (created on port %{GREEDYDATA:aruba.port}|deleted)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -18076,7 +19046,7 @@ impl Transform for Default {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^MSRP is active on port %{GREEDYDATA:aruba.port}
                     // Grok pattern: ^MSRP is inactive on port %{DATA:aruba.port} due to %{GREEDYDATA:aruba.status}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^MSRP is active on port %{GREEDYDATA:aruba.port}"),
                             cached_grok!(
@@ -18085,7 +19055,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -18093,7 +19065,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^MSRP Stream %{DATA:aruba.instance.id} (Talker has left|Listener connected on port %{DATA:aruba.port} has left)
-                    let _ = cached_grok!("^MSRP Stream %{DATA:aruba.instance.id} (Talker has left|Listener connected on port %{DATA:aruba.port} has left)").extract_into(&input, event)?;
+                    if !cached_grok!("^MSRP Stream %{DATA:aruba.instance.id} (Talker has left|Listener connected on port %{DATA:aruba.port} has left)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -18147,7 +19121,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Resource (de-allocated|allocation requested) for stream %{DATA:aruba.instance.id} on port %{GREEDYDATA:aruba.port}
-                    let _ = cached_grok!("^Resource (de-allocated|allocation requested) for stream %{DATA:aruba.instance.id} on port %{GREEDYDATA:aruba.port}").extract_into(&input, event)?;
+                    if !cached_grok!("^Resource (de-allocated|allocation requested) for stream %{DATA:aruba.instance.id} on port %{GREEDYDATA:aruba.port}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -18201,7 +19177,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^MSRP Listener (added with declaration-type|declaration-type changed to) %{DATA:aruba.msrp.decl_type} for stream %{DATA:aruba.instance.id} on port %{GREEDYDATA:aruba.port}
-                    let _ = cached_grok!("^MSRP Listener (added with declaration-type|declaration-type changed to) %{DATA:aruba.msrp.decl_type} for stream %{DATA:aruba.instance.id} on port %{GREEDYDATA:aruba.port}").extract_into(&input, event)?;
+                    if !cached_grok!("^MSRP Listener (added with declaration-type|declaration-type changed to) %{DATA:aruba.msrp.decl_type} for stream %{DATA:aruba.instance.id} on port %{GREEDYDATA:aruba.port}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -18211,8 +19189,11 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Injected view %{DATA:aruba.injected_view.name}
-                    let _ = cached_grok!("^Injected view %{DATA:aruba.injected_view.name} ")
-                        .extract_into(&input, event)?;
+                    if !cached_grok!("^Injected view %{DATA:aruba.injected_view.name} ")
+                        .extract_into(&input, event)?
+                    {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -18327,7 +19308,9 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^Underlay multicast vxlan replication tunnel %{DATA:aruba.multicast.encap_type} (pim_bidir state|hardware status) for flood group %{IP:aruba.multicast.flood_group_ip} is %{GREEDYDATA:aruba.state}
-                    let _ = cached_grok!("^Underlay multicast vxlan replication tunnel %{DATA:aruba.multicast.encap_type} (pim_bidir state|hardware status) for flood group %{IP:aruba.multicast.flood_group_ip} is %{GREEDYDATA:aruba.state}").extract_into(&input, event)?;
+                    if !cached_grok!("^Underlay multicast vxlan replication tunnel %{DATA:aruba.multicast.encap_type} (pim_bidir state|hardware status) for flood group %{IP:aruba.multicast.flood_group_ip} is %{GREEDYDATA:aruba.state}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

@@ -22,7 +22,7 @@ impl Transform for SslvpnAndAaatmFeature {
                     // Grok pattern: ^User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Browser_type \"%{DATA:citrix_adc.log.browser_type}\" - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\" ?$
                     // Grok pattern: ^User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Browser_type \"%{DATA:citrix_adc.log.browser_type}\" - SSLVPN_client_type %{DATA:citrix_adc.log.sslvpn_client_type} - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\" ?$
                     // Grok pattern: ^(Logout handler : )?Context %{DATA:citrix_adc.log.username}@%{IP} - SessionId: %{NUMBER:citrix_adc.log.session_id} - User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Browser_type \"%{DATA:citrix_adc.log.browser_type}\" - (SSLVPN_client_type %{WORD:citrix_adc.log.sslvpn_client_type} - )?Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\" ?
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Browser_type \"%{DATA:citrix_adc.log.browser_type}\" - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\" ?$"),
                             cached_grok!("^User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Browser_type \"%{DATA:citrix_adc.log.browser_type}\" - SSLVPN_client_type %{DATA:citrix_adc.log.sslvpn_client_type} - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\" ?$"),
@@ -30,7 +30,9 @@ impl Transform for SslvpnAndAaatmFeature {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -39,14 +41,16 @@ impl Transform for SslvpnAndAaatmFeature {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^(?:User %{DATA:citrix_adc.log.user})(?:%{SPACE}-%{SPACE})(?:Client_ip (%{IP:citrix_adc.log.client_ip})?)(?:%{SPACE}-%{SPACE})(?:Nat_ip (%{IP:citrix_adc.log.nat.ip}|%{DATA}))(?:%{SPACE}-%{SPACE})(?:Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port})(?:%{SPACE}-%{SPACE})(?:Start_time \"%{DATA:_tmp.start_time}\"(?:%{SPACE}-%{SPACE})End_time \"%{DATA:_tmp.end_time}\"(?:%{SPACE}-%{SPACE})Duration %{NOTSPACE:citrix_adc.log.duration})(?:%{SPACE}-%{SPACE})(?:Http_resources_accessed %{INT:citrix_adc.log.http_resources_accessed})(?:%{SPACE}-%{SPACE})(?:(?:NonHttp_services_accessed %{INT:citrix_adc.log.non_http_services_accessed}(?:%{SPACE}-%{SPACE}))?)(?:Total_TCP_connections %{INT:citrix_adc.log.total_tcp_connections}(?:(?:%{SPACE}-%{SPACE})Total_UDP_flows %{INT:citrix_adc.log.total_udp_flows})?)(?:%{SPACE}-%{SPACE})?(?:Total_policies_allowed %{INT:citrix_adc.log.total_policies_allowed}(?:%{SPACE}-%{SPACE})Total_policies_denied %{INT:citrix_adc.log.total_policies_denied})(?:%{SPACE}-%{SPACE})(?:Total_bytes_send %{INT:citrix_adc.log.total_bytes_send}(?:%{SPACE}-%{SPACE})Total_bytes_recv %{INT:citrix_adc.log.total_bytes_received})(?:%{SPACE}-%{SPACE})(?:Total_compressedbytes_send %{INT:citrix_adc.log.total_compressed_bytes_send}(?:%{SPACE}-%{SPACE})Total_compressedbytes_recv %{INT:citrix_adc.log.total_compressed_bytes_recieved})(?:%{SPACE}-%{SPACE})(?:Compression_ratio_send %{NUMBER:citrix_adc.log.compression_ratio_send}%(?:%{SPACE}-%{SPACE})Compression_ratio_recv %{NUMBER:citrix_adc.log.compression_ratio_recieved}%)(?:%{SPACE}-%{SPACE})(?:LogoutMethod \"%{DATA:citrix_adc.log.logout_method}\"(?:%{SPACE}-%{SPACE})Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\") ?$
                     // Grok pattern: ^(Logout handler : )?Context %{DATA:citrix_adc.log.username}@%{IP}(?:%{SPACE}-%{SPACE})SessionId: %{NUMBER:citrix_adc.log.session_id}(?:%{SPACE}-%{SPACE})(?:User %{DATA:citrix_adc.log.user})(?:%{SPACE}-%{SPACE})(?:Client_ip (%{IP:citrix_adc.log.client_ip})?)(?:%{SPACE}-%{SPACE})(?:Nat_ip (%{IP:citrix_adc.log.nat.ip}|\\\\?\"%{DATA}\\\\?\"))(?:%{SPACE}-%{SPACE})(?:Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port})(?:%{SPACE}-%{SPACE})(?:Start_time \\\\?\"%{DATA:_tmp.start_time}\\\\?\"(?:%{SPACE}-%{SPACE})End_time \\\\?\"%{DATA:_tmp.end_time}\\\\?\"(?:%{SPACE}-%{SPACE})Duration %{NOTSPACE:citrix_adc.log.duration})(?:%{SPACE}-%{SPACE})(?:Http_resources_accessed %{INT:citrix_adc.log.http_resources_accessed})(?:%{SPACE}-%{SPACE})(?:(?:NonHttp_services_accessed %{INT:citrix_adc.log.non_http_services_accessed}(?:%{SPACE}-%{SPACE}))?)(?:Total_TCP_connections %{INT:citrix_adc.log.total_tcp_connections}(?:(?:%{SPACE}-%{SPACE})Total_UDP_flows %{INT:citrix_adc.log.total_udp_flows})?)(?:%{SPACE}-%{SPACE})(?:Total_policies_allowed %{INT:citrix_adc.log.total_policies_allowed}(?:%{SPACE}-%{SPACE})Total_policies_denied %{INT:citrix_adc.log.total_policies_denied})(?:%{SPACE}-%{SPACE})(?:Total_bytes_send %{INT:citrix_adc.log.total_bytes_send}(?:%{SPACE}-%{SPACE})Total_bytes_recv %{INT:citrix_adc.log.total_bytes_received})(?:%{SPACE}-%{SPACE})(?:Total_compressedbytes_send %{INT:citrix_adc.log.total_compressed_bytes_send}(?:%{SPACE}-%{SPACE})Total_compressedbytes_recv %{INT:citrix_adc.log.total_compressed_bytes_recieved})(?:%{SPACE}-%{SPACE})(?:Compression_ratio_send %{NUMBER:citrix_adc.log.compression_ratio_send}%(?:%{SPACE}-%{SPACE})Compression_ratio_recv %{NUMBER:citrix_adc.log.compression_ratio_recieved}%)(?:%{SPACE}-%{SPACE})(?:LogoutMethod \\\\?\"%{DATA:citrix_adc.log.logout_method}\\\\?\"(?:%{SPACE}-%{SPACE})Group\\(s\\) \\\\?\"%{DATA:citrix_adc.log.groups}\\\\?\") ?$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^(?:User %{DATA:citrix_adc.log.user})(?:%{SPACE}-%{SPACE})(?:Client_ip (%{IP:citrix_adc.log.client_ip})?)(?:%{SPACE}-%{SPACE})(?:Nat_ip (%{IP:citrix_adc.log.nat.ip}|%{DATA}))(?:%{SPACE}-%{SPACE})(?:Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port})(?:%{SPACE}-%{SPACE})(?:Start_time \"%{DATA:_tmp.start_time}\"(?:%{SPACE}-%{SPACE})End_time \"%{DATA:_tmp.end_time}\"(?:%{SPACE}-%{SPACE})Duration %{NOTSPACE:citrix_adc.log.duration})(?:%{SPACE}-%{SPACE})(?:Http_resources_accessed %{INT:citrix_adc.log.http_resources_accessed})(?:%{SPACE}-%{SPACE})(?:(?:NonHttp_services_accessed %{INT:citrix_adc.log.non_http_services_accessed}(?:%{SPACE}-%{SPACE}))?)(?:Total_TCP_connections %{INT:citrix_adc.log.total_tcp_connections}(?:(?:%{SPACE}-%{SPACE})Total_UDP_flows %{INT:citrix_adc.log.total_udp_flows})?)(?:%{SPACE}-%{SPACE})?(?:Total_policies_allowed %{INT:citrix_adc.log.total_policies_allowed}(?:%{SPACE}-%{SPACE})Total_policies_denied %{INT:citrix_adc.log.total_policies_denied})(?:%{SPACE}-%{SPACE})(?:Total_bytes_send %{INT:citrix_adc.log.total_bytes_send}(?:%{SPACE}-%{SPACE})Total_bytes_recv %{INT:citrix_adc.log.total_bytes_received})(?:%{SPACE}-%{SPACE})(?:Total_compressedbytes_send %{INT:citrix_adc.log.total_compressed_bytes_send}(?:%{SPACE}-%{SPACE})Total_compressedbytes_recv %{INT:citrix_adc.log.total_compressed_bytes_recieved})(?:%{SPACE}-%{SPACE})(?:Compression_ratio_send %{NUMBER:citrix_adc.log.compression_ratio_send}%(?:%{SPACE}-%{SPACE})Compression_ratio_recv %{NUMBER:citrix_adc.log.compression_ratio_recieved}%)(?:%{SPACE}-%{SPACE})(?:LogoutMethod \"%{DATA:citrix_adc.log.logout_method}\"(?:%{SPACE}-%{SPACE})Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\") ?$"),
                             cached_grok!("^(Logout handler : )?Context %{DATA:citrix_adc.log.username}@%{IP}(?:%{SPACE}-%{SPACE})SessionId: %{NUMBER:citrix_adc.log.session_id}(?:%{SPACE}-%{SPACE})(?:User %{DATA:citrix_adc.log.user})(?:%{SPACE}-%{SPACE})(?:Client_ip (%{IP:citrix_adc.log.client_ip})?)(?:%{SPACE}-%{SPACE})(?:Nat_ip (%{IP:citrix_adc.log.nat.ip}|\\\\?\"%{DATA}\\\\?\"))(?:%{SPACE}-%{SPACE})(?:Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port})(?:%{SPACE}-%{SPACE})(?:Start_time \\\\?\"%{DATA:_tmp.start_time}\\\\?\"(?:%{SPACE}-%{SPACE})End_time \\\\?\"%{DATA:_tmp.end_time}\\\\?\"(?:%{SPACE}-%{SPACE})Duration %{NOTSPACE:citrix_adc.log.duration})(?:%{SPACE}-%{SPACE})(?:Http_resources_accessed %{INT:citrix_adc.log.http_resources_accessed})(?:%{SPACE}-%{SPACE})(?:(?:NonHttp_services_accessed %{INT:citrix_adc.log.non_http_services_accessed}(?:%{SPACE}-%{SPACE}))?)(?:Total_TCP_connections %{INT:citrix_adc.log.total_tcp_connections}(?:(?:%{SPACE}-%{SPACE})Total_UDP_flows %{INT:citrix_adc.log.total_udp_flows})?)(?:%{SPACE}-%{SPACE})(?:Total_policies_allowed %{INT:citrix_adc.log.total_policies_allowed}(?:%{SPACE}-%{SPACE})Total_policies_denied %{INT:citrix_adc.log.total_policies_denied})(?:%{SPACE}-%{SPACE})(?:Total_bytes_send %{INT:citrix_adc.log.total_bytes_send}(?:%{SPACE}-%{SPACE})Total_bytes_recv %{INT:citrix_adc.log.total_bytes_received})(?:%{SPACE}-%{SPACE})(?:Total_compressedbytes_send %{INT:citrix_adc.log.total_compressed_bytes_send}(?:%{SPACE}-%{SPACE})Total_compressedbytes_recv %{INT:citrix_adc.log.total_compressed_bytes_recieved})(?:%{SPACE}-%{SPACE})(?:Compression_ratio_send %{NUMBER:citrix_adc.log.compression_ratio_send}%(?:%{SPACE}-%{SPACE})Compression_ratio_recv %{NUMBER:citrix_adc.log.compression_ratio_recieved}%)(?:%{SPACE}-%{SPACE})(?:LogoutMethod \\\\?\"%{DATA:citrix_adc.log.logout_method}\\\\?\"(?:%{SPACE}-%{SPACE})Group\\(s\\) \\\\?\"%{DATA:citrix_adc.log.groups}\\\\?\") ?$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -55,14 +59,16 @@ impl Transform for SslvpnAndAaatmFeature {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - SSLRelayAddress %{IP:citrix_adc.log.ssl_relay.address}:%{INT:citrix_adc.log.ssl_relay.port} - customername(?:%{SPACE}%{WORD:citrix_adc.log.customer_name})?(?:%{SPACE}-%{SPACE})username:domainname %{DATA:citrix_adc.log.username}:%{DATA:citrix_adc.log.domain_name} - applicationName %{DATA:citrix_adc.log.application_name} - startTime \"%{DATA:_tmp.start_time}\" - connectionId %{WORD:citrix_adc.log.connection_id}%{SPACE}$
                     // Grok pattern: ^%{DATA} Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - customername(?:%{SPACE}%{WORD:citrix_adc.log.customer_name})?(?:%{SPACE}-%{SPACE})username:domainname %{DATA:citrix_adc.log.username}:%{DATA:citrix_adc.log.domain_name} - applicationName %{DATA:citrix_adc.log.application_name} - startTime \"%{DATA:_tmp.start_time}\" - connectionId %{WORD:citrix_adc.log.connection_id}%{SPACE}$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - SSLRelayAddress %{IP:citrix_adc.log.ssl_relay.address}:%{INT:citrix_adc.log.ssl_relay.port} - customername(?:%{SPACE}%{WORD:citrix_adc.log.customer_name})?(?:%{SPACE}-%{SPACE})username:domainname %{DATA:citrix_adc.log.username}:%{DATA:citrix_adc.log.domain_name} - applicationName %{DATA:citrix_adc.log.application_name} - startTime \"%{DATA:_tmp.start_time}\" - connectionId %{WORD:citrix_adc.log.connection_id}%{SPACE}$"),
                             cached_grok!("^%{DATA} Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - customername(?:%{SPACE}%{WORD:citrix_adc.log.customer_name})?(?:%{SPACE}-%{SPACE})username:domainname %{DATA:citrix_adc.log.username}:%{DATA:citrix_adc.log.domain_name} - applicationName %{DATA:citrix_adc.log.application_name} - startTime \"%{DATA:_tmp.start_time}\" - connectionId %{WORD:citrix_adc.log.connection_id}%{SPACE}$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -71,14 +77,16 @@ impl Transform for SslvpnAndAaatmFeature {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^%{DATA} ?Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - (SSLRelayAddress %{IP:citrix_adc.log.ssl_relay.address}:%{INT:citrix_adc.log.ssl_relay.port} - )?customername (%{WORD:citrix_adc.log.customer_name})? - username:domainname %{DATA:citrix_adc.log.username}:%{DATA:citrix_adc.log.domain_name} - startTime \"%{DATA:_tmp.start_time}\" - endTime \"%{DATA:_tmp.end_time}\" - Duration %{DATA:citrix_adc.log.duration} ? - Total_bytes_send %{INT:citrix_adc.log.total_bytes_send} - Total_bytes_recv %{INT:citrix_adc.log.total_bytes_received} - Total_compressedbytes_send %{INT:citrix_adc.log.total_compressed_bytes_send} - Total_compressedbytes_recv %{INT:citrix_adc.log.total_compressed_bytes_recieved} - Compression_ratio_send %{NUMBER:citrix_adc.log.compression_ratio_send:float}% - Compression_ratio_recv %{NUMBER:citrix_adc.log.compression_ratio_recieved:float}% - connectionId %{WORD:citrix_adc.log.connection_id} ?$
                     // Grok pattern: ^%{DATA} ?Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - (SSLRelayAddress %{IP:citrix_adc.log.ssl_relay.address}:%{INT:citrix_adc.log.ssl_relay.port} - )?customername (%{WORD:citrix_adc.log.customer_name})? ?- username:domainname %{DATA:citrix_adc.log.username}:%{DATA:citrix_adc.log.domain_name} - startTime \"%{DATA:_tmp.start_time}\" - endTime \"%{DATA:_tmp.end_time}\" - Duration %{DATA:citrix_adc.log.duration} ? - Total_bytes_send %{INT:citrix_adc.log.total_bytes_send} - Total_bytes_recv %{INT:citrix_adc.log.total_bytes_received} - Total_compressedbytes_send %{INT:citrix_adc.log.total_compressed_bytes_send} - Total_compressedbytes_recv %{INT:citrix_adc.log.total_compressed_bytes_recieved} - Compression_ratio_send %{NUMBER:citrix_adc.log.compression_ratio_send:float}% - Compression_ratio_recv %{NUMBER:citrix_adc.log.compression_ratio_recieved:float}% - connectionId %{WORD:citrix_adc.log.connection_id} - Total_bytes_wire_send %{INT:citrix_adc.log.total_bytes_wire_send} - Total_bytes_wire_recv %{INT:citrix_adc.log.total_bytes_wire_recieved} ?$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{DATA} ?Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - (SSLRelayAddress %{IP:citrix_adc.log.ssl_relay.address}:%{INT:citrix_adc.log.ssl_relay.port} - )?customername (%{WORD:citrix_adc.log.customer_name})? - username:domainname %{DATA:citrix_adc.log.username}:%{DATA:citrix_adc.log.domain_name} - startTime \"%{DATA:_tmp.start_time}\" - endTime \"%{DATA:_tmp.end_time}\" - Duration %{DATA:citrix_adc.log.duration} ? - Total_bytes_send %{INT:citrix_adc.log.total_bytes_send} - Total_bytes_recv %{INT:citrix_adc.log.total_bytes_received} - Total_compressedbytes_send %{INT:citrix_adc.log.total_compressed_bytes_send} - Total_compressedbytes_recv %{INT:citrix_adc.log.total_compressed_bytes_recieved} - Compression_ratio_send %{NUMBER:citrix_adc.log.compression_ratio_send:float}% - Compression_ratio_recv %{NUMBER:citrix_adc.log.compression_ratio_recieved:float}% - connectionId %{WORD:citrix_adc.log.connection_id} ?$"),
                             cached_grok!("^%{DATA} ?Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - (SSLRelayAddress %{IP:citrix_adc.log.ssl_relay.address}:%{INT:citrix_adc.log.ssl_relay.port} - )?customername (%{WORD:citrix_adc.log.customer_name})? ?- username:domainname %{DATA:citrix_adc.log.username}:%{DATA:citrix_adc.log.domain_name} - startTime \"%{DATA:_tmp.start_time}\" - endTime \"%{DATA:_tmp.end_time}\" - Duration %{DATA:citrix_adc.log.duration} ? - Total_bytes_send %{INT:citrix_adc.log.total_bytes_send} - Total_bytes_recv %{INT:citrix_adc.log.total_bytes_received} - Total_compressedbytes_send %{INT:citrix_adc.log.total_compressed_bytes_send} - Total_compressedbytes_recv %{INT:citrix_adc.log.total_compressed_bytes_recieved} - Compression_ratio_send %{NUMBER:citrix_adc.log.compression_ratio_send:float}% - Compression_ratio_recv %{NUMBER:citrix_adc.log.compression_ratio_recieved:float}% - connectionId %{WORD:citrix_adc.log.connection_id} - Total_bytes_wire_send %{INT:citrix_adc.log.total_bytes_wire_send} - Total_bytes_wire_recv %{INT:citrix_adc.log.total_bytes_wire_recieved} ?$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -87,14 +95,16 @@ impl Transform for SslvpnAndAaatmFeature {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - Start_time \"%{DATA:_tmp.start_time}\" - End_time \"%{GREEDYDATA:_tmp.end_time}\" - Duration %{DATA:citrix_adc.log.duration} - Total_bytes_send %{NUMBER:citrix_adc.log.total_bytes_send:int} - Total_bytes_recv %{NUMBER:citrix_adc.log.total_bytes_received:int} - Total_compressedbytes_send %{NUMBER:citrix_adc.log.total_compressed_bytes_send:int} - Total_compressedbytes_recv %{NUMBER:citrix_adc.log.total_compressed_bytes_recieved:int} - Compression_ratio_send %{NUMBER:citrix_adc.log.compression_ratio_send:float}% - Compression_ratio_recv %{NUMBER:citrix_adc.log.compression_ratio_recieved:float}% - Access %{WORD:citrix_adc.log.access} - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\"$
                     // Grok pattern: ^Context %{DATA:citrix_adc.log.username}@%{IP} - SessionId: %{NUMBER:citrix_adc.log.session_id} - User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - Start_time \"%{DATA:_tmp.start_time}\" - End_time \"%{GREEDYDATA:_tmp.end_time}\" - Duration %{DATA:citrix_adc.log.duration} - Total_bytes_send %{NUMBER:citrix_adc.log.total_bytes_send:int} - Total_bytes_recv %{NUMBER:citrix_adc.log.total_bytes_received:int} - Total_compressedbytes_send %{NUMBER:citrix_adc.log.total_compressed_bytes_send:int} - Total_compressedbytes_recv %{NUMBER:citrix_adc.log.total_compressed_bytes_recieved:int} - Compression_ratio_send %{NUMBER:citrix_adc.log.compression_ratio_send:float}% - Compression_ratio_recv %{NUMBER:citrix_adc.log.compression_ratio_recieved:float}% - Access %{WORD:citrix_adc.log.access} - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\" ?$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - Start_time \"%{DATA:_tmp.start_time}\" - End_time \"%{GREEDYDATA:_tmp.end_time}\" - Duration %{DATA:citrix_adc.log.duration} - Total_bytes_send %{NUMBER:citrix_adc.log.total_bytes_send:int} - Total_bytes_recv %{NUMBER:citrix_adc.log.total_bytes_received:int} - Total_compressedbytes_send %{NUMBER:citrix_adc.log.total_compressed_bytes_send:int} - Total_compressedbytes_recv %{NUMBER:citrix_adc.log.total_compressed_bytes_recieved:int} - Compression_ratio_send %{NUMBER:citrix_adc.log.compression_ratio_send:float}% - Compression_ratio_recv %{NUMBER:citrix_adc.log.compression_ratio_recieved:float}% - Access %{WORD:citrix_adc.log.access} - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\"$"),
                             cached_grok!("^Context %{DATA:citrix_adc.log.username}@%{IP} - SessionId: %{NUMBER:citrix_adc.log.session_id} - User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - Start_time \"%{DATA:_tmp.start_time}\" - End_time \"%{GREEDYDATA:_tmp.end_time}\" - Duration %{DATA:citrix_adc.log.duration} - Total_bytes_send %{NUMBER:citrix_adc.log.total_bytes_send:int} - Total_bytes_recv %{NUMBER:citrix_adc.log.total_bytes_received:int} - Total_compressedbytes_send %{NUMBER:citrix_adc.log.total_compressed_bytes_send:int} - Total_compressedbytes_recv %{NUMBER:citrix_adc.log.total_compressed_bytes_recieved:int} - Compression_ratio_send %{NUMBER:citrix_adc.log.compression_ratio_send:float}% - Compression_ratio_recv %{NUMBER:citrix_adc.log.compression_ratio_recieved:float}% - Access %{WORD:citrix_adc.log.access} - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\" ?$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -103,14 +113,16 @@ impl Transform for SslvpnAndAaatmFeature {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Last_contact \"%{DATA:citrix_adc.log.last_contact}\" - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\" ?$
                     // Grok pattern: ^Context %{DATA} - SessionId: %{NUMBER:citrix_adc.log.session_id} - User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Last_contact \"%{DATA:citrix_adc.log.last_contact}\" - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\" ?$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Last_contact \"%{DATA:citrix_adc.log.last_contact}\" - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\" ?$"),
                             cached_grok!("^Context %{DATA} - SessionId: %{NUMBER:citrix_adc.log.session_id} - User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Last_contact \"%{DATA:citrix_adc.log.last_contact}\" - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\" ?$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -119,14 +131,16 @@ impl Transform for SslvpnAndAaatmFeature {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"${DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - Start_time \"%{DATA:_tmp.start_time}\" - End_time \"%{GREEDYDATA:_tmp.end_time}\" - Duration %{DATA:citrix_adc.log.duration} - Total_bytes_send %{NUMBER:citrix_adc.log.total_bytes_send:int} - Total_bytes_recv %{NUMBER:citrix_adc.log.total_bytes_received:int} - Access %{WORD:citrix_adc.log.access} - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\" ?$
                     // Grok pattern: ^(Context %{DATA:citrix_adc.log.username}@%{IP} - SessionId: %{NUMBER:citrix_adc.log.session_id} - )?(\\[%{DATA}\\] )?User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"${DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - Start_time \"%{DATA:_tmp.start_time}\" - End_time \"%{GREEDYDATA:_tmp.end_time}\" - Duration %{DATA:citrix_adc.log.duration} - Total_bytes_send %{NUMBER:citrix_adc.log.total_bytes_send:int} - Total_bytes_recv %{NUMBER:citrix_adc.log.total_bytes_received:int} - Access %{WORD:citrix_adc.log.access} - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\" ?$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"${DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - Start_time \"%{DATA:_tmp.start_time}\" - End_time \"%{GREEDYDATA:_tmp.end_time}\" - Duration %{DATA:citrix_adc.log.duration} - Total_bytes_send %{NUMBER:citrix_adc.log.total_bytes_send:int} - Total_bytes_recv %{NUMBER:citrix_adc.log.total_bytes_received:int} - Access %{WORD:citrix_adc.log.access} - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\" ?$"),
                             cached_grok!("^(Context %{DATA:citrix_adc.log.username}@%{IP} - SessionId: %{NUMBER:citrix_adc.log.session_id} - )?(\\[%{DATA}\\] )?User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"${DATA}\") - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Source %{IP:citrix_adc.log.source.ip}:%{INT:citrix_adc.log.source.port} - Destination %{IP:citrix_adc.log.destination.ip}:%{INT:citrix_adc.log.destination.port} - Start_time \"%{DATA:_tmp.start_time}\" - End_time \"%{GREEDYDATA:_tmp.end_time}\" - Duration %{DATA:citrix_adc.log.duration} - Total_bytes_send %{NUMBER:citrix_adc.log.total_bytes_send:int} - Total_bytes_recv %{NUMBER:citrix_adc.log.total_bytes_received:int} - Access %{WORD:citrix_adc.log.access} - Group\\(s\\) \"%{DATA:citrix_adc.log.groups}\" ?$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -135,14 +149,16 @@ impl Transform for SslvpnAndAaatmFeature {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^(?:(?:Context (?:(%{USERNAME:citrix_adc.log.username}|%{EMAILADDRESS:citrix_adc.log.username}|%{DATA:citrix_adc.log.username}))@%{IP:citrix_adc.log.client_ip} ?- SessionId: %{NUMBER:citrix_adc.log.session_id} ?-) )?(?:(?:\\[TECHSUPPORT\\]\\[ENUMERATION\\] )?)(?:%{HOSTNAME:citrix_adc.log.hostname} User (?:(%{USERNAME:citrix_adc.log.user}|%{EMAILADDRESS:citrix_adc.log.user}|%{DATA:citrix_adc.log.user})) ?: Group\\(s\\) %{DATA:citrix_adc.log.groups}) : (?:Vserver %{IP:citrix_adc.log.vserver.ip}:%{NUMBER:citrix_adc.log.vserver.port}) - %{DATA:_tmp.timestamp}(?: %{WORD:citrix_adc.log.timezone})?(?: : (?:Message = )?SSO is %{WORD:citrix_adc.log.sso_status})? : (?:%{WORD:citrix_adc.log.method} %{DATA:citrix_adc.log.request.path} - -) ?$
                     // Grok pattern: ^(?:Context (?:(%{USERNAME:citrix_adc.log.username}|%{EMAILADDRESS:citrix_adc.log.username}|%{DATA:citrix_adc.log.username}))@%{IP:citrix_adc.log.client_ip} ?- SessionId: %{NUMBER:citrix_adc.log.session_id} ?-) (?:(?:\\[TECHSUPPORT\\]\\[ENUMERATION\\] )?)(?:%{HOSTNAME:citrix_adc.log.hostname} User (?:(%{USERNAME:citrix_adc.log.user}|%{EMAILADDRESS:citrix_adc.log.user}|%{DATA:citrix_adc.log.user})) ?: Group\\(s\\) %{DATA:citrix_adc.log.groups}) : (?:Vserver %{IP:citrix_adc.log.vserver.ip}:%{NUMBER:citrix_adc.log.vserver.port}) - (?:%{DATA:_tmp.timestamp} %{DATA:citrix_adc.log.timezone}) (?:%{WORD:citrix_adc.log.method} %{DATA:citrix_adc.log.request.path} - -) ?$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^(?:(?:Context (?:(%{USERNAME:citrix_adc.log.username}|%{EMAILADDRESS:citrix_adc.log.username}|%{DATA:citrix_adc.log.username}))@%{IP:citrix_adc.log.client_ip} ?- SessionId: %{NUMBER:citrix_adc.log.session_id} ?-) )?(?:(?:\\[TECHSUPPORT\\]\\[ENUMERATION\\] )?)(?:%{HOSTNAME:citrix_adc.log.hostname} User (?:(%{USERNAME:citrix_adc.log.user}|%{EMAILADDRESS:citrix_adc.log.user}|%{DATA:citrix_adc.log.user})) ?: Group\\(s\\) %{DATA:citrix_adc.log.groups}) : (?:Vserver %{IP:citrix_adc.log.vserver.ip}:%{NUMBER:citrix_adc.log.vserver.port}) - %{DATA:_tmp.timestamp}(?: %{WORD:citrix_adc.log.timezone})?(?: : (?:Message = )?SSO is %{WORD:citrix_adc.log.sso_status})? : (?:%{WORD:citrix_adc.log.method} %{DATA:citrix_adc.log.request.path} - -) ?$"),
                             cached_grok!("^(?:Context (?:(%{USERNAME:citrix_adc.log.username}|%{EMAILADDRESS:citrix_adc.log.username}|%{DATA:citrix_adc.log.username}))@%{IP:citrix_adc.log.client_ip} ?- SessionId: %{NUMBER:citrix_adc.log.session_id} ?-) (?:(?:\\[TECHSUPPORT\\]\\[ENUMERATION\\] )?)(?:%{HOSTNAME:citrix_adc.log.hostname} User (?:(%{USERNAME:citrix_adc.log.user}|%{EMAILADDRESS:citrix_adc.log.user}|%{DATA:citrix_adc.log.user})) ?: Group\\(s\\) %{DATA:citrix_adc.log.groups}) : (?:Vserver %{IP:citrix_adc.log.vserver.ip}:%{NUMBER:citrix_adc.log.vserver.port}) - (?:%{DATA:_tmp.timestamp} %{DATA:citrix_adc.log.timezone}) (?:%{WORD:citrix_adc.log.method} %{DATA:citrix_adc.log.request.path} - -) ?$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -150,7 +166,9 @@ impl Transform for SslvpnAndAaatmFeature {
             if _cond {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^- Denied_by_policy \"%{DATA:citrix_adc.log.policy_violation}\" ?$
-                    let _ = cached_grok!("^- Denied_by_policy \"%{DATA:citrix_adc.log.policy_violation}\" ?$").extract_into(&input, event)?;
+                    if !cached_grok!("^- Denied_by_policy \"%{DATA:citrix_adc.log.policy_violation}\" ?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -158,7 +176,9 @@ impl Transform for SslvpnAndAaatmFeature {
             if _cond {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^- Denied_by_policy \"%{DATA:citrix_adc.log.policy_violation}\" ?$
-                    let _ = cached_grok!("^- Denied_by_policy \"%{DATA:citrix_adc.log.policy_violation}\" ?$").extract_into(&input, event)?;
+                    if !cached_grok!("^- Denied_by_policy \"%{DATA:citrix_adc.log.policy_violation}\" ?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -166,7 +186,9 @@ impl Transform for SslvpnAndAaatmFeature {
             if _cond {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - License_limit %{NUMBER:citrix_adc.log.license_limit:int} ?$
-                    let _ = cached_grok!("^Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - License_limit %{NUMBER:citrix_adc.log.license_limit:int} ?$").extract_into(&input, event)?;
+                    if !cached_grok!("^Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - License_limit %{NUMBER:citrix_adc.log.license_limit:int} ?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -175,14 +197,16 @@ impl Transform for SslvpnAndAaatmFeature {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^%{WORD:citrix_adc.log.alert_type} ?: %{WORD:citrix_adc.log.alert_level} - ClientIP %{IP:citrix_adc.log.client_ip} - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Client_security_expression \"%{DATA:citrix_adc.log.client_security_expression}\" - ?$
                     // Grok pattern: ^CaseID: %{WORD} - Client IP %{IP:citrix_adc.log.client_ip} - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Client_security_expression \"%{GREEDYDATA:citrix_adc.log.client_security_expression}\" - Client_security_check (?:\"%{GREEDYDATA:citrix_adc.log.client_security_check_status}\"|%{WORD:citrix_adc.log.client_security_check_status})$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^%{WORD:citrix_adc.log.alert_type} ?: %{WORD:citrix_adc.log.alert_level} - ClientIP %{IP:citrix_adc.log.client_ip} - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Client_security_expression \"%{DATA:citrix_adc.log.client_security_expression}\" - ?$"),
                             cached_grok!("^CaseID: %{WORD} - Client IP %{IP:citrix_adc.log.client_ip} - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Client_security_expression \"%{GREEDYDATA:citrix_adc.log.client_security_expression}\" - Client_security_check (?:\"%{GREEDYDATA:citrix_adc.log.client_security_check_status}\"|%{WORD:citrix_adc.log.client_security_check_status})$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -190,7 +214,9 @@ impl Transform for SslvpnAndAaatmFeature {
             if _cond {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^Xdatalen %{NUMBER:citrix_adc.log.data_length:int} - Xdata %{GREEDYDATA:citrix_adc.log.data} ?$
-                    let _ = cached_grok!("^Xdatalen %{NUMBER:citrix_adc.log.data_length:int} - Xdata %{GREEDYDATA:citrix_adc.log.data} ?$").extract_into(&input, event)?;
+                    if !cached_grok!("^Xdatalen %{NUMBER:citrix_adc.log.data_length:int} - Xdata %{GREEDYDATA:citrix_adc.log.data} ?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -198,7 +224,9 @@ impl Transform for SslvpnAndAaatmFeature {
             if _cond {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^(Sessionid|Session id) %{NUMBER:citrix_adc.log.session_id:int} - User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver_ip %{IP:citrix_adc.log.vserver.ip} - Errmsg \"%{DATA:citrix_adc.log.errmsg}\" ?$
-                    let _ = cached_grok!("^(Sessionid|Session id) %{NUMBER:citrix_adc.log.session_id:int} - User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver_ip %{IP:citrix_adc.log.vserver.ip} - Errmsg \"%{DATA:citrix_adc.log.errmsg}\" ?$").extract_into(&input, event)?;
+                    if !cached_grok!("^(Sessionid|Session id) %{NUMBER:citrix_adc.log.session_id:int} - User %{DATA:citrix_adc.log.user} - Client_ip %{IP:citrix_adc.log.client_ip} - Nat_ip (%{IP:citrix_adc.log.nat.ip}|\"%{DATA}\") - Vserver_ip %{IP:citrix_adc.log.vserver.ip} - Errmsg \"%{DATA:citrix_adc.log.errmsg}\" ?$").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -207,14 +235,16 @@ impl Transform for SslvpnAndAaatmFeature {
                 if let Some(input) = event.get_string("citrix.extended.message") {
                     // Grok pattern: ^User %{USER:citrix_adc.log.user}%{SPACE}:%{SPACE}- Client%{SPACE}IP %{IP:citrix_adc.log.client_ip} - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Client%{SPACE}security%{SPACE}check%{SPACE}Passed\\(%{NUMBER:citrix_adc.log.client_security_check_status:int}\\)%{SPACE}on%{SPACE}the%{SPACE}client%{SPACE}machine$
                     // Grok pattern: ^CaseID %{WORD}: - Client IP %{IP:citrix_adc.log.client_ip} - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Client security check %{GREEDYDATA} EXISTS %{GREEDYDATA:citrix_adc.log.client_security_check_status} on the client machine$
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^User %{USER:citrix_adc.log.user}%{SPACE}:%{SPACE}- Client%{SPACE}IP %{IP:citrix_adc.log.client_ip} - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Client%{SPACE}security%{SPACE}check%{SPACE}Passed\\(%{NUMBER:citrix_adc.log.client_security_check_status:int}\\)%{SPACE}on%{SPACE}the%{SPACE}client%{SPACE}machine$"),
                             cached_grok!("^CaseID %{WORD}: - Client IP %{IP:citrix_adc.log.client_ip} - Vserver %{IP:citrix_adc.log.vserver.ip}:%{INT:citrix_adc.log.vserver.port} - Client security check %{GREEDYDATA} EXISTS %{GREEDYDATA:citrix_adc.log.client_security_check_status} on the client machine$"),
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -224,7 +254,7 @@ impl Transform for SslvpnAndAaatmFeature {
                     // Grok pattern: ^Logout handler : %{DATA}, for user <%{USERNAME|EMAILADDRESS:citrix_adc.log.username}>$
                     // Grok pattern: ^aaatm_handler successfully parsed assertion client ip is %{IP:citrix_adx.log.client_ip}, username is %{DATA:citrix_adc.log.user}$
                     // Grok pattern: %{DATA}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("^Logout handler : %{DATA}, for user <%{USERNAME|EMAILADDRESS:citrix_adc.log.username}>$"),
                             cached_grok!("^aaatm_handler successfully parsed assertion client ip is %{IP:citrix_adx.log.client_ip}, username is %{DATA:citrix_adc.log.user}$"),
@@ -232,7 +262,9 @@ impl Transform for SslvpnAndAaatmFeature {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

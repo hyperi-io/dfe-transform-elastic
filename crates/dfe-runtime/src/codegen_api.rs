@@ -1329,7 +1329,16 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         "MONTH" => MONTH,
         "MAC" => r"(?:[0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}",
         "EMAILADDRESS" => r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
-        "PATH" | "UNIXPATH" | "WINPATH" => r"[^\s]+",
+        // Elastic's own three. A Windows path admits SPACES between its
+        // backslashes, which `[^\s]+` refused: sophos_central's
+        // `C:\Program Files\Bad Vendor\Bad Program.exe` failed the whole
+        // ips_threat grok and took every `raw_data` field with it. The atomic
+        // group Elastic writes around the drive letter is dropped -- it changes
+        // backtracking, not the language, and `(?>` would push every pattern
+        // that uses PATH onto the backtracking engine.
+        "UNIXPATH" => r"(?:/(?:[\w_%!$@:.,+~-]+|\\.)*)+",
+        "WINPATH" => r"(?:[A-Za-z]+:|\\)(?:\\[^\\?*]*)+",
+        "PATH" => r"(?:(?:/(?:[\w_%!$@:.,+~-]+|\\.)*)+|(?:[A-Za-z]+:|\\)(?:\\[^\\?*]*)+)",
         // Azure custom patterns (from pipeline pattern_definitions)
         "SUBID" => {
             r"(?:\{)?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}(?:\})?"

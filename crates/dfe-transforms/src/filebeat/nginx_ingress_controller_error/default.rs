@@ -28,7 +28,9 @@ impl Transform for Default {
             if event.has_value("event.original") {
                 if let Some(input) = event.get_string("event.original") {
                     // Grok pattern: (?P<log_level>(?:[A-Z]{1}))%{MONTHNUM2:timestamp_month}%{MONTHDAY:timestamp_day} %{HOUR:timestamp_hour}:%{MINUTE:timestamp_minute}:%{SECOND:timestamp_second}.(?P<timestamp_nano>(?:[0-9]{6}))%{SPACE}%{NUMBER:nginx_ingress_controller.error.thread_id} (?P<nginx_ingress_controller_error_source_file>(?:[^:]+)):%{NUMBER:nginx_ingress_controller.error.source.line_number}\\] (?P<message>(?:(.|\\n)*))
-                    let _ = cached_grok_mapped!("(?P<log_level>(?:[A-Z]{1}))%{MONTHNUM2:timestamp_month}%{MONTHDAY:timestamp_day} %{HOUR:timestamp_hour}:%{MINUTE:timestamp_minute}:%{SECOND:timestamp_second}.(?P<timestamp_nano>(?:[0-9]{6}))%{SPACE}%{NUMBER:nginx_ingress_controller.error.thread_id} (?P<nginx_ingress_controller_error_source_file>(?:[^:]+)):%{NUMBER:nginx_ingress_controller.error.source.line_number}\\] (?P<message>(?:(.|\\n)*))", [("log_level", "log.level"), ("nginx_ingress_controller_error_source_file", "nginx_ingress_controller.error.source.file")]).extract_into(&input, event)?;
+                    if !cached_grok_mapped!("(?P<log_level>(?:[A-Z]{1}))%{MONTHNUM2:timestamp_month}%{MONTHDAY:timestamp_day} %{HOUR:timestamp_hour}:%{MINUTE:timestamp_minute}:%{SECOND:timestamp_second}.(?P<timestamp_nano>(?:[0-9]{6}))%{SPACE}%{NUMBER:nginx_ingress_controller.error.thread_id} (?P<nginx_ingress_controller_error_source_file>(?:[^:]+)):%{NUMBER:nginx_ingress_controller.error.source.line_number}\\] (?P<message>(?:(.|\\n)*))", [("log_level", "log.level"), ("nginx_ingress_controller_error_source_file", "nginx_ingress_controller.error.source.file")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

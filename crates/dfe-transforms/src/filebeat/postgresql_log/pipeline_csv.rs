@@ -168,7 +168,9 @@ impl Transform for PipelineCsv {
         if event.has_value("tempcsv.connection_from") {
             if let Some(input) = event.get_string("tempcsv.connection_from") {
                 // Grok pattern: ^%{DATA:postgresql.log.client_addr}(:%{NUMBER:postgresql.log.client_port:int})?$
-                let _ = cached_grok!("^%{DATA:postgresql.log.client_addr}(:%{NUMBER:postgresql.log.client_port:int})?$").extract_into(&input, event)?;
+                if !cached_grok!("^%{DATA:postgresql.log.client_addr}(:%{NUMBER:postgresql.log.client_port:int})?$").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
         }
 
@@ -223,7 +225,7 @@ impl Transform for PipelineCsv {
                 // Grok pattern: ^duration: %{NUMBER:temp.duration:float} ms  (?P<postgresql_log_query_step>(?:(parse|bind|statement|fastpath function call|execute|execute fetch from))) %{DATA:postgresql.log.query_name}: (?P<message>(?:(.|\n|   )*))$
                 // Grok pattern: ^duration: %{NUMBER:temp.duration:float} ms  (?P<postgresql_log_query_step>(?:(parse|bind|statement|fastpath function call|execute|execute fetch from))): (?P<message>(?:(.|\n|   )*))$
                 // Grok pattern: ^((?P<postgresql_log_query_step>(?:(parse|bind|statement|fastpath function call|execute|execute fetch from))): )?(?P<message>(?:(.|\n|   )*))$
-                let _ = extract_first_match(
+                if !extract_first_match(
                     &[
                         cached_grok!("^duration: %{NUMBER:temp.duration:float} ms$"),
                         cached_grok_mapped!("^duration: %{NUMBER:temp.duration:float} ms  (?P<postgresql_log_query_step>(?:(parse|bind|statement|fastpath function call|execute|execute fetch from))) %{DATA:postgresql.log.query_name}: (?P<message>(?:(.|\n|   )*))$", [("postgresql_log_query_step", "postgresql.log.query_step")]),
@@ -232,14 +234,18 @@ impl Transform for PipelineCsv {
                     ],
                     &input,
                     event,
-                )?;
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
         }
 
         if event.has_value("tempcsv.connection_from") {
             if let Some(input) = event.get_string("tempcsv.connection_from") {
                 // Grok pattern: ^%{DATA:postgresql.log.client_addr}(:%{NUMBER:postgresql.log.client_port:int})?$
-                let _ = cached_grok!("^%{DATA:postgresql.log.client_addr}(:%{NUMBER:postgresql.log.client_port:int})?$").extract_into(&input, event)?;
+                if !cached_grok!("^%{DATA:postgresql.log.client_addr}(:%{NUMBER:postgresql.log.client_port:int})?$").extract_into(&input, event)? {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
         }
 

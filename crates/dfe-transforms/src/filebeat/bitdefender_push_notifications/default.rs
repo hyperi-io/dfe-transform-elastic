@@ -1501,9 +1501,20 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: !(ctx.bitdefender?.event?.computer_ip instanceof List) && !(ctx.bitdefender?.event?.computer_ip == ctx.bitdefender?.event?.computer_name) && !(ctx.bitdefender?.event?.computer_ip == ctx.host?.name)
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                !(event
+                    .get("bitdefender.event.computer_ip")
+                    .is_some_and(|v| v.is_array()))
+                    && !(condition_eq(
+                        event.get("bitdefender.event.computer_ip"),
+                        event.get("bitdefender.event.computer_name"),
+                    ))
+                    && !(condition_eq(
+                        event.get("bitdefender.event.computer_ip"),
+                        event.get("host.name"),
+                    ))
+            };
+            if _cond {
                 if event.has_value("bitdefender.event.computer_ip") {
                     if let Some(s) = event.get_string("bitdefender.event.computer_ip") {
                         let mut parts: Vec<Value> = cached_regex!(",\\ *")
@@ -2095,7 +2106,7 @@ impl Transform for Default {
                         // Grok pattern: %{DATA:user.name}@%{GREEDYDATA:user.domain}
                         // Grok pattern: %{DATA:user.domain}\\\\%{GREEDYDATA:user.name}
                         // Grok pattern: %{GREEDYDATA:user.name}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "%{DATA:_tmp.user_leading_domain}\\\\%{DATA:user.name}@%{GREEDYDATA:user.domain}"
@@ -2106,7 +2117,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -2152,7 +2165,7 @@ impl Transform for Default {
                         // Grok pattern: %{DATA:user.name}@%{GREEDYDATA:user.domain}
                         // Grok pattern: %{DATA:user.domain}\\\\%{GREEDYDATA:user.name}
                         // Grok pattern: %{GREEDYDATA:user.name}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "%{DATA:_tmp.user_leading_domain}\\\\%{DATA:user.name}@%{GREEDYDATA:user.domain}"
@@ -2163,7 +2176,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -2209,7 +2224,7 @@ impl Transform for Default {
                         // Grok pattern: %{DATA:user.name}@%{GREEDYDATA:user.domain}
                         // Grok pattern: %{DATA:user.domain}\\\\%{GREEDYDATA:user.name}
                         // Grok pattern: %{GREEDYDATA:user.name}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "%{DATA:_tmp.user_leading_domain}\\\\%{DATA:user.name}@%{GREEDYDATA:user.domain}"
@@ -2220,7 +2235,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -2266,7 +2283,7 @@ impl Transform for Default {
                         // Grok pattern: %{DATA:user.name}@%{GREEDYDATA:user.domain}
                         // Grok pattern: %{DATA:user.domain}\\\\%{GREEDYDATA:user.name}
                         // Grok pattern: %{GREEDYDATA:user.name}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "%{DATA:_tmp.user_leading_domain}\\\\%{DATA:user.name}@%{GREEDYDATA:user.domain}"
@@ -2277,7 +2294,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }

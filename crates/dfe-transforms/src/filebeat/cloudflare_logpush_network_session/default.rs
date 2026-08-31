@@ -1000,7 +1000,7 @@ impl Transform for Default {
                         {
                             // Grok pattern: %{DATA:tls.version_protocol}v%{GREEDYDATA:tls.version}
                             // Grok pattern: %{DATA:tls.version_protocol} %{GREEDYDATA:tls.version}
-                            let _ = extract_first_match(
+                            if !extract_first_match(
                                 &[
                                     cached_grok!(
                                         "%{DATA:tls.version_protocol}v%{GREEDYDATA:tls.version}"
@@ -1011,7 +1011,9 @@ impl Transform for Default {
                                 ],
                                 &input,
                                 event,
-                            )?;
+                            )? {
+                                return Err(TransformError::GrokNoMatch { value: input });
+                            }
                         }
                     }
                     Ok(())

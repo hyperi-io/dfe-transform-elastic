@@ -922,7 +922,9 @@ impl Transform for Default {
             if event.has_value("sublime_security.audit.type") {
                 if let Some(input) = event.get_string("sublime_security.audit.type") {
                     // Grok pattern: .*.%{WORD:event.action}
-                    let _ = cached_grok!(".*.%{WORD:event.action}").extract_into(&input, event)?;
+                    if !cached_grok!(".*.%{WORD:event.action}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 

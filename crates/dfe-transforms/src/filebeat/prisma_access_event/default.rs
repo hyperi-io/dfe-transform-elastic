@@ -2467,7 +2467,9 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("cef.extensions.PanOSDestinationUser") {
                         // Grok pattern: (?P<prisma_access_event_pan_os_value_destination_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_pan_os_value_destination_user_name>[^\\\\]*)
-                        let _ = cached_grok_mapped!("(?P<prisma_access_event_pan_os_value_destination_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_pan_os_value_destination_user_name>[^\\\\]*)", [("prisma_access_event_pan_os_value_destination_user_domain", "prisma_access.event.pan_os_value.destination.user.domain"), ("prisma_access_event_pan_os_value_destination_user_name", "prisma_access.event.pan_os_value.destination.user.name")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?P<prisma_access_event_pan_os_value_destination_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_pan_os_value_destination_user_name>[^\\\\]*)", [("prisma_access_event_pan_os_value_destination_user_domain", "prisma_access.event.pan_os_value.destination.user.domain"), ("prisma_access_event_pan_os_value_destination_user_name", "prisma_access.event.pan_os_value.destination.user.name")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })() {
@@ -2570,7 +2572,9 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("cef.extensions.PanOSDestinationUserName")
                     {
                         // Grok pattern: (?P<prisma_access_event_pan_os_data_destination_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_pan_os_data_destination_user_name>[^\\\\]*)
-                        let _ = cached_grok_mapped!("(?P<prisma_access_event_pan_os_data_destination_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_pan_os_data_destination_user_name>[^\\\\]*)", [("prisma_access_event_pan_os_data_destination_user_domain", "prisma_access.event.pan_os_data.destination.user.domain"), ("prisma_access_event_pan_os_data_destination_user_name", "prisma_access.event.pan_os_data.destination.user.name")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?P<prisma_access_event_pan_os_data_destination_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_pan_os_data_destination_user_name>[^\\\\]*)", [("prisma_access_event_pan_os_data_destination_user_domain", "prisma_access.event.pan_os_data.destination.user.domain"), ("prisma_access_event_pan_os_data_destination_user_name", "prisma_access.event.pan_os_data.destination.user.name")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })() {
@@ -2722,7 +2726,9 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("cef.extensions.destinationUserName") {
                         // Grok pattern: (?P<prisma_access_event_destination_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_destination_user_name>[^\\\\]*)
-                        let _ = cached_grok_mapped!("(?P<prisma_access_event_destination_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_destination_user_name>[^\\\\]*)", [("prisma_access_event_destination_user_domain", "prisma_access.event.destination.user.domain"), ("prisma_access_event_destination_user_name", "prisma_access.event.destination.user.name")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?P<prisma_access_event_destination_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_destination_user_name>[^\\\\]*)", [("prisma_access_event_destination_user_domain", "prisma_access.event.destination.user.domain"), ("prisma_access_event_destination_user_name", "prisma_access.event.destination.user.name")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })() {
@@ -9079,7 +9085,9 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("cef.extensions.deviceCustomString2") {
                         // Grok pattern: (?P<prisma_access_event_normalize_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_normalize_user_name>[^\\\\]*)
-                        let _ = cached_grok_mapped!("(?P<prisma_access_event_normalize_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_normalize_user_name>[^\\\\]*)", [("prisma_access_event_normalize_user_domain", "prisma_access.event.normalize_user.domain"), ("prisma_access_event_normalize_user_name", "prisma_access.event.normalize_user.name")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?P<prisma_access_event_normalize_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_normalize_user_name>[^\\\\]*)", [("prisma_access_event_normalize_user_domain", "prisma_access.event.normalize_user.domain"), ("prisma_access_event_normalize_user_name", "prisma_access.event.normalize_user.name")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })() {
@@ -12467,7 +12475,9 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("cef.extensions.PanOSSourceUser") {
                         // Grok pattern: (?P<prisma_access_event_pan_os_value_source_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_pan_os_value_source_user_name>[^\\\\]*)
-                        let _ = cached_grok_mapped!("(?P<prisma_access_event_pan_os_value_source_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_pan_os_value_source_user_name>[^\\\\]*)", [("prisma_access_event_pan_os_value_source_user_domain", "prisma_access.event.pan_os_value.source.user.domain"), ("prisma_access_event_pan_os_value_source_user_name", "prisma_access.event.pan_os_value.source.user.name")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?P<prisma_access_event_pan_os_value_source_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_pan_os_value_source_user_name>[^\\\\]*)", [("prisma_access_event_pan_os_value_source_user_domain", "prisma_access.event.pan_os_value.source.user.domain"), ("prisma_access_event_pan_os_value_source_user_name", "prisma_access.event.pan_os_value.source.user.name")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })() {
@@ -12613,7 +12623,9 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("cef.extensions.PanOSSourceUserName") {
                         // Grok pattern: (?P<prisma_access_event_pan_os_data_source_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_pan_os_data_source_user_name>[^\\\\]*)
-                        let _ = cached_grok_mapped!("(?P<prisma_access_event_pan_os_data_source_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_pan_os_data_source_user_name>[^\\\\]*)", [("prisma_access_event_pan_os_data_source_user_domain", "prisma_access.event.pan_os_data.source.user.domain"), ("prisma_access_event_pan_os_data_source_user_name", "prisma_access.event.pan_os_data.source.user.name")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?P<prisma_access_event_pan_os_data_source_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_pan_os_data_source_user_name>[^\\\\]*)", [("prisma_access_event_pan_os_data_source_user_domain", "prisma_access.event.pan_os_data.source.user.domain"), ("prisma_access_event_pan_os_data_source_user_name", "prisma_access.event.pan_os_data.source.user.name")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })() {
@@ -12720,7 +12732,9 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("cef.extensions.sourceUserName") {
                         // Grok pattern: (?P<prisma_access_event_source_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_source_user_name>[^\\\\]*)
-                        let _ = cached_grok_mapped!("(?P<prisma_access_event_source_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_source_user_name>[^\\\\]*)", [("prisma_access_event_source_user_domain", "prisma_access.event.source.user.domain"), ("prisma_access_event_source_user_name", "prisma_access.event.source.user.name")]).extract_into(&input, event)?;
+                        if !cached_grok_mapped!("(?P<prisma_access_event_source_user_domain>[^\\\\]*)[\\\\]*(?P<prisma_access_event_source_user_name>[^\\\\]*)", [("prisma_access_event_source_user_domain", "prisma_access.event.source.user.domain"), ("prisma_access_event_source_user_name", "prisma_access.event.source.user.name")]).extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })() {

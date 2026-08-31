@@ -80,7 +80,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("kafka.log_manager.mbean") {
                         // Grok pattern: kafka.log:type=LogManager,name=LogDirectoryOffline,logDirectory=\"%{DATA:directory_offline_count_log_directory}\"
-                        let _ = cached_grok!("kafka.log:type=LogManager,name=LogDirectoryOffline,logDirectory=\"%{DATA:directory_offline_count_log_directory}\"").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.log:type=LogManager,name=LogDirectoryOffline,logDirectory=\"%{DATA:directory_offline_count_log_directory}\"").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -112,7 +114,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("kafka.log_manager.mbean") {
                         // Grok pattern: kafka.log:type=LogCleanerManager,name=uncleanable-partitions-count,logDirectory=\"%{DATA:uncleanable_partitions_count_log_directory}\"
-                        let _ = cached_grok!("kafka.log:type=LogCleanerManager,name=uncleanable-partitions-count,logDirectory=\"%{DATA:uncleanable_partitions_count_log_directory}\"").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.log:type=LogCleanerManager,name=uncleanable-partitions-count,logDirectory=\"%{DATA:uncleanable_partitions_count_log_directory}\"").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();
@@ -145,7 +149,9 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(input) = event.get_string("kafka.log_manager.mbean") {
                         // Grok pattern: kafka.log:type=LogCleanerManager,name=uncleanable-bytes,logDirectory=\"%{DATA:uncleanable_bytes_log_directory}\"
-                        let _ = cached_grok!("kafka.log:type=LogCleanerManager,name=uncleanable-bytes,logDirectory=\"%{DATA:uncleanable_bytes_log_directory}\"").extract_into(&input, event)?;
+                        if !cached_grok!("kafka.log:type=LogCleanerManager,name=uncleanable-bytes,logDirectory=\"%{DATA:uncleanable_bytes_log_directory}\"").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                     }
                     Ok(())
                 })();

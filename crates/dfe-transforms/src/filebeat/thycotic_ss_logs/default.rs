@@ -45,7 +45,7 @@ impl Transform for Default {
                     // Grok pattern: %{DATA:event.provider} - %{GREEDYDATA:event.action}
                     // Grok pattern: %{DATA:event.provider} %{GREEDYDATA:event.action}
                     // Grok pattern: %{GREEDYDATA:event.action}
-                    let _ = extract_first_match(
+                    if !extract_first_match(
                         &[
                             cached_grok!("%{DATA:event.provider} - %{GREEDYDATA:event.action}"),
                             cached_grok!("%{DATA:event.provider} %{GREEDYDATA:event.action}"),
@@ -53,7 +53,9 @@ impl Transform for Default {
                         ],
                         &input,
                         event,
-                    )?;
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
                 }
             }
 
@@ -83,8 +85,11 @@ impl Transform for Default {
                 if event.has_value("_tmp.pre_cef") {
                     if let Some(input) = event.get_string("_tmp.pre_cef") {
                         // Grok pattern: %{TIME} %{HOSTNAME:log.syslog.hostname}
-                        let _ = cached_grok!("%{TIME} %{HOSTNAME:log.syslog.hostname}")
-                            .extract_into(&input, event)?;
+                        if !cached_grok!("%{TIME} %{HOSTNAME:log.syslog.hostname}")
+                            .extract_into(&input, event)?
+                        {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -119,14 +124,16 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("log.source.address") {
                         // Grok pattern: %{IP:_tmp.host.ip:ip}:%{NUMBER}
                         // Grok pattern: %{IP:_tmp.host.ip:ip}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!("%{IP:_tmp.host.ip:ip}:%{NUMBER}"),
                                 cached_grok!("%{IP:_tmp.host.ip:ip}"),
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
                 Ok(())
@@ -181,14 +188,16 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("cef.extensions.sourceAddress") {
                         // Grok pattern: %{IP:source.ip}:%{NUMBER:source.port}
                         // Grok pattern: %{IP:source.ip}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!("%{IP:source.ip}:%{NUMBER:source.port}"),
                                 cached_grok!("%{IP:source.ip}"),
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -289,7 +298,7 @@ impl Transform for Default {
                         // Grok pattern: %{DATA:user.name}@%{GREEDYDATA:user.domain}
                         // Grok pattern: %{DATA:user.domain}\\\\%{DATA:user.name}
                         // Grok pattern: %{GREEDYDATA:user.name}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "%{DATA:_tmp.source_user_leading_domain}\\\\%{DATA:user.name}@%{GREEDYDATA:user.domain}"
@@ -300,7 +309,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -394,7 +405,7 @@ impl Transform for Default {
                     if let Some(input) = event.get_string("cef.extensions.deviceCustomString4") {
                         // Grok pattern: %{DATA:_tmp.cs4_leading_domain}\\\\%{GREEDYDATA:user.full_name}
                         // Grok pattern: %{GREEDYDATA:user.full_name}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "%{DATA:_tmp.cs4_leading_domain}\\\\%{GREEDYDATA:user.full_name}"
@@ -403,7 +414,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
@@ -536,7 +549,7 @@ impl Transform for Default {
                         // Grok pattern: %{DATA:thycotic_ss.event.user.name}@%{GREEDYDATA:thycotic_ss.event.user.domain}
                         // Grok pattern: %{GREEDYDATA:thycotic_ss.event.user.domain}\\\\%{DATA:thycotic_ss.event.user.name}
                         // Grok pattern: %{GREEDYDATA:thycotic_ss.event.user.name}
-                        let _ = extract_first_match(
+                        if !extract_first_match(
                             &[
                                 cached_grok!(
                                     "%{DATA:_tmp.destination_user_leading_domain}\\\\%{DATA:thycotic_ss.event.user.name}@%{GREEDYDATA:thycotic_ss.event.user.domain}"
@@ -551,7 +564,9 @@ impl Transform for Default {
                             ],
                             &input,
                             event,
-                        )?;
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
                     }
                 }
             }
