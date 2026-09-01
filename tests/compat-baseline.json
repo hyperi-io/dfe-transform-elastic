@@ -199,7 +199,7 @@
     "mongodb": { "events": 44, "events_total": 44, "fields_wrong": 0 },
     "mongodb_atlas": { "events": 7, "events_total": 16, "fields_wrong": 65 },
     "mysql": { "events": 440, "events_total": 440, "fields_wrong": 0 },
-    "mysql_enterprise": { "events": 1, "events_total": 34, "fields_wrong": 672 },
+    "mysql_enterprise": { "events": 1, "events_total": 34, "fields_wrong": 35 },
     "nagios_xi": { "events": 12, "events_total": 15, "fields_wrong": 3 },
     "nats": { "events": 19, "events_total": 19, "fields_wrong": 0 },
     "neon_cyber": { "events": 9, "events_total": 9, "fields_wrong": 0 },

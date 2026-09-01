@@ -1626,6 +1626,43 @@ fn run_remove_list_value(event: &mut Event, field: &str, value: &str) -> bool {
     true
 }
 
+/// `ctx.<f> = ctx.<f>.substring(0, ctx.<f>.length() - 1)` -- drop the last
+/// character.
+///
+/// `mysql_enterprise`'s audit lines arrive with the trailing comma of the array
+/// they came from, and this is what removes it. Unclaimed, the `json`
+/// processor after it had invalid JSON on every event and the source scored
+/// 1.3% of its fields.
+fn parse_drop_last_char(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let (before, after) = script.split_once(" = ctx.")?;
+    let target = clean_path(&before[before.rfind("ctx.")? + 4..]);
+    let (source, tail) = after.split_once(".substring(0, ctx.")?;
+
+    // The SAME field on both sides, and nothing but the length expression
+    // after it -- a substring of one field into another is a different shape.
+    if clean_path(source) != target || target.is_empty() {
+        return None;
+    }
+    let tail = tail.strip_prefix(source)?;
+    tail.trim_start().strip_prefix(".length() - 1);")?;
+
+    Some(KnownShape::DropLastChar(target))
+}
+
+/// Remove the final character of a string field.
+fn run_drop_last_char(event: &mut Event, field: &str) -> bool {
+    let Some(text) = event.get_string(field) else {
+        return true;
+    };
+    // By CHARACTER, so a multi-byte final character leaves valid UTF-8.
+    let mut chars = text.chars();
+    chars.next_back();
+    let _ = event.set(field, Value::String(chars.as_str().to_owned()));
+    true
+}
+
 /// A hand-written quote-aware KV splitter writing into one namespace.
 ///
 /// stormshield's WHOLE parse is this one script -- the vendor walks the
@@ -11217,6 +11254,7 @@ pub(crate) enum KnownShape {
         target: String,
     },
     KvIntoNamespace(String),
+    DropLastChar(String),
     M365ProcessEvidence(String),
     M365IdentityEvidence(String),
     Route53Answers,
@@ -12560,6 +12598,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: drop a field's last character, which is what strips the
+    // trailing comma off mysql_enterprise's audit lines before the JSON parse.
+    if normalised.contains(".substring(0, ctx.")
+        && normalised.contains(".length() - 1)")
+        && let Some(shape) = parse_drop_last_char(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
     // Pattern: a hand-written quote-aware KV split into one namespace, which
     // is the whole of stormshield's parse.
     if normalised.contains("inQuote")
@@ -13019,6 +13067,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             run_ctx_table_lookup(event, table, key, target)
         }
         KnownShape::KvIntoNamespace(target) => run_kv_into_namespace(event, target),
+        KnownShape::DropLastChar(field) => run_drop_last_char(event, field),
         KnownShape::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
         KnownShape::M365IdentityEvidence(path) => run_m365_identity_evidence(event, path),
         KnownShape::Route53Answers => run_route53_answers(event),
@@ -17997,6 +18046,23 @@ def event_timezone = get_timezone(ctx);
             event.get("_tmp"),
             Some(&json!({ "method": "GET", "url": "http://example.com/" }))
         );
+    }
+
+    /// Verbatim from `pipelines/mysql_enterprise/audit/default.yml`: the
+    /// trailing comma of the array the audit line came from, removed before
+    /// the JSON parse that would otherwise fail on every event.
+    #[test]
+    fn the_last_character_comes_off_a_field() {
+        let script = "ctx.message = ctx.message.substring(0, ctx.message.length() - 1);";
+
+        let mut event = Event::new(json!({ "message": "{\"a\":1}," }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("message"), Some("{\"a\":1}"));
+
+        // By character, not by byte, so a multi-byte tail leaves valid UTF-8.
+        let mut wide = Event::new(json!({ "message": "ab\u{00e9}" }));
+        assert!(try_known_painless(&mut wide, script));
+        assert_eq!(wide.get_str("message"), Some("ab"));
     }
 
     /// Verbatim from `pipelines/stormshield/log/default.yml`, which is that
