@@ -359,6 +359,22 @@ pub fn set_templated(event: &mut Event, template: &str, value: Value) -> Result<
     event.set(&path, value)
 }
 
+/// Remove the field at a path whose NAME is a mustache template.
+///
+/// The mirror of [`set_templated`], and needed for the same reason: a `remove`
+/// inside a `foreach` names its target through `_ingest._value`. sonicwall
+/// defers every source key it has mapped into `_temp_.removes` and drops them
+/// in one pass, and passing the template through literally removed nothing --
+/// leaving the whole `sonicwall.firewall.*` block behind as extra fields.
+pub fn remove_templated(event: &mut Event, template: &str) {
+    let path = render_path(event, template);
+    // An unresolved template names no field, so there is nothing to remove.
+    if path.is_empty() {
+        return;
+    }
+    event.remove(&path);
+}
+
 /// Substitute every `{{expr}}` / `{{{expr}}}` with the event's value for it.
 fn render_path(event: &Event, template: &str) -> String {
     let mut out = String::with_capacity(template.len());

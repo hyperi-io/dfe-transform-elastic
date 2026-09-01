@@ -31,7 +31,7 @@ pub use crate::codegen_api::{
     grok_to_regex_with_map, gsub_field, html_strip, ip_in_networks, is_internal_ip, join_values,
     kv_put, map_strings, painless_exec, painless_exec_params, parse_json_field,
     parse_json_field_to_root, parse_json_str, parse_user_agent, registered_domain_lookup,
-    resolve_path, set_templated, sort_values, uri_parts, url_decode,
+    remove_templated, resolve_path, set_templated, sort_values, uri_parts, url_decode,
 };
 
 pub use crate::painless_helpers::{

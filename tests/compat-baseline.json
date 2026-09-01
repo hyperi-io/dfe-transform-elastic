@@ -255,7 +255,7 @@
     "slack": { "events": 6, "events_total": 6, "fields_wrong": 0 },
     "snort": { "events": 21, "events_total": 36, "fields_wrong": 30 },
     "snyk": { "events": 7, "events_total": 27, "fields_wrong": 31 },
-    "sonicwall_firewall": { "events": 0, "events_total": 220, "fields_wrong": 6207 },
+    "sonicwall_firewall": { "events": 220, "events_total": 220, "fields_wrong": 0 },
     "sophos": { "events": 213, "events_total": 293, "fields_wrong": 214 },
     "sophos_central": { "events": 8, "events_total": 8, "fields_wrong": 0 },
     "splunk": { "events": 1, "events_total": 7, "fields_wrong": 27 },

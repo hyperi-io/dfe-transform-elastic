@@ -215,7 +215,7 @@ impl Transform for Default {
             )?;
 
             foreach_array(event, "_temp_.removes", |event| {
-                event.remove("sonicwall.firewall.{{{ _ingest._value }}}");
+                remove_templated(event, "sonicwall.firewall.{{{ _ingest._value }}}");
                 Ok(())
             })?;
 

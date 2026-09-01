@@ -135,6 +135,20 @@ pub(crate) enum ParamsShape {
         key: String,
     },
     MsgParts,
+    /// One deferred `{target, value}` list built from a params table, in the
+    /// three spellings the sonicwall family ships. Each defers its writes into
+    /// `_temp_.sets` and its source keys into `_temp_.removes`, which a later
+    /// `foreach` applies -- so a script can target arbitrary paths.
+    DeferredFieldTable(String),
+    DeferredSplitTable(String),
+    DeferredAppendTable(String),
+    /// `event.code` routed through one params table to name an event type,
+    /// which a second table expands into the `event.*` block.
+    MessageCodeEventType,
+    /// Each key of `params.keys` totalled across the `params.from` prefixes
+    /// into `params.to`. The literal-path spelling of the same sum is
+    /// `KnownShape::SumDirections`, which cannot read this one.
+    SummedDirections,
     MappingRow(Box<MappingRow>),
     SecuritySddl,
     KeyedRowMembers(Box<KeyedRowMembers>),
@@ -245,6 +259,45 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // Pattern: strip the vendor's sentinel values out of a map.
     if normalised.contains(".entrySet().removeIf(") && normalised.contains("entry.getValue()") {
         return Some(ParamsShape::SentinelRemoval);
+    }
+
+    // Pattern: the params-driven table scripts, which name their targets in
+    // `params` rather than spelling them. Three defer their writes onto
+    // `_temp_.sets` and their source keys onto `_temp_.removes` for a later
+    // `foreach` to apply, which is how one script targets arbitrary paths.
+    // Ahead of the generic table matchers, which read the same `params[key]`
+    // trigger as a plain lookup and would claim a script for a single field.
+    if normalised.contains("computeIfAbsent(\"sets\"") {
+        if normalised.contains("action.map == null")
+            && let Some(base) = base_between(normalised, "for (def src_field : ctx.", ".entrySet()")
+        {
+            return Some(ParamsShape::DeferredFieldTable(base));
+        }
+        if normalised.contains("splitOnToken(\":\")")
+            && let Some(base) = base_between(normalised, "String value = ctx.", "[field.getKey()]")
+        {
+            return Some(ParamsShape::DeferredSplitTable(base));
+        }
+        if normalised.contains("params.sources")
+            && let Some(base) = base_between(normalised, "Map base = ctx.", ";")
+        {
+            return Some(ParamsShape::DeferredAppendTable(base));
+        }
+    }
+
+    // Pattern: the message code expanded into the whole event block through
+    // two params tables, one naming the type and one holding its fields.
+    if normalised.contains("params.message_codes[") && normalised.contains("params.event_types[") {
+        return Some(ParamsShape::MessageCodeEventType);
+    }
+
+    // Pattern: a per-direction total, with the directions and the keys named
+    // by params rather than spelled in the script.
+    if normalised.contains("params.from")
+        && normalised.contains("params.keys")
+        && normalised.contains("ctx[params.to]")
+    {
+        return Some(ParamsShape::SummedDirections);
     }
 
     // Pattern: empty-string members dropped from each of the sub-maps params
@@ -635,8 +688,223 @@ fn params_shape_rest(normalised: &str) -> Option<ParamsShape> {
     None
 }
 
+/// The ctx path a script names between two literals, with its `?` stripped.
+///
+/// Returns None when the span is not a plain path, so a restructured script
+/// declines rather than claiming a base it never touches.
+fn base_between(script: &str, open: &str, close: &str) -> Option<String> {
+    let start = script.find(open)? + open.len();
+    let end = script[start..].find(close)? + start;
+    let raw = &script[start..end];
+    if raw.is_empty()
+        || !raw
+            .chars()
+            .all(|c| c.is_alphanumeric() || "._?".contains(c))
+    {
+        return None;
+    }
+    let path = clean_path(raw);
+    (!path.is_empty()).then_some(path)
+}
+
+/// Append to one of the deferred lists, creating it if this is the first push.
+///
+/// The vendor writes `ctx._temp_.computeIfAbsent("sets", k -> new ArrayList())`
+/// and three scripts in a row push onto the same list, so the order of the
+/// pushes is the order the `foreach` applies them -- a later set at the same
+/// target wins.
+fn push_deferred(event: &mut Event, path: &str, value: Value) {
+    let mut items = match event.get(path) {
+        Some(Value::Array(existing)) => existing.clone(),
+        _ => Vec::new(),
+    };
+    items.push(value);
+    let _ = event.set(path, Value::Array(items));
+}
+
+/// Defer a write of `value` to `target`.
+fn defer_set(event: &mut Event, target: &str, value: Value) {
+    let mut entry = Map::new();
+    entry.insert("target".to_owned(), Value::String(target.to_owned()));
+    entry.insert("value".to_owned(), value);
+    push_deferred(event, "_temp_.sets", Value::Object(entry));
+}
+
+/// Defer the removal of one key of the source map.
+fn defer_remove(event: &mut Event, key: &str) {
+    push_deferred(event, "_temp_.removes", Value::String(key.to_owned()));
+}
+
+/// A value as the params tables key themselves: a string stays as it is, and
+/// anything else takes its JSON rendering, so a number keys as its digits.
+fn table_key(value: &Value) -> String {
+    match value {
+        Value::String(text) => text.clone(),
+        other => other.to_string(),
+    }
+}
+
+/// Every key of the source map routed through `params[key]`, a list of
+/// actions each naming a `to` and optionally a `map` to translate the value.
+///
+/// A key the table does not name is left alone -- the vendor adds to `removes`
+/// only inside the `params[key] != null` guard.
+fn run_deferred_field_table(event: &mut Event, base: &str, params: &Map<String, Value>) -> bool {
+    let Some(Value::Object(source)) = event.get(base).cloned() else {
+        return true;
+    };
+    for (key, raw) in &source {
+        let Some(Value::Array(actions)) = params.get(key) else {
+            continue;
+        };
+        for action in actions {
+            let Some(target) = action.get("to").and_then(Value::as_str) else {
+                continue;
+            };
+            // A translated value that the table does not carry is DROPPED,
+            // not passed through: the vendor guards on `value != null`.
+            let value = match action.get("map") {
+                Some(Value::Object(table)) => table.get(&table_key(raw)).cloned(),
+                _ => Some(raw.clone()),
+            };
+            if let Some(value) = value {
+                defer_set(event, target, value);
+            }
+        }
+        defer_remove(event, key);
+    }
+    true
+}
+
+/// A colon-joined field split across the targets params lists for it.
+///
+/// sonicwall's `dst` is `81.2.69.143:443:X1`, which is the address, the port
+/// and the egress interface. The vendor walks the pairs DOWNWARD, so the last
+/// target is deferred first and the earliest one wins at the same target.
+fn run_deferred_split_table(event: &mut Event, base: &str, params: &Map<String, Value>) -> bool {
+    for (key, mapping) in params {
+        let Some(targets) = mapping.as_array() else {
+            continue;
+        };
+        // A key with no value is skipped BEFORE the remove, so it stays.
+        let Some(text) = event.get_string(&format!("{base}.{key}")) else {
+            continue;
+        };
+        let parts: Vec<&str> = text.split(':').collect();
+        for index in (0..parts.len().min(targets.len())).rev() {
+            if let Some(target) = targets[index].as_str() {
+                defer_set(event, target, Value::String(parts[index].to_owned()));
+            }
+        }
+        defer_remove(event, key);
+    }
+    true
+}
+
+/// One destination built by appending a fixed suffix to whichever source
+/// field is present -- sonicwall's `dur` in seconds and `cdur` in
+/// milliseconds, both becoming `event.duration` in nanoseconds.
+///
+/// The remove is OUTSIDE the presence check in the vendor script, so a named
+/// field is dropped whether or not it was there.
+fn run_deferred_append_table(event: &mut Event, base: &str, params: &Map<String, Value>) -> bool {
+    let Some(Value::Object(source)) = event.get(base).cloned() else {
+        return true;
+    };
+    let (Some(destination), Some(sources)) = (
+        params.get("destination").and_then(Value::as_str),
+        params.get("sources").and_then(Value::as_array),
+    ) else {
+        return true;
+    };
+    for entry in sources {
+        let Some(field) = entry.get("field").and_then(Value::as_str) else {
+            continue;
+        };
+        if let Some(raw) = source.get(field) {
+            let append = entry.get("append").and_then(Value::as_str).unwrap_or("");
+            defer_set(
+                event,
+                destination,
+                Value::String(format!("{}{append}", table_key(raw))),
+            );
+        }
+        defer_remove(event, field);
+    }
+    true
+}
+
+/// `event.code` through `params.message_codes` to name a type, then
+/// `params.event_types` to expand that type into the `event.*` block.
+///
+/// A code the first table does not carry leaves the event alone. A type the
+/// SECOND table does not carry makes the vendor throw, which its `on_failure`
+/// catches and turns into a tagged error -- there is nothing to throw here, so
+/// the event is left alone and the miss shows up as the missing fields.
+fn run_message_code_event_type(event: &mut Event, params: &Map<String, Value>) -> bool {
+    let Some(code) = event.get("event.code").map(table_key) else {
+        return true;
+    };
+    let Some(evtype) = params
+        .get("message_codes")
+        .and_then(Value::as_object)
+        .and_then(|codes| codes.get(&code))
+        .and_then(Value::as_str)
+    else {
+        return true;
+    };
+    if let Some(actions) = params
+        .get("event_types")
+        .and_then(Value::as_object)
+        .and_then(|types| types.get(evtype))
+        .and_then(Value::as_object)
+    {
+        for (field, value) in actions {
+            let _ = event.set(&format!("event.{field}"), value.clone());
+        }
+    }
+    let _ = event.set("event.action", Value::String(evtype.to_owned()));
+    true
+}
+
+/// Each key totalled across the named direction prefixes.
+///
+/// Only an integer counts on either side -- the vendor guards every operand on
+/// `instanceof Long`, so a byte count still carrying its grok string is skipped
+/// rather than coerced. An existing total is added to, not replaced, and the
+/// addition saturates because both operands come off the wire.
+fn run_summed_directions(event: &mut Event, params: &Map<String, Value>) -> bool {
+    let (Some(from), Some(keys), Some(to)) = (
+        params.get("from").and_then(Value::as_array),
+        params.get("keys").and_then(Value::as_array),
+        params.get("to").and_then(Value::as_str),
+    ) else {
+        return true;
+    };
+
+    for key in keys.iter().filter_map(Value::as_str) {
+        let target = format!("{to}.{key}");
+        let mut total = event.get(&target).and_then(Value::as_i64);
+        let mut summed = false;
+        for prefix in from.iter().filter_map(Value::as_str) {
+            let Some(value) = event
+                .get(&format!("{prefix}.{key}"))
+                .and_then(Value::as_i64)
+            else {
+                continue;
+            };
+            total = Some(total.map_or(value, |running| running.saturating_add(value)));
+            summed = true;
+        }
+        if summed && let Some(total) = total {
+            let _ = event.set(&target, Value::from(total));
+        }
+    }
+    true
+}
+
 /// Run the matcher a shape names, against one event.
-#[allow(clippy::too_many_lines)] // One arm per shape; splitting it would hide which matcher runs.
+#[allow(clippy::too_many_lines)] // One delegation arm per shape; it grows with the shape list.
 pub(crate) fn run_params_shape(
     event: &mut Event,
     normalised: &str,
@@ -653,6 +921,11 @@ pub(crate) fn run_params_shape(
         ParamsShape::IndexedRowColumns { subject, columns } => {
             run_indexed_row_columns(event, subject, columns, params)
         }
+        ParamsShape::DeferredFieldTable(base) => run_deferred_field_table(event, base, params),
+        ParamsShape::DeferredSplitTable(base) => run_deferred_split_table(event, base, params),
+        ParamsShape::DeferredAppendTable(base) => run_deferred_append_table(event, base, params),
+        ParamsShape::MessageCodeEventType => run_message_code_event_type(event, params),
+        ParamsShape::SummedDirections => run_summed_directions(event, params),
         ParamsShape::SysmonQueryResults => try_sysmon_query_results(event, normalised, params),
         ParamsShape::SysmonRegistry => crate::painless_windows::run_registry(event, params),
         ParamsShape::MessageTable => crate::painless_windows::run_message_table(event, params),
@@ -7290,5 +7563,105 @@ mod tests {
         assert!(try_params_painless(&mut event, script, &params));
         assert_eq!(event.get("event.type"), Some(&json!(["connection"])));
         assert_eq!(event.get_str("event.outcome"), Some("success"));
+    }
+
+    /// Verbatim from `pipelines/sonicwall_firewall/log/default.yml`: every
+    /// mapped key deferred onto `_temp_.sets`, with the source key deferred
+    /// onto `_temp_.removes` for the `foreach` that applies them.
+    #[test]
+    fn a_params_table_defers_a_set_and_a_remove_per_mapped_key() {
+        let script = "List sets = ctx._temp_.computeIfAbsent(\"sets\", k -> new ArrayList());\n\
+            List removes = ctx._temp_.computeIfAbsent(\"removes\", k -> new ArrayList());\n\
+            for (def src_field : ctx.sonicwall.firewall.entrySet()) {\n  \
+            def key = src_field.getKey();\n  if (params[key] != null) {\n    \
+            boolean mapped = false;\n    for (def action : params[key]) {\n      \
+            def value = action.map == null? src_field.getValue() : action.map[src_field.getValue()];\n      \
+            if (value != null) {\n        sets.add([\n          \"target\": action.to,\n          \
+            \"value\": value\n        ]);\n      }\n    }\n    removes.add(key);\n  }\n}\n";
+        let params = json!({
+            "id": [{ "to": "observer.name" }],
+            "pri": [
+                { "to": "event.severity" },
+                { "to": "log.level", "map": { "6": "info" } },
+            ],
+        });
+
+        let mut event = Event::new(json!({ "sonicwall": { "firewall": {
+            "id": "firewall", "pri": "6", "unmapped": "kept",
+        }}}));
+        assert!(try_params_painless(&mut event, script, &params));
+
+        assert_eq!(
+            event.get("_temp_.sets"),
+            Some(&json!([
+                { "target": "observer.name", "value": "firewall" },
+                { "target": "event.severity", "value": "6" },
+                { "target": "log.level", "value": "info" },
+            ]))
+        );
+        // Only the MAPPED keys are deferred for removal.
+        assert_eq!(event.get("_temp_.removes"), Some(&json!(["id", "pri"])));
+    }
+
+    /// The colon-joined spelling: one field split across the targets params
+    /// lists for it. sonicwall's `dst` is address, port and egress interface.
+    #[test]
+    fn a_colon_joined_field_defers_a_set_per_part() {
+        let script = "List sets = ctx._temp_.computeIfAbsent(\"sets\", k -> new ArrayList());\n\
+            List removes = ctx._temp_.computeIfAbsent(\"removes\", k -> new ArrayList());\n\
+            for (def field : params.entrySet()) {\n  \
+            String value = ctx.sonicwall.firewall[field.getKey()];\n  \
+            if (value == null) continue;\n  String[] parts = value.splitOnToken(\":\");\n  \
+            List mapping = field.getValue();\n  for ( int i = (int)Math.min(parts.length, mapping.size()) - 1\n      \
+            ; i>=0\n      ; i--) {\n    sets.add([\n      \"target\": mapping[i],\n      \
+            \"value\": parts[i]\n    ]);\n  }\n  removes.add(field.getKey());\n}\n";
+        let params = json!({
+            "dst": ["destination.address", "destination.port", "observer.egress.interface.name"],
+        });
+
+        let mut event = Event::new(json!({ "sonicwall": { "firewall": {
+            "dst": "81.2.69.143:443:X1",
+        }}}));
+        assert!(try_params_painless(&mut event, script, &params));
+
+        // Deferred in reverse, which is the order the vendor's loop walks.
+        assert_eq!(
+            event.get("_temp_.sets"),
+            Some(&json!([
+                { "target": "observer.egress.interface.name", "value": "X1" },
+                { "target": "destination.port", "value": "443" },
+                { "target": "destination.address", "value": "81.2.69.143" },
+            ]))
+        );
+        assert_eq!(event.get("_temp_.removes"), Some(&json!(["dst"])));
+    }
+
+    /// Both directions totalled into one field, with the prefixes and the keys
+    /// named by params rather than spelled in the script.
+    #[test]
+    fn a_params_named_total_sums_every_direction() {
+        let script = "for (def src : params.from) {\n  for (def key : params.keys) {\n    \
+            def v = null;\n    if (ctx[src] != null && (v = ctx[src][key]) != null && v instanceof Long) {\n      \
+            if (ctx[params.to] == null || !(ctx[params.to] instanceof Map)) {\n        \
+            ctx[params.to] = new HashMap();\n      }\n      \
+            if (ctx[params.to][key] == null || !(ctx[params.to][key] instanceof Long)) {\n        \
+            ctx[params.to][key] = v;\n      } else {\n        ctx[params.to][key] += v;\n      }\n    }\n  }\n}\n";
+        let params = json!({ "keys": ["bytes", "packets"], "from": ["source", "destination"], "to": "network" });
+
+        let mut event = Event::new(json!({
+            "source": { "bytes": 60, "packets": 1 },
+            "destination": { "bytes": 40 },
+        }));
+        assert!(try_params_painless(&mut event, script, &params));
+
+        assert_eq!(event.get("network.bytes"), Some(&json!(100)));
+        // One side present is still a total; the other contributes nothing.
+        assert_eq!(event.get("network.packets"), Some(&json!(1)));
+
+        // A count still carrying its grok string is not a Long, so the
+        // vendor's guard skips it and no total is written.
+        let mut untyped = Event::new(json!({ "source": { "bytes": "60" } }));
+        assert!(try_params_painless(&mut untyped, script, &params));
+        assert_eq!(untyped.get("network.bytes"), None);
     }
 }
