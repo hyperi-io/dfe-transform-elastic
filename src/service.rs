@@ -78,6 +78,8 @@ pub struct ScalingSignals {
 pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
     check_credentials(&transport_defaults())?;
 
+    provision_geoip(&config.geoip).await;
+
     let consumer = KafkaTransport::new(&consumer_config(&config))
         .await
         .map_err(|e| crate::Error::Transport(format!("consumer: {e}")))?;
@@ -106,6 +108,41 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
         scaling.as_ref(),
     )
     .await
+}
+
+/// Get the MMDB databases onto disk before the first batch reaches a geoip
+/// processor.
+///
+/// Provisioning is scalo's (`geoip_download`): it resolves the provider's file
+/// names, keeps a local copy inside `max_age_days`, downloads a replacement
+/// when it is stale, and falls back to the stale copy when the download fails.
+/// Only the lookup engine and its cache are ours.
+///
+/// Deliberately not on [`run_loop`], which the broker round-trip test drives
+/// directly -- a test must not reach db-ip.com. It is also why this never
+/// returns an error: a provider outage degrades enrichment, and turning that
+/// into a failed startup would take the transform offline over geo fields.
+async fn provision_geoip(config: &scalo::geoip_download::GeoIpConfig) {
+    let paths = match scalo::geoip_download::ensure_databases(config).await {
+        Ok(paths) => paths,
+        Err(e) => {
+            tracing::warn!(error = %e, "GeoIP provisioning failed; enrichment will be empty");
+            return;
+        }
+    };
+
+    tracing::info!(
+        city = ?paths.city,
+        asn = ?paths.asn,
+        provider = ?config.provider,
+        "GeoIP databases provisioned"
+    );
+
+    // False means a lookup already forced the readers open, which cannot
+    // happen here: nothing has consumed a batch yet.
+    if !dfe_runtime::enrichment::geoip_global::set_databases(paths.city, paths.asn) {
+        tracing::warn!("GeoIP databases were already resolved; the provisioned paths are unused");
+    }
 }
 
 /// The batch loop, over transports the caller already built.
@@ -164,8 +201,9 @@ pub async fn run_loop(
         tracing::info!("GeoIP enrichment active");
     } else {
         tracing::warn!(
-            "no GeoIP database found -- geo fields will be empty. Mount one at \
-             /var/lib/dfe/geoip or set GEOIP_CITY_DB and GEOIP_ASN_DB"
+            "no GeoIP database found -- geo fields will be empty. Check \
+             `geoip.enabled` and `geoip.auto_download`, or mount the files \
+             yourself and name them in `geoip.city_db_path` / `geoip.asn_db_path`"
         );
     }
 
@@ -607,6 +645,7 @@ mod tests {
                 brokers: Some(vec!["other:9092".into()]),
                 max_message_bytes: crate::config::default_max_message_bytes(),
             },
+            geoip: scalo::geoip_download::GeoIpConfig::default(),
         }
     }
 

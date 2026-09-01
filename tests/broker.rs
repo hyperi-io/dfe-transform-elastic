@@ -61,6 +61,9 @@ fn config_sized(
             brokers: Some(brokers),
             max_message_bytes: dfe_transform_elastic::config::default_max_message_bytes(),
         },
+        // Unread here: the round trip drives `run_loop`, and provisioning sits
+        // on `run`, so no test reaches a provider.
+        geoip: scalo::geoip_download::GeoIpConfig::default(),
     }
 }
 

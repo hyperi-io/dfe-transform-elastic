@@ -8,9 +8,15 @@
 //! fronts the MMDB readers.
 //!
 //! Databases are resolved once, lazily, from:
-//! 1. `GEOIP_CITY_DB` / `GEOIP_ASN_DB` (explicit paths)
-//! 2. `GEOIP_DB_DIR` (a directory of `*.mmdb`)
-//! 3. `/var/lib/dfe/geoip`, which is where dfe-loader's downloader puts them
+//! 1. Paths [`set_databases`] was given, which is where the service puts what
+//!    `scalo::geoip_download` provisioned
+//! 2. `GEOIP_CITY_DB` / `GEOIP_ASN_DB` (explicit paths)
+//! 3. `GEOIP_DB_DIR` (a directory of `*.mmdb`)
+//! 4. `/var/lib/dfe/geoip`, which is where dfe-loader's downloader puts them
+//!
+//! Steps 2 to 4 stay reachable per DATABASE, not just when provisioning was
+//! skipped altogether: a provider that publishes only ASN leaves city unset,
+//! and an operator who mounts the city file themselves must still get it.
 //!
 //! Finding none is not an error: lookups return empty and the transform
 //! carries on. [`enabled`] says which happened, so a deployment that expects
@@ -45,6 +51,12 @@ static GLOBAL_GEOIP: OnceLock<GlobalGeoIp> = OnceLock::new();
 /// Set by [`disable`] before the first lookup, read by [`init_global`].
 static DISABLED: AtomicBool = AtomicBool::new(false);
 
+/// Databases the service provisioned, set by [`set_databases`].
+///
+/// A `OnceLock` rather than a lock: it is written once at startup and read
+/// once inside [`init_global`], so nothing on the lookup path touches it.
+static PROVISIONED: OnceLock<(Option<PathBuf>, Option<PathBuf>)> = OnceLock::new();
+
 /// Load no database, whatever is on disk.
 ///
 /// For a comparison against output another engine produced with a DIFFERENT
@@ -60,6 +72,23 @@ static DISABLED: AtomicBool = AtomicBool::new(false);
 pub fn disable() -> bool {
     DISABLED.store(true, Ordering::Relaxed);
     GLOBAL_GEOIP.get().is_none()
+}
+
+/// Name the databases to load, before the first lookup.
+///
+/// This crate does not provision: `scalo::geoip_download` resolves, freshness-
+/// checks and downloads the MMDB files, and the service hands the resulting
+/// paths here. Keeping the download out of this crate is what stops a unit
+/// test or a corpus run reaching the network -- neither calls this, so both
+/// still resolve from `testdata/geoip` through the search below.
+///
+/// Either path may be `None`: a provider that publishes only ASN leaves city
+/// unresolved, and that kind falls back to the search rather than to nothing.
+///
+/// Returns false if the paths were already set or a lookup has already forced
+/// initialisation, in which case this had no effect.
+pub fn set_databases(city: Option<PathBuf>, asn: Option<PathBuf>) -> bool {
+    PROVISIONED.set((city, asn)).is_ok() && GLOBAL_GEOIP.get().is_none()
 }
 
 /// Whether any database loaded.
@@ -80,9 +109,10 @@ pub fn cache_stats() -> Stats {
 
 /// Initialise the global `GeoIP` enricher.
 ///
-/// Called lazily on first `geoip_lookup()`. Searches for MMDB files
-/// in standard locations. Non-fatal: if no databases found, lookups
-/// return empty results instead of errors.
+/// Called lazily on first `geoip_lookup()`. Takes what [`set_databases`]
+/// provisioned and searches the standard locations for whatever it did not
+/// name. Non-fatal: if no databases found, lookups return empty results
+/// instead of errors.
 fn init_global() -> GlobalGeoIp {
     if DISABLED.load(Ordering::Relaxed) {
         debug!("GeoIP enrichment disabled by request");
@@ -92,11 +122,16 @@ fn init_global() -> GlobalGeoIp {
             cache: Cache::default(),
         };
     }
-    let city_path = find_db(
-        "GEOIP_CITY_DB",
-        &["dbip-city-lite.mmdb", "GeoLite2-City.mmdb"],
-    );
-    let asn_path = find_db("GEOIP_ASN_DB", &["dbip-asn-lite.mmdb", "GeoLite2-ASN.mmdb"]);
+    let (city_provisioned, asn_provisioned) = PROVISIONED.get().cloned().unwrap_or_default();
+
+    let city_path = city_provisioned.or_else(|| {
+        find_db(
+            "GEOIP_CITY_DB",
+            &["dbip-city-lite.mmdb", "GeoLite2-City.mmdb"],
+        )
+    });
+    let asn_path = asn_provisioned
+        .or_else(|| find_db("GEOIP_ASN_DB", &["dbip-asn-lite.mmdb", "GeoLite2-ASN.mmdb"]));
 
     let city = city_path.and_then(|p| {
         info!(path = %p.display(), "loading GeoIP City database");
@@ -398,6 +433,20 @@ mod tests {
         assert_eq!(after.size, before.size, "junk was stored in the cache");
         assert_eq!(after.hits, before.hits);
         assert_eq!(after.misses, before.misses);
+    }
+
+    /// The paths are set ONCE, so a later call cannot swap the database out
+    /// from under a reader that has already mapped the file.
+    #[test]
+    fn provisioned_paths_are_set_once() {
+        let _guard = serialised();
+        // Neither kind is named, so every lookup still resolves through the
+        // search. This asserts the arity, not a path.
+        let _ = set_databases(None, None);
+        assert!(
+            !set_databases(Some(PathBuf::from("/nonexistent.mmdb")), None),
+            "a second set must not take effect"
+        );
     }
 
     #[test]

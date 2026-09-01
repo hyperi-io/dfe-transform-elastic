@@ -80,6 +80,19 @@ pub fn contract() -> DeploymentContract {
                 // headroom for the key, headers and framing.
                 "max_message_bytes": 900_000
             },
+            // scalo provisions the MMDB databases, re-downloading a file older
+            // than `max_age_days` and keeping the stale copy when a provider is
+            // down. `/var/lib/dfe/geoip` is dfe-loader's directory too, so one
+            // volume serves both stages.
+            "geoip": {
+                "enabled": true,
+                "provider": "db_ip_lite",
+                "auto_download": {
+                    "enabled": true,
+                    "data_dir": "/var/lib/dfe/geoip",
+                    "max_age_days": 30
+                }
+            },
             // No `health` or `metrics` address here: scalo's `--metrics-addr`
             // (env `METRICS_ADDR`) is the single source of truth, and a key
             // this service never reads is a knob that silently does nothing.
@@ -148,6 +161,12 @@ pub fn default_config_yaml() -> String {
 # differs. Which envelopes a source accepts is listed per source in the
 # capability catalogue, and an envelope it cannot arrive in is refused at
 # startup rather than at the first batch.
+#
+# `geoip` provisions the MMDB databases at startup and refreshes them when the
+# local copy passes `max_age_days`. Mount `data_dir` on a volume that survives
+# a restart, or each new pod downloads again. To supply the files yourself, set
+# `geoip.city_db_path` and `geoip.asn_db_path`; to run without enrichment, set
+# `geoip.enabled: false`.
 ";
 
     let body = contract()
@@ -261,6 +280,60 @@ fn capabilities() -> Vec<Capability> {
                 FieldSpec::string("sink.topic")
                     .required()
                     .description("Topic the normalised events are produced to."),
+            ),
+        Capability::new("enrichment", "geoip")
+            .description(
+                "City and ASN lookups for the geoip processors 14 of the source pipelines \
+                 carry. scalo downloads and refreshes the MMDB files; the lookup runs \
+                 in-process behind a bounded cache. A database that cannot be obtained \
+                 leaves the geo fields empty and never stops the service.",
+            )
+            .maturity("beta")
+            .field(
+                FieldSpec::bool("geoip.enabled")
+                    .default_value(true)
+                    .description("Provision databases at all."),
+            )
+            .field(
+                FieldSpec::enumeration(
+                    "geoip.provider",
+                    [
+                        "db_ip_lite",
+                        "max_mind_geo_lite2",
+                        "ip_locate",
+                        "ip_info_lite",
+                        "sapics",
+                        "custom",
+                    ],
+                )
+                .default_value("db_ip_lite")
+                .description(
+                    "Where the databases come from. Only db_ip_lite and max_mind_geo_lite2 \
+                     publish both city and ASN.",
+                ),
+            )
+            .field(FieldSpec::string("geoip.city_db_path").description(
+                "Mounted city MMDB. Setting either path bypasses the provider and \
+                     downloads nothing.",
+            ))
+            .field(
+                FieldSpec::string("geoip.asn_db_path")
+                    .description("Mounted ASN MMDB. See geoip.city_db_path."),
+            )
+            .field(
+                FieldSpec::string("geoip.auto_download.data_dir")
+                    .default_value("/var/lib/dfe/geoip")
+                    .description("Directory the downloaded databases are written to."),
+            )
+            .field(
+                FieldSpec::int("geoip.auto_download.max_age_days")
+                    .default_value(30)
+                    .description("Age past which a local database is re-downloaded."),
+            )
+            .field(
+                FieldSpec::secret("geoip.auto_download.maxmind_license_key").description(
+                    "Required by the max_mind_geo_lite2 provider, with the account id.",
+                ),
             ),
     ]
 }

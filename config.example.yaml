@@ -15,6 +15,12 @@
 # differs. Which envelopes a source accepts is listed per source in the
 # capability catalogue, and an envelope it cannot arrive in is refused at
 # startup rather than at the first batch.
+#
+# `geoip` provisions the MMDB databases at startup and refreshes them when the
+# local copy passes `max_age_days`. Mount `data_dir` on a volume that survives
+# a restart, or each new pod downloads again. To supply the files yourself, set
+# `geoip.city_db_path` and `geoip.asn_db_path`; to run without enrichment, set
+# `geoip.enabled: false`.
 
 pipeline_name: dfe-transform-elastic
 source:
@@ -31,6 +37,13 @@ sink:
   brokers:
   - kafka:9092
   max_message_bytes: 900000
+geoip:
+  enabled: true
+  provider: db_ip_lite
+  auto_download:
+    enabled: true
+    data_dir: /var/lib/dfe/geoip
+    max_age_days: 30
 scaling:
   enabled: true
   memory_gate_threshold: 0.8

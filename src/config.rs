@@ -27,6 +27,14 @@ pub struct Config {
 
     /// Outbound side.
     pub sink: SinkConfig,
+
+    /// Which MMDB databases the geoip processors read, and how to obtain them.
+    ///
+    /// scalo's type verbatim: provisioning is shared across the fleet, and the
+    /// lookup engine and its cache stay in `dfe-runtime`. Read once at startup,
+    /// so a change needs a restart.
+    #[serde(default)]
+    pub geoip: scalo::geoip_download::GeoIpConfig,
 }
 
 /// Inbound configuration.
@@ -211,6 +219,7 @@ mod tests {
                 brokers: None,
                 max_message_bytes: default_max_message_bytes(),
             },
+            geoip: scalo::geoip_download::GeoIpConfig::default(),
         }
     }
 
@@ -259,6 +268,28 @@ mod tests {
         .expect("config parses without a sink budget");
         assert_eq!(parsed.sink.max_message_bytes, 900_000);
         assert!(parsed.sink.max_message_bytes < 1_000_000);
+    }
+
+    /// A config written before the geoip section existed still loads, and
+    /// loads with provisioning ON -- the point of the section is that an
+    /// operator gets databases without configuring anything.
+    #[test]
+    fn geoip_provisions_unless_it_is_turned_off() {
+        let base = "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
+                    group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n";
+
+        let parsed: Config =
+            serde_yaml_ng::from_str(base).expect("config parses without a geoip section");
+        assert!(parsed.geoip.enabled);
+        assert!(parsed.geoip.auto_download.enabled);
+        assert_eq!(
+            parsed.geoip.provider,
+            scalo::geoip_download::GeoIpProvider::DbIpLite
+        );
+
+        let off: Config = serde_yaml_ng::from_str(&format!("{base}geoip:\n  enabled: false\n"))
+            .expect("config parses with geoip disabled");
+        assert!(!off.geoip.enabled);
     }
 
     #[test]
