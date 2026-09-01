@@ -1663,6 +1663,48 @@ fn run_drop_last_char(event: &mut Event, field: &str) -> bool {
     true
 }
 
+/// A list deduplicated in place, and UNWRAPPED when one member is left.
+///
+/// suricata writes `destination.domain` as a list and then collapses it, so
+/// the field is a bare string wherever the answers agreed and a list only
+/// where they did not. The unwrap is the part that matters -- leaving a
+/// one-member list is a different document from a string.
+fn parse_dedupe_unwrap(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let raw = script.split_once(" = ctx.")?.1.split_once(';')?.0;
+    if raw.is_empty()
+        || !raw
+            .chars()
+            .all(|c| c.is_alphanumeric() || "._?".contains(c))
+    {
+        return None;
+    }
+    let field = clean_path(raw);
+    (!field.is_empty()).then_some(KnownShape::DedupeUnwrap(field))
+}
+
+/// Drop repeated members, keeping first-seen order, then unwrap a single one.
+fn run_dedupe_unwrap(event: &mut Event, field: &str) -> bool {
+    let Some(Value::Array(items)) = event.get(field).cloned() else {
+        return true;
+    };
+
+    let mut kept: Vec<Value> = Vec::with_capacity(items.len());
+    for item in items {
+        if !kept.contains(&item) {
+            kept.push(item);
+        }
+    }
+
+    let value = match kept.len() {
+        1 => kept.into_iter().next().unwrap_or(Value::Null),
+        _ => Value::Array(kept),
+    };
+    let _ = event.set(field, value);
+    true
+}
+
 /// `fortinet_fortiproxy`'s KV loop, which is stormshield's idea with five
 /// behavioural differences -- hence its own runner rather than a widened
 /// [`parse_kv_into_namespace`].
@@ -11327,6 +11369,7 @@ pub(crate) enum KnownShape {
     },
     KvIntoNamespace(String),
     KvIntoFields(String),
+    DedupeUnwrap(String),
     DropLastChar(String),
     M365ProcessEvidence(String),
     M365IdentityEvidence(String),
@@ -12682,6 +12725,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: a list deduplicated and then unwrapped when one member is
+    // left, which is how suricata collapses destination.domain.
+    if normalised.contains(".stream().distinct().collect(Collectors.toList())")
+        && normalised.contains(".length == 1")
+        && let Some(shape) = parse_dedupe_unwrap(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
     // Pattern: the fortiproxy variant of the same loop. FIRST, because it
     // spells `inQuote` and `kvSplit` too and the plain reader would claim it
     // and then drop its N/A and non-word-key rules.
@@ -13153,6 +13206,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         }
         KnownShape::KvIntoNamespace(target) => run_kv_into_namespace(event, target),
         KnownShape::KvIntoFields(target) => run_kv_into_fields(event, target),
+        KnownShape::DedupeUnwrap(field) => run_dedupe_unwrap(event, field),
         KnownShape::DropLastChar(field) => run_drop_last_char(event, field),
         KnownShape::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
         KnownShape::M365IdentityEvidence(path) => run_m365_identity_evidence(event, path),
@@ -18156,6 +18210,33 @@ def event_timezone = get_timezone(ctx);
         let mut wide = Event::new(json!({ "message": "ab\u{00e9}" }));
         assert!(try_known_painless(&mut wide, script));
         assert_eq!(wide.get_str("message"), Some("ab"));
+    }
+
+    /// Verbatim from `pipelines/suricata/eve/default.yml`: a list
+    /// deduplicated and then UNWRAPPED when one member is left, which is what
+    /// makes `destination.domain` a bare string where the answers agreed.
+    #[test]
+    fn a_deduplicated_list_unwraps_to_its_last_member() {
+        let script = "def domain = ctx.destination?.domain; if (domain instanceof Collection) {\n\n\n  \
+            domain = domain.stream().distinct().collect(Collectors.toList());\n  \
+            if (domain.length == 1) {\n    domain = domain[0];\n  }\n  \
+            ctx.destination.domain = domain;\n}\n";
+
+        // Every member the same collapses to the bare value, not a list.
+        let mut one =
+            Event::new(json!({ "destination": { "domain": ["a.example", "a.example"] } }));
+        assert!(try_known_painless(&mut one, script));
+        assert_eq!(one.get("destination.domain"), Some(&json!("a.example")));
+
+        // Two survivors stay a list, in first-seen order.
+        let mut many = Event::new(
+            json!({ "destination": { "domain": ["b.example", "a.example", "b.example"] } }),
+        );
+        assert!(try_known_painless(&mut many, script));
+        assert_eq!(
+            many.get("destination.domain"),
+            Some(&json!(["b.example", "a.example"]))
+        );
     }
 
     /// The fortiproxy variant: the same idea as stormshield's loop, with the
