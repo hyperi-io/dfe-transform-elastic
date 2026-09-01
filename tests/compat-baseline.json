@@ -215,7 +215,7 @@
     "o365_metrics": { "events": 4, "events_total": 28, "fields_wrong": 352 },
     "okta": { "events": 24, "events_total": 24, "fields_wrong": 0 },
     "openai": { "events": 5, "events_total": 5, "fields_wrong": 0 },
-    "opencanary": { "events": 1, "events_total": 35, "fields_wrong": 88 },
+    "opencanary": { "events": 35, "events_total": 35, "fields_wrong": 0 },
     "oracle": { "events": 1, "events_total": 29, "fields_wrong": 330 },
     "oracle_weblogic": { "events": 46, "events_total": 46, "fields_wrong": 0 },
     "osquery": { "events": 2213, "events_total": 2213, "fields_wrong": 0 },

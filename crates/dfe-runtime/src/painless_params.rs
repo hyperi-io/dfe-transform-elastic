@@ -145,6 +145,11 @@ pub(crate) enum ParamsShape {
         source: String,
         target: String,
     },
+    /// The same lookup, falling back to the KEY where the table has no row.
+    LookupOrKey {
+        source: String,
+        target: String,
+    },
     /// One deferred `{target, value}` list built from a params table, in the
     /// three spellings the sonicwall family ships. Each defers its writes into
     /// `_temp_.sets` and its source keys into `_temp_.removes`, which a later
@@ -463,6 +468,17 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         return Some(ParamsShape::FirstContainedMember);
     }
 
+    // Pattern: the same lookup, but keeping the KEY where the table has no
+    // row. Ahead of the plain assign, which would claim it and drop the
+    // fallback -- opencanary keeps an unrecognised log code as its own name.
+    if normalised.contains("params.get(")
+        && normalised.contains("== null) {")
+        && let Some(source) = base_between(normalised, " = ctx.", ".toString()")
+        && let Some(target) = bracket_path_before(normalised, " = params.get(")
+    {
+        return Some(ParamsShape::LookupOrKey { source, target });
+    }
+
     // Pattern: one field keying a params table, the row assigned whole.
     // bitdefender ships four of these back to back, one per `event.*` field,
     // differing only in the target they name.
@@ -722,6 +738,57 @@ fn params_shape_rest(normalised: &str) -> Option<ParamsShape> {
     }
 
     None
+}
+
+/// The ctx path before a literal, accepting a bracket subscript.
+///
+/// `ctx.log['logger']` names the field a dotted path would; the brackets are
+/// how Painless spells a key it does not want read as an identifier, and
+/// opencanary writes its target that way.
+fn bracket_path_before(script: &str, close: &str) -> Option<String> {
+    let head = &script[..script.find(close)?];
+    let raw = head[head.rfind("ctx.")? + 4..].trim();
+
+    let mut path = String::with_capacity(raw.len());
+    let mut rest = raw;
+    while let Some(open) = rest.find('[') {
+        path.push_str(&rest[..open]);
+        let inner = &rest[open + 1..];
+        let end = inner.find(']')?;
+        path.push('.');
+        path.push_str(inner[..end].trim().trim_matches(['\'', '"']));
+        rest = &inner[end + 1..];
+    }
+    path.push_str(rest);
+
+    let path = clean_path(&path);
+    (!path.is_empty()
+        && path
+            .chars()
+            .all(|c| c.is_alphanumeric() || "._@-".contains(c)))
+    .then_some(path)
+}
+
+/// The row `source` keys, or the KEY ITSELF where the table has no row.
+///
+/// opencanary names its log type from a numeric code and keeps the code as
+/// the name when it does not recognise it, which is a fallback rather than a
+/// default -- the value written depends on the document.
+fn run_lookup_or_key(
+    event: &mut Event,
+    source: &str,
+    target: &str,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(key) = event.get(source).map(table_key) else {
+        return true;
+    };
+    let value = params
+        .get(&key)
+        .cloned()
+        .unwrap_or_else(|| Value::String(key));
+    let _ = event.set(target, value);
+    true
 }
 
 /// The ctx path immediately BEFORE a literal, read backwards from it.
@@ -1023,6 +1090,9 @@ pub(crate) fn run_params_shape(
         }
         ParamsShape::KeyedRowAssign { source, target } => {
             run_keyed_row_assign(event, source, target, params)
+        }
+        ParamsShape::LookupOrKey { source, target } => {
+            run_lookup_or_key(event, source, target, params)
         }
         ParamsShape::DeferredFieldTable(base) => run_deferred_field_table(event, base, params),
         ParamsShape::DeferredSplitTable(base) => run_deferred_split_table(event, base, params),
@@ -7666,6 +7736,28 @@ mod tests {
         assert!(try_params_painless(&mut event, script, &params));
         assert_eq!(event.get("event.type"), Some(&json!(["connection"])));
         assert_eq!(event.get_str("event.outcome"), Some("success"));
+    }
+
+    /// Verbatim from `pipelines/opencanary/events/default.yml`: the log code
+    /// named through the table, and KEPT as its own name when the table has
+    /// no row for it. The target is a bracket subscript.
+    #[test]
+    fn an_unlisted_key_becomes_its_own_value() {
+        let script = "String logType = ctx.opencanary.logtype.toString();\n        \
+            if (ctx.log == null) {\n          ctx.log = new HashMap();\n        }\n        \
+            if (params.get(logType) == null) {\n          ctx.log['logger'] = logType;\n        \
+            } else {\n          ctx.log['logger'] = params.get(logType);\n        }";
+        let params = json!({ "13001": "LOG_SNMP_CMD" });
+
+        let mut known = Event::new(json!({ "opencanary": { "logtype": 13001 } }));
+        assert!(try_params_painless(&mut known, script, &params));
+        assert_eq!(known.get_str("log.logger"), Some("LOG_SNMP_CMD"));
+
+        // A code the table does not carry stays as itself, which is a
+        // FALLBACK rather than a default -- the value comes from the event.
+        let mut unlisted = Event::new(json!({ "opencanary": { "logtype": 4242 } }));
+        assert!(try_params_painless(&mut unlisted, script, &params));
+        assert_eq!(unlisted.get_str("log.logger"), Some("4242"));
     }
 
     /// Verbatim from `pipelines/bitdefender/push_notifications/default.yml`,

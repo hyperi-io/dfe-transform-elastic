@@ -184,30 +184,31 @@
  25 FiletimeFieldList
  26 BitFlags
  27 FirstContainedMember
- 28 KeyedRowAssign
- 29 FirstLabelInTable
- 30 RenameKeys
- 31 ValueMaps
- 32 InstructionRows
- 33 RowColumnAppends
- 34 RowColumns
- 35 KeyedMessageTable
- 36 MessageTable
- 37 FirstAsset
- 38 MatcherKv
- 39 IndexedRowColumns
- 40 LookupPut
- 41 LookupWrapList
- 42 ProtocolPrefix
- 43 ReversibleLookup
- 44 LookupMerge
- 45 KeyedActionRow
- 46 KeyedRowAppends
- 47 LookupColumns
- 48 LookupNormalise
- 49 IndexedLookup
- 50 Scale
- 51 Replace
- 52 AddUniqueRow
- 53 FrameworkPreference
+ 28 LookupOrKey
+ 29 KeyedRowAssign
+ 30 FirstLabelInTable
+ 31 RenameKeys
+ 32 ValueMaps
+ 33 InstructionRows
+ 34 RowColumnAppends
+ 35 RowColumns
+ 36 KeyedMessageTable
+ 37 MessageTable
+ 38 FirstAsset
+ 39 MatcherKv
+ 40 IndexedRowColumns
+ 41 LookupPut
+ 42 LookupWrapList
+ 43 ProtocolPrefix
+ 44 ReversibleLookup
+ 45 LookupMerge
+ 46 KeyedActionRow
+ 47 KeyedRowAppends
+ 48 LookupColumns
+ 49 LookupNormalise
+ 50 IndexedLookup
+ 51 Scale
+ 52 Replace
+ 53 AddUniqueRow
+ 54 FrameworkPreference
 
