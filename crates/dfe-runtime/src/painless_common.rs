@@ -1626,6 +1626,164 @@ fn run_remove_list_value(event: &mut Event, field: &str, value: &str) -> bool {
     true
 }
 
+/// Split a firehose record on spaces, keeping quoted runs whole.
+///
+/// The quotes stay IN the token, which is what the vendor's `StringBuilder`
+/// does, and the S3 host-header test depends on it.
+fn firehose_tokens(message: &str) -> Vec<String> {
+    let mut tokens = Vec::new();
+    let mut current = String::new();
+    let mut inside = false;
+
+    for c in message.chars() {
+        if c == '"' {
+            inside = !inside;
+            current.push(c);
+        } else if c == ' ' && !inside {
+            if !current.is_empty() {
+                tokens.push(std::mem::take(&mut current));
+            }
+        } else {
+            current.push(c);
+        }
+    }
+    if !current.is_empty() {
+        tokens.push(current);
+    }
+    tokens
+}
+
+/// Name the AWS log type a firehose record carries.
+///
+/// A transliteration of awsfirehose's own classifier, ladder order included --
+/// the route53 arms have to stay in this order, and the resolver test would
+/// otherwise claim the public records.
+fn firehose_dataset(event: &Event, message: &str, lower: &str) -> Option<&'static str> {
+    // `ctx['aws.kinesis.name']` is a bracket subscript of a flat dotted key at
+    // the ROOT, which is a literal read and not a path walk.
+    let literal = |key: &str| -> Option<&str> { event.as_value().as_object()?.get(key)?.as_str() };
+    let group_holds = |needle: &str| {
+        literal("aws.cloudwatch.log_group").is_some_and(|value| value.contains(needle))
+    };
+
+    if literal("aws.kinesis.name").is_some_and(|v| v.contains("aws-waf-logs-"))
+        || group_holds("aws-waf-logs-")
+    {
+        return Some("aws.waf");
+    }
+    if ["webaclid", "terminatingrule", "httpsource", "rulegrouplist"]
+        .iter()
+        .all(|needle| lower.contains(needle))
+    {
+        return Some("aws.waf");
+    }
+    if literal("aws.cloudwatch.log_stream").is_some_and(|v| v.contains("CloudTrail")) {
+        return Some("aws.cloudtrail");
+    }
+    // A transit gateway names itself; an ENI or NAT record is known by its
+    // action instead, and v9+ regional NAT reports the interface as `-`.
+    if (lower.contains("tgw-") && lower.contains("transitgateway"))
+        || ((lower.contains("eni-") || lower.contains("nat-"))
+            && ["accept", "reject", "nodata", "skipdata"]
+                .iter()
+                .any(|action| lower.contains(action)))
+    {
+        return Some("aws.vpcflow");
+    }
+    if [
+        "\"firewall_name\":",
+        "\"availability_zone\":",
+        "\"event_timestamp\":",
+        "\"event\":",
+    ]
+    .iter()
+    .all(|key| lower.contains(key))
+    {
+        return Some("aws.firewall_logs");
+    }
+    if [
+        "\"version\":",
+        "\"account_id\":",
+        "\"region\":",
+        "\"vpc_id\":",
+        "\"query_timestamp\":",
+    ]
+    .iter()
+    .all(|key| lower.contains(key))
+    {
+        return Some("aws.route53_resolver_logs");
+    }
+    if group_holds("/aws/route53/") {
+        // The vendor's chain STOPS on the group name, so a record from this
+        // group that fails the shape test is left unnamed rather than falling
+        // through to the token checks.
+        return (message.contains('T')
+            && message.contains('Z')
+            && message.contains("NOERROR")
+            && message.contains("UDP"))
+        .then_some("aws.route53_public_logs");
+    }
+    if lower.contains("\"requestid\":")
+        && lower.contains("\"ip\":")
+        && (lower.contains("\"requesttime\":") || lower.contains("\"request_time\":"))
+        && (lower.contains("\"httpmethod\":") || lower.contains("\"eventtype\":"))
+    {
+        return Some("aws.apigateway_logs");
+    }
+
+    let tokens = firehose_tokens(message);
+    if tokens.len() >= 24 {
+        if tokens[23].contains("s3") && tokens[23].contains("amazonaws.com") {
+            return Some("aws.s3access");
+        }
+        if ["SOAP.", "REST.", "BATCH.", "WEBSITE.", "S3."]
+            .iter()
+            .any(|prefix| tokens[7].starts_with(prefix))
+        {
+            return Some("aws.s3access");
+        }
+    }
+
+    // Tokenising splits the CloudFront timestamp in two, which is why 33 is
+    // the count and why the date and time are checked as separate tokens.
+    if tokens.len() == 33 {
+        let (date, time) = (tokens[0].as_bytes(), tokens[1].as_bytes());
+        let dated = date.len() == 10 && date[4] == b'-' && date[7] == b'-';
+        let timed = time.len() == 8 && time[2] == b':' && time[5] == b':';
+        return (dated && timed).then_some("aws.cloudfront_logs");
+    }
+    if tokens
+        .first()
+        .is_some_and(|first| matches!(first.as_str(), "http" | "https" | "tcp" | "tls" | "udp"))
+    {
+        return Some("aws.elb_logs");
+    }
+    // A classic ELB, known by two host:port tokens and a number after them.
+    // The vendor reads token 4 behind a `length >= 4` guard and catches the
+    // index error, so four tokens name nothing.
+    if matches!(tokens.len(), 15 | 22 | 29)
+        && tokens.len() >= 5
+        && tokens[2].contains(':')
+        && tokens[3].contains(':')
+        && tokens[4].parse::<f64>().is_ok()
+    {
+        return Some("aws.elb_logs");
+    }
+    None
+}
+
+/// Write the dataset the firehose classifier names, if it names one.
+fn run_firehose_dataset(event: &mut Event) -> bool {
+    let Some(message) = event.get_string("message") else {
+        return true;
+    };
+    let lower = message.to_lowercase();
+    if let Some(dataset) = firehose_dataset(event, &message, &lower) {
+        let _ = event.set("event.dataset", Value::String(dataset.to_owned()));
+    }
+    true
+}
+
 /// The sorted key names of the FIRST nested map holding an inner map.
 ///
 /// awsfirehose collects every metric name out of `aws.<service>.metrics` so a
@@ -10922,6 +11080,7 @@ pub(crate) enum KnownShape {
         inner: String,
         target: String,
     },
+    FirehoseDataset,
     M365ProcessEvidence(String),
     M365IdentityEvidence(String),
     Route53Answers,
@@ -12265,6 +12424,13 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: awsfirehose naming the AWS log type its record carries. Its own
+    // classifier, so the trigger is its own literals.
+    if normalised.contains("aws-waf-logs-") && normalised.contains("tokens_result") {
+        shapes.push(KnownShape::FirehoseDataset);
+        return shapes;
+    }
+
     // Pattern: the sorted key names of the first nested map holding an inner
     // map, which awsfirehose fingerprints to key a document by its metrics.
     if normalised.contains("metricNames")
@@ -12692,6 +12858,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             inner,
             target,
         } => run_nested_key_names(event, source, inner, target),
+        KnownShape::FirehoseDataset => run_firehose_dataset(event),
         KnownShape::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
         KnownShape::M365IdentityEvidence(path) => run_m365_identity_evidence(event, path),
         KnownShape::Route53Answers => run_route53_answers(event),
@@ -17669,6 +17836,58 @@ def event_timezone = get_timezone(ctx);
         assert_eq!(
             event.get("_tmp"),
             Some(&json!({ "method": "GET", "url": "http://example.com/" }))
+        );
+    }
+
+    /// The firehose classifier's ladder order, which is what its correctness
+    /// rests on, plus the two readings that are easy to get wrong.
+    #[test]
+    fn the_firehose_classifier_names_a_log_type() {
+        let dataset = |event: &Event| -> Option<String> {
+            let message = event.get_string("message")?;
+            let lower = message.to_lowercase();
+            super::firehose_dataset(event, &message, &lower).map(str::to_owned)
+        };
+
+        // A bracket subscript reads the FLAT key, which no dotted path finds.
+        let waf = Event::new(json!({
+            "aws.kinesis.name": "aws-waf-logs-stream", "message": "anything",
+        }));
+        assert_eq!(dataset(&waf).as_deref(), Some("aws.waf"));
+
+        // The resolver test must beat the public one: both are route53, and
+        // only the ladder's order keeps them apart.
+        let resolver = Event::new(json!({
+            "aws.cloudwatch.log_group": "/aws/route53/example",
+            "message": "{\"version\":1,\"account_id\":\"1\",\"region\":\"us-east-1\",\
+                \"vpc_id\":\"vpc-1\",\"query_timestamp\":\"2023-01-01\"}",
+        }));
+        assert_eq!(
+            dataset(&resolver).as_deref(),
+            Some("aws.route53_resolver_logs")
+        );
+
+        // A record from the route53 group that fails the shape test is left
+        // UNNAMED -- the vendor's chain stops on the group name.
+        let unnamed = Event::new(json!({
+            "aws.cloudwatch.log_group": "/aws/route53/example", "message": "nothing useful",
+        }));
+        assert_eq!(dataset(&unnamed), None);
+
+        // An ELB is known by its first token.
+        let elb = Event::new(
+            json!({ "message": "https 2023-01-01T00:00:00 app/x 1.2.3.4:1 5.6.7.8:2 0.1" }),
+        );
+        assert_eq!(dataset(&elb).as_deref(), Some("aws.elb_logs"));
+    }
+
+    /// Quotes stay IN the token, and a quoted run holds its spaces.
+    #[test]
+    fn firehose_tokens_keep_a_quoted_run_whole() {
+        let tokens = super::firehose_tokens(r#"a "b c" d"#);
+        assert_eq!(
+            tokens,
+            vec!["a".to_owned(), "\"b c\"".to_owned(), "d".to_owned()]
         );
     }
 
