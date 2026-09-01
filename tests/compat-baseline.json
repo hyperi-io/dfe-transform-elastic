@@ -282,7 +282,7 @@
     "tencent_cloud": { "events": 26, "events_total": 26, "fields_wrong": 0 },
     "tetragon": { "events": 0, "events_total": 14, "fields_wrong": 300 },
     "thycotic_ss": { "events": 2, "events_total": 2, "fields_wrong": 0 },
-    "ti_abusech": { "events": 127, "events_total": 142, "fields_wrong": 16 },
+    "ti_abusech": { "events": 138, "events_total": 142, "fields_wrong": 2 },
     "ti_anomali": { "events": 130, "events_total": 131, "fields_wrong": 1 },
     "ti_anyrun": { "events": 0, "events_total": 4, "fields_wrong": 8 },
     "ti_cif3": { "events": 0, "events_total": 2, "fields_wrong": 4 },

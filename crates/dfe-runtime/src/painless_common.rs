@@ -3307,6 +3307,62 @@ fn try_literal_value_map(event: &mut Event, script: &str) -> bool {
     matched
 }
 
+/// Every VALUE of a map gathered into one deduped list, lists flattened.
+///
+/// Sibling of [`KnownShape::CollectMapValues`], which walks `.keySet()` and
+/// reads a named leaf off each entry. This one walks `.values()` and takes the
+/// value itself, stepping into a value that is a list -- `ti_abusech` gathers
+/// `threat.indicator.file.hash` (md5, sha256, ssdeep, ...) into `related.hash`,
+/// and `ssdeep` may itself be a list.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct FlattenMapInto {
+    source: String,
+    target: String,
+}
+
+fn parse_flatten_map_into(script: &str) -> Option<FlattenMapInto> {
+    // `for (def x : <map>.values())`
+    let receiver = identifier_before(script.split_once(".values()")?.0)?;
+    let source = ctx_path_bound_to(script, receiver)
+        .or_else(|| painless_path(script.split_once(".values()")?.0))?;
+
+    // `ctx.<target>.add(<item>)`
+    let target = painless_path(script.split_once(".add(")?.0)?;
+    (source != target).then_some(FlattenMapInto { source, target })
+}
+
+fn run_flatten_map_into(event: &mut Event, shape: &FlattenMapInto) -> bool {
+    let Some(Value::Object(map)) = event.get(&shape.source).cloned() else {
+        // Gated on the map, which the processor's own `if` also checks.
+        return true;
+    };
+
+    // The script appends to whatever is already there, and `preserve_order`
+    // means `values()` walks the document's own order.
+    let mut collected: Vec<Value> = match event.get(&shape.target) {
+        Some(Value::Array(items)) => items.clone(),
+        _ => Vec::new(),
+    };
+    let push = |value: &Value, into: &mut Vec<Value>| {
+        if !value.is_null() && !into.contains(value) {
+            into.push(value.clone());
+        }
+    };
+    for value in map.values() {
+        match value {
+            Value::Array(items) => {
+                for item in items {
+                    push(item, &mut collected);
+                }
+            }
+            other => push(other, &mut collected),
+        }
+    }
+
+    let _ = event.set(&shape.target, Value::Array(collected));
+    true
+}
+
 /// Render whole numbers as strings, in place, where they are not already one.
 ///
 /// `ti_anomali` does it to `id` and `update_id` because they arrive from JSON
@@ -10868,6 +10924,7 @@ pub(crate) enum KnownShape {
     ProcessNameFromCommandLine,
     FlagsPresent(Box<FlagsPresent>),
     ZipLists(Box<ZipLists>),
+    FlattenMapInto(Box<FlattenMapInto>),
     StringifyLongs(Vec<String>),
     CopyByLabel(Box<CopyByLabel>),
     BandLadder(Box<BandLadder>),
@@ -12058,6 +12115,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: every value of a map gathered into one deduped list, a value
+    // that is itself a list flattened into it.
+    if normalised.contains(".values()")
+        && normalised.contains("instanceof List")
+        && normalised.contains(".add(")
+        && let Some(shape) = parse_flatten_map_into(normalised)
+    {
+        shapes.push(KnownShape::FlattenMapInto(Box::new(shape)));
+        return shapes;
+    }
+
     // Pattern: whole numbers rendered as strings in place. Ahead of the
     // ladders below, whose `instanceof String` guard and `!= null` triggers
     // this also spells.
@@ -12680,6 +12748,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             absent,
             divisor,
         } => run_guarded_divide(event, target, source, absent.as_ref(), *divisor),
+        KnownShape::FlattenMapInto(shape) => run_flatten_map_into(event, shape),
         KnownShape::StringifyLongs(fields) => run_stringify_longs(event, fields),
         KnownShape::CopyByLabel(shape) => run_copy_by_label(event, shape),
         KnownShape::BandLadder(shape) => run_band_ladder(event, shape),
@@ -13225,6 +13294,47 @@ mod tests {
             Some("Not Specified")
         );
     }
+
+    /// `pipelines/ti_abusech/malwarebazaar/default.yml`: the hash map's values
+    /// gathered into `related.hash`, a value that is itself a list flattened
+    /// in, and nothing repeated.
+    #[test]
+    fn a_map_is_flattened_into_a_deduped_list() {
+        let mut event = Event::new(json!({
+            "threat": { "indicator": { "file": { "hash": {
+                "md5": "aaa",
+                "sha256": "bbb",
+                // ssdeep arrives as a list, and one member repeats the md5.
+                "ssdeep": ["ccc", "ddd", "aaa"],
+            } } } },
+        }));
+        assert!(try_known_painless(&mut event, COLLECT_HASHES));
+        assert_eq!(
+            event.get("related.hash"),
+            Some(&json!(["aaa", "bbb", "ccc", "ddd"]))
+        );
+    }
+
+    /// The script APPENDS -- an earlier processor may have put a hash there,
+    /// and replacing the list would drop it.
+    #[test]
+    fn flattening_keeps_what_the_target_already_held() {
+        let mut event = Event::new(json!({
+            "related": { "hash": ["existing"] },
+            "threat": { "indicator": { "file": { "hash": { "md5": "aaa" } } } },
+        }));
+        assert!(try_known_painless(&mut event, COLLECT_HASHES));
+        assert_eq!(event.get("related.hash"), Some(&json!(["existing", "aaa"])));
+    }
+
+    const COLLECT_HASHES: &str = "def map = ctx.threat.indicator.file.hash;\n\
+        if(ctx.related == null) {\n    ctx.put('related', new HashMap());\n}\n\
+        if(ctx.related.hash == null) {\n    ctx.related.put('hash',new ArrayList());\n}\n\
+        for (def x : map.values()) {\n    if (x instanceof List) {\n        \
+        for (def i : x) {\n            if(i != null && !ctx.related.hash.contains(i)) {\n\
+        ctx.related.hash.add(i);\n            }\n        }\n    \
+        } else if(x != null && !ctx.related.hash.contains(x)) {\n        \
+        ctx.related.hash.add(x);\n    }\n}\n";
 
     /// A big id arrives from JSON as a number and Elasticsearch renders it as
     /// a string; leaving it numeric is a type mismatch on every event.
