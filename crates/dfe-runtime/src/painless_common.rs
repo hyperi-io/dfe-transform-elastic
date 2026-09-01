@@ -3232,6 +3232,214 @@ fn try_literal_value_map(event: &mut Event, script: &str) -> bool {
     matched
 }
 
+/// A number banded into a label.
+///
+/// Distinct from [`RangeLadder`] by SPELLING, not by meaning: the guards are
+/// written subject-first (`value > 0 && value < 30`) instead of literal-first,
+/// the out-of-range band is an `||`, and the label may land in a local that one
+/// closing `.put()` writes rather than in the arm itself.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct BandLadder {
+    /// Where the number is read from.
+    subject: String,
+    /// Bands in the script's own order; the first that holds wins.
+    arms: Vec<(Band, String)>,
+    /// The label when no band holds. `None` where the script writes nothing,
+    /// which is what `ti_anomali` does for a value between its bands.
+    default: Option<String>,
+    target: String,
+}
+
+/// One arm's guard: comparisons over the subject, joined one way.
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct Band {
+    bounds: Vec<Bound>,
+    /// `&&` when true, `||` when false. A guard mixing the two is declined.
+    all: bool,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct Bound {
+    op: Cmp,
+    /// Whole numbers only, so the shape derives `Eq` and never rounds a
+    /// boundary the vendor wrote. Every threshold in the catalogue is one.
+    value: i64,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum Cmp {
+    Lt,
+    Le,
+    Gt,
+    Ge,
+}
+
+impl Band {
+    fn holds(&self, value: f64) -> bool {
+        let hit = |bound: &Bound| {
+            // Thresholds are vendor-written band edges -- 0, 30, 70, 100 --
+            // so the i64 is always exact in an f64.
+            #[allow(clippy::cast_precision_loss)]
+            let limit = bound.value as f64;
+            match bound.op {
+                Cmp::Lt => value < limit,
+                Cmp::Le => value <= limit,
+                Cmp::Gt => value > limit,
+                Cmp::Ge => value >= limit,
+            }
+        };
+        if self.all {
+            self.bounds.iter().all(hit)
+        } else {
+            self.bounds.iter().any(hit)
+        }
+    }
+}
+
+fn parse_band_ladder(script: &str) -> Option<BandLadder> {
+    let (local, subject) = local_and_ctx_path(script)?;
+
+    let mut arms = Vec::new();
+    let mut written: Option<String> = None;
+    let mut label_local: Option<String> = None;
+
+    for block in script.split("if (").skip(1) {
+        let (guard, body) = block.split_once(") {")?;
+        let band = parse_band(guard, &local)?;
+
+        // `ctx["x"] = "Label";` or `label = "Label";` -- the second form needs
+        // the closing `.put()` to say where it lands.
+        let (lhs, rhs) = body.split(';').next()?.split_once('=')?;
+        let label = quoted_first(rhs)?;
+        // Every arm has to agree on where it writes, or this is two shapes.
+        if let Some(path) = painless_path(lhs) {
+            if written.get_or_insert_with(|| path.clone()) != &path {
+                return None;
+            }
+        } else {
+            let name = lhs.trim().to_string();
+            if label_local.get_or_insert_with(|| name.clone()) != &name {
+                return None;
+            }
+        }
+        arms.push((band, label));
+    }
+
+    // Two arms is the least that is a ladder rather than a single guard.
+    if arms.len() < 2 {
+        return None;
+    }
+
+    let target = match &label_local {
+        // `ctx.threat.indicator.put("confidence", confidence)`
+        Some(_) => {
+            let (head, rest) = script.rsplit_once(".put(")?;
+            format!("{}.{}", painless_path(head)?, quoted_first(rest)?)
+        }
+        None => written?,
+    };
+
+    Some(BandLadder {
+        subject,
+        arms,
+        // The local's initialiser is the no-band-holds label.
+        default: label_local.and_then(|name| {
+            script
+                .split_once(&format!(" {name} = "))
+                .and_then(|(_, rest)| quoted_first(rest.split(';').next()?))
+        }),
+        target,
+    })
+}
+
+/// The first `def x = ctx.<path>` binding, as (local, path).
+///
+/// Splits on STATEMENTS, not lines: these scripts ship as a YAML folded
+/// scalar, so the whole preamble arrives on one line and a line-based read
+/// takes the rest of the script as the path.
+fn local_and_ctx_path(script: &str) -> Option<(String, String)> {
+    use crate::painless_params::clean_path;
+
+    script.split([';', '\n']).find_map(|statement| {
+        let (declaration, value) = statement.trim().split_once(" = ")?;
+        let path = value.trim().strip_prefix("ctx.")?;
+        let name = declaration.rsplit(' ').next()?;
+        (declaration.split(' ').count() == 2 && !name.is_empty())
+            .then(|| (name.to_string(), clean_path(path.trim())))
+    })
+}
+
+/// One guard, as comparisons over `local` joined by `&&` or `||`.
+fn parse_band(guard: &str, local: &str) -> Option<Band> {
+    let all = !guard.contains("||");
+    if !all && guard.contains("&&") {
+        // A mixed guard is a different shape; reading it as one or the other
+        // would take the wrong arm.
+        return None;
+    }
+    let bounds: Option<Vec<Bound>> = guard
+        .split(if all { "&&" } else { "||" })
+        .map(|clause| parse_bound(clause, local))
+        .collect();
+    let bounds = bounds?;
+    (!bounds.is_empty()).then_some(Band { bounds, all })
+}
+
+fn parse_bound(clause: &str, local: &str) -> Option<Bound> {
+    let rest = clause.trim().strip_prefix(local)?.trim_start();
+    // Two-character operators first, or `>=` reads as `>` and the band shifts
+    // by one.
+    let (op, number) = [
+        ("<=", Cmp::Le),
+        (">=", Cmp::Ge),
+        ("<", Cmp::Lt),
+        (">", Cmp::Gt),
+    ]
+    .into_iter()
+    .find_map(|(token, op)| Some((op, rest.strip_prefix(token)?)))?;
+    Some(Bound {
+        op,
+        value: whole_number(number)?,
+    })
+}
+
+/// A threshold written `70`, `70.0` or `70L`. A genuinely fractional one
+/// declines the whole shape rather than rounding a boundary the vendor wrote.
+fn whole_number(text: &str) -> Option<i64> {
+    let text = text.trim().trim_end_matches(['L', 'l', 'f', 'F', 'd', 'D']);
+    let Some((whole, fraction)) = text.split_once('.') else {
+        return text.parse().ok();
+    };
+    if !fraction.bytes().all(|b| b == b'0') {
+        return None;
+    }
+    whole.parse().ok()
+}
+
+fn run_band_ladder(event: &mut Event, shape: &BandLadder) -> bool {
+    // A grok leaves a numeric field as a string and the `convert` may not have
+    // run yet, so read it either way.
+    let Some(value) = event
+        .get_f64(&shape.subject)
+        .or_else(|| event.get_as_string(&shape.subject)?.trim().parse().ok())
+    else {
+        // Absent, which every one of these scripts is gated on.
+        return false;
+    };
+
+    let label = shape
+        .arms
+        .iter()
+        .find(|(band, _)| band.holds(value))
+        .map(|(_, label)| label.clone())
+        .or_else(|| shape.default.clone());
+
+    if let Some(label) = label {
+        let _ = event.set(&shape.target, json!(label));
+    }
+    true
+}
+
 /// An expiry timestamp: a base plus a duration whose LAST CHARACTER is a unit.
 ///
 /// Every threat-intel package computes one. The unit switch is the shape --
@@ -10388,6 +10596,7 @@ pub(crate) enum KnownShape {
     ProcessNameFromCommandLine,
     FlagsPresent(Box<FlagsPresent>),
     ZipLists(Box<ZipLists>),
+    BandLadder(Box<BandLadder>),
     IocExpiry(Box<IocExpiry>),
     WrapMapInList(String),
     FirstOrSelf(Box<FirstOrSelf>),
@@ -10654,6 +10863,19 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_range_ladder(normalised)
     {
         shapes.push(KnownShape::RangeLadder(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: a number banded into a label, in the spelling `RangeLadder`
+    // above does NOT parse -- comparisons written subject-first
+    // (`value > 0 && value < 30`) rather than literal-first, arms that may
+    // land in a LOCAL one `.put()` writes at the end, and an `||` guard for
+    // the out-of-range band. Every threat-intel package normalises its
+    // vendor confidence this way.
+    if normalised.contains("&&")
+        && let Some(shape) = parse_band_ladder(normalised)
+    {
+        shapes.push(KnownShape::BandLadder(Box::new(shape)));
         return shapes;
     }
 
@@ -12155,6 +12377,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             absent,
             divisor,
         } => run_guarded_divide(event, target, source, absent.as_ref(), *divisor),
+        KnownShape::BandLadder(shape) => run_band_ladder(event, shape),
         KnownShape::IocExpiry(shape) => run_ioc_expiry(event, shape),
         KnownShape::GuardedCopy => try_guarded_copy(event, normalised),
         KnownShape::PlainAssignments => {
@@ -12604,6 +12827,99 @@ mod tests {
         _tmp_deleted_at = _tmp_deleted_at.minusMinutes(transform_max_age_in_min)\
         .minusSeconds(max_ingest_time_in_sec);\n\
         ctx.abusech.ja3_fingerprints.deleted_at = _tmp_deleted_at;\n";
+
+    // Both constants are the FOLDED form the call sites actually hold: these
+    // scripts are YAML `source: >`, so the preamble is one line and only the
+    // braces carry newlines. A pretty-printed copy parses differently and
+    // would test a script that never ships.
+
+    /// `pipelines/ti_anomali/threatstream/default.yml`: each arm writes a
+    /// bracketed ctx key and returns, and the out-of-range band is an `||`.
+    const CONFIDENCE_RETURNING: &str = "def value = ctx.json.confidence; \
+        if (value <= 0.0 || value > 100.0) {\n  \
+        ctx[\"threatintel_indicator_confidence\"] = \"None\";\n  return;\n} \
+        if (value >= 1.0 && value <= 29.0) {\n  \
+        ctx[\"threatintel_indicator_confidence\"] = \"Low\";\n  return;\n} \
+        if (value >= 30.0 && value <= 69.0) {\n  \
+        ctx[\"threatintel_indicator_confidence\"] = \"Medium\";\n  return;\n} \
+        if (value >= 70 && value <= 100) {\n  \
+        ctx[\"threatintel_indicator_confidence\"] = \"High\";\n  return;\n}\n";
+
+    /// `pipelines/ti_abusech/threatfox/default.yml`: the arms fill a local one
+    /// closing `.put()` writes, and the local's initialiser is the default.
+    const CONFIDENCE_PUT: &str = "def value = ctx.abusech.threatfox.confidence_level; \
+        def confidence = \"None\"; if (value > 0 && value < 30) {\n  confidence = \"Low\";\n\
+        } if (value >= 30.0 && value < 70) {\n  confidence = \"Medium\";\n\
+        } else if (value >= 70 && value <= 100) {\n  confidence = \"High\";\n\
+        } ctx.threat.indicator.put(\"confidence\", confidence)\n";
+
+    #[test]
+    fn a_returning_band_ladder_takes_the_first_band_that_holds() {
+        for (confidence, expected) in [
+            (0, Some("None")),
+            (101, Some("None")),
+            (1, Some("Low")),
+            (29, Some("Low")),
+            (30, Some("Medium")),
+            (69, Some("Medium")),
+            (70, Some("High")),
+            (100, Some("High")),
+        ] {
+            let mut event = Event::new(json!({ "json": { "confidence": confidence } }));
+            assert!(try_known_painless(&mut event, CONFIDENCE_RETURNING));
+            assert_eq!(
+                event.get_str("threatintel_indicator_confidence"),
+                expected,
+                "confidence {confidence}"
+            );
+        }
+    }
+
+    /// Between the bands the script returns having written nothing, and a
+    /// default would be this shape inventing one.
+    #[test]
+    fn a_ladder_with_no_default_writes_nothing_between_bands() {
+        let mut event = Event::new(json!({ "json": { "confidence": 0.5 } }));
+        assert!(try_known_painless(&mut event, CONFIDENCE_RETURNING));
+        assert_eq!(event.get("threatintel_indicator_confidence"), None);
+    }
+
+    /// The local's initialiser IS the no-band label, and the closing `.put()`
+    /// names where it lands.
+    #[test]
+    fn a_put_band_ladder_falls_back_to_the_locals_initialiser() {
+        for (level, expected) in [
+            (0, "None"),
+            (150, "None"),
+            (1, "Low"),
+            (29, "Low"),
+            (30, "Medium"),
+            (69, "Medium"),
+            (70, "High"),
+            (100, "High"),
+        ] {
+            let mut event =
+                Event::new(json!({ "abusech": { "threatfox": { "confidence_level": level } } }));
+            assert!(try_known_painless(&mut event, CONFIDENCE_PUT));
+            assert_eq!(
+                event.get_str("threat.indicator.confidence"),
+                Some(expected),
+                "confidence_level {level}"
+            );
+        }
+    }
+
+    /// A vendor field that has not been through a `convert` is a string, and
+    /// banding it as one would put every event in the same arm.
+    #[test]
+    fn a_band_ladder_reads_a_numeric_string() {
+        let mut event = Event::new(json!({ "json": { "confidence": "85" } }));
+        assert!(try_known_painless(&mut event, CONFIDENCE_RETURNING));
+        assert_eq!(
+            event.get_str("threatintel_indicator_confidence"),
+            Some("High")
+        );
+    }
 
     /// Verbatim from `testdata/compat/ti_abusech/url/test-abusechurl-dump`:
     /// 2021-10-05 plus the configured 90 days.
