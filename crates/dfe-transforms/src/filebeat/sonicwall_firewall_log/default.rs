@@ -220,7 +220,8 @@ impl Transform for Default {
             })?;
 
             foreach_array(event, "_temp_.sets", |event| {
-                event.set(
+                set_templated(
+                    event,
                     "{{{ _ingest._value.target }}}",
                     json!(
                         event

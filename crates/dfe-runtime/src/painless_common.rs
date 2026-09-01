@@ -3122,15 +3122,15 @@ fn drop_value(
 ///
 /// Converts camelCase JSON object keys to `snake_case` recursively.
 /// Common in Okta and other pipelines for normalising field names.
-pub fn keys_to_snake_case(value: &mut Value) {
+pub fn keys_to_snake_case(value: &mut Value, rule: SnakeRule) {
     match value {
         Value::Object(map) => {
             let entries: Vec<(String, Value)> = map
                 .iter()
                 .map(|(k, v)| {
-                    let snake = to_snake_case(k, SnakeRule::BeforeEveryUpper);
+                    let snake = to_snake_case(k, rule);
                     let mut v = v.clone();
-                    keys_to_snake_case(&mut v);
+                    keys_to_snake_case(&mut v, rule);
                     (snake, v)
                 })
                 .collect();
@@ -3141,7 +3141,7 @@ pub fn keys_to_snake_case(value: &mut Value) {
         }
         Value::Array(arr) => {
             for v in arr {
-                keys_to_snake_case(v);
+                keys_to_snake_case(v, rule);
             }
         }
         _ => {}
@@ -8925,6 +8925,198 @@ pub(crate) struct NestUnder {
     removes: Vec<String>,
 }
 
+/// A field replaced by WHETHER it equals a literal.
+///
+/// `def value = ctx.a.b; ctx.a['b'] = value == 'yes';` -- cyberarkpas turns
+/// its `Rfc5424` string into the boolean Elasticsearch stores.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct EqualsLiteralFlag {
+    source: String,
+    target: String,
+    literal: String,
+}
+
+fn parse_equals_literal_flag(script: &str) -> Option<EqualsLiteralFlag> {
+    use crate::painless_params::clean_path;
+
+    // Two statements and a trailing newline; anything longer is a different
+    // script that happens to compare against a literal somewhere.
+    if script.split(';').filter(|s| !s.trim().is_empty()).count() > 2 {
+        return None;
+    }
+
+    let (head, tail) = script.split_once(" == ")?;
+    let literal = tail
+        .split(';')
+        .next()?
+        .trim()
+        .trim_matches(['\'', '"'])
+        .to_string();
+
+    let (assigned, local) = head.rsplit_once(" = ")?;
+    let target = desubscript(assigned.rsplit(';').next()?.trim());
+    let target = clean_path(target.strip_prefix("ctx.")?);
+    let source = resolve_local_path(script, local.trim())?;
+
+    Some(EqualsLiteralFlag {
+        source,
+        target,
+        literal,
+    })
+}
+
+fn run_equals_literal_flag(event: &mut Event, shape: &EqualsLiteralFlag) -> bool {
+    // Painless throws writing through an absent parent, so a missing container
+    // means the script never got to write at all.
+    let parent = shape.target.rsplit_once('.').map_or("", |(head, _)| head);
+    if !parent.is_empty() && !event.has(parent) {
+        return true;
+    }
+
+    // An absent source reads as null, and `null == 'yes'` is false.
+    let matched = event.get_str(&shape.source) == Some(shape.literal.as_str());
+    let _ = event.set(&shape.target, Value::Bool(matched));
+    true
+}
+
+/// A value looked up in a LIST of records, one member of the match written on.
+///
+/// sophos spells it twice against its config: the log's `IST` through
+/// `_conf.tz_map` to `Asia/Kolkata`, and the device serial through
+/// `_conf.mappings` to a hostname, that one falling back to `_conf.default`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct RecordLookup {
+    /// The list of records.
+    table: String,
+    /// The field whose value is matched.
+    subject: String,
+    /// The record member compared against it.
+    key: String,
+    /// The record member taken from the match.
+    value: String,
+    /// Where the result lands.
+    target: String,
+    /// The field holding the value used when nothing matches.
+    default: Option<String>,
+}
+
+/// Follow `def a = ctx['x']; def b = a.y;` back to the dotted `ctx` path.
+///
+/// These scripts bind a subtree to a local before looping over it, so the
+/// table's real path is two or three `def`s away from the `for`.
+fn resolve_local_path(script: &str, expr: &str) -> Option<String> {
+    use crate::painless_params::clean_path;
+
+    let mut expr = desubscript(expr.trim());
+    // Bounded: a `def` that refers to itself would otherwise spin.
+    for _ in 0..8 {
+        if let Some(rest) = expr.strip_prefix("ctx.") {
+            return Some(clean_path(rest));
+        }
+        let (head, tail) = expr
+            .split_once('.')
+            .map_or((expr.as_str(), ""), |(head, tail)| (head, tail));
+        let binding = format!("def {head} = ");
+        let start = script.find(&binding)? + binding.len();
+        let bound = &script[start..];
+        let bound = bound[..bound.find([';', '\n'])?].trim();
+        expr = desubscript(&if tail.is_empty() {
+            bound.to_string()
+        } else {
+            format!("{bound}.{tail}")
+        });
+    }
+    None
+}
+
+/// `a['b']` and `a["b"]` are `a.b`, and the pipelines use every spelling.
+fn desubscript(expr: &str) -> String {
+    let mut out = String::with_capacity(expr.len());
+    let mut rest = expr;
+    while let Some((head, tail)) = rest.split_once('[') {
+        let Some((key, after)) = tail.split_once(']') else {
+            break;
+        };
+        out.push_str(head);
+        out.push('.');
+        out.push_str(key.trim().trim_matches(['\'', '"']));
+        rest = after;
+    }
+    out.push_str(rest);
+    out
+}
+
+/// `for (def i : <list>) { if (i.<key> == <subject>) { <target> = i.<value>; } }`
+fn parse_record_lookup(script: &str) -> Option<RecordLookup> {
+    use crate::painless_params::{balanced, clean_path};
+
+    let (head, rest) = script.split_once(" : ")?;
+    let item = head.rsplit_once("def ")?.1.trim();
+    let (table, after) = rest.split_once(')')?;
+    let table = resolve_local_path(script, table.trim())?;
+    let (body, tail) = balanced(after.trim_start(), '{', '}')?;
+
+    // The comparison names the member and the value it is matched against.
+    let (guard, assignment) = body.split_once(&format!("{item}."))?;
+    if !guard.contains("if") {
+        return None;
+    }
+    let (key, after_key) = assignment.split_once("==")?;
+    let subject = resolve_local_path(script, after_key.split(')').next()?.trim())?;
+
+    // The taken member, and where the script puts it.
+    let (lhs, rhs) = assignment.split_once(&format!("= {item}."))?;
+    let value = rhs
+        .split(|c: char| !c.is_alphanumeric() && c != '_')
+        .next()
+        .filter(|value| !value.is_empty())?;
+    let written = lhs.rsplit(['\n', '{', '}', ';']).next()?.trim();
+
+    // The write is either straight onto `ctx`, or onto a local the script
+    // seeds with a default and assigns after the loop.
+    let (target, default) = match written.strip_prefix("ctx.") {
+        Some(path) => (clean_path(path), None),
+        None => (
+            crate::painless_params::ctx_path_before(tail, &format!("= {written};"))?,
+            resolve_local_path(script, written),
+        ),
+    };
+
+    Some(RecordLookup {
+        table,
+        subject,
+        key: clean_path(key.trim()),
+        value: value.to_string(),
+        target,
+        default,
+    })
+}
+
+fn run_record_lookup(event: &mut Event, shape: &RecordLookup) -> bool {
+    let Some(Value::Array(records)) = event.get(&shape.table).cloned() else {
+        // `if (mappings == null) return;` -- the script's own guard.
+        return true;
+    };
+    let Some(subject) = event.get(&shape.subject).cloned() else {
+        return true;
+    };
+
+    let mut chosen = shape
+        .default
+        .as_ref()
+        .and_then(|path| event.get(path).cloned());
+    for record in &records {
+        if record.get(&shape.key) == Some(&subject) {
+            chosen = record.get(&shape.value).cloned();
+            break;
+        }
+    }
+    if let Some(value) = chosen {
+        let _ = event.set(&shape.target, value);
+    }
+    true
+}
+
 /// One list's members collected into deduped arrays.
 ///
 /// `cisco_secure_endpoint` walks `computer.network_addresses` three times: the
@@ -9884,7 +10076,7 @@ pub(crate) enum KnownShape {
     JoinOptional,
     AppendEach,
     LiteralValueMap,
-    KeysToSnakeCase(Option<String>),
+    KeysToSnakeCase(Option<String>, SnakeRule),
     CommandLine {
         parent: bool,
     },
@@ -9918,6 +10110,8 @@ pub(crate) enum KnownShape {
     MapEntryToBoolean(Box<MapEntryToBoolean>),
     NestUnder(Box<NestUnder>),
     CollectFromList(Box<CollectFromList>),
+    RecordLookup(Box<RecordLookup>),
+    EqualsLiteralFlag(Box<EqualsLiteralFlag>),
     PositionInList(Box<PositionInList>),
     SplitFirstLabel(Box<SplitFirstLabel>),
     HashesByLength(Box<HashesByLength>),
@@ -10018,6 +10212,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_collect_from_list(normalised)
     {
         shapes.push(KnownShape::CollectFromList(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: a value looked up in a LIST of records. sophos runs its whole
+    // config through this -- the log's timezone abbreviation and the device
+    // serial both -- and losing the timezone made its date processor fail,
+    // whose `on_failure` then REMOVES `event.timezone` altogether.
+    if normalised.contains("for (def ")
+        && let Some(shape) = parse_record_lookup(normalised)
+    {
+        shapes.push(KnownShape::RecordLookup(Box::new(shape)));
         return shapes;
     }
 
@@ -11009,11 +11214,30 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         shapes.push(KnownShape::LiteralValueMap);
     }
 
-    // Pattern: keys_to_snake_case
+    // Pattern: a field replaced by whether it equals a literal. Late, because
+    // the parse is a two-statement script and every richer shape above spells
+    // a comparison somewhere too.
+    if normalised.contains(" == '")
+        && let Some(shape) = parse_equals_literal_flag(normalised)
+    {
+        shapes.push(KnownShape::EqualsLiteralFlag(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: keys_to_snake_case. The helper is COPIED between packages and
+    // the copies disagree on an acronym, so the rule comes off the script:
+    // a run counter with a `setCharAt` fix-up breaks before the run's last
+    // character, where the plain copies break before every uppercase.
     if normalised.contains("keys_to_snake_case") || normalised.contains("keysToSnakeCase") {
-        shapes.push(KnownShape::KeysToSnakeCase(extract_target_field(
-            normalised,
-        )));
+        let rule = if normalised.contains("setCharAt(") {
+            SnakeRule::AcronymRun
+        } else {
+            SnakeRule::BeforeEveryUpper
+        };
+        shapes.push(KnownShape::KeysToSnakeCase(
+            extract_target_field(normalised),
+            rule,
+        ));
         return shapes;
     }
 
@@ -11526,17 +11750,17 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::JoinOptional => try_join_optional(event, normalised),
         KnownShape::AppendEach => try_append_each(event, normalised),
         KnownShape::LiteralValueMap => try_literal_value_map(event, normalised),
-        KnownShape::KeysToSnakeCase(field) => {
+        KnownShape::KeysToSnakeCase(field, rule) => {
             if let Some(field) = field {
                 if let Some(val) = event.get(field).cloned() {
                     let mut val = val;
-                    keys_to_snake_case(&mut val);
+                    keys_to_snake_case(&mut val, *rule);
                     let _ = event.set(field, val);
                 }
             } else {
                 // Apply to entire event
                 let inner = event.as_value_mut();
-                keys_to_snake_case(inner);
+                keys_to_snake_case(inner, *rule);
             }
             true
         }
@@ -11596,6 +11820,8 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::MapEntryToBoolean(shape) => run_map_entry_to_boolean(event, shape),
         KnownShape::NestUnder(shape) => run_nest_under(event, shape),
         KnownShape::CollectFromList(shape) => run_collect_from_list(event, shape),
+        KnownShape::RecordLookup(shape) => run_record_lookup(event, shape),
+        KnownShape::EqualsLiteralFlag(shape) => run_equals_literal_flag(event, shape),
         KnownShape::PositionInList(shape) => run_position_in_list(event, shape),
         KnownShape::SplitFirstLabel(shape) => run_split_first_label(event, shape),
         KnownShape::SuffixesByPrefix(shape) => run_suffixes_by_prefix(event, shape),
@@ -14433,7 +14659,7 @@ def event_timezone = get_timezone(ctx);
             "clientIp": "1.2.3.4",
             "nested": {"displayName": "test"}
         });
-        keys_to_snake_case(&mut val);
+        keys_to_snake_case(&mut val, SnakeRule::BeforeEveryUpper);
         assert!(val.get("event_type").is_some());
         assert!(val.get("client_ip").is_some());
         assert!(val.get("eventType").is_none());
@@ -15173,7 +15399,7 @@ def event_timezone = get_timezone(ctx);
     #[test]
     fn keys_to_snake_case_already_snake() {
         let mut val = json!({"already_snake": "yes", "alreadylower": "yes"});
-        keys_to_snake_case(&mut val);
+        keys_to_snake_case(&mut val, SnakeRule::BeforeEveryUpper);
         assert!(val.get("already_snake").is_some());
         assert!(val.get("alreadylower").is_some());
     }
@@ -15554,6 +15780,92 @@ def event_timezone = get_timezone(ctx);
             event.get("email.attachments"),
             Some(&json!([{ "file": { "name": "a.pdf" } }]))
         );
+    }
+
+    /// Verbatim from `pipelines/cyberarkpas/audit/audit.yml`: the vendor's own
+    /// run-counter helper, whose acronym handling none of the other rules has.
+    #[test]
+    fn a_snake_case_run_breaks_before_the_last_upper() {
+        assert_eq!(
+            to_snake_case("MessageID", SnakeRule::AcronymRun),
+            "message_id"
+        );
+        assert_eq!(
+            to_snake_case("HTTPServer", SnakeRule::AcronymRun),
+            "http_server"
+        );
+        assert_eq!(
+            to_snake_case("IsoTimestamp", SnakeRule::AcronymRun),
+            "iso_timestamp"
+        );
+        // The script's fast path: no uppercase after the first.
+        assert_eq!(to_snake_case("Rfc5424", SnakeRule::AcronymRun), "rfc5424");
+    }
+
+    /// Verbatim from `pipelines/cyberarkpas/audit/audit.yml`: the string turned
+    /// into the boolean Elasticsearch stores.
+    #[test]
+    fn a_literal_comparison_replaces_its_field_with_a_boolean() {
+        let script = "def value = ctx.cyberarkpas.audit.rfc5424; \
+            ctx.cyberarkpas.audit[\"rfc5424\"] = value == 'yes';\n";
+
+        let mut yes = Event::new(json!({ "cyberarkpas": { "audit": { "rfc5424": "yes" } } }));
+        assert!(try_known_painless(&mut yes, script));
+        assert_eq!(yes.get("cyberarkpas.audit.rfc5424"), Some(&json!(true)));
+
+        let mut no = Event::new(json!({ "cyberarkpas": { "audit": { "rfc5424": "no" } } }));
+        assert!(try_known_painless(&mut no, script));
+        assert_eq!(no.get("cyberarkpas.audit.rfc5424"), Some(&json!(false)));
+    }
+
+    /// Verbatim from `pipelines/sophos/xg/default.yml`: the log's timezone
+    /// abbreviation mapped through the config, written back over itself.
+    #[test]
+    fn a_record_lookup_writes_back_over_its_subject() {
+        let script = "def conf = ctx['_conf'];\nif (conf == null) return;\n\
+            def mappings = conf.tz_map;\nif (mappings == null) return;\n\
+            def tz_log = ctx._temp_.tz;\nfor (def item : mappings) {\n  \
+            if (item.tz_short == tz_log) {\n    ctx._temp_.tz = item.tz_long;\n    \
+            break;\n  }\n}";
+        let mut event = Event::new(json!({
+            "_temp_": { "tz": "IST" },
+            "_conf": { "tz_map": [
+                { "tz_short": "IST", "tz_long": "Asia/Kolkata" },
+                { "tz_short": "AEST", "tz_long": "Australia/Sydney" },
+            ]},
+        }));
+
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("_temp_.tz"), Some("Asia/Kolkata"));
+    }
+
+    /// The same shape with a DEFAULT and a different target: the device serial
+    /// through `_conf.mappings` to `host.name`, falling back to
+    /// `_conf.default` when no record matches.
+    #[test]
+    fn a_record_lookup_falls_back_to_its_default() {
+        let script = "def conf = ctx['_conf'];\nif (conf == null) return;\n\
+            def serial = ctx.observer.serial_number;\ndef mappings = conf.mappings;\n\
+            if (mappings == null) return;\ndef name = conf['default'];\n\
+            for (def item : mappings) {\n  if (item.serial_number == serial) {\n    \
+            name = item.hostname;\n    break;\n  }\n}\n\
+            if (ctx.host == null) {\n  ctx.host = new HashMap();\n}\nctx.host.name = name;";
+        let params = json!({
+            "default": "defaulttest.local",
+            "mappings": [{ "serial_number": "1234567890123456", "hostname": "testhost.local" }],
+        });
+
+        let mut unlisted = Event::new(json!({
+            "observer": { "serial_number": "C44313350024-P29PUA" }, "_conf": params,
+        }));
+        assert!(try_known_painless(&mut unlisted, script));
+        assert_eq!(unlisted.get_str("host.name"), Some("defaulttest.local"));
+
+        let mut listed = Event::new(json!({
+            "observer": { "serial_number": "1234567890123456" }, "_conf": params,
+        }));
+        assert!(try_known_painless(&mut listed, script));
+        assert_eq!(listed.get_str("host.name"), Some("testhost.local"));
     }
 
     /// Verbatim from `pipelines/cisco_secure_endpoint/event/default.yml`: two

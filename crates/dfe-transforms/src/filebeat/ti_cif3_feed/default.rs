@@ -231,7 +231,8 @@ impl Transform for Default {
 
             let _cond = { event.get_str("threat.indicator.type") == Some("file") };
             if _cond {
-                event.set(
+                set_templated(
+                    event,
                     "threat.indicator.file.hash.{{{cif3.itype}}}",
                     json!(
                         event

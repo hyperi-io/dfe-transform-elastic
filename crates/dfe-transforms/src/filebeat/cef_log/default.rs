@@ -324,7 +324,8 @@ impl Transform for Default {
                     ),
                 )?;
                 foreach_array(event, "_tmp_copy", |event| {
-                    event.set(
+                    set_templated(
+                        event,
                         "{{{_ingest._value.to}}}",
                         json!(
                             event

@@ -439,6 +439,11 @@ pub enum SnakeRule {
     /// char and cleared by ANY other, so a digit or a dot before an uppercase
     /// still breaks the word where [`Self::OnWordBreak`] would not.
     AfterNonUpper,
+    /// Underscore before the LAST uppercase of a run, which is where the next
+    /// word starts: `HTTPServer` is `http_server`. cyberarkpas and the
+    /// packages that copied its helper walk the run with a counter and move
+    /// the separator back once they see the run end.
+    AcronymRun,
 }
 
 /// Convert a string to `snake_case` under `rule`.
@@ -448,6 +453,10 @@ pub enum SnakeRule {
 /// than one -- U+0130 becomes `i` plus a combining dot.
 #[must_use]
 pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
+    if rule == SnakeRule::AcronymRun {
+        return acronym_run_snake(s);
+    }
+
     let mut result = String::with_capacity(s.len() + 4);
     let mut prev_was_lowercase = false;
     let mut prev_was_uppercase = false;
@@ -459,6 +468,9 @@ pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
                 SnakeRule::OnWordBreak => prev_was_lowercase,
                 SnakeRule::BeforeEveryUpper => !first,
                 SnakeRule::AfterNonUpper => !first && !prev_was_uppercase,
+                SnakeRule::AcronymRun => {
+                    unreachable!("the run rule returns above, before this loop")
+                }
             };
             if separate {
                 result.push('_');
@@ -472,6 +484,43 @@ pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
         first = false;
     }
 
+    result
+}
+
+/// The vendor's own `to_snake_case`, run-counter and all.
+///
+/// It walks a RUN of uppercase and, when the run ends, moves the separator to
+/// sit before the run's LAST character -- that character starts the next word.
+/// `MessageID` is `message_id`, and reading it as one underscore per uppercase
+/// gave `message_i_d`, which the `rename` to `event.code` then missed.
+fn acronym_run_snake(s: &str) -> String {
+    // The script's own fast path: nothing after the first character is
+    // uppercase, so there is no word to break.
+    if !s.chars().skip(1).any(char::is_uppercase) {
+        return s.to_lowercase();
+    }
+
+    let mut result = String::with_capacity(s.len() + 4);
+    let mut run = 0usize;
+    let mut first = true;
+    for ch in s.chars() {
+        if ch.is_uppercase() {
+            if run == 0 && !first {
+                result.push('_');
+            }
+            run += 1;
+        } else {
+            if run > 1
+                && let Some(last) = result.pop()
+            {
+                result.push('_');
+                result.push(last);
+            }
+            run = 0;
+            first = false;
+        }
+        result.extend(ch.to_lowercase());
+    }
     result
 }
 

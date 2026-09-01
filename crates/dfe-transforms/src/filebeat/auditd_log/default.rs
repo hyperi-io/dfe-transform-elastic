@@ -401,7 +401,8 @@ impl Transform for Default {
 
             if event.has_value("auditd.log.copy") {
                 foreach_array(event, "auditd.log.copy", |event| {
-                    event.set(
+                    set_templated(
+                        event,
                         "{{{_ingest._value.target}}}",
                         json!(
                             event

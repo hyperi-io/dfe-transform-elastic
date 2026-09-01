@@ -225,7 +225,7 @@ impl Transform for Audit {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("cyberarkpas.audit.CAProperties.CAProperty") {
                 foreach_array(event, "cyberarkpas.audit.CAProperties.CAProperty", |event| {
-                    event.set("cyberarkpas.audit.CAProperties.{{{_ingest._value.Name}}}", json!(event.get("_ingest._value.Value").map_or_else(String::new, template_to_string)))?;
+                    set_templated(event, "cyberarkpas.audit.CAProperties.{{{_ingest._value.Name}}}", json!(event.get("_ingest._value.Value").map_or_else(String::new, template_to_string)))?;
                     Ok(())
                 })?;
             }
@@ -374,7 +374,7 @@ impl Transform for Audit {
             if event.has_value("_tmp.values") {
                 foreach_array(event, "_tmp.values", |event| {
                     if let Some(v) = event.get("_ingest._value.value").filter(|v| !painless_is_empty_value(v)).cloned() {
-                    event.set("{{{_ingest._value.to}}}", v)?;
+                    set_templated(event, "{{{_ingest._value.to}}}", v)?;
                     }
                     Ok(())
                 })?;

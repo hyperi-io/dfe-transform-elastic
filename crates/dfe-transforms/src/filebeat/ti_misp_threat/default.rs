@@ -537,7 +537,8 @@ impl Transform for Default {
                     && event.has_value("_tmp.hashtype")
             };
             if _cond {
-                event.set(
+                set_templated(
+                    event,
                     "threat.indicator.file.hash.{{{_tmp.hashtype}}}",
                     json!(
                         event

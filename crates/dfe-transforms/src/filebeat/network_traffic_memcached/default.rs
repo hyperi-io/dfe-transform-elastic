@@ -343,7 +343,8 @@ impl Transform for Default {
             };
             if _cond {
                 foreach_array(event, "memcache.response.stats_objects", |event| {
-                    event.set(
+                    set_templated(
+                        event,
                         "memcache.response.stats.{{{_ingest._value.name}}}",
                         json!(
                             event

@@ -339,6 +339,48 @@ pub fn parse_json_field(event: &mut Event, field: &str, target: &str) -> Result<
 ///
 /// # Errors
 ///
+/// Set a value at a path whose NAME is a mustache template.
+///
+/// A `set` inside a `foreach` names its target through `_ingest._value`, so the
+/// path is only known per iteration. Writing the template literally produced a
+/// field actually called `{{{_ingest._value.Name}}}`, and cyberarkpas routes
+/// its whole `event.category`/`user.name` fan-out through one of these.
+///
+/// # Errors
+///
+/// Propagates whatever [`Event::set`] returns for the rendered path.
+pub fn set_templated(event: &mut Event, template: &str, value: Value) -> Result<()> {
+    let path = render_path(event, template);
+    // An unresolved template names no field, and Elasticsearch's own `set`
+    // skips rather than creating one under the empty name.
+    if path.is_empty() {
+        return Ok(());
+    }
+    event.set(&path, value)
+}
+
+/// Substitute every `{{expr}}` / `{{{expr}}}` with the event's value for it.
+fn render_path(event: &Event, template: &str) -> String {
+    let mut out = String::with_capacity(template.len());
+    let mut rest = template;
+    while let Some((head, tail)) = rest.split_once("{{") {
+        out.push_str(head);
+        let tail = tail.trim_start_matches('{');
+        let Some((expr, after)) = tail.split_once("}}") else {
+            out.push_str(tail);
+            return out;
+        };
+        out.push_str(
+            &event
+                .get(expr.trim())
+                .map_or_else(String::new, crate::painless_helpers::template_to_string),
+        );
+        rest = after.trim_start_matches('}');
+    }
+    out.push_str(rest);
+    out
+}
+
 /// Returns a `ParseError` naming the field when the text is not JSON, when it
 /// is not an object, or when `merge` meets a conflict it cannot merge.
 pub fn parse_json_field_to_root(event: &mut Event, field: &str, merge: bool) -> Result<()> {

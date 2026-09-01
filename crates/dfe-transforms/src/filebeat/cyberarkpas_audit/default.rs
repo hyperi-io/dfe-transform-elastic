@@ -402,7 +402,8 @@ impl Transform for Default {
                             event,
                             "cyberarkpas.audit.CAProperties.CAProperty",
                             |event| {
-                                event.set(
+                                set_templated(
+                                    event,
                                     "cyberarkpas.audit.CAProperties.{{{_ingest._value.Name}}}",
                                     json!(
                                         event
@@ -612,7 +613,7 @@ impl Transform for Default {
                             .filter(|v| !painless_is_empty_value(v))
                             .cloned()
                         {
-                            event.set("{{{_ingest._value.to}}}", v)?;
+                            set_templated(event, "{{{_ingest._value.to}}}", v)?;
                         }
                         Ok(())
                     })?;
