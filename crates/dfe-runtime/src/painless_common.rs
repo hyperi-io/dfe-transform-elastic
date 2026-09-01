@@ -3307,6 +3307,46 @@ fn try_literal_value_map(event: &mut Event, script: &str) -> bool {
     matched
 }
 
+/// Render whole numbers as strings, in place, where they are not already one.
+///
+/// `ti_anomali` does it to `id` and `update_id` because they arrive from JSON
+/// as a Double: `Long.toString((long) ctx.json.id)` is what stops a big id
+/// rendering in exponent notation. The `instanceof String` guard means a value
+/// already stringified is left alone.
+fn parse_stringify_longs(script: &str) -> Option<Vec<String>> {
+    let mut fields = Vec::new();
+    for statement in script.split([';', '\n']) {
+        let Some((lhs, rhs)) = statement.split_once('=') else {
+            continue;
+        };
+        let Some(argument) = rhs.trim().strip_prefix("Long.toString(") else {
+            continue;
+        };
+        // IN PLACE only. A call whose result goes to a LOCAL is building a
+        // lookup KEY, not converting the field -- cyberark_epm makes one out
+        // of `logon_status_id`, and stringifying that field in place is a type
+        // change the vendor never makes.
+        let (Some(target), Some(source)) = (painless_path(lhs), painless_path(argument)) else {
+            continue;
+        };
+        if target == source && !fields.contains(&target) {
+            fields.push(target);
+        }
+    }
+    (!fields.is_empty()).then_some(fields)
+}
+
+fn run_stringify_longs(event: &mut Event, fields: &[String]) -> bool {
+    for field in fields {
+        // Already a string, or absent: the script's own guard leaves it.
+        let Some(number) = event.get(field).and_then(Value::as_i64) else {
+            continue;
+        };
+        let _ = event.set(field, json!(number.to_string()));
+    }
+    true
+}
+
 /// One target filled from a DIFFERENT source per label.
 ///
 /// A ladder over a label field where each arm names its own source and carries
@@ -3395,9 +3435,14 @@ pub(crate) struct BandLadder {
     subject: String,
     /// Bands in the script's own order; the first that holds wins.
     arms: Vec<(Band, String)>,
-    /// The label when no band holds. `None` where the script writes nothing,
-    /// which is what `ti_anomali` does for a value between its bands.
+    /// The label when no band holds -- a local's initialiser, or a trailing
+    /// bare `else`. `None` where the script writes nothing, which is what
+    /// `ti_anomali`'s threatstream ladder does between its bands.
     default: Option<String>,
+    /// The label for an ABSENT or null subject, where the script spells that
+    /// arm (`if (value == null)`). Distinct from `default`: one is "no value",
+    /// the other "a value in no band".
+    absent: Option<String>,
     target: String,
 }
 
@@ -3453,9 +3498,23 @@ fn parse_band_ladder(script: &str) -> Option<BandLadder> {
     let mut arms = Vec::new();
     let mut written: Option<String> = None;
     let mut label_local: Option<String> = None;
+    let mut absent: Option<String> = None;
 
     for block in script.split("if (").skip(1) {
         let (guard, body) = block.split_once(") {")?;
+        // A guard that never names the subject belongs to something else --
+        // `ti_anomali`'s intelligence ladder opens with two `ctx.x == null`
+        // map creations. Skipping them is what lets the ladder be read at all.
+        if !mentions(guard, &local) {
+            continue;
+        }
+        // `if (value == null)` is the NO-VALUE arm, not a band.
+        if let Some(rest) = guard.trim().strip_prefix(&local)
+            && rest.trim().trim_start_matches('=').trim() == "null"
+        {
+            absent = quoted_first(body.split(';').next()?.split_once('=')?.1);
+            continue;
+        }
         let band = parse_band(guard, &local)?;
 
         // `ctx["x"] = "Label";` or `label = "Label";` -- the second form needs
@@ -3490,16 +3549,46 @@ fn parse_band_ladder(script: &str) -> Option<BandLadder> {
         None => written?,
     };
 
-    Some(BandLadder {
-        subject,
-        arms,
-        // The local's initialiser is the no-band-holds label.
-        default: label_local.and_then(|name| {
+    // The no-band-holds label: a local's initialiser, or a trailing bare
+    // `else` whose write lands on the SAME target -- an `else` writing
+    // somewhere else is a different statement, not this ladder's fallback.
+    let default = label_local
+        .and_then(|name| {
             script
                 .split_once(&format!(" {name} = "))
                 .and_then(|(_, rest)| quoted_first(rest.split(';').next()?))
-        }),
+        })
+        .or_else(|| {
+            let (_, tail) = script.rsplit_once(" else {")?;
+            let (lhs, rhs) = tail.split(';').next()?.split_once('=')?;
+            (painless_path(lhs)? == target).then(|| quoted_first(rhs))?
+        });
+
+    Some(BandLadder {
+        subject,
+        arms,
+        default,
+        absent,
         target,
+    })
+}
+
+/// Whether `token` appears in `text` as a whole identifier.
+///
+/// A substring test would read `ctx.myvalue` as naming the local `value`, and
+/// then skip an arm that is really part of the ladder.
+fn mentions(text: &str, token: &str) -> bool {
+    let identifier = |c: char| c.is_alphanumeric() || c == '_';
+    text.match_indices(token).any(|(at, _)| {
+        let before = text[..at]
+            .chars()
+            .next_back()
+            .is_none_or(|c| !identifier(c));
+        let after = text[at + token.len()..]
+            .chars()
+            .next()
+            .is_none_or(|c| !identifier(c));
+        before && after
     })
 }
 
@@ -3514,6 +3603,10 @@ fn local_and_ctx_path(script: &str) -> Option<(String, String)> {
     script.split([';', '\n']).find_map(|statement| {
         let (declaration, value) = statement.trim().split_once(" = ")?;
         let path = value.trim().strip_prefix("ctx.")?;
+        // A brace closing the PREVIOUS block sits on this statement once the
+        // script is folded (`} def value = ctx.x`), and it is punctuation
+        // rather than part of the declaration.
+        let declaration = declaration.trim_matches(['{', '}', ' ']);
         let name = declaration.rsplit(' ').next()?;
         (declaration.split(' ').count() == 2 && !name.is_empty())
             .then(|| (name.to_string(), clean_path(path.trim())))
@@ -3536,18 +3629,46 @@ fn parse_band(guard: &str, local: &str) -> Option<Band> {
     (!bounds.is_empty()).then_some(Band { bounds, all })
 }
 
+impl Cmp {
+    /// The same comparison read from the other side, for a clause the vendor
+    /// wrote literal-first (`100.0 < value` is `value > 100.0`).
+    const fn mirrored(self) -> Self {
+        match self {
+            Self::Lt => Self::Gt,
+            Self::Le => Self::Ge,
+            Self::Gt => Self::Lt,
+            Self::Ge => Self::Le,
+        }
+    }
+}
+
 fn parse_bound(clause: &str, local: &str) -> Option<Bound> {
-    let rest = clause.trim().strip_prefix(local)?.trim_start();
     // Two-character operators first, or `>=` reads as `>` and the band shifts
     // by one.
-    let (op, number) = [
+    const OPERATORS: [(&str, Cmp); 4] = [
         ("<=", Cmp::Le),
         (">=", Cmp::Ge),
         ("<", Cmp::Lt),
         (">", Cmp::Gt),
-    ]
-    .into_iter()
-    .find_map(|(token, op)| Some((op, rest.strip_prefix(token)?)))?;
+    ];
+
+    let clause = clause.trim();
+    let Some(rest) = clause.strip_prefix(local) else {
+        // Literal-first: `100.0 < value`. ti_anomali's intelligence ladder
+        // spells one bound each way in the same script.
+        let (head, tail) = OPERATORS.into_iter().find_map(|(token, op)| {
+            let (head, tail) = clause.split_once(token)?;
+            (tail.trim() == local).then_some((head, op))
+        })?;
+        return Some(Bound {
+            op: tail.mirrored(),
+            value: whole_number(head)?,
+        });
+    };
+    let rest = rest.trim_start();
+    let (op, number) = OPERATORS
+        .into_iter()
+        .find_map(|(token, op)| Some((op, rest.strip_prefix(token)?)))?;
     Some(Bound {
         op,
         value: whole_number(number)?,
@@ -3574,8 +3695,15 @@ fn run_band_ladder(event: &mut Event, shape: &BandLadder) -> bool {
         .get_f64(&shape.subject)
         .or_else(|| event.get_as_string(&shape.subject)?.trim().parse().ok())
     else {
-        // Absent, which every one of these scripts is gated on.
-        return false;
+        // The script's own `== null` arm, where it spells one. Without one the
+        // processor's `if` gates on the field and this declines.
+        return match &shape.absent {
+            Some(label) => {
+                let _ = event.set(&shape.target, json!(label));
+                true
+            }
+            None => false,
+        };
     };
 
     let label = shape
@@ -10740,6 +10868,7 @@ pub(crate) enum KnownShape {
     ProcessNameFromCommandLine,
     FlagsPresent(Box<FlagsPresent>),
     ZipLists(Box<ZipLists>),
+    StringifyLongs(Vec<String>),
     CopyByLabel(Box<CopyByLabel>),
     BandLadder(Box<BandLadder>),
     IocExpiry(Box<IocExpiry>),
@@ -11017,7 +11146,9 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // land in a LOCAL one `.put()` writes at the end, and an `||` guard for
     // the out-of-range band. Every threat-intel package normalises its
     // vendor confidence this way.
-    if normalised.contains("&&")
+    // Either joiner: a band may be `a && b`, an out-of-range `a || b`, or a
+    // single open-ended bound in a ladder that has one of the other two.
+    if (normalised.contains("&&") || normalised.contains("||"))
         && let Some(shape) = parse_band_ladder(normalised)
     {
         shapes.push(KnownShape::BandLadder(Box::new(shape)));
@@ -11927,6 +12058,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: whole numbers rendered as strings in place. Ahead of the
+    // ladders below, whose `instanceof String` guard and `!= null` triggers
+    // this also spells.
+    if normalised.contains("Long.toString(")
+        && let Some(fields) = parse_stringify_longs(normalised)
+    {
+        shapes.push(KnownShape::StringifyLongs(fields));
+        return shapes;
+    }
+
     // Pattern: the same if/else-if chain over one field, but every arm COPIES
     // a different source into one target rather than writing a literal. Ahead
     // of `LiteralValueMap` below, whose arms must write a literal, so it
@@ -12539,6 +12680,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             absent,
             divisor,
         } => run_guarded_divide(event, target, source, absent.as_ref(), *divisor),
+        KnownShape::StringifyLongs(fields) => run_stringify_longs(event, fields),
         KnownShape::CopyByLabel(shape) => run_copy_by_label(event, shape),
         KnownShape::BandLadder(shape) => run_band_ladder(event, shape),
         KnownShape::IocExpiry(shape) => run_ioc_expiry(event, shape),
@@ -13036,6 +13178,72 @@ mod tests {
 
     /// Each label takes its OWN source. Reading the first arm's source for
     /// every label is what the guarded-copy fallback did.
+    /// `pipelines/ti_anomali/intelligence/default.yml`, the THIRD spelling of
+    /// the confidence band: two map-creation guards before the ladder, a
+    /// `== null` arm, one bound written literal-first (`100.0 < value`), and a
+    /// bare `else` for the top band.
+    const CONFIDENCE_WITH_ELSE: &str = "if (ctx.threat == null) {\n  ctx.threat = [:];\n\
+        } if (ctx.threat.indicator == null) {\n  ctx.threat.indicator = [:];\n\
+        } def value = ctx.json.confidence; if (value == null) {\n  \
+        ctx.threat.indicator.confidence = \"Not Specified\";\n\
+        } else if (value <= 0.0 || 100.0 < value) {\n  \
+        ctx.threat.indicator.confidence = \"None\";\n\
+        } else if (value < 30.0) {\n  ctx.threat.indicator.confidence = \"Low\";\n\
+        } else if (value < 70.0) {\n  ctx.threat.indicator.confidence = \"Medium\";\n\
+        } else {\n  ctx.threat.indicator.confidence = \"High\";\n}\n";
+
+    /// Every reading the third spelling needs at once: the null arm, a bound
+    /// the vendor wrote the other way round, and the bare `else`.
+    #[test]
+    fn a_band_ladder_reads_a_null_arm_a_mirrored_bound_and_a_bare_else() {
+        for (confidence, expected) in [
+            (json!(-1), "None"),
+            (json!(0), "None"),
+            (json!(150), "None"),
+            (json!(1), "Low"),
+            (json!(29), "Low"),
+            (json!(30), "Medium"),
+            (json!(69), "Medium"),
+            (json!(70), "High"),
+            (json!(100), "High"),
+        ] {
+            let mut event = Event::new(json!({ "json": { "confidence": confidence } }));
+            assert!(try_known_painless(&mut event, CONFIDENCE_WITH_ELSE));
+            assert_eq!(
+                event.get_str("threat.indicator.confidence"),
+                Some(expected),
+                "confidence {confidence}"
+            );
+        }
+
+        // The `== null` arm: an absent subject gets its OWN label, which is a
+        // different thing from a present value in no band.
+        let mut absent = Event::new(json!({ "json": {} }));
+        assert!(try_known_painless(&mut absent, CONFIDENCE_WITH_ELSE));
+        assert_eq!(
+            absent.get_str("threat.indicator.confidence"),
+            Some("Not Specified")
+        );
+    }
+
+    /// A big id arrives from JSON as a number and Elasticsearch renders it as
+    /// a string; leaving it numeric is a type mismatch on every event.
+    #[test]
+    fn longs_are_stringified_where_they_are_not_already_strings() {
+        let script = "if (ctx.json?.id != null && !(ctx.json.id instanceof String)) {\n  \
+            ctx.json.id = Long.toString((long) ctx.json.id);\n\
+            }\nif (ctx.json?.update_id != null && !(ctx.json.update_id instanceof String)) {\n  \
+            ctx.json.update_id = Long.toString((long) ctx.json.update_id);\n}\n";
+
+        let mut event = Event::new(json!({
+            "json": { "id": 185_029_228, "update_id": "376590230" },
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("json.id"), Some("185029228"));
+        // Already a string -- the script's `instanceof String` guard.
+        assert_eq!(event.get_str("json.update_id"), Some("376590230"));
+    }
+
     #[test]
     fn a_copy_ladder_takes_the_source_its_label_names() {
         let sources = json!({

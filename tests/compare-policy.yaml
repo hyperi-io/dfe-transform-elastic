@@ -38,6 +38,13 @@ nondeterministic:
       which asserts the captured value against the captured ingest instant.
   - path: abusech.sslblacklist.deleted_at
     why: Same script as abusech.ja3_fingerprints.deleted_at, same write time.
+  - path: anomali.threatstream.deletion_scheduled_at
+    why: >
+      `@timestamp` plus `_conf.ioc_duration_before_deletion`, and `@timestamp`
+      is itself write time on this source -- the captured value carries the
+      same sub-second digits as the captured `event.ingested`. Capped at
+      `json.expiration_ts` when that is earlier, which IS deterministic, but
+      the uncapped path is not.
 
 # Elastic and Beats plumbing DFE does not emit. Never a defect. Prefix match on
 # the dotted path, list indices removed first.
