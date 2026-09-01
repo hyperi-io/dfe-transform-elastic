@@ -5183,17 +5183,18 @@ pub fn epoch_to_timestamp(event: &mut Event, source_field: &str, target_field: &
 /// The ECS field a `ctx.source.X + ctx.destination.X` script totals into.
 ///
 /// Both `bytes` and `packets` appear verbatim across the network sources.
-fn sum_of_directions(script: &str) -> Option<&'static str> {
-    for unit in ["bytes", "packets"] {
-        let target = format!("ctx.network.{unit}");
-        if script.contains(&target)
-            && script.contains(&format!("ctx.source.{unit}"))
-            && script.contains(&format!("ctx.destination.{unit}"))
-        {
-            return Some(if unit == "bytes" { "bytes" } else { "packets" });
-        }
-    }
-    None
+fn sum_of_directions(script: &str) -> Vec<&'static str> {
+    // EVERY unit the script names, not the first. fortinet_fortiproxy and
+    // arista_ngfw both sum bytes and packets in ONE script, and returning on
+    // the first left `network.packets` unwritten on every event of each.
+    ["bytes", "packets"]
+        .into_iter()
+        .filter(|unit| {
+            script.contains(&format!("ctx.network.{unit}"))
+                && script.contains(&format!("ctx.source.{unit}"))
+                && script.contains(&format!("ctx.destination.{unit}"))
+        })
+        .collect()
 }
 
 /// `network.{unit} = source.{unit} + destination.{unit}`.
@@ -11451,7 +11452,7 @@ pub(crate) enum KnownShape {
         removes: Vec<String>,
     },
     SplitTrimCollect,
-    SumDirections(&'static str),
+    SumDirections(Vec<&'static str>),
     SumOfFields,
     DurationToNanos,
     FlowDuration,
@@ -12503,8 +12504,9 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     }
 
     // Pattern: network.bytes / network.packets as the sum of both directions.
-    if let Some(total) = sum_of_directions(normalised) {
-        shapes.push(KnownShape::SumDirections(total));
+    let totals = sum_of_directions(normalised);
+    if !totals.is_empty() {
+        shapes.push(KnownShape::SumDirections(totals));
         return shapes;
     }
 
@@ -13339,7 +13341,14 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             true
         }
         KnownShape::SplitTrimCollect => try_split_trim_collect(event, normalised),
-        KnownShape::SumDirections(total) => try_sum_directions(event, total),
+        KnownShape::SumDirections(totals) => {
+            // Every unit the script names, each independently skipped where
+            // its own two operands are not both there.
+            for unit in totals {
+                try_sum_directions(event, unit);
+            }
+            true
+        }
         KnownShape::SumOfFields => try_sum_of_fields(event, normalised),
         KnownShape::DurationToNanos => try_duration_to_nanos(event, normalised),
         KnownShape::FlowDuration => try_flow_duration(event, normalised),
