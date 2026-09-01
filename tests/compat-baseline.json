@@ -283,7 +283,7 @@
     "tetragon": { "events": 0, "events_total": 14, "fields_wrong": 300 },
     "thycotic_ss": { "events": 2, "events_total": 2, "fields_wrong": 0 },
     "ti_abusech": { "events": 127, "events_total": 142, "fields_wrong": 16 },
-    "ti_anomali": { "events": 0, "events_total": 131, "fields_wrong": 321 },
+    "ti_anomali": { "events": 101, "events_total": 131, "fields_wrong": 117 },
     "ti_anyrun": { "events": 0, "events_total": 4, "fields_wrong": 8 },
     "ti_cif3": { "events": 0, "events_total": 2, "fields_wrong": 4 },
     "ti_crowdstrike": { "events": 1, "events_total": 11, "fields_wrong": 10 },

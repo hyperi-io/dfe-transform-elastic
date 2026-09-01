@@ -249,13 +249,55 @@ fn parse_split_token_field(script: &str) -> Option<KnownShape> {
         .and_then(|sep| (sep.chars().count() == 1).then(|| sep.chars().next()))
         .flatten();
 
-    Some(KnownShape::SplitTokenField {
+    Some(KnownShape::SplitTokenField(Box::new(SplitToken {
         source,
         separator: separator.chars().next()?,
         parse_int: script.contains("Integer.parseInt("),
         target,
         head,
-    })
+        // The loop spelling keeps interior empties and always stores.
+        drop_empty: false,
+        remove_if_empty: false,
+    })))
+}
+
+/// The same split, written as a stream: `Stream.of(ctx.<path>.splitOnToken(
+/// '<sep>')).filter(s -> !s.isEmpty()).collect(Collectors.toList())`, stored
+/// back in place, and the field REMOVED when nothing survives.
+///
+/// `ti_anomali` uses it for a value its own separator fences (`,10015,`),
+/// which is exactly what the loop spelling above cannot express -- Java's
+/// split eats a trailing empty but keeps a leading one.
+fn parse_stream_split_filter(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let (_, rest) = script.split_once("Stream.of(ctx.")?;
+    let (path, after) = rest.split_once(".splitOnToken(")?;
+    let source = clean_path(path.trim());
+    let separator = quoted_first(after)?;
+    let mut separator = separator.chars();
+    let (Some(separator), None) = (separator.next(), separator.next()) else {
+        return None;
+    };
+
+    // In place only. A script storing the list elsewhere does more than this.
+    let stored = crate::painless_params::ctx_writes(script)
+        .into_iter()
+        .any(|(target, _)| target == source);
+    if source.is_empty() || !stored || !script.contains(".isEmpty()") {
+        return None;
+    }
+
+    Some(KnownShape::SplitTokenField(Box::new(SplitToken {
+        target: source.clone(),
+        source,
+        separator,
+        parse_int: false,
+        head: None,
+        drop_empty: true,
+        // `if (lst.size() > 0) { ... } else { ctx.<path>.remove(...) }`.
+        remove_if_empty: script.contains(".remove("),
+    })))
 }
 
 /// Split each named field's string on `|` in place, empties kept, exactly as
@@ -276,22 +318,49 @@ fn run_split_pipe_fields(event: &mut Event, fields: &[String]) -> bool {
     true
 }
 
-/// Split one field on its token in place, optionally keeping only the pieces
-/// that parse as 32-bit integers -- `Integer.parseInt`'s range, since Painless
-/// skips the ones that throw.
-fn run_split_token_field(
-    event: &mut Event,
-    source: &str,
+/// One field split on its token into a list, in place.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct SplitToken {
+    source: String,
     separator: char,
+    /// Keep only the pieces that parse as 32-bit integers --
+    /// `Integer.parseInt`'s range, since Painless skips the ones that throw.
     parse_int: bool,
-    target: &str,
+    target: String,
+    /// A second separator whose FIRST piece is what each member keeps.
     head: Option<char>,
-) -> bool {
+    /// Drop EVERY empty piece, not just the trailing ones Java's split eats.
+    /// The stream spelling filters on `!s.isEmpty()`, which is how
+    /// `ti_anomali` handles a value fenced by its own separator (`,10015,`).
+    drop_empty: bool,
+    /// Remove the field outright when nothing survives the filter. Paired with
+    /// `drop_empty` in the stream spelling, and separate because "keep no
+    /// empties" and "delete the field" are two decisions.
+    remove_if_empty: bool,
+}
+
+fn run_split_token_field(event: &mut Event, shape: &SplitToken) -> bool {
+    let &SplitToken {
+        ref source,
+        separator,
+        parse_int,
+        ref target,
+        head,
+        drop_empty,
+        remove_if_empty,
+    } = shape;
+
     if let Some(text) = event.get_str(source).map(str::to_string) {
-        // Java's split drops trailing empty pieces.
         let mut pieces: Vec<&str> = text.split(separator).collect();
-        while pieces.last() == Some(&"") {
-            pieces.pop();
+        if drop_empty {
+            // The stream spelling filters on `!s.isEmpty()`, so a LEADING
+            // empty goes too -- which Java's split keeps.
+            pieces.retain(|piece| !piece.is_empty());
+        } else {
+            // Java's split drops trailing empty pieces.
+            while pieces.last() == Some(&"") {
+                pieces.pop();
+            }
         }
         // A second split whose FIRST piece is what the script keeps --
         // zscaler's `<name>: <description>` dictionary entries.
@@ -313,7 +382,13 @@ fn run_split_token_field(
                 .map(|p| Value::String((*p).to_string()))
                 .collect()
         };
-        let _ = event.set(target, Value::Array(values));
+        // The vendor's `if (lst.size() > 0)` -- an empty result deletes the
+        // field rather than storing an empty array.
+        if values.is_empty() && remove_if_empty {
+            event.remove(target);
+        } else {
+            let _ = event.set(target, Value::Array(values));
+        }
     }
     true
 }
@@ -3230,6 +3305,82 @@ fn try_literal_value_map(event: &mut Event, script: &str) -> bool {
         break;
     }
     matched
+}
+
+/// One target filled from a DIFFERENT source per label.
+///
+/// A ladder over a label field where each arm names its own source and carries
+/// its own `!= null` guard: `ti_anomali` picks the indicator's name from
+/// `srcip`, `domain`, `url`, `email` or `md5` according to the indicator type
+/// it just derived. Distinct from `LiteralValueMap`, whose arms write a
+/// LITERAL -- here every arm writes a copy.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct CopyByLabel {
+    /// The field whose value picks the arm.
+    subject: String,
+    /// Labels and the source each of them copies from, in script order.
+    arms: Vec<(Vec<String>, String)>,
+    target: String,
+}
+
+fn parse_copy_by_label(script: &str) -> Option<CopyByLabel> {
+    let (local, subject) = local_and_ctx_path(script)?;
+
+    let mut arms = Vec::new();
+    let mut target: Option<String> = None;
+    for piece in script.split(" else if (") {
+        let (head, body) = piece.split_once(") {")?;
+        // The ladder's own guard, not the copy's -- the first arm's piece also
+        // carries the binding that precedes it.
+        let guard = head.rsplit("if (").next()?;
+
+        let labels: Option<Vec<String>> = guard
+            .split("||")
+            .map(|clause| {
+                let rest = clause.trim().strip_prefix(&local)?.trim_start();
+                quoted_first(rest.strip_prefix("==")?)
+            })
+            .collect();
+        let labels = labels?;
+
+        // `if (ctx.<source> != null) ctx.<target> = ctx.<source>;`
+        let statement = body.split(';').next()?;
+        let at = last_assignment(statement)?;
+        let path = painless_path(&statement[..at])?;
+        if target.get_or_insert_with(|| path.clone()) != &path {
+            return None;
+        }
+        arms.push((labels, painless_path(&statement[at..])?));
+    }
+
+    // One arm is a guarded copy, not a ladder.
+    if arms.len() < 2 {
+        return None;
+    }
+    Some(CopyByLabel {
+        subject,
+        arms,
+        target: target?,
+    })
+}
+
+fn run_copy_by_label(event: &mut Event, shape: &CopyByLabel) -> bool {
+    let Some(label) = event.get_as_string(&shape.subject) else {
+        // Absent, which the processor's own `if` gates on.
+        return false;
+    };
+    for (labels, source) in &shape.arms {
+        if !labels.contains(&label) {
+            continue;
+        }
+        // The arm's own `!= null`: an absent or explicitly null source leaves
+        // the target alone rather than clearing it.
+        if let Some(value) = event.get(source).filter(|v| !v.is_null()).cloned() {
+            let _ = event.set(&shape.target, value);
+        }
+        return true;
+    }
+    true
 }
 
 /// A number banded into a label.
@@ -10505,14 +10656,7 @@ pub(crate) enum KnownShape {
         sid_field: String,
     },
     SplitPipeFields(Vec<String>),
-    SplitTokenField {
-        source: String,
-        separator: char,
-        parse_int: bool,
-        target: String,
-        /// A second separator whose FIRST piece is what each member keeps.
-        head: Option<char>,
-    },
+    SplitTokenField(Box<SplitToken>),
     DecodeBase64 {
         source: String,
         target: String,
@@ -10596,6 +10740,7 @@ pub(crate) enum KnownShape {
     ProcessNameFromCommandLine,
     FlagsPresent(Box<FlagsPresent>),
     ZipLists(Box<ZipLists>),
+    CopyByLabel(Box<CopyByLabel>),
     BandLadder(Box<BandLadder>),
     IocExpiry(Box<IocExpiry>),
     WrapMapInList(String),
@@ -11465,6 +11610,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: the same split written as a stream, dropping EVERY empty piece
+    // and deleting the field when none survive -- ti_anomali's comma-fenced
+    // `,10015,`, which the loop spelling above cannot express.
+    if normalised.contains(".splitOnToken(")
+        && normalised.contains("Collectors.toList()")
+        && let Some(shape) = parse_stream_split_filter(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
     // Pattern: `ctx.<t> = ctx.<s>.decodeBase64();` -- zscaler web's URL and
     // referer.
     if normalised.contains(".decodeBase64()")
@@ -11768,6 +11924,18 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
             .any(|marker| normalised.find(marker).is_some_and(|at| at < add_at))
     {
         shapes.push(KnownShape::AppendEach);
+        return shapes;
+    }
+
+    // Pattern: the same if/else-if chain over one field, but every arm COPIES
+    // a different source into one target rather than writing a literal. Ahead
+    // of `LiteralValueMap` below, whose arms must write a literal, so it
+    // declines this and leaves it to `GuardedCopy` -- which takes the FIRST
+    // arm's source whatever the label says.
+    if normalised.contains(" else if (")
+        && let Some(shape) = parse_copy_by_label(normalised)
+    {
+        shapes.push(KnownShape::CopyByLabel(Box::new(shape)));
         return shapes;
     }
 
@@ -12233,13 +12401,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             sid_field,
         } => crate::painless_windows::run_copy_user_to_base(event, codes, base, sid_field),
         KnownShape::SplitPipeFields(fields) => run_split_pipe_fields(event, fields),
-        KnownShape::SplitTokenField {
-            source,
-            separator,
-            parse_int,
-            target,
-            head,
-        } => run_split_token_field(event, source, *separator, *parse_int, target, *head),
+        KnownShape::SplitTokenField(shape) => run_split_token_field(event, shape),
         KnownShape::DecodeBase64 { source, target } => run_decode_base64(event, source, target),
         KnownShape::TokenCount {
             source,
@@ -12377,6 +12539,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             absent,
             divisor,
         } => run_guarded_divide(event, target, source, absent.as_ref(), *divisor),
+        KnownShape::CopyByLabel(shape) => run_copy_by_label(event, shape),
         KnownShape::BandLadder(shape) => run_band_ladder(event, shape),
         KnownShape::IocExpiry(shape) => run_ioc_expiry(event, shape),
         KnownShape::GuardedCopy => try_guarded_copy(event, normalised),
@@ -12852,6 +13015,100 @@ mod tests {
         } if (value >= 30.0 && value < 70) {\n  confidence = \"Medium\";\n\
         } else if (value >= 70 && value <= 100) {\n  confidence = \"High\";\n\
         } ctx.threat.indicator.put(\"confidence\", confidence)\n";
+
+    /// `pipelines/ti_anomali/threatstream/default.yml`: one target, a
+    /// different source per label, each arm carrying its own null guard.
+    const NAME_BY_TYPE: &str = "String indicatorType = ctx.threat?.indicator?.type;\n\
+        if (indicatorType == 'ipv4-addr' || indicatorType == 'ipv6-addr') {\n  \
+        if (ctx.json?.srcip != null) ctx.threat.indicator.name = ctx.json.srcip;\n\
+        } else if (indicatorType == 'domain-name') {\n  \
+        if (ctx.json?.domain != null) ctx.threat.indicator.name = ctx.json.domain;\n\
+        } else if (indicatorType == 'url') {\n  \
+        if (ctx.json?.url != null) ctx.threat.indicator.name = ctx.json.url;\n\
+        } else if (indicatorType == 'file') {\n  \
+        if (ctx.json?.md5 != null) ctx.threat.indicator.name = ctx.json.md5;\n}\n";
+
+    /// The same split as the `new ArrayList()` spelling, written as a stream.
+    const SPLIT_STREAM: &str = "def lst = Stream.of(ctx.json.trusted_circle_ids\
+        .splitOnToken(',')).filter(s -> !s.isEmpty()).collect(Collectors.toList()); \
+        if (lst.size() > 0) {\n  ctx.json.trusted_circle_ids = lst;\n\
+        } else {\n  ctx.json.remove('trusted_circle_ids');\n}\n";
+
+    /// Each label takes its OWN source. Reading the first arm's source for
+    /// every label is what the guarded-copy fallback did.
+    #[test]
+    fn a_copy_ladder_takes_the_source_its_label_names() {
+        let sources = json!({
+            "srcip": "10.0.0.1",
+            "domain": "example.test",
+            "url": "https://example.test/a",
+            "md5": "d41d8cd98f00b204e9800998ecf8427e",
+        });
+        for (indicator, expected) in [
+            ("ipv4-addr", "10.0.0.1"),
+            ("ipv6-addr", "10.0.0.1"),
+            ("domain-name", "example.test"),
+            ("url", "https://example.test/a"),
+            ("file", "d41d8cd98f00b204e9800998ecf8427e"),
+        ] {
+            let mut event = Event::new(json!({
+                "threat": { "indicator": { "type": indicator } },
+                "json": sources,
+            }));
+            assert!(try_known_painless(&mut event, NAME_BY_TYPE), "{indicator}");
+            assert_eq!(
+                event.get_str("threat.indicator.name"),
+                Some(expected),
+                "type {indicator}"
+            );
+        }
+    }
+
+    /// A label with no arm, and an arm whose source is absent, both leave the
+    /// target alone -- the script's own `!= null` guards say so.
+    #[test]
+    fn a_copy_ladder_writes_nothing_it_was_not_given() {
+        let mut unmatched = Event::new(json!({
+            "threat": { "indicator": { "type": "x509-certificate" } },
+            "json": { "srcip": "10.0.0.1" },
+        }));
+        assert!(try_known_painless(&mut unmatched, NAME_BY_TYPE));
+        assert_eq!(unmatched.get("threat.indicator.name"), None);
+
+        let mut absent = Event::new(json!({
+            "threat": { "indicator": { "type": "url" } },
+            "json": { "srcip": "10.0.0.1" },
+        }));
+        assert!(try_known_painless(&mut absent, NAME_BY_TYPE));
+        assert_eq!(absent.get("threat.indicator.name"), None);
+    }
+
+    /// The stream filter drops EVERY empty piece, so a value fenced by its own
+    /// separator loses both ends -- Java's split keeps the leading one.
+    #[test]
+    fn a_stream_split_drops_every_empty_piece() {
+        let mut event = Event::new(json!({
+            "json": { "trusted_circle_ids": ",10015," },
+        }));
+        assert!(try_known_painless(&mut event, SPLIT_STREAM));
+        assert_eq!(
+            event.get("json.trusted_circle_ids"),
+            Some(&json!(["10015"]))
+        );
+    }
+
+    /// Nothing surviving the filter deletes the field, which is the script's
+    /// own `else` branch -- an empty array would be a value the vendor never
+    /// writes.
+    #[test]
+    fn a_stream_split_removes_a_field_with_no_pieces() {
+        let mut event = Event::new(json!({
+            "json": { "trusted_circle_ids": ",,,", "keep": "me" },
+        }));
+        assert!(try_known_painless(&mut event, SPLIT_STREAM));
+        assert_eq!(event.get("json.trusted_circle_ids"), None);
+        assert_eq!(event.get_str("json.keep"), Some("me"));
+    }
 
     #[test]
     fn a_returning_band_ladder_takes_the_first_band_that_holds() {
