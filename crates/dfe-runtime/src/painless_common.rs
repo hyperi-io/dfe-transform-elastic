@@ -8354,31 +8354,169 @@ fn run_nanos_between(event: &mut Event, shape: &NanosBetween) -> bool {
     true
 }
 
-/// Read `if (ctx.<a> != null && ctx.<b> == null) { ctx.<a> = ctx.<a> / <n>; }`.
+/// The lone document a list-or-object field carries, lifted to a sibling.
 ///
-/// `aws/ec2_metrics` and `aws/rds` turn a `CloudWatch` percentage into a fraction
-/// this way, and only when the agent has not already written the fraction
-/// itself -- that second clause is the whole point of the script, so the
-/// absent-field guard is carried rather than assumed.
-fn parse_guarded_divide(script: &str) -> Option<KnownShape> {
+/// The mirror of [`parse_wrap_map_in_list`]: where that levels a lone object UP
+/// into a list, this takes a one-element list DOWN to the object, so every
+/// processor after it can name one path. `carbonblack_edr` opens with it, and
+/// missing it left `json.docs` where the next forty renames all read
+/// `json.doc` -- the whole of its 99 events.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct FirstOrSelf {
+    /// The list-or-object field.
+    source: String,
+    /// Where the single document lands.
+    target: String,
+    /// The field the script drops once the document has been lifted.
+    remove: Option<String>,
+}
+
+fn parse_first_or_self(script: &str) -> Option<FirstOrSelf> {
     use crate::painless_params::clean_path;
 
-    let line = script
-        .lines()
-        .map(str::trim)
-        .find(|line| line.starts_with("ctx.") && line.contains('/'))?;
-    let (lhs, rhs) = line.split_once(" = ")?;
-    let target = clean_path(lhs.trim().strip_prefix("ctx.")?);
-
-    let (value, divisor) = rhs.trim().trim_end_matches(';').rsplit_once('/')?;
-    let divisor = divisor.trim().parse::<i64>().ok().filter(|n| *n != 0)?;
-    if clean_path(value.trim().strip_prefix("ctx.")?) != target {
+    let local = script
+        .split_once(" instanceof List")?
+        .0
+        .rsplit(|c: char| c.is_whitespace() || c == '(')
+        .next()?;
+    if local.is_empty() || !local.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+    // Both arms must be there. A script that only handles the list is some
+    // other shape, and running this one on it would invent the object arm.
+    if !script.contains(&format!("{local} instanceof Map")) {
         return None;
     }
 
+    let source = ctx_path_bound_to(script, local)?;
+    let head = script.split_once(&format!("= {local}[0]"))?.0;
+    let at = head.rfind("ctx.")? + "ctx.".len();
+    let target = clean_path(&desubscript(head[at..].trim().trim_end_matches(" =")));
+    if source.is_empty() || target.is_empty() {
+        return None;
+    }
+
+    // `ctx.<parent>.remove('<leaf>')` -- the source under its two halves.
+    let remove = script.split_once(".remove(").and_then(|(head, tail)| {
+        let leaf = tail.split_once(')')?.0.trim();
+        if !leaf.starts_with(['"', '\'']) {
+            return None;
+        }
+        let at = head.rfind("ctx.")? + "ctx.".len();
+        let parent = clean_path(&desubscript(&head[at..]));
+        Some(format!("{parent}.{}", leaf.trim_matches(['"', '\''])))
+    });
+
+    Some(FirstOrSelf {
+        source,
+        target,
+        remove,
+    })
+}
+
+fn run_first_or_self(event: &mut Event, shape: &FirstOrSelf) -> bool {
+    let lifted = match event.get(&shape.source) {
+        Some(Value::Array(items)) => items.first().cloned(),
+        Some(map @ Value::Object(_)) => Some(map.clone()),
+        // An empty list or a scalar is the script's own `throw`, which fails
+        // the pipeline rather than writing anything. Nothing is removed on
+        // that path either, because the throw comes first.
+        _ => None,
+    };
+    let Some(lifted) = lifted else {
+        return true;
+    };
+    let _ = event.set(&shape.target, lifted);
+    if let Some(path) = &shape.remove {
+        event.remove(path);
+    }
+    true
+}
+
+/// Read `def <p> = ctx.<path>; if (<p> instanceof Map) { ctx.<path> = [ <p> ]; }`.
+///
+/// An XML-shaped payload serialises a repeated element as a LIST when there are
+/// several and as a bare object when there is one, so the pipeline levels it
+/// before the `foreach` that walks it. Skipping this cost cyberarkpas the whole
+/// property: the `foreach` read a map, `{{{_ingest._value.Name}}}` rendered
+/// empty, and the set wrote a field with no name and no value.
+fn parse_wrap_map_in_list(script: &str) -> Option<String> {
+    use crate::painless_params::clean_path;
+
+    let local = script
+        .split_once(" instanceof Map")?
+        .0
+        .rsplit(|c: char| c.is_whitespace() || c == '(')
+        .next()?;
+    if local.is_empty() || !local.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+
+    // The wrap itself. `[ <local> ]` and nothing else -- a list built from
+    // anything more is some other shape's business.
+    let (head, tail) = script.split_once(" = [")?;
+    if tail.split_once(']')?.0.trim() != local {
+        return None;
+    }
+    let assigned = clean_path(head.rsplit_once("ctx.")?.1);
+
+    // The local must be BOUND to the same path, or the script is levelling one
+    // field by testing another.
+    let bound = clean_path(
+        script
+            .split_once(&format!("{local} = ctx."))?
+            .1
+            .split([';', '\n'])
+            .next()?,
+    );
+    (bound == assigned && !assigned.is_empty()).then_some(assigned)
+}
+
+/// Read `ctx.<target> = ctx.<source> / <n>;`, with an optional absent-guard.
+///
+/// `aws/ec2_metrics` and `aws/rds` turn a `CloudWatch` percentage into a
+/// fraction in place, and only when the agent has not already written the
+/// fraction itself -- that guard is the whole point there, so it is carried
+/// rather than assumed. cyberarkpas's monitor writes the same fraction to a
+/// DIFFERENT field, spells the divisor `100.0`, and puts no space either side
+/// of the slash; each of those alone was enough to miss it, which is why the
+/// statement is split apart rather than pattern-matched whole.
+fn parse_guarded_divide(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    // Statements, not lines: a folded YAML scalar puts the whole script on one.
+    let statement = script
+        .split([';', '\n'])
+        .map(str::trim)
+        .find(|s| s.starts_with("ctx.") && s.contains('/') && s.contains(" = "))?;
+    let (lhs, rhs) = statement.split_once(" = ")?;
+    let target = clean_path(lhs.trim().strip_prefix("ctx.")?);
+
+    let (value, divisor) = rhs.trim().rsplit_once('/')?;
+    // `100` and `100.0` are the same divisor, and Painless allows a type
+    // suffix on either. Read as an INTEGER -- `KnownShape` derives `Eq`, and no
+    // vendor divides by a fraction.
+    let literal = divisor
+        .trim()
+        .trim_end_matches(['L', 'l', 'd', 'D', 'f', 'F']);
+    let literal = match literal.split_once('.') {
+        Some((whole, fraction)) if fraction.chars().all(|c| c == '0') => whole,
+        Some(_) => return None,
+        None => literal,
+    };
+    let divisor = literal.parse::<i64>().ok().filter(|n| *n != 0)?;
+    let source = clean_path(value.trim().strip_prefix("ctx.")?);
+    if target.is_empty() || source.is_empty() {
+        return None;
+    }
+
+    // Only a `&&`-joined clause is a GUARD. A bare `if (ctx.host == null)
+    // ctx.host = [:];` is map creation, and reading it as a guard made
+    // cyberarkpas skip the divide on every event that had a host at all.
     let absent = script.split_once("== null").and_then(|(head, _)| {
-        let at = head.rfind("ctx.")?;
-        let path = clean_path(&head[at + "ctx.".len()..]);
+        let clause = head.rsplit_once("&&")?.1;
+        let at = clause.rfind("ctx.")?;
+        let path = clean_path(&clause[at + "ctx.".len()..]);
         (!path.is_empty()
             && path
                 .chars()
@@ -8388,22 +8526,24 @@ fn parse_guarded_divide(script: &str) -> Option<KnownShape> {
 
     Some(KnownShape::GuardedDivide {
         target,
+        source,
         absent,
         divisor,
     })
 }
 
-/// Divide a field in place, unless the guarded field is already set.
+/// Divide one field by a literal into another, unless the guard is already set.
 fn run_guarded_divide(
     event: &mut Event,
     target: &str,
+    source: &str,
     absent: Option<&String>,
     divisor: i64,
 ) -> bool {
     if absent.is_some_and(|path| event.has_value(path)) {
         return true;
     }
-    if let Some(value) = event.get_f64(target) {
+    if let Some(value) = event.get_f64(source) {
         #[allow(clippy::cast_precision_loss)]
         let _ = event.set(target, json!(value / divisor as f64));
     }
@@ -10097,8 +10237,13 @@ pub(crate) enum KnownShape {
     ProcessNameFromCommandLine,
     FlagsPresent(Box<FlagsPresent>),
     ZipLists(Box<ZipLists>),
+    WrapMapInList(String),
+    FirstOrSelf(Box<FirstOrSelf>),
     GuardedDivide {
         target: String,
+        /// The dividend. USUALLY the target -- aws divides in place -- but
+        /// cyberarkpas reads a vendor field and writes an ECS one.
+        source: String,
         absent: Option<String>,
         divisor: i64,
     },
@@ -10179,6 +10324,27 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_millisecond_ladder(normalised)
     {
         shapes.push(KnownShape::MillisecondLadder(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: a lone object wrapped in a one-element list so the `foreach`
+    // after it has something to walk. Ahead of every other `instanceof Map`
+    // branch because it is the SHORTEST of them and the rest would read its
+    // single assignment as their own.
+    if normalised.contains("instanceof Map")
+        && let Some(path) = parse_wrap_map_in_list(normalised)
+    {
+        shapes.push(KnownShape::WrapMapInList(path));
+        return shapes;
+    }
+
+    // Pattern: the reverse -- a one-element list taken down to the object it
+    // holds, so the renames after it can name one path.
+    if normalised.contains("instanceof Map")
+        && normalised.contains("instanceof List")
+        && let Some(shape) = parse_first_or_self(normalised)
+    {
+        shapes.push(KnownShape::FirstOrSelf(Box::new(shape)));
         return shapes;
     }
 
@@ -11051,8 +11217,14 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
-    // Pattern: an `hh:mm:ss` flow duration becomes a span ending at @timestamp.
-    if normalised.contains("minusNanos(") && normalised.contains(".toCharArray()") {
+    // Pattern: an `hh:mm:ss` duration scaled to nanoseconds, plus the span
+    // around @timestamp where the script counts one end back from the other.
+    //
+    // The HELPER'S NAME is the trigger. Keying on the loop missed cyberarkpas,
+    // which indexes with `charAt(i)` where cisco walks `.toCharArray()`, and
+    // keying on `minusNanos(` missed it twice over -- it writes the duration
+    // and no span at all, so that call was never going to be there.
+    if normalised.contains("parse_hms(") && normalised.contains("1000000000") {
         shapes.push(KnownShape::FlowDuration);
         return shapes;
     }
@@ -11433,8 +11605,11 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // The two catch-alls below are shapes a longer script also CONTAINS, so
     // they run only after every structural matcher has declined.
 
-    // Pattern: divide a number in place by a literal, under a guard.
-    if normalised.contains(" / ")
+    // Pattern: divide a number by a literal into a field, under a guard. The
+    // trigger is a bare slash because cyberarkpas writes `cpu_usage/100.0`
+    // with no spaces; the parse is what actually decides, and it declines on
+    // a slash that is part of a path or a literal.
+    if normalised.contains('/')
         && !normalised.contains("params")
         && let Some(shape) = parse_guarded_divide(normalised)
     {
@@ -11797,11 +11972,20 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::ProcessNameFromCommandLine => run_process_name_from_command_line(event),
         KnownShape::FlagsPresent(shape) => run_flags_present(event, shape),
         KnownShape::ZipLists(shape) => run_zip_lists(event, shape),
+        KnownShape::FirstOrSelf(shape) => run_first_or_self(event, shape),
+        KnownShape::WrapMapInList(path) => {
+            if let Some(Value::Object(_)) = event.get(path) {
+                let held = event.get(path).cloned().unwrap_or(Value::Null);
+                let _ = event.set(path, Value::Array(vec![held]));
+            }
+            true
+        }
         KnownShape::GuardedDivide {
             target,
+            source,
             absent,
             divisor,
-        } => run_guarded_divide(event, target, absent.as_ref(), *divisor),
+        } => run_guarded_divide(event, target, source, absent.as_ref(), *divisor),
         KnownShape::GuardedCopy => try_guarded_copy(event, normalised),
         KnownShape::PlainAssignments => {
             crate::painless_params::run_guarded_literals(event, normalised)
@@ -12815,6 +12999,99 @@ mod tests {
         assert_eq!(agent.get("host.cpu.usage"), Some(&json!(0.421)));
     }
 
+    /// Verbatim from `pipelines/carbonblack_edr/log/default.yml`, described
+    /// 'Selects a single document from docs input field'. Everything after it
+    /// reads `json.doc`, so leaving `json.docs` in place lost the lot.
+    #[test]
+    fn a_single_document_is_lifted_out_of_its_wrapper() {
+        let script = "def docs = ctx.json.docs;\n\
+             if (docs instanceof List && docs.size() > 0) {\n  \
+             ctx.json[\"doc\"] = docs[0];\n\
+             } else if (docs instanceof Map) {\n  ctx.json[\"doc\"] = docs;\n\
+             } else {\n  throw new Exception(\"Unexpected type\");\n}\n\
+             ctx.json.remove(\"docs\");";
+
+        let mut listed = Event::new(json!({ "json": { "docs": [{ "pid": 44988 }] } }));
+        assert!(try_known_painless(&mut listed, script));
+        assert_eq!(listed.get("json.doc"), Some(&json!({ "pid": 44988 })));
+        assert_eq!(listed.get("json.docs"), None);
+
+        // The object form is taken as it stands, not wrapped and unwrapped.
+        let mut single = Event::new(json!({ "json": { "docs": { "pid": 7 } } }));
+        assert!(try_known_painless(&mut single, script));
+        assert_eq!(single.get("json.doc"), Some(&json!({ "pid": 7 })));
+        assert_eq!(single.get("json.docs"), None);
+
+        // An empty list is the script's own `throw`: nothing is lifted, and
+        // the source is NOT dropped, because the throw comes first.
+        let mut empty = Event::new(json!({ "json": { "docs": [] } }));
+        assert!(try_known_painless(&mut empty, script));
+        assert_eq!(empty.get("json.doc"), None);
+        assert_eq!(empty.get("json.docs"), Some(&json!([])));
+    }
+
+    /// Verbatim from `pipelines/cyberarkpas/audit/audit.yml`, tagged
+    /// `script_converts_caproperties_into_an_array_if_necessary`. The vendor
+    /// serialises one `CAProperty` as an object and several as a list, and the
+    /// `foreach` after this can only walk the list.
+    #[test]
+    fn a_lone_object_is_wrapped_so_the_foreach_can_walk_it() {
+        let script = "def props = ctx.cyberarkpas?.audit?.CAProperties?.CAProperty;\n\
+             if (props instanceof Map) {\n  \
+             ctx.cyberarkpas.audit.CAProperties.CAProperty = [ props ];\n}\n";
+
+        let mut single = Event::new(json!({ "cyberarkpas": { "audit": { "CAProperties": {
+            "CAProperty": { "Name": "ConfigurationSchemaVersion", "Value": "12121" },
+        }}}}));
+        assert!(try_known_painless(&mut single, script));
+        assert_eq!(
+            single.get("cyberarkpas.audit.CAProperties.CAProperty"),
+            Some(&json!([{ "Name": "ConfigurationSchemaVersion", "Value": "12121" }]))
+        );
+
+        // Already a list: left exactly as it stands, not nested a second time.
+        let already = json!([{ "Name": "PolicyID", "Value": "LINUX-SSH" }]);
+        let mut many = Event::new(json!({ "cyberarkpas": { "audit": { "CAProperties": {
+            "CAProperty": already.clone(),
+        }}}}));
+        assert!(try_known_painless(&mut many, script));
+        assert_eq!(
+            many.get("cyberarkpas.audit.CAProperties.CAProperty"),
+            Some(&already)
+        );
+
+        // Absent: the script's own null-safe navigation, so nothing is created.
+        let mut absent = Event::new(json!({ "cyberarkpas": { "audit": {} } }));
+        assert!(try_known_painless(&mut absent, script));
+        assert_eq!(absent.get("cyberarkpas.audit.CAProperties"), None);
+    }
+
+    /// Verbatim from `pipelines/cyberarkpas/monitor/default.yml`, tagged
+    /// `script_set_host_cpu_usage`. The same divide, but the quotient lands on
+    /// a DIFFERENT field, the divisor is spelled `100.0`, and there is no space
+    /// either side of the slash.
+    #[test]
+    fn a_percentage_divides_into_a_different_field() {
+        let script = "if (ctx.host == null) ctx.host = [:]; \
+             if (ctx.host.cpu == null) ctx.host.cpu = [:]; \
+             ctx.host.cpu.usage = ctx.cyberarkpas.monitor.cpu_usage/100.0;";
+
+        let mut event = Event::new(json!({ "cyberarkpas": { "monitor": { "cpu_usage": 12 } } }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get("host.cpu.usage"), Some(&json!(0.12)));
+        // The dividend is the vendor's own field and is left as it stands.
+        assert_eq!(event.get("cyberarkpas.monitor.cpu_usage"), Some(&json!(12)));
+
+        // `if (ctx.host == null)` is map CREATION, not a guard -- an event
+        // that already carries a host must still get its usage.
+        let mut with_host = Event::new(json!({
+            "cyberarkpas": { "monitor": { "cpu_usage": 50 } },
+            "host": { "name": "vault01" },
+        }));
+        assert!(try_known_painless(&mut with_host, script));
+        assert_eq!(with_host.get("host.cpu.usage"), Some(&json!(0.5)));
+    }
+
     /// Verbatim from `pipelines/aws/cloudtrail/default.yml`. `MobileVersion`
     /// and `MFAUsed` are read as `!= 'No'`, so the string becomes a boolean;
     /// `LoginTo` is carried as it stands.
@@ -13191,6 +13468,39 @@ mod tests {
             event.get("event.start"),
             Some(&json!("2018-10-10T12:33:49.000Z"))
         );
+    }
+
+    /// Verbatim from `pipelines/cyberarkpas/audit/audit.yml`, tagged
+    /// `script_set_event_duration_from_the_session_duration_hh_mm_ss`. Same
+    /// job as cisco's, written by a different hand: an indexed loop rather
+    /// than `toCharArray`, `_tmp` rather than `_temp_`, and no span.
+    const SESSION_DURATION: &str = "long parse_hms(String s) {\n    \
+        long cur = 0, total = 0;\n    for (int i = 0, n = s.length(); i < n; i++) {\n        \
+        char c = s.charAt(i);\n        if (c >= (char)'0' && c <= (char)'9') {\n            \
+        cur = (cur*10) + (long)(c - (char)'0');\n        } else if (c == (char)':') {\n            \
+        total = (total + cur) * 60;\n            cur = 0;\n        } else {\n            \
+        return 0;\n        }\n    }\n    return total + cur;\n}\n\
+        long nanos = parse_hms(ctx._tmp.duration_hms) * 1000000000L;\n\
+        ctx.event['duration'] = nanos;\n";
+
+    #[test]
+    fn a_session_duration_is_read_from_the_scripts_own_tmp_field() {
+        let mut event = Event::new(json!({
+            "@timestamp": "2018-10-10T12:34:56.000Z",
+            "_tmp": { "duration_hms": "01:02:03" },
+        }));
+
+        assert!(try_known_painless(&mut event, SESSION_DURATION));
+
+        assert_eq!(
+            event.get("event.duration"),
+            Some(&json!(3_723_000_000_000i64))
+        );
+        // No span: this script writes only the duration, and inventing the
+        // ends from the cisco shape would put two fields on the document
+        // that Elasticsearch never wrote.
+        assert_eq!(event.get("event.start"), None);
+        assert_eq!(event.get("event.end"), None);
     }
 
     /// With no timestamp there is nothing to count back from, so the duration

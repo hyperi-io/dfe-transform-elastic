@@ -164,7 +164,8 @@ pub fn grok_mapped(pattern: &str, extra: &[(&str, &str)]) -> &'static CompiledGr
         }
     }
     crate::codegen_api::resolve_capture_paths(&mut field_map, &mut capture_types);
-    let tolerant = tolerate_trailing_terminator(&expanded);
+    let literal_angles = ruby_literal_angles(&expanded);
+    let tolerant = tolerate_trailing_terminator(&literal_angles);
     let expanded = line_anchored(&tolerant);
 
     let compiled: &'static CompiledGrok = Box::leak(Box::new(CompiledGrok {
@@ -481,6 +482,43 @@ fn line_anchored(expanded: &str) -> Cow<'_, str> {
     Cow::Owned(format!("(?m){expanded}"))
 }
 
+/// `\<` and `\>` are the LITERAL brackets, which is what Ruby's syntax makes
+/// them.
+///
+/// Same root as the anchor rule above: Elasticsearch's grok is joni under
+/// `Syntax.RUBY`, and Ruby has no word-start or word-end escape, so a backslash
+/// before a non-special character stands for that character. Rust's `regex`
+/// added `\<` and `\>` as word boundaries in 1.9, which silently turns the
+/// vendor's literal bracket into a zero-width assertion -- the pattern then
+/// compiles and matches NOTHING. rabbitmq's `ERL_PID` is written
+/// `\<%{INT}+\.%{INT}+\.%{INT}+\>` to match an Erlang pid like `<0.222.0>`, and
+/// it failed on all 157 of its events; `aws_mq` ships the same definition.
+fn ruby_literal_angles(expanded: &str) -> Cow<'_, str> {
+    if !expanded.contains("\\<") && !expanded.contains("\\>") {
+        return Cow::Borrowed(expanded);
+    }
+    let mut out = String::with_capacity(expanded.len());
+    let mut chars = expanded.chars();
+    while let Some(c) = chars.next() {
+        if c != '\\' {
+            out.push(c);
+            continue;
+        }
+        match chars.next() {
+            // The bracket alone -- the backslash was never an escape here.
+            Some(angle @ ('<' | '>')) => out.push(angle),
+            // A doubled backslash is a literal backslash, and whatever follows
+            // it is NOT escaped, so it must not be examined as if it were.
+            Some(other) => {
+                out.push('\\');
+                out.push(other);
+            }
+            None => out.push('\\'),
+        }
+    }
+    Cow::Owned(out)
+}
+
 /// Let a trailing `$` match before a final line terminator, as Java's does.
 ///
 /// Rust's `$` is the end of the haystack and Java's is the end but for one
@@ -766,6 +804,37 @@ mod tests {
         );
         assert_eq!(tolerate_trailing_terminator("^a\\$"), "^a\\$");
         assert_eq!(tolerate_trailing_terminator("^a"), "^a");
+    }
+
+    /// Ruby has no word-start escape, so rabbitmq's `\<...\>` is a pair of
+    /// literal brackets round an Erlang pid.
+    #[test]
+    fn an_escaped_angle_bracket_is_the_bracket_itself() {
+        assert_eq!(ruby_literal_angles("\\<a\\>"), "<a>");
+        // A doubled backslash is a literal backslash, and the bracket after it
+        // was never escaped -- rewriting it would change what the regex means.
+        assert_eq!(ruby_literal_angles("\\\\<a"), "\\\\<a");
+        // Nothing to do, and nothing allocated.
+        assert!(matches!(
+            ruby_literal_angles("^%{WORD:a}$"),
+            std::borrow::Cow::Borrowed(_)
+        ));
+
+        let compiled = grok(
+            "%{TIMESTAMP_ISO8601:timestamp} \\[%{WORD:level}\\] \
+             (?P<pid>(?:\\<%{INT}+\\.%{INT}+\\.%{INT}+\\>)) (?P<msg>(?:(.|\n)*))",
+        );
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into(
+                    "2021-05-13 09:00:00.000000+00:00 [info] <0.222.0> Server startup complete",
+                    &mut event,
+                )
+                .expect("the pid pattern compiles")
+        );
+        assert_eq!(event.get_str("pid"), Some("<0.222.0>"));
+        assert_eq!(event.get_str("msg"), Some("Server startup complete"));
     }
 
     /// joni anchors to lines, so a catch-all matches the first line of a

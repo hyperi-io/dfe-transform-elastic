@@ -199,6 +199,16 @@ pub(crate) enum ParamsShape {
     FrameworkPreference,
     RowOrDefaults(Box<RowOrDefaults>),
     MergeRowOrFallback(Box<MergeRowOrFallback>),
+    SelectMembers {
+        subject: String,
+        rest: String,
+    },
+    ParamRenameLadder {
+        path: String,
+        /// Each arm as (the params member holding the value to match, the
+        /// params member holding what to write instead).
+        arms: Vec<(String, String)>,
+    },
 }
 
 /// The one matcher this script's text triggers, or `None`.
@@ -256,6 +266,26 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // line of the named event_data field.
     if normalised.contains("def parseRawDetail(String raw)") {
         return Some(ParamsShape::InvocationDetails);
+    }
+
+    // Pattern: one field rewritten through an if/else-if ladder whose BOTH
+    // sides are params members -- stan spells its log levels and its message
+    // types this way. Early, because the parse is the trigger and it demands
+    // the whole script be the ladder.
+    if normalised.contains("== params.")
+        && let Some(shape) = parse_param_rename_ladder(normalised)
+    {
+        return Some(shape);
+    }
+
+    // Pattern: keep the params-listed members of a sub-map where they are and
+    // push the rest down one level -- cyberarkpas's mapping-explosion guard.
+    // Early, because the parse is the trigger: only this shape spells a params
+    // VALUE streamed as the field list, so nothing else can be stolen by it.
+    if normalised.contains(".getValue().stream().filter(")
+        && let Some(shape) = parse_select_members(normalised)
+    {
+        return Some(shape);
     }
 
     // Pattern: every params label whose flag the field's bits carry, collected
@@ -476,7 +506,17 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
     }
 
     // Pattern: look a field up in a static table and merge the row into ctx.
-    if normalised.contains("params.get(") && normalised.contains("forEach((k, v) ->") {
+    //
+    // The lambda's exact spelling is NOT the trigger. carbonblack_edr writes
+    // `forEach( (k, v) ->` with a space, subscripts `params[type]` where the
+    // others call `.get(`, and merges onto a local bound to `ctx.event`;
+    // each of those three alone was enough to miss it, and missing it cost
+    // `event.kind` on all 99 of its events. `[k] = ` is the merge itself and
+    // is what the parse below reads the target from.
+    if normalised.contains("forEach(")
+        && normalised.contains("[k] = ")
+        && (normalised.contains("params.get(") || normalised.contains("params["))
+    {
         return Some(ParamsShape::LookupMerge);
     }
 
@@ -763,6 +803,12 @@ pub(crate) fn run_params_shape(
         ParamsShape::FrameworkPreference => try_framework_preference(event, normalised, params),
         ParamsShape::RowOrDefaults(shape) => run_row_or_defaults(event, shape, params),
         ParamsShape::MergeRowOrFallback(shape) => run_merge_row_or_fallback(event, shape, params),
+        ParamsShape::SelectMembers { subject, rest } => {
+            run_select_members(event, subject, rest, params)
+        }
+        ParamsShape::ParamRenameLadder { path, arms } => {
+            run_param_rename_ladder(event, path, arms, params)
+        }
     }
 }
 
@@ -2152,6 +2198,219 @@ fn run_merge_row_or_fallback(
     true
 }
 
+/// Read an if/else-if ladder that rewrites ONE field, both sides named by
+/// params members:
+///
+/// ```text
+/// if (ctx.<p> == params.<a1>) { ctx.<p> = params.<b1>; }
+/// else if (ctx.<p> == params.<a2>) { ctx.<p> = params.<b2>; } ...
+/// ```
+///
+/// The vendor keeps the abbreviations and their expansions in params so the
+/// table is editable without touching the script. Nothing about it is
+/// source-specific, but every arm must name the SAME field -- a ladder that
+/// switches fields half way is a different shape and is declined here rather
+/// than half-run.
+fn parse_param_rename_ladder(script: &str) -> Option<ParamsShape> {
+    // Nothing may precede the ladder. Running the arms of a script that also
+    // does something else writes the vendor's value while skipping its work.
+    let mut chunks = script.split("if (");
+    if !chunks.next()?.trim().is_empty() {
+        return None;
+    }
+
+    let mut path: Option<String> = None;
+    let mut arms: Vec<(String, String)> = Vec::new();
+    for chunk in chunks {
+        let (condition, body) = chunk.split_once(')')?;
+        let (subject, compare) = condition.split_once("== params.")?;
+        let subject = clean_path(subject.trim().strip_prefix("ctx.")?);
+        let from = leading_name(compare);
+
+        let (assigned, to) = body.split_once("= params.")?;
+        let written = clean_path(assigned.rsplit_once("ctx.")?.1.trim());
+        let to = leading_name(to);
+
+        if subject != written
+            || from.is_empty()
+            || to.is_empty()
+            || *path.get_or_insert_with(|| subject.clone()) != subject
+        {
+            return None;
+        }
+        arms.push((from, to));
+    }
+
+    // One arm is an `if`, not a ladder, and is claimed by the shapes that read
+    // a single guarded write.
+    let path = path.filter(|_| arms.len() > 1)?;
+    Some(ParamsShape::ParamRenameLadder { path, arms })
+}
+
+/// The identifier a params reference starts with.
+fn leading_name(text: &str) -> String {
+    text.chars()
+        .take_while(|c| c.is_alphanumeric() || *c == '_')
+        .collect()
+}
+
+fn run_param_rename_ladder(
+    event: &mut Event,
+    path: &str,
+    arms: &[(String, String)],
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(held) = event.get(path).cloned() else {
+        return true;
+    };
+    for (from, to) in arms {
+        // Painless compares the VALUES, so a params member the block does not
+        // carry compares equal to nothing and the arm is simply skipped.
+        if params.get(from) != Some(&held) {
+            continue;
+        }
+        if let Some(replacement) = params.get(to) {
+            let _ = event.set(path, replacement.clone());
+        }
+        return true;
+    }
+    true
+}
+
+/// Read the sub-map prune: which map is reshuffled, and under which member the
+/// unlisted fields land.
+///
+/// Every name in the script is a LOCAL, so all six are read off the text rather
+/// than assumed. The shape is:
+///
+/// ```text
+/// Map <map> = ctx.<subject>;
+/// params.entrySet().stream().filter(e -> <map>.containsKey(e.getKey())).forEach(<lst> -> {
+///   Map <base> = <map>[<lst>.getKey()], <sel> = new HashMap();
+///   <lst>.getValue().stream().filter(f -> <base>.containsKey(f)).forEach(f -> {
+///     <sel>[f] = <base>.remove(f);
+///   });
+///   <sel>['<rest>'] = <base>;
+///   <map>[<lst>.getKey()] = <sel>;
+/// });
+/// ```
+fn parse_select_members(script: &str) -> Option<ParamsShape> {
+    let (head, body) = script.split_once("params.entrySet()")?;
+    let subject = ctx_path_before(head, ";")?;
+    let map = head
+        .rsplit_once(" = ")?
+        .0
+        .rsplit(char::is_whitespace)
+        .next()?;
+    if subject.is_empty() || !is_local_name(map) {
+        return None;
+    }
+
+    // The filter must gate on the SAME local, or the script is walking some
+    // other map and the shape below means nothing.
+    if !body.contains(&format!("{map}.containsKey(")) {
+        return None;
+    }
+    let lst = body
+        .split_once(".forEach(")?
+        .1
+        .split_once("->")?
+        .0
+        .trim()
+        .trim_start_matches("def ")
+        .trim();
+    if !is_local_name(lst) {
+        return None;
+    }
+
+    let row = format!("{map}[{lst}.getKey()]");
+    let base = body
+        .split_once(&format!("{row},"))?
+        .0
+        .rsplit_once(" = ")?
+        .0
+        .rsplit(char::is_whitespace)
+        .next()?;
+    let sel = body
+        .split_once(" = new HashMap()")?
+        .0
+        .rsplit(char::is_whitespace)
+        .next()?;
+    if !is_local_name(base) || !is_local_name(sel) {
+        return None;
+    }
+
+    // The move itself, then the write-back. Without both, the script is
+    // reading the sub-map rather than replacing it.
+    if !body.contains(&format!("{sel}[")) || !body.contains(&format!("{base}.remove(")) {
+        return None;
+    }
+    if !body.contains(&format!("{row} = {sel};")) {
+        return None;
+    }
+
+    // `<sel>['<rest>'] = <base>;` -- the semicolon is what separates it from
+    // the `<sel>[f] = <base>.remove(f);` above.
+    let assign = format!("] = {base};");
+    let at = body.find(&assign)?;
+    let subscript = &body[..at];
+    let open = subscript.rfind('[')?;
+    let rest = unquote(&subscript[open + 1..]);
+    if rest.is_empty() || !subscript[..open].trim_end().ends_with(sel) {
+        return None;
+    }
+
+    Some(ParamsShape::SelectMembers { subject, rest })
+}
+
+/// A bare Painless identifier -- what every local in these scripts is.
+fn is_local_name(name: &str) -> bool {
+    !name.is_empty()
+        && !name.starts_with(|c: char| c.is_ascii_digit())
+        && name.chars().all(|c| c.is_alphanumeric() || c == '_')
+}
+
+fn run_select_members(
+    event: &mut Event,
+    subject: &str,
+    rest: &str,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(held) = event.get_object(subject) else {
+        return true;
+    };
+
+    // Built first, because `get_object` borrows the event for as long as the
+    // sub-maps are read. Only the keys params names are touched, so the clone
+    // is a handful of small maps rather than the document.
+    let mut rebuilt: Vec<(String, Value)> = Vec::new();
+    for (key, listed) in params {
+        let (Some(Value::Object(base)), Some(listed)) = (held.get(key), listed.as_array()) else {
+            continue;
+        };
+        // Painless streams the LIST, so the kept members come out in the
+        // params order and not the sub-map's.
+        let mut left = base.clone();
+        let mut selected = Map::new();
+        for name in listed.iter().filter_map(Value::as_str) {
+            // shift_remove, never remove: under `preserve_order` the swapping
+            // variant drops the LAST key into the freed slot.
+            if let Some(value) = left.shift_remove(name) {
+                selected.insert(name.to_string(), value);
+            }
+        }
+        // Unconditional, exactly as the script writes it -- a sub-map with
+        // nothing left over still gets an empty `rest`.
+        selected.insert(rest.to_string(), Value::Object(left));
+        rebuilt.push((key.clone(), Value::Object(selected)));
+    }
+
+    for (key, value) in rebuilt {
+        let _ = event.set(&format!("{subject}.{key}"), value);
+    }
+    true
+}
+
 /// Keys the vendor ships as text that the rename typed on the way through.
 const MSG_PART_LONGS: [&str; 2] = ["detected_size_bytes", "size_decoded_bytes"];
 const MSG_PART_BOOLS: [&str; 7] = [
@@ -3033,11 +3292,16 @@ fn try_lookup_merge(event: &mut Event, script: &str, params: &Map<String, Value>
     let Some(body) = script.split_once("forEach(").map(|(_, tail)| tail) else {
         return false;
     };
-    let Some(target) = merge_default_target(body) else {
+    let Some(target) = merge_default_target(script, body) else {
         return false;
     };
     let routes = merge_routes(body);
-    let keys = get_chain(script);
+    // `.get(` first, then the bracket spelling -- carbonblack_edr subscripts
+    // the table, and reading only the call form found no key at all.
+    let keys = match get_chain(script) {
+        chain if chain.is_empty() => bracket_key(script).into_iter().collect(),
+        chain => chain,
+    };
     if keys.is_empty() {
         return false;
     }
@@ -3048,6 +3312,10 @@ fn try_lookup_merge(event: &mut Event, script: &str, params: &Map<String, Value>
     // only its merge ran, so those three came out missing. The walk skips
     // anything it cannot read, so the lookup and the `forEach` pass it by.
     run_guarded_literals(event, script);
+
+    // `params[k] != null ? params[k] : params['<name>']` -- a key the table does
+    // not list still gets a row.
+    let fallback = bracket_fallback(script).and_then(|name| params.get(&name));
 
     let mut node = Some(&Value::Null);
     for (level, expr) in keys.iter().enumerate() {
@@ -3063,7 +3331,8 @@ fn try_lookup_merge(event: &mut Event, script: &str, params: &Map<String, Value>
                 .and_then(|map| map.get(&key))
         };
         if node.is_none() {
-            return true;
+            node = fallback;
+            break;
         }
     }
 
@@ -3088,11 +3357,39 @@ fn try_lookup_merge(event: &mut Event, script: &str, params: &Map<String, Value>
 /// routed arm as the target for the whole row, so `event.category`,
 /// `event.type` and `event.outcome` were written under
 /// `watchguard_firebox.log` on all 637 events.
-fn merge_default_target(body: &str) -> Option<String> {
+fn merge_default_target(script: &str, body: &str) -> Option<String> {
     let end = body.rfind("[k] = ")?;
-    let head = &body[..end];
-    let start = head.rfind("ctx.")? + "ctx.".len();
-    Some(clean_path(&head[start..]))
+    let reference = body[..end]
+        .rsplit(|c: char| c.is_whitespace() || matches!(c, '{' | '}' | ';' | '(' | ')'))
+        .next()?;
+    if let Some(path) = reference
+        .strip_prefix("ctx.")
+        .or_else(|| reference.strip_prefix("ctx?."))
+    {
+        return Some(clean_path(path));
+    }
+    // A LOCAL bound to a ctx path. carbonblack_edr binds `event` at the top and
+    // merges onto that, so reading only the spelled-out `ctx.` form found no
+    // target and the whole shape declined.
+    crate::painless_common::ctx_path_bound_to(script, reference)
+}
+
+/// The key expression of a `params[<expr>]` lookup.
+///
+/// The bracket twin of [`get_chain`]. A QUOTED subscript names a table rather
+/// than a key, which is a different shape, so it is declined here.
+fn bracket_key(script: &str) -> Option<String> {
+    let head = script.split("forEach").next().unwrap_or(script);
+    let at = head.find("params[")?;
+    let inner = head[at + "params[".len()..].split_once(']')?.0.trim();
+    (!inner.is_empty() && !inner.starts_with(['"', '\''])).then(|| inner.to_string())
+}
+
+/// The params row a key that missed falls back to: `... : params['<name>']`.
+fn bracket_fallback(script: &str) -> Option<String> {
+    let head = script.split("forEach").next().unwrap_or(script);
+    let inner = head.rsplit_once(": params[")?.1.split_once(']')?.0.trim();
+    inner.starts_with(['"', '\'']).then(|| unquote(inner))
 }
 
 /// Where one routed key's value goes.
@@ -5059,6 +5356,128 @@ pub(crate) fn pointer_mut<'a>(event: &'a mut Event, path: &str) -> Option<&'a mu
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// Verbatim from `pipelines/stan/log/default.yml`: the abbreviation and
+    /// its expansion are BOTH params members, so the table is editable without
+    /// touching the script.
+    #[test]
+    fn a_ladder_rewrites_one_field_through_pairs_of_params_members() {
+        let script = "if (ctx.log.level == params.inf) {\n          \
+            ctx.log.level = params.info;\n        } else if (ctx.log.level == params.dbg) {\n          \
+            ctx.log.level = params.debug;\n        } else if (ctx.log.level == params.wrn) {\n          \
+            ctx.log.level = params.warning;\n        }";
+        let params = json!({
+            "inf": "INF", "info": "info",
+            "dbg": "DBG", "debug": "debug",
+            "wrn": "WRN", "warning": "warning",
+        });
+
+        let mut matched = Event::new(json!({ "log": { "level": "DBG" } }));
+        assert!(try_params_painless(&mut matched, script, &params));
+        assert_eq!(matched.get_str("log.level"), Some("debug"));
+
+        // No arm matches, so the ladder falls through and the field stands.
+        let mut unmatched = Event::new(json!({ "log": { "level": "TRC" } }));
+        assert!(try_params_painless(&mut unmatched, script, &params));
+        assert_eq!(unmatched.get_str("log.level"), Some("TRC"));
+
+        // Absent is the script's own `== null` on every arm.
+        let mut absent = Event::new(json!({}));
+        assert!(try_params_painless(&mut absent, script, &params));
+        assert_eq!(absent.get("log.level"), None);
+    }
+
+    /// Verbatim from `pipelines/carbonblack_edr/log/default.yml`: the ECS
+    /// categorisation table, keyed by `event.action`, merged onto a LOCAL
+    /// bound to `ctx.event`, with an `unknown` row for an action the table
+    /// does not list.
+    #[test]
+    fn a_categorisation_row_merges_onto_a_bound_local() {
+        let script = "def clone(def ref) {\n  if (ref == null) return ref;\n  \
+            if (ref instanceof Map) {\n    ref = ref.entrySet().stream().collect(\n      \
+            Collectors.toMap(\n        e -> e.getKey(),\n        e -> clone(e.getValue())\n      \
+            )\n    );\n  } else if (ref instanceof List) {\n    \
+            ref = ref.stream().map(e -> clone(e)).collect(\n      Collectors.toList()\n    );\n  \
+            }\n  return ref;\n}\ndef event = ctx.event;\nif (event == null) {\n  \
+            event = new HashMap();\n  ctx[\"event\"] = event;\n}\n\
+            def type = ctx.event.action;\n\
+            def fields = params[type] != null? params[type] : params[\"unknown\"];\n\
+            fields.forEach( (k, v) -> {\n  event[k] = clone(v);\n});\n";
+        let params = json!({
+            "binaryinfo.group.observed": { "kind": "event", "category": ["file"], "type": ["info"] },
+            "unknown": { "kind": "event" },
+        });
+
+        let mut listed = Event::new(json!({
+            "event": { "action": "binaryinfo.group.observed" },
+        }));
+        assert!(try_params_painless(&mut listed, script, &params));
+        assert_eq!(listed.get_str("event.kind"), Some("event"));
+        assert_eq!(listed.get("event.category"), Some(&json!(["file"])));
+        assert_eq!(listed.get("event.type"), Some(&json!(["info"])));
+        // The key itself is left where it was -- the merge adds, it does not
+        // replace what it was keyed by.
+        assert_eq!(
+            listed.get_str("event.action"),
+            Some("binaryinfo.group.observed")
+        );
+
+        // An action the table does not list takes the `unknown` row, which
+        // carries a kind and nothing else.
+        let mut unlisted = Event::new(json!({ "event": { "action": "unknown" } }));
+        assert!(try_params_painless(&mut unlisted, script, &params));
+        assert_eq!(unlisted.get_str("event.kind"), Some("event"));
+        assert_eq!(unlisted.get("event.category"), None);
+    }
+
+    /// Verbatim from `pipelines/cyberarkpas/audit/audit.yml`: the members
+    /// params names stay put, everything else moves down one level. The
+    /// vendor's reason is a mapping explosion, so a field the device invented
+    /// MUST end up under the flattened key and not beside the named ones.
+    #[test]
+    fn unlisted_members_move_under_the_scripts_own_rest_key() {
+        let script = "Map audit = ctx.cyberarkpas.audit; \
+            params.entrySet().stream().filter(e -> audit.containsKey(e.getKey())).forEach(lst -> {\n  \
+            Map base = audit[lst.getKey()],\n      selected = new HashMap();\n  \
+            lst.getValue().stream().filter(fld -> base.containsKey(fld)).forEach(fld -> {\n    \
+            selected[fld] = base.remove(fld);\n  });\n  selected['other'] = base;\n  \
+            audit[lst.getKey()] = selected;\n});\n";
+        let params = json!({
+            "ca_properties": ["address", "port"],
+            "extra_details": ["command", "username"],
+        });
+
+        let mut event = Event::new(json!({ "cyberarkpas": { "audit": {
+            "action": "Logon",
+            "ca_properties": { "device_type": "database", "port": "1521", "address": "db1" },
+            "extra_details": { "address": "10.0.0.1", "command": "ls", "psmid": "PSM01" },
+        }}}));
+        assert!(try_params_painless(&mut event, script, &params));
+
+        // Listed: kept where it was, and in the PARAMS order rather than the
+        // sub-map's -- Painless streams the list, not the map.
+        assert_eq!(
+            event.get("cyberarkpas.audit.ca_properties"),
+            Some(&json!({
+                "address": "db1",
+                "port": "1521",
+                "other": { "device_type": "database" },
+            }))
+        );
+
+        // `address` is listed for ca_properties and NOT for extra_details, so
+        // the same name lands on opposite sides of the split.
+        assert_eq!(
+            event.get("cyberarkpas.audit.extra_details"),
+            Some(&json!({
+                "command": "ls",
+                "other": { "address": "10.0.0.1", "psmid": "PSM01" },
+            }))
+        );
+
+        // A sibling params does not name is left exactly as it was.
+        assert_eq!(event.get_str("cyberarkpas.audit.action"), Some("Logon"));
+    }
 
     /// Verbatim from `pipelines/kolide/auth/categorize.yml`: an unconditional
     /// write, then the row's columns or the fallback literals.
