@@ -174,6 +174,7 @@ pub(crate) enum ParamsShape {
     RenameKeys,
     ValueMaps,
     RowColumns,
+    RowColumnAppends(Box<RowColumnAppends>),
     /// A row overwrites the field it was looked up by, fans several more
     /// columns onto ctx (one of them APPENDING rather than replacing), and a
     /// key with no row still writes two fields rather than nothing -- auth0's
@@ -375,6 +376,15 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         return Some(ParamsShape::ValueMaps);
     }
 
+    // Pattern: params IS the table, keyed by a field, and each named column's
+    // members are appended onto an ECS array. `getOrDefault` spells the lookup
+    // so none of the `params.get(` triggers below ever sees it.
+    if normalised.contains("params.getOrDefault(ctx.")
+        && let Some(shape) = parse_row_column_appends(normalised)
+    {
+        return Some(ParamsShape::RowColumnAppends(Box::new(shape)));
+    }
+
     // Pattern: params IS the table, and one row's columns are written straight
     // onto ctx, then refined by the event's outcome. The key is spelled either
     // plainly or wrapped for `.toString()`, which a numeric or boolean key is.
@@ -521,6 +531,13 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         return Some(ParamsShape::FrameworkPreference);
     }
 
+    params_shape_rest(normalised)
+}
+
+/// The last of the dispatch, split only because one function may not run past
+/// 150 lines. Order still matters across all three parts: the first trigger
+/// that fires wins, and these run after everything above.
+fn params_shape_rest(normalised: &str) -> Option<ParamsShape> {
     // Pattern: a key normalised through the table onto ONE field, under the
     // script's own null check. Above the bracket catch-all, which cannot
     // resolve a key that still carries its normalising call and which stands an
@@ -710,6 +727,7 @@ pub(crate) fn run_params_shape(
         ParamsShape::RenameKeys => try_rename_keys(event, normalised, params),
         ParamsShape::ValueMaps => try_value_maps(event, normalised, params),
         ParamsShape::RowColumns => try_row_columns(event, normalised, params),
+        ParamsShape::RowColumnAppends(shape) => run_row_column_appends(event, shape, params),
         ParamsShape::KeyedActionRow { table, source } => {
             run_keyed_action_row(event, table, source, params)
         }
@@ -4475,6 +4493,88 @@ fn expand_locals(script: &str) -> String {
 
 /// The local a `def x = <marker>...` or typed `Integer x = <marker>...`
 /// statement binds -- either way the name is the last word before the `=`.
+/// `params.getOrDefault(ctx.<key>, null)`, then a loop per named column
+/// appending each of its members onto an ECS array.
+///
+/// `box_events` keys the whole params block by its event type and puts the two
+/// columns under a `map` member. Nothing claimed it, so `event.category` and
+/// `event.type` were never written on 147 of its 148 events.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct RowColumnAppends {
+    /// The field whose value keys the table.
+    key: String,
+    /// A member the columns sit under, where the row nests them.
+    inner: Option<String>,
+    /// Each `(column, ctx target)`.
+    appends: Vec<(String, String)>,
+}
+
+fn parse_row_column_appends(script: &str) -> Option<RowColumnAppends> {
+    let key = ctx_path_between(script, "params.getOrDefault(ctx.", ",")?;
+    let local = local_bound_to(script, "params.getOrDefault(")?;
+
+    let mut inner = None;
+    let mut appends = Vec::new();
+    for (at, _) in script.match_indices(&format!("{local}.")) {
+        let rest = &script[at + local.len() + 1..];
+        let (member, tail) = match rest.strip_prefix("get('") {
+            Some(tail) => (None, tail),
+            None => match rest.split_once(".get('") {
+                Some((member, tail)) => (Some(member.to_string()), tail),
+                None => continue,
+            },
+        };
+        let Some((column, tail)) = tail.split_once('\'') else {
+            continue;
+        };
+        let Some(add_at) = tail.find(".add(") else {
+            continue;
+        };
+        let Some((_, path)) = tail[..add_at].rsplit_once("ctx.") else {
+            continue;
+        };
+        inner = inner.or(member);
+        appends.push((column.to_string(), clean_path(path)));
+    }
+
+    (!appends.is_empty()).then_some(RowColumnAppends {
+        key,
+        inner,
+        appends,
+    })
+}
+
+fn run_row_column_appends(
+    event: &mut Event,
+    shape: &RowColumnAppends,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(key) = event.get_as_string(&shape.key) else {
+        return true;
+    };
+    let Some(row) = params.get(&key) else {
+        // `getOrDefault(..., null)` and the script's own null check.
+        return true;
+    };
+    let row = match &shape.inner {
+        Some(member) => match row.get(member) {
+            Some(nested) => nested,
+            None => return true,
+        },
+        None => row,
+    };
+
+    for (column, target) in &shape.appends {
+        let Some(Value::Array(items)) = row.get(column) else {
+            continue;
+        };
+        for item in items.clone() {
+            add_to_list(event, target, item);
+        }
+    }
+    true
+}
+
 fn local_bound_to(script: &str, marker: &str) -> Option<String> {
     let head = &script[..script.find(marker)?];
     let statement = head.rsplit(';').next()?.trim();
@@ -6527,6 +6627,30 @@ mod tests {
         assert_eq!(event.get("watchguard_firebox.log.category"), None);
         assert_eq!(event.get("watchguard_firebox.log.type"), None);
         assert_eq!(event.get("watchguard_firebox.log.outcome"), None);
+    }
+
+    /// Verbatim from `pipelines/box_events/events/default.yml`: params IS the
+    /// table, and the two columns sit under a `map` member.
+    #[test]
+    fn a_keyed_row_appends_each_column_onto_its_array() {
+        let script = "def eventType = params.getOrDefault(ctx.box.event_type, null);\n\
+            if (eventType != null) {\n  for (category in eventType.map.get('category')) {\n    \
+            ctx.event.category.add(category);\n  }\n  \
+            for ( type in eventType.map.get('type')) {\n    \
+            ctx.event.type.add(type);\n  }\n}\n";
+        let params = json!({
+            "COPY": { "map": { "category": ["file"], "type": ["creation"] } },
+        });
+
+        let mut event = Event::new(json!({ "box": { "event_type": "COPY" } }));
+        assert!(try_params_painless(&mut event, script, &params));
+        assert_eq!(event.get("event.category"), Some(&json!(["file"])));
+        assert_eq!(event.get("event.type"), Some(&json!(["creation"])));
+
+        // A type the table does not list leaves both arrays alone.
+        let mut unlisted = Event::new(json!({ "box": { "event_type": "UNHEARD_OF" } }));
+        assert!(try_params_painless(&mut unlisted, script, &params));
+        assert!(!unlisted.has("event.category"));
     }
 
     /// Verbatim from `pipelines/suricata/eve/default.yml`: the other spelling

@@ -56,7 +56,7 @@
     "bitwarden": { "events": 7, "events_total": 20, "fields_wrong": 30 },
     "blacklens": { "events": 1, "events_total": 1, "fields_wrong": 0 },
     "bluecoat": { "events": 100, "events_total": 100, "fields_wrong": 0 },
-    "box_events": { "events": 1, "events_total": 148, "fields_wrong": 339 },
+    "box_events": { "events": 133, "events_total": 148, "fields_wrong": 61 },
     "canva": { "events": 0, "events_total": 1, "fields_wrong": 3 },
     "carbon_black_cloud": { "events": 50, "events_total": 50, "fields_wrong": 0 },
     "carbonblack_edr": { "events": 0, "events_total": 99, "fields_wrong": 417 },

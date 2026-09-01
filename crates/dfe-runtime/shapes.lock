@@ -166,29 +166,30 @@
  20 FirstContainedMember
  21 RenameKeys
  22 ValueMaps
- 23 RowColumns
- 24 KeyedMessageTable
- 25 MessageTable
- 26 FirstAsset
- 27 MatcherKv
- 28 IndexedRowColumns
- 29 LookupPut
- 30 LookupWrapList
- 31 ProtocolPrefix
- 32 ReversibleLookup
- 33 LookupMerge
- 34 KeyedActionRow
- 35 KeyedRowAppends
- 36 LookupColumns
- 37 LookupNormalise
- 38 IndexedLookup
- 39 Scale
- 40 Replace
- 41 AddUniqueRow
- 42 FrameworkPreference
- 43 NormalisedLookup
- 44 StringifiedLookup
- 45 LookupNormalise
- 46 MergeRowOrFallback
- 47 RowOrDefaults
+ 23 RowColumnAppends
+ 24 RowColumns
+ 25 KeyedMessageTable
+ 26 MessageTable
+ 27 FirstAsset
+ 28 MatcherKv
+ 29 IndexedRowColumns
+ 30 LookupPut
+ 31 LookupWrapList
+ 32 ProtocolPrefix
+ 33 ReversibleLookup
+ 34 LookupMerge
+ 35 KeyedActionRow
+ 36 KeyedRowAppends
+ 37 LookupColumns
+ 38 LookupNormalise
+ 39 IndexedLookup
+ 40 Scale
+ 41 Replace
+ 42 AddUniqueRow
+ 43 FrameworkPreference
+ 44 NormalisedLookup
+ 45 StringifiedLookup
+ 46 LookupNormalise
+ 47 MergeRowOrFallback
+ 48 RowOrDefaults
 
