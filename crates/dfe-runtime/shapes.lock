@@ -117,40 +117,41 @@
 116 ArrayToIndexedObject
 117 KeyValuePairs
 118 IocExpiry
-119 JoinOptional
-120 ListRenameTable
-121 AppendEach
-122 FlattenMapInto
-123 StringifyLongs
-124 CopyByLabel
-125 LiteralValueMap
-126 EqualsLiteralFlag
-127 KeysToSnakeCase
-128 CommandLine
-129 ProcessStartTime
-130 EmailSplit
-131 RiskBehaviors
-132 AzureCategoryEventType
-133 AzureEventCategory
-134 ReplaceDotsInKeys
-135 OktaTargetRename
-136 KeysBySuffix
-137 CollectMapValues
-138 GuardedReplace
-139 RoundedScale
-140 FieldsIntoMap
-141 CrowdstrikeTimelineEntityIdentity
-142 CrowdstrikeTimelineEntityAccounts
-143 FirstElement
-144 IndexedFieldCopies
-145 MoveKeys
-146 ClassifyLadder
-147 PrivateCidrDirection
-148 BranchCopies
-149 GuardedDivide
-150 ScaleField
-151 GuardedCopy
-152 PlainAssignments
+119 DatePlusDays
+120 JoinOptional
+121 ListRenameTable
+122 AppendEach
+123 FlattenMapInto
+124 StringifyLongs
+125 CopyByLabel
+126 LiteralValueMap
+127 EqualsLiteralFlag
+128 KeysToSnakeCase
+129 CommandLine
+130 ProcessStartTime
+131 EmailSplit
+132 RiskBehaviors
+133 AzureCategoryEventType
+134 AzureEventCategory
+135 ReplaceDotsInKeys
+136 OktaTargetRename
+137 KeysBySuffix
+138 CollectMapValues
+139 GuardedReplace
+140 RoundedScale
+141 FieldsIntoMap
+142 CrowdstrikeTimelineEntityIdentity
+143 CrowdstrikeTimelineEntityAccounts
+144 FirstElement
+145 IndexedFieldCopies
+146 MoveKeys
+147 ClassifyLadder
+148 PrivateCidrDirection
+149 BranchCopies
+150 GuardedDivide
+151 ScaleField
+152 GuardedCopy
+153 PlainAssignments
 
 [params_shape]
   1 AwsEntity
@@ -180,28 +181,29 @@
  25 FiletimeFieldList
  26 BitFlags
  27 FirstContainedMember
- 28 RenameKeys
- 29 ValueMaps
- 30 InstructionRows
- 31 RowColumnAppends
- 32 RowColumns
- 33 KeyedMessageTable
- 34 MessageTable
- 35 FirstAsset
- 36 MatcherKv
- 37 IndexedRowColumns
- 38 LookupPut
- 39 LookupWrapList
- 40 ProtocolPrefix
- 41 ReversibleLookup
- 42 LookupMerge
- 43 KeyedActionRow
- 44 KeyedRowAppends
- 45 LookupColumns
- 46 LookupNormalise
- 47 IndexedLookup
- 48 Scale
- 49 Replace
- 50 AddUniqueRow
- 51 FrameworkPreference
+ 28 FirstLabelInTable
+ 29 RenameKeys
+ 30 ValueMaps
+ 31 InstructionRows
+ 32 RowColumnAppends
+ 33 RowColumns
+ 34 KeyedMessageTable
+ 35 MessageTable
+ 36 FirstAsset
+ 37 MatcherKv
+ 38 IndexedRowColumns
+ 39 LookupPut
+ 40 LookupWrapList
+ 41 ProtocolPrefix
+ 42 ReversibleLookup
+ 43 LookupMerge
+ 44 KeyedActionRow
+ 45 KeyedRowAppends
+ 46 LookupColumns
+ 47 LookupNormalise
+ 48 IndexedLookup
+ 49 Scale
+ 50 Replace
+ 51 AddUniqueRow
+ 52 FrameworkPreference
 

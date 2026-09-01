@@ -135,6 +135,11 @@ pub(crate) enum ParamsShape {
         key: String,
     },
     MsgParts,
+    /// The first member of a ctx list the params table has a row for.
+    FirstLabelInTable {
+        list: String,
+        target: String,
+    },
     /// One deferred `{target, value}` list built from a params table, in the
     /// three spellings the sonicwall family ships. Each defers its writes into
     /// `_temp_.sets` and its source keys into `_temp_.removes`, which a later
@@ -449,6 +454,18 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         return Some(ParamsShape::FirstContainedMember);
     }
 
+    // Pattern: the first member of a ctx LIST the params table has a row for,
+    // assigned straight to a ctx path. The `.put(` spelling above is the same
+    // idea through a map, and neither reads the other.
+    if normalised.contains("params.containsKey(")
+        && normalised.contains("params.get(")
+        && normalised.contains("break;")
+        && let Some(list) = base_between(normalised, " : ctx.", ")")
+        && let Some(target) = path_before(normalised, " = params.get(")
+    {
+        return Some(ParamsShape::FirstLabelInTable { list, target });
+    }
+
     // Pattern: rename an object's keys, recursively, through a name map.
     if normalised.contains("keyMap.containsKey(key)") {
         return Some(ParamsShape::RenameKeys);
@@ -688,6 +705,47 @@ fn params_shape_rest(normalised: &str) -> Option<ParamsShape> {
     None
 }
 
+/// The ctx path immediately BEFORE a literal, read backwards from it.
+///
+/// The forward reader cannot answer this: a script that walks one ctx path and
+/// assigns to another spells `ctx.` twice, and the first one is the loop's.
+fn path_before(script: &str, close: &str) -> Option<String> {
+    let head = &script[..script.find(close)?];
+    let start = head.rfind("ctx.")? + 4;
+    let raw = &head[start..];
+    if raw.is_empty()
+        || !raw
+            .chars()
+            .all(|c| c.is_alphanumeric() || "._?".contains(c))
+    {
+        return None;
+    }
+    let path = clean_path(raw);
+    (!path.is_empty()).then_some(path)
+}
+
+/// The first member of `list` the table has a row for, written to `target`.
+///
+/// The vendor breaks on the first hit, so a document carrying several labels
+/// takes the earliest one in ITS OWN order, not the table's.
+fn run_first_label_in_table(
+    event: &mut Event,
+    list: &str,
+    target: &str,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(Value::Array(members)) = event.get(list).cloned() else {
+        return true;
+    };
+    for member in &members {
+        if let Some(value) = params.get(&table_key(member)) {
+            let _ = event.set(target, value.clone());
+            break;
+        }
+    }
+    true
+}
+
 /// The ctx path a script names between two literals, with its `?` stripped.
 ///
 /// Returns None when the span is not a plain path, so a restructured script
@@ -920,6 +978,9 @@ pub(crate) fn run_params_shape(
         }
         ParamsShape::IndexedRowColumns { subject, columns } => {
             run_indexed_row_columns(event, subject, columns, params)
+        }
+        ParamsShape::FirstLabelInTable { list, target } => {
+            run_first_label_in_table(event, list, target, params)
         }
         ParamsShape::DeferredFieldTable(base) => run_deferred_field_table(event, base, params),
         ParamsShape::DeferredSplitTable(base) => run_deferred_split_table(event, base, params),
@@ -7563,6 +7624,33 @@ mod tests {
         assert!(try_params_painless(&mut event, script, &params));
         assert_eq!(event.get("event.type"), Some(&json!(["connection"])));
         assert_eq!(event.get_str("event.outcome"), Some("success"));
+    }
+
+    /// Verbatim from `pipelines/ti_eset/ip/default.yml`: the first label the
+    /// table has a row for, in the DOCUMENT's order rather than the table's.
+    #[test]
+    fn the_first_label_the_table_carries_wins() {
+        let script = "for (def label : ctx.eset.labels) {\n  \
+            if (params.containsKey(label)) {\n    \
+            ctx.threat.indicator.confidence = params.get(label);\n    break;\n  }\n}";
+        let params = json!({
+            "malicious-activity": "High",
+            "unwanted-activity": "Medium",
+            "benign": "Low",
+        });
+
+        // `benign` is listed first in the DOCUMENT, so it wins over the
+        // higher-confidence label that follows it.
+        let mut event = Event::new(json!({ "eset": {
+            "labels": ["unlisted", "benign", "malicious-activity"],
+        }}));
+        assert!(try_params_painless(&mut event, script, &params));
+        assert_eq!(event.get_str("threat.indicator.confidence"), Some("Low"));
+
+        // No label the table carries leaves the field unwritten.
+        let mut unlisted = Event::new(json!({ "eset": { "labels": ["other"] } }));
+        assert!(try_params_painless(&mut unlisted, script, &params));
+        assert_eq!(unlisted.get("threat.indicator.confidence"), None);
     }
 
     /// Verbatim from `pipelines/sonicwall_firewall/log/default.yml`: every

@@ -292,7 +292,7 @@
     "ti_cyware_intel_exchange": { "events": 0, "events_total": 3, "fields_wrong": 3 },
     "ti_domaintools": { "events": 16, "events_total": 16, "fields_wrong": 0 },
     "ti_eclecticiq": { "events": 6, "events_total": 33, "fields_wrong": 241 },
-    "ti_eset": { "events": 0, "events_total": 81, "fields_wrong": 81 },
+    "ti_eset": { "events": 81, "events_total": 81, "fields_wrong": 0 },
     "ti_flashpoint": { "events": 0, "events_total": 9, "fields_wrong": 278 },
     "ti_google_threat_intelligence": { "events": 60, "events_total": 60, "fields_wrong": 0 },
     "ti_greynoise": { "events": 0, "events_total": 1, "fields_wrong": 2 },

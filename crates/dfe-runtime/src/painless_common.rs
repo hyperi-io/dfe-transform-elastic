@@ -1626,6 +1626,55 @@ fn run_remove_list_value(event: &mut Event, field: &str, value: &str) -> bool {
     true
 }
 
+/// `ctx.<target> = ZonedDateTime.parse(ctx['<source>']).plusDays(<n>)` as a
+/// [`KnownShape::DatePlusDays`].
+///
+/// The source is read through a bracket subscript because the field it names
+/// is `@timestamp`, which no dotted path can spell.
+fn parse_date_plus_days(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    // The assignment's spacing is the vendor's, not ours -- ti_eset writes two
+    // spaces after the `=`, so the operator is found rather than matched.
+    let (before, after) = script.split_once("ZonedDateTime.parse(")?;
+    let assigned = before[..before.rfind('=')?].trim_end();
+    // The WHOLE path, not its last segment: the script declares the parent map
+    // first, so the nearest `ctx.` is the assignment's own.
+    let target = clean_path(&assigned[assigned.rfind("ctx.")? + 4..]);
+    let (subject, tail) = after.split_once(").plusDays(")?;
+    let days: i64 = tail
+        .split(')')
+        .next()?
+        .trim()
+        .trim_end_matches(['L', 'l'])
+        .parse()
+        .ok()?;
+
+    // `ctx['@timestamp']` or `ctx.a.b`, the two spellings the source takes.
+    let source = subject
+        .trim()
+        .strip_prefix("ctx")
+        .map(|rest| rest.trim_start_matches('.'))
+        .map(|rest| rest.trim_matches(['[', ']', '\'', '"']))?;
+
+    (!target.is_empty() && !source.is_empty()).then_some(KnownShape::DatePlusDays {
+        source: clean_path(source),
+        target,
+        days,
+    })
+}
+
+/// Write `source` advanced by a whole number of days to `target`.
+fn run_date_plus_days(event: &mut Event, source: &str, target: &str, days: i64) -> bool {
+    let Some(text) = event.get_string(source) else {
+        return true;
+    };
+    if let Some(moved) = crate::date_formats::iso8601_plus(&text, 'd', days, 0) {
+        let _ = event.set(target, Value::String(moved));
+    }
+    true
+}
+
 /// `ctx.<f>.values().removeIf(v -> v == '<literal>')` as a
 /// [`KnownShape::RemoveMapValue`].
 ///
@@ -10811,6 +10860,11 @@ pub(crate) enum KnownShape {
         field: String,
         value: String,
     },
+    DatePlusDays {
+        source: String,
+        target: String,
+        days: i64,
+    },
     M365ProcessEvidence(String),
     M365IdentityEvidence(String),
     Route53Answers,
@@ -12154,6 +12208,19 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: the same expiry with no unit ladder at all -- one parse and one
+    // literal number of days. ti_eset's apt stream dates its indicators a year
+    // out from `@timestamp`, and `IocExpiry` above declines it for want of the
+    // `plusHours` / `plusMinutes` arms it reads the unit from.
+    if normalised.contains("ZonedDateTime.parse(")
+        && normalised.contains(".plusDays(")
+        && !normalised.contains("plusHours(")
+        && let Some(shape) = parse_date_plus_days(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
     // Pattern: join two optional fields, each alone if the other is absent.
     if normalised.matches("String ").count() == 2 && normalised.contains("} else if (") {
         shapes.push(KnownShape::JoinOptional);
@@ -12548,6 +12615,11 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::GcpRelatedEntity => run_gcp_related_entity(event),
         KnownShape::RemoveListValue { field, value } => run_remove_list_value(event, field, value),
         KnownShape::RemoveMapValue { field, value } => run_remove_map_value(event, field, value),
+        KnownShape::DatePlusDays {
+            source,
+            target,
+            days,
+        } => run_date_plus_days(event, source, target, *days),
         KnownShape::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
         KnownShape::M365IdentityEvidence(path) => run_m365_identity_evidence(event, path),
         KnownShape::Route53Answers => run_route53_answers(event),
@@ -17526,6 +17598,26 @@ def event_timezone = get_timezone(ctx);
             event.get("_tmp"),
             Some(&json!({ "method": "GET", "url": "http://example.com/" }))
         );
+    }
+
+    /// Verbatim from `pipelines/ti_eset/apt/default.yml`: an expiry a whole
+    /// number of days out, with no unit ladder for `IocExpiry` to read.
+    ///
+    /// The vendor writes TWO spaces after the `=`, and the source is a bracket
+    /// subscript because `@timestamp` is a name no dotted path can spell.
+    #[test]
+    fn an_expiry_lands_a_literal_number_of_days_out() {
+        let script = "if (ctx.eset == null) {\n  ctx.eset = new HashMap();\n}\n\
+            ctx.eset.valid_until =  ZonedDateTime.parse(ctx['@timestamp']).plusDays(365);";
+        let mut event = Event::new(json!({ "@timestamp": "2023-02-14T09:38:10.000Z" }));
+
+        assert!(try_known_painless(&mut event, script));
+        // The whole path is the target, not just its last segment.
+        assert_eq!(
+            event.get_str("eset.valid_until"),
+            Some("2024-02-14T09:38:10.000Z")
+        );
+        assert_eq!(event.get("valid_until"), None);
     }
 
     /// The list matcher must not claim the map spelling, nor the reverse.
