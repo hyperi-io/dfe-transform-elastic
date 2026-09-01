@@ -51,7 +51,7 @@
     "beyondtrust_epm": { "events": 0, "events_total": 4, "fields_wrong": 95 },
     "beyondtrust_isi": { "events": 0, "events_total": 4, "fields_wrong": 5 },
     "beyondtrust_pra": { "events": 0, "events_total": 2, "fields_wrong": 2 },
-    "bitdefender": { "events": 3, "events_total": 69, "fields_wrong": 294 },
+    "bitdefender": { "events": 67, "events_total": 69, "fields_wrong": 2 },
     "bitsight": { "events": 0, "events_total": 1, "fields_wrong": 1 },
     "bitwarden": { "events": 7, "events_total": 20, "fields_wrong": 30 },
     "blacklens": { "events": 1, "events_total": 1, "fields_wrong": 0 },

@@ -140,6 +140,11 @@ pub(crate) enum ParamsShape {
         list: String,
         target: String,
     },
+    /// One field keying a params table, the row assigned WHOLE to a target.
+    KeyedRowAssign {
+        source: String,
+        target: String,
+    },
     /// One deferred `{target, value}` list built from a params table, in the
     /// three spellings the sonicwall family ships. Each defers its writes into
     /// `_temp_.sets` and its source keys into `_temp_.removes`, which a later
@@ -397,6 +402,10 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
 /// The rest of the dispatch, split only because one function may not run past
 /// 150 lines. Order still matters across the two halves: the first trigger
 /// that fires wins, and these run after everything above.
+// One branch per shape, and the lock scanner needs every branch INLINE so it
+// can resolve each dispatch site to one variant -- splitting further is what
+// `shapes.lock` rejects, not just what would hide the order.
+#[allow(clippy::too_many_lines)]
 fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
     // Pattern: windows security descriptors expanded into readable ACL lines.
     if normalised.contains("void enrichSDDL(") {
@@ -452,6 +461,16 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
     // Pattern: the first member of a params list the subject contains.
     if normalised.contains("for (String ") && normalised.contains(".put(") {
         return Some(ParamsShape::FirstContainedMember);
+    }
+
+    // Pattern: one field keying a params table, the row assigned whole.
+    // bitdefender ships four of these back to back, one per `event.*` field,
+    // differing only in the target they name.
+    if normalised.contains("params[schemaId]")
+        && let Some(source) = base_between(normalised, "def schemaId = ctx.", ".toString()")
+        && let Some(target) = path_before(normalised, " = schema;")
+    {
+        return Some(ParamsShape::KeyedRowAssign { source, target });
     }
 
     // Pattern: the first member of a ctx LIST the params table has a row for,
@@ -724,6 +743,26 @@ fn path_before(script: &str, close: &str) -> Option<String> {
     (!path.is_empty()).then_some(path)
 }
 
+/// The params row `source` keys, assigned WHOLE to `target`.
+///
+/// The row is a list for `event.type` and `event.category` and a string for
+/// `event.kind` and `event.provider`, so it is written as it stands rather
+/// than appended to. A key the table does not carry leaves the target alone.
+fn run_keyed_row_assign(
+    event: &mut Event,
+    source: &str,
+    target: &str,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(key) = event.get(source).map(table_key) else {
+        return true;
+    };
+    if let Some(row) = params.get(&key) {
+        let _ = event.set(target, row.clone());
+    }
+    true
+}
+
 /// The first member of `list` the table has a row for, written to `target`.
 ///
 /// The vendor breaks on the first hit, so a document carrying several labels
@@ -981,6 +1020,9 @@ pub(crate) fn run_params_shape(
         }
         ParamsShape::FirstLabelInTable { list, target } => {
             run_first_label_in_table(event, list, target, params)
+        }
+        ParamsShape::KeyedRowAssign { source, target } => {
+            run_keyed_row_assign(event, source, target, params)
         }
         ParamsShape::DeferredFieldTable(base) => run_deferred_field_table(event, base, params),
         ParamsShape::DeferredSplitTable(base) => run_deferred_split_table(event, base, params),
@@ -7624,6 +7666,27 @@ mod tests {
         assert!(try_params_painless(&mut event, script, &params));
         assert_eq!(event.get("event.type"), Some(&json!(["connection"])));
         assert_eq!(event.get_str("event.outcome"), Some("success"));
+    }
+
+    /// Verbatim from `pipelines/bitdefender/push_notifications/default.yml`,
+    /// which ships four of these back to back differing only in the target.
+    /// The row is written WHOLE, so a list target takes the list.
+    #[test]
+    fn one_field_keys_a_table_and_the_row_lands_whole() {
+        let script = "def schemaId = ctx.bitdefender?.event?.module.toString();\n      \
+            def schema = params[schemaId];\n      if (schema != null) {\n        \
+            if (ctx.event == null) {\n          ctx.event = new HashMap();\n        }\n        \
+            ctx.event.type = schema;\n      }";
+        let params = json!({ "aph": ["info", "access"], "av": ["info"] });
+
+        let mut event = Event::new(json!({ "bitdefender": { "event": { "module": "aph" } } }));
+        assert!(try_params_painless(&mut event, script, &params));
+        assert_eq!(event.get("event.type"), Some(&json!(["info", "access"])));
+
+        // A module the table does not carry leaves the target alone.
+        let mut unlisted = Event::new(json!({ "bitdefender": { "event": { "module": "other" } } }));
+        assert!(try_params_painless(&mut unlisted, script, &params));
+        assert_eq!(unlisted.get("event.type"), None);
     }
 
     /// Verbatim from `pipelines/ti_eset/ip/default.yml`: the first label the

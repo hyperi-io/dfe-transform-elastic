@@ -1626,6 +1626,67 @@ fn run_remove_list_value(event: &mut Event, field: &str, value: &str) -> bool {
     true
 }
 
+/// A lookup whose TABLE lives in the document rather than in `params`.
+///
+/// bitdefender ships its tenant list on the event and names the organisation
+/// from it, so the table is per-document and no params matcher can see it.
+fn parse_ctx_table_lookup(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let plain = |path: &str| {
+        !path.is_empty()
+            && path
+                .chars()
+                .all(|c| c.is_alphanumeric() || "._?".contains(c))
+    };
+
+    let (before_table, after_table) = script.split_once(" = ctx.")?;
+    let table_local = identifier_before(before_table)?.to_owned();
+    let (table, rest) = after_table.split_once(';')?;
+
+    let (before_key, after_key) = rest.split_once(" = ctx.")?;
+    let key_local = identifier_before(before_key)?.to_owned();
+    let key = after_key.split_once(';')?.0;
+
+    // The guard has to name the SAME two locals, or this is another script
+    // that merely opens the same way.
+    if !script.contains(&format!("{table_local}.containsKey({key_local})")) {
+        return None;
+    }
+    let assign = format!(" = {table_local}[{key_local}];");
+    let head = &script[..script.find(&assign)?];
+    let target = clean_path(&head[head.rfind("ctx.")? + 4..]);
+
+    if !plain(table) || !plain(key) || target.is_empty() {
+        return None;
+    }
+    Some(KnownShape::CtxTableLookup {
+        table: clean_path(table),
+        key: clean_path(key),
+        target,
+    })
+}
+
+/// Write the row `key` selects out of the document's own table.
+fn run_ctx_table_lookup(event: &mut Event, table: &str, key: &str, target: &str) -> bool {
+    let row = {
+        let Some(Value::Object(rows)) = event.get(table) else {
+            return true;
+        };
+        let Some(selector) = event.get(key).map(|value| match value {
+            Value::String(text) => text.clone(),
+            other => other.to_string(),
+        }) else {
+            return true;
+        };
+        rows.get(&selector).cloned()
+    };
+    if let Some(row) = row {
+        let _ = event.set(target, row);
+    }
+    true
+}
+
 /// Split a firehose record on spaces, keeping quoted runs whole.
 ///
 /// The quotes stay IN the token, which is what the vendor's `StringBuilder`
@@ -11081,6 +11142,11 @@ pub(crate) enum KnownShape {
         target: String,
     },
     FirehoseDataset,
+    CtxTableLookup {
+        table: String,
+        key: String,
+        target: String,
+    },
     M365ProcessEvidence(String),
     M365IdentityEvidence(String),
     Route53Answers,
@@ -12424,6 +12490,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: a lookup whose table is on the DOCUMENT rather than in params,
+    // which is why no params matcher can claim it.
+    if normalised.contains("instanceof Map &&")
+        && normalised.contains(".containsKey(")
+        && let Some(shape) = parse_ctx_table_lookup(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
     // Pattern: awsfirehose naming the AWS log type its record carries. Its own
     // classifier, so the trigger is its own literals.
     if normalised.contains("aws-waf-logs-") && normalised.contains("tokens_result") {
@@ -12859,6 +12935,9 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             target,
         } => run_nested_key_names(event, source, inner, target),
         KnownShape::FirehoseDataset => run_firehose_dataset(event),
+        KnownShape::CtxTableLookup { table, key, target } => {
+            run_ctx_table_lookup(event, table, key, target)
+        }
         KnownShape::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
         KnownShape::M365IdentityEvidence(path) => run_m365_identity_evidence(event, path),
         KnownShape::Route53Answers => run_route53_answers(event),
@@ -17837,6 +17916,31 @@ def event_timezone = get_timezone(ctx);
             event.get("_tmp"),
             Some(&json!({ "method": "GET", "url": "http://example.com/" }))
         );
+    }
+
+    /// Verbatim from `pipelines/bitdefender/push_notifications/default.yml`:
+    /// a lookup whose TABLE is on the document, so no params matcher sees it.
+    #[test]
+    fn a_lookup_reads_a_table_the_document_carries() {
+        let script = "def conftenants = ctx._tmp.tenants;\n      \
+            def orgid = ctx.organization.id;\n      \
+            if (conftenants instanceof Map && conftenants.containsKey(orgid)) {\n        \
+            ctx.organization.name = conftenants[orgid];\n      }";
+
+        let mut event = Event::new(json!({
+            "_tmp": { "tenants": { "abc": "test_events.tld" } },
+            "organization": { "id": "abc" },
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("organization.name"), Some("test_events.tld"));
+
+        // An id the table does not carry leaves the name unwritten.
+        let mut unlisted = Event::new(json!({
+            "_tmp": { "tenants": { "abc": "test_events.tld" } },
+            "organization": { "id": "zzz" },
+        }));
+        assert!(try_known_painless(&mut unlisted, script));
+        assert_eq!(unlisted.get("organization.name"), None);
     }
 
     /// The firehose classifier's ladder order, which is what its correctness

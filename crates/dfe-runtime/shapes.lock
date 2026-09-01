@@ -117,43 +117,44 @@
 116 ArrayToIndexedObject
 117 KeyValuePairs
 118 IocExpiry
-119 FirehoseDataset
-120 NestedKeyNames
-121 DatePlusDays
-122 JoinOptional
-123 ListRenameTable
-124 AppendEach
-125 FlattenMapInto
-126 StringifyLongs
-127 CopyByLabel
-128 LiteralValueMap
-129 EqualsLiteralFlag
-130 KeysToSnakeCase
-131 CommandLine
-132 ProcessStartTime
-133 EmailSplit
-134 RiskBehaviors
-135 AzureCategoryEventType
-136 AzureEventCategory
-137 ReplaceDotsInKeys
-138 OktaTargetRename
-139 KeysBySuffix
-140 CollectMapValues
-141 GuardedReplace
-142 RoundedScale
-143 FieldsIntoMap
-144 CrowdstrikeTimelineEntityIdentity
-145 CrowdstrikeTimelineEntityAccounts
-146 FirstElement
-147 IndexedFieldCopies
-148 MoveKeys
-149 ClassifyLadder
-150 PrivateCidrDirection
-151 BranchCopies
-152 GuardedDivide
-153 ScaleField
-154 GuardedCopy
-155 PlainAssignments
+119 CtxTableLookup
+120 FirehoseDataset
+121 NestedKeyNames
+122 DatePlusDays
+123 JoinOptional
+124 ListRenameTable
+125 AppendEach
+126 FlattenMapInto
+127 StringifyLongs
+128 CopyByLabel
+129 LiteralValueMap
+130 EqualsLiteralFlag
+131 KeysToSnakeCase
+132 CommandLine
+133 ProcessStartTime
+134 EmailSplit
+135 RiskBehaviors
+136 AzureCategoryEventType
+137 AzureEventCategory
+138 ReplaceDotsInKeys
+139 OktaTargetRename
+140 KeysBySuffix
+141 CollectMapValues
+142 GuardedReplace
+143 RoundedScale
+144 FieldsIntoMap
+145 CrowdstrikeTimelineEntityIdentity
+146 CrowdstrikeTimelineEntityAccounts
+147 FirstElement
+148 IndexedFieldCopies
+149 MoveKeys
+150 ClassifyLadder
+151 PrivateCidrDirection
+152 BranchCopies
+153 GuardedDivide
+154 ScaleField
+155 GuardedCopy
+156 PlainAssignments
 
 [params_shape]
   1 AwsEntity
@@ -183,29 +184,30 @@
  25 FiletimeFieldList
  26 BitFlags
  27 FirstContainedMember
- 28 FirstLabelInTable
- 29 RenameKeys
- 30 ValueMaps
- 31 InstructionRows
- 32 RowColumnAppends
- 33 RowColumns
- 34 KeyedMessageTable
- 35 MessageTable
- 36 FirstAsset
- 37 MatcherKv
- 38 IndexedRowColumns
- 39 LookupPut
- 40 LookupWrapList
- 41 ProtocolPrefix
- 42 ReversibleLookup
- 43 LookupMerge
- 44 KeyedActionRow
- 45 KeyedRowAppends
- 46 LookupColumns
- 47 LookupNormalise
- 48 IndexedLookup
- 49 Scale
- 50 Replace
- 51 AddUniqueRow
- 52 FrameworkPreference
+ 28 KeyedRowAssign
+ 29 FirstLabelInTable
+ 30 RenameKeys
+ 31 ValueMaps
+ 32 InstructionRows
+ 33 RowColumnAppends
+ 34 RowColumns
+ 35 KeyedMessageTable
+ 36 MessageTable
+ 37 FirstAsset
+ 38 MatcherKv
+ 39 IndexedRowColumns
+ 40 LookupPut
+ 41 LookupWrapList
+ 42 ProtocolPrefix
+ 43 ReversibleLookup
+ 44 LookupMerge
+ 45 KeyedActionRow
+ 46 KeyedRowAppends
+ 47 LookupColumns
+ 48 LookupNormalise
+ 49 IndexedLookup
+ 50 Scale
+ 51 Replace
+ 52 AddUniqueRow
+ 53 FrameworkPreference
 
