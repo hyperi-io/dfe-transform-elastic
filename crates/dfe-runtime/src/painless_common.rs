@@ -1626,6 +1626,75 @@ fn run_remove_list_value(event: &mut Event, field: &str, value: &str) -> bool {
     true
 }
 
+/// A hand-written quote-aware KV splitter writing into one namespace.
+///
+/// stormshield's WHOLE parse is this one script -- the vendor walks the
+/// message character by character rather than using a `kv` processor, so
+/// nothing downstream of it had any input at all and the source scored 3.3%
+/// of its fields.
+fn parse_kv_into_namespace(script: &str) -> Option<KnownShape> {
+    let target = script
+        .split_once("ctx[\"")?
+        .1
+        .split_once("\"] = new HashMap()")?
+        .0;
+    (!target.is_empty()
+        && target
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '_' || c == '.'))
+    .then(|| KnownShape::KvIntoNamespace(target.to_owned()))
+}
+
+/// Split `message` into `key=value` pairs under `target`.
+///
+/// A transliteration of the vendor's own loop, its cursor arithmetic
+/// included: a quote TOGGLES the state and everything inside one is skipped,
+/// the last character closes the final pair, and the value has every quote
+/// removed rather than just a surrounding pair.
+fn run_kv_into_namespace(event: &mut Event, target: &str) -> bool {
+    let Some(message) = event.get_string("message") else {
+        return true;
+    };
+    let bytes = message.as_bytes();
+    let n = bytes.len();
+
+    let mut pairs = serde_json::Map::new();
+    let (mut kv_start, mut kv_split) = (0usize, 0usize);
+    let mut in_quote = false;
+
+    for (i, byte) in bytes.iter().enumerate() {
+        if *byte == b'"' {
+            in_quote = !in_quote;
+        }
+        if in_quote {
+            continue;
+        }
+        if *byte == b'=' {
+            kv_split = i;
+        }
+        if *byte == b' ' || i == n - 1 {
+            if kv_start != kv_split {
+                let end = if i == n - 1 { n } else { i };
+                // Slicing is by BYTE, so a multi-byte character in the middle
+                // of a pair yields None rather than panicking.
+                if let (Some(key), Some(value)) = (
+                    message.get(kv_start..kv_split),
+                    message.get(kv_split + 1..end),
+                ) {
+                    pairs.insert(key.to_owned(), Value::String(value.replace('"', "")));
+                }
+            }
+            kv_start = i + 1;
+            kv_split = i + 1;
+        }
+    }
+
+    // The vendor creates the map before the loop, so an unparseable message
+    // still leaves an empty one behind.
+    let _ = event.set(target, Value::Object(pairs));
+    true
+}
+
 /// A lookup whose TABLE lives in the document rather than in `params`.
 ///
 /// bitdefender ships its tenant list on the event and names the organisation
@@ -11147,6 +11216,7 @@ pub(crate) enum KnownShape {
         key: String,
         target: String,
     },
+    KvIntoNamespace(String),
     M365ProcessEvidence(String),
     M365IdentityEvidence(String),
     Route53Answers,
@@ -12490,6 +12560,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: a hand-written quote-aware KV split into one namespace, which
+    // is the whole of stormshield's parse.
+    if normalised.contains("inQuote")
+        && normalised.contains("kvSplit")
+        && let Some(shape) = parse_kv_into_namespace(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
     // Pattern: a lookup whose table is on the DOCUMENT rather than in params,
     // which is why no params matcher can claim it.
     if normalised.contains("instanceof Map &&")
@@ -12938,6 +13018,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::CtxTableLookup { table, key, target } => {
             run_ctx_table_lookup(event, table, key, target)
         }
+        KnownShape::KvIntoNamespace(target) => run_kv_into_namespace(event, target),
         KnownShape::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
         KnownShape::M365IdentityEvidence(path) => run_m365_identity_evidence(event, path),
         KnownShape::Route53Answers => run_route53_answers(event),
@@ -17916,6 +17997,33 @@ def event_timezone = get_timezone(ctx);
             event.get("_tmp"),
             Some(&json!({ "method": "GET", "url": "http://example.com/" }))
         );
+    }
+
+    /// Verbatim from `pipelines/stormshield/log/default.yml`, which is that
+    /// source's WHOLE parse -- the vendor walks the message rather than using
+    /// a `kv` processor, so nothing downstream of it had any input.
+    #[test]
+    fn a_hand_written_kv_split_fills_its_namespace() {
+        let script = r#"ctx[\"stormshield\"] = new HashMap();\ndef kvStart = 0; def kvSplit = 0; def kvEnd = 0; def inQuote = false;\nfor (int i = 0, n = ctx[\"message\"].length(); i < n; ++i) {\n  char c = ctx[\"message\"].charAt(i);\n  if (c == (char)'\"') {\n    inQuote = !inQuote;\n  }\n  if (inQuote) {\n    continue;\n  }\n  \n  if (c == (char)'=') {\n    kvSplit = i;\n  }\n  if (c == (char)' ' || (i == n - 1)) {\n    if (kvStart != kvSplit) {\n      def key = ctx[\"message\"].substring(kvStart, kvSplit);\n      def end = i;\n      if (i == n - 1)  {\n          end = n;\n      }\n      def value = ctx[\"message\"].substring(kvSplit + 1, end).replace(\"\\\"\", \"\");\n      ctx[\"stormshield\"][key] = value;\n    }\n\n    kvStart = i + 1;\n    kvSplit = i + 1;\n  }\n}"#;
+
+        // A quoted value keeps its spaces and loses its quotes, and the last
+        // pair is closed by the end of the message rather than by a space.
+        let mut event = Event::new(json!({
+            "message": r#"id=firewall time="2023-01-01 10:00:00" pri=5"#,
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("stormshield.id"), Some("firewall"));
+        assert_eq!(
+            event.get_str("stormshield.time"),
+            Some("2023-01-01 10:00:00")
+        );
+        assert_eq!(event.get_str("stormshield.pri"), Some("5"));
+
+        // The vendor creates the map before its loop, so a message with no
+        // pairs still leaves an empty one behind.
+        let mut bare = Event::new(json!({ "message": "nopairs" }));
+        assert!(try_known_painless(&mut bare, script));
+        assert_eq!(bare.get("stormshield"), Some(&json!({})));
     }
 
     /// Verbatim from `pipelines/bitdefender/push_notifications/default.yml`:
