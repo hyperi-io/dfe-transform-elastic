@@ -1921,6 +1921,144 @@ fn run_csv_colon_pairs(
     true
 }
 
+/// A tag list scrubbed into names, with the prefixed ones lifted into a
+/// marking map.
+///
+/// `ti_misp` ships this twice -- once per stream -- and it is TWO writes in
+/// one script: every tag name with a couple of characters stripped out, and
+/// the `tlp:` ones stripped of their prefix and upper-cased under
+/// `threat.indicator.marking`. Claiming only the first write scored the
+/// `tags` field and left the marking missing on 16 events.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct TagsAndMarking {
+    /// The list of tag objects.
+    source: String,
+    /// The member of each object holding the name.
+    member: String,
+    /// The characters taken out of every name.
+    strip: Vec<String>,
+    /// Where the scrubbed names go.
+    scrubbed: String,
+    /// Whether they are APPENDED there rather than assigned -- the `threat`
+    /// stream writes `ctx.tags.addAll(tags)` onto a list something else has
+    /// already started, where `threat_attributes` assigns its own `temp_tags`.
+    append: bool,
+    /// The marking map, and the key the selected names go under.
+    marking: String,
+    key: String,
+    /// The prefix that selects a name, and which then comes off it.
+    prefix: String,
+}
+
+/// Every `.replace('<what>', '')` argument in a chain.
+///
+/// The text is what PAINLESS sees, so `'\\'` is one backslash -- the pipeline
+/// strips a literal backslash out of tag names, not an escape.
+fn replaced_away(chain: &str) -> Vec<String> {
+    let mut out = Vec::new();
+    for piece in chain.split(".replace('").skip(1) {
+        let Some((what, rest)) = piece.split_once("', '") else {
+            continue;
+        };
+        if rest.starts_with("')") {
+            out.push(what.replace("\\\\", "\\"));
+        }
+    }
+    out
+}
+
+fn parse_tags_and_marking(script: &str) -> Option<TagsAndMarking> {
+    use crate::painless_params::clean_path;
+
+    let source = script.split_once("= ctx.")?.1.split_once(".stream()")?.0;
+    let member = script
+        .split_once(".map(t -> t.")?
+        .1
+        .split_once(".replace(")?
+        .0;
+    let prefix = script
+        .split_once(".startsWith('")?
+        .1
+        .split_once("')")?
+        .0
+        .to_owned();
+    // The two writes are the last two statements and the marking is the very
+    // last, so the scrubbed list is the assignment immediately before it.
+    let (before_marking, after) = script.rsplit_once(" = [ '")?;
+    let marking = painless_path(before_marking)?;
+    let key = after.split_once('\'')?.0.to_owned();
+    let head = &before_marking[..before_marking.rfind("ctx.")?];
+    let statement = head.rsplit_once("ctx.")?.1;
+    let (scrubbed, append) = match statement.split_once(".addAll(") {
+        Some((path, _)) => (path, true),
+        None => (statement.split_once(" = ")?.0, false),
+    };
+
+    let ok = |raw: &str| {
+        !raw.is_empty()
+            && raw
+                .chars()
+                .all(|c| c.is_alphanumeric() || "._?".contains(c))
+    };
+    if !ok(source) || !ok(member) || !ok(scrubbed) || prefix.is_empty() || key.is_empty() {
+        return None;
+    }
+
+    // The scrub chain is the one inside the FIRST map, before the filter.
+    let chain = script.split_once(".map(t -> t.")?.1;
+    let strip = replaced_away(chain.split_once(".filter(").map_or(chain, |(head, _)| head));
+    (!strip.is_empty()).then(|| TagsAndMarking {
+        source: clean_path(source),
+        member: clean_path(member),
+        strip,
+        scrubbed: clean_path(scrubbed),
+        append,
+        marking,
+        key,
+        prefix,
+    })
+}
+
+/// Scrub the tag names, and lift the prefixed ones into the marking.
+fn run_tags_and_marking(event: &mut Event, shape: &TagsAndMarking) -> bool {
+    let Some(Value::Array(tags)) = event.get(&shape.source).cloned() else {
+        return true;
+    };
+
+    let mut names: Vec<Value> = Vec::with_capacity(tags.len());
+    let mut selected: Vec<Value> = Vec::new();
+    for tag in &tags {
+        let Some(raw) = tag.get(&shape.member).and_then(Value::as_str) else {
+            continue;
+        };
+        let mut name = raw.to_owned();
+        for what in &shape.strip {
+            name = name.replace(what.as_str(), "");
+        }
+        // The vendor selects on the PREFIX and then replaces every occurrence
+        // of it, which is the same thing wherever it appears once.
+        if name.starts_with(shape.prefix.as_str()) {
+            selected.push(Value::String(
+                name.replace(&shape.prefix, "").to_uppercase(),
+            ));
+        }
+        names.push(Value::String(name));
+    }
+
+    if shape.append {
+        for name in names {
+            let _ = event.append(&shape.scrubbed, name);
+        }
+    } else {
+        let _ = event.set(&shape.scrubbed, Value::Array(names));
+    }
+    // Assigned WHOLE, so anything already under the marking goes.
+    let mut marking = serde_json::Map::new();
+    marking.insert(shape.key.clone(), Value::Array(selected));
+    let _ = event.set(&shape.marking, Value::Object(marking));
+    true
+}
+
 /// `fortinet_fortiproxy`'s KV loop, which is stormshield's idea with five
 /// behavioural differences -- hence its own runner rather than a widened
 /// [`parse_kv_into_namespace`].
@@ -11621,6 +11759,8 @@ pub(crate) enum KnownShape {
         source: String,
         target: String,
     },
+    /// Tag names scrubbed into a list, the prefixed ones into a marking map.
+    TagsAndMarking(Box<TagsAndMarking>),
     /// `Key: value` columns into a map, their keys into a fingerprint.
     CsvColonPairs {
         list: String,
@@ -12984,6 +13124,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: ti_misp's tag list, scrubbed into names AND filtered into a
+    // marking map. Ahead of whichever matcher was claiming it for the first
+    // write alone, which left the marking missing on every tagged event.
+    if normalised.contains("Collectors.toList()")
+        && normalised.contains(".toUpperCase())")
+        && let Some(shape) = parse_tags_and_marking(normalised)
+    {
+        shapes.push(KnownShape::TagsAndMarking(Box::new(shape)));
+        return shapes;
+    }
+
     // Pattern: the numbered CSV column map collapsed into an ordered list.
     // Ahead of the colon-pair reader below, which is the NEXT script in the
     // same chain and shares its `_csv_array` anchor.
@@ -13487,6 +13638,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::KvIntoNamespace(target) => run_kv_into_namespace(event, target),
         KnownShape::KvIntoFields(target) => run_kv_into_fields(event, target),
         KnownShape::CsvMapToArray { source, target } => run_csv_map_to_array(event, source, target),
+        KnownShape::TagsAndMarking(shape) => run_tags_and_marking(event, shape),
         KnownShape::CsvColonPairs {
             list,
             map_target,
@@ -18497,6 +18649,60 @@ def event_timezone = get_timezone(ctx);
         let mut wide = Event::new(json!({ "message": "ab\u{00e9}" }));
         assert!(try_known_painless(&mut wide, script));
         assert_eq!(wide.get_str("message"), Some("ab"));
+    }
+
+    /// Verbatim from both `pipelines/ti_misp/threat/default.yml` and
+    /// `.../threat_attributes/default.yml`: the same script with the scrubbed
+    /// list APPENDED in one and assigned in the other. Claiming only the
+    /// first write left the marking missing on all 16 tagged events.
+    #[test]
+    fn tag_names_are_scrubbed_and_the_tlp_ones_marked() {
+        let assigning = "def tags = ctx.misp.tag.stream()\n   \
+            .map(t -> t.name.replace('\\\\', '').replace('\"', ''))\n   \
+            .collect(Collectors.toList());\ndef tlpTags = tags.stream()\n   \
+            .filter(t -> t.startsWith('tlp:'))\n   \
+            .map(t -> t.replace('tlp:', '').toUpperCase())\n   \
+            .collect(Collectors.toList());\n\nctx.temp_tags = tags;\n\
+            ctx.threat.indicator.marking = [ 'tlp': tlpTags ];\n";
+
+        let tagged = json!({
+            "misp": { "tag": [
+                { "name": "tlp:white" },
+                { "name": "mal\\ware\"" },
+                { "name": "tlp:green" }
+            ] }
+        });
+
+        let mut event = Event::new(tagged.clone());
+        assert!(try_known_painless(&mut event, assigning));
+        // The backslash and the quote come out of every name, and the marking
+        // holds the `tlp:` ones with the prefix off and upper-cased.
+        assert_eq!(
+            event.get("temp_tags"),
+            Some(&json!(["tlp:white", "malware", "tlp:green"]))
+        );
+        assert_eq!(
+            event.get("threat.indicator.marking"),
+            Some(&json!({ "tlp": ["WHITE", "GREEN"] }))
+        );
+
+        // The `threat` stream appends onto a list something else started.
+        let appending = "def tags = ctx.misp.tag.stream()\n   \
+            .map(t -> t.name.replace('\\\\', '').replace('\"', ''))\n   \
+            .collect(Collectors.toList());\ndef tlpTags = tags.stream()\n   \
+            .filter(t -> t.startsWith('tlp:'))\n   \
+            .map(t -> t.replace('tlp:', '').toUpperCase())\n   \
+            .collect(Collectors.toList());\n\nif (ctx.tags == null) {\n  \
+            ctx.tags = new ArrayList();\n}\nctx.tags.addAll(tags);\n\
+            ctx.threat.indicator.marking = [ 'tlp': tlpTags ];\n";
+
+        let mut held = Event::new(tagged);
+        held.set("tags", json!(["preserved"])).unwrap();
+        assert!(try_known_painless(&mut held, appending));
+        assert_eq!(
+            held.get("tags"),
+            Some(&json!(["preserved", "tlp:white", "malware", "tlp:green"]))
+        );
     }
 
     /// Verbatim from `pipelines/symantec_endpoint/log/default.yml`: the

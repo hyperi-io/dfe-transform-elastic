@@ -298,7 +298,7 @@
     "ti_greynoise": { "events": 0, "events_total": 1, "fields_wrong": 2 },
     "ti_maltiverse": { "events": 5, "events_total": 5, "fields_wrong": 0 },
     "ti_mandiant_advantage": { "events": 0, "events_total": 5, "fields_wrong": 41 },
-    "ti_misp": { "events": 29, "events_total": 59, "fields_wrong": 50 },
+    "ti_misp": { "events": 44, "events_total": 59, "fields_wrong": 34 },
     "ti_opencti": { "events": 0, "events_total": 31, "fields_wrong": 241 },
     "ti_otx": { "events": 96, "events_total": 96, "fields_wrong": 0 },
     "ti_rapid7_threat_command": { "events": 7, "events_total": 12, "fields_wrong": 21 },
