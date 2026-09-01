@@ -3232,6 +3232,157 @@ fn try_literal_value_map(event: &mut Event, script: &str) -> bool {
     matched
 }
 
+/// An expiry timestamp: a base plus a duration whose LAST CHARACTER is a unit.
+///
+/// Every threat-intel package computes one. The unit switch is the shape --
+/// three adders selected by one character, with a days default and an
+/// `error.message` for a unit the vendor does not know -- and the field names
+/// around it are incidental: `ti_abusech` writes six streams' worth against
+/// `threat.indicator.last_seen`, `ti_anomali` one against `json.added_at`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct IocExpiry {
+    /// Where the duration string is read from.
+    duration: String,
+    /// The literal used when that field is absent, where the script names one.
+    /// `ti_anomali` names none and its processor `if:` guarantees the field.
+    default_duration: Option<String>,
+    /// Base timestamps in the order the script tries them.
+    bases: Vec<String>,
+    /// Days added when the unit is not one the script knows.
+    default_days: i64,
+    /// Seconds taken back off the result. The `labels.interval` streams expire
+    /// an indicator just BEFORE the next interval so the transform's retention
+    /// window cannot miss it.
+    settle_seconds: i64,
+    /// The message that same branch appends to `error.message`.
+    invalid_message: Option<String>,
+    target: String,
+}
+
+fn parse_ioc_expiry(script: &str) -> Option<IocExpiry> {
+    let at = last_assignment(script)?;
+    let target = painless_path(&script[..at])?;
+
+    // The base is whatever the adder is called ON, which is the one reading
+    // that survives both spellings: `ZonedDateTime.parse(ctx.x)` where the
+    // vendor holds a string, a bare `= ctx.x` where it holds a date already.
+    let receiver = identifier_before(script.split_once(".plusDays(")?.0)?;
+    let mut bases: Vec<String> = Vec::new();
+    for segment in script.split(&format!("{receiver} = ")).skip(1) {
+        // A script binds the same local in both arms of an if/else, and the
+        // order it does so is its preference order.
+        let expression = segment.split([';', '\n']).next().unwrap_or_default();
+        if let Some(path) = painless_path(expression)
+            && !bases.contains(&path)
+        {
+            bases.push(path);
+        }
+    }
+    if bases.is_empty() {
+        return None;
+    }
+
+    // The duration is whatever `.length()` is called on -- both spellings take
+    // the last character off it, one with `substring` and one with `charAt`.
+    let local = identifier_before(script.split_once(".length()")?.0)?;
+    let binding = script.split_once(&format!(" {local} = "))?.1;
+    let expression = binding.split_once(';').map_or(binding, |(head, _)| head);
+
+    Some(IocExpiry {
+        duration: painless_path(expression)?,
+        // The ternary's else arm, which is the version-upgrade default.
+        default_duration: expression
+            .rsplit_once(':')
+            .and_then(|(_, tail)| quoted_first(tail)),
+        bases,
+        // The one `plusDays` whose argument is a literal rather than the
+        // parsed duration: the arm for a unit the script does not know.
+        default_days: script.split("plusDays(").skip(1).find_map(|segment| {
+            segment
+                .split(')')
+                .next()?
+                .trim()
+                .trim_end_matches(['L', 'l'])
+                .parse::<i64>()
+                .ok()
+        })?,
+        settle_seconds: subtracted(script, ".minusMinutes(") * 60
+            + subtracted(script, ".minusSeconds("),
+        invalid_message: quoted_after(script, "message.add(").into_iter().next(),
+        target,
+    })
+}
+
+/// The identifier a fragment ends with, which is the receiver of the call that
+/// follows it.
+fn identifier_before(fragment: &str) -> Option<&str> {
+    fragment
+        .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
+        .next()
+        .filter(|name| !name.is_empty())
+}
+
+/// What one `minusX(` takes off, whether the count is written there or held in
+/// a local the script bound to a literal.
+fn subtracted(script: &str, method: &str) -> i64 {
+    let Some(argument) = script
+        .split_once(method)
+        .and_then(|(_, rest)| rest.split(')').next())
+        .map(str::trim)
+    else {
+        return 0;
+    };
+    let literal = |text: &str| text.trim().trim_end_matches(['L', 'l']).parse::<i64>().ok();
+    literal(argument)
+        .or_else(|| {
+            let binding = script.split_once(&format!(" {argument} = "))?.1;
+            literal(binding.split([';', '\n']).next()?)
+        })
+        .unwrap_or_default()
+}
+
+fn run_ioc_expiry(event: &mut Event, shape: &IocExpiry) -> bool {
+    let Some(duration) = event
+        .get_as_string(&shape.duration)
+        .filter(|configured| !configured.is_empty())
+        .or_else(|| shape.default_duration.clone())
+    else {
+        // No duration and no literal default. `ti_anomali` wraps its whole body
+        // in `if (dur instanceof String)`, so that writes nothing.
+        return true;
+    };
+    let Some(base) = shape
+        .bases
+        .iter()
+        .find_map(|path| event.get_as_string(path))
+    else {
+        return true;
+    };
+
+    let mut value = duration.chars();
+    let unit = value.next_back().unwrap_or_default();
+    let (unit, count) = if matches!(unit, 'd' | 'h' | 'm') {
+        let Ok(count) = value.as_str().parse::<i64>() else {
+            // `Long.parseLong` throws, so the document fails and the vendor
+            // writes nothing here either.
+            return true;
+        };
+        (unit, count)
+    } else {
+        if let Some(message) = &shape.invalid_message {
+            let _ = event.append("error.message", json!(message));
+        }
+        ('d', shape.default_days)
+    };
+
+    if let Some(expiry) =
+        crate::date_formats::iso8601_plus(&base, unit, count, shape.settle_seconds)
+    {
+        let _ = event.set(&shape.target, json!(expiry));
+    }
+    true
+}
+
 /// The first `String x = ctx.<path>;` binding, as (local, path).
 fn local_bound_to_ctx(script: &str) -> Option<(String, String)> {
     for line in script.lines() {
@@ -10237,6 +10388,7 @@ pub(crate) enum KnownShape {
     ProcessNameFromCommandLine,
     FlagsPresent(Box<FlagsPresent>),
     ZipLists(Box<ZipLists>),
+    IocExpiry(Box<IocExpiry>),
     WrapMapInList(String),
     FirstOrSelf(Box<FirstOrSelf>),
     GuardedDivide {
@@ -11348,6 +11500,23 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: a base timestamp plus a duration whose LAST CHARACTER is the
+    // unit. Ahead of the two matchers whose triggers this script's text
+    // satisfies by coincidence: `JoinOptional` below counts two `String `
+    // declarations and an `else if`, which the `ti_abusech` interval streams
+    // spell exactly; `GuardedCopy` further down claims anything with
+    // `!= null` and then walks THIS partially -- deciding the unit ladder on a
+    // local it cannot resolve, taking the else arm, and writing the vendor's
+    // "invalid duration" message onto every event while writing no expiry.
+    if normalised.contains("plusDays(")
+        && normalised.contains("plusHours(")
+        && normalised.contains("plusMinutes(")
+        && let Some(shape) = parse_ioc_expiry(normalised)
+    {
+        shapes.push(KnownShape::IocExpiry(Box::new(shape)));
+        return shapes;
+    }
+
     // Pattern: join two optional fields, each alone if the other is absent.
     if normalised.matches("String ").count() == 2 && normalised.contains("} else if (") {
         shapes.push(KnownShape::JoinOptional);
@@ -11986,6 +12155,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             absent,
             divisor,
         } => run_guarded_divide(event, target, source, absent.as_ref(), *divisor),
+        KnownShape::IocExpiry(shape) => run_ioc_expiry(event, shape),
         KnownShape::GuardedCopy => try_guarded_copy(event, normalised),
         KnownShape::PlainAssignments => {
             crate::painless_params::run_guarded_literals(event, normalised)
@@ -12380,6 +12550,148 @@ mod tests {
           if (ctx._tmp == null) { ctx._tmp = new HashMap(); }\n\
           ctx._tmp.cat = c;\n\
         }";
+
+    /// `pipelines/ti_abusech/url/default.yml`, which five of the six streams
+    /// ship: the duration is configured, the base is a pair of candidates.
+    const EXPIRY_FROM_SEEN: &str = "def dur = (ctx._conf?.ioc_expiration_duration != null && \
+        ctx._conf.ioc_expiration_duration instanceof String && \
+        ctx._conf.ioc_expiration_duration != '') ? ctx._conf.ioc_expiration_duration : '90d';\n\
+        ZonedDateTime _tmp_deleted_at;\n\
+        ZonedDateTime _tmp_updated_at;\n\
+        if (ctx.threat.indicator.last_seen != null) {\n\
+          _tmp_updated_at = ZonedDateTime.parse(ctx.threat.indicator.last_seen);\n\
+        } else {\n\
+          _tmp_updated_at = ZonedDateTime.parse(ctx.threat.indicator.first_seen);\n\
+        }\n\
+        String time_unit = dur.substring(dur.length() -  1, dur.length());\n\
+        String time_value = dur.substring(0, dur.length() - 1);\n\
+        if (time_unit == 'd') {\n\
+          _tmp_deleted_at = _tmp_updated_at.plusDays(Long.parseLong(time_value));\n\
+        } else if (time_unit == 'h') {\n\
+          _tmp_deleted_at = _tmp_updated_at.plusHours(Long.parseLong(time_value));\n\
+        } else if (time_unit == 'm') {\n\
+          _tmp_deleted_at = _tmp_updated_at.plusMinutes(Long.parseLong(time_value));\n\
+        } else {\n\
+          _tmp_deleted_at = _tmp_updated_at.plusDays(90L);\n\
+          if (ctx.error == null) { ctx.error = new HashMap(); }\n\
+          if (ctx.error.message == null) { ctx.error.message = new ArrayList(); }\n\
+          ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n\
+        }\n\
+        ctx.abusech.url.deleted_at = _tmp_deleted_at;\n";
+
+    /// `pipelines/ti_abusech/ja3_fingerprints/default.yml`: the base is bound
+    /// straight off `ctx`, and the result is pulled back so an indicator
+    /// expires just before the next interval.
+    const EXPIRY_FROM_INGEST: &str = "def dur = ctx.labels.interval;\n\
+        ZonedDateTime _tmp_deleted_at;\n\
+        ZonedDateTime _tmp_created_at = ctx.event.ingested;\n\
+        long max_ingest_time_in_sec = 30L;\n\
+        long transform_max_age_in_min = 1L;\n\
+        String time_unit = dur.substring(dur.length() -  1, dur.length());\n\
+        String time_value = dur.substring(0, dur.length() - 1);\n\
+        if (time_unit == 'd') {\n\
+          _tmp_deleted_at = _tmp_created_at.plusDays(Long.parseLong(time_value));\n\
+        } else if (time_unit == 'h') {\n\
+          _tmp_deleted_at = _tmp_created_at.plusHours(Long.parseLong(time_value));\n\
+        } else if (time_unit == 'm') {\n\
+          _tmp_deleted_at = _tmp_created_at.plusMinutes(Long.parseLong(time_value));\n\
+        } else {\n\
+          _tmp_deleted_at = _tmp_created_at.plusDays(90L);\n\
+          if (ctx.error == null) { ctx.error = new HashMap(); }\n\
+          if (ctx.error.message == null) { ctx.error.message = new ArrayList(); }\n\
+          ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n\
+        }\n\
+        _tmp_deleted_at = _tmp_deleted_at.minusMinutes(transform_max_age_in_min)\
+        .minusSeconds(max_ingest_time_in_sec);\n\
+        ctx.abusech.ja3_fingerprints.deleted_at = _tmp_deleted_at;\n";
+
+    /// Verbatim from `testdata/compat/ti_abusech/url/test-abusechurl-dump`:
+    /// 2021-10-05 plus the configured 90 days.
+    #[test]
+    fn an_expiry_is_the_base_plus_the_configured_duration() {
+        let mut event = Event::new(json!({
+            "_conf": { "ioc_expiration_duration": "90d" },
+            "threat": { "indicator": { "first_seen": "2021-10-05T13:57:05.000Z" } },
+        }));
+        assert!(try_known_painless(&mut event, EXPIRY_FROM_SEEN));
+        assert_eq!(
+            event.get_str("abusech.url.deleted_at"),
+            Some("2022-01-03T13:57:05.000Z")
+        );
+        assert_eq!(event.get("error.message"), None);
+    }
+
+    /// The script tries `last_seen` first, so a document carrying both must
+    /// expire from the later one.
+    #[test]
+    fn last_seen_beats_first_seen() {
+        let mut event = Event::new(json!({
+            "_conf": { "ioc_expiration_duration": "2h" },
+            "threat": { "indicator": {
+                "first_seen": "2021-10-05T13:57:05.000Z",
+                "last_seen": "2021-11-05T01:02:03.000Z",
+            } },
+        }));
+        assert!(try_known_painless(&mut event, EXPIRY_FROM_SEEN));
+        assert_eq!(
+            event.get_str("abusech.url.deleted_at"),
+            Some("2021-11-05T03:02:03.000Z")
+        );
+    }
+
+    /// No duration configured is the version-upgrade case, and the script's own
+    /// ternary names the fallback. It is NOT the invalid-unit branch, so no
+    /// error is appended -- writing one on every event is what the partial walk
+    /// under `GuardedCopy` used to do.
+    #[test]
+    fn an_absent_duration_takes_the_literal_default_quietly() {
+        let mut event = Event::new(json!({
+            "threat": { "indicator": { "first_seen": "2021-10-05T13:57:05.000Z" } },
+        }));
+        assert!(try_known_painless(&mut event, EXPIRY_FROM_SEEN));
+        assert_eq!(
+            event.get_str("abusech.url.deleted_at"),
+            Some("2022-01-03T13:57:05.000Z")
+        );
+        assert_eq!(event.get("error.message"), None);
+    }
+
+    /// A unit the script does not know falls to 90 days AND says so.
+    #[test]
+    fn an_unknown_unit_defaults_and_reports() {
+        let mut event = Event::new(json!({
+            "_conf": { "ioc_expiration_duration": "12w" },
+            "threat": { "indicator": { "first_seen": "2021-10-05T13:57:05.000Z" } },
+        }));
+        assert!(try_known_painless(&mut event, EXPIRY_FROM_SEEN));
+        assert_eq!(
+            event.get_str("abusech.url.deleted_at"),
+            Some("2022-01-03T13:57:05.000Z")
+        );
+        assert_eq!(
+            event.get("error.message"),
+            Some(&json!([
+                "invalid ioc_expiration_duration: using default 90 days"
+            ]))
+        );
+    }
+
+    /// Verbatim from `testdata/compat/ti_abusech/ja3_fingerprints`: ingest time
+    /// plus the interval, less the minute and thirty seconds the script takes
+    /// back. The VALUE cannot be compared against Elasticsearch -- it is
+    /// derived from write time -- so this is where the arithmetic is checked.
+    #[test]
+    fn an_interval_expiry_settles_before_the_next_run() {
+        let mut event = Event::new(json!({
+            "labels": { "interval": "1h" },
+            "event": { "ingested": "2026-08-30T11:55:06.583752823Z" },
+        }));
+        assert!(try_known_painless(&mut event, EXPIRY_FROM_INGEST));
+        assert_eq!(
+            event.get_str("abusech.ja3_fingerprints.deleted_at"),
+            Some("2026-08-30T12:53:36.583Z")
+        );
+    }
 
     /// Every arm form the ladder uses lands the action AND the grok routing
     /// key, which is what the blocks behind it are gated on.

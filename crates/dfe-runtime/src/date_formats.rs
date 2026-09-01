@@ -10,7 +10,9 @@
 
 use std::borrow::Cow;
 
-use chrono::{DateTime, Datelike, FixedOffset, NaiveDate, NaiveDateTime, Offset, TimeZone, Utc};
+use chrono::{
+    DateTime, Datelike, FixedOffset, NaiveDate, NaiveDateTime, Offset, TimeDelta, TimeZone, Utc,
+};
 use chrono_tz::Tz;
 
 /// The output shape: ISO 8601 with milliseconds, ending in `Z`.
@@ -429,6 +431,35 @@ fn zone_offset(zone: &str) -> Option<FixedOffset> {
         _ => return None,
     };
     FixedOffset::east_opt(sign * (hours * 3600 + minutes * 60))
+}
+
+/// Add `count` of `unit` to an ISO 8601 timestamp, then take `back` seconds off.
+///
+/// `unit` is the vendor's own single character -- `d`, `h` or `m` -- because
+/// that is how the threat-intel packages spell an expiry duration: one string
+/// whose LAST CHARACTER selects the adder. `back` is the settling window those
+/// same scripts subtract so an indicator expires just before its next
+/// interval. The result is rendered the way the `date` processor that follows
+/// them renders it, so the value is already right for a pipeline that omits
+/// one.
+///
+/// Returns `None` for a unit this does not know or a timestamp it cannot read.
+#[must_use]
+pub fn iso8601_plus(input: &str, unit: char, count: i64, back: i64) -> Option<String> {
+    let delta = match unit {
+        'd' => TimeDelta::try_days(count),
+        'h' => TimeDelta::try_hours(count),
+        'm' => TimeDelta::try_minutes(count),
+        _ => None,
+    }?;
+    Some(
+        parse_iso8601(input.trim())?
+            .checked_add_signed(delta)?
+            .checked_sub_signed(TimeDelta::try_seconds(back)?)?
+            .with_timezone(&Utc)
+            .format(ISO_OUT)
+            .to_string(),
+    )
 }
 
 /// Translate a Java `DateTimeFormatter` pattern into a chrono one.

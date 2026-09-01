@@ -30,6 +30,14 @@ nondeterministic:
     why: Agent read time, not event time.
   - path: "@timestamp"
     why: Pipelines that fall back to now() when the payload carries no time.
+  - path: abusech.ja3_fingerprints.deleted_at
+    why: >
+      event.ingested plus labels.interval, so it inherits write time. The
+      arithmetic is held instead by
+      painless_common::tests::an_interval_expiry_settles_before_the_next_run,
+      which asserts the captured value against the captured ingest instant.
+  - path: abusech.sslblacklist.deleted_at
+    why: Same script as abusech.ja3_fingerprints.deleted_at, same write time.
 
 # Elastic and Beats plumbing DFE does not emit. Never a defect. Prefix match on
 # the dotted path, list indices removed first.
