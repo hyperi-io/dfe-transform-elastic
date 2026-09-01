@@ -175,6 +175,7 @@ pub(crate) enum ParamsShape {
     ValueMaps,
     RowColumns,
     RowColumnAppends(Box<RowColumnAppends>),
+    InstructionRows(Box<InstructionRows>),
     /// A row overwrites the field it was looked up by, fans several more
     /// columns onto ctx (one of them APPENDING rather than replacing), and a
     /// key with no row still writes two fields rather than nothing -- auth0's
@@ -374,6 +375,15 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
     // Ahead of the reversible lookup, whose trigger this shape also matches.
     if normalised.contains(".map?.getOrDefault(") || normalised.contains("param.map.") {
         return Some(ParamsShape::ValueMaps);
+    }
+
+    // Pattern: the row is a LIST OF INSTRUCTIONS built into a list for a
+    // `foreach` to write. Ahead of every `params.get(` matcher below, and of
+    // the `LookupNormalise` catch-all that would otherwise claim it.
+    if normalised.contains("values.add(")
+        && let Some(shape) = parse_instruction_rows(normalised)
+    {
+        return Some(ParamsShape::InstructionRows(Box::new(shape)));
     }
 
     // Pattern: params IS the table, keyed by a field, and each named column's
@@ -728,6 +738,7 @@ pub(crate) fn run_params_shape(
         ParamsShape::ValueMaps => try_value_maps(event, normalised, params),
         ParamsShape::RowColumns => try_row_columns(event, normalised, params),
         ParamsShape::RowColumnAppends(shape) => run_row_column_appends(event, shape, params),
+        ParamsShape::InstructionRows(shape) => run_instruction_rows(event, shape, params),
         ParamsShape::KeyedActionRow { table, source } => {
             run_keyed_action_row(event, table, source, params)
         }
@@ -4493,6 +4504,102 @@ fn expand_locals(script: &str) -> String {
 
 /// The local a `def x = <marker>...` or typed `Integer x = <marker>...`
 /// statement binds -- either way the name is the last word before the `=`.
+/// A params row that is a LIST OF INSTRUCTIONS, each naming a destination and
+/// either a literal value or a field to copy from.
+///
+/// cyberarkpas builds `_tmp.values` for a `foreach` to write, so the whole ECS
+/// fan-out -- `event.category`, `event.outcome`, `user.target.name` -- hangs
+/// off this one script. The member names are the helper's own and are required
+/// here, so a package that diverged declines rather than being mis-read.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct InstructionRows {
+    /// The field whose value keys the table.
+    key: String,
+    /// Where the built list lands.
+    target: String,
+}
+
+fn parse_instruction_rows(script: &str) -> Option<InstructionRows> {
+    if !script.contains("item.set") || !script.contains("item.from") {
+        return None;
+    }
+
+    // `String msgID = ctx.event?.code;` -- the declared type varies, so the
+    // binding is found by the local's name rather than by a `def` prefix.
+    let local = script
+        .split_once("params.get(")?
+        .1
+        .split(')')
+        .next()?
+        .trim();
+    let bound = script.split_once(&format!(" {local} = ctx"))?.1;
+    let key = clean_path(bound[..bound.find([';', '\n'])?].trim_start_matches(['?', '.']));
+
+    // `ctx._tmp["values"] = values`, whose member is subscripted.
+    let head = script[..script.rfind("= values")?]
+        .trim()
+        .trim_end_matches(']');
+    let (parent, member) = match head.rsplit_once('[') {
+        Some((parent, member)) => (
+            parent,
+            Some(member.trim().trim_matches(['"', '\'']).to_string()),
+        ),
+        None => (head, None),
+    };
+    let parent = clean_path(parent.trim().rsplit("ctx.").next()?);
+    if parent.is_empty() || key.is_empty() {
+        return None;
+    }
+
+    Some(InstructionRows {
+        key,
+        target: member.map_or_else(|| parent.clone(), |member| format!("{parent}.{member}")),
+    })
+}
+
+fn run_instruction_rows(
+    event: &mut Event,
+    shape: &InstructionRows,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(key) = event.get_as_string(&shape.key) else {
+        return true;
+    };
+    let Some(Value::Array(actions)) = params.get(&key) else {
+        // `if (actions == null) return;`
+        return true;
+    };
+
+    let mut values = Vec::with_capacity(actions.len());
+    for item in actions {
+        // A literal value wins; otherwise the instruction names a field to read.
+        let value = match item.get("value") {
+            Some(literal) if !literal.is_null() => literal.clone(),
+            _ => match item.get("from").and_then(Value::as_str).and_then(|from| {
+                let from = from.to_string();
+                event.get(&from).cloned()
+            }) {
+                Some(read) => read,
+                None => continue,
+            },
+        };
+        // `|| val == ""` -- an empty string contributes nothing.
+        if value.as_str() == Some("") {
+            continue;
+        }
+        let Some(to) = item.get("set") else {
+            continue;
+        };
+        values.push(json!({ "to": to.clone(), "value": value }));
+    }
+
+    // `if (!values.isEmpty())` -- an empty list is not written at all.
+    if !values.is_empty() {
+        let _ = event.set(&shape.target, Value::Array(values));
+    }
+    true
+}
+
 /// `params.getOrDefault(ctx.<key>, null)`, then a loop per named column
 /// appending each of its members onto an ECS array.
 ///
@@ -6627,6 +6734,43 @@ mod tests {
         assert_eq!(event.get("watchguard_firebox.log.category"), None);
         assert_eq!(event.get("watchguard_firebox.log.type"), None);
         assert_eq!(event.get("watchguard_firebox.log.outcome"), None);
+    }
+
+    /// Verbatim from `pipelines/cyberarkpas/audit/audit.yml`: the row is a list
+    /// of instructions, each a literal value or a field to read.
+    #[test]
+    fn an_instruction_row_builds_the_list_its_foreach_writes() {
+        let script = "String msgID = ctx.event?.code;\ndef actions = params.get(msgID);\n\
+            if (actions == null) return;\nList values = new ArrayList();\n\
+            for (def item : actions) {\n  def val = item.value;\n  \
+            if (val == null && (val = read_field(ctx, item.from)) == null || val == \"\") continue;\n  \
+            values.add([\n    \"to\": item.set,\n    \"value\": clone(val)\n  ]);\n}\n\
+            if (!values.isEmpty()) ctx._tmp[\"values\"] = values;\n";
+        let params = json!({ "180": [
+            { "set": "user.target.name", "from": "cyberarkpas.audit.source_user" },
+            { "set": "event.type", "value": ["user", "creation"] },
+            { "set": "event.outcome", "value": "success" },
+            { "set": "user.name", "from": "cyberarkpas.audit.absent" },
+        ]});
+
+        let mut event = Event::new(json!({
+            "event": { "code": "180" },
+            "cyberarkpas": { "audit": { "source_user": "PSMPApp_localhost" } },
+        }));
+        assert!(try_params_painless(&mut event, script, &params));
+        assert_eq!(
+            event.get("_tmp.values"),
+            Some(&json!([
+                { "to": "user.target.name", "value": "PSMPApp_localhost" },
+                { "to": "event.type", "value": ["user", "creation"] },
+                { "to": "event.outcome", "value": "success" },
+            ]))
+        );
+
+        // A code the table does not list writes nothing at all.
+        let mut unlisted = Event::new(json!({ "event": { "code": "999" } }));
+        assert!(try_params_painless(&mut unlisted, script, &params));
+        assert!(!unlisted.has("_tmp.values"));
     }
 
     /// Verbatim from `pipelines/box_events/events/default.yml`: params IS the

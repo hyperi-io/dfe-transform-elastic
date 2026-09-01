@@ -97,7 +97,7 @@
     "cursor": { "events": 30, "events_total": 30, "fields_wrong": 0 },
     "cyberark_epm": { "events": 11, "events_total": 31, "fields_wrong": 89 },
     "cyberark_pta": { "events": 3, "events_total": 4, "fields_wrong": 1 },
-    "cyberarkpas": { "events": 128, "events_total": 374, "fields_wrong": 2139 },
+    "cyberarkpas": { "events": 209, "events_total": 374, "fields_wrong": 342 },
     "cybereason": { "events": 1, "events_total": 6, "fields_wrong": 31 },
     "cyera": { "events": 17, "events_total": 22, "fields_wrong": 12 },
     "cylance": { "events": 101, "events_total": 101, "fields_wrong": 0 },
