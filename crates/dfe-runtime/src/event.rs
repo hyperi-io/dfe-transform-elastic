@@ -421,9 +421,17 @@ fn prefix_of(path: &str, depth: usize) -> String {
 }
 
 /// Walk a dotted path to find an immutable reference to the target value.
+///
+/// A key may hold dots of its own, and the whole-key reading is allowed only
+/// once a real segment has been walked. Elastic draws the line in the same
+/// place: `ti_eclecticiq` reaches `calculated.relevancy` under `json` and
+/// removes it, while `vectra_detect`'s ROOT-level `log.syslog.hostname` is never
+/// reached at all -- its `observer.serial_number` is unset in Elastic's own
+/// captured output even though the vendor `set` copies from that path.
 fn resolve_path<'a>(value: &'a Value, path: &str) -> Option<&'a Value> {
     let mut current = value;
     let mut rest = path;
+    let mut descended = false;
     loop {
         // A numeric segment on an array is an index, the way Elastic's
         // mustache reads `{{_temp.user_parts.0}}`.
@@ -447,16 +455,18 @@ fn resolve_path<'a>(value: &'a Value, path: &str) -> Option<&'a Value> {
         let Some(next) = map.get(segment) else {
             // The segment is not a field, so the dot may sit INSIDE a key --
             // see flat_key.
-            if let Some(found) = map.get(rest) {
+            if descended && let Some(found) = map.get(rest) {
                 return Some(found);
             }
             let key = flat_key(map, rest)?;
             rest = &rest[key.len() + 1..];
             current = map.get(key)?;
+            descended = true;
             continue;
         };
         current = next;
         rest = tail;
+        descended = true;
     }
 }
 
@@ -467,6 +477,7 @@ fn resolve_path<'a>(value: &'a Value, path: &str) -> Option<&'a Value> {
 fn resolve_path_mut<'a>(value: &'a mut Value, path: &str) -> Option<&'a mut Value> {
     let mut current = value;
     let mut rest = path;
+    let mut descended = false;
     loop {
         if current.is_array() {
             let (segment, tail) = rest.split_once('.').unwrap_or((rest, ""));
@@ -490,13 +501,14 @@ fn resolve_path_mut<'a>(value: &'a mut Value, path: &str) -> Option<&'a mut Valu
         let key: String = if map.contains_key(segment) {
             rest = tail;
             segment.to_string()
-        } else if map.contains_key(rest) {
+        } else if descended && map.contains_key(rest) {
             return map.get_mut(rest);
         } else {
             let key = flat_key(map, rest)?.to_string();
             rest = &rest[key.len() + 1..];
             key
         };
+        descended = true;
         current = map.get_mut(&key)?;
     }
 }
@@ -659,9 +671,23 @@ mod tests {
     fn a_nested_path_beats_a_flat_key_of_the_same_name() {
         let event = Event::new(json!({ "a": { "b": "nested" }, "a.b": "flat" }));
         assert_eq!(event.get_str("a.b"), Some("nested"));
+    }
 
-        let only_flat = Event::new(json!({ "a.b": "flat" }));
-        assert_eq!(only_flat.get_str("a.b"), Some("flat"));
+    /// A key holding dots is reachable only BELOW a segment that resolved.
+    ///
+    /// Elastic draws the line in the same place, and the corpus is what says
+    /// so: `ti_eclecticiq` reaches `calculated.relevancy` under `json` and
+    /// removes it, while `vectra_detect`'s root-level `log.syslog.hostname` is
+    /// never reached -- Elastic's captured output leaves
+    /// `observer.serial_number` unset even though the vendor `set` copies from
+    /// that exact path. Reading the root-level key cost all 57 of its events.
+    #[test]
+    fn a_flat_key_is_reachable_only_after_a_real_segment() {
+        let at_root = Event::new(json!({ "a.b": "flat" }));
+        assert_eq!(at_root.get_str("a.b"), None);
+
+        let below = Event::new(json!({ "json": { "a.b": "flat" } }));
+        assert_eq!(below.get_str("json.a.b"), Some("flat"));
     }
 
     /// `append` looks the path up with `get` and then unwraps the mutable
