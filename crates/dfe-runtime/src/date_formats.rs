@@ -104,13 +104,18 @@ fn parse_one(input: &str, format: &str, timezone: Option<&str>) -> Option<DateTi
         // first instead loses precision the integer seconds have already eaten:
         // `1742799479.852 - 1742799479.0` is 0.851999998, which renders .851
         // where Elastic renders .852.
+        // Zero is a TIMESTAMP, not a missing value: Elastic renders it
+        // 1970-01-01T00:00:00.000Z, and ti_misp ships events whose
+        // `publish_timestamp` is exactly that. Rejecting it sent 28 of its 59
+        // events down the on_failure path with the epoch left as the string
+        // "0". A negative is pre-1970 and equally real.
         "UNIX" => {
-            let seconds = input.parse::<f64>().ok().filter(|s| *s > 0.0)?;
+            let seconds = input.parse::<f64>().ok()?;
             #[allow(clippy::cast_possible_truncation)]
             DateTime::from_timestamp_millis((seconds * 1000.0) as i64).map(Into::into)
         }
         "UNIX_MS" => {
-            let millis = input.parse::<i64>().ok().filter(|ms| *ms > 0)?;
+            let millis = input.parse::<i64>().ok()?;
             DateTime::from_timestamp_millis(millis).map(Into::into)
         }
         // TAI64N labels are hex, and the leap-second table they need to become
@@ -722,6 +727,28 @@ mod tests {
         ] {
             assert_eq!(parse_date(input, &["UNIX"], None).unwrap(), expected);
         }
+    }
+
+    /// Epoch zero is a TIMESTAMP, not a missing value.
+    ///
+    /// Elastic renders it, and rejecting it sent 28 of `ti_misp`'s 59 events
+    /// down the `on_failure` path with the epoch left as the string "0". Six
+    /// sources moved when this was allowed. A negative is pre-1970 and just
+    /// as real.
+    #[test]
+    fn epoch_zero_is_a_timestamp() {
+        assert_eq!(
+            parse_date("0", &["UNIX"], None).unwrap(),
+            "1970-01-01T00:00:00.000Z"
+        );
+        assert_eq!(
+            parse_date("0", &["UNIX_MS"], None).unwrap(),
+            "1970-01-01T00:00:00.000Z"
+        );
+        assert_eq!(
+            parse_date("-86400", &["UNIX"], None).unwrap(),
+            "1969-12-31T00:00:00.000Z"
+        );
     }
 
     /// The processor's zone is the OUTPUT zone as well as the parsing one:
