@@ -349,22 +349,22 @@ impl Transform for Default {
                             cached_grok!("^%{IPV4:destination.ip}$"),
                             cached_grok_mapped!(
                                 "^%{IPV4:destination.ip}:(?P<destination_port>(?:[0-9]+))$",
-                                [("destination_port", "destination.port")]
+                                [("destination_port", "destination.port:long")]
                             ),
                             cached_grok_mapped!(
                                 "^\\[%{IPV6:destination.ip}\\]:(?P<destination_port>(?:[0-9]+))$",
-                                [("destination_port", "destination.port")]
+                                [("destination_port", "destination.port:long")]
                             ),
                             cached_grok_mapped!(
                                 "^(?P<destination_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<destination_port>(?:[0-9]+))$",
                                 [
                                     ("destination_ip", "destination.ip"),
-                                    ("destination_port", "destination.port")
+                                    ("destination_port", "destination.port:long")
                                 ]
                             ),
                             cached_grok_mapped!(
                                 "^%{IPV6:destination.ip}(?:(?: port |[p#.]))(?P<destination_port>(?:[0-9]+))$",
-                                [("destination_port", "destination.port")]
+                                [("destination_port", "destination.port:long")]
                             ),
                             cached_grok_mapped!(
                                 "^(?P<destination_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}))$",

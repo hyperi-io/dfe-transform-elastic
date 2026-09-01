@@ -49,36 +49,36 @@ impl Transform for Default {
                         cached_grok_mapped!(
                             "^(?P<_tmp_time_s>(?:[0-9]+))\\.(?P<_tmp_time_ms>(?:[0-9]+))%{SPACE}(?P<_tmp_elapsed>(?:[0-9]+)) %{NOTSPACE:_tmp.source_ip} (?P<_tmp_code>(?:[^/]+))/(?P<_tmp_status>(?:[0-9]+)) (?P<_tmp_destination_bytes>(?:[0-9]+)) %{NOTSPACE:_tmp.method} %{NOTSPACE:_tmp.url} %{NOTSPACE:_tmp.user_name} (?P<_tmp_peer_status>(?:[^/]+))/%{NOTSPACE:_tmp.peer_host} %{NOTSPACE:_tmp.content_type}$",
                             [
-                                ("_tmp_time_s", "_tmp.time_s"),
-                                ("_tmp_time_ms", "_tmp.time_ms"),
-                                ("_tmp_elapsed", "_tmp.elapsed"),
+                                ("_tmp_time_s", "_tmp.time_s:long"),
+                                ("_tmp_time_ms", "_tmp.time_ms:long"),
+                                ("_tmp_elapsed", "_tmp.elapsed:long"),
                                 ("_tmp_code", "_tmp.code"),
-                                ("_tmp_status", "_tmp.status"),
-                                ("_tmp_destination_bytes", "_tmp.destination_bytes"),
+                                ("_tmp_status", "_tmp.status:long"),
+                                ("_tmp_destination_bytes", "_tmp.destination_bytes:long"),
                                 ("_tmp_peer_status", "_tmp.peer_status")
                             ]
                         ),
                         cached_grok_mapped!(
                             "^(?P<_tmp_time_s>(?:[0-9]+))\\.(?P<_tmp_time_ms>(?:[0-9]+))%{SPACE}(?P<_tmp_elapsed>(?:[0-9]+)) %{NOTSPACE:_tmp.source_ip} (?P<_tmp_source_port>(?:[0-9]+)) (?P<_tmp_code>(?:[^/]+))/(?P<_tmp_status>(?:[0-9]+)) %{NOTSPACE:_tmp.reply_size} %{NOTSPACE:_tmp.request_size} %{NOTSPACE:_tmp.reply_header_size} %{NOTSPACE:_tmp.request_header_size} %{NOTSPACE:_tmp.reply_body_size} %{NOTSPACE:_tmp.method} %{NOTSPACE:_tmp.url} %{NOTSPACE:_tmp.http_version} %{NOTSPACE:_tmp.user_name} (?P<_tmp_peer_status>(?:[^/]+))/%{NOTSPACE:_tmp.peer_host} %{NOTSPACE:_tmp.destination_port} %{NOTSPACE:_tmp.content_type} %{NOTSPACE:_tmp.err_code} %{NOTSPACE:_tmp.err_detail} \"%{DATA:_tmp.referer}\" \"%{DATA:_tmp.user_agent}\" \"%{DATA:_tmp.host_header}\" \"%{DATA:_tmp.xff}\" \"%{DATA:_tmp.sni}\" %{GREEDYDATA:_tmp.note}$",
                             [
-                                ("_tmp_time_s", "_tmp.time_s"),
-                                ("_tmp_time_ms", "_tmp.time_ms"),
-                                ("_tmp_elapsed", "_tmp.elapsed"),
-                                ("_tmp_source_port", "_tmp.source_port"),
+                                ("_tmp_time_s", "_tmp.time_s:long"),
+                                ("_tmp_time_ms", "_tmp.time_ms:long"),
+                                ("_tmp_elapsed", "_tmp.elapsed:long"),
+                                ("_tmp_source_port", "_tmp.source_port:long"),
                                 ("_tmp_code", "_tmp.code"),
-                                ("_tmp_status", "_tmp.status"),
+                                ("_tmp_status", "_tmp.status:long"),
                                 ("_tmp_peer_status", "_tmp.peer_status")
                             ]
                         ),
                         cached_grok_mapped!(
                             "^(?P<_tmp_time_s>(?:[0-9]+))\\.(?P<_tmp_time_ms>(?:[0-9]+))%{SPACE}(?P<_tmp_elapsed>(?:[0-9]+)) %{NOTSPACE:_tmp.source_ip} (?P<_tmp_source_port>(?:[0-9]+)) (?P<_tmp_code>(?:[^/]+))/(?P<_tmp_status>(?:[0-9]+)) %{NOTSPACE:_tmp.reply_size} %{NOTSPACE:_tmp.request_size} %{NOTSPACE:_tmp.reply_header_size} %{NOTSPACE:_tmp.request_header_size} %{NOTSPACE:_tmp.reply_body_size} %{NOTSPACE:_tmp.method} %{NOTSPACE:_tmp.url} %{NOTSPACE:_tmp.http_version} %{NOTSPACE:_tmp.user_name} (?P<_tmp_peer_status>(?:[^/]+))/%{NOTSPACE:_tmp.peer_host} %{NOTSPACE:_tmp.destination_port} %{NOTSPACE:_tmp.content_type} %{NOTSPACE:_tmp.err_code} %{NOTSPACE:_tmp.err_detail} \"%{DATA:_tmp.referer}\" \"%{DATA:_tmp.user_agent}\" \"%{DATA:_tmp.host_header}\" \"%{DATA:_tmp.xff}\" %{GREEDYDATA:_tmp.note}$",
                             [
-                                ("_tmp_time_s", "_tmp.time_s"),
-                                ("_tmp_time_ms", "_tmp.time_ms"),
-                                ("_tmp_elapsed", "_tmp.elapsed"),
-                                ("_tmp_source_port", "_tmp.source_port"),
+                                ("_tmp_time_s", "_tmp.time_s:long"),
+                                ("_tmp_time_ms", "_tmp.time_ms:long"),
+                                ("_tmp_elapsed", "_tmp.elapsed:long"),
+                                ("_tmp_source_port", "_tmp.source_port:long"),
                                 ("_tmp_code", "_tmp.code"),
-                                ("_tmp_status", "_tmp.status"),
+                                ("_tmp_status", "_tmp.status:long"),
                                 ("_tmp_peer_status", "_tmp.peer_status")
                             ]
                         ),
