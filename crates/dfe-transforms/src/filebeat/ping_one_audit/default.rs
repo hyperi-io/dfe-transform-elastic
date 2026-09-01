@@ -59,70 +59,34 @@ impl Transform for Default {
                 event.append("event.category", json!("configuration"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json?.action?.type?.toLowerCase()?.contains('created') == true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
-                event.append("event.type", json!("creation"))?;
-            }
-
-            // SKIPPED: condition not transpiled: ctx.json?.action?.type?.toLowerCase()?.contains('deleted') == true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
-                event.append("event.type", json!("deletion"))?;
-            }
-
-            // SKIPPED: condition not transpiled: ctx.json?.action?.type?.toLowerCase()?.contains('updated') == true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
-                event.append("event.type", json!("change"))?;
-            }
-
-            // SKIPPED: condition not transpiled: ctx.json?.action?.type?.toLowerCase()?.contains('user') == true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
-                event.append("event.type", json!("user"))?;
-            }
-
-            // SKIPPED: condition not transpiled: ctx.json?.action?.type?.toLowerCase()?.contains('group') == true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
-                event.append("event.type", json!("group"))?;
-            }
-
-            // SKIPPED: condition not transpiled: ctx.json?.action?.type?.toLowerCase()?.contains('allowed') == true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
-                event.append("event.type", json!("info"))?;
-            }
-
-            // SKIPPED: condition not transpiled: ctx.json?.action?.type?.toLowerCase()?.contains('denied') == true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
-                event.append("event.type", json!("denied"))?;
-            }
-
-            // SKIPPED: condition not transpiled: ctx.json?.action?.type?.toLowerCase()?.contains('started') == true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
-                event.append("event.type", json!("start"))?;
-            }
-
-            // SKIPPED: condition not transpiled: ctx.json?.action?.type?.toLowerCase()?.contains('access_allowed') == true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
-                event.append("event.type", json!("access"))?;
-            }
-
-            // SKIPPED: condition not transpiled: ctx.json?.action?.type?.toLowerCase()?.contains('password.check_succeeded') == true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
-                event.append("event.category", json!("authentication"))?;
-            }
-
-            // SKIPPED: condition not transpiled: ctx.json?.action?.type?.toLowerCase()?.contains('email') == true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
-                event.append("event.category", json!("email"))?;
+            // A `?.`-chained `contains` compared to true. An absent field
+            // makes the chain null, and `null == true` is false, which is
+            // exactly what `is_some_and` answers.
+            for (needle, field, value) in [
+                ("created", "event.type", "creation"),
+                ("deleted", "event.type", "deletion"),
+                ("updated", "event.type", "change"),
+                ("user", "event.type", "user"),
+                ("group", "event.type", "group"),
+                ("allowed", "event.type", "info"),
+                ("denied", "event.type", "denied"),
+                ("started", "event.type", "start"),
+                ("access_allowed", "event.type", "access"),
+                (
+                    "password.check_succeeded",
+                    "event.category",
+                    "authentication",
+                ),
+                ("email", "event.category", "email"),
+            ] {
+                let _cond = {
+                    event
+                        .get_str("json.action.type")
+                        .is_some_and(|s| s.to_lowercase().contains(needle))
+                };
+                if _cond {
+                    event.append(field, json!(value))?;
+                }
             }
 
             let _cond = { !event.has_value("event.type") };
