@@ -1626,6 +1626,58 @@ fn run_remove_list_value(event: &mut Event, field: &str, value: &str) -> bool {
     true
 }
 
+/// The sorted key names of the FIRST nested map holding an inner map.
+///
+/// awsfirehose collects every metric name out of `aws.<service>.metrics` so a
+/// `fingerprint` can key the document by which metrics it carries. The list is
+/// written whether or not anything was found, exactly as the vendor does, and
+/// a `remove` drops it once the fingerprint has been taken.
+fn parse_nested_key_names(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let source = script
+        .split_once("for (entry in ctx.")?
+        .1
+        .split_once(".entrySet()")?
+        .0;
+    if source.is_empty()
+        || !source
+            .chars()
+            .all(|c| c.is_alphanumeric() || "._".contains(c))
+    {
+        return None;
+    }
+    let inner = script.split_once(".get(\"")?.1.split('"').next()?;
+    let assigned = script.rsplit_once(" = metricNames;")?.0;
+    let target = clean_path(&assigned[assigned.rfind("ctx.")? + 4..]);
+
+    (!inner.is_empty() && !target.is_empty()).then_some(KnownShape::NestedKeyNames {
+        source: clean_path(source),
+        inner: inner.to_owned(),
+        target,
+    })
+}
+
+/// Write the sorted keys of the first `inner` map found under `source`.
+fn run_nested_key_names(event: &mut Event, source: &str, inner: &str, target: &str) -> bool {
+    let mut names: Vec<String> = Vec::new();
+    if let Some(Value::Object(top)) = event.get(source) {
+        for value in top.values() {
+            let Some(Value::Object(members)) = value.as_object().and_then(|m| m.get(inner)) else {
+                continue;
+            };
+            names.extend(members.keys().cloned());
+            break;
+        }
+    }
+    names.sort();
+    let _ = event.set(
+        target,
+        Value::Array(names.into_iter().map(Value::String).collect()),
+    );
+    true
+}
+
 /// `ctx.<target> = ZonedDateTime.parse(ctx['<source>']).plusDays(<n>)` as a
 /// [`KnownShape::DatePlusDays`].
 ///
@@ -10865,6 +10917,11 @@ pub(crate) enum KnownShape {
         target: String,
         days: i64,
     },
+    NestedKeyNames {
+        source: String,
+        inner: String,
+        target: String,
+    },
     M365ProcessEvidence(String),
     M365IdentityEvidence(String),
     Route53Answers,
@@ -12208,6 +12265,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: the sorted key names of the first nested map holding an inner
+    // map, which awsfirehose fingerprints to key a document by its metrics.
+    if normalised.contains("metricNames")
+        && normalised.contains("Collections.sort(")
+        && let Some(shape) = parse_nested_key_names(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
     // Pattern: the same expiry with no unit ladder at all -- one parse and one
     // literal number of days. ti_eset's apt stream dates its indicators a year
     // out from `@timestamp`, and `IocExpiry` above declines it for want of the
@@ -12620,6 +12687,11 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             target,
             days,
         } => run_date_plus_days(event, source, target, *days),
+        KnownShape::NestedKeyNames {
+            source,
+            inner,
+            target,
+        } => run_nested_key_names(event, source, inner, target),
         KnownShape::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
         KnownShape::M365IdentityEvidence(path) => run_m365_identity_evidence(event, path),
         KnownShape::Route53Answers => run_route53_answers(event),
@@ -17598,6 +17670,36 @@ def event_timezone = get_timezone(ctx);
             event.get("_tmp"),
             Some(&json!({ "method": "GET", "url": "http://example.com/" }))
         );
+    }
+
+    /// Verbatim from `pipelines/awsfirehose/metrics/default.yml`: the metric
+    /// names of the first service map, sorted, for a `fingerprint` to key the
+    /// document by. Written even when nothing was found, as the vendor does.
+    #[test]
+    fn the_first_nested_map_gives_up_its_sorted_key_names() {
+        let script = "List metricNames = new ArrayList();\n\
+            if (ctx.aws != null && ctx.aws instanceof Map) {\n    \
+            for (entry in ctx.aws.entrySet()) {\n        def nestedMap = entry.getValue();\n        \
+            if (nestedMap instanceof Map) {\n            def metricsMap = nestedMap.get(\"metrics\");\n            \
+            if (metricsMap instanceof Map) {\n                metricNames.addAll(metricsMap.keySet());\n                \
+            break;\n            }\n        }\n    }\n}\nCollections.sort(metricNames);\n\
+            ctx.aws.metrics_names = metricNames;";
+
+        let mut event = Event::new(json!({ "aws": {
+            "cloudwatch": { "not_metrics": { "z": 1 } },
+            "firehose": { "metrics": { "Sum": 1, "Average": 2 } },
+        }}));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("aws.metrics_names"),
+            Some(&json!(["Average", "Sum"]))
+        );
+
+        // Nothing found still writes the empty list, which is what the
+        // fingerprint after it hashes.
+        let mut bare = Event::new(json!({ "aws": { "firehose": { "other": 1 } } }));
+        assert!(try_known_painless(&mut bare, script));
+        assert_eq!(bare.get("aws.metrics_names"), Some(&json!([])));
     }
 
     /// Verbatim from `pipelines/ti_eset/apt/default.yml`: an expiry a whole
