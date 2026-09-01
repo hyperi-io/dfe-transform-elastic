@@ -90,12 +90,12 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx._tmp?.values() != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            // A map's values() is non-null exactly when the map is there, so
+            // the vendor's `ctx._tmp?.values() != null` is a presence test.
+            let _cond = { event.get("_tmp").is_some_and(|v| v.is_object()) };
+            if _cond {
                 // Painless script
                 // Source: ctx._tmp?.values().removeIf(value -> value == \"-\");
-                // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec_plan(
                     event,
                     cached_painless!(r#"ctx._tmp?.values().removeIf(value -> value == \"-\");"#),
@@ -244,7 +244,13 @@ impl Transform for Default {
             let _cond = { event.get_str("http.request.method") != Some("CONNECT") };
             if _cond {
                 if event.has_value("_tmp.url") {
-                    uri_parts(event, "_tmp.url", "url", true, false)?;
+                    // on_failure set_url_original_on_fail: a URI Java will not
+                    // parse still keeps its raw text on url.original.
+                    if !uri_parts(event, "_tmp.url", "url", true, false)?
+                        && let Some(original) = event.get("_tmp.url").cloned()
+                    {
+                        event.set("url.original", original)?;
+                    }
                 }
             }
 

@@ -261,7 +261,7 @@
     "splunk": { "events": 1, "events_total": 7, "fields_wrong": 27 },
     "spring_boot": { "events": 5, "events_total": 5, "fields_wrong": 0 },
     "spycloud": { "events": 2, "events_total": 4, "fields_wrong": 2 },
-    "squid": { "events": 47, "events_total": 112, "fields_wrong": 114 },
+    "squid": { "events": 112, "events_total": 112, "fields_wrong": 0 },
     "stan": { "events": 69, "events_total": 69, "fields_wrong": 0 },
     "stormshield": { "events": 0, "events_total": 44, "fields_wrong": 1274 },
     "sublime_security": { "events": 2, "events_total": 6, "fields_wrong": 8 },

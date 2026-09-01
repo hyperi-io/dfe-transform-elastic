@@ -1626,6 +1626,61 @@ fn run_remove_list_value(event: &mut Event, field: &str, value: &str) -> bool {
     true
 }
 
+/// `ctx.<f>.values().removeIf(v -> v == '<literal>')` as a
+/// [`KnownShape::RemoveMapValue`].
+///
+/// The MAP counterpart of [`parse_remove_list_value`], which declines this
+/// because `<f>.values()` carries parentheses. A source that writes a sentinel
+/// rather than omitting a field prunes the whole map in one line -- squid
+/// writes `-` for "no value" in a dozen grok captures, so this single script
+/// is what stands between its `_tmp` scratch map and every field derived from
+/// it.
+fn parse_remove_map_value(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let at = script.find(".values().removeIf(")?;
+    let before = &script[..at];
+    let subject = &before[before.rfind("ctx.")? + 4..];
+    // A ctx FIELD and nothing else, on the same reading as the list version:
+    // a call on a local or on an entry set is a different script.
+    if !subject
+        .chars()
+        .all(|c| c.is_alphanumeric() || "._?".contains(c))
+    {
+        return None;
+    }
+    let field = clean_path(subject);
+    let (_, lambda) = script[at..].split_once("->")?;
+    let lambda = lambda.split(')').next()?;
+    // ONE literal comparison, for the reason the list version gives: a
+    // drop-empty predicate chains several sentinels, and claiming it on its
+    // first literal would take the whole script for a single removal.
+    if lambda.matches("==").count() != 1 || lambda.contains('|') || lambda.contains('&') {
+        return None;
+    }
+    let (_, rhs) = lambda.split_once("==")?;
+    let value = quoted_first(rhs)?.replace("\\\\", "\\");
+    (!field.is_empty()).then_some(KnownShape::RemoveMapValue { field, value })
+}
+
+/// Drop every ENTRY of a map whose value equals one literal.
+///
+/// Rebuilt by filtering rather than removed key by key: under `preserve_order`
+/// the map is an `IndexMap`, and collecting the survivors in iteration order is
+/// exactly what a run of `shift_remove` would leave, without going near the
+/// forbidden `Map::remove`.
+fn run_remove_map_value(event: &mut Event, field: &str, value: &str) -> bool {
+    let Some(Value::Object(map)) = event.get(field).cloned() else {
+        return true;
+    };
+    let kept: serde_json::Map<String, Value> = map
+        .into_iter()
+        .filter(|(_, member)| member.as_str() != Some(value))
+        .collect();
+    let _ = event.set(field, Value::Object(kept));
+    true
+}
+
 /// `for (int i=0; i<ctx.<f>.length; i++) { if (ctx.<f>[i] == '<v>') {
 /// ctx.<f>.remove(i); } }` as the same [`KnownShape::RemoveListValue`]
 /// [`parse_remove_list_value`] reads off `.removeIf(`.
@@ -10752,6 +10807,10 @@ pub(crate) enum KnownShape {
         field: String,
         value: String,
     },
+    RemoveMapValue {
+        field: String,
+        value: String,
+    },
     M365ProcessEvidence(String),
     M365IdentityEvidence(String),
     Route53Answers,
@@ -11469,6 +11528,18 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
             shapes.push(KnownShape::TruthyAssignments(pairs));
             return shapes;
         }
+    }
+
+    // Pattern: drop every ENTRY of a map holding one literal -- squid's `-`,
+    // which it writes into a dozen grok captures instead of omitting them.
+    // Ahead of the list version because the two share the `.removeIf(` opening
+    // and only the subject tells them apart.
+    if normalised.contains(".values().removeIf(")
+        && !normalised.contains("instanceof Map")
+        && let Some(shape) = parse_remove_map_value(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
     }
 
     // Pattern: drop one literal out of a list -- m365's file.path, whose
@@ -12476,6 +12547,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::MailRelated(script) => run_mail_related(event, script),
         KnownShape::GcpRelatedEntity => run_gcp_related_entity(event),
         KnownShape::RemoveListValue { field, value } => run_remove_list_value(event, field, value),
+        KnownShape::RemoveMapValue { field, value } => run_remove_map_value(event, field, value),
         KnownShape::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
         KnownShape::M365IdentityEvidence(path) => run_m365_identity_evidence(event, path),
         KnownShape::Route53Answers => run_route53_answers(event),
@@ -17431,6 +17503,55 @@ def event_timezone = get_timezone(ctx);
         assert_eq!(
             event.get("related.ip"),
             Some(&json!(["81.2.69.144", "10.10.10.10"]))
+        );
+    }
+
+    /// squid's sentinel prune, verbatim from its generated call site.
+    ///
+    /// The source writes `-` rather than omitting a field, so this one line
+    /// decides every value derived from the `_tmp` scratch map.
+    #[test]
+    fn a_map_prune_drops_every_entry_holding_the_sentinel() {
+        let script = r#"ctx._tmp?.values().removeIf(value -> value == \"-\");"#;
+        let mut event = Event::new(json!({ "_tmp": {
+            "user_name": "-",
+            "method": "GET",
+            "content_type": "-",
+            "url": "http://example.com/",
+        }}));
+
+        assert!(try_known_painless(&mut event, script));
+        // Survivors keep their insertion order; the sentinels are gone.
+        assert_eq!(
+            event.get("_tmp"),
+            Some(&json!({ "method": "GET", "url": "http://example.com/" }))
+        );
+    }
+
+    /// The list matcher must not claim the map spelling, nor the reverse.
+    ///
+    /// The two share the `.removeIf(` opening and are told apart only by the
+    /// subject, so a receiver that is a list stays with the list matcher.
+    #[test]
+    fn a_list_prune_is_not_read_as_a_map_prune() {
+        let script = r#"ctx.file.path.removeIf(v -> v == \"-\");"#;
+        let mut event = Event::new(json!({ "file": { "path": ["-", "/etc/passwd"] } }));
+
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get("file.path"), Some(&json!(["/etc/passwd"])));
+    }
+
+    /// A prune whose receiver is a LOCAL is a different script.
+    ///
+    /// Reading back to the nearest `ctx.` would claim a field the script never
+    /// touches, which is the trap the list matcher's subject check exists for.
+    #[test]
+    fn a_map_prune_declines_a_local_receiver() {
+        let script = r#"def m = ctx.a.b; m.values().removeIf(value -> value == \"-\");"#;
+        assert!(
+            !known_shapes(&normalise(script))
+                .iter()
+                .any(|shape| matches!(shape, KnownShape::RemoveMapValue { .. }))
         );
     }
 }
