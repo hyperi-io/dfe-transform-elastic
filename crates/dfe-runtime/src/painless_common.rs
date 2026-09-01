@@ -1663,6 +1663,77 @@ fn run_drop_last_char(event: &mut Event, field: &str) -> bool {
     true
 }
 
+/// `fortinet_fortiproxy`'s KV loop, which is stormshield's idea with five
+/// behavioural differences -- hence its own runner rather than a widened
+/// [`parse_kv_into_namespace`].
+///
+/// The namespace opens with `[:]` rather than `new HashMap()`, a closing
+/// quote only counts when a space or the end follows it, the pair guard is
+/// the START cursor rather than the split, only a LEADING or trailing quote
+/// comes off the value, and a pair whose value is `N/A` or whose key holds a
+/// non-word character is dropped outright.
+fn parse_kv_into_fields(script: &str) -> Option<KnownShape> {
+    let target = script.split_once("ctx[\"")?.1.split_once("\"] = [:]")?.0;
+    (!target.is_empty()
+        && target
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '_' || c == '.'))
+    .then(|| KnownShape::KvIntoFields(target.to_owned()))
+}
+
+/// Split `message` into `key=value` pairs under `target`, fortiproxy's way.
+fn run_kv_into_fields(event: &mut Event, target: &str) -> bool {
+    let Some(message) = event.get_string("message") else {
+        return true;
+    };
+    let bytes = message.as_bytes();
+    let n = bytes.len();
+
+    let mut fields = serde_json::Map::new();
+    let (mut kv_start, mut kv_split) = (0usize, 0usize);
+    let mut in_quote = false;
+
+    for (i, byte) in bytes.iter().enumerate() {
+        if *byte == b'"' {
+            // A quote inside a value does not close it; only one with a
+            // space after it, or at the very end, does.
+            if in_quote && i < n - 1 && bytes[i + 1] != b' ' {
+                continue;
+            }
+            in_quote = !in_quote;
+        }
+        if in_quote {
+            continue;
+        }
+        if *byte == b'=' {
+            kv_split = i;
+        }
+        if *byte == b' ' || i == n - 1 {
+            if i != kv_start {
+                let end = if i == n - 1 { i + 1 } else { i };
+                if let (Some(key), Some(raw)) = (
+                    message.get(kv_start..kv_split),
+                    message.get(kv_split + 1..end),
+                ) {
+                    let value = raw.strip_prefix('"').unwrap_or(raw);
+                    let value = value.strip_suffix('"').unwrap_or(value);
+                    // The vendor drops the pair rather than storing either.
+                    let key_is_word =
+                        !key.is_empty() && key.chars().all(|c| c.is_alphanumeric() || c == '_');
+                    if value != "N/A" && key_is_word {
+                        fields.insert(key.to_owned(), Value::String(value.to_owned()));
+                    }
+                }
+            }
+            kv_start = i + 1;
+            kv_split = i + 1;
+        }
+    }
+
+    let _ = event.set(target, Value::Object(fields));
+    true
+}
+
 /// A hand-written quote-aware KV splitter writing into one namespace.
 ///
 /// stormshield's WHOLE parse is this one script -- the vendor walks the
@@ -11254,6 +11325,7 @@ pub(crate) enum KnownShape {
         target: String,
     },
     KvIntoNamespace(String),
+    KvIntoFields(String),
     DropLastChar(String),
     M365ProcessEvidence(String),
     M365IdentityEvidence(String),
@@ -12608,6 +12680,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: the fortiproxy variant of the same loop. FIRST, because it
+    // spells `inQuote` and `kvSplit` too and the plain reader would claim it
+    // and then drop its N/A and non-word-key rules.
+    if normalised.contains("wordPattern")
+        && normalised.contains("kvSplit")
+        && let Some(shape) = parse_kv_into_fields(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
     // Pattern: a hand-written quote-aware KV split into one namespace, which
     // is the whole of stormshield's parse.
     if normalised.contains("inQuote")
@@ -13067,6 +13150,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             run_ctx_table_lookup(event, table, key, target)
         }
         KnownShape::KvIntoNamespace(target) => run_kv_into_namespace(event, target),
+        KnownShape::KvIntoFields(target) => run_kv_into_fields(event, target),
         KnownShape::DropLastChar(field) => run_drop_last_char(event, field),
         KnownShape::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
         KnownShape::M365IdentityEvidence(path) => run_m365_identity_evidence(event, path),
@@ -18063,6 +18147,27 @@ def event_timezone = get_timezone(ctx);
         let mut wide = Event::new(json!({ "message": "ab\u{00e9}" }));
         assert!(try_known_painless(&mut wide, script));
         assert_eq!(wide.get_str("message"), Some("ab"));
+    }
+
+    /// The fortiproxy variant: the same idea as stormshield's loop, with the
+    /// four rules that make it a different shape.
+    #[test]
+    fn the_fortiproxy_kv_drops_what_the_vendor_drops() {
+        let script = r#"ctx[\"_fields_\"] = [:];\ndef kvStart = 0; def kvSplit = 0; def inQuote = false;\nPattern wsPattern = /^\\\"|\\\"$/; Pattern wordPattern = /\\W+/;\nfor (int i = 0, n = ctx[\"message\"].length(); i < n; ++i) {\n  char c = ctx[\"message\"].charAt(i);\n  if (c == (char)'\"') {\n    if (inQuote && i < n - 1 && ctx[\"message\"].charAt(i + 1) != (char)' ') {\n      continue;\n    }\n    inQuote = !inQuote;\n  }\n  if (inQuote) {\n    continue;\n  }\n  if (c == (char)'=') {\n    kvSplit = i;\n  }\n  if (c == (char)' ' || i == n - 1) {\n    if (i != kvStart) {\n      def endIndex = i == n - 1 ? i + 1 : i;\n      def key = ctx[\"message\"].substring(kvStart, kvSplit);\n      def value = wsPattern.matcher(ctx[\"message\"].substring(kvSplit + 1, endIndex)).replaceAll(\"\");\n\n      if (value != \"N/A\" && !wordPattern.matcher(key).find()) {\n        ctx[\"_fields_\"].put(key, value);\n      }\n    }\n\n    kvStart = i + 1;\n    kvSplit = i + 1;\n  }\n}"#;
+
+        let mut event = Event::new(json!({
+            "message": r#"date=2023-01-01 msg="a b" skipme=N/A dev-id=x tz=UTC"#,
+        }));
+        assert!(try_known_painless(&mut event, script));
+
+        assert_eq!(event.get_str("_fields_.date"), Some("2023-01-01"));
+        // Only the surrounding quotes come off, and the quoted run is whole.
+        assert_eq!(event.get_str("_fields_.msg"), Some("a b"));
+        assert_eq!(event.get_str("_fields_.tz"), Some("UTC"));
+        // An N/A value is DROPPED, not stored empty.
+        assert_eq!(event.get("_fields_.skipme"), None);
+        // So is a key holding a non-word character.
+        assert_eq!(event.get("_fields_.dev-id"), None);
     }
 
     /// Verbatim from `pipelines/stormshield/log/default.yml`, which is that

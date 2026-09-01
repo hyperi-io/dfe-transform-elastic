@@ -131,7 +131,7 @@
     "fortinet_fortigate": { "events": 185, "events_total": 185, "fields_wrong": 0 },
     "fortinet_fortimail": { "events": 32, "events_total": 34, "fields_wrong": 4 },
     "fortinet_fortimanager": { "events": 0, "events_total": 31, "fields_wrong": 65 },
-    "fortinet_fortiproxy": { "events": 0, "events_total": 33, "fields_wrong": 1175 },
+    "fortinet_fortiproxy": { "events": 28, "events_total": 33, "fields_wrong": 5 },
     "gcp": { "events": 382, "events_total": 382, "fields_wrong": 0 },
     "gcp_vertexai": { "events": 5, "events_total": 5, "fields_wrong": 0 },
     "gdacs": { "events": 0, "events_total": 42, "fields_wrong": 666 },
