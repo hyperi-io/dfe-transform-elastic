@@ -118,101 +118,104 @@
 117 KeyValuePairs
 118 IocExpiry
 119 DropLastChar
-120 DedupeUnwrap
-121 KvIntoFields
-122 KvIntoNamespace
-123 CtxTableLookup
-124 FirehoseDataset
-125 NestedKeyNames
-126 DatePlusDays
-127 JoinOptional
-128 ListRenameTable
-129 AppendEach
-130 FlattenMapInto
-131 StringifyLongs
-132 CopyByLabel
-133 LiteralValueMap
-134 EqualsLiteralFlag
-135 KeysToSnakeCase
-136 CommandLine
-137 ProcessStartTime
-138 EmailSplit
-139 RiskBehaviors
-140 AzureCategoryEventType
-141 AzureEventCategory
-142 ReplaceDotsInKeys
-143 OktaTargetRename
-144 KeysBySuffix
-145 CollectMapValues
-146 GuardedReplace
-147 RoundedScale
-148 FieldsIntoMap
-149 CrowdstrikeTimelineEntityIdentity
-150 CrowdstrikeTimelineEntityAccounts
-151 FirstElement
-152 IndexedFieldCopies
-153 MoveKeys
-154 ClassifyLadder
-155 PrivateCidrDirection
-156 BranchCopies
-157 GuardedDivide
-158 ScaleField
-159 GuardedCopy
-160 PlainAssignments
+120 CsvMapToArray
+121 CsvColonPairs
+122 DedupeUnwrap
+123 KvIntoFields
+124 KvIntoNamespace
+125 CtxTableLookup
+126 FirehoseDataset
+127 NestedKeyNames
+128 DatePlusDays
+129 JoinOptional
+130 ListRenameTable
+131 AppendEach
+132 FlattenMapInto
+133 StringifyLongs
+134 CopyByLabel
+135 LiteralValueMap
+136 EqualsLiteralFlag
+137 KeysToSnakeCase
+138 CommandLine
+139 ProcessStartTime
+140 EmailSplit
+141 RiskBehaviors
+142 AzureCategoryEventType
+143 AzureEventCategory
+144 ReplaceDotsInKeys
+145 OktaTargetRename
+146 KeysBySuffix
+147 CollectMapValues
+148 GuardedReplace
+149 RoundedScale
+150 FieldsIntoMap
+151 CrowdstrikeTimelineEntityIdentity
+152 CrowdstrikeTimelineEntityAccounts
+153 FirstElement
+154 IndexedFieldCopies
+155 MoveKeys
+156 ClassifyLadder
+157 PrivateCidrDirection
+158 BranchCopies
+159 GuardedDivide
+160 ScaleField
+161 GuardedCopy
+162 PlainAssignments
 
 [params_shape]
   1 AwsEntity
   2 SysmonQueryResults
   3 SysmonRegistry
   4 SentinelRemoval
-  5 DeferredFieldTable
-  6 DeferredSplitTable
-  7 DeferredAppendTable
-  8 MessageCodeEventType
-  9 SummedDirections
- 10 DropEmptyMembers
- 11 ScheduledTask
- 12 InvocationDetails
- 13 ParamRenameLadder
- 14 SelectMembers
- 15 PutFlagNames
- 16 PutWrites
- 17 KeyedRowMembers
- 18 UppercaseLookupDefault
- 19 ThreatIndicatorType
- 20 SecuritySddl
- 21 MappingRow
- 22 MsgParts
- 23 EvidenceCategories
- 24 MimecastLogType
- 25 FiletimeFieldList
- 26 BitFlags
- 27 FirstContainedMember
- 28 LookupOrKey
- 29 KeyedRowAssign
- 30 FirstLabelInTable
- 31 RenameKeys
- 32 ValueMaps
- 33 InstructionRows
- 34 RowColumnAppends
- 35 RowColumns
- 36 KeyedMessageTable
- 37 MessageTable
- 38 FirstAsset
- 39 MatcherKv
- 40 IndexedRowColumns
- 41 LookupPut
- 42 LookupWrapList
- 43 ProtocolPrefix
- 44 ReversibleLookup
- 45 LookupMerge
- 46 KeyedActionRow
- 47 KeyedRowAppends
- 48 LookupColumns
- 49 LookupNormalise
- 50 IndexedLookup
- 51 Scale
- 52 Replace
- 53 AddUniqueRow
- 54 FrameworkPreference
+  5 CsvFingerprintProvider
+  6 DeferredFieldTable
+  7 DeferredSplitTable
+  8 DeferredAppendTable
+  9 MessageCodeEventType
+ 10 SummedDirections
+ 11 DropEmptyMembers
+ 12 ScheduledTask
+ 13 InvocationDetails
+ 14 ParamRenameLadder
+ 15 SelectMembers
+ 16 PutFlagNames
+ 17 PutWrites
+ 18 KeyedRowMembers
+ 19 UppercaseLookupDefault
+ 20 ThreatIndicatorType
+ 21 SecuritySddl
+ 22 MappingRow
+ 23 MsgParts
+ 24 EvidenceCategories
+ 25 MimecastLogType
+ 26 FiletimeFieldList
+ 27 BitFlags
+ 28 FirstContainedMember
+ 29 LookupOrKey
+ 30 KeyedRowAssign
+ 31 FirstLabelInTable
+ 32 RenameKeys
+ 33 ValueMaps
+ 34 InstructionRows
+ 35 RowColumnAppends
+ 36 RowColumns
+ 37 KeyedMessageTable
+ 38 MessageTable
+ 39 FirstAsset
+ 40 MatcherKv
+ 41 IndexedRowColumns
+ 42 LookupPut
+ 43 LookupWrapList
+ 44 ProtocolPrefix
+ 45 ReversibleLookup
+ 46 LookupMerge
+ 47 KeyedActionRow
+ 48 KeyedRowAppends
+ 49 LookupColumns
+ 50 LookupNormalise
+ 51 IndexedLookup
+ 52 Scale
+ 53 Replace
+ 54 AddUniqueRow
+ 55 FrameworkPreference
 

@@ -238,6 +238,16 @@ pub(crate) enum ParamsShape {
         /// params member holding what to write instead).
         arms: Vec<(String, String)>,
     },
+    /// A CSV layout identified by the KEYS its labelled columns produced,
+    /// then its unlabelled columns named by index from the matching row.
+    CsvFingerprintProvider {
+        /// The `ctx.` path holding the columns as a list.
+        list: String,
+        /// The `ctx.` map the named columns are added to.
+        map: String,
+        /// The `ctx.` path holding the joined key list.
+        fingerprint: String,
+    },
 }
 
 /// The one matcher this script's text triggers, or `None`.
@@ -274,6 +284,23 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // Pattern: strip the vendor's sentinel values out of a map.
     if normalised.contains(".entrySet().removeIf(") && normalised.contains("entry.getValue()") {
         return Some(ParamsShape::SentinelRemoval);
+    }
+
+    // Pattern: symantec_endpoint's CSV layout table, keyed on the fingerprint
+    // the colon-pair reader built. Ahead of the generic table matchers, which
+    // read `params.providers` as an ordinary per-field lookup and would claim
+    // the script without ever naming a column.
+    if normalised.contains("params.providers")
+        && normalised.contains("p.fingerprint")
+        && let Some(list) = base_between(normalised, "def hostname = ctx.", ".get(0)")
+        && let Some(map) = base_between(normalised, "  ctx.", "[c.name] = v")
+        && let Some(fingerprint) = base_between(normalised, "== ctx.", " ")
+    {
+        return Some(ParamsShape::CsvFingerprintProvider {
+            list,
+            map,
+            fingerprint,
+        });
     }
 
     // Pattern: the params-driven table scripts, which name their targets in
@@ -1067,6 +1094,90 @@ fn run_summed_directions(event: &mut Event, params: &Map<String, Value>) -> bool
     true
 }
 
+/// Name a CSV line's unlabelled columns from the row its fingerprint matches.
+///
+/// The fingerprint is the joined key list the colon-pair reader built, so a
+/// layout is identified by WHICH columns carried a `Key:` label and which did
+/// not. Where a row matches, its `columns` name the holes by index.
+fn run_csv_fingerprint_provider(
+    event: &mut Event,
+    list: &str,
+    map: &str,
+    fingerprint: &str,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(Value::Array(columns)) = event.get(list).cloned() else {
+        return true;
+    };
+
+    // The first column is assumed to be the host, whenever it reads like one.
+    if let Some(hostname) = columns.first().and_then(Value::as_str)
+        && !hostname.is_empty()
+        && hostname
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '.' | '_' | '-'))
+    {
+        let _ = event.set("host.hostname", hostname);
+    }
+
+    let Some(Value::Array(providers)) = params.get("providers") else {
+        return true;
+    };
+    let Some(current) = event.get_str(fingerprint).map(str::to_owned) else {
+        return true;
+    };
+
+    // A row names either one layout or several; against a list the `==` is
+    // false and only the membership test can hit.
+    let Some(provider) = providers.iter().find(|row| match row.get("fingerprint") {
+        Some(Value::String(only)) => *only == current,
+        Some(Value::Array(any)) => any.iter().any(|m| m.as_str() == Some(current.as_str())),
+        _ => false,
+    }) else {
+        return true;
+    };
+
+    if let Some(name) = provider.get("name") {
+        let _ = event.set("event.provider", name.clone());
+    }
+    for (member, target) in [
+        ("event_category", "event.category"),
+        ("event_type", "event.type"),
+    ] {
+        if let Some(value) = provider.get(member).filter(|value| !value.is_null()) {
+            let _ = event.set(target, value.clone());
+        }
+    }
+
+    let Some(Value::Array(named)) = provider.get("columns") else {
+        return true;
+    };
+    let mut writes: Vec<(String, String)> = Vec::with_capacity(named.len());
+    for column in named {
+        let (Some(index), Some(name)) = (
+            column.get("index").and_then(Value::as_u64),
+            column.get("name").and_then(Value::as_str),
+        ) else {
+            continue;
+        };
+        let Some(value) = columns
+            .get(usize::try_from(index).unwrap_or(usize::MAX))
+            .and_then(Value::as_str)
+        else {
+            continue;
+        };
+        // Java's `trim` cuts at U+0020, not at Unicode whitespace.
+        let trimmed = value.trim_matches(|c: char| c <= ' ');
+        if !trimmed.is_empty() {
+            writes.push((name.to_owned(), trimmed.to_owned()));
+        }
+    }
+    for (name, value) in writes {
+        let _ = event.set(&format!("{map}.{name}"), value);
+    }
+    true
+}
+
 /// Run the matcher a shape names, against one event.
 #[allow(clippy::too_many_lines)] // One delegation arm per shape; it grows with the shape list.
 pub(crate) fn run_params_shape(
@@ -1097,6 +1208,11 @@ pub(crate) fn run_params_shape(
         ParamsShape::DeferredFieldTable(base) => run_deferred_field_table(event, base, params),
         ParamsShape::DeferredSplitTable(base) => run_deferred_split_table(event, base, params),
         ParamsShape::DeferredAppendTable(base) => run_deferred_append_table(event, base, params),
+        ParamsShape::CsvFingerprintProvider {
+            list,
+            map,
+            fingerprint,
+        } => run_csv_fingerprint_provider(event, list, map, fingerprint, params),
         ParamsShape::MessageCodeEventType => run_message_code_event_type(event, params),
         ParamsShape::SummedDirections => run_summed_directions(event, params),
         ParamsShape::SysmonQueryResults => try_sysmon_query_results(event, normalised, params),
@@ -5840,6 +5956,76 @@ pub(crate) fn pointer_mut<'a>(event: &'a mut Event, path: &str) -> Option<&'a mu
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// Verbatim from `pipelines/symantec_endpoint/log/default.yml`: the CSV
+    /// layout is identified by WHICH columns carried a `Key:` label, and the
+    /// matching row then names the holes by index.
+    #[test]
+    fn a_fingerprint_row_names_the_unlabelled_columns() {
+        let script = "// Assume first column is always the host.hostname.\n\
+            def hostname = ctx._csv_array.get(0);\n\
+            if (/[\\.a-zA-Z0-9_-]+/.matcher(hostname).matches()) {\n  \
+            if (ctx?.host == null) {\n    ctx['host'] = [:];\n  }\n  \
+            ctx['host']['hostname'] = hostname;\n}\n\ndef provider = null;\n\
+            for (def p: params.providers) {\n  \
+            if (p.fingerprint == ctx._fingerprint || (p.fingerprint instanceof Collection \
+            && p.fingerprint.contains(ctx._fingerprint))) {\n    provider = p;\n    \
+            break;\n  }\n}\nif (provider == null) { return; }\n\n\
+            ctx['event']['provider'] = provider.name;\n\
+            if (provider?.event_category != null) {\n  \
+            ctx['event']['category'] = new ArrayList(provider.event_category);\n}\n\
+            if (provider?.event_type!= null) {\n  \
+            ctx['event']['type'] = new ArrayList(provider.event_type);\n}\n\
+            for (def c : provider.columns) {\n  \
+            def v = ctx._csv_array.get(c.index).trim();\n  if (!v.isEmpty()) {\n    \
+            ctx._csv_map[c.name] = v;\n  }\n}\n";
+
+        let params = json!({
+            "providers": [
+                {
+                    "name": "System Log",
+                    "fingerprint": "site|server|NONE",
+                    "columns": [{ "index": 2, "name": "event_description" }]
+                },
+                {
+                    "name": "Agent Packet Log",
+                    // Two layouts under one name, so the row lists both.
+                    "fingerprint": ["NONE|application", "NONE|action"],
+                    "event_category": ["network"],
+                    "columns": [{ "index": 0, "name": "traffic_direction" }]
+                }
+            ]
+        });
+
+        let mut event = Event::new(json!({
+            "_csv_array": ["srv01", "Server: srv01", "  Scan finished  "],
+            "_csv_map": { "site": "SEPM" },
+            "_fingerprint": "site|server|NONE"
+        }));
+        assert!(try_params_painless(&mut event, script, &params));
+        assert_eq!(event.get_str("host.hostname"), Some("srv01"));
+        assert_eq!(event.get_str("event.provider"), Some("System Log"));
+        assert_eq!(
+            event.get_str("_csv_map.event_description"),
+            Some("Scan finished")
+        );
+        // The row names no categories, so the script writes none.
+        assert!(!event.has("event.category"));
+
+        // A row whose fingerprint is a LIST matches on membership.
+        let mut listed = Event::new(json!({
+            "_csv_array": ["inbound", "tcp"],
+            "_csv_map": { "action": "allow" },
+            "_fingerprint": "NONE|action"
+        }));
+        assert!(try_params_painless(&mut listed, script, &params));
+        assert_eq!(listed.get_str("event.provider"), Some("Agent Packet Log"));
+        assert_eq!(listed.get("event.category"), Some(&json!(["network"])));
+        assert_eq!(
+            listed.get_str("_csv_map.traffic_direction"),
+            Some("inbound")
+        );
+    }
 
     /// Verbatim from `pipelines/stan/log/default.yml`: the abbreviation and
     /// its expansion are BOTH params members, so the table is editable without

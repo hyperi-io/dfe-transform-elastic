@@ -1705,6 +1705,222 @@ fn run_dedupe_unwrap(event: &mut Event, field: &str) -> bool {
     true
 }
 
+/// A numbered CSV column MAP collapsed into a list, in key order.
+///
+/// `symantec_endpoint`'s csv processor writes `_csv_array.00`..`.50` as
+/// separate fields, and this script puts them through a `TreeMap` to get the
+/// columns back in order as a list. The keys are zero-padded, so natural
+/// string order IS column order. A surrounding pair of SINGLE quotes comes
+/// off each value -- the csv processor quotes on `"` and never sees them.
+fn parse_csv_map_to_array(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let source = script.split_once("putAll(ctx.")?.1.split_once(')')?.0;
+    let target = script
+        .split_once("ctx['")?
+        .1
+        .split_once("'] = columnArray")?
+        .0;
+    let ok = |raw: &str| {
+        !raw.is_empty()
+            && raw
+                .chars()
+                .all(|c| c.is_alphanumeric() || "._?".contains(c))
+    };
+    if !ok(source) || !ok(target) {
+        return None;
+    }
+    Some(KnownShape::CsvMapToArray {
+        source: clean_path(source),
+        target: clean_path(target),
+    })
+}
+
+/// Collapse the column map into a list, unquoting each member.
+fn run_csv_map_to_array(event: &mut Event, source: &str, target: &str) -> bool {
+    let Some(Value::Object(columns)) = event.get(source).cloned() else {
+        return true;
+    };
+
+    let mut keys: Vec<&String> = columns.keys().collect();
+    keys.sort_unstable();
+
+    let mut ordered: Vec<Value> = Vec::with_capacity(keys.len());
+    for key in keys {
+        let Some(value) = columns.get(key) else {
+            continue;
+        };
+        // Only a string carries quotes to strip, and a lone `'` is not a
+        // PAIR -- the vendor's `substring(1, length - 1)` would throw on it.
+        match value.as_str() {
+            Some(text) if text.len() > 1 && text.starts_with('\'') && text.ends_with('\'') => {
+                ordered.push(Value::String(text[1..text.len() - 1].to_owned()));
+            }
+            _ => ordered.push(value.clone()),
+        }
+    }
+
+    let _ = event.set(target, Value::Array(ordered));
+    true
+}
+
+/// `^([a-zA-Z][a-zA-Z0-9 \(\)-]{0,28}):(?:\s(.+)|\s)?` under `matches()`, by
+/// hand. Returns the raw key and the value, which is absent where the member
+/// is a bare `Key:` or `Key: `.
+///
+/// `matches()` demands the WHOLE member, which is what makes this parseable
+/// without a regex: `:` is outside the key class, so the key is exactly the
+/// run before the first colon, and `.` never crosses a line terminator, so a
+/// member carrying one does not match at all.
+fn colon_key_value(member: &str) -> Option<(&str, Option<&str>)> {
+    let is_space = |c: char| matches!(c, ' ' | '\t' | '\n' | '\u{0B}' | '\u{0C}' | '\r');
+
+    let colon = member.find(':')?;
+    let key = &member[..colon];
+    if key.len() > 29
+        || !key.starts_with(|c: char| c.is_ascii_alphabetic())
+        || !key
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, ' ' | '(' | ')' | '-'))
+    {
+        return None;
+    }
+
+    let rest = &member[colon + 1..];
+    if rest.is_empty() {
+        return Some((key, None));
+    }
+    let mut tail = rest.chars();
+    if !tail.next().is_some_and(is_space) {
+        return None;
+    }
+    let value = tail.as_str();
+    if value.is_empty() {
+        return Some((key, None));
+    }
+    if value.contains(['\n', '\r']) {
+        return None;
+    }
+    Some((key, Some(value)))
+}
+
+/// The vendor's key normalisation: lowercase, spaces to underscores, then
+/// every parenthesis dropped.
+fn colon_key(raw: &str) -> String {
+    raw.to_lowercase()
+        .chars()
+        .filter_map(|c| match c {
+            ' ' => Some('_'),
+            '(' | ')' => None,
+            _ => Some(c),
+        })
+        .collect()
+}
+
+/// `Key: value` columns into a map, and their KEYS into a fingerprint.
+///
+/// This is the half of `symantec_endpoint`'s parse that scores: the labelled
+/// columns become `symantec_endpoint.log.*` through a later rename, and the
+/// joined key list identifies which of the fourteen log layouts the line came
+/// from, so the params table can name the unlabelled columns. An unmatched
+/// column contributes `NONE`, which is why the fingerprints are mostly holes.
+fn parse_csv_colon_pairs(script: &str) -> Option<KnownShape> {
+    use crate::painless_params::clean_path;
+
+    let list = script.split_once("ctx.")?.1.split_once(".forEach(")?.0;
+    let map_target = script.split_once("ctx['")?.1.split_once("'] = keyValue")?.0;
+    let fingerprint_target = script
+        .rsplit_once("ctx['")?
+        .1
+        .split_once("'] = String.join(")?
+        .0;
+    let ok = |raw: &str| {
+        !raw.is_empty()
+            && raw
+                .chars()
+                .all(|c| c.is_alphanumeric() || "._?".contains(c))
+    };
+    if !ok(list) || !ok(map_target) || !ok(fingerprint_target) {
+        return None;
+    }
+
+    // The alias table is a literal in the script, so it is read from there
+    // rather than pinned here -- a package that ships a different one gets
+    // its own aliases for free.
+    let block = script
+        .split_once("unmodifiableMap([")?
+        .1
+        .split_once("])")?
+        .0;
+    let mut tokens: Vec<String> = Vec::new();
+    let mut rest = block;
+    while let Some((_, after)) = rest.split_once('\'') {
+        let Some((token, tail)) = after.split_once('\'') else {
+            break;
+        };
+        tokens.push(token.to_owned());
+        rest = tail;
+    }
+
+    Some(KnownShape::CsvColonPairs {
+        list: clean_path(list),
+        map_target: clean_path(map_target),
+        fingerprint_target: clean_path(fingerprint_target),
+        aliases: tokens
+            .as_chunks::<2>()
+            .0
+            .iter()
+            .map(|[from, to]| (from.clone(), to.clone()))
+            .collect(),
+    })
+}
+
+/// Read each `Key: value` column into the map, every key into the fingerprint.
+fn run_csv_colon_pairs(
+    event: &mut Event,
+    list: &str,
+    map_target: &str,
+    fingerprint_target: &str,
+    aliases: &[(String, String)],
+) -> bool {
+    let Some(Value::Array(members)) = event.get(list).cloned() else {
+        return true;
+    };
+
+    let mut pairs = serde_json::Map::new();
+    let mut fingerprint: Vec<String> = Vec::with_capacity(members.len());
+
+    for member in &members {
+        // `NONE` is the placeholder an unlabelled column contributes, and the
+        // params table's fingerprints are written against it.
+        let mut key = "NONE".to_owned();
+        if let Some(text) = member.as_str()
+            && let Some((raw, value)) = colon_key_value(text)
+        {
+            key = colon_key(raw);
+            if let Some((_, alias)) = aliases.iter().find(|(from, _)| *from == key) {
+                key.clone_from(alias);
+            }
+            if let Some(value) = value {
+                // Java's `trim` cuts at U+0020, not at Unicode whitespace.
+                let trimmed = value.trim_matches(|c: char| c <= ' ');
+                if !trimmed.is_empty() {
+                    pairs.insert(key.clone(), Value::String(trimmed.to_owned()));
+                }
+            }
+        }
+        fingerprint.push(key);
+    }
+
+    // An all-unlabelled line writes no map at all, and the params table is
+    // what names its columns.
+    if !pairs.is_empty() {
+        let _ = event.set(map_target, Value::Object(pairs));
+    }
+    let _ = event.set(fingerprint_target, fingerprint.join("|"));
+    true
+}
+
 /// `fortinet_fortiproxy`'s KV loop, which is stormshield's idea with five
 /// behavioural differences -- hence its own runner rather than a widened
 /// [`parse_kv_into_namespace`].
@@ -8666,8 +8882,33 @@ pub(crate) fn painless_path(fragment: &str) -> Option<String> {
 pub struct ScaleField {
     source: String,
     target: String,
-    factor: i64,
+    factor: Factor,
 }
+
+/// A multiply's literal, carrying the Painless TYPE it was written with.
+///
+/// The type decides the PRODUCT's: `n * 1000000000L` is a long and `n * 1e9`
+/// is a double, and Elasticsearch writes the difference --
+/// `symantec_endpoint`'s scan duration comes back as `600000000000.0`, not
+/// `600000000000`, so a long here fails the comparison on every scan event.
+#[derive(Debug, Clone, Copy)]
+pub enum Factor {
+    Long(i64),
+    Double(f64),
+}
+
+impl PartialEq for Factor {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (Self::Long(one), Self::Long(two)) => one == two,
+            // Bit equality, so the shape stays `Eq` and the lock can order it.
+            (Self::Double(one), Self::Double(two)) => one.to_bits() == two.to_bits(),
+            _ => false,
+        }
+    }
+}
+
+impl Eq for Factor {}
 
 /// Read the multiply and the assignment that owns it.
 ///
@@ -8679,14 +8920,13 @@ pub struct ScaleField {
 /// events with no `event.duration` at all.
 fn parse_scale_field(script: &str) -> Option<ScaleField> {
     let (head, factor) = script.rsplit_once('*')?;
-    // `L` is Java's long suffix, which checkpoint writes on its 1e9 constant.
-    let factor = factor
-        .trim()
-        .trim_end_matches([';', ')', ' '])
-        .trim_end_matches(['L', 'l'])
-        .trim()
-        .parse::<i64>()
-        .ok()?;
+    let literal = factor.trim().trim_end_matches([';', ')', ' ']).trim();
+    // `L` is Java's long suffix, which checkpoint writes on its 1e9 constant;
+    // symantec_endpoint writes the same magnitude as `1e9` and gets a double.
+    let factor = match literal.trim_end_matches(['L', 'l']).trim().parse::<i64>() {
+        Ok(long) => Factor::Long(long),
+        Err(_) => Factor::Double(literal.parse::<f64>().ok()?),
+    };
 
     let at = last_assignment(head)?;
     let target = painless_path(&head[..at])?;
@@ -8723,7 +8963,14 @@ pub(crate) fn last_assignment(text: &str) -> Option<usize> {
 /// Multiply the source into the target.
 fn run_scale_field(event: &mut Event, shape: &ScaleField) -> bool {
     if let Some(n) = event.get_as_i64(&shape.source) {
-        let _ = event.set(&shape.target, json!(n.saturating_mul(shape.factor)));
+        let scaled = match shape.factor {
+            Factor::Long(factor) => json!(n.saturating_mul(factor)),
+            // Painless widens the long to a double BEFORE multiplying, so the
+            // rounding is the same one Elasticsearch published.
+            #[allow(clippy::cast_precision_loss)]
+            Factor::Double(factor) => json!(n as f64 * factor),
+        };
+        let _ = event.set(&shape.target, scaled);
     }
     true
 }
@@ -11369,6 +11616,18 @@ pub(crate) enum KnownShape {
     },
     KvIntoNamespace(String),
     KvIntoFields(String),
+    /// A numbered column map collapsed into a list, in key order.
+    CsvMapToArray {
+        source: String,
+        target: String,
+    },
+    /// `Key: value` columns into a map, their keys into a fingerprint.
+    CsvColonPairs {
+        list: String,
+        map_target: String,
+        fingerprint_target: String,
+        aliases: Vec<(String, String)>,
+    },
     DedupeUnwrap(String),
     DropLastChar(String),
     M365ProcessEvidence(String),
@@ -12725,6 +12984,27 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: the numbered CSV column map collapsed into an ordered list.
+    // Ahead of the colon-pair reader below, which is the NEXT script in the
+    // same chain and shares its `_csv_array` anchor.
+    if normalised.contains("new TreeMap()")
+        && normalised.contains("columnArray.add(")
+        && let Some(shape) = parse_csv_map_to_array(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
+    // Pattern: `Key: value` columns into a map, their keys joined into the
+    // fingerprint that identifies the log layout.
+    if normalised.contains("String.join(\"|\", fingerprint)")
+        && normalised.contains("m.group(1).toLowerCase()")
+        && let Some(shape) = parse_csv_colon_pairs(normalised)
+    {
+        shapes.push(shape);
+        return shapes;
+    }
+
     // Pattern: a list deduplicated and then unwrapped when one member is
     // left, which is how suricata collapses destination.domain.
     if normalised.contains(".stream().distinct().collect(Collectors.toList())")
@@ -13206,6 +13486,13 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         }
         KnownShape::KvIntoNamespace(target) => run_kv_into_namespace(event, target),
         KnownShape::KvIntoFields(target) => run_kv_into_fields(event, target),
+        KnownShape::CsvMapToArray { source, target } => run_csv_map_to_array(event, source, target),
+        KnownShape::CsvColonPairs {
+            list,
+            map_target,
+            fingerprint_target,
+            aliases,
+        } => run_csv_colon_pairs(event, list, map_target, fingerprint_target, aliases),
         KnownShape::DedupeUnwrap(field) => run_dedupe_unwrap(event, field),
         KnownShape::DropLastChar(field) => run_drop_last_char(event, field),
         KnownShape::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
@@ -18210,6 +18497,98 @@ def event_timezone = get_timezone(ctx);
         let mut wide = Event::new(json!({ "message": "ab\u{00e9}" }));
         assert!(try_known_painless(&mut wide, script));
         assert_eq!(wide.get_str("message"), Some("ab"));
+    }
+
+    /// Verbatim from `pipelines/symantec_endpoint/log/default.yml`: the
+    /// numbered column map through a `TreeMap`, so the columns come back in
+    /// index order with the vendor's single quotes off.
+    #[test]
+    fn csv_columns_come_back_in_key_order_unquoted() {
+        let script = "def columnArray = [];\ndef sortedMap = new TreeMap();\n\
+            sortedMap.putAll(ctx._csv_array);\nsortedMap.forEach((key, value) -> {\n  \
+            def v = value;\n  if (v.startsWith(\"'\") && v.endsWith(\"'\"))\n  {\n    \
+            v = v.substring(1, v.length() - 1);\n  }\n  columnArray.add(v);\n});\n\
+            ctx['_csv_array'] = columnArray;\n";
+
+        // Written out of order, and one member wearing the quotes.
+        let mut event = Event::new(json!({
+            "_csv_array": { "02": "c", "00": "'Site: Home'", "01": "b" }
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("_csv_array"),
+            Some(&json!(["Site: Home", "b", "c"]))
+        );
+    }
+
+    /// Verbatim from the same pipeline: the labelled columns become a map and
+    /// EVERY column contributes to the fingerprint, `NONE` where it had no
+    /// label. That fingerprint is what names the unlabelled columns later.
+    #[test]
+    fn a_labelled_column_becomes_a_pair_and_an_unlabelled_one_a_hole() {
+        let script = "def aliases = Collections.unmodifiableMap([\n  \
+            'computer': 'computer_name',\n  'domain': 'domain_name',\n  \
+            'end_time': 'end',\n  'group_name': 'group',\n  \
+            'local': 'local_host_ip',\n  'local_host': 'local_host_ip',\n  \
+            'server_name': 'server',\n  'user': 'user_name'\n]);\n\n\
+            def keyPattern = /^([a-zA-Z][a-zA-Z0-9 \\(\\)-]{0,28}):(?:\\s(.+)|\\s)?/;\n\
+            def keyValue = [:];\ndef fingerprint = [];\nctx._csv_array.forEach(v -> {\n    \
+            def m = keyPattern.matcher(v);\n    def key = 'NONE';\n    if (m.matches()) {\n      \
+            key = m.group(1).toLowerCase().replace(' ', '_');\n      \
+            key = /[\\(\\)]+/.matcher(key).replaceAll('');\n\n      \
+            def tmp = aliases[key];\n      if (tmp != null) {\n        key = tmp;\n      }\n\n\n      \
+            def value = m.group(2);\n      if (value != null && !value.trim().isEmpty()) {\n        \
+            keyValue[key] = value.trim();\n      }\n    }\n\n    fingerprint.add(key);\n    \
+            return true;\n});\nif (!keyValue.isEmpty()) {\n  ctx['_csv_map'] = keyValue;\n}\n\
+            ctx['_fingerprint'] = String.join(\"|\", fingerprint);\n";
+
+        let mut event = Event::new(json!({
+            "_csv_array": [
+                "Site: SEPM",
+                "Server: srv01",
+                "10.0.0.1",
+                "Domain: WORKGROUP",
+                "Admin:"
+            ]
+        }));
+        assert!(try_known_painless(&mut event, script));
+
+        // `domain` is aliased to `domain_name`; a bare `Admin:` carries no
+        // value, so it keys the fingerprint without writing a pair.
+        assert_eq!(
+            event.get("_csv_map"),
+            Some(&json!({
+                "site": "SEPM",
+                "server": "srv01",
+                "domain_name": "WORKGROUP"
+            }))
+        );
+        assert_eq!(
+            event.get_str("_fingerprint"),
+            Some("site|server|NONE|domain_name|admin")
+        );
+    }
+
+    /// Verbatim from the same pipeline: `1e9` is a DOUBLE in Painless, so the
+    /// product is one too and Elasticsearch publishes `600000000000.0`.
+    #[test]
+    fn a_floating_factor_scales_to_a_double() {
+        let script = "ctx.event['duration'] = ctx.event.duration * 1e9;";
+
+        let mut event = Event::new(json!({ "event": { "duration": 600 } }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get("event.duration"), Some(&json!(600_000_000_000.0)));
+
+        // The long spelling still writes a long.
+        let mut long = Event::new(json!({ "event": { "duration": 600 } }));
+        assert!(try_known_painless(
+            &mut long,
+            "ctx.event['duration'] = ctx.event.duration * 1000000000L;"
+        ));
+        assert_eq!(
+            long.get("event.duration"),
+            Some(&json!(600_000_000_000_i64))
+        );
     }
 
     /// Verbatim from `pipelines/suricata/eve/default.yml`: a list

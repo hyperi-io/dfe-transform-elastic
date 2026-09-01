@@ -267,7 +267,7 @@
     "sublime_security": { "events": 2, "events_total": 6, "fields_wrong": 8 },
     "suricata": { "events": 19, "events_total": 64, "fields_wrong": 112 },
     "swimlane": { "events": 4, "events_total": 7, "fields_wrong": 3 },
-    "symantec_endpoint": { "events": 0, "events_total": 33, "fields_wrong": 1021 },
+    "symantec_endpoint": { "events": 32, "events_total": 33, "fields_wrong": 50 },
     "symantec_endpoint_security": { "events": 52, "events_total": 58, "fields_wrong": 21 },
     "sysdig": { "events": 8, "events_total": 38, "fields_wrong": 421 },
     "syslog_router": { "events": 2, "events_total": 2, "fields_wrong": 0 },
