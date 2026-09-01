@@ -1190,8 +1190,13 @@ fn parse_normalised_lookup(script: &str) -> Option<ParamsShape> {
     }
 
     // The local the lookup binds, and the single field it is copied onto.
+    // The write may be rooted at a bracket: ti_anomali's threatstream itype
+    // lookup spells `ctx["threatintel_indicator_type"] = mapping` and nothing
+    // else, so a `ctx.`-only search found no target and the lookup fell
+    // through to the catch-all, which writes the KEY on a miss where this
+    // script's own `!= null` writes nothing.
     let local = local_bound_to(script, "params[")?;
-    let target = ctx_writes(script)
+    let target = ctx_writes_rooted_either_way(script)
         .into_iter()
         .find(|(_, rhs)| rhs.trim() == local)
         .map(|(path, _)| path)?;
@@ -5007,6 +5012,39 @@ pub(crate) fn ctx_writes(script: &str) -> Vec<(String, String)> {
             .replace("']", "")
             .replace("\"]", "");
         writes.push((clean_path(&path), rhs.trim().to_string()));
+    }
+    writes
+}
+
+/// [`ctx_writes`], plus writes whose ROOT is a bracket -- `ctx["a"] = v`.
+///
+/// Deliberately NOT folded into `ctx_writes`: nine other matchers read that
+/// helper, and `carbonblack_edr`'s clone script spells `ctx["event"] = event`.
+/// Teaching them all to see a bracket root gave `LookupMerge` a target it had
+/// never had and cost two events on the corpus, against no gain -- so the
+/// wider reading is scoped to the one parser that needs it.
+fn ctx_writes_rooted_either_way(script: &str) -> Vec<(String, String)> {
+    let mut writes = ctx_writes(script);
+    for statement in script.split(';') {
+        let Some((lhs, rhs)) = split_assignment(statement) else {
+            continue;
+        };
+        // `ctx.a["b"]` already came back from `ctx_writes`.
+        if lhs.contains("ctx.") {
+            continue;
+        }
+        let Some(at) = lhs.rfind("ctx[") else {
+            continue;
+        };
+        let path = lhs[at + "ctx".len()..]
+            .replace("['", ".")
+            .replace("[\"", ".")
+            .replace("']", "")
+            .replace("\"]", "");
+        writes.push((
+            clean_path(path.trim_start_matches('.')),
+            rhs.trim().to_string(),
+        ));
     }
     writes
 }
