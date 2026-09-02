@@ -3929,6 +3929,10 @@ pub struct DropPolicy {
     /// reads `**` and `0` as "no value", and they are its own literals rather
     /// than anything general.
     pub sentinels: Vec<String>,
+    /// The script prunes the root's DIRECT values only. tychon walks
+    /// `keySet()` and removes at the top level, so descending would take
+    /// nested nulls it keeps.
+    pub shallow: bool,
 }
 
 impl DropPolicy {
@@ -3952,6 +3956,9 @@ impl DropPolicy {
                 .take(script.matches(".removeIf(").count())
                 .any(|head| !head.trim_end().ends_with("values()")),
             sentinels: predicate_sentinels(script),
+            // The recursive spellings this reads all descend; only the
+            // `keySet()` walk sets it, and it does so at its own trigger.
+            shallow: false,
         }
     }
 }
@@ -4038,11 +4045,32 @@ pub fn drop_empty_recursive(event: &mut Event, policy: &DropPolicy) {
 /// recorded path has to read the same as the one a later render walks to.
 /// Prune the whole document, or one subtree where the script names a root.
 pub fn drop_empty(event: &mut Event, policy: &DropPolicy, root: Option<&str>) -> bool {
-    match root {
-        None => drop_empty_recursive(event, policy),
-        Some(path) => drop_subtree(event, policy, path),
+    match (root, policy.shallow) {
+        (None, _) => drop_empty_recursive(event, policy),
+        (Some(path), false) => drop_subtree(event, policy, path),
+        (Some(path), true) => drop_shallow(event, policy, path),
     }
     true
+}
+
+/// Drop the root's direct values the policy calls empty, without descending.
+fn drop_shallow(event: &mut Event, policy: &DropPolicy, root: &str) {
+    let Some(Value::Object(map)) = crate::painless_params::pointer_mut(event, root) else {
+        return;
+    };
+    let doomed: Vec<String> = map
+        .iter()
+        .filter(|(_, value)| match value {
+            Value::Null => policy.nulls,
+            Value::String(text) if text.is_empty() => policy.empty_strings,
+            Value::String(text) => policy.sentinels.iter().any(|s| s == text),
+            _ => false,
+        })
+        .map(|(key, _)| key.clone())
+        .collect();
+    for key in doomed {
+        map.shift_remove(&key);
+    }
 }
 
 pub(crate) fn drop_subtree(event: &mut Event, policy: &DropPolicy, root: &str) {
@@ -12477,6 +12505,29 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
+    // Pattern: the same prune written as a walk over `keySet()`, which removes
+    // the root's DIRECT values only -- descending would drop nested nulls the
+    // script keeps. tychon ships it on every stream.
+    if normalised.contains(".keySet())")
+        && normalised.contains("for (key in keys)")
+        && let Some(at) = normalised.find("ArrayList(ctx.")
+        && let Some(root) = normalised[at + "ArrayList(ctx.".len()..]
+            .split(".keySet()")
+            .next()
+        && !root.is_empty()
+        && root
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '.' || c == '_')
+    {
+        let mut policy = DropPolicy::read(normalised);
+        policy.shallow = true;
+        shapes.push(KnownShape::DropEmpty {
+            policy,
+            root: Some(root.to_string()),
+        });
+        return shapes;
+    }
+
     // Pattern: drop null and empty values recursively. Matched on the SHAPE,
     // not the helper's name -- panw spells it `dropEmptyFields`, and keying
     // on `drop(ctx)` left every emptied object behind. What counts as empty
@@ -13817,12 +13868,14 @@ impl KnownShape {
                     .map_or_else(|| "None".to_string(), |r| format!("Some({})", rust_str(r)));
                 Some(format!(
                     "drop_empty(event, &DropPolicy {{ nulls: {}, empty_strings: {}, \
-                     empty_collections: {}, prune_lists: {}, sentinels: vec![{}] }}, {root});",
+                     empty_collections: {}, prune_lists: {}, sentinels: vec![{}], \
+                     shallow: {} }}, {root});",
                     policy.nulls,
                     policy.empty_strings,
                     policy.empty_collections,
                     policy.prune_lists,
                     sentinels.join(", "),
+                    policy.shallow,
                 ))
             }
             Self::KvIntoFields(target) => {
@@ -17557,6 +17610,7 @@ def event_timezone = get_timezone(ctx);
             empty_collections: true,
             prune_lists: true,
             sentinels: Vec::new(),
+            shallow: false,
         }
     }
 
@@ -17598,6 +17652,7 @@ def event_timezone = get_timezone(ctx);
                 empty_collections: false,
                 prune_lists: false,
                 sentinels: Vec::new(),
+                shallow: false,
             }
         );
 
