@@ -3936,6 +3936,22 @@ pub struct DropPolicy {
 }
 
 impl DropPolicy {
+    /// A policy that drops nothing.
+    ///
+    /// The base a generated literal builds on, so adding an axis to this
+    /// struct does not invalidate every file the generator has written.
+    #[must_use]
+    pub fn none() -> Self {
+        Self {
+            nulls: false,
+            empty_strings: false,
+            empty_collections: false,
+            prune_lists: false,
+            sentinels: Vec::new(),
+            shallow: false,
+        }
+    }
+
     /// The reading of a script's predicate, taken off its own text.
     #[must_use]
     pub fn read(script: &str) -> Self {
@@ -13858,24 +13874,34 @@ impl KnownShape {
     pub(crate) fn direct_call(&self) -> Option<String> {
         match self {
             Self::DropEmpty { policy, root } => {
-                let sentinels: Vec<String> = policy
-                    .sentinels
-                    .iter()
-                    .map(|s| format!("{}.into()", rust_str(s)))
-                    .collect();
+                // Only the axes this script turns on, over `none()`. Listing
+                // every field would make each new axis a regeneration of the
+                // whole tree.
+                let mut set: Vec<String> = [
+                    ("nulls", policy.nulls),
+                    ("empty_strings", policy.empty_strings),
+                    ("empty_collections", policy.empty_collections),
+                    ("prune_lists", policy.prune_lists),
+                    ("shallow", policy.shallow),
+                ]
+                .into_iter()
+                .filter(|(_, on)| *on)
+                .map(|(name, _)| format!("{name}: true"))
+                .collect();
+                if !policy.sentinels.is_empty() {
+                    let literals: Vec<String> = policy
+                        .sentinels
+                        .iter()
+                        .map(|s| format!("{}.into()", rust_str(s)))
+                        .collect();
+                    set.push(format!("sentinels: vec![{}]", literals.join(", ")));
+                }
                 let root = root
                     .as_deref()
                     .map_or_else(|| "None".to_string(), |r| format!("Some({})", rust_str(r)));
                 Some(format!(
-                    "drop_empty(event, &DropPolicy {{ nulls: {}, empty_strings: {}, \
-                     empty_collections: {}, prune_lists: {}, sentinels: vec![{}], \
-                     shallow: {} }}, {root});",
-                    policy.nulls,
-                    policy.empty_strings,
-                    policy.empty_collections,
-                    policy.prune_lists,
-                    sentinels.join(", "),
-                    policy.shallow,
+                    "drop_empty(event, &DropPolicy {{ {}, ..DropPolicy::none() }}, {root});",
+                    set.join(", "),
                 ))
             }
             Self::KvIntoFields(target) => {
@@ -13883,10 +13909,7 @@ impl KnownShape {
             }
             Self::SumDirections(units) => {
                 let list: Vec<String> = units.iter().map(|unit| rust_str(unit)).collect();
-                Some(format!(
-                    "sum_directions(event, &[{}]);",
-                    list.join(", ")
-                ))
+                Some(format!("sum_directions(event, &[{}]);", list.join(", ")))
             }
             Self::ScaleField(shape) => {
                 let factor = match shape.factor {
@@ -13900,10 +13923,10 @@ impl KnownShape {
                 ))
             }
             Self::SyslogPriority(shape) => {
-                let source = shape
-                    .source
-                    .as_deref()
-                    .map_or_else(|| "None".to_string(), |s| format!("Some({}.into())", rust_str(s)));
+                let source = shape.source.as_deref().map_or_else(
+                    || "None".to_string(),
+                    |s| format!("Some({}.into())", rust_str(s)),
+                );
                 Some(format!(
                     "syslog_priority(event, &SyslogPriorityScript::new({source}, {}, {}, {}));",
                     shape.facility, shape.severity, shape.names,

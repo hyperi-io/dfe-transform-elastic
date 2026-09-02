@@ -280,8 +280,7 @@ mod tests {
                  ((List) o).removeIf(v -> drop(v)); return ((List) o).length == 0; } \
                  return false; } drop(ctx);",
                 "drop_empty(event, &DropPolicy { nulls: true, empty_strings: true, \
-                 empty_collections: true, prune_lists: true, sentinels: vec![], \
-                 shallow: false }, None);",
+                 empty_collections: true, prune_lists: true, ..DropPolicy::none() }, None);",
             ),
         ] {
             let plan = PainlessPlan::new(script);
