@@ -467,6 +467,27 @@ pub fn iso8601_plus(input: &str, unit: char, count: i64, back: i64) -> Option<St
     )
 }
 
+/// Render epoch SECONDS the way the `date` processor renders a timestamp.
+///
+/// `ti_misp` holds `misp.attribute.timestamp` in seconds and its decay script
+/// multiplies by 1000 to hand `Instant.ofEpochMilli` what it wants, so the
+/// base of the expiry window is a number where every other package's is
+/// already a string.
+#[must_use]
+pub fn epoch_seconds_to_iso8601(seconds: i64) -> Option<String> {
+    DateTime::from_timestamp(seconds, 0).map(|at| at.format(ISO_OUT).to_string())
+}
+
+/// Whether one ISO 8601 timestamp is strictly before another.
+///
+/// `None` where either side does not read as a timestamp, which is a
+/// different answer from `false` -- the caller writes nothing rather than
+/// claiming an ordering it could not establish.
+#[must_use]
+pub fn iso8601_is_before(one: &str, two: &str) -> Option<bool> {
+    Some(parse_iso8601(one.trim())? < parse_iso8601(two.trim())?)
+}
+
 /// Translate a Java `DateTimeFormatter` pattern into a chrono one.
 ///
 /// Only the tokens the pipelines actually use are translated; an unknown

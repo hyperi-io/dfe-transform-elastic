@@ -4804,6 +4804,144 @@ fn parse_ioc_expiry(script: &str) -> Option<IocExpiry> {
     })
 }
 
+/// The same expiry window, from an EPOCH base and with a decayed flag.
+///
+/// `ti_misp`'s spelling of what [`IocExpiry`] does, and it declines there for
+/// a precise reason: `parse_ioc_expiry` reads its bases off what the adder's
+/// receiver is assigned, and this script binds that receiver to LOCALS
+/// (`_tmp_timestamp`, `_tmp_last_seen`) rather than to a `ctx` path, so the
+/// base list comes back empty. Three further differences make it its own
+/// shape rather than a widening: the first base is epoch SECONDS through
+/// `Instant.ofEpochMilli`, the two bases are combined by taking the LATER
+/// rather than the first present, and the script also writes a BOOLEAN saying
+/// whether the expiry has already passed at ingest time.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct DecayWindow {
+    /// Where the duration string is read from.
+    duration: String,
+    /// The epoch-SECONDS base.
+    seconds: String,
+    /// The ISO base that wins when it is the later of the two.
+    later: String,
+    /// Days added when the unit is not one the script knows.
+    default_days: i64,
+    /// The message that same branch appends to `error.message`.
+    invalid_message: Option<String>,
+    /// Where the expiry goes.
+    target: String,
+    /// The flag, and the ingest time it is compared against.
+    flag: String,
+    ingested: String,
+}
+
+fn parse_decay_window(script: &str) -> Option<DecayWindow> {
+    use crate::painless_params::clean_path;
+
+    let duration = script.split_once("= ctx.")?.1.split_once(';')?.0;
+    let seconds = script.split_once(" ts = ctx.")?.1.split_once(';')?.0;
+    let later = script
+        .split_once("ZonedDateTime.parse(ctx.")?
+        .1
+        .split_once(')')?
+        .0;
+
+    // The local the adders write into, which is what names both remaining
+    // statements: the expiry assignment and the flag that reads it.
+    let receiver = identifier_before(script.split_once(".plusDays(")?.0)?;
+    let assigned = identifier_before(script.split_once(&format!(" = {receiver}.plusDays("))?.0)?;
+    let target = painless_path(script.split_once(&format!(" = {assigned};"))?.0)?;
+
+    let (head, tail) = script.split_once(&format!(" = {assigned}.isBefore("))?;
+    let flag = painless_path(head)?;
+    let ingested = tail
+        .split_once("ZonedDateTime.parse(ctx.")?
+        .1
+        .split_once(')')?
+        .0;
+
+    let ok = |raw: &str| {
+        !raw.is_empty()
+            && raw
+                .chars()
+                .all(|c| c.is_alphanumeric() || "._?".contains(c))
+    };
+    if !ok(duration) || !ok(seconds) || !ok(later) || !ok(ingested) {
+        return None;
+    }
+
+    Some(DecayWindow {
+        duration: clean_path(duration),
+        seconds: clean_path(seconds),
+        later: clean_path(later),
+        // The one `plusDays` whose argument is a literal: the arm for a unit
+        // the script does not know.
+        default_days: script.split("plusDays(").skip(1).find_map(|segment| {
+            segment
+                .split(')')
+                .next()?
+                .trim()
+                .trim_end_matches(['L', 'l'])
+                .parse::<i64>()
+                .ok()
+        })?,
+        invalid_message: quoted_after(script, "message.add(").into_iter().next(),
+        target,
+        flag,
+        ingested: clean_path(ingested),
+    })
+}
+
+/// Expire the indicator, and say whether it has already expired.
+fn run_decay_window(event: &mut Event, shape: &DecayWindow) -> bool {
+    let Some(duration) = event
+        .get_as_string(&shape.duration)
+        .filter(|configured| !configured.is_empty())
+    else {
+        return true;
+    };
+    let Some(seconds) = event.get_as_i64(&shape.seconds) else {
+        return true;
+    };
+    let Some(mut base) = crate::date_formats::epoch_seconds_to_iso8601(seconds) else {
+        return true;
+    };
+
+    // `isBefore` picks the LATER of the two, which is a different rule from
+    // IocExpiry's first-present ladder: a re-sighting moves the window out.
+    if let Some(seen) = event.get_as_string(&shape.later)
+        && crate::date_formats::iso8601_is_before(&base, &seen) == Some(true)
+    {
+        base = seen;
+    }
+
+    let mut value = duration.chars();
+    let unit = value.next_back().unwrap_or_default();
+    let (unit, count) = if matches!(unit, 'd' | 'h' | 'm') {
+        let Ok(count) = value.as_str().parse::<i64>() else {
+            // `Long.parseLong` throws, so the document fails and the vendor
+            // writes nothing here either.
+            return true;
+        };
+        (unit, count)
+    } else {
+        if let Some(message) = &shape.invalid_message {
+            let _ = event.append("error.message", json!(message));
+        }
+        ('d', shape.default_days)
+    };
+
+    let Some(expiry) = crate::date_formats::iso8601_plus(&base, unit, count, 0) else {
+        return true;
+    };
+    let _ = event.set(&shape.target, json!(expiry.clone()));
+    if let Some(ingested) = event.get_as_string(&shape.ingested)
+        && let Some(decayed) = crate::date_formats::iso8601_is_before(&expiry, &ingested)
+    {
+        let _ = event.set(&shape.flag, json!(decayed));
+    }
+    true
+}
+
 /// The identifier a fragment ends with, which is the receiver of the call that
 /// follows it.
 fn identifier_before(fragment: &str) -> Option<&str> {
@@ -11761,6 +11899,8 @@ pub(crate) enum KnownShape {
     },
     /// Tag names scrubbed into a list, the prefixed ones into a marking map.
     TagsAndMarking(Box<TagsAndMarking>),
+    /// The expiry window from an epoch base, plus the already-expired flag.
+    DecayWindow(Box<DecayWindow>),
     /// `Key: value` columns into a map, their keys into a fingerprint.
     CsvColonPairs {
         list: String,
@@ -13105,6 +13245,22 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // `!= null` and then walks THIS partially -- deciding the unit ladder on a
     // local it cannot resolve, taking the else arm, and writing the vendor's
     // "invalid duration" message onto every event while writing no expiry.
+    // Pattern: ti_misp's spelling of the same window -- an epoch base, the
+    // LATER of two, and a flag saying it has already passed. Ahead of
+    // `IocExpiry`, which declines it (its bases are locals, not ctx paths) and
+    // so let `GuardedCopy` further down claim it and write the vendor's
+    // "invalid duration" message onto 15 events while writing no expiry.
+    if normalised.contains("plusDays(")
+        && normalised.contains("plusHours(")
+        && normalised.contains("plusMinutes(")
+        && normalised.contains("Instant.ofEpochMilli(")
+        && normalised.contains(".isBefore(")
+        && let Some(shape) = parse_decay_window(normalised)
+    {
+        shapes.push(KnownShape::DecayWindow(Box::new(shape)));
+        return shapes;
+    }
+
     if normalised.contains("plusDays(")
         && normalised.contains("plusHours(")
         && normalised.contains("plusMinutes(")
@@ -13639,6 +13795,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::KvIntoFields(target) => run_kv_into_fields(event, target),
         KnownShape::CsvMapToArray { source, target } => run_csv_map_to_array(event, source, target),
         KnownShape::TagsAndMarking(shape) => run_tags_and_marking(event, shape),
+        KnownShape::DecayWindow(shape) => run_decay_window(event, shape),
         KnownShape::CsvColonPairs {
             list,
             map_target,
@@ -18649,6 +18806,51 @@ def event_timezone = get_timezone(ctx);
         let mut wide = Event::new(json!({ "message": "ab\u{00e9}" }));
         assert!(try_known_painless(&mut wide, script));
         assert_eq!(wide.get_str("message"), Some("ab"));
+    }
+
+    /// Verbatim from the generated `ti_misp_threat_attributes` call site: the
+    /// expiry window from an EPOCH base, the LATER of two timestamps winning,
+    /// and the flag saying the window has already passed. [`IocExpiry`]
+    /// declines this spelling because the adders' receiver is bound to
+    /// locals, never to a ctx path.
+    #[test]
+    fn a_decay_window_expires_from_the_later_base_and_flags_the_past() {
+        let script = r"def dur = ctx._conf.ioc_expiration_duration; def ts = ctx.misp.attribute.timestamp; long tsMillis = ts instanceof Number ? ts.longValue() : Long.parseLong(ts); ZonedDateTime _tmp_decayed_at; ZonedDateTime _tmp_timestamp = ZonedDateTime.ofInstant(Instant.ofEpochMilli(tsMillis * 1000L), ZoneId.of('Z')); ZonedDateTime _tmp_max_time = _tmp_timestamp; if (ctx.misp.attribute.last_seen != null) {\n    ZonedDateTime _tmp_last_seen = ZonedDateTime.parse(ctx.misp.attribute.last_seen);\n    if (_tmp_max_time.isBefore(_tmp_last_seen)) {\n        _tmp_max_time = _tmp_last_seen;\n    }\n} if (dur instanceof String){\n  char time_unit;\n  String time_value;\n  if (dur.length() != 0){\n    time_unit = dur.charAt(dur.length() - 1);\n    time_value = dur.substring(0, dur.length() - 1);\n  }\n  if (time_unit == (char)'d') {\n    _tmp_decayed_at = _tmp_max_time.plusDays(Long.parseLong(time_value));\n  } else if (time_unit == (char)'h') {\n    _tmp_decayed_at = _tmp_max_time.plusHours(Long.parseLong(time_value));\n  } else if (time_unit == (char)'m') {\n    _tmp_decayed_at = _tmp_max_time.plusMinutes(Long.parseLong(time_value));\n  } else {\n    _tmp_decayed_at = _tmp_max_time.plusDays(90L);\n    if (ctx.error == null) {\n      ctx.error = new HashMap();\n    }\n    if (ctx.error.message == null) {\n      ctx.error.message = new ArrayList();\n    }\n    ctx.error.message.add('invalid ioc_expiration_duration: using default 90 days');\n  }\n  ctx.misp.attribute.decayed_at = _tmp_decayed_at;\n} ctx.misp.attribute.decayed = _tmp_decayed_at.isBefore(ZonedDateTime.parse(ctx._tmp.event_ingested))? true : false;\n";
+
+        // The later of the two bases wins, so the window opens at last_seen.
+        let mut event = Event::new(json!({
+            "_conf": { "ioc_expiration_duration": "30d" },
+            "_tmp": { "event_ingested": "2020-01-01T00:00:00Z" },
+            "misp": { "attribute": {
+                "timestamp": 86400,
+                "last_seen": "1970-01-10T00:00:00Z"
+            } }
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get_str("misp.attribute.decayed_at"),
+            Some("1970-02-09T00:00:00.000Z")
+        );
+        assert_eq!(event.get("misp.attribute.decayed"), Some(&json!(true)));
+
+        // An unknown unit takes the 90-day default and says so.
+        let mut invalid = Event::new(json!({
+            "_conf": { "ioc_expiration_duration": "1x" },
+            "_tmp": { "event_ingested": "2020-01-01T00:00:00Z" },
+            "misp": { "attribute": { "timestamp": 86400 } }
+        }));
+        assert!(try_known_painless(&mut invalid, script));
+        assert_eq!(
+            invalid.get_str("misp.attribute.decayed_at"),
+            Some("1970-04-02T00:00:00.000Z")
+        );
+        assert_eq!(
+            invalid.get("error.message"),
+            Some(&json!([
+                "invalid ioc_expiration_duration: using default 90 days"
+            ]))
+        );
+        assert_eq!(invalid.get("misp.attribute.decayed"), Some(&json!(true)));
     }
 
     /// Verbatim from both `pipelines/ti_misp/threat/default.yml` and
