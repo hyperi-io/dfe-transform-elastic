@@ -66,7 +66,7 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
 /// not merely mis-case a lookup -- it misses every row and the shape resolves
 /// nothing.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) enum Fold {
+pub enum Fold {
     None,
     Lower,
     Upper,
@@ -220,7 +220,7 @@ pub(crate) enum ParamsShape {
     ReversibleLookup,
     LookupMerge,
     LookupColumns,
-    LookupNormalise,
+    LookupNormalise(LookupNormaliseScript),
     IndexedLookup,
     Scale,
     Replace,
@@ -684,8 +684,10 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
 
     // Pattern: normalise a field through a params table, keeping the input
     // when the table has no row for it.
-    if normalised.contains("params.get(") {
-        return Some(ParamsShape::LookupNormalise);
+    if normalised.contains("params.get(")
+        && let Some(shape) = parse_lookup_normalise(normalised)
+    {
+        return Some(ParamsShape::LookupNormalise(shape));
     }
 
     // Pattern: index a params array by a numeric field.
@@ -744,8 +746,10 @@ fn params_shape_rest(normalised: &str) -> Option<ParamsShape> {
     // Pattern: the same normalise-through-a-table written with the bracket
     // form. LAST, so nothing that reads the brackets for its own shape --
     // `addUnique` over a row, for one -- is claimed by the general case.
-    if normalised.contains("params[ctx.") {
-        return Some(ParamsShape::LookupNormalise);
+    if normalised.contains("params[ctx.")
+        && let Some(shape) = parse_lookup_normalise(normalised)
+    {
+        return Some(ParamsShape::LookupNormalise(shape));
     }
 
     // Pattern: a NAMED params table's row merged WHOLE onto ctx, with further
@@ -1357,7 +1361,7 @@ pub(crate) fn run_params_shape(
         ParamsShape::StringifiedLookup { source, target } => {
             run_stringified_lookup(event, source, target, params)
         }
-        ParamsShape::LookupNormalise => try_lookup_normalise(event, normalised, params),
+        ParamsShape::LookupNormalise(shape) => lookup_normalise(event, shape, normalised, params),
         ParamsShape::IndexedLookup => try_indexed_lookup(event, normalised, params),
         ParamsShape::Scale => try_scale(event, normalised, params),
         ParamsShape::Replace => try_replace(event, normalised, params),
@@ -4196,15 +4200,60 @@ fn fallback_target(script: &str) -> Option<String> {
 /// The fallback writes the LOOKUP KEY back, not the original, so a value the
 /// table misses still comes out lower-cased -- and the pipeline's own
 /// allow-list check downstream then sees the same string Elastic would.
-fn try_lookup_normalise(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
+pub fn lookup_normalise(
+    event: &mut Event,
+    shape: &LookupNormaliseScript,
+    script: &str,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(raw) = event.get_as_string(&shape.key) else {
+        return true;
+    };
+    let key = shape.fold.apply(&raw);
+
+    let value = params.get(&key).cloned().unwrap_or(Value::String(key));
+    let _ = event.set(&shape.target, value);
+
+    // Whatever else the script writes on its own account, AFTER the lookup so
+    // a `ctx.x = null` that clears the field the key came from is not read
+    // before it is used. mimecast's siem_logs is that shape exactly.
+    run_guarded_literals(event, script);
+    true
+}
+
+/// Where a normalise-through-a-table reads its key and writes its answer.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LookupNormaliseScript {
+    /// The `ctx.` path the lookup key comes from, already unwrapped from
+    /// whatever local the script bound it to.
+    key: String,
+    fold: Fold,
+    target: String,
+}
+
+impl LookupNormaliseScript {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(key: impl Into<String>, fold: Fold, target: impl Into<String>) -> Self {
+        Self {
+            key: key.into(),
+            fold,
+            target: target.into(),
+        }
+    }
+}
+
+/// Read the key path, its fold and the target out of the script once.
+///
+/// `None` where the script is not this shape after all, which declines the
+/// trigger and leaves the text to the matchers below it -- the same
+/// fall-through the runner used to do per event.
+fn parse_lookup_normalise(script: &str) -> Option<LookupNormaliseScript> {
     // `params[key]` and `params.get(key)` are the same operation in Painless
     // and the integrations use both -- sysmon's DNS status table is written
     // with the brackets.
-    let Some(key_expr) = last_call_argument(script, "params.get(")
-        .or_else(|| last_bracket_subscript(script, "params["))
-    else {
-        return false;
-    };
+    let key_expr = last_call_argument(script, "params.get(")
+        .or_else(|| last_bracket_subscript(script, "params["))?;
     // The field assigned from the lookup, falling back to the last assignment
     // where the lookup is bound to a local first.
     let writes = ctx_writes(script);
@@ -4212,22 +4261,9 @@ fn try_lookup_normalise(event: &mut Event, script: &str, params: &Map<String, Va
         .iter()
         .find(|(_, rhs)| rhs.contains("params.get(") || rhs.contains("params["))
         .map(|(path, _)| path.clone())
-        .or_else(|| writes.last().map(|(path, _)| path.clone()));
-    let Some(target) = target else {
-        return false;
-    };
-    let Some(key) = resolve_key(event, script, &key_expr) else {
-        return true;
-    };
-
-    let value = params.get(&key).cloned().unwrap_or(Value::String(key));
-    let _ = event.set(&target, value);
-
-    // Whatever else the script writes on its own account, AFTER the lookup so
-    // a `ctx.x = null` that clears the field the key came from is not read
-    // before it is used. mimecast's siem_logs is that shape exactly.
-    run_guarded_literals(event, script);
-    true
+        .or_else(|| writes.last().map(|(path, _)| path.clone()))?;
+    let (key, fold) = lookup_key_path(script, &key_expr)?;
+    Some(LookupNormaliseScript { key, fold, target })
 }
 
 /// The first member of a params list the subject contains, written to a field.
@@ -5812,6 +5848,16 @@ fn quoted_after(script: &str, after: &str) -> Option<String> {
 /// It is either a `ctx.` path written inline or a `def` bound to one earlier in
 /// the script, and either may be case-folded before the lookup.
 fn resolve_key(event: &Event, script: &str, expr: &str) -> Option<String> {
+    let (path, fold) = lookup_key_path(script, expr)?;
+    let value = event.get_as_string(&path)?;
+    Some(fold.apply(&value))
+}
+
+/// The `ctx.` path a lookup key expression names, and the fold applied to it.
+///
+/// Constant for a given script, so a caller that resolves once keeps this out
+/// of the per-event path.
+fn lookup_key_path(script: &str, expr: &str) -> Option<(String, Fold)> {
     let (expr, fold) = Fold::strip(expr);
     let expr = expr.trim();
 
@@ -5835,8 +5881,7 @@ fn resolve_key(event: &Event, script: &str, expr: &str) -> Option<String> {
         (bound.trim().to_string(), fold)
     };
 
-    let value = event.get_as_string(&clean_path(&path))?;
-    Some(fold.apply(&value))
+    Some((clean_path(&path), fold))
 }
 
 /// The params entry an indexed reference names, in either form Painless allows:

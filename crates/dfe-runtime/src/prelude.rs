@@ -29,6 +29,7 @@ pub use crate::painless_common::{
     Factor, ScaleField, SyslogPriorityScript, kv_into_fields, scale_field, sum_directions,
     syslog_priority,
 };
+pub use crate::painless_params::{Fold, LookupNormaliseScript, lookup_normalise};
 
 pub use crate::date_formats::{parse_date, parse_date_out};
 
