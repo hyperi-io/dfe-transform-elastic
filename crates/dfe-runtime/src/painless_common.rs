@@ -4186,7 +4186,7 @@ impl StringOps {
 /// Every statement has to fit, and one op off the allowlist rejects the whole
 /// chain. A partial parse is worse than none: the shape binds, the ladder stops,
 /// and the ops it could not read are dropped in silence -- which is what the
-/// bare `.replace(` trigger below did to ti_opencti's indicator type.
+/// bare `.replace(` trigger below did to `ti_opencti`'s indicator type.
 fn parse_string_ops(script: &str) -> Option<StringOps> {
     use crate::painless_params::clean_path;
 

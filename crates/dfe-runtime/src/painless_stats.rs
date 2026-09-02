@@ -30,20 +30,32 @@ static CATALOGUE_ON: AtomicBool = AtomicBool::new(false);
 /// distinct scripts into one entry.
 const CATALOGUE_KEY_LEN: usize = 200;
 
-fn catalogue_store() -> &'static RwLock<HashMap<String, u64>> {
-    static STORE: OnceLock<RwLock<HashMap<String, u64>>> = OnceLock::new();
+/// Per script, how often it ran and how often it was skipped.
+type Reach = HashMap<String, [u64; 2]>;
+
+fn catalogue_store() -> &'static RwLock<Reach> {
+    static STORE: OnceLock<RwLock<Reach>> = OnceLock::new();
     STORE.get_or_init(|| RwLock::new(HashMap::new()))
 }
 
 /// Record that a script was recognised and run.
-pub fn record_handled() {
+pub fn record_handled(script: &str) {
     HANDLED.fetch_add(1, Ordering::Relaxed);
+    tally(script, 0);
 }
 
 /// Record that a script was skipped because nothing recognised it.
 pub fn record_unhandled(script: &str) {
     UNHANDLED.fetch_add(1, Ordering::Relaxed);
+    tally(script, 1);
+}
 
+/// Count one outcome for a script: slot 0 ran, slot 1 was skipped.
+///
+/// Both outcomes are recorded because a skip count alone cannot tell a shape
+/// that NEVER applies from one that declines on the events missing its source
+/// field. Only the first is a defect, and the difference is the ratio.
+fn tally(script: &str, slot: usize) {
     // A relaxed bool read is the whole cost when the catalogue is off, which
     // is the production case.
     if !CATALOGUE_ON.load(Ordering::Relaxed) {
@@ -51,7 +63,7 @@ pub fn record_unhandled(script: &str) {
     }
     let key: String = script.chars().take(CATALOGUE_KEY_LEN).collect();
     if let Ok(mut store) = catalogue_store().write() {
-        *store.entry(key).or_insert(0) += 1;
+        store.entry(key).or_insert([0, 0])[slot] += 1;
     }
 }
 
@@ -101,14 +113,28 @@ pub fn enable_catalogue(on: bool) {
 /// Empty unless [`enable_catalogue`] was on while they were skipped.
 #[must_use]
 pub fn catalogue() -> Vec<(String, u64)> {
+    reach()
+        .into_iter()
+        .filter(|(_, _, skipped)| *skipped > 0)
+        .map(|(script, _, skipped)| (script, skipped))
+        .collect()
+}
+
+/// Every catalogued script as `(script, ran, skipped)`, most skipped first.
+///
+/// A script with `ran == 0` was never once applied, which is the shape a
+/// matcher claims and cannot honour. One with both counts non-zero declines
+/// only on some events, which is ordinary.
+#[must_use]
+pub fn reach() -> Vec<(String, u64, u64)> {
     let Ok(store) = catalogue_store().read() else {
         return Vec::new();
     };
-    let mut entries: Vec<(String, u64)> = store
+    let mut entries: Vec<(String, u64, u64)> = store
         .iter()
-        .map(|(script, count)| (script.clone(), *count))
+        .map(|(script, counts)| (script.clone(), counts[0], counts[1]))
         .collect();
-    entries.sort_unstable_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
+    entries.sort_unstable_by(|a, b| b.2.cmp(&a.2).then_with(|| a.0.cmp(&b.0)));
     entries
 }
 
@@ -140,8 +166,8 @@ mod tests {
         let _guard = serialised();
         reset();
 
-        record_handled();
-        record_handled();
+        record_handled("a script");
+        record_handled("a script");
         record_unhandled("script one");
 
         assert_eq!(handled(), 2);
@@ -188,6 +214,31 @@ mod tests {
         assert_eq!(entries[1], ("rare script".to_string(), 1));
     }
 
+    /// A script that never once ran is a matcher claiming what it cannot
+    /// honour; one that ran and sometimes declined is ordinary. A skip count
+    /// alone cannot tell them apart, which is what `reach` is for.
+    #[test]
+    fn reach_separates_a_shape_that_never_applies_from_one_that_sometimes_declines() {
+        let _guard = serialised();
+        reset();
+        enable_catalogue(true);
+
+        record_unhandled("never applies");
+        record_unhandled("never applies");
+        record_handled("declines sometimes");
+        record_handled("declines sometimes");
+        record_unhandled("declines sometimes");
+        enable_catalogue(false);
+
+        let reach = reach();
+        assert_eq!(reach[0], ("never applies".to_string(), 0, 2));
+        assert_eq!(reach[1], ("declines sometimes".to_string(), 2, 1));
+
+        // The skip-only view keeps its shape for the coverage test, which reads
+        // it to rank what is worth teaching the runtime next.
+        assert_eq!(catalogue().len(), 2);
+    }
+
     /// Scripts sharing a long preamble must not collapse into one entry.
     #[test]
     fn long_scripts_are_distinguished_past_their_preamble() {
@@ -208,7 +259,7 @@ mod tests {
         let _guard = serialised();
         reset();
         enable_catalogue(true);
-        record_handled();
+        record_handled("a script");
         record_unhandled("s");
 
         reset();

@@ -127,7 +127,7 @@ pub fn painless_exec_plan_params(
         && let Some(map) = params.as_object()
         && run_params_shape(event, &plan.text, map, shape)
     {
-        crate::painless_stats::record_handled();
+        crate::painless_stats::record_handled(&plan.text);
         return Ok(());
     }
     if plan
@@ -135,7 +135,7 @@ pub fn painless_exec_plan_params(
         .iter()
         .any(|shape| run_known_shape(event, &plan.text, shape))
     {
-        crate::painless_stats::record_handled();
+        crate::painless_stats::record_handled(&plan.text);
         return Ok(());
     }
     // Counted, because an uncounted skip is indistinguishable from a script

@@ -160,11 +160,11 @@ pub fn painless_exec_params(
     params: &serde_json::Value,
 ) -> Result<()> {
     if crate::painless_params::try_params_painless(event, script, params) {
-        crate::painless_stats::record_handled();
+        crate::painless_stats::record_handled(script);
         return Ok(());
     }
     if crate::painless_common::try_known_painless(event, script) {
-        crate::painless_stats::record_handled();
+        crate::painless_stats::record_handled(script);
         return Ok(());
     }
     // Counted, because an uncounted skip is indistinguishable from a script

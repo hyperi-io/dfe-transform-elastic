@@ -1641,6 +1641,15 @@ fn score_the_corpus() {
         .collect();
     let dump = std::env::var("DFE_COMPAT_DUMP").ok();
 
+    // Which scripts actually ran, written to the named path. The static census
+    // cannot see this: it reports what a script MATCHES, and a shape whose
+    // runner declines still matches.
+    let unhandled_dump = std::env::var("DFE_PAINLESS_UNHANDLED").ok();
+    if unhandled_dump.is_some() {
+        dfe_runtime::painless_stats::reset();
+        dfe_runtime::painless_stats::enable_catalogue(true);
+    }
+
     // Score only the named sources, comma-separated. For the inner loop while
     // one source is being worked on; the ratchet is SKIPPED under it, because a
     // partial run cannot say whether another source went down.
@@ -1812,6 +1821,37 @@ fn score_the_corpus() {
         }
     }
     println!("\n{:<20} {}", "TOTAL", total.line());
+
+    if let Some(path) = &unhandled_dump {
+        dfe_runtime::painless_stats::enable_catalogue(false);
+        let reach = dfe_runtime::painless_stats::reach();
+        let never = reach.iter().filter(|(_, ran, _)| *ran == 0).count();
+        let rows: Vec<serde_json::Value> = reach
+            .iter()
+            .map(|(script, ran, skipped)| {
+                serde_json::json!({ "ran": ran, "skipped": skipped, "script": script })
+            })
+            .collect();
+        let handled = dfe_runtime::painless_stats::handled();
+        let skipped = dfe_runtime::painless_stats::unhandled();
+        println!(
+            "\npainless runtime reach: {handled} handled, {skipped} skipped across {} \
+             distinct scripts, {never} of which NEVER ran -- written to {path}",
+            rows.len(),
+        );
+        std::fs::write(
+            path,
+            serde_json::to_string_pretty(&serde_json::json!({
+                "handled": handled,
+                "unhandled": skipped,
+                "distinct": rows.len(),
+                "never_ran": never,
+                "scripts": rows,
+            }))
+            .expect("the catalogue is plain strings and counts"),
+        )
+        .expect("DFE_PAINLESS_UNHANDLED names a writable path");
+    }
 
     assert!(
         unmapped.is_empty(),
