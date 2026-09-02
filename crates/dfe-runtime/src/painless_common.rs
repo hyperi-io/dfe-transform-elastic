@@ -4569,17 +4569,60 @@ pub fn camel_map_to_snake(value: &Value, rule: SnakeRule, drop_at_keys: bool) ->
 /// null-guard preamble those scripts open with is skipped. Both `.put(k, v)`
 /// and a plain assignment are recognised as the write.
 ///
-/// Returns false when nothing parses.
-fn try_literal_value_map(event: &mut Event, script: &str) -> bool {
-    let Some((local, source)) = local_bound_to_ctx(script) else {
-        return false;
-    };
-    let Some(subject) = event.get_as_string(&source) else {
-        // The field is absent, which every one of these scripts is gated on.
-        return false;
-    };
+/// One arm: the subject value that selects it, and the literal it writes.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ValueArm {
+    when: String,
+    target: String,
+    value: String,
+}
 
-    let mut matched = false;
+impl ValueArm {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(
+        when: impl Into<String>,
+        target: impl Into<String>,
+        value: impl Into<String>,
+    ) -> Self {
+        Self {
+            when: when.into(),
+            target: target.into(),
+            value: value.into(),
+        }
+    }
+}
+
+/// The whole chain as a table, read off the text once.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LiteralValueMap {
+    source: String,
+    arms: Vec<ValueArm>,
+}
+
+impl LiteralValueMap {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(source: impl Into<String>, arms: Vec<ValueArm>) -> Self {
+        Self {
+            source: source.into(),
+            arms,
+        }
+    }
+}
+
+/// Read the chain into a table, declining a script that yields no arm.
+///
+/// The arm order is the script's, because the first match wins. Branches that
+/// do not test the bound local against a literal are skipped rather than
+/// failing the parse -- that is what lets the null-guard preamble through --
+/// so "no arm parsed" is the only structural rejection, and it is the one that
+/// matters: it drops the recursive map-walkers that merely spell `else if (`
+/// and which this shape claimed for 91 call sites without ever applying.
+fn parse_literal_value_map(script: &str) -> Option<LiteralValueMap> {
+    let (local, source) = local_bound_to_ctx(script)?;
+
+    let mut arms = Vec::new();
     for block in script.split("if (").skip(1) {
         let Some((guard, body)) = block.split_once(") {") else {
             continue;
@@ -4587,17 +4630,26 @@ fn try_literal_value_map(event: &mut Event, script: &str) -> bool {
         let Some(literal) = equality_literal(guard, &local) else {
             continue;
         };
-        if literal != subject {
-            continue;
-        }
         let Some((target, value)) = branch_write(body) else {
             continue;
         };
-        let _ = event.set(&target, value);
-        matched = true;
-        break;
+        arms.push(ValueArm::new(literal, target, value));
     }
-    matched
+
+    (!arms.is_empty()).then(|| LiteralValueMap::new(source, arms))
+}
+
+/// Write the arm the subject selects, if any.
+pub fn literal_value_map(event: &mut Event, shape: &LiteralValueMap) -> bool {
+    // The field is absent, which every one of these scripts is gated on.
+    let Some(subject) = event.get_as_string(&shape.source) else {
+        return false;
+    };
+    let Some(arm) = shape.arms.iter().find(|arm| arm.when == subject) else {
+        return false;
+    };
+    let _ = event.set(&arm.target, arm.value.clone());
+    true
 }
 
 /// Every VALUE of a map gathered into one deduped list, lists flattened.
@@ -12495,7 +12547,7 @@ pub(crate) enum KnownShape {
     KeyValuePairs,
     JoinOptional,
     AppendEach,
-    LiteralValueMap,
+    LiteralValueMap(Box<LiteralValueMap>),
     KeysToSnakeCase(Option<String>, SnakeRule),
     CommandLine {
         parent: bool,
@@ -13936,9 +13988,13 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     }
 
     // Pattern: a value map written out as an if/else-if chain over one field.
-    // Guarded by the parse, so a script that merely branches falls through.
-    if normalised.contains("else if (") {
-        shapes.push(KnownShape::LiteralValueMap);
+    // Now actually guarded by the parse, which the comment here used to claim
+    // while the code matched on `contains` alone and took 91 sites it never
+    // applied. No `return`, so declining changes nothing at run time.
+    if normalised.contains("else if (")
+        && let Some(shape) = parse_literal_value_map(normalised)
+    {
+        shapes.push(KnownShape::LiteralValueMap(Box::new(shape)));
     }
 
     // Pattern: a field replaced by whether it equals a literal. Late, because
@@ -14644,7 +14700,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::KeyValuePairs => try_key_value_pairs(event, normalised),
         KnownShape::JoinOptional => try_join_optional(event, normalised),
         KnownShape::AppendEach => try_append_each(event, normalised),
-        KnownShape::LiteralValueMap => try_literal_value_map(event, normalised),
+        KnownShape::LiteralValueMap(shape) => literal_value_map(event, shape),
         KnownShape::KeysToSnakeCase(field, rule) => {
             if let Some(field) = field {
                 if let Some(val) = event.get(field).cloned() {
@@ -19526,6 +19582,38 @@ def event_timezone = get_timezone(ctx);
         let mut empty = Event::new(json!({ "json": {} }));
         assert!(try_known_painless(&mut empty, script));
         assert!(!empty.has("jamf_compliance_reporter.log.attributes.file.access_mode"));
+    }
+
+    /// The chain still binds and still takes the first matching arm.
+    #[test]
+    fn a_value_map_writes_the_arm_its_subject_selects() {
+        let script = "String osType = ctx.zscaler_zia.firewall.device.os.type;\n\
+            if (osType == 'iOS') { ctx.host.os.put('type', 'ios'); }\n\
+            else if (osType == 'Android OS') { ctx.host.os.put('type', 'android'); }";
+
+        let mut event = Event::new(json!({ "zscaler_zia": { "firewall": { "device": {
+            "os": { "type": "Android OS" } } } } }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("host.os.type"), Some("android"));
+
+        // A subject no arm names writes nothing, which is not the same thing as
+        // a script the shape cannot read.
+        let mut other = Event::new(json!({ "zscaler_zia": { "firewall": { "device": {
+            "os": { "type": "Windows" } } } } }));
+        try_known_painless(&mut other, script);
+        assert!(!other.has("host.os.type"));
+    }
+
+    /// A recursive walker spells `else if (` and is not a value map. It claimed
+    /// 91 call sites on that alone and applied to none of them.
+    #[test]
+    fn a_branching_script_that_is_not_a_value_map_declines() {
+        let script = "def filterMassive(def src) {\n  \
+            if (src instanceof Map) {\n    return src;\n  \
+            } else if (src instanceof List) {\n    return src;\n  }\n  \
+            return src;\n}\ndef out = ctx.qualys;\n";
+
+        assert!(parse_literal_value_map(script).is_none());
     }
 
     /// Verbatim from `pipelines/ti_opencti/indicator/default.yml`. The bare
