@@ -2078,7 +2078,7 @@ fn parse_kv_into_fields(script: &str) -> Option<KnownShape> {
 }
 
 /// Split `message` into `key=value` pairs under `target`, fortiproxy's way.
-fn run_kv_into_fields(event: &mut Event, target: &str) -> bool {
+pub fn kv_into_fields(event: &mut Event, target: &str) -> bool {
     let Some(message) = event.get_string("message") else {
         return true;
     };
@@ -5751,6 +5751,18 @@ fn try_sum_directions(event: &mut Event, unit: &str) -> bool {
     true
 }
 
+/// The same sum for every unit a script names.
+///
+/// Each unit is skipped independently: a script that sums both bytes and
+/// packets still writes the bytes total when only the packet operands are
+/// missing.
+pub fn sum_directions(event: &mut Event, units: &[&str]) -> bool {
+    for unit in units {
+        try_sum_directions(event, unit);
+    }
+    true
+}
+
 /// `ctx.<target> = ctx.<left> + ctx.<right>`, whatever the three are called.
 ///
 /// The directional-bytes matcher above only knows `source`/`destination` into
@@ -9161,6 +9173,18 @@ pub struct ScaleField {
     factor: Factor,
 }
 
+impl ScaleField {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(source: impl Into<String>, target: impl Into<String>, factor: Factor) -> Self {
+        Self {
+            source: source.into(),
+            target: target.into(),
+            factor,
+        }
+    }
+}
+
 /// A multiply's literal, carrying the Painless TYPE it was written with.
 ///
 /// The type decides the PRODUCT's: `n * 1000000000L` is a long and `n * 1e9`
@@ -9237,7 +9261,7 @@ pub(crate) fn last_assignment(text: &str) -> Option<usize> {
 }
 
 /// Multiply the source into the target.
-fn run_scale_field(event: &mut Event, shape: &ScaleField) -> bool {
+pub fn scale_field(event: &mut Event, shape: &ScaleField) -> bool {
     if let Some(n) = event.get_as_i64(&shape.source) {
         let scaled = match shape.factor {
             Factor::Long(factor) => json!(n.saturating_mul(factor)),
@@ -10465,18 +10489,56 @@ fn json_str(value: &str) -> Value {
     Value::String(value.to_owned())
 }
 
+/// Which halves of a syslog PRI one script decomposes, and where it reads it.
+///
+/// Only the halves the SCRIPT writes get written. A pipeline that sets
+/// `severity.code` with a `set` processor and only the facility here (cisco
+/// nexus) must not gain a severity from us, and none of the vendor scripts
+/// derive the `name` at all -- inventing one is an extra field, not a bonus.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SyslogPriorityScript {
+    /// The vendor field the script reads, where it is not the ECS one.
+    source: Option<String>,
+    facility: bool,
+    severity: bool,
+    names: bool,
+}
+
+impl SyslogPriorityScript {
+    /// Build one from resolved parts, for a caller that already knows them.
+    ///
+    /// `source` is the vendor field the PRI comes from, or `None` for the ECS
+    /// `log.syslog.priority`.
+    #[must_use]
+    pub fn new(source: Option<String>, facility: bool, severity: bool, names: bool) -> Self {
+        Self {
+            source,
+            facility,
+            severity,
+            names,
+        }
+    }
+}
+
+/// Read the four constants out of the script once, at the call site.
+fn parse_syslog_priority(script: &str) -> SyslogPriorityScript {
+    SyslogPriorityScript {
+        source: priority_source(script).map(str::to_owned),
+        facility: writes_syslog_half(script, "facility"),
+        severity: writes_syslog_half(script, "severity"),
+        names: script.contains("name"),
+    }
+}
+
 /// Decompose a syslog PRI into ECS `log.syslog.{facility,severity}.{code,name}`.
 ///
 /// The PRI is read from wherever the script found it: `log.syslog.priority`
 /// for the generic pipelines, or a vendor field such as
 /// `cisco_nexus.log.priority_number`.
-///
-/// Only the halves the SCRIPT writes are written. A pipeline that sets
-/// `severity.code` with a `set` processor and only the facility here (cisco
-/// nexus) must not gain a severity from us, and none of the vendor scripts
-/// derive the `name` at all -- inventing one is an extra field, not a bonus.
-fn try_syslog_priority(event: &mut Event, script: &str) -> bool {
-    let pri = priority_source(script)
+pub fn syslog_priority(event: &mut Event, shape: &SyslogPriorityScript) -> bool {
+    let pri = shape
+        .source
+        .as_deref()
         .and_then(|field| read_u16(event, field))
         .or_else(|| read_u16(event, "log.syslog.priority"));
 
@@ -10485,9 +10547,9 @@ fn try_syslog_priority(event: &mut Event, script: &str) -> bool {
     };
 
     let (facility, severity) = crate::syslog_pri::decompose(pri);
-    let names = script.contains("name");
+    let names = shape.names;
 
-    if writes_syslog_half(script, "facility") {
+    if shape.facility {
         let _ = event.set("log.syslog.facility.code", json!(facility));
         if let Some(name) = names
             .then(|| crate::syslog_pri::facility_name(facility))
@@ -10496,7 +10558,7 @@ fn try_syslog_priority(event: &mut Event, script: &str) -> bool {
             let _ = event.set("log.syslog.facility.name", json!(name));
         }
     }
-    if writes_syslog_half(script, "severity") {
+    if shape.severity {
         let _ = event.set("log.syslog.severity.code", json!(severity));
         if let Some(name) = names
             .then(|| crate::syslog_pri::severity_name(severity))
@@ -12049,7 +12111,7 @@ pub(crate) enum KnownShape {
     RowLookupWithFallback,
     SchemelessUrl,
     VersionSplit,
-    SyslogPriority,
+    SyslogPriority(SyslogPriorityScript),
     AppendUnique {
         from: &'static str,
         into: &'static str,
@@ -13207,7 +13269,9 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
 
     // Pattern: decompose a syslog PRI into ECS facility and severity.
     if normalised.contains("log.syslog") && normalised.contains("priority") {
-        shapes.push(KnownShape::SyslogPriority);
+        shapes.push(KnownShape::SyslogPriority(parse_syslog_priority(
+            normalised,
+        )));
         return shapes;
     }
 
@@ -13792,7 +13856,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             run_ctx_table_lookup(event, table, key, target)
         }
         KnownShape::KvIntoNamespace(target) => run_kv_into_namespace(event, target),
-        KnownShape::KvIntoFields(target) => run_kv_into_fields(event, target),
+        KnownShape::KvIntoFields(target) => kv_into_fields(event, target),
         KnownShape::CsvMapToArray { source, target } => run_csv_map_to_array(event, source, target),
         KnownShape::TagsAndMarking(shape) => run_tags_and_marking(event, shape),
         KnownShape::DecayWindow(shape) => run_decay_window(event, shape),
@@ -13991,14 +14055,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             true
         }
         KnownShape::SplitTrimCollect => try_split_trim_collect(event, normalised),
-        KnownShape::SumDirections(totals) => {
-            // Every unit the script names, each independently skipped where
-            // its own two operands are not both there.
-            for unit in totals {
-                try_sum_directions(event, unit);
-            }
-            true
-        }
+        KnownShape::SumDirections(totals) => sum_directions(event, totals),
         KnownShape::SumOfFields => try_sum_of_fields(event, normalised),
         KnownShape::DurationToNanos => try_duration_to_nanos(event, normalised),
         KnownShape::FlowDuration => try_flow_duration(event, normalised),
@@ -14013,7 +14070,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::RowLookupWithFallback => try_row_lookup_with_fallback(event, normalised),
         KnownShape::SchemelessUrl => try_schemeless_url(event),
         KnownShape::VersionSplit => try_version_split(event, normalised),
-        KnownShape::SyslogPriority => try_syslog_priority(event, normalised),
+        KnownShape::SyslogPriority(shape) => syslog_priority(event, shape),
         KnownShape::AppendUnique { from, into } => try_append_unique(event, from, into),
         KnownShape::SplitUnquotedKv(split) => run_split_unquoted_kv(event, split),
         KnownShape::ArrayToIndexedObject => try_array_to_indexed_object(event, normalised),
@@ -14062,7 +14119,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::KeysBySuffix(shape) => run_keys_by_suffix(event, shape),
         KnownShape::CollectMapValues => try_collect_map_values(event, normalised),
         KnownShape::GuardedReplace => try_guarded_replace(event, normalised),
-        KnownShape::ScaleField(shape) => run_scale_field(event, shape),
+        KnownShape::ScaleField(shape) => scale_field(event, shape),
         KnownShape::MillisecondLadder(shape) => run_millisecond_ladder(event, shape),
         KnownShape::RoundedScale(shape) => run_rounded_scale(event, shape),
         KnownShape::NanosBetween(shape) => run_nanos_between(event, shape),

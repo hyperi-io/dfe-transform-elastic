@@ -23,6 +23,13 @@ pub use crate::grok_cache::{extract_first_match, extract_first_match_traced};
 
 pub use crate::painless_plan::{PainlessPlan, painless_exec_plan, painless_exec_plan_params};
 
+// Matchers a caller can drive directly, having already resolved the script.
+// Same functions the ladder dispatches to, so the two paths cannot diverge.
+pub use crate::painless_common::{
+    Factor, ScaleField, SyslogPriorityScript, kv_into_fields, scale_field, sum_directions,
+    syslog_priority,
+};
+
 pub use crate::date_formats::{parse_date, parse_date_out};
 
 pub use crate::codegen_api::{
