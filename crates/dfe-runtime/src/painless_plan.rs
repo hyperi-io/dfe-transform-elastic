@@ -282,6 +282,18 @@ mod tests {
                 "drop_empty(event, &DropPolicy { nulls: true, empty_strings: true, \
                  empty_collections: true, prune_lists: true, ..DropPolicy::none() }, None);",
             ),
+            (
+                // tychon gates the copy on ECS's closed vocabulary for
+                // host.os.type, 36 call sites.
+                "def value = ctx.tychon.host?.os?.family?.toLowerCase();\\n\
+                 if (['linux', 'macos', 'unix', 'windows', 'ios', 'android'].contains(value)) {\\n  \
+                 if (ctx.host == null) {\\n    ctx.host = [:];\\n  }\\n  \
+                 if (ctx.host.os == null) {\\n    ctx.host.os = [:];\\n  }\\n  \
+                 ctx.host.os.type = value;\\n}\\n",
+                "allowed_value_copy(event, &AllowedValueCopy::new(\"tychon.host.os.family\", \
+                 true, vec![\"linux\".into(), \"macos\".into(), \"unix\".into(), \
+                 \"windows\".into(), \"ios\".into(), \"android\".into()], \"host.os.type\"));",
+            ),
         ] {
             let plan = PainlessPlan::new(script);
             assert_eq!(

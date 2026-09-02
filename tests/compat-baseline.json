@@ -316,7 +316,7 @@
     "trellix_epo_cloud": { "events": 7, "events_total": 9, "fields_wrong": 0 },
     "trend_micro_vision_one": { "events": 4, "events_total": 46, "fields_wrong": 264 },
     "trendmicro": { "events": 4, "events_total": 6, "fields_wrong": 6 },
-    "tychon": { "events": 1, "events_total": 20, "fields_wrong": 57 },
+    "tychon": { "events": 1, "events_total": 20, "fields_wrong": 38 },
     "varonis": { "events": 0, "events_total": 2, "fields_wrong": 14 },
     "vectra_detect": { "events": 41, "events_total": 57, "fields_wrong": 11 },
     "vectra_rux": { "events": 8, "events_total": 8, "fields_wrong": 0 },

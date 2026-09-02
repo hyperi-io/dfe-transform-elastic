@@ -4059,6 +4059,84 @@ pub fn drop_empty_recursive(event: &mut Event, policy: &DropPolicy) {
 
 /// Prune the subtree at `root`, which is where in the document it sits -- a
 /// recorded path has to read the same as the one a later render walks to.
+/// A value copied only when it is one of a literal set.
+///
+/// tychon reads a vendor `os.family`, lower-cases it, and writes ECS
+/// `host.os.type` only for the six values ECS allows -- the membership test IS
+/// the validation, so copying unconditionally would put a vendor string in a
+/// field with a closed vocabulary.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AllowedValueCopy {
+    source: String,
+    lower: bool,
+    allowed: Vec<String>,
+    target: String,
+}
+
+impl AllowedValueCopy {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(
+        source: impl Into<String>,
+        lower: bool,
+        allowed: Vec<String>,
+        target: impl Into<String>,
+    ) -> Self {
+        Self {
+            source: source.into(),
+            lower,
+            allowed,
+            target: target.into(),
+        }
+    }
+}
+
+/// Read the source, the fold, the allowed set and the target off the script.
+fn parse_allowed_value_copy(script: &str) -> Option<AllowedValueCopy> {
+    use crate::painless_params::clean_path;
+
+    let (head, tail) = script.split_once(" = ctx.")?;
+    let local = identifier_before(head)?;
+    let bound = tail.split(';').next()?;
+    let lower = bound.contains(".toLowerCase()");
+    let source = bound.trim_end_matches(".toLowerCase()").trim();
+
+    let list = script.split_once('[')?.1.split_once("].contains(")?;
+    let allowed: Vec<String> = quoted_all(list.0);
+    if allowed.is_empty() || !list.1.starts_with(local) {
+        return None;
+    }
+
+    let target = painless_path(script.rsplit_once(&format!(" = {local};"))?.0)?;
+    (!source.is_empty()).then(|| AllowedValueCopy::new(clean_path(source), lower, allowed, target))
+}
+
+/// Every single-quoted literal in a fragment.
+fn quoted_all(text: &str) -> Vec<String> {
+    let mut found = Vec::new();
+    let mut rest = text;
+    while let Some((_, after)) = rest.split_once('\'') {
+        let Some((literal, tail)) = after.split_once('\'') else {
+            break;
+        };
+        found.push(literal.to_owned());
+        rest = tail;
+    }
+    found
+}
+
+/// Copy the source onto the target when the allowed set holds its value.
+pub fn allowed_value_copy(event: &mut Event, shape: &AllowedValueCopy) -> bool {
+    let Some(raw) = event.get_as_string(&shape.source) else {
+        return true;
+    };
+    let value = if shape.lower { raw.to_lowercase() } else { raw };
+    if shape.allowed.contains(&value) {
+        let _ = event.set(&shape.target, json!(value));
+    }
+    true
+}
+
 /// Prune the whole document, or one subtree where the script names a root.
 pub fn drop_empty(event: &mut Event, policy: &DropPolicy, root: Option<&str>) -> bool {
     match (root, policy.shallow) {
@@ -12007,6 +12085,8 @@ pub(crate) enum KnownShape {
     },
     KvIntoNamespace(String),
     KvIntoFields(String),
+    /// A value copied only when a literal set holds it.
+    AllowedValueCopy(AllowedValueCopy),
     /// A numbered column map collapsed into a list, in key order.
     CsvMapToArray {
         source: String,
@@ -12518,6 +12598,15 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // `process.name`. The defender pipelines share one copy of this script.
     if normalised.contains("currentNames") && normalised.contains("ctx.process.command_line") {
         shapes.push(KnownShape::ProcessNameFromCommandLine);
+        return shapes;
+    }
+
+    // Pattern: a copy gated on membership of a literal set, which is how a
+    // vendor value reaches an ECS field with a closed vocabulary.
+    if normalised.contains("].contains(")
+        && let Some(shape) = parse_allowed_value_copy(normalised)
+    {
+        shapes.push(KnownShape::AllowedValueCopy(shape));
         return shapes;
     }
 
@@ -13904,6 +13993,20 @@ impl KnownShape {
                     set.join(", "),
                 ))
             }
+            Self::AllowedValueCopy(shape) => {
+                let allowed: Vec<String> = shape
+                    .allowed
+                    .iter()
+                    .map(|value| format!("{}.into()", rust_str(value)))
+                    .collect();
+                Some(format!(
+                    "allowed_value_copy(event, &AllowedValueCopy::new({}, {}, vec![{}], {}));",
+                    rust_str(&shape.source),
+                    shape.lower,
+                    allowed.join(", "),
+                    rust_str(&shape.target),
+                ))
+            }
             Self::KvIntoFields(target) => {
                 Some(format!("kv_into_fields(event, {});", rust_str(target)))
             }
@@ -14008,6 +14111,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         }
         KnownShape::KvIntoNamespace(target) => run_kv_into_namespace(event, target),
         KnownShape::KvIntoFields(target) => kv_into_fields(event, target),
+        KnownShape::AllowedValueCopy(shape) => allowed_value_copy(event, shape),
         KnownShape::CsvMapToArray { source, target } => run_csv_map_to_array(event, source, target),
         KnownShape::TagsAndMarking(shape) => run_tags_and_marking(event, shape),
         KnownShape::DecayWindow(shape) => run_decay_window(event, shape),
