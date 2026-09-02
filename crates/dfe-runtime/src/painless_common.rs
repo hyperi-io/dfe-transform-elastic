@@ -4036,6 +4036,15 @@ pub fn drop_empty_recursive(event: &mut Event, policy: &DropPolicy) {
 
 /// Prune the subtree at `root`, which is where in the document it sits -- a
 /// recorded path has to read the same as the one a later render walks to.
+/// Prune the whole document, or one subtree where the script names a root.
+pub fn drop_empty(event: &mut Event, policy: &DropPolicy, root: Option<&str>) -> bool {
+    match root {
+        None => drop_empty_recursive(event, policy),
+        Some(path) => drop_subtree(event, policy, path),
+    }
+    true
+}
+
 pub(crate) fn drop_subtree(event: &mut Event, policy: &DropPolicy, root: &str) {
     let Some(value) = crate::painless_params::pointer_mut(event, root) else {
         return;
@@ -13797,6 +13806,25 @@ impl KnownShape {
     /// literals, so a wrong emit is impossible rather than merely unlikely.
     pub(crate) fn direct_call(&self) -> Option<String> {
         match self {
+            Self::DropEmpty { policy, root } => {
+                let sentinels: Vec<String> = policy
+                    .sentinels
+                    .iter()
+                    .map(|s| format!("{}.into()", rust_str(s)))
+                    .collect();
+                let root = root
+                    .as_deref()
+                    .map_or_else(|| "None".to_string(), |r| format!("Some({})", rust_str(r)));
+                Some(format!(
+                    "drop_empty(event, &DropPolicy {{ nulls: {}, empty_strings: {}, \
+                     empty_collections: {}, prune_lists: {}, sentinels: vec![{}] }}, {root});",
+                    policy.nulls,
+                    policy.empty_strings,
+                    policy.empty_collections,
+                    policy.prune_lists,
+                    sentinels.join(", "),
+                ))
+            }
             Self::KvIntoFields(target) => {
                 Some(format!("kv_into_fields(event, {});", rust_str(target)))
             }
@@ -13841,13 +13869,7 @@ impl KnownShape {
 #[allow(clippy::too_many_lines)] // One delegation arm per shape; it grows with the shape list.
 pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &KnownShape) -> bool {
     match shape {
-        KnownShape::DropEmpty { policy, root } => {
-            match root {
-                None => drop_empty_recursive(event, policy),
-                Some(path) => drop_subtree(event, policy, path),
-            }
-            true
-        }
+        KnownShape::DropEmpty { policy, root } => drop_empty(event, policy, root.as_deref()),
         KnownShape::SplitCommandLine(script) => {
             crate::painless_windows::run_argv_script(event, script)
         }

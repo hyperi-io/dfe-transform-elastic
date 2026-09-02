@@ -26,8 +26,8 @@ pub use crate::painless_plan::{PainlessPlan, painless_exec_plan, painless_exec_p
 // Matchers a caller can drive directly, having already resolved the script.
 // Same functions the ladder dispatches to, so the two paths cannot diverge.
 pub use crate::painless_common::{
-    Factor, ScaleField, SyslogPriorityScript, kv_into_fields, scale_field, sum_directions,
-    syslog_priority,
+    DropPolicy, Factor, ScaleField, SyslogPriorityScript, drop_empty, kv_into_fields, scale_field,
+    sum_directions, syslog_priority,
 };
 pub use crate::painless_params::{Fold, LookupNormaliseScript, lookup_normalise};
 

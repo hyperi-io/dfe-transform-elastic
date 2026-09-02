@@ -272,6 +272,16 @@ mod tests {
                 "scale_field(event, &ScaleField::new(\"event.duration\", \
                  \"event.duration\", Factor::Double(1000000000.0)));",
             ),
+            (
+                // The commonest shape in the catalogue, 759 call sites.
+                "boolean drop(Object o) { if (o == null || o == '') return true; \
+                 if (o instanceof Map) { ((Map) o).values().removeIf(v -> drop(v)); \
+                 return ((Map) o).size() == 0; } if (o instanceof List) { \
+                 ((List) o).removeIf(v -> drop(v)); return ((List) o).length == 0; } \
+                 return false; } drop(ctx);",
+                "drop_empty(event, &DropPolicy { nulls: true, empty_strings: true, \
+                 empty_collections: true, prune_lists: true, sentinels: vec![] }, None);",
+            ),
         ] {
             let plan = PainlessPlan::new(script);
             assert_eq!(
@@ -293,12 +303,14 @@ mod tests {
                 .direct_call()
                 .is_none()
         );
+        // A params shape declines the whole plan, however expressible its
+        // text shapes are: dispatch tries params first and skips them.
         assert!(
-            PainlessPlan::new("boolean drop(Object o) { if (o == null || o == '') return true; \
-                 if (o instanceof Map) { ((Map) o).values().removeIf(v -> drop(v)); \
-                 return ((Map) o).size() == 0; } if (o instanceof List) { \
-                 ((List) o).removeIf(v -> drop(v)); return ((List) o).length == 0; } \
-                 return false; } drop(ctx);")
+            PainlessPlan::new(
+                "def k = ctx.network.direction.toLowerCase(); def v = params.get(k); \
+                 if (v != null) { ctx.network.direction = v; return; } \
+                 ctx.network.direction = k;"
+            )
             .direct_call()
             .is_none()
         );
