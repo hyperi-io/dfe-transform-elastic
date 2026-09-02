@@ -4059,6 +4059,51 @@ pub fn drop_empty_recursive(event: &mut Event, policy: &DropPolicy) {
 
 /// Prune the subtree at `root`, which is where in the document it sits -- a
 /// recorded path has to read the same as the one a later render walks to.
+/// A number rendered as an octal string, which is how a file mode reads.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct OctalString {
+    source: String,
+    target: String,
+}
+
+impl OctalString {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(source: impl Into<String>, target: impl Into<String>) -> Self {
+        Self {
+            source: source.into(),
+            target: target.into(),
+        }
+    }
+}
+
+/// `int t = (int)ctx.<source>; ctx.<target> = Integer.toOctalString(t);`
+fn parse_octal_string(script: &str) -> Option<OctalString> {
+    use crate::painless_params::clean_path;
+
+    let (head, tail) = script.split_once("Integer.toOctalString(")?;
+    let local = tail.split(')').next()?.trim();
+    let bound = script.split_once(&format!(" {local} = "))?.1;
+    let source = painless_path(bound.split(';').next()?)?;
+    let target = painless_path(head)?;
+    (!source.is_empty() && !target.is_empty())
+        .then(|| OctalString::new(source, clean_path(&target)))
+}
+
+/// Write the source as octal, the way Painless's 32-bit `(int)` cast renders.
+pub fn octal_string(event: &mut Event, shape: &OctalString) -> bool {
+    let Some(value) = event.get_as_i64(&shape.source) else {
+        return true;
+    };
+    // `(int)` truncates to 32 bits before `toOctalString`, which then reads
+    // the result unsigned -- a wider or signed rendering diverges on any
+    // negative the vendor happens to send.
+    #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+    let truncated = value as i32 as u32;
+    let _ = event.set(&shape.target, json!(format!("{truncated:o}")));
+    true
+}
+
 /// A value copied only when it is one of a literal set.
 ///
 /// tychon reads a vendor `os.family`, lower-cases it, and writes ECS
@@ -12087,6 +12132,8 @@ pub(crate) enum KnownShape {
     KvIntoFields(String),
     /// A value copied only when a literal set holds it.
     AllowedValueCopy(AllowedValueCopy),
+    /// A number written back as an octal string.
+    OctalString(OctalString),
     /// A numbered column map collapsed into a list, in key order.
     CsvMapToArray {
         source: String,
@@ -12598,6 +12645,14 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // `process.name`. The defender pipelines share one copy of this script.
     if normalised.contains("currentNames") && normalised.contains("ctx.process.command_line") {
         shapes.push(KnownShape::ProcessNameFromCommandLine);
+        return shapes;
+    }
+
+    // Pattern: a number written back as octal, which is how a file mode reads.
+    if normalised.contains("Integer.toOctalString(")
+        && let Some(shape) = parse_octal_string(normalised)
+    {
+        shapes.push(KnownShape::OctalString(shape));
         return shapes;
     }
 
@@ -14007,6 +14062,11 @@ impl KnownShape {
                     rust_str(&shape.target),
                 ))
             }
+            Self::OctalString(shape) => Some(format!(
+                "octal_string(event, &OctalString::new({}, {}));",
+                rust_str(&shape.source),
+                rust_str(&shape.target),
+            )),
             Self::KvIntoFields(target) => {
                 Some(format!("kv_into_fields(event, {});", rust_str(target)))
             }
@@ -14112,6 +14172,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::KvIntoNamespace(target) => run_kv_into_namespace(event, target),
         KnownShape::KvIntoFields(target) => kv_into_fields(event, target),
         KnownShape::AllowedValueCopy(shape) => allowed_value_copy(event, shape),
+        KnownShape::OctalString(shape) => octal_string(event, shape),
         KnownShape::CsvMapToArray { source, target } => run_csv_map_to_array(event, source, target),
         KnownShape::TagsAndMarking(shape) => run_tags_and_marking(event, shape),
         KnownShape::DecayWindow(shape) => run_decay_window(event, shape),
@@ -19165,6 +19226,27 @@ def event_timezone = get_timezone(ctx);
             ]))
         );
         assert_eq!(invalid.get("misp.attribute.decayed"), Some(&json!(true)));
+    }
+
+    /// Verbatim from `pipelines/jamf_compliance_reporter/log/default.yml`: a
+    /// file mode is stored as a number and reads as octal.
+    #[test]
+    fn a_file_mode_is_written_back_as_octal() {
+        let script = "int temp = (int)ctx.json.file_access_mode;\n\
+            ctx.jamf_compliance_reporter.log.attributes.file.access_mode = \
+            Integer.toOctalString(temp);\n";
+
+        let mut event = Event::new(json!({ "json": { "file_access_mode": 33188 } }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get_str("jamf_compliance_reporter.log.attributes.file.access_mode"),
+            Some("100644")
+        );
+
+        // Absent source leaves the target alone rather than writing a zero.
+        let mut empty = Event::new(json!({ "json": {} }));
+        assert!(try_known_painless(&mut empty, script));
+        assert!(!empty.has("jamf_compliance_reporter.log.attributes.file.access_mode"));
     }
 
     /// Verbatim from both `pipelines/ti_misp/threat/default.yml` and

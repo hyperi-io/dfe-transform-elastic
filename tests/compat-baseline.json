@@ -163,7 +163,7 @@
     "ironscales": { "events": 0, "events_total": 3, "fields_wrong": 5 },
     "island_browser": { "events": 32, "events_total": 42, "fields_wrong": 16 },
     "istio": { "events": 21, "events_total": 21, "fields_wrong": 0 },
-    "jamf_compliance_reporter": { "events": 40, "events_total": 53, "fields_wrong": 15 },
+    "jamf_compliance_reporter": { "events": 44, "events_total": 53, "fields_wrong": 10 },
     "jamf_pro": { "events": 5, "events_total": 31, "fields_wrong": 58 },
     "jamf_protect": { "events": 14, "events_total": 64, "fields_wrong": 1389 },
     "jumpcloud": { "events": 4, "events_total": 4, "fields_wrong": 0 },
