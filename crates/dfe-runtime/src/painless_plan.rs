@@ -65,6 +65,25 @@ impl PainlessPlan {
         self.params.is_some() || !self.known.is_empty()
     }
 
+    /// The runner calls that reproduce this script, for a generator emitting
+    /// them in place of the script itself.
+    ///
+    /// `None` unless the WHOLE plan is expressible. Dispatch runs the params
+    /// shape first and skips the text shapes when it succeeds, so emitting a
+    /// half-resolved plan would run branches the ladder would not.
+    ///
+    /// A params shape declines the whole plan: every params runner still reads
+    /// the script text or the `params` block at run time, so none of them can
+    /// be reproduced from extracted parts alone.
+    #[cfg(feature = "codegen")]
+    #[must_use]
+    pub fn direct_call(&self) -> Option<Vec<String>> {
+        if !self.matches() || self.params.is_some() {
+            return None;
+        }
+        self.known.iter().map(KnownShape::direct_call).collect()
+    }
+
     /// The matchers this text binds to, in dispatch order, each rendered with
     /// whatever its trigger's parse recovered.
     ///
@@ -230,6 +249,59 @@ mod tests {
             cached_painless!("ctx.a = ctx.b + ctx.c;")
         }
         assert!(std::ptr::eq(site(), site()));
+    }
+
+    /// The four shapes a generator can emit today, each rendering to the call
+    /// the ladder would have made. Verbatim scripts from
+    /// `pipelines/fortinet_fortiproxy/log/default.yml`, which is the source
+    /// the direct-emit spike regenerates.
+    #[cfg(feature = "codegen")]
+    #[test]
+    fn an_expressible_plan_renders_the_call_the_ladder_would_make() {
+        for (script, expected) in [
+            (
+                "if (ctx.log?.syslog?.priority == null) {\\n  return;\\n} \
+                 def severity = [:]; severity['code'] = ctx.log.syslog.priority&0x7; \
+                 ctx.log.syslog['severity'] = severity; def facility = [:]; \
+                 facility['code'] = ctx.log.syslog.priority>>3; \
+                 ctx.log.syslog['facility'] = facility;",
+                "syslog_priority(event, &SyslogPriorityScript::new(None, true, true, false));",
+            ),
+            (
+                "ctx.event['duration'] = ctx.event.duration * 1e9;",
+                "scale_field(event, &ScaleField::new(\"event.duration\", \
+                 \"event.duration\", Factor::Double(1000000000.0)));",
+            ),
+        ] {
+            let plan = PainlessPlan::new(script);
+            assert_eq!(
+                plan.direct_call().as_deref(),
+                Some([expected.to_string()].as_slice()),
+                "script rendered wrong: {script}"
+            );
+        }
+    }
+
+    /// A script no matcher claims, and one whose matcher still needs the text,
+    /// both decline -- the call site keeps the ladder rather than emitting a
+    /// call that would run something else.
+    #[cfg(feature = "codegen")]
+    #[test]
+    fn an_inexpressible_plan_declines() {
+        assert!(
+            PainlessPlan::new("def splitFancy(String input) { return input; }")
+                .direct_call()
+                .is_none()
+        );
+        assert!(
+            PainlessPlan::new("boolean drop(Object o) { if (o == null || o == '') return true; \
+                 if (o instanceof Map) { ((Map) o).values().removeIf(v -> drop(v)); \
+                 return ((Map) o).size() == 0; } if (o instanceof List) { \
+                 ((List) o).removeIf(v -> drop(v)); return ((List) o).length == 0; } \
+                 return false; } drop(ctx);")
+            .direct_call()
+            .is_none()
+        );
     }
 
     /// A drop-empty plan carries its policy, parsed once.

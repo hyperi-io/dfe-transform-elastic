@@ -13780,6 +13780,59 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     shapes
 }
 
+/// A Rust string literal, escaped for the generated source.
+#[cfg(feature = "codegen")]
+fn rust_str(value: &str) -> String {
+    format!("{value:?}")
+}
+
+#[cfg(feature = "codegen")]
+impl KnownShape {
+    /// The runner call that reproduces this shape, for a generator emitting it
+    /// directly instead of the script.
+    ///
+    /// `None` means the shape is not expressible yet and the call site keeps
+    /// the ladder. This is an ALLOWLIST: a shape is added here only once its
+    /// runner takes extracted params and its payload can be written as
+    /// literals, so a wrong emit is impossible rather than merely unlikely.
+    pub(crate) fn direct_call(&self) -> Option<String> {
+        match self {
+            Self::KvIntoFields(target) => {
+                Some(format!("kv_into_fields(event, {});", rust_str(target)))
+            }
+            Self::SumDirections(units) => {
+                let list: Vec<String> = units.iter().map(|unit| rust_str(unit)).collect();
+                Some(format!(
+                    "sum_directions(event, &[{}]);",
+                    list.join(", ")
+                ))
+            }
+            Self::ScaleField(shape) => {
+                let factor = match shape.factor {
+                    Factor::Long(n) => format!("Factor::Long({n})"),
+                    Factor::Double(n) => format!("Factor::Double({n:?})"),
+                };
+                Some(format!(
+                    "scale_field(event, &ScaleField::new({}, {}, {factor}));",
+                    rust_str(&shape.source),
+                    rust_str(&shape.target),
+                ))
+            }
+            Self::SyslogPriority(shape) => {
+                let source = shape
+                    .source
+                    .as_deref()
+                    .map_or_else(|| "None".to_string(), |s| format!("Some({}.into())", rust_str(s)));
+                Some(format!(
+                    "syslog_priority(event, &SyslogPriorityScript::new({source}, {}, {}, {}));",
+                    shape.facility, shape.severity, shape.names,
+                ))
+            }
+            _ => None,
+        }
+    }
+}
+
 /// Run one matcher branch against one event.
 ///
 /// Returns whether the script counts as HANDLED, with each branch's semantics

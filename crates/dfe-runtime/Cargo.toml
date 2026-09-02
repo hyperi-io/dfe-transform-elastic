@@ -22,6 +22,10 @@ workspace = true
 
 [features]
 testutil = ["dep:serde_yaml_ng"]
+# The generator resolves a script to its runner call at generation time by
+# asking this crate, so the two paths cannot diverge. The service never
+# enables it and never compiles the emitters.
+codegen = []
 
 [dependencies]
 dfe-parse = { workspace = true }

@@ -197,7 +197,9 @@ chrono = { version = ">=0.4", features = ["serde"] }
 chrono-tz = { version = ">=0.10, <0.11" }
 
 # GeoIP enrichment (mmap for long-running apps, simdutf8 for SIMD UTF-8 validation)
-maxminddb = { version = ">=0.24", features = ["mmap", "simdutf8"] }
+# Upper bound because 0.x minors break: 0.30 turned `Reader::metadata` from a
+# field into a method, which `enrichment/geoip.rs` reads as a field.
+maxminddb = { version = ">=0.27, <0.28", features = ["mmap", "simdutf8"] }
 
 # Error handling
 thiserror = ">=2.0"
