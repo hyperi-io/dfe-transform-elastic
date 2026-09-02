@@ -38,10 +38,14 @@
 
 use std::path::{Path, PathBuf};
 
-/// A ladder: the file it lives in, its dispatch functions in call order --
-/// `params_shape` falls through to `params_shape_tail`, so both are listed,
-/// in that order -- the text that opens a pushed/returned shape, and the
-/// enum's own `Name::` prefix.
+/// A ladder: the file it lives in, its dispatch functions in call order, the
+/// text that opens a pushed/returned shape, and the enum's own `Name::` prefix.
+///
+/// EVERY function the ladder falls through to has to be listed, in order. The
+/// params ladder runs `params_shape` -> `params_shape_tail` ->
+/// `params_shape_rest`, and while the last was missing its shapes were
+/// dispatched but unpinned -- the lock read as a guard over the whole ladder
+/// and covered two thirds of it.
 struct Ladder {
     name: &'static str,
     source: &'static str,
@@ -61,7 +65,7 @@ const LADDERS: &[Ladder] = &[
     Ladder {
         name: "params_shape",
         source: "src/painless_params.rs",
-        functions: &["params_shape", "params_shape_tail"],
+        functions: &["params_shape", "params_shape_tail", "params_shape_rest"],
         push_prefix: "return Some(",
         variant_prefix: "ParamsShape::",
     },

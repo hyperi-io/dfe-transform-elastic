@@ -222,4 +222,10 @@
  53 Replace
  54 AddUniqueRow
  55 FrameworkPreference
+ 56 NormalisedLookup
+ 57 StringifiedLookup
+ 58 LookupNormalise
+ 59 GuardedLookup
+ 60 MergeRowOrFallback
+ 61 RowOrDefaults
 
