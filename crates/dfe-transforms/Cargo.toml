@@ -37,7 +37,9 @@ csv = { workspace = true }
 
 [dev-dependencies]
 criterion = { workspace = true }
-dfe-runtime = { workspace = true, features = ["testutil"] }
+# `codegen` so `painless_binding` can ask a plan whether the generator could
+# emit it directly, rather than a second copy of the allowlist drifting here.
+dfe-runtime = { workspace = true, features = ["testutil", "codegen"] }
 # `grok_compiles` proves every pattern reaches one of the two engines the
 # runtime dispatches over, so it has to be able to try both itself.
 fancy-regex = { workspace = true }

@@ -120,6 +120,10 @@ fn transforms_root() -> PathBuf {
 /// What one distinct script binds to, and where it is used.
 struct Script {
     binding: Vec<String>,
+    /// Whether the generator could emit this script's runners instead of the
+    /// script. Asked of the plan rather than kept as a list here, so the
+    /// allowlist has one home.
+    direct: bool,
     chars: usize,
     head: String,
     uses: Vec<(String, usize)>,
@@ -146,6 +150,7 @@ fn every_call_site_reports_the_matcher_it_binds_to() {
                 let plan = PainlessPlan::new(&site.script);
                 Script {
                     binding: plan.binding(),
+                    direct: plan.direct_call().is_some(),
                     chars: plan.text().chars().count(),
                     head: plan.text().chars().take(120).collect(),
                     uses: Vec::new(),
@@ -175,6 +180,15 @@ fn every_call_site_reports_the_matcher_it_binds_to() {
         "  unbound: {} distinct, {unbound_sites} sites",
         unbound.len()
     );
+    let direct_sites: usize = scripts
+        .values()
+        .filter(|s| s.direct)
+        .map(|s| s.uses.len())
+        .sum();
+    println!(
+        "  the generator can emit {direct_sites} sites directly ({}%)",
+        direct_sites * 100 / sites.len()
+    );
     let mut ranked: Vec<(&&str, &usize)> = families.iter().collect();
     ranked.sort_by(|a, b| b.1.cmp(a.1));
     for (name, count) in ranked.iter().take(15) {
@@ -190,6 +204,7 @@ fn every_call_site_reports_the_matcher_it_binds_to() {
                     "chars": script.chars,
                     "head": script.head,
                     "binding": script.binding,
+                    "direct": script.direct,
                     "uses": script.uses.iter()
                         .map(|(file, line)| json!({ "file": file, "line": line }))
                         .collect::<Vec<_>>(),
@@ -201,6 +216,7 @@ fn every_call_site_reports_the_matcher_it_binds_to() {
             "distinct": scripts.len(),
             "unbound_distinct": unbound.len(),
             "unbound_sites": unbound_sites,
+            "direct_sites": direct_sites,
             "families": families,
             "scripts": rows,
         });
