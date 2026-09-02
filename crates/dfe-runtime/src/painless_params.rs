@@ -221,6 +221,8 @@ pub(crate) enum ParamsShape {
     LookupMerge,
     LookupColumns,
     LookupNormalise(LookupNormaliseScript),
+    /// A params lookup that writes nothing when the table misses.
+    GuardedLookup(GuardedLookupScript),
     IndexedLookup,
     Scale,
     Replace,
@@ -752,6 +754,15 @@ fn params_shape_rest(normalised: &str) -> Option<ParamsShape> {
         return Some(ParamsShape::LookupNormalise(shape));
     }
 
+    // Pattern: the same lookup with no fallback, guarded on the table holding
+    // the key. AFTER both `LookupNormalise` spellings, so it takes only what
+    // they decline -- a miss must leave the target absent, not written back.
+    if normalised.contains("params.containsKey(")
+        && let Some(shape) = parse_guarded_lookup(normalised)
+    {
+        return Some(ParamsShape::GuardedLookup(shape));
+    }
+
     // Pattern: a NAMED params table's row merged WHOLE onto ctx, with further
     // rows of the same table standing in for a key that missed. The unnamed
     // table is `LookupMerge` above, which this cannot reach past.
@@ -1182,6 +1193,55 @@ fn run_csv_fingerprint_provider(
     true
 }
 
+/// Where a guarded params lookup reads its key and writes its answer.
+///
+/// `LookupNormalise` is the same idea with a fallback: it writes the KEY back
+/// when the table misses. This one writes nothing, so they cannot share a
+/// runner -- a miss here must leave the target absent.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct GuardedLookupScript {
+    key: String,
+    target: String,
+}
+
+impl GuardedLookupScript {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(key: impl Into<String>, target: impl Into<String>) -> Self {
+        Self {
+            key: key.into(),
+            target: target.into(),
+        }
+    }
+}
+
+/// `if (params.containsKey(k)) { ctx.<target> = params.get(k); }`
+fn parse_guarded_lookup(script: &str) -> Option<GuardedLookupScript> {
+    // Balanced, because the key is `obj.toString()` and splitting on the first
+    // `)` cuts inside that call rather than after the argument.
+    let expr = last_call_argument(script, "params.containsKey(")?;
+    let local = expr.trim().trim_end_matches(".toString()").trim();
+    let bound = script.split_once(&format!(" {local} = ctx."))?.1;
+    let key = clean_path(bound.split([';', '\n']).next()?.trim());
+    let target = ctx_writes(script).last().map(|(path, _)| path.clone())?;
+    (!key.is_empty() && !target.is_empty()).then(|| GuardedLookupScript::new(key, target))
+}
+
+/// Write the table's row for the key, and nothing at all when it misses.
+pub fn guarded_lookup(
+    event: &mut Event,
+    shape: &GuardedLookupScript,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(key) = event.get_as_string(&shape.key) else {
+        return true;
+    };
+    if let Some(row) = params.get(&key) {
+        let _ = event.set(&shape.target, row.clone());
+    }
+    true
+}
+
 /// Run the matcher a shape names, against one event.
 #[allow(clippy::too_many_lines)] // One delegation arm per shape; it grows with the shape list.
 pub(crate) fn run_params_shape(
@@ -1362,6 +1422,7 @@ pub(crate) fn run_params_shape(
             run_stringified_lookup(event, source, target, params)
         }
         ParamsShape::LookupNormalise(shape) => lookup_normalise(event, shape, normalised, params),
+        ParamsShape::GuardedLookup(shape) => guarded_lookup(event, shape, params),
         ParamsShape::IndexedLookup => try_indexed_lookup(event, normalised, params),
         ParamsShape::Scale => try_scale(event, normalised, params),
         ParamsShape::Replace => try_replace(event, normalised, params),
@@ -6070,6 +6131,26 @@ mod tests {
             listed.get_str("_csv_map.traffic_direction"),
             Some("inbound")
         );
+    }
+
+    /// Verbatim from `pipelines/symantec_endpoint_security/event/default.yml`:
+    /// a table lookup that writes NOTHING when the key misses, where
+    /// `LookupNormalise` would write the key back.
+    #[test]
+    fn a_guarded_lookup_writes_only_on_a_hit() {
+        let script = "def obj = ctx.ses.file.type_id;\nif (params.containsKey(obj.toString())) {\n  \
+            def type = params.get(obj.toString());\n  ctx.ses.file.type_value = type\n}";
+        let params = json!({ "1": "File", "2": "Folder" });
+
+        let mut hit = Event::new(json!({ "ses": { "file": { "type_id": 1 } } }));
+        assert!(try_params_painless(&mut hit, script, &params));
+        assert_eq!(hit.get_str("ses.file.type_value"), Some("File"));
+
+        // A key the table misses leaves the target absent -- writing the key
+        // back is the other shape's behaviour, not this one's.
+        let mut miss = Event::new(json!({ "ses": { "file": { "type_id": 99 } } }));
+        assert!(try_params_painless(&mut miss, script, &params));
+        assert!(!miss.has("ses.file.type_value"));
     }
 
     /// Verbatim from `pipelines/stan/log/default.yml`: the abbreviation and
