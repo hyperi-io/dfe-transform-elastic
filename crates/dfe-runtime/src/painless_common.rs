@@ -4059,6 +4059,49 @@ pub fn drop_empty_recursive(event: &mut Event, policy: &DropPolicy) {
 
 /// Prune the subtree at `root`, which is where in the document it sits -- a
 /// recorded path has to read the same as the one a later render walks to.
+/// A value appended to a list the script first ensures exists.
+///
+/// The `?:` preamble that builds each level is ceremony [`Event::append`] does
+/// for free -- it creates the array and the path it hangs from -- so only the
+/// two paths matter.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct EnsureAppend {
+    source: String,
+    target: String,
+}
+
+impl EnsureAppend {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(source: impl Into<String>, target: impl Into<String>) -> Self {
+        Self {
+            source: source.into(),
+            target: target.into(),
+        }
+    }
+}
+
+/// `ctx.<target> = ctx.<target> ?: []; ctx.<target>.add(ctx.<source>);`
+fn parse_ensure_append(script: &str) -> Option<EnsureAppend> {
+    let (head, tail) = script.rsplit_once(" ?: [];")?;
+    let target = painless_path(head)?;
+    let argument = tail.split_once(".add(")?.1.split(')').next()?;
+    // A nested call in the argument is a different shape, not this one.
+    if argument.contains('(') {
+        return None;
+    }
+    let source = painless_path(argument)?;
+    (!source.is_empty() && !target.is_empty()).then(|| EnsureAppend::new(source, target))
+}
+
+/// Append the source onto the target list, creating it where it is absent.
+pub fn ensure_append(event: &mut Event, shape: &EnsureAppend) -> bool {
+    if let Some(value) = event.get(&shape.source).cloned() {
+        let _ = event.append(&shape.target, value);
+    }
+    true
+}
+
 /// A number rendered as an octal string, which is how a file mode reads.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct OctalString {
@@ -12134,6 +12177,8 @@ pub(crate) enum KnownShape {
     AllowedValueCopy(AllowedValueCopy),
     /// A number written back as an octal string.
     OctalString(OctalString),
+    /// A value appended to a list the script first ensures exists.
+    EnsureAppend(EnsureAppend),
     /// A numbered column map collapsed into a list, in key order.
     CsvMapToArray {
         source: String,
@@ -12645,6 +12690,15 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // `process.name`. The defender pipelines share one copy of this script.
     if normalised.contains("currentNames") && normalised.contains("ctx.process.command_line") {
         shapes.push(KnownShape::ProcessNameFromCommandLine);
+        return shapes;
+    }
+
+    // Pattern: a value appended to a list the script builds level by level.
+    if normalised.contains(" ?: [];")
+        && normalised.contains(".add(")
+        && let Some(shape) = parse_ensure_append(normalised)
+    {
+        shapes.push(KnownShape::EnsureAppend(shape));
         return shapes;
     }
 
@@ -14062,6 +14116,11 @@ impl KnownShape {
                     rust_str(&shape.target),
                 ))
             }
+            Self::EnsureAppend(shape) => Some(format!(
+                "ensure_append(event, &EnsureAppend::new({}, {}));",
+                rust_str(&shape.source),
+                rust_str(&shape.target),
+            )),
             Self::OctalString(shape) => Some(format!(
                 "octal_string(event, &OctalString::new({}, {}));",
                 rust_str(&shape.source),
@@ -14173,6 +14232,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::KvIntoFields(target) => kv_into_fields(event, target),
         KnownShape::AllowedValueCopy(shape) => allowed_value_copy(event, shape),
         KnownShape::OctalString(shape) => octal_string(event, shape),
+        KnownShape::EnsureAppend(shape) => ensure_append(event, shape),
         KnownShape::CsvMapToArray { source, target } => run_csv_map_to_array(event, source, target),
         KnownShape::TagsAndMarking(shape) => run_tags_and_marking(event, shape),
         KnownShape::DecayWindow(shape) => run_decay_window(event, shape),
@@ -19226,6 +19286,34 @@ def event_timezone = get_timezone(ctx);
             ]))
         );
         assert_eq!(invalid.get("misp.attribute.decayed"), Some(&json!(true)));
+    }
+
+    /// Verbatim from `pipelines/ti_opencti/indicator/default.yml`: three
+    /// levels built with `?:` so the fourth can be appended to.
+    #[test]
+    fn a_value_appends_to_a_list_the_script_builds_first() {
+        let script = "ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = \
+            ctx.threat.indicator ?: [:];\nctx.threat.indicator.as = \
+            ctx.threat.indicator.as ?: [];\nctx.threat.indicator.as.add(ctx._tmp_as);\n";
+
+        // Nothing of the path exists: append builds all of it.
+        let mut fresh = Event::new(json!({ "_tmp_as": { "number": 64512 } }));
+        assert!(try_known_painless(&mut fresh, script));
+        assert_eq!(
+            fresh.get("threat.indicator.as"),
+            Some(&json!([{ "number": 64512 }]))
+        );
+
+        // An existing list is appended to, not replaced.
+        let mut held = Event::new(json!({
+            "_tmp_as": { "number": 2 },
+            "threat": { "indicator": { "as": [{ "number": 1 }] } }
+        }));
+        assert!(try_known_painless(&mut held, script));
+        assert_eq!(
+            held.get("threat.indicator.as"),
+            Some(&json!([{ "number": 1 }, { "number": 2 }]))
+        );
     }
 
     /// Verbatim from `pipelines/jamf_compliance_reporter/log/default.yml`: a
