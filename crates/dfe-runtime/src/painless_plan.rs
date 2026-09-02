@@ -64,6 +64,20 @@ impl PainlessPlan {
     pub fn matches(&self) -> bool {
         self.params.is_some() || !self.known.is_empty()
     }
+
+    /// The matchers this text binds to, in dispatch order, each rendered with
+    /// whatever its trigger's parse recovered.
+    ///
+    /// One list rather than the two fields, because dispatch tries the params
+    /// shape first and the order is the answer.
+    #[must_use]
+    pub fn binding(&self) -> Vec<String> {
+        self.params
+            .iter()
+            .map(|shape| format!("{shape:?}"))
+            .chain(self.known.iter().map(|shape| format!("{shape:?}")))
+            .collect()
+    }
 }
 
 /// Execute a planned Painless script that carries no `params` block.
