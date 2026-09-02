@@ -6170,21 +6170,40 @@ pub fn sum_directions(event: &mut Event, units: &[&str]) -> bool {
 /// Skips when either side is absent or non-numeric: Elastic's script would
 /// throw, and its `if` gates on both being a Number. The addition saturates,
 /// since both operands came off the wire.
-fn try_sum_of_fields(event: &mut Event, script: &str) -> bool {
+/// `ctx.<target> = ctx.<left> + ctx.<right>`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SumOfFields {
+    target: String,
+    left: String,
+    right: String,
+}
+
+impl SumOfFields {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(
+        target: impl Into<String>,
+        left: impl Into<String>,
+        right: impl Into<String>,
+    ) -> Self {
+        Self {
+            target: target.into(),
+            left: left.into(),
+            right: right.into(),
+        }
+    }
+}
+
+fn parse_sum_of_fields(script: &str) -> Option<SumOfFields> {
     use crate::painless_params::clean_path;
 
     // The assignment is the one whose RHS holds the addition: taking the
     // script's FIRST `=` reads a preamble that creates the target container,
     // and the sum is never found.
-    let Some(sum_at) = script.find(" + ctx.") else {
-        return false;
-    };
-    let Some(assign) = script[..sum_at].rfind(" = ") else {
-        return false;
-    };
-    let Some(target) = script[..assign].trim().rsplit("ctx.").next() else {
-        return false;
-    };
+    let sum_at = script.find(" + ctx.")?;
+    let assign = script[..sum_at].rfind(" = ")?;
+    let target = script[..assign].trim().rsplit("ctx.").next()?;
+
     let rhs = &script[assign + " = ".len()..];
     let end = rhs.find([';', '\n']).unwrap_or(rhs.len());
     let rhs = rhs[..end].trim();
@@ -6192,19 +6211,22 @@ fn try_sum_of_fields(event: &mut Event, script: &str) -> bool {
         .strip_prefix('(')
         .and_then(|inner| inner.strip_suffix(')'))
         .unwrap_or(rhs);
-    let Some((left, right)) = rhs.split_once(" + ") else {
-        return false;
-    };
-    let (Some(left), Some(right)) = (
-        left.trim().strip_prefix("ctx."),
-        right.trim().strip_prefix("ctx."),
-    ) else {
-        return false;
-    };
+    let (left, right) = rhs.split_once(" + ")?;
+    let left = left.trim().strip_prefix("ctx.")?;
+    let right = right.trim().strip_prefix("ctx.")?;
 
+    Some(SumOfFields::new(
+        clean_path(target),
+        clean_path(left),
+        clean_path(right),
+    ))
+}
+
+/// Add two fields into a third, leaving the target alone where either is absent.
+pub fn sum_of_fields(event: &mut Event, shape: &SumOfFields) -> bool {
     let (Some(a), Some(b)) = (
-        event.get(&clean_path(left)).cloned(),
-        event.get(&clean_path(right)).cloned(),
+        event.get(&shape.left).cloned(),
+        event.get(&shape.right).cloned(),
     ) else {
         return true;
     };
@@ -6218,7 +6240,7 @@ fn try_sum_of_fields(event: &mut Event, script: &str) -> bool {
         };
         json!(x + y)
     };
-    let _ = event.set(&clean_path(target), total);
+    let _ = event.set(&shape.target, total);
     true
 }
 
@@ -12522,7 +12544,7 @@ pub(crate) enum KnownShape {
     },
     SplitTrimCollect,
     SumDirections(Vec<&'static str>),
-    SumOfFields,
+    SumOfFields(Box<SumOfFields>),
     DurationToNanos,
     FlowDuration,
     ParallelDispatch,
@@ -13629,9 +13651,12 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
-    // Pattern: one ctx field as the sum of two others.
-    if normalised.contains(" + ctx.") {
-        shapes.push(KnownShape::SumOfFields);
+    // Pattern: one ctx field as the sum of two others. Gated on the parse, so a
+    // script that merely adds two fields somewhere no longer claims the shape.
+    if normalised.contains(" + ctx.")
+        && let Some(shape) = parse_sum_of_fields(normalised)
+    {
+        shapes.push(KnownShape::SumOfFields(Box::new(shape)));
     }
 
     // Pattern: seconds to nanoseconds for event.duration.
@@ -14678,7 +14703,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         }
         KnownShape::SplitTrimCollect => try_split_trim_collect(event, normalised),
         KnownShape::SumDirections(totals) => sum_directions(event, totals),
-        KnownShape::SumOfFields => try_sum_of_fields(event, normalised),
+        KnownShape::SumOfFields(shape) => sum_of_fields(event, shape),
         KnownShape::DurationToNanos => try_duration_to_nanos(event, normalised),
         KnownShape::FlowDuration => try_flow_duration(event, normalised),
         KnownShape::ParallelDispatch => try_parallel_dispatch(event, normalised),
@@ -19582,6 +19607,32 @@ def event_timezone = get_timezone(ctx);
         let mut empty = Event::new(json!({ "json": {} }));
         assert!(try_known_painless(&mut empty, script));
         assert!(!empty.has("jamf_compliance_reporter.log.attributes.file.access_mode"));
+    }
+
+    /// The sum still binds, and Painless keeps two integers integral.
+    #[test]
+    fn a_field_is_the_sum_of_two_others() {
+        let script = "ctx.total = ctx.a + ctx.b;";
+
+        let mut event = Event::new(json!({ "a": 3, "b": 4 }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get("total").and_then(serde_json::Value::as_i64),
+            Some(7)
+        );
+
+        // An absent operand leaves the target alone rather than writing a zero.
+        let mut partial = Event::new(json!({ "a": 3 }));
+        assert!(try_known_painless(&mut partial, script));
+        assert!(!partial.has("total"));
+    }
+
+    /// An addition the parse cannot read is no longer claimed. It used to bind
+    /// on `" + ctx."` alone, which any script adding two fields anywhere
+    /// satisfies.
+    #[test]
+    fn an_addition_that_is_not_an_assignment_declines() {
+        assert!(parse_sum_of_fields("if (ctx.a + ctx.b > 10) { ctx.big = true; }").is_none());
     }
 
     /// The chain still binds and still takes the first matching arm.
