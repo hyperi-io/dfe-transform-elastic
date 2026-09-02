@@ -50,27 +50,51 @@ The corpus gives JSON types only. It cannot separate `keyword` from `text`
 (a lowcardinality dimension against a fulltext index), or `long` from
 `scaled_float` — and those distinctions are exactly what drive the DDL.
 
-Types come from the integrations' `fields/*.yml`, pinned to the
-`integrations_sha` that every corpus `meta.json` already records, so a generated
-schema and the parity corpus describe the same upstream commit.
+Types come from the integrations' `fields/*.yml`. The clone at
+`/projects/elastic-stuff/integrations` already sits at
+`2c934eb5223bdfcf0ea0db9e3230154933352bda`, the same `integrations_sha` every
+corpus `meta.json` records, so a generated schema and the parity corpus describe
+the same upstream commit without vendoring anything.
 
-`fields/*.yml` also carries `external: ecs`, which is the only reliable
-ECS/vendor discriminator. Inferring it from the top-level namespace is wrong in
-both directions: `process.*` is ECS *and* vendor-extended, and some vendor
-namespaces collide with ECS names.
+`external: ecs` there is the only reliable ECS/vendor discriminator. Inferring
+it from the top-level namespace is wrong in both directions: `process.*` is ECS
+*and* vendor-extended, and some vendor namespaces collide with ECS names.
 
-## Port the importer, do not fork it
+### The two layers have different sources, and only one is complete
 
-`dfe-engine`'s `services/schema/elastic_schema_service.py` walks
-`mappings.properties` into `SchemaColumn`s. Two pieces must stay identical
-across the Python and the Rust port, or the generated views break against the
-generated tables:
+- **Vendor sub-schema** — fully derivable from a data stream's `fields.yml`,
+  which declares the package namespace as nested `type: group` trees with types.
+  No further dependency.
+- **ECS meta schema** — the integrations clone gives the ECS field *names* a
+  package uses (22,037 `external: ecs` declarations across 1,556 files) and
+  sometimes `dimension: true`, but **no types**. Types need the ECS spec
+  (`elastic/ecs`, `generated/ecs/ecs_flat.yml`), which is not on disk.
+
+Not every data stream declares its ECS fields either: `aws.cloudtrail` has no
+`ecs.yml` and relies on the stack's `ecs@mappings` component template. So the
+ECS layer cannot be assembled from the integrations clone alone.
+
+## Reuse the importer's type mapping, not its walker
+
+`dfe-engine`'s `services/schema/elastic_schema_service.py` walks an **index
+template**'s `mappings.properties`. Our input is `fields.yml`'s
+`name`/`type`/`group`/`fields` shape, which is a different format, so
+`_walk_mapping` does not transfer.
+
+Two pieces must stay identical across the Python and the Rust port, or the
+generated views break against the generated tables:
 
 - `_map_es_type` — the 13 primitives
 - `_column_name_from_field_path` — dotted path to underscored column
 
-A conformance test holds them together, the same way the compat corpus holds
-the transforms to Elasticsearch.
+A conformance test holds those two together, the same way the compat corpus
+holds the transforms to Elasticsearch.
+
+Reading index templates directly would reuse the walker as well, but the compat
+Elasticsearch installs ingest pipelines only, never whole packages, so it has no
+index templates to read. Getting them means standing up Fleet or
+`elastic-package`, which buys fidelity at a cost worth taking only if the
+`fields.yml` route proves insufficient.
 
 ## Every column carries its evidence
 
