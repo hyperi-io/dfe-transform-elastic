@@ -4120,6 +4120,132 @@ impl OctalString {
     }
 }
 
+/// One step of a string-op chain, its literal arguments already resolved.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum StringOp {
+    Lower,
+    Upper,
+    Trim,
+    Replace { from: String, to: String },
+}
+
+impl StringOp {
+    fn apply(&self, text: &str) -> String {
+        match self {
+            Self::Lower => text.to_lowercase(),
+            Self::Upper => text.to_uppercase(),
+            Self::Trim => text.trim().to_string(),
+            Self::Replace { from, to } => text.replace(from.as_str(), to),
+        }
+    }
+
+    /// Parse one `<op>(<args>)` call, declining anything off the allowlist.
+    ///
+    /// The allowlist is the point: `replaceAll` takes a regex rather than a
+    /// literal, so accepting it by shape would quietly change the semantics.
+    fn parse(name: &str, arguments: &str) -> Option<Self> {
+        match name {
+            "toLowerCase" | "toUpperCase" | "trim" if arguments.trim().is_empty() => {
+                Some(match name {
+                    "toLowerCase" => Self::Lower,
+                    "toUpperCase" => Self::Upper,
+                    _ => Self::Trim,
+                })
+            }
+            "replace" => {
+                let (from, to) = two_string_literals(arguments)?;
+                Some(Self::Replace { from, to })
+            }
+            _ => None,
+        }
+    }
+}
+
+/// A field read into a local, rewritten by a chain of string ops, written back.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct StringOps {
+    source: String,
+    target: String,
+    ops: Vec<StringOp>,
+}
+
+impl StringOps {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(source: impl Into<String>, target: impl Into<String>, ops: Vec<StringOp>) -> Self {
+        Self {
+            source: source.into(),
+            target: target.into(),
+            ops,
+        }
+    }
+}
+
+/// `String v = ctx.<source>; v = v.<op>(..); ..; ctx.<target> = v;`
+///
+/// Every statement has to fit, and one op off the allowlist rejects the whole
+/// chain. A partial parse is worse than none: the shape binds, the ladder stops,
+/// and the ops it could not read are dropped in silence -- which is what the
+/// bare `.replace(` trigger below did to ti_opencti's indicator type.
+fn parse_string_ops(script: &str) -> Option<StringOps> {
+    use crate::painless_params::clean_path;
+
+    let statements: Vec<&str> = script
+        .split(['\n', ';'])
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .collect();
+    let [declaration, steps @ .., write_back] = statements.as_slice() else {
+        return None;
+    };
+    if steps.is_empty() {
+        return None;
+    }
+
+    let (local, source) = declaration
+        .strip_prefix("String ")
+        .or_else(|| declaration.strip_prefix("def "))?
+        .split_once('=')?;
+    let (local, source) = (
+        local.trim(),
+        clean_path(source.trim().strip_prefix("ctx.")?),
+    );
+
+    let target = write_back
+        .strip_prefix("ctx.")?
+        .split_once('=')
+        .filter(|(_, bound)| bound.trim() == local)
+        .map(|(path, _)| clean_path(path.trim()))?;
+
+    let mut ops = Vec::with_capacity(steps.len());
+    for step in steps {
+        let call = step
+            .strip_prefix(local)?
+            .trim_start()
+            .strip_prefix('=')?
+            .trim()
+            .strip_prefix(local)?
+            .strip_prefix('.')?;
+        let (name, arguments) = call.split_once('(')?;
+        ops.push(StringOp::parse(name, arguments.strip_suffix(')')?)?);
+    }
+
+    (!source.is_empty() && !target.is_empty()).then(|| StringOps::new(source, target, ops))
+}
+
+/// Run the chain, leaving the event alone where the source is not a string.
+pub fn string_ops(event: &mut Event, shape: &StringOps) -> bool {
+    let Some(text) = event.get_str(&shape.source) else {
+        return true;
+    };
+    let value = shape
+        .ops
+        .iter()
+        .fold(text.to_string(), |text, op| op.apply(&text));
+    let _ = event.set(&shape.target, value);
+    true
+}
+
 /// `int t = (int)ctx.<source>; ctx.<target> = Integer.toOctalString(t);`
 fn parse_octal_string(script: &str) -> Option<OctalString> {
     use crate::painless_params::clean_path;
@@ -7400,26 +7526,45 @@ fn run_keys_by_suffix(event: &mut Event, shape: &KeysBySuffix) -> bool {
 /// handing it to a `json` processor. Painless's
 /// `replace(CharSequence, CharSequence)` is a LITERAL replace of every
 /// occurrence, not a regex.
-fn try_guarded_replace(event: &mut Event, script: &str) -> bool {
+/// `ctx.<target> = ctx.<source>.replace('<from>', '<to>')`, guard optional.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct GuardedReplace {
+    source: String,
+    target: String,
+    from: String,
+    to: String,
+}
+
+impl GuardedReplace {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(
+        source: impl Into<String>,
+        target: impl Into<String>,
+        from: impl Into<String>,
+        to: impl Into<String>,
+    ) -> Self {
+        Self {
+            source: source.into(),
+            target: target.into(),
+            from: from.into(),
+            to: to.into(),
+        }
+    }
+}
+
+fn parse_guarded_replace(script: &str) -> Option<GuardedReplace> {
     use crate::painless_params::clean_path;
 
-    let Some((head, arguments)) = script.split_once(".replace(") else {
-        return false;
-    };
+    let (head, arguments) = script.split_once(".replace(")?;
     // The last bare `=` is the assignment: the guard above it is `!= null`.
-    let Some(assign) = head.rfind('=').filter(|at| {
+    let assign = head.rfind('=').filter(|at| {
         !matches!(
             head[..*at].chars().next_back(),
             Some('!' | '=' | '<' | '>' | '+')
         )
-    }) else {
-        return false;
-    };
-    let (Some(target_at), Some(source_at)) =
-        (head[..assign].rfind("ctx."), head[assign..].rfind("ctx."))
-    else {
-        return false;
-    };
+    })?;
+    let (target_at, source_at) = (head[..assign].rfind("ctx.")?, head[assign..].rfind("ctx.")?);
     let target = clean_path(head[target_at + "ctx.".len()..assign].trim());
     let source = clean_path(head[assign + source_at + "ctx.".len()..].trim());
     // A guard sitting above the assignment holds a `ctx.` of its own, and
@@ -7429,16 +7574,19 @@ fn try_guarded_replace(event: &mut Event, script: &str) -> bool {
         .chars()
         .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_' | '-' | '@'))
     {
-        return false;
+        return None;
     }
-    let Some((from, to)) = two_string_literals(arguments) else {
-        return false;
-    };
+    let (from, to) = two_string_literals(arguments)?;
+    Some(GuardedReplace::new(source, target, from, to))
+}
 
-    if let Some(text) = event.get_str(&source) {
-        let replaced = text.replace(&from, &to);
-        let _ = event.set(&target, replaced);
-    }
+/// Rewrite one substring of a field, leaving a non-string source alone.
+pub fn guarded_replace(event: &mut Event, shape: &GuardedReplace) -> bool {
+    let Some(text) = event.get_str(&shape.source) else {
+        return true;
+    };
+    let replaced = text.replace(shape.from.as_str(), &shape.to);
+    let _ = event.set(&shape.target, replaced);
     true
 }
 
@@ -12361,7 +12509,8 @@ pub(crate) enum KnownShape {
     OktaTargetRename,
     KeysBySuffix(Box<KeysBySuffix>),
     CollectMapValues,
-    GuardedReplace,
+    StringOps(Box<StringOps>),
+    GuardedReplace(Box<GuardedReplace>),
     ScaleField(Box<ScaleField>),
     MillisecondLadder(Box<MillisecondLadder>),
     RoundedScale(Box<RoundedScale>),
@@ -13903,9 +14052,21 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         return shapes;
     }
 
-    // Pattern: rewrite one substring of a field in place.
+    // Pattern: a field read into a local, run through a chain of string ops and
+    // written back. Ahead of the single-replace shape below, whose parse reads
+    // only the first `.replace(` and would drop the rest of the chain.
+    if let Some(shape) = parse_string_ops(normalised) {
+        shapes.push(KnownShape::StringOps(Box::new(shape)));
+        return shapes;
+    }
+
+    // Pattern: rewrite one substring of a field in place. The parse decides what
+    // BINDS; the arm stops the ladder either way, because letting an unreadable
+    // script fall through cost juniper_srx 845 fields to worse matches below.
     if normalised.contains(".replace(") {
-        shapes.push(KnownShape::GuardedReplace);
+        if let Some(shape) = parse_guarded_replace(normalised) {
+            shapes.push(KnownShape::GuardedReplace(Box::new(shape)));
+        }
         return shapes;
     }
 
@@ -14125,6 +14286,35 @@ impl KnownShape {
                 "octal_string(event, &OctalString::new({}, {}));",
                 rust_str(&shape.source),
                 rust_str(&shape.target),
+            )),
+            Self::StringOps(shape) => {
+                let ops: Vec<String> = shape
+                    .ops
+                    .iter()
+                    .map(|op| match op {
+                        StringOp::Lower => "StringOp::Lower".to_string(),
+                        StringOp::Upper => "StringOp::Upper".to_string(),
+                        StringOp::Trim => "StringOp::Trim".to_string(),
+                        StringOp::Replace { from, to } => format!(
+                            "StringOp::Replace {{ from: {}.into(), to: {}.into() }}",
+                            rust_str(from),
+                            rust_str(to),
+                        ),
+                    })
+                    .collect();
+                Some(format!(
+                    "string_ops(event, &StringOps::new({}, {}, vec![{}]));",
+                    rust_str(&shape.source),
+                    rust_str(&shape.target),
+                    ops.join(", "),
+                ))
+            }
+            Self::GuardedReplace(shape) => Some(format!(
+                "guarded_replace(event, &GuardedReplace::new({}, {}, {}, {}));",
+                rust_str(&shape.source),
+                rust_str(&shape.target),
+                rust_str(&shape.from),
+                rust_str(&shape.to),
             )),
             Self::KvIntoFields(target) => {
                 Some(format!("kv_into_fields(event, {});", rust_str(target)))
@@ -14494,7 +14684,8 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::OktaTargetRename => try_okta_target_rename(event),
         KnownShape::KeysBySuffix(shape) => run_keys_by_suffix(event, shape),
         KnownShape::CollectMapValues => try_collect_map_values(event, normalised),
-        KnownShape::GuardedReplace => try_guarded_replace(event, normalised),
+        KnownShape::StringOps(shape) => string_ops(event, shape),
+        KnownShape::GuardedReplace(shape) => guarded_replace(event, shape),
         KnownShape::ScaleField(shape) => scale_field(event, shape),
         KnownShape::MillisecondLadder(shape) => run_millisecond_ladder(event, shape),
         KnownShape::RoundedScale(shape) => run_rounded_scale(event, shape),
@@ -19335,6 +19526,73 @@ def event_timezone = get_timezone(ctx);
         let mut empty = Event::new(json!({ "json": {} }));
         assert!(try_known_painless(&mut empty, script));
         assert!(!empty.has("jamf_compliance_reporter.log.attributes.file.access_mode"));
+    }
+
+    /// Verbatim from `pipelines/ti_opencti/indicator/default.yml`. The bare
+    /// `.replace(` trigger claimed this script and applied none of it, so
+    /// `threat.indicator.type` stayed title-cased on all 31 corpus events.
+    #[test]
+    fn a_chain_of_string_ops_runs_in_order() {
+        let script = "String type = ctx.threat.indicator.type;\n\
+            type = type.toLowerCase();\n\
+            type = type.replace('stixfile', 'file');\n\
+            ctx.threat.indicator.type = type;\n";
+
+        let mut event = Event::new(json!({ "threat": { "indicator": {
+            "type": "Windows-Registry-Key" } } }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get_str("threat.indicator.type"),
+            Some("windows-registry-key")
+        );
+
+        // Order is the whole point: `StixFile` only reaches the replace once
+        // the lowercase has run, so a chain missing that step writes `StixFile`
+        // and one applied backwards writes `stixfile`.
+        let mut stix = Event::new(json!({ "threat": { "indicator": {
+            "type": "StixFile" } } }));
+        assert!(try_known_painless(&mut stix, script));
+        assert_eq!(stix.get_str("threat.indicator.type"), Some("file"));
+
+        // Absent source leaves the target alone rather than writing an empty.
+        let mut empty = Event::new(json!({ "threat": { "indicator": {} } }));
+        assert!(try_known_painless(&mut empty, script));
+        assert!(!empty.has("threat.indicator.type"));
+    }
+
+    /// An op off the allowlist takes the WHOLE chain down. `replaceAll` reads a
+    /// regex, so binding the chain around it would silently change what the two
+    /// arguments mean.
+    #[test]
+    fn an_unreadable_op_declines_the_whole_chain() {
+        let script = "String s = ctx.a;\n\
+            s = s.toLowerCase();\n\
+            s = s.replaceAll('[0-9]+', 'N');\n\
+            ctx.b = s;\n";
+
+        assert!(parse_string_ops(script).is_none());
+
+        let mut event = Event::new(json!({ "a": "Host42" }));
+        try_known_painless(&mut event, script);
+        assert!(!event.has("b"), "a declined chain must not half-apply");
+    }
+
+    /// The single-replace shape keeps working, and now DECLINES a script it
+    /// cannot parse instead of claiming it -- which is what let the chain above
+    /// reach a shape at all.
+    #[test]
+    fn a_single_replace_binds_and_declines_a_chain() {
+        let script = "ctx.host.name = ctx.host.hostname.replace('_', '-');";
+        let mut event = Event::new(json!({ "host": { "hostname": "web_01" } }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("host.name"), Some("web-01"));
+
+        let chain = "String type = ctx.a;\ntype = type.toLowerCase();\n\
+            type = type.replace('x', 'y');\nctx.a = type;\n";
+        assert!(
+            parse_guarded_replace(chain).is_none(),
+            "the chain's declaration is not a target path"
+        );
     }
 
     /// Verbatim from both `pipelines/ti_misp/threat/default.yml` and

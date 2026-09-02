@@ -152,21 +152,22 @@
 151 OktaTargetRename
 152 KeysBySuffix
 153 CollectMapValues
-154 GuardedReplace
-155 RoundedScale
-156 FieldsIntoMap
-157 CrowdstrikeTimelineEntityIdentity
-158 CrowdstrikeTimelineEntityAccounts
-159 FirstElement
-160 IndexedFieldCopies
-161 MoveKeys
-162 ClassifyLadder
-163 PrivateCidrDirection
-164 BranchCopies
-165 GuardedDivide
-166 ScaleField
-167 GuardedCopy
-168 PlainAssignments
+154 StringOps
+155 GuardedReplace
+156 RoundedScale
+157 FieldsIntoMap
+158 CrowdstrikeTimelineEntityIdentity
+159 CrowdstrikeTimelineEntityAccounts
+160 FirstElement
+161 IndexedFieldCopies
+162 MoveKeys
+163 ClassifyLadder
+164 PrivateCidrDirection
+165 BranchCopies
+166 GuardedDivide
+167 ScaleField
+168 GuardedCopy
+169 PlainAssignments
 
 [params_shape]
   1 AwsEntity
