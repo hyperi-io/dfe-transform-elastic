@@ -2000,34 +2000,62 @@ fn entry(score: Score) -> String {
     )
 }
 
+/// Set to acknowledge that this run scores a corpus the baseline cannot
+/// ratchet against, and to let it pass anyway.
+///
+/// The legitimate case is a regeneration in progress: the corpus is being
+/// recaptured at a new `integrations_sha` and the baseline has not caught up.
+/// Whoever is doing that knows it; nobody else does.
+const ALLOW_UNRATCHETED: &str = "DFE_COMPAT_ALLOW_UNRATCHETED";
+
 /// Fail if a source scores below what it scored when the baseline was written.
 ///
 /// Only asserted when the corpus on disk was captured at the same integrations
-/// commit and engine version the baseline names. Anything else is reported --
-/// a score against different pipelines is a different measurement, and
-/// ratcheting one against the other would fail for the wrong reason.
+/// commit and engine version the baseline names. Anything else is a different
+/// measurement -- ratcheting one against the other would fail for the wrong
+/// reason -- so this REFUSES to run rather than scoring it.
+///
+/// Refusing loudly is the point. Each of these was a `println!` and a `return`,
+/// which turned the whole parity gate into a printer while the run still
+/// exited 0, among thousands of per-fixture lines. Regenerate the corpus at a
+/// new sha, forget line 4 of the baseline, and parity is unenforced with no
+/// signal for as long as the drift lasts.
+///
+/// The corpus being ABSENT is a different thing and still skips, up in
+/// `score_the_corpus` -- it is gitignored, so a fresh clone has none.
 fn check_baseline(measured: &BTreeMap<String, Score>, provenance: &Option<(String, String)>) {
     const PATH: &str = concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../tests/compat-baseline.json"
     );
+    let acknowledged = std::env::var_os(ALLOW_UNRATCHETED).is_some();
+    let refuse = |reason: String| {
+        assert!(
+            acknowledged,
+            "{reason}\n  The corpus is present, so this run COULD have ratcheted and did not. \
+             Fix the mismatch, or set {ALLOW_UNRATCHETED}=1 to say you know -- \
+             which leaves parity unenforced for this run."
+        );
+        println!("\nbaseline NOT asserted ({ALLOW_UNRATCHETED} is set): {reason}");
+    };
+
     let Ok(text) = std::fs::read_to_string(PATH) else {
-        println!("\nno baseline at {PATH}");
+        refuse(format!("no readable baseline at {PATH}"));
         return;
     };
     let baseline: Baseline = serde_json::from_str(&text).expect("parse compat-baseline.json");
 
     let Some((sha, engine)) = provenance else {
-        println!("\nbaseline NOT asserted: the corpus mixes provenances, so regenerate it whole");
+        refuse("the corpus mixes provenances, so regenerate it whole".to_string());
         return;
     };
     if *sha != baseline.integrations_sha || *engine != baseline.elasticsearch_version {
-        println!(
-            "\nbaseline NOT asserted: corpus is {}/{engine}, baseline is {}/{}",
+        refuse(format!(
+            "corpus is {}/{engine}, baseline is {}/{}",
             &sha[..12.min(sha.len())],
             &baseline.integrations_sha[..12.min(baseline.integrations_sha.len())],
             baseline.elasticsearch_version,
-        );
+        ));
         return;
     }
 

@@ -76,6 +76,8 @@ fifteen of aws's metric streams and eleven of gcp's are like that. The
 transform is still generated and wired; it simply has nothing to be scored
 against. Naming a `--fixture` that matches nothing is still an error.
 
+## The ratchet
+
 `tests/compat-baseline.json` is the ratchet the corpus test asserts, and the
 test prints the exact line for every source that improved.
 `scripts/raise_baseline.py` applies them:
@@ -88,7 +90,27 @@ python3 scripts/raise_baseline.py /tmp/run.txt
 It REFUSES any line that would lower a score. A fall needs a stated reason and
 is never mechanical.
 
-### The ratchet does not gate EXTRA fields
+### It refuses to be skipped quietly
+
+The baseline is asserted only when the corpus on disk was captured at the
+`integrations_sha` and engine version the baseline names. A score against
+different pipelines is a different measurement, so ratcheting one against the
+other would fail for the wrong reason.
+
+Until 2026-09-03 that mismatch PRINTED and returned, and the run still exited
+0. Regenerate the corpus at a new sha, forget to update the baseline, and
+parity was unenforced with no signal, the message lost among thousands of
+per-fixture lines. It now FAILS instead, naming the two shas.
+
+`DFE_COMPAT_ALLOW_UNRATCHETED=1` is the acknowledgement, for the one
+legitimate case: a regeneration in progress, where the corpus has moved and
+the baseline has not caught up yet. It leaves parity unenforced for that run,
+which is why it has to be typed.
+
+A corpus that is ABSENT is a different thing and still skips silently -- the
+corpus is gitignored, so a fresh clone has none.
+
+### It does not gate EXTRA fields
 
 `fields_wrong` counts missing and mismatched fields only. A field we emit that
 Elasticsearch does not is counted separately as `fields_extra`, printed in the
