@@ -88,6 +88,24 @@ python3 scripts/raise_baseline.py /tmp/run.txt
 It REFUSES any line that would lower a score. A fall needs a stated reason and
 is never mechanical.
 
+### The ratchet does not gate EXTRA fields
+
+`fields_wrong` counts missing and mismatched fields only. A field we emit that
+Elasticsearch does not is counted separately as `fields_extra`, printed in the
+run and compared against nothing.
+
+An event still needs an empty diff to count as matched, so extras are gated at
+EVENT granularity -- but on a source already scoring zero matched events, which
+is most of the ones carrying real debt, nothing checks them at all. The corpus
+currently reports 11,962.
+
+So **record the extras figure before and after any change to the shape ladder**.
+A shape that stops claiming a script hands it to whatever sits below, and if
+that writes a field Elastic never emits, the totals hold while only the extras
+move -- which the ratchet passes green. That has happened once and the change
+was reverted; it was caught by having written the previous number down and by
+nothing else.
+
 ## What matters, and what does not
 
 Byte equality is not the goal. `tests/compare-policy.yaml` is the single
