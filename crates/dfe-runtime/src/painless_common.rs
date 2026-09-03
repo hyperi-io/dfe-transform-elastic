@@ -8974,26 +8974,45 @@ fn index_keyed(value: &Value) -> Value {
 ///     for (value in ctx.crowdstrike.event.Tags.splitOnToken(',')) { ctx.tags.add(value.trim()); }
 /// }
 /// ```
-fn try_append_each(event: &mut Event, script: &str) -> bool {
-    use crate::painless_params::{clean_path, ctx_path_before};
+/// A field split or flattened into the list at another path.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AppendEach {
+    source: String,
+    target: String,
+    /// The two object keys the map branch joins, when the script has them.
+    map_keys: Vec<String>,
+    separator: String,
+}
 
-    let Some(target) = ctx_path_before(script, ".add(") else {
-        return false;
-    };
-    let Some(source) = append_source_path(script) else {
-        return false;
-    };
-    // The map branch joins two keys; without both there is nothing to build.
-    let map_keys = quoted_after(script, "tag[");
-    let separator = quoted_after(script, ".splitOnToken(")
-        .into_iter()
-        .next()
-        .unwrap_or_else(|| ",".to_string());
+/// Read the paths, keys and separator the append uses, or decline.
+fn parse_append_each(script: &str) -> Option<AppendEach> {
+    use crate::painless_params::ctx_path_before;
+
+    Some(AppendEach {
+        target: ctx_path_before(script, ".add(")?,
+        source: append_source_path(script)?,
+        map_keys: quoted_after(script, "tag["),
+        separator: quoted_after(script, ".splitOnToken(")
+            .into_iter()
+            .next()
+            .unwrap_or_else(|| ",".to_string()),
+    })
+}
+
+fn try_append_each(event: &mut Event, shape: &AppendEach) -> bool {
+    use crate::painless_params::clean_path;
+
+    let AppendEach {
+        source,
+        target,
+        map_keys,
+        separator,
+    } = shape;
 
     // A missing source is not a failure -- the processor's `if` guards it.
-    let entries: Vec<Value> = match event.get(&source) {
+    let entries: Vec<Value> = match event.get(source) {
         Some(Value::String(s)) => s
-            .split(&separator)
+            .split(separator.as_str())
             .map(str::trim)
             .filter(|p| !p.is_empty())
             .map(|p| json!(p))
@@ -9015,12 +9034,13 @@ fn try_append_each(event: &mut Event, script: &str) -> bool {
         _ => return true,
     };
 
-    let mut existing = match event.get(&clean_path(&target)) {
+    let path = clean_path(target);
+    let mut existing = match event.get(&path) {
         Some(Value::Array(arr)) => arr.clone(),
         _ => Vec::new(),
     };
     existing.extend(entries);
-    let _ = event.set(&clean_path(&target), Value::Array(existing));
+    let _ = event.set(&path, Value::Array(existing));
     true
 }
 
@@ -12669,7 +12689,7 @@ pub(crate) enum KnownShape {
     ListRenameTable(Box<ListRenameTable>),
     KeyValuePairs,
     JoinOptional,
-    AppendEach,
+    AppendEach(Box<AppendEach>),
     LiteralValueMap(Box<LiteralValueMap>),
     KeysToSnakeCase(Option<String>, SnakeRule),
     CommandLine {
@@ -14094,7 +14114,9 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
             .iter()
             .any(|marker| normalised.find(marker).is_some_and(|at| at < add_at))
     {
-        shapes.push(KnownShape::AppendEach);
+        if let Some(shape) = parse_append_each(normalised) {
+            shapes.push(KnownShape::AppendEach(Box::new(shape)));
+        }
         return shapes;
     }
 
@@ -14855,7 +14877,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::ListRenameTable(shape) => run_list_rename_table(event, shape),
         KnownShape::KeyValuePairs => try_key_value_pairs(event, normalised),
         KnownShape::JoinOptional => try_join_optional(event, normalised),
-        KnownShape::AppendEach => try_append_each(event, normalised),
+        KnownShape::AppendEach(shape) => try_append_each(event, shape),
         KnownShape::LiteralValueMap(shape) => literal_value_map(event, shape),
         KnownShape::KeysToSnakeCase(field, rule) => {
             if let Some(field) = field {
