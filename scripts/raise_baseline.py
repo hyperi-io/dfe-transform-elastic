@@ -5,10 +5,15 @@ The corpus test already computes the exact line to paste for every source that
 improved. Pasting them by hand is a `sd` per source per run, and a typo there
 lowers a ratchet instead of raising it.
 
-Reads the test's output on stdin, or from a file:
+Runs the corpus itself, or reads a run it is given:
 
-    cargo test ... -- --nocapture > /tmp/run.txt
+    raise_baseline.py --run
     raise_baseline.py /tmp/run.txt
+
+`--run` is the one that leaves no step for a person: the paste was the last
+place a number reached the repo by hand. The writer stays here rather than in
+the test, because two writers over one file format drift the way two walks over
+one grammar do.
 
 Refuses any line that would LOWER a score: a fall needs a stated reason and is
 never mechanical.
@@ -24,6 +29,7 @@ from __future__ import annotations
 import json
 import pathlib
 import re
+import subprocess
 import sys
 
 BASELINE = pathlib.Path(__file__).resolve().parent.parent / "tests/compat-baseline.json"
@@ -54,19 +60,56 @@ def scores_in(text: str, pattern: re.Pattern[str]) -> dict[str, dict[str, int]]:
     return found
 
 
-def main() -> int:
-    flags = {"--resize", "--new"}
-    argv = [a for a in sys.argv[1:] if a not in flags]
-    text = (
-        pathlib.Path(argv[0]).read_text(encoding="utf-8", errors="replace")
-        if argv
-        else sys.stdin.read()
+def corpus_run() -> str:
+    """Run the corpus test and return everything it printed.
+
+    A non-zero exit is not a reason to stop: the run prints its raises before
+    it asserts, and a source that regressed is exactly when the others' gains
+    still need recording.
+    """
+    command = [
+        "cargo",
+        "test",
+        "-p",
+        "dfe-transforms",
+        "--test",
+        "compat_corpus",
+        "--",
+        "--nocapture",
+    ]
+    print(f"  running {' '.join(command)}", file=sys.stderr)
+    done = subprocess.run(
+        command,
+        cwd=BASELINE.parent.parent,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        check=False,
     )
+    return done.stdout + done.stderr
+
+
+def main() -> int:
+    flags = {"--resize", "--new", "--run"}
+    argv = [a for a in sys.argv[1:] if a not in flags]
+    if "--run" in sys.argv:
+        text = corpus_run()
+    elif argv:
+        text = pathlib.Path(argv[0]).read_text(encoding="utf-8", errors="replace")
+    else:
+        text = sys.stdin.read()
 
     proposed = scores_in(text, LINE)
     resized = scores_in(text, RESIZE) if "--resize" in sys.argv else {}
     fresh = scores_in(text, NEW) if "--new" in sys.argv else {}
     reached = REACH.search(text)
+    # A run that scored the corpus always prints its reach. Not finding it
+    # means the line was reworded and this stopped ratcheting never_ran --
+    # silently, which is the failure mode the corpus gate itself had.
+    if "painless runtime reach" in text and not reached:
+        print("the reach line changed shape -- REACH here no longer reads it", file=sys.stderr)
+        return 1
     if not proposed and not resized and not fresh and not reached:
         print("nothing to raise")
         return 0
@@ -142,6 +185,8 @@ def main() -> int:
         print(f"  raised {line}")
     for line in refused:
         print(f"  REFUSED, this would lower a ratchet -- {line}")
+    if not raised and not refused:
+        print("  every ratchet already holds today's score")
     return 1 if refused else 0
 
 
