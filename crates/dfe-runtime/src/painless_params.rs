@@ -4831,6 +4831,13 @@ enum Rhs {
     /// `ctx.event.category = [ctx.<path>]` -- a field wrapped in a one-element
     /// list, which is how a script promotes a scalar into an ECS array field.
     FieldInList(String),
+    /// `ctx.<path> / 1000000` -- rescale a number by a whole factor, which is
+    /// how a script moves an epoch between units.
+    Scaled {
+        path: String,
+        factor: i64,
+        divide: bool,
+    },
     /// `(long) Double.parseDouble(ctx.<path>.toString())` -- coerce to a whole
     /// number, truncating toward zero as the Painless cast does.
     ///
@@ -4897,7 +4904,7 @@ fn replace_uses(body: &str, needle: &str, with: &str) -> String {
 /// Substitution runs forward from each declaration, so a chain resolves in one
 /// pass and a local never rewrites its own binding.
 fn inline_ctx_aliases(body: &str) -> Cow<'_, str> {
-    if !body.contains("def ") || !body.contains("ctx") {
+    if !body.contains("ctx") || next_declaration(body, 0).is_none() {
         return Cow::Borrowed(body);
     }
 
@@ -4912,6 +4919,23 @@ fn inline_ctx_aliases(body: &str) -> Cow<'_, str> {
     text
 }
 
+/// How a local is introduced. `def` is the common spelling and a TYPED one is
+/// not unusual -- cloudflare opens its epoch ladder with `long t = ...`.
+const DECLARATIONS: &[&str] = &["def ", "long ", "int ", "double ", "float ", "String "];
+
+/// The next local declaration at or after `from`, as the offset just past its
+/// keyword.
+fn next_declaration(body: &str, from: usize) -> Option<usize> {
+    DECLARATIONS
+        .iter()
+        .filter_map(|keyword| {
+            body[from..]
+                .find(keyword)
+                .map(|at| from + at + keyword.len())
+        })
+        .min()
+}
+
 /// One left-to-right sweep, substituting each resolvable local after its own
 /// declaration. `None` when nothing was substituted.
 fn one_alias_pass(body: &str) -> Option<String> {
@@ -4919,10 +4943,9 @@ fn one_alias_pass(body: &str) -> Option<String> {
     let mut changed = false;
     let mut at = 0;
 
-    while let Some(found) = out[at..].find("def ") {
+    while let Some(declaration) = next_declaration(&out, at) {
         // Offsets are taken against `out` directly. Deriving them from a
         // trimmed name instead loses the whitespace either side of the `=`.
-        let declaration = at + found + "def ".len();
         at = declaration;
         let Some(equals) = out[declaration..].find('=') else {
             break;
@@ -4977,6 +5000,36 @@ fn contains_tail(text: &str) -> &str {
     text.strip_suffix(')').unwrap_or(text).trim()
 }
 
+/// A JSON number as a `long`, the way a Painless cast reads it.
+///
+/// A float truncates toward zero rather than rounding, and a value past `i64`
+/// is not one.
+fn whole_of(value: &Value) -> Option<i64> {
+    value.as_i64().or_else(|| {
+        value
+            .as_f64()
+            .map(f64::trunc)
+            .and_then(|n| (n.abs() < 9.2e18).then_some(n as i64))
+    })
+}
+
+/// A whole number, however the script spells it: `1000`, `1e3`, `(long)(1e3)`.
+///
+/// `None` for anything with a fraction or beyond `i64`, so a threshold this
+/// cannot represent exactly stays unreadable rather than comparing wrongly.
+fn whole_number(text: &str) -> Option<i64> {
+    let text = text.trim().trim_end_matches([')', ';']).trim();
+    let text = text
+        .strip_prefix("(long)")
+        .map_or(text, |rest| rest.trim().trim_start_matches('(').trim());
+    let text = text.trim_end_matches('L');
+    if let Ok(whole) = text.parse::<i64>() {
+        return Some(whole);
+    }
+    let number = text.parse::<f64>().ok()?;
+    (number.fract() == 0.0 && number.abs() < 9.2e18).then_some(number as i64)
+}
+
 /// Split a trailing `.toLowerCase()` off an expression.
 ///
 /// The fold applies to the EVENT's value at run time, not to this text, so it
@@ -4995,6 +5048,14 @@ fn strip_case_fold(text: &str) -> (&str, bool) {
 /// rather than applied, because [`Term::parse`] reads it and the fold has to
 /// happen against the EVENT's value, not this text.
 fn ctx_alias_value(value: &str) -> Option<String> {
+    // The path travels UNCAST: the comparisons and arithmetic downstream read
+    // the event's own number, so the `(long)` says nothing they need.
+    let value = value.strip_prefix("(long)").map_or(value, |rest| {
+        rest.trim()
+            .trim_start_matches('(')
+            .trim_end_matches(')')
+            .trim()
+    });
     let bare = value
         .strip_suffix(".toLowerCase()")
         .or_else(|| value.strip_suffix(".toUpperCase()"))
@@ -5019,7 +5080,9 @@ fn drop_inlined_declaration(body: &str, name: &str) -> Option<String> {
     if word_uses(body, name) != 1 {
         return None;
     }
-    let start = body.find(&format!("def {name}"))?;
+    let start = DECLARATIONS
+        .iter()
+        .find_map(|keyword| body.find(&format!("{keyword}{name}")))?;
     let end = body[start..].find(';')? + start + 1;
     let mut out = body[..start].to_string();
     out.push_str(body[end..].trim_start());
@@ -5435,6 +5498,20 @@ enum Term {
     /// A bare field IS the test: Painless reads its boolean value, and arista
     /// gates its whole outcome ladder on `if (ctx.arista.blocked)`.
     Truthy(String),
+    /// `ctx.<path> > 1e18` -- a magnitude test, which is how a script tells
+    /// nanoseconds from seconds without being told the unit.
+    ///
+    /// Read BEFORE the bare-field fallback, or the whole comparison becomes a
+    /// `Truthy` on a path with an operator in it, which no event carries and
+    /// which the dead-branch census cannot see.
+    /// The threshold is an `i64` because `Term` is `Eq` and because every
+    /// spelling these scripts use -- `1e18`, `1e10`, `1e3` -- is a whole
+    /// number. One that is not stays unreadable.
+    Magnitude {
+        path: String,
+        than: i64,
+        greater: bool,
+    },
     /// `ctx.<path> instanceof List` -- a type test the document answers.
     ///
     /// Only the three container kinds, because JSON settles those exactly.
@@ -5609,6 +5686,24 @@ impl Term {
                 argument,
             };
         }
+        // Before the `==` pair, because `>=` and `<=` carry an `=` that the
+        // split below would take for the start of an equality test.
+        for (operator, greater) in [(">=", true), ("<=", false), (">", true), ("<", false)] {
+            let Some((subject, threshold)) = term.split_once(operator) else {
+                continue;
+            };
+            let Some(path) = subject.trim().strip_prefix("ctx.") else {
+                continue;
+            };
+            let Some(than) = whole_number(threshold) else {
+                continue;
+            };
+            return Self::Magnitude {
+                path: clean_path(path),
+                than,
+                greater,
+            };
+        }
         for (operator, negated) in [("==", false), ("!=", true)] {
             let Some((subject, wanted)) = term.split_once(operator) else {
                 continue;
@@ -5695,6 +5790,20 @@ impl Term {
             // An absent field is not an instance of anything, which is what
             // Painless answers for a null too.
             Self::InstanceOf { path, kind } => event.get(path).is_some_and(|v| kind.matches(v)),
+            // Compared as a `long`, which is what the script cast it to, and
+            // exactly: 1e18 is past the integer f64 represents without loss.
+            // A field that is not a number is neither greater nor less.
+            Self::Magnitude {
+                path,
+                than,
+                greater,
+            } => event.get(path).and_then(whole_of).is_some_and(|value| {
+                if *greater {
+                    value > *than
+                } else {
+                    value < *than
+                }
+            }),
         }
     }
 }
@@ -5782,6 +5891,30 @@ fn parse_rhs(text: &str) -> Option<Rhs> {
     {
         return Some(Rhs::Text(clean_path(inner.trim().strip_prefix("ctx.")?)));
     }
+    // `ctx.a / 1000` and `ctx.a * 1000`, before the bare-path read below,
+    // which would otherwise take the whole expression for a field name.
+    for (operator, divide) in [('/', true), ('*', false)] {
+        let Some((left, right)) = text.split_once(operator) else {
+            continue;
+        };
+        let Some(path) = subject_path(left.trim())
+            .strip_prefix("ctx.")
+            .map(str::to_owned)
+        else {
+            continue;
+        };
+        let Some(factor) = whole_number(right) else {
+            continue;
+        };
+        if factor == 0 || path.contains(['(', ')', ' ']) {
+            continue;
+        }
+        return Some(Rhs::Scaled {
+            path: clean_path(&path),
+            factor,
+            divide,
+        });
+    }
     if let Some(inner) = text
         .strip_prefix("(long)")
         .map(str::trim)
@@ -5847,6 +5980,19 @@ fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
             .get(path)
             .cloned()
             .map(|value| Value::Array(vec![value])),
+        // Integer arithmetic, as Painless does it on a `long`: the division
+        // truncates rather than producing a fraction.
+        Rhs::Scaled {
+            path,
+            factor,
+            divide,
+        } => event.get(path).and_then(Value::as_i64).map(|value| {
+            Value::from(if *divide {
+                value / factor
+            } else {
+                value * factor
+            })
+        }),
         // A value that will not parse is left alone, the way the vendor's
         // script throws and its processor's `on_failure` leaves the field.
         Rhs::LongOf(path) => event
@@ -8095,6 +8241,35 @@ mod tests {
         assert_eq!(falco_category("user"), json!(["session"]));
         // Not in the list and not named: the vendor's own fallback.
         assert_eq!(falco_category("wat"), json!(["process"]));
+    }
+
+    /// cloudflare normalises an epoch to milliseconds by its MAGNITUDE, in
+    /// two data streams and 14 call sites.
+    ///
+    /// Three things had to become readable together, which is why this is one
+    /// shape rather than three patches: a numeric local behind a `(long)`
+    /// cast, a `>` comparison against a scientific literal, and a division.
+    #[test]
+    fn an_epoch_is_normalised_by_its_magnitude() {
+        const SCRIPT: &str = "long t = (long)(ctx.json.Timestamp);\n\
+            if (t > (long)(1e18)) {\n  ctx.json.Timestamp = t/(long)(1e6)\n\
+            } else if (t < (long)(1e10))  {\n  ctx.json.Timestamp = t*(long)(1e3)\n}\n";
+
+        fn normalised(stamp: i64) -> Value {
+            let mut event = Event::new(json!({ "json": { "Timestamp": stamp } }));
+            Program::parse(SCRIPT).run(&mut event);
+            event.get("json.Timestamp").cloned().unwrap_or(Value::Null)
+        }
+
+        // Nanoseconds down to milliseconds.
+        assert_eq!(
+            normalised(1_771_459_200_000_000_000),
+            json!(1_771_459_200_000_i64)
+        );
+        // Seconds up to milliseconds.
+        assert_eq!(normalised(1_771_459_200), json!(1_771_459_200_000_i64));
+        // Already milliseconds: neither arm holds.
+        assert_eq!(normalised(1_771_459_200_000), json!(1_771_459_200_000_i64));
     }
 
     /// The gate has to accept every statement the handler parses.
