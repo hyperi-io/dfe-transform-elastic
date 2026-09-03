@@ -6210,11 +6210,20 @@ fn params_ref<'a>(script: &str, params: &'a Map<String, Value>, prefix: &str) ->
 }
 
 /// The dotted `ctx.` path that immediately precedes `marker`.
+///
+/// The search runs BACKWARD from the marker, so an earlier binding in the same
+/// statement wins whenever the path it finds is not the one the marker belongs
+/// to -- `def p = ctx.a; def q = ctx.b; q.splitOnToken(' ')` handed back
+/// everything from `b` to the marker. A path holding whitespace or a statement
+/// terminator is that failure, and the caller is better told nothing than sold
+/// a field name no event can hold: it declines instead of binding a shape that
+/// then writes nothing.
 pub(crate) fn ctx_path_before(script: &str, marker: &str) -> Option<String> {
     let end = script.find(marker)?;
     let head = &script[..end];
     let start = head.rfind("ctx.")? + "ctx.".len();
-    Some(clean_path(&head[start..]))
+    let path = clean_path(&head[start..]);
+    (!path.contains([' ', '\t', '\n', ';'])).then_some(path)
 }
 
 /// The dotted `ctx.` path written between two markers.
@@ -6346,27 +6355,26 @@ mod tests {
         assert_eq!(clean_path("host?.name"), "host.name");
     }
 
-    /// The divergence that produced a wrong field path in the generated tree.
+    /// A backward search that spans two bindings declines rather than handing
+    /// back a field name no event can hold.
     ///
-    /// `ctx_path_before` searches BACKWARD from its marker, so a second binding
-    /// earlier in the same statement wins and the path comes back carrying
-    /// whole statements. The character parser stops at the first character a
-    /// path cannot hold.
+    /// `falco_alerts` ships this shape and the reader used to return
+    /// `proc.args;\n def items = args`, which bound a shape that then wrote
+    /// nothing.
     #[test]
-    fn a_backward_search_can_span_two_bindings() {
+    fn a_backward_search_spanning_two_bindings_declines() {
         let script = "def path = ctx.proc.exepath; def args = ctx.proc.args; \
             def items = args.splitOnToken(' ');";
 
-        let scanned = ctx_path_before(script, ".splitOnToken(").expect("finds something");
-        assert!(
-            scanned.contains(' '),
-            "the backward search no longer spans bindings -- if the reader was \
-             fixed, assert the fix here instead: {scanned:?}"
-        );
+        assert_eq!(ctx_path_before(script, ".splitOnToken("), None);
 
+        // A marker whose path IS the one before it still reads.
         assert_eq!(
-            crate::painless_common::painless_path("def args = ctx.proc.args").as_deref(),
-            Some("proc.args")
+            ctx_path_before(
+                "def items = ctx.proc.args.splitOnToken(' ')",
+                ".splitOnToken("
+            ),
+            Some("proc.args".to_string())
         );
     }
 
