@@ -5123,6 +5123,15 @@ enum Wanted {
     /// compare FALSE -- `carbon_black`'s netconn direction took the wrong arm of
     /// its `== true` and wrote source and destination the wrong way round.
     Value(Value),
+    /// Another `ctx.` field, compared by VALUE and only where both sides are
+    /// scalars.
+    ///
+    /// An ingest `if` reads a read-only view of the document and every access
+    /// to a nested container builds a fresh wrapper with no `equals`, so two
+    /// containers never compare equal there however identical their contents.
+    /// `codegen_api::condition_eq` answers the same way for generated
+    /// conditionals.
+    Field(String),
     /// A side no literal reader resolves. It equals nothing the event holds,
     /// which makes the `!=` spelling of it TRUE.
     Unreadable,
@@ -5223,6 +5232,10 @@ impl Term {
                 Wanted::Null
             } else if let Some(literal) = quoted_after(wanted, "") {
                 Wanted::Text(literal)
+            } else if let Some(other) = wanted.strip_prefix("ctx.") {
+                // Read the same way as the subject above, so one side of a
+                // comparison cannot resolve a spelling the other refuses.
+                Wanted::Field(clean_path(other))
             } else {
                 // `literal_value` reads strings and lists only, so a bare
                 // `true` or a number needs the wider reader.
@@ -5276,6 +5289,15 @@ impl Term {
                     Wanted::Null => held.is_none_or(Value::is_null),
                     Wanted::Text(text) => held.and_then(Value::as_str) == Some(text.as_str()),
                     Wanted::Value(value) => held == Some(value),
+                    // Absent and explicitly null are one value and DO compare
+                    // equal; two containers never do.
+                    Wanted::Field(other) => match (held, event.get(other)) {
+                        (Some(Value::Object(_) | Value::Array(_)), _)
+                        | (_, Some(Value::Object(_) | Value::Array(_))) => false,
+                        (left, right) => {
+                            left.unwrap_or(&Value::Null) == right.unwrap_or(&Value::Null)
+                        }
+                    },
                     Wanted::Unreadable => false,
                 };
                 matched != *negated
@@ -6294,6 +6316,38 @@ pub(crate) fn pointer_mut<'a>(event: &'a mut Event, path: &str) -> Option<&'a mu
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// A field-to-field comparison used to read as unresolvable and answer
+    /// false forever, so the branch behind it was dead on every event.
+    #[test]
+    fn one_field_compares_against_another() {
+        let same = Event::new(json!({ "a": "x", "b": "x", "c": "y" }));
+        assert!(guard_holds(&same, "ctx.a == ctx.b"));
+        assert!(!guard_holds(&same, "ctx.a == ctx.c"));
+        assert!(guard_holds(&same, "ctx.a != ctx.c"));
+        assert!(!guard_holds(&same, "ctx.a != ctx.b"));
+    }
+
+    /// Absent and explicitly null are ONE value to an ingest `if`.
+    #[test]
+    fn an_absent_field_equals_an_explicitly_null_one() {
+        let event = Event::new(json!({ "a": null }));
+        assert!(guard_holds(&event, "ctx.a == ctx.missing"));
+    }
+
+    /// An ingest conditional reads a view whose nested containers are fresh
+    /// wrappers with no `equals`, so two of them never compare equal however
+    /// identical their contents. `condition_eq` answers the same way.
+    #[test]
+    fn two_containers_never_compare_equal() {
+        let event = Event::new(json!({
+            "a": { "k": 1 }, "b": { "k": 1 },
+            "list": [1, 2], "same": [1, 2]
+        }));
+        assert!(!guard_holds(&event, "ctx.a == ctx.b"));
+        assert!(!guard_holds(&event, "ctx.list == ctx.same"));
+        assert!(guard_holds(&event, "ctx.a != ctx.b"));
+    }
 
     /// Verbatim from `pipelines/symantec_endpoint/log/default.yml`: the CSV
     /// layout is identified by WHICH columns carried a `Key:` label, and the
