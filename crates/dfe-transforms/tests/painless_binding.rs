@@ -36,7 +36,7 @@ const MIN_SITES: usize = 3_000;
 /// `jamf_protect_telemetry` still counts here after its fix, because
 /// `Basename` now wins at run time while `GuardedCopy` still binds behind it.
 /// Ratchets down as guards are made readable, never as evidence on its own.
-const DEAD_BRANCH_SITES: usize = 191;
+const DEAD_BRANCH_SITES: usize = 187;
 
 /// One generated call site.
 struct Site {
