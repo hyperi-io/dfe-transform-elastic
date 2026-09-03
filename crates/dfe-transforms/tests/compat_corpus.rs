@@ -2030,11 +2030,12 @@ fn entry(score: Score) -> String {
 /// shapes are fixed and is read alongside `scripts/shape_reach.py`, never on
 /// its own.
 ///
-/// 528, down from the 543 first measured on 2026-09-04, as reading a local
+/// 524, down from the 543 first measured on 2026-09-04, as reading a local
 /// that names a field, a `(long)` cast, a `remove`, an inlined binding's death,
-/// the statements the gate used to refuse, and the second spelling of
-/// `MergeMapUp` let fifteen more shapes reach their runner.
-const NEVER_RAN_SCRIPTS: usize = 528;
+/// the statements the gate used to refuse, the second spelling of
+/// `MergeMapUp` and Google Workspace's parameter fan-out let nineteen more
+/// shapes reach their runner.
+const NEVER_RAN_SCRIPTS: usize = 524;
 
 /// Set to acknowledge that this run scores a corpus the baseline cannot
 /// ratchet against, and to let it pass anyway.

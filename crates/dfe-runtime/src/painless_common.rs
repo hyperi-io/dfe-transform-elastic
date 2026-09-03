@@ -11338,6 +11338,106 @@ pub(crate) enum Collision {
     Prefix(String),
 }
 
+/// A list of `{name, value}` objects fanned out into a map keyed by `name`.
+///
+/// How Google Workspace ships every event's payload, and five of its streams
+/// carry the same script:
+///
+/// ```painless
+/// for (int i = 0; i < ctx.json.events.parameters.length; ++i) {
+///   if (ctx["json"]["events"]["parameters"][i]["value"] != null) {
+///     ctx.google_workspace.drive[ctx["json"]["events"]["parameters"][i]["name"]]
+///       = ctx["json"]["events"]["parameters"][i]["value"];
+///   }
+///   // then again for "multiValue" and "boolValue"
+/// }
+/// ```
+///
+/// Read as its own shape rather than through general loop support, which the
+/// corpus of scripts does not justify: 579 enhanced loops decompose to six
+/// with a common body, where this one body appears in five streams and holds
+/// whole blocks of `google_workspace.drive.*`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ParameterFanOut {
+    /// The list walked, e.g. `json.events.parameters`.
+    list: String,
+    /// Where the named keys land, e.g. `google_workspace.drive`.
+    target: String,
+    /// The value keys tried, in the order the script writes them, so a later
+    /// one overwrites an earlier the same way.
+    values: Vec<String>,
+}
+
+fn parse_parameter_fan_out(script: &str) -> Option<ParameterFanOut> {
+    use crate::painless_params::clean_path;
+
+    // The loop counts an index over a list's length, which is what separates
+    // this from every enhanced-for shape.
+    let head = script.split_once("for (int ")?.1;
+    let (counter, head) = head.split_once(" = 0;")?;
+    let counter = counter.trim();
+    let list = head.split_once(".length")?.0;
+    let list = clean_path(list.rsplit_once("ctx.")?.1.trim());
+
+    // The write's subject: `ctx.<target>[ctx[...][i]["name"]] = ...`. Anchored
+    // on `[ctx[`, which is where the subject ends -- the first `[` in the
+    // script is inside the guard above it.
+    let keyed = format!("[{counter}][\"name\"]]");
+    let before = script.split_once(&keyed)?.0;
+    let target = clean_path(before.rsplit_once("[ctx[")?.0.rsplit_once("ctx.")?.1.trim());
+
+    // Every `[i]["<key>"] != null` the body guards on, in order. `name` is the
+    // key, never a value.
+    let guard = format!("[{counter}][\"");
+    let mut values = Vec::new();
+    for (at, _) in script.match_indices(&guard) {
+        let rest = &script[at + guard.len()..];
+        let Some((key, tail)) = rest.split_once('"') else {
+            continue;
+        };
+        if key == "name" || values.iter().any(|seen| seen == key) {
+            continue;
+        }
+        if tail.trim_start().starts_with("] != null") {
+            values.push(key.to_string());
+        }
+    }
+
+    let named = |path: &str| !path.is_empty() && !path.contains(['(', ')', '[', ']', ' ', '"']);
+    if values.is_empty() || !named(&list) || !named(&target) {
+        return None;
+    }
+    Some(ParameterFanOut {
+        list,
+        target,
+        values,
+    })
+}
+
+fn run_parameter_fan_out(event: &mut Event, shape: &ParameterFanOut) -> bool {
+    let Some(Value::Array(items)) = event.get(&shape.list) else {
+        return true;
+    };
+    let items = items.clone();
+    for item in items {
+        let Some(entry) = item.as_object() else {
+            continue;
+        };
+        let Some(name) = entry.get("name").and_then(Value::as_str) else {
+            continue;
+        };
+        for key in &shape.values {
+            match entry.get(key) {
+                Some(Value::Null) | None => {}
+                Some(value) => {
+                    let _ = event.set(&format!("{}.{name}", shape.target), value.clone());
+                }
+            }
+        }
+    }
+    true
+}
+
 /// The same merge with no loop at all: `ctx.<target>.putAll(ctx.<source>)`.
 ///
 /// Four sites, and tanium's `threat_response` is one of them -- its whole
@@ -12774,6 +12874,7 @@ pub(crate) enum KnownShape {
     ClassifyLadder(Box<ClassifyLadder>),
     MoveKeys(Vec<(String, String)>),
     MergeMapUp(Box<MergeMapUp>),
+    ParameterFanOut(Box<ParameterFanOut>),
     MapEntryToBoolean(Box<MapEntryToBoolean>),
     NestUnder(Box<NestUnder>),
     CollectFromList(Box<CollectFromList>),
@@ -13021,6 +13122,13 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_put_all(normalised)
     {
         shapes.push(KnownShape::MergeMapUp(Box::new(shape)));
+        return shapes;
+    }
+    if normalised.contains("for (int ")
+        && normalised.contains("[\"name\"]]")
+        && let Some(shape) = parse_parameter_fan_out(normalised)
+    {
+        shapes.push(KnownShape::ParameterFanOut(Box::new(shape)));
         return shapes;
     }
 
@@ -15002,6 +15110,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::ClassifyLadder(shape) => run_classify_ladder(event, shape),
         KnownShape::MoveKeys(moves) => run_move_keys(event, moves),
         KnownShape::MergeMapUp(shape) => run_merge_map_up(event, shape),
+        KnownShape::ParameterFanOut(shape) => run_parameter_fan_out(event, shape),
         KnownShape::UnreservedKeyPayload(shape) => run_unreserved_key_payload(event, shape),
         KnownShape::HashesByLength(shape) => run_hashes_by_length(event, shape),
         KnownShape::MapEntryToBoolean(shape) => run_map_entry_to_boolean(event, shape),
@@ -15351,6 +15460,59 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
+
+    /// Google Workspace's parameter fan-out, verbatim from
+    /// `google_workspace_drive`, which four sibling streams also carry.
+    #[test]
+    fn a_parameter_list_fans_out_by_name() {
+        let script = "if (ctx.google_workspace.drive == null) {\n  \
+            ctx.google_workspace.drive = new HashMap();\n} \
+            for (int i = 0; i < ctx.json.events.parameters.length; ++i) {\n  \
+            if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"value\"] != null) {\n    \
+            ctx.google_workspace.drive[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = \
+            ctx[\"json\"][\"events\"][\"parameters\"][i][\"value\"];\n  }\n  \
+            if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"multiValue\"] != null) {\n    \
+            ctx.google_workspace.drive[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = \
+            ctx[\"json\"][\"events\"][\"parameters\"][i][\"multiValue\"];\n  }\n  \
+            if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"boolValue\"] != null) {\n    \
+            ctx.google_workspace.drive[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = \
+            ctx[\"json\"][\"events\"][\"parameters\"][i][\"boolValue\"];\n  }\n}\n";
+
+        let shape = parse_parameter_fan_out(&normalise(script)).expect("the fan-out parses");
+        assert_eq!(shape.list, "json.events.parameters");
+        assert_eq!(shape.target, "google_workspace.drive");
+        assert_eq!(shape.values, ["value", "multiValue", "boolValue"]);
+
+        let mut event = Event::new(serde_json::json!({
+            "json": { "events": { "parameters": [
+                { "name": "doc_title", "value": "document title" },
+                { "name": "billable", "boolValue": false },
+                { "name": "owners", "multiValue": ["a@example.com", "b@example.com"] },
+                { "name": "nothing", "value": null },
+            ] } },
+        }));
+        assert!(run_parameter_fan_out(&mut event, &shape));
+
+        assert_eq!(
+            event.get("google_workspace.drive.doc_title"),
+            Some(&serde_json::json!("document title"))
+        );
+        // A false is a VALUE, not an absence: reading it as one dropped every
+        // `billable: false` the corpus expects.
+        assert_eq!(
+            event.get("google_workspace.drive.billable"),
+            Some(&serde_json::json!(false))
+        );
+        assert_eq!(
+            event.get("google_workspace.drive.owners"),
+            Some(&serde_json::json!(["a@example.com", "b@example.com"]))
+        );
+        assert_eq!(
+            event.get("google_workspace.drive.nothing"),
+            None,
+            "an explicit null is what the script's own guard skips"
+        );
+    }
 
     /// A map merged into another with no loop at all.
     ///
