@@ -4820,6 +4820,12 @@ enum Rhs {
     /// `ctx.event.category = [ctx.<path>]` -- a field wrapped in a one-element
     /// list, which is how a script promotes a scalar into an ECS array field.
     FieldInList(String),
+    /// `(long) Double.parseDouble(ctx.<path>.toString())` -- coerce to a whole
+    /// number, truncating toward zero as the Painless cast does.
+    ///
+    /// The `.toString()` is the point of the shape: the field arrives as a
+    /// string on some events and a number on others.
+    LongOf(String),
     Literal(Value),
 }
 
@@ -5673,6 +5679,17 @@ fn parse_rhs(text: &str) -> Option<Rhs> {
     {
         return Some(Rhs::Text(clean_path(inner.trim().strip_prefix("ctx.")?)));
     }
+    if let Some(inner) = text
+        .strip_prefix("(long)")
+        .map(str::trim)
+        .and_then(|rest| rest.strip_prefix("Double.parseDouble("))
+        .and_then(|rest| rest.strip_suffix(')'))
+        .map(|rest| rest.trim().trim_end_matches(".toString()").trim())
+        .and_then(|rest| subject_path(rest).strip_prefix("ctx.").map(str::to_owned))
+        && !inner.contains(['(', ')', ' '])
+    {
+        return Some(Rhs::LongOf(clean_path(&inner)));
+    }
     // `[ctx.a.b]` before the bare form, or the brackets read as path syntax.
     if let Some(inner) = text
         .strip_prefix('[')
@@ -5724,6 +5741,16 @@ fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
             .get(path)
             .cloned()
             .map(|value| Value::Array(vec![value])),
+        // A value that will not parse is left alone, the way the vendor's
+        // script throws and its processor's `on_failure` leaves the field.
+        Rhs::LongOf(path) => event
+            .get(path)
+            .and_then(|value| match value {
+                Value::Number(number) => number.as_f64(),
+                Value::String(text) => text.trim().parse::<f64>().ok(),
+                _ => None,
+            })
+            .map(|number| Value::from(number.trunc() as i64)),
         Rhs::Literal(value) => Some(value.clone()),
     }
 }
@@ -7962,6 +7989,39 @@ mod tests {
         assert_eq!(falco_category("user"), json!(["session"]));
         // Not in the list and not named: the vendor's own fallback.
         assert_eq!(falco_category("wat"), json!(["process"]));
+    }
+
+    /// tychon coerces a duration to a whole number in every one of its
+    /// streams, 38 call sites of one script.
+    ///
+    /// Painless truncates toward zero on a `(long)` cast rather than rounding,
+    /// and the `.toString()` in the middle is why the vendor wrote it this
+    /// way: the field arrives as a string on some events and a number on
+    /// others.
+    #[test]
+    fn a_double_cast_to_long_truncates() {
+        const SCRIPT: &str = "if (ctx.tychon?.script?.current_duration != null)\n{\n  \
+            ctx.tychon.script.current_duration =\n    \
+            (long) Double.parseDouble(ctx.tychon.script.current_duration.toString());\n}\n";
+
+        fn coerced(value: Value) -> Value {
+            let mut event = Event::new(json!({ "tychon": { "script": {} } }));
+            event
+                .set("tychon.script.current_duration", value)
+                .expect("sets");
+            Program::parse(SCRIPT).run(&mut event);
+            event
+                .get("tychon.script.current_duration")
+                .cloned()
+                .unwrap_or(Value::Null)
+        }
+
+        assert_eq!(coerced(json!("12.7")), json!(12));
+        assert_eq!(coerced(json!(12.7)), json!(12));
+        assert_eq!(coerced(json!("-3.9")), json!(-3));
+        assert_eq!(coerced(json!(5)), json!(5));
+        // Nothing to parse leaves the field as it was.
+        assert_eq!(coerced(json!("nope")), json!("nope"));
     }
 
     /// A local can be named after a field, and `carbonblack_edr` binds one

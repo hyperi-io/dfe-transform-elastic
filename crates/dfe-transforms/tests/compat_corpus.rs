@@ -2030,9 +2030,10 @@ fn entry(score: Score) -> String {
 /// shapes are fixed and is read alongside `scripts/shape_reach.py`, never on
 /// its own.
 ///
-/// 540, down from the 543 first measured on 2026-09-04, when resolving a local
-/// that names a field let three more shapes reach their runner.
-const NEVER_RAN_SCRIPTS: usize = 540;
+/// 539, down from the 543 first measured on 2026-09-04, as resolving a local
+/// that names a field and reading a `(long)` cast let four more shapes reach
+/// their runner.
+const NEVER_RAN_SCRIPTS: usize = 539;
 
 /// Set to acknowledge that this run scores a corpus the baseline cannot
 /// ratchet against, and to let it pass anyway.
