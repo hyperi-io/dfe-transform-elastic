@@ -264,9 +264,21 @@ fn the_envelope_is_safe_even_on_a_source_config_would_reject() {
 /// line to the transform.
 ///
 /// The reason the envelope layer exists: one set of parsers, whatever brought
-/// the bytes. Each wrapper here is the transport's real shape, from
-/// `tests/envelopes/receiver/`, so a converter that changes where it puts the
-/// body fails this rather than quietly parsing nothing.
+/// the bytes.
+///
+/// These wrappers are each transport's shape carrying a PANW line, which is
+/// not the same thing as the recorded fixtures in `tests/envelopes/receiver/`
+/// -- those hold the body their own producer sent, and `envelope_detection.rs`
+/// is what checks them. The two cannot be merged: this test needs a body the
+/// panw grok parses, and that is not what a GELF or Fluent sample carries.
+///
+/// One shape here deliberately differs from its fixture. `fluent.json` puts
+/// the body in `log`, because the converter passes the sender's msgpack record
+/// through untouched and a Docker driver writes `log`; a sender forwarding a
+/// device line writes `message`. Both are real, and the fluent transport lifts
+/// neither onto the other -- so a `log`-only record reaches a line-framed
+/// transform with no `message` at all. Whether anything forwards device lines
+/// that way is open.
 #[test]
 fn every_transport_that_carries_a_line_produces_the_same_output() {
     let baseline = run(
@@ -303,6 +315,9 @@ fn every_transport_that_carries_a_line_produces_the_same_output() {
             "splunk_hec",
             json!({
                 "message": PANW_BODY,
+                // `_time` is in the recorded fixture and drives the transport's
+                // epoch-seconds lift, which this case did not exercise.
+                "_time": 1_771_459_200,
                 "host": "fw01",
                 "source": "/var/log/panw",
                 "sourcetype": "pan:traffic",
