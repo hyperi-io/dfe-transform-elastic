@@ -228,6 +228,11 @@ dotenvy = ">=0.15"
 criterion = { version = ">=0.5, <0.6", features = ["html_reports"] }
 tempfile = ">=3.10, <3.20"
 
+# Scores the compat corpus across cores. A test-only dependency: the service
+# gets its parallelism from one transform thread per Kafka partition, and
+# nothing in the shipped path uses a work-stealing pool.
+rayon = ">=1.10, <2"
+
 # Ephemeral broker for the round-trip test. Same range as the rest of the
 # fleet so one version is shared across dfe-receiver, dfe-loader and the
 # transform services.

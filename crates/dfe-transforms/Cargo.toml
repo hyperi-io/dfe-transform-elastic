@@ -44,6 +44,7 @@ dfe-runtime = { workspace = true, features = ["testutil", "codegen"] }
 # runtime dispatches over, so it has to be able to try both itself.
 fancy-regex = { workspace = true }
 dotenvy = { workspace = true }
+rayon = { workspace = true }
 serde_yaml_ng = { workspace = true }
 
 # Per-event transform throughput. A 20k batch multiplies whatever one event

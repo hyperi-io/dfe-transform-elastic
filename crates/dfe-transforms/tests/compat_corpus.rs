@@ -20,6 +20,7 @@ use dfe_runtime::testutil::diff::{DiffKind, JsonDiff, MatchMode};
 use dfe_runtime::testutil::{flatten_value, policy};
 use dfe_runtime::transform::{Transform, TransformResult};
 use dfe_transforms::filebeat;
+use rayon::prelude::*;
 use serde_json::Value;
 
 /// Where `compat.py` writes by default. `DFE_COMPAT_CORPUS` overrides it, the
@@ -1660,41 +1661,132 @@ fn score_the_corpus() {
         .map(str::to_owned)
         .collect();
 
+    // Captures are independent, so they score across cores. Each collects its
+    // output rather than printing, and the merge below replays them in corpus
+    // order: a gate whose totals moved with scheduling would be no gate.
+    let outcomes: Vec<Outcome> = scoring_pool().install(|| {
+        fixtures
+            .par_iter()
+            .map(|capture| score_capture(capture, &only, &detail, dump.as_deref()))
+            .collect()
+    });
+
     let mut unmapped = Vec::new();
     let mut by_source: BTreeMap<String, Score> = BTreeMap::new();
     let mut failures: BTreeMap<String, Vec<BTreeSet<String>>> = BTreeMap::new();
     let mut total = Score::default();
 
-    for capture in &fixtures {
-        if !only.is_empty() && !only.contains(&capture.source) {
-            continue;
+    for outcome in outcomes {
+        print!("{}", outcome.output);
+        if let Some(name) = outcome.unmapped {
+            unmapped.push(name);
         }
-        let Some(transform) = transform_for(&capture.source, &capture.data_stream) else {
-            unmapped.push(format!("{}/{}", capture.source, capture.data_stream));
+        let Some(score) = outcome.score else {
             continue;
         };
-
-        // Say why a capture is not worth comparing BEFORE printing a score
-        // against it, or a zero reads as a broken transform.
-        if capture.is_stale() {
-            println!(
-                "[{}/{}] SKIPPED: written by an earlier tool ({}), regenerate it",
-                capture.source, capture.fixture, capture.entry_pipeline,
-            );
-            continue;
+        if !outcome.failures.is_empty() {
+            failures
+                .entry(outcome.source.clone())
+                .or_default()
+                .extend(outcome.failures);
         }
-        if capture.capture_failed() {
-            println!(
-                "[{}/{}] SKIPPED: Elastic errored on all {} events, so the capture \
-                 carries no expectation -- check the input shape",
-                capture.source,
-                capture.fixture,
-                capture.expected.len(),
-            );
-            continue;
-        }
+        by_source.entry(outcome.source).or_default().add(score);
+        total.add(score);
+    }
 
-        let mut score = Score::default();
+    print_and_check(
+        &fixtures,
+        &unmapped,
+        &by_source,
+        &failures,
+        total,
+        &only,
+        unhandled_dump.as_deref(),
+    );
+}
+
+/// What one capture produced: its output, its score, and the fields that
+/// disagreed. Collected rather than emitted so a parallel run reads exactly
+/// like a serial one.
+#[derive(Default)]
+struct Outcome {
+    source: String,
+    output: String,
+    score: Option<Score>,
+    failures: Vec<BTreeSet<String>>,
+    unmapped: Option<String>,
+}
+
+/// One pool for the whole run, sized to the host and given the deep stack the
+/// transforms need.
+///
+/// Rayon's default 2 MB worker stack overflows on the recursive shapes, which
+/// is why the test body itself already runs on a 64 MB thread. The stacks are
+/// reserved address space rather than resident pages, so a wide host pays
+/// nothing for them.
+///
+/// `DFE_COMPAT_THREADS` overrides the width, for pinning a measurement or for
+/// bisecting a failure that only appears in parallel.
+fn scoring_pool() -> rayon::ThreadPool {
+    let threads = std::env::var("DFE_COMPAT_THREADS")
+        .ok()
+        .and_then(|value| value.parse::<usize>().ok())
+        .filter(|threads| *threads > 0)
+        .unwrap_or_else(|| std::thread::available_parallelism().map_or(8, std::num::NonZero::get));
+
+    rayon::ThreadPoolBuilder::new()
+        .num_threads(threads)
+        .stack_size(64 * 1024 * 1024)
+        .build()
+        .expect("build the corpus scoring pool")
+}
+
+fn score_capture(
+    capture: &Captured,
+    only: &BTreeSet<String>,
+    detail: &BTreeSet<String>,
+    dump: Option<&str>,
+) -> Outcome {
+    use std::fmt::Write as _;
+
+    let mut out = Outcome {
+        source: capture.source.clone(),
+        ..Outcome::default()
+    };
+
+    if !only.is_empty() && !only.contains(&capture.source) {
+        return out;
+    }
+    let Some(transform) = transform_for(&capture.source, &capture.data_stream) else {
+        out.unmapped = Some(format!("{}/{}", capture.source, capture.data_stream));
+        return out;
+    };
+
+    // Say why a capture is not worth comparing BEFORE printing a score
+    // against it, or a zero reads as a broken transform.
+    if capture.is_stale() {
+        let _ = writeln!(
+            out.output,
+            "[{}/{}] SKIPPED: written by an earlier tool ({}), regenerate it",
+            capture.source, capture.fixture, capture.entry_pipeline,
+        );
+        return out;
+    }
+    if capture.capture_failed() {
+        let _ = writeln!(
+            out.output,
+            "[{}/{}] SKIPPED: Elastic errored on all {} events, so the capture \
+             carries no expectation -- check the input shape",
+            capture.source,
+            capture.fixture,
+            capture.expected.len(),
+        );
+        return out;
+    }
+
+    let mut score = Score::default();
+    {
+        let failures = &mut out.failures;
         for (i, raw) in capture.input.iter().enumerate() {
             let Some(expected) = capture.expected.get(i) else {
                 continue;
@@ -1739,19 +1831,13 @@ fn score_the_corpus() {
                     // Dropped an event Elastic kept: every expected field is
                     // gone, and the ranking hears about it under one name.
                     score.fields_wrong += compared_field_count(&capture.source, expected);
-                    failures
-                        .entry(capture.source.clone())
-                        .or_default()
-                        .push(BTreeSet::from(["_dropped".to_string()]));
+                    failures.push(BTreeSet::from(["_dropped".to_string()]));
                     continue;
                 }
                 Ok(_) if expected_drop => {
                     // Kept an event Elastic dropped.
                     score.fields_wrong += 1;
-                    failures
-                        .entry(capture.source.clone())
-                        .or_default()
-                        .push(BTreeSet::from(["_not_dropped".to_string()]));
+                    failures.push(BTreeSet::from(["_not_dropped".to_string()]));
                     continue;
                 }
                 Ok(_) => {}
@@ -1769,13 +1855,14 @@ fn score_the_corpus() {
             }
 
             if detail.contains(&capture.source) {
-                println!("  {}[{i}]: {diff}", capture.fixture);
+                let _ = writeln!(out.output, "  {}[{i}]: {diff}", capture.fixture);
             }
             // A diff names the fields that disagree; it does not say what ELSE
             // the transform wrote, which is where a stray value's real source
             // shows up. `DFE_COMPAT_DUMP=<fixture>` prints the whole document.
-            if dump.as_deref() == Some(capture.fixture.as_str()) {
-                println!(
+            if dump == Some(capture.fixture.as_str()) {
+                let _ = writeln!(
+                    out.output,
                     "  {}[{i}] GOT: {}",
                     capture.fixture,
                     serde_json::to_string(event.as_value()).unwrap_or_default()
@@ -1790,28 +1877,34 @@ fn score_the_corpus() {
                 }
                 paths.insert(field.path.clone());
             }
-            failures
-                .entry(capture.source.clone())
-                .or_default()
-                .push(paths);
+            failures.push(paths);
         }
-
-        println!(
-            "[{}/{}] {} (es {})",
-            capture.source,
-            capture.fixture,
-            score.line(),
-            capture.engine,
-        );
-        by_source
-            .entry(capture.source.clone())
-            .or_default()
-            .add(score);
-        total.add(score);
     }
 
+    let _ = writeln!(
+        out.output,
+        "[{}/{}] {} (es {})",
+        capture.source,
+        capture.fixture,
+        score.line(),
+        capture.engine,
+    );
+    out.score = Some(score);
+    out
+}
+
+/// The ranking, the totals, the optional reach dump, and the ratchet.
+fn print_and_check(
+    fixtures: &[Captured],
+    unmapped: &[String],
+    by_source: &BTreeMap<String, Score>,
+    failures: &BTreeMap<String, Vec<BTreeSet<String>>>,
+    total: Score,
+    only: &BTreeSet<String>,
+    unhandled_dump: Option<&str>,
+) {
     println!("\n=== per source ===");
-    for (source, score) in &by_source {
+    for (source, score) in by_source {
         println!("{source:<20} {}", score.line());
         for blocker in events_unlocked(failures.get(source).map_or(&[], Vec::as_slice), 6) {
             println!(
@@ -1822,7 +1915,7 @@ fn score_the_corpus() {
     }
     println!("\n{:<20} {}", "TOTAL", total.line());
 
-    if let Some(path) = &unhandled_dump {
+    if let Some(path) = unhandled_dump {
         dfe_runtime::painless_stats::enable_catalogue(false);
         let reach = dfe_runtime::painless_stats::reach();
         let never = reach.iter().filter(|(_, ran, _)| *ran == 0).count();
@@ -1861,7 +1954,7 @@ fn score_the_corpus() {
     // A partial run cannot say whether another source went down, so it reports
     // and never ratchets. The whole-corpus run stays the only gate.
     if only.is_empty() {
-        check_baseline(&by_source, &provenance(&fixtures));
+        check_baseline(by_source, &provenance(fixtures));
     } else {
         println!("\nDFE_COMPAT_ONLY is set, so the baseline was NOT checked");
     }
