@@ -4953,6 +4953,14 @@ fn one_alias_pass(body: &str) -> Option<String> {
         }
         out = out[..after].to_string() + &rewritten;
         at = after;
+
+        // The binding is dead text once every use of it carries the path, and
+        // a declaration the walk cannot run keeps the script from being whole.
+        if let Some(without) = drop_inlined_declaration(&out, &name) {
+            at = at.min(without.len());
+            out = without;
+            changed = true;
+        }
     }
 
     changed.then_some(out)
@@ -4996,6 +5004,50 @@ fn ctx_alias_value(value: &str) -> Option<String> {
     }
     // A call or a subscript is a value this cannot follow.
     (!bare.contains(['(', ')', '[', ']', ' ', '\n'])).then(|| value.to_string())
+}
+
+/// Drop `def <name> = ...;` once every use of it has been inlined.
+///
+/// The declaration is not a statement the walk can run, so a script keeping
+/// one is never WHOLE and `PlainAssignments` declines it -- which left
+/// activemq's level ladder unbound even after its list was read.
+///
+/// Only when the name appears exactly once in the whole body, which is the
+/// declaration itself. Anything else means a use the substitution did not
+/// reach, and the binding still has to be there for it.
+fn drop_inlined_declaration(body: &str, name: &str) -> Option<String> {
+    if word_uses(body, name) != 1 {
+        return None;
+    }
+    let start = body.find(&format!("def {name}"))?;
+    let end = body[start..].find(';')? + start + 1;
+    let mut out = body[..start].to_string();
+    out.push_str(body[end..].trim_start());
+    Some(out)
+}
+
+/// Whole-word occurrences of `name`, counting a segment after a dot as part of
+/// a path rather than a use of the variable.
+fn word_uses(body: &str, name: &str) -> usize {
+    fn word(c: u8) -> bool {
+        c.is_ascii_alphanumeric() || c == b'_'
+    }
+
+    let bytes = body.as_bytes();
+    let mut seen = 0;
+    let mut at = 0;
+    while let Some(found) = body[at..].find(name) {
+        let start = at + found;
+        let end = start + name.len();
+        at = end;
+        let before = start.checked_sub(1).map(|index| bytes[index]);
+        if before.is_some_and(|c| c == b'.' || word(c)) || bytes.get(end).copied().is_some_and(word)
+        {
+            continue;
+        }
+        seen += 1;
+    }
+    seen
 }
 
 /// Replace occurrences of `name` used as a VARIABLE.
@@ -5047,7 +5099,7 @@ fn inline_local_lists(body: &str) -> Cow<'_, str> {
         return Cow::Borrowed(body);
     }
 
-    let mut swaps: Vec<(String, String)> = Vec::new();
+    let mut swaps: Vec<(String, String, String)> = Vec::new();
     let mut at = 0;
     while let Some(found) = body[at..].find("def ") {
         at += found + "def ".len();
@@ -5071,15 +5123,18 @@ fn inline_local_lists(body: &str) -> Cow<'_, str> {
         if !body.contains(&use_site) || !assigned_once(body, name) {
             continue;
         }
-        swaps.push((use_site, format!("{literal}.contains(")));
+        swaps.push((name.to_string(), use_site, format!("{literal}.contains(")));
     }
 
     if swaps.is_empty() {
         return Cow::Borrowed(body);
     }
     let mut text = body.to_string();
-    for (needle, with) in &swaps {
+    for (name, needle, with) in &swaps {
         text = replace_uses(&text, needle, with);
+        if let Some(without) = drop_inlined_declaration(&text, name) {
+            text = without;
+        }
     }
     Cow::Owned(text)
 }
@@ -8109,7 +8164,7 @@ mod tests {
     #[test]
     fn a_local_named_after_a_field_leaves_paths_alone() {
         let script = "def event = ctx.winlog.event_data; ctx.event.action = 'x'; \
-            def other = event;";
+            ctx.kept = event;";
         let rewritten = inline_ctx_aliases(script);
 
         assert!(
@@ -8117,8 +8172,12 @@ mod tests {
             "a path segment was rewritten: {rewritten}"
         );
         assert!(
-            rewritten.contains("def other = ctx.winlog.event_data"),
+            rewritten.contains("ctx.kept = ctx.winlog.event_data"),
             "the bare variable was not resolved: {rewritten}"
+        );
+        assert!(
+            !rewritten.contains("def event"),
+            "the binding is dead text once every use carries the path: {rewritten}"
         );
     }
 
