@@ -198,19 +198,6 @@ fn quoted(text: &str) -> Option<String> {
 }
 
 /// Every quoted literal in `text`, in order.
-fn quoted_all(text: &str) -> Vec<String> {
-    let mut out = Vec::new();
-    let mut rest = text;
-    while let Some(start) = rest.find(['"', '\'']) {
-        let quote = rest[start..].chars().next().unwrap_or('"');
-        let after = &rest[start + 1..];
-        let Some(end) = after.find(quote) else { break };
-        out.push(after[..end].to_string());
-        rest = &after[end + 1..];
-    }
-    out
-}
-
 /// `enrichCtx.related` / `enrichCtx.target` as a [`SetRef`].
 fn set_ref(text: &str) -> Option<SetRef> {
     match text.trim() {
@@ -282,7 +269,10 @@ fn parse_actions(mut text: &str, scope: &mut ParseScope) -> Option<Vec<Action>> 
         if let Some(rest) = text.strip_prefix("addFields") {
             let (args, tail) = paren_args(rest)?;
             let (set, list) = args.split_once(',')?;
-            out.push(Action::AddFields(set_ref(set)?, quoted_all(list)));
+            out.push(Action::AddFields(
+                set_ref(set)?,
+                crate::painless_common::quoted_members(list),
+            ));
             text = tail.trim_start().strip_prefix(';')?;
             continue;
         }

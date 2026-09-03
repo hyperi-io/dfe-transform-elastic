@@ -3559,19 +3559,13 @@ pub(crate) struct SuffixesByPrefix {
 }
 
 /// The identifier a fragment ends on.
-fn last_identifier(text: &str) -> Option<&str> {
-    text.rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
-        .next()
-        .filter(|name| !name.is_empty())
-}
-
 fn parse_suffixes_by_prefix(script: &str) -> Option<SuffixesByPrefix> {
     use crate::painless_params::clean_path;
 
     let (head, tail) = script.split_once(".substring(")?;
     let (accumulator, item) = head.rsplit_once(".add(")?;
-    let accumulator = last_identifier(accumulator)?;
-    let item = last_identifier(item)?;
+    let accumulator = identifier_before(accumulator)?;
+    let item = identifier_before(item)?;
     let prefix = quoted_first(declared_expression(
         script,
         tail.split_once(".length()")?.0.trim(),
@@ -5671,7 +5665,7 @@ fn destination(tail: &str) -> Option<String> {
     let braced = format!("{{{tail}");
     let (block, _) = crate::painless_params::balanced(&braced, '{', '}')?;
     let (_, arguments) = block.split_once("addNestedValue(")?;
-    first_quoted(arguments)
+    quoted_first(arguments)
 }
 
 /// One arm's test, evaluated against the member rather than the event.
@@ -5686,15 +5680,6 @@ fn string_predicate(test: &str, member: &str) -> bool {
     })
 }
 
-/// The first single- or double-quoted literal in a fragment.
-fn first_quoted(text: &str) -> Option<String> {
-    let start = text.find(['\'', '"'])?;
-    let quote = text[start..].chars().next()?;
-    let rest = &text[start + quote.len_utf8()..];
-    let end = rest.find(quote)?;
-    Some(rest[..end].to_string())
-}
-
 fn string_term(term: &str, member: &str) -> bool {
     // A grouping paren is not part of the term, and there may be several.
     let term = term.trim().trim_start_matches('(').trim();
@@ -5704,7 +5689,7 @@ fn string_term(term: &str, member: &str) -> bool {
     let Some((call, argument)) = term.split_once('(') else {
         return false;
     };
-    let Some(wanted) = first_quoted(argument) else {
+    let Some(wanted) = quoted_first(argument) else {
         return false;
     };
     if call.ends_with(".startsWith") {
@@ -6305,7 +6290,8 @@ fn try_parallel_dispatch(event: &mut Event, script: &str) -> bool {
     let Some((variable, kinds_path, body)) = dispatch_loop(script) else {
         return false;
     };
-    let Some(values_path) = ctx_path_between_markers(&body, "(ctx, ctx.", "[i]") else {
+    let Some(values_path) = crate::painless_params::ctx_path_between(&body, "(ctx, ctx.", "[i]")
+    else {
         return false;
     };
 
@@ -6413,17 +6399,8 @@ fn dispatch_loop(script: &str) -> Option<(String, String, String)> {
     ))
 }
 
-/// The dotted `ctx.` path written between two markers.
-fn ctx_path_between_markers(text: &str, open: &str, close: &str) -> Option<String> {
-    use crate::painless_params::clean_path;
-
-    let start = text.find(open)? + open.len();
-    let tail = &text[start..];
-    Some(clean_path(&tail[..tail.find(close)?]))
-}
-
 /// The quoted strings of a literal list.
-fn quoted_members(literals: &str) -> Vec<String> {
+pub(crate) fn quoted_members(literals: &str) -> Vec<String> {
     let mut members = Vec::new();
     let mut rest = literals;
     while let Some(open) = rest.find(['"', '\'']) {

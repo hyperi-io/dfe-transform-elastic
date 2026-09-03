@@ -6239,21 +6239,7 @@ pub(crate) fn ctx_path_between(script: &str, open: &str, close: &str) -> Option<
 /// The table lookup is often written twice -- once to null-check, once to use
 /// -- and it is the second that feeds the merge.
 fn last_call_argument(script: &str, name: &str) -> Option<String> {
-    let start = script.rfind(name)? + name.len();
-    let mut depth = 1usize;
-    for (i, c) in script[start..].char_indices() {
-        match c {
-            '(' => depth += 1,
-            ')' => {
-                depth -= 1;
-                if depth == 0 {
-                    return Some(script[start..start + i].to_string());
-                }
-            }
-            _ => {}
-        }
-    }
-    None
+    last_delimited(script, name, '(', ')')
 }
 
 /// The last `name[...]` subscript's contents, brackets balanced.
@@ -6262,18 +6248,24 @@ fn last_call_argument(script: &str, name: &str) -> Option<String> {
 /// whether it is subscripted or `.get()`, and both spellings appear across the
 /// integrations for the same job.
 fn last_bracket_subscript(script: &str, name: &str) -> Option<String> {
+    last_delimited(script, name, '[', ']')
+}
+
+/// What the LAST `name` opens, up to its matching close.
+///
+/// The two spellings differ only in the delimiter pair, so they share the
+/// scan rather than the scan being written twice and drifting.
+fn last_delimited(script: &str, name: &str, open: char, close: char) -> Option<String> {
     let start = script.rfind(name)? + name.len();
     let mut depth = 1usize;
     for (i, c) in script[start..].char_indices() {
-        match c {
-            '[' => depth += 1,
-            ']' => {
-                depth -= 1;
-                if depth == 0 {
-                    return Some(script[start..start + i].to_string());
-                }
+        if c == open {
+            depth += 1;
+        } else if c == close {
+            depth -= 1;
+            if depth == 0 {
+                return Some(script[start..start + i].to_string());
             }
-            _ => {}
         }
     }
     None
