@@ -189,7 +189,7 @@ fn parse_split_pipe_fields(script: &str) -> Option<Vec<String>> {
     use crate::painless_params::clean_path;
 
     // The one local bound to a ctx path that the calls pass.
-    let (local, base) = local_bound_to_ctx(script)?;
+    let (local, base) = local_and_ctx_path(script)?;
 
     let mut fields = Vec::new();
     for call in script.split("splitStr(").skip(1) {
@@ -218,7 +218,7 @@ fn parse_split_pipe_fields(script: &str) -> Option<Vec<String>> {
 fn parse_split_token_field(script: &str) -> Option<KnownShape> {
     use crate::painless_params::clean_path;
 
-    let (local, source) = local_bound_to_ctx(script)?;
+    let (local, source) = local_and_ctx_path(script)?;
     let call = format!("{local}.splitOnToken(");
     let at = script.find(&call)?;
     let separator = quoted_first(&script[at + call.len()..])?;
@@ -4614,7 +4614,7 @@ impl LiteralValueMap {
 /// matters: it drops the recursive map-walkers that merely spell `else if (`
 /// and which this shape claimed for 91 call sites without ever applying.
 fn parse_literal_value_map(script: &str) -> Option<LiteralValueMap> {
-    let (local, source) = local_bound_to_ctx(script)?;
+    let (local, source) = local_and_ctx_path(script)?;
 
     let mut arms = Vec::new();
     for block in script.split("if (").skip(1) {
@@ -4991,8 +4991,9 @@ fn mentions(text: &str, token: &str) -> bool {
 ///
 /// Splits on STATEMENTS, not lines: these scripts ship as a YAML folded
 /// scalar, so the whole preamble arrives on one line and a line-based read
-/// takes the rest of the script as the path.
-fn local_and_ctx_path(script: &str) -> Option<(String, String)> {
+/// takes the rest of the script as the path. `String x = ctx.y` reads the same
+/// way, since both spellings are a two-word declaration.
+pub(crate) fn local_and_ctx_path(script: &str) -> Option<(String, String)> {
     use crate::painless_params::clean_path;
 
     script.split([';', '\n']).find_map(|statement| {
@@ -5401,25 +5402,6 @@ fn run_ioc_expiry(event: &mut Event, shape: &IocExpiry) -> bool {
         let _ = event.set(&shape.target, json!(expiry));
     }
     true
-}
-
-/// The first `String x = ctx.<path>;` binding, as (local, path).
-fn local_bound_to_ctx(script: &str) -> Option<(String, String)> {
-    for line in script.lines() {
-        let line = line.trim().trim_end_matches(';');
-        let Some((declaration, value)) = line.split_once(" = ") else {
-            continue;
-        };
-        let Some(path) = value.trim().strip_prefix("ctx.") else {
-            continue;
-        };
-        let name = declaration.rsplit(' ').next()?;
-        if declaration.split(' ').count() != 2 || name.is_empty() {
-            continue;
-        }
-        return Some((name.to_string(), clean_path(path)));
-    }
-    None
 }
 
 /// The literal a guard compares `local` to, whichever quote it used.
@@ -19792,6 +19774,27 @@ def event_timezone = get_timezone(ctx);
             return src;\n}\ndef out = ctx.qualys;\n";
 
         assert!(parse_literal_value_map(script).is_none());
+    }
+
+    /// A folded YAML scalar puts the whole preamble on one line, so a
+    /// line-based read takes the rest of the script as the path.
+    #[test]
+    fn a_binding_reads_out_of_a_folded_script() {
+        let folded = "if (ctx.a == null) { return; } String v = ctx.b.c; \
+            if (v != null) { ctx.d = v; }";
+        assert_eq!(
+            local_and_ctx_path(folded),
+            Some(("v".to_string(), "b.c".to_string()))
+        );
+    }
+
+    /// Both declaration spellings are two words, so both read the same.
+    #[test]
+    fn def_and_a_typed_declaration_read_alike() {
+        assert_eq!(
+            local_and_ctx_path("def x = ctx.a.b;"),
+            local_and_ctx_path("String x = ctx.a.b;")
+        );
     }
 
     /// Verbatim from `jamf_protect_telemetry`, 99 call sites and no corpus
