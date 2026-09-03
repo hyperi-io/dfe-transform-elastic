@@ -33,7 +33,7 @@
     "aws_mq": { "events": 12, "events_total": 12, "fields_wrong": 0 },
     "aws_securityhub": { "events": 0, "events_total": 10, "fields_wrong": 164 },
     "awsfirehose": { "events": 42, "events_total": 42, "fields_wrong": 0 },
-    "axonius": { "events": 10, "events_total": 89, "fields_wrong": 2353 },
+    "axonius": { "events": 84, "events_total": 89, "fields_wrong": 14 },
     "azure": { "events": 181, "events_total": 182, "fields_wrong": 4 },
     "azure_ai_foundry": { "events": 5, "events_total": 10, "fields_wrong": 5 },
     "azure_app_service": { "events": 11, "events_total": 11, "fields_wrong": 0 },

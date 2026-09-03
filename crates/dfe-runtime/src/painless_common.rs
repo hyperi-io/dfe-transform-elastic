@@ -11320,18 +11320,43 @@ pub(crate) struct MergeMapUp {
     source: String,
     /// Whether the binding consumed the map. A plain read leaves it.
     take: bool,
-    /// Whether a `containsKey` guard makes an existing key win.
-    keep_existing: bool,
+    /// What a key already on the parent does to the one arriving.
+    collision: Collision,
     drops: Vec<String>,
+}
+
+/// What happens when a lifted key is already on the parent.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) enum Collision {
+    /// No guard: the arriving value wins.
+    Overwrite,
+    /// `if (!ctx.<parent>.containsKey(k))` -- the one already there wins.
+    KeepExisting,
+    /// `ctx.<parent>['data_' + k] = ...` -- BOTH are kept, the arriving one
+    /// under a prefix. axonius lifts its whole payload out of `event.data`
+    /// this way, in nine of its streams.
+    Prefix(String),
 }
 
 fn parse_merge_map_up(script: &str) -> Option<MergeMapUp> {
     use crate::painless_params::{clean_path, ctx_path_before};
 
     // The loop names both locals: the entry it binds, and the map it walks.
+    // Two spellings of one operation -- `m.entrySet()` reaching members
+    // through `getKey`, and `new ArrayList(m.keySet())` subscripting instead.
     let (entry, after) = script.split_once("for (")?.1.split_once(':')?;
     let entry = entry.trim().rsplit(' ').next()?;
-    let local = after.split_once(".entrySet()")?.0.trim();
+    let keyed = after.contains(".keySet()");
+    let local = if keyed {
+        after
+            .split_once(".keySet()")?
+            .0
+            .trim()
+            .trim_start_matches("new ArrayList(")
+            .trim()
+    } else {
+        after.split_once(".entrySet()")?.0.trim()
+    };
     if entry.is_empty() || local.is_empty() {
         return None;
     }
@@ -11339,7 +11364,11 @@ fn parse_merge_map_up(script: &str) -> Option<MergeMapUp> {
     // The parent is read from the WRITE rather than from the binding, because
     // that is where the merge actually lands -- the two differ whenever the
     // map is nested more than one level down.
-    let write = format!("[{entry}.getKey()] = {entry}.getValue()");
+    let write = if keyed {
+        format!("[{entry}] = {local}[{entry}]")
+    } else {
+        format!("[{entry}.getKey()] = {entry}.getValue()")
+    };
     let parent = ctx_path_before(script, &write)?;
     if parent.is_empty() {
         return None;
@@ -11370,7 +11399,13 @@ fn parse_merge_map_up(script: &str) -> Option<MergeMapUp> {
         return None;
     }
 
-    let keep_existing = script.contains(&format!("!ctx.{parent}.containsKey({entry}.getKey())"));
+    let collision = if script.contains(&format!("!ctx.{parent}.containsKey({entry}.getKey())")) {
+        Collision::KeepExisting
+    } else if let Some(prefix) = prefixed_on_collision(script, &parent, entry) {
+        Collision::Prefix(prefix)
+    } else {
+        Collision::Overwrite
+    };
 
     let dropper = format!("ctx.{parent}.remove(");
     let drops = script
@@ -11384,9 +11419,22 @@ fn parse_merge_map_up(script: &str) -> Option<MergeMapUp> {
         parent,
         source,
         take,
-        keep_existing,
+        collision,
         drops,
     })
+}
+
+/// The prefix a colliding key is stored under, if the script keeps both.
+///
+/// `if (ctx.<parent>.containsKey(k)) { ctx.<parent>['data_' + k] = ... }` is
+/// axonius's spelling, and the prefix is the quoted half of that expression.
+fn prefixed_on_collision(script: &str, parent: &str, entry: &str) -> Option<String> {
+    let guard = format!("ctx.{parent}.containsKey({entry})");
+    let after = script.split_once(&guard)?.1;
+    let marker = format!("' + {entry}]");
+    let head = after.split_once(&marker)?.0;
+    let prefix = head.rsplit_once('\'')?.1;
+    (!prefix.is_empty() && !prefix.contains(['.', ' '])).then(|| prefix.to_string())
 }
 
 fn run_merge_map_up(event: &mut Event, shape: &MergeMapUp) -> bool {
@@ -11404,10 +11452,16 @@ fn run_merge_map_up(event: &mut Event, shape: &MergeMapUp) -> bool {
     };
     if let Some(Value::Object(parent)) = crate::painless_params::pointer_mut(event, &shape.parent) {
         for (key, value) in entries {
-            if shape.keep_existing && parent.contains_key(&key) {
-                continue;
+            match &shape.collision {
+                // The one already there wins, so the arriving value is dropped.
+                Collision::KeepExisting if parent.contains_key(&key) => {}
+                Collision::Prefix(prefix) if parent.contains_key(&key) => {
+                    parent.insert(format!("{prefix}{key}"), value);
+                }
+                _ => {
+                    parent.insert(key, value);
+                }
             }
-            parent.insert(key, value);
         }
     }
     for path in &shape.drops {
@@ -12918,10 +12972,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     }
 
     // Pattern: a nested map emptied into an ancestor, and the routing keys
-    // beside it dropped. The trigger is the WRITE rather than the binding,
-    // because the map is bound either by a `remove` or by a plain read.
-    if normalised.contains(".entrySet()")
-        && normalised.contains(".getValue()")
+    // beside it dropped. The trigger is the PARSE, with only a cheap reject in
+    // front: gating on `.getValue()` gated on one of the two spellings, and
+    // the nine axonius streams write the other.
+    if (normalised.contains(".entrySet()") || normalised.contains(".keySet()"))
         && let Some(shape) = parse_merge_map_up(normalised)
     {
         shapes.push(KnownShape::MergeMapUp(Box::new(shape)));
