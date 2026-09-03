@@ -4806,8 +4806,19 @@ enum Stmt {
 /// folded into the path, so they share a variant.
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum Literal {
-    Append { path: String, value: Rhs },
-    Set { path: String, value: Rhs },
+    Append {
+        path: String,
+        value: Rhs,
+    },
+    Set {
+        path: String,
+        value: Rhs,
+    },
+    /// `ctx.<base>.remove('<leaf>')` -- a prune the script makes on its own
+    /// account, and the other half of many an `if`/`else` that sets on one arm.
+    Remove {
+        path: String,
+    },
 }
 
 /// Where a write's value comes from.
@@ -5158,6 +5169,10 @@ fn readable_term(term: &str) -> bool {
 /// Container allocation (`ctx.a = new HashMap()`) counts as runnable and does
 /// nothing: `Event::set` builds the parents a later write needs.
 fn statement_is_runnable(statement: &str) -> bool {
+    // Asked through the same reader the handler uses, so the two cannot drift.
+    if removed_path(statement).is_some() {
+        return true;
+    }
     let Some((subject, value)) = split_assignment(statement) else {
         return false;
     };
@@ -5643,7 +5658,35 @@ impl Argument {
 /// Four shapes, and the value is either a literal or another `ctx.` field:
 /// `ctx.a.add(v)`, `ctx.a.put('k', v)`, `ctx.a = v`, and the `.put` and `.add`
 /// forms with a copied source. Anything else is left alone.
+/// The field a `ctx.<base>.remove('<leaf>')` prunes.
+///
+/// One reader for the gate and the handler both, because two hand-written
+/// answers to "can this statement run" is the drift F53 named. `ctx.remove(k)`
+/// prunes a top-level key and has no base.
+fn removed_path(statement: &str) -> Option<String> {
+    let (subject, argument) = statement.split_once(".remove(")?;
+    let leaf = quoted_after(argument, "")?;
+    // A `remove` on anything but the document is a list operation, which is a
+    // different shape with its own matcher.
+    if argument
+        .trim_start()
+        .starts_with(|c: char| c.is_ascii_digit())
+    {
+        return None;
+    }
+    match subject.trim() {
+        "ctx" => Some(leaf),
+        subject => Some(format!(
+            "{}.{leaf}",
+            clean_path(subject.strip_prefix("ctx.")?)
+        )),
+    }
+}
+
 fn parse_literal_statement(statement: &str) -> Option<Literal> {
+    if let Some(path) = removed_path(statement) {
+        return Some(Literal::Remove { path });
+    }
     if let Some((subject, argument)) = statement.split_once(".add(") {
         return Some(Literal::Append {
             path: clean_path(subject.trim().strip_prefix("ctx.")?),
@@ -5729,6 +5772,9 @@ fn run_literal(event: &mut Event, literal: &Literal) -> bool {
             let _ = event.set(path, value);
             true
         }
+        // `Event::remove` is the funnel that uses `shift_remove`, so a prune
+        // cannot reorder the document it is cleaning.
+        Literal::Remove { path } => event.remove(path).is_some(),
     }
 }
 
@@ -7989,6 +8035,35 @@ mod tests {
         assert_eq!(falco_category("user"), json!(["session"]));
         // Not in the list and not named: the vendor's own fallback.
         assert_eq!(falco_category("wat"), json!(["process"]));
+    }
+
+    /// A prune is the other half of many an `if`/`else` that sets on one arm,
+    /// and `tychon_browser` is the shape: a sentinel timestamp when the vendor
+    /// said "installed", the key gone otherwise.
+    #[test]
+    fn a_remove_is_a_statement_the_walk_can_run() {
+        const SCRIPT: &str = "if (['installed', 'true'].contains(ctx.tychon.package.installed)) {\n  \
+            ctx.tychon.package.installed = '1970-01-01T00:00:01Z';\n} else {\n  \
+            ctx.tychon.package.remove('installed');\n}\n";
+
+        fn installed(value: &str) -> Value {
+            let mut event = Event::new(json!({
+                "tychon": { "package": { "installed": value, "name": "firefox" } },
+            }));
+            Program::parse(SCRIPT).run(&mut event);
+            event.as_value().clone()
+        }
+
+        assert_eq!(
+            installed("installed"),
+            json!({ "tychon": { "package": {
+                "installed": "1970-01-01T00:00:01Z", "name": "firefox" } } })
+        );
+        // The else arm prunes the key and leaves everything beside it.
+        assert_eq!(
+            installed("2026-01-01"),
+            json!({ "tychon": { "package": { "name": "firefox" } } })
+        );
     }
 
     /// tychon coerces a duration to a whole number in every one of its

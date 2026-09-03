@@ -36,7 +36,15 @@ const MIN_SITES: usize = 3_000;
 /// `jamf_protect_telemetry` still counts here after its fix, because
 /// `Basename` now wins at run time while `GuardedCopy` still binds behind it.
 /// Ratchets down as guards are made readable, never as evidence on its own.
-const DEAD_BRANCH_SITES: usize = 187;
+///
+/// It went 187 -> 191 when `remove` became a statement the walk can run, and
+/// that is a RISE with a reason rather than a regression: three
+/// `microsoft_dnsserver` sites were already bound and their trees merely grew
+/// the removes they had always made, and the fourth --
+/// `beyondtrust_isi_incident` -- was UNBOUND and now binds at all. The corpus
+/// is the authority on whether that was an improvement, and it said so:
+/// 70 fewer extra fields, 25 more correct, no source lowered.
+const DEAD_BRANCH_SITES: usize = 191;
 
 /// One generated call site.
 struct Site {

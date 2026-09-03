@@ -146,7 +146,7 @@
     "grafana": { "events": 12, "events_total": 15, "fields_wrong": 3 },
     "greenhouse": { "events": 5, "events_total": 5, "fields_wrong": 0 },
     "hackerone": { "events": 0, "events_total": 4, "fields_wrong": 38 },
-    "hadoop": { "events": 2, "events_total": 8, "fields_wrong": 38 },
+    "hadoop": { "events": 3, "events_total": 8, "fields_wrong": 13 },
     "haproxy": { "events": 7, "events_total": 15, "fields_wrong": 10 },
     "hashicorp_vault": { "events": 25, "events_total": 25, "fields_wrong": 0 },
     "hid_bravura_monitor": { "events": 4, "events_total": 4, "fields_wrong": 0 },

@@ -140,7 +140,7 @@ run and compared against nothing.
 An event still needs an empty diff to count as matched, so extras are gated at
 EVENT granularity -- but on a source already scoring zero matched events, which
 is most of the ones carrying real debt, nothing checks them at all. The corpus
-currently reports 11,962.
+currently reports 11,886.
 
 So **record the extras figure before and after any change to the shape ladder**.
 A shape that stops claiming a script hands it to whatever sits below, and if
