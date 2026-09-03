@@ -210,10 +210,15 @@ pub fn run_floor(transform: &dyn Transform, fixture_dir: &str, log_name: &str, m
         "{} on {log_name}: errors rose from {max_errors} to {errors} of {total}",
         transform.name(),
     );
-    assert!(
-        enriched > 0,
-        "{} on {log_name}: no event gained a field -- the transform has collapsed",
+    // EVERY event that transformed without error gains a field, on every
+    // fixture here. `enriched > 0` would pass a transform that had collapsed
+    // from 1,071 working events to one.
+    assert_eq!(
+        enriched,
+        total - errors,
+        "{} on {log_name}: {enriched} of {} non-erroring events gained a field",
         transform.name(),
+        total - errors,
     );
 }
 
