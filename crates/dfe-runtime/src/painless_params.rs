@@ -5223,9 +5223,14 @@ fn readable_term(term: &str) -> bool {
 ///
 /// Container allocation (`ctx.a = new HashMap()`) counts as runnable and does
 /// nothing: `Event::set` builds the parents a later write needs.
+///
+/// A statement the HANDLER parses is runnable by definition, so it is asked
+/// first and the rest of this only has to cover what parses to nothing.
+/// Answering that question twice is what F53 named: `.add(` was handled and
+/// refused here, so `couchbase_cache`'s `ctx.tags.add(...)` made its script
+/// un-whole and nothing claimed it.
 fn statement_is_runnable(statement: &str) -> bool {
-    // Asked through the same reader the handler uses, so the two cannot drift.
-    if removed_path(statement).is_some() {
+    if parse_literal_statement(statement).is_some() {
         return true;
     }
     let Some((subject, value)) = split_assignment(statement) else {
@@ -8090,6 +8095,24 @@ mod tests {
         assert_eq!(falco_category("user"), json!(["session"]));
         // Not in the list and not named: the vendor's own fallback.
         assert_eq!(falco_category("wat"), json!(["process"]));
+    }
+
+    /// The gate has to accept every statement the handler parses.
+    ///
+    /// `couchbase_cache` appends a Prometheus label to `tags` behind a
+    /// null-guard. `parse_literal_statement` read the `.add(` all along and
+    /// `statement_is_runnable` refused it, so the script was never whole and
+    /// nothing claimed it -- the F53 pair disagreeing, live.
+    #[test]
+    fn an_append_is_a_statement_the_gate_accepts() {
+        let script = "if (ctx.tags == null) {\n    ctx.tags = new ArrayList();\n} \
+            ctx.tags.add(ctx.prometheus.labels.job)";
+        let program = Program::parse(script);
+        assert!(program.is_whole(), "{program:?}");
+
+        let mut event = Event::new(json!({ "prometheus": { "labels": { "job": "cache" } } }));
+        assert!(program.run(&mut event));
+        assert_eq!(event.get("tags"), Some(&json!(["cache"])));
     }
 
     /// A prune is the other half of many an `if`/`else` that sets on one arm,
