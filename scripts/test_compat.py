@@ -267,7 +267,15 @@ class SourceTable(unittest.TestCase):
     # A ceiling rather than zero, so a mistyped fixture_dir still fails.
     SOURCES_WITHOUT_FIXTURES = 130
 
+    # The table has to be loaded for the ceiling below to mean anything: an
+    # empty SOURCES gives no missing entries and clears the ceiling on nothing.
+    MIN_SOURCES = 1_000
+
+    def test_the_source_table_is_loaded(self) -> None:
+        self.assertGreaterEqual(len(compat.SOURCES), self.MIN_SOURCES)
+
     def test_no_more_sources_lack_a_fixture_directory(self) -> None:
+        self.assertGreaterEqual(len(compat.SOURCES), self.MIN_SOURCES)
         missing = [
             name
             for name, source in compat.SOURCES.items()

@@ -58,7 +58,11 @@ class Census(unittest.TestCase):
 
     def corpus(self, captures: list[tuple[str, str, list[dict]]]) -> Path:
         """Write a corpus of (package, data_stream, events) and return its root."""
-        root = Path(tempfile.mkdtemp())
+        # Registered for cleanup rather than left behind: mkdtemp alone leaked
+        # a tree per test, of a suite that now runs in the gate.
+        holder = tempfile.TemporaryDirectory()
+        self.addCleanup(holder.cleanup)
+        root = Path(holder.name)
         for index, (package, stream, events) in enumerate(captures):
             directory = root / package / stream / f"fixture{index}"
             directory.mkdir(parents=True)
