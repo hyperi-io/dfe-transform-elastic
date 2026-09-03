@@ -4817,6 +4817,9 @@ enum Rhs {
     /// text", and aws stamps `management_event` with it.
     Text(String),
     Field(String),
+    /// `ctx.event.category = [ctx.<path>]` -- a field wrapped in a one-element
+    /// list, which is how a script promotes a scalar into an ECS array field.
+    FieldInList(String),
     Literal(Value),
 }
 
@@ -4859,6 +4862,152 @@ fn replace_uses(body: &str, needle: &str, with: &str) -> String {
             out.push_str(with);
         }
         at = start + needle.len();
+    }
+    out.push_str(&body[at..]);
+    out
+}
+
+/// Substitute a local that is just another name for a `ctx.` field.
+///
+/// `def inputCategory = ctx.falco.output_fields.evt.category;` then
+/// `def lowercaseCategory = inputCategory.toLowerCase();` then a guard asking
+/// about `lowercaseCategory`. Every hop is a rename, and until they are
+/// followed the guard names something no event carries, so it reads as
+/// [`Term::Never`].
+///
+/// Only a local ASSIGNED ONCE and bound to a `ctx.` path, optionally through
+/// one case fold, is followed -- anything else is a value this cannot know.
+/// Substitution runs forward from each declaration, so a chain resolves in one
+/// pass and a local never rewrites its own binding.
+fn inline_ctx_aliases(body: &str) -> Cow<'_, str> {
+    if !body.contains("def ") || !body.contains("ctx") {
+        return Cow::Borrowed(body);
+    }
+
+    let mut text = Cow::Borrowed(body);
+    // Two passes: the second resolves a local whose binding the first rewrote.
+    for _ in 0..2 {
+        let Some(next) = one_alias_pass(&text) else {
+            break;
+        };
+        text = Cow::Owned(next);
+    }
+    text
+}
+
+/// One left-to-right sweep, substituting each resolvable local after its own
+/// declaration. `None` when nothing was substituted.
+fn one_alias_pass(body: &str) -> Option<String> {
+    let mut out = body.to_string();
+    let mut changed = false;
+    let mut at = 0;
+
+    while let Some(found) = out[at..].find("def ") {
+        // Offsets are taken against `out` directly. Deriving them from a
+        // trimmed name instead loses the whitespace either side of the `=`.
+        let declaration = at + found + "def ".len();
+        at = declaration;
+        let Some(equals) = out[declaration..].find('=') else {
+            break;
+        };
+        let name = out[declaration..declaration + equals].trim().to_string();
+        if name.is_empty() || !name.chars().all(|c| c.is_alphanumeric() || c == '_') {
+            continue;
+        }
+        let value_start = declaration + equals + 1;
+        let Some(terminator) = out[value_start..].find(';') else {
+            continue;
+        };
+        let value = out[value_start..value_start + terminator]
+            .trim()
+            .to_string();
+        let Some(resolved) = ctx_alias_value(&value) else {
+            continue;
+        };
+        if !assigned_once(&out, &name) {
+            continue;
+        }
+
+        // Forward of the declaration only, so the binding itself is untouched.
+        let after = value_start + terminator + 1;
+        let rewritten = replace_word(&out[after..], &name, &resolved);
+        if rewritten != out[after..] {
+            changed = true;
+        }
+        out = out[..after].to_string() + &rewritten;
+        at = after;
+    }
+
+    changed.then_some(out)
+}
+
+/// Close a `.contains(` argument: one terminator, one closing parenthesis.
+///
+/// Trimming every trailing `)` instead swallows the argument's OWN call, so
+/// `ctx.a.toLowerCase()` arrived as `ctx.a.toLowerCase(` and read as a field
+/// path with a bracket in it.
+fn contains_tail(text: &str) -> &str {
+    let text = text.trim();
+    let text = text.strip_suffix(';').unwrap_or(text).trim_end();
+    text.strip_suffix(')').unwrap_or(text).trim()
+}
+
+/// Split a trailing `.toLowerCase()` off an expression.
+///
+/// The fold applies to the EVENT's value at run time, not to this text, so it
+/// travels as a flag. `.toUpperCase()` is deliberately NOT read: the members it
+/// would be tested against are upper case too, and lowering the value there
+/// would stop every one of them matching. It stays unreadable, as it is today.
+///
+fn strip_case_fold(text: &str) -> (&str, bool) {
+    text.strip_suffix(".toLowerCase()")
+        .map_or((text, false), |bare| (bare, true))
+}
+
+/// The `ctx.` expression a local stands for, if it stands for one.
+///
+/// A bare path, or a path through one case fold. `.toLowerCase()` is kept
+/// rather than applied, because [`Term::parse`] reads it and the fold has to
+/// happen against the EVENT's value, not this text.
+fn ctx_alias_value(value: &str) -> Option<String> {
+    let bare = value
+        .strip_suffix(".toLowerCase()")
+        .or_else(|| value.strip_suffix(".toUpperCase()"))
+        .unwrap_or(value);
+    if !bare.starts_with("ctx.") && !bare.starts_with("ctx?.") {
+        return None;
+    }
+    // A call or a subscript is a value this cannot follow.
+    (!bare.contains(['(', ')', '[', ']', ' ', '\n'])).then(|| value.to_string())
+}
+
+/// Replace occurrences of `name` used as a VARIABLE.
+///
+/// `nameSuffix` and `prefixName` are other identifiers. So is `a.name`: a
+/// segment after a dot is a member access, and substituting there rewrites the
+/// document's own field paths -- a local called `event` would turn every
+/// `ctx.event.action` into `ctx.<whatever it was bound to>.action`.
+fn replace_word(body: &str, name: &str, with: &str) -> String {
+    fn word(c: u8) -> bool {
+        c.is_ascii_alphanumeric() || c == b'_'
+    }
+
+    let bytes = body.as_bytes();
+    let mut out = String::with_capacity(body.len());
+    let mut at = 0;
+    while let Some(found) = body[at..].find(name) {
+        let start = at + found;
+        let end = start + name.len();
+        out.push_str(&body[at..start]);
+        let before = start.checked_sub(1).map(|index| bytes[index]);
+        let after = bytes.get(end).copied();
+        let member = before.is_some_and(|c| c == b'.');
+        if member || before.is_some_and(word) || after.is_some_and(word) {
+            out.push_str(name);
+        } else {
+            out.push_str(with);
+        }
+        at = end;
     }
     out.push_str(&body[at..]);
     out
@@ -4921,7 +5070,11 @@ fn inline_local_lists(body: &str) -> Cow<'_, str> {
 impl Program {
     /// Read a body into the tree the per-event walk runs.
     pub(crate) fn parse(body: &str) -> Self {
-        let body = inline_local_lists(body);
+        // Aliases first: a local list's members are literals, but a local
+        // NAMING a field has to be followed before the list can be asked about
+        // it.
+        let body = inline_ctx_aliases(body);
+        let body = inline_local_lists(&body);
         let mut whole = true;
         let statements = parse_statements(&body, &mut whole);
         Self { statements, whole }
@@ -5201,8 +5354,42 @@ enum Term {
     /// A bare field IS the test: Painless reads its boolean value, and arista
     /// gates its whole outcome ladder on `if (ctx.arista.blocked)`.
     Truthy(String),
+    /// `ctx.<path> instanceof List` -- a type test the document answers.
+    ///
+    /// Only the three container kinds, because JSON settles those exactly.
+    /// `instanceof long` is NOT read: a JSON number carries no width, so a
+    /// `long` test cannot be told from a `double` one here.
+    InstanceOf { path: String, kind: JsonKind },
     /// Nothing the text resolves, so no event can make it hold.
     Never,
+}
+
+/// The JSON kinds an `instanceof` can be answered from.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum JsonKind {
+    List,
+    Map,
+    Text,
+}
+
+impl JsonKind {
+    /// The Painless type names that settle to one JSON kind.
+    fn parse(name: &str) -> Option<Self> {
+        match name.trim() {
+            "List" | "Collection" | "ArrayList" => Some(Self::List),
+            "Map" | "HashMap" => Some(Self::Map),
+            "String" => Some(Self::Text),
+            _ => None,
+        }
+    }
+
+    fn matches(self, value: &Value) -> bool {
+        match self {
+            Self::List => value.is_array(),
+            Self::Map => value.is_object(),
+            Self::Text => value.is_string(),
+        }
+    }
 }
 
 /// What a `.contains(` is asked about.
@@ -5210,6 +5397,9 @@ enum Term {
 enum Argument {
     Literal(String),
     Field(String),
+    /// A field asked about in lower case, which is how a script tests
+    /// membership of a lower-cased list against a vendor's mixed-case value.
+    LoweredField(String),
 }
 
 /// The right-hand side of an `==` or `!=`.
@@ -5278,15 +5468,19 @@ impl Term {
             && let Some((list, argument)) = term.split_once(".contains(")
             && let Some(Value::Array(members)) = literal_value(list)
         {
-            let argument = argument.trim().trim_end_matches([')', ';']).trim();
-            let argument = match quoted_after(argument, "") {
-                Some(text) => Argument::Literal(text),
-                // The list was read before the rewrite, so this path still
-                // carries the map syntax every other reader has had stripped.
-                None => match argument.strip_prefix("ctx.") {
-                    Some(path) => Argument::Field(clean_path(&subject_path(path))),
+            let argument = contains_tail(argument);
+            let argument = if let Some(text) = quoted_after(argument, "") {
+                Argument::Literal(text)
+            } else {
+                // Normalised on the ARGUMENT alone, before the `ctx.` strip:
+                // the term's own leading `["` is a list, not a path segment.
+                let argument = subject_path(argument);
+                let (argument, lowered) = strip_case_fold(&argument);
+                match argument.strip_prefix("ctx.") {
+                    Some(path) if lowered => Argument::LoweredField(clean_path(path)),
+                    Some(path) => Argument::Field(clean_path(path)),
                     None => return Self::Never,
-                },
+                }
             };
             return Self::ListContains {
                 members: members
@@ -5300,13 +5494,28 @@ impl Term {
         // `ctx['@timestamp']` and `ctx.event.action` name the same kind of
         // thing.
         let term = &subject_path(term);
+        if let Some((subject, kind)) = term.split_once(" instanceof ")
+            && let Some(path) = subject
+                .trim()
+                .trim_start_matches('(')
+                .trim()
+                .strip_prefix("ctx.")
+            && let Some(kind) = JsonKind::parse(kind.trim().trim_end_matches([')', ';']))
+        {
+            return Self::InstanceOf {
+                path: clean_path(path),
+                kind,
+            };
+        }
         if let Some((subject, literal)) = term.split_once(".contains(") {
             // A field argument is the append-once guard these scripts write.
             let argument = if let Some(text) = quoted_after(literal, "") {
                 Argument::Literal(text)
             } else {
-                let field = literal.trim().trim_end_matches([')', ';']).trim();
+                let field = contains_tail(literal);
+                let (field, lowered) = strip_case_fold(field);
                 match field.strip_prefix("ctx.") {
+                    Some(path) if lowered => Argument::LoweredField(clean_path(path)),
                     Some(path) => Argument::Field(clean_path(path)),
                     None => return Self::Never,
                 }
@@ -5402,6 +5611,9 @@ impl Term {
                 matched != *negated
             }
             Self::Truthy(path) => event.get(path).and_then(Value::as_bool) == Some(true),
+            // An absent field is not an instance of anything, which is what
+            // Painless answers for a null too.
+            Self::InstanceOf { path, kind } => event.get(path).is_some_and(|v| kind.matches(v)),
         }
     }
 }
@@ -5413,6 +5625,9 @@ impl Argument {
         match self {
             Self::Literal(text) => Some(Cow::Borrowed(text)),
             Self::Field(path) => event.get_as_string(path).map(Cow::Owned),
+            Self::LoweredField(path) => event
+                .get_as_string(path)
+                .map(|text| Cow::Owned(text.to_lowercase())),
         }
     }
 }
@@ -5458,6 +5673,16 @@ fn parse_rhs(text: &str) -> Option<Rhs> {
     {
         return Some(Rhs::Text(clean_path(inner.trim().strip_prefix("ctx.")?)));
     }
+    // `[ctx.a.b]` before the bare form, or the brackets read as path syntax.
+    if let Some(inner) = text
+        .strip_prefix('[')
+        .and_then(|rest| rest.strip_suffix(']'))
+        .map(str::trim)
+        .and_then(|inner| subject_path(inner).strip_prefix("ctx.").map(str::to_owned))
+        && !inner.contains([',', '(', ' '])
+    {
+        return Some(Rhs::FieldInList(clean_path(&inner)));
+    }
     let text = text.trim_end_matches(')').trim();
     if let Some(path) = text.strip_prefix("ctx.") {
         // A source path and nothing else. `ctx.a + ctx.b` and a method call
@@ -5495,6 +5720,10 @@ fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
     match value {
         Rhs::Text(path) => event.get(path).and_then(scalar_text).map(Value::String),
         Rhs::Field(path) => event.get(path).cloned(),
+        Rhs::FieldInList(path) => event
+            .get(path)
+            .cloned()
+            .map(|value| Value::Array(vec![value])),
         Rhs::Literal(value) => Some(value.clone()),
     }
 }
@@ -7688,6 +7917,74 @@ mod tests {
             "AC_RuleName": { "target": "access_control_rule_name", "id": ["430002"] },
             "Protocol": { "target": "protocol", "ecs": ["network.transport"] },
         })
+    }
+
+    /// falco's category ladder: a literal list, a local bound to the field,
+    /// and a second local holding its lower-cased form.
+    const FALCO_CATEGORY: &str = "def allowedValues = ['file', 'network', 'process'];\n\
+        if (ctx?.falco?.output_fields?.evt != null && \
+        ctx?.falco?.output_fields?.evt?.category != null) {\n\
+        def inputCategory = ctx?.falco?.output_fields?.evt?.category;\n\
+        def lowercaseCategory = inputCategory.toLowerCase();\n\
+        if (allowedValues.contains(lowercaseCategory)) {\n\
+        ctx.event.category = [inputCategory];\n\
+        } else if (inputCategory == 'user') {\n\
+        ctx.event.category = ['session'];\n\
+        } else {\n\
+        ctx.event.category = ['process'];\n\
+        }\n} else {\n ctx.event.category = ['process'];\n}";
+
+    fn falco_category(category: &str) -> Value {
+        let mut event = Event::new(json!({
+            "falco": { "output_fields": { "evt": { "category": category } } },
+            "event": {},
+        }));
+        Program::parse(FALCO_CATEGORY).run(&mut event);
+        event.get("event.category").cloned().unwrap_or(Value::Null)
+    }
+
+    /// A local is a name for a field, and a guard asking about it is asking
+    /// about the field.
+    ///
+    /// `allowedValues.contains(lowercaseCategory)` needs two hops --
+    /// `lowercaseCategory` to `inputCategory.toLowerCase()`, and that to the
+    /// `ctx.` path -- before the membership test can be read at all. Without
+    /// them the guard is `Never`, the first arm never runs, and every category
+    /// the else-ifs do not name falls to the final `['process']`. falco's
+    /// `file` and `network` events were categorised as `process`.
+    #[test]
+    fn a_local_naming_a_field_is_resolved_through_its_fold() {
+        assert_eq!(falco_category("file"), json!(["file"]));
+        assert_eq!(falco_category("network"), json!(["network"]));
+        // The fold is what makes the membership test match.
+        assert_eq!(falco_category("FILE"), json!(["FILE"]));
+        // Not in the list, named by an else-if.
+        assert_eq!(falco_category("user"), json!(["session"]));
+        // Not in the list and not named: the vendor's own fallback.
+        assert_eq!(falco_category("wat"), json!(["process"]));
+    }
+
+    /// A local can be named after a field, and `carbonblack_edr` binds one
+    /// called `event`.
+    ///
+    /// Substituting a segment that follows a dot rewrites the document's own
+    /// paths: `ctx.event.action` would become `ctx.<binding>.action`. The
+    /// corpus caught this as one field on `carbonblack_edr`, which is what the
+    /// per-source ratchet is for.
+    #[test]
+    fn a_local_named_after_a_field_leaves_paths_alone() {
+        let script = "def event = ctx.winlog.event_data; ctx.event.action = 'x'; \
+            def other = event;";
+        let rewritten = inline_ctx_aliases(script);
+
+        assert!(
+            rewritten.contains("ctx.event.action = 'x'"),
+            "a path segment was rewritten: {rewritten}"
+        );
+        assert!(
+            rewritten.contains("def other = ctx.winlog.event_data"),
+            "the bare variable was not resolved: {rewritten}"
+        );
     }
 
     /// `microsoft_dhcp_log`'s event-code lookup, the shape behind six of the
