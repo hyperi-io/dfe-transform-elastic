@@ -179,6 +179,19 @@ pub(crate) enum ParamsShape {
         member: String,
         source: String,
     },
+    /// A NAMED params table read through a ternary, with a LITERAL default.
+    ///
+    /// `jamf_protect` writes one of these per telemetry field -- 40 sites over
+    /// 13 files. Sibling to [`ParamsShape::UppercaseLookupDefault`], which
+    /// differs on four points: it folds case, reads the whole `params` map,
+    /// spells the lookup `getOrDefault`, and defaults to the KEY rather than
+    /// to a literal.
+    TableLookupOrLiteral {
+        source: String,
+        table: String,
+        target: String,
+        default: String,
+    },
     UppercaseLookupDefault {
         source: String,
         target: String,
@@ -419,6 +432,16 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // registry hive, where an unlisted name stands for itself.
     if normalised.contains(".toUpperCase();")
         && let Some(shape) = parse_uppercase_lookup_default(normalised)
+    {
+        return Some(shape);
+    }
+
+    // Pattern: the same lookup through a NAMED table with a LITERAL default --
+    // jamf_protect's telemetry, one per field. The trigger is the parse, with
+    // only the ternary as a cheap reject.
+    if normalised.contains(".containsKey(")
+        && normalised.contains(".toString();")
+        && let Some(shape) = parse_table_lookup_or_literal(normalised)
     {
         return Some(shape);
     }
@@ -1375,6 +1398,25 @@ pub(crate) fn run_params_shape(
             }
             true
         }
+        ParamsShape::TableLookupOrLiteral {
+            source,
+            table,
+            target,
+            default,
+        } => {
+            // The script's own `!= null` guard: an absent source writes
+            // nothing at all, not the default.
+            if let Some(key) = event.get_as_string(source) {
+                let value = params
+                    .get(table)
+                    .and_then(Value::as_object)
+                    .and_then(|rows| rows.get(&key))
+                    .cloned()
+                    .unwrap_or_else(|| json!(default));
+                let _ = event.set(target, value);
+            }
+            true
+        }
         ParamsShape::UppercaseLookupDefault { source, target } => {
             if let Some(name) = event.get_str(source).map(str::to_uppercase) {
                 let value = params.get(&name).cloned().unwrap_or_else(|| json!(name));
@@ -1741,6 +1783,61 @@ fn try_first_asset(event: &mut Event, params: &Map<String, Value>) -> bool {
 ///
 /// The default being the KEY itself is what makes this its own shape: a name
 /// the table does not abbreviate stands for itself rather than going missing.
+/// `params.<table>.containsKey(k) ? params.<table>[k] : '<default>'`, written
+/// to a target and guarded on the source being present.
+///
+/// The whole script, as `jamf_protect` writes it forty times over:
+///
+/// ```painless
+/// if (ctx.<source> != null) {
+///     String itemType = ctx.<source>.toString();
+///     def itemTypeString = params.<table>.containsKey(itemType)
+///         ? params.<table>[itemType] : 'Unknown';
+///     ctx.<root> = ctx.<root> != null ? ctx.<root> : new HashMap();
+///     ctx.<target> = itemTypeString;
+/// }
+/// ```
+///
+/// The allocation line is noise: `Event::set` builds the parents anyway.
+fn parse_table_lookup_or_literal(script: &str) -> Option<ParamsShape> {
+    let (head, rest) = script.split_once(".toString();")?;
+    let source = clean_path(head.rsplit("ctx.").next()?);
+    if source.is_empty() || source.contains(char::is_whitespace) {
+        return None;
+    }
+
+    // The local the lookup is keyed on, so a script binding two is not read as
+    // one -- the key and the ternary have to name the same thing.
+    let bound = head.rsplit(['\n', ';']).next()?.split('=').next()?.trim();
+    let key = bound.rsplit(char::is_whitespace).next()?;
+
+    let (before, after) = rest.split_once(&format!(".containsKey({key})"))?;
+    let table = before.rsplit("params.").next()?.trim().to_string();
+    if table.is_empty() || table.contains(['.', ' ', '(', '[']) {
+        return None;
+    }
+
+    // `? params.<table>[key] : '<default>'` -- the default is the quoted half.
+    let (_, defaulted) = after.split_once('?')?;
+    let (_, literal) = defaulted.split_once(':')?;
+    let default = quoted_after(literal.split(';').next()?, "")?;
+
+    // The LAST `ctx.` in the script is the write. The allocation line above it
+    // names the root only, and `Event::set` builds that anyway.
+    let assigned = script.rsplit_once("ctx.")?.1;
+    let target = clean_path(assigned.split('=').next()?.trim());
+    if target.is_empty() || target.contains(char::is_whitespace) {
+        return None;
+    }
+
+    Some(ParamsShape::TableLookupOrLiteral {
+        source,
+        table,
+        target,
+        default,
+    })
+}
+
 fn parse_uppercase_lookup_default(script: &str) -> Option<ParamsShape> {
     let (head, rest) = script.split_once(".toUpperCase();")?;
     let source = clean_path(head.rsplit("ctx.").next()?);
@@ -8356,6 +8453,51 @@ mod tests {
         assert_eq!(coerced(json!(5)), json!(5));
         // Nothing to parse leaves the field as it was.
         assert_eq!(coerced(json!("nope")), json!("nope"));
+    }
+
+    /// `jamf_protect`'s telemetry lookup, verbatim, one of forty such sites.
+    ///
+    /// A NAMED table read through a ternary with a LITERAL default -- the
+    /// sibling of `UppercaseLookupDefault`, which folds case, reads the whole
+    /// `params` map, spells it `getOrDefault` and defaults to the key.
+    #[test]
+    fn a_named_table_lookup_falls_back_to_its_literal() {
+        fn address_type(script: &str, params: &Value, held: Value) -> Value {
+            let mut event = Event::new(json!({
+                "jamf_protect": { "telemetry": { "event": { "screensharing_attach": {} } } },
+            }));
+            if !held.is_null() {
+                event
+                    .set(
+                        "jamf_protect.telemetry.event.screensharing_attach.source_address_type",
+                        held,
+                    )
+                    .expect("sets");
+            }
+            try_params_painless(&mut event, script, params);
+            event
+                .get("jamf_protect.telemetry.source_address_type")
+                .cloned()
+                .unwrap_or(Value::Null)
+        }
+
+        const SCRIPT: &str = "if (ctx.jamf_protect?.telemetry?.event?.screensharing_attach\
+            ?.source_address_type != null) {\n    String itemType = ctx.jamf_protect.telemetry\
+            .event.screensharing_attach.source_address_type.toString();\n    \
+            def itemTypeString = params.itemTypeMap.containsKey(itemType) ? \
+            params.itemTypeMap[itemType] : 'Unknown';\n    \
+            ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    \
+            ctx.jamf_protect.telemetry.source_address_type = itemTypeString;\n}\n";
+
+        let params = json!({ "itemTypeMap": { "4": "IPv4", "6": "IPv6" } });
+
+        assert_eq!(address_type(SCRIPT, &params, json!("4")), json!("IPv4"));
+        // A number keys the table the same way: the script calls toString().
+        assert_eq!(address_type(SCRIPT, &params, json!(6)), json!("IPv6"));
+        // Not in the table: the script's own literal, not the key.
+        assert_eq!(address_type(SCRIPT, &params, json!("9")), json!("Unknown"));
+        // Absent: the `!= null` guard writes nothing, not the default.
+        assert_eq!(address_type(SCRIPT, &params, Value::Null), Value::Null);
     }
 
     /// A local can be named after a field, and `carbonblack_edr` binds one
