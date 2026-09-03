@@ -43,7 +43,6 @@ dfe-runtime = { workspace = true, features = ["testutil", "codegen"] }
 # `grok_compiles` proves every pattern reaches one of the two engines the
 # runtime dispatches over, so it has to be able to try both itself.
 fancy-regex = { workspace = true }
-dotenvy = { workspace = true }
 rayon = { workspace = true }
 serde_yaml_ng = { workspace = true }
 

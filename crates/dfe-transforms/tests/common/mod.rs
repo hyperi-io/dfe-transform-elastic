@@ -8,11 +8,6 @@
 //! - Config YAML provides pre-set fields (@timestamp, tags, etc.)
 //! - The transform then processes message → event.original → json.* → ECS fields
 
-// Shared by the integration and e2e test binaries, which use different subsets.
-#![allow(dead_code)]
-
-pub mod test_infra;
-
 use std::path::Path;
 
 use dfe_runtime::event::Event;
