@@ -37,7 +37,12 @@ use serde_json::{Value, json};
 use crate::registry::{Framing, Intake};
 
 /// The receiver's own field names, removed once they have been lifted.
-const RECEIVER_KEYS: &[&str] = &[
+///
+/// Public so a test asserts against THIS list rather than a copy of it. The
+/// integration suite held a hand-written six of these twelve, so `procid`,
+/// `msgid`, `timestamp`, `structured_data`, `facility`, `severity`, `hostname`
+/// and `appname` were checked by nothing outside this file.
+pub const RECEIVER_KEYS: &[&str] = &[
     "_source",
     "_raw",
     // OTLP and Vector's gRPC tag with these instead of `_source`; both are
@@ -175,7 +180,9 @@ const TRANSPORTS: &[Transport] = &[
 ///
 /// Stripped before the payload is handed to the transform, the same way the
 /// receiver's are: they describe the delivery, not the event.
-const FETCHER_KEYS: &[&str] = &[
+///
+/// Public for the same reason as [`RECEIVER_KEYS`].
+pub const FETCHER_KEYS: &[&str] = &[
     "_timestamp_fetcher",
     "_timestamp_received",
     "_source_fetcher",

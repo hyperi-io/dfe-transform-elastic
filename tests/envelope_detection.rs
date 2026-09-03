@@ -335,17 +335,17 @@ fn a_vector_metric_keeps_its_stamp() {
 
 /// A producer's delivery keys describe the delivery, so none may reach a
 /// transform under any transport.
+///
+/// Reads `envelope::RECEIVER_KEYS` rather than a copy: the copy here listed six
+/// keys, two of which are the fetcher's, and so checked eight of the twelve
+/// nothing at all.
+///
+/// Presence is asked at the TOP LEVEL, which is where `unwrap_into_beats`
+/// removes them. Matching `"<key>"` in the rendered document instead would
+/// fail on a payload legitimately carrying a nested `timestamp` or `severity`,
+/// and those are ordinary vendor field names.
 #[test]
 fn no_producer_key_survives_unwrapping() {
-    const KEYS: &[&str] = &[
-        "_source",
-        "_raw",
-        "_signal",
-        "_vector_type",
-        "_timestamp",
-        "_observed_timestamp",
-    ];
-
     for fixture in fixtures() {
         if fixture.family("shape") != Envelope::Receiver {
             continue;
@@ -357,10 +357,9 @@ fn no_producer_key_survives_unwrapping() {
             .unwrap_into_beats(&mut event, None, &detected.variant)
             .expect("unwraps");
 
-        let rendered = event.as_value().to_string();
-        for key in KEYS {
+        for key in envelope::RECEIVER_KEYS {
             assert!(
-                !rendered.contains(&format!("\"{key}\"")),
+                !event.has(key),
                 "{}: `{key}` reached the transform",
                 fixture.name()
             );

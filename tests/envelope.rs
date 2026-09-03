@@ -151,11 +151,9 @@ fn receiver_field_names_never_reach_the_output() {
     )
     .expect("emitted");
 
-    for leaked in [
-        "_source", "_raw", "facility", "severity", "hostname", "appname",
-    ] {
+    for leaked in dfe_transform_elastic::envelope::RECEIVER_KEYS {
         assert!(
-            out.get(leaked).is_none(),
+            out.get(*leaked).is_none(),
             "`{leaked}` leaked into the output: {out}"
         );
     }
@@ -600,6 +598,12 @@ fn cisco_ios_produces_the_same_output_from_beats_or_the_agent() {
 
 /// The delivery keys are the fetcher's own bookkeeping and must not survive
 /// onto the event, under any spelling.
+///
+/// The keys are inserted with the types the fetcher writes rather than looped
+/// out of `FETCHER_KEYS`, because `_timestamp_received` is read before it is
+/// stripped. The completeness check below is what stops the list drifting: a
+/// fourth key this test never delivers would otherwise "pass" by never being
+/// there in the first place.
 #[test]
 fn the_fetchers_own_keys_never_reach_the_output() {
     let record: Value = serde_json::from_str(OKTA_RECORD).expect("the record parses");
@@ -607,6 +611,13 @@ fn the_fetchers_own_keys_never_reach_the_output() {
     delivered.insert("_source_fetcher".into(), json!("okta.system_log"));
     delivered.insert("_timestamp_fetcher".into(), json!(1_771_459_200_000_u64));
     delivered.insert("_timestamp_received".into(), json!(1_771_459_200_000_u64));
+
+    for key in dfe_transform_elastic::envelope::FETCHER_KEYS {
+        assert!(
+            delivered.contains_key(*key),
+            "`{key}` is a fetcher key this test never delivers, so it proves nothing about it"
+        );
+    }
 
     let out = run(
         "filebeat.okta.default",
