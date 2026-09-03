@@ -6300,6 +6300,76 @@ mod tests {
     use super::*;
     use serde_json::json;
 
+    /// Hold the `ctx.` path readers to one answer, or to a stated reason.
+    ///
+    /// Eighteen helpers read a dotted path out of Painless text and differ on
+    /// four axes: bracket segments, `?` handling, whether they validate, and
+    /// which end they search from. Nothing compared them, so a reader that
+    /// drifted was invisible until it produced a wrong field path.
+    ///
+    /// Same move as `shapes.lock`: turn a property nobody can see into a diff
+    /// somebody has to approve.
+    #[test]
+    fn the_two_bracket_readers_agree() {
+        use crate::painless_common::painless_path;
+
+        // Spelling, then what both readers must make of it.
+        let cases = [
+            ("ctx.host.name", "host.name"),
+            ("ctx.host?.name", "host.name"),
+            ("ctx['host.name']", "host.name"),
+            ("ctx[\"host\"].name", "host.name"),
+            // A leading `@` is a real ECS field, not punctuation.
+            ("ctx['@timestamp']", "@timestamp"),
+        ];
+
+        for (fragment, expected) in cases {
+            assert_eq!(
+                painless_path(fragment).as_deref(),
+                Some(expected),
+                "painless_path({fragment:?})"
+            );
+            assert_eq!(
+                subject_path(fragment).strip_prefix("ctx.").map(clean_path),
+                Some(expected.to_string()),
+                "subject_path({fragment:?}) then a ctx. strip"
+            );
+        }
+    }
+
+    /// `clean_path` does not read map syntax, so a bracketed path reaching it
+    /// keeps its brackets. Pinned rather than fixed: `ctx_path_before` searches
+    /// for the literal `ctx.`, so a bracketed ROOT is not found at all.
+    #[test]
+    fn clean_path_leaves_map_syntax_alone() {
+        assert_eq!(clean_path("host['name']"), "host['name']");
+        assert_eq!(clean_path("host?.name"), "host.name");
+    }
+
+    /// The divergence that produced a wrong field path in the generated tree.
+    ///
+    /// `ctx_path_before` searches BACKWARD from its marker, so a second binding
+    /// earlier in the same statement wins and the path comes back carrying
+    /// whole statements. The character parser stops at the first character a
+    /// path cannot hold.
+    #[test]
+    fn a_backward_search_can_span_two_bindings() {
+        let script = "def path = ctx.proc.exepath; def args = ctx.proc.args; \
+            def items = args.splitOnToken(' ');";
+
+        let scanned = ctx_path_before(script, ".splitOnToken(").expect("finds something");
+        assert!(
+            scanned.contains(' '),
+            "the backward search no longer spans bindings -- if the reader was \
+             fixed, assert the fix here instead: {scanned:?}"
+        );
+
+        assert_eq!(
+            crate::painless_common::painless_path("def args = ctx.proc.args").as_deref(),
+            Some("proc.args")
+        );
+    }
+
     /// `+=` accumulates onto its left side rather than assigning to it, so
     /// splitting there yields a write target with the operator still attached.
     /// `fortinet`'s tls version ships `ctx.tls.version += ".0"`.
