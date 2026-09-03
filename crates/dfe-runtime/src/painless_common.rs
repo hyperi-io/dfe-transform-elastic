@@ -9110,41 +9110,68 @@ fn run_list_member_flag(event: &mut Event, shape: &ListMemberFlag) -> bool {
 /// largest unhandled script in the corpus. The table lives in `ctx`, not in
 /// `params`, because the deployment supplies it -- so the mapping is data the
 /// matcher READS, never a table transcribed into Rust.
-fn try_row_lookup_with_fallback(event: &mut Event, script: &str) -> bool {
+/// The parts of a row lookup that the script text alone decides.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RowLookup {
+    item: String,
+    table: String,
+    key: String,
+    subject: String,
+    value_col: String,
+    target: Option<String>,
+}
+
+/// Read the loop, its match condition and the column a hit yields.
+///
+/// Every rejection here is structural, so the shape can be decided from the
+/// text and no longer has to be claimed on a `for (def ` and a `" : ctx."`
+/// appearing somewhere in the same script.
+fn parse_row_lookup(script: &str) -> Option<RowLookup> {
     use crate::painless_params::clean_path;
 
-    let Some((item, table)) = for_binding(script) else {
-        return false;
-    };
+    let (item, table) = for_binding(script)?;
     // `item.<key> == ctx.<subject>` names the column and the field to match.
-    let Some((key, subject)) = script
+    let (key, subject) = script
         .split_once(&format!("if ({item}."))
         .and_then(|(_, rest)| rest.split_once(')'))
-        .and_then(|(cond, _)| cond.split_once("=="))
-    else {
-        return false;
-    };
-    let key = key.trim();
-    let Some(subject) = subject.trim().strip_prefix("ctx.").map(clean_path) else {
-        return false;
-    };
+        .and_then(|(cond, _)| cond.split_once("=="))?;
+    let subject = subject.trim().strip_prefix("ctx.").map(clean_path)?;
     // A hit either assigns the column or, since the vendor wrapped this in a
     // function, RETURNS it. Reading only the assignment form left cisco_ios's
     // timezone chain unmatched from the first character.
-    let Some(value_col) = script
+    let value_col = script
         .split_once(&format!("= {item}."))
         .or_else(|| script.split_once(&format!("return {item}.")))
         .map(|(_, rest)| rest.trim_end_matches(';'))
-        .and_then(|rest| rest.split([';', '\n']).next())
-    else {
-        return false;
-    };
+        .and_then(|rest| rest.split([';', '\n']).next())?;
     // The return form assigns nothing on a hit, so there is no target to find
     // ahead of it; the fallback arms below name their own.
     let target = ctx_assignment_target_before(script, &format!("= {item}."));
 
-    let wanted = event.get_as_string(&subject);
-    if let (Some(wanted), Some(Value::Array(rows))) = (&wanted, event.get(&table)) {
+    Some(RowLookup {
+        item,
+        table,
+        key: key.trim().to_owned(),
+        subject,
+        value_col: value_col.trim().to_owned(),
+        target,
+    })
+}
+
+fn try_row_lookup_with_fallback(event: &mut Event, script: &str, shape: &RowLookup) -> bool {
+    let RowLookup {
+        table,
+        key,
+        subject,
+        value_col,
+        target,
+        ..
+    } = shape;
+    let (key, value_col) = (key.as_str(), value_col.as_str());
+    let target = target.clone();
+
+    let wanted = event.get_as_string(subject);
+    if let (Some(wanted), Some(Value::Array(rows))) = (&wanted, event.get(table)) {
         let hit = rows.iter().find_map(|row| {
             (row.get(key).and_then(Value::as_str) == Some(wanted.as_str()))
                 .then(|| row.get(value_col.trim()).cloned())
@@ -12555,7 +12582,7 @@ pub(crate) enum KnownShape {
     EqualityLadder(Ladder),
     SentinelRemovalLiteral,
     ListMemberFlag(Box<ListMemberFlag>),
-    RowLookupWithFallback,
+    RowLookupWithFallback(Box<RowLookup>),
     SchemelessUrl,
     VersionSplit,
     SyslogPriority(SyslogPriorityScript),
@@ -13752,8 +13779,14 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     }
 
     // Pattern: look a value up in a ctx-held table of rows, else fall back.
-    if normalised.contains("for (def ") && normalised.contains(" : ctx.") {
-        shapes.push(KnownShape::RowLookupWithFallback);
+    // Gated on the parse: on the two `contains` alone it claimed 47 call sites
+    // whose loop and match condition it could not read, and applied to none of
+    // them. No `return` here, so declining changes nothing at run time.
+    if normalised.contains("for (def ")
+        && normalised.contains(" : ctx.")
+        && let Some(shape) = parse_row_lookup(normalised)
+    {
+        shapes.push(KnownShape::RowLookupWithFallback(Box::new(shape)));
     }
 
     // Pattern: split a schemeless URL into its ECS components.
@@ -14714,7 +14747,9 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::EqualityLadder(ladder) => try_ladder(event, ladder),
         KnownShape::SentinelRemovalLiteral => try_sentinel_removal_literal(event, normalised),
         KnownShape::ListMemberFlag(shape) => run_list_member_flag(event, shape),
-        KnownShape::RowLookupWithFallback => try_row_lookup_with_fallback(event, normalised),
+        KnownShape::RowLookupWithFallback(shape) => {
+            try_row_lookup_with_fallback(event, normalised, shape)
+        }
         KnownShape::SchemelessUrl => try_schemeless_url(event),
         KnownShape::VersionSplit => try_version_split(event, normalised),
         KnownShape::SyslogPriority(shape) => syslog_priority(event, shape),
@@ -19665,6 +19700,32 @@ def event_timezone = get_timezone(ctx);
             return src;\n}\ndef out = ctx.qualys;\n";
 
         assert!(parse_literal_value_map(script).is_none());
+    }
+
+    /// A loop over a ctx-held table still binds and still reads its row.
+    #[test]
+    fn a_row_lookup_reads_the_column_its_subject_selects() {
+        let script = "for (def row : ctx.tz_map) {\n  \
+            if (row.name == ctx.event.timezone) {\n    \
+            ctx.event.timezone = row.offset;\n  }\n}";
+
+        let mut event = Event::new(json!({
+            "tz_map": [{ "name": "AEST", "offset": "+10:00" }],
+            "event": { "timezone": "AEST" }
+        }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("event.timezone"), Some("+10:00"));
+    }
+
+    /// A `for (def ` loop that walks a ctx list without matching a row against
+    /// a column is not this shape. It claimed 47 call sites on those two
+    /// substrings alone and applied to none of them.
+    #[test]
+    fn a_loop_with_no_row_match_declines() {
+        let script = "for (def entry : ctx.items) {\n  \
+            ctx.total = ctx.total + entry.size;\n}";
+
+        assert!(parse_row_lookup(script).is_none());
     }
 
     /// Verbatim from `pipelines/ti_opencti/indicator/default.yml`. The bare
