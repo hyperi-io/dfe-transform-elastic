@@ -11338,6 +11338,42 @@ pub(crate) enum Collision {
     Prefix(String),
 }
 
+/// The same merge with no loop at all: `ctx.<target>.putAll(ctx.<source>)`.
+///
+/// Four sites, and tanium's `threat_response` is one of them -- its whole
+/// `Match Details` payload lands through this single call, so leaving it
+/// unread cost 1,968 fields on 54 events. Count is not value: the loop forms
+/// are a hundred times more common and worth a fraction of this.
+fn parse_put_all(script: &str) -> Option<MergeMapUp> {
+    use crate::painless_params::{clean_path, subject_path};
+
+    // A loop spells the merge out and is the other function's business.
+    if script.contains("for (") {
+        return None;
+    }
+    let (head, tail) = script.split_once(".putAll(")?;
+    // The subject is the LAST statement's, not the script's. tanium allocates
+    // the target on the line above, and reading from the start took both.
+    let head = head.rsplit([';', '\n', '{', '}']).next()?.trim();
+    let parent = clean_path(subject_path(head).strip_prefix("ctx.")?);
+    let argument = tail.split_once(')')?.0.trim();
+    let source = clean_path(subject_path(argument).strip_prefix("ctx.")?);
+
+    // Merging a map into itself, or into something that is not a path, is not
+    // this shape whatever the text says.
+    let named = |path: &str| !path.is_empty() && !path.contains(['(', '[', ']', '\'', '"']);
+    if !named(&parent) || !named(&source) || parent == source {
+        return None;
+    }
+    Some(MergeMapUp {
+        parent,
+        source,
+        take: false,
+        collision: Collision::Overwrite,
+        drops: Vec::new(),
+    })
+}
+
 fn parse_merge_map_up(script: &str) -> Option<MergeMapUp> {
     use crate::painless_params::{clean_path, ctx_path_before};
 
@@ -12977,6 +13013,12 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // the nine axonius streams write the other.
     if (normalised.contains(".entrySet()") || normalised.contains(".keySet()"))
         && let Some(shape) = parse_merge_map_up(normalised)
+    {
+        shapes.push(KnownShape::MergeMapUp(Box::new(shape)));
+        return shapes;
+    }
+    if normalised.contains(".putAll(")
+        && let Some(shape) = parse_put_all(normalised)
     {
         shapes.push(KnownShape::MergeMapUp(Box::new(shape)));
         return shapes;
@@ -15309,6 +15351,46 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
+
+    /// A map merged into another with no loop at all.
+    ///
+    /// tanium's `threat_response` lands its whole `Match Details` payload
+    /// through this one call. The subject is the LAST statement's: the target
+    /// is allocated on the line above, and reading from the start of the
+    /// script took both statements for one path.
+    ///
+    /// The generated call site is inside `if false` -- its condition,
+    /// `ctx.json['Match Details'] instanceof Map`, is one of the 282
+    /// `skipped_processors.rs` counts -- so the corpus cannot exercise this
+    /// yet and the unit test is what holds it.
+    #[test]
+    fn a_put_all_merges_a_map_into_another() {
+        let script = "ctx.tanium.threat_response.match_details = \
+            ctx.tanium.threat_response.match_details ?: [:];\n\
+            ctx.tanium.threat_response.match_details.putAll(ctx.json['Match Details']);\n";
+        let shape = parse_put_all(&normalise(script)).expect("the merge parses");
+        assert_eq!(shape.parent, "tanium.threat_response.match_details");
+        assert_eq!(shape.source, "json.Match Details");
+        assert!(
+            !shape.take,
+            "a putAll reads the source, it does not consume it"
+        );
+
+        let mut event = Event::new(serde_json::json!({
+            "json": { "Match Details": { "finding": { "id": "5212345" }, "config_id": 1_000_111 } },
+            "tanium": { "threat_response": { "match_details": { "kept": true } } },
+        }));
+        assert!(run_merge_map_up(&mut event, &shape));
+        assert_eq!(
+            event.get("tanium.threat_response.match_details.finding.id"),
+            Some(&serde_json::json!("5212345"))
+        );
+        assert_eq!(
+            event.get("tanium.threat_response.match_details.kept"),
+            Some(&serde_json::json!(true)),
+            "what the target already held survives the merge"
+        );
+    }
 
     /// The arm forms `pipelines/kolide/audit/extended-mappings.yml` uses,
     /// verbatim, around its own opening and closing lines.
