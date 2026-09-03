@@ -134,9 +134,26 @@ fn every_site() -> (Vec<Site>, usize) {
     (found, unread)
 }
 
+/// The scan has to actually find the call sites.
+///
+/// Not a property of the code under test -- a property of this test. Every
+/// assertion below is over `sites`, so an empty scan passes them all, and a
+/// walk finds nothing for reasons that have nothing to do with grok: a
+/// `read_dir` that fails, a renamed macro, rustfmt moving the literal off the
+/// invocation line. This test is the SOLE guard for a class that costs whole
+/// sources -- cisco_asa scored 0 of 512 events that way.
+const MIN_SITES: usize = 4_000;
+
 #[test]
 fn every_grok_literal_compiles() {
     let (sites, unread) = every_site();
+    println!("{} grok literal(s) scanned", sites.len());
+    assert!(
+        sites.len() >= MIN_SITES,
+        "the scan found {} grok literals, under the {MIN_SITES} floor -- it is \
+         not seeing the call sites, so every check below passes on nothing",
+        sites.len()
+    );
     assert_eq!(
         unread, 0,
         "{unread} grok invocation(s) do not open with a string literal, so the \

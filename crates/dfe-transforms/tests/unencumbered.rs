@@ -9,6 +9,7 @@
 //! consumes each shape and emits something, which is what makes them usable as
 //! input to `scripts/compat.py`.
 
+use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 
 use dfe_runtime::event::Event;
@@ -21,8 +22,18 @@ const SAMPLES: &str = concat!(
     "/../../tests/fixtures/unencumbered"
 );
 
+/// Sample directories with no transform, and none planned: they are here
+/// because the upstream corpus carries them, not because a source needs them.
+///
+/// Declared rather than skipped. `transform_for` used to spell these in an arm
+/// directly above its `_` catch-all, which made the arm dead and let ANY
+/// unmapped directory pass as though it were deliberate -- the opposite of
+/// what the comment on it said.
+const UNMAPPED: &[&str] = &["cisco_asa", "cisco_umbrella"];
+
 /// The transform each sample directory feeds. A directory with no entry here
-/// is a sample nothing consumes, which is worth failing on.
+/// and no place on [`UNMAPPED`] is a sample nothing consumes, which
+/// `every_sample_directory_is_mapped_or_declared_unmapped` fails on.
 fn transform_for(source: &str) -> Option<&'static dyn Transform> {
     Some(match source {
         "azure" => &filebeat::azure_activitylogs::default::Default,
@@ -34,18 +45,21 @@ fn transform_for(source: &str) -> Option<&'static dyn Transform> {
         "o365" => &filebeat::o365::default::Default,
         "okta" => &filebeat::okta::default::Default,
         "panw" => &filebeat::panw::default::Default,
-        // No transform for these two, and none planned: they are here because
-        // the upstream corpus carries them, not because a source needs them.
-        "cisco_asa" | "cisco_umbrella" => return None,
         _ => return None,
     })
 }
 
+/// Every sample, guarded against finding none.
+///
+/// All three tests here loop over this and assert inside the loop, so an empty
+/// walk passes every one of them -- and `read_dir` returning `Err` is the
+/// ordinary way that happens. The guard lives HERE rather than in each test,
+/// because two of the three did not have it and the third did.
 fn sample_files() -> Vec<(String, PathBuf)> {
     let root = Path::new(SAMPLES);
     let mut out = Vec::new();
     let Ok(sources) = std::fs::read_dir(root) else {
-        return out;
+        panic!("no sample directory at {SAMPLES}");
     };
     for source in sources.flatten().filter(|e| e.path().is_dir()) {
         let name = source.file_name().to_string_lossy().into_owned();
@@ -57,6 +71,7 @@ fn sample_files() -> Vec<(String, PathBuf)> {
         }
     }
     out.sort();
+    assert!(!out.is_empty(), "no samples under {SAMPLES}");
     out
 }
 
@@ -68,8 +83,6 @@ fn wrap(line: &str) -> Event {
 #[test]
 fn every_sample_feeds_a_transform_and_yields_fields() {
     let files = sample_files();
-    assert!(!files.is_empty(), "no samples under {SAMPLES}");
-
     let mut total = 0usize;
     for (source, path) in &files {
         let Some(transform) = transform_for(source) else {
@@ -135,6 +148,27 @@ fn no_sample_panics_a_transform() {
             }
         }
     }
+}
+
+/// A sample nobody consumes is dead weight in the tree, and one that USED to
+/// be consumed is a transform that quietly stopped being exercised.
+///
+/// Both look identical from inside the other tests here, which skip an
+/// unmapped directory and carry on.
+#[test]
+fn every_sample_directory_is_mapped_or_declared_unmapped() {
+    let orphans: BTreeSet<String> = sample_files()
+        .into_iter()
+        .map(|(source, _)| source)
+        .filter(|source| transform_for(source).is_none())
+        .filter(|source| !UNMAPPED.contains(&source.as_str()))
+        .collect();
+
+    assert!(
+        orphans.is_empty(),
+        "these sample directories feed no transform and are not declared \
+         unmapped, so nothing exercises them: {orphans:?}"
+    );
 }
 
 /// The provenance record travels with the data: every source directory is
