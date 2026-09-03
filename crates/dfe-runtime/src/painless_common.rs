@@ -9526,35 +9526,41 @@ fn try_guarded_copy(event: &mut Event, script: &str, literals: &Program) -> bool
         return true;
     }
 
-    let Some((cond, rest)) = script.split_once("!= null") else {
+    let Some(copy) = parse_single_copy(script) else {
         return false;
     };
-    let Some(source) = painless_path(cond) else {
-        return false;
-    };
+
+    if let Some(v) = event.get(&copy.source).cloned()
+        && !v.is_null()
+    {
+        let _ = event.set(&copy.target, v);
+    }
+    true
+}
+
+/// One `if (ctx.<source> != null) { ctx.<target> = ctx.<source>; }`.
+struct SingleCopy {
+    source: String,
+    target: String,
+}
+
+/// Read the one copy the fallback path handles, or decline.
+///
+/// Split out so the ladder arm can ask the same question the runner would,
+/// rather than claiming a script and discovering per event that it cannot read
+/// it.
+fn parse_single_copy(script: &str) -> Option<SingleCopy> {
+    let (cond, rest) = script.split_once("!= null")?;
+    let source = painless_path(cond)?;
     // The body starts where the CONDITION ends. Splitting at the first `=`
     // after `!= null` cut a two-clause guard in half: aws/ec2_metrics gates on
     // `&& ctx.host?.cpu?.usage == null` and then divides the source in place,
     // so the guard's own field was read as the target and the RAW percentage
     // was copied onto it -- 42 where the agent had already written 0.421.
     let body = condition_body(cond, rest);
-    let Some((target_expr, value_expr)) = body.split_once('=') else {
-        return false;
-    };
-    let (Some(target), Some(value)) = (painless_path(target_expr), painless_path(value_expr))
-    else {
-        return false;
-    };
-    if value != source {
-        return false;
-    }
-
-    if let Some(v) = event.get(&source).cloned()
-        && !v.is_null()
-    {
-        let _ = event.set(&target, v);
-    }
-    true
+    let (target_expr, value_expr) = body.split_once('=')?;
+    let (target, value) = (painless_path(target_expr)?, painless_path(value_expr)?);
+    (value == source).then_some(SingleCopy { source, target })
 }
 
 /// What follows a guard's closing parenthesis.
@@ -14310,9 +14316,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     }
 
     // Pattern: copy one field to another when the source is set.
+    //
+    // Gated on the two reads the runner actually has: a tree holding at least
+    // one write, or the single-copy fallback.
+    //
+    // On `!= null` alone it claimed 112 sites it could do nothing with.
     if normalised.contains("!= null") && !normalised.contains("for (") {
-        shapes.push(KnownShape::GuardedCopy(Program::parse(normalised)));
-        return shapes;
+        let literals = Program::parse(normalised);
+        if literals.can_write() || parse_single_copy(normalised).is_some() {
+            shapes.push(KnownShape::GuardedCopy(literals));
+            return shapes;
+        }
     }
 
     // Pattern: nothing BUT statements the walk can run -- allocations, copies,
@@ -19701,6 +19715,29 @@ def event_timezone = get_timezone(ctx);
             return src;\n}\ndef out = ctx.qualys;\n";
 
         assert!(parse_literal_value_map(script).is_none());
+    }
+
+    /// The copy still binds and still runs.
+    #[test]
+    fn a_guarded_copy_binds_and_copies() {
+        let script = "if (ctx.winlog.event_data.SubjectUserName != null) {\n  \
+            ctx.user.name = ctx.winlog.event_data.SubjectUserName;\n}";
+
+        let mut event = Event::new(json!({ "winlog": { "event_data": {
+            "SubjectUserName": "derek" } } }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(event.get_str("user.name"), Some("derek"));
+    }
+
+    /// A script that only TESTS a field writes nothing whatever the event
+    /// says, so the shape declines rather than claiming it and answering false
+    /// on every event.
+    #[test]
+    fn a_guard_with_no_write_declines() {
+        let script = "if (ctx.error.message != null) {\n  return;\n}";
+
+        assert!(!Program::parse(script).can_write());
+        assert!(parse_single_copy(script).is_none());
     }
 
     /// A loop over a ctx-held table still binds and still reads its row.

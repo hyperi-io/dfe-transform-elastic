@@ -4849,6 +4849,22 @@ impl Program {
     pub(crate) fn is_whole(&self) -> bool {
         self.whole
     }
+
+    /// Whether any branch holds a write at all.
+    ///
+    /// A tree of pure guards and returns cannot write whatever the event says,
+    /// so a shape gating on this declines at match time rather than claiming a
+    /// script and answering false on every event.
+    pub(crate) fn can_write(&self) -> bool {
+        fn any_write(statements: &[Stmt]) -> bool {
+            statements.iter().any(|statement| match statement {
+                Stmt::Literal(_) => true,
+                Stmt::If { then, alt, .. } => any_write(then) || any_write(alt),
+                Stmt::Return => false,
+            })
+        }
+        any_write(&self.statements)
+    }
 }
 
 /// Whether one comparison is a form [`Term::holds`] resolves rather than
