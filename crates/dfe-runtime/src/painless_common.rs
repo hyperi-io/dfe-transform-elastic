@@ -15,7 +15,7 @@ use serde_json::{Map, Value, json};
 use crate::error::Result;
 use crate::event::Event;
 use crate::painless_helpers::{SnakeRule, to_snake_case};
-use crate::painless_params::clean_path;
+use crate::painless_params::{Program, clean_path};
 
 /// A script's text with its JSON escapes resolved.
 ///
@@ -9516,13 +9516,13 @@ fn run_branch_copies(event: &mut Event, branches: &[BranchCopy]) -> bool {
     true
 }
 
-fn try_guarded_copy(event: &mut Event, script: &str) -> bool {
+fn try_guarded_copy(event: &mut Event, script: &str, literals: &Program) -> bool {
     // Every guarded copy in the script, not just the first. Windows'
     // `security_standard` is four hundred lines of them -- one per winlog
     // field, each in its own `if (... != null) { ... }` with a null-guard
     // preamble -- and taking only the first claimed the script and lost the
     // rest.
-    if crate::painless_params::run_guarded_literals(event, script) {
+    if literals.run(event) {
         return true;
     }
 
@@ -12634,8 +12634,10 @@ pub(crate) enum KnownShape {
         absent: Option<String>,
         divisor: i64,
     },
-    GuardedCopy,
-    PlainAssignments,
+    /// Both catch-alls carry the guarded-literal tail already parsed, so the
+    /// four-hundred-line bodies are read once per call site, not per event.
+    GuardedCopy(Program),
+    PlainAssignments(Program),
     ClassifyLadder(Box<ClassifyLadder>),
     MoveKeys(Vec<(String, String)>),
     MergeMapUp(Box<MergeMapUp>),
@@ -14309,7 +14311,7 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
 
     // Pattern: copy one field to another when the source is set.
     if normalised.contains("!= null") && !normalised.contains("for (") {
-        shapes.push(KnownShape::GuardedCopy);
+        shapes.push(KnownShape::GuardedCopy(Program::parse(normalised)));
         return shapes;
     }
 
@@ -14321,8 +14323,9 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // closed: a script qualifies only when nothing in it is skipped, so what
     // runs is the whole of what the vendor wrote. carbon_black's netconn
     // direction is the shape.
-    if crate::painless_params::every_statement_is_runnable(normalised) {
-        shapes.push(KnownShape::PlainAssignments);
+    let program = Program::parse(normalised);
+    if program.is_whole() {
+        shapes.push(KnownShape::PlainAssignments(program));
         return shapes;
     }
 
@@ -14828,10 +14831,8 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::CopyByLabel(shape) => run_copy_by_label(event, shape),
         KnownShape::BandLadder(shape) => run_band_ladder(event, shape),
         KnownShape::IocExpiry(shape) => run_ioc_expiry(event, shape),
-        KnownShape::GuardedCopy => try_guarded_copy(event, normalised),
-        KnownShape::PlainAssignments => {
-            crate::painless_params::run_guarded_literals(event, normalised)
-        }
+        KnownShape::GuardedCopy(literals) => try_guarded_copy(event, normalised, literals),
+        KnownShape::PlainAssignments(literals) => literals.run(event),
         KnownShape::BranchCopies(branches) => run_branch_copies(event, branches),
         KnownShape::PrivateCidrDirection {
             source,

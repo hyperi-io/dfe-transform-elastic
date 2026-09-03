@@ -31,7 +31,9 @@ pub use crate::painless_common::{
     guarded_replace, kv_into_fields, octal_string, scale_field, string_ops, sum_directions,
     syslog_priority,
 };
-pub use crate::painless_params::{Fold, LookupNormaliseScript, lookup_normalise};
+// `lookup_normalise` is NOT here: it now takes the call site's parsed literal
+// tail, which is a runtime detail rather than something a generator resolves.
+pub use crate::painless_params::{Fold, LookupNormaliseScript};
 
 pub use crate::date_formats::{parse_date, parse_date_out};
 

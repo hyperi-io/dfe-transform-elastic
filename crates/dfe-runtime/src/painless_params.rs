@@ -13,6 +13,8 @@
 //! [`crate::painless_common::try_known_painless`], so a shape with a params
 //! block runs against the pipeline's real table rather than a transcribed copy.
 
+use std::borrow::Cow;
+
 use serde_json::{Map, Value, json};
 
 use crate::event::Event;
@@ -202,7 +204,7 @@ pub(crate) enum ParamsShape {
     FirstContainedMember,
     RenameKeys,
     ValueMaps,
-    RowColumns,
+    RowColumns(Program),
     RowColumnAppends(Box<RowColumnAppends>),
     InstructionRows(Box<InstructionRows>),
     /// A row overwrites the field it was looked up by, fans several more
@@ -218,9 +220,12 @@ pub(crate) enum ParamsShape {
     KeyedRowAppends(Box<KeyedRowAppends>),
     KeyedMessageTable,
     ReversibleLookup,
-    LookupMerge,
+    /// The literal writes the script makes on its own account travel with the
+    /// shape, so the four-hundred-line bodies are read once rather than per
+    /// event.
+    LookupMerge(Program),
     LookupColumns,
-    LookupNormalise(LookupNormaliseScript),
+    LookupNormalise(LookupNormaliseScript, Program),
     /// A params lookup that writes nothing when the table misses.
     GuardedLookup(GuardedLookupScript),
     IndexedLookup,
@@ -565,7 +570,9 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
     if (normalised.contains("params.get(ctx.") || normalised.contains("params.get((ctx."))
         && normalised.contains(").get('")
     {
-        return Some(ParamsShape::RowColumns);
+        return Some(ParamsShape::RowColumns(Program::parse(row_columns_tail(
+            normalised,
+        ))));
     }
 
     // Pattern: fan a parsed key/value message out through a params table.
@@ -651,7 +658,7 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         && normalised.contains("[k] = ")
         && (normalised.contains("params.get(") || normalised.contains("params["))
     {
-        return Some(ParamsShape::LookupMerge);
+        return Some(ParamsShape::LookupMerge(Program::parse(normalised)));
     }
 
     // Pattern: auth0's per-event-type action table -- a row overwrites the
@@ -689,7 +696,10 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
     if normalised.contains("params.get(")
         && let Some(shape) = parse_lookup_normalise(normalised)
     {
-        return Some(ParamsShape::LookupNormalise(shape));
+        return Some(ParamsShape::LookupNormalise(
+            shape,
+            Program::parse(normalised),
+        ));
     }
 
     // Pattern: index a params array by a numeric field.
@@ -751,7 +761,10 @@ fn params_shape_rest(normalised: &str) -> Option<ParamsShape> {
     if normalised.contains("params[ctx.")
         && let Some(shape) = parse_lookup_normalise(normalised)
     {
-        return Some(ParamsShape::LookupNormalise(shape));
+        return Some(ParamsShape::LookupNormalise(
+            shape,
+            Program::parse(normalised),
+        ));
     }
 
     // Pattern: the same lookup with no fallback, guarded on the table holding
@@ -1402,7 +1415,7 @@ pub(crate) fn run_params_shape(
         ParamsShape::FirstContainedMember => try_first_contained_member(event, normalised, params),
         ParamsShape::RenameKeys => try_rename_keys(event, normalised, params),
         ParamsShape::ValueMaps => try_value_maps(event, normalised, params),
-        ParamsShape::RowColumns => try_row_columns(event, normalised, params),
+        ParamsShape::RowColumns(literals) => try_row_columns(event, normalised, params, literals),
         ParamsShape::RowColumnAppends(shape) => run_row_column_appends(event, shape, params),
         ParamsShape::InstructionRows(shape) => run_instruction_rows(event, shape, params),
         ParamsShape::KeyedActionRow { table, source } => {
@@ -1411,7 +1424,7 @@ pub(crate) fn run_params_shape(
         ParamsShape::KeyedRowAppends(shape) => run_keyed_row_appends(event, shape, params),
         ParamsShape::KeyedMessageTable => try_keyed_message_table(event, normalised, params),
         ParamsShape::ReversibleLookup => try_reversible_lookup(event, normalised, params),
-        ParamsShape::LookupMerge => try_lookup_merge(event, normalised, params),
+        ParamsShape::LookupMerge(literals) => try_lookup_merge(event, normalised, params, literals),
         ParamsShape::LookupColumns => try_lookup_columns(event, normalised, params),
         ParamsShape::NormalisedLookup {
             source,
@@ -1421,7 +1434,9 @@ pub(crate) fn run_params_shape(
         ParamsShape::StringifiedLookup { source, target } => {
             run_stringified_lookup(event, source, target, params)
         }
-        ParamsShape::LookupNormalise(shape) => lookup_normalise(event, shape, normalised, params),
+        ParamsShape::LookupNormalise(shape, literals) => {
+            lookup_normalise(event, shape, literals, params)
+        }
         ParamsShape::GuardedLookup(shape) => guarded_lookup(event, shape, params),
         ParamsShape::IndexedLookup => try_indexed_lookup(event, normalised, params),
         ParamsShape::Scale => try_scale(event, normalised, params),
@@ -3917,7 +3932,12 @@ fn try_filetime_field_list(event: &mut Event, script: &str, params: &Map<String,
 /// Following only the first level fanned the SECOND level's keys out as if
 /// they were fields, which is how `event.denied.action` and its two siblings
 /// appeared in place of one `event.action`.
-fn try_lookup_merge(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
+fn try_lookup_merge(
+    event: &mut Event,
+    script: &str,
+    params: &Map<String, Value>,
+    literals: &Program,
+) -> bool {
     // The lambda is written both inline and as a braced block that branches on
     // the value's type, so the target is read from the `ctx.<path>[k] =`
     // assignment in the lambda's LAST arm rather than from its head.
@@ -3943,7 +3963,7 @@ fn try_lookup_merge(event: &mut Event, script: &str, params: &Map<String, Value>
     // -- aws's cloudtrail categorisation is the shape -- was claimed here and
     // only its merge ran, so those three came out missing. The walk skips
     // anything it cannot read, so the lookup and the `forEach` pass it by.
-    run_guarded_literals(event, script);
+    literals.run(event);
 
     // `params[k] != null ? params[k] : params['<name>']` -- a key the table does
     // not list still gets a row.
@@ -4261,10 +4281,10 @@ fn fallback_target(script: &str) -> Option<String> {
 /// The fallback writes the LOOKUP KEY back, not the original, so a value the
 /// table misses still comes out lower-cased -- and the pipeline's own
 /// allow-list check downstream then sees the same string Elastic would.
-pub fn lookup_normalise(
+pub(crate) fn lookup_normalise(
     event: &mut Event,
     shape: &LookupNormaliseScript,
-    script: &str,
+    literals: &Program,
     params: &Map<String, Value>,
 ) -> bool {
     let Some(raw) = event.get_as_string(&shape.key) else {
@@ -4278,7 +4298,7 @@ pub fn lookup_normalise(
     // Whatever else the script writes on its own account, AFTER the lookup so
     // a `ctx.x = null` that clears the field the key came from is not read
     // before it is used. mimecast's siem_logs is that shape exactly.
-    run_guarded_literals(event, script);
+    literals.run(event);
     true
 }
 
@@ -4522,7 +4542,12 @@ fn try_value_maps(event: &mut Event, script: &str, params: &Map<String, Value>) 
 /// guarded statements then adds `allowed` or `denied` and rewrites the outcome
 /// into an ECS one. It is `cisco_ftd`'s remaining 398 corpus events, and the
 /// same shape appears wherever a package maps an action onto categorisation.
-fn try_row_columns(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
+fn try_row_columns(
+    event: &mut Event,
+    script: &str,
+    params: &Map<String, Value>,
+    literals: &Program,
+) -> bool {
     let Some(key_path) = row_key_path(script) else {
         return false;
     };
@@ -4554,18 +4579,21 @@ fn try_row_columns(event: &mut Event, script: &str, params: &Map<String, Value>)
         return false;
     }
 
-    // Everything after the last table read is the refinement tail.
-    if let Some(cut) = script.rfind("params.get(") {
-        let tail = &script[cut..];
-        if let Some((_, rest)) = tail.split_once(';') {
-            run_guarded_literals(event, rest);
-        }
-    }
+    literals.run(event);
     // A script that drops the field it keyed by leaves it behind otherwise.
     for removed in parse_removes(script) {
         event.remove(&removed);
     }
     true
+}
+
+/// Everything after the last table read, which is the refinement tail
+/// [`try_row_columns`] walks. Empty where the script has no such tail.
+fn row_columns_tail(script: &str) -> &str {
+    script
+        .rfind("params.get(")
+        .and_then(|cut| script[cut..].split_once(';'))
+        .map_or("", |(_, rest)| rest)
 }
 
 /// A table row whose named columns are LISTS appended to array fields, with
@@ -4737,18 +4765,93 @@ fn run_keyed_action_row(
     true
 }
 
-/// Run a tail of `if (<test>) { ... }` blocks over literal appends and writes.
+/// A tail of `if (<test>) { ... }` blocks over literal appends and writes,
+/// parsed once per CALL SITE.
 ///
 /// The grammar is deliberately tiny, because that is all these tails do once
 /// the row is on the event: compare a field to a literal, and append or assign
 /// another literal. Anything outside it is left alone rather than guessed at.
-/// Returns whether anything was written, so a caller can tell a script it
-/// read from one it walked past.
-pub(crate) fn run_guarded_literals(event: &mut Event, body: &str) -> bool {
-    walk_statements(event, body).0
+///
+/// The text is tokenised ONCE, here, never per event. Windows'
+/// `security_standard` is four hundred lines of guarded copies, and at the
+/// shipped 20,000 events a batch re-reading that text was the whole cost. Every
+/// decision the text alone settles -- which shape a statement is, which path it
+/// writes, which literal it compares against -- is resolved into this tree, so
+/// the per-event walk only ever reads the event.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct Program {
+    statements: Vec<Stmt>,
+    whole: bool,
 }
 
-/// Whether one comparison is a form [`term_holds`] resolves rather than
+/// One statement of that grammar.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum Stmt {
+    /// Ends the SCRIPT, not the block. The flag has to travel out of the
+    /// recursion: letting the enclosing walk carry on ran the whole body of
+    /// every script that opens by returning on the wrong event code.
+    Return,
+    If {
+        test: Guard,
+        then: Vec<Stmt>,
+        /// Empty where the script wrote no `else`, which then runs nothing.
+        alt: Vec<Stmt>,
+    },
+    Literal(Literal),
+}
+
+/// One write the script makes from a value it already has to hand.
+///
+/// `ctx.a.put('k', v)` and `ctx.a.k = v` name the same write once the key is
+/// folded into the path, so they share a variant.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum Literal {
+    Append { path: String, value: Rhs },
+    Set { path: String, value: Rhs },
+}
+
+/// Where a write's value comes from.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum Rhs {
+    /// `String.valueOf(ctx.a.b)` is the vendors' spelling of "write this as
+    /// text", and aws stamps `management_event` with it.
+    Text(String),
+    Field(String),
+    Literal(Value),
+}
+
+impl Program {
+    /// Read a body into the tree the per-event walk runs.
+    pub(crate) fn parse(body: &str) -> Self {
+        let mut whole = true;
+        let statements = parse_statements(body, &mut whole);
+        Self { statements, whole }
+    }
+
+    /// Run the tree, reporting whether anything was written -- which is how a
+    /// caller tells a script it read from one it walked past.
+    pub(crate) fn run(&self, event: &mut Event) -> bool {
+        walk(event, &self.statements).0
+    }
+
+    /// Whether EVERY statement in the body sits inside the strict subset.
+    ///
+    /// Running the readable statements of ANY script was tried as a last-resort
+    /// catch-all and rejected: a partial read writes a value where the vendor's
+    /// whole script would have written a different one, and the corpus said
+    /// that is worse than writing nothing. So a script qualifies only when
+    /// nothing in it would be silently skipped.
+    ///
+    /// The subset is NARROWER than what [`Program::run`] executes: it takes no
+    /// `return`, no braceless `else if`, no `.add(` or `.put(` form, and no `@`
+    /// in a copied path. That is deliberate -- this answer decides whether to
+    /// claim a script at all, so it declines wherever it is not certain.
+    pub(crate) fn is_whole(&self) -> bool {
+        self.whole
+    }
+}
+
+/// Whether one comparison is a form [`Term::holds`] resolves rather than
 /// answering `false` by default.
 fn readable_term(term: &str) -> bool {
     let term = term.trim().trim_start_matches('!').trim();
@@ -4775,108 +4878,43 @@ fn readable_term(term: &str) -> bool {
             || crate::painless_common::painless_literal(wanted).is_some())
 }
 
-/// Whether EVERY statement in a script is one [`walk_statements`] can run.
-///
-/// Running the readable statements of ANY script was tried as a last-resort
-/// catch-all and rejected: a partial read writes a value where the vendor's
-/// whole script would have written a different one, and the corpus said that
-/// is worse than writing nothing. This is the same walk with the hole closed
-/// -- a script qualifies only when nothing in it would be silently skipped,
-/// so what runs is the whole of what the vendor wrote.
+/// Whether one statement sits inside the strict subset [`Program::is_whole`]
+/// answers for.
 ///
 /// Container allocation (`ctx.a = new HashMap()`) counts as runnable and does
 /// nothing: `Event::set` builds the parents a later write needs.
-pub(crate) fn every_statement_is_runnable(body: &str) -> bool {
-    let mut rest = body;
-    while let Some(offset) = rest.find(|c: char| !c.is_whitespace()) {
-        rest = &rest[offset..];
-
-        if let Some(after) = rest.strip_prefix("//") {
-            rest = after.find('\n').map_or("", |at| &after[at + 1..]);
-            continue;
-        }
-        if let Some(after) = rest.strip_prefix("/*") {
-            rest = after.find("*/").map_or("", |at| &after[at + 2..]);
-            continue;
-        }
-        if let Some(after) = rest.strip_prefix("if") {
-            let Some((test, after)) = balanced(after.trim_start(), '(', ')') else {
-                return false;
-            };
-            let Some((block, after)) = balanced(after.trim_start(), '{', '}') else {
-                return false;
-            };
-            // Every comparison has to be one `term_holds` can decide, or the
-            // walk takes an arm on a coin toss.
-            let readable = test
-                .split("||")
-                .flat_map(|clause| clause.split("&&"))
-                .all(readable_term);
-            if !readable || !every_statement_is_runnable(block) {
-                return false;
-            }
-            let after = match after.trim_start().strip_prefix("else") {
-                Some(tail) => {
-                    let Some((alternative, after)) = balanced(tail.trim_start(), '{', '}') else {
-                        return false;
-                    };
-                    if !every_statement_is_runnable(alternative) {
-                        return false;
-                    }
-                    after
-                }
-                None => after,
-            };
-            rest = after;
-            continue;
-        }
-
-        let end = rest.find(';').unwrap_or(rest.len());
-        let statement = rest[..end].trim();
-        rest = &rest[(end + 1).min(rest.len())..];
-        if statement.is_empty() {
-            continue;
-        }
-        let Some((subject, value)) = split_assignment(statement) else {
-            return false;
-        };
-        if subject.trim().strip_prefix("ctx.").is_none() {
-            return false;
-        }
-        let value = value.trim().trim_end_matches(';').trim();
-        // An allocation is a no-op; anything else has to be a value the walk
-        // can actually resolve.
-        if value.starts_with("new HashMap(") || value.starts_with("new ArrayList(") {
-            continue;
-        }
-        if let Some(inner) = value
-            .strip_prefix("String.valueOf(")
-            .and_then(|rest| rest.strip_suffix(')'))
-        {
-            if inner.trim().starts_with("ctx.") {
-                continue;
-            }
-            return false;
-        }
-        if literal_value(value).is_none()
-            && !value.strip_prefix("ctx.").is_some_and(|path| {
-                path.chars()
-                    .all(|c| c.is_alphanumeric() || "._?['\"]".contains(c))
-            })
-        {
-            return false;
-        }
+fn statement_is_runnable(statement: &str) -> bool {
+    let Some((subject, value)) = split_assignment(statement) else {
+        return false;
+    };
+    if subject.trim().strip_prefix("ctx.").is_none() {
+        return false;
     }
-    true
+    let value = value.trim().trim_end_matches(';').trim();
+    if value.starts_with("new HashMap(") || value.starts_with("new ArrayList(") {
+        return true;
+    }
+    if let Some(inner) = value
+        .strip_prefix("String.valueOf(")
+        .and_then(|rest| rest.strip_suffix(')'))
+    {
+        return inner.trim().starts_with("ctx.");
+    }
+    // Anything else has to be a value the walk can actually resolve.
+    literal_value(value).is_some()
+        || value.strip_prefix("ctx.").is_some_and(|path| {
+            path.chars()
+                .all(|c| c.is_alphanumeric() || "._?['\"]".contains(c))
+        })
 }
 
-/// As [`run_guarded_literals`], also reporting whether a `return` was reached.
+/// Read a body's statements, and decide [`Program::is_whole`] on the way.
 ///
-/// The flag has to travel out of the recursion: a `return` inside a block ends
-/// the SCRIPT, and letting the enclosing walk carry on ran the whole body of
-/// every script that opens by returning on the wrong event code.
-fn walk_statements(event: &mut Event, body: &str) -> (bool, bool) {
-    let mut wrote = false;
+/// ONE walk over the text answers both. The tree and the strict gate used to be
+/// separate functions over the same grammar, which meant a shape taught to one
+/// could silently miss the other.
+fn parse_statements(body: &str, whole: &mut bool) -> Vec<Stmt> {
+    let mut out = Vec::new();
     let mut rest = body;
     while let Some(offset) = rest.find(|c: char| !c.is_whitespace()) {
         rest = &rest[offset..];
@@ -4895,45 +4933,92 @@ fn walk_statements(event: &mut Event, body: &str) -> (bool, bool) {
         }
 
         if rest.starts_with("return") {
-            return (wrote, true);
+            // Nothing past it is reachable, so nothing past it is parsed.
+            *whole = false;
+            out.push(Stmt::Return);
+            return out;
         }
         if let Some(after) = rest.strip_prefix("if") {
             let Some((test, after)) = balanced(after.trim_start(), '(', ')') else {
-                return (wrote, false);
+                *whole = false;
+                return out;
             };
             let Some((block, after)) = balanced(after.trim_start(), '{', '}') else {
-                return (wrote, false);
+                *whole = false;
+                return out;
             };
+            // Every comparison has to be one the evaluator can decide, or the
+            // walk takes an arm on a coin toss.
+            if !test
+                .split("||")
+                .flat_map(|clause| clause.split("&&"))
+                .all(readable_term)
+            {
+                *whole = false;
+            }
             // An `else` arm when there is one. `else if` has no braces of its
             // own, so the whole tail becomes the alternative and the recursion
             // reads it as another `if`.
             let (alternative, after) = match after.trim_start().strip_prefix("else") {
-                Some(tail) => match balanced(tail.trim_start(), '{', '}') {
-                    Some((body, rest)) => (Some(body), rest),
-                    None => (Some(tail), ""),
-                },
-                None => (None, after),
+                Some(tail) => {
+                    if let Some((body, rest)) = balanced(tail.trim_start(), '{', '}') {
+                        (body, rest)
+                    } else {
+                        *whole = false;
+                        (tail, "")
+                    }
+                }
+                None => ("", after),
             };
+            out.push(Stmt::If {
+                test: Guard::parse(test),
+                then: parse_statements(block, whole),
+                alt: parse_statements(alternative, whole),
+            });
+            rest = after;
+            continue;
+        }
 
-            let taken = if guard_holds(event, test) {
-                Some(block)
-            } else {
-                alternative
-            };
-            if let Some(branch) = taken {
-                let (branch_wrote, returned) = walk_statements(event, branch);
+        // A plain statement, up to its terminator.
+        let end = rest.find(';').unwrap_or(rest.len());
+        let statement = &rest[..end];
+        rest = &rest[(end + 1).min(rest.len())..];
+        if statement.is_empty() {
+            continue;
+        }
+        if !statement_is_runnable(statement.trim()) {
+            *whole = false;
+        }
+        // A statement no reader resolves could never write, so the tree simply
+        // does not carry it.
+        if let Some(literal) = parse_literal_statement(statement) {
+            out.push(Stmt::Literal(literal));
+        }
+    }
+    out
+}
+
+/// Run parsed statements, reporting whether anything was written and whether a
+/// `return` was reached.
+///
+/// The second flag has to travel out of the recursion: a `return` inside a
+/// block ends the SCRIPT, and letting the enclosing walk carry on ran the whole
+/// body of every script that opens by returning on the wrong event code.
+fn walk(event: &mut Event, statements: &[Stmt]) -> (bool, bool) {
+    let mut wrote = false;
+    for statement in statements {
+        match statement {
+            Stmt::Return => return (wrote, true),
+            Stmt::If { test, then, alt } => {
+                let branch = if test.holds(event) { then } else { alt };
+                let (branch_wrote, returned) = walk(event, branch);
                 wrote |= branch_wrote;
                 if returned {
                     return (wrote, true);
                 }
             }
-            rest = after;
-            continue;
+            Stmt::Literal(literal) => wrote |= run_literal(event, literal),
         }
-        // A plain statement, up to its terminator.
-        let end = rest.find(';').unwrap_or(rest.len());
-        wrote |= run_literal_statement(event, &rest[..end]);
-        rest = &rest[(end + 1).min(rest.len())..];
     }
     (wrote, false)
 }
@@ -4976,97 +5061,223 @@ pub(crate) fn subject_path(term: &str) -> String {
         .replace("\"]", "")
 }
 
-/// Evaluate one `if` test: `||` of `&&` of comparisons against literals.
-pub(crate) fn guard_holds(event: &Event, test: &str) -> bool {
-    test.split("||").any(|conjunction| {
-        conjunction
-            .split("&&")
-            .all(|term| term_holds(event, term.trim()))
-    })
+/// An `if` test: `||` of `&&` of comparisons, resolved as far as the text goes.
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct Guard(Vec<Vec<Term>>);
+
+/// One comparison, with everything the text settles already settled.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum Term {
+    /// A leading `!`, inverting what it wraps.
+    Not(Box<Term>),
+    /// `["4778", "4779"].contains(ctx.event.code)`, the early-return gate.
+    ListContains {
+        members: Vec<String>,
+        argument: Argument,
+    },
+    /// `ctx.related.user.contains(<argument>)`, the append-once guard.
+    FieldContains { path: String, argument: Argument },
+    /// `ctx.<path> == <wanted>`, with the `!=` spelling as `negated`.
+    Compare {
+        path: String,
+        wanted: Wanted,
+        negated: bool,
+    },
+    /// A bare field IS the test: Painless reads its boolean value, and arista
+    /// gates its whole outcome ladder on `if (ctx.arista.blocked)`.
+    Truthy(String),
+    /// Nothing the text resolves, so no event can make it hold.
+    Never,
 }
 
-/// One comparison, with `!` handled by inverting what it wraps.
-fn term_holds(event: &Event, term: &str) -> bool {
-    if let Some(inner) = term.strip_prefix('!') {
-        // `!x.contains(y)` -- a bare `!ctx.field` is not a shape these use.
-        return !term_holds(event, inner.trim());
-    }
-    // A LITERAL list is the subject of every early-return gate these scripts
-    // open with -- `!["4778", "4779"].contains(ctx.event.code)`. It is read
-    // FIRST because the path rewriting below turns its `["` into a separator,
-    // and the wreckage matched nothing, so the gate always held and the script
-    // returned before doing any of its work.
-    if term.starts_with('[')
-        && let Some((list, argument)) = term.split_once(".contains(")
-        && let Some(Value::Array(members)) = literal_value(list)
-    {
-        let argument = argument.trim().trim_end_matches([')', ';']).trim();
-        let Some(wanted) = quoted_after(argument, "").or_else(|| {
-            let path = argument.strip_prefix("ctx.")?;
-            event.get_as_string(&clean_path(&subject_path(path)))
-        }) else {
-            return false;
-        };
-        return members
-            .iter()
-            .any(|member| member.as_str() == Some(&wanted));
+/// What a `.contains(` is asked about.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum Argument {
+    Literal(String),
+    Field(String),
+}
+
+/// The right-hand side of an `==` or `!=`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum Wanted {
+    Null,
+    Text(String),
+    /// A bare `true` / `false` / number is as common a right-hand side as a
+    /// quoted string, and reading only the quoted form made every one of them
+    /// compare FALSE -- `carbon_black`'s netconn direction took the wrong arm of
+    /// its `== true` and wrote source and destination the wrong way round.
+    Value(Value),
+    /// A side no literal reader resolves. It equals nothing the event holds,
+    /// which makes the `!=` spelling of it TRUE.
+    Unreadable,
+}
+
+/// Evaluate one `if` test straight from its text.
+///
+/// The branch resolver in [`crate::painless_common`] rewrites a script per
+/// event, so its tests have no call site that could hold a parsed [`Guard`].
+pub(crate) fn guard_holds(event: &Event, test: &str) -> bool {
+    Guard::parse(test).holds(event)
+}
+
+impl Guard {
+    fn parse(test: &str) -> Self {
+        Self(
+            test.split("||")
+                .map(|conjunction| {
+                    conjunction
+                        .split("&&")
+                        .map(|term| Term::parse(term.trim()))
+                        .collect()
+                })
+                .collect(),
+        )
     }
 
-    // `ctx['@timestamp']` and `ctx.event.action` name the same kind of thing.
-    let term = &subject_path(term);
-    if let Some((subject, literal)) = term.split_once(".contains(") {
-        // The argument is a literal or another field -- `!ctx.related.user
-        // .contains(ctx.winlog.event_data.SubjectUserName)` is the append-once
-        // guard these scripts use.
-        let Some(wanted) = quoted_after(literal, "").or_else(|| {
-            let argument = literal.trim().trim_end_matches([')', ';']).trim();
-            let path = argument.strip_prefix("ctx.")?;
-            event.get_as_string(&clean_path(path))
-        }) else {
-            return false;
-        };
-        let Some(path) = subject.trim().strip_prefix("ctx.") else {
-            return false;
-        };
-        return match event.get(&clean_path(path)) {
-            Some(Value::Array(items)) => items.iter().any(|i| i.as_str() == Some(&wanted)),
-            Some(Value::String(text)) => text.contains(&wanted),
-            _ => false,
-        };
+    fn holds(&self, event: &Event) -> bool {
+        self.0
+            .iter()
+            .any(|conjunction| conjunction.iter().all(|term| term.holds(event)))
     }
-    for (operator, negated) in [("==", false), ("!=", true)] {
-        let Some((subject, wanted)) = term.split_once(operator) else {
-            continue;
-        };
-        let Some(path) = subject.trim().strip_prefix("ctx.") else {
-            return false;
-        };
-        let held = event.get(&clean_path(path));
-        let wanted = wanted.trim();
-        // A bare `true` / `false` / number is as common a right-hand side as a
-        // quoted string, and reading only the quoted form made every one of
-        // them compare FALSE -- carbon_black's netconn direction takes the
-        // wrong arm of its `== true` and writes source and destination the
-        // wrong way round.
-        let matched = if wanted == "null" {
-            held.is_none_or(Value::is_null)
-        } else if let Some(literal) = quoted_after(wanted, "") {
-            held.and_then(Value::as_str) == Some(literal.as_str())
-        } else {
-            // `literal_value` reads strings and lists only, so a bare `true`
-            // or a number needs the wider reader or every such test is false.
-            crate::painless_common::painless_literal(wanted)
-                .is_some_and(|literal| held == Some(&literal))
-        };
-        return matched != negated;
+}
+
+impl Term {
+    fn parse(term: &str) -> Self {
+        if let Some(inner) = term.strip_prefix('!') {
+            // `!x.contains(y)` -- a bare `!ctx.field` is not a shape these use.
+            return Self::Not(Box::new(Self::parse(inner.trim())));
+        }
+        // A LITERAL list opens every early-return gate these scripts write, and
+        // is read FIRST because the rewrite below turns its `["` into a
+        // separator -- which matched nothing, so the gate always held.
+        if term.starts_with('[')
+            && let Some((list, argument)) = term.split_once(".contains(")
+            && let Some(Value::Array(members)) = literal_value(list)
+        {
+            let argument = argument.trim().trim_end_matches([')', ';']).trim();
+            let argument = match quoted_after(argument, "") {
+                Some(text) => Argument::Literal(text),
+                // The list was read before the rewrite, so this path still
+                // carries the map syntax every other reader has had stripped.
+                None => match argument.strip_prefix("ctx.") {
+                    Some(path) => Argument::Field(clean_path(&subject_path(path))),
+                    None => return Self::Never,
+                },
+            };
+            return Self::ListContains {
+                members: members
+                    .iter()
+                    .filter_map(|member| member.as_str().map(str::to_string))
+                    .collect(),
+                argument,
+            };
+        }
+
+        // `ctx['@timestamp']` and `ctx.event.action` name the same kind of
+        // thing.
+        let term = &subject_path(term);
+        if let Some((subject, literal)) = term.split_once(".contains(") {
+            // A field argument is the append-once guard these scripts write.
+            let argument = if let Some(text) = quoted_after(literal, "") {
+                Argument::Literal(text)
+            } else {
+                let field = literal.trim().trim_end_matches([')', ';']).trim();
+                match field.strip_prefix("ctx.") {
+                    Some(path) => Argument::Field(clean_path(path)),
+                    None => return Self::Never,
+                }
+            };
+            let Some(path) = subject.trim().strip_prefix("ctx.") else {
+                return Self::Never;
+            };
+            return Self::FieldContains {
+                path: clean_path(path),
+                argument,
+            };
+        }
+        for (operator, negated) in [("==", false), ("!=", true)] {
+            let Some((subject, wanted)) = term.split_once(operator) else {
+                continue;
+            };
+            let Some(path) = subject.trim().strip_prefix("ctx.") else {
+                return Self::Never;
+            };
+            let wanted = wanted.trim();
+            let wanted = if wanted == "null" {
+                Wanted::Null
+            } else if let Some(literal) = quoted_after(wanted, "") {
+                Wanted::Text(literal)
+            } else {
+                // `literal_value` reads strings and lists only, so a bare
+                // `true` or a number needs the wider reader.
+                crate::painless_common::painless_literal(wanted)
+                    .map_or(Wanted::Unreadable, Wanted::Value)
+            };
+            return Self::Compare {
+                path: clean_path(path),
+                wanted,
+                negated,
+            };
+        }
+        // A BARE field is the test: Painless reads its boolean value. arista
+        // gates its whole outcome ladder on `if (ctx.arista.blocked)`, and
+        // answering false here took the else arm on every event.
+        if let Some(path) = subject_path(term).strip_prefix("ctx.") {
+            return Self::Truthy(clean_path(path));
+        }
+        Self::Never
     }
-    // A BARE field is the test: Painless reads its boolean value. arista gates
-    // its whole outcome ladder on `if (ctx.arista.blocked)`, and answering
-    // false here took the else arm on every event.
-    if let Some(path) = subject_path(term).strip_prefix("ctx.") {
-        return event.get(&clean_path(path)).and_then(Value::as_bool) == Some(true);
+
+    fn holds(&self, event: &Event) -> bool {
+        match self {
+            Self::Not(inner) => !inner.holds(event),
+            Self::Never => false,
+            Self::ListContains { members, argument } => {
+                let Some(wanted) = argument.resolve(event) else {
+                    return false;
+                };
+                members.iter().any(|member| member == wanted.as_ref())
+            }
+            Self::FieldContains { path, argument } => {
+                let Some(wanted) = argument.resolve(event) else {
+                    return false;
+                };
+                match event.get(path) {
+                    Some(Value::Array(items)) => items
+                        .iter()
+                        .any(|item| item.as_str() == Some(wanted.as_ref())),
+                    Some(Value::String(text)) => text.contains(wanted.as_ref()),
+                    _ => false,
+                }
+            }
+            Self::Compare {
+                path,
+                wanted,
+                negated,
+            } => {
+                let held = event.get(path);
+                let matched = match wanted {
+                    Wanted::Null => held.is_none_or(Value::is_null),
+                    Wanted::Text(text) => held.and_then(Value::as_str) == Some(text.as_str()),
+                    Wanted::Value(value) => held == Some(value),
+                    Wanted::Unreadable => false,
+                };
+                matched != *negated
+            }
+            Self::Truthy(path) => event.get(path).and_then(Value::as_bool) == Some(true),
+        }
     }
-    false
+}
+
+impl Argument {
+    /// Borrowed for the literal spelling, which is most of them, so the common
+    /// term costs no allocation per event.
+    fn resolve<'a>(&'a self, event: &Event) -> Option<Cow<'a, str>> {
+        match self {
+            Self::Literal(text) => Some(Cow::Borrowed(text)),
+            Self::Field(path) => event.get_as_string(path).map(Cow::Owned),
+        }
+    }
 }
 
 /// One statement that writes a value the script already has to hand.
@@ -5074,76 +5285,81 @@ fn term_holds(event: &Event, term: &str) -> bool {
 /// Four shapes, and the value is either a literal or another `ctx.` field:
 /// `ctx.a.add(v)`, `ctx.a.put('k', v)`, `ctx.a = v`, and the `.put` and `.add`
 /// forms with a copied source. Anything else is left alone.
-fn run_literal_statement(event: &mut Event, statement: &str) -> bool {
+fn parse_literal_statement(statement: &str) -> Option<Literal> {
     if let Some((subject, argument)) = statement.split_once(".add(") {
-        let (Some(path), Some(value)) = (
-            subject.trim().strip_prefix("ctx."),
-            written_value(event, argument),
-        ) else {
-            return false;
-        };
-        add_to_list(event, &clean_path(path), value);
-        return true;
+        return Some(Literal::Append {
+            path: clean_path(subject.trim().strip_prefix("ctx.")?),
+            value: parse_rhs(argument)?,
+        });
     }
     // `ctx.user.put("name", ctx.winlog.event_data.SubjectUserName)`. The
     // null-guard blocks these scripts open with -- `ctx.put("user", hm)` --
     // fall out here: the subject is bare `ctx` and the value is a local.
     if let Some((subject, arguments)) = statement.split_once(".put(") {
-        let Some(parent) = subject.trim().strip_prefix("ctx.") else {
-            return false;
-        };
-        let (Some(key), Some((_, rest))) = (quoted_after(arguments, ""), arguments.split_once(','))
-        else {
-            return false;
-        };
-        let Some(value) = written_value(event, rest) else {
-            return false;
-        };
-        let _ = event.set(&format!("{}.{key}", clean_path(parent)), value);
-        return true;
+        let parent = clean_path(subject.trim().strip_prefix("ctx.")?);
+        let key = quoted_after(arguments, "")?;
+        let (_, rest) = arguments.split_once(',')?;
+        return Some(Literal::Set {
+            path: format!("{parent}.{key}"),
+            value: parse_rhs(rest)?,
+        });
     }
-    let Some((subject, value)) = split_assignment(statement) else {
-        return false;
-    };
-    let Some(path) = subject.trim().strip_prefix("ctx.") else {
-        return false;
-    };
-    let Some(value) = written_value(event, value) else {
-        return false;
-    };
-    let _ = event.set(&clean_path(path), value);
-    true
+    let (subject, value) = split_assignment(statement)?;
+    Some(Literal::Set {
+        path: clean_path(subject.trim().strip_prefix("ctx.")?),
+        value: parse_rhs(value)?,
+    })
 }
 
-/// The value a statement writes: a literal, or a `ctx.` field read off the
+/// The value a statement writes: a literal, or a `ctx.` field to read off the
 /// event.
-fn written_value(event: &Event, text: &str) -> Option<Value> {
+fn parse_rhs(text: &str) -> Option<Rhs> {
     let text = text.trim().trim_end_matches(';').trim();
-    // `String.valueOf(ctx.a.b)` is the vendors' spelling of "write this as
-    // text", and aws stamps `management_event` with it.
     if let Some(inner) = text
         .strip_prefix("String.valueOf(")
         .and_then(|rest| rest.strip_suffix(')'))
     {
-        let path = inner.trim().strip_prefix("ctx.")?;
-        return event
-            .get(&clean_path(path))
-            .and_then(scalar_text)
-            .map(Value::String);
+        return Some(Rhs::Text(clean_path(inner.trim().strip_prefix("ctx.")?)));
     }
     let text = text.trim_end_matches(')').trim();
     if let Some(path) = text.strip_prefix("ctx.") {
         // A source path and nothing else. `ctx.a + ctx.b` and a method call
         // on one are different shapes with their own matchers.
-        if path
+        return path
             .chars()
             .all(|c| c.is_alphanumeric() || "._?@['\"]".contains(c))
-        {
-            return event.get(&clean_path(path)).cloned();
-        }
-        return None;
+            .then(|| Rhs::Field(clean_path(path)));
     }
-    literal_value(text)
+    literal_value(text).map(Rhs::Literal)
+}
+
+/// Make one parsed write, reporting whether the event had a value for it.
+fn run_literal(event: &mut Event, literal: &Literal) -> bool {
+    match literal {
+        Literal::Append { path, value } => {
+            let Some(value) = resolve_rhs(event, value) else {
+                return false;
+            };
+            add_to_list(event, path, value);
+            true
+        }
+        Literal::Set { path, value } => {
+            let Some(value) = resolve_rhs(event, value) else {
+                return false;
+            };
+            let _ = event.set(path, value);
+            true
+        }
+    }
+}
+
+/// A write's value, read off the event where the script named a field.
+fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
+    match value {
+        Rhs::Text(path) => event.get(path).and_then(scalar_text).map(Value::String),
+        Rhs::Field(path) => event.get(path).cloned(),
+        Rhs::Literal(value) => Some(value.clone()),
+    }
 }
 
 /// A quoted string, or a bracketed list of them.
@@ -7204,7 +7420,7 @@ mod tests {
             ctx.related.ip.add(ctx.source.ip);";
         let mut event = Event::new(json!({ "source": { "ip": "10.100.150.9" } }));
 
-        assert!(run_guarded_literals(&mut event, script));
+        assert!(Program::parse(script).run(&mut event));
         assert_eq!(event.get("related.ip"), Some(&json!(["10.100.150.9"])));
     }
 
