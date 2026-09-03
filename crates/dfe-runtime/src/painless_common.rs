@@ -5491,10 +5491,17 @@ fn leading_literal(text: &str) -> Option<(String, &str)> {
 ///
 /// Returns false when nothing parses, which lets a script that merely spells
 /// `lastIndexOf` fall through to the matchers below.
-fn try_basename_after_separator(event: &mut Event, script: &str) -> bool {
-    let Some(separator) = last_index_of_separator(script) else {
-        return false;
-    };
+/// Every basename cut one script makes, and the separator they share.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct BasenameCuts {
+    separator: char,
+    /// Source field to target field, one per local the helper is called with.
+    cuts: Vec<(String, String)>,
+}
+
+/// Read the cuts out of the script text, or decline.
+fn parse_basename_cuts(script: &str) -> Option<BasenameCuts> {
+    let separator = last_index_of_separator(script)?;
 
     // `def cmd = ctx.process?.executable;` -- the locals the helper is called
     // with, and the field each one reads.
@@ -5507,17 +5514,16 @@ fn try_basename_after_separator(event: &mut Event, script: &str) -> bool {
         let Some((name, value)) = rest.split_once(" = ") else {
             continue;
         };
-        let value = value.trim();
-        if let Some(path) = value.strip_prefix("ctx.") {
+        if let Some(path) = value.trim().strip_prefix("ctx.") {
             locals.push((name.trim().to_string(), clean_path(path)));
         }
     }
 
-    let mut wrote = false;
     // The call is `(<local>)` with nothing else in the parentheses. The
     // helper's DEFINITION takes `def path`, which is not one of the locals,
     // so it is skipped for free -- and so is `(cmd != null && ...)`, which
     // names the local but is not a call.
+    let mut cuts = Vec::new();
     for (local, source) in &locals {
         let Some(at) = script.find(&format!("({local})")) else {
             continue;
@@ -5530,21 +5536,28 @@ fn try_basename_after_separator(event: &mut Event, script: &str) -> bool {
         else {
             continue;
         };
-
-        if let Some(text) = event.get_str(source) {
-            // Elastic writes nothing when the path holds no separator, and
-            // nothing when the basename is empty -- a trailing separator.
-            if let Some((_, base)) = text.rsplit_once(separator)
-                && !base.is_empty()
-            {
-                let base = base.to_string();
-                let _ = event.set(&target, base);
-            }
-        }
-        wrote = true;
+        cuts.push((source.clone(), target));
     }
 
-    wrote
+    (!cuts.is_empty()).then_some(BasenameCuts { separator, cuts })
+}
+
+/// Write each cut, leaving a source with no separator alone.
+pub fn basename_cuts(event: &mut Event, shape: &BasenameCuts) -> bool {
+    for (source, target) in &shape.cuts {
+        let Some(text) = event.get_str(source) else {
+            continue;
+        };
+        // Elastic writes nothing when the path holds no separator, and
+        // nothing when the basename is empty -- a trailing separator.
+        if let Some((_, base)) = text.rsplit_once(shape.separator)
+            && !base.is_empty()
+        {
+            let base = base.to_string();
+            let _ = event.set(target, base);
+        }
+    }
+    true
 }
 
 /// The separator a `lastIndexOf` in this script looks for.
@@ -12430,7 +12443,7 @@ pub(crate) enum KnownShape {
         root: Option<String>,
     },
     SplitCommandLine(crate::painless_windows::ArgvScript),
-    Basename,
+    Basename(Box<BasenameCuts>),
     FileInfo(String),
     HashLowercase(String),
     PrefixTail {
@@ -13101,7 +13114,9 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // the last separator. Guarded by the parse rather than by the trigger,
     // so a script that only looks similar falls through.
     if normalised.contains("lastIndexOf(") && normalised.contains(".substring(") {
-        shapes.push(KnownShape::Basename);
+        if let Some(shape) = parse_basename_cuts(normalised) {
+            shapes.push(KnownShape::Basename(Box::new(shape)));
+        }
         // Pattern: the same cut, but written straight onto a ctx path and
         // landing on a DIFFERENT one -- `file.name` to `file.extension` -- or
         // written inline and landing back on the field it read.
@@ -14555,7 +14570,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::SplitCommandLine(script) => {
             crate::painless_windows::run_argv_script(event, script)
         }
-        KnownShape::Basename => try_basename_after_separator(event, normalised),
+        KnownShape::Basename(shape) => basename_cuts(event, shape),
         KnownShape::FileInfo(source) => crate::painless_windows::run_file_info(event, source),
         KnownShape::HashLowercase(source) => {
             crate::painless_windows::run_hash_lowercase(event, source)
