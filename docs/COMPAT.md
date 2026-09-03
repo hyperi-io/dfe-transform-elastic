@@ -110,6 +110,27 @@ which is why it has to be typed.
 A corpus that is ABSENT is a different thing and still skips silently -- the
 corpus is gitignored, so a fresh clone has none.
 
+### The second ratchet: shapes that never apply
+
+`NEVER_RAN_SCRIPTS` in the corpus test holds the count of scripts that bound a
+shape and never once ran it. **543 as at 2026-09-04.**
+
+This is the class the work in early September kept finding: a ladder arm with a
+bare `contains()` trigger claims a script its runner then declines on every
+event. The static census counts it as covered and the Painless coverage floor
+reads 100%, because both measure whether a shape MATCHED. Only running the
+corpus shows whether it applied.
+
+It is not a defect count. A script can legitimately never run because no event
+in the corpus carries its source field, so read it with
+`scripts/shape_reach.py`, which joins the reach data to call sites, and never
+on its own.
+
+`DFE_PAINLESS_UNHANDLED=<path>` writes the per-script catalogue. The catalogue
+is now on for every run: its write lock is taken once per script EXECUTION,
+about 70,500 times over the whole corpus, and the run measured 18.6s against
+17.7-19.8s with it off.
+
 ### It does not gate EXTRA fields
 
 `fields_wrong` counts missing and mismatched fields only. A field we emit that

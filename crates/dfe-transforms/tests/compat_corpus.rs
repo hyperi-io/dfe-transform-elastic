@@ -11,6 +11,14 @@
 //! The corpus derives from Elastic-Licensed pipelines, so it is not committed.
 //! A missing corpus is reported and skipped -- unlike the committed fixtures,
 //! where absence is a failure.
+//!
+//! It carries TWO ratchets, and both are skipped under `DFE_COMPAT_ONLY`
+//! because a partial run cannot say whether another source went down:
+//!
+//! - `tests/compat-baseline.json`, per-source field and event scores.
+//! - `NEVER_RAN_SCRIPTS`, how many scripts bound a shape and never ran it.
+//!   The static census and the coverage floor both count the CLAIM, so this
+//!   run is the only thing that sees a shape which never applies.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
@@ -1642,14 +1650,14 @@ fn score_the_corpus() {
         .collect();
     let dump = std::env::var("DFE_COMPAT_DUMP").ok();
 
-    // Which scripts actually ran, written to the named path. The static census
-    // cannot see this: it reports what a script MATCHES, and a shape whose
-    // runner declines still matches.
+    // On for every run, because this is the only place the reach number exists
+    // and `NEVER_RAN_SCRIPTS` now ratchets it. The lock is taken once per
+    // script EXECUTION, which measured inside the run-to-run noise.
+    dfe_runtime::painless_stats::reset();
+    dfe_runtime::painless_stats::enable_catalogue(true);
+
+    // Written to the named path when asked, for working out WHICH scripts.
     let unhandled_dump = std::env::var("DFE_PAINLESS_UNHANDLED").ok();
-    if unhandled_dump.is_some() {
-        dfe_runtime::painless_stats::reset();
-        dfe_runtime::painless_stats::enable_catalogue(true);
-    }
 
     // Score only the named sources, comma-separated. For the inner loop while
     // one source is being worked on; the ratchet is SKIPPED under it, because a
@@ -1915,23 +1923,25 @@ fn print_and_check(
     }
     println!("\n{:<20} {}", "TOTAL", total.line());
 
+    dfe_runtime::painless_stats::enable_catalogue(false);
+    let reach = dfe_runtime::painless_stats::reach();
+    let never = reach.iter().filter(|(_, ran, _)| *ran == 0).count();
+    let handled = dfe_runtime::painless_stats::handled();
+    let skipped = dfe_runtime::painless_stats::unhandled();
+    println!(
+        "\npainless runtime reach: {handled} handled, {skipped} skipped across {} \
+         distinct scripts, {never} of which NEVER ran",
+        reach.len(),
+    );
+
     if let Some(path) = unhandled_dump {
-        dfe_runtime::painless_stats::enable_catalogue(false);
-        let reach = dfe_runtime::painless_stats::reach();
-        let never = reach.iter().filter(|(_, ran, _)| *ran == 0).count();
         let rows: Vec<serde_json::Value> = reach
             .iter()
             .map(|(script, ran, skipped)| {
                 serde_json::json!({ "ran": ran, "skipped": skipped, "script": script })
             })
             .collect();
-        let handled = dfe_runtime::painless_stats::handled();
-        let skipped = dfe_runtime::painless_stats::unhandled();
-        println!(
-            "\npainless runtime reach: {handled} handled, {skipped} skipped across {} \
-             distinct scripts, {never} of which NEVER ran -- written to {path}",
-            rows.len(),
-        );
+        println!("  the per-script catalogue is at {path}");
         std::fs::write(
             path,
             serde_json::to_string_pretty(&serde_json::json!({
@@ -1955,8 +1965,16 @@ fn print_and_check(
     // and never ratchets. The whole-corpus run stays the only gate.
     if only.is_empty() {
         check_baseline(by_source, &provenance(fixtures));
+        assert!(
+            never <= NEVER_RAN_SCRIPTS,
+            "{never} scripts bound a shape and never ran it, up from \
+             {NEVER_RAN_SCRIPTS}. A shape claiming a script it cannot apply \
+             reads as covered everywhere except here -- the painless coverage \
+             floor counts the CLAIM. Run with DFE_PAINLESS_UNHANDLED=<path> to \
+             see which, and `scripts/shape_reach.py` to join them to call sites."
+        );
     } else {
-        println!("\nDFE_COMPAT_ONLY is set, so the baseline was NOT checked");
+        println!("\nDFE_COMPAT_ONLY is set, so neither ratchet was checked");
     }
 }
 
@@ -1999,6 +2017,23 @@ fn entry(score: Score) -> String {
         score.events_matched, score.events, score.fields_wrong
     )
 }
+
+/// Scripts that bound a shape and never once ran it, over the whole corpus.
+///
+/// The class this session found most often, and until now the only one with no
+/// gate. A shape whose runner declines every event still MATCHES, so the
+/// static census counts it as covered and `painless_coverage.rs` reads 100% --
+/// both measure the claim. Only the corpus can see whether it applied.
+///
+/// It is not a defect count. A script can legitimately never run because the
+/// corpus holds no event carrying its source field, so this ratchets DOWN as
+/// shapes are fixed and is read alongside `scripts/shape_reach.py`, never on
+/// its own.
+///
+/// 543 as measured 2026-09-04. No clean immediately-preceding figure exists:
+/// the 522 in the older notes predates roughly twenty commits of shape work,
+/// so it is not a before-and-after pair with this one.
+const NEVER_RAN_SCRIPTS: usize = 543;
 
 /// Set to acknowledge that this run scores a corpus the baseline cannot
 /// ratchet against, and to let it pass anyway.
