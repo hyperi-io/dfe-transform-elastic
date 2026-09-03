@@ -135,7 +135,7 @@
     "gcp": { "events": 382, "events_total": 382, "fields_wrong": 0 },
     "gcp_vertexai": { "events": 5, "events_total": 5, "fields_wrong": 0 },
     "gdacs": { "events": 0, "events_total": 42, "fields_wrong": 666 },
-    "gigamon": { "events": 20, "events_total": 78, "fields_wrong": 303 },
+    "gigamon": { "events": 20, "events_total": 78, "fields_wrong": 274 },
     "github": { "events": 216, "events_total": 237, "fields_wrong": 37 },
     "gitlab": { "events": 10, "events_total": 68, "fields_wrong": 891 },
     "goflow2": { "events": 0, "events_total": 12, "fields_wrong": 235 },

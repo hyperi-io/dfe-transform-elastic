@@ -10403,6 +10403,42 @@ fn parse_inline_suffix_cut(script: &str) -> Option<(String, String, String)> {
     Some((source, target, separator))
 }
 
+/// `int i = ctx.<s>.lastIndexOf('<sep>'); if (i != -1) { ctx.<t> =
+/// ctx.<s>.substring(i + 1); } else { ctx.<t> = ctx.<s>; }`
+///
+/// The index lives in a LOCAL, which is what separates this from the inline
+/// spellings. The guard on it compares that local against -1, and the guard
+/// evaluator cannot read a local, so without this parse the script binds a
+/// shape whose guard never holds and the else arm writes the whole path as the
+/// basename -- 99 `jamf_protect_telemetry` call sites, and no corpus capture
+/// to catch it.
+fn parse_local_index_basename(script: &str) -> Option<(String, String, String)> {
+    let (declaration, rest) = script.split_once(".lastIndexOf(")?;
+    // `int <local> = ctx.<source>` -- the name sits before the assignment, and
+    // the path after it, so the split has to come first or the last
+    // whitespace-separated token is the path rather than the local.
+    let (named, assigned) = declaration.rsplit_once(" = ")?;
+    let local = named.rsplit(char::is_whitespace).next()?.trim();
+    let source = painless_path(assigned)?;
+
+    let separator = painless_unescape(&quoted_first(rest)?);
+    if separator.is_empty() {
+        return None;
+    }
+
+    // The cut has to read the SAME field and start one past that local.
+    let (before_cut, after_cut) = rest.split_once(".substring(")?;
+    if painless_path(before_cut)? != source {
+        return None;
+    }
+    if after_cut.split_once(')')?.0.trim() != format!("{local} + 1") {
+        return None;
+    }
+
+    let target = painless_path(before_cut.rsplit_once('=')?.0)?;
+    Some((source, target, separator))
+}
+
 /// A Painless string literal's escapes, resolved.
 ///
 /// A Windows path separator reaches us as `'\\'` and is ONE backslash; cutting
@@ -10427,13 +10463,27 @@ fn painless_unescape(literal: &str) -> String {
 }
 
 /// The text after the source's LAST separator, where there is one.
-fn run_suffix_after_separator(event: &mut Event, source: &str, target: &str, sep: &str) -> bool {
-    if let Some(text) = event.get_str(source)
-        && let Some((_, suffix)) = text.rsplit_once(sep)
-        && !suffix.is_empty()
-    {
-        let suffix = suffix.to_string();
-        let _ = event.set(target, json!(suffix));
+fn run_suffix_after_separator(
+    event: &mut Event,
+    source: &str,
+    target: &str,
+    sep: &str,
+    whole_when_absent: bool,
+) -> bool {
+    let Some(text) = event.get_str(source) else {
+        return true;
+    };
+    match text.rsplit_once(sep) {
+        Some((_, suffix)) if !suffix.is_empty() => {
+            let suffix = suffix.to_string();
+            let _ = event.set(target, json!(suffix));
+        }
+        // No separator: only the spelling with an else arm writes anything.
+        _ if whole_when_absent => {
+            let whole = text.to_string();
+            let _ = event.set(target, json!(whole));
+        }
+        _ => {}
     }
     true
 }
@@ -12529,6 +12579,11 @@ pub(crate) enum KnownShape {
         source: String,
         target: String,
         separator: String,
+        /// Whether a source with no separator in it writes the whole value.
+        ///
+        /// The inline spellings write nothing, because the vendor guards the
+        /// cut and has no else arm. The local-index spelling has one.
+        whole_when_absent: bool,
     },
     CopyTargetUser(Vec<String>),
     CopySubjectUser(Vec<String>),
@@ -13057,6 +13112,14 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
                 source,
                 target,
                 separator,
+                whole_when_absent: false,
+            });
+        } else if let Some((source, target, separator)) = parse_local_index_basename(normalised) {
+            shapes.push(KnownShape::SuffixAfterSeparator {
+                source,
+                target,
+                separator,
+                whole_when_absent: true,
             });
         }
     }
@@ -14680,7 +14743,8 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             source,
             target,
             separator,
-        } => run_suffix_after_separator(event, source, target, separator),
+            whole_when_absent,
+        } => run_suffix_after_separator(event, source, target, separator, *whole_when_absent),
         KnownShape::CopyTargetUser(codes) => {
             crate::painless_windows::run_copy_target_user(event, codes)
         }
@@ -19715,6 +19779,33 @@ def event_timezone = get_timezone(ctx);
             return src;\n}\ndef out = ctx.qualys;\n";
 
         assert!(parse_literal_value_map(script).is_none());
+    }
+
+    /// Verbatim from `jamf_protect_telemetry`, 99 call sites and no corpus
+    /// capture to catch it.
+    ///
+    /// The inner guard compares a LOCAL int against -1, which the guard
+    /// evaluator cannot read, so it parses to a term that never holds. The
+    /// shape binds `Basename` first and `GuardedCopy` second, and only
+    /// `Basename` writes the cut path -- were it to decline, the fallback
+    /// would write the whole executable as the name.
+    #[test]
+    fn a_basename_cut_wins_over_its_never_true_fallback() {
+        let script = "if (ctx.process?.executable != null) {\n    \
+            int lastSlashIndex = ctx.process.executable.lastIndexOf('/');\n    \
+            if (lastSlashIndex != -1) {\n        \
+            ctx.process.name = ctx.process.executable.substring(lastSlashIndex + 1);\n    \
+            } else {\n        \
+            ctx.process.name = ctx.process.executable;\n    }\n}\n";
+
+        let mut event = Event::new(json!({ "process": {
+            "executable": "/usr/local/bin/jamf" } }));
+        assert!(try_known_painless(&mut event, script));
+        assert_eq!(
+            event.get_str("process.name"),
+            Some("jamf"),
+            "the fallback ran and wrote the whole path"
+        );
     }
 
     /// The copy still binds and still runs.
