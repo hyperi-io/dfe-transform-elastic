@@ -6360,6 +6360,30 @@ mod tests {
         assert_eq!(clean_path("host?.name"), "host.name");
     }
 
+    /// The readers do NOT agree on which characters a path may hold, and the
+    /// difference is pinned rather than resolved.
+    ///
+    /// `path_before` and `base_between` accept `alnum . _ ?` and so refuse
+    /// `@timestamp`; the `ctx_path_*` pair refuses only whitespace and a
+    /// terminator. Widening the strict pair would open matchers that have never
+    /// been exposed to a bad path, which is a parity change and not a tidy-up.
+    /// Narrowing the loose pair would refuse ECS fields that are real.
+    #[test]
+    fn the_readers_differ_on_the_at_sign_and_that_is_deliberate() {
+        let script = "def t = ctx.@timestamp;";
+
+        assert_eq!(
+            ctx_path_before(script, ";"),
+            Some("@timestamp".to_string()),
+            "the loose pair takes a real ECS field"
+        );
+        assert_eq!(
+            super::path_before(script, ";"),
+            None,
+            "the strict pair refuses it -- widen only with a corpus run"
+        );
+    }
+
     /// A backward search that spans two bindings declines rather than handing
     /// back a field name no event can hold.
     ///
