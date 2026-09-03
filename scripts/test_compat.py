@@ -263,9 +263,19 @@ class GeoipTypePatch(unittest.TestCase):
 class SourceTable(unittest.TestCase):
     """No more sources point at a fixture directory than already do."""
 
-    # Streams with no fixtures upstream, which COMPAT.md states as expected.
-    # A ceiling rather than zero, so a mistyped fixture_dir still fails.
-    SOURCES_WITHOUT_FIXTURES = 130
+    @property
+    def SOURCES_WITHOUT_FIXTURES(self) -> int:  # noqa: N802 - a ratchet, named as one
+        """Streams with no fixtures upstream, which COMPAT.md states as expected.
+
+        A ceiling rather than zero, so a mistyped fixture_dir still fails. Read
+        from the same `tests/ratchets.json` the Rust ratchets use, which is
+        what makes that file the source of truth rather than one language's
+        copy of a number.
+        """
+        ratchets = json.loads(
+            (compat.REPO_ROOT / "tests/ratchets.json").read_text(encoding="utf-8")
+        )
+        return ratchets["sources_without_fixtures"]
 
     # The table has to be loaded for the ceiling below to mean anything: an
     # empty SOURCES gives no missing entries and clears the ceiling on nothing.

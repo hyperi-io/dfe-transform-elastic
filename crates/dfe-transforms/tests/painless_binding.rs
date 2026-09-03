@@ -29,29 +29,10 @@ const SITE: &str = "cached_painless!(";
 /// having shrunk -- 3,490 sites when this was written.
 const MIN_SITES: usize = 3_000;
 
-/// Call sites whose bound shape carries a branch that can never be taken.
-///
-/// Counted statically, so it includes sites where the dead branch sits in a
-/// FALLBACK shape and something ahead of it handles the script correctly --
-/// `jamf_protect_telemetry` still counts here after its fix, because
-/// `Basename` now wins at run time while `GuardedCopy` still binds behind it.
-/// Ratchets down as guards are made readable, never as evidence on its own.
-///
-/// It has been RAISED twice, both times because the count became truer rather
-/// than the code worse. The corpus is the authority on that, never this number.
-///
-/// 187 -> 191 when `remove` became a statement the walk can run: three
-/// `microsoft_dnsserver` sites were already bound and their trees merely grew
-/// the removes they had always made, and `beyondtrust_isi_incident` was
-/// UNBOUND and now binds at all. The corpus said 70 fewer extra fields, 25
-/// more correct, nothing lowered.
-///
-/// 191 -> 209 when `Truthy` started checking its path. Anything opening with
-/// `ctx.` and reaching that last arm used to become a `Truthy` on whatever
-/// text followed, operators and all -- answering false forever, which is what
-/// `Never` means, while reporting as a readable term this count could not see.
-/// 18 sites were in that state and the corpus is byte-identical either way.
-const DEAD_BRANCH_SITES: usize = 209;
+/// Where the ratchets live, relative to this crate.
+fn workspace_root() -> std::path::PathBuf {
+    std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../..")
+}
 
 /// One generated call site.
 struct Site {
@@ -221,14 +202,19 @@ fn every_call_site_reports_the_matcher_it_binds_to() {
         .map(|s| s.uses.len())
         .sum();
     println!("  {dead_branches} sites carry a guard the evaluator cannot read");
-    assert!(
-        dead_branches <= DEAD_BRANCH_SITES,
-        "{dead_branches} sites now carry an unreadable guard, up from \
-         {DEAD_BRANCH_SITES} -- a new shape or script has added a dead branch. \
-         Establish what the script binds FIRST before calling it a defect: the \
-         shape carrying the dead branch is often a fallback something else \
-         handles."
+    // Counted statically, so it includes sites where the dead branch sits in a
+    // FALLBACK shape and something ahead of it handles the script correctly.
+    let mut ratchets = dfe_runtime::testutil::ratchets::Ratchets::load(&workspace_root());
+    ratchets.check(
+        "dead_branch_sites",
+        dead_branches,
+        "A new shape or script has added a dead branch. Establish what the \
+         script binds FIRST before calling it a defect -- the shape carrying \
+         it is often a fallback something else handles, and a RISE can mean \
+         the count got truer rather than the code worse. The corpus is the \
+         authority on which; this number never is.",
     );
+    ratchets.save();
 
     let mut ranked: Vec<(&&str, &usize)> = families.iter().collect();
     ranked.sort_by(|a, b| b.1.cmp(a.1));

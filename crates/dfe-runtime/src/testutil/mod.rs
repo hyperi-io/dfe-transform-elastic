@@ -11,6 +11,7 @@ pub mod diff;
 pub mod flatten;
 pub mod harness;
 pub mod policy;
+pub mod ratchets;
 
 /// Run `body` on a thread with a stack deep enough for a generated transform.
 ///
