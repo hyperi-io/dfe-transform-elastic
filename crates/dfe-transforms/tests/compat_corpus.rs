@@ -15,10 +15,11 @@
 //! It carries TWO ratchets, and both are skipped under `DFE_COMPAT_ONLY`
 //! because a partial run cannot say whether another source went down:
 //!
-//! - `tests/compat-baseline.json`, per-source field and event scores.
-//! - `NEVER_RAN_SCRIPTS`, how many scripts bound a shape and never ran it.
-//!   The static census and the coverage floor both count the CLAIM, so this
-//!   run is the only thing that sees a shape which never applies.
+//! Both live in `tests/compat-baseline.json` and are written by
+//! `scripts/raise_baseline.py`: per-source field and event scores, and
+//! `never_ran`, how many scripts bound a shape and never ran it. The static
+//! census and the coverage floor both count the CLAIM, so this run is the
+//! only thing that sees a shape which never applies.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
@@ -1964,15 +1965,7 @@ fn print_and_check(
     // A partial run cannot say whether another source went down, so it reports
     // and never ratchets. The whole-corpus run stays the only gate.
     if only.is_empty() {
-        check_baseline(by_source, &provenance(fixtures));
-        assert!(
-            never <= NEVER_RAN_SCRIPTS,
-            "{never} scripts bound a shape and never ran it, up from \
-             {NEVER_RAN_SCRIPTS}. A shape claiming a script it cannot apply \
-             reads as covered everywhere except here -- the painless coverage \
-             floor counts the CLAIM. Run with DFE_PAINLESS_UNHANDLED=<path> to \
-             see which, and `scripts/shape_reach.py` to join them to call sites."
-        );
+        check_baseline(by_source, &provenance(fixtures), never);
     } else {
         println!("\nDFE_COMPAT_ONLY is set, so neither ratchet was checked");
     }
@@ -2000,6 +1993,20 @@ fn provenance(fixtures: &[Captured]) -> Option<(String, String)> {
 struct Baseline {
     integrations_sha: String,
     elasticsearch_version: String,
+    /// Scripts that bound a shape and never once ran it.
+    ///
+    /// A shape whose runner declines every event still MATCHES, so the static
+    /// census counts it as covered and `painless_coverage.rs` reads 100% --
+    /// both measure the CLAIM. Only this run sees whether it applied.
+    ///
+    /// Not a defect count: a script can legitimately never run because the
+    /// corpus holds no event carrying its source field. Read alongside
+    /// `scripts/shape_reach.py`, never on its own.
+    ///
+    /// Lives here rather than in a constant because it moves on every
+    /// improvement, and `scripts/raise_baseline.py` writes it. A number a
+    /// human retypes is a number that grows a changelog beside it.
+    never_ran: usize,
     sources: BTreeMap<String, Expected>,
 }
 
@@ -2017,25 +2024,6 @@ fn entry(score: Score) -> String {
         score.events_matched, score.events, score.fields_wrong
     )
 }
-
-/// Scripts that bound a shape and never once ran it, over the whole corpus.
-///
-/// The class this session found most often, and until now the only one with no
-/// gate. A shape whose runner declines every event still MATCHES, so the
-/// static census counts it as covered and `painless_coverage.rs` reads 100% --
-/// both measure the claim. Only the corpus can see whether it applied.
-///
-/// It is not a defect count. A script can legitimately never run because the
-/// corpus holds no event carrying its source field, so this ratchets DOWN as
-/// shapes are fixed and is read alongside `scripts/shape_reach.py`, never on
-/// its own.
-///
-/// 524, down from the 543 first measured on 2026-09-04, as reading a local
-/// that names a field, a `(long)` cast, a `remove`, an inlined binding's death,
-/// the statements the gate used to refuse, the second spelling of
-/// `MergeMapUp` and Google Workspace's parameter fan-out let nineteen more
-/// shapes reach their runner.
-const NEVER_RAN_SCRIPTS: usize = 524;
 
 /// Set to acknowledge that this run scores a corpus the baseline cannot
 /// ratchet against, and to let it pass anyway.
@@ -2060,7 +2048,11 @@ const ALLOW_UNRATCHETED: &str = "DFE_COMPAT_ALLOW_UNRATCHETED";
 ///
 /// The corpus being ABSENT is a different thing and still skips, up in
 /// `score_the_corpus` -- it is gitignored, so a fresh clone has none.
-fn check_baseline(measured: &BTreeMap<String, Score>, provenance: &Option<(String, String)>) {
+fn check_baseline(
+    measured: &BTreeMap<String, Score>,
+    provenance: &Option<(String, String)>,
+    never: usize,
+) {
     const PATH: &str = concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/../../tests/compat-baseline.json"
@@ -2095,6 +2087,16 @@ fn check_baseline(measured: &BTreeMap<String, Score>, provenance: &Option<(Strin
         ));
         return;
     }
+
+    assert!(
+        never <= baseline.never_ran,
+        "{never} scripts bound a shape and never ran it, up from {}. A shape \
+         claiming a script it cannot apply reads as covered everywhere except \
+         here -- the painless coverage floor counts the CLAIM. Run with \
+         DFE_PAINLESS_UNHANDLED=<path> to see which, and \
+         `scripts/shape_reach.py` to join them to call sites.",
+        baseline.never_ran
+    );
 
     let mut failures = Vec::new();
     let mut improved = Vec::new();

@@ -11338,6 +11338,81 @@ pub(crate) enum Collision {
     Prefix(String),
 }
 
+/// `key=value key="value with spaces"` scanned a character at a time.
+///
+/// `watchguard_firebox` writes its own KV parser in Painless rather than using
+/// the kv processor, because its values carry spaces and colons inside quotes
+/// and the vendor wants the quotes off. It is a state machine, and the only
+/// faithful way to read it is to run the same one: `msg` and `proxy_act` alone
+/// are 410 wrong fields across 29 events it would otherwise unlock.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct QuotedKvScan {
+    /// The string scanned, e.g. `_temp`.
+    source: String,
+    /// Where each pair lands, e.g. `watchguard_firebox.log`.
+    target: String,
+}
+
+fn parse_quoted_kv_scan(script: &str) -> Option<QuotedKvScan> {
+    use crate::painless_params::{clean_path, subject_path};
+
+    // The three locals the scanner needs, all of them named in one line.
+    if !script.contains("kvStart") || !script.contains("kvSplit") || !script.contains("charAt(") {
+        return None;
+    }
+    let source = script.split_once("length();")?.0.rsplit_once("ctx")?.1;
+    let source = clean_path(subject_path(&format!("ctx{source}")).strip_prefix("ctx.")?);
+    let target = script.split_once(".put(key, value)")?.0;
+    let target = clean_path(target.rsplit_once("ctx.")?.1.trim());
+
+    let named = |path: &str| !path.is_empty() && !path.contains(['(', ')', '[', ']', ' ', '"']);
+    (named(&source) && named(&target)).then_some(QuotedKvScan { source, target })
+}
+
+/// The vendor's loop, character for character.
+///
+/// Ported rather than reinterpreted: a quote OPENS unless the one already open
+/// is followed by an end, a space or a colon, which is what lets a value hold
+/// `10:20` and `a "quoted" word` alike. Bounds are checked where Painless
+/// would throw, because a panic here takes the pod.
+fn run_quoted_kv_scan(event: &mut Event, shape: &QuotedKvScan) -> bool {
+    let Some(text) = event.get_string(&shape.source) else {
+        return true;
+    };
+    let chars: Vec<char> = text.chars().collect();
+    let n = chars.len();
+    let (mut kv_start, mut kv_split, mut in_quote) = (0usize, 0usize, false);
+
+    for i in 0..n {
+        let c = chars[i];
+        let c2 = if i + 1 < n { chars[i + 1] } else { '\0' };
+
+        if c == '"' {
+            in_quote = !(in_quote && (c2 == '\0' || c2 == ' ' || c2 == ':'));
+        }
+        if in_quote {
+            continue;
+        }
+        if c == '=' {
+            kv_split = i;
+        }
+        if c == '"' || c == ' ' || c2 == '\0' {
+            let end = if i + 1 == n { i + 1 } else { i };
+            if i != kv_start && kv_start <= kv_split && kv_split < end {
+                let key: String = chars[kv_start..kv_split].iter().collect();
+                let value: String = chars[kv_split + 1..end].iter().collect();
+                let value = value.trim_start_matches('"').trim_end_matches('"');
+                if !key.is_empty() {
+                    let _ = event.set(&format!("{}.{key}", shape.target), json!(value));
+                }
+            }
+            kv_start = i + 1;
+            kv_split = i + 1;
+        }
+    }
+    true
+}
+
 /// A list of `{name, value}` objects fanned out into a map keyed by `name`.
 ///
 /// How Google Workspace ships every event's payload, and five of its streams
@@ -12875,6 +12950,7 @@ pub(crate) enum KnownShape {
     MoveKeys(Vec<(String, String)>),
     MergeMapUp(Box<MergeMapUp>),
     ParameterFanOut(Box<ParameterFanOut>),
+    QuotedKvScan(Box<QuotedKvScan>),
     MapEntryToBoolean(Box<MapEntryToBoolean>),
     NestUnder(Box<NestUnder>),
     CollectFromList(Box<CollectFromList>),
@@ -13129,6 +13205,12 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_parameter_fan_out(normalised)
     {
         shapes.push(KnownShape::ParameterFanOut(Box::new(shape)));
+        return shapes;
+    }
+    if normalised.contains("kvStart")
+        && let Some(shape) = parse_quoted_kv_scan(normalised)
+    {
+        shapes.push(KnownShape::QuotedKvScan(Box::new(shape)));
         return shapes;
     }
 
@@ -15111,6 +15193,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::MoveKeys(moves) => run_move_keys(event, moves),
         KnownShape::MergeMapUp(shape) => run_merge_map_up(event, shape),
         KnownShape::ParameterFanOut(shape) => run_parameter_fan_out(event, shape),
+        KnownShape::QuotedKvScan(shape) => run_quoted_kv_scan(event, shape),
         KnownShape::UnreservedKeyPayload(shape) => run_unreserved_key_payload(event, shape),
         KnownShape::HashesByLength(shape) => run_hashes_by_length(event, shape),
         KnownShape::MapEntryToBoolean(shape) => run_map_entry_to_boolean(event, shape),
@@ -15460,6 +15543,39 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
+
+    /// watchguard's own KV scanner, on the shapes its logs actually carry.
+    ///
+    /// A quoted value holding spaces is the whole reason the vendor wrote a
+    /// scanner instead of using the kv processor, and `msg` is the field it
+    /// exists for.
+    #[test]
+    fn a_quoted_kv_scan_keeps_spaces_inside_quotes() {
+        let shape = QuotedKvScan {
+            source: "_temp".to_string(),
+            target: "watchguard_firebox.log".to_string(),
+        };
+        let mut event = Event::new(serde_json::json!({
+            "_temp": "app_id=63 app_name=\"World WideWeb HTTP\" \
+                msg=\"Application identified\" sig_vers=18.123",
+        }));
+        assert!(run_quoted_kv_scan(&mut event, &shape));
+
+        let at = |key: &str| {
+            event
+                .get(&format!("watchguard_firebox.log.{key}"))
+                .and_then(serde_json::Value::as_str)
+                .map(str::to_string)
+        };
+        assert_eq!(at("app_id").as_deref(), Some("63"));
+        assert_eq!(
+            at("app_name").as_deref(),
+            Some("World WideWeb HTTP"),
+            "a quoted value keeps its spaces and loses its quotes"
+        );
+        assert_eq!(at("msg").as_deref(), Some("Application identified"));
+        assert_eq!(at("sig_vers").as_deref(), Some("18.123"));
+    }
 
     /// Google Workspace's parameter fan-out, verbatim from
     /// `google_workspace_drive`, which four sibling streams also carry.

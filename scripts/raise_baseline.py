@@ -36,6 +36,10 @@ LINE = re.compile(rf"^\s*{ENTRY}")
 RESIZE = re.compile(rf"^RESIZE\s+{ENTRY}")
 NEW = re.compile(rf"^NEW\s+{ENTRY}")
 
+# The reach line the corpus run prints, so `never_ran` ratchets the same way
+# every per-source score does -- written by this tool, never by hand.
+REACH = re.compile(r"across \d+ distinct scripts, (?P<never>\d+) of which NEVER ran")
+
 
 def scores_in(text: str, pattern: re.Pattern[str]) -> dict[str, dict[str, int]]:
     found: dict[str, dict[str, int]] = {}
@@ -62,7 +66,8 @@ def main() -> int:
     proposed = scores_in(text, LINE)
     resized = scores_in(text, RESIZE) if "--resize" in sys.argv else {}
     fresh = scores_in(text, NEW) if "--new" in sys.argv else {}
-    if not proposed and not resized and not fresh:
+    reached = REACH.search(text)
+    if not proposed and not resized and not fresh and not reached:
         print("nothing to raise")
         return 0
 
@@ -102,6 +107,16 @@ def main() -> int:
             f"{scores['fields_wrong']} fields wrong"
         )
 
+    if reached:
+        never = int(reached["never"])
+        old = baseline.get("never_ran")
+        if old is not None and never > old:
+            refused.append(f"never_ran: {old} -> {never}")
+        else:
+            baseline["never_ran"] = never
+            if old != never:
+                raised.append(f"never_ran: {old} -> {never} scripts")
+
     # Written by hand rather than json.dump: the file keeps one source per
     # line, which a pretty-printer would explode into five.
     # Sorted, so a new source lands where it belongs and a diff shows only the
@@ -111,9 +126,16 @@ def main() -> int:
         f'"events_total": {s["events_total"]}, "fields_wrong": {s["fields_wrong"]} }}'
         for name, s in sorted(baseline["sources"].items())
     )
-    head = BASELINE.read_text(encoding="utf-8").split('  "sources": {')[0]
+    # The head is rebuilt from the parsed keys rather than copied, so a value
+    # this tool sets -- `never_ran` -- actually reaches the file. Insertion
+    # order is the file's own, because `json.loads` keeps it.
+    head = "".join(
+        f"  {json.dumps(key)}: {json.dumps(value)},\n"
+        for key, value in baseline.items()
+        if key != "sources"
+    )
     BASELINE.write_text(
-        f'{head}  "sources": {{\n{body}\n  }}\n}}\n', encoding="utf-8", newline="\n"
+        f'{{\n{head}  "sources": {{\n{body}\n  }}\n}}\n', encoding="utf-8", newline="\n"
     )
 
     for line in raised:
