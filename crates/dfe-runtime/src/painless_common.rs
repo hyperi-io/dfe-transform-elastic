@@ -7947,7 +7947,7 @@ fn expand_concat(
 /// that is what the captured Elasticsearch output shows for a VPN event
 /// carrying only `remip`.
 fn try_swap_subtrees(event: &mut Event, script: &str) -> bool {
-    let Some((local, first)) = binding_of(script) else {
+    let Some((local, first)) = local_and_ctx_path(script) else {
         return false;
     };
     let Some(second) = assigned_from_ctx(script, &first) else {
@@ -7996,15 +7996,6 @@ fn write_or_remove(event: &mut Event, path: &str, value: Value) {
 }
 
 /// The `def <local> = ctx.<path>;` a script opens with.
-fn binding_of(script: &str) -> Option<(String, String)> {
-    use crate::painless_params::clean_path;
-
-    let start = script.find("def ")? + "def ".len();
-    let (name, rest) = script[start..].split_once(" = ctx.")?;
-    let end = rest.find([';', '\n'])?;
-    Some((name.trim().to_string(), clean_path(&rest[..end])))
-}
-
 /// The `ctx.<from> = ctx.<to>;` assignment, as `<to>`.
 fn assigned_from_ctx(script: &str, from: &str) -> Option<String> {
     use crate::painless_params::clean_path;
@@ -19785,6 +19776,19 @@ def event_timezone = get_timezone(ctx);
         assert_eq!(
             local_and_ctx_path(folded),
             Some(("v".to_string(), "b.c".to_string()))
+        );
+    }
+
+    /// A script opening with a function declaration must not read its header
+    /// as the local. `ti_opencti` opens `Map hashesToECS(ArrayList hashes) {`
+    /// before its real binding, and a reader taking the first `def ` and the
+    /// first ` = ctx.` after it returns the header as the name.
+    #[test]
+    fn a_function_header_is_not_a_binding() {
+        let script = "Map toEcs(ArrayList hashes) { return hashes; } def out = ctx.a.b;";
+        assert_eq!(
+            local_and_ctx_path(script),
+            Some(("out".to_string(), "a.b".to_string()))
         );
     }
 
