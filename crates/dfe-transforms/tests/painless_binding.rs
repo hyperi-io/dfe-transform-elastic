@@ -29,6 +29,15 @@ const SITE: &str = "cached_painless!(";
 /// having shrunk -- 3,490 sites when this was written.
 const MIN_SITES: usize = 3_000;
 
+/// Call sites whose bound shape carries a branch that can never be taken.
+///
+/// Counted statically, so it includes sites where the dead branch sits in a
+/// FALLBACK shape and something ahead of it handles the script correctly --
+/// `jamf_protect_telemetry` still counts here after its fix, because
+/// `Basename` now wins at run time while `GuardedCopy` still binds behind it.
+/// Ratchets down as guards are made readable, never as evidence on its own.
+const DEAD_BRANCH_SITES: usize = 203;
+
 /// One generated call site.
 struct Site {
     file: String,
@@ -189,6 +198,23 @@ fn every_call_site_reports_the_matcher_it_binds_to() {
         "  the generator can emit {direct_sites} sites directly ({}%)",
         direct_sites * 100 / sites.len()
     );
+    // A guard the evaluator cannot read never holds, so the branch behind it
+    // is dead and the script takes the other one whatever the data says.
+    let dead_branches: usize = scripts
+        .values()
+        .filter(|s| s.binding.iter().any(|shape| shape.contains("Never")))
+        .map(|s| s.uses.len())
+        .sum();
+    println!("  {dead_branches} sites carry a guard the evaluator cannot read");
+    assert!(
+        dead_branches <= DEAD_BRANCH_SITES,
+        "{dead_branches} sites now carry an unreadable guard, up from \
+         {DEAD_BRANCH_SITES} -- a new shape or script has added a dead branch. \
+         Establish what the script binds FIRST before calling it a defect: the \
+         shape carrying the dead branch is often a fallback something else \
+         handles."
+    );
+
     let mut ranked: Vec<(&&str, &usize)> = families.iter().collect();
     ranked.sort_by(|a, b| b.1.cmp(a.1));
     for (name, count) in ranked.iter().take(15) {
