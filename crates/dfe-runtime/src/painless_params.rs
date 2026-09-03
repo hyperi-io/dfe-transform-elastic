@@ -4820,11 +4820,110 @@ enum Rhs {
     Literal(Value),
 }
 
+/// Whether `name` is assigned exactly once in `body` -- its own declaration.
+///
+/// A local written twice is not a constant, so inlining it would pick one of
+/// its values and run that on every event.
+fn assigned_once(body: &str, name: &str) -> bool {
+    let bytes = body.as_bytes();
+    let mut assignments = 0usize;
+    let mut at = 0;
+    while let Some(found) = body[at..].find(name) {
+        let start = at + found;
+        at = start + name.len();
+        let before = start.checked_sub(1).map(|index| bytes[index]);
+        if before.is_some_and(|c| c.is_ascii_alphanumeric() || c == b'_') {
+            continue;
+        }
+        let after = body[at..].trim_start();
+        if after.starts_with('=') && !after.starts_with("==") {
+            assignments += 1;
+        }
+    }
+    assignments == 1
+}
+
+/// Replace `needle` with `with`, skipping a match that is the tail of a longer
+/// identifier -- `levels.contains(` also sits inside `errorLevels.contains(`.
+fn replace_uses(body: &str, needle: &str, with: &str) -> String {
+    let bytes = body.as_bytes();
+    let mut out = String::with_capacity(body.len());
+    let mut at = 0;
+    while let Some(found) = body[at..].find(needle) {
+        let start = at + found;
+        out.push_str(&body[at..start]);
+        let before = start.checked_sub(1).map(|index| bytes[index]);
+        if before.is_some_and(|c| c.is_ascii_alphanumeric() || c == b'_') {
+            out.push_str(needle);
+        } else {
+            out.push_str(with);
+        }
+        at = start + needle.len();
+    }
+    out.push_str(&body[at..]);
+    out
+}
+
+/// Inline a list literal bound to a local, so the guard that asks it is
+/// readable.
+///
+/// `def errorLevels = ["ERROR", "FATAL"]; ... if (errorLevels.contains(x))` is
+/// one literal spelled across two statements. The inline form was read all
+/// along and this one was not, so the guard parsed as [`Term::Never`], never
+/// held, and every event took the else arm -- `kafka_log` and
+/// `elasticsearch_server` stamped `event.type: ["info"]` on their FATAL logs.
+///
+/// It rewrites ONCE, ahead of the statement walk, so [`readable_term`] and
+/// [`Term::parse`] are both handed the inlined form. Teaching one of them
+/// alone is exactly how those two walks drift apart (F53).
+fn inline_local_lists(body: &str) -> Cow<'_, str> {
+    if !body.contains("def ") || !body.contains(".contains(") {
+        return Cow::Borrowed(body);
+    }
+
+    let mut swaps: Vec<(String, String)> = Vec::new();
+    let mut at = 0;
+    while let Some(found) = body[at..].find("def ") {
+        at += found + "def ".len();
+        // A `def` with no `=` (`def best;`) runs its name into the statements
+        // after it, which the identifier check below refuses.
+        let Some((name, tail)) = body[at..].split_once('=') else {
+            break;
+        };
+        let name = name.trim();
+        if name.is_empty() || !name.chars().all(|c| c.is_alphanumeric() || c == '_') {
+            continue;
+        }
+        let Some((inside, _)) = balanced(tail.trim_start(), '[', ']') else {
+            continue;
+        };
+        let literal = format!("[{inside}]");
+        if !matches!(literal_value(&literal), Some(Value::Array(_))) {
+            continue;
+        }
+        let use_site = format!("{name}.contains(");
+        if !body.contains(&use_site) || !assigned_once(body, name) {
+            continue;
+        }
+        swaps.push((use_site, format!("{literal}.contains(")));
+    }
+
+    if swaps.is_empty() {
+        return Cow::Borrowed(body);
+    }
+    let mut text = body.to_string();
+    for (needle, with) in &swaps {
+        text = replace_uses(&text, needle, with);
+    }
+    Cow::Owned(text)
+}
+
 impl Program {
     /// Read a body into the tree the per-event walk runs.
     pub(crate) fn parse(body: &str) -> Self {
+        let body = inline_local_lists(body);
         let mut whole = true;
-        let statements = parse_statements(body, &mut whole);
+        let statements = parse_statements(&body, &mut whole);
         Self { statements, whole }
     }
 
@@ -7589,6 +7688,69 @@ mod tests {
             "AC_RuleName": { "target": "access_control_rule_name", "id": ["430002"] },
             "Protocol": { "target": "protocol", "ecs": ["network.transport"] },
         })
+    }
+
+    /// kafka's and elasticsearch's level ladders, whose list of error levels is
+    /// bound to a local before it is asked.
+    const ERROR_LEVELS: &str = "def errorLevels = [\"ERROR\", \"FATAL\"]; \
+        if (ctx?.log?.level != null) {\n  if (errorLevels.contains(ctx.log.level)) {\n \
+        ctx.event.type = [\"error\"];\n  } else {\n    ctx.event.type = [\"info\"];\n  }\n}";
+
+    fn level_type(level: &str) -> Value {
+        let mut event = Event::new(json!({ "log": { "level": level } }));
+        Program::parse(ERROR_LEVELS).run(&mut event);
+        event.get("event.type").cloned().unwrap_or(Value::Null)
+    }
+
+    /// A list bound to a local is still a literal, and the guard asking it has
+    /// to be readable.
+    ///
+    /// `["ERROR"].contains(ctx.log.level)` was read all along; the same list
+    /// behind a `def` was not, so the guard could never hold and EVERY event
+    /// took the else arm. `kafka_log` and `elasticsearch_server` stamped
+    /// `event.type: ["info"]` on their FATAL logs across 11 call sites.
+    #[test]
+    fn a_list_bound_to_a_local_is_still_read() {
+        assert_eq!(level_type("FATAL"), json!(["error"]));
+        assert_eq!(level_type("ERROR"), json!(["error"]));
+        assert_eq!(level_type("INFO"), json!(["info"]));
+    }
+
+    /// The inlining is what makes the guard readable, so it has to reach the
+    /// gate as well as the runner -- one rewrite ahead of both, rather than two
+    /// walks that can drift (F53).
+    #[test]
+    fn inlining_a_local_list_reaches_the_gate_too() {
+        let inlined = inline_local_lists(ERROR_LEVELS);
+        assert!(
+            inlined.contains("[\"ERROR\", \"FATAL\"].contains(ctx.log.level)"),
+            "the local's use carries the literal: {inlined}"
+        );
+        assert!(
+            !readable_term("errorLevels.contains(ctx.log.level)"),
+            "the raw spelling is what the gate could never read"
+        );
+        assert!(
+            readable_term("[\"ERROR\", \"FATAL\"].contains(ctx.log.level)"),
+            "the inlined spelling is the one the gate is handed"
+        );
+    }
+
+    /// A script with no local list is handed back untouched, so the common case
+    /// pays no allocation.
+    #[test]
+    fn a_script_with_no_local_list_is_not_rewritten() {
+        let script = "ctx.event.kind = \"event\";";
+        assert!(matches!(inline_local_lists(script), Cow::Borrowed(_)));
+    }
+
+    /// A local assigned twice is not a constant, so it is left alone rather
+    /// than inlined at the wrong value.
+    #[test]
+    fn a_local_list_reassigned_later_is_left_alone() {
+        let script = "def levels = [\"A\"]; levels = [\"B\"]; \
+            if (levels.contains(ctx.log.level)) { ctx.event.type = [\"x\"]; }";
+        assert!(matches!(inline_local_lists(script), Cow::Borrowed(_)));
     }
 
     /// A script's `.add()` targets a List it created a line earlier, so one
