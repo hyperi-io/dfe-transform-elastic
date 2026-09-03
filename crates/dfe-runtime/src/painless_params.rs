@@ -7690,6 +7690,65 @@ mod tests {
         })
     }
 
+    /// `microsoft_dhcp_log`'s event-code lookup, the shape behind six of the
+    /// dead-branch sites and the same one `system_security` writes.
+    const DHCP_LOOKUP: &str = "if (ctx.event?.code == null || \
+        params.get(ctx.event.code) == null) {\n  return;\n}\n\
+        def hm = new HashMap(params[ctx.event.code]);\n\
+        hm.forEach((k, v) -> ctx.event[k] = v);";
+
+    fn dhcp_params() -> Value {
+        json!({
+            "10": { "action": "dhcp-new", "category": ["network"], "type": ["allowed"] },
+        })
+    }
+
+    fn dhcp_event(code: Option<&str>) -> Event {
+        let mut event = Event::new(json!({ "event": { "kind": "event" } }));
+        if let Some(code) = code {
+            event.set("event.code", json!(code)).expect("sets");
+        }
+        event
+    }
+
+    /// A guard the evaluator cannot read is only a defect when something
+    /// depends on the branch behind it.
+    ///
+    /// `params.get(ctx.event.code) == null` reads as `Never`, so the `||` never
+    /// holds on that arm and the early `return` is dead. It changes nothing:
+    /// the arm's whole body is that `return`, and `try_lookup_merge`
+    /// independently writes nothing when the table has no row. Both roads end
+    /// at the same document.
+    ///
+    /// Established before touching it, because the count is a SUSPECT count --
+    /// `jamf_protect_telemetry` looked the same and was writing full
+    /// executable paths as `process.name` on 99 sites.
+    #[test]
+    fn a_dead_early_return_over_a_missing_row_changes_nothing() {
+        let params = dhcp_params();
+
+        let mut listed = dhcp_event(Some("10"));
+        assert!(try_params_painless(&mut listed, DHCP_LOOKUP, &params));
+        assert_eq!(listed.get_str("event.action"), Some("dhcp-new"));
+
+        // The code the vendor's dead `return` was meant to catch.
+        let mut unlisted = dhcp_event(Some("99"));
+        try_params_painless(&mut unlisted, DHCP_LOOKUP, &params);
+        assert_eq!(
+            unlisted.as_value(),
+            &json!({ "event": { "kind": "event", "code": "99" } }),
+            "an unlisted code must leave the document as it arrived"
+        );
+
+        let mut absent = dhcp_event(None);
+        try_params_painless(&mut absent, DHCP_LOOKUP, &params);
+        assert_eq!(
+            absent.as_value(),
+            &json!({ "event": { "kind": "event" } }),
+            "an absent code must leave the document as it arrived"
+        );
+    }
+
     /// kafka's and elasticsearch's level ladders, whose list of error levels is
     /// bound to a local before it is asked.
     const ERROR_LEVELS: &str = "def errorLevels = [\"ERROR\", \"FATAL\"]; \
