@@ -37,14 +37,21 @@ const MIN_SITES: usize = 3_000;
 /// `Basename` now wins at run time while `GuardedCopy` still binds behind it.
 /// Ratchets down as guards are made readable, never as evidence on its own.
 ///
-/// It went 187 -> 191 when `remove` became a statement the walk can run, and
-/// that is a RISE with a reason rather than a regression: three
+/// It has been RAISED twice, both times because the count became truer rather
+/// than the code worse. The corpus is the authority on that, never this number.
+///
+/// 187 -> 191 when `remove` became a statement the walk can run: three
 /// `microsoft_dnsserver` sites were already bound and their trees merely grew
-/// the removes they had always made, and the fourth --
-/// `beyondtrust_isi_incident` -- was UNBOUND and now binds at all. The corpus
-/// is the authority on whether that was an improvement, and it said so:
-/// 70 fewer extra fields, 25 more correct, no source lowered.
-const DEAD_BRANCH_SITES: usize = 191;
+/// the removes they had always made, and `beyondtrust_isi_incident` was
+/// UNBOUND and now binds at all. The corpus said 70 fewer extra fields, 25
+/// more correct, nothing lowered.
+///
+/// 191 -> 209 when `Truthy` started checking its path. Anything opening with
+/// `ctx.` and reaching that last arm used to become a `Truthy` on whatever
+/// text followed, operators and all -- answering false forever, which is what
+/// `Never` means, while reporting as a readable term this count could not see.
+/// 18 sites were in that state and the corpus is byte-identical either way.
+const DEAD_BRANCH_SITES: usize = 209;
 
 /// One generated call site.
 struct Site {

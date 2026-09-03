@@ -5735,7 +5735,13 @@ impl Term {
         // A BARE field is the test: Painless reads its boolean value. arista
         // gates its whole outcome ladder on `if (ctx.arista.blocked)`, and
         // answering false here took the else arm on every event.
-        if let Some(path) = subject_path(term).strip_prefix("ctx.") {
+        // Checked, because this is the LAST arm: an unchecked one made a
+        // Truthy of any leftover text and hid 18 unreadable guards.
+        if let Some(path) = subject_path(term).strip_prefix("ctx.")
+            && path
+                .chars()
+                .all(|c| c.is_alphanumeric() || "._?@['\"]".contains(c))
+        {
             return Self::Truthy(clean_path(path));
         }
         Self::Never
