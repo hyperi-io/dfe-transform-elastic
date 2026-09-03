@@ -8844,17 +8844,9 @@ fn both_present_expression(script: &str) -> Option<String> {
 /// The offset just past the first ASSIGNMENT `=`, skipping `!=` `==` `<=` `>=`.
 fn assignment_offset(text: &str) -> Option<usize> {
     let bytes = text.as_bytes();
-    for (i, c) in bytes.iter().enumerate() {
-        if *c != b'=' {
-            continue;
-        }
-        let before = i.checked_sub(1).map(|p| bytes[p]);
-        if matches!(before, Some(b'!' | b'=' | b'<' | b'>')) || bytes.get(i + 1) == Some(&b'=') {
-            continue;
-        }
-        return Some(i + 1);
-    }
-    None
+    (0..bytes.len())
+        .find(|at| bytes[*at] == b'=' && assigns_at(bytes, *at))
+        .map(|at| at + 1)
 }
 
 /// Evaluate a `a + ' (' + b + ')'` concatenation against the bound variables.
@@ -9730,18 +9722,25 @@ fn parse_scale_field(script: &str) -> Option<ScaleField> {
 /// `==`, `!=`, `<=`, `>=` and the compound arithmetic forms are all reads.
 pub(crate) fn last_assignment(text: &str) -> Option<usize> {
     let bytes = text.as_bytes();
-    text.char_indices().rev().find_map(|(at, c)| {
-        if c != '=' {
-            return None;
-        }
-        let before = at.checked_sub(1).map(|i| bytes[i]);
-        let after = bytes.get(at + 1).copied();
-        let compares = matches!(
-            before,
-            Some(b'=' | b'!' | b'<' | b'>' | b'+' | b'-' | b'*' | b'/')
-        ) || after == Some(b'=');
-        (!compares).then_some(at)
-    })
+    text.char_indices()
+        .rev()
+        .find_map(|(at, c)| (c == '=' && assigns_at(bytes, at)).then_some(at))
+}
+
+/// Whether the `=` at `at` ASSIGNS rather than compares or accumulates.
+///
+/// `==`, `!=`, `<=` and `>=` compare. `+=` and its arithmetic siblings assign
+/// too, but not to the path on their left: reading `ctx.a += ".0"` as an
+/// assignment yields the write target `a +`, which `fortinet`'s tls version
+/// ships and which one of the three scanners that shared this rule used to
+/// return.
+pub(crate) fn assigns_at(bytes: &[u8], at: usize) -> bool {
+    let before = at.checked_sub(1).map(|i| bytes[i]);
+    let compares = matches!(
+        before,
+        Some(b'=' | b'!' | b'<' | b'>' | b'+' | b'-' | b'*' | b'/')
+    ) || bytes.get(at + 1) == Some(&b'=');
+    !compares
 }
 
 /// Multiply the source into the target.

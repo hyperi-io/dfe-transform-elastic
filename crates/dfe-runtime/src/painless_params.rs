@@ -5968,18 +5968,9 @@ fn ctx_writes_rooted_either_way(script: &str) -> Vec<(String, String)> {
 /// the text belongs to the comparison and splitting there loses the write.
 fn split_assignment(statement: &str) -> Option<(&str, &str)> {
     let bytes = statement.as_bytes();
-    for (i, byte) in bytes.iter().enumerate() {
-        if *byte != b'=' {
-            continue;
-        }
-        let before = if i == 0 { b' ' } else { bytes[i - 1] };
-        let after = *bytes.get(i + 1).unwrap_or(&b' ');
-        if matches!(before, b'=' | b'!' | b'<' | b'>') || after == b'=' {
-            continue;
-        }
-        return Some((&statement[..i], &statement[i + 1..]));
-    }
-    None
+    let at = (0..bytes.len())
+        .find(|at| bytes[*at] == b'=' && crate::painless_common::assigns_at(bytes, *at))?;
+    Some((&statement[..at], &statement[at + 1..]))
 }
 
 /// A scalar's text, the way Painless would stringify it for a map key.
@@ -6308,6 +6299,28 @@ pub(crate) fn pointer_mut<'a>(event: &'a mut Event, path: &str) -> Option<&'a mu
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// `+=` accumulates onto its left side rather than assigning to it, so
+    /// splitting there yields a write target with the operator still attached.
+    /// `fortinet`'s tls version ships `ctx.tls.version += ".0"`.
+    #[test]
+    fn a_compound_assignment_is_not_a_write_target() {
+        assert_eq!(split_assignment("ctx.tls.version += \".0\""), None);
+        assert_eq!(split_assignment("ctx.a -= 1"), None);
+        assert_eq!(split_assignment("ctx.a *= 2"), None);
+    }
+
+    /// The ordinary forms still split, and a comparison still does not.
+    #[test]
+    fn a_plain_assignment_still_splits() {
+        assert_eq!(
+            split_assignment("ctx.a = ctx.b"),
+            Some(("ctx.a ", " ctx.b"))
+        );
+        assert_eq!(split_assignment("ctx.a == ctx.b"), None);
+        assert_eq!(split_assignment("ctx.a != ctx.b"), None);
+        assert_eq!(split_assignment("ctx.a >= 3"), None);
+    }
 
     /// A field-to-field comparison used to read as unresolvable and answer
     /// false forever, so the branch behind it was dead on every event.
