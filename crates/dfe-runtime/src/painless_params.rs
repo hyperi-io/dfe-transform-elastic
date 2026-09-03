@@ -6227,11 +6227,16 @@ pub(crate) fn ctx_path_before(script: &str, marker: &str) -> Option<String> {
 }
 
 /// The dotted `ctx.` path written between two markers.
+///
+/// Held to the same rule as [`ctx_path_before`]: the two markers need not sit
+/// in one statement, so a close that only appears later spans the gap and the
+/// path comes back carrying whatever lay between.
 pub(crate) fn ctx_path_between(script: &str, open: &str, close: &str) -> Option<String> {
     let start = script.find(open)? + open.len();
     let tail = &script[start..];
     let end = tail.find(close)?;
-    Some(clean_path(&tail[..end]))
+    let path = clean_path(&tail[..end]);
+    (!path.contains([' ', '\t', '\n', ';'])).then_some(path)
 }
 
 /// The argument of the LAST call to `name(`, balanced across nested parens.
