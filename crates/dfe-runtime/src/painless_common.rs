@@ -11924,6 +11924,57 @@ struct CollectedColumn {
     upper: bool,
 }
 
+/// The loop's variable, the `ctx.` list it walks, and the text after its head.
+///
+/// Two spellings, and reading only the first left gdacs at 0 of 42 events:
+/// `for (v in ctx.<path>)`, and `for (def v : <list>)` where the list is
+/// either a `ctx.` path or a local bound to one above the loop.
+fn loop_head(script: &str) -> Option<(String, String, &str)> {
+    use crate::painless_params::clean_path;
+
+    if let Some((head, rest)) = script.split_once(" in ctx") {
+        let var = head.rsplit_once('(')?.1.trim().to_string();
+        let (source, after) = rest.split_once(')')?;
+        return Some((var, clean_path(source.trim().trim_start_matches('.')), after));
+    }
+
+    let (head, rest) = script.split_once(" : ")?;
+    let var = head.rsplit(['(', ' ']).next()?.trim().to_string();
+    let (walked, after) = rest.split_once(')')?;
+    let walked = walked.trim();
+    let source = match walked.strip_prefix("ctx.").or_else(|| walked.strip_prefix("ctx?.")) {
+        Some(path) => clean_path(path),
+        // A local: the binding above the loop names the list.
+        None => bound_list(script, walked)?,
+    };
+    Some((var, source, after))
+}
+
+/// The `ctx.` list a local walked by a loop was bound to.
+fn bound_list(script: &str, local: &str) -> Option<String> {
+    use crate::painless_params::{clean_path, subject_path};
+
+    if local.is_empty() || !local.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+    for statement in script.split([';', '\n']) {
+        let Some((head, tail)) = statement.split_once('=') else {
+            continue;
+        };
+        if head.trim().rsplit([' ', '\t']).next() != Some(local) {
+            continue;
+        }
+        let path = subject_path(tail.trim());
+        let Some(path) = path.strip_prefix("ctx.") else {
+            continue;
+        };
+        if !path.contains([' ', '(', '[']) {
+            return Some(clean_path(path));
+        }
+    }
+    None
+}
+
 /// The `ctx.` path a local accumulator is handed to, if it is handed to one.
 ///
 /// `ctx.<target> = <local>;` after the loop. The name must match whole, or
@@ -11956,10 +12007,8 @@ fn assigned_to_ctx(script: &str, local: &str) -> Option<String> {
 fn parse_collect_from_list(script: &str) -> Option<CollectFromList> {
     use crate::painless_params::{balanced, clean_path};
 
-    let (head, rest) = script.split_once(" in ctx")?;
-    let var = head.rsplit_once('(')?.1.trim();
-    let (source, after) = rest.split_once(')')?;
-    let source = clean_path(source.trim().trim_start_matches('.'));
+    let (var, source, after) = loop_head(script)?;
+    let var = var.as_str();
     if var.is_empty() || source.is_empty() {
         return None;
     }
@@ -13104,8 +13153,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // copy shapes, whose `.add(` this also spells and which cannot walk a list,
     // so cisco_secure_endpoint's `host.ip`, `host.mac` and both `related`
     // arrays were never written on any of its 408 events.
-    if normalised.contains(" in ctx")
-        && normalised.contains(".isEmpty())")
+    // `.isEmpty()` is one of the two guards a vendor writes -- gdacs checks
+    // `!= null` alone -- so the trigger is the loop and the append, and the
+    // PARSE decides.
+    if (normalised.contains(" in ctx") || normalised.contains(" : "))
         && normalised.contains(".add(")
         && let Some(shape) = parse_collect_from_list(normalised)
     {
