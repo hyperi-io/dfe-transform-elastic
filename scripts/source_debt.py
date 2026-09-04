@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
 # Copyright (c) 2026 HYPERI PTY LIMITED
-"""Rank the parity debt, and say what SHAPE each source's failure is.
+"""Rank the parity debt, and say what PATTERN each source's failure is.
 
-The debt is concentrated: 330 sources hold ~28,000 wrong fields and the worst
-15 hold 60% of them, while the unbound Painless sites spread over 625 scripts
-at 1.3 each. So the leverage is in a handful of sources, each with ONE
-structural cause, and finding that cause starts with a number the run already
-prints.
+The debt is concentrated: a handful of sources hold most of the wrong fields,
+while the unbound Painless sites spread thinly over hundreds of scripts. So the
+leverage is in those few sources, each with ONE structural cause, and finding
+that cause starts with a number the run already prints. The ranking below
+prints the current figures rather than restating them here, where they go stale
+on the next commit.
 
     scripts/source_debt.py                # the ranking, worst first
     scripts/source_debt.py axonius        # diagnose one source
@@ -22,7 +23,7 @@ read:
   fields, one unread hoist, 11% of events to 94%.
 - **nothing emitted** -- near-zero extras with most fields missing. Something
   upstream never runs at all. tanium: one condition the GENERATOR could not
-  transpile, so the body sits inside `if false` and no runtime shape reaches
+  transpile, so the body sits inside `if false` and no runtime pattern reaches
   it. Check `scripts/skipped_debt.py`.
 - **block not lifted** -- some extras, most fields right, whole groups absent.
   A nested payload that one script should fan out. google_workspace: a
@@ -65,7 +66,7 @@ def debt() -> list[tuple[int, int, int, str]]:
 
 
 def classify(fields: int, fields_total: int, extra: int) -> tuple[str, str]:
-    """Name the failure's shape, and what to do about it.
+    """Name the failure's pattern, and what to do about it.
 
     Thresholds are read off the four sources diagnosed by hand, and are meant
     to point rather than to decide: the diff is still the evidence.
@@ -126,7 +127,7 @@ def diagnose(source: str) -> int:
     fields = int(total["fields"])
     fields_total = int(total["fields_total"])
     extra = int(total["extra"])
-    shape, advice = classify(fields, fields_total, extra)
+    pattern, advice = classify(fields, fields_total, extra)
 
     print(f"\n{source}")
     print(f"  events   {total['events']}/{total['events_total']}")
@@ -138,7 +139,7 @@ def diagnose(source: str) -> int:
             f"  scripts  {reach['distinct']} distinct, {reach['never']} never ran, "
             f"{reach['skipped']} invocations skipped"
         )
-    print(f"\n  SHAPE: {shape}\n  {advice}")
+    print(f"\n  PATTERN: {pattern}\n  {advice}")
 
     blockers = [line for line in text.splitlines() if "wrong in" in line]
     if blockers:

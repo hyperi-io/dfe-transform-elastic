@@ -11747,11 +11747,22 @@ fn parse_quoted_kv_scan(script: &str) -> Option<QuotedKvScan> {
         return None;
     }
     let source = script.split_once("length();")?.0.rsplit_once("ctx")?.1;
+    // The subscript is read from `ctx["_temp"].length()`, so the member dot of
+    // the CALL comes back on the end of the path.
     let source = clean_path(subject_path(&format!("ctx{source}")).strip_prefix("ctx.")?);
+    let source = source.trim_matches('.').to_owned();
     let target = script.split_once(".put(key, value)")?.0;
     let target = clean_path(target.rsplit_once("ctx.")?.1.trim());
 
-    let named = |path: &str| !path.is_empty() && !path.contains(['(', ')', '[', ']', ' ', '"']);
+    // A dot on either end is not a path, and it is the failure this guard
+    // missed: `_temp.` resolved to nothing, the scan wrote nothing, and the
+    // pattern still reported the script handled.
+    let named = |path: &str| {
+        !path.is_empty()
+            && !path.contains(['(', ')', '[', ']', ' ', '"'])
+            && !path.starts_with('.')
+            && !path.ends_with('.')
+    };
     (named(&source) && named(&target)).then_some(QuotedKvScan { source, target })
 }
 
@@ -11762,8 +11773,11 @@ fn parse_quoted_kv_scan(script: &str) -> Option<QuotedKvScan> {
 /// `10:20` and `a "quoted" word` alike. Bounds are checked where Painless
 /// would throw, because a panic here takes the pod.
 fn run_quoted_kv_scan(event: &mut Event, pattern: &QuotedKvScan) -> bool {
+    // DECLINE rather than claim it: the caller gates this script on the source
+    // being a string, so a source that reads as absent means the PATH is
+    // wrong, and answering true there is how a no-op passed for a parse.
     let Some(text) = event.get_string(&pattern.source) else {
-        return true;
+        return false;
     };
     let chars: Vec<char> = text.chars().collect();
     let n = chars.len();
@@ -16245,6 +16259,37 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
+
+    /// watchguard reads its source as `ctx["_temp"].length()`, and the member
+    /// dot of that CALL used to come back as part of the path.
+    #[test]
+    fn a_kv_scan_reads_a_subscripted_source_without_its_call_dot() {
+        let script = "def kvStart = 0; def kvSplit = 0; def inQuote = false;\nPattern quotePattern = /^\\\"|\\\"$/;\nfor (int i = 0, n = ctx[\"_temp\"].length(); i < n; ++i) {\n  char c = ctx[\"_temp\"].charAt(i);\n  char c2 = i < n - 1 ? ctx[\"_temp\"].charAt(i + 1) : 0;\n\n  if (c == (char)'\"') {\n    if (inQuote && (c2 == 0 || c2 == (char)' ' || c2 == (char)':')) {\n      inQuote = false;\n    } else {\n      inQuote = true;\n    }\n  }\n  if (inQuote) {\n    continue;\n  }\n  if (c == (char)'=') {\n    kvSplit = i;\n  }\n  if (c == (char)'\"' || c == (char)' ' || c2 == 0) {\n    if (i != kvStart) {\n      def endIndex = i == n - 1 ? i + 1 : i;\n      def key = ctx[\"_temp\"].substring(kvStart, kvSplit);\n      def value = quotePattern.matcher(ctx[\"_temp\"].substring(kvSplit + 1, endIndex)).replaceAll(\"\");\n\n      if (key != '') {\n        ctx.watchguard_firebox.log.put(key, value);\n      }\n    }\n\n    kvStart = i + 1;\n    kvSplit = i + 1;\n  }\n}";
+        let normalised = normalise(script);
+        let found = known_patterns(&normalised);
+        let mut event = Event::new(serde_json::json!({
+            "_temp": "msg=\"HTTP request\" proxy_act=\"HTTP-Client.Standard.1\" op=\"GET\"",
+            "watchguard_firebox": { "log": {} }
+        }));
+        assert!(
+            found
+                .iter()
+                .any(|pattern| run_known_pattern(&mut event, &normalised, pattern)),
+            "the scanner must claim the script it was written for"
+        );
+        assert_eq!(
+            event.get("watchguard_firebox.log.msg"),
+            Some(&Value::from("HTTP request"))
+        );
+        assert_eq!(
+            event.get("watchguard_firebox.log.proxy_act"),
+            Some(&Value::from("HTTP-Client.Standard.1"))
+        );
+        assert_eq!(
+            event.get("watchguard_firebox.log.op"),
+            Some(&Value::from("GET"))
+        );
+    }
 
     /// `GeoJSON` puts longitude FIRST, so the indices come off the script.
     #[test]

@@ -322,7 +322,7 @@
     "vectra_detect": { "events": 41, "events_total": 57, "fields_wrong": 11 },
     "vectra_rux": { "events": 8, "events_total": 8, "fields_wrong": 0 },
     "vsphere": { "events": 125, "events_total": 173, "fields_wrong": 251 },
-    "watchguard_firebox": { "events": 415, "events_total": 637, "fields_wrong": 1504 },
+    "watchguard_firebox": { "events": 633, "events_total": 637, "fields_wrong": 4 },
     "websphere_application_server": { "events": 31, "events_total": 31, "fields_wrong": 0 },
     "windows": { "events": 596, "events_total": 596, "fields_wrong": 0 },
     "withsecure_elements": { "events": 2, "events_total": 2, "fields_wrong": 0 },
