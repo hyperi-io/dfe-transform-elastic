@@ -4096,6 +4096,176 @@ pub fn ensure_append(event: &mut Event, pattern: &EnsureAppend) -> bool {
     true
 }
 
+/// A composite key built by joining whichever of several fields are present.
+///
+/// gdacs identifies an event by up to three ids, and the join is what makes
+/// them one `event.id`. The ABSENT ones contribute nothing rather than an
+/// empty segment, which is why the guards are per field and not one guard
+/// around the lot.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct JoinPresentFields {
+    sources: Vec<String>,
+    separator: String,
+    target: String,
+}
+
+impl JoinPresentFields {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(
+        sources: Vec<String>,
+        separator: impl Into<String>,
+        target: impl Into<String>,
+    ) -> Self {
+        Self {
+            sources,
+            separator: separator.into(),
+            target: target.into(),
+        }
+    }
+}
+
+/// `if (ctx.a != null) { p.add(ctx.a.toString()); } ... ctx.t = String.join("-", p);`
+///
+/// The accumulator's NAME is not the trigger -- gdacs calls it `parts` and it
+/// is the only source in the corpus that does, so keying on the spelling would
+/// claim exactly one script and miss the next vendor to write `ids` or `bits`.
+/// The join names the local, and the local's `.add(` calls name the fields.
+fn parse_join_present_fields(script: &str) -> Option<JoinPresentFields> {
+    let (head, join) = script.rsplit_once("String.join(")?;
+    // Only the assignment itself, not everything the script did before it.
+    let assignment = head.rsplit(['{', '}', ';', '\n']).next()?;
+    let target = painless_path(assignment.trim_end().strip_suffix('=')?)?;
+
+    let (separator, rest) = join.strip_prefix('"')?.split_once('"')?;
+    let local = rest
+        .trim_start_matches([',', ' '])
+        .split(')')
+        .next()?
+        .trim();
+    if local.is_empty() || !local.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+
+    // Every value the local collects, in the order the script adds them --
+    // order is the key's meaning, so a set would be wrong here.
+    let needle = format!("{local}.add(");
+    let mut sources = Vec::new();
+    for chunk in script.split(&needle).skip(1) {
+        // To the end of the STATEMENT, not the first `)`: `.toString()`
+        // carries a pair of its own and splitting on `)` lands inside it.
+        let argument = chunk.split_once(");").map_or(chunk, |(head, _)| head);
+        let path = argument.strip_suffix(".toString()").unwrap_or(argument);
+        // Anything but a plain field read -- a nested call, a literal, an
+        // expression -- is a different pattern, and this one declines rather
+        // than guess at it.
+        if path.contains('(') {
+            return None;
+        }
+        sources.push(painless_path(path)?);
+    }
+
+    // One field joined to nothing is a copy, and a copy has its own pattern.
+    (sources.len() > 1 && !target.is_empty())
+        .then(|| JoinPresentFields::new(sources, separator, target))
+}
+
+/// Join the present sources in order; write nothing when none of them are.
+pub fn join_present_fields(event: &mut Event, pattern: &JoinPresentFields) -> bool {
+    let mut parts: Vec<String> = Vec::with_capacity(pattern.sources.len());
+    for source in &pattern.sources {
+        if let Some(value) = event.get_as_string(source) {
+            parts.push(value);
+        }
+    }
+    if !parts.is_empty() {
+        let _ = event.set(&pattern.target, json!(parts.join(&pattern.separator)));
+    }
+    true
+}
+
+/// A vendor flag folded to a real boolean by comparing its string spelling.
+///
+/// Distinct from [`KnownPattern::TruthyAssignments`], which is m365's
+/// `isTruthy(...)` helper and leaves a value it cannot resolve ALONE. This is
+/// written inline and always assigns: a spelling not in the truthy set becomes
+/// `false`, not "unchanged", so the two cannot share a runner.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CoerceBoolean {
+    /// Each `(source, target)` the script folds, in the order it writes them.
+    fields: Vec<(String, String)>,
+    /// The lower-cased spellings that mean true. Anything else is false.
+    truthy: Vec<String>,
+}
+
+impl CoerceBoolean {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(fields: Vec<(String, String)>, truthy: Vec<String>) -> Self {
+        Self { fields, truthy }
+    }
+}
+
+/// `def v = ctx.a.toString().toLowerCase(); ctx.a = (v == "true" || v == "1");`
+///
+/// Every field in the script must agree on the truthy set. Two different sets
+/// in one script is a different pattern -- probably two unrelated coercions --
+/// and claiming it would apply one field's spellings to another's.
+fn parse_coerce_boolean(script: &str) -> Option<CoerceBoolean> {
+    const FOLD: &str = ".toString().toLowerCase()";
+
+    let chunks: Vec<&str> = script.split(FOLD).collect();
+    if chunks.len() < 2 {
+        return None;
+    }
+
+    let mut fields = Vec::with_capacity(chunks.len() - 1);
+    let mut truthy: Option<Vec<String>> = None;
+    for pair in chunks.windows(2) {
+        let source = painless_path(pair[0])?;
+        // Past the fold's own statement, to the assignment that consumes it.
+        let (_, assignment) = pair[1].split_once(';')?;
+        let (lhs, rhs) = assignment.split_once('=')?;
+        let target = painless_path(lhs)?;
+
+        // An OR of equality tests and nothing else -- a negation or an AND
+        // means the flag is not simply "is it one of these spellings".
+        let expression = rhs.split(';').next()?;
+        if expression.contains("&&") || expression.contains("!=") {
+            return None;
+        }
+        let mut spellings = Vec::new();
+        for piece in expression.split("||") {
+            let literal = piece
+                .split_once("==")?
+                .1
+                .trim()
+                .trim_matches(['(', ')', ' ']);
+            spellings.push(literal.strip_prefix('"')?.strip_suffix('"')?.to_owned());
+        }
+
+        match &truthy {
+            Some(agreed) if *agreed != spellings => return None,
+            Some(_) => {}
+            None => truthy = Some(spellings),
+        }
+        fields.push((source, target));
+    }
+    Some(CoerceBoolean::new(fields, truthy?))
+}
+
+/// Fold each present field to a boolean; an absent one is left absent.
+pub fn coerce_boolean(event: &mut Event, pattern: &CoerceBoolean) -> bool {
+    for (source, target) in &pattern.fields {
+        let Some(value) = event.get_as_string(source) else {
+            continue;
+        };
+        let folded = value.to_lowercase();
+        let _ = event.set(target, json!(pattern.truthy.contains(&folded)));
+    }
+    true
+}
+
 /// A number rendered as an octal string, which is how a file mode reads.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct OctalString {
@@ -12982,6 +13152,10 @@ pub(crate) enum KnownPattern {
     OctalString(OctalString),
     /// A value appended to a list the script first ensures exists.
     EnsureAppend(EnsureAppend),
+    /// A composite key joined from whichever named fields are present.
+    JoinPresentFields(JoinPresentFields),
+    /// A vendor flag folded to a boolean by its string spelling.
+    CoerceBoolean(CoerceBoolean),
     /// A numbered column map collapsed into a list, in key order.
     CsvMapToArray {
         source: String,
@@ -13542,6 +13716,23 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_ensure_append(normalised)
     {
         patterns.push(KnownPattern::EnsureAppend(pattern));
+        return patterns;
+    }
+
+    // Pattern: a composite key joined from whichever fields are present.
+    if normalised.contains("String.join(")
+        && normalised.contains(".add(")
+        && let Some(pattern) = parse_join_present_fields(normalised)
+    {
+        patterns.push(KnownPattern::JoinPresentFields(pattern));
+        return patterns;
+    }
+
+    // Pattern: a vendor flag folded to a boolean by its string spelling.
+    if normalised.contains(".toString().toLowerCase()")
+        && let Some(pattern) = parse_coerce_boolean(normalised)
+    {
+        patterns.push(KnownPattern::CoerceBoolean(pattern));
         return patterns;
     }
 
@@ -15010,6 +15201,36 @@ impl KnownPattern {
                 rust_str(&pattern.source),
                 rust_str(&pattern.target),
             )),
+            Self::CoerceBoolean(pattern) => Some(format!(
+                "coerce_boolean(event, &CoerceBoolean::new(vec![{}], vec![{}]));",
+                pattern
+                    .fields
+                    .iter()
+                    .map(|(source, target)| format!(
+                        "({}.to_owned(), {}.to_owned())",
+                        rust_str(source),
+                        rust_str(target)
+                    ))
+                    .collect::<Vec<_>>()
+                    .join(", "),
+                pattern
+                    .truthy
+                    .iter()
+                    .map(|spelling| format!("{}.to_owned()", rust_str(spelling)))
+                    .collect::<Vec<_>>()
+                    .join(", "),
+            )),
+            Self::JoinPresentFields(pattern) => Some(format!(
+                "join_present_fields(event, &JoinPresentFields::new(vec![{}], {}, {}));",
+                pattern
+                    .sources
+                    .iter()
+                    .map(|source| format!("{}.to_owned()", rust_str(source)))
+                    .collect::<Vec<_>>()
+                    .join(", "),
+                rust_str(&pattern.separator),
+                rust_str(&pattern.target),
+            )),
             Self::OctalString(pattern) => Some(format!(
                 "octal_string(event, &OctalString::new({}, {}));",
                 rust_str(&pattern.source),
@@ -15157,6 +15378,8 @@ pub(crate) fn run_known_pattern(
         KnownPattern::AllowedValueCopy(pattern) => allowed_value_copy(event, pattern),
         KnownPattern::OctalString(pattern) => octal_string(event, pattern),
         KnownPattern::EnsureAppend(pattern) => ensure_append(event, pattern),
+        KnownPattern::JoinPresentFields(pattern) => join_present_fields(event, pattern),
+        KnownPattern::CoerceBoolean(pattern) => coerce_boolean(event, pattern),
         KnownPattern::CsvMapToArray { source, target } => {
             run_csv_map_to_array(event, source, target)
         }
@@ -15814,6 +16037,63 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
+
+    /// gdacs folds two flags, and an unrecognised spelling becomes FALSE --
+    /// the difference from `isTruthy`, which would leave it alone.
+    #[test]
+    fn a_flag_folds_to_a_boolean_by_its_spelling() {
+        let script = "if (ctx.gdacs?.is_current != null) {\n  \
+            def val = ctx.gdacs.is_current.toString().toLowerCase();\n  \
+            ctx.gdacs.is_current = (val == \"true\" || val == \"1\");\n}\n\
+            if (ctx.gdacs?.is_temporary != null) {\n  \
+            def val = ctx.gdacs.is_temporary.toString().toLowerCase();\n  \
+            ctx.gdacs.is_temporary = (val == \"true\" || val == \"1\");\n}\n";
+        let pattern = parse_coerce_boolean(&normalise(script)).expect("gdacs folds two flags");
+        assert_eq!(pattern.truthy, ["true", "1"]);
+        assert_eq!(
+            pattern.fields,
+            [
+                ("gdacs.is_current".to_owned(), "gdacs.is_current".to_owned()),
+                (
+                    "gdacs.is_temporary".to_owned(),
+                    "gdacs.is_temporary".to_owned()
+                ),
+            ]
+        );
+
+        let mut event = Event::new(serde_json::json!({
+            "gdacs": { "is_current": "True", "is_temporary": "no" }
+        }));
+        assert!(coerce_boolean(&mut event, &pattern));
+        assert_eq!(event.get("gdacs.is_current"), Some(&Value::Bool(true)));
+        assert_eq!(event.get("gdacs.is_temporary"), Some(&Value::Bool(false)));
+    }
+
+    /// gdacs's composite `event.id`, and the reason the accumulator's NAME is
+    /// not the trigger: `parts` is gdacs's spelling and nothing else's.
+    #[test]
+    fn a_composite_key_joins_only_the_fields_that_are_there() {
+        let script = "if (ctx.event == null) { ctx.event = new HashMap(); }\n\
+            def parts = new ArrayList();\n\
+            if (ctx.gdacs?.event_id != null) { parts.add(ctx.gdacs.event_id.toString()); }\n\
+            if (ctx.gdacs?.episode_id != null) { parts.add(ctx.gdacs.episode_id.toString()); }\n\
+            if (ctx.gdacs?.geometry_id != null) { parts.add(ctx.gdacs.geometry_id.toString()); }\n\
+            if (parts.size() > 0) {\n  ctx.event.id = String.join(\"-\", parts);\n}\n";
+        let pattern = parse_join_present_fields(&normalise(script)).expect("gdacs builds an id");
+        assert_eq!(
+            pattern.sources,
+            ["gdacs.event_id", "gdacs.episode_id", "gdacs.geometry_id"]
+        );
+        assert_eq!(pattern.separator, "-");
+        assert_eq!(pattern.target, "event.id");
+
+        // An absent middle id contributes NOTHING, not an empty segment.
+        let mut event = Event::new(serde_json::json!({
+            "gdacs": { "event_id": 1234, "geometry_id": "G9" }
+        }));
+        assert!(join_present_fields(&mut event, &pattern));
+        assert_eq!(event.get("event.id"), Some(&Value::from("1234-G9")));
+    }
 
     /// gdacs grades an alert level, and both defects it exposed are here: the
     /// local narrows ITSELF (`level = level.toLowerCase()`), which the
