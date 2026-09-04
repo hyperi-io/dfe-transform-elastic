@@ -2685,3 +2685,63 @@ fn a_params_named_total_sums_every_direction() {
     assert!(try_params_painless(&mut untyped, script, &params));
     assert_eq!(untyped.get("network.bytes"), None);
 }
+
+/// stormshield keys its whole ECS event block off `logtype`.
+///
+/// Verbatim from `pipelines/stormshield/log/default.yml:699`, with the tables
+/// cut to the entries the assertions read. All 44 of its events carry the
+/// block and none of it was written.
+#[test]
+fn an_event_block_comes_from_the_table_its_subject_keys() {
+    let script = "def logtype = ctx.stormshield?.logtype; \
+        def entry = params.logtypes[logtype]; if (ctx.event == null) {\n    ctx.event = [:];\n} \
+        if (entry == null) {\n    ctx.event.kind = 'event';\n} else {\n    \
+        ctx.event.kind = entry.kind;\n    ctx.event.category = new ArrayList(entry.category);\n    \
+        ctx.event.type = new ArrayList(entry.type);\n    \
+        if (params.action_logtypes.contains(logtype) && ctx.event.action instanceof String) {\n      \
+        def mapped = params.action_types[ctx.event.action.toLowerCase()];\n      \
+        if (mapped != null && !ctx.event.type.contains(mapped)) {\n        \
+        ctx.event.type.add(mapped);\n      }\n    }\n}";
+    let params = json!({
+        "logtypes": {
+            "alarm": { "kind": "alert", "category": ["intrusion_detection", "network"],
+                       "type": ["info"] },
+            "authstat": { "kind": "metric", "category": ["authentication"], "type": ["info"] }
+        },
+        "action_types": { "pass": "allowed", "block": "denied" },
+        "action_logtypes": ["alarm", "connection"]
+    });
+
+    // A listed logtype whose action maps: the extra type is APPENDED.
+    let mut alarm = Event::new(json!({
+        "stormshield": { "logtype": "alarm" }, "event": { "action": "Block" }
+    }));
+    assert!(try_params_painless(&mut alarm, script, &params));
+    assert_eq!(alarm.get_str("event.kind"), Some("alert"));
+    assert_eq!(
+        alarm.get("event.category"),
+        Some(&json!(["intrusion_detection", "network"]))
+    );
+    assert_eq!(alarm.get("event.type"), Some(&json!(["info", "denied"])));
+
+    // Not in action_logtypes, so the action is never consulted.
+    let mut stat = Event::new(json!({
+        "stormshield": { "logtype": "authstat" }, "event": { "action": "pass" }
+    }));
+    assert!(try_params_painless(&mut stat, script, &params));
+    assert_eq!(stat.get_str("event.kind"), Some("metric"));
+    assert_eq!(stat.get("event.type"), Some(&json!(["info"])));
+
+    // No entry writes the bare default and nothing else.
+    let mut unknown = Event::new(json!({ "stormshield": { "logtype": "nosuch" } }));
+    assert!(try_params_painless(&mut unknown, script, &params));
+    assert_eq!(unknown.get_str("event.kind"), Some("event"));
+    assert_eq!(unknown.get("event.category"), None);
+
+    // The params table must not have grown a member from the append above.
+    assert_eq!(
+        params["logtypes"]["alarm"]["type"],
+        json!(["info"]),
+        "the entry was aliased rather than copied"
+    );
+}

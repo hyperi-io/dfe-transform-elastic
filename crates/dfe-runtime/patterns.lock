@@ -222,22 +222,23 @@
  42 IndexedRowColumns
  43 LookupPut
  44 LookupWrapList
- 45 ProtocolPrefix
- 46 ReversibleLookup
- 47 LookupMerge
- 48 KeyedActionRow
- 49 KeyedRowAppends
- 50 LookupColumns
- 51 LookupNormalise
- 52 IndexedLookup
- 53 Scale
- 54 Replace
- 55 AddUniqueRow
- 56 FrameworkPreference
- 57 NormalisedLookup
- 58 StringifiedLookup
- 59 LookupNormalise
- 60 GuardedLookup
- 61 MergeRowOrFallback
- 62 RowOrDefaults
+ 45 EventBlockTable
+ 46 ProtocolPrefix
+ 47 ReversibleLookup
+ 48 LookupMerge
+ 49 KeyedActionRow
+ 50 KeyedRowAppends
+ 51 LookupColumns
+ 52 LookupNormalise
+ 53 IndexedLookup
+ 54 Scale
+ 55 Replace
+ 56 AddUniqueRow
+ 57 FrameworkPreference
+ 58 NormalisedLookup
+ 59 StringifiedLookup
+ 60 LookupNormalise
+ 61 GuardedLookup
+ 62 MergeRowOrFallback
+ 63 RowOrDefaults
 

@@ -128,6 +128,7 @@ pub(crate) enum ParamsPattern {
         subject: String,
         target: String,
     },
+    EventBlockTable(Box<EventBlockTable>),
     MimecastLogType,
     InvocationDetails,
     ScheduledTask,
@@ -653,6 +654,17 @@ fn params_pattern_tail(normalised: &str) -> Option<ParamsPattern> {
         && let Some((source, target)) = parse_lookup_wrap_list(normalised)
     {
         return Some(ParamsPattern::LookupWrapList { source, target });
+    }
+
+    // Pattern: the ECS event block a params table names, keyed on one field.
+    // Ahead of the generic table matchers, which read `params.logtypes` as an
+    // ordinary per-field lookup and would claim the script without writing
+    // category or type.
+    if normalised.contains(".kind = ")
+        && normalised.contains("= params.")
+        && let Some(pattern) = parse_event_block_table(normalised)
+    {
+        return Some(ParamsPattern::EventBlockTable(Box::new(pattern)));
     }
 
     // Pattern: prefix a field with a validated scheme -- zscaler web's
@@ -1424,6 +1436,7 @@ pub(crate) fn run_params_pattern(
             }
             true
         }
+        ParamsPattern::EventBlockTable(pattern) => run_event_block_table(event, pattern, params),
         ParamsPattern::ProtocolPrefix {
             list,
             fallback,
@@ -3565,6 +3578,164 @@ fn try_mimecast_log_type(event: &mut Event, params: &Map<String, Value>) -> bool
         .map(|(_, _, name, _)| json!(name))
         .collect();
     let _ = event.set("mimecast.log_type", Value::Array(winners));
+    true
+}
+
+/// The ECS event block a params table names, keyed on one field.
+///
+/// stormshield keys `event.kind`, `event.category` and `event.type` off its
+/// `logtype`, falls back to a bare `kind` when the table has no entry, and
+/// then appends one more type for a subset of log types whose `event.action`
+/// names it. All 44 of its events carry the block, and none of it was written.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct EventBlockTable {
+    subject: String,
+    target: String,
+    table: String,
+    default_kind: String,
+    /// The subjects that take the second lookup, and the table it reads. Both
+    /// or neither -- a script without the append writes only the block.
+    action_subjects: Option<String>,
+    action_types: Option<String>,
+    action_field: String,
+}
+
+/// `def entry = params.<table>[<local>]; ... ctx.<target>.kind = entry.kind;`
+fn parse_event_block_table(script: &str) -> Option<EventBlockTable> {
+    // The lookup names the table and the local the subject was read into.
+    let (table, rest) = script.split_once("= params.")?.1.split_once('[')?;
+    let table = table.trim();
+    let (local, _) = rest.split_once(']')?;
+    let local = local.trim();
+    if table.is_empty() || local.is_empty() || local.starts_with("ctx.") {
+        return None;
+    }
+    let subject = crate::painless_common::ctx_path_bound_to(script, local)?;
+
+    // The miss arm names the target and the kind written without an entry.
+    let (head, tail) = script.split_once("== null)")?.1.split_once(".kind = ")?;
+    let target = clean_path(
+        head.rsplit("ctx.")
+            .next()?
+            .trim()
+            .trim_start_matches('{')
+            .trim(),
+    );
+    let default_kind = tail
+        .trim()
+        .trim_start_matches(['\'', '"'])
+        .split(['\'', '"'])
+        .next()?
+        .to_owned();
+    if target.is_empty() || default_kind.is_empty() {
+        return None;
+    }
+    // Only claim the script that writes the WHOLE block; a kind on its own is
+    // an ordinary lookup and has its own arms.
+    if !script.contains(".category = ") || !script.contains(".type = ") {
+        return None;
+    }
+
+    // The optional second lookup: both halves or neither.
+    let action_subjects = script
+        .split_once("params.")
+        .and_then(|(_, rest)| rest.split_once(&format!(".contains({local})")))
+        .and_then(|(head, _)| head.rsplit("params.").next())
+        .map(|name| name.trim().to_owned())
+        .filter(|name| !name.is_empty() && !name.contains(char::is_whitespace));
+    let action = script
+        .split_once(".toLowerCase()]")
+        .and_then(|(head, _)| head.rsplit_once("params.")?.1.split_once('['))
+        .map(|(table, field)| {
+            let field = field
+                .trim()
+                .trim_start_matches("ctx?.")
+                .trim_start_matches("ctx.");
+            (table.trim().to_owned(), clean_path(field))
+        });
+
+    let (action_types, action_field) = match action {
+        Some((table, field)) if !table.is_empty() && !field.is_empty() => (Some(table), field),
+        _ => (None, String::new()),
+    };
+    // A subject list with no table to read is not this pattern.
+    let action_subjects = action_types.as_ref().and(action_subjects);
+
+    Some(EventBlockTable {
+        subject,
+        target,
+        table: table.to_owned(),
+        default_kind,
+        action_subjects,
+        action_types,
+        action_field,
+    })
+}
+
+/// Write the block the table names, then the action's extra type.
+fn run_event_block_table(
+    event: &mut Event,
+    pattern: &EventBlockTable,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(key) = event.get_as_string(&pattern.subject) else {
+        return true;
+    };
+    let entry = params
+        .get(&pattern.table)
+        .and_then(Value::as_object)
+        .and_then(|table| table.get(&key));
+
+    let Some(entry) = entry else {
+        // No entry is not a failure: the script writes the bare kind.
+        let _ = event.set(
+            &format!("{}.kind", pattern.target),
+            json!(pattern.default_kind),
+        );
+        return true;
+    };
+
+    for field in ["kind", "category", "type"] {
+        if let Some(value) = entry.get(field) {
+            // COPIED, not aliased: the script says `new ArrayList(..)`, and
+            // the append below would otherwise grow the params table itself.
+            let _ = event.set(&format!("{}.{field}", pattern.target), value.clone());
+        }
+    }
+
+    let (Some(subjects), Some(types)) = (&pattern.action_subjects, &pattern.action_types) else {
+        return true;
+    };
+    let listed = params
+        .get(subjects)
+        .and_then(Value::as_array)
+        .is_some_and(|list| list.iter().any(|item| item.as_str() == Some(key.as_str())));
+    if !listed {
+        return true;
+    }
+    // `instanceof String` in the script, so a non-string action adds nothing.
+    let Some(action) = event.get(&pattern.action_field).and_then(Value::as_str) else {
+        return true;
+    };
+    let Some(mapped) = params
+        .get(types)
+        .and_then(Value::as_object)
+        .and_then(|table| table.get(&action.to_lowercase()))
+        .cloned()
+    else {
+        return true;
+    };
+
+    let target = format!("{}.type", pattern.target);
+    let mut types: Vec<Value> = match event.get(&target) {
+        Some(Value::Array(existing)) => existing.clone(),
+        Some(other) => vec![other.clone()],
+        None => Vec::new(),
+    };
+    if !types.contains(&mapped) {
+        types.push(mapped);
+        let _ = event.set(&target, Value::Array(types));
+    }
     true
 }
 
