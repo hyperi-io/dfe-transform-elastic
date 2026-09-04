@@ -3445,6 +3445,35 @@ fn camel_to_snake_writes_the_converted_object_to_its_target() {
     assert!(event.has("json"), "the source object is not consumed");
 }
 
+/// `jamf_protect` names the telemetry event by WHICH key is populated.
+///
+/// Verbatim from `pipelines/jamf_protect/telemetry/default.yml:71`. The ECS
+/// `event.action` is a key NAME, not a value anywhere in the document.
+#[test]
+fn the_first_populated_key_names_the_action() {
+    let script = "if (ctx.jamf_protect.telemetry.containsKey('event')) {\n  \
+        def eventObject = ctx.jamf_protect.telemetry.event;\n  \
+        for (def key : eventObject.keySet()) {\n    if (eventObject[key] != null) {\n      \
+        if (!ctx.containsKey('event')) {\n        ctx.event = new HashMap();\n      }\n      \
+        ctx.event.action = key;\n      break;\n    }\n  }\n}";
+
+    // The first key with a value wins, in the document's own order.
+    let mut event = Event::new(json!({
+        "jamf_protect": { "telemetry": { "event": {
+            "unrelated": null, "exec": { "pid": 1 }, "open": { "path": "/x" }
+        } } }
+    }));
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(event.get_str("event.action"), Some("exec"));
+
+    // Every member null writes nothing rather than an empty action.
+    let mut empty = Event::new(json!({
+        "jamf_protect": { "telemetry": { "event": { "exec": null } } }
+    }));
+    assert!(try_known_painless(&mut empty, script));
+    assert!(!empty.has("event.action"));
+}
+
 /// An arm that reads a field into ECS and DROPS it.
 ///
 /// Verbatim from `pipelines/stormshield/log/default.yml:480`. Keeping `ipv`

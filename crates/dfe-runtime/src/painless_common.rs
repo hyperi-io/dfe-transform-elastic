@@ -6530,6 +6530,66 @@ pub fn sum_of_fields(event: &mut Event, pattern: &SumOfFields) -> bool {
 /// a pattern this code does not actually understand, and counting it as handled
 /// would inflate the coverage figure. A field the script names but the EVENT
 /// lacks is a different thing -- the script would have done nothing either.
+/// The NAME of a map's first key whose value is not null.
+///
+/// `jamf_protect` reports which telemetry event fired by which member of one
+/// object is populated, so the ECS `event.action` is a key name rather than
+/// any value in the document.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FirstPresentKeyName {
+    source: String,
+    target: String,
+}
+
+impl FirstPresentKeyName {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(source: impl Into<String>, target: impl Into<String>) -> Self {
+        Self {
+            source: source.into(),
+            target: target.into(),
+        }
+    }
+}
+
+/// `for (def k : <map>.keySet()) { if (<map>[k] != null) { ctx.<t> = k; break; } }`
+fn parse_first_present_key_name(script: &str) -> Option<FirstPresentKeyName> {
+    let (head, rest) = script.split_once(".keySet()")?;
+    // The map is usually a local bound to the ctx path, so follow it.
+    let subject = head.rsplit(['(', ' ', ':']).next()?.trim();
+    let source = resolve_subject(script, subject, 3)?;
+
+    // The loop variable is what gets written, so the assignment naming it is
+    // the target. Reading any assignment would take the `ctx.event = new
+    // HashMap()` line above it instead.
+    let variable = head.rsplit_once(" : ")?.0.rsplit([' ', '(']).next()?.trim();
+    if variable.is_empty() {
+        return None;
+    }
+    let marker = format!("= {variable};");
+    let target = painless_path(rest.split_once(&marker)?.0)?;
+
+    (!source.is_empty() && !target.is_empty()).then_some(FirstPresentKeyName { source, target })
+}
+
+/// Write the first key that carries a value, in the document's own order.
+pub fn first_present_key_name(event: &mut Event, pattern: &FirstPresentKeyName) -> bool {
+    let Some(Value::Object(map)) = event.get(&pattern.source) else {
+        return true;
+    };
+    // Insertion order, which `preserve_order` gives us and which is the order
+    // Elasticsearch's own iteration would see.
+    let Some(key) = map
+        .iter()
+        .find(|(_, value)| !value.is_null())
+        .map(|(key, _)| key.clone())
+    else {
+        return true;
+    };
+    let _ = event.set(&pattern.target, json!(key));
+    true
+}
+
 /// FRACTIONAL seconds scaled to nanoseconds and cast to a Java `int`.
 ///
 /// Distinct from [`KnownPattern::DurationToNanos`], which parses a whole
@@ -13652,6 +13712,7 @@ pub(crate) enum KnownPattern {
     SumDirections(Vec<&'static str>),
     SumOfFields(Box<SumOfFields>),
     DurationToNanos,
+    FirstPresentKeyName(Box<FirstPresentKeyName>),
     FloatSecondsToNanos(Box<FloatSecondsToNanos>),
     FlowDuration,
     ParallelDispatch,
@@ -14836,6 +14897,17 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: the NAME of the first key carrying a value. Ahead of the map
+    // walkers, which read the `keySet()` loop as a fan-out and would claim it
+    // without ever writing the key name.
+    if normalised.contains(".keySet()")
+        && normalised.contains("break;")
+        && let Some(pattern) = parse_first_present_key_name(normalised)
+    {
+        patterns.push(KnownPattern::FirstPresentKeyName(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: the same scaling from a FRACTIONAL count of seconds, narrowed
     // by the vendor's own `(int)` cast rather than saturating at i64.
     if normalised.contains("Float.parseFloat")
@@ -15975,6 +16047,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::SumOfFields(pattern) => sum_of_fields(event, pattern),
         KnownPattern::DurationToNanos => try_duration_to_nanos(event, normalised),
         KnownPattern::FloatSecondsToNanos(pattern) => float_seconds_to_nanos(event, pattern),
+        KnownPattern::FirstPresentKeyName(pattern) => first_present_key_name(event, pattern),
         KnownPattern::FlowDuration => try_flow_duration(event, normalised),
         KnownPattern::ParallelDispatch => try_parallel_dispatch(event, normalised),
         KnownPattern::ConcatMessage => try_concat_message(event, normalised),
