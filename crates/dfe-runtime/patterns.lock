@@ -170,11 +170,12 @@
 169 MoveKeys
 170 ClassifyLadder
 171 PrivateCidrDirection
-172 BranchCopies
-173 GuardedDivide
-174 ScaleField
-175 GuardedCopy
-176 PlainAssignments
+172 GeoPointFromCoordinates
+173 BranchCopies
+174 GuardedDivide
+175 ScaleField
+176 GuardedCopy
+177 PlainAssignments
 
 [params_pattern]
   1 AwsEntity

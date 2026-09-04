@@ -4266,6 +4266,109 @@ pub fn coerce_boolean(event: &mut Event, pattern: &CoerceBoolean) -> bool {
     true
 }
 
+/// An ECS `geo_point` built from a `GeoJSON` coordinate array.
+///
+/// `GeoJSON` orders a position `[longitude, latitude]`, which is the reverse of
+/// how every human writes one, so the INDICES are read off the script rather
+/// than assumed -- a vendor that writes `['lat': c[1], 'lon': c[0]]` and one
+/// that writes them the other way round must both come out right.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct GeoPointFromCoordinates {
+    coordinates: String,
+    target: String,
+    lon_index: usize,
+    lat_index: usize,
+    /// `lon` written before `lat`. Under `preserve_order` the key order is
+    /// part of the document Elasticsearch renders, so it is not cosmetic.
+    lon_first: bool,
+}
+
+impl GeoPointFromCoordinates {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(
+        coordinates: impl Into<String>,
+        target: impl Into<String>,
+        lon_index: usize,
+        lat_index: usize,
+        lon_first: bool,
+    ) -> Self {
+        Self {
+            coordinates: coordinates.into(),
+            target: target.into(),
+            lon_index,
+            lat_index,
+            lon_first,
+        }
+    }
+}
+
+/// `ctx.t = ['lon': geom.coordinates[0], 'lat': geom.coordinates[1]];`
+fn parse_geo_point_from_coordinates(script: &str) -> Option<GeoPointFromCoordinates> {
+    /// The array and the index one entry of the map literal reads.
+    fn entry<'a>(statement: &'a str, key: &str) -> Option<(&'a str, usize)> {
+        let value = statement.split_once(key)?.1;
+        let value = value.split([',', ']']).next()?.trim();
+        let (base, index) = value.rsplit_once('[')?;
+        Some((base, index.trim_end_matches(']').trim().parse().ok()?))
+    }
+
+    let lon_at = script.find("'lon':")?;
+    let lat_at = script.find("'lat':")?;
+    let statement = &script[lon_at.min(lat_at)..];
+
+    // The assignment this map literal is the value of.
+    let target = painless_path(script[..lon_at.min(lat_at)].rsplit_once('=')?.0)?;
+
+    let (lon_base, lon_index) = entry(statement, "'lon':")?;
+    let (lat_base, lat_index) = entry(statement, "'lat':")?;
+    // Two different arrays is a different pattern -- this one is one position.
+    if lon_base != lat_base || lon_index == lat_index {
+        return None;
+    }
+
+    let coordinates = resolve_subject(script, lon_base.trim(), 3)?;
+    Some(GeoPointFromCoordinates::new(
+        coordinates,
+        target,
+        lon_index,
+        lat_index,
+        lon_at < lat_at,
+    ))
+}
+
+/// Write the point, but only where both positions are actually NUMBERS.
+///
+/// That check is the type guard the script spells as `geomType == "Point"`: a
+/// Polygon's `coordinates[0]` is itself an array, so a non-numeric position is
+/// exactly the case the vendor's guard excludes.
+pub fn geo_point_from_coordinates(event: &mut Event, pattern: &GeoPointFromCoordinates) -> bool {
+    let Some(Value::Array(coordinates)) = event.get(&pattern.coordinates) else {
+        return true;
+    };
+    let (Some(lon), Some(lat)) = (
+        coordinates.get(pattern.lon_index),
+        coordinates.get(pattern.lat_index),
+    ) else {
+        return true;
+    };
+    if !lon.is_number() || !lat.is_number() {
+        return true;
+    }
+    let (lon, lat) = (lon.clone(), lat.clone());
+
+    let mut point = Map::new();
+    if pattern.lon_first {
+        point.insert("lon".to_owned(), lon);
+        point.insert("lat".to_owned(), lat);
+    } else {
+        point.insert("lat".to_owned(), lat);
+        point.insert("lon".to_owned(), lon);
+    }
+    let _ = event.set(&pattern.target, Value::Object(point));
+    true
+}
+
 /// A number rendered as an octal string, which is how a file mode reads.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct OctalString {
@@ -13239,6 +13342,8 @@ pub(crate) enum KnownPattern {
     JoinPresentFields(JoinPresentFields),
     /// A vendor flag folded to a boolean by its string spelling.
     CoerceBoolean(CoerceBoolean),
+    /// An ECS `geo_point` built from a `GeoJSON` coordinate array.
+    GeoPointFromCoordinates(GeoPointFromCoordinates),
     /// A numbered column map collapsed into a list, in key order.
     CsvMapToArray {
         source: String,
@@ -15150,6 +15255,15 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: an ECS geo_point from a `GeoJSON` position. It does not return --
+    // gdacs writes the point and the polygon's copies in one script, and both
+    // are wanted.
+    if normalised.contains("'lon':")
+        && let Some(pattern) = parse_geo_point_from_coordinates(normalised)
+    {
+        patterns.push(KnownPattern::GeoPointFromCoordinates(pattern));
+    }
+
     // Pattern: copies selected by a field matching a literal -- arista's
     // interface aliases, keyed on the interface id. Ahead of `GuardedCopy`,
     // which claims the script on its first `!= null`, applies ONE of the
@@ -15283,6 +15397,14 @@ impl KnownPattern {
                 "ensure_append(event, &EnsureAppend::new({}, {}));",
                 rust_str(&pattern.source),
                 rust_str(&pattern.target),
+            )),
+            Self::GeoPointFromCoordinates(pattern) => Some(format!(
+                "geo_point_from_coordinates(event, &GeoPointFromCoordinates::new({}, {}, {}, {}, {}));",
+                rust_str(&pattern.coordinates),
+                rust_str(&pattern.target),
+                pattern.lon_index,
+                pattern.lat_index,
+                pattern.lon_first,
             )),
             Self::CoerceBoolean(pattern) => Some(format!(
                 "coerce_boolean(event, &CoerceBoolean::new(vec![{}], vec![{}]));",
@@ -15463,6 +15585,9 @@ pub(crate) fn run_known_pattern(
         KnownPattern::EnsureAppend(pattern) => ensure_append(event, pattern),
         KnownPattern::JoinPresentFields(pattern) => join_present_fields(event, pattern),
         KnownPattern::CoerceBoolean(pattern) => coerce_boolean(event, pattern),
+        KnownPattern::GeoPointFromCoordinates(pattern) => {
+            geo_point_from_coordinates(event, pattern)
+        }
         KnownPattern::CsvMapToArray { source, target } => {
             run_csv_map_to_array(event, source, target)
         }
@@ -16120,6 +16245,36 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
+
+    /// `GeoJSON` puts longitude FIRST, so the indices come off the script.
+    #[test]
+    fn a_geo_point_reads_its_position_indices_from_the_script() {
+        let script = "def geom = ctx.geometry;\nString geomType = geom.type;\n\
+            if (geomType == \"Point\" && geom.coordinates != null) {\n    \
+            ctx.gdacs.geo.location = ['lon': geom.coordinates[0], 'lat': geom.coordinates[1]];\n}\n";
+        let pattern =
+            parse_geo_point_from_coordinates(&normalise(script)).expect("gdacs writes a point");
+        assert_eq!(pattern.coordinates, "geometry.coordinates");
+        assert_eq!(pattern.target, "gdacs.geo.location");
+        assert_eq!((pattern.lon_index, pattern.lat_index), (0, 1));
+
+        let mut event = Event::new(serde_json::json!({
+            "geometry": { "type": "Point", "coordinates": [138.2, -34.9] }
+        }));
+        assert!(geo_point_from_coordinates(&mut event, &pattern));
+        assert_eq!(
+            event.get("gdacs.geo.location"),
+            Some(&serde_json::json!({ "lon": 138.2, "lat": -34.9 }))
+        );
+
+        // A Polygon's position is itself an array, which is the case the
+        // vendor's `== "Point"` guard excludes, so nothing is written.
+        let mut polygon = Event::new(serde_json::json!({
+            "geometry": { "type": "Polygon", "coordinates": [[[1.0, 2.0]]] }
+        }));
+        assert!(geo_point_from_coordinates(&mut polygon, &pattern));
+        assert_eq!(polygon.get("gdacs.geo.location"), None);
+    }
 
     /// gdacs guards on a member of a local, and guards with more than one
     /// clause -- the two things that made every copy in the branch dead.

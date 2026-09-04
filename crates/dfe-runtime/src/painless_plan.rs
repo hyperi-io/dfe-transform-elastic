@@ -130,6 +130,12 @@ pub fn painless_exec_plan_params(
         crate::painless_stats::record_handled(&plan.text);
         return Ok(());
     }
+    // FALL-THROUGH, and deliberately so: the listed patterns are ALTERNATIVES,
+    // and the first to claim the script wins. Running them all instead was
+    // measured and is worse -- fortinet_fortigate went from 0 to 11 fields
+    // wrong and symantec_endpoint from 32 matched events to 25, because a
+    // later arm that the winner had been shadowing overwrites what it wrote.
+    // Do not re-try it; a script needing two patterns needs ONE that does both.
     if plan
         .known
         .iter()
