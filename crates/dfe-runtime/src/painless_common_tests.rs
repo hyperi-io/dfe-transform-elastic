@@ -3445,6 +3445,33 @@ fn camel_to_snake_writes_the_converted_object_to_its_target() {
     assert!(event.has("json"), "the source object is not consumed");
 }
 
+/// netskope stores a single-valued field as a numbered map and flattens it.
+///
+/// Verbatim from `-dev/pipelines/netskope/events/default.yml:1060`. Without
+/// the dedupe the same mime type landed three times and no event matched.
+#[test]
+fn a_maps_values_collect_into_a_deduplicated_list() {
+    let script = "def parts = ctx.file.mime_type; if (parts != null && parts.size() > 0) {\n  \
+        List l = new ArrayList();\n  for (entry in parts.entrySet()) {\n    \
+        l.add(entry.getValue());\n  }\n  List setList = new ArrayList(new HashSet(l));\n  \
+        ctx.file.mime_type = setList;\n}";
+
+    // Three copies of one value collapse to one.
+    let mut event = Event::new(json!({ "file": { "mime_type": {
+        "0": "application/pdf", "1": "application/pdf", "2": "application/pdf"
+    } } }));
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(
+        event.get("file.mime_type"),
+        Some(&json!(["application/pdf"]))
+    );
+
+    // A field that is already a list, not a map, is left alone.
+    let mut listed = Event::new(json!({ "file": { "mime_type": ["text/plain"] } }));
+    assert!(try_known_painless(&mut listed, script));
+    assert_eq!(listed.get("file.mime_type"), Some(&json!(["text/plain"])));
+}
+
 /// `ti_recordedfuture` snake-cases its evidence list with a REGEX rule.
 ///
 /// Verbatim from `-dev/pipelines/ti_recordedfuture/threat/default.yml:143`.

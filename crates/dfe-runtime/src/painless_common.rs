@@ -6530,6 +6530,65 @@ pub fn sum_of_fields(event: &mut Event, pattern: &SumOfFields) -> bool {
 /// a pattern this code does not actually understand, and counting it as handled
 /// would inflate the coverage figure. A field the script names but the EVENT
 /// lacks is a different thing -- the script would have done nothing either.
+/// A map's VALUES collected into a deduplicated list, written back in place.
+///
+/// netskope stores a single-valued field as a numbered map and flattens it
+/// this way. The dedupe is the point: without it the same mime type or address
+/// lands three or four times and no event can match.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DedupeMapValues {
+    path: String,
+}
+
+impl DedupeMapValues {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(path: impl Into<String>) -> Self {
+        Self { path: path.into() }
+    }
+}
+
+/// `def p = ctx.<path>; ... for (e in p.entrySet()) { l.add(e.getValue()); }
+/// ctx.<path> = new ArrayList(new HashSet(l));`
+fn parse_dedupe_map_values(script: &str) -> Option<DedupeMapValues> {
+    if !script.contains("new HashSet(") || !script.contains(".getValue()") {
+        return None;
+    }
+    let path = painless_path(script.split_once(".entrySet()")?.0)?;
+    // The result must go back where it came from; a different target is a
+    // different pattern.
+    script
+        .contains(&format!("ctx.{path} ="))
+        .then_some(DedupeMapValues { path })
+}
+
+/// Collect, dedupe, and order the way Java's `HashSet` iterates.
+pub fn dedupe_map_values(event: &mut Event, pattern: &DedupeMapValues) -> bool {
+    let Some(Value::Object(map)) = event.get(&pattern.path) else {
+        return true;
+    };
+
+    // First occurrence wins, which is what adding to a Set does.
+    let mut unique: Vec<Value> = Vec::with_capacity(map.len());
+    for value in map.values() {
+        if !unique.contains(value) {
+            unique.push(value.clone());
+        }
+    }
+
+    // `new ArrayList(new HashSet(..))` reads the table in BUCKET order, not
+    // insertion order, and a stable sort keeps insertion order within a
+    // bucket -- which is how Java chains them.
+    let table = crate::painless_helpers::java_table_size(unique.len());
+    unique.sort_by_key(|value| {
+        let key = crate::painless_helpers::java_to_string(value);
+        crate::painless_helpers::java_bucket(&key, table)
+    });
+
+    let _ = event.set(&pattern.path, Value::Array(unique));
+    true
+}
+
 /// Every key of every object in a LIST, snake-cased in place.
 ///
 /// A THIRD snake rule, and not either [`SnakeRule`]: `ti_recordedfuture`
@@ -13903,6 +13962,7 @@ pub(crate) enum KnownPattern {
     SumDirections(Vec<&'static str>),
     SumOfFields(Box<SumOfFields>),
     DurationToNanos,
+    DedupeMapValues(Box<DedupeMapValues>),
     SnakeCaseListElements(Box<SnakeCaseListElements>),
     SumMemberOverList(Box<SumMemberOverList>),
     FirstPresentKeyName(Box<FirstPresentKeyName>),
@@ -15090,6 +15150,15 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: a map's values collected into a deduplicated list. Ahead of the
+    // generic map walkers, which read the `entrySet()` loop as a fan-out.
+    if normalised.contains("new HashSet(")
+        && let Some(pattern) = parse_dedupe_map_values(normalised)
+    {
+        patterns.push(KnownPattern::DedupeMapValues(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: a list's objects snake-cased in place by the vendor's own
     // regex rule. Ahead of the sum below, which also walks `ctx.<list>`.
     if normalised.contains("$1_$2")
@@ -16261,6 +16330,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::FirstPresentKeyName(pattern) => first_present_key_name(event, pattern),
         KnownPattern::SumMemberOverList(pattern) => sum_member_over_list(event, pattern),
         KnownPattern::SnakeCaseListElements(pattern) => snake_case_list_elements(event, pattern),
+        KnownPattern::DedupeMapValues(pattern) => dedupe_map_values(event, pattern),
         KnownPattern::FlowDuration => try_flow_duration(event, normalised),
         KnownPattern::ParallelDispatch => try_parallel_dispatch(event, normalised),
         KnownPattern::ConcatMessage => try_concat_message(event, normalised),
