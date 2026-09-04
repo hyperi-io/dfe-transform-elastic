@@ -11924,6 +11924,33 @@ struct CollectedColumn {
     upper: bool,
 }
 
+/// The `ctx.` path a local accumulator is handed to, if it is handed to one.
+///
+/// `ctx.<target> = <local>;` after the loop. The name must match whole, or
+/// `names` would answer for `country_names`.
+fn assigned_to_ctx(script: &str, local: &str) -> Option<String> {
+    use crate::painless_params::clean_path;
+
+    if local.is_empty() || !local.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+    for statement in script.split([';', '\n']) {
+        let Some((head, tail)) = statement.split_once('=') else {
+            continue;
+        };
+        if tail.trim() != local {
+            continue;
+        }
+        let Some(path) = head.trim().strip_prefix("ctx.") else {
+            continue;
+        };
+        if !path.contains([' ', '(', '[']) {
+            return Some(clean_path(path));
+        }
+    }
+    None
+}
+
 /// `for (v in ctx.<list>) { if (v.<member> != null && !v.<member>.isEmpty())
 /// { ... ctx.<target>.add(...) } }`
 fn parse_collect_from_list(script: &str) -> Option<CollectFromList> {
@@ -11945,7 +11972,13 @@ fn parse_collect_from_list(script: &str) -> Option<CollectFromList> {
             .next()
             .filter(|member| !member.is_empty())?;
         let (head, _) = arm.split_once(".add(")?;
-        let target = clean_path(head.rsplit_once("ctx.")?.1.trim());
+        let added_to = head.rsplit(['\n', ';', '{', '}']).next()?.trim();
+        // Either named on the document, or a LOCAL handed to one after the
+        // loop: gdacs builds three accumulators and assigns them at the end.
+        let target = match added_to.rsplit_once("ctx.") {
+            Some((_, path)) => clean_path(path.trim()),
+            None => assigned_to_ctx(script, added_to)?,
+        };
         if target.is_empty() {
             return None;
         }
