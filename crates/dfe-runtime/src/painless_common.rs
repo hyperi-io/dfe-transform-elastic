@@ -7475,6 +7475,38 @@ pub(crate) struct LadderArm {
     /// a `String` field cannot hold without quoting it into the wrong JSON
     /// type.
     writes: Vec<(String, Value)>,
+    /// Fields the arm REMOVES once it has written.
+    ///
+    /// stormshield reads `ipv` into `network.type` and drops it, and keeping
+    /// it left a field Elasticsearch does not emit on 13 of its 44 events.
+    removes: Vec<String>,
+}
+
+/// The fields an arm's body removes: `ctx.<parent>.remove("<key>")`.
+fn arm_removes(body: &str) -> Vec<String> {
+    use crate::painless_params::clean_path;
+
+    let parts: Vec<&str> = body.split(".remove(").collect();
+    let mut removes = Vec::new();
+    // Each pair is the text BEFORE a `.remove(` and the text after it, so the
+    // parent is the last `ctx.` path on the left and the key the literal on
+    // the right.
+    for pair in parts.windows(2) {
+        let Some(parent) = painless_path(pair[0]) else {
+            continue;
+        };
+        let Some(key) = pair[1]
+            .trim_start()
+            .strip_prefix(['"', '\''])
+            .and_then(|rest| rest.split(['"', '\'']).next())
+        else {
+            continue;
+        };
+        if !parent.is_empty() && !key.is_empty() {
+            removes.push(clean_path(&format!("{parent}.{key}")));
+        }
+    }
+    removes
 }
 
 /// An `if (x == 'a') { ctx.t = 'A' } else if (x == 'b') { ... }` ladder.
@@ -7563,6 +7595,7 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
                     format!("{}.{key}", clean_path(parent.trim())),
                     Value::String(value),
                 )],
+                removes: arm_removes(body),
             }
         } else {
             // Every assignment in the arm, not just the first -- a graded
@@ -7588,7 +7621,11 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
             if writes.is_empty() {
                 continue;
             }
-            LadderArm { literals, writes }
+            LadderArm {
+                literals,
+                writes,
+                removes: arm_removes(body),
+            }
         };
         arms.push(arm);
     }
@@ -8517,6 +8554,11 @@ fn try_ladder(event: &mut Event, ladder: &Ladder) -> bool {
     if let Some(arm) = ladder.arms.iter().find(matches) {
         for (target, value) in &arm.writes {
             let _ = event.set(target, value.clone());
+        }
+        // After the writes, as the script orders them: an arm that reads a
+        // field into ECS and drops it would otherwise leave the original.
+        for path in &arm.removes {
+            event.remove(path);
         }
     }
     true

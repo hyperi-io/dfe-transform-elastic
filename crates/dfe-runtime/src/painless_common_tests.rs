@@ -3445,6 +3445,35 @@ fn camel_to_snake_writes_the_converted_object_to_its_target() {
     assert!(event.has("json"), "the source object is not consumed");
 }
 
+/// An arm that reads a field into ECS and DROPS it.
+///
+/// Verbatim from `pipelines/stormshield/log/default.yml:480`. Keeping `ipv`
+/// left a field Elasticsearch does not emit on 13 of stormshield's 44 events.
+#[test]
+fn a_ladder_arm_removes_what_the_script_removes() {
+    let script = "if (ctx.stormshield.ipv == \"4\") {\n    ctx.network.type = \"ipv4\";\n    \
+        ctx.stormshield.remove(\"ipv\");\n} else if (ctx.stormshield.ipv == \"6\") {\n    \
+        ctx.network.type = \"ipv6\";\n    ctx.stormshield.remove(\"ipv\");\n}";
+
+    let mut four = Event::new(json!({ "stormshield": { "ipv": "4", "logtype": "filter" } }));
+    assert!(try_known_painless(&mut four, script));
+    assert_eq!(four.get_str("network.type"), Some("ipv4"));
+    assert!(!four.has("stormshield.ipv"), "the arm drops what it read");
+    // Only the named key goes.
+    assert_eq!(four.get_str("stormshield.logtype"), Some("filter"));
+
+    let mut six = Event::new(json!({ "stormshield": { "ipv": "6" } }));
+    assert!(try_known_painless(&mut six, script));
+    assert_eq!(six.get_str("network.type"), Some("ipv6"));
+    assert!(!six.has("stormshield.ipv"));
+
+    // No arm matches, so nothing is written and nothing is removed.
+    let mut other = Event::new(json!({ "stormshield": { "ipv": "9" } }));
+    assert!(try_known_painless(&mut other, script));
+    assert!(!other.has("network.type"));
+    assert_eq!(other.get_str("stormshield.ipv"), Some("9"));
+}
+
 /// stormshield's fractional session length, narrowed the way Java narrows.
 ///
 /// Verbatim from `pipelines/stormshield/log/default.yml:435`. Two of its
