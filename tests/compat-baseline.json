@@ -264,7 +264,7 @@
     "spycloud": { "events": 2, "events_total": 4, "fields_wrong": 2 },
     "squid": { "events": 112, "events_total": 112, "fields_wrong": 0 },
     "stan": { "events": 69, "events_total": 69, "fields_wrong": 0 },
-    "stormshield": { "events": 25, "events_total": 44, "fields_wrong": 173 },
+    "stormshield": { "events": 26, "events_total": 44, "fields_wrong": 161 },
     "sublime_security": { "events": 2, "events_total": 6, "fields_wrong": 8 },
     "suricata": { "events": 19, "events_total": 64, "fields_wrong": 94 },
     "swimlane": { "events": 4, "events_total": 7, "fields_wrong": 3 },

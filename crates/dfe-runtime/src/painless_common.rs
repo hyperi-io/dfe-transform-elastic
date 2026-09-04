@@ -6530,6 +6530,82 @@ pub fn sum_of_fields(event: &mut Event, pattern: &SumOfFields) -> bool {
 /// a pattern this code does not actually understand, and counting it as handled
 /// would inflate the coverage figure. A field the script names but the EVENT
 /// lacks is a different thing -- the script would have done nothing either.
+/// FRACTIONAL seconds scaled to nanoseconds and cast to a Java `int`.
+///
+/// Distinct from [`KnownPattern::DurationToNanos`], which parses a whole
+/// number of seconds and saturates at `i64`. stormshield parses a float and
+/// the vendor casts with `(int)`, so the result saturates at `i32` -- two of
+/// its events expect exactly 2,147,483,647, which is that cast and not an
+/// overflow to correct.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FloatSecondsToNanos {
+    source: String,
+    target: String,
+    /// The script removes the seconds field once it has been converted.
+    remove_source: bool,
+}
+
+impl FloatSecondsToNanos {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(source: impl Into<String>, target: impl Into<String>, remove_source: bool) -> Self {
+        Self {
+            source: source.into(),
+            target: target.into(),
+            remove_source,
+        }
+    }
+}
+
+/// `def d = Float.parseFloat(ctx.<source>); d *= 1000000000; ctx.<target> = (int)d;`
+fn parse_float_seconds_to_nanos(script: &str) -> Option<FloatSecondsToNanos> {
+    let source = script
+        .split_once("Float.parseFloat(ctx.")?
+        .1
+        .split(')')
+        .next()?;
+    let source = crate::painless_params::clean_path(source.trim());
+
+    // The cast names the target, and is what makes this an i32 result.
+    let target = script.split_once("= (int)")?.0.rsplit("ctx.").next()?;
+    let target = crate::painless_params::clean_path(target.trim().trim_start_matches('{').trim());
+
+    let remove_source = script.contains(".remove(\"") || script.contains(".remove('");
+    (!source.is_empty() && !target.is_empty()).then_some(FloatSecondsToNanos {
+        source,
+        target,
+        remove_source,
+    })
+}
+
+/// Scale the seconds, then narrow the way Java's `(int)` narrows.
+pub fn float_seconds_to_nanos(event: &mut Event, pattern: &FloatSecondsToNanos) -> bool {
+    let seconds = event.get(&pattern.source).and_then(|value| match value {
+        Value::String(text) => text.parse::<f64>().ok(),
+        other => other.as_f64(),
+    });
+    let Some(seconds) = seconds else {
+        return true;
+    };
+
+    // Java narrows a float to int by SATURATING, not by wrapping, so a long
+    // session lands on i32::MAX rather than a negative duration.
+    let nanos = seconds * 1e9;
+    let narrowed = if nanos >= f64::from(i32::MAX) {
+        i64::from(i32::MAX)
+    } else if nanos <= f64::from(i32::MIN) {
+        i64::from(i32::MIN)
+    } else {
+        nanos as i64
+    };
+
+    let _ = event.set(&pattern.target, json!(narrowed));
+    if pattern.remove_source {
+        event.remove(&pattern.source);
+    }
+    true
+}
+
 fn try_duration_to_nanos(event: &mut Event, script: &str) -> bool {
     let Some(field) = script
         .split("Long.parseLong(ctx.")
@@ -13534,6 +13610,7 @@ pub(crate) enum KnownPattern {
     SumDirections(Vec<&'static str>),
     SumOfFields(Box<SumOfFields>),
     DurationToNanos,
+    FloatSecondsToNanos(Box<FloatSecondsToNanos>),
     FlowDuration,
     ParallelDispatch,
     ConcatMessage,
@@ -14717,6 +14794,17 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: the same scaling from a FRACTIONAL count of seconds, narrowed
+    // by the vendor's own `(int)` cast rather than saturating at i64.
+    if normalised.contains("Float.parseFloat")
+        && normalised.contains("1000000000")
+        && normalised.contains("= (int)")
+        && let Some(pattern) = parse_float_seconds_to_nanos(normalised)
+    {
+        patterns.push(KnownPattern::FloatSecondsToNanos(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: an `hh:mm:ss` duration scaled to nanoseconds, plus the span
     // around @timestamp where the script counts one end back from the other.
     //
@@ -15844,6 +15932,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::SumDirections(totals) => sum_directions(event, totals),
         KnownPattern::SumOfFields(pattern) => sum_of_fields(event, pattern),
         KnownPattern::DurationToNanos => try_duration_to_nanos(event, normalised),
+        KnownPattern::FloatSecondsToNanos(pattern) => float_seconds_to_nanos(event, pattern),
         KnownPattern::FlowDuration => try_flow_duration(event, normalised),
         KnownPattern::ParallelDispatch => try_parallel_dispatch(event, normalised),
         KnownPattern::ConcatMessage => try_concat_message(event, normalised),

@@ -3445,6 +3445,36 @@ fn camel_to_snake_writes_the_converted_object_to_its_target() {
     assert!(event.has("json"), "the source object is not consumed");
 }
 
+/// stormshield's fractional session length, narrowed the way Java narrows.
+///
+/// Verbatim from `pipelines/stormshield/log/default.yml:435`. Two of its
+/// events expect exactly 2,147,483,647 -- that is the vendor's `(int)` cast
+/// saturating, not an overflow to correct.
+#[test]
+fn fractional_seconds_scale_to_nanos_and_saturate_at_an_int() {
+    let script = "if (ctx.stormshield?.duration != null) {\n    \
+        def duration = Float.parseFloat(ctx.stormshield.duration);\n    \
+        duration *= 1000000000;\n    if (!ctx.containsKey(\"event\")) {\n        \
+        ctx.event = [:];\n    }\n\n    ctx.event.duration = (int)duration;\n    \
+        ctx.stormshield.remove(\"duration\");\n}";
+
+    // 0.09 seconds is exact, and the seconds field is CONSUMED.
+    let mut event = Event::new(json!({ "stormshield": { "duration": "0.09" } }));
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(event.get("event.duration"), Some(&json!(90_000_000)));
+    assert!(!event.has("stormshield.duration"));
+
+    // Anything past ~2.147 seconds hits the cast's ceiling.
+    let mut long = Event::new(json!({ "stormshield": { "duration": "30" } }));
+    assert!(try_known_painless(&mut long, script));
+    assert_eq!(long.get("event.duration"), Some(&json!(2_147_483_647)));
+
+    // Zero stays zero rather than going missing.
+    let mut zero = Event::new(json!({ "stormshield": { "duration": "0" } }));
+    assert!(try_known_painless(&mut zero, script));
+    assert_eq!(zero.get("event.duration"), Some(&json!(0)));
+}
+
 /// `qualys_gav` spells the same hoist as `putAll`, which MERGES.
 ///
 /// Reading only the assignment form left its whole payload under `json.*` --
