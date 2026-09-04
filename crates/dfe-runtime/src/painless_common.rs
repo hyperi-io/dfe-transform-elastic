@@ -3,7 +3,7 @@
 
 //! Common Painless script patterns implemented in Rust.
 //!
-//! The same handful of script shapes recur across the Elastic pipelines --
+//! The same handful of script patterns recur across the Elastic pipelines --
 //! drop-empty, snake-case keys, sum both directions -- so they are written
 //! once here rather than once per source. [`try_known_painless`] matches a
 //! script against them and runs the Rust equivalent.
@@ -67,7 +67,7 @@ pub fn normalise(script: &str) -> Cow<'_, str> {
 /// The script is a literal that never changes, but `painless_exec` was
 /// re-resolving its escapes on every event -- two allocations over the whole
 /// script text, per script, per event. Resolving at the site makes
-/// [`normalise`] a borrow from then on. Same shape as [`crate::cached_grok`].
+/// [`normalise`] a borrow from then on. Same pattern as [`crate::cached_grok`].
 #[macro_export]
 macro_rules! cached_script {
     ($script:literal $(,)?) => {{
@@ -78,8 +78,8 @@ macro_rules! cached_script {
 }
 
 /// Read `<local> = ctx.<a>.substring(ctx.<b>.length())` and where the local
-/// finally lands, as a [`KnownShape::PrefixTail`].
-fn parse_prefix_tail(script: &str) -> Option<KnownShape> {
+/// finally lands, as a [`KnownPattern::PrefixTail`].
+fn parse_prefix_tail(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let at = script.find(".substring(ctx.")?;
@@ -102,7 +102,7 @@ fn parse_prefix_tail(script: &str) -> Option<KnownShape> {
         return None;
     }
 
-    Some(KnownShape::PrefixTail {
+    Some(KnownPattern::PrefixTail {
         source,
         prefix,
         strip_comma: script.contains(".startsWith(',')"),
@@ -134,8 +134,8 @@ fn try_prefix_tail(
 }
 
 /// Read `x.add(ctx.<scalar>); for (v in ctx.<array>) { x.add(v); }
-/// ctx.<target> = x;` as a [`KnownShape::PrependToArray`].
-fn parse_prepend_to_array(script: &str) -> Option<KnownShape> {
+/// ctx.<target> = x;` as a [`KnownPattern::PrependToArray`].
+fn parse_prepend_to_array(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let add_at = script.find(".add(ctx.")?;
@@ -158,7 +158,7 @@ fn parse_prepend_to_array(script: &str) -> Option<KnownShape> {
     let head = &script[..store_at];
     let target = clean_path(&head[head.rfind("ctx.")? + 4..]);
 
-    Some(KnownShape::PrependToArray {
+    Some(KnownPattern::PrependToArray {
         scalar,
         array,
         target,
@@ -215,7 +215,7 @@ fn parse_split_pipe_fields(script: &str) -> Option<Vec<String>> {
 
 /// Read the one-field token split: subject binding, separator, optional
 /// `Integer.parseInt`, and the list's final store.
-fn parse_split_token_field(script: &str) -> Option<KnownShape> {
+fn parse_split_token_field(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let (local, source) = local_and_ctx_path(script)?;
@@ -235,7 +235,7 @@ fn parse_split_token_field(script: &str) -> Option<KnownShape> {
     let target = clean_path(&before[before.rfind("ctx.")? + 4..]);
 
     // In place only: a script storing the list somewhere ELSE does more than
-    // this shape, and claiming it would write a wrong array.
+    // this pattern, and claiming it would write a wrong array.
     if target != source {
         return None;
     }
@@ -249,7 +249,7 @@ fn parse_split_token_field(script: &str) -> Option<KnownShape> {
         .and_then(|sep| (sep.chars().count() == 1).then(|| sep.chars().next()))
         .flatten();
 
-    Some(KnownShape::SplitTokenField(Box::new(SplitToken {
+    Some(KnownPattern::SplitTokenField(Box::new(SplitToken {
         source,
         separator: separator.chars().next()?,
         parse_int: script.contains("Integer.parseInt("),
@@ -268,7 +268,7 @@ fn parse_split_token_field(script: &str) -> Option<KnownShape> {
 /// `ti_anomali` uses it for a value its own separator fences (`,10015,`),
 /// which is exactly what the loop spelling above cannot express -- Java's
 /// split eats a trailing empty but keeps a leading one.
-fn parse_stream_split_filter(script: &str) -> Option<KnownShape> {
+fn parse_stream_split_filter(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let (_, rest) = script.split_once("Stream.of(ctx.")?;
@@ -288,7 +288,7 @@ fn parse_stream_split_filter(script: &str) -> Option<KnownShape> {
         return None;
     }
 
-    Some(KnownShape::SplitTokenField(Box::new(SplitToken {
+    Some(KnownPattern::SplitTokenField(Box::new(SplitToken {
         target: source.clone(),
         source,
         separator,
@@ -339,7 +339,7 @@ pub(crate) struct SplitToken {
     remove_if_empty: bool,
 }
 
-fn run_split_token_field(event: &mut Event, shape: &SplitToken) -> bool {
+fn run_split_token_field(event: &mut Event, pattern: &SplitToken) -> bool {
     let &SplitToken {
         ref source,
         separator,
@@ -348,7 +348,7 @@ fn run_split_token_field(event: &mut Event, shape: &SplitToken) -> bool {
         head,
         drop_empty,
         remove_if_empty,
-    } = shape;
+    } = pattern;
 
     if let Some(text) = event.get_str(source).map(str::to_string) {
         let mut pieces: Vec<&str> = text.split(separator).collect();
@@ -1218,8 +1218,8 @@ impl MaxByContains {
 ///
 /// The ladder is first-match per value, so a string containing two of the
 /// substrings scores the EARLIER arm rather than the higher one.
-fn run_max_by_contains(event: &mut Event, shape: &MaxByContains) -> bool {
-    let values = match event.get(&shape.source) {
+fn run_max_by_contains(event: &mut Event, pattern: &MaxByContains) -> bool {
+    let values = match event.get(&pattern.source) {
         Some(Value::Array(values)) => values.clone(),
         Some(value @ Value::String(_)) => vec![value.clone()],
         _ => return true,
@@ -1228,7 +1228,7 @@ fn run_max_by_contains(event: &mut Event, shape: &MaxByContains) -> bool {
     let mut highest = 0i64;
     for value in values.iter().filter_map(Value::as_str) {
         let folded = value.to_lowercase();
-        if let Some((_, score)) = shape
+        if let Some((_, score)) = pattern
             .arms
             .iter()
             .find(|(literals, _)| literals.iter().any(|lit| folded.contains(lit)))
@@ -1239,7 +1239,7 @@ fn run_max_by_contains(event: &mut Event, shape: &MaxByContains) -> bool {
     }
 
     if highest > 0 {
-        let _ = event.set(&shape.target, json!(highest));
+        let _ = event.set(&pattern.target, json!(highest));
     }
     true
 }
@@ -1579,8 +1579,8 @@ fn run_m365_identity_evidence(event: &mut Event, source: &str) -> bool {
 }
 
 /// `ctx.<f>.removeIf(v -> v == '<literal>')` as a
-/// [`KnownShape::RemoveListValue`].
-fn parse_remove_list_value(script: &str) -> Option<KnownShape> {
+/// [`KnownPattern::RemoveListValue`].
+fn parse_remove_list_value(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let at = script.find(".removeIf(")?;
@@ -1609,7 +1609,7 @@ fn parse_remove_list_value(script: &str) -> Option<KnownShape> {
     // the JSON layer only. `'\\'` in the script is one backslash, and m365
     // removes exactly that from `file.path`.
     let value = quoted_first(rhs)?.replace("\\\\", "\\");
-    (!field.is_empty()).then_some(KnownShape::RemoveListValue { field, value })
+    (!field.is_empty()).then_some(KnownPattern::RemoveListValue { field, value })
 }
 
 /// Drop every member of a list equal to one literal.
@@ -1633,7 +1633,7 @@ fn run_remove_list_value(event: &mut Event, field: &str, value: &str) -> bool {
 /// they came from, and this is what removes it. Unclaimed, the `json`
 /// processor after it had invalid JSON on every event and the source scored
 /// 1.3% of its fields.
-fn parse_drop_last_char(script: &str) -> Option<KnownShape> {
+fn parse_drop_last_char(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let (before, after) = script.split_once(" = ctx.")?;
@@ -1641,14 +1641,14 @@ fn parse_drop_last_char(script: &str) -> Option<KnownShape> {
     let (source, tail) = after.split_once(".substring(0, ctx.")?;
 
     // The SAME field on both sides, and nothing but the length expression
-    // after it -- a substring of one field into another is a different shape.
+    // after it -- a substring of one field into another is a different pattern.
     if clean_path(source) != target || target.is_empty() {
         return None;
     }
     let tail = tail.strip_prefix(source)?;
     tail.trim_start().strip_prefix(".length() - 1);")?;
 
-    Some(KnownShape::DropLastChar(target))
+    Some(KnownPattern::DropLastChar(target))
 }
 
 /// Remove the final character of a string field.
@@ -1669,7 +1669,7 @@ fn run_drop_last_char(event: &mut Event, field: &str) -> bool {
 /// the field is a bare string wherever the answers agreed and a list only
 /// where they did not. The unwrap is the part that matters -- leaving a
 /// one-member list is a different document from a string.
-fn parse_dedupe_unwrap(script: &str) -> Option<KnownShape> {
+fn parse_dedupe_unwrap(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let raw = script.split_once(" = ctx.")?.1.split_once(';')?.0;
@@ -1681,7 +1681,7 @@ fn parse_dedupe_unwrap(script: &str) -> Option<KnownShape> {
         return None;
     }
     let field = clean_path(raw);
-    (!field.is_empty()).then_some(KnownShape::DedupeUnwrap(field))
+    (!field.is_empty()).then_some(KnownPattern::DedupeUnwrap(field))
 }
 
 /// Drop repeated members, keeping first-seen order, then unwrap a single one.
@@ -1712,7 +1712,7 @@ fn run_dedupe_unwrap(event: &mut Event, field: &str) -> bool {
 /// columns back in order as a list. The keys are zero-padded, so natural
 /// string order IS column order. A surrounding pair of SINGLE quotes comes
 /// off each value -- the csv processor quotes on `"` and never sees them.
-fn parse_csv_map_to_array(script: &str) -> Option<KnownShape> {
+fn parse_csv_map_to_array(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let source = script.split_once("putAll(ctx.")?.1.split_once(')')?.0;
@@ -1730,7 +1730,7 @@ fn parse_csv_map_to_array(script: &str) -> Option<KnownShape> {
     if !ok(source) || !ok(target) {
         return None;
     }
-    Some(KnownShape::CsvMapToArray {
+    Some(KnownPattern::CsvMapToArray {
         source: clean_path(source),
         target: clean_path(target),
     })
@@ -1824,7 +1824,7 @@ fn colon_key(raw: &str) -> String {
 /// joined key list identifies which of the fourteen log layouts the line came
 /// from, so the params table can name the unlabelled columns. An unmatched
 /// column contributes `NONE`, which is why the fingerprints are mostly holes.
-fn parse_csv_colon_pairs(script: &str) -> Option<KnownShape> {
+fn parse_csv_colon_pairs(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let list = script.split_once("ctx.")?.1.split_once(".forEach(")?.0;
@@ -1862,7 +1862,7 @@ fn parse_csv_colon_pairs(script: &str) -> Option<KnownShape> {
         rest = tail;
     }
 
-    Some(KnownShape::CsvColonPairs {
+    Some(KnownPattern::CsvColonPairs {
         list: clean_path(list),
         map_target: clean_path(map_target),
         fingerprint_target: clean_path(fingerprint_target),
@@ -2020,42 +2020,42 @@ fn parse_tags_and_marking(script: &str) -> Option<TagsAndMarking> {
 }
 
 /// Scrub the tag names, and lift the prefixed ones into the marking.
-fn run_tags_and_marking(event: &mut Event, shape: &TagsAndMarking) -> bool {
-    let Some(Value::Array(tags)) = event.get(&shape.source).cloned() else {
+fn run_tags_and_marking(event: &mut Event, pattern: &TagsAndMarking) -> bool {
+    let Some(Value::Array(tags)) = event.get(&pattern.source).cloned() else {
         return true;
     };
 
     let mut names: Vec<Value> = Vec::with_capacity(tags.len());
     let mut selected: Vec<Value> = Vec::new();
     for tag in &tags {
-        let Some(raw) = tag.get(&shape.member).and_then(Value::as_str) else {
+        let Some(raw) = tag.get(&pattern.member).and_then(Value::as_str) else {
             continue;
         };
         let mut name = raw.to_owned();
-        for what in &shape.strip {
+        for what in &pattern.strip {
             name = name.replace(what.as_str(), "");
         }
         // The vendor selects on the PREFIX and then replaces every occurrence
         // of it, which is the same thing wherever it appears once.
-        if name.starts_with(shape.prefix.as_str()) {
+        if name.starts_with(pattern.prefix.as_str()) {
             selected.push(Value::String(
-                name.replace(&shape.prefix, "").to_uppercase(),
+                name.replace(&pattern.prefix, "").to_uppercase(),
             ));
         }
         names.push(Value::String(name));
     }
 
-    if shape.append {
+    if pattern.append {
         for name in names {
-            let _ = event.append(&shape.scrubbed, name);
+            let _ = event.append(&pattern.scrubbed, name);
         }
     } else {
-        let _ = event.set(&shape.scrubbed, Value::Array(names));
+        let _ = event.set(&pattern.scrubbed, Value::Array(names));
     }
     // Assigned WHOLE, so anything already under the marking goes.
     let mut marking = serde_json::Map::new();
-    marking.insert(shape.key.clone(), Value::Array(selected));
-    let _ = event.set(&shape.marking, Value::Object(marking));
+    marking.insert(pattern.key.clone(), Value::Array(selected));
+    let _ = event.set(&pattern.marking, Value::Object(marking));
     true
 }
 
@@ -2068,13 +2068,13 @@ fn run_tags_and_marking(event: &mut Event, shape: &TagsAndMarking) -> bool {
 /// the START cursor rather than the split, only a LEADING or trailing quote
 /// comes off the value, and a pair whose value is `N/A` or whose key holds a
 /// non-word character is dropped outright.
-fn parse_kv_into_fields(script: &str) -> Option<KnownShape> {
+fn parse_kv_into_fields(script: &str) -> Option<KnownPattern> {
     let target = script.split_once("ctx[\"")?.1.split_once("\"] = [:]")?.0;
     (!target.is_empty()
         && target
             .chars()
             .all(|c| c.is_alphanumeric() || c == '_' || c == '.'))
-    .then(|| KnownShape::KvIntoFields(target.to_owned()))
+    .then(|| KnownPattern::KvIntoFields(target.to_owned()))
 }
 
 /// Split `message` into `key=value` pairs under `target`, fortiproxy's way.
@@ -2136,7 +2136,7 @@ pub fn kv_into_fields(event: &mut Event, target: &str) -> bool {
 /// message character by character rather than using a `kv` processor, so
 /// nothing downstream of it had any input at all and the source scored 3.3%
 /// of its fields.
-fn parse_kv_into_namespace(script: &str) -> Option<KnownShape> {
+fn parse_kv_into_namespace(script: &str) -> Option<KnownPattern> {
     let target = script
         .split_once("ctx[\"")?
         .1
@@ -2146,7 +2146,7 @@ fn parse_kv_into_namespace(script: &str) -> Option<KnownShape> {
         && target
             .chars()
             .all(|c| c.is_alphanumeric() || c == '_' || c == '.'))
-    .then(|| KnownShape::KvIntoNamespace(target.to_owned()))
+    .then(|| KnownPattern::KvIntoNamespace(target.to_owned()))
 }
 
 /// Split `message` into `key=value` pairs under `target`.
@@ -2203,7 +2203,7 @@ fn run_kv_into_namespace(event: &mut Event, target: &str) -> bool {
 ///
 /// bitdefender ships its tenant list on the event and names the organisation
 /// from it, so the table is per-document and no params matcher can see it.
-fn parse_ctx_table_lookup(script: &str) -> Option<KnownShape> {
+fn parse_ctx_table_lookup(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let plain = |path: &str| {
@@ -2233,7 +2233,7 @@ fn parse_ctx_table_lookup(script: &str) -> Option<KnownShape> {
     if !plain(table) || !plain(key) || target.is_empty() {
         return None;
     }
-    Some(KnownShape::CtxTableLookup {
+    Some(KnownPattern::CtxTableLookup {
         table: clean_path(table),
         key: clean_path(key),
         target,
@@ -2349,7 +2349,7 @@ fn firehose_dataset(event: &Event, message: &str, lower: &str) -> Option<&'stati
     }
     if group_holds("/aws/route53/") {
         // The vendor's chain STOPS on the group name, so a record from this
-        // group that fails the shape test is left unnamed rather than falling
+        // group that fails the pattern test is left unnamed rather than falling
         // through to the token checks.
         return (message.contains('T')
             && message.contains('Z')
@@ -2424,7 +2424,7 @@ fn run_firehose_dataset(event: &mut Event) -> bool {
 /// `fingerprint` can key the document by which metrics it carries. The list is
 /// written whether or not anything was found, exactly as the vendor does, and
 /// a `remove` drops it once the fingerprint has been taken.
-fn parse_nested_key_names(script: &str) -> Option<KnownShape> {
+fn parse_nested_key_names(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let source = script
@@ -2443,7 +2443,7 @@ fn parse_nested_key_names(script: &str) -> Option<KnownShape> {
     let assigned = script.rsplit_once(" = metricNames;")?.0;
     let target = clean_path(&assigned[assigned.rfind("ctx.")? + 4..]);
 
-    (!inner.is_empty() && !target.is_empty()).then_some(KnownShape::NestedKeyNames {
+    (!inner.is_empty() && !target.is_empty()).then_some(KnownPattern::NestedKeyNames {
         source: clean_path(source),
         inner: inner.to_owned(),
         target,
@@ -2471,11 +2471,11 @@ fn run_nested_key_names(event: &mut Event, source: &str, inner: &str, target: &s
 }
 
 /// `ctx.<target> = ZonedDateTime.parse(ctx['<source>']).plusDays(<n>)` as a
-/// [`KnownShape::DatePlusDays`].
+/// [`KnownPattern::DatePlusDays`].
 ///
 /// The source is read through a bracket subscript because the field it names
 /// is `@timestamp`, which no dotted path can spell.
-fn parse_date_plus_days(script: &str) -> Option<KnownShape> {
+fn parse_date_plus_days(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     // The assignment's spacing is the vendor's, not ours -- ti_eset writes two
@@ -2501,7 +2501,7 @@ fn parse_date_plus_days(script: &str) -> Option<KnownShape> {
         .map(|rest| rest.trim_start_matches('.'))
         .map(|rest| rest.trim_matches(['[', ']', '\'', '"']))?;
 
-    (!target.is_empty() && !source.is_empty()).then_some(KnownShape::DatePlusDays {
+    (!target.is_empty() && !source.is_empty()).then_some(KnownPattern::DatePlusDays {
         source: clean_path(source),
         target,
         days,
@@ -2520,7 +2520,7 @@ fn run_date_plus_days(event: &mut Event, source: &str, target: &str, days: i64) 
 }
 
 /// `ctx.<f>.values().removeIf(v -> v == '<literal>')` as a
-/// [`KnownShape::RemoveMapValue`].
+/// [`KnownPattern::RemoveMapValue`].
 ///
 /// The MAP counterpart of [`parse_remove_list_value`], which declines this
 /// because `<f>.values()` carries parentheses. A source that writes a sentinel
@@ -2528,7 +2528,7 @@ fn run_date_plus_days(event: &mut Event, source: &str, target: &str, days: i64) 
 /// writes `-` for "no value" in a dozen grok captures, so this single script
 /// is what stands between its `_tmp` scratch map and every field derived from
 /// it.
-fn parse_remove_map_value(script: &str) -> Option<KnownShape> {
+fn parse_remove_map_value(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let at = script.find(".values().removeIf(")?;
@@ -2553,7 +2553,7 @@ fn parse_remove_map_value(script: &str) -> Option<KnownShape> {
     }
     let (_, rhs) = lambda.split_once("==")?;
     let value = quoted_first(rhs)?.replace("\\\\", "\\");
-    (!field.is_empty()).then_some(KnownShape::RemoveMapValue { field, value })
+    (!field.is_empty()).then_some(KnownPattern::RemoveMapValue { field, value })
 }
 
 /// Drop every ENTRY of a map whose value equals one literal.
@@ -2575,7 +2575,7 @@ fn run_remove_map_value(event: &mut Event, field: &str, value: &str) -> bool {
 }
 
 /// `for (int i=0; i<ctx.<f>.length; i++) { if (ctx.<f>[i] == '<v>') {
-/// ctx.<f>.remove(i); } }` as the same [`KnownShape::RemoveListValue`]
+/// ctx.<f>.remove(i); } }` as the same [`KnownPattern::RemoveListValue`]
 /// [`parse_remove_list_value`] reads off `.removeIf(`.
 ///
 /// The loop walks FORWARD while removing from the same list, so a match
@@ -2587,7 +2587,7 @@ fn run_remove_map_value(event: &mut Event, field: &str, value: &str) -> bool {
 /// the same opening -- sysmon's V4MAPPED address conversion spells `for (def
 /// i = 0; i < ctx.dns.resolved_ip.length; i++)` -- falls through instead of
 /// losing the rest of its work.
-fn parse_indexed_list_removal(script: &str) -> Option<KnownShape> {
+fn parse_indexed_list_removal(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let tail = script.strip_prefix("for (int i=0; i<ctx.")?;
@@ -2610,7 +2610,7 @@ fn parse_indexed_list_removal(script: &str) -> Option<KnownShape> {
     }
 
     let field = clean_path(path_raw);
-    (!field.is_empty()).then_some(KnownShape::RemoveListValue { field, value })
+    (!field.is_empty()).then_some(KnownPattern::RemoveListValue { field, value })
 }
 
 /// gcp audit's `related.entity`, transliterated.
@@ -2733,7 +2733,7 @@ pub(crate) struct MailRelatedScript {
 }
 
 /// Read mimecast's `Populate related.* fields` script.
-fn parse_mail_related(script: &str) -> Option<KnownShape> {
+fn parse_mail_related(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let ctx_path_at = |text: &str| -> Option<String> {
@@ -2777,7 +2777,7 @@ fn parse_mail_related(script: &str) -> Option<KnownShape> {
         .map(clean_path)
         .filter(|path| !path.is_empty());
 
-    (!addresses.is_empty() || !names.is_empty()).then_some(KnownShape::MailRelated(Box::new(
+    (!addresses.is_empty() || !names.is_empty()).then_some(KnownPattern::MailRelated(Box::new(
         MailRelatedScript {
             names,
             addresses,
@@ -3142,7 +3142,7 @@ pub(crate) struct CategoryArm {
 /// Read the sequential `for (<v> in ctx.<list>) { if (<v> == 'a' || ...) {
 /// ctx.<t> = ['x']; break; } }` blocks, later ones gated on the target
 /// still being null.
-fn parse_category_type_ladder(script: &str) -> Option<KnownShape> {
+fn parse_category_type_ladder(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let mut arms = Vec::new();
@@ -3199,7 +3199,7 @@ fn parse_category_type_ladder(script: &str) -> Option<KnownShape> {
         cursor = at + "for (".len();
     }
 
-    (!arms.is_empty()).then_some(KnownShape::CategoryTypeLadder(arms))
+    (!arms.is_empty()).then_some(KnownPattern::CategoryTypeLadder(arms))
 }
 
 /// Run the ladder: each arm in order, matching any member of its list.
@@ -3238,9 +3238,9 @@ fn run_category_type_ladder(event: &mut Event, arms: &[CategoryArm]) -> bool {
 ///
 /// `for (def item : ctx.<source>.entrySet())` names the map being walked, and
 /// the trailing `ctx.<target> = <local>` names where the rebuilt one lands.
-/// Both halves must be present: the loop alone could be any of a dozen shapes,
+/// Both halves must be present: the loop alone could be any of a dozen patterns,
 /// and the assignment alone says nothing about what is being copied.
-fn parse_snake_key_map_copy(script: &str) -> Option<KnownShape> {
+fn parse_snake_key_map_copy(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let loop_at = script.find(" : ctx.")?;
@@ -3253,7 +3253,7 @@ fn parse_snake_key_map_copy(script: &str) -> Option<KnownShape> {
         .find(|line| line.starts_with("ctx.") && line.contains(" = "))?;
     let (target, _) = assignment.split_once(" = ")?;
 
-    Some(KnownShape::SnakeKeyMapCopy {
+    Some(KnownPattern::SnakeKeyMapCopy {
         source: clean_path(source),
         target: clean_path(&target["ctx.".len()..]),
     })
@@ -3261,7 +3261,7 @@ fn parse_snake_key_map_copy(script: &str) -> Option<KnownShape> {
 
 /// Read the angle-strip helper's call sites: `ctx.<p> = <name>(ctx.<p>);`
 /// scalars, and the loop rebuilding a list through the same helper.
-fn parse_strip_angle_pairs(script: &str) -> Option<KnownShape> {
+fn parse_strip_angle_pairs(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let name_at = script.find("(def input)")?;
@@ -3294,7 +3294,7 @@ fn parse_strip_angle_pairs(script: &str) -> Option<KnownShape> {
     }
 
     (!scalars.is_empty() || !lists.is_empty())
-        .then_some(KnownShape::StripAnglePairs { scalars, lists })
+        .then_some(KnownPattern::StripAnglePairs { scalars, lists })
 }
 
 /// cloudtrail's resources pass: ARN and accountId rename to their snake
@@ -3346,8 +3346,8 @@ fn run_resources_rename_dedup(event: &mut Event, source: &str) -> bool {
 }
 
 /// Read `ctx.put("<t>", new HashMap()); for (<v> in ctx.<s>) {
-/// ctx.<t>.put(<v>.<k>, <v>.<val>); }` as a [`KnownShape::NameValueFold`].
-fn parse_name_value_fold(script: &str) -> Option<KnownShape> {
+/// ctx.<t>.put(<v>.<k>, <v>.<val>); }` as a [`KnownPattern::NameValueFold`].
+fn parse_name_value_fold(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let at = script.find(", new HashMap())")?;
@@ -3372,7 +3372,7 @@ fn parse_name_value_fold(script: &str) -> Option<KnownShape> {
         .split(')')
         .next()?;
 
-    Some(KnownShape::NameValueFold {
+    Some(KnownPattern::NameValueFold {
         source: clean_path(source),
         target,
         key_member: key_member.trim().to_string(),
@@ -3384,10 +3384,10 @@ fn parse_name_value_fold(script: &str) -> Option<KnownShape> {
 ///
 /// `ctx.<t>[ctx.<s>[i].name] = ctx.<s>[i].value` inside
 /// `for (def i = 0; i < ctx.<s>.length; i++)`. The outcome is
-/// [`KnownShape::NameValueFold`]'s, so only the reading differs: the map is
+/// [`KnownPattern::NameValueFold`]'s, so only the reading differs: the map is
 /// subscripted rather than `put` to, and the element is reached by index
 /// rather than by a loop variable.
-fn parse_indexed_name_value_fold(script: &str) -> Option<KnownShape> {
+fn parse_indexed_name_value_fold(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let assignment = script
@@ -3407,7 +3407,7 @@ fn parse_indexed_name_value_fold(script: &str) -> Option<KnownShape> {
     let source = clean_path(source);
     let target = clean_path(target);
     (!source.is_empty() && !target.is_empty() && !key_member.is_empty() && !value_member.is_empty())
-        .then_some(KnownShape::NameValueFold {
+        .then_some(KnownPattern::NameValueFold {
             source,
             target,
             key_member: key_member.to_string(),
@@ -3440,9 +3440,9 @@ fn run_name_value_fold(
     true
 }
 
-/// Read the outcome-from-tags shape: the action plus a dot prefixes the tag
+/// Read the outcome-from-tags pattern: the action plus a dot prefixes the tag
 /// whose value decides success or failure.
-fn parse_outcome_from_tags(script: &str) -> Option<KnownShape> {
+fn parse_outcome_from_tags(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let plus = script.find(" + '.'")?;
@@ -3457,7 +3457,7 @@ fn parse_outcome_from_tags(script: &str) -> Option<KnownShape> {
     let head = &script[..put_at];
     let target = clean_path(&head[head.rfind("ctx.")? + 4..]);
 
-    Some(KnownShape::OutcomeFromTags {
+    Some(KnownPattern::OutcomeFromTags {
         action_field,
         tags: clean_path(tags),
         target: format!("{target}.outcome"),
@@ -3503,8 +3503,8 @@ fn run_outcome_from_tags(event: &mut Event, action_field: &str, tags: &str, targ
 }
 
 /// Read `ctx.<t> = ctx.<s>.splitOnToken("<sep>").length;` as a
-/// [`KnownShape::TokenCount`].
-fn parse_token_count(script: &str) -> Option<KnownShape> {
+/// [`KnownPattern::TokenCount`].
+fn parse_token_count(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let at = script.find(".splitOnToken(")?;
@@ -3524,7 +3524,7 @@ fn parse_token_count(script: &str) -> Option<KnownShape> {
         return None;
     }
 
-    Some(KnownShape::TokenCount {
+    Some(KnownPattern::TokenCount {
         source,
         separator,
         target,
@@ -3594,21 +3594,21 @@ fn parse_suffixes_by_prefix(script: &str) -> Option<SuffixesByPrefix> {
 }
 
 /// Collect the tails, appending where the target already holds a list.
-fn run_suffixes_by_prefix(event: &mut Event, shape: &SuffixesByPrefix) -> bool {
-    let Some(Value::Array(items)) = event.get(&shape.source) else {
+fn run_suffixes_by_prefix(event: &mut Event, pattern: &SuffixesByPrefix) -> bool {
+    let Some(Value::Array(items)) = event.get(&pattern.source) else {
         return true;
     };
     let collected: Vec<Value> = items
         .iter()
-        .filter_map(|item| item.get(&shape.member)?.as_str())
-        .filter_map(|text| text.strip_prefix(shape.prefix.as_str()))
+        .filter_map(|item| item.get(&pattern.member)?.as_str())
+        .filter_map(|text| text.strip_prefix(pattern.prefix.as_str()))
         .map(|tail| Value::String(tail.to_string()))
         .collect();
     if collected.is_empty() {
         return true;
     }
 
-    let grown = match event.get(&shape.target) {
+    let grown = match event.get(&pattern.target) {
         Some(Value::Array(existing)) => {
             let mut grown = existing.clone();
             grown.extend(collected);
@@ -3616,16 +3616,16 @@ fn run_suffixes_by_prefix(event: &mut Event, shape: &SuffixesByPrefix) -> bool {
         }
         _ => Value::Array(collected),
     };
-    let _ = event.set(&shape.target, grown);
+    let _ = event.set(&pattern.target, grown);
     true
 }
 
 /// Read `def <l> = []; <l>.add(ctx.<s>); ctx.<t> = <l>;` or its one-line
-/// spelling `ctx.<t> = [ctx.<s>];` as a [`KnownShape::WrapValueInList`].
+/// spelling `ctx.<t> = [ctx.<s>];` as a [`KnownPattern::WrapValueInList`].
 ///
 /// The literal is written with and without a space inside the bracket:
 /// `amazon_security_lake` closes it up and kolide's `osquery_status` does not.
-fn parse_wrap_value_in_list(script: &str) -> Option<KnownShape> {
+fn parse_wrap_value_in_list(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let literal = ["= [ctx.", "= [ ctx."]
@@ -3677,7 +3677,7 @@ fn parse_wrap_value_in_list(script: &str) -> Option<KnownShape> {
     let remove_source = script.contains(&format!("{owner}.remove('{leaf}')"))
         || script.contains(&format!("{owner}.remove(\"{leaf}\")"));
 
-    Some(KnownShape::WrapValueInList {
+    Some(KnownPattern::WrapValueInList {
         source,
         target,
         remove_source,
@@ -3685,8 +3685,8 @@ fn parse_wrap_value_in_list(script: &str) -> Option<KnownShape> {
 }
 
 /// Read `ctx.<t> = ctx.<a>[ctx.<a>.length-1];` as a
-/// [`KnownShape::LastElement`].
-fn parse_last_element(script: &str) -> Option<KnownShape> {
+/// [`KnownPattern::LastElement`].
+fn parse_last_element(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let at = script.find("[ctx.")?;
@@ -3700,11 +3700,11 @@ fn parse_last_element(script: &str) -> Option<KnownShape> {
     }
     let (lhs, _) = before.split_once('=')?;
     let target = clean_path(lhs.trim().strip_prefix("ctx.")?);
-    Some(KnownShape::LastElement { array, target })
+    Some(KnownPattern::LastElement { array, target })
 }
 
-/// Read `ctx.<a>[i] = ctx.<a>[i].trim()` as a [`KnownShape::TrimListInPlace`].
-fn parse_trim_list(script: &str) -> Option<KnownShape> {
+/// Read `ctx.<a>[i] = ctx.<a>[i].trim()` as a [`KnownPattern::TrimListInPlace`].
+fn parse_trim_list(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let at = script.find(".trim()")?;
@@ -3719,12 +3719,12 @@ fn parse_trim_list(script: &str) -> Option<KnownShape> {
             .trim()
             .strip_suffix("[i]")?,
     );
-    (read == written && !read.is_empty()).then_some(KnownShape::TrimListInPlace(read))
+    (read == written && !read.is_empty()).then_some(KnownPattern::TrimListInPlace(read))
 }
 
-/// Read cloudfront's localhost edge case as a [`KnownShape::StartsWithAppend`]:
+/// Read cloudfront's localhost edge case as a [`KnownPattern::StartsWithAppend`]:
 /// a constant appended to a list when a member of another list has a prefix.
-fn parse_starts_with_append(script: &str) -> Option<KnownShape> {
+fn parse_starts_with_append(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let at = script.find(".startsWith(")?;
@@ -3745,7 +3745,7 @@ fn parse_starts_with_append(script: &str) -> Option<KnownShape> {
     let value = quoted_argument(&script[add_at + ".add(".len()..])?;
     let target = bracket_path(&script[..add_at])?;
 
-    (!source.is_empty() && !target.is_empty()).then_some(KnownShape::StartsWithAppend {
+    (!source.is_empty() && !target.is_empty()).then_some(KnownPattern::StartsWithAppend {
         source,
         prefix,
         target,
@@ -3792,11 +3792,11 @@ enum ConcatTerm {
     Field(String),
 }
 
-/// Read cloudfront's `url.full` assembly as a [`KnownShape::ConcatParts`].
+/// Read cloudfront's `url.full` assembly as a [`KnownPattern::ConcatParts`].
 ///
 /// `def full = ""` then a run of guarded `full += ...`, and the result assigned
 /// to a ctx field when it came to something.
-fn parse_concat_parts(script: &str) -> Option<KnownShape> {
+fn parse_concat_parts(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let at = script.find("def ")?;
@@ -3825,7 +3825,7 @@ fn parse_concat_parts(script: &str) -> Option<KnownShape> {
     let assignment = script.rfind(&format!("= {var}"))?;
     let before = &script[..assignment];
     let target = clean_path(&before[before.rfind("ctx.")? + 4..]);
-    (!target.is_empty()).then_some(KnownShape::ConcatParts(ConcatScript { target, clauses }))
+    (!target.is_empty()).then_some(KnownPattern::ConcatParts(ConcatScript { target, clauses }))
 }
 
 /// One `+=` expression as its literal and ctx-field terms.
@@ -3863,14 +3863,14 @@ fn split_outside_quotes(text: &str, sep: char) -> Vec<&str> {
     parts
 }
 
-/// Read elb's `tlsv12` split as a [`KnownShape::TlsVersionSplit`].
+/// Read elb's `tlsv12` split as a [`KnownPattern::TlsVersionSplit`].
 ///
 /// s3access spells the same thing `ctx.<p>.toLowerCase().splitOnToken("v")`,
 /// and taking everything before the split read `toLowerCase()` as a segment of
 /// the path -- so the field resolved to nothing and eight events lost both
 /// `tls.version` and `tls.version_protocol`. The run lowercases the protocol
 /// half itself, so dropping the call changes nothing else.
-fn parse_tls_version_split(script: &str) -> Option<KnownShape> {
+fn parse_tls_version_split(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let at = script.find(".splitOnToken(")?;
@@ -3881,11 +3881,11 @@ fn parse_tls_version_split(script: &str) -> Option<KnownShape> {
         .take_while(|segment| !segment.contains('('))
         .collect::<Vec<_>>()
         .join(".");
-    (!source.is_empty()).then_some(KnownShape::TlsVersionSplit { source })
+    (!source.is_empty()).then_some(KnownPattern::TlsVersionSplit { source })
 }
 
-/// `ctx.<t> = ctx.<s>.decodeBase64();` as a [`KnownShape::DecodeBase64`].
-fn parse_decode_base64(script: &str) -> Option<KnownShape> {
+/// `ctx.<t> = ctx.<s>.decodeBase64();` as a [`KnownPattern::DecodeBase64`].
+fn parse_decode_base64(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let at = script.find(".decodeBase64()")?;
@@ -3894,12 +3894,12 @@ fn parse_decode_base64(script: &str) -> Option<KnownShape> {
     let (lhs, _) = before.split_once('=')?;
     let target = clean_path(lhs.trim().strip_prefix("ctx.")?);
     (!target.is_empty() && !source.is_empty())
-        .then_some(KnownShape::DecodeBase64 { source, target })
+        .then_some(KnownPattern::DecodeBase64 { source, target })
 }
 
 /// What a drop-empty script's OWN predicate says is droppable.
 ///
-/// The shape recurs across 245 of the 351 packages with an ingest pipeline, and
+/// The pattern recurs across 245 of the 351 packages with an ingest pipeline, and
 /// it is not one script. Most spell the predicate
 /// `v == null || v == '' || (v instanceof Map && v.size() == 0) || ...`, but 16
 /// packages -- `cisco_asa` among them -- write `removeIf(v -> v == null)` and
@@ -4080,7 +4080,7 @@ fn parse_ensure_append(script: &str) -> Option<EnsureAppend> {
     let (head, tail) = script.rsplit_once(" ?: [];")?;
     let target = painless_path(head)?;
     let argument = tail.split_once(".add(")?.1.split(')').next()?;
-    // A nested call in the argument is a different shape, not this one.
+    // A nested call in the argument is a different pattern, not this one.
     if argument.contains('(') {
         return None;
     }
@@ -4089,9 +4089,9 @@ fn parse_ensure_append(script: &str) -> Option<EnsureAppend> {
 }
 
 /// Append the source onto the target list, creating it where it is absent.
-pub fn ensure_append(event: &mut Event, shape: &EnsureAppend) -> bool {
-    if let Some(value) = event.get(&shape.source).cloned() {
-        let _ = event.append(&shape.target, value);
+pub fn ensure_append(event: &mut Event, pattern: &EnsureAppend) -> bool {
+    if let Some(value) = event.get(&pattern.source).cloned() {
+        let _ = event.append(&pattern.target, value);
     }
     true
 }
@@ -4136,7 +4136,7 @@ impl StringOp {
     /// Parse one `<op>(<args>)` call, declining anything off the allowlist.
     ///
     /// The allowlist is the point: `replaceAll` takes a regex rather than a
-    /// literal, so accepting it by shape would quietly change the semantics.
+    /// literal, so accepting it by pattern would quietly change the semantics.
     fn parse(name: &str, arguments: &str) -> Option<Self> {
         match name {
             "toLowerCase" | "toUpperCase" | "trim" if arguments.trim().is_empty() => {
@@ -4178,7 +4178,7 @@ impl StringOps {
 /// `String v = ctx.<source>; v = v.<op>(..); ..; ctx.<target> = v;`
 ///
 /// Every statement has to fit, and one op off the allowlist rejects the whole
-/// chain. A partial parse is worse than none: the shape binds, the ladder stops,
+/// chain. A partial parse is worse than none: the pattern binds, the ladder stops,
 /// and the ops it could not read are dropped in silence -- which is what the
 /// bare `.replace(` trigger below did to `ti_opencti`'s indicator type.
 fn parse_string_ops(script: &str) -> Option<StringOps> {
@@ -4228,15 +4228,15 @@ fn parse_string_ops(script: &str) -> Option<StringOps> {
 }
 
 /// Run the chain, leaving the event alone where the source is not a string.
-pub fn string_ops(event: &mut Event, shape: &StringOps) -> bool {
-    let Some(text) = event.get_str(&shape.source) else {
+pub fn string_ops(event: &mut Event, pattern: &StringOps) -> bool {
+    let Some(text) = event.get_str(&pattern.source) else {
         return true;
     };
-    let value = shape
+    let value = pattern
         .ops
         .iter()
         .fold(text.to_string(), |text, op| op.apply(&text));
-    let _ = event.set(&shape.target, value);
+    let _ = event.set(&pattern.target, value);
     true
 }
 
@@ -4254,8 +4254,8 @@ fn parse_octal_string(script: &str) -> Option<OctalString> {
 }
 
 /// Write the source as octal, the way Painless's 32-bit `(int)` cast renders.
-pub fn octal_string(event: &mut Event, shape: &OctalString) -> bool {
-    let Some(value) = event.get_as_i64(&shape.source) else {
+pub fn octal_string(event: &mut Event, pattern: &OctalString) -> bool {
+    let Some(value) = event.get_as_i64(&pattern.source) else {
         return true;
     };
     // `(int)` truncates to 32 bits before `toOctalString`, which then reads
@@ -4263,7 +4263,7 @@ pub fn octal_string(event: &mut Event, shape: &OctalString) -> bool {
     // negative the vendor happens to send.
     #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
     let truncated = value as i32 as u32;
-    let _ = event.set(&shape.target, json!(format!("{truncated:o}")));
+    let _ = event.set(&pattern.target, json!(format!("{truncated:o}")));
     true
 }
 
@@ -4334,13 +4334,17 @@ fn quoted_all(text: &str) -> Vec<String> {
 }
 
 /// Copy the source onto the target when the allowed set holds its value.
-pub fn allowed_value_copy(event: &mut Event, shape: &AllowedValueCopy) -> bool {
-    let Some(raw) = event.get_as_string(&shape.source) else {
+pub fn allowed_value_copy(event: &mut Event, pattern: &AllowedValueCopy) -> bool {
+    let Some(raw) = event.get_as_string(&pattern.source) else {
         return true;
     };
-    let value = if shape.lower { raw.to_lowercase() } else { raw };
-    if shape.allowed.contains(&value) {
-        let _ = event.set(&shape.target, json!(value));
+    let value = if pattern.lower {
+        raw.to_lowercase()
+    } else {
+        raw
+    };
+    if pattern.allowed.contains(&value) {
+        let _ = event.set(&pattern.target, json!(value));
     }
     true
 }
@@ -4612,7 +4616,7 @@ impl LiteralValueMap {
 /// failing the parse -- that is what lets the null-guard preamble through --
 /// so "no arm parsed" is the only structural rejection, and it is the one that
 /// matters: it drops the recursive map-walkers that merely spell `else if (`
-/// and which this shape claimed for 91 call sites without ever applying.
+/// and which this pattern claimed for 91 call sites without ever applying.
 fn parse_literal_value_map(script: &str) -> Option<LiteralValueMap> {
     let (local, source) = local_and_ctx_path(script)?;
 
@@ -4634,12 +4638,12 @@ fn parse_literal_value_map(script: &str) -> Option<LiteralValueMap> {
 }
 
 /// Write the arm the subject selects, if any.
-pub fn literal_value_map(event: &mut Event, shape: &LiteralValueMap) -> bool {
+pub fn literal_value_map(event: &mut Event, pattern: &LiteralValueMap) -> bool {
     // The field is absent, which every one of these scripts is gated on.
-    let Some(subject) = event.get_as_string(&shape.source) else {
+    let Some(subject) = event.get_as_string(&pattern.source) else {
         return false;
     };
-    let Some(arm) = shape.arms.iter().find(|arm| arm.when == subject) else {
+    let Some(arm) = pattern.arms.iter().find(|arm| arm.when == subject) else {
         return false;
     };
     let _ = event.set(&arm.target, arm.value.clone());
@@ -4648,7 +4652,7 @@ pub fn literal_value_map(event: &mut Event, shape: &LiteralValueMap) -> bool {
 
 /// Every VALUE of a map gathered into one deduped list, lists flattened.
 ///
-/// Sibling of [`KnownShape::CollectMapValues`], which walks `.keySet()` and
+/// Sibling of [`KnownPattern::CollectMapValues`], which walks `.keySet()` and
 /// reads a named leaf off each entry. This one walks `.values()` and takes the
 /// value itself, stepping into a value that is a list -- `ti_abusech` gathers
 /// `threat.indicator.file.hash` (md5, sha256, ssdeep, ...) into `related.hash`,
@@ -4670,15 +4674,15 @@ fn parse_flatten_map_into(script: &str) -> Option<FlattenMapInto> {
     (source != target).then_some(FlattenMapInto { source, target })
 }
 
-fn run_flatten_map_into(event: &mut Event, shape: &FlattenMapInto) -> bool {
-    let Some(Value::Object(map)) = event.get(&shape.source).cloned() else {
+fn run_flatten_map_into(event: &mut Event, pattern: &FlattenMapInto) -> bool {
+    let Some(Value::Object(map)) = event.get(&pattern.source).cloned() else {
         // Gated on the map, which the processor's own `if` also checks.
         return true;
     };
 
     // The script appends to whatever is already there, and `preserve_order`
     // means `values()` walks the document's own order.
-    let mut collected: Vec<Value> = match event.get(&shape.target) {
+    let mut collected: Vec<Value> = match event.get(&pattern.target) {
         Some(Value::Array(items)) => items.clone(),
         _ => Vec::new(),
     };
@@ -4698,7 +4702,7 @@ fn run_flatten_map_into(event: &mut Event, shape: &FlattenMapInto) -> bool {
         }
     }
 
-    let _ = event.set(&shape.target, Value::Array(collected));
+    let _ = event.set(&pattern.target, Value::Array(collected));
     true
 }
 
@@ -4799,19 +4803,19 @@ fn parse_copy_by_label(script: &str) -> Option<CopyByLabel> {
     })
 }
 
-fn run_copy_by_label(event: &mut Event, shape: &CopyByLabel) -> bool {
-    let Some(label) = event.get_as_string(&shape.subject) else {
+fn run_copy_by_label(event: &mut Event, pattern: &CopyByLabel) -> bool {
+    let Some(label) = event.get_as_string(&pattern.subject) else {
         // Absent, which the processor's own `if` gates on.
         return false;
     };
-    for (labels, source) in &shape.arms {
+    for (labels, source) in &pattern.arms {
         if !labels.contains(&label) {
             continue;
         }
         // The arm's own `!= null`: an absent or explicitly null source leaves
         // the target alone rather than clearing it.
         if let Some(value) = event.get(source).filter(|v| !v.is_null()).cloned() {
-            let _ = event.set(&shape.target, value);
+            let _ = event.set(&pattern.target, value);
         }
         return true;
     }
@@ -4852,7 +4856,7 @@ struct Band {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct Bound {
     op: Cmp,
-    /// Whole numbers only, so the shape derives `Eq` and never rounds a
+    /// Whole numbers only, so the pattern derives `Eq` and never rounds a
     /// boundary the vendor wrote. Every threshold in the catalogue is one.
     value: i64,
 }
@@ -4916,7 +4920,7 @@ fn parse_band_ladder(script: &str) -> Option<BandLadder> {
         // the closing `.put()` to say where it lands.
         let (lhs, rhs) = body.split(';').next()?.split_once('=')?;
         let label = quoted_first(rhs)?;
-        // Every arm has to agree on where it writes, or this is two shapes.
+        // Every arm has to agree on where it writes, or this is two patterns.
         if let Some(path) = painless_path(lhs) {
             if written.get_or_insert_with(|| path.clone()) != &path {
                 return None;
@@ -5013,7 +5017,7 @@ pub(crate) fn local_and_ctx_path(script: &str) -> Option<(String, String)> {
 fn parse_band(guard: &str, local: &str) -> Option<Band> {
     let all = !guard.contains("||");
     if !all && guard.contains("&&") {
-        // A mixed guard is a different shape; reading it as one or the other
+        // A mixed guard is a different pattern; reading it as one or the other
         // would take the wrong arm.
         return None;
     }
@@ -5072,7 +5076,7 @@ fn parse_bound(clause: &str, local: &str) -> Option<Bound> {
 }
 
 /// A threshold written `70`, `70.0` or `70L`. A genuinely fractional one
-/// declines the whole shape rather than rounding a boundary the vendor wrote.
+/// declines the whole pattern rather than rounding a boundary the vendor wrote.
 fn whole_number(text: &str) -> Option<i64> {
     let text = text.trim().trim_end_matches(['L', 'l', 'f', 'F', 'd', 'D']);
     let Some((whole, fraction)) = text.split_once('.') else {
@@ -5084,40 +5088,40 @@ fn whole_number(text: &str) -> Option<i64> {
     whole.parse().ok()
 }
 
-fn run_band_ladder(event: &mut Event, shape: &BandLadder) -> bool {
+fn run_band_ladder(event: &mut Event, pattern: &BandLadder) -> bool {
     // A grok leaves a numeric field as a string and the `convert` may not have
     // run yet, so read it either way.
     let Some(value) = event
-        .get_f64(&shape.subject)
-        .or_else(|| event.get_as_string(&shape.subject)?.trim().parse().ok())
+        .get_f64(&pattern.subject)
+        .or_else(|| event.get_as_string(&pattern.subject)?.trim().parse().ok())
     else {
         // The script's own `== null` arm, where it spells one. Without one the
         // processor's `if` gates on the field and this declines.
-        return match &shape.absent {
+        return match &pattern.absent {
             Some(label) => {
-                let _ = event.set(&shape.target, json!(label));
+                let _ = event.set(&pattern.target, json!(label));
                 true
             }
             None => false,
         };
     };
 
-    let label = shape
+    let label = pattern
         .arms
         .iter()
         .find(|(band, _)| band.holds(value))
         .map(|(_, label)| label.clone())
-        .or_else(|| shape.default.clone());
+        .or_else(|| pattern.default.clone());
 
     if let Some(label) = label {
-        let _ = event.set(&shape.target, json!(label));
+        let _ = event.set(&pattern.target, json!(label));
     }
     true
 }
 
 /// An expiry timestamp: a base plus a duration whose LAST CHARACTER is a unit.
 ///
-/// Every threat-intel package computes one. The unit switch is the shape --
+/// Every threat-intel package computes one. The unit switch is the pattern --
 /// three adders selected by one character, with a days default and an
 /// `error.message` for a unit the vendor does not know -- and the field names
 /// around it are incidental: `ti_abusech` writes six streams' worth against
@@ -5203,7 +5207,7 @@ fn parse_ioc_expiry(script: &str) -> Option<IocExpiry> {
 /// receiver is assigned, and this script binds that receiver to LOCALS
 /// (`_tmp_timestamp`, `_tmp_last_seen`) rather than to a `ctx` path, so the
 /// base list comes back empty. Three further differences make it its own
-/// shape rather than a widening: the first base is epoch SECONDS through
+/// pattern rather than a widening: the first base is epoch SECONDS through
 /// `Instant.ofEpochMilli`, the two bases are combined by taking the LATER
 /// rather than the first present, and the script also writes a BOOLEAN saying
 /// whether the expiry has already passed at ingest time.
@@ -5284,14 +5288,14 @@ fn parse_decay_window(script: &str) -> Option<DecayWindow> {
 }
 
 /// Expire the indicator, and say whether it has already expired.
-fn run_decay_window(event: &mut Event, shape: &DecayWindow) -> bool {
+fn run_decay_window(event: &mut Event, pattern: &DecayWindow) -> bool {
     let Some(duration) = event
-        .get_as_string(&shape.duration)
+        .get_as_string(&pattern.duration)
         .filter(|configured| !configured.is_empty())
     else {
         return true;
     };
-    let Some(seconds) = event.get_as_i64(&shape.seconds) else {
+    let Some(seconds) = event.get_as_i64(&pattern.seconds) else {
         return true;
     };
     let Some(mut base) = crate::date_formats::epoch_seconds_to_iso8601(seconds) else {
@@ -5300,7 +5304,7 @@ fn run_decay_window(event: &mut Event, shape: &DecayWindow) -> bool {
 
     // `isBefore` picks the LATER of the two, which is a different rule from
     // IocExpiry's first-present ladder: a re-sighting moves the window out.
-    if let Some(seen) = event.get_as_string(&shape.later)
+    if let Some(seen) = event.get_as_string(&pattern.later)
         && crate::date_formats::iso8601_is_before(&base, &seen) == Some(true)
     {
         base = seen;
@@ -5316,20 +5320,20 @@ fn run_decay_window(event: &mut Event, shape: &DecayWindow) -> bool {
         };
         (unit, count)
     } else {
-        if let Some(message) = &shape.invalid_message {
+        if let Some(message) = &pattern.invalid_message {
             let _ = event.append("error.message", json!(message));
         }
-        ('d', shape.default_days)
+        ('d', pattern.default_days)
     };
 
     let Some(expiry) = crate::date_formats::iso8601_plus(&base, unit, count, 0) else {
         return true;
     };
-    let _ = event.set(&shape.target, json!(expiry.clone()));
-    if let Some(ingested) = event.get_as_string(&shape.ingested)
+    let _ = event.set(&pattern.target, json!(expiry.clone()));
+    if let Some(ingested) = event.get_as_string(&pattern.ingested)
         && let Some(decayed) = crate::date_formats::iso8601_is_before(&expiry, &ingested)
     {
-        let _ = event.set(&shape.flag, json!(decayed));
+        let _ = event.set(&pattern.flag, json!(decayed));
     }
     true
 }
@@ -5362,17 +5366,17 @@ fn subtracted(script: &str, method: &str) -> i64 {
         .unwrap_or_default()
 }
 
-fn run_ioc_expiry(event: &mut Event, shape: &IocExpiry) -> bool {
+fn run_ioc_expiry(event: &mut Event, pattern: &IocExpiry) -> bool {
     let Some(duration) = event
-        .get_as_string(&shape.duration)
+        .get_as_string(&pattern.duration)
         .filter(|configured| !configured.is_empty())
-        .or_else(|| shape.default_duration.clone())
+        .or_else(|| pattern.default_duration.clone())
     else {
         // No duration and no literal default. `ti_anomali` wraps its whole body
         // in `if (dur instanceof String)`, so that writes nothing.
         return true;
     };
-    let Some(base) = shape
+    let Some(base) = pattern
         .bases
         .iter()
         .find_map(|path| event.get_as_string(path))
@@ -5390,16 +5394,16 @@ fn run_ioc_expiry(event: &mut Event, shape: &IocExpiry) -> bool {
         };
         (unit, count)
     } else {
-        if let Some(message) = &shape.invalid_message {
+        if let Some(message) = &pattern.invalid_message {
             let _ = event.append("error.message", json!(message));
         }
-        ('d', shape.default_days)
+        ('d', pattern.default_days)
     };
 
     if let Some(expiry) =
-        crate::date_formats::iso8601_plus(&base, unit, count, shape.settle_seconds)
+        crate::date_formats::iso8601_plus(&base, unit, count, pattern.settle_seconds)
     {
-        let _ = event.set(&shape.target, json!(expiry));
+        let _ = event.set(&pattern.target, json!(expiry));
     }
     true
 }
@@ -5411,7 +5415,7 @@ fn equality_literal(guard: &str, local: &str) -> Option<String> {
     let quote = rest.chars().next().filter(|c| *c == '\'' || *c == '"')?;
     let rest = &rest[quote.len_utf8()..];
     let end = rest.find(quote)?;
-    // A compound guard is a different shape, not this one.
+    // A compound guard is a different pattern, not this one.
     rest[end + quote.len_utf8()..]
         .trim()
         .is_empty()
@@ -5445,7 +5449,7 @@ fn leading_literal(text: &str) -> Option<(String, &str)> {
 
 /// Write the basename of one or more path fields.
 ///
-/// The shape is a helper that finds the last separator and returns what
+/// The pattern is a helper that finds the last separator and returns what
 /// follows it, then one paragraph per field:
 ///
 /// ```text
@@ -5519,14 +5523,14 @@ fn parse_basename_cuts(script: &str) -> Option<BasenameCuts> {
 }
 
 /// Write each cut, leaving a source with no separator alone.
-pub fn basename_cuts(event: &mut Event, shape: &BasenameCuts) -> bool {
-    for (source, target) in &shape.cuts {
+pub fn basename_cuts(event: &mut Event, pattern: &BasenameCuts) -> bool {
+    for (source, target) in &pattern.cuts {
         let Some(text) = event.get_str(source) else {
             continue;
         };
         // Elastic writes nothing when the path holds no separator, and
         // nothing when the basename is empty -- a trailing separator.
-        if let Some((_, base)) = text.rsplit_once(shape.separator)
+        if let Some((_, base)) = text.rsplit_once(pattern.separator)
             && !base.is_empty()
         {
             let base = base.to_string();
@@ -5753,7 +5757,7 @@ fn try_flattened_duplicates(event: &mut Event, script: &str) -> bool {
 /// the script's own `addValue(...)` calls rather than transcribed, so a
 /// vendor adding one is picked up by regenerating.
 ///
-/// Three argument shapes appear, and all three resolve to a value on the
+/// Three argument patterns appear, and all three resolve to a value on the
 /// event: a `ctx.` path, a local bound to one, and a member of a local -- the
 /// loops walk a list and add `i.principalSubject` from each element. A
 /// `TreeSet` is sorted and unique, and nothing empty goes in.
@@ -5970,7 +5974,7 @@ fn try_answers_from_resolved_ip(event: &mut Event) -> bool {
 /// converted `json` somewhere new. Both are one assignment, so one reader
 /// covers them. `jupiter_one` then REMOVES the source, and reading that off the
 /// script is what keeps its whole `json` tree out of the document.
-fn snake_case_apply(script: &str) -> Option<KnownShape> {
+fn snake_case_apply(script: &str) -> Option<KnownPattern> {
     // Which word-break rule the copied helper implements. `lastCharWasUpperCase`
     // is cleared by any non-uppercase character, a dot included; the other guard
     // asks about the previous character directly and breaks only after a
@@ -5992,7 +5996,7 @@ fn snake_case_apply(script: &str) -> Option<KnownShape> {
             continue;
         }
         // `convertToSnakeCase(ctx.json)` -- the helper's name is not fixed, so
-        // the shape of the call is what identifies it.
+        // the pattern of the call is what identifies it.
         let Some((_, argument)) = rhs.trim().split_once("SnakeCase(") else {
             continue;
         };
@@ -6000,7 +6004,7 @@ fn snake_case_apply(script: &str) -> Option<KnownShape> {
         if !argument.starts_with("ctx.") {
             continue;
         }
-        return Some(KnownShape::CamelToSnake {
+        return Some(KnownPattern::CamelToSnake {
             target: target[4..].to_string(),
             source: argument[4..].to_string(),
             rule,
@@ -6203,10 +6207,10 @@ fn parse_sum_of_fields(script: &str) -> Option<SumOfFields> {
 }
 
 /// Add two fields into a third, leaving the target alone where either is absent.
-pub fn sum_of_fields(event: &mut Event, shape: &SumOfFields) -> bool {
+pub fn sum_of_fields(event: &mut Event, pattern: &SumOfFields) -> bool {
     let (Some(a), Some(b)) = (
-        event.get(&shape.left).cloned(),
-        event.get(&shape.right).cloned(),
+        event.get(&pattern.left).cloned(),
+        event.get(&pattern.right).cloned(),
     ) else {
         return true;
     };
@@ -6220,14 +6224,14 @@ pub fn sum_of_fields(event: &mut Event, shape: &SumOfFields) -> bool {
         };
         json!(x + y)
     };
-    let _ = event.set(&shape.target, total);
+    let _ = event.set(&pattern.target, total);
     true
 }
 
 /// `event.duration = <field> * 1_000_000_000`, seconds to nanoseconds.
 ///
 /// Returns false when the field name cannot be read out of the SCRIPT: that is
-/// a shape this code does not actually understand, and counting it as handled
+/// a pattern this code does not actually understand, and counting it as handled
 /// would inflate the coverage figure. A field the script names but the EVENT
 /// lacks is a different thing -- the script would have done nothing either.
 fn try_duration_to_nanos(event: &mut Event, script: &str) -> bool {
@@ -6552,9 +6556,9 @@ fn parse_title_case(script: &str) -> Option<TitleCase> {
 }
 
 /// An empty string writes nothing, as the script's own `!= ""` guard does.
-fn run_title_case(event: &mut Event, shape: &TitleCase) -> bool {
+fn run_title_case(event: &mut Event, pattern: &TitleCase) -> bool {
     let titled = {
-        let Some(raw) = event.get_str(&shape.source) else {
+        let Some(raw) = event.get_str(&pattern.source) else {
             return true;
         };
         if raw.is_empty() {
@@ -6568,7 +6572,7 @@ fn run_title_case(event: &mut Event, shape: &TitleCase) -> bool {
         out.extend(chars.flat_map(char::to_lowercase));
         out
     };
-    let _ = event.set(&shape.target, json!(titled));
+    let _ = event.set(&pattern.target, json!(titled));
     true
 }
 
@@ -6631,16 +6635,16 @@ fn parse_named_map_entry(script: &str) -> Option<NamedMapEntry> {
 
 /// A map the event does not carry is the processor's own `instanceof Map`
 /// guard, so nothing is written.
-fn run_named_map_entry(event: &mut Event, shape: &NamedMapEntry) -> bool {
+fn run_named_map_entry(event: &mut Event, pattern: &NamedMapEntry) -> bool {
     let found = {
-        let Some(map) = event.get(&shape.map).and_then(Value::as_object) else {
+        let Some(map) = event.get(&pattern.map).and_then(Value::as_object) else {
             return true;
         };
-        map.get(&shape.key).cloned()
+        map.get(&pattern.key).cloned()
     };
     let _ = event.set(
-        &shape.target,
-        found.unwrap_or_else(|| shape.fallback.clone()),
+        &pattern.target,
+        found.unwrap_or_else(|| pattern.fallback.clone()),
     );
     true
 }
@@ -6658,7 +6662,7 @@ pub(crate) struct RangeArm {
 /// An `if (0 <= n && n < 20) { ctx.t = "info" } else if ...` ladder.
 ///
 /// A score becomes the name of its band. crowdstrike's alert severity is the
-/// shape, and its name then feeds a second script that scores it back, so a
+/// pattern, and its name then feeds a second script that scores it back, so a
 /// miss here costs both fields.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct RangeLadder {
@@ -6667,7 +6671,7 @@ pub(crate) struct RangeLadder {
     arms: Vec<RangeArm>,
 }
 
-/// Parse a numeric-band ladder, or `None` if the script is a different shape.
+/// Parse a numeric-band ladder, or `None` if the script is a different pattern.
 fn parse_range_ladder(script: &str) -> Option<RangeLadder> {
     use crate::painless_params::clean_path;
 
@@ -6739,18 +6743,18 @@ fn parse_range_ladder(script: &str) -> Option<RangeLadder> {
 
 /// A value outside every band writes nothing, as the script's own fall-through
 /// does.
-fn run_range_ladder(event: &mut Event, shape: &RangeLadder) -> bool {
-    let Some(value) = event.get_as_i64(&shape.source) else {
+fn run_range_ladder(event: &mut Event, pattern: &RangeLadder) -> bool {
+    let Some(value) = event.get_as_i64(&pattern.source) else {
         return true;
     };
-    for arm in &shape.arms {
+    for arm in &pattern.arms {
         let within_upper = if arm.high_inclusive {
             value <= arm.high
         } else {
             value < arm.high
         };
         if value >= arm.low && within_upper {
-            let _ = event.set(&shape.target, json!(arm.value));
+            let _ = event.set(&pattern.target, json!(arm.value));
             return true;
         }
     }
@@ -6819,15 +6823,15 @@ fn parse_score_severity_bands(script: &str) -> Option<ScoreSeverityBands> {
     })
 }
 
-fn run_score_severity_bands(event: &mut Event, shape: &ScoreSeverityBands) -> bool {
-    let Some(score) = event.get_as_i64(&shape.source) else {
+fn run_score_severity_bands(event: &mut Event, pattern: &ScoreSeverityBands) -> bool {
+    let Some(score) = event.get_as_i64(&pattern.source) else {
         return true;
     };
     #[allow(clippy::cast_precision_loss)]
-    let _ = event.set(&shape.risk_score_target, json!(score as f64));
-    for (ceiling, severity) in &shape.bands {
+    let _ = event.set(&pattern.risk_score_target, json!(score as f64));
+    for (ceiling, severity) in &pattern.bands {
         if ceiling.is_none_or(|c| score < c) {
-            let _ = event.set(&shape.severity_target, json!(severity));
+            let _ = event.set(&pattern.severity_target, json!(severity));
             break;
         }
     }
@@ -6872,16 +6876,16 @@ fn parse_indexed_field_copies(script: &str) -> Option<IndexedFieldCopies> {
     })
 }
 
-fn run_indexed_field_copies(event: &mut Event, shape: &IndexedFieldCopies) -> bool {
+fn run_indexed_field_copies(event: &mut Event, pattern: &IndexedFieldCopies) -> bool {
     let Some(item) = event
-        .get(&shape.list)
+        .get(&pattern.list)
         .and_then(Value::as_array)
-        .and_then(|items| items.get(shape.index))
+        .and_then(|items| items.get(pattern.index))
         .cloned()
     else {
         return true;
     };
-    for (member, target) in &shape.copies {
+    for (member, target) in &pattern.copies {
         if let Some(value) = item
             .get(member)
             .filter(|v| !crate::painless_helpers::painless_is_empty_value(v))
@@ -6924,15 +6928,15 @@ fn parse_fields_into_map(script: &str) -> Option<FieldsIntoMap> {
 
 /// Any member absent leaves the whole map unwritten -- the vendor guards the
 /// SCRIPT on every source being non-null, so this only runs when they are.
-fn run_fields_into_map(event: &mut Event, shape: &FieldsIntoMap) -> bool {
+fn run_fields_into_map(event: &mut Event, pattern: &FieldsIntoMap) -> bool {
     let mut map = Map::new();
-    for (key, source) in &shape.members {
+    for (key, source) in &pattern.members {
         let Some(value) = event.get(source).cloned() else {
             return true;
         };
         map.insert(key.clone(), value);
     }
-    let _ = event.set(&shape.target, Value::Object(map));
+    let _ = event.set(&pattern.target, Value::Object(map));
     true
 }
 
@@ -7068,15 +7072,15 @@ fn parse_first_element(script: &str) -> Option<FirstElement> {
     })
 }
 
-fn run_first_element(event: &mut Event, shape: &FirstElement) -> bool {
-    if shape.only_if_unset && event.has_value(&shape.target) {
+fn run_first_element(event: &mut Event, pattern: &FirstElement) -> bool {
+    if pattern.only_if_unset && event.has_value(&pattern.target) {
         return true;
     }
-    let Some(Value::Array(items)) = event.get(&shape.array) else {
+    let Some(Value::Array(items)) = event.get(&pattern.array) else {
         return true;
     };
     if let Some(first) = items.first().cloned() {
-        let _ = event.set(&shape.target, first);
+        let _ = event.set(&pattern.target, first);
     }
     true
 }
@@ -7107,7 +7111,7 @@ pub(crate) struct LadderArm {
 /// through a SECOND local (`def u = level.toUpperCase();` where `level`
 /// itself reads `ctx.a.b`), or compared inline -- and every arm assigns a
 /// literal to a ctx path. Fortinet's 11-arm IANA-number-to-transport table is
-/// the shape; writing the table out by hand is how a mapping silently goes
+/// the pattern; writing the table out by hand is how a mapping silently goes
 /// stale.
 ///
 /// Owned rather than borrowed from the script: the parse runs once per call
@@ -7122,7 +7126,7 @@ pub(crate) struct Ladder {
     arms: Vec<LadderArm>,
 }
 
-/// Parse an equality ladder, or `None` if the script is a different shape.
+/// Parse an equality ladder, or `None` if the script is a different pattern.
 fn parse_ladder(script: &str) -> Option<Ladder> {
     use crate::painless_params::clean_path;
 
@@ -7151,7 +7155,7 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
         };
         // Every literal an OR'd condition compares the subject against --
         // `u == 'LOW' || u == 'NEUTRAL'` is one arm with two literals, and a
-        // plain `x == 'a'` is the same shape with one.
+        // plain `x == 'a'` is the same pattern with one.
         let literals: Vec<String> = cond
             .split("||")
             .filter_map(|piece| {
@@ -7219,7 +7223,7 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
     if arms.len() < 2 {
         return None;
     }
-    // A `.put()` arm is also how a script BUILDS a map, so the shape only
+    // A `.put()` arm is also how a script BUILDS a map, so the pattern only
     // claims one where every `if` in it is an arm -- nothing else going on.
     if through_put && arms.len() != script.matches("if (").count() {
         return None;
@@ -7301,7 +7305,7 @@ fn strip_case_fold(path: &str) -> (String, bool) {
 /// ```
 ///
 /// Both targets are read off the `substring` assignments rather than named, so
-/// the same shape over another vendor's version field lands the same way.
+/// the same pattern over another vendor's version field lands the same way.
 fn try_version_split(event: &mut Event, script: &str) -> bool {
     const HEAD: &str = ".substring(0, matcher.start())";
     const TAIL: &str = ".substring(matcher.start(),";
@@ -7363,7 +7367,7 @@ fn try_version_split(event: &mut Event, script: &str) -> bool {
 /// ```
 ///
 /// o365's forwarding rules are nearly the whole of what the runtime was still
-/// skipping -- 1,483 of 1,487 scripts, this one shape.
+/// skipping -- 1,483 of 1,487 scripts, this one pattern.
 ///
 /// The list keeps INSERTION order where Elastic's `HashSet` iterates by hash
 /// bucket. That order carries no meaning, so `tests/compare-policy.yaml`
@@ -7557,12 +7561,12 @@ fn parse_keys_by_suffix(script: &str) -> Option<KeysBySuffix> {
 /// `Collections.sort` on a list of address strings is lexicographic, which is
 /// why `2a02:cf40::1` sorts between `0.0.0.0` and `81.2.69.144` rather than
 /// after both.
-fn run_keys_by_suffix(event: &mut Event, shape: &KeysBySuffix) -> bool {
+fn run_keys_by_suffix(event: &mut Event, pattern: &KeysBySuffix) -> bool {
     let mut matched = false;
     let mut collected: Vec<String> = Vec::new();
-    if let Some(Value::Object(entries)) = event.get(&shape.map) {
+    if let Some(Value::Object(entries)) = event.get(&pattern.map) {
         for (key, value) in entries {
-            if !shape.suffixes.iter().any(|suffix| key.ends_with(suffix)) {
+            if !pattern.suffixes.iter().any(|suffix| key.ends_with(suffix)) {
                 continue;
             }
             matched = true;
@@ -7577,13 +7581,13 @@ fn run_keys_by_suffix(event: &mut Event, shape: &KeysBySuffix) -> bool {
         return true;
     }
 
-    if let Some(Value::Array(held)) = event.get(&shape.target) {
+    if let Some(Value::Array(held)) = event.get(&pattern.target) {
         collected.extend(held.iter().filter_map(Value::as_str).map(str::to_owned));
     }
     collected.sort_unstable();
     collected.dedup();
     let _ = event.set(
-        &shape.target,
+        &pattern.target,
         Value::Array(collected.into_iter().map(Value::String).collect()),
     );
     true
@@ -7651,12 +7655,12 @@ fn parse_guarded_replace(script: &str) -> Option<GuardedReplace> {
 }
 
 /// Rewrite one substring of a field, leaving a non-string source alone.
-pub fn guarded_replace(event: &mut Event, shape: &GuardedReplace) -> bool {
-    let Some(text) = event.get_str(&shape.source) else {
+pub fn guarded_replace(event: &mut Event, pattern: &GuardedReplace) -> bool {
+    let Some(text) = event.get_str(&pattern.source) else {
         return true;
     };
-    let replaced = text.replace(shape.from.as_str(), &shape.to);
-    let _ = event.set(&shape.target, replaced);
+    let replaced = text.replace(pattern.from.as_str(), &pattern.to);
+    let _ = event.set(&pattern.target, replaced);
     true
 }
 
@@ -7757,7 +7761,7 @@ pub(crate) fn ctx_path_bound_to(script: &str, name: &str) -> Option<String> {
 /// else if (result.size() > 1) { ctx.network.direction = result; }
 /// ```
 ///
-/// The two-shapes-one-field ending is the part the plain ladder cannot express,
+/// The two-patterns-one-field ending is the part the plain ladder cannot express,
 /// and `CrowdStrike`'s `network.direction` rides entirely on it -- every rename
 /// of `LocalAddress` and `RemoteAddress` after it is gated on the result.
 fn try_collecting_ladder(event: &mut Event, script: &str) -> bool {
@@ -7783,7 +7787,7 @@ fn try_collecting_ladder(event: &mut Event, script: &str) -> bool {
             continue;
         };
         // Only the arms testing the subject; the size tests at the end are the
-        // same shape and must not be mistaken for one.
+        // same pattern and must not be mistaken for one.
         let Some((_, rhs)) = cond.split_once("==") else {
             continue;
         };
@@ -8148,7 +8152,7 @@ fn try_ladder(event: &mut Event, ladder: &Ladder) -> bool {
 
 /// The source and destination arrays of an append-if-absent script.
 ///
-/// The shape is `for (x in ctx.A) { if (!ctx.B.contains(x)) ctx.B.add(x) }`,
+/// The pattern is `for (x in ctx.A) { if (!ctx.B.contains(x)) ctx.B.add(x) }`,
 /// which the network sources use to fold resolved addresses into
 /// `related.ip`.
 fn append_unique_fields(script: &str) -> Option<(&'static str, &'static str)> {
@@ -8263,8 +8267,8 @@ fn parse_list_rename_table(script: &str) -> Option<ListRenameTable> {
 /// the value is even a list, so a present-but-wrong-typed field is gone
 /// afterwards too -- the same `Event::remove` call gives that order for free,
 /// and the pattern match declines onto a no-op for anything but an array.
-fn run_list_rename_table(event: &mut Event, shape: &ListRenameTable) -> bool {
-    let Some(Value::Array(items)) = event.remove(&shape.source) else {
+fn run_list_rename_table(event: &mut Event, pattern: &ListRenameTable) -> bool {
+    let Some(Value::Array(items)) = event.remove(&pattern.source) else {
         return true;
     };
 
@@ -8274,7 +8278,7 @@ fn run_list_rename_table(event: &mut Event, shape: &ListRenameTable) -> bool {
             continue;
         };
         let mut out = Map::new();
-        for (old_key, new_key) in &shape.renames {
+        for (old_key, new_key) in &pattern.renames {
             if let Some(value) = entries.get(old_key) {
                 out.insert(new_key.clone(), value.clone());
             }
@@ -8282,7 +8286,7 @@ fn run_list_rename_table(event: &mut Event, shape: &ListRenameTable) -> bool {
         rebuilt.push(Value::Object(out));
     }
 
-    let _ = event.set(&shape.target, Value::Array(rebuilt));
+    let _ = event.set(&pattern.target, Value::Array(rebuilt));
     true
 }
 
@@ -8302,7 +8306,7 @@ fn evidence_loop_path(script: &str) -> Option<String> {
 /// pipeline wants the half before the marker. The search is case-INSENSITIVE
 /// and the cut is on the ORIGINAL text, so the case of what survives is the
 /// vendor's.
-fn parse_substring_before_last(script: &str) -> Option<KnownShape> {
+fn parse_substring_before_last(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let source = script
@@ -8321,7 +8325,7 @@ fn parse_substring_before_last(script: &str) -> Option<KnownShape> {
         .map(|(target, _)| clean_path(&target["ctx.".len()..]))?;
 
     (!source.is_empty() && !target.is_empty() && !needle.is_empty()).then_some(
-        KnownShape::SubstringBeforeLast {
+        KnownPattern::SubstringBeforeLast {
             source,
             target,
             needle,
@@ -8444,19 +8448,19 @@ fn parse_pascal_keys(script: &str) -> Option<PascalKeys> {
 }
 
 /// Capitalise every key, honouring the prefix exception.
-fn run_pascal_keys(event: &mut Event, shape: &PascalKeys) -> bool {
-    let Some(Value::Object(entries)) = event.get(&shape.path).cloned() else {
+fn run_pascal_keys(event: &mut Event, pattern: &PascalKeys) -> bool {
+    let Some(Value::Object(entries)) = event.get(&pattern.path).cloned() else {
         return true;
     };
 
     let mut rebuilt = Map::new();
     for (key, value) in entries {
-        let tail = (!shape.prefix.is_empty())
-            .then(|| key.strip_prefix(shape.prefix.as_str()))
+        let tail = (!pattern.prefix.is_empty())
+            .then(|| key.strip_prefix(pattern.prefix.as_str()))
             .flatten()
             .filter(|tail| tail.chars().next().is_some_and(char::is_uppercase));
         let renamed = if let Some(tail) = tail {
-            format!("{}{tail}", shape.replacement)
+            format!("{}{tail}", pattern.replacement)
         } else {
             let mut chars = key.chars();
             chars.next().map_or_else(
@@ -8466,7 +8470,7 @@ fn run_pascal_keys(event: &mut Event, shape: &PascalKeys) -> bool {
         };
         rebuilt.insert(renamed, value);
     }
-    let _ = event.set(&shape.path, Value::Object(rebuilt));
+    let _ = event.set(&pattern.path, Value::Object(rebuilt));
     true
 }
 
@@ -8474,7 +8478,7 @@ fn run_pascal_keys(event: &mut Event, shape: &PascalKeys) -> bool {
 ///
 /// `aws/vpcflow` and `aws/firewall_logs` both spell out the six TCP flags this
 /// way. The masks and names are read off the script rather than assumed to be
-/// TCP's, because nothing in the shape says they must be.
+/// TCP's, because nothing in the pattern says they must be.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BitFlagNames {
     source: String,
@@ -8573,7 +8577,7 @@ pub struct BitNameArray {
 /// from the top down. Every literal between the extracted fields is matched
 /// exactly, so a script that only shares the `new String[]{` opening falls
 /// through instead of losing data silently.
-fn parse_bit_name_array(script: &str) -> Option<KnownShape> {
+fn parse_bit_name_array(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     let tail = script.strip_prefix("String[] flags = new String[]{")?;
@@ -8622,7 +8626,7 @@ fn parse_bit_name_array(script: &str) -> Option<KnownShape> {
         return None;
     }
 
-    Some(KnownShape::BitNameArray(Box::new(BitNameArray {
+    Some(KnownPattern::BitNameArray(Box::new(BitNameArray {
         source,
         target,
         names,
@@ -8631,20 +8635,20 @@ fn parse_bit_name_array(script: &str) -> Option<KnownShape> {
 
 /// Decode the bits high to low against the name array, writing nothing when
 /// none are set -- the script's own `if (flagsSeen.length > 0)` guard.
-fn run_bit_name_array(event: &mut Event, shape: &BitNameArray) -> bool {
-    let Some(bits) = event.get_as_i64(&shape.source) else {
+fn run_bit_name_array(event: &mut Event, pattern: &BitNameArray) -> bool {
+    let Some(bits) = event.get_as_i64(&pattern.source) else {
         return true;
     };
-    let len = shape.names.len();
+    let len = pattern.names.len();
     let mut seen = Vec::with_capacity(len);
-    for (index, name) in shape.names.iter().enumerate() {
+    for (index, name) in pattern.names.iter().enumerate() {
         let bit = (len - 1 - index) as u32;
         if bits & (1i64 << bit) != 0 {
             seen.push(Value::String(name.clone()));
         }
     }
     if !seen.is_empty() {
-        let _ = event.set(&shape.target, Value::Array(seen));
+        let _ = event.set(&pattern.target, Value::Array(seen));
     }
     true
 }
@@ -8967,7 +8971,7 @@ fn parse_append_each(script: &str) -> Option<AppendEach> {
     })
 }
 
-fn try_append_each(event: &mut Event, shape: &AppendEach) -> bool {
+fn try_append_each(event: &mut Event, pattern: &AppendEach) -> bool {
     use crate::painless_params::clean_path;
 
     let AppendEach {
@@ -8975,7 +8979,7 @@ fn try_append_each(event: &mut Event, shape: &AppendEach) -> bool {
         target,
         map_keys,
         separator,
-    } = shape;
+    } = pattern;
 
     // A missing source is not a failure -- the processor's `if` guards it.
     let entries: Vec<Value> = match event.get(source) {
@@ -9066,7 +9070,7 @@ fn parse_list_member_flag(script: &str) -> Option<ListMemberFlag> {
             .trim(),
     );
 
-    // Every arm compares the SAME member; a mixed member name is not this shape.
+    // Every arm compares the SAME member; a mixed member name is not this pattern.
     let (_, after_if) = script.split_once(&format!("if ({item}."))?;
     let (member, _) = after_if.split_once(" == ")?;
     let member = member.trim();
@@ -9091,23 +9095,23 @@ fn parse_list_member_flag(script: &str) -> Option<ListMemberFlag> {
 
 /// The loop exits (`return`) on the first hit, so this is `list.any(member in
 /// values)` -- never which element or which literal, only whether one exists.
-fn run_list_member_flag(event: &mut Event, shape: &ListMemberFlag) -> bool {
-    let Some(Value::Array(items)) = event.get(&shape.list) else {
+fn run_list_member_flag(event: &mut Event, pattern: &ListMemberFlag) -> bool {
+    let Some(Value::Array(items)) = event.get(&pattern.list) else {
         return true;
     };
     let hit = items.iter().any(|item| {
-        item.get(&shape.member)
+        item.get(&pattern.member)
             .and_then(Value::as_str)
-            .is_some_and(|v| shape.values.iter().any(|want| want == v))
+            .is_some_and(|v| pattern.values.iter().any(|want| want == v))
     });
-    let _ = event.set(&shape.target, json!(hit));
+    let _ = event.set(&pattern.target, json!(hit));
     true
 }
 
 /// `for (def item : ctx.<table>) { if (item.<key> == ctx.<subject>) { ... } }`
 /// followed by a chain of fallback assignments to the same target.
 ///
-/// Cisco IOS's timezone map is the shape, and at 89 hits it was the single
+/// Cisco IOS's timezone map is the pattern, and at 89 hits it was the single
 /// largest unhandled script in the corpus. The table lives in `ctx`, not in
 /// `params`, because the deployment supplies it -- so the mapping is data the
 /// matcher READS, never a table transcribed into Rust.
@@ -9124,7 +9128,7 @@ pub struct RowLookup {
 
 /// Read the loop, its match condition and the column a hit yields.
 ///
-/// Every rejection here is structural, so the shape can be decided from the
+/// Every rejection here is structural, so the pattern can be decided from the
 /// text and no longer has to be claimed on a `for (def ` and a `" : ctx."`
 /// appearing somewhere in the same script.
 fn parse_row_lookup(script: &str) -> Option<RowLookup> {
@@ -9159,7 +9163,7 @@ fn parse_row_lookup(script: &str) -> Option<RowLookup> {
     })
 }
 
-fn try_row_lookup_with_fallback(event: &mut Event, script: &str, shape: &RowLookup) -> bool {
+fn try_row_lookup_with_fallback(event: &mut Event, script: &str, pattern: &RowLookup) -> bool {
     let RowLookup {
         table,
         key,
@@ -9167,7 +9171,7 @@ fn try_row_lookup_with_fallback(event: &mut Event, script: &str, shape: &RowLook
         value_col,
         target,
         ..
-    } = shape;
+    } = pattern;
     let (key, value_col) = (key.as_str(), value_col.as_str());
     let target = target.clone();
 
@@ -9367,7 +9371,7 @@ fn try_sentinel_removal_literal(event: &mut Event, script: &str) -> bool {
 ///
 /// The helper's own three ranges -- 10.0.0.0/8, 172.16.0.0/12 and
 /// 192.168.0.0/16 -- are exactly the set `Ipv4Addr::is_private` answers for.
-fn parse_private_cidr_direction(script: &str) -> Option<KnownShape> {
+fn parse_private_cidr_direction(script: &str) -> Option<KnownPattern> {
     let mut ends = Vec::new();
     let mut cursor = 0usize;
     while let Some(rel) = script[cursor..].find("isPrivateCIDR(ctx.") {
@@ -9387,7 +9391,7 @@ fn parse_private_cidr_direction(script: &str) -> Option<KnownShape> {
         .find(|(_, rhs)| rhs.trim().trim_matches(['\'', '"']) == "inbound")
         .map(|(path, _)| path)?;
 
-    Some(KnownShape::PrivateCidrDirection {
+    Some(KnownPattern::PrivateCidrDirection {
         source: source.clone(),
         destination: destination.clone(),
         target,
@@ -9676,7 +9680,7 @@ impl PartialEq for Factor {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
             (Self::Long(one), Self::Long(two)) => one == two,
-            // Bit equality, so the shape stays `Eq` and the lock can order it.
+            // Bit equality, so the pattern stays `Eq` and the lock can order it.
             (Self::Double(one), Self::Double(two)) => one.to_bits() == two.to_bits(),
             _ => false,
         }
@@ -9743,16 +9747,16 @@ pub(crate) fn assigns_at(bytes: &[u8], at: usize) -> bool {
 }
 
 /// Multiply the source into the target.
-pub fn scale_field(event: &mut Event, shape: &ScaleField) -> bool {
-    if let Some(n) = event.get_as_i64(&shape.source) {
-        let scaled = match shape.factor {
+pub fn scale_field(event: &mut Event, pattern: &ScaleField) -> bool {
+    if let Some(n) = event.get_as_i64(&pattern.source) {
+        let scaled = match pattern.factor {
             Factor::Long(factor) => json!(n.saturating_mul(factor)),
             // Painless widens the long to a double BEFORE multiplying, so the
             // rounding is the same one Elasticsearch published.
             #[allow(clippy::cast_precision_loss)]
             Factor::Double(factor) => json!(n as f64 * factor),
         };
-        let _ = event.set(&shape.target, scaled);
+        let _ = event.set(&pattern.target, scaled);
     }
     true
 }
@@ -9825,9 +9829,9 @@ fn parse_millisecond_ladder(script: &str) -> Option<MillisecondLadder> {
 }
 
 /// Normalise every suspected timestamp under the walk's root.
-fn run_millisecond_ladder(event: &mut Event, shape: &MillisecondLadder) -> bool {
-    if let Some(root) = crate::painless_params::pointer_mut(event, &shape.root) {
-        scale_suspected_timestamps(root, &shape.suffixes);
+fn run_millisecond_ladder(event: &mut Event, pattern: &MillisecondLadder) -> bool {
+    if let Some(root) = crate::painless_params::pointer_mut(event, &pattern.root) {
+        scale_suspected_timestamps(root, &pattern.suffixes);
     }
     true
 }
@@ -9925,15 +9929,15 @@ fn parse_rounded_scale(script: &str) -> Option<RoundedScale> {
 
 /// Round rather than truncate: `Math.round` keeps `0.999 * 100` at the top of
 /// its band where a plain `(long)` cast on the product would drop it.
-fn run_rounded_scale(event: &mut Event, shape: &RoundedScale) -> bool {
-    let Some(v) = event.get_f64(&shape.source) else {
+fn run_rounded_scale(event: &mut Event, pattern: &RoundedScale) -> bool {
+    let Some(v) = event.get_f64(&pattern.source) else {
         return true;
     };
     #[allow(clippy::cast_precision_loss)]
-    let scaled = v * shape.factor as f64;
+    let scaled = v * pattern.factor as f64;
     #[allow(clippy::cast_possible_truncation)]
     let rounded = scaled.round() as i64;
-    let _ = event.set(&shape.target, json!(rounded));
+    let _ = event.set(&pattern.target, json!(rounded));
     true
 }
 
@@ -10108,20 +10112,20 @@ fn parse_contains_ladder(script: &str) -> Option<ContainsLadder> {
     })
 }
 
-fn run_contains_ladder(event: &mut Event, shape: &ContainsLadder) -> bool {
-    let Some(subject) = event.get_str(&shape.subject).map(str::to_string) else {
+fn run_contains_ladder(event: &mut Event, pattern: &ContainsLadder) -> bool {
+    let Some(subject) = event.get_str(&pattern.subject).map(str::to_string) else {
         return true;
     };
-    let subject = if shape.lower {
+    let subject = if pattern.lower {
         subject.to_lowercase()
     } else {
         subject
     };
-    let Some(value) = event.get(&shape.value).cloned() else {
+    let Some(value) = event.get(&pattern.value).cloned() else {
         return true;
     };
 
-    for (needle, target) in &shape.arms {
+    for (needle, target) in &pattern.arms {
         if subject.contains(needle) {
             let _ = event.set(target, value);
             break;
@@ -10223,8 +10227,8 @@ fn ctx_path_before_assignment(script: &str, bucket: &str) -> Option<String> {
 
 /// A cut that misses on ANY item leaves every column unwritten: Painless
 /// throws on `substring(0, -1)` and the whole processor fails there.
-fn run_slice_each_item(event: &mut Event, shape: &SliceEachItem) -> bool {
-    let Some(Value::Array(items)) = event.get(&shape.source) else {
+fn run_slice_each_item(event: &mut Event, pattern: &SliceEachItem) -> bool {
+    let Some(Value::Array(items)) = event.get(&pattern.source) else {
         return true;
     };
     let items: Vec<String> = items
@@ -10240,7 +10244,7 @@ fn run_slice_each_item(event: &mut Event, shape: &SliceEachItem) -> bool {
             .map(Value::Array)
     };
 
-    let Some(written) = shape
+    let Some(written) = pattern
         .columns
         .iter()
         .map(|(target, slice)| cut_all(slice).map(|column| (target, column)))
@@ -10324,14 +10328,14 @@ fn parse_collect_columns(script: &str) -> Option<CollectColumns> {
     })
 }
 
-fn run_collect_columns(event: &mut Event, shape: &CollectColumns) -> bool {
-    let Some(Value::Array(items)) = event.get(&shape.source) else {
+fn run_collect_columns(event: &mut Event, pattern: &CollectColumns) -> bool {
+    let Some(Value::Array(items)) = event.get(&pattern.source) else {
         return true;
     };
     let items = items.clone();
 
     let mut built = serde_json::Map::new();
-    for (key, member) in &shape.columns {
+    for (key, member) in &pattern.columns {
         let values: Vec<Value> = items
             .iter()
             .filter_map(|item| item.get(member).filter(|held| !held.is_null()).cloned())
@@ -10344,7 +10348,7 @@ fn run_collect_columns(event: &mut Event, shape: &CollectColumns) -> bool {
         return true;
     }
 
-    let value = match &shape.inner {
+    let value = match &pattern.inner {
         Some(inner) => {
             let mut wrapper = serde_json::Map::new();
             wrapper.insert(inner.clone(), Value::Object(built));
@@ -10352,7 +10356,7 @@ fn run_collect_columns(event: &mut Event, shape: &CollectColumns) -> bool {
         }
         None => Value::Object(built),
     };
-    let _ = event.set(&format!("{}.{}", shape.target, shape.name), value);
+    let _ = event.set(&format!("{}.{}", pattern.target, pattern.name), value);
     true
 }
 
@@ -10417,7 +10421,7 @@ fn parse_inline_suffix_cut(script: &str) -> Option<(String, String, String)> {
 /// The index lives in a LOCAL, which is what separates this from the inline
 /// spellings. The guard on it compares that local against -1, and the guard
 /// evaluator cannot read a local, so without this parse the script binds a
-/// shape whose guard never holds and the else arm writes the whole path as the
+/// pattern whose guard never holds and the else arm writes the whole path as the
 /// basename -- 99 `jamf_protect_telemetry` call sites, and no corpus capture
 /// to catch it.
 fn parse_local_index_basename(script: &str) -> Option<(String, String, String)> {
@@ -10542,16 +10546,16 @@ fn parse_flags_present(script: &str) -> Option<FlagsPresent> {
 
 /// The list is written even when EMPTY: the vendor's assignment is unconditional
 /// and the pipeline's own cleanup is what removes it again.
-fn run_flags_present(event: &mut Event, shape: &FlagsPresent) -> bool {
-    let Some(map) = event.get_object(&shape.source) else {
+fn run_flags_present(event: &mut Event, pattern: &FlagsPresent) -> bool {
+    let Some(map) = event.get_object(&pattern.source) else {
         return true;
     };
-    let flags: Vec<&String> = shape
+    let flags: Vec<&String> = pattern
         .keys
         .iter()
-        .filter(|key| map.get(*key).and_then(Value::as_str) == Some(shape.wanted.as_str()))
+        .filter(|key| map.get(*key).and_then(Value::as_str) == Some(pattern.wanted.as_str()))
         .collect();
-    let _ = event.set(&shape.target, json!(flags));
+    let _ = event.set(&pattern.target, json!(flags));
     true
 }
 
@@ -10595,9 +10599,9 @@ fn parse_zip_lists(script: &str) -> Option<ZipLists> {
 }
 
 #[allow(clippy::cast_possible_truncation)]
-fn run_zip_lists(event: &mut Event, shape: &ZipLists) -> bool {
-    let mut lists = Vec::with_capacity(shape.columns.len());
-    for column in &shape.columns {
+fn run_zip_lists(event: &mut Event, pattern: &ZipLists) -> bool {
+    let mut lists = Vec::with_capacity(pattern.columns.len());
+    for column in &pattern.columns {
         let Some(Value::Array(items)) = event.get(&column.source) else {
             return true;
         };
@@ -10609,7 +10613,7 @@ fn run_zip_lists(event: &mut Event, shape: &ZipLists) -> bool {
 
     let rows = lists[0].len();
     if lists.iter().any(|items| items.len() != rows) {
-        if let Some(message) = &shape.mismatch {
+        if let Some(message) = &pattern.mismatch {
             let _ = event.append("error.message", json!(message));
         }
         // A column shorter than the first is an index Painless cannot reach, so
@@ -10621,7 +10625,7 @@ fn run_zip_lists(event: &mut Event, shape: &ZipLists) -> bool {
 
     let mut out = Vec::with_capacity(rows);
     for i in 0..rows {
-        let row: serde_json::Map<String, Value> = shape
+        let row: serde_json::Map<String, Value> = pattern
             .columns
             .iter()
             .zip(&lists)
@@ -10636,7 +10640,7 @@ fn run_zip_lists(event: &mut Event, shape: &ZipLists) -> bool {
             .collect();
         out.push(Value::Object(row));
     }
-    let _ = event.set(&shape.target, Value::Array(out));
+    let _ = event.set(&pattern.target, Value::Array(out));
     true
 }
 
@@ -10707,18 +10711,18 @@ fn string_values(held: Option<&Value>) -> Vec<String> {
 /// Either end missing or unparseable leaves the target alone: Painless throws
 /// there and the processor carries `ignore_failure`, so the vendor writes
 /// nothing either.
-fn run_nanos_between(event: &mut Event, shape: &NanosBetween) -> bool {
+fn run_nanos_between(event: &mut Event, pattern: &NanosBetween) -> bool {
     let (Some(start), Some(end)) = (
-        instant_nanos(event, &shape.start),
-        instant_nanos(event, &shape.end),
+        instant_nanos(event, &pattern.start),
+        instant_nanos(event, &pattern.end),
     ) else {
         return true;
     };
     let span = end - start;
-    if shape.non_negative && span < 0 {
+    if pattern.non_negative && span < 0 {
         return true;
     }
-    let _ = event.set(&shape.target, json!(span));
+    let _ = event.set(&pattern.target, json!(span));
     true
 }
 
@@ -10751,7 +10755,7 @@ fn parse_first_or_self(script: &str) -> Option<FirstOrSelf> {
         return None;
     }
     // Both arms must be there. A script that only handles the list is some
-    // other shape, and running this one on it would invent the object arm.
+    // other pattern, and running this one on it would invent the object arm.
     if !script.contains(&format!("{local} instanceof Map")) {
         return None;
     }
@@ -10782,8 +10786,8 @@ fn parse_first_or_self(script: &str) -> Option<FirstOrSelf> {
     })
 }
 
-fn run_first_or_self(event: &mut Event, shape: &FirstOrSelf) -> bool {
-    let lifted = match event.get(&shape.source) {
+fn run_first_or_self(event: &mut Event, pattern: &FirstOrSelf) -> bool {
+    let lifted = match event.get(&pattern.source) {
         Some(Value::Array(items)) => items.first().cloned(),
         Some(map @ Value::Object(_)) => Some(map.clone()),
         // An empty list or a scalar is the script's own `throw`, which fails
@@ -10794,8 +10798,8 @@ fn run_first_or_self(event: &mut Event, shape: &FirstOrSelf) -> bool {
     let Some(lifted) = lifted else {
         return true;
     };
-    let _ = event.set(&shape.target, lifted);
-    if let Some(path) = &shape.remove {
+    let _ = event.set(&pattern.target, lifted);
+    if let Some(path) = &pattern.remove {
         event.remove(path);
     }
     true
@@ -10821,7 +10825,7 @@ fn parse_wrap_map_in_list(script: &str) -> Option<String> {
     }
 
     // The wrap itself. `[ <local> ]` and nothing else -- a list built from
-    // anything more is some other shape's business.
+    // anything more is some other pattern's business.
     let (head, tail) = script.split_once(" = [")?;
     if tail.split_once(']')?.0.trim() != local {
         return None;
@@ -10849,7 +10853,7 @@ fn parse_wrap_map_in_list(script: &str) -> Option<String> {
 /// DIFFERENT field, spells the divisor `100.0`, and puts no space either side
 /// of the slash; each of those alone was enough to miss it, which is why the
 /// statement is split apart rather than pattern-matched whole.
-fn parse_guarded_divide(script: &str) -> Option<KnownShape> {
+fn parse_guarded_divide(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
     // Statements, not lines: a folded YAML scalar puts the whole script on one.
@@ -10862,7 +10866,7 @@ fn parse_guarded_divide(script: &str) -> Option<KnownShape> {
 
     let (value, divisor) = rhs.trim().rsplit_once('/')?;
     // `100` and `100.0` are the same divisor, and Painless allows a type
-    // suffix on either. Read as an INTEGER -- `KnownShape` derives `Eq`, and no
+    // suffix on either. Read as an INTEGER -- `KnownPattern` derives `Eq`, and no
     // vendor divides by a fraction.
     let literal = divisor
         .trim()
@@ -10892,7 +10896,7 @@ fn parse_guarded_divide(script: &str) -> Option<KnownShape> {
         .then_some(path)
     });
 
-    Some(KnownShape::GuardedDivide {
+    Some(KnownPattern::GuardedDivide {
         target,
         source,
         absent,
@@ -11067,8 +11071,8 @@ fn parse_syslog_priority(script: &str) -> SyslogPriorityScript {
 /// The PRI is read from wherever the script found it: `log.syslog.priority`
 /// for the generic pipelines, or a vendor field such as
 /// `cisco_nexus.log.priority_number`.
-pub fn syslog_priority(event: &mut Event, shape: &SyslogPriorityScript) -> bool {
-    let pri = shape
+pub fn syslog_priority(event: &mut Event, pattern: &SyslogPriorityScript) -> bool {
+    let pri = pattern
         .source
         .as_deref()
         .and_then(|field| read_u16(event, field))
@@ -11079,9 +11083,9 @@ pub fn syslog_priority(event: &mut Event, shape: &SyslogPriorityScript) -> bool 
     };
 
     let (facility, severity) = crate::syslog_pri::decompose(pri);
-    let names = shape.names;
+    let names = pattern.names;
 
-    if shape.facility {
+    if pattern.facility {
         let _ = event.set("log.syslog.facility.code", json!(facility));
         if let Some(name) = names
             .then(|| crate::syslog_pri::facility_name(facility))
@@ -11090,7 +11094,7 @@ pub fn syslog_priority(event: &mut Event, shape: &SyslogPriorityScript) -> bool 
             let _ = event.set("log.syslog.facility.name", json!(name));
         }
     }
-    if shape.severity {
+    if pattern.severity {
         let _ = event.set("log.syslog.severity.code", json!(severity));
         if let Some(name) = names
             .then(|| crate::syslog_pri::severity_name(severity))
@@ -11143,7 +11147,7 @@ enum StringTest {
 }
 
 impl StringTest {
-    /// The test, or `None` where the term is a shape this ladder is not.
+    /// The test, or `None` where the term is a pattern this ladder is not.
     fn parse(term: &str, subject: &str) -> Option<Self> {
         let rest = term.trim().strip_prefix(subject)?;
         if let Some(literal) = rest.trim_start().strip_prefix("==") {
@@ -11209,7 +11213,7 @@ impl ClassifyArm {
 /// }
 /// ```
 ///
-/// kolide's audit descriptions are classified this way. Without the shape the
+/// kolide's audit descriptions are classified this way. Without the pattern the
 /// `!= null` catch-all claims the script and writes nothing at all -- neither
 /// the action nor the `_tmp.cat` that gates every grok block behind it.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -11262,7 +11266,7 @@ fn parse_classify_ladder(script: &str) -> Option<ClassifyLadder> {
         };
         rest = skip_trivia(tail);
     }
-    // A two-arm chain is an ordinary either/or; the shape is a classification
+    // A two-arm chain is an ordinary either/or; the pattern is a classification
     // TABLE, and demanding three keeps it off the smaller scripts.
     if arms.len() < 3 {
         return None;
@@ -11299,17 +11303,17 @@ fn split_if(text: &str) -> Option<(&str, &str, &str)> {
 }
 
 /// Classify the subject, then write each answer to the path it names.
-fn run_classify_ladder(event: &mut Event, shape: &ClassifyLadder) -> bool {
+fn run_classify_ladder(event: &mut Event, pattern: &ClassifyLadder) -> bool {
     // The processor's own `if` gates on the subject, so an absent one is a
     // no-op rather than a failure.
-    let Some(subject) = event.get_string(&shape.subject) else {
+    let Some(subject) = event.get_string(&pattern.subject) else {
         return true;
     };
-    let Some(arm) = shape.arms.iter().find(|arm| arm.holds(&subject)) else {
+    let Some(arm) = pattern.arms.iter().find(|arm| arm.holds(&subject)) else {
         return true;
     };
 
-    for (name, target) in &shape.outputs {
+    for (name, target) in &pattern.outputs {
         if let Some((_, literal)) = arm.writes.iter().find(|(local, _)| local == name) {
             let _ = event.set(target, Value::String(literal.clone()));
         }
@@ -11401,8 +11405,8 @@ fn parse_quoted_kv_scan(script: &str) -> Option<QuotedKvScan> {
 /// is followed by an end, a space or a colon, which is what lets a value hold
 /// `10:20` and `a "quoted" word` alike. Bounds are checked where Painless
 /// would throw, because a panic here takes the pod.
-fn run_quoted_kv_scan(event: &mut Event, shape: &QuotedKvScan) -> bool {
-    let Some(text) = event.get_string(&shape.source) else {
+fn run_quoted_kv_scan(event: &mut Event, pattern: &QuotedKvScan) -> bool {
+    let Some(text) = event.get_string(&pattern.source) else {
         return true;
     };
     let chars: Vec<char> = text.chars().collect();
@@ -11429,7 +11433,7 @@ fn run_quoted_kv_scan(event: &mut Event, shape: &QuotedKvScan) -> bool {
                 let value: String = chars[kv_split + 1..end].iter().collect();
                 let value = value.trim_start_matches('"').trim_end_matches('"');
                 if !key.is_empty() {
-                    let _ = event.set(&format!("{}.{key}", shape.target), json!(value));
+                    let _ = event.set(&format!("{}.{key}", pattern.target), json!(value));
                 }
             }
             kv_start = i + 1;
@@ -11454,7 +11458,7 @@ fn run_quoted_kv_scan(event: &mut Event, shape: &QuotedKvScan) -> bool {
 /// }
 /// ```
 ///
-/// Read as its own shape rather than through general loop support, which the
+/// Read as its own pattern rather than through general loop support, which the
 /// corpus of scripts does not justify: 579 enhanced loops decompose to six
 /// with a common body, where this one body appears in five streams and holds
 /// whole blocks of `google_workspace.drive.*`.
@@ -11473,7 +11477,7 @@ fn parse_parameter_fan_out(script: &str) -> Option<ParameterFanOut> {
     use crate::painless_params::clean_path;
 
     // The loop counts an index over a list's length, which is what separates
-    // this from every enhanced-for shape.
+    // this from every enhanced-for pattern.
     let head = script.split_once("for (int ")?.1;
     let (counter, head) = head.split_once(" = 0;")?;
     let counter = counter.trim();
@@ -11515,8 +11519,8 @@ fn parse_parameter_fan_out(script: &str) -> Option<ParameterFanOut> {
     })
 }
 
-fn run_parameter_fan_out(event: &mut Event, shape: &ParameterFanOut) -> bool {
-    let Some(Value::Array(items)) = event.get(&shape.list) else {
+fn run_parameter_fan_out(event: &mut Event, pattern: &ParameterFanOut) -> bool {
+    let Some(Value::Array(items)) = event.get(&pattern.list) else {
         return true;
     };
     let items = items.clone();
@@ -11527,11 +11531,11 @@ fn run_parameter_fan_out(event: &mut Event, shape: &ParameterFanOut) -> bool {
         let Some(name) = entry.get("name").and_then(Value::as_str) else {
             continue;
         };
-        for key in &shape.values {
+        for key in &pattern.values {
             match entry.get(key) {
                 Some(Value::Null) | None => {}
                 Some(value) => {
-                    let _ = event.set(&format!("{}.{name}", shape.target), value.clone());
+                    let _ = event.set(&format!("{}.{name}", pattern.target), value.clone());
                 }
             }
         }
@@ -11561,7 +11565,7 @@ fn parse_put_all(script: &str) -> Option<MergeMapUp> {
     let source = clean_path(subject_path(argument).strip_prefix("ctx.")?);
 
     // Merging a map into itself, or into something that is not a path, is not
-    // this shape whatever the text says.
+    // this pattern whatever the text says.
     let named = |path: &str| !path.is_empty() && !path.contains(['(', '[', ']', '\'', '"']);
     if !named(&parent) || !named(&source) || parent == source {
         return None;
@@ -11631,7 +11635,7 @@ fn parse_merge_map_up(script: &str) -> Option<MergeMapUp> {
             (clean_path(read.strip_prefix("ctx.")?.trim()), false)
         }
     };
-    // Merging a map into itself is not this shape whatever the text says.
+    // Merging a map into itself is not this pattern whatever the text says.
     if source.is_empty() || source == parent || source.contains(['(', ')', ' ']) {
         return None;
     }
@@ -11674,22 +11678,23 @@ fn prefixed_on_collision(script: &str, parent: &str, entry: &str) -> Option<Stri
     (!prefix.is_empty() && !prefix.contains(['.', ' '])).then(|| prefix.to_string())
 }
 
-fn run_merge_map_up(event: &mut Event, shape: &MergeMapUp) -> bool {
+fn run_merge_map_up(event: &mut Event, pattern: &MergeMapUp) -> bool {
     // The processor's own `instanceof Map` guard, so anything else is a no-op.
-    let entries = if shape.take {
-        match event.remove(&shape.source) {
+    let entries = if pattern.take {
+        match event.remove(&pattern.source) {
             Some(Value::Object(entries)) => entries,
             _ => return true,
         }
     } else {
-        match event.get(&shape.source) {
+        match event.get(&pattern.source) {
             Some(Value::Object(entries)) => entries.clone(),
             _ => return true,
         }
     };
-    if let Some(Value::Object(parent)) = crate::painless_params::pointer_mut(event, &shape.parent) {
+    if let Some(Value::Object(parent)) = crate::painless_params::pointer_mut(event, &pattern.parent)
+    {
         for (key, value) in entries {
-            match &shape.collision {
+            match &pattern.collision {
                 // The one already there wins, so the arriving value is dropped.
                 Collision::KeepExisting if parent.contains_key(&key) => {}
                 Collision::Prefix(prefix) if parent.contains_key(&key) => {
@@ -11701,7 +11706,7 @@ fn run_merge_map_up(event: &mut Event, shape: &MergeMapUp) -> bool {
             }
         }
     }
-    for path in &shape.drops {
+    for path in &pattern.drops {
         event.remove(path);
     }
     true
@@ -11776,17 +11781,17 @@ fn parse_equals_literal_flag(script: &str) -> Option<EqualsLiteralFlag> {
     })
 }
 
-fn run_equals_literal_flag(event: &mut Event, shape: &EqualsLiteralFlag) -> bool {
+fn run_equals_literal_flag(event: &mut Event, pattern: &EqualsLiteralFlag) -> bool {
     // Painless throws writing through an absent parent, so a missing container
     // means the script never got to write at all.
-    let parent = shape.target.rsplit_once('.').map_or("", |(head, _)| head);
+    let parent = pattern.target.rsplit_once('.').map_or("", |(head, _)| head);
     if !parent.is_empty() && !event.has(parent) {
         return true;
     }
 
     // An absent source reads as null, and `null == 'yes'` is false.
-    let matched = event.get_str(&shape.source) == Some(shape.literal.as_str());
-    let _ = event.set(&shape.target, Value::Bool(matched));
+    let matched = event.get_str(&pattern.source) == Some(pattern.literal.as_str());
+    let _ = event.set(&pattern.target, Value::Bool(matched));
     true
 }
 
@@ -11903,27 +11908,27 @@ fn parse_record_lookup(script: &str) -> Option<RecordLookup> {
     })
 }
 
-fn run_record_lookup(event: &mut Event, shape: &RecordLookup) -> bool {
-    let Some(Value::Array(records)) = event.get(&shape.table).cloned() else {
+fn run_record_lookup(event: &mut Event, pattern: &RecordLookup) -> bool {
+    let Some(Value::Array(records)) = event.get(&pattern.table).cloned() else {
         // `if (mappings == null) return;` -- the script's own guard.
         return true;
     };
-    let Some(subject) = event.get(&shape.subject).cloned() else {
+    let Some(subject) = event.get(&pattern.subject).cloned() else {
         return true;
     };
 
-    let mut chosen = shape
+    let mut chosen = pattern
         .default
         .as_ref()
         .and_then(|path| event.get(path).cloned());
     for record in &records {
-        if record.get(&shape.key) == Some(&subject) {
-            chosen = record.get(&shape.value).cloned();
+        if record.get(&pattern.key) == Some(&subject) {
+            chosen = record.get(&pattern.value).cloned();
             break;
         }
     }
     if let Some(value) = chosen {
-        let _ = event.set(&shape.target, value);
+        let _ = event.set(&pattern.target, value);
     }
     true
 }
@@ -12025,12 +12030,12 @@ fn parse_local_map_lookup(script: &str) -> Option<LocalMapLookup> {
     })
 }
 
-fn run_local_map_lookup(event: &mut Event, shape: &LocalMapLookup) -> bool {
+fn run_local_map_lookup(event: &mut Event, pattern: &LocalMapLookup) -> bool {
     // The script's own `containsKey` guard: an unlisted code writes nothing.
-    if let Some(code) = event.get_as_string(&shape.source)
-        && let Some(name) = shape.table.get(&code)
+    if let Some(code) = event.get_as_string(&pattern.source)
+        && let Some(name) = pattern.table.get(&code)
     {
-        let _ = event.set(&shape.target, json!(name));
+        let _ = event.set(&pattern.target, json!(name));
     }
     true
 }
@@ -12197,13 +12202,13 @@ fn parse_collect_from_list(script: &str) -> Option<CollectFromList> {
     })
 }
 
-fn run_collect_from_list(event: &mut Event, shape: &CollectFromList) -> bool {
-    let Some(Value::Array(entries)) = event.get(&shape.source).cloned() else {
+fn run_collect_from_list(event: &mut Event, pattern: &CollectFromList) -> bool {
+    let Some(Value::Array(entries)) = event.get(&pattern.source).cloned() else {
         // Every one of these scripts is gated on the list being present.
         return true;
     };
 
-    for column in &shape.columns {
+    for column in &pattern.columns {
         let mut collected = match event.get(&column.target) {
             Some(Value::Array(existing)) => existing.clone(),
             _ => Vec::new(),
@@ -12236,7 +12241,7 @@ fn run_collect_from_list(event: &mut Event, shape: &CollectFromList) -> bool {
     }
 
     // The script's own `size() > 0` guard: an empty collection names nothing.
-    for (target, collected) in &shape.firsts {
+    for (target, collected) in &pattern.firsts {
         if let Some(Value::Array(items)) = event.get(collected)
             && let Some(first) = items.first().cloned()
         {
@@ -12287,12 +12292,12 @@ fn parse_nest_under(script: &str) -> Option<NestUnder> {
     })
 }
 
-fn run_nest_under(event: &mut Event, shape: &NestUnder) -> bool {
-    let Some(moved) = event.get(&shape.source).cloned() else {
+fn run_nest_under(event: &mut Event, pattern: &NestUnder) -> bool {
+    let Some(moved) = event.get(&pattern.source).cloned() else {
         return true;
     };
-    let _ = event.set(&shape.target, moved);
-    for path in &shape.removes {
+    let _ = event.set(&pattern.target, moved);
+    for path in &pattern.removes {
         event.remove(path);
     }
     true
@@ -12389,17 +12394,17 @@ fn parse_position_in_list(script: &str) -> Option<PositionInList> {
     })
 }
 
-fn run_position_in_list(event: &mut Event, shape: &PositionInList) -> bool {
+fn run_position_in_list(event: &mut Event, pattern: &PositionInList) -> bool {
     let found = {
         let (Some(items), Some(wanted)) = (
-            event.get(&shape.list).and_then(Value::as_array),
-            event.get(&shape.key),
+            event.get(&pattern.list).and_then(Value::as_array),
+            event.get(&pattern.key),
         ) else {
             return true;
         };
         items
             .iter()
-            .position(|item| item.is_object() && item.get(&shape.member) == Some(wanted))
+            .position(|item| item.is_object() && item.get(&pattern.member) == Some(wanted))
             .map(|at| (at, items.len()))
     };
     let Some((at, len)) = found else {
@@ -12407,14 +12412,14 @@ fn run_position_in_list(event: &mut Event, shape: &PositionInList) -> bool {
     };
 
     let value = if at + 1 == len {
-        &shape.last
+        &pattern.last
     } else if at == 0 {
-        &shape.first
+        &pattern.first
     } else {
-        &shape.middle
+        &pattern.middle
     };
     let value = value.clone();
-    let _ = event.set(&shape.target, value);
+    let _ = event.set(&pattern.target, value);
     true
 }
 
@@ -12481,17 +12486,17 @@ fn parse_split_first_label(script: &str) -> Option<SplitFirstLabel> {
     })
 }
 
-fn run_split_first_label(event: &mut Event, shape: &SplitFirstLabel) -> bool {
-    let Some(name) = event.get_str(&shape.source).map(str::to_owned) else {
+fn run_split_first_label(event: &mut Event, pattern: &SplitFirstLabel) -> bool {
+    let Some(name) = event.get_str(&pattern.source).map(str::to_owned) else {
         return true;
     };
-    let mut labels = name.split(shape.separator.as_str());
+    let mut labels = name.split(pattern.separator.as_str());
     let Some(first) = labels.next() else {
         return true;
     };
-    let rest = labels.collect::<Vec<_>>().join(&shape.separator);
-    let _ = event.set(&shape.head, Value::String(first.to_string()));
-    let _ = event.set(&shape.tail, Value::String(rest));
+    let rest = labels.collect::<Vec<_>>().join(&pattern.separator);
+    let _ = event.set(&pattern.head, Value::String(first.to_string()));
+    let _ = event.set(&pattern.tail, Value::String(rest));
     true
 }
 
@@ -12571,12 +12576,12 @@ fn parse_map_entry_to_boolean(script: &str) -> Option<MapEntryToBoolean> {
     })
 }
 
-fn run_map_entry_to_boolean(event: &mut Event, shape: &MapEntryToBoolean) -> bool {
-    let path = format!("{}.{}", shape.parent, shape.key);
+fn run_map_entry_to_boolean(event: &mut Event, pattern: &MapEntryToBoolean) -> bool {
+    let path = format!("{}.{}", pattern.parent, pattern.key);
     let Some(Value::String(held)) = event.get(&path) else {
         return true;
     };
-    let Some((_, flag)) = shape
+    let Some((_, flag)) = pattern
         .values
         .iter()
         .find(|(spelling, _)| spelling == held)
@@ -12674,8 +12679,8 @@ fn parse_hashes_by_length(script: &str) -> Option<HashesByLength> {
     })
 }
 
-fn run_hashes_by_length(event: &mut Event, shape: &HashesByLength) -> bool {
-    for (path, key) in &shape.lists {
+fn run_hashes_by_length(event: &mut Event, pattern: &HashesByLength) -> bool {
+    for (path, key) in &pattern.lists {
         // Anything but a list is the script's own `instanceof List` guard.
         let Some(Value::Array(hashes)) = event.get(path) else {
             continue;
@@ -12684,11 +12689,14 @@ fn run_hashes_by_length(event: &mut Event, shape: &HashesByLength) -> bool {
             .iter()
             .filter_map(Value::as_str)
             .filter_map(|hash| {
-                let (_, suffix) = shape
+                let (_, suffix) = pattern
                     .widths
                     .iter()
                     .find(|(width, _)| hash.chars().count() == *width)?;
-                Some((format!("{}.{key}{suffix}", shape.parent), hash.to_string()))
+                Some((
+                    format!("{}.{key}{suffix}", pattern.parent),
+                    hash.to_string(),
+                ))
             })
             .collect();
         for (target, hash) in typed {
@@ -12816,36 +12824,39 @@ fn parse_unreserved_key_payload(script: &str) -> Option<UnreservedKeyPayload> {
     })
 }
 
-fn run_unreserved_key_payload(event: &mut Event, shape: &UnreservedKeyPayload) -> bool {
-    let Some(Value::Object(envelope)) = event.get(&shape.doc) else {
+fn run_unreserved_key_payload(event: &mut Event, pattern: &UnreservedKeyPayload) -> bool {
+    let Some(Value::Object(envelope)) = event.get(&pattern.doc) else {
         return true;
     };
     // Insertion order is the script's own iteration order, which is why the
     // whole document is read under `preserve_order`.
     let Some(key) = envelope
         .keys()
-        .find(|key| !shape.reserved.iter().any(|held| held == *key))
+        .find(|key| !pattern.reserved.iter().any(|held| held == *key))
         .cloned()
     else {
         // The script's own `if (eventKey == null) { return; }`.
         return true;
     };
 
-    let payload = event.remove(&format!("{}.{key}", shape.doc));
+    let payload = event.remove(&format!("{}.{key}", pattern.doc));
     let payload = match payload {
         Some(map @ Value::Object(_)) => map,
         Some(Value::Null) | None => Value::Object(Map::new()),
         Some(scalar) => {
             let mut wrap = Map::new();
-            wrap.insert(shape.wrap_key.clone(), scalar);
+            wrap.insert(pattern.wrap_key.clone(), scalar);
             Value::Object(wrap)
         }
     };
     let _ = event.set(
-        &format!("{}.{}", shape.doc, shape.name_field),
+        &format!("{}.{}", pattern.doc, pattern.name_field),
         Value::String(key),
     );
-    let _ = event.set(&format!("{}.{}", shape.doc, shape.payload_field), payload);
+    let _ = event.set(
+        &format!("{}.{}", pattern.doc, pattern.payload_field),
+        payload,
+    );
     true
 }
 
@@ -12892,26 +12903,26 @@ fn run_move_keys(event: &mut Event, moves: &[(String, String)]) -> bool {
 /// Returns true if the script was handled, false if it should fall through
 /// to the generic `painless_exec` stub.
 ///
-/// The dispatch is two halves. [`known_shapes`] reads the script TEXT and
+/// The dispatch is two halves. [`known_patterns`] reads the script TEXT and
 /// names the matchers it triggers -- a decision that never changes for a given
 /// script, which is why [`crate::painless_plan::PainlessPlan`] makes it once
-/// per call site. [`run_known_shape`] then runs one matcher against one event.
+/// per call site. [`run_known_pattern`] then runs one matcher against one event.
 /// This entry point does both per call, for callers without a plan.
 pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
     let normalised = normalise(script);
-    known_shapes(&normalised)
+    known_patterns(&normalised)
         .iter()
-        .any(|shape| run_known_shape(event, &normalised, shape))
+        .any(|pattern| run_known_pattern(event, &normalised, pattern))
 }
 
 /// A matcher branch of the text-only dispatch, with whatever the trigger's own
 /// parse already recovered from the script.
 ///
 /// The variants up to `KeysToSnakeCase` recognise what a script DOES and work
-/// for any source that writes the shape; the rest are keyed on a vendor's
+/// for any source that writes the pattern; the rest are keyed on a vendor's
 /// FIELD NAMES and recognise whose script it is, ending in the two catch-alls.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) enum KnownShape {
+pub(crate) enum KnownPattern {
     DropEmpty {
         policy: DropPolicy,
         root: Option<String>,
@@ -13230,8 +13241,8 @@ pub(crate) struct BranchCopy {
 /// The trigger order is load-bearing; each comment that says why a branch sits
 /// where it does travelled here with it.
 #[allow(clippy::too_many_lines)] // A transliteration of the dispatch ladder; splitting it would hide the order.
-pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
-    let mut shapes = Vec::new();
+pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
+    let mut patterns = Vec::new();
 
     // Pattern: seconds to nanoseconds, closing the span it opens. Ahead of the
     // scale-by-literal fallback, which reads the same multiply and stops
@@ -13242,29 +13253,29 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
             .and_then(|(_, rest)| rest.split_once(" *"))
             .map(|(path, _)| crate::painless_params::clean_path(path))
     {
-        shapes.push(KnownShape::SecondsToSpan(source));
-        return shapes;
+        patterns.push(KnownPattern::SecondsToSpan(source));
+        return patterns;
     }
 
     // Pattern: the span between two parsed instants, in nanoseconds. The
     // defender and crowdstrike pipelines derive `event.duration` this way.
     if normalised.contains("ChronoUnit.NANOS.between(")
-        && let Some(shape) = parse_nanos_between(normalised)
+        && let Some(pattern) = parse_nanos_between(normalised)
     {
-        shapes.push(KnownShape::NanosBetween(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::NanosBetween(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: every number under one subtree whose FIELD NAME reads as a
     // timestamp, normalised to milliseconds by magnitude. Leads with the other
-    // rescale shapes because the `GuardedDivide` and `ScaleField` catch-alls
+    // rescale patterns because the `GuardedDivide` and `ScaleField` catch-alls
     // read this ladder's `/ 1000` and stop there, rescaling one field.
     if normalised.contains("instanceof Number")
         && normalised.contains(".endsWith(")
-        && let Some(shape) = parse_millisecond_ladder(normalised)
+        && let Some(pattern) = parse_millisecond_ladder(normalised)
     {
-        shapes.push(KnownShape::MillisecondLadder(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::MillisecondLadder(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: a lone object wrapped in a one-element list so the `foreach`
@@ -13274,42 +13285,42 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains("instanceof Map")
         && let Some(path) = parse_wrap_map_in_list(normalised)
     {
-        shapes.push(KnownShape::WrapMapInList(path));
-        return shapes;
+        patterns.push(KnownPattern::WrapMapInList(path));
+        return patterns;
     }
 
     // Pattern: the reverse -- a one-element list taken down to the object it
     // holds, so the renames after it can name one path.
     if normalised.contains("instanceof Map")
         && normalised.contains("instanceof List")
-        && let Some(shape) = parse_first_or_self(normalised)
+        && let Some(pattern) = parse_first_or_self(normalised)
     {
-        shapes.push(KnownShape::FirstOrSelf(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::FirstOrSelf(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: the keys of a fixed list that a map marks `"true"`.
     if normalised.contains("instanceof Map")
         && normalised.contains("] == \"true\"")
-        && let Some(shape) = parse_flags_present(normalised)
+        && let Some(pattern) = parse_flags_present(normalised)
     {
-        shapes.push(KnownShape::FlagsPresent(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::FlagsPresent(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: a whole map moved beneath a NEW parent. Ahead of the merge
-    // shapes, whose `entrySet()` and `getKey()` triggers this also spells and
+    // patterns, whose `entrySet()` and `getKey()` triggers this also spells and
     // which would lift its members to the wrong level.
     if normalised.contains(": new HashMap()]")
         && normalised.contains(".entrySet()")
-        && let Some(shape) = parse_nest_under(normalised)
+        && let Some(pattern) = parse_nest_under(normalised)
     {
-        shapes.push(KnownShape::NestUnder(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::NestUnder(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: one list's members collected into deduped arrays. Ahead of the
-    // copy shapes, whose `.add(` this also spells and which cannot walk a list,
+    // copy patterns, whose `.add(` this also spells and which cannot walk a list,
     // so cisco_secure_endpoint's `host.ip`, `host.mac` and both `related`
     // arrays were never written on any of its 408 events.
     // `.isEmpty()` is one of the two guards a vendor writes -- gdacs checks
@@ -13317,10 +13328,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // PARSE decides.
     if (normalised.contains(" in ctx") || normalised.contains(" : "))
         && normalised.contains(".add(")
-        && let Some(shape) = parse_collect_from_list(normalised)
+        && let Some(pattern) = parse_collect_from_list(normalised)
     {
-        shapes.push(KnownShape::CollectFromList(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::CollectFromList(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: a value looked up in a LIST of records. sophos runs its whole
@@ -13328,10 +13339,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // serial both -- and losing the timezone made its date processor fail,
     // whose `on_failure` then REMOVES `event.timezone` altogether.
     if normalised.contains("for (def ")
-        && let Some(shape) = parse_record_lookup(normalised)
+        && let Some(pattern) = parse_record_lookup(normalised)
     {
-        shapes.push(KnownShape::RecordLookup(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::RecordLookup(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: the value this document's POSITION in a list decides. Early,
@@ -13339,19 +13350,19 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // three-armed index ladder as a value table over a field.
     if normalised.contains("instanceof Map")
         && normalised.contains(".size() - 1")
-        && let Some(shape) = parse_position_in_list(normalised)
+        && let Some(pattern) = parse_position_in_list(normalised)
     {
-        shapes.push(KnownShape::PositionInList(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::PositionInList(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: one list cut two ways, a column per cut.
     if normalised.contains(".substring(")
         && normalised.contains(".add(")
-        && let Some(shape) = parse_slice_each_item(normalised)
+        && let Some(pattern) = parse_slice_each_item(normalised)
     {
-        shapes.push(KnownShape::SliceEachItem(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::SliceEachItem(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: the tail of every list member whose named field carries a
@@ -13359,72 +13370,72 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // this also spells and which declines on it.
     if normalised.contains(".substring(")
         && normalised.contains(".add(")
-        && let Some(shape) = parse_suffixes_by_prefix(normalised)
+        && let Some(pattern) = parse_suffixes_by_prefix(normalised)
     {
-        shapes.push(KnownShape::SuffixesByPrefix(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::SuffixesByPrefix(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: a type tag choosing which field one value lands on.
     if normalised.contains(".contains('")
-        && let Some(shape) = parse_contains_ladder(normalised)
+        && let Some(pattern) = parse_contains_ladder(normalised)
     {
-        shapes.push(KnownShape::ContainsLadder(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::ContainsLadder(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: a shouted vendor value title-cased onto its ECS field.
     if normalised.contains(".substring(1).toLowerCase()")
-        && let Some(shape) = parse_title_case(normalised)
+        && let Some(pattern) = parse_title_case(normalised)
     {
-        shapes.push(KnownShape::TitleCase(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::TitleCase(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: one named entry lifted out of a map, or a literal in its place.
     if normalised.contains(".entrySet()")
         && normalised.contains(".getKey()")
-        && let Some(shape) = parse_named_map_entry(normalised)
+        && let Some(pattern) = parse_named_map_entry(normalised)
     {
-        shapes.push(KnownShape::NamedMapEntry(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::NamedMapEntry(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: a dotted name split into its first label and the rest of it.
     if normalised.contains(".splitOnToken(")
         && normalised.contains("[0]")
-        && let Some(shape) = parse_split_first_label(normalised)
+        && let Some(pattern) = parse_split_first_label(normalised)
     {
-        shapes.push(KnownShape::SplitFirstLabel(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::SplitFirstLabel(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: one entry of a map retyped from its digit spelling to a boolean.
     if normalised.contains(".containsKey(")
         && normalised.contains(".equals(")
-        && let Some(shape) = parse_map_entry_to_boolean(normalised)
+        && let Some(pattern) = parse_map_entry_to_boolean(normalised)
     {
-        shapes.push(KnownShape::MapEntryToBoolean(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::MapEntryToBoolean(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: a list of hashes split into typed fields by the LENGTH of each.
     if normalised.contains(".length() == ")
         && normalised.contains("instanceof List")
-        && let Some(shape) = parse_hashes_by_length(normalised)
+        && let Some(pattern) = parse_hashes_by_length(normalised)
     {
-        shapes.push(KnownShape::HashesByLength(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::HashesByLength(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: the one key of an envelope that is not envelope names the
     // event, and its value is the payload.
     if normalised.contains(".keySet()")
         && normalised.contains("new HashSet(")
-        && let Some(shape) = parse_unreserved_key_payload(normalised)
+        && let Some(pattern) = parse_unreserved_key_payload(normalised)
     {
-        shapes.push(KnownShape::UnreservedKeyPayload(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::UnreservedKeyPayload(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: a nested map emptied into an ancestor, and the routing keys
@@ -13432,46 +13443,46 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // front: gating on `.getValue()` gated on one of the two spellings, and
     // the nine axonius streams write the other.
     if (normalised.contains(".entrySet()") || normalised.contains(".keySet()"))
-        && let Some(shape) = parse_merge_map_up(normalised)
+        && let Some(pattern) = parse_merge_map_up(normalised)
     {
-        shapes.push(KnownShape::MergeMapUp(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::MergeMapUp(Box::new(pattern)));
+        return patterns;
     }
     if normalised.contains(".putAll(")
-        && let Some(shape) = parse_put_all(normalised)
+        && let Some(pattern) = parse_put_all(normalised)
     {
-        shapes.push(KnownShape::MergeMapUp(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::MergeMapUp(Box::new(pattern)));
+        return patterns;
     }
     if normalised.contains("for (int ")
         && normalised.contains("[\"name\"]]")
-        && let Some(shape) = parse_parameter_fan_out(normalised)
+        && let Some(pattern) = parse_parameter_fan_out(normalised)
     {
-        shapes.push(KnownShape::ParameterFanOut(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::ParameterFanOut(Box::new(pattern)));
+        return patterns;
     }
     if normalised.contains("kvStart")
-        && let Some(shape) = parse_quoted_kv_scan(normalised)
+        && let Some(pattern) = parse_quoted_kv_scan(normalised)
     {
-        shapes.push(KnownShape::QuotedKvScan(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::QuotedKvScan(Box::new(pattern)));
+        return patterns;
     }
     // Pattern: a lookup table written inline rather than shipped in `params`.
     if normalised.contains(".containsKey(")
         && normalised.contains("': '")
-        && let Some(shape) = parse_local_map_lookup(normalised)
+        && let Some(pattern) = parse_local_map_lookup(normalised)
     {
-        shapes.push(KnownShape::LocalMapLookup(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::LocalMapLookup(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: a score named by the band it falls in.
     if normalised.contains("<=")
         && normalised.contains("&&")
-        && let Some(shape) = parse_range_ladder(normalised)
+        && let Some(pattern) = parse_range_ladder(normalised)
     {
-        shapes.push(KnownShape::RangeLadder(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::RangeLadder(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: a number banded into a label, in the spelling `RangeLadder`
@@ -13483,10 +13494,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // Either joiner: a band may be `a && b`, an out-of-range `a || b`, or a
     // single open-ended bound in a ladder that has one of the other two.
     if (normalised.contains("&&") || normalised.contains("||"))
-        && let Some(shape) = parse_band_ladder(normalised)
+        && let Some(pattern) = parse_band_ladder(normalised)
     {
-        shapes.push(KnownShape::BandLadder(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::BandLadder(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: a risk score cast to double, then a ceiling-only ladder over
@@ -13494,61 +13505,61 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // `RangeLadder` above, so the two triggers never both fire.
     if normalised.contains(" = (double) ")
         && normalised.contains("} else {")
-        && let Some(shape) = parse_score_severity_bands(normalised)
+        && let Some(pattern) = parse_score_severity_bands(normalised)
     {
-        shapes.push(KnownShape::ScoreSeverityBands(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::ScoreSeverityBands(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: one column per member, gathered off a list of objects.
     if normalised.contains(" : ctx.")
         && normalised.contains(".isEmpty()")
-        && let Some(shape) = parse_collect_columns(normalised)
+        && let Some(pattern) = parse_collect_columns(normalised)
     {
-        shapes.push(KnownShape::CollectColumns(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::CollectColumns(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: parallel lists zipped into a list of objects.
     if normalised.contains(".add([")
         && normalised.contains("new ArrayList()")
-        && let Some(shape) = parse_zip_lists(normalised)
+        && let Some(pattern) = parse_zip_lists(normalised)
     {
-        shapes.push(KnownShape::ZipLists(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::ZipLists(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: the executables of `process.command_line` folded into
     // `process.name`. The defender pipelines share one copy of this script.
     if normalised.contains("currentNames") && normalised.contains("ctx.process.command_line") {
-        shapes.push(KnownShape::ProcessNameFromCommandLine);
-        return shapes;
+        patterns.push(KnownPattern::ProcessNameFromCommandLine);
+        return patterns;
     }
 
     // Pattern: a value appended to a list the script builds level by level.
     if normalised.contains(" ?: [];")
         && normalised.contains(".add(")
-        && let Some(shape) = parse_ensure_append(normalised)
+        && let Some(pattern) = parse_ensure_append(normalised)
     {
-        shapes.push(KnownShape::EnsureAppend(shape));
-        return shapes;
+        patterns.push(KnownPattern::EnsureAppend(pattern));
+        return patterns;
     }
 
     // Pattern: a number written back as octal, which is how a file mode reads.
     if normalised.contains("Integer.toOctalString(")
-        && let Some(shape) = parse_octal_string(normalised)
+        && let Some(pattern) = parse_octal_string(normalised)
     {
-        shapes.push(KnownShape::OctalString(shape));
-        return shapes;
+        patterns.push(KnownPattern::OctalString(pattern));
+        return patterns;
     }
 
     // Pattern: a copy gated on membership of a literal set, which is how a
     // vendor value reaches an ECS field with a closed vocabulary.
     if normalised.contains("].contains(")
-        && let Some(shape) = parse_allowed_value_copy(normalised)
+        && let Some(pattern) = parse_allowed_value_copy(normalised)
     {
-        shapes.push(KnownShape::AllowedValueCopy(shape));
-        return shapes;
+        patterns.push(KnownPattern::AllowedValueCopy(pattern));
+        return patterns;
     }
 
     // Pattern: the same prune written as a walk over `keySet()`, which removes
@@ -13567,14 +13578,14 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     {
         let mut policy = DropPolicy::read(normalised);
         policy.shallow = true;
-        shapes.push(KnownShape::DropEmpty {
+        patterns.push(KnownPattern::DropEmpty {
             policy,
             root: Some(root.to_string()),
         });
-        return shapes;
+        return patterns;
     }
 
-    // Pattern: drop null and empty values recursively. Matched on the SHAPE,
+    // Pattern: drop null and empty values recursively. Matched on the PATTERN,
     // not the helper's name -- panw spells it `dropEmptyFields`, and keying
     // on `drop(ctx)` left every emptied object behind. What counts as empty
     // comes from the script's own predicate, which is not the same
@@ -13584,11 +13595,11 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && normalised.contains("instanceof List")
     {
         if normalised.contains("(ctx)") {
-            shapes.push(KnownShape::DropEmpty {
+            patterns.push(KnownPattern::DropEmpty {
                 policy: DropPolicy::read(normalised),
                 root: None,
             });
-            return shapes;
+            return patterns;
         }
         if let Some(at) = normalised.rfind("(ctx.")
             && let Some(root) = normalised[at + "(ctx.".len()..].split(')').next()
@@ -13596,11 +13607,11 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
                 .chars()
                 .all(|c| c.is_alphanumeric() || c == '.' || c == '_' || c == '?')
         {
-            shapes.push(KnownShape::DropEmpty {
+            patterns.push(KnownPattern::DropEmpty {
                 policy: DropPolicy::read(normalised),
                 root: Some(crate::painless_params::clean_path(root)),
             });
-            return shapes;
+            return patterns;
         }
     }
 
@@ -13612,16 +13623,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && normalised.contains("readNextArg")
         && let Some(parsed) = crate::painless_windows::ArgvScript::parse(normalised)
     {
-        shapes.push(KnownShape::SplitCommandLine(parsed));
-        return shapes;
+        patterns.push(KnownPattern::SplitCommandLine(parsed));
+        return patterns;
     }
 
     // Pattern: the basename of one or more path fields -- everything after
     // the last separator. Guarded by the parse rather than by the trigger,
     // so a script that only looks similar falls through.
     if normalised.contains("lastIndexOf(") && normalised.contains(".substring(") {
-        if let Some(shape) = parse_basename_cuts(normalised) {
-            shapes.push(KnownShape::Basename(Box::new(shape)));
+        if let Some(pattern) = parse_basename_cuts(normalised) {
+            patterns.push(KnownPattern::Basename(Box::new(pattern)));
         }
         // Pattern: the same cut, but written straight onto a ctx path and
         // landing on a DIFFERENT one -- `file.name` to `file.extension` -- or
@@ -13629,14 +13640,14 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         if let Some((source, target, separator)) =
             parse_suffix_after_separator(normalised).or_else(|| parse_inline_suffix_cut(normalised))
         {
-            shapes.push(KnownShape::SuffixAfterSeparator {
+            patterns.push(KnownPattern::SuffixAfterSeparator {
                 source,
                 target,
                 separator,
                 whole_when_absent: false,
             });
         } else if let Some((source, target, separator)) = parse_local_index_basename(normalised) {
-            shapes.push(KnownShape::SuffixAfterSeparator {
+            patterns.push(KnownPattern::SuffixAfterSeparator {
                 source,
                 target,
                 separator,
@@ -13651,8 +13662,8 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && normalised.contains(".directory = path.substring(0, idx)")
         && let Some(source) = crate::painless_windows::file_info_source(normalised)
     {
-        shapes.push(KnownShape::FileInfo(source));
-        return shapes;
+        patterns.push(KnownPattern::FileInfo(source));
+        return patterns;
     }
 
     // Pattern: sysmon's hash-map lowercasing, empty and all-zero hashes
@@ -13660,27 +13671,27 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains("hashIsEmpty(")
         && let Some(source) = crate::painless_windows::hash_lowercase_source(normalised)
     {
-        shapes.push(KnownShape::HashLowercase(source));
-        return shapes;
+        patterns.push(KnownPattern::HashLowercase(source));
+        return patterns;
     }
 
     // Pattern: the tail of one string field past another field's length,
     // optionally dropping one leading comma -- umbrella's identities dance.
     if normalised.contains(".substring(ctx.")
         && normalised.contains(".length())")
-        && let Some(shape) = parse_prefix_tail(normalised)
+        && let Some(pattern) = parse_prefix_tail(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: a scalar field prepended to an array field into a target.
     if normalised.contains("new ArrayList()")
         && normalised.contains(".add(ctx.")
-        && let Some(shape) = parse_prepend_to_array(normalised)
+        && let Some(pattern) = parse_prepend_to_array(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: cloudtrail's resources -- ARN and accountId renamed per
@@ -13691,10 +13702,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
             .rfind("ctx.")
             .map(|s| &normalised[s + 4..at])
     {
-        shapes.push(KnownShape::ResourcesRenameDedup(
+        patterns.push(KnownPattern::ResourcesRenameDedup(
             crate::painless_params::clean_path(source),
         ));
-        return shapes;
+        return patterns;
     }
 
     // Pattern: securityhub's single-resource entity extraction, and its
@@ -13706,12 +13717,12 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(source) = ctx_path_bound_to(normalised, "resources")
     {
         if normalised.contains("resources.size() == 1") {
-            shapes.push(KnownShape::SecurityhubResource(source));
-            return shapes;
+            patterns.push(KnownPattern::SecurityhubResource(source));
+            return patterns;
         }
         if normalised.contains("ctx.resource.type.add(") {
-            shapes.push(KnownShape::SecurityhubResources(source));
-            return shapes;
+            patterns.push(KnownPattern::SecurityhubResources(source));
+            return patterns;
         }
     }
 
@@ -13723,27 +13734,27 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains("void maybeAddExecutable(")
         && let Some(path) = evidence_loop_path(normalised)
     {
-        shapes.push(KnownShape::M365ProcessEvidence(path));
-        return shapes;
+        patterns.push(KnownPattern::M365ProcessEvidence(path));
+        return patterns;
     }
     if normalised.contains("def processUserName = new HashSet()")
         && let Some(path) = evidence_loop_path(normalised)
     {
-        shapes.push(KnownShape::M365IdentityEvidence(path));
-        return shapes;
+        patterns.push(KnownPattern::M365IdentityEvidence(path));
+        return patterns;
     }
 
     // Pattern: route53's answers rebuilt into ECS, feeding related.* as they go.
     if normalised.contains("answer?.Rdata") && normalised.contains("new_answer") {
-        shapes.push(KnownShape::Route53Answers);
-        return shapes;
+        patterns.push(KnownPattern::Route53Answers);
+        return patterns;
     }
 
     // Pattern: the address a reverse-lookup question names, back out of its
     // `in-addr.arpa` / `ip6.arpa` labels and into `related.ip`.
     if normalised.contains(".in-addr.arpa") && normalised.contains(".ip6.arpa") {
-        shapes.push(KnownShape::ReverseLookupAddress);
-        return shapes;
+        patterns.push(KnownPattern::ReverseLookupAddress);
+        return patterns;
     }
 
     // Pattern: gcp's long-running operation, which opens and closes a session.
@@ -13751,24 +13762,24 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(first) = ternary_default_path(normalised, "first")
         && let Some(last) = ternary_default_path(normalised, "last")
     {
-        shapes.push(KnownShape::LongOperationSession { first, last });
-        return shapes;
+        patterns.push(KnownPattern::LongOperationSession { first, last });
+        return patterns;
     }
 
     // Pattern: powershell's script-block entropy and the spread around it.
     if normalised.contains("double surprisalVar")
         && let Some(source) = ctx_path_bound_to(normalised, "script")
     {
-        shapes.push(KnownShape::ScriptBlockEntropy(source));
-        return shapes;
+        patterns.push(KnownPattern::ScriptBlockEntropy(source));
+        return patterns;
     }
 
     // Pattern: zscaler's pipe-delimited columns, split in place.
     if normalised.contains("void splitStr(Map m, String key)") {
         let fields = parse_split_on_pipe(normalised);
         if !fields.is_empty() {
-            shapes.push(KnownShape::SplitOnPipe(fields));
-            return shapes;
+            patterns.push(KnownPattern::SplitOnPipe(fields));
+            return patterns;
         }
     }
 
@@ -13776,17 +13787,17 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains("item.put('file', file)")
         && let Some(zip) = AttachmentZip::parse(normalised)
     {
-        shapes.push(KnownShape::ZipAttachments(Box::new(zip)));
-        return shapes;
+        patterns.push(KnownPattern::ZipAttachments(Box::new(zip)));
+        return patterns;
     }
 
     // Pattern: the highest score any of a field's values scores, each scored by
     // the substring it contains.
     if normalised.contains("if (cur > maxSev) maxSev = cur;")
-        && let Some(shape) = MaxByContains::parse(normalised)
+        && let Some(pattern) = MaxByContains::parse(normalised)
     {
-        shapes.push(KnownShape::MaxByContains(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::MaxByContains(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: the same zip with no wrapper, driven by one column's length and
@@ -13794,16 +13805,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains("out.add(item)")
         && let Some(zip) = ColumnZip::parse(normalised)
     {
-        shapes.push(KnownShape::ZipColumns(Box::new(zip)));
-        return shapes;
+        patterns.push(KnownPattern::ZipColumns(Box::new(zip)));
+        return patterns;
     }
 
     // Pattern: m365's `isTruthy` helper, one target per vendor flag.
     if normalised.contains("def isTruthy(def val)") {
         let pairs = parse_truthy_assignments(normalised);
         if !pairs.is_empty() {
-            shapes.push(KnownShape::TruthyAssignments(pairs));
-            return shapes;
+            patterns.push(KnownPattern::TruthyAssignments(pairs));
+            return patterns;
         }
     }
 
@@ -13813,10 +13824,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // and only the subject tells them apart.
     if normalised.contains(".values().removeIf(")
         && !normalised.contains("instanceof Map")
-        && let Some(shape) = parse_remove_map_value(normalised)
+        && let Some(pattern) = parse_remove_map_value(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: drop one literal out of a list -- m365's file.path, whose
@@ -13824,10 +13835,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // there.
     if normalised.contains(".removeIf(")
         && !normalised.contains("instanceof Map")
-        && let Some(shape) = parse_remove_list_value(normalised)
+        && let Some(pattern) = parse_remove_list_value(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: the same drop, spelled as a loop that removes by index while
@@ -13836,53 +13847,53 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // loop with `def i = 0`.
     if normalised.contains("for (int i=0; i<ctx.")
         && normalised.contains(".remove(i)")
-        && let Some(shape) = parse_indexed_list_removal(normalised)
+        && let Some(pattern) = parse_indexed_list_removal(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: gcp audit's related.entity, whose `isKubernetes` gate decides
     // which three of its sources are suppressed.
     if normalised.contains("boolean isKubernetes") && normalised.contains("ctx.related.entity") {
-        shapes.push(KnownShape::GcpRelatedEntity);
-        return shapes;
+        patterns.push(KnownPattern::GcpRelatedEntity);
+        return patterns;
     }
 
     // Pattern: mimecast's related.* collection -- display names and email
     // addresses off named paths, split at the `@`, sorted.
     if normalised.contains("splitmail(")
         && normalised.contains("related.hosts")
-        && let Some(shape) = parse_mail_related(normalised)
+        && let Some(pattern) = parse_mail_related(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: inspector's twin of the above -- the same one-or-many split,
     // over its own lower-cased member names.
     if normalised.contains("ctx.aws.inspector.resources") && normalised.contains("ctx.resource.id")
     {
-        shapes.push(KnownShape::InspectorResources {
+        patterns.push(KnownPattern::InspectorResources {
             multi: normalised.contains("ctx.resource.id.add("),
         });
-        return shapes;
+        return patterns;
     }
 
     // Pattern: checkpoint's dropped-packet tuples into structured maps.
     if normalised.contains("packets_dropped") && normalised.contains(".splitOnToken('>')") {
-        shapes.push(KnownShape::CheckpointPackets);
-        return shapes;
+        patterns.push(KnownPattern::CheckpointPackets);
+        return patterns;
     }
 
     // Pattern: every member of a list trimmed where it sits -- cloudfront's
     // split x-forwarded-for, whose next processor greps each member anchored.
     if normalised.contains(".trim();")
         && normalised.contains("[i] =")
-        && let Some(shape) = parse_trim_list(normalised)
+        && let Some(pattern) = parse_trim_list(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: a constant appended when a member of a list carries a prefix --
@@ -13890,29 +13901,29 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains(".startsWith(")
         && normalised.contains(".add(")
         && normalised.contains("ctx[")
-        && let Some(shape) = parse_starts_with_append(normalised)
+        && let Some(pattern) = parse_starts_with_append(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: elb's `tlsv12` -- the protocol and version out of one token.
     if normalised.contains("ctx.tls.version_protocol")
         && normalised.contains(".splitOnToken(\"v\")")
-        && let Some(shape) = parse_tls_version_split(normalised)
+        && let Some(pattern) = parse_tls_version_split(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: sequential loop-over-category ladders assigning a LIST
     // literal -- defender's event.type.
     if normalised.contains(" in ctx.event.category)")
         && normalised.contains("break;")
-        && let Some(shape) = parse_category_type_ladder(normalised)
+        && let Some(pattern) = parse_category_type_ladder(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: whitespace stripped from every key of one map -- powershell's
@@ -13922,10 +13933,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(at) = normalised.find(".entrySet()")
         && let Some(start) = normalised[..at].rfind("ctx.")
     {
-        shapes.push(KnownShape::KeysStripWhitespace(
+        patterns.push(KnownPattern::KeysStripWhitespace(
             crate::painless_params::clean_path(&normalised[start + 4..at]),
         ));
-        return shapes;
+        return patterns;
     }
 
     // Pattern: one map copied to another path with its keys snake_cased by a
@@ -13934,30 +13945,30 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // what identifies it.
     if normalised.contains("([a-z])([A-Z]+)")
         && normalised.contains(".getKey()")
-        && let Some(shape) = parse_snake_key_map_copy(normalised)
+        && let Some(pattern) = parse_snake_key_map_copy(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: strip a surrounding `<...>` pair from named fields and each
     // member of a list -- proofpoint's mail addresses.
     if normalised.contains(".startsWith(\"<\")")
         && normalised.contains(".endsWith(\">\")")
-        && let Some(shape) = parse_strip_angle_pairs(normalised)
+        && let Some(pattern) = parse_strip_angle_pairs(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: a list of {name, value} pairs folded into a map that REPLACES
     // the target -- proofpoint's audit labels.
     if normalised.contains(", new HashMap())")
         && normalised.contains("for (")
-        && let Some(shape) = parse_name_value_fold(normalised)
+        && let Some(pattern) = parse_name_value_fold(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: the text before the last CASE-INSENSITIVE marker. The
@@ -13965,64 +13976,64 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // which cut on a plain `lastIndexOf` and are several statements long.
     if normalised.contains(".toLowerCase().lastIndexOf(")
         && normalised.contains(".substring(0, ")
-        && let Some(shape) = parse_substring_before_last(normalised)
+        && let Some(pattern) = parse_substring_before_last(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: every key of one map capitalised, ahead of PascalCase renames.
     if normalised.contains(".substring(0, 1).toUpperCase()")
         && normalised.contains(".entrySet()")
-        && let Some(shape) = parse_pascal_keys(normalised)
+        && let Some(pattern) = parse_pascal_keys(normalised)
     {
-        shapes.push(KnownShape::PascalKeys(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::PascalKeys(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: a numeric field's bits decoded into a list of names.
     if normalised.contains("parseUnsignedInt(")
         && normalised.contains("& 0x")
-        && let Some(shape) = parse_bit_flag_names(normalised)
+        && let Some(pattern) = parse_bit_flag_names(normalised)
     {
-        shapes.push(KnownShape::BitFlagNames(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::BitFlagNames(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: the same bit decode, spelled as a fixed name array indexed off
     // the loop counter instead of one literal `.add()` per mask. netflow's
     // `new String[]{` opening does not appear in any other vendored pipeline.
     if normalised.contains("new String[]{")
-        && let Some(shape) = parse_bit_name_array(normalised)
+        && let Some(pattern) = parse_bit_name_array(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: cloudtrail's ConsoleLogin extras.
     if normalised.contains("aed_map") && normalised.contains("'ConsoleLogin'") {
-        shapes.push(KnownShape::ConsoleLoginEventData);
-        return shapes;
+        patterns.push(KnownPattern::ConsoleLoginEventData);
+        return patterns;
     }
 
     // Pattern: the same fold written as an indexed loop -- aws/waf's request
     // headers and the headers it inserts.
     if normalised.contains("= new HashMap()")
         && normalised.contains("] = ctx.")
-        && let Some(shape) = parse_indexed_name_value_fold(normalised)
+        && let Some(pattern) = parse_indexed_name_value_fold(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: an outcome read off the tag whose name carries the action's
     // prefix -- proofpoint's audit outcome.
     if normalised.contains("+ '.'")
         && normalised.contains(".startsWith(action)")
-        && let Some(shape) = parse_outcome_from_tags(normalised)
+        && let Some(pattern) = parse_outcome_from_tags(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: "Rename Common Auth Fields" -- process, source and client
@@ -14031,8 +14042,8 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && normalised.contains("ClientAddress")
         && let Some(codes) = crate::painless_windows::event_code_list(normalised)
     {
-        shapes.push(KnownShape::RenameCommonAuth(codes));
-        return shapes;
+        patterns.push(KnownPattern::RenameCommonAuth(codes));
+        return patterns;
     }
 
     // Pattern: "Copy MemberName to User and User to Group" -- the split DN
@@ -14041,16 +14052,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains("MemberNameParts")
         && let Some(codes) = crate::painless_windows::event_code_list(normalised)
     {
-        shapes.push(KnownShape::CopyMemberName(codes));
-        return shapes;
+        patterns.push(KnownPattern::CopyMemberName(codes));
+        return patterns;
     }
 
     // Pattern: "Copy Target User to Computer Object".
     if normalised.contains("computerObject")
         && let Some(codes) = crate::painless_windows::event_code_list(normalised)
     {
-        shapes.push(KnownShape::CopyComputerObject(codes));
-        return shapes;
+        patterns.push(KnownPattern::CopyComputerObject(codes));
+        return patterns;
     }
 
     // Pattern: "Copy Target User to Target" and its Effective twin -- the
@@ -14061,12 +14072,12 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(base) = crate::painless_windows::copy_base(normalised)
         && let Some(sid_field) = crate::painless_windows::copy_sid_field(normalised)
     {
-        shapes.push(KnownShape::CopyUserToBase {
+        patterns.push(KnownPattern::CopyUserToBase {
             codes,
             base,
             sid_field,
         });
-        return shapes;
+        return patterns;
     }
 
     // Pattern: event 5136's `ObjectDN`, whose CN carries RFC 4514 escapes.
@@ -14074,8 +14085,8 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && normalised.contains("StringBuilder cn")
         && normalised.contains("objectClass")
     {
-        shapes.push(KnownShape::ObjectDn);
-        return shapes;
+        patterns.push(KnownPattern::ObjectDn);
+        return patterns;
     }
 
     // Pattern: the file-share events' path block. Ahead of the basename
@@ -14084,8 +14095,8 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && normalised.contains("ShareLocalPath")
         && let Some(codes) = crate::painless_windows::contained_code_list(normalised)
     {
-        shapes.push(KnownShape::ShareFilePath(codes));
-        return shapes;
+        patterns.push(KnownPattern::ShareFilePath(codes));
+        return patterns;
     }
 
     // Pattern: event 4688's process block. Ahead of the append matcher, which
@@ -14095,8 +14106,8 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && normalised.contains("ParentProcessName")
         && let Some(codes) = crate::painless_windows::event_code_list(normalised)
     {
-        shapes.push(KnownShape::ProcessCreated(codes));
-        return shapes;
+        patterns.push(KnownPattern::ProcessCreated(codes));
+        return patterns;
     }
 
     // Pattern: the security pipeline's "Copy Target User" -- SID, username
@@ -14108,8 +14119,8 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && normalised.contains("user.target")
         && let Some(codes) = crate::painless_windows::event_code_list(normalised)
     {
-        shapes.push(KnownShape::CopyTargetUser(codes));
-        return shapes;
+        patterns.push(KnownPattern::CopyTargetUser(codes));
+        return patterns;
     }
 
     // Pattern: its sibling "Copy Subject User from Event Data", which
@@ -14121,8 +14132,8 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && !normalised.contains("user_data")
         && let Some(codes) = crate::painless_windows::event_code_list(normalised)
     {
-        shapes.push(KnownShape::CopySubjectUser(codes));
-        return shapes;
+        patterns.push(KnownPattern::CopySubjectUser(codes));
+        return patterns;
     }
 
     // Pattern: zscaler's splitStr batch -- named map members split on `|` in
@@ -14131,8 +14142,8 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains("void splitStr(")
         && let Some(fields) = parse_split_pipe_fields(normalised)
     {
-        shapes.push(KnownShape::SplitPipeFields(fields));
-        return shapes;
+        patterns.push(KnownPattern::SplitPipeFields(fields));
+        return patterns;
     }
 
     // Pattern: one field split on a token into a list, optionally parsed to
@@ -14140,10 +14151,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // above.
     if normalised.contains(".splitOnToken(")
         && normalised.contains("new ArrayList()")
-        && let Some(shape) = parse_split_token_field(normalised)
+        && let Some(pattern) = parse_split_token_field(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: the same split written as a stream, dropping EVERY empty piece
@@ -14151,96 +14162,96 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // `,10015,`, which the loop spelling above cannot express.
     if normalised.contains(".splitOnToken(")
         && normalised.contains("Collectors.toList()")
-        && let Some(shape) = parse_stream_split_filter(normalised)
+        && let Some(pattern) = parse_stream_split_filter(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: `ctx.<t> = ctx.<s>.decodeBase64();` -- zscaler web's URL and
     // referer.
     if normalised.contains(".decodeBase64()")
-        && let Some(shape) = parse_decode_base64(normalised)
+        && let Some(pattern) = parse_decode_base64(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: a split's token COUNT stored on the event -- vpcflow's format
     // dispatch, where every dissect gates on it.
     if normalised.contains(".splitOnToken(")
         && normalised.contains(").length")
-        && let Some(shape) = parse_token_count(normalised)
+        && let Some(pattern) = parse_token_count(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: one value wrapped in a one-element list -- mimecast's
     // attachments promotion, amazon_security_lake's singular `resource` moved
     // onto `resources`, and kolide's osquery_status address. No loop, or it is
-    // the prepend shape below.
+    // the prepend pattern below.
     let wraps_a_new_list = (normalised.contains("= [];") || normalised.contains("new ArrayList()"))
         && normalised.contains(".add(ctx.");
     if (wraps_a_new_list || normalised.contains("= [ctx.") || normalised.contains("= [ ctx."))
         && !normalised.contains("for (")
-        && let Some(shape) = parse_wrap_value_in_list(normalised)
+        && let Some(pattern) = parse_wrap_value_in_list(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: the LAST element of an array assigned to a field --
     // mimecast's attachment extension off the split path.
     if normalised.contains(".length-1]")
-        && let Some(shape) = parse_last_element(normalised)
+        && let Some(pattern) = parse_last_element(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: classify each member of a list by string tests on the member.
     if normalised.contains("addNestedValue(") && normalised.contains("instanceof List") {
-        shapes.push(KnownShape::ClassifyMembers);
-        return shapes;
+        patterns.push(KnownPattern::ClassifyMembers);
+        return patterns;
     }
 
     // Pattern: keep a rendered copy of a nested object beside the object.
     if normalised.contains("keep_flattened_duplicates") {
-        shapes.push(KnownShape::FlattenedDuplicates);
-        return shapes;
+        patterns.push(KnownPattern::FlattenedDuplicates);
+        return patterns;
     }
 
     // Pattern: collect every non-empty value the script names into one sorted,
     // unique list.
     if normalised.contains("void addValue(") && normalised.contains("new TreeSet(") {
-        shapes.push(KnownShape::CollectEntities);
-        return shapes;
+        patterns.push(KnownPattern::CollectEntities);
+        return patterns;
     }
 
     // Pattern: DNS RData as tab-separated columns, one answer per line.
     if normalised.contains("answer_parts[") && normalised.contains("dns_answers.add(") {
-        shapes.push(KnownShape::DnsRdataAnswers);
-        return shapes;
+        patterns.push(KnownPattern::DnsRdataAnswers);
+        return patterns;
     }
 
     // Pattern: Google Public DNS's structured RData into `dns.answers`.
     if normalised.contains("structuredRdata") {
-        shapes.push(KnownShape::StructuredRdataAnswers);
-        return shapes;
+        patterns.push(KnownPattern::StructuredRdataAnswers);
+        return patterns;
     }
 
     // Pattern: the ECS lists an answer set feeds, keyed on the record type.
     if normalised.contains("for (answer in ctx.dns.answers)") {
-        shapes.push(KnownShape::RelatedFromDnsAnswers);
-        return shapes;
+        patterns.push(KnownPattern::RelatedFromDnsAnswers);
+        return patterns;
     }
 
     // Pattern: one synthesised DNS answer per resolved address, typed by
     // whether the address holds a colon.
     if normalised.contains("ctx.dns.answers.add(") && normalised.contains("ip.indexOf(\":\")") {
-        shapes.push(KnownShape::AnswersFromResolvedIp);
-        return shapes;
+        patterns.push(KnownPattern::AnswersFromResolvedIp);
+        return patterns;
     }
 
     // Pattern: the integrations' own recursive camelCase-to-snake_case pair,
@@ -14249,33 +14260,33 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // then does nothing with.
     if normalised.contains("Character.isUpperCase(")
         && normalised.contains("instanceof Map")
-        && let Some(shape) = snake_case_apply(normalised)
+        && let Some(pattern) = snake_case_apply(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: split, trim and collect several optional fields into one list.
     // Checked early: the script also spells `.add(` and `.splitOnToken(`, which
-    // a later matcher reads as a different shape entirely.
+    // a later matcher reads as a different pattern entirely.
     if normalised.contains("new HashSet(") && normalised.contains(".asList()") {
-        shapes.push(KnownShape::SplitTrimCollect);
-        return shapes;
+        patterns.push(KnownPattern::SplitTrimCollect);
+        return patterns;
     }
 
     // Pattern: network.bytes / network.packets as the sum of both directions.
     let totals = sum_of_directions(normalised);
     if !totals.is_empty() {
-        shapes.push(KnownShape::SumDirections(totals));
-        return shapes;
+        patterns.push(KnownPattern::SumDirections(totals));
+        return patterns;
     }
 
     // Pattern: one ctx field as the sum of two others. Gated on the parse, so a
-    // script that merely adds two fields somewhere no longer claims the shape.
+    // script that merely adds two fields somewhere no longer claims the pattern.
     if normalised.contains(" + ctx.")
-        && let Some(shape) = parse_sum_of_fields(normalised)
+        && let Some(pattern) = parse_sum_of_fields(normalised)
     {
-        shapes.push(KnownShape::SumOfFields(Box::new(shape)));
+        patterns.push(KnownPattern::SumOfFields(Box::new(pattern)));
     }
 
     // Pattern: seconds to nanoseconds for event.duration.
@@ -14283,8 +14294,8 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && normalised.contains("Long.parseLong")
         && normalised.contains("1000000000")
     {
-        shapes.push(KnownShape::DurationToNanos);
-        return shapes;
+        patterns.push(KnownPattern::DurationToNanos);
+        return patterns;
     }
 
     // Pattern: an `hh:mm:ss` duration scaled to nanoseconds, plus the span
@@ -14295,14 +14306,14 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // keying on `minusNanos(` missed it twice over -- it writes the duration
     // and no span at all, so that call was never going to be there.
     if normalised.contains("parse_hms(") && normalised.contains("1000000000") {
-        shapes.push(KnownShape::FlowDuration);
-        return shapes;
+        patterns.push(KnownPattern::FlowDuration);
+        return patterns;
     }
 
     // Pattern: two parallel arrays, one naming what the other holds.
     if normalised.contains("(ctx, ctx.") && normalised.contains("[i])") {
-        shapes.push(KnownShape::ParallelDispatch);
-        return shapes;
+        patterns.push(KnownPattern::ParallelDispatch);
+        return patterns;
     }
 
     // Pattern: a string built up piece by piece under per-field guards --
@@ -14310,10 +14321,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains("def ")
         && normalised.contains(" += ")
         && normalised.contains("!= \"\"")
-        && let Some(shape) = parse_concat_parts(normalised)
+        && let Some(pattern) = parse_concat_parts(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: build a string out of ctx fields and literals.
@@ -14321,12 +14332,12 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && normalised.contains(".isEmpty()")
         && normalised.contains("\" + ")
     {
-        shapes.push(KnownShape::ConcatMessage);
+        patterns.push(KnownPattern::ConcatMessage);
     }
 
     // Pattern: swap two ctx subtrees, keeping named keys on one side.
     if normalised.contains("def tmp = ctx.") {
-        shapes.push(KnownShape::SwapSubtrees);
+        patterns.push(KnownPattern::SwapSubtrees);
     }
 
     // Pattern: a ladder collecting into a list, written as scalar or array.
@@ -14334,40 +14345,40 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && normalised.contains(".size()")
         && normalised.contains("else if (")
     {
-        shapes.push(KnownShape::CollectingLadder);
+        patterns.push(KnownPattern::CollectingLadder);
     }
 
     // Pattern: a case-insensitive ladder mapping one field onto a literal.
     // Tried before the `==` ladder, which cannot read either the multi-literal
     // arms or the numeric right-hand sides.
     if normalised.contains(".equalsIgnoreCase(") && normalised.contains("else if (") {
-        shapes.push(KnownShape::CaseInsensitiveLadder);
-        return shapes;
+        patterns.push(KnownPattern::CaseInsensitiveLadder);
+        return patterns;
     }
 
     // Pattern: an equality ladder mapping one field onto string literals.
     if normalised.contains("else if (")
         && let Some(ladder) = parse_ladder(normalised)
     {
-        shapes.push(KnownShape::EqualityLadder(ladder));
-        return shapes;
+        patterns.push(KnownPattern::EqualityLadder(ladder));
+        return patterns;
     }
 
     // Pattern: strip sentinel values and junk keys out of a parsed map.
     if normalised.contains(".entrySet().removeIf(") && normalised.contains("entry.getValue()") {
-        shapes.push(KnownShape::SentinelRemovalLiteral);
-        return shapes;
+        patterns.push(KnownPattern::SentinelRemovalLiteral);
+        return patterns;
     }
 
     // Checked ahead of `RowLookupWithFallback`, whose `" : ctx."` trigger needs
-    // a space before the colon this shape's loop variable never has.
+    // a space before the colon this pattern's loop variable never has.
     if normalised.contains("for (def ")
         && normalised.contains(" = true;")
         && normalised.contains(" = false;")
-        && let Some(shape) = parse_list_member_flag(normalised)
+        && let Some(pattern) = parse_list_member_flag(normalised)
     {
-        shapes.push(KnownShape::ListMemberFlag(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::ListMemberFlag(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: look a value up in a ctx-held table of rows, else fall back.
@@ -14376,54 +14387,54 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // them. No `return` here, so declining changes nothing at run time.
     if normalised.contains("for (def ")
         && normalised.contains(" : ctx.")
-        && let Some(shape) = parse_row_lookup(normalised)
+        && let Some(pattern) = parse_row_lookup(normalised)
     {
-        shapes.push(KnownShape::RowLookupWithFallback(Box::new(shape)));
+        patterns.push(KnownPattern::RowLookupWithFallback(Box::new(pattern)));
     }
 
     // Pattern: split a schemeless URL into its ECS components.
     if normalised.contains("domainPort") && normalised.contains("url.original") {
-        shapes.push(KnownShape::SchemelessUrl);
-        return shapes;
+        patterns.push(KnownPattern::SchemelessUrl);
+        return patterns;
     }
 
     // Pattern: split a version string at its first digit.
     if normalised.contains("matcher.start()") {
-        shapes.push(KnownShape::VersionSplit);
+        patterns.push(KnownPattern::VersionSplit);
     }
 
     // Pattern: decompose a syslog PRI into ECS facility and severity.
     if normalised.contains("log.syslog") && normalised.contains("priority") {
-        shapes.push(KnownShape::SyslogPriority(parse_syslog_priority(
+        patterns.push(KnownPattern::SyslogPriority(parse_syslog_priority(
             normalised,
         )));
-        return shapes;
+        return patterns;
     }
 
     // Pattern: append one array into another, skipping duplicates.
     if let Some((from, into)) = append_unique_fields(normalised) {
-        shapes.push(KnownShape::AppendUnique { from, into });
-        return shapes;
+        patterns.push(KnownPattern::AppendUnique { from, into });
+        return patterns;
     }
 
     // Pattern: quote-aware KV split of a whole vendor payload.
     if normalised.contains("splitUnquoted(")
-        && let Some(shape) = parse_split_unquoted_kv(normalised)
+        && let Some(pattern) = parse_split_unquoted_kv(normalised)
     {
-        shapes.push(KnownShape::SplitUnquotedKv(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::SplitUnquotedKv(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: re-key an array of maps into an object indexed by position.
     if normalised.contains("new HashMap()") && normalised.contains("String.valueOf(") {
-        shapes.push(KnownShape::ArrayToIndexedObject);
-        return shapes;
+        patterns.push(KnownPattern::ArrayToIndexedObject);
+        return patterns;
     }
 
     // Pattern: collapse an array of `{key, value}` maps into one object.
     if normalised.contains("[item.key] = item.value") {
-        shapes.push(KnownShape::KeyValuePairs);
-        return shapes;
+        patterns.push(KnownPattern::KeyValuePairs);
+        return patterns;
     }
 
     // Pattern: a base timestamp plus a duration whose LAST CHARACTER is the
@@ -14444,29 +14455,29 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && normalised.contains("plusMinutes(")
         && normalised.contains("Instant.ofEpochMilli(")
         && normalised.contains(".isBefore(")
-        && let Some(shape) = parse_decay_window(normalised)
+        && let Some(pattern) = parse_decay_window(normalised)
     {
-        shapes.push(KnownShape::DecayWindow(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::DecayWindow(Box::new(pattern)));
+        return patterns;
     }
 
     if normalised.contains("plusDays(")
         && normalised.contains("plusHours(")
         && normalised.contains("plusMinutes(")
-        && let Some(shape) = parse_ioc_expiry(normalised)
+        && let Some(pattern) = parse_ioc_expiry(normalised)
     {
-        shapes.push(KnownShape::IocExpiry(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::IocExpiry(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: drop a field's last character, which is what strips the
     // trailing comma off mysql_enterprise's audit lines before the JSON parse.
     if normalised.contains(".substring(0, ctx.")
         && normalised.contains(".length() - 1)")
-        && let Some(shape) = parse_drop_last_char(normalised)
+        && let Some(pattern) = parse_drop_last_char(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: ti_misp's tag list, scrubbed into names AND filtered into a
@@ -14474,10 +14485,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // write alone, which left the marking missing on every tagged event.
     if normalised.contains("Collectors.toList()")
         && normalised.contains(".toUpperCase())")
-        && let Some(shape) = parse_tags_and_marking(normalised)
+        && let Some(pattern) = parse_tags_and_marking(normalised)
     {
-        shapes.push(KnownShape::TagsAndMarking(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::TagsAndMarking(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: the numbered CSV column map collapsed into an ordered list.
@@ -14485,30 +14496,30 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // same chain and shares its `_csv_array` anchor.
     if normalised.contains("new TreeMap()")
         && normalised.contains("columnArray.add(")
-        && let Some(shape) = parse_csv_map_to_array(normalised)
+        && let Some(pattern) = parse_csv_map_to_array(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: `Key: value` columns into a map, their keys joined into the
     // fingerprint that identifies the log layout.
     if normalised.contains("String.join(\"|\", fingerprint)")
         && normalised.contains("m.group(1).toLowerCase()")
-        && let Some(shape) = parse_csv_colon_pairs(normalised)
+        && let Some(pattern) = parse_csv_colon_pairs(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: a list deduplicated and then unwrapped when one member is
     // left, which is how suricata collapses destination.domain.
     if normalised.contains(".stream().distinct().collect(Collectors.toList())")
         && normalised.contains(".length == 1")
-        && let Some(shape) = parse_dedupe_unwrap(normalised)
+        && let Some(pattern) = parse_dedupe_unwrap(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: the fortiproxy variant of the same loop. FIRST, because it
@@ -14516,47 +14527,47 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // and then drop its N/A and non-word-key rules.
     if normalised.contains("wordPattern")
         && normalised.contains("kvSplit")
-        && let Some(shape) = parse_kv_into_fields(normalised)
+        && let Some(pattern) = parse_kv_into_fields(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: a hand-written quote-aware KV split into one namespace, which
     // is the whole of stormshield's parse.
     if normalised.contains("inQuote")
         && normalised.contains("kvSplit")
-        && let Some(shape) = parse_kv_into_namespace(normalised)
+        && let Some(pattern) = parse_kv_into_namespace(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: a lookup whose table is on the DOCUMENT rather than in params,
     // which is why no params matcher can claim it.
     if normalised.contains("instanceof Map &&")
         && normalised.contains(".containsKey(")
-        && let Some(shape) = parse_ctx_table_lookup(normalised)
+        && let Some(pattern) = parse_ctx_table_lookup(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: awsfirehose naming the AWS log type its record carries. Its own
     // classifier, so the trigger is its own literals.
     if normalised.contains("aws-waf-logs-") && normalised.contains("tokens_result") {
-        shapes.push(KnownShape::FirehoseDataset);
-        return shapes;
+        patterns.push(KnownPattern::FirehoseDataset);
+        return patterns;
     }
 
     // Pattern: the sorted key names of the first nested map holding an inner
     // map, which awsfirehose fingerprints to key a document by its metrics.
     if normalised.contains("metricNames")
         && normalised.contains("Collections.sort(")
-        && let Some(shape) = parse_nested_key_names(normalised)
+        && let Some(pattern) = parse_nested_key_names(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: the same expiry with no unit ladder at all -- one parse and one
@@ -14566,16 +14577,16 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains("ZonedDateTime.parse(")
         && normalised.contains(".plusDays(")
         && !normalised.contains("plusHours(")
-        && let Some(shape) = parse_date_plus_days(normalised)
+        && let Some(pattern) = parse_date_plus_days(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: join two optional fields, each alone if the other is absent.
     if normalised.matches("String ").count() == 2 && normalised.contains("} else if (") {
-        shapes.push(KnownShape::JoinOptional);
-        return shapes;
+        patterns.push(KnownPattern::JoinOptional);
+        return patterns;
     }
 
     // Pattern: a list of maps rebuilt under an explicit rename table. Ahead
@@ -14583,10 +14594,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // triggers the closing `out.add(m)` and `!(f instanceof Map)` also spell.
     if normalised.contains(".containsKey('")
         && normalised.contains(".remove('")
-        && let Some(shape) = parse_list_rename_table(normalised)
+        && let Some(pattern) = parse_list_rename_table(normalised)
     {
-        shapes.push(KnownShape::ListRenameTable(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::ListRenameTable(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: flatten a field into an array, either by splitting a delimited
@@ -14600,10 +14611,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
             .iter()
             .any(|marker| normalised.find(marker).is_some_and(|at| at < add_at))
     {
-        if let Some(shape) = parse_append_each(normalised) {
-            shapes.push(KnownShape::AppendEach(Box::new(shape)));
+        if let Some(pattern) = parse_append_each(normalised) {
+            patterns.push(KnownPattern::AppendEach(Box::new(pattern)));
         }
-        return shapes;
+        return patterns;
     }
 
     // Pattern: every value of a map gathered into one deduped list, a value
@@ -14611,10 +14622,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains(".values()")
         && normalised.contains("instanceof List")
         && normalised.contains(".add(")
-        && let Some(shape) = parse_flatten_map_into(normalised)
+        && let Some(pattern) = parse_flatten_map_into(normalised)
     {
-        shapes.push(KnownShape::FlattenMapInto(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::FlattenMapInto(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: whole numbers rendered as strings in place. Ahead of the
@@ -14623,8 +14634,8 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains("Long.toString(")
         && let Some(fields) = parse_stringify_longs(normalised)
     {
-        shapes.push(KnownShape::StringifyLongs(fields));
-        return shapes;
+        patterns.push(KnownPattern::StringifyLongs(fields));
+        return patterns;
     }
 
     // Pattern: the same if/else-if chain over one field, but every arm COPIES
@@ -14633,10 +14644,10 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // declines this and leaves it to `GuardedCopy` -- which takes the FIRST
     // arm's source whatever the label says.
     if normalised.contains(" else if (")
-        && let Some(shape) = parse_copy_by_label(normalised)
+        && let Some(pattern) = parse_copy_by_label(normalised)
     {
-        shapes.push(KnownShape::CopyByLabel(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::CopyByLabel(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: a value map written out as an if/else-if chain over one field.
@@ -14644,19 +14655,19 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // while the code matched on `contains` alone and took 91 sites it never
     // applied. No `return`, so declining changes nothing at run time.
     if normalised.contains("else if (")
-        && let Some(shape) = parse_literal_value_map(normalised)
+        && let Some(pattern) = parse_literal_value_map(normalised)
     {
-        shapes.push(KnownShape::LiteralValueMap(Box::new(shape)));
+        patterns.push(KnownPattern::LiteralValueMap(Box::new(pattern)));
     }
 
     // Pattern: a field replaced by whether it equals a literal. Late, because
-    // the parse is a two-statement script and every richer shape above spells
+    // the parse is a two-statement script and every richer pattern above spells
     // a comparison somewhere too.
     if normalised.contains(" == '")
-        && let Some(shape) = parse_equals_literal_flag(normalised)
+        && let Some(pattern) = parse_equals_literal_flag(normalised)
     {
-        shapes.push(KnownShape::EqualsLiteralFlag(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::EqualsLiteralFlag(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: keys_to_snake_case. The helper is COPIED between packages and
@@ -14669,11 +14680,11 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         } else {
             SnakeRule::BeforeEveryUpper
         };
-        shapes.push(KnownShape::KeysToSnakeCase(
+        patterns.push(KnownPattern::KeysToSnakeCase(
             extract_target_field(normalised),
             rule,
         ));
-        return shapes;
+        return patterns;
     }
 
     // From here down: the matchers keyed on a vendor's FIELD NAMES rather than
@@ -14681,33 +14692,33 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
 
     // Pattern: CommandLine → process fields
     if normalised.contains("CommandLine") && normalised.contains("process") {
-        shapes.push(KnownShape::CommandLine {
+        patterns.push(KnownPattern::CommandLine {
             parent: normalised.contains("ParentCommandLine"),
         });
-        return shapes;
+        return patterns;
     }
 
     // Pattern: ProcessStartTime epoch → @timestamp or process.start
     if normalised.contains("ProcessStartTime") || normalised.contains("processStartTime") {
-        shapes.push(KnownShape::ProcessStartTime);
-        return shapes;
+        patterns.push(KnownPattern::ProcessStartTime);
+        return patterns;
     }
 
     // Pattern: an address split on `@`, each half written where the script
     // says. Used by okta, o365, azure and many others.
     if normalised.contains("splitOnToken")
         && normalised.contains('@')
-        && let Some(shape) = parse_email_split(normalised)
+        && let Some(pattern) = parse_email_split(normalised)
     {
-        shapes.push(KnownShape::EmailSplit(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::EmailSplit(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: okta risk_behaviors extraction from flattened.behaviors
     // Extracts keys with value "POSITIVE" into an array
     if normalised.contains("POSITIVE") && normalised.contains("risk_behaviors") {
-        shapes.push(KnownShape::RiskBehaviors);
-        return shapes;
+        patterns.push(KnownPattern::RiskBehaviors);
+        return patterns;
     }
 
     // Pattern: Azure category → event type/category mapping via params lookup
@@ -14715,21 +14726,21 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && normalised.contains("category")
         && normalised.contains("params.get")
     {
-        shapes.push(KnownShape::AzureCategoryEventType);
-        return shapes;
+        patterns.push(KnownPattern::AzureCategoryEventType);
+        return patterns;
     }
 
     // Pattern: Azure event_category assignment, in whichever module's subtree.
     if normalised.contains("event_category") && normalised.contains("eventCategory") {
-        shapes.push(KnownShape::AzureEventCategory);
-        return shapes;
+        patterns.push(KnownPattern::AzureEventCategory);
+        return patterns;
     }
 
     // Pattern: replace dots in map keys (Azure identity claims)
     // Matches: ctx.temp_claims[key.replace('.', '_')] = ...
     if normalised.contains("replace('.'") && normalised.contains("keySet()") {
-        shapes.push(KnownShape::ReplaceDotsInKeys);
-        return shapes;
+        patterns.push(KnownPattern::ReplaceDotsInKeys);
+        return patterns;
     }
 
     // Pattern: okta.target array key renames + user/group extraction
@@ -14739,64 +14750,64 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && normalised.contains("alternate_id")
         && normalised.contains("okta")
     {
-        shapes.push(KnownShape::OktaTargetRename);
-        return shapes;
+        patterns.push(KnownPattern::OktaTargetRename);
+        return patterns;
     }
 
     // Pattern: a map's keys selected by suffix, their values sorted onto one
-    // target. Ahead of the collect-by-key shape below, whose trigger this also
+    // target. Ahead of the collect-by-key pattern below, whose trigger this also
     // satisfies and whose parse reads neither the suffix nor the sort.
     if normalised.contains(".keySet()")
         && normalised.contains(".endsWith(")
-        && let Some(shape) = parse_keys_by_suffix(normalised)
+        && let Some(pattern) = parse_keys_by_suffix(normalised)
     {
-        shapes.push(KnownShape::KeysBySuffix(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::KeysBySuffix(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: collect one nested key out of every entry of a map.
     if normalised.contains(".keySet()") && normalised.contains(".add(") {
-        shapes.push(KnownShape::CollectMapValues);
-        return shapes;
+        patterns.push(KnownPattern::CollectMapValues);
+        return patterns;
     }
 
     // Pattern: a field read into a local, run through a chain of string ops and
-    // written back. Ahead of the single-replace shape below, whose parse reads
+    // written back. Ahead of the single-replace pattern below, whose parse reads
     // only the first `.replace(` and would drop the rest of the chain.
-    if let Some(shape) = parse_string_ops(normalised) {
-        shapes.push(KnownShape::StringOps(Box::new(shape)));
-        return shapes;
+    if let Some(pattern) = parse_string_ops(normalised) {
+        patterns.push(KnownPattern::StringOps(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: rewrite one substring of a field in place. The parse decides what
     // BINDS; the arm stops the ladder either way, because letting an unreadable
     // script fall through cost juniper_srx 845 fields to worse matches below.
     if normalised.contains(".replace(") {
-        if let Some(shape) = parse_guarded_replace(normalised) {
-            shapes.push(KnownShape::GuardedReplace(Box::new(shape)));
+        if let Some(pattern) = parse_guarded_replace(normalised) {
+            patterns.push(KnownPattern::GuardedReplace(Box::new(pattern)));
         }
-        return shapes;
+        return patterns;
     }
 
     // Pattern: a cast double rounded and scaled into a long. Ahead of the
     // scale-by-literal catch-all below, which reads the same `*` but parses
-    // its factor as an integer and would decline on this shape's `100.0`.
+    // its factor as an integer and would decline on this pattern's `100.0`.
     if normalised.contains("Math.round(")
         && normalised.contains(".doubleValue()")
-        && let Some(shape) = parse_rounded_scale(normalised)
+        && let Some(pattern) = parse_rounded_scale(normalised)
     {
-        shapes.push(KnownShape::RoundedScale(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::RoundedScale(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: a local map assembled from `ctx.` fields via `.put()`, then
     // assigned whole onto one target.
     if normalised.contains(" = new HashMap();")
         && normalised.matches(".put('").count() >= 2
-        && let Some(shape) = parse_fields_into_map(normalised)
+        && let Some(pattern) = parse_fields_into_map(normalised)
     {
-        shapes.push(KnownShape::FieldsIntoMap(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::FieldsIntoMap(Box::new(pattern)));
+        return patterns;
     }
 
     // crowdstrike timeline: keyed on field names, ahead of `GuardedCopy`
@@ -14805,23 +14816,23 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains("ctx.crowdstrike.idp.timeline.entity")
         && normalised.contains("secondary_display_name")
     {
-        shapes.push(KnownShape::CrowdstrikeTimelineEntityIdentity);
-        return shapes;
+        patterns.push(KnownPattern::CrowdstrikeTimelineEntityIdentity);
+        return patterns;
     }
     if normalised.contains("ctx.crowdstrike.idp.timeline.entity")
         && normalised.contains("sam_account_name")
     {
-        shapes.push(KnownShape::CrowdstrikeTimelineEntityAccounts);
-        return shapes;
+        patterns.push(KnownPattern::CrowdstrikeTimelineEntityAccounts);
+        return patterns;
     }
 
     // Pattern: the first element of a list, bare or guarded on the target
     // being unset.
     if normalised.contains("[0];")
-        && let Some(shape) = parse_first_element(normalised)
+        && let Some(pattern) = parse_first_element(normalised)
     {
-        shapes.push(KnownShape::FirstElement(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::FirstElement(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: members copied off one indexed list element, each under its own
@@ -14831,18 +14842,18 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains(" = ctx.")
         && normalised.contains("!= null")
         && !normalised.contains("for (")
-        && let Some(shape) = parse_indexed_field_copies(normalised)
+        && let Some(pattern) = parse_indexed_field_copies(normalised)
     {
-        shapes.push(KnownShape::IndexedFieldCopies(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::IndexedFieldCopies(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: named top-level keys moved under another object.
     if normalised.contains(" = ctx.remove(")
         && let Some(moves) = parse_move_keys(normalised)
     {
-        shapes.push(KnownShape::MoveKeys(moves));
-        return shapes;
+        patterns.push(KnownPattern::MoveKeys(moves));
+        return patterns;
     }
 
     // Pattern: one string field classified by an else-if ladder whose answers
@@ -14850,19 +14861,19 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // catch-all the trailing writes also spell and which then declines,
     // leaving the script claimed and unrun.
     if normalised.contains("else if (")
-        && let Some(shape) = parse_classify_ladder(normalised)
+        && let Some(pattern) = parse_classify_ladder(normalised)
     {
-        shapes.push(KnownShape::ClassifyLadder(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::ClassifyLadder(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: ECS network.direction from whether each end is in a private
     // range.
     if normalised.contains("isPrivateCIDR")
-        && let Some(shape) = parse_private_cidr_direction(normalised)
+        && let Some(pattern) = parse_private_cidr_direction(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: copies selected by a field matching a literal -- arista's
@@ -14873,11 +14884,11 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && normalised.contains("!= null")
         && let Some(branches) = parse_branch_copies(normalised)
     {
-        shapes.push(KnownShape::BranchCopies(branches));
-        return shapes;
+        patterns.push(KnownPattern::BranchCopies(branches));
+        return patterns;
     }
 
-    // The two catch-alls below are shapes a longer script also CONTAINS, so
+    // The two catch-alls below are patterns a longer script also CONTAINS, so
     // they run only after every structural matcher has declined.
 
     // Pattern: divide a number by a literal into a field, under a guard. The
@@ -14886,19 +14897,19 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // a slash that is part of a path or a literal.
     if normalised.contains('/')
         && !normalised.contains("params")
-        && let Some(shape) = parse_guarded_divide(normalised)
+        && let Some(pattern) = parse_guarded_divide(normalised)
     {
-        shapes.push(shape);
-        return shapes;
+        patterns.push(pattern);
+        return patterns;
     }
 
     // Pattern: one field scaled by a literal into another.
     if normalised.contains(" * ")
         && !normalised.contains("params")
-        && let Some(shape) = parse_scale_field(normalised)
+        && let Some(pattern) = parse_scale_field(normalised)
     {
-        shapes.push(KnownShape::ScaleField(Box::new(shape)));
-        return shapes;
+        patterns.push(KnownPattern::ScaleField(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: copy one field to another when the source is set.
@@ -14910,8 +14921,8 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     if normalised.contains("!= null") && !normalised.contains("for (") {
         let literals = Program::parse(normalised);
         if literals.can_write() || parse_single_copy(normalised).is_some() {
-            shapes.push(KnownShape::GuardedCopy(literals));
-            return shapes;
+            patterns.push(KnownPattern::GuardedCopy(literals));
+            return patterns;
         }
     }
 
@@ -14922,14 +14933,14 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
     // would have written a different one. This is that walk with the hole
     // closed: a script qualifies only when nothing in it is skipped, so what
     // runs is the whole of what the vendor wrote. carbon_black's netconn
-    // direction is the shape.
+    // direction is the pattern.
     let program = Program::parse(normalised);
     if program.is_whole() {
-        shapes.push(KnownShape::PlainAssignments(program));
-        return shapes;
+        patterns.push(KnownPattern::PlainAssignments(program));
+        return patterns;
     }
 
-    shapes
+    patterns
 }
 
 /// A Rust string literal, escaped for the generated source.
@@ -14939,12 +14950,12 @@ fn rust_str(value: &str) -> String {
 }
 
 #[cfg(feature = "codegen")]
-impl KnownShape {
-    /// The runner call that reproduces this shape, for a generator emitting it
+impl KnownPattern {
+    /// The runner call that reproduces this pattern, for a generator emitting it
     /// directly instead of the script.
     ///
-    /// `None` means the shape is not expressible yet and the call site keeps
-    /// the ladder. This is an ALLOWLIST: a shape is added here only once its
+    /// `None` means the pattern is not expressible yet and the call site keeps
+    /// the ladder. This is an ALLOWLIST: a pattern is added here only once its
     /// runner takes extracted params and its payload can be written as
     /// literals, so a wrong emit is impossible rather than merely unlikely.
     pub(crate) fn direct_call(&self) -> Option<String> {
@@ -14980,32 +14991,32 @@ impl KnownShape {
                     set.join(", "),
                 ))
             }
-            Self::AllowedValueCopy(shape) => {
-                let allowed: Vec<String> = shape
+            Self::AllowedValueCopy(pattern) => {
+                let allowed: Vec<String> = pattern
                     .allowed
                     .iter()
                     .map(|value| format!("{}.into()", rust_str(value)))
                     .collect();
                 Some(format!(
                     "allowed_value_copy(event, &AllowedValueCopy::new({}, {}, vec![{}], {}));",
-                    rust_str(&shape.source),
-                    shape.lower,
+                    rust_str(&pattern.source),
+                    pattern.lower,
                     allowed.join(", "),
-                    rust_str(&shape.target),
+                    rust_str(&pattern.target),
                 ))
             }
-            Self::EnsureAppend(shape) => Some(format!(
+            Self::EnsureAppend(pattern) => Some(format!(
                 "ensure_append(event, &EnsureAppend::new({}, {}));",
-                rust_str(&shape.source),
-                rust_str(&shape.target),
+                rust_str(&pattern.source),
+                rust_str(&pattern.target),
             )),
-            Self::OctalString(shape) => Some(format!(
+            Self::OctalString(pattern) => Some(format!(
                 "octal_string(event, &OctalString::new({}, {}));",
-                rust_str(&shape.source),
-                rust_str(&shape.target),
+                rust_str(&pattern.source),
+                rust_str(&pattern.target),
             )),
-            Self::StringOps(shape) => {
-                let ops: Vec<String> = shape
+            Self::StringOps(pattern) => {
+                let ops: Vec<String> = pattern
                     .ops
                     .iter()
                     .map(|op| match op {
@@ -15021,17 +15032,17 @@ impl KnownShape {
                     .collect();
                 Some(format!(
                     "string_ops(event, &StringOps::new({}, {}, vec![{}]));",
-                    rust_str(&shape.source),
-                    rust_str(&shape.target),
+                    rust_str(&pattern.source),
+                    rust_str(&pattern.target),
                     ops.join(", "),
                 ))
             }
-            Self::GuardedReplace(shape) => Some(format!(
+            Self::GuardedReplace(pattern) => Some(format!(
                 "guarded_replace(event, &GuardedReplace::new({}, {}, {}, {}));",
-                rust_str(&shape.source),
-                rust_str(&shape.target),
-                rust_str(&shape.from),
-                rust_str(&shape.to),
+                rust_str(&pattern.source),
+                rust_str(&pattern.target),
+                rust_str(&pattern.from),
+                rust_str(&pattern.to),
             )),
             Self::KvIntoFields(target) => {
                 Some(format!("kv_into_fields(event, {});", rust_str(target)))
@@ -15040,25 +15051,25 @@ impl KnownShape {
                 let list: Vec<String> = units.iter().map(|unit| rust_str(unit)).collect();
                 Some(format!("sum_directions(event, &[{}]);", list.join(", ")))
             }
-            Self::ScaleField(shape) => {
-                let factor = match shape.factor {
+            Self::ScaleField(pattern) => {
+                let factor = match pattern.factor {
                     Factor::Long(n) => format!("Factor::Long({n})"),
                     Factor::Double(n) => format!("Factor::Double({n:?})"),
                 };
                 Some(format!(
                     "scale_field(event, &ScaleField::new({}, {}, {factor}));",
-                    rust_str(&shape.source),
-                    rust_str(&shape.target),
+                    rust_str(&pattern.source),
+                    rust_str(&pattern.target),
                 ))
             }
-            Self::SyslogPriority(shape) => {
-                let source = shape.source.as_deref().map_or_else(
+            Self::SyslogPriority(pattern) => {
+                let source = pattern.source.as_deref().map_or_else(
                     || "None".to_string(),
                     |s| format!("Some({}.into())", rust_str(s)),
                 );
                 Some(format!(
                     "syslog_priority(event, &SyslogPriorityScript::new({source}, {}, {}, {}));",
-                    shape.facility, shape.severity, shape.names,
+                    pattern.facility, pattern.severity, pattern.names,
                 ))
             }
             _ => None,
@@ -15070,103 +15081,111 @@ impl KnownShape {
 ///
 /// Returns whether the script counts as HANDLED, with each branch's semantics
 /// unchanged from the old inline dispatch: a guarded branch may decline, and
-/// the caller then tries the next shape in the list.
-#[allow(clippy::too_many_lines)] // One delegation arm per shape; it grows with the shape list.
-pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &KnownShape) -> bool {
-    match shape {
-        KnownShape::DropEmpty { policy, root } => drop_empty(event, policy, root.as_deref()),
-        KnownShape::SplitCommandLine(script) => {
+/// the caller then tries the next pattern in the list.
+#[allow(clippy::too_many_lines)] // One delegation arm per pattern; it grows with the pattern list.
+pub(crate) fn run_known_pattern(
+    event: &mut Event,
+    normalised: &str,
+    pattern: &KnownPattern,
+) -> bool {
+    match pattern {
+        KnownPattern::DropEmpty { policy, root } => drop_empty(event, policy, root.as_deref()),
+        KnownPattern::SplitCommandLine(script) => {
             crate::painless_windows::run_argv_script(event, script)
         }
-        KnownShape::Basename(shape) => basename_cuts(event, shape),
-        KnownShape::FileInfo(source) => crate::painless_windows::run_file_info(event, source),
-        KnownShape::HashLowercase(source) => {
+        KnownPattern::Basename(pattern) => basename_cuts(event, pattern),
+        KnownPattern::FileInfo(source) => crate::painless_windows::run_file_info(event, source),
+        KnownPattern::HashLowercase(source) => {
             crate::painless_windows::run_hash_lowercase(event, source)
         }
-        KnownShape::PrefixTail {
+        KnownPattern::PrefixTail {
             source,
             prefix,
             strip_comma,
             target,
         } => try_prefix_tail(event, source, prefix, *strip_comma, target),
-        KnownShape::PrependToArray {
+        KnownPattern::PrependToArray {
             scalar,
             array,
             target,
         } => try_prepend_to_array(event, scalar, array, target),
-        KnownShape::ResourcesRenameDedup(source) => run_resources_rename_dedup(event, source),
-        KnownShape::SecurityhubResource(source) => run_securityhub_resource(event, source),
-        KnownShape::CheckpointPackets => run_checkpoint_packets(event),
-        KnownShape::ConsoleLoginEventData => run_console_login_event_data(event),
-        KnownShape::BitFlagNames(decode) => run_bit_flag_names(event, decode),
-        KnownShape::BitNameArray(shape) => run_bit_name_array(event, shape),
-        KnownShape::PascalKeys(shape) => run_pascal_keys(event, shape),
-        KnownShape::SecondsToSpan(source) => run_seconds_to_span(event, source),
-        KnownShape::SubstringBeforeLast {
+        KnownPattern::ResourcesRenameDedup(source) => run_resources_rename_dedup(event, source),
+        KnownPattern::SecurityhubResource(source) => run_securityhub_resource(event, source),
+        KnownPattern::CheckpointPackets => run_checkpoint_packets(event),
+        KnownPattern::ConsoleLoginEventData => run_console_login_event_data(event),
+        KnownPattern::BitFlagNames(decode) => run_bit_flag_names(event, decode),
+        KnownPattern::BitNameArray(pattern) => run_bit_name_array(event, pattern),
+        KnownPattern::PascalKeys(pattern) => run_pascal_keys(event, pattern),
+        KnownPattern::SecondsToSpan(source) => run_seconds_to_span(event, source),
+        KnownPattern::SubstringBeforeLast {
             source,
             target,
             needle,
         } => run_substring_before_last(event, source, target, needle),
-        KnownShape::TlsVersionSplit { source } => run_tls_version_split(event, source),
-        KnownShape::ConcatParts(script) => run_concat_parts(event, script),
-        KnownShape::TrimListInPlace(field) => run_trim_list(event, field),
-        KnownShape::StartsWithAppend {
+        KnownPattern::TlsVersionSplit { source } => run_tls_version_split(event, source),
+        KnownPattern::ConcatParts(script) => run_concat_parts(event, script),
+        KnownPattern::TrimListInPlace(field) => run_trim_list(event, field),
+        KnownPattern::StartsWithAppend {
             source,
             prefix,
             target,
             value,
         } => run_starts_with_append(event, source, prefix, target, value),
-        KnownShape::InspectorResources { multi } => run_inspector_resources(event, *multi),
-        KnownShape::MailRelated(script) => run_mail_related(event, script),
-        KnownShape::GcpRelatedEntity => run_gcp_related_entity(event),
-        KnownShape::RemoveListValue { field, value } => run_remove_list_value(event, field, value),
-        KnownShape::RemoveMapValue { field, value } => run_remove_map_value(event, field, value),
-        KnownShape::DatePlusDays {
+        KnownPattern::InspectorResources { multi } => run_inspector_resources(event, *multi),
+        KnownPattern::MailRelated(script) => run_mail_related(event, script),
+        KnownPattern::GcpRelatedEntity => run_gcp_related_entity(event),
+        KnownPattern::RemoveListValue { field, value } => {
+            run_remove_list_value(event, field, value)
+        }
+        KnownPattern::RemoveMapValue { field, value } => run_remove_map_value(event, field, value),
+        KnownPattern::DatePlusDays {
             source,
             target,
             days,
         } => run_date_plus_days(event, source, target, *days),
-        KnownShape::NestedKeyNames {
+        KnownPattern::NestedKeyNames {
             source,
             inner,
             target,
         } => run_nested_key_names(event, source, inner, target),
-        KnownShape::FirehoseDataset => run_firehose_dataset(event),
-        KnownShape::CtxTableLookup { table, key, target } => {
+        KnownPattern::FirehoseDataset => run_firehose_dataset(event),
+        KnownPattern::CtxTableLookup { table, key, target } => {
             run_ctx_table_lookup(event, table, key, target)
         }
-        KnownShape::KvIntoNamespace(target) => run_kv_into_namespace(event, target),
-        KnownShape::KvIntoFields(target) => kv_into_fields(event, target),
-        KnownShape::AllowedValueCopy(shape) => allowed_value_copy(event, shape),
-        KnownShape::OctalString(shape) => octal_string(event, shape),
-        KnownShape::EnsureAppend(shape) => ensure_append(event, shape),
-        KnownShape::CsvMapToArray { source, target } => run_csv_map_to_array(event, source, target),
-        KnownShape::TagsAndMarking(shape) => run_tags_and_marking(event, shape),
-        KnownShape::DecayWindow(shape) => run_decay_window(event, shape),
-        KnownShape::CsvColonPairs {
+        KnownPattern::KvIntoNamespace(target) => run_kv_into_namespace(event, target),
+        KnownPattern::KvIntoFields(target) => kv_into_fields(event, target),
+        KnownPattern::AllowedValueCopy(pattern) => allowed_value_copy(event, pattern),
+        KnownPattern::OctalString(pattern) => octal_string(event, pattern),
+        KnownPattern::EnsureAppend(pattern) => ensure_append(event, pattern),
+        KnownPattern::CsvMapToArray { source, target } => {
+            run_csv_map_to_array(event, source, target)
+        }
+        KnownPattern::TagsAndMarking(pattern) => run_tags_and_marking(event, pattern),
+        KnownPattern::DecayWindow(pattern) => run_decay_window(event, pattern),
+        KnownPattern::CsvColonPairs {
             list,
             map_target,
             fingerprint_target,
             aliases,
         } => run_csv_colon_pairs(event, list, map_target, fingerprint_target, aliases),
-        KnownShape::DedupeUnwrap(field) => run_dedupe_unwrap(event, field),
-        KnownShape::DropLastChar(field) => run_drop_last_char(event, field),
-        KnownShape::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
-        KnownShape::M365IdentityEvidence(path) => run_m365_identity_evidence(event, path),
-        KnownShape::Route53Answers => run_route53_answers(event),
-        KnownShape::ReverseLookupAddress => run_reverse_lookup_address(event),
-        KnownShape::TruthyAssignments(pairs) => run_truthy_assignments(event, pairs),
-        KnownShape::LongOperationSession { first, last } => {
+        KnownPattern::DedupeUnwrap(field) => run_dedupe_unwrap(event, field),
+        KnownPattern::DropLastChar(field) => run_drop_last_char(event, field),
+        KnownPattern::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
+        KnownPattern::M365IdentityEvidence(path) => run_m365_identity_evidence(event, path),
+        KnownPattern::Route53Answers => run_route53_answers(event),
+        KnownPattern::ReverseLookupAddress => run_reverse_lookup_address(event),
+        KnownPattern::TruthyAssignments(pairs) => run_truthy_assignments(event, pairs),
+        KnownPattern::LongOperationSession { first, last } => {
             run_long_operation_session(event, first, last)
         }
-        KnownShape::ScriptBlockEntropy(source) => {
+        KnownPattern::ScriptBlockEntropy(source) => {
             crate::painless_windows::run_script_block_entropy(event, source)
         }
-        KnownShape::SplitOnPipe(fields) => run_split_on_pipe(event, fields),
-        KnownShape::ZipAttachments(zip) => run_zip_attachments(event, zip),
-        KnownShape::ZipColumns(zip) => run_zip_columns(event, zip),
-        KnownShape::MaxByContains(shape) => run_max_by_contains(event, shape),
-        KnownShape::SecurityhubResources(source) => {
+        KnownPattern::SplitOnPipe(fields) => run_split_on_pipe(event, fields),
+        KnownPattern::ZipAttachments(zip) => run_zip_attachments(event, zip),
+        KnownPattern::ZipColumns(zip) => run_zip_columns(event, zip),
+        KnownPattern::MaxByContains(pattern) => run_max_by_contains(event, pattern),
+        KnownPattern::SecurityhubResources(source) => {
             if let Some(Value::Array(resources)) = event.get(source).cloned()
                 && resources.len() > 1
             {
@@ -15175,8 +15194,8 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
                 true
             }
         }
-        KnownShape::CategoryTypeLadder(arms) => run_category_type_ladder(event, arms),
-        KnownShape::KeysStripWhitespace(source) => {
+        KnownPattern::CategoryTypeLadder(arms) => run_category_type_ladder(event, arms),
+        KnownPattern::KeysStripWhitespace(source) => {
             if let Some(Value::Object(entries)) = event.get(source).cloned() {
                 let mut rebuilt = Map::new();
                 for (key, value) in entries {
@@ -15187,7 +15206,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             }
             true
         }
-        KnownShape::SnakeKeyMapCopy { source, target } => {
+        KnownPattern::SnakeKeyMapCopy { source, target } => {
             if let Some(Value::Object(entries)) = event.get(source).cloned() {
                 let mut rebuilt = Map::new();
                 for (key, value) in entries {
@@ -15200,7 +15219,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             }
             true
         }
-        KnownShape::StripAnglePairs { scalars, lists } => {
+        KnownPattern::StripAnglePairs { scalars, lists } => {
             let strip = |text: &str| {
                 text.strip_prefix('<')
                     .and_then(|t| t.strip_suffix('>'))
@@ -15225,75 +15244,75 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             }
             true
         }
-        KnownShape::NameValueFold {
+        KnownPattern::NameValueFold {
             source,
             target,
             key_member,
             value_member,
         } => run_name_value_fold(event, source, target, key_member, value_member),
-        KnownShape::OutcomeFromTags {
+        KnownPattern::OutcomeFromTags {
             action_field,
             tags,
             target,
         } => run_outcome_from_tags(event, action_field, tags, target),
-        KnownShape::RenameCommonAuth(codes) => {
+        KnownPattern::RenameCommonAuth(codes) => {
             crate::painless_windows::run_rename_common_auth(event, codes)
         }
-        KnownShape::ProcessCreated(codes) => {
+        KnownPattern::ProcessCreated(codes) => {
             crate::painless_windows::run_process_created(event, codes)
         }
-        KnownShape::ShareFilePath(codes) => {
+        KnownPattern::ShareFilePath(codes) => {
             crate::painless_windows::run_share_file_path(event, codes)
         }
-        KnownShape::ObjectDn => crate::painless_windows::run_object_dn(event),
-        KnownShape::CollectColumns(shape) => run_collect_columns(event, shape),
-        KnownShape::SliceEachItem(shape) => run_slice_each_item(event, shape),
-        KnownShape::ContainsLadder(shape) => run_contains_ladder(event, shape),
-        KnownShape::RangeLadder(shape) => run_range_ladder(event, shape),
-        KnownShape::ScoreSeverityBands(shape) => run_score_severity_bands(event, shape),
-        KnownShape::IndexedFieldCopies(shape) => run_indexed_field_copies(event, shape),
-        KnownShape::FieldsIntoMap(shape) => run_fields_into_map(event, shape),
-        KnownShape::CrowdstrikeTimelineEntityIdentity => {
+        KnownPattern::ObjectDn => crate::painless_windows::run_object_dn(event),
+        KnownPattern::CollectColumns(pattern) => run_collect_columns(event, pattern),
+        KnownPattern::SliceEachItem(pattern) => run_slice_each_item(event, pattern),
+        KnownPattern::ContainsLadder(pattern) => run_contains_ladder(event, pattern),
+        KnownPattern::RangeLadder(pattern) => run_range_ladder(event, pattern),
+        KnownPattern::ScoreSeverityBands(pattern) => run_score_severity_bands(event, pattern),
+        KnownPattern::IndexedFieldCopies(pattern) => run_indexed_field_copies(event, pattern),
+        KnownPattern::FieldsIntoMap(pattern) => run_fields_into_map(event, pattern),
+        KnownPattern::CrowdstrikeTimelineEntityIdentity => {
             try_crowdstrike_timeline_entity_identity(event)
         }
-        KnownShape::CrowdstrikeTimelineEntityAccounts => {
+        KnownPattern::CrowdstrikeTimelineEntityAccounts => {
             try_crowdstrike_timeline_entity_accounts(event)
         }
-        KnownShape::FirstElement(shape) => run_first_element(event, shape),
-        KnownShape::NamedMapEntry(shape) => run_named_map_entry(event, shape),
-        KnownShape::TitleCase(shape) => run_title_case(event, shape),
-        KnownShape::SuffixAfterSeparator {
+        KnownPattern::FirstElement(pattern) => run_first_element(event, pattern),
+        KnownPattern::NamedMapEntry(pattern) => run_named_map_entry(event, pattern),
+        KnownPattern::TitleCase(pattern) => run_title_case(event, pattern),
+        KnownPattern::SuffixAfterSeparator {
             source,
             target,
             separator,
             whole_when_absent,
         } => run_suffix_after_separator(event, source, target, separator, *whole_when_absent),
-        KnownShape::CopyTargetUser(codes) => {
+        KnownPattern::CopyTargetUser(codes) => {
             crate::painless_windows::run_copy_target_user(event, codes)
         }
-        KnownShape::CopySubjectUser(codes) => {
+        KnownPattern::CopySubjectUser(codes) => {
             crate::painless_windows::run_copy_subject_user(event, codes)
         }
-        KnownShape::CopyMemberName(codes) => {
+        KnownPattern::CopyMemberName(codes) => {
             crate::painless_windows::run_copy_member_name(event, codes)
         }
-        KnownShape::CopyComputerObject(codes) => {
+        KnownPattern::CopyComputerObject(codes) => {
             crate::painless_windows::run_copy_computer_object(event, codes)
         }
-        KnownShape::CopyUserToBase {
+        KnownPattern::CopyUserToBase {
             codes,
             base,
             sid_field,
         } => crate::painless_windows::run_copy_user_to_base(event, codes, base, sid_field),
-        KnownShape::SplitPipeFields(fields) => run_split_pipe_fields(event, fields),
-        KnownShape::SplitTokenField(shape) => run_split_token_field(event, shape),
-        KnownShape::DecodeBase64 { source, target } => run_decode_base64(event, source, target),
-        KnownShape::TokenCount {
+        KnownPattern::SplitPipeFields(fields) => run_split_pipe_fields(event, fields),
+        KnownPattern::SplitTokenField(pattern) => run_split_token_field(event, pattern),
+        KnownPattern::DecodeBase64 { source, target } => run_decode_base64(event, source, target),
+        KnownPattern::TokenCount {
             source,
             separator,
             target,
         } => run_token_count(event, source, separator, target),
-        KnownShape::WrapValueInList {
+        KnownPattern::WrapValueInList {
             source,
             target,
             remove_source,
@@ -15306,7 +15325,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             }
             true
         }
-        KnownShape::LastElement { array, target } => {
+        KnownPattern::LastElement { array, target } => {
             if let Some(Value::Array(items)) = event.get(array)
                 && let Some(last) = items.last().cloned()
             {
@@ -15314,14 +15333,14 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             }
             true
         }
-        KnownShape::ClassifyMembers => try_classify_members(event, normalised),
-        KnownShape::FlattenedDuplicates => try_flattened_duplicates(event, normalised),
-        KnownShape::CollectEntities => try_collect_entities(event, normalised),
-        KnownShape::DnsRdataAnswers => try_dns_rdata_answers(event, normalised),
-        KnownShape::StructuredRdataAnswers => try_structured_rdata_answers(event),
-        KnownShape::RelatedFromDnsAnswers => try_related_from_dns_answers(event),
-        KnownShape::AnswersFromResolvedIp => try_answers_from_resolved_ip(event),
-        KnownShape::CamelToSnake {
+        KnownPattern::ClassifyMembers => try_classify_members(event, normalised),
+        KnownPattern::FlattenedDuplicates => try_flattened_duplicates(event, normalised),
+        KnownPattern::CollectEntities => try_collect_entities(event, normalised),
+        KnownPattern::DnsRdataAnswers => try_dns_rdata_answers(event, normalised),
+        KnownPattern::StructuredRdataAnswers => try_structured_rdata_answers(event),
+        KnownPattern::RelatedFromDnsAnswers => try_related_from_dns_answers(event),
+        KnownPattern::AnswersFromResolvedIp => try_answers_from_resolved_ip(event),
+        KnownPattern::CamelToSnake {
             target,
             source,
             rule,
@@ -15338,34 +15357,34 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             }
             true
         }
-        KnownShape::SplitTrimCollect => try_split_trim_collect(event, normalised),
-        KnownShape::SumDirections(totals) => sum_directions(event, totals),
-        KnownShape::SumOfFields(shape) => sum_of_fields(event, shape),
-        KnownShape::DurationToNanos => try_duration_to_nanos(event, normalised),
-        KnownShape::FlowDuration => try_flow_duration(event, normalised),
-        KnownShape::ParallelDispatch => try_parallel_dispatch(event, normalised),
-        KnownShape::ConcatMessage => try_concat_message(event, normalised),
-        KnownShape::SwapSubtrees => try_swap_subtrees(event, normalised),
-        KnownShape::CollectingLadder => try_collecting_ladder(event, normalised),
-        KnownShape::CaseInsensitiveLadder => try_case_insensitive_ladder(event, normalised),
-        KnownShape::EqualityLadder(ladder) => try_ladder(event, ladder),
-        KnownShape::SentinelRemovalLiteral => try_sentinel_removal_literal(event, normalised),
-        KnownShape::ListMemberFlag(shape) => run_list_member_flag(event, shape),
-        KnownShape::RowLookupWithFallback(shape) => {
-            try_row_lookup_with_fallback(event, normalised, shape)
+        KnownPattern::SplitTrimCollect => try_split_trim_collect(event, normalised),
+        KnownPattern::SumDirections(totals) => sum_directions(event, totals),
+        KnownPattern::SumOfFields(pattern) => sum_of_fields(event, pattern),
+        KnownPattern::DurationToNanos => try_duration_to_nanos(event, normalised),
+        KnownPattern::FlowDuration => try_flow_duration(event, normalised),
+        KnownPattern::ParallelDispatch => try_parallel_dispatch(event, normalised),
+        KnownPattern::ConcatMessage => try_concat_message(event, normalised),
+        KnownPattern::SwapSubtrees => try_swap_subtrees(event, normalised),
+        KnownPattern::CollectingLadder => try_collecting_ladder(event, normalised),
+        KnownPattern::CaseInsensitiveLadder => try_case_insensitive_ladder(event, normalised),
+        KnownPattern::EqualityLadder(ladder) => try_ladder(event, ladder),
+        KnownPattern::SentinelRemovalLiteral => try_sentinel_removal_literal(event, normalised),
+        KnownPattern::ListMemberFlag(pattern) => run_list_member_flag(event, pattern),
+        KnownPattern::RowLookupWithFallback(pattern) => {
+            try_row_lookup_with_fallback(event, normalised, pattern)
         }
-        KnownShape::SchemelessUrl => try_schemeless_url(event),
-        KnownShape::VersionSplit => try_version_split(event, normalised),
-        KnownShape::SyslogPriority(shape) => syslog_priority(event, shape),
-        KnownShape::AppendUnique { from, into } => try_append_unique(event, from, into),
-        KnownShape::SplitUnquotedKv(split) => run_split_unquoted_kv(event, split),
-        KnownShape::ArrayToIndexedObject => try_array_to_indexed_object(event, normalised),
-        KnownShape::ListRenameTable(shape) => run_list_rename_table(event, shape),
-        KnownShape::KeyValuePairs => try_key_value_pairs(event, normalised),
-        KnownShape::JoinOptional => try_join_optional(event, normalised),
-        KnownShape::AppendEach(shape) => try_append_each(event, shape),
-        KnownShape::LiteralValueMap(shape) => literal_value_map(event, shape),
-        KnownShape::KeysToSnakeCase(field, rule) => {
+        KnownPattern::SchemelessUrl => try_schemeless_url(event),
+        KnownPattern::VersionSplit => try_version_split(event, normalised),
+        KnownPattern::SyslogPriority(pattern) => syslog_priority(event, pattern),
+        KnownPattern::AppendUnique { from, into } => try_append_unique(event, from, into),
+        KnownPattern::SplitUnquotedKv(split) => run_split_unquoted_kv(event, split),
+        KnownPattern::ArrayToIndexedObject => try_array_to_indexed_object(event, normalised),
+        KnownPattern::ListRenameTable(pattern) => run_list_rename_table(event, pattern),
+        KnownPattern::KeyValuePairs => try_key_value_pairs(event, normalised),
+        KnownPattern::JoinOptional => try_join_optional(event, normalised),
+        KnownPattern::AppendEach(pattern) => try_append_each(event, pattern),
+        KnownPattern::LiteralValueMap(pattern) => literal_value_map(event, pattern),
+        KnownPattern::KeysToSnakeCase(field, rule) => {
             if let Some(field) = field {
                 if let Some(val) = event.get(field).cloned() {
                     let mut val = val;
@@ -15379,7 +15398,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             }
             true
         }
-        KnownShape::CommandLine { parent } => {
+        KnownPattern::CommandLine { parent } => {
             if *parent {
                 let _ = extract_process_fields(
                     event,
@@ -15391,71 +15410,71 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
             }
             true
         }
-        KnownShape::ProcessStartTime => {
+        KnownPattern::ProcessStartTime => {
             let _ =
                 epoch_to_timestamp(event, "crowdstrike.event.ProcessStartTime", "process.start");
             true
         }
-        KnownShape::EmailSplit(shape) => run_email_split(event, shape),
-        KnownShape::RiskBehaviors => try_risk_behaviors(event),
-        KnownShape::AzureCategoryEventType => try_azure_category_to_event_type(event),
-        KnownShape::AzureEventCategory => try_azure_event_category(event, normalised),
-        KnownShape::ReplaceDotsInKeys => try_replace_dots_in_keys(event, normalised),
-        KnownShape::OktaTargetRename => try_okta_target_rename(event),
-        KnownShape::KeysBySuffix(shape) => run_keys_by_suffix(event, shape),
-        KnownShape::CollectMapValues => try_collect_map_values(event, normalised),
-        KnownShape::StringOps(shape) => string_ops(event, shape),
-        KnownShape::GuardedReplace(shape) => guarded_replace(event, shape),
-        KnownShape::ScaleField(shape) => scale_field(event, shape),
-        KnownShape::MillisecondLadder(shape) => run_millisecond_ladder(event, shape),
-        KnownShape::RoundedScale(shape) => run_rounded_scale(event, shape),
-        KnownShape::NanosBetween(shape) => run_nanos_between(event, shape),
-        KnownShape::ProcessNameFromCommandLine => run_process_name_from_command_line(event),
-        KnownShape::FlagsPresent(shape) => run_flags_present(event, shape),
-        KnownShape::ZipLists(shape) => run_zip_lists(event, shape),
-        KnownShape::FirstOrSelf(shape) => run_first_or_self(event, shape),
-        KnownShape::WrapMapInList(path) => {
+        KnownPattern::EmailSplit(pattern) => run_email_split(event, pattern),
+        KnownPattern::RiskBehaviors => try_risk_behaviors(event),
+        KnownPattern::AzureCategoryEventType => try_azure_category_to_event_type(event),
+        KnownPattern::AzureEventCategory => try_azure_event_category(event, normalised),
+        KnownPattern::ReplaceDotsInKeys => try_replace_dots_in_keys(event, normalised),
+        KnownPattern::OktaTargetRename => try_okta_target_rename(event),
+        KnownPattern::KeysBySuffix(pattern) => run_keys_by_suffix(event, pattern),
+        KnownPattern::CollectMapValues => try_collect_map_values(event, normalised),
+        KnownPattern::StringOps(pattern) => string_ops(event, pattern),
+        KnownPattern::GuardedReplace(pattern) => guarded_replace(event, pattern),
+        KnownPattern::ScaleField(pattern) => scale_field(event, pattern),
+        KnownPattern::MillisecondLadder(pattern) => run_millisecond_ladder(event, pattern),
+        KnownPattern::RoundedScale(pattern) => run_rounded_scale(event, pattern),
+        KnownPattern::NanosBetween(pattern) => run_nanos_between(event, pattern),
+        KnownPattern::ProcessNameFromCommandLine => run_process_name_from_command_line(event),
+        KnownPattern::FlagsPresent(pattern) => run_flags_present(event, pattern),
+        KnownPattern::ZipLists(pattern) => run_zip_lists(event, pattern),
+        KnownPattern::FirstOrSelf(pattern) => run_first_or_self(event, pattern),
+        KnownPattern::WrapMapInList(path) => {
             if let Some(Value::Object(_)) = event.get(path) {
                 let held = event.get(path).cloned().unwrap_or(Value::Null);
                 let _ = event.set(path, Value::Array(vec![held]));
             }
             true
         }
-        KnownShape::GuardedDivide {
+        KnownPattern::GuardedDivide {
             target,
             source,
             absent,
             divisor,
         } => run_guarded_divide(event, target, source, absent.as_ref(), *divisor),
-        KnownShape::FlattenMapInto(shape) => run_flatten_map_into(event, shape),
-        KnownShape::StringifyLongs(fields) => run_stringify_longs(event, fields),
-        KnownShape::CopyByLabel(shape) => run_copy_by_label(event, shape),
-        KnownShape::BandLadder(shape) => run_band_ladder(event, shape),
-        KnownShape::IocExpiry(shape) => run_ioc_expiry(event, shape),
-        KnownShape::GuardedCopy(literals) => try_guarded_copy(event, normalised, literals),
-        KnownShape::PlainAssignments(literals) => literals.run(event),
-        KnownShape::BranchCopies(branches) => run_branch_copies(event, branches),
-        KnownShape::PrivateCidrDirection {
+        KnownPattern::FlattenMapInto(pattern) => run_flatten_map_into(event, pattern),
+        KnownPattern::StringifyLongs(fields) => run_stringify_longs(event, fields),
+        KnownPattern::CopyByLabel(pattern) => run_copy_by_label(event, pattern),
+        KnownPattern::BandLadder(pattern) => run_band_ladder(event, pattern),
+        KnownPattern::IocExpiry(pattern) => run_ioc_expiry(event, pattern),
+        KnownPattern::GuardedCopy(literals) => try_guarded_copy(event, normalised, literals),
+        KnownPattern::PlainAssignments(literals) => literals.run(event),
+        KnownPattern::BranchCopies(branches) => run_branch_copies(event, branches),
+        KnownPattern::PrivateCidrDirection {
             source,
             destination,
             target,
         } => run_private_cidr_direction(event, source, destination, target),
-        KnownShape::ClassifyLadder(shape) => run_classify_ladder(event, shape),
-        KnownShape::MoveKeys(moves) => run_move_keys(event, moves),
-        KnownShape::MergeMapUp(shape) => run_merge_map_up(event, shape),
-        KnownShape::ParameterFanOut(shape) => run_parameter_fan_out(event, shape),
-        KnownShape::QuotedKvScan(shape) => run_quoted_kv_scan(event, shape),
-        KnownShape::LocalMapLookup(shape) => run_local_map_lookup(event, shape),
-        KnownShape::UnreservedKeyPayload(shape) => run_unreserved_key_payload(event, shape),
-        KnownShape::HashesByLength(shape) => run_hashes_by_length(event, shape),
-        KnownShape::MapEntryToBoolean(shape) => run_map_entry_to_boolean(event, shape),
-        KnownShape::NestUnder(shape) => run_nest_under(event, shape),
-        KnownShape::CollectFromList(shape) => run_collect_from_list(event, shape),
-        KnownShape::RecordLookup(shape) => run_record_lookup(event, shape),
-        KnownShape::EqualsLiteralFlag(shape) => run_equals_literal_flag(event, shape),
-        KnownShape::PositionInList(shape) => run_position_in_list(event, shape),
-        KnownShape::SplitFirstLabel(shape) => run_split_first_label(event, shape),
-        KnownShape::SuffixesByPrefix(shape) => run_suffixes_by_prefix(event, shape),
+        KnownPattern::ClassifyLadder(pattern) => run_classify_ladder(event, pattern),
+        KnownPattern::MoveKeys(moves) => run_move_keys(event, moves),
+        KnownPattern::MergeMapUp(pattern) => run_merge_map_up(event, pattern),
+        KnownPattern::ParameterFanOut(pattern) => run_parameter_fan_out(event, pattern),
+        KnownPattern::QuotedKvScan(pattern) => run_quoted_kv_scan(event, pattern),
+        KnownPattern::LocalMapLookup(pattern) => run_local_map_lookup(event, pattern),
+        KnownPattern::UnreservedKeyPayload(pattern) => run_unreserved_key_payload(event, pattern),
+        KnownPattern::HashesByLength(pattern) => run_hashes_by_length(event, pattern),
+        KnownPattern::MapEntryToBoolean(pattern) => run_map_entry_to_boolean(event, pattern),
+        KnownPattern::NestUnder(pattern) => run_nest_under(event, pattern),
+        KnownPattern::CollectFromList(pattern) => run_collect_from_list(event, pattern),
+        KnownPattern::RecordLookup(pattern) => run_record_lookup(event, pattern),
+        KnownPattern::EqualsLiteralFlag(pattern) => run_equals_literal_flag(event, pattern),
+        KnownPattern::PositionInList(pattern) => run_position_in_list(event, pattern),
+        KnownPattern::SplitFirstLabel(pattern) => run_split_first_label(event, pattern),
+        KnownPattern::SuffixesByPrefix(pattern) => run_suffixes_by_prefix(event, pattern),
     }
 }
 
@@ -15830,17 +15849,17 @@ mod tests {
             'FL': 'Flood'\n];\ndef code = ctx.gdacs?.event_type;\n\
             if (code != null && typeMap.containsKey(code)) {\n  \
             ctx.gdacs.event_type_name = typeMap[code];\n}\n";
-        let shape = parse_local_map_lookup(&normalise(script)).expect("the table parses");
-        assert_eq!(shape.source, "gdacs.event_type");
-        assert_eq!(shape.target, "gdacs.event_type_name");
+        let pattern = parse_local_map_lookup(&normalise(script)).expect("the table parses");
+        assert_eq!(pattern.source, "gdacs.event_type");
+        assert_eq!(pattern.target, "gdacs.event_type_name");
         assert_eq!(
-            shape.table.get("TC").map(String::as_str),
+            pattern.table.get("TC").map(String::as_str),
             Some("Tropical Cyclone")
         );
 
         let named = |code: &str| {
             let mut event = Event::new(serde_json::json!({ "gdacs": { "event_type": code } }));
-            run_local_map_lookup(&mut event, &shape);
+            run_local_map_lookup(&mut event, &pattern);
             event
                 .get("gdacs.event_type_name")
                 .and_then(serde_json::Value::as_str)
@@ -15853,14 +15872,14 @@ mod tests {
         assert_eq!(named("ZZ"), None);
     }
 
-    /// watchguard's own KV scanner, on the shapes its logs actually carry.
+    /// watchguard's own KV scanner, on the patterns its logs actually carry.
     ///
     /// A quoted value holding spaces is the whole reason the vendor wrote a
     /// scanner instead of using the kv processor, and `msg` is the field it
     /// exists for.
     #[test]
     fn a_quoted_kv_scan_keeps_spaces_inside_quotes() {
-        let shape = QuotedKvScan {
+        let pattern = QuotedKvScan {
             source: "_temp".to_string(),
             target: "watchguard_firebox.log".to_string(),
         };
@@ -15868,7 +15887,7 @@ mod tests {
             "_temp": "app_id=63 app_name=\"World WideWeb HTTP\" \
                 msg=\"Application identified\" sig_vers=18.123",
         }));
-        assert!(run_quoted_kv_scan(&mut event, &shape));
+        assert!(run_quoted_kv_scan(&mut event, &pattern));
 
         let at = |key: &str| {
             event
@@ -15903,10 +15922,10 @@ mod tests {
             ctx.google_workspace.drive[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = \
             ctx[\"json\"][\"events\"][\"parameters\"][i][\"boolValue\"];\n  }\n}\n";
 
-        let shape = parse_parameter_fan_out(&normalise(script)).expect("the fan-out parses");
-        assert_eq!(shape.list, "json.events.parameters");
-        assert_eq!(shape.target, "google_workspace.drive");
-        assert_eq!(shape.values, ["value", "multiValue", "boolValue"]);
+        let pattern = parse_parameter_fan_out(&normalise(script)).expect("the fan-out parses");
+        assert_eq!(pattern.list, "json.events.parameters");
+        assert_eq!(pattern.target, "google_workspace.drive");
+        assert_eq!(pattern.values, ["value", "multiValue", "boolValue"]);
 
         let mut event = Event::new(serde_json::json!({
             "json": { "events": { "parameters": [
@@ -15916,7 +15935,7 @@ mod tests {
                 { "name": "nothing", "value": null },
             ] } },
         }));
-        assert!(run_parameter_fan_out(&mut event, &shape));
+        assert!(run_parameter_fan_out(&mut event, &pattern));
 
         assert_eq!(
             event.get("google_workspace.drive.doc_title"),
@@ -15955,11 +15974,11 @@ mod tests {
         let script = "ctx.tanium.threat_response.match_details = \
             ctx.tanium.threat_response.match_details ?: [:];\n\
             ctx.tanium.threat_response.match_details.putAll(ctx.json['Match Details']);\n";
-        let shape = parse_put_all(&normalise(script)).expect("the merge parses");
-        assert_eq!(shape.parent, "tanium.threat_response.match_details");
-        assert_eq!(shape.source, "json.Match Details");
+        let pattern = parse_put_all(&normalise(script)).expect("the merge parses");
+        assert_eq!(pattern.parent, "tanium.threat_response.match_details");
+        assert_eq!(pattern.source, "json.Match Details");
         assert!(
-            !shape.take,
+            !pattern.take,
             "a putAll reads the source, it does not consume it"
         );
 
@@ -15967,7 +15986,7 @@ mod tests {
             "json": { "Match Details": { "finding": { "id": "5212345" }, "config_id": 1_000_111 } },
             "tanium": { "threat_response": { "match_details": { "kept": true } } },
         }));
-        assert!(run_merge_map_up(&mut event, &shape));
+        assert!(run_merge_map_up(&mut event, &pattern));
         assert_eq!(
             event.get("tanium.threat_response.match_details.finding.id"),
             Some(&serde_json::json!("5212345"))
@@ -16314,7 +16333,7 @@ mod tests {
     }
 
     /// Between the bands the script returns having written nothing, and a
-    /// default would be this shape inventing one.
+    /// default would be this pattern inventing one.
     #[test]
     fn a_ladder_with_no_default_writes_nothing_between_bands() {
         let mut event = Event::new(json!({ "json": { "confidence": 0.5 } }));
@@ -16559,7 +16578,7 @@ mod tests {
     }
 
     /// A wrap followed by a removal of its own source is ONE move, so the
-    /// shape has to carry the removal rather than decline and drop it.
+    /// pattern has to carry the removal rather than decline and drop it.
     #[test]
     fn a_wrap_that_removes_its_source_moves_the_value() {
         let script = "ctx.ocsf.resources = [ctx.ocsf.resource];\nctx.ocsf.remove('resource');";
@@ -17563,7 +17582,7 @@ mod tests {
             Some(&json!(3_723_000_000_000i64))
         );
         // No span: this script writes only the duration, and inventing the
-        // ends from the cisco shape would put two fields on the document
+        // ends from the cisco pattern would put two fields on the document
         // that Elasticsearch never wrote.
         assert_eq!(event.get("event.start"), None);
         assert_eq!(event.get("event.end"), None);
@@ -18071,7 +18090,7 @@ mod tests {
     }
 
     /// Shortened from `pipelines/fortinet/default.yml` -- the parts that
-    /// identify the shape, not the whole 30-line definition.
+    /// identify the pattern, not the whole 30-line definition.
     const SPLIT_UNQUOTED: &str = "def splitUnquoted(String input, String sep) {\n  def tokens = \
                                   [];\n}\ndef arr = splitUnquoted(ctx.syslog5424_sd, \" \");\n\
                                   Map map = new HashMap();\nfor (def i = 0; i < arr?.length; i++) \
@@ -18370,7 +18389,7 @@ mod tests {
         );
     }
 
-    /// The shape of `pipelines/m365_defender/incident/default.yml`'s
+    /// The pattern of `pipelines/m365_defender/incident/default.yml`'s
     /// `set_process_name_from_command_line`, which four pipelines share.
     const PROCESS_NAME: &str = "ctx.process = ctx.process ?: [:];\n\
          ctx.process.name = ctx.process.name ?: [];\n\
@@ -19084,7 +19103,7 @@ def event_timezone = get_timezone(ctx);
     }
 
     /// lambda's REPORT metrics: a map copied to a new path with its keys
-    /// `snake_cased` by a helper the script names itself, so the shape of the
+    /// `snake_cased` by a helper the script names itself, so the pattern of the
     /// replacement identifies it rather than the helper's name. `MB` is one
     /// word to the vendor's regex, not two letters.
     #[test]
@@ -19467,7 +19486,7 @@ def event_timezone = get_timezone(ctx);
     }
 
     /// Cut from `pipelines/gcp/audit/default.yml` to the three argument
-    /// shapes: a `ctx.` path, a member of a bound local, and a member of a
+    /// patterns: a `ctx.` path, a member of a bound local, and a member of a
     /// loop variable over a list.
     const ENTITIES: &str = "void addValue(Set entities, def value) {\n\
         if (value != null && value != \"\") { entities.add(value); }\n\
@@ -20095,7 +20114,7 @@ def event_timezone = get_timezone(ctx);
         assert_eq!(event.get("ocsf.resource"), None);
     }
 
-    /// A literal holding more than one element is a different shape, and
+    /// A literal holding more than one element is a different pattern, and
     /// claiming it would write an unresolvable path -- nothing at all.
     #[test]
     fn a_multi_element_list_literal_is_not_a_wrap() {
@@ -20217,7 +20236,7 @@ def event_timezone = get_timezone(ctx);
         assert_eq!(event.get_str("_temp_.tz"), Some("Asia/Kolkata"));
     }
 
-    /// The same shape with a DEFAULT and a different target: the device serial
+    /// The same pattern with a DEFAULT and a different target: the device serial
     /// through `_conf.mappings` to `host.name`, falling back to
     /// `_conf.default` when no record matches.
     #[test]
@@ -20471,7 +20490,7 @@ def event_timezone = get_timezone(ctx);
         assert_eq!(event.get_str("host.os.type"), Some("android"));
 
         // A subject no arm names writes nothing, which is not the same thing as
-        // a script the shape cannot read.
+        // a script the pattern cannot read.
         let mut other = Event::new(json!({ "zscaler_zia": { "firewall": { "device": {
             "os": { "type": "Windows" } } } } }));
         try_known_painless(&mut other, script);
@@ -20529,7 +20548,7 @@ def event_timezone = get_timezone(ctx);
     ///
     /// The inner guard compares a LOCAL int against -1, which the guard
     /// evaluator cannot read, so it parses to a term that never holds. The
-    /// shape binds `Basename` first and `GuardedCopy` second, and only
+    /// pattern binds `Basename` first and `GuardedCopy` second, and only
     /// `Basename` writes the cut path -- were it to decline, the fallback
     /// would write the whole executable as the name.
     #[test]
@@ -20564,7 +20583,7 @@ def event_timezone = get_timezone(ctx);
     }
 
     /// A script that only TESTS a field writes nothing whatever the event
-    /// says, so the shape declines rather than claiming it and answering false
+    /// says, so the pattern declines rather than claiming it and answering false
     /// on every event.
     #[test]
     fn a_guard_with_no_write_declines() {
@@ -20590,7 +20609,7 @@ def event_timezone = get_timezone(ctx);
     }
 
     /// A `for (def ` loop that walks a ctx list without matching a row against
-    /// a column is not this shape. It claimed 47 call sites on those two
+    /// a column is not this pattern. It claimed 47 call sites on those two
     /// substrings alone and applied to none of them.
     #[test]
     fn a_loop_with_no_row_match_declines() {
@@ -20649,9 +20668,9 @@ def event_timezone = get_timezone(ctx);
         assert!(!event.has("b"), "a declined chain must not half-apply");
     }
 
-    /// The single-replace shape keeps working, and now DECLINES a script it
+    /// The single-replace pattern keeps working, and now DECLINES a script it
     /// cannot parse instead of claiming it -- which is what let the chain above
-    /// reach a shape at all.
+    /// reach a pattern at all.
     #[test]
     fn a_single_replace_binds_and_declines_a_chain() {
         let script = "ctx.host.name = ctx.host.hostname.replace('_', '-');";
@@ -20841,7 +20860,7 @@ def event_timezone = get_timezone(ctx);
     }
 
     /// The fortiproxy variant: the same idea as stormshield's loop, with the
-    /// four rules that make it a different shape.
+    /// four rules that make it a different pattern.
     #[test]
     fn the_fortiproxy_kv_drops_what_the_vendor_drops() {
         let script = r#"ctx[\"_fields_\"] = [:];\ndef kvStart = 0; def kvSplit = 0; def inQuote = false;\nPattern wsPattern = /^\\\"|\\\"$/; Pattern wordPattern = /\\W+/;\nfor (int i = 0, n = ctx[\"message\"].length(); i < n; ++i) {\n  char c = ctx[\"message\"].charAt(i);\n  if (c == (char)'\"') {\n    if (inQuote && i < n - 1 && ctx[\"message\"].charAt(i + 1) != (char)' ') {\n      continue;\n    }\n    inQuote = !inQuote;\n  }\n  if (inQuote) {\n    continue;\n  }\n  if (c == (char)'=') {\n    kvSplit = i;\n  }\n  if (c == (char)' ' || i == n - 1) {\n    if (i != kvStart) {\n      def endIndex = i == n - 1 ? i + 1 : i;\n      def key = ctx[\"message\"].substring(kvStart, kvSplit);\n      def value = wsPattern.matcher(ctx[\"message\"].substring(kvSplit + 1, endIndex)).replaceAll(\"\");\n\n      if (value != \"N/A\" && !wordPattern.matcher(key).find()) {\n        ctx[\"_fields_\"].put(key, value);\n      }\n    }\n\n    kvStart = i + 1;\n    kvSplit = i + 1;\n  }\n}"#;
@@ -20941,7 +20960,7 @@ def event_timezone = get_timezone(ctx);
             Some("aws.route53_resolver_logs")
         );
 
-        // A record from the route53 group that fails the shape test is left
+        // A record from the route53 group that fails the pattern test is left
         // UNNAMED -- the vendor's chain stops on the group name.
         let unnamed = Event::new(json!({
             "aws.cloudwatch.log_group": "/aws/route53/example", "message": "nothing useful",
@@ -21036,9 +21055,9 @@ def event_timezone = get_timezone(ctx);
     fn a_map_prune_declines_a_local_receiver() {
         let script = r#"def m = ctx.a.b; m.values().removeIf(value -> value == \"-\");"#;
         assert!(
-            !known_shapes(&normalise(script))
+            !known_patterns(&normalise(script))
                 .iter()
-                .any(|shape| matches!(shape, KnownShape::RemoveMapValue { .. }))
+                .any(|pattern| matches!(pattern, KnownPattern::RemoveMapValue { .. }))
         );
     }
 }

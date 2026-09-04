@@ -1,4 +1,4 @@
-[known_shapes]
+[known_patterns]
   1 SecondsToSpan
   2 NanosBetween
   3 MillisecondLadder
@@ -174,7 +174,7 @@
 173 GuardedCopy
 174 PlainAssignments
 
-[params_shape]
+[params_pattern]
   1 AwsEntity
   2 SysmonQueryResults
   3 SysmonRegistry

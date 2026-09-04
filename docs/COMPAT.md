@@ -110,20 +110,21 @@ which is why it has to be typed.
 A corpus that is ABSENT is a different thing and still skips silently -- the
 corpus is gitignored, so a fresh clone has none.
 
-### The second ratchet: shapes that never apply
+### The second ratchet: patterns that never apply
 
-`NEVER_RAN_SCRIPTS` in the corpus test holds the count of scripts that bound a
-shape and never once ran it. **543 as at 2026-09-04.**
+`never_ran` in `tests/compat-baseline.json` holds the count of scripts that
+bound a pattern and never once ran it. Read the number there rather than here:
+a figure restated in prose is stale the next time the ratchet moves.
 
 This is the class the work in early September kept finding: a ladder arm with a
 bare `contains()` trigger claims a script its runner then declines on every
 event. The static census counts it as covered and the Painless coverage floor
-reads 100%, because both measure whether a shape MATCHED. Only running the
+reads 100%, because both measure whether a pattern MATCHED. Only running the
 corpus shows whether it applied.
 
 It is not a defect count. A script can legitimately never run because no event
 in the corpus carries its source field, so read it with
-`scripts/shape_reach.py`, which joins the reach data to call sites, and never
+`scripts/pattern_reach.py`, which joins the reach data to call sites, and never
 on its own.
 
 `DFE_PAINLESS_UNHANDLED=<path>` writes the per-script catalogue. The catalogue
@@ -139,16 +140,17 @@ run and compared against nothing.
 
 An event still needs an empty diff to count as matched, so extras are gated at
 EVENT granularity -- but on a source already scoring zero matched events, which
-is most of the ones carrying real debt, nothing checks them at all. The corpus
-currently reports 9,575.
+is most of the ones carrying real debt, nothing checks them at all. The run
+prints the current figure; it is not restated here, for the same reason.
 
 Extras are the best single signal that a source is emitting a RAW shape rather
 than the parsed one. axonius carried 2,313 of them on 3,705 fields, all of the
 form `<base>.event.data.<name>` where Elasticsearch had `<base>.<name>` -- one
 unread hoist, and reading it took the source from 11% of events to 94%.
 
-So **record the extras figure before and after any change to the shape ladder**.
-A shape that stops claiming a script hands it to whatever sits below, and if
+So **record the extras figure before and after any change to the pattern
+ladder**. A pattern that stops claiming a script hands it to whatever sits
+below, and if
 that writes a field Elastic never emits, the totals hold while only the extras
 move -- which the ratchet passes green. That has happened once and the change
 was reverted; it was caught by having written the previous number down and by

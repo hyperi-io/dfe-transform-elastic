@@ -325,7 +325,7 @@ async fn offsets_commit_after_the_batch_is_sent() {
 #[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
 async fn a_batch_larger_than_one_kafka_record_arrives() {
     /// 2,000 okta events is roughly 4 MB in and more out -- several records at
-    /// the 900 KB budget, without the wall-clock of a full 20,000.
+    /// the 900 KB budget, without the elapsed time of a full 20,000.
     const EVENTS: usize = 2_000;
 
     let broker = broker_or_skip!("oversize-batch");

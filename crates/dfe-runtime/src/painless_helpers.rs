@@ -129,7 +129,7 @@ pub fn painless_to_string(v: &Value) -> String {
         Value::Number(n) => n.to_string(),
         // Painless is Java, so a map renders `{k=v, k=v}` and a list
         // `[a, b]` -- not their JSON. aws's cloudtrail keeps a rendered copy
-        // of `requestParameters` in exactly that shape.
+        // of `requestParameters` in exactly that pattern.
         Value::Array(_) | Value::Object(_) => java_to_string(v),
     }
 }

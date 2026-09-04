@@ -29,7 +29,7 @@ const OKTA_TARGET: &str = "for (item in ctx.okta.target) {\\n  if (item.alternat
 
 /// A run of guarded copies, which is what windows' `security_standard` ships
 /// four hundred lines of -- one per winlog field, each in its own `!= null`
-/// block. `KnownShape::GuardedCopy` claims it, and the walk over the body is
+/// block. `KnownPattern::GuardedCopy` claims it, and the walk over the body is
 /// the per-event cost this measures.
 const GUARDED_COPIES: &str = "if (ctx.winlog.event_data.SubjectUserName != null) \
                               {\\n  ctx.user.name = ctx.winlog.event_data.SubjectUserName;\\n}\\n\

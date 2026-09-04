@@ -119,7 +119,7 @@ fn no_unreachable_transform_panics_on_a_degenerate_document() {
         for (label, document) in &documents {
             let mut event = dfe_runtime::event::Event::new(document.clone());
             // Caught rather than left to unwind, so the failure names the
-            // transform and the shape instead of a bare backtrace.
+            // transform and the pattern instead of a bare backtrace.
             let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
                 transform.transform(&mut event)
             }));

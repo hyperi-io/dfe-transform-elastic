@@ -8,7 +8,7 @@
 //! every event -- up to 116 substring scans over constant text, at 20k events
 //! a batch. The decision is a property of the text alone, so [`PainlessPlan`]
 //! makes it once: [`cached_painless`] holds the plan in a site-local
-//! `OnceLock`, the same shape as [`crate::cached_grok`], and per event only
+//! `OnceLock`, the same pattern as [`crate::cached_grok`], and per event only
 //! the matchers the text actually triggers are run.
 //!
 //! What the plan carries beyond the routing: whatever the trigger's own parse
@@ -20,8 +20,8 @@ use tracing::debug;
 
 use crate::error::Result;
 use crate::event::Event;
-use crate::painless_common::{KnownShape, known_shapes, normalise, run_known_shape};
-use crate::painless_params::{ParamsShape, params_shape, run_params_shape};
+use crate::painless_common::{KnownPattern, known_patterns, normalise, run_known_pattern};
+use crate::painless_params::{ParamsPattern, params_pattern, run_params_pattern};
 
 #[cfg(doc)]
 use crate::painless_common::DropPolicy;
@@ -33,8 +33,8 @@ use crate::painless_common::DropPolicy;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PainlessPlan {
     text: String,
-    params: Option<ParamsShape>,
-    known: Vec<KnownShape>,
+    params: Option<ParamsPattern>,
+    known: Vec<KnownPattern>,
 }
 
 impl PainlessPlan {
@@ -43,8 +43,8 @@ impl PainlessPlan {
     pub fn new(script: &str) -> Self {
         let text = normalise(script).into_owned();
         Self {
-            params: params_shape(&text),
-            known: known_shapes(&text),
+            params: params_pattern(&text),
+            known: known_patterns(&text),
             text,
         }
     }
@@ -69,10 +69,10 @@ impl PainlessPlan {
     /// them in place of the script itself.
     ///
     /// `None` unless the WHOLE plan is expressible. Dispatch runs the params
-    /// shape first and skips the text shapes when it succeeds, so emitting a
+    /// pattern first and skips the text patterns when it succeeds, so emitting a
     /// half-resolved plan would run branches the ladder would not.
     ///
-    /// A params shape declines the whole plan: every params runner still reads
+    /// A params pattern declines the whole plan: every params runner still reads
     /// the script text or the `params` block at run time, so none of them can
     /// be reproduced from extracted parts alone.
     #[cfg(feature = "codegen")]
@@ -81,20 +81,20 @@ impl PainlessPlan {
         if !self.matches() || self.params.is_some() {
             return None;
         }
-        self.known.iter().map(KnownShape::direct_call).collect()
+        self.known.iter().map(KnownPattern::direct_call).collect()
     }
 
     /// The matchers this text binds to, in dispatch order, each rendered with
     /// whatever its trigger's parse recovered.
     ///
     /// One list rather than the two fields, because dispatch tries the params
-    /// shape first and the order is the answer.
+    /// pattern first and the order is the answer.
     #[must_use]
     pub fn binding(&self) -> Vec<String> {
         self.params
             .iter()
-            .map(|shape| format!("{shape:?}"))
-            .chain(self.known.iter().map(|shape| format!("{shape:?}")))
+            .map(|pattern| format!("{pattern:?}"))
+            .chain(self.known.iter().map(|pattern| format!("{pattern:?}")))
             .collect()
     }
 }
@@ -123,9 +123,9 @@ pub fn painless_exec_plan_params(
     plan: &PainlessPlan,
     params: &Value,
 ) -> Result<()> {
-    if let Some(shape) = &plan.params
+    if let Some(pattern) = &plan.params
         && let Some(map) = params.as_object()
-        && run_params_shape(event, &plan.text, map, shape)
+        && run_params_pattern(event, &plan.text, map, pattern)
     {
         crate::painless_stats::record_handled(&plan.text);
         return Ok(());
@@ -133,7 +133,7 @@ pub fn painless_exec_plan_params(
     if plan
         .known
         .iter()
-        .any(|shape| run_known_shape(event, &plan.text, shape))
+        .any(|pattern| run_known_pattern(event, &plan.text, pattern))
     {
         crate::painless_stats::record_handled(&plan.text);
         return Ok(());
@@ -183,7 +183,7 @@ mod tests {
                 json!({ "crowdstrike": { "event": { "keep": "v", "dash": "-" } } }),
             ),
             (
-                // Text, first branch: the drop-empty shape with its policy.
+                // Text, first branch: the drop-empty pattern with its policy.
                 "boolean drop(Object o) { if (o == null || o == '') return true; \
                  if (o instanceof Map) { ((Map) o).values().removeIf(v -> drop(v)); \
                  return ((Map) o).size() == 0; } if (o instanceof List) { \
@@ -251,7 +251,7 @@ mod tests {
         assert!(std::ptr::eq(site(), site()));
     }
 
-    /// The four shapes a generator can emit today, each rendering to the call
+    /// The four patterns a generator can emit today, each rendering to the call
     /// the ladder would have made. Verbatim scripts from
     /// `pipelines/fortinet_fortiproxy/log/default.yml`, which is the source
     /// the direct-emit spike regenerates.
@@ -273,7 +273,7 @@ mod tests {
                  \"event.duration\", Factor::Double(1000000000.0)));",
             ),
             (
-                // The commonest shape in the catalogue, 759 call sites.
+                // The commonest pattern in the catalogue, 759 call sites.
                 "boolean drop(Object o) { if (o == null || o == '') return true; \
                  if (o instanceof Map) { ((Map) o).values().removeIf(v -> drop(v)); \
                  return ((Map) o).size() == 0; } if (o instanceof List) { \
@@ -315,8 +315,8 @@ mod tests {
                 .direct_call()
                 .is_none()
         );
-        // A params shape declines the whole plan, however expressible its
-        // text shapes are: dispatch tries params first and skips them.
+        // A params pattern declines the whole plan, however expressible its
+        // text patterns are: dispatch tries params first and skips them.
         assert!(
             PainlessPlan::new(
                 "def k = ctx.network.direction.toLowerCase(); def v = params.get(k); \
@@ -340,7 +340,7 @@ mod tests {
         );
         assert!(matches!(
             plan.known.as_slice(),
-            [KnownShape::DropEmpty { policy, root: None }] if policy.empty_strings
+            [KnownPattern::DropEmpty { policy, root: None }] if policy.empty_strings
         ));
     }
 }

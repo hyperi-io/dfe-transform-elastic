@@ -7,7 +7,7 @@
 //! beside it explaining each move -- history that git already holds, and churn
 //! in every review. These live in `tests/ratchets.json` and are rewritten by
 //! the test that measures them, under `DFE_UPDATE_RATCHETS=1`, the same way
-//! `shapes.lock` is rewritten under `DFE_UPDATE_SHAPE_LOCK=1`.
+//! `patterns.lock` is rewritten under `DFE_UPDATE_PATTERN_LOCK=1`.
 //!
 //! A FLOOR is the opposite and stays a `const`: it proves a scan was not
 //! empty, moves only on a structural change, and carries its reason in a

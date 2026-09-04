@@ -92,7 +92,7 @@ pub struct TransformMetrics {
     /// Events per received batch. Shows whether `batch_size` is being reached.
     pub batch_events: Histogram,
 
-    /// Wall-clock seconds to transform one batch.
+    /// Elapsed seconds to transform one batch.
     pub batch_duration: Histogram,
 }
 

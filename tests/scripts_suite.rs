@@ -4,14 +4,14 @@
 //! Run the Python tooling's own test suite, so it is in the gate.
 //!
 //! `scripts/` carries 538 lines of tests across `test_compat.py`,
-//! `test_field_census.py` and `test_shape_reach.py`, and NOTHING executed
+//! `test_field_census.py` and `test_pattern_reach.py`, and NOTHING executed
 //! them. `.hyperi-ci.yaml` declares `language: rust`, the reusable
 //! `rust-ci.yml` runs no pytest or unittest, and neither does
 //! `hyperi-ci check` -- so a fix landing in one of them was fiction.
 //!
 //! They are not incidental. `field_census.py`'s leaf walk produces every
-//! schema width figure the design rests on, and `shape_reach.py` is the join
-//! that finds a shape claiming a script it never applies -- it drove five
+//! schema width figure the design rests on, and `pattern_reach.py` is the join
+//! that finds a pattern claiming a script it never applies -- it drove five
 //! fixes this week. A miscount in either is silent.
 //!
 //! Shelling out is the way in because `hyperi-ci` offers no per-repo hook for

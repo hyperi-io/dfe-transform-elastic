@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: BUSL-1.1
 # Copyright (c) 2026 HYPERI PTY LIMITED
-"""Rank the shapes that BIND a script and then never apply it.
+"""Rank the patterns that BIND a script and then never apply it.
 
 Two tests measure different halves of the same question and neither answers it
-alone. `painless_binding` is static: it says what a script MATCHES, and a shape
+alone. `painless_binding` is static: it says what a script MATCHES, and a pattern
 whose runner declines still matches. `compat_corpus` is dynamic: it says what
-actually ran. A shape that claims a script and then writes nothing looks
+actually ran. A pattern that claims a script and then writes nothing looks
 covered from everywhere except here.
 
     cargo test -p dfe-transforms --test painless_binding      # DFE_BINDING_DUMP
     cargo test -p dfe-transforms --test compat_corpus         # DFE_PAINLESS_UNHANDLED
-    scripts/shape_reach.py
+    scripts/pattern_reach.py
 
 Both dumps are written by env var, so the tests stay silent by default:
 
@@ -19,7 +19,7 @@ Both dumps are written by env var, so the tests stay silent by default:
     DFE_PAINLESS_UNHANDLED=<path> ...
 
 A script counted here has `ran == 0` across the WHOLE corpus, so it is not a
-shape declining on the events that lack its source field -- that is ordinary
+pattern declining on the events that lack its source field -- that is ordinary
 and is excluded. Scripts with no capture at all are excluded too: absence of
 evidence is reported separately rather than counted as a defect.
 """
@@ -50,7 +50,7 @@ def load(path: pathlib.Path, what: str) -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def shape_of(binding: str) -> str:
+def pattern_of(binding: str) -> str:
     """The family name, without the payload the census prints after it."""
     return binding.split("(")[0].split(" ")[0]
 
@@ -90,18 +90,18 @@ def main() -> int:
             continue
         if args.solo and len(script["binding"]) > 1:
             continue
-        name = shape_of(script["binding"][0])
+        name = pattern_of(script["binding"][0])
         claimed[name] += row["skipped"]
         sites[name] += len(script["uses"])
 
     print(f"{reach['distinct']} distinct scripts ran, {reach['never_ran']} never applied")
-    print(f"  bound by a shape:  {sum(claimed.values())} invocations, {sum(sites.values())} sites")
+    print(f"  bound by a pattern:  {sum(claimed.values())} invocations, {sum(sites.values())} sites")
     print(f"  honestly unbound:  {unbound_skips} invocations")
     print(f"  ran and sometimes declined (ordinary, excluded): {sometimes}")
 
     if args.solo:
         print("\n--solo: nothing else binds these, so the claim is the only one")
-    print("\nnever applied, by the shape that claimed them:")
+    print("\nnever applied, by the pattern that claimed them:")
     for name, invocations in claimed.most_common():
         print(f"{invocations:8d} invocations  {sites[name]:5d} sites  {name}")
 

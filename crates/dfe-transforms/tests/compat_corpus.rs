@@ -17,9 +17,9 @@
 //!
 //! Both live in `tests/compat-baseline.json` and are written by
 //! `scripts/raise_baseline.py`: per-source field and event scores, and
-//! `never_ran`, how many scripts bound a shape and never ran it. The static
+//! `never_ran`, how many scripts bound a pattern and never ran it. The static
 //! census and the coverage floor both count the CLAIM, so this run is the
-//! only thing that sees a shape which never applies.
+//! only thing that sees a pattern which never applies.
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
@@ -1993,15 +1993,15 @@ fn provenance(fixtures: &[Captured]) -> Option<(String, String)> {
 struct Baseline {
     integrations_sha: String,
     elasticsearch_version: String,
-    /// Scripts that bound a shape and never once ran it.
+    /// Scripts that bound a pattern and never once ran it.
     ///
-    /// A shape whose runner declines every event still MATCHES, so the static
+    /// A pattern whose runner declines every event still MATCHES, so the static
     /// census counts it as covered and `painless_coverage.rs` reads 100% --
     /// both measure the CLAIM. Only this run sees whether it applied.
     ///
     /// Not a defect count: a script can legitimately never run because the
     /// corpus holds no event carrying its source field. Read alongside
-    /// `scripts/shape_reach.py`, never on its own.
+    /// `scripts/pattern_reach.py`, never on its own.
     ///
     /// Lives here rather than in a constant because it moves on every
     /// improvement, and `scripts/raise_baseline.py` writes it. A number a
@@ -2090,11 +2090,11 @@ fn check_baseline(
 
     assert!(
         never <= baseline.never_ran,
-        "{never} scripts bound a shape and never ran it, up from {}. A shape \
+        "{never} scripts bound a pattern and never ran it, up from {}. A pattern \
          claiming a script it cannot apply reads as covered everywhere except \
          here -- the painless coverage floor counts the CLAIM. Run with \
          DFE_PAINLESS_UNHANDLED=<path> to see which, and \
-         `scripts/shape_reach.py` to join them to call sites.",
+         `scripts/pattern_reach.py` to join them to call sites.",
         baseline.never_ran
     );
 

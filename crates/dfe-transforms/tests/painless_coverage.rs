@@ -27,7 +27,7 @@ use serde_json::{Map, Value, json};
 /// pipelines, fell to 64.7% when they were re-vendored from the current
 /// integrations commit, and is back at 100%.
 ///
-/// The last four shapes were o365's `splitTrimAdd` (1,483 uses on its own),
+/// The last four patterns were o365's `splitTrimAdd` (1,483 uses on its own),
 /// fortinet's `tlsver` split, azure's quote rewrite and azure's target-resource
 /// collect.
 ///

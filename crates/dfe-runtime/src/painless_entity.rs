@@ -6,16 +6,16 @@
 //! One ~950-line Painless script owns the whole `*.entity.id` family for
 //! cloudtrail: two dozen per-service `enrich*` functions gather related and
 //! target entities into `TreeSet`s, then a classifier sorts every entity into
-//! user, host, service or generic by the tables in `params` and the shape of
+//! user, host, service or generic by the tables in `params` and the pattern of
 //! the value itself. The per-service functions are PARSED, not transcribed --
 //! a vendor adding a service or an event name flows through regeneration --
 //! while the classifier tail is fixed logic driven by the params tables, with
 //! its distinctive markers asserted so a restructured script declines loudly
 //! rather than half-running.
 //!
-//! The parse runs once per call site: [`crate::painless_params::params_shape`]
+//! The parse runs once per call site: [`crate::painless_params::params_pattern`]
 //! only names this matcher when [`EntityScript::parse`] succeeds, and the
-//! parsed script rides inside the shape. A statement the parser cannot read
+//! parsed script rides inside the pattern. A statement the parser cannot read
 //! fails the WHOLE parse -- the script then falls through the dispatch as it
 //! did before this matcher existed, and the corpus ratchet says so.
 
@@ -544,7 +544,7 @@ fn condition_action(
 
 /// The markers the fixed classification tail is keyed on. Each one names a
 /// piece of logic the evaluator hardcodes; a script missing any has changed
-/// shape, and the parse declines rather than half-running.
+/// pattern, and the parse declines rather than half-running.
 const CLASSIFIER_MARKERS: [&str; 10] = [
     r#"field("target.entity.id").set(enrichCtx.target)"#,
     "params.userResourceTypes.containsKey",

@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! The Windows event-log script shapes: sysmon, powershell and the
+//! The Windows event-log script patterns: sysmon, powershell and the
 //! `m365_defender` copies of the same helpers.
 //!
-//! Four shapes recur across those pipelines. `commandLineToArgv` is the Go
+//! Four patterns recur across those pipelines. `commandLineToArgv` is the Go
 //! implementation of Windows argument splitting transliterated into Painless,
 //! carried by eight pipelines with per-copy field pairs read off the tail.
 //! The file-info split, the hash-map lowercasing and the registry parser are
@@ -507,7 +507,7 @@ pub(crate) fn run_message_table(event: &mut Event, params: &Map<String, Value>) 
 }
 
 /// A whitespace-split string, or the array's string members -- the two
-/// shapes the script's own `split` helper accepts.
+/// patterns the script's own `split` helper accepts.
 fn whitespace_or_array(value: &Value) -> Vec<String> {
     match value {
         Value::String(s) => s.split_whitespace().map(str::to_string).collect(),

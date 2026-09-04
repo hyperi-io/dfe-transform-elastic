@@ -169,8 +169,8 @@ fn every_call_site_reports_the_matcher_it_binds_to() {
     let unbound_sites: usize = unbound.iter().map(|s| s.uses.len()).sum();
     let mut families: BTreeMap<&str, usize> = BTreeMap::new();
     for script in scripts.values() {
-        for shape in &script.binding {
-            let name = shape.split(['(', ' ']).next().unwrap_or(shape);
+        for pattern in &script.binding {
+            let name = pattern.split(['(', ' ']).next().unwrap_or(pattern);
             *families.entry(name).or_default() += script.uses.len();
         }
     }
@@ -198,18 +198,18 @@ fn every_call_site_reports_the_matcher_it_binds_to() {
     // is dead and the script takes the other one whatever the data says.
     let dead_branches: usize = scripts
         .values()
-        .filter(|s| s.binding.iter().any(|shape| shape.contains("Never")))
+        .filter(|s| s.binding.iter().any(|pattern| pattern.contains("Never")))
         .map(|s| s.uses.len())
         .sum();
     println!("  {dead_branches} sites carry a guard the evaluator cannot read");
     // Counted statically, so it includes sites where the dead branch sits in a
-    // FALLBACK shape and something ahead of it handles the script correctly.
+    // FALLBACK pattern and something ahead of it handles the script correctly.
     let mut ratchets = dfe_runtime::testutil::ratchets::Ratchets::load(&workspace_root());
     ratchets.check(
         "dead_branch_sites",
         dead_branches,
-        "A new shape or script has added a dead branch. Establish what the \
-         script binds FIRST before calling it a defect -- the shape carrying \
+        "A new pattern or script has added a dead branch. Establish what the \
+         script binds FIRST before calling it a defect -- the pattern carrying \
          it is often a fallback something else handles, and a RISE can mean \
          the count got truer rather than the code worse. The corpus is the \
          authority on which; this number never is.",

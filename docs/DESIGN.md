@@ -33,13 +33,13 @@ enrich, and route the data.
 | Elastic Component | dfe-transform-elastic Equivalent | Status |
 |-------------------|----------------------------------|--------|
 | **Ingest processors** (27 used) | Rust processor implementations, one per Elastic processor type | Done |
-| **Painless scripts** | Pattern-matched against known script shapes in `painless_common.rs`; unrecognised scripts are skipped | 59,308 of 70,538 corpus invocations run (see Painless Coverage) |
+| **Painless scripts** | Pattern-matched against known script patterns in `painless_common.rs`; unrecognised scripts are skipped | 59,308 of 70,538 corpus invocations run (see Painless Coverage) |
 | **Foreach processor** | Per-event loop inside the transform function | Okta, O365 |
 | **Pipeline chaining** | One transform module calls into another's logic directly | Partial (CrowdStrike done) |
 | **GeoIP enrichment** | Global MMDB enricher, auto-detected at startup, LRU-cached | Done (DB-IP Lite) |
 | **User Agent parsing** | Regex-based parser | Done (minor diffs from Elastic UA parser) |
 | **Community ID** | Hash-based network flow ID | Done |
-| **Conditional evaluation** | Native Rust `if`/`match` expressions per condition shape | Done (all patterns covered) |
+| **Conditional evaluation** | Native Rust `if`/`match` expressions per condition pattern | Done (all patterns covered) |
 | **On-failure handlers** | Not yet implemented | Planned |
 
 ### What We Do NOT Replicate
@@ -537,7 +537,7 @@ sources exercise it.
 
 | Processor | Status | Used By | Code Pattern |
 |---|---|---|---|
-| `script` (Painless) | Pattern-match, see below | All | Rust matching a recognised script shape, or a no-op |
+| `script` (Painless) | Pattern-match, see below | All | Rust matching a recognised script pattern, or a no-op |
 | `geoip` | Done (DB-IP) | All with IPs | `enrichment::geoip::enrich(event, field, prefix)?` |
 | `user_agent` | Done | O365, Okta | `enrichment::user_agent::enrich(event, field, prefix)?` |
 | `community_id` | Done | Panw, Fortinet | `enrichment::community_id::enrich(event)?` |
@@ -556,7 +556,7 @@ using one fails to onboard and says which -- that is how `join`, `sort`,
 
 A script the runtime cannot execute is skipped rather than failing the event, so the skips have
 to be counted or they are indistinguishable from a script that did nothing. `painless_exec`
-(`crates/dfe-runtime/src/codegen_api.rs`) tries each script against the known shapes in
+(`crates/dfe-runtime/src/codegen_api.rs`) tries each script against the known patterns in
 `painless_common.rs` and records the outcome through `painless_stats.rs`.
 
 **Two measurements, and only the second is honest about reach.**
@@ -570,10 +570,10 @@ Running the same counters over the compat corpus is what says that:
 **59,308 handled and 11,230 skipped**, across 1,257 distinct scripts, **522 of which never
 applied on any event**. `DFE_PAINLESS_UNHANDLED=<path>` on the corpus test writes the detail.
 
-The gap between the two is the point. A shape can MATCH a script statically and then decline at
+The gap between the two is the point. A pattern can MATCH a script statically and then decline at
 run time, which reads as covered from everywhere except that dump - so
-`scripts/shape_reach.py` joins it against the static census
-(`DFE_BINDING_DUMP=<path>` on `painless_binding`) to name the shapes that claim a script and
+`scripts/pattern_reach.py` joins it against the static census
+(`DFE_BINDING_DUMP=<path>` on `painless_binding`) to name the patterns that claim a script and
 never apply it.
 
 ---

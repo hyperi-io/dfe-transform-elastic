@@ -4,13 +4,13 @@
 //! Painless script patterns whose behaviour lives in the processor's `params`.
 //!
 //! An Elastic `script` processor may carry a `params` block, and the recurring
-//! shapes read their whole configuration from it -- the sentinel list to strip,
+//! patterns read their whole configuration from it -- the sentinel list to strip,
 //! the field names to convert, the lookup table to merge. Matching on script
 //! text alone cannot execute any of them, because the text says only *that* a
 //! param is read, never what it holds.
 //!
 //! [`try_params_painless`] is tried before the text-only matchers in
-//! [`crate::painless_common::try_known_painless`], so a shape with a params
+//! [`crate::painless_common::try_known_painless`], so a pattern with a params
 //! block runs against the pipeline's real table rather than a transcribed copy.
 
 use std::borrow::Cow;
@@ -26,7 +26,7 @@ use crate::painless_helpers::{filetime_to_unix_ms, remove_sentinel_values};
 /// macro expands once per key, and the o365 operation table alone is deep
 /// enough to blow rustc's recursion limit. Parsing it behind a per-site
 /// `OnceLock` costs one parse per process and nothing per event -- the same
-/// shape [`crate::cached_grok`] uses, and for the same reason.
+/// pattern [`crate::cached_grok`] uses, and for the same reason.
 #[macro_export]
 macro_rules! cached_params {
     ($json:literal $(,)?) => {{
@@ -49,8 +49,8 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
         return false;
     };
     let normalised = crate::painless_common::normalise(script);
-    match params_shape(&normalised) {
-        Some(shape) => run_params_shape(event, &normalised, params, &shape),
+    match params_pattern(&normalised) {
+        Some(pattern) => run_params_pattern(event, &normalised, params, &pattern),
         None => false,
     }
 }
@@ -60,12 +60,12 @@ pub fn try_params_painless(event: &mut Event, script: &str, params: &Value) -> b
 /// Every branch of the params dispatch is terminal -- the first trigger that
 /// holds names the matcher, whatever that matcher then returns -- so the whole
 /// decision is a property of the script TEXT and is made once per call site by
-/// [`crate::painless_plan::PainlessPlan`] rather than once per event. A shape
+/// [`crate::painless_plan::PainlessPlan`] rather than once per event. A pattern
 /// whose trigger is itself a parse carries the parse's result.
 /// The case a script folds a lookup key to before reading the table.
 ///
 /// Painless folds the key, never the table, so a fold the parse misses does
-/// not merely mis-case a lookup -- it misses every row and the shape resolves
+/// not merely mis-case a lookup -- it misses every row and the pattern resolves
 /// nothing.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Fold {
@@ -98,7 +98,7 @@ impl Fold {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) enum ParamsShape {
+pub(crate) enum ParamsPattern {
     AwsEntity(Box<crate::painless_entity::EntityScript>),
     DropEmptyMembers {
         parent: String,
@@ -164,7 +164,7 @@ pub(crate) enum ParamsShape {
     MessageCodeEventType,
     /// Each key of `params.keys` totalled across the `params.from` prefixes
     /// into `params.to`. The literal-path spelling of the same sum is
-    /// `KnownShape::SumDirections`, which cannot read this one.
+    /// `KnownPattern::SumDirections`, which cannot read this one.
     SummedDirections,
     MappingRow(Box<MappingRow>),
     SecuritySddl,
@@ -182,7 +182,7 @@ pub(crate) enum ParamsShape {
     /// A NAMED params table read through a ternary, with a LITERAL default.
     ///
     /// `jamf_protect` writes one of these per telemetry field -- 40 sites over
-    /// 13 files. Sibling to [`ParamsShape::UppercaseLookupDefault`], which
+    /// 13 files. Sibling to [`ParamsPattern::UppercaseLookupDefault`], which
     /// differs on four points: it folds case, reads the whole `params` map,
     /// spells the lookup `getOrDefault`, and defaults to the KEY rather than
     /// to a literal.
@@ -234,7 +234,7 @@ pub(crate) enum ParamsShape {
     KeyedMessageTable,
     ReversibleLookup,
     /// The literal writes the script makes on its own account travel with the
-    /// shape, so the four-hundred-line bodies are read once rather than per
+    /// pattern, so the four-hundred-line bodies are read once rather than per
     /// event.
     LookupMerge(Program),
     LookupColumns,
@@ -275,7 +275,7 @@ pub(crate) enum ParamsShape {
 /// The trigger order is load-bearing and each comment says why a branch sits
 /// where it does; a script can spell several triggers and the FIRST wins,
 /// exactly as the old inline dispatch behaved.
-pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
+pub(crate) fn params_pattern(normalised: &str) -> Option<ParamsPattern> {
     // Pattern: aws cloudtrail's entity classifier, per-service enrichment
     // into TreeSets then classification through the params tables. First,
     // because its 950 lines spell half the other triggers somewhere. The
@@ -285,25 +285,25 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
         && normalised.contains("related.entity")
         && let Some(parsed) = crate::painless_entity::EntityScript::parse(normalised)
     {
-        return Some(ParamsShape::AwsEntity(Box::new(parsed)));
+        return Some(ParamsPattern::AwsEntity(Box::new(parsed)));
     }
 
     // Pattern: sysmon's semicolon-separated DNS QueryResults, where params is
     // the RR-number-to-name table. Checked first: the script also spells
     // `.put(` and `params`, which a later matcher reads as an indexed lookup.
     if normalised.contains("QueryResults") && normalised.contains("startsWith(\"type:\")") {
-        return Some(ParamsShape::SysmonQueryResults);
+        return Some(ParamsPattern::SysmonQueryResults);
     }
 
     // Pattern: sysmon's registry fields, the hive abbreviated through the
     // params table and the Details value typed by its own text.
     if normalised.contains("ctx.registry = new HashMap()") && normalised.contains("TargetObject") {
-        return Some(ParamsShape::SysmonRegistry);
+        return Some(ParamsPattern::SysmonRegistry);
     }
 
     // Pattern: strip the vendor's sentinel values out of a map.
     if normalised.contains(".entrySet().removeIf(") && normalised.contains("entry.getValue()") {
-        return Some(ParamsShape::SentinelRemoval);
+        return Some(ParamsPattern::SentinelRemoval);
     }
 
     // Pattern: symantec_endpoint's CSV layout table, keyed on the fingerprint
@@ -316,7 +316,7 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
         && let Some(map) = base_between(normalised, "  ctx.", "[c.name] = v")
         && let Some(fingerprint) = base_between(normalised, "== ctx.", " ")
     {
-        return Some(ParamsShape::CsvFingerprintProvider {
+        return Some(ParamsPattern::CsvFingerprintProvider {
             list,
             map,
             fingerprint,
@@ -333,24 +333,24 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
         if normalised.contains("action.map == null")
             && let Some(base) = base_between(normalised, "for (def src_field : ctx.", ".entrySet()")
         {
-            return Some(ParamsShape::DeferredFieldTable(base));
+            return Some(ParamsPattern::DeferredFieldTable(base));
         }
         if normalised.contains("splitOnToken(\":\")")
             && let Some(base) = base_between(normalised, "String value = ctx.", "[field.getKey()]")
         {
-            return Some(ParamsShape::DeferredSplitTable(base));
+            return Some(ParamsPattern::DeferredSplitTable(base));
         }
         if normalised.contains("params.sources")
             && let Some(base) = base_between(normalised, "Map base = ctx.", ";")
         {
-            return Some(ParamsShape::DeferredAppendTable(base));
+            return Some(ParamsPattern::DeferredAppendTable(base));
         }
     }
 
     // Pattern: the message code expanded into the whole event block through
     // two params tables, one naming the type and one holding its fields.
     if normalised.contains("params.message_codes[") && normalised.contains("params.event_types[") {
-        return Some(ParamsShape::MessageCodeEventType);
+        return Some(ParamsPattern::MessageCodeEventType);
     }
 
     // Pattern: a per-direction total, with the directions and the keys named
@@ -359,28 +359,28 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
         && normalised.contains("params.keys")
         && normalised.contains("ctx[params.to]")
     {
-        return Some(ParamsShape::SummedDirections);
+        return Some(ParamsPattern::SummedDirections);
     }
 
     // Pattern: empty-string members dropped from each of the sub-maps params
     // names. Ahead of every table matcher, whose `params.<name>` trigger this
     // also spells and which reads the list as a lookup table.
     if normalised.contains("entry.getValue() != ''")
-        && let Some(shape) = parse_drop_empty_members(normalised)
+        && let Some(pattern) = parse_drop_empty_members(normalised)
     {
-        return Some(shape);
+        return Some(pattern);
     }
 
     // Pattern: windows security's decoded scheduled-task XML, normalised
     // against the trigger and action tables params carries.
     if normalised.contains("ArrayList normalizeTriggers(") {
-        return Some(ParamsShape::ScheduledTask);
+        return Some(ParamsPattern::ScheduledTask);
     }
 
     // Pattern: powershell's raw invocation details, one structured map per
     // line of the named event_data field.
     if normalised.contains("def parseRawDetail(String raw)") {
-        return Some(ParamsShape::InvocationDetails);
+        return Some(ParamsPattern::InvocationDetails);
     }
 
     // Pattern: one field rewritten through an if/else-if ladder whose BOTH
@@ -388,52 +388,52 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // types this way. Early, because the parse is the trigger and it demands
     // the whole script be the ladder.
     if normalised.contains("== params.")
-        && let Some(shape) = parse_param_rename_ladder(normalised)
+        && let Some(pattern) = parse_param_rename_ladder(normalised)
     {
-        return Some(shape);
+        return Some(pattern);
     }
 
     // Pattern: keep the params-listed members of a sub-map where they are and
     // push the rest down one level -- cyberarkpas's mapping-explosion guard.
-    // Early, because the parse is the trigger: only this shape spells a params
+    // Early, because the parse is the trigger: only this pattern spells a params
     // VALUE streamed as the field list, so nothing else can be stolen by it.
     if normalised.contains(".getValue().stream().filter(")
-        && let Some(shape) = parse_select_members(normalised)
+        && let Some(pattern) = parse_select_members(normalised)
     {
-        return Some(shape);
+        return Some(pattern);
     }
 
     // Pattern: every params label whose flag the field's bits carry, collected
     // into one list -- kerberos ticket options.
     if normalised.contains("Long.decode(")
         && normalised.contains("params.entrySet()")
-        && let Some(shape) = parse_put_flag_names(normalised)
+        && let Some(pattern) = parse_put_flag_names(normalised)
     {
-        return Some(shape);
+        return Some(pattern);
     }
 
     // Pattern: one params row put back under a name -- kerberos status and
     // encryption-type descriptions.
     if normalised.contains("params[ctx.")
-        && let Some(shape) = parse_put_lookup(normalised)
+        && let Some(pattern) = parse_put_lookup(normalised)
     {
-        return Some(shape);
+        return Some(pattern);
     }
 
     // Pattern: a params ROW looked up by a normalised key, two of its members
     // put back -- windows security's audit subcategory GUID.
     if (normalised.contains("][0])") || normalised.contains("][1])"))
-        && let Some(shape) = KeyedRowMembers::parse(normalised)
+        && let Some(pattern) = KeyedRowMembers::parse(normalised)
     {
-        return Some(ParamsShape::KeyedRowMembers(Box::new(shape)));
+        return Some(ParamsPattern::KeyedRowMembers(Box::new(pattern)));
     }
 
     // Pattern: a field uppercased, then abbreviated through params -- m365's
     // registry hive, where an unlisted name stands for itself.
     if normalised.contains(".toUpperCase();")
-        && let Some(shape) = parse_uppercase_lookup_default(normalised)
+        && let Some(pattern) = parse_uppercase_lookup_default(normalised)
     {
-        return Some(shape);
+        return Some(pattern);
     }
 
     // Pattern: the same lookup through a NAMED table with a LITERAL default --
@@ -441,9 +441,9 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
     // only the ternary as a cheap reject.
     if normalised.contains(".containsKey(")
         && normalised.contains(".toString();")
-        && let Some(shape) = parse_table_lookup_or_literal(normalised)
+        && let Some(pattern) = parse_table_lookup_or_literal(normalised)
     {
-        return Some(shape);
+        return Some(pattern);
     }
 
     // Pattern: securityhub's threat-intel indicators, each vendor type mapped
@@ -455,38 +455,38 @@ pub(crate) fn params_shape(normalised: &str) -> Option<ParamsShape> {
             .and_then(|(_, rest)| rest.split_once(')'))
             .map(|(path, _)| clean_path(path.trim()))
     {
-        return Some(ParamsShape::ThreatIndicatorType(source));
+        return Some(ParamsPattern::ThreatIndicatorType(source));
     }
 
-    params_shape_tail(normalised)
+    params_pattern_tail(normalised)
 }
 
 /// The rest of the dispatch, split only because one function may not run past
 /// 150 lines. Order still matters across the two halves: the first trigger
 /// that fires wins, and these run after everything above.
-// One branch per shape, and the lock scanner needs every branch INLINE so it
+// One branch per pattern, and the lock scanner needs every branch INLINE so it
 // can resolve each dispatch site to one variant -- splitting further is what
-// `shapes.lock` rejects, not just what would hide the order.
+// `patterns.lock` rejects, not just what would hide the order.
 #[allow(clippy::too_many_lines)]
-fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
+fn params_pattern_tail(normalised: &str) -> Option<ParamsPattern> {
     // Pattern: windows security descriptors expanded into readable ACL lines.
     if normalised.contains("void enrichSDDL(") {
-        return Some(ParamsShape::SecuritySddl);
+        return Some(ParamsPattern::SecuritySddl);
     }
 
     // Pattern: one row of a NAMED params table, selected by a field, with a
     // literal fallback where the subject is not in the table.
     if normalised.contains("def at = ctx.")
         && normalised.contains(".get(at)")
-        && let Some(shape) = parse_mapping_row(normalised)
+        && let Some(pattern) = parse_mapping_row(normalised)
     {
-        return Some(ParamsShape::MappingRow(Box::new(shape)));
+        return Some(ParamsPattern::MappingRow(Box::new(pattern)));
     }
 
     // Pattern: proofpoint's message parts, renamed through the params key map
     // and fanned out into the ECS lists.
     if normalised.contains("for (part in ctx.json.msgParts)") {
-        return Some(ParamsShape::MsgParts);
+        return Some(ParamsPattern::MsgParts);
     }
 
     // Pattern: m365's event categories and types off the evidence list, each
@@ -501,28 +501,28 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
             .and_then(|(_, rest)| rest.split_once(']'))
             .map(|(key, _)| key.trim().trim_matches(['"', '\'']).to_string())
     {
-        return Some(ParamsShape::EvidenceCategories { source, key });
+        return Some(ParamsPattern::EvidenceCategories { source, key });
     }
 
     // Pattern: mimecast's scored log-type classifier, keyed on its four
     // params tables.
     if normalised.contains("params.definite_positive") && normalised.contains("params.candidates") {
-        return Some(ParamsShape::MimecastLogType);
+        return Some(ParamsPattern::MimecastLogType);
     }
 
     // Pattern: convert every named field from Windows FILETIME to UNIX ms.
     if normalised.contains(FILETIME_LITERAL) && normalised.contains("for (def field : params.") {
-        return Some(ParamsShape::FiletimeFieldList);
+        return Some(ParamsPattern::FiletimeFieldList);
     }
 
     // Pattern: decode a bitfield into one boolean label per set bit.
     if normalised.contains("params.entrySet()") && normalised.contains("& flag") {
-        return Some(ParamsShape::BitFlags);
+        return Some(ParamsPattern::BitFlags);
     }
 
     // Pattern: the first member of a params list the subject contains.
     if normalised.contains("for (String ") && normalised.contains(".put(") {
-        return Some(ParamsShape::FirstContainedMember);
+        return Some(ParamsPattern::FirstContainedMember);
     }
 
     // Pattern: the same lookup, but keeping the KEY where the table has no
@@ -533,7 +533,7 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         && let Some(source) = base_between(normalised, " = ctx.", ".toString()")
         && let Some(target) = bracket_path_before(normalised, " = params.get(")
     {
-        return Some(ParamsShape::LookupOrKey { source, target });
+        return Some(ParamsPattern::LookupOrKey { source, target });
     }
 
     // Pattern: one field keying a params table, the row assigned whole.
@@ -543,7 +543,7 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         && let Some(source) = base_between(normalised, "def schemaId = ctx.", ".toString()")
         && let Some(target) = path_before(normalised, " = schema;")
     {
-        return Some(ParamsShape::KeyedRowAssign { source, target });
+        return Some(ParamsPattern::KeyedRowAssign { source, target });
     }
 
     // Pattern: the first member of a ctx LIST the params table has a row for,
@@ -555,36 +555,36 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         && let Some(list) = base_between(normalised, " : ctx.", ")")
         && let Some(target) = path_before(normalised, " = params.get(")
     {
-        return Some(ParamsShape::FirstLabelInTable { list, target });
+        return Some(ParamsPattern::FirstLabelInTable { list, target });
     }
 
     // Pattern: rename an object's keys, recursively, through a name map.
     if normalised.contains("keyMap.containsKey(key)") {
-        return Some(ParamsShape::RenameKeys);
+        return Some(ParamsPattern::RenameKeys);
     }
 
     // Pattern: several fields each normalised through their own value map.
-    // Ahead of the reversible lookup, whose trigger this shape also matches.
+    // Ahead of the reversible lookup, whose trigger this pattern also matches.
     if normalised.contains(".map?.getOrDefault(") || normalised.contains("param.map.") {
-        return Some(ParamsShape::ValueMaps);
+        return Some(ParamsPattern::ValueMaps);
     }
 
     // Pattern: the row is a LIST OF INSTRUCTIONS built into a list for a
     // `foreach` to write. Ahead of every `params.get(` matcher below, and of
     // the `LookupNormalise` catch-all that would otherwise claim it.
     if normalised.contains("values.add(")
-        && let Some(shape) = parse_instruction_rows(normalised)
+        && let Some(pattern) = parse_instruction_rows(normalised)
     {
-        return Some(ParamsShape::InstructionRows(Box::new(shape)));
+        return Some(ParamsPattern::InstructionRows(Box::new(pattern)));
     }
 
     // Pattern: params IS the table, keyed by a field, and each named column's
     // members are appended onto an ECS array. `getOrDefault` spells the lookup
     // so none of the `params.get(` triggers below ever sees it.
     if normalised.contains("params.getOrDefault(ctx.")
-        && let Some(shape) = parse_row_column_appends(normalised)
+        && let Some(pattern) = parse_row_column_appends(normalised)
     {
-        return Some(ParamsShape::RowColumnAppends(Box::new(shape)));
+        return Some(ParamsPattern::RowColumnAppends(Box::new(pattern)));
     }
 
     // Pattern: params IS the table, and one row's columns are written straight
@@ -593,14 +593,14 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
     if (normalised.contains("params.get(ctx.") || normalised.contains("params.get((ctx."))
         && normalised.contains(").get('")
     {
-        return Some(ParamsShape::RowColumns(Program::parse(row_columns_tail(
+        return Some(ParamsPattern::RowColumns(Program::parse(row_columns_tail(
             normalised,
         ))));
     }
 
     // Pattern: fan a parsed key/value message out through a params table.
     if normalised.contains("appendOrCreate(") && normalised.contains("params.get(entry.getKey())") {
-        return Some(ParamsShape::KeyedMessageTable);
+        return Some(ParamsPattern::KeyedMessageTable);
     }
 
     // Pattern: the security pipeline's msobjs message-table decode, keyed on
@@ -608,18 +608,18 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
     // trigger its writes also spell.
     if normalised.contains("AccessMaskDescriptions") && normalised.contains("reversed_descriptions")
     {
-        return Some(ParamsShape::MessageTable);
+        return Some(ParamsPattern::MessageTable);
     }
 
     // Pattern: sentinel_one's first-asset extraction, the os list in params.
     if normalised.contains("agent_uuid") && normalised.contains("params.os_type") {
-        return Some(ParamsShape::FirstAsset);
+        return Some(ParamsPattern::FirstAsset);
     }
 
     // Pattern: powershell's matcher-driven KV -- tab-prefixed keys, the
     // value everything up to the next key, multiline included.
     if normalised.contains("ctx.winlog?.event_data[params[") && normalised.contains("previousEnd") {
-        return Some(ParamsShape::MatcherKv);
+        return Some(ParamsPattern::MatcherKv);
     }
 
     // Pattern: a params row whose members are selected by INDEX, one field
@@ -627,19 +627,19 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
     // this also spells and which writes the WHOLE row into the last field the
     // script names.
     if normalised.contains("= params.get(ctx.")
-        && let Some(shape) = parse_indexed_row_columns(normalised)
+        && let Some(pattern) = parse_indexed_row_columns(normalised)
     {
-        return Some(shape);
+        return Some(pattern);
     }
 
     // Pattern: look one field up in the table and `.put` the row somewhere
     // ELSE -- the security pipeline's logon type, dnsserver's QTYPE with its
-    // trailing `.remove`. Ahead of the normalise shape, which writes back to
+    // trailing `.remove`. Ahead of the normalise pattern, which writes back to
     // the field it read.
     if normalised.contains("= params.get(ctx.")
         && let Some((source, target)) = parse_lookup_put(normalised)
     {
-        return Some(ParamsShape::LookupPut {
+        return Some(ParamsPattern::LookupPut {
             source,
             target,
             removes: parse_removes(normalised),
@@ -652,21 +652,21 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         && normalised.contains("new ArrayList()")
         && let Some((source, target)) = parse_lookup_wrap_list(normalised)
     {
-        return Some(ParamsShape::LookupWrapList { source, target });
+        return Some(ParamsPattern::LookupWrapList { source, target });
     }
 
     // Pattern: prefix a field with a validated scheme -- zscaler web's
     // `<protocol>://<url>` build, the fallback scheme from params.
     if normalised.contains("+ '://' +")
-        && let Some(shape) = parse_protocol_prefix(normalised)
+        && let Some(pattern) = parse_protocol_prefix(normalised)
     {
-        return Some(shape);
+        return Some(pattern);
     }
 
     // Pattern: map a field through a params table in whichever direction it
     // was written -- name to number, or a number already there back to a name.
     if normalised.contains("params.entrySet()") && normalised.contains("entry.getKey()") {
-        return Some(ParamsShape::ReversibleLookup);
+        return Some(ParamsPattern::ReversibleLookup);
     }
 
     // Pattern: look a field up in a static table and merge the row into ctx.
@@ -681,7 +681,7 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
         && normalised.contains("[k] = ")
         && (normalised.contains("params.get(") || normalised.contains("params["))
     {
-        return Some(ParamsShape::LookupMerge(Program::parse(normalised)));
+        return Some(ParamsPattern::LookupMerge(Program::parse(normalised)));
     }
 
     // Pattern: auth0's per-event-type action table -- a row overwrites the
@@ -692,9 +692,9 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
     // are this script's own names, unique across every pipeline.
     if normalised.contains("params.get('actions')")
         && normalised.contains("actions.get(eventType)")
-        && let Some(shape) = parse_keyed_action_row(normalised)
+        && let Some(pattern) = parse_keyed_action_row(normalised)
     {
-        return Some(shape);
+        return Some(pattern);
     }
 
     // Pattern: a row whose named columns are LISTS appended to array fields,
@@ -703,68 +703,68 @@ fn params_shape_tail(normalised: &str) -> Option<ParamsShape> {
     // reached nothing at all.
     if normalised.contains("params.get(")
         && normalised.contains(".add(")
-        && let Some(shape) = parse_keyed_row_appends(normalised)
+        && let Some(pattern) = parse_keyed_row_appends(normalised)
     {
-        return Some(ParamsShape::KeyedRowAppends(Box::new(shape)));
+        return Some(ParamsPattern::KeyedRowAppends(Box::new(pattern)));
     }
 
     // Pattern: look a row up in a nested table and fan its columns out,
     // appending the list-valued ones rather than replacing them.
     if normalised.contains("params.get(") && normalised.matches(".get(").count() >= 3 {
-        return Some(ParamsShape::LookupColumns);
+        return Some(ParamsPattern::LookupColumns);
     }
 
     // Pattern: normalise a field through a params table, keeping the input
     // when the table has no row for it.
     if normalised.contains("params.get(")
-        && let Some(shape) = parse_lookup_normalise(normalised)
+        && let Some(pattern) = parse_lookup_normalise(normalised)
     {
-        return Some(ParamsShape::LookupNormalise(
-            shape,
+        return Some(ParamsPattern::LookupNormalise(
+            pattern,
             Program::parse(normalised),
         ));
     }
 
     // Pattern: index a params array by a numeric field.
     if normalised.contains(".put(") && normalised.contains("params") {
-        return Some(ParamsShape::IndexedLookup);
+        return Some(ParamsPattern::IndexedLookup);
     }
 
     // Pattern: scale a numeric field by a params constant.
     if scale_marker(normalised).is_some() {
-        return Some(ParamsShape::Scale);
+        return Some(ParamsPattern::Scale);
     }
 
     // Pattern: strip a params-named marker out of a string field.
     if normalised.contains(".replace(params.") {
-        return Some(ParamsShape::Replace);
+        return Some(ParamsPattern::Replace);
     }
 
     // Pattern: union a table row's list columns into the ECS arrays.
     if normalised.contains("addUnique(") && normalised.contains("params[ctx.") {
-        return Some(ParamsShape::AddUniqueRow);
+        return Some(ParamsPattern::AddUniqueRow);
     }
 
     // Pattern: pick one framework name from the prefixes of several ID lists.
     if normalised.contains("new HashSet()") && normalised.contains("params.framework_preference") {
-        return Some(ParamsShape::FrameworkPreference);
+        return Some(ParamsPattern::FrameworkPreference);
     }
 
-    params_shape_rest(normalised)
+    params_pattern_rest(normalised)
 }
 
 /// The last of the dispatch, split only because one function may not run past
 /// 150 lines. Order still matters across all three parts: the first trigger
 /// that fires wins, and these run after everything above.
-fn params_shape_rest(normalised: &str) -> Option<ParamsShape> {
+fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
     // Pattern: a key normalised through the table onto ONE field, under the
     // script's own null check. Above the bracket catch-all, which cannot
     // resolve a key that still carries its normalising call and which stands an
     // unlisted key in for its own value where this drops it.
     if normalised.contains("params[ctx.")
-        && let Some(shape) = parse_normalised_lookup(normalised)
+        && let Some(pattern) = parse_normalised_lookup(normalised)
     {
-        return Some(shape);
+        return Some(pattern);
     }
 
     // Pattern: the same lookup where the key carries its own parentheses and
@@ -773,19 +773,19 @@ fn params_shape_rest(normalised: &str) -> Option<ParamsShape> {
     // where the catch-all stands it in for its own value.
     if normalised.contains("!params.containsKey(")
         && normalised.contains("= params[")
-        && let Some(shape) = parse_stringified_lookup(normalised)
+        && let Some(pattern) = parse_stringified_lookup(normalised)
     {
-        return Some(shape);
+        return Some(pattern);
     }
 
     // Pattern: the same normalise-through-a-table written with the bracket
-    // form. LAST, so nothing that reads the brackets for its own shape --
+    // form. LAST, so nothing that reads the brackets for its own pattern --
     // `addUnique` over a row, for one -- is claimed by the general case.
     if normalised.contains("params[ctx.")
-        && let Some(shape) = parse_lookup_normalise(normalised)
+        && let Some(pattern) = parse_lookup_normalise(normalised)
     {
-        return Some(ParamsShape::LookupNormalise(
-            shape,
+        return Some(ParamsPattern::LookupNormalise(
+            pattern,
             Program::parse(normalised),
         ));
     }
@@ -794,25 +794,25 @@ fn params_shape_rest(normalised: &str) -> Option<ParamsShape> {
     // the key. AFTER both `LookupNormalise` spellings, so it takes only what
     // they decline -- a miss must leave the target absent, not written back.
     if normalised.contains("params.containsKey(")
-        && let Some(shape) = parse_guarded_lookup(normalised)
+        && let Some(pattern) = parse_guarded_lookup(normalised)
     {
-        return Some(ParamsShape::GuardedLookup(shape));
+        return Some(ParamsPattern::GuardedLookup(pattern));
     }
 
     // Pattern: a NAMED params table's row merged WHOLE onto ctx, with further
     // rows of the same table standing in for a key that missed. The unnamed
     // table is `LookupMerge` above, which this cannot reach past.
     if normalised.contains("forEach((k, v) ->")
-        && let Some(shape) = parse_merge_row_or_fallback(normalised)
+        && let Some(pattern) = parse_merge_row_or_fallback(normalised)
     {
-        return Some(ParamsShape::MergeRowOrFallback(Box::new(shape)));
+        return Some(ParamsPattern::MergeRowOrFallback(Box::new(pattern)));
     }
 
     // Pattern: a NAMED params table's row fanned onto ctx, with literal
     // defaults where the key has no row. LAST, so every table matcher above
     // keeps the scripts it already claims.
-    if let Some(shape) = parse_row_or_defaults(normalised) {
-        return Some(ParamsShape::RowOrDefaults(Box::new(shape)));
+    if let Some(pattern) = parse_row_or_defaults(normalised) {
+        return Some(ParamsPattern::RowOrDefaults(Box::new(pattern)));
     }
 
     None
@@ -1266,61 +1266,61 @@ fn parse_guarded_lookup(script: &str) -> Option<GuardedLookupScript> {
 /// Write the table's row for the key, and nothing at all when it misses.
 pub fn guarded_lookup(
     event: &mut Event,
-    shape: &GuardedLookupScript,
+    pattern: &GuardedLookupScript,
     params: &Map<String, Value>,
 ) -> bool {
-    let Some(key) = event.get_as_string(&shape.key) else {
+    let Some(key) = event.get_as_string(&pattern.key) else {
         return true;
     };
     if let Some(row) = params.get(&key) {
-        let _ = event.set(&shape.target, row.clone());
+        let _ = event.set(&pattern.target, row.clone());
     }
     true
 }
 
-/// Run the matcher a shape names, against one event.
-#[allow(clippy::too_many_lines)] // One delegation arm per shape; it grows with the shape list.
-pub(crate) fn run_params_shape(
+/// Run the matcher a pattern names, against one event.
+#[allow(clippy::too_many_lines)] // One delegation arm per pattern; it grows with the pattern list.
+pub(crate) fn run_params_pattern(
     event: &mut Event,
     normalised: &str,
     params: &Map<String, Value>,
-    shape: &ParamsShape,
+    pattern: &ParamsPattern,
 ) -> bool {
-    match shape {
-        ParamsShape::AwsEntity(script) => {
+    match pattern {
+        ParamsPattern::AwsEntity(script) => {
             crate::painless_entity::run_entity_script(event, script, params)
         }
-        ParamsShape::DropEmptyMembers { parent, list } => {
+        ParamsPattern::DropEmptyMembers { parent, list } => {
             run_drop_empty_members(event, parent, list, params)
         }
-        ParamsShape::IndexedRowColumns { subject, columns } => {
+        ParamsPattern::IndexedRowColumns { subject, columns } => {
             run_indexed_row_columns(event, subject, columns, params)
         }
-        ParamsShape::FirstLabelInTable { list, target } => {
+        ParamsPattern::FirstLabelInTable { list, target } => {
             run_first_label_in_table(event, list, target, params)
         }
-        ParamsShape::KeyedRowAssign { source, target } => {
+        ParamsPattern::KeyedRowAssign { source, target } => {
             run_keyed_row_assign(event, source, target, params)
         }
-        ParamsShape::LookupOrKey { source, target } => {
+        ParamsPattern::LookupOrKey { source, target } => {
             run_lookup_or_key(event, source, target, params)
         }
-        ParamsShape::DeferredFieldTable(base) => run_deferred_field_table(event, base, params),
-        ParamsShape::DeferredSplitTable(base) => run_deferred_split_table(event, base, params),
-        ParamsShape::DeferredAppendTable(base) => run_deferred_append_table(event, base, params),
-        ParamsShape::CsvFingerprintProvider {
+        ParamsPattern::DeferredFieldTable(base) => run_deferred_field_table(event, base, params),
+        ParamsPattern::DeferredSplitTable(base) => run_deferred_split_table(event, base, params),
+        ParamsPattern::DeferredAppendTable(base) => run_deferred_append_table(event, base, params),
+        ParamsPattern::CsvFingerprintProvider {
             list,
             map,
             fingerprint,
         } => run_csv_fingerprint_provider(event, list, map, fingerprint, params),
-        ParamsShape::MessageCodeEventType => run_message_code_event_type(event, params),
-        ParamsShape::SummedDirections => run_summed_directions(event, params),
-        ParamsShape::SysmonQueryResults => try_sysmon_query_results(event, normalised, params),
-        ParamsShape::SysmonRegistry => crate::painless_windows::run_registry(event, params),
-        ParamsShape::MessageTable => crate::painless_windows::run_message_table(event, params),
-        ParamsShape::FirstAsset => try_first_asset(event, params),
-        ParamsShape::MatcherKv => try_matcher_kv(event, params),
-        ParamsShape::LookupPut {
+        ParamsPattern::MessageCodeEventType => run_message_code_event_type(event, params),
+        ParamsPattern::SummedDirections => run_summed_directions(event, params),
+        ParamsPattern::SysmonQueryResults => try_sysmon_query_results(event, normalised, params),
+        ParamsPattern::SysmonRegistry => crate::painless_windows::run_registry(event, params),
+        ParamsPattern::MessageTable => crate::painless_windows::run_message_table(event, params),
+        ParamsPattern::FirstAsset => try_first_asset(event, params),
+        ParamsPattern::MatcherKv => try_matcher_kv(event, params),
+        ParamsPattern::LookupPut {
             source,
             target,
             removes,
@@ -1339,7 +1339,7 @@ pub(crate) fn run_params_shape(
             }
             true
         }
-        ParamsShape::LookupWrapList { source, target } => {
+        ParamsPattern::LookupWrapList { source, target } => {
             if let Some(row) = event
                 .get_as_string(source)
                 .and_then(|key| params.get(&key))
@@ -1349,20 +1349,20 @@ pub(crate) fn run_params_shape(
             }
             true
         }
-        ParamsShape::MimecastLogType => try_mimecast_log_type(event, params),
-        ParamsShape::InvocationDetails => try_invocation_details(event, params),
-        ParamsShape::ScheduledTask => crate::painless_scheduled_task::run(event, params),
-        ParamsShape::ThreatIndicatorType(source) => {
+        ParamsPattern::MimecastLogType => try_mimecast_log_type(event, params),
+        ParamsPattern::InvocationDetails => try_invocation_details(event, params),
+        ParamsPattern::ScheduledTask => crate::painless_scheduled_task::run(event, params),
+        ParamsPattern::ThreatIndicatorType(source) => {
             try_threat_indicator_type(event, source, params)
         }
-        ParamsShape::EvidenceCategories { source, key } => {
+        ParamsPattern::EvidenceCategories { source, key } => {
             run_evidence_categories(event, source, key, params)
         }
-        ParamsShape::MsgParts => run_msg_parts(event, params),
-        ParamsShape::MappingRow(shape) => run_mapping_row(event, shape, params),
-        ParamsShape::SecuritySddl => crate::painless_sddl::run(event, params),
-        ParamsShape::KeyedRowMembers(shape) => shape.run(event, params),
-        ParamsShape::PutWrites { writes, require } => {
+        ParamsPattern::MsgParts => run_msg_parts(event, params),
+        ParamsPattern::MappingRow(pattern) => run_mapping_row(event, pattern, params),
+        ParamsPattern::SecuritySddl => crate::painless_sddl::run(event, params),
+        ParamsPattern::KeyedRowMembers(pattern) => pattern.run(event, params),
+        ParamsPattern::PutWrites { writes, require } => {
             if let Some((path, allowed)) = require
                 && !event
                     .get_as_string(path)
@@ -1375,7 +1375,7 @@ pub(crate) fn run_params_shape(
             }
             true
         }
-        ParamsShape::PutFlagNames {
+        ParamsPattern::PutFlagNames {
             container,
             member,
             source,
@@ -1398,7 +1398,7 @@ pub(crate) fn run_params_shape(
             }
             true
         }
-        ParamsShape::TableLookupOrLiteral {
+        ParamsPattern::TableLookupOrLiteral {
             source,
             table,
             target,
@@ -1417,14 +1417,14 @@ pub(crate) fn run_params_shape(
             }
             true
         }
-        ParamsShape::UppercaseLookupDefault { source, target } => {
+        ParamsPattern::UppercaseLookupDefault { source, target } => {
             if let Some(name) = event.get_str(source).map(str::to_uppercase) {
                 let value = params.get(&name).cloned().unwrap_or_else(|| json!(name));
                 let _ = event.set(target, value);
             }
             true
         }
-        ParamsShape::ProtocolPrefix {
+        ParamsPattern::ProtocolPrefix {
             list,
             fallback,
             subject,
@@ -1451,46 +1451,52 @@ pub(crate) fn run_params_shape(
             let _ = event.set(target, Value::String(format!("{scheme}://{tail}")));
             true
         }
-        ParamsShape::SentinelRemoval => try_sentinel_removal(event, normalised, params),
-        ParamsShape::FiletimeFieldList => try_filetime_field_list(event, normalised, params),
-        ParamsShape::BitFlags => try_bit_flags(event, normalised, params),
-        ParamsShape::FirstContainedMember => try_first_contained_member(event, normalised, params),
-        ParamsShape::RenameKeys => try_rename_keys(event, normalised, params),
-        ParamsShape::ValueMaps => try_value_maps(event, normalised, params),
-        ParamsShape::RowColumns(literals) => try_row_columns(event, normalised, params, literals),
-        ParamsShape::RowColumnAppends(shape) => run_row_column_appends(event, shape, params),
-        ParamsShape::InstructionRows(shape) => run_instruction_rows(event, shape, params),
-        ParamsShape::KeyedActionRow { table, source } => {
+        ParamsPattern::SentinelRemoval => try_sentinel_removal(event, normalised, params),
+        ParamsPattern::FiletimeFieldList => try_filetime_field_list(event, normalised, params),
+        ParamsPattern::BitFlags => try_bit_flags(event, normalised, params),
+        ParamsPattern::FirstContainedMember => {
+            try_first_contained_member(event, normalised, params)
+        }
+        ParamsPattern::RenameKeys => try_rename_keys(event, normalised, params),
+        ParamsPattern::ValueMaps => try_value_maps(event, normalised, params),
+        ParamsPattern::RowColumns(literals) => try_row_columns(event, normalised, params, literals),
+        ParamsPattern::RowColumnAppends(pattern) => run_row_column_appends(event, pattern, params),
+        ParamsPattern::InstructionRows(pattern) => run_instruction_rows(event, pattern, params),
+        ParamsPattern::KeyedActionRow { table, source } => {
             run_keyed_action_row(event, table, source, params)
         }
-        ParamsShape::KeyedRowAppends(shape) => run_keyed_row_appends(event, shape, params),
-        ParamsShape::KeyedMessageTable => try_keyed_message_table(event, normalised, params),
-        ParamsShape::ReversibleLookup => try_reversible_lookup(event, normalised, params),
-        ParamsShape::LookupMerge(literals) => try_lookup_merge(event, normalised, params, literals),
-        ParamsShape::LookupColumns => try_lookup_columns(event, normalised, params),
-        ParamsShape::NormalisedLookup {
+        ParamsPattern::KeyedRowAppends(pattern) => run_keyed_row_appends(event, pattern, params),
+        ParamsPattern::KeyedMessageTable => try_keyed_message_table(event, normalised, params),
+        ParamsPattern::ReversibleLookup => try_reversible_lookup(event, normalised, params),
+        ParamsPattern::LookupMerge(literals) => {
+            try_lookup_merge(event, normalised, params, literals)
+        }
+        ParamsPattern::LookupColumns => try_lookup_columns(event, normalised, params),
+        ParamsPattern::NormalisedLookup {
             source,
             target,
             fold,
         } => run_normalised_lookup(event, source, target, *fold, params),
-        ParamsShape::StringifiedLookup { source, target } => {
+        ParamsPattern::StringifiedLookup { source, target } => {
             run_stringified_lookup(event, source, target, params)
         }
-        ParamsShape::LookupNormalise(shape, literals) => {
-            lookup_normalise(event, shape, literals, params)
+        ParamsPattern::LookupNormalise(pattern, literals) => {
+            lookup_normalise(event, pattern, literals, params)
         }
-        ParamsShape::GuardedLookup(shape) => guarded_lookup(event, shape, params),
-        ParamsShape::IndexedLookup => try_indexed_lookup(event, normalised, params),
-        ParamsShape::Scale => try_scale(event, normalised, params),
-        ParamsShape::Replace => try_replace(event, normalised, params),
-        ParamsShape::AddUniqueRow => try_add_unique_row(event, normalised, params),
-        ParamsShape::FrameworkPreference => try_framework_preference(event, normalised, params),
-        ParamsShape::RowOrDefaults(shape) => run_row_or_defaults(event, shape, params),
-        ParamsShape::MergeRowOrFallback(shape) => run_merge_row_or_fallback(event, shape, params),
-        ParamsShape::SelectMembers { subject, rest } => {
+        ParamsPattern::GuardedLookup(pattern) => guarded_lookup(event, pattern, params),
+        ParamsPattern::IndexedLookup => try_indexed_lookup(event, normalised, params),
+        ParamsPattern::Scale => try_scale(event, normalised, params),
+        ParamsPattern::Replace => try_replace(event, normalised, params),
+        ParamsPattern::AddUniqueRow => try_add_unique_row(event, normalised, params),
+        ParamsPattern::FrameworkPreference => try_framework_preference(event, normalised, params),
+        ParamsPattern::RowOrDefaults(pattern) => run_row_or_defaults(event, pattern, params),
+        ParamsPattern::MergeRowOrFallback(pattern) => {
+            run_merge_row_or_fallback(event, pattern, params)
+        }
+        ParamsPattern::SelectMembers { subject, rest } => {
             run_select_members(event, subject, rest, params)
         }
-        ParamsShape::ParamRenameLadder { path, arms } => {
+        ParamsPattern::ParamRenameLadder { path, arms } => {
             run_param_rename_ladder(event, path, arms, params)
         }
     }
@@ -1542,7 +1548,7 @@ fn parse_removes(script: &str) -> Vec<String> {
     removes
 }
 
-/// Read the wrap-in-list shape: `def <t> = params.get(ctx.<source>); def
+/// Read the wrap-in-list pattern: `def <t> = params.get(ctx.<source>); def
 /// <list> = new ArrayList(); <list>.add(<t>); ctx.<target> = <list>;`.
 fn parse_lookup_wrap_list(script: &str) -> Option<(String, String)> {
     let at = script.find("= params.get(ctx.")?;
@@ -1781,7 +1787,7 @@ fn try_first_asset(event: &mut Event, params: &Map<String, Value>) -> bool {
 /// single-winner strings depend on them.
 /// `def name = ctx.<source>.toUpperCase(); ... ctx.<target> = params.getOrDefault(name, name);`
 ///
-/// The default being the KEY itself is what makes this its own shape: a name
+/// The default being the KEY itself is what makes this its own pattern: a name
 /// the table does not abbreviate stands for itself rather than going missing.
 /// `params.<table>.containsKey(k) ? params.<table>[k] : '<default>'`, written
 /// to a target and guarded on the source being present.
@@ -1799,7 +1805,7 @@ fn try_first_asset(event: &mut Event, params: &Map<String, Value>) -> bool {
 /// ```
 ///
 /// The allocation line is noise: `Event::set` builds the parents anyway.
-fn parse_table_lookup_or_literal(script: &str) -> Option<ParamsShape> {
+fn parse_table_lookup_or_literal(script: &str) -> Option<ParamsPattern> {
     let (head, rest) = script.split_once(".toString();")?;
     let source = clean_path(head.rsplit("ctx.").next()?);
     if source.is_empty() || source.contains(char::is_whitespace) {
@@ -1830,7 +1836,7 @@ fn parse_table_lookup_or_literal(script: &str) -> Option<ParamsShape> {
         return None;
     }
 
-    Some(ParamsShape::TableLookupOrLiteral {
+    Some(ParamsPattern::TableLookupOrLiteral {
         source,
         table,
         target,
@@ -1838,7 +1844,7 @@ fn parse_table_lookup_or_literal(script: &str) -> Option<ParamsShape> {
     })
 }
 
-fn parse_uppercase_lookup_default(script: &str) -> Option<ParamsShape> {
+fn parse_uppercase_lookup_default(script: &str) -> Option<ParamsPattern> {
     let (head, rest) = script.split_once(".toUpperCase();")?;
     let source = clean_path(head.rsplit("ctx.").next()?);
     if source.is_empty() || source.contains(char::is_whitespace) {
@@ -1853,7 +1859,7 @@ fn parse_uppercase_lookup_default(script: &str) -> Option<ParamsShape> {
         return None;
     }
 
-    Some(ParamsShape::UppercaseLookupDefault { source, target })
+    Some(ParamsPattern::UppercaseLookupDefault { source, target })
 }
 
 /// The container and member name a `ctx.<c>.put("<m>", ...)` writes.
@@ -1916,7 +1922,7 @@ impl PutWrite {
 ///
 /// The lookup is bound to a local and copied out under a null check, so an
 /// unlisted key leaves the field alone.
-fn parse_normalised_lookup(script: &str) -> Option<ParamsShape> {
+fn parse_normalised_lookup(script: &str) -> Option<ParamsPattern> {
     let key = ctx_path_between(script, "params[ctx.", "]")?;
     let (source, fold) = Fold::strip(&key);
     let source = source.trim().to_string();
@@ -1940,7 +1946,7 @@ fn parse_normalised_lookup(script: &str) -> Option<ParamsShape> {
         .find(|(_, rhs)| rhs.trim() == local)
         .map(|(path, _)| path)?;
 
-    Some(ParamsShape::NormalisedLookup {
+    Some(ParamsPattern::NormalisedLookup {
         source,
         target,
         fold,
@@ -1999,7 +2005,7 @@ fn key_path(expr: &str) -> Option<String> {
 
 /// `if (<path> == null || !params.containsKey(<key>)) { return; }` then
 /// `ctx.<target> = params[<key>];`, where both `<key>` spellings agree.
-fn parse_stringified_lookup(script: &str) -> Option<ParamsShape> {
+fn parse_stringified_lookup(script: &str) -> Option<ParamsPattern> {
     const GUARD: &str = "!params.containsKey(";
     let at = script.find(GUARD)?;
     let source = key_path(&balanced_argument(&script[at + GUARD.len()..])?)?;
@@ -2011,7 +2017,7 @@ fn parse_stringified_lookup(script: &str) -> Option<ParamsShape> {
         (key_path(inner)? == source).then_some(path)
     })?;
 
-    Some(ParamsShape::StringifiedLookup { source, target })
+    Some(ParamsPattern::StringifiedLookup { source, target })
 }
 
 fn run_stringified_lookup(
@@ -2029,7 +2035,7 @@ fn run_stringified_lookup(
     true
 }
 
-fn parse_put_lookup(script: &str) -> Option<ParamsShape> {
+fn parse_put_lookup(script: &str) -> Option<ParamsPattern> {
     let mut writes = Vec::new();
     let mut cursor = 0usize;
     while let Some(rel) = script[cursor..].find(".put(\"") {
@@ -2077,7 +2083,7 @@ fn parse_put_lookup(script: &str) -> Option<ParamsShape> {
         });
     }
 
-    (!writes.is_empty()).then(|| ParamsShape::PutWrites {
+    (!writes.is_empty()).then(|| ParamsPattern::PutWrites {
         writes,
         require: parse_contains_guard(script),
     })
@@ -2114,7 +2120,7 @@ fn parse_contains_guard(script: &str) -> Option<(String, Vec<String>)> {
 }
 
 /// `Long.decode(ctx.<path>)` against every params key, labels collected.
-fn parse_put_flag_names(script: &str) -> Option<ParamsShape> {
+fn parse_put_flag_names(script: &str) -> Option<ParamsPattern> {
     let (container, member) = parse_put_target(script)?;
     let (_, tail) = script.split_once("Long.decode(ctx.")?;
     // The vendor wraps the read in `.trim()` where the field is text.
@@ -2127,7 +2133,7 @@ fn parse_put_flag_names(script: &str) -> Option<ParamsShape> {
         return None;
     }
 
-    Some(ParamsShape::PutFlagNames {
+    Some(ParamsPattern::PutFlagNames {
         container,
         member,
         source,
@@ -2329,19 +2335,19 @@ fn parse_mapping_row(script: &str) -> Option<MappingRow> {
 }
 
 /// Copy the selected row's members out, or write the defaults.
-fn run_mapping_row(event: &mut Event, shape: &MappingRow, params: &Map<String, Value>) -> bool {
+fn run_mapping_row(event: &mut Event, pattern: &MappingRow, params: &Map<String, Value>) -> bool {
     let row = event
-        .get_as_string(&shape.subject)
-        .and_then(|key| params.get(&shape.table)?.get(&key).cloned());
+        .get_as_string(&pattern.subject)
+        .and_then(|key| params.get(&pattern.table)?.get(&key).cloned());
 
     let Some(row) = row else {
-        for (target, members) in &shape.defaults {
+        for (target, members) in &pattern.defaults {
             let _ = event.set(target, json!(members));
         }
         return true;
     };
 
-    for (target, member) in &shape.writes {
+    for (target, member) in &pattern.writes {
         if let Some(held) = row.get(member).filter(|v| !v.is_null()) {
             let _ = event.set(target, held.clone());
         }
@@ -2378,7 +2384,7 @@ pub struct RowColumn {
 /// }
 /// ```
 ///
-/// The whole kolide package categorises this way. Without the shape the
+/// The whole kolide package categorises this way. Without the pattern the
 /// `!= null` catch-all claims the script and runs only the ELSE branch, so
 /// every event with a row comes out carrying the fallback's `kind`,
 /// `category` and `type`.
@@ -2435,7 +2441,7 @@ fn null_branch_at(script: &str, row: &str) -> Option<usize> {
 /// `hpe_aruba_cx` classifies 1,871 events this way, and read as a plain
 /// lookup-put the WHOLE row landed in the last field the script names --
 /// `event.outcome` holding the type and the kind as well.
-fn parse_indexed_row_columns(script: &str) -> Option<ParamsShape> {
+fn parse_indexed_row_columns(script: &str) -> Option<ParamsPattern> {
     let (head, rest) = script.split_once("= params.get(ctx.")?;
     let row = head
         .trim_end()
@@ -2449,7 +2455,7 @@ fn parse_indexed_row_columns(script: &str) -> Option<ParamsShape> {
     }
 
     // Each write names its index twice -- once in the guard, once in the value
-    // -- and only a pair that agrees is this shape.
+    // -- and only a pair that agrees is this pattern.
     let mut columns = Vec::new();
     let marker = format!("{row}[");
     for (at, _) in rest.match_indices(&marker) {
@@ -2472,7 +2478,7 @@ fn parse_indexed_row_columns(script: &str) -> Option<ParamsShape> {
         columns.push((index, clean_path(target)));
     }
 
-    (!columns.is_empty()).then_some(ParamsShape::IndexedRowColumns { subject, columns })
+    (!columns.is_empty()).then_some(ParamsPattern::IndexedRowColumns { subject, columns })
 }
 
 fn run_indexed_row_columns(
@@ -2512,7 +2518,7 @@ fn run_indexed_row_columns(
 ///
 /// osquery ships one column per table field whether the row filled it or not,
 /// so the empty ones are the difference between 666 matching events and 2,213.
-fn parse_drop_empty_members(script: &str) -> Option<ParamsShape> {
+fn parse_drop_empty_members(script: &str) -> Option<ParamsPattern> {
     // `for (key in params.keys)` names the loop variable and the params member.
     let (head, rest) = script.split_once(" in params.")?;
     let variable = head.rsplit(['(', ' ']).next()?.trim().to_string();
@@ -2528,7 +2534,7 @@ fn parse_drop_empty_members(script: &str) -> Option<ParamsShape> {
             .trim_start_matches('.')
             .trim(),
     );
-    (!parent.is_empty()).then_some(ParamsShape::DropEmptyMembers { parent, list })
+    (!parent.is_empty()).then_some(ParamsPattern::DropEmptyMembers { parent, list })
 }
 
 fn run_drop_empty_members(
@@ -2678,7 +2684,7 @@ fn parse_row_or_defaults(script: &str) -> Option<RowOrDefaults> {
         }
     };
 
-    // A dotted table is a nested lookup this shape cannot resolve, and taking
+    // A dotted table is a nested lookup this pattern cannot resolve, and taking
     // it would write the defaults over a key that HAS a row.
     if !table.chars().all(|c| c.is_alphanumeric() || c == '_') {
         return None;
@@ -2694,7 +2700,7 @@ fn parse_row_or_defaults(script: &str) -> Option<RowOrDefaults> {
     {
         (then, otherwise, after)
     } else {
-        // `if (<row> == null) { return; }` and then the body: the same shape
+        // `if (<row> == null) { return; }` and then the body: the same pattern
         // spelled as an early return, with nothing written for a miss.
         let (_, block, rest) = guard_and_block(branch)?;
         if !block.contains("return") {
@@ -2758,24 +2764,24 @@ fn parse_row_or_defaults(script: &str) -> Option<RowOrDefaults> {
 /// Fan the selected row's columns out, or write the defaults.
 fn run_row_or_defaults(
     event: &mut Event,
-    shape: &RowOrDefaults,
+    pattern: &RowOrDefaults,
     params: &Map<String, Value>,
 ) -> bool {
-    for (target, value) in &shape.prelude {
+    for (target, value) in &pattern.prelude {
         let _ = event.set(target, value.clone());
     }
 
     let row = event
-        .get_as_string(&shape.subject)
-        .and_then(|key| params.get(&shape.table)?.get(&key).cloned());
+        .get_as_string(&pattern.subject)
+        .and_then(|key| params.get(&pattern.table)?.get(&key).cloned());
     let Some(row) = row else {
-        for (target, value) in &shape.defaults {
+        for (target, value) in &pattern.defaults {
             let _ = event.set(target, value.clone());
         }
         return true;
     };
 
-    for column in &shape.columns {
+    for column in &pattern.columns {
         if column.only_if_unset && event.has_value(&column.target) {
             continue;
         }
@@ -2909,35 +2915,35 @@ fn key_written_paths(head: &str, key: &str) -> Vec<String> {
 /// Merge the row the key selects, or the first fallback row that applies.
 fn run_merge_row_or_fallback(
     event: &mut Event,
-    shape: &MergeRowOrFallback,
+    pattern: &MergeRowOrFallback,
     params: &Map<String, Value>,
 ) -> bool {
     // Absent is the processor's own `if` guard, and every one of these scripts
     // opens by reading the key.
-    let Some(key) = event.get_as_string(&shape.subject) else {
+    let Some(key) = event.get_as_string(&pattern.subject) else {
         return true;
     };
-    for path in &shape.key_writes {
+    for path in &pattern.key_writes {
         let _ = event.set(path, Value::String(key.clone()));
     }
-    for (target, value) in &shape.prelude {
+    for (target, value) in &pattern.prelude {
         let _ = event.set(target, value.clone());
     }
 
     let row = params
-        .get(&shape.table)
+        .get(&pattern.table)
         .and_then(|table| table.get(&key))
         .or_else(|| {
-            let (prefix, name) = shape.prefix_row.as_ref()?;
+            let (prefix, name) = pattern.prefix_row.as_ref()?;
             key.starts_with(prefix.as_str()).then(|| params.get(name))?
         })
-        .or_else(|| params.get(shape.default_row.as_ref()?));
+        .or_else(|| params.get(pattern.default_row.as_ref()?));
     let Some(Value::Object(row)) = row else {
         return true;
     };
 
     for (member, value) in row.clone() {
-        let _ = event.set(&format!("{}.{member}", shape.target), value);
+        let _ = event.set(&format!("{}.{member}", pattern.target), value);
     }
     true
 }
@@ -2953,9 +2959,9 @@ fn run_merge_row_or_fallback(
 /// The vendor keeps the abbreviations and their expansions in params so the
 /// table is editable without touching the script. Nothing about it is
 /// source-specific, but every arm must name the SAME field -- a ladder that
-/// switches fields half way is a different shape and is declined here rather
+/// switches fields half way is a different pattern and is declined here rather
 /// than half-run.
-fn parse_param_rename_ladder(script: &str) -> Option<ParamsShape> {
+fn parse_param_rename_ladder(script: &str) -> Option<ParamsPattern> {
     // Nothing may precede the ladder. Running the arms of a script that also
     // does something else writes the vendor's value while skipping its work.
     let mut chunks = script.split("if (");
@@ -2985,10 +2991,10 @@ fn parse_param_rename_ladder(script: &str) -> Option<ParamsShape> {
         arms.push((from, to));
     }
 
-    // One arm is an `if`, not a ladder, and is claimed by the shapes that read
+    // One arm is an `if`, not a ladder, and is claimed by the patterns that read
     // a single guarded write.
     let path = path.filter(|_| arms.len() > 1)?;
-    Some(ParamsShape::ParamRenameLadder { path, arms })
+    Some(ParamsPattern::ParamRenameLadder { path, arms })
 }
 
 /// The identifier a params reference starts with.
@@ -3025,7 +3031,7 @@ fn run_param_rename_ladder(
 /// unlisted fields land.
 ///
 /// Every name in the script is a LOCAL, so all six are read off the text rather
-/// than assumed. The shape is:
+/// than assumed. The pattern is:
 ///
 /// ```text
 /// Map <map> = ctx.<subject>;
@@ -3038,7 +3044,7 @@ fn run_param_rename_ladder(
 ///   <map>[<lst>.getKey()] = <sel>;
 /// });
 /// ```
-fn parse_select_members(script: &str) -> Option<ParamsShape> {
+fn parse_select_members(script: &str) -> Option<ParamsPattern> {
     let (head, body) = script.split_once("params.entrySet()")?;
     let subject = ctx_path_before(head, ";")?;
     let map = head
@@ -3051,7 +3057,7 @@ fn parse_select_members(script: &str) -> Option<ParamsShape> {
     }
 
     // The filter must gate on the SAME local, or the script is walking some
-    // other map and the shape below means nothing.
+    // other map and the pattern below means nothing.
     if !body.contains(&format!("{map}.containsKey(")) {
         return None;
     }
@@ -3104,7 +3110,7 @@ fn parse_select_members(script: &str) -> Option<ParamsShape> {
         return None;
     }
 
-    Some(ParamsShape::SelectMembers { subject, rest })
+    Some(ParamsPattern::SelectMembers { subject, rest })
 }
 
 /// A bare Painless identifier -- what every local in these scripts is.
@@ -3400,7 +3406,7 @@ fn try_threat_indicator_type(event: &mut Event, source: &str, params: &Map<Strin
 /// powershell's `parseRawDetail`: one structured map per raw detail line.
 ///
 /// `<type>(<related command>): <value>`, and a `ParameterBinding` type splits
-/// its value again into `name=<n>; value=<v>`. A line that fits neither shape
+/// its value again into `name=<n>; value=<v>`. A line that fits neither pattern
 /// keeps its whole text under `value`, which is the script's own fallback.
 fn try_invocation_details(event: &mut Event, params: &Map<String, Value>) -> bool {
     // Site-local cells: the two patterns are literals, so they compile once
@@ -3562,10 +3568,10 @@ fn try_mimecast_log_type(event: &mut Event, params: &Map<String, Value>) -> bool
     true
 }
 
-/// Read the scheme-prefix shape: `if (params.<list>.contains(ctx.<subject>))
+/// Read the scheme-prefix pattern: `if (params.<list>.contains(ctx.<subject>))
 /// { ctx.<target> = ctx.<subject> + '://' + ctx.<target>; } else {
 /// ctx.<target> = params.<fallback> + '://' + ... }`.
-fn parse_protocol_prefix(script: &str) -> Option<ParamsShape> {
+fn parse_protocol_prefix(script: &str) -> Option<ParamsPattern> {
     let at = script.find(".contains(ctx.")?;
     let before = &script[..at];
     let list = before[before.rfind("params.")? + 7..].to_string();
@@ -3591,7 +3597,7 @@ fn parse_protocol_prefix(script: &str) -> Option<ParamsShape> {
     if list.is_empty() || fallback.is_empty() {
         return None;
     }
-    Some(ParamsShape::ProtocolPrefix {
+    Some(ParamsPattern::ProtocolPrefix {
         list,
         fallback,
         subject: clean_path(subject),
@@ -3905,7 +3911,7 @@ fn add_unique_bindings(script: &str) -> Vec<(String, String)> {
 /// regenerating rather than by editing Rust. Only set bits are written; a clear
 /// bit leaves the label absent rather than false, which is what the script does.
 ///
-/// panw's decryption-log flags are the shape, and they gate two of its largest
+/// panw's decryption-log flags are the pattern, and they gate two of its largest
 /// remaining blockers -- `labels.nat_translated` and `labels.captive_portal`.
 fn try_bit_flags(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
     let Some(source) = ctx_path_between(script, "long value = ctx.", ";") else {
@@ -4057,7 +4063,7 @@ fn try_lookup_merge(
 
     // The literal writes the script makes on its own account. A script that
     // sets `event.kind`, `event.type` and an outcome before looking the row up
-    // -- aws's cloudtrail categorisation is the shape -- was claimed here and
+    // -- aws's cloudtrail categorisation is the pattern -- was claimed here and
     // only its merge ran, so those three came out missing. The walk skips
     // anything it cannot read, so the lookup and the `forEach` pass it by.
     literals.run(event);
@@ -4119,14 +4125,14 @@ fn merge_default_target(script: &str, body: &str) -> Option<String> {
     }
     // A LOCAL bound to a ctx path. carbonblack_edr binds `event` at the top and
     // merges onto that, so reading only the spelled-out `ctx.` form found no
-    // target and the whole shape declined.
+    // target and the whole pattern declined.
     crate::painless_common::ctx_path_bound_to(script, reference)
 }
 
 /// The key expression of a `params[<expr>]` lookup.
 ///
 /// The bracket twin of [`get_chain`]. A QUOTED subscript names a table rather
-/// than a key, which is a different shape, so it is declined here.
+/// than a key, which is a different pattern, so it is declined here.
 fn bracket_key(script: &str) -> Option<String> {
     let head = script.split("forEach").next().unwrap_or(script);
     let at = head.find("params[")?;
@@ -4271,7 +4277,7 @@ fn get_chain(script: &str) -> Vec<String> {
 /// `def c = row.get('<key>'); for (def x : c) { ctx.<path>.add(x) }` or
 /// `ctx.<path> = c;`, with `ctx.<path> = ctx.<subject>` when the row is absent.
 ///
-/// Cisco Meraki's event map is the shape: one vendor subtype expands into an
+/// Cisco Meraki's event map is the pattern: one vendor subtype expands into an
 /// ECS action plus additions to `event.type` and `event.category`. Appending
 /// matters -- the pipeline has already put `info` in `event.type`, and a
 /// replacing write drops it.
@@ -4380,21 +4386,21 @@ fn fallback_target(script: &str) -> Option<String> {
 /// allow-list check downstream then sees the same string Elastic would.
 pub(crate) fn lookup_normalise(
     event: &mut Event,
-    shape: &LookupNormaliseScript,
+    pattern: &LookupNormaliseScript,
     literals: &Program,
     params: &Map<String, Value>,
 ) -> bool {
-    let Some(raw) = event.get_as_string(&shape.key) else {
+    let Some(raw) = event.get_as_string(&pattern.key) else {
         return true;
     };
-    let key = shape.fold.apply(&raw);
+    let key = pattern.fold.apply(&raw);
 
     let value = params.get(&key).cloned().unwrap_or(Value::String(key));
-    let _ = event.set(&shape.target, value);
+    let _ = event.set(&pattern.target, value);
 
     // Whatever else the script writes on its own account, AFTER the lookup so
     // a `ctx.x = null` that clears the field the key came from is not read
-    // before it is used. mimecast's siem_logs is that shape exactly.
+    // before it is used. mimecast's siem_logs is that pattern exactly.
     literals.run(event);
     true
 }
@@ -4423,7 +4429,7 @@ impl LookupNormaliseScript {
 
 /// Read the key path, its fold and the target out of the script once.
 ///
-/// `None` where the script is not this shape after all, which declines the
+/// `None` where the script is not this pattern after all, which declines the
 /// trigger and leaves the text to the matchers below it -- the same
 /// fall-through the runner used to do per event.
 fn parse_lookup_normalise(script: &str) -> Option<LookupNormaliseScript> {
@@ -4634,11 +4640,11 @@ fn try_value_maps(event: &mut Event, script: &str, params: &Map<String, Value>) 
 
 /// Write one params row's columns onto ctx, then refine them by outcome.
 ///
-/// This is Elastic's ECS categorisation shape: the vendor action selects a row
+/// This is Elastic's ECS categorisation pattern: the vendor action selects a row
 /// giving `event.kind`, `event.category` and `event.type`, and a tail of
 /// guarded statements then adds `allowed` or `denied` and rewrites the outcome
 /// into an ECS one. It is `cisco_ftd`'s remaining 398 corpus events, and the
-/// same shape appears wherever a package maps an action onto categorisation.
+/// same pattern appears wherever a package maps an action onto categorisation.
 fn try_row_columns(
     event: &mut Event,
     script: &str,
@@ -4763,25 +4769,25 @@ fn parse_keyed_row_appends(script: &str) -> Option<KeyedRowAppends> {
 /// The copy first, then each column's members appended in the row's order.
 fn run_keyed_row_appends(
     event: &mut Event,
-    shape: &KeyedRowAppends,
+    pattern: &KeyedRowAppends,
     params: &Map<String, Value>,
 ) -> bool {
-    if let Some((target, source)) = &shape.copy
+    if let Some((target, source)) = &pattern.copy
         && let Some(value) = event.get(source).cloned()
     {
         let _ = event.set(target, value);
     }
 
-    let Some(rows) = params.get(&shape.table).and_then(Value::as_object) else {
+    let Some(rows) = params.get(&pattern.table).and_then(Value::as_object) else {
         return true;
     };
-    let Some(key) = event.get_as_string(&shape.key) else {
+    let Some(key) = event.get_as_string(&pattern.key) else {
         return true;
     };
     let Some(row) = rows.get(&key).and_then(Value::as_object) else {
         return true;
     };
-    for (column, field) in &shape.appends {
+    for (column, field) in &pattern.appends {
         if let Some(Value::Array(items)) = row.get(column) {
             for item in items {
                 add_to_list(event, field, item.clone());
@@ -4793,7 +4799,7 @@ fn run_keyed_row_appends(
 
 /// Read `def <t> = params.get('<table>'); def <row> = <t>.get(<key>);`, and
 /// the `ctx.` path the key local is itself bound from.
-fn parse_keyed_action_row(script: &str) -> Option<ParamsShape> {
+fn parse_keyed_action_row(script: &str) -> Option<ParamsPattern> {
     let table = script
         .split_once("params.get('")
         .and_then(|(_, rest)| rest.split_once('\''))
@@ -4802,7 +4808,7 @@ fn parse_keyed_action_row(script: &str) -> Option<ParamsShape> {
     let key_local = last_call_argument(script, &format!("{table_local}.get("))?;
     let source = ctx_path_between(script, &format!("def {key_local} = ctx."), ";")?;
 
-    Some(ParamsShape::KeyedActionRow { table, source })
+    Some(ParamsPattern::KeyedActionRow { table, source })
 }
 
 /// A key with no row still writes `event.action` and `event.type`, matching
@@ -4872,7 +4878,7 @@ fn run_keyed_action_row(
 /// The text is tokenised ONCE, here, never per event. Windows'
 /// `security_standard` is four hundred lines of guarded copies, and at the
 /// shipped 20,000 events a batch re-reading that text was the whole cost. Every
-/// decision the text alone settles -- which shape a statement is, which path it
+/// decision the text alone settles -- which pattern a statement is, which path it
 /// writes, which literal it compares against -- is resolved into this tree, so
 /// the per-event walk only ever reads the event.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -4941,7 +4947,7 @@ enum Rhs {
     /// `(long) Double.parseDouble(ctx.<path>.toString())` -- coerce to a whole
     /// number, truncating toward zero as the Painless cast does.
     ///
-    /// The `.toString()` is the point of the shape: the field arrives as a
+    /// The `.toString()` is the point of the pattern: the field arrives as a
     /// string on some events and a number on others.
     LongOf(String),
     Literal(Value),
@@ -5364,7 +5370,7 @@ impl Program {
     /// Whether any branch holds a write at all.
     ///
     /// A tree of pure guards and returns cannot write whatever the event says,
-    /// so a shape gating on this declines at match time rather than claiming a
+    /// so a pattern gating on this declines at match time rather than claiming a
     /// script and answering false on every event.
     pub(crate) fn can_write(&self) -> bool {
         fn any_write(statements: &[Stmt]) -> bool {
@@ -5447,7 +5453,7 @@ fn statement_is_runnable(statement: &str) -> bool {
 /// Read a body's statements, and decide [`Program::is_whole`] on the way.
 ///
 /// ONE walk over the text answers both. The tree and the strict gate used to be
-/// separate functions over the same grammar, which meant a shape taught to one
+/// separate functions over the same grammar, which meant a pattern taught to one
 /// could silently miss the other.
 fn parse_statements(body: &str, whole: &mut bool) -> Vec<Stmt> {
     let mut out = Vec::new();
@@ -5744,7 +5750,7 @@ impl Guard {
 impl Term {
     fn parse(term: &str) -> Self {
         if let Some(inner) = term.strip_prefix('!') {
-            // `!x.contains(y)` -- a bare `!ctx.field` is not a shape these use.
+            // `!x.contains(y)` -- a bare `!ctx.field` is not a pattern these use.
             return Self::Not(Box::new(Self::parse(inner.trim())));
         }
         // A LITERAL list opens every early-return gate these scripts write, and
@@ -5967,7 +5973,7 @@ impl Argument {
 
 /// One statement that writes a value the script already has to hand.
 ///
-/// Four shapes, and the value is either a literal or another `ctx.` field:
+/// Four patterns, and the value is either a literal or another `ctx.` field:
 /// `ctx.a.add(v)`, `ctx.a.put('k', v)`, `ctx.a = v`, and the `.put` and `.add`
 /// forms with a copied source. Anything else is left alone.
 /// The field a `ctx.<base>.remove('<leaf>')` prunes.
@@ -5979,7 +5985,7 @@ fn removed_path(statement: &str) -> Option<String> {
     let (subject, argument) = statement.split_once(".remove(")?;
     let leaf = quoted_after(argument, "")?;
     // A `remove` on anything but the document is a list operation, which is a
-    // different shape with its own matcher.
+    // different pattern with its own matcher.
     if argument
         .trim_start()
         .starts_with(|c: char| c.is_ascii_digit())
@@ -6092,7 +6098,7 @@ fn parse_rhs(text: &str) -> Option<Rhs> {
     let text = text.trim_end_matches(')').trim();
     if let Some(path) = text.strip_prefix("ctx.") {
         // A source path and nothing else. `ctx.a + ctx.b` and a method call
-        // on one are different shapes with their own matchers.
+        // on one are different patterns with their own matchers.
         return path
             .chars()
             .all(|c| c.is_alphanumeric() || "._?@['\"]".contains(c))
@@ -6541,10 +6547,10 @@ fn parse_instruction_rows(script: &str) -> Option<InstructionRows> {
 
 fn run_instruction_rows(
     event: &mut Event,
-    shape: &InstructionRows,
+    pattern: &InstructionRows,
     params: &Map<String, Value>,
 ) -> bool {
-    let Some(key) = event.get_as_string(&shape.key) else {
+    let Some(key) = event.get_as_string(&pattern.key) else {
         return true;
     };
     let Some(Value::Array(actions)) = params.get(&key) else {
@@ -6577,7 +6583,7 @@ fn run_instruction_rows(
 
     // `if (!values.isEmpty())` -- an empty list is not written at all.
     if !values.is_empty() {
-        let _ = event.set(&shape.target, Value::Array(values));
+        let _ = event.set(&pattern.target, Value::Array(values));
     }
     true
 }
@@ -6635,17 +6641,17 @@ fn parse_row_column_appends(script: &str) -> Option<RowColumnAppends> {
 
 fn run_row_column_appends(
     event: &mut Event,
-    shape: &RowColumnAppends,
+    pattern: &RowColumnAppends,
     params: &Map<String, Value>,
 ) -> bool {
-    let Some(key) = event.get_as_string(&shape.key) else {
+    let Some(key) = event.get_as_string(&pattern.key) else {
         return true;
     };
     let Some(row) = params.get(&key) else {
         // `getOrDefault(..., null)` and the script's own null check.
         return true;
     };
-    let row = match &shape.inner {
+    let row = match &pattern.inner {
         Some(member) => match row.get(member) {
             Some(nested) => nested,
             None => return true,
@@ -6653,7 +6659,7 @@ fn run_row_column_appends(
         None => row,
     };
 
-    for (column, target) in &shape.appends {
+    for (column, target) in &pattern.appends {
         let Some(Value::Array(items)) = row.get(column) else {
             continue;
         };
@@ -6983,7 +6989,7 @@ fn params_ref<'a>(script: &str, params: &'a Map<String, Value>, prefix: &str) ->
 /// to -- `def p = ctx.a; def q = ctx.b; q.splitOnToken(' ')` handed back
 /// everything from `b` to the marker. A path holding whitespace or a statement
 /// terminator is that failure, and the caller is better told nothing than sold
-/// a field name no event can hold: it declines instead of binding a shape that
+/// a field name no event can hold: it declines instead of binding a pattern that
 /// then writes nothing.
 pub(crate) fn ctx_path_before(script: &str, marker: &str) -> Option<String> {
     let end = script.find(marker)?;
@@ -7047,7 +7053,7 @@ fn last_delimited(script: &str, name: &str, open: char, close: char) -> Option<S
 ///
 /// Allocates once where there is nothing to strip, which is most paths, and
 /// twice where there is. Returning a `Cow` would borrow in the common case,
-/// but 85 of the callers build a shape struct that owns its paths, so the
+/// but 85 of the callers build a pattern struct that owns its paths, so the
 /// signature change costs more than the runtime sites it would save.
 pub(crate) fn clean_path(path: &str) -> String {
     let path = path.trim();
@@ -7088,7 +7094,7 @@ mod tests {
     /// which end they search from. Nothing compared them, so a reader that
     /// drifted was invisible until it produced a wrong field path.
     ///
-    /// Same move as `shapes.lock`: turn a property nobody can see into a diff
+    /// Same move as `patterns.lock`: turn a property nobody can see into a diff
     /// somebody has to approve.
     #[test]
     fn the_two_bracket_readers_agree() {
@@ -7154,8 +7160,8 @@ mod tests {
     /// A backward search that spans two bindings declines rather than handing
     /// back a field name no event can hold.
     ///
-    /// `falco_alerts` ships this shape and the reader used to return
-    /// `proc.args;\n def items = args`, which bound a shape that then wrote
+    /// `falco_alerts` ships this pattern and the reader used to return
+    /// `proc.args;\n def items = args`, which bound a pattern that then wrote
     /// nothing.
     #[test]
     fn a_backward_search_spanning_two_bindings_declines() {
@@ -7312,7 +7318,7 @@ mod tests {
         assert_eq!(hit.get_str("ses.file.type_value"), Some("File"));
 
         // A key the table misses leaves the target absent -- writing the key
-        // back is the other shape's behaviour, not this one's.
+        // back is the other pattern's behaviour, not this one's.
         let mut miss = Event::new(json!({ "ses": { "file": { "type_id": 99 } } }));
         assert!(try_params_painless(&mut miss, script, &params));
         assert!(!miss.has("ses.file.type_value"));
@@ -7533,7 +7539,7 @@ mod tests {
     }
 
     /// Verbatim from `pipelines/kolide/issues/categorize.yml`: statements
-    /// after the branch mean the shape does not describe the whole script, so
+    /// after the branch mean the pattern does not describe the whole script, so
     /// it declines rather than dropping them.
     #[test]
     fn a_lookup_with_work_after_it_is_not_claimed() {
@@ -8407,7 +8413,7 @@ mod tests {
     /// two data streams and 14 call sites.
     ///
     /// Three things had to become readable together, which is why this is one
-    /// shape rather than three patches: a numeric local behind a `(long)`
+    /// pattern rather than three patches: a numeric local behind a `(long)`
     /// cast, a `>` comparison against a scientific literal, and a division.
     #[test]
     fn an_epoch_is_normalised_by_its_magnitude() {
@@ -8451,7 +8457,7 @@ mod tests {
     }
 
     /// A prune is the other half of many an `if`/`else` that sets on one arm,
-    /// and `tychon_browser` is the shape: a sentinel timestamp when the vendor
+    /// and `tychon_browser` is the pattern: a sentinel timestamp when the vendor
     /// said "installed", the key gone otherwise.
     #[test]
     fn a_remove_is_a_statement_the_walk_can_run() {
@@ -8608,7 +8614,7 @@ mod tests {
         );
     }
 
-    /// `microsoft_dhcp_log`'s event-code lookup, the shape behind six of the
+    /// `microsoft_dhcp_log`'s event-code lookup, the pattern behind six of the
     /// dead-branch sites and the same one `system_security` writes.
     const DHCP_LOOKUP: &str = "if (ctx.event?.code == null || \
         params.get(ctx.event.code) == null) {\n  return;\n}\n\

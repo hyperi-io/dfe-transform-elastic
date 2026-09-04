@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! How far the shape ladder reaches into packages it has never seen.
+//! How far the pattern ladder reaches into packages it has never seen.
 //!
 //! `painless_coverage.rs` measures the ladder against the packages it was
 //! BUILT for, by running transforms over their fixtures. That number cannot
@@ -15,13 +15,13 @@
 //!
 //! Triggering is not the same as being RIGHT; `compat_corpus.rs` is what
 //! measures that. A high reach here means the next package is mostly a
-//! generate-and-verify job rather than a write-new-shapes job.
+//! generate-and-verify job rather than a write-new-patterns job.
 //!
 //! Reads a clone it does not own, so it skips when the clone is absent.
 //!
 //! ```text
 //! DFE_INTEGRATIONS=/projects/elastic-stuff/integrations \
-//!     cargo test -p dfe-transforms --test shape_reach -- --nocapture
+//!     cargo test -p dfe-transforms --test pattern_reach -- --nocapture
 //! ```
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -90,7 +90,7 @@ fn scripts_in(value: &serde_yaml_ng::Value, found: &mut Vec<String>) {
     }
 }
 
-/// A script's shape, with the details that vary between two copies removed.
+/// A script's pattern, with the details that vary between two copies removed.
 ///
 /// Two scripts differing only in their field names and literals are ONE piece
 /// of work, so the cluster key drops quoted text, digits and whitespace runs.

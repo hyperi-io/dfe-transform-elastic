@@ -151,7 +151,7 @@ pub fn painless_exec(event: &mut Event, script: &str) -> Result<()> {
 
 /// Execute a Painless script that carries a `params` block.
 ///
-/// The recurring params shapes -- sentinel lists, field lists, lookup tables --
+/// The recurring params patterns -- sentinel lists, field lists, lookup tables --
 /// read their whole behaviour out of `params`, so the script text alone cannot
 /// run them. The generated code passes the pipeline's params block verbatim.
 pub fn painless_exec_params(
@@ -681,7 +681,7 @@ pub fn convert_value(value: &Value, kind: &str) -> std::result::Result<Value, St
 /// fingerprint alike.
 ///
 /// Read off Elasticsearch 9.2.2 through `_ingest/pipeline/_simulate` rather
-/// than from its source: sixteen shapes, four methods and a salt, all
+/// than from its source: sixteen patterns, four methods and a salt, all
 /// reproduced exactly.
 fn fingerprint_bytes(value: &Value, out: &mut Vec<u8>) {
     match value {
@@ -1342,7 +1342,7 @@ const CISCO_TIMESTAMP: &str = concat!(
 /// The `[0-9a-fA-F:]+` this replaces matched any run of hex and colons -- a
 /// bare `2a02` included -- and `IP` carried no v6 branch at all, so a grok
 /// reading a v6 address failed outright and took every capture in the pattern
-/// with it. `cisco_ios`'s syslog header is exactly that shape.
+/// with it. `cisco_ios`'s syslog header is exactly that pattern.
 const IPV6: &str = r"((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?";
 
 /// The simplified `IPV4`. Elastic's own carries `(?<![0-9])` look-around,
@@ -1410,7 +1410,7 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // side of it in the pattern.
         "MONTHNUM2" => r"(?:0[1-9]|1[0-2])",
         "YEAR" => r"\d{4}",
-        // Elastic's own, and each part earns its shape. HOUR takes one digit
+        // Elastic's own, and each part earns its pattern. HOUR takes one digit
         // or two, because an offset is written `-5:00` as often as `-05:00`.
         // SECOND carries an optional fraction, without which checkpoint's
         // `16:39:12.000Z` leaves `.000Z` for the next literal to fail on.
@@ -2366,7 +2366,7 @@ mod tests {
     }
 
     /// An ICANN suffix IS honoured whole -- reverse DNS is the case that needs
-    /// it, and `co.uk` is the same shape.
+    /// it, and `co.uk` is the same pattern.
     #[test]
     fn an_icann_suffix_is_honoured_whole() {
         let reverse = registered_domain_lookup("211.52.31.172.in-addr.arpa").expect("known");

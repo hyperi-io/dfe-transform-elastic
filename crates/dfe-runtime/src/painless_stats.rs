@@ -52,7 +52,7 @@ pub fn record_unhandled(script: &str) {
 
 /// Count one outcome for a script: slot 0 ran, slot 1 was skipped.
 ///
-/// Both outcomes are recorded because a skip count alone cannot tell a shape
+/// Both outcomes are recorded because a skip count alone cannot tell a pattern
 /// that NEVER applies from one that declines on the events missing its source
 /// field. Only the first is a defect, and the difference is the ratio.
 fn tally(script: &str, slot: usize) {
@@ -122,7 +122,7 @@ pub fn catalogue() -> Vec<(String, u64)> {
 
 /// Every catalogued script as `(script, ran, skipped)`, most skipped first.
 ///
-/// A script with `ran == 0` was never once applied, which is the shape a
+/// A script with `ran == 0` was never once applied, which is the pattern a
 /// matcher claims and cannot honour. One with both counts non-zero declines
 /// only on some events, which is ordinary.
 #[must_use]
@@ -218,7 +218,7 @@ mod tests {
     /// honour; one that ran and sometimes declined is ordinary. A skip count
     /// alone cannot tell them apart, which is what `reach` is for.
     #[test]
-    fn reach_separates_a_shape_that_never_applies_from_one_that_sometimes_declines() {
+    fn reach_separates_a_pattern_that_never_applies_from_one_that_sometimes_declines() {
         let _guard = serialised();
         reset();
         enable_catalogue(true);
@@ -234,7 +234,7 @@ mod tests {
         assert_eq!(reach[0], ("never applies".to_string(), 0, 2));
         assert_eq!(reach[1], ("declines sometimes".to_string(), 2, 1));
 
-        // The skip-only view keeps its shape for the coverage test, which reads
+        // The skip-only view keeps its pattern for the coverage test, which reads
         // it to rank what is worth teaching the runtime next.
         assert_eq!(catalogue().len(), 2);
     }

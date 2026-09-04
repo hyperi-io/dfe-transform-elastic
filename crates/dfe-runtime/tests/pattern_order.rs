@@ -8,42 +8,42 @@
     reason = "a test asserts by panicking, and this one builds its report as a string"
 )]
 
-//! The dispatch order of the shape ladders, pinned to a committed lock.
+//! The dispatch order of the pattern ladders, pinned to a committed lock.
 //!
-//! Order is BEHAVIOUR. The first shape whose trigger fires claims the script,
-//! so a shape inserted at the wrong position silently takes scripts belonging
+//! Order is BEHAVIOUR. The first pattern whose trigger fires claims the script,
+//! so a pattern inserted at the wrong position silently takes scripts belonging
 //! to a later one -- a defect that has cost over a hundred parity events more
 //! than once, and one that reads as an unrelated source regressing.
 //!
 //! Position in the file carries that order today, which makes it invisible in
 //! review and a conflict for anyone else editing the same file. The lock makes
-//! it a diff: adding or moving a shape changes `shapes.lock`, so the change is
+//! it a diff: adding or moving a pattern changes `patterns.lock`, so the change is
 //! reviewable on its own, and two people doing it at once get a MERGE CONFLICT
 //! rather than a silent reorder.
 //!
 //! A dispatch site either constructs its variant inline
-//! (`shapes.push(KnownShape::Foo(...))`) or hands back a value a `parse_*`
-//! call already built (`shapes.push(shape)`). The second form names no
+//! (`patterns.push(KnownPattern::Foo(...))`) or hands back a value a `parse_*`
+//! call already built (`patterns.push(pattern)`). The second form names no
 //! variant at its own site, so it is resolved by finding the ONE `let
-//! Some(shape) = parse_*(...)` binding that fed it, then reading the ONE
+//! Some(pattern) = parse_*(...)` binding that fed it, then reading the ONE
 //! variant `parse_*`'s own body constructs -- whatever combinator it used to
 //! wrap it. A site the scanner cannot place either way is a scanner gap, not
-//! a skip: it panics rather than silently dropping a shape out of the lock.
+//! a skip: it panics rather than silently dropping a pattern out of the lock.
 //!
 //! Update deliberately, never by reflex:
 //!
 //! ```text
-//! DFE_UPDATE_SHAPE_LOCK=1 cargo test -p dfe-runtime --test shape_order
+//! DFE_UPDATE_PATTERN_LOCK=1 cargo test -p dfe-runtime --test pattern_order
 //! ```
 
 use std::path::{Path, PathBuf};
 
 /// A ladder: the file it lives in, its dispatch functions in call order, the
-/// text that opens a pushed/returned shape, and the enum's own `Name::` prefix.
+/// text that opens a pushed/returned pattern, and the enum's own `Name::` prefix.
 ///
 /// EVERY function the ladder falls through to has to be listed, in order. The
-/// params ladder runs `params_shape` -> `params_shape_tail` ->
-/// `params_shape_rest`, and while the last was missing its shapes were
+/// params ladder runs `params_pattern` -> `params_pattern_tail` ->
+/// `params_pattern_rest`, and while the last was missing its patterns were
 /// dispatched but unpinned -- the lock read as a guard over the whole ladder
 /// and covered two thirds of it.
 struct Ladder {
@@ -56,18 +56,22 @@ struct Ladder {
 
 const LADDERS: &[Ladder] = &[
     Ladder {
-        name: "known_shapes",
+        name: "known_patterns",
         source: "src/painless_common.rs",
-        functions: &["known_shapes"],
-        push_prefix: "shapes.push(",
-        variant_prefix: "KnownShape::",
+        functions: &["known_patterns"],
+        push_prefix: "patterns.push(",
+        variant_prefix: "KnownPattern::",
     },
     Ladder {
-        name: "params_shape",
+        name: "params_pattern",
         source: "src/painless_params.rs",
-        functions: &["params_shape", "params_shape_tail", "params_shape_rest"],
+        functions: &[
+            "params_pattern",
+            "params_pattern_tail",
+            "params_pattern_rest",
+        ],
         push_prefix: "return Some(",
-        variant_prefix: "ParamsShape::",
+        variant_prefix: "ParamsPattern::",
     },
 ];
 
@@ -161,7 +165,7 @@ fn resolve_variant(ladder: &Ladder, source_text: &str, function: &str) -> String
     }
     found.unwrap_or_else(|| {
         panic!(
-            "{function}: constructs no `{}` -- teach the scanner its shape, or the lock \
+            "{function}: constructs no `{}` -- teach the scanner its pattern, or the lock \
              silently drops it.",
             ladder.variant_prefix
         )
@@ -183,7 +187,7 @@ fn resolve_bare(
     let bind_at = body[..push_at].rfind(binder.as_str()).unwrap_or_else(|| {
         panic!(
             "{function}: bare dispatch of `{var}` has no `{binder}` binding above it in \
-             this function -- teach the scanner this shape, or it silently drops out of \
+             this function -- teach the scanner this pattern, or it silently drops out of \
              the lock."
         )
     });
@@ -269,11 +273,11 @@ fn observed() -> String {
 
 #[test]
 fn the_dispatch_order_matches_its_lock() {
-    let lock = crate_root().join("shapes.lock");
+    let lock = crate_root().join("patterns.lock");
     let current = observed();
 
-    if std::env::var_os("DFE_UPDATE_SHAPE_LOCK").is_some() {
-        std::fs::write(&lock, &current).expect("write shapes.lock");
+    if std::env::var_os("DFE_UPDATE_PATTERN_LOCK").is_some() {
+        std::fs::write(&lock, &current).expect("write patterns.lock");
         println!("wrote {}", lock.display());
         return;
     }
@@ -292,12 +296,12 @@ fn the_dispatch_order_matches_its_lock() {
         .unwrap_or(recorded_lines.len().min(current_lines.len()));
 
     panic!(
-        "the shape ladders no longer match shapes.lock, first difference at line {}:\n\
+        "the pattern ladders no longer match patterns.lock, first difference at line {}:\n\
          lock    : {:?}\n\
          source  : {:?}\n\n\
-         Order is behaviour: a shape placed too early takes scripts that belong to a \
+         Order is behaviour: a pattern placed too early takes scripts that belong to a \
          later one. Run the whole compat corpus, confirm no source regressed, then \
-         update the lock with DFE_UPDATE_SHAPE_LOCK=1.",
+         update the lock with DFE_UPDATE_PATTERN_LOCK=1.",
         first + 1,
         recorded_lines.get(first),
         current_lines.get(first),

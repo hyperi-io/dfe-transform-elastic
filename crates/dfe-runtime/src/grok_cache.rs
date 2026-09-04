@@ -66,12 +66,12 @@ macro_rules! cached_regex {
     }};
 }
 
-/// A grok pattern whose whole shape a native parser can handle.
+/// A grok pattern whose whole pattern a native parser can handle.
 ///
 /// Even against an already-compiled regex, `dfe-parse` is roughly 4-5x faster
 /// on these -- 79.7ns to 16.3ns for a bare address, 77.2ns to 18.4ns for an
 /// address and port. That margin is why the native path exists; it is not
-/// worth the divergence for shapes where the margin is not there.
+/// worth the divergence for patterns where the margin is not there.
 ///
 /// Only whole-pattern matches qualify. A pattern with literal text around the
 /// captures stays on the regex path, because the regex engine is genuinely
@@ -203,7 +203,7 @@ fn cache_key(pattern: &str, extra: &[(&str, &str)]) -> String {
     key
 }
 
-/// Recognise the whole-pattern shapes a native parser covers.
+/// Recognise the whole-pattern patterns a native parser covers.
 ///
 /// Deliberately literal: it matches the exact pattern strings the transforms
 /// use rather than parsing grok generally. A near-miss must fall through to
@@ -855,7 +855,7 @@ mod tests {
         assert_eq!(event.get_str("first"), Some("Following entries"));
     }
 
-    /// The shape that made this necessary: an ALB access log begins with the
+    /// The pattern that made this necessary: an ALB access log begins with the
     /// load-balancer type, so the classic-ELB pattern matches from column 5
     /// while the ALB pattern matches from column 0 -- and Elastic, matching one
     /// alternation, takes the earlier start rather than the earlier pattern.
