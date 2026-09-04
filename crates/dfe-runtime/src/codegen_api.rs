@@ -557,6 +557,21 @@ pub fn dot_expand(event: &mut crate::Event, path: &str, field: &str) -> crate::R
                     .as_object_mut()
                     .ok_or_else(|| crate::TransformError::FieldNotFound { path: key.clone() })?;
             }
+        } else if let (Some(Value::Object(into)), Value::Object(from)) =
+            (rebuilt.get_mut(key), value)
+        {
+            // MERGE, never replace. A pipeline expands one dotted key per
+            // processor, so by the second call the nested container already
+            // exists -- and whether it is reached before or after the dotted
+            // key decides everything. zeek writes `id.orig_h` BEFORE
+            // `id.orig_p`, so expanding `orig_p` first put a nested `id`
+            // AFTER the still-dotted `orig_h`; expanding `orig_h` then built
+            // its own `id` and this branch overwrote it a moment later.
+            // `source.address` vanished on ~30 of its streams that way, while
+            // `id.resp_h` -- which sorts after the nested `id` -- survived.
+            for (inner, value) in from {
+                into.insert(inner.clone(), value.clone());
+            }
         } else {
             rebuilt.insert(key.clone(), value.clone());
         }
@@ -2257,6 +2272,33 @@ mod tests {
         assert_eq!(event.get("a.b"), Some(&json!(1)));
         assert!(event.get("a").is_some_and(|v| v.is_object()));
         assert!(event.as_value().get("c.d").is_some(), "c.d stays flat");
+    }
+
+    /// Expanding SIBLINGS one at a time must not lose the earlier one.
+    ///
+    /// A pipeline names one field per `dot_expander`, so the second call finds
+    /// a nested container already there. zeek writes `id.orig_h` before
+    /// `id.orig_p`, which put the nested `id` AFTER the still-dotted key --
+    /// and rebuilding then overwrote what the expansion had just built.
+    /// `source.address` disappeared on ~30 of its streams.
+    #[test]
+    fn expanding_siblings_in_turn_keeps_them_all() {
+        let mut event = Event::new(json!({
+            "id.orig_h": "192.168.86.167", "id.orig_p": 38339,
+            "id.resp_h": "192.168.86.1", "id.resp_p": 53
+        }));
+        // The pipeline's own order: the ports and the responder expand around
+        // the originator, which is the case that used to be lost.
+        for field in ["id.orig_p", "id.orig_h", "id.resp_h", "id.resp_p"] {
+            dot_expand(&mut event, "", field).unwrap();
+        }
+
+        assert_eq!(event.get_str("id.orig_h"), Some("192.168.86.167"));
+        assert_eq!(event.get("id.orig_p"), Some(&json!(38339)));
+        assert_eq!(event.get_str("id.resp_h"), Some("192.168.86.1"));
+        assert_eq!(event.get("id.resp_p"), Some(&json!(53)));
+        // One nested container, not four flat keys left behind.
+        assert!(event.as_value().get("id.orig_h").is_none());
     }
 
     /// A container with no dotted key is left exactly as it was, without the
