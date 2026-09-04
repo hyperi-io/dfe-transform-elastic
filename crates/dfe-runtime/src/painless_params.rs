@@ -6403,12 +6403,26 @@ fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
             path,
             factor,
             divide,
-        } => event.get(path).and_then(Value::as_i64).map(|value| {
-            Value::from(if *divide {
-                value / factor
-            } else {
-                value * factor
-            })
+        } => event.get(path).and_then(|value| {
+            // A whole number keeps integer arithmetic, exactly as Painless
+            // does for `long * long`.
+            if let Some(whole) = value.as_i64() {
+                return Some(Value::from(if *divide {
+                    whole / factor
+                } else {
+                    whole * factor
+                }));
+            }
+            // A FRACTIONAL source widens to a double before multiplying.
+            // Reading it as an integer declined and left the field unscaled --
+            // gitlab times a request at 0.01969 seconds and publishes 19,690.
+            let n = match value {
+                Value::String(text) => text.trim().parse::<f64>().ok()?,
+                other => other.as_f64()?,
+            };
+            #[allow(clippy::cast_precision_loss)]
+            let factor = *factor as f64;
+            Some(Value::from(if *divide { n / factor } else { n * factor }))
         }),
         // A value that will not parse is left alone, the way the vendor's
         // script throws and its processor's `on_failure` leaves the field.

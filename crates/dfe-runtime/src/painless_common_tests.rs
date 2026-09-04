@@ -3445,6 +3445,26 @@ fn camel_to_snake_writes_the_converted_object_to_its_target() {
     assert!(event.has("json"), "the source object is not consumed");
 }
 
+/// The GUARDED spelling of the same scaling, which `GuardedCopy` claims.
+///
+/// gitlab's api stream reaches `Rhs::Scaled` rather than `ScaleField`, and
+/// that evaluator read its source as an integer too -- so 0.01969 seconds
+/// stayed put where Elasticsearch publishes 19,690.
+#[test]
+fn a_guarded_scale_reads_a_fractional_source() {
+    let script = "if (ctx.gitlab?.api?.duration_s != null) {\n  \
+        ctx.event.duration = ctx.gitlab.api.duration_s * 1000000;\n}";
+
+    let mut event = Event::new(json!({ "gitlab": { "api": { "duration_s": 0.01969 } } }));
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(event.get("event.duration"), Some(&json!(19_690.0)));
+
+    // A whole number keeps integer arithmetic and stays exact.
+    let mut whole = Event::new(json!({ "gitlab": { "api": { "duration_s": 3 } } }));
+    assert!(try_known_painless(&mut whole, script));
+    assert_eq!(whole.get("event.duration"), Some(&json!(3_000_000)));
+}
+
 /// gitlab times a request in FRACTIONAL seconds.
 ///
 /// Verbatim from `pipelines/gitlab/production/default.yml:116`. The integer
