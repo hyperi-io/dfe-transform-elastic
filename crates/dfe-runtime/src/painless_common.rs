@@ -6530,6 +6530,98 @@ pub fn sum_of_fields(event: &mut Event, pattern: &SumOfFields) -> bool {
 /// a pattern this code does not actually understand, and counting it as handled
 /// would inflate the coverage figure. A field the script names but the EVENT
 /// lacks is a different thing -- the script would have done nothing either.
+/// One member TOTALLED across a list of objects.
+///
+/// `ti_recordedfuture` reports evidence as a list and the ECS sighting count
+/// is the sum of one member over it. Distinct from [`KnownPattern::SumOfFields`],
+/// which adds up named fields at fixed paths rather than walking a list.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SumMemberOverList {
+    list: String,
+    member: String,
+    target: String,
+}
+
+impl SumMemberOverList {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(
+        list: impl Into<String>,
+        member: impl Into<String>,
+        target: impl Into<String>,
+    ) -> Self {
+        Self {
+            list: list.into(),
+            member: member.into(),
+            target: target.into(),
+        }
+    }
+}
+
+/// `def t = 0; for (e in ctx.<list>) { t += e['<member>']; } ctx.<target> = t;`
+fn parse_sum_member_over_list(script: &str) -> Option<SumMemberOverList> {
+    let (head, rest) = script.split_once(" in ctx.")?;
+    let variable = head.rsplit(['(', ' ']).next()?.trim();
+    let list = crate::painless_params::clean_path(rest.split(')').next()?.trim());
+
+    // The accumulation names the member, and only a bracketed literal is read
+    // -- anything computed is a different pattern.
+    let member = rest
+        .split_once(&format!("{variable}['"))
+        .or_else(|| rest.split_once(&format!("{variable}[\"")))?
+        .1
+        .split(['\'', '"'])
+        .next()?;
+
+    // The accumulator is whatever `+=` adds into, and the target is where that
+    // same name is finally written.
+    let accumulator = rest
+        .split_once("+=")?
+        .0
+        .rsplit(['\n', ';', '{'])
+        .next()?
+        .trim();
+    let target = painless_path(rest.split_once(&format!("= {accumulator};"))?.0)?;
+
+    (!list.is_empty() && !member.is_empty() && !target.is_empty()).then_some(SumMemberOverList {
+        list,
+        member: member.to_owned(),
+        target,
+    })
+}
+
+/// Total the member across the list, skipping the entries that lack it.
+pub fn sum_member_over_list(event: &mut Event, pattern: &SumMemberOverList) -> bool {
+    let Some(Value::Array(items)) = event.get(&pattern.list) else {
+        return true;
+    };
+    // Integer while every addend is one, as Painless's `int +=` stays, and a
+    // double only once something fractional arrives.
+    let mut whole: i64 = 0;
+    let mut fraction = 0.0_f64;
+    let mut fractional = false;
+    for item in items {
+        let Some(value) = item.get(&pattern.member) else {
+            continue;
+        };
+        if let Some(n) = value.as_i64() {
+            whole += n;
+        } else if let Some(n) = value.as_f64() {
+            fraction += n;
+            fractional = true;
+        }
+    }
+
+    #[allow(clippy::cast_precision_loss)]
+    let total = if fractional {
+        json!(whole as f64 + fraction)
+    } else {
+        json!(whole)
+    };
+    let _ = event.set(&pattern.target, total);
+    true
+}
+
 /// The NAME of a map's first key whose value is not null.
 ///
 /// `jamf_protect` reports which telemetry event fired by which member of one
@@ -13729,6 +13821,7 @@ pub(crate) enum KnownPattern {
     SumDirections(Vec<&'static str>),
     SumOfFields(Box<SumOfFields>),
     DurationToNanos,
+    SumMemberOverList(Box<SumMemberOverList>),
     FirstPresentKeyName(Box<FirstPresentKeyName>),
     FloatSecondsToNanos(Box<FloatSecondsToNanos>),
     FlowDuration,
@@ -14914,6 +15007,15 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: one member totalled across a list of objects.
+    if normalised.contains(" in ctx.")
+        && normalised.contains("+=")
+        && let Some(pattern) = parse_sum_member_over_list(normalised)
+    {
+        patterns.push(KnownPattern::SumMemberOverList(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: the NAME of the first key carrying a value. Ahead of the map
     // walkers, which read the `keySet()` loop as a fan-out and would claim it
     // without ever writing the key name.
@@ -16065,6 +16167,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::DurationToNanos => try_duration_to_nanos(event, normalised),
         KnownPattern::FloatSecondsToNanos(pattern) => float_seconds_to_nanos(event, pattern),
         KnownPattern::FirstPresentKeyName(pattern) => first_present_key_name(event, pattern),
+        KnownPattern::SumMemberOverList(pattern) => sum_member_over_list(event, pattern),
         KnownPattern::FlowDuration => try_flow_duration(event, normalised),
         KnownPattern::ParallelDispatch => try_parallel_dispatch(event, normalised),
         KnownPattern::ConcatMessage => try_concat_message(event, normalised),

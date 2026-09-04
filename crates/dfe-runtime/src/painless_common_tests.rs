@@ -3445,6 +3445,30 @@ fn camel_to_snake_writes_the_converted_object_to_its_target() {
     assert!(event.has("json"), "the source object is not consumed");
 }
 
+/// `ti_recordedfuture` totals one member across its evidence list.
+///
+/// Verbatim from the source's own script. `threat.indicator.sightings` gated
+/// 31 of its events.
+#[test]
+fn a_member_totals_across_a_list() {
+    let script = "def sum_sightings_count = 0;\nfor (evidence in ctx.json.evidence_details){\n  \
+        if (evidence['sightings_count'] != null){\n    \
+        sum_sightings_count += evidence['sightings_count'];\n  }\n}\n\
+        ctx.threat.indicator.sightings = sum_sightings_count;";
+
+    // An entry without the member contributes nothing rather than declining.
+    let mut event = Event::new(json!({ "json": { "evidence_details": [
+        { "sightings_count": 3 }, { "other": 1 }, { "sightings_count": 4 }
+    ] } }));
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(event.get("threat.indicator.sightings"), Some(&json!(7)));
+
+    // An empty list totals zero, which is what the vendor's `= 0` start means.
+    let mut empty = Event::new(json!({ "json": { "evidence_details": [] } }));
+    assert!(try_known_painless(&mut empty, script));
+    assert_eq!(empty.get("threat.indicator.sightings"), Some(&json!(0)));
+}
+
 /// The GUARDED spelling of the same scaling, which `GuardedCopy` claims.
 ///
 /// gitlab's api stream reaches `Rhs::Scaled` rather than `ScaleField`, and
