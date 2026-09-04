@@ -7089,12 +7089,16 @@ fn run_first_element(event: &mut Event, shape: &FirstElement) -> bool {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct LadderArm {
     literals: Vec<String>,
-    target: String,
-    /// Whatever `painless_literal` reads off the assignment -- a quoted
-    /// string in most vendored ladders, but a severity NUMBER arrives bare
-    /// (`ctx.event.severity = 21;`), which a `String` field cannot hold
-    /// without quoting it into the wrong JSON type.
-    value: Value,
+    /// EVERY assignment in the arm, in the order the script writes them.
+    ///
+    /// One arm does not mean one field: gdacs grades a disaster's alert level
+    /// into `event.severity` AND `event.risk_score` together, and reading only
+    /// the first left the second wrong on every event. The value is whatever
+    /// `painless_literal` reads -- a quoted string in most vendored ladders,
+    /// but a severity NUMBER arrives bare (`ctx.event.severity = 21;`), which
+    /// a `String` field cannot hold without quoting it into the wrong JSON
+    /// type.
+    writes: Vec<(String, Value)>,
 }
 
 /// An `if (x == 'a') { ctx.t = 'A' } else if (x == 'b') { ... }` ladder.
@@ -7179,29 +7183,36 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
             through_put = true;
             LadderArm {
                 literals,
-                target: format!("{}.{key}", clean_path(parent.trim())),
-                value: Value::String(value),
+                writes: vec![(
+                    format!("{}.{key}", clean_path(parent.trim())),
+                    Value::String(value),
+                )],
             }
         } else {
-            let Some((lhs, rhs)) = body.split(';').next().and_then(|s| s.split_once('=')) else {
-                continue;
-            };
-            let Some(target) = lhs
-                .trim()
-                .trim_start_matches('{')
-                .trim()
-                .strip_prefix("ctx.")
-            else {
-                continue;
-            };
-            let Some(value) = painless_literal(rhs.trim()) else {
-                continue;
-            };
-            LadderArm {
-                literals,
-                target: clean_path(target.trim()),
-                value,
+            // Every assignment in the arm, not just the first -- a graded
+            // severity writes a score alongside it.
+            let mut writes = Vec::new();
+            for statement in body.split(';') {
+                let Some((lhs, rhs)) = statement.split_once('=') else {
+                    continue;
+                };
+                let Some(target) = lhs
+                    .trim()
+                    .trim_start_matches('{')
+                    .trim()
+                    .strip_prefix("ctx.")
+                else {
+                    continue;
+                };
+                let Some(value) = painless_literal(rhs.trim()) else {
+                    continue;
+                };
+                writes.push((clean_path(target.trim()), value));
             }
+            if writes.is_empty() {
+                continue;
+            }
+            LadderArm { literals, writes }
         };
         arms.push(arm);
     }
@@ -7236,7 +7247,8 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
 /// lookup does not recurse further.
 fn ladder_subject(script: &str, name: &str) -> Option<(String, bool)> {
     if let Some(path) = ctx_path_bound_to(script, name) {
-        return Some(strip_case_fold(&path));
+        let (path, declared_fold) = strip_case_fold(&path);
+        return Some((path, declared_fold || self_folds(script, name)));
     }
 
     let needle = format!(" {name} = ");
@@ -7249,6 +7261,18 @@ fn ladder_subject(script: &str, name: &str) -> Option<(String, bool)> {
     }
     let (path, deep_fold) = ctx_path_bound_to(script, &other).map(|p| strip_case_fold(&p))?;
     Some((path, own_fold || deep_fold))
+}
+
+/// Does the script narrow the local ONTO ITSELF -- `level = level.toLowerCase()`?
+///
+/// `ctx_path_bound_to` reads the DECLARATION only, so a fold written as its own
+/// later statement is invisible to it. gdacs writes exactly that, and without
+/// this the ladder compares an unfolded `"Red"` against the script's own
+/// lower-case `"red"` and no arm can ever match.
+fn self_folds(script: &str, name: &str) -> bool {
+    [".toLowerCase()", ".toUpperCase()"]
+        .iter()
+        .any(|fold| script.contains(&format!("{name} = {name}{fold}")))
 }
 
 /// Split a trailing `.toLowerCase()` / `.toUpperCase()` off a path, reporting
@@ -8115,7 +8139,9 @@ fn try_ladder(event: &mut Event, ladder: &Ladder) -> bool {
         })
     };
     if let Some(arm) = ladder.arms.iter().find(matches) {
-        let _ = event.set(&arm.target, arm.value.clone());
+        for (target, value) in &arm.writes {
+            let _ = event.set(target, value.clone());
+        }
     }
     true
 }
@@ -15769,6 +15795,33 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
+
+    /// gdacs grades an alert level, and both defects it exposed are here: the
+    /// local narrows ITSELF (`level = level.toLowerCase()`), which the
+    /// declaration scan cannot see, and each arm writes TWO fields.
+    #[test]
+    fn a_ladder_folds_a_self_narrowed_local_and_keeps_every_write() {
+        let script = "def level = ctx.gdacs?.alert_level;\nif (level == null) { return; }\n\
+            level = level.toLowerCase();\nif (level == \"red\") {\n  ctx.event.severity = 3;\n  \
+            ctx.event.risk_score = 90.0;\n} else if (level == \"orange\") {\n  \
+            ctx.event.severity = 2;\n  ctx.event.risk_score = 60.0;\n}\n";
+        let ladder = parse_ladder(&normalise(script)).expect("gdacs grades an alert level");
+        assert_eq!(ladder.subject, "gdacs.alert_level");
+        assert!(ladder.fold_case, "the self-fold travels with the subject");
+        assert_eq!(
+            ladder.arms[0].writes,
+            vec![
+                ("event.severity".to_owned(), Value::from(3)),
+                ("event.risk_score".to_owned(), Value::from(90.0)),
+            ]
+        );
+
+        // The EVENT carries the unfolded spelling; the fold is what matches it.
+        let mut event = Event::new(serde_json::json!({"gdacs": {"alert_level": "Red"}}));
+        assert!(try_ladder(&mut event, &ladder));
+        assert_eq!(event.get("event.severity"), Some(&Value::from(3)));
+        assert_eq!(event.get("event.risk_score"), Some(&Value::from(90.0)));
+    }
 
     /// gdacs's disaster-code table, written inline rather than in `params`.
     #[test]
