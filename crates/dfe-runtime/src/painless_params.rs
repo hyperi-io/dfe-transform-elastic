@@ -5618,6 +5618,10 @@ enum Term {
         path: String,
         wanted: Wanted,
         negated: bool,
+        /// `ctx.<p>.toLowerCase() == "red"` compares the FOLDED value. The
+        /// script's own literal is already lower case, so only the event's
+        /// side folds.
+        lowered: bool,
     },
     /// A bare field IS the test: Painless reads its boolean value, and arista
     /// gates its whole outcome ladder on `if (ctx.arista.blocked)`.
@@ -5832,7 +5836,11 @@ impl Term {
             let Some((subject, wanted)) = term.split_once(operator) else {
                 continue;
             };
-            let Some(path) = subject.trim().strip_prefix("ctx.") else {
+            // `ctx.<p>.toLowerCase() == "red"` compares the FOLDED value, and
+            // reading the fold as part of the path named a field no event
+            // carries -- gdacs's alert ladder took its else arm on every event.
+            let (subject, lowered) = strip_case_fold(subject.trim());
+            let Some(path) = subject.strip_prefix("ctx.") else {
                 return Self::Never;
             };
             let wanted = wanted.trim();
@@ -5854,6 +5862,7 @@ impl Term {
                 path: clean_path(path),
                 wanted,
                 negated,
+                lowered,
             };
         }
         // A BARE field is the test: Painless reads its boolean value. arista
@@ -5897,10 +5906,14 @@ impl Term {
                 path,
                 wanted,
                 negated,
+                lowered,
             } => {
                 let held = event.get(path);
                 let matched = match wanted {
                     Wanted::Null => held.is_none_or(Value::is_null),
+                    Wanted::Text(text) if *lowered => {
+                        held.and_then(Value::as_str).map(str::to_lowercase) == Some(text.clone())
+                    }
                     Wanted::Text(text) => held.and_then(Value::as_str) == Some(text.as_str()),
                     Wanted::Value(value) => held == Some(value),
                     // Absent and explicitly null are one value and DO compare
