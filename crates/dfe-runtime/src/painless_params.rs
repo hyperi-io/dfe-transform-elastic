@@ -5999,10 +5999,11 @@ fn parse_rhs(text: &str) -> Option<Rhs> {
     }
     // `ctx.a.size()`, before the bare-path read below takes the call for part
     // of the name.
-    if let Some(path) = text
-        .strip_suffix(".size()")
-        .and_then(|head| subject_path(head.trim()).strip_prefix("ctx.").map(str::to_owned))
-        && !path.contains(['(', ')', ' '])
+    if let Some(path) = text.strip_suffix(".size()").and_then(|head| {
+        subject_path(head.trim())
+            .strip_prefix("ctx.")
+            .map(str::to_owned)
+    }) && !path.contains(['(', ')', ' '])
     {
         return Some(Rhs::SizeOf(clean_path(&path)));
     }
@@ -8486,7 +8487,10 @@ mod tests {
         fn counted(args: &Value) -> Value {
             let mut event = Event::new(json!({ "process": { "args": args } }));
             Program::parse(SCRIPT).run(&mut event);
-            event.get("process.args_count").cloned().unwrap_or(Value::Null)
+            event
+                .get("process.args_count")
+                .cloned()
+                .unwrap_or(Value::Null)
         }
 
         assert_eq!(counted(&json!(["-l", "-a", "/tmp"])), json!(3));

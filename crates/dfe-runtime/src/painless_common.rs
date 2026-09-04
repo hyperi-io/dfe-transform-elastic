@@ -11928,6 +11928,87 @@ struct CollectedColumn {
     upper: bool,
 }
 
+/// A lookup table written as a LOCAL map literal, not shipped in `params`.
+///
+/// gdacs names its disaster codes this way, and fourteen sites over five files
+/// do the same:
+///
+/// ```painless
+/// def typeMap = ['EQ': 'Earthquake', 'TC': 'Tropical Cyclone', ...];
+/// def code = ctx.gdacs?.event_type;
+/// if (code != null && typeMap.containsKey(code)) {
+///   ctx.gdacs.event_type_name = typeMap[code];
+/// }
+/// ```
+///
+/// The table is a literal the call site fully determines, so it is read once
+/// per site rather than per event, like every other params block here.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct LocalMapLookup {
+    source: String,
+    target: String,
+    table: std::collections::BTreeMap<String, String>,
+}
+
+fn parse_local_map_lookup(script: &str) -> Option<LocalMapLookup> {
+    use crate::painless_params::{clean_path, subject_path};
+
+    // `def <name> = [ '<k>': '<v>', ... ];`
+    let (head, rest) = script.split_once(" = [")?;
+    let name = head.rsplit([' ', '\n']).next()?.trim();
+    // A map literal holds no nested brackets, so the first `]` closes it.
+    let inside = rest.split_once(']')?.0;
+    let mut table = std::collections::BTreeMap::new();
+    for pair in inside.split(',') {
+        let (key, value) = pair.split_once(':')?;
+        let key = key.trim().trim_matches(['\'', '"']).to_string();
+        let value = value.trim().trim_matches(['\'', '"']).to_string();
+        if key.is_empty() || value.is_empty() {
+            return None;
+        }
+        table.insert(key, value);
+    }
+    if table.is_empty() || name.is_empty() {
+        return None;
+    }
+
+    // The key local, and the field it reads.
+    let (bound, after) = rest.split_once(&format!("{name}.containsKey("))?;
+    let key = after.split(')').next()?.trim();
+    let source = clean_path(
+        subject_path(
+            bound
+                .rsplit(&format!("{key} = "))
+                .next()?
+                .split(';')
+                .next()?
+                .trim(),
+        )
+        .strip_prefix("ctx.")?,
+    );
+
+    // `ctx.<target> = <name>[<key>]`
+    let (assignment, _) = script.split_once(&format!("= {name}[{key}]"))?;
+    let target = clean_path(assignment.rsplit_once("ctx.")?.1.trim());
+
+    let named = |path: &str| !path.is_empty() && !path.contains(['(', ')', '[', ']', ' ']);
+    (named(&source) && named(&target)).then_some(LocalMapLookup {
+        source,
+        target,
+        table,
+    })
+}
+
+fn run_local_map_lookup(event: &mut Event, shape: &LocalMapLookup) -> bool {
+    // The script's own `containsKey` guard: an unlisted code writes nothing.
+    if let Some(code) = event.get_as_string(&shape.source)
+        && let Some(name) = shape.table.get(&code)
+    {
+        let _ = event.set(&shape.target, json!(name));
+    }
+    true
+}
+
 /// The loop's variable, the `ctx.` list it walks, and the text after its head.
 ///
 /// Two spellings, and reading only the first left gdacs at 0 of 42 events:
@@ -11939,14 +12020,21 @@ fn loop_head(script: &str) -> Option<(String, String, &str)> {
     if let Some((head, rest)) = script.split_once(" in ctx") {
         let var = head.rsplit_once('(')?.1.trim().to_string();
         let (source, after) = rest.split_once(')')?;
-        return Some((var, clean_path(source.trim().trim_start_matches('.')), after));
+        return Some((
+            var,
+            clean_path(source.trim().trim_start_matches('.')),
+            after,
+        ));
     }
 
     let (head, rest) = script.split_once(" : ")?;
     let var = head.rsplit(['(', ' ']).next()?.trim().to_string();
     let (walked, after) = rest.split_once(')')?;
     let walked = walked.trim();
-    let source = match walked.strip_prefix("ctx.").or_else(|| walked.strip_prefix("ctx?.")) {
+    let source = match walked
+        .strip_prefix("ctx.")
+        .or_else(|| walked.strip_prefix("ctx?."))
+    {
         Some(path) => clean_path(path),
         // A local: the binding above the loop names the list.
         None => bound_list(script, walked)?,
@@ -12058,7 +12146,10 @@ fn parse_collect_from_list(script: &str) -> Option<CollectFromList> {
         let Some((head, local)) = assignment.rsplit_once('=') else {
             continue;
         };
-        let Some(target) = head.trim().rsplit_once("ctx.").map(|(_, p)| clean_path(p.trim()))
+        let Some(target) = head
+            .trim()
+            .rsplit_once("ctx.")
+            .map(|(_, p)| clean_path(p.trim()))
         else {
             continue;
         };
@@ -13074,6 +13165,7 @@ pub(crate) enum KnownShape {
     MergeMapUp(Box<MergeMapUp>),
     ParameterFanOut(Box<ParameterFanOut>),
     QuotedKvScan(Box<QuotedKvScan>),
+    LocalMapLookup(Box<LocalMapLookup>),
     MapEntryToBoolean(Box<MapEntryToBoolean>),
     NestUnder(Box<NestUnder>),
     CollectFromList(Box<CollectFromList>),
@@ -13336,6 +13428,14 @@ pub(crate) fn known_shapes(normalised: &str) -> Vec<KnownShape> {
         && let Some(shape) = parse_quoted_kv_scan(normalised)
     {
         shapes.push(KnownShape::QuotedKvScan(Box::new(shape)));
+        return shapes;
+    }
+    // Pattern: a lookup table written inline rather than shipped in `params`.
+    if normalised.contains(".containsKey(")
+        && normalised.contains("': '")
+        && let Some(shape) = parse_local_map_lookup(normalised)
+    {
+        shapes.push(KnownShape::LocalMapLookup(Box::new(shape)));
         return shapes;
     }
 
@@ -15319,6 +15419,7 @@ pub(crate) fn run_known_shape(event: &mut Event, normalised: &str, shape: &Known
         KnownShape::MergeMapUp(shape) => run_merge_map_up(event, shape),
         KnownShape::ParameterFanOut(shape) => run_parameter_fan_out(event, shape),
         KnownShape::QuotedKvScan(shape) => run_quoted_kv_scan(event, shape),
+        KnownShape::LocalMapLookup(shape) => run_local_map_lookup(event, shape),
         KnownShape::UnreservedKeyPayload(shape) => run_unreserved_key_payload(event, shape),
         KnownShape::HashesByLength(shape) => run_hashes_by_length(event, shape),
         KnownShape::MapEntryToBoolean(shape) => run_map_entry_to_boolean(event, shape),
@@ -15668,6 +15769,36 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
+
+    /// gdacs's disaster-code table, written inline rather than in `params`.
+    #[test]
+    fn a_local_map_literal_is_a_lookup_table() {
+        let script = "def typeMap = [\n  'EQ': 'Earthquake',\n  'TC': 'Tropical Cyclone',\n  \
+            'FL': 'Flood'\n];\ndef code = ctx.gdacs?.event_type;\n\
+            if (code != null && typeMap.containsKey(code)) {\n  \
+            ctx.gdacs.event_type_name = typeMap[code];\n}\n";
+        let shape = parse_local_map_lookup(&normalise(script)).expect("the table parses");
+        assert_eq!(shape.source, "gdacs.event_type");
+        assert_eq!(shape.target, "gdacs.event_type_name");
+        assert_eq!(
+            shape.table.get("TC").map(String::as_str),
+            Some("Tropical Cyclone")
+        );
+
+        let named = |code: &str| {
+            let mut event = Event::new(serde_json::json!({ "gdacs": { "event_type": code } }));
+            run_local_map_lookup(&mut event, &shape);
+            event
+                .get("gdacs.event_type_name")
+                .and_then(serde_json::Value::as_str)
+                .map(str::to_string)
+        };
+        assert_eq!(named("EQ").as_deref(), Some("Earthquake"));
+        // A value with a space survives its quotes.
+        assert_eq!(named("TC").as_deref(), Some("Tropical Cyclone"));
+        // Unlisted: the script's own containsKey guard writes nothing.
+        assert_eq!(named("ZZ"), None);
+    }
 
     /// watchguard's own KV scanner, on the shapes its logs actually carry.
     ///

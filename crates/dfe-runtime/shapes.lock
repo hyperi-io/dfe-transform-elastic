@@ -22,156 +22,157 @@
  21 MergeMapUp
  22 ParameterFanOut
  23 QuotedKvScan
- 24 RangeLadder
- 25 BandLadder
- 26 ScoreSeverityBands
- 27 CollectColumns
- 28 ZipLists
- 29 ProcessNameFromCommandLine
- 30 EnsureAppend
- 31 OctalString
- 32 AllowedValueCopy
- 33 DropEmpty
+ 24 LocalMapLookup
+ 25 RangeLadder
+ 26 BandLadder
+ 27 ScoreSeverityBands
+ 28 CollectColumns
+ 29 ZipLists
+ 30 ProcessNameFromCommandLine
+ 31 EnsureAppend
+ 32 OctalString
+ 33 AllowedValueCopy
  34 DropEmpty
  35 DropEmpty
- 36 SplitCommandLine
- 37 Basename
- 38 SuffixAfterSeparator
+ 36 DropEmpty
+ 37 SplitCommandLine
+ 38 Basename
  39 SuffixAfterSeparator
- 40 FileInfo
- 41 HashLowercase
- 42 PrefixTail
- 43 PrependToArray
- 44 ResourcesRenameDedup
- 45 SecurityhubResource
- 46 SecurityhubResources
- 47 M365ProcessEvidence
- 48 M365IdentityEvidence
- 49 Route53Answers
- 50 ReverseLookupAddress
- 51 LongOperationSession
- 52 ScriptBlockEntropy
- 53 SplitOnPipe
- 54 ZipAttachments
- 55 MaxByContains
- 56 ZipColumns
- 57 TruthyAssignments
- 58 RemoveMapValue
- 59 RemoveListValue
+ 40 SuffixAfterSeparator
+ 41 FileInfo
+ 42 HashLowercase
+ 43 PrefixTail
+ 44 PrependToArray
+ 45 ResourcesRenameDedup
+ 46 SecurityhubResource
+ 47 SecurityhubResources
+ 48 M365ProcessEvidence
+ 49 M365IdentityEvidence
+ 50 Route53Answers
+ 51 ReverseLookupAddress
+ 52 LongOperationSession
+ 53 ScriptBlockEntropy
+ 54 SplitOnPipe
+ 55 ZipAttachments
+ 56 MaxByContains
+ 57 ZipColumns
+ 58 TruthyAssignments
+ 59 RemoveMapValue
  60 RemoveListValue
- 61 GcpRelatedEntity
- 62 MailRelated
- 63 InspectorResources
- 64 CheckpointPackets
- 65 TrimListInPlace
- 66 StartsWithAppend
- 67 TlsVersionSplit
- 68 CategoryTypeLadder
- 69 KeysStripWhitespace
- 70 SnakeKeyMapCopy
- 71 StripAnglePairs
- 72 NameValueFold
- 73 SubstringBeforeLast
- 74 PascalKeys
- 75 BitFlagNames
- 76 BitNameArray
- 77 ConsoleLoginEventData
- 78 NameValueFold
- 79 OutcomeFromTags
- 80 RenameCommonAuth
- 81 CopyMemberName
- 82 CopyComputerObject
- 83 CopyUserToBase
- 84 ObjectDn
- 85 ShareFilePath
- 86 ProcessCreated
- 87 CopyTargetUser
- 88 CopySubjectUser
- 89 SplitPipeFields
- 90 SplitTokenField
+ 61 RemoveListValue
+ 62 GcpRelatedEntity
+ 63 MailRelated
+ 64 InspectorResources
+ 65 CheckpointPackets
+ 66 TrimListInPlace
+ 67 StartsWithAppend
+ 68 TlsVersionSplit
+ 69 CategoryTypeLadder
+ 70 KeysStripWhitespace
+ 71 SnakeKeyMapCopy
+ 72 StripAnglePairs
+ 73 NameValueFold
+ 74 SubstringBeforeLast
+ 75 PascalKeys
+ 76 BitFlagNames
+ 77 BitNameArray
+ 78 ConsoleLoginEventData
+ 79 NameValueFold
+ 80 OutcomeFromTags
+ 81 RenameCommonAuth
+ 82 CopyMemberName
+ 83 CopyComputerObject
+ 84 CopyUserToBase
+ 85 ObjectDn
+ 86 ShareFilePath
+ 87 ProcessCreated
+ 88 CopyTargetUser
+ 89 CopySubjectUser
+ 90 SplitPipeFields
  91 SplitTokenField
- 92 DecodeBase64
- 93 TokenCount
- 94 WrapValueInList
- 95 LastElement
- 96 ClassifyMembers
- 97 FlattenedDuplicates
- 98 CollectEntities
- 99 DnsRdataAnswers
-100 StructuredRdataAnswers
-101 RelatedFromDnsAnswers
-102 AnswersFromResolvedIp
-103 CamelToSnake
-104 SplitTrimCollect
-105 SumDirections
-106 SumOfFields
-107 DurationToNanos
-108 FlowDuration
-109 ParallelDispatch
-110 ConcatParts
-111 ConcatMessage
-112 SwapSubtrees
-113 CollectingLadder
-114 CaseInsensitiveLadder
-115 EqualityLadder
-116 SentinelRemovalLiteral
-117 ListMemberFlag
-118 RowLookupWithFallback
-119 SchemelessUrl
-120 VersionSplit
-121 SyslogPriority
-122 AppendUnique
-123 SplitUnquotedKv
-124 ArrayToIndexedObject
-125 KeyValuePairs
-126 DecayWindow
-127 IocExpiry
-128 DropLastChar
-129 TagsAndMarking
-130 CsvMapToArray
-131 CsvColonPairs
-132 DedupeUnwrap
-133 KvIntoFields
-134 KvIntoNamespace
-135 CtxTableLookup
-136 FirehoseDataset
-137 NestedKeyNames
-138 DatePlusDays
-139 JoinOptional
-140 ListRenameTable
-141 AppendEach
-142 FlattenMapInto
-143 StringifyLongs
-144 CopyByLabel
-145 LiteralValueMap
-146 EqualsLiteralFlag
-147 KeysToSnakeCase
-148 CommandLine
-149 ProcessStartTime
-150 EmailSplit
-151 RiskBehaviors
-152 AzureCategoryEventType
-153 AzureEventCategory
-154 ReplaceDotsInKeys
-155 OktaTargetRename
-156 KeysBySuffix
-157 CollectMapValues
-158 StringOps
-159 GuardedReplace
-160 RoundedScale
-161 FieldsIntoMap
-162 CrowdstrikeTimelineEntityIdentity
-163 CrowdstrikeTimelineEntityAccounts
-164 FirstElement
-165 IndexedFieldCopies
-166 MoveKeys
-167 ClassifyLadder
-168 PrivateCidrDirection
-169 BranchCopies
-170 GuardedDivide
-171 ScaleField
-172 GuardedCopy
-173 PlainAssignments
+ 92 SplitTokenField
+ 93 DecodeBase64
+ 94 TokenCount
+ 95 WrapValueInList
+ 96 LastElement
+ 97 ClassifyMembers
+ 98 FlattenedDuplicates
+ 99 CollectEntities
+100 DnsRdataAnswers
+101 StructuredRdataAnswers
+102 RelatedFromDnsAnswers
+103 AnswersFromResolvedIp
+104 CamelToSnake
+105 SplitTrimCollect
+106 SumDirections
+107 SumOfFields
+108 DurationToNanos
+109 FlowDuration
+110 ParallelDispatch
+111 ConcatParts
+112 ConcatMessage
+113 SwapSubtrees
+114 CollectingLadder
+115 CaseInsensitiveLadder
+116 EqualityLadder
+117 SentinelRemovalLiteral
+118 ListMemberFlag
+119 RowLookupWithFallback
+120 SchemelessUrl
+121 VersionSplit
+122 SyslogPriority
+123 AppendUnique
+124 SplitUnquotedKv
+125 ArrayToIndexedObject
+126 KeyValuePairs
+127 DecayWindow
+128 IocExpiry
+129 DropLastChar
+130 TagsAndMarking
+131 CsvMapToArray
+132 CsvColonPairs
+133 DedupeUnwrap
+134 KvIntoFields
+135 KvIntoNamespace
+136 CtxTableLookup
+137 FirehoseDataset
+138 NestedKeyNames
+139 DatePlusDays
+140 JoinOptional
+141 ListRenameTable
+142 AppendEach
+143 FlattenMapInto
+144 StringifyLongs
+145 CopyByLabel
+146 LiteralValueMap
+147 EqualsLiteralFlag
+148 KeysToSnakeCase
+149 CommandLine
+150 ProcessStartTime
+151 EmailSplit
+152 RiskBehaviors
+153 AzureCategoryEventType
+154 AzureEventCategory
+155 ReplaceDotsInKeys
+156 OktaTargetRename
+157 KeysBySuffix
+158 CollectMapValues
+159 StringOps
+160 GuardedReplace
+161 RoundedScale
+162 FieldsIntoMap
+163 CrowdstrikeTimelineEntityIdentity
+164 CrowdstrikeTimelineEntityAccounts
+165 FirstElement
+166 IndexedFieldCopies
+167 MoveKeys
+168 ClassifyLadder
+169 PrivateCidrDirection
+170 BranchCopies
+171 GuardedDivide
+172 ScaleField
+173 GuardedCopy
+174 PlainAssignments
 
 [params_shape]
   1 AwsEntity
