@@ -9613,7 +9613,7 @@ fn parse_branch_copies(script: &str) -> Option<Vec<BranchCopy>> {
         let at = cursor + rel;
         cursor = at + "== \"".len();
 
-        let Some(guard) = painless_path(&script[..at]) else {
+        let Some(guard) = guard_subject(script, &script[..at]) else {
             continue;
         };
         let Some(literal) = script[cursor..].split('"').next().map(str::to_string) else {
@@ -9630,6 +9630,69 @@ fn parse_branch_copies(script: &str) -> Option<Vec<BranchCopy>> {
         }
     }
     (!branches.is_empty()).then_some(branches)
+}
+
+/// What the branch actually compares, resolved through any locals.
+///
+/// Taking the last `ctx.` path before the `==` is right only when the script
+/// compares a field inline. gdacs reads the geometry into a local and tests a
+/// member of it --
+///
+/// ```painless
+/// def polyGeom = ctx.polygon_geometry;
+/// String polyType = polyGeom.type;
+/// if (polyType == "Polygon") { ... }
+/// ```
+///
+/// -- where the nearest `ctx.` path is `polygon_geometry`, an OBJECT. Guarding
+/// on that compares a map against `"Polygon"` and no branch can ever hold, so
+/// every copy inside was silently dead.
+fn guard_subject(script: &str, head: &str) -> Option<String> {
+    // The token immediately before the comparison, not the last path anywhere.
+    let subject = head
+        .trim_end()
+        .trim_end_matches('=')
+        .trim_end()
+        .rsplit(['(', ' ', '!', '&', '|'])
+        .next()?
+        .trim();
+    if subject.is_empty() {
+        return None;
+    }
+    resolve_subject(script, subject, 3)
+}
+
+/// Follow an expression back to the ctx path it reads, through local bindings.
+///
+/// gdacs takes two hops -- `polyType` is `polyGeom.type` and `polyGeom` is
+/// `ctx.polygon_geometry` -- and the member access has to survive both, or the
+/// guard tests the container instead of the field. The depth bound is what
+/// stops a self-referential binding looping.
+fn resolve_subject(script: &str, expression: &str, depth: u8) -> Option<String> {
+    if expression.starts_with("ctx.") || expression.starts_with("ctx[") {
+        return painless_path(expression);
+    }
+    let depth = depth.checked_sub(1)?;
+
+    let (name, suffix) = expression
+        .split_once('.')
+        .map_or((expression, ""), |(head, tail)| (head, tail));
+    let bound = local_expression(script, name)?;
+    let base = resolve_subject(script, bound.trim(), depth)?;
+    Some(if suffix.is_empty() {
+        base
+    } else {
+        crate::painless_params::clean_path(&format!("{base}.{suffix}"))
+    })
+}
+
+/// Whatever a local was last declared to hold, as written.
+fn local_expression<'a>(script: &'a str, name: &str) -> Option<&'a str> {
+    let needle = format!(" {name} = ");
+    let at = script.find(&needle)?;
+    let rest = &script[at + needle.len()..];
+    let end = rest.find([';', '\n']).unwrap_or(rest.len());
+    Some(&rest[..end])
 }
 
 /// The text of the `{ ... }` block a branch opens.
@@ -9654,10 +9717,30 @@ fn branch_body(rest: &str) -> &str {
 }
 
 /// `if (ctx.<src> != null) { ctx.<dst> = ctx.<src>; }` pairs, as (dst, src).
+/// Split at the first `=` that ASSIGNS, skipping the comparison operators.
+///
+/// A guard that says more than `!= null` -- gdacs writes
+/// `if (ctx.a != null && ctx.a != "")` -- put the `=` of the second `!=`
+/// first, so the target came out as the guard's own left-hand side with its
+/// namespace lost: `gdacs.polygon_label` was read as `polygon_label`, and the
+/// copy then wrote a field Elasticsearch never carries.
+fn split_assignment_once(text: &str) -> Option<(&str, &str)> {
+    let bytes = text.as_bytes();
+    for (at, _) in text.match_indices('=') {
+        let previous = at.checked_sub(1).map(|i| bytes[i]);
+        let next = bytes.get(at + 1).copied();
+        if matches!(previous, Some(b'!' | b'=' | b'<' | b'>')) || next == Some(b'=') {
+            continue;
+        }
+        return Some((&text[..at], &text[at + 1..]));
+    }
+    None
+}
+
 fn guarded_copies(body: &str) -> Vec<(String, String)> {
     let mut copies = Vec::new();
     for part in body.split("!= null").skip(1) {
-        let Some((target_expr, value_expr)) = part.split_once('=') else {
+        let Some((target_expr, value_expr)) = split_assignment_once(part) else {
             continue;
         };
         // The value ends at its own statement: a body of several copies runs
@@ -16037,6 +16120,42 @@ fn extract_target_field(script: &str) -> Option<String> {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
+
+    /// gdacs guards on a member of a local, and guards with more than one
+    /// clause -- the two things that made every copy in the branch dead.
+    #[test]
+    fn a_branch_guards_on_a_local_and_keeps_its_namespace() {
+        let script = "def polyGeom = ctx.polygon_geometry;\n\
+            String polyType = polyGeom.type;\n\
+            if (polyType == \"Polygon\") {\n  \
+            if (ctx.polygon_class != null) { ctx.gdacs.class = ctx.polygon_class; }\n  \
+            if (ctx.polygon_label != null && ctx.polygon_label != \"\") \
+            { ctx.gdacs.polygon_label = ctx.polygon_label; }\n}\n";
+        let branches = parse_branch_copies(&normalise(script)).expect("gdacs guards on a type");
+        assert_eq!(branches[0].guard, "polygon_geometry.type");
+        assert_eq!(
+            branches[0].copies,
+            [
+                ("gdacs.class".to_owned(), "polygon_class".to_owned()),
+                ("gdacs.polygon_label".to_owned(), "polygon_label".to_owned()),
+            ]
+        );
+
+        let mut event = Event::new(serde_json::json!({
+            "polygon_geometry": { "type": "Polygon" },
+            "polygon_class": "Poly_Affected",
+            "polygon_label": "Population affected"
+        }));
+        assert!(run_branch_copies(&mut event, &branches));
+        assert_eq!(
+            event.get("gdacs.class"),
+            Some(&Value::from("Poly_Affected"))
+        );
+        assert_eq!(
+            event.get("gdacs.polygon_label"),
+            Some(&Value::from("Population affected"))
+        );
+    }
 
     /// gdacs folds two flags, and an unrecognised spelling becomes FALSE --
     /// the difference from `isTruthy`, which would leave it alone.
