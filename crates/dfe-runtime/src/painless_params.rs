@@ -4928,6 +4928,9 @@ enum Rhs {
     /// `ctx.event.category = [ctx.<path>]` -- a field wrapped in a one-element
     /// list, which is how a script promotes a scalar into an ECS array field.
     FieldInList(String),
+    /// `ctx.<path>.size()` -- how many members a list holds, which a script
+    /// writes to a `_count` field beside it. 37 sites over 31 files.
+    SizeOf(String),
     /// `ctx.<path> / 1000000` -- rescale a number by a whole factor, which is
     /// how a script moves an epoch between units.
     Scaled {
@@ -5994,6 +5997,15 @@ fn parse_rhs(text: &str) -> Option<Rhs> {
     {
         return Some(Rhs::Text(clean_path(inner.trim().strip_prefix("ctx.")?)));
     }
+    // `ctx.a.size()`, before the bare-path read below takes the call for part
+    // of the name.
+    if let Some(path) = text
+        .strip_suffix(".size()")
+        .and_then(|head| subject_path(head.trim()).strip_prefix("ctx.").map(str::to_owned))
+        && !path.contains(['(', ')', ' '])
+    {
+        return Some(Rhs::SizeOf(clean_path(&path)));
+    }
     // `ctx.a / 1000` and `ctx.a * 1000`, before the bare-path read below,
     // which would otherwise take the whole expression for a field name.
     for (operator, divide) in [('/', true), ('*', false)] {
@@ -6083,6 +6095,13 @@ fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
             .get(path)
             .cloned()
             .map(|value| Value::Array(vec![value])),
+        // A map counts its keys and a list its members, the way Painless does.
+        // Anything else has no size and writes nothing.
+        Rhs::SizeOf(path) => event.get(path).and_then(|value| match value {
+            Value::Array(items) => Some(Value::from(items.len())),
+            Value::Object(entries) => Some(Value::from(entries.len())),
+            _ => None,
+        }),
         // Integer arithmetic, as Painless does it on a `long`: the division
         // truncates rather than producing a fraction.
         Rhs::Scaled {
@@ -8453,6 +8472,27 @@ mod tests {
         assert_eq!(coerced(json!(5)), json!(5));
         // Nothing to parse leaves the field as it was.
         assert_eq!(coerced(json!("nope")), json!("nope"));
+    }
+
+    /// A list's member count, written to the `_count` field beside it.
+    ///
+    /// 37 sites over 31 files, and the `instanceof` guard around it has been
+    /// readable since this session -- only the WRITE was missing.
+    #[test]
+    fn a_list_writes_its_own_member_count() {
+        const SCRIPT: &str = "if (ctx.process.args instanceof List) {\n  \
+            ctx.process.args_count = ctx.process.args.size();\n}";
+
+        fn counted(args: &Value) -> Value {
+            let mut event = Event::new(json!({ "process": { "args": args } }));
+            Program::parse(SCRIPT).run(&mut event);
+            event.get("process.args_count").cloned().unwrap_or(Value::Null)
+        }
+
+        assert_eq!(counted(&json!(["-l", "-a", "/tmp"])), json!(3));
+        assert_eq!(counted(&json!([])), json!(0));
+        // Not a list: the script's own guard declines, so nothing is written.
+        assert_eq!(counted(&json!("-l -a /tmp")), Value::Null);
     }
 
     /// `jamf_protect`'s telemetry lookup, verbatim, one of forty such sites.
