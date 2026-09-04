@@ -3445,6 +3445,44 @@ fn camel_to_snake_writes_the_converted_object_to_its_target() {
     assert!(event.has("json"), "the source object is not consumed");
 }
 
+/// netskope derives its users from the addresses, and NAMES only one.
+///
+/// Verbatim from `-dev/pipelines/netskope/events/default.yml:1077`.
+/// `user.name` was wrong on 27 events and `related.user` on 48.
+#[test]
+fn addresses_become_related_users_and_name_only_one() {
+    let script = "def parts = ctx.user.email;\nif (!(parts instanceof String)) {\n  \
+        List l = new ArrayList();\n  for (entry in parts.entrySet()) {\n    \
+        l.add(entry.getValue());\n  }\n  List setList = new ArrayList(new HashSet(l));\n  \
+        ctx.user.email = setList;\n}\nif (ctx.user.email instanceof List) {\n  \
+        def related_users = [];\n  for (def email : ctx.user.email) {\n    \
+        if (email.contains('@')) {\n      related_users.add(email.splitOnToken('@')[0])\n    \
+        }\n  }\n  if (ctx.related == null) {\n    ctx.related = new HashMap();\n  }\n  \
+        ctx.related.user = related_users;\n  if (related_users.length == 1) {\n    \
+        ctx.user.name = related_users[0]\n  }\n}";
+
+    // The numbered map is flattened and deduped first, then derived from.
+    let mut event = Event::new(json!({ "user": { "email": {
+        "0": "test@example.com", "1": "test@example.com", "2": "test@example.com"
+    } } }));
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(event.get("user.email"), Some(&json!(["test@example.com"])));
+    assert_eq!(event.get("related.user"), Some(&json!(["test"])));
+    assert_eq!(event.get_str("user.name"), Some("test"));
+
+    // TWO addresses make the name ambiguous, so the vendor leaves it unset.
+    let mut two = Event::new(json!({ "user": { "email": ["a@x.com", "b@y.com"] } }));
+    assert!(try_known_painless(&mut two, script));
+    assert_eq!(two.get("related.user"), Some(&json!(["a", "b"])));
+    assert!(!two.has("user.name"), "two addresses name nobody");
+
+    // An entry with no `@` contributes nothing.
+    let mut odd = Event::new(json!({ "user": { "email": ["nobody", "c@z.com"] } }));
+    assert!(try_known_painless(&mut odd, script));
+    assert_eq!(odd.get("related.user"), Some(&json!(["c"])));
+    assert_eq!(odd.get_str("user.name"), Some("c"));
+}
+
 /// netskope stores a single-valued field as a numbered map and flattens it.
 ///
 /// Verbatim from `-dev/pipelines/netskope/events/default.yml:1060`. Without

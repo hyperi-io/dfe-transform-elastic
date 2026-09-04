@@ -6589,6 +6589,93 @@ pub fn dedupe_map_values(event: &mut Event, pattern: &DedupeMapValues) -> bool {
     true
 }
 
+/// The same dedupe, then the local parts of the addresses it produced.
+///
+/// netskope derives `related.user` from every address and `user.name` only
+/// when exactly ONE survived -- a second address makes the name ambiguous, so
+/// the vendor leaves it unset rather than guessing.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct EmailsToRelatedUsers {
+    source: String,
+    related: String,
+    name: String,
+}
+
+impl EmailsToRelatedUsers {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(
+        source: impl Into<String>,
+        related: impl Into<String>,
+        name: impl Into<String>,
+    ) -> Self {
+        Self {
+            source: source.into(),
+            related: related.into(),
+            name: name.into(),
+        }
+    }
+}
+
+/// `... ctx.<related> = related_users; if (n == 1) ctx.<name> = ..[0]`
+fn parse_emails_to_related_users(script: &str) -> Option<EmailsToRelatedUsers> {
+    if !script.contains("splitOnToken('@')") && !script.contains("splitOnToken(\"@\")") {
+        return None;
+    }
+    // `clean_path`, not `painless_path`: the `ctx.` is already consumed by the
+    // split, and `painless_path` needs to see one.
+    let source = clean_path(script.split_once(" = ctx.")?.1.split(';').next()?.trim());
+
+    // The accumulator is the list the SPLIT feeds, not the first `.add(` in
+    // the script -- that one is the dedupe's own working list.
+    let accumulator = script
+        .split_once("splitOnToken")?
+        .0
+        .rsplit_once(".add(")?
+        .0
+        .rsplit(['\n', ';', '{', ' ', '('])
+        .next()?
+        .trim();
+    let related = painless_path(script.split_once(&format!("= {accumulator};"))?.0)?;
+    let name = painless_path(script.rsplit_once(&format!("= {accumulator}["))?.0)?;
+
+    (!source.is_empty() && !related.is_empty() && !name.is_empty()).then_some(
+        EmailsToRelatedUsers {
+            source,
+            related,
+            name,
+        },
+    )
+}
+
+fn run_emails_to_related_users(event: &mut Event, pattern: &EmailsToRelatedUsers) -> bool {
+    // The map form is flattened first, exactly as the script's own opening
+    // guard does before it reads the list.
+    if matches!(event.get(&pattern.source), Some(Value::Object(_))) {
+        dedupe_map_values(event, &DedupeMapValues::new(pattern.source.clone()));
+    }
+    let Some(Value::Array(addresses)) = event.get(&pattern.source) else {
+        return true;
+    };
+
+    // Only an address with an `@` contributes, and the local part is what the
+    // vendor keeps.
+    let users: Vec<Value> = addresses
+        .iter()
+        .filter_map(Value::as_str)
+        .filter_map(|address| address.split_once('@'))
+        .map(|(local, _)| Value::from(local))
+        .collect();
+
+    let single = (users.len() == 1).then(|| users[0].clone());
+    let _ = event.set(&pattern.related, Value::Array(users));
+    // A second address makes the name ambiguous, so the vendor leaves it.
+    if let Some(name) = single {
+        let _ = event.set(&pattern.name, name);
+    }
+    true
+}
+
 /// Every key of every object in a LIST, snake-cased in place.
 ///
 /// A THIRD snake rule, and not either [`SnakeRule`]: `ti_recordedfuture`
@@ -13963,6 +14050,7 @@ pub(crate) enum KnownPattern {
     SumOfFields(Box<SumOfFields>),
     DurationToNanos,
     DedupeMapValues(Box<DedupeMapValues>),
+    EmailsToRelatedUsers(Box<EmailsToRelatedUsers>),
     SnakeCaseListElements(Box<SnakeCaseListElements>),
     SumMemberOverList(Box<SumMemberOverList>),
     FirstPresentKeyName(Box<FirstPresentKeyName>),
@@ -14161,6 +14249,16 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
     // `.isEmpty()` is one of the two guards a vendor writes -- gdacs checks
     // `!= null` alone -- so the trigger is the loop and the append, and the
     // PARSE decides.
+    // Ahead of the collect below: that reads a member name off the loop body
+    // and takes `email.contains('@')` for one, claiming netskope's script and
+    // writing `related.user` from a member called `contains`.
+    if normalised.contains("splitOnToken(")
+        && let Some(pattern) = parse_emails_to_related_users(normalised)
+    {
+        patterns.push(KnownPattern::EmailsToRelatedUsers(Box::new(pattern)));
+        return patterns;
+    }
+
     if (normalised.contains(" in ctx") || normalised.contains(" : "))
         && normalised.contains(".add(")
         && let Some(pattern) = parse_collect_from_list(normalised)
@@ -16331,6 +16429,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::SumMemberOverList(pattern) => sum_member_over_list(event, pattern),
         KnownPattern::SnakeCaseListElements(pattern) => snake_case_list_elements(event, pattern),
         KnownPattern::DedupeMapValues(pattern) => dedupe_map_values(event, pattern),
+        KnownPattern::EmailsToRelatedUsers(pattern) => run_emails_to_related_users(event, pattern),
         KnownPattern::FlowDuration => try_flow_duration(event, normalised),
         KnownPattern::ParallelDispatch => try_parallel_dispatch(event, normalised),
         KnownPattern::ConcatMessage => try_concat_message(event, normalised),

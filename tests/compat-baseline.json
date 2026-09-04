@@ -207,7 +207,7 @@
     "netbox": { "events": 2, "events_total": 4, "fields_wrong": 2 },
     "netflow": { "events": 34, "events_total": 34, "fields_wrong": 0 },
     "netscout": { "events": 100, "events_total": 100, "fields_wrong": 0 },
-    "netskope": { "events": 5, "events_total": 57, "fields_wrong": 426 },
+    "netskope": { "events": 47, "events_total": 57, "fields_wrong": 309 },
     "network_traffic": { "events": 2, "events_total": 2, "fields_wrong": 0 },
     "nginx": { "events": 24, "events_total": 25, "fields_wrong": 3 },
     "nginx_ingress_controller": { "events": 2, "events_total": 32, "fields_wrong": 140 },
