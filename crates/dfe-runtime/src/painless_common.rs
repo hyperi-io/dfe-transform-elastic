@@ -6252,6 +6252,14 @@ fn snake_case_apply(script: &str) -> Option<KnownPattern> {
     // is cleared by any non-uppercase character, a dot included; the other guard
     // asks about the previous character directly and breaks only after a
     // lowercase one. See [`camel_map_to_snake`].
+    // The helper must actually detect CASE. One source converts kebab-case
+    // with a bare `str.replace("-", "_")` and names it `convertToSnakeCase`
+    // too, so keying on the call alone claims a script this runner cannot
+    // apply -- bound, never run, and invisible everywhere but the reach count.
+    if !script.contains("Character.isUpperCase(") {
+        return None;
+    }
+
     let rule = if script.contains("Character.isLowerCase(str.charAt(i - 1))") {
         SnakeRule::OnWordBreak
     } else {
@@ -6261,9 +6269,23 @@ fn snake_case_apply(script: &str) -> Option<KnownPattern> {
 
     for line in script.lines().rev() {
         let line = line.trim().trim_end_matches(';');
-        let Some((target, rhs)) = line.split_once(" = ") else {
-            continue;
+
+        // Two spellings of the same hoist. An ASSIGNMENT replaces the target;
+        // a `putAll` MERGES into whatever the script's own `?: [:]` left
+        // there. qualys_gav writes the second, and reading only the first left
+        // its whole payload under `json.*` -- 525 extra fields and 606
+        // missing on every event.
+        // The assignment form is tried FIRST so this is strictly additive:
+        // every script that bound before binds the same way, and `putAll` only
+        // catches what used to fall through.
+        let (target, rhs, merge) = match line.split_once(" = ") {
+            Some((target, rhs)) => (target, rhs, false),
+            None => match line.split_once(".putAll(") {
+                Some((target, rhs)) => (target, rhs, true),
+                None => continue,
+            },
         };
+
         let target = target.trim();
         if !target.starts_with("ctx.") {
             continue;
@@ -6282,6 +6304,7 @@ fn snake_case_apply(script: &str) -> Option<KnownPattern> {
             source: argument[4..].to_string(),
             rule,
             drop_at_keys,
+            merge,
             removes: ctx_removes(script),
         });
     }
@@ -13502,6 +13525,9 @@ pub(crate) enum KnownPattern {
         source: String,
         rule: SnakeRule,
         drop_at_keys: bool,
+        /// The script wrote `putAll`, so the converted keys join whatever the
+        /// target already holds rather than replacing it.
+        merge: bool,
         removes: Vec<String>,
     },
     SplitTrimCollect,
@@ -15790,11 +15816,23 @@ pub(crate) fn run_known_pattern(
             source,
             rule,
             drop_at_keys,
+            merge,
             removes,
         } => {
             if let Some(value) = event.get(source) {
                 let converted = camel_map_to_snake(value, *rule, *drop_at_keys);
-                let _ = event.set(target, converted);
+                // `putAll` keeps what the target already holds; an arriving key
+                // wins, which is what Java's Map::putAll does.
+                match (merge, converted) {
+                    (true, Value::Object(arriving)) => {
+                        for (key, value) in arriving {
+                            let _ = event.set(&format!("{target}.{key}"), value);
+                        }
+                    }
+                    (_, converted) => {
+                        let _ = event.set(target, converted);
+                    }
+                }
             }
             // Outside the null guard, exactly as the script writes it.
             for path in removes {

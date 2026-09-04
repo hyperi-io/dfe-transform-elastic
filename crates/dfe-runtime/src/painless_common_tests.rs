@@ -3445,6 +3445,35 @@ fn camel_to_snake_writes_the_converted_object_to_its_target() {
     assert!(event.has("json"), "the source object is not consumed");
 }
 
+/// `qualys_gav` spells the same hoist as `putAll`, which MERGES.
+///
+/// Reading only the assignment form left its whole payload under `json.*` --
+/// 525 extra fields and 606 missing on every one of its events.
+#[test]
+fn camel_to_snake_merges_when_the_script_says_put_all() {
+    let script = format!(
+        "{CAMEL_TO_SNAKE}ctx.qualys_gav = ctx.qualys_gav ?: [:];\n\
+         ctx.qualys_gav.asset = ctx.qualys_gav.asset ?: [:];\n\
+         if (ctx.json != null) {{\n  \
+         ctx.qualys_gav.asset.putAll(convertToSnakeCase(ctx.json));\n}}\n\
+         ctx.remove('json');\n"
+    );
+    let mut event = Event::new(json!({
+        "qualys_gav": {"asset": {"kept": "already here"}},
+        "json": {"assetId": 42, "agentInfo": {"agentVersion": "1.2"}}
+    }));
+
+    assert!(try_known_painless(&mut event, &script));
+    assert_eq!(event.get("qualys_gav.asset.asset_id"), Some(&json!(42)));
+    assert_eq!(
+        event.get_str("qualys_gav.asset.agent_info.agent_version"),
+        Some("1.2")
+    );
+    // The distinction from the assignment form: what was there SURVIVES.
+    assert_eq!(event.get_str("qualys_gav.asset.kept"), Some("already here"));
+    assert!(!event.has("json"), "the script removes its source");
+}
+
 /// lambda's REPORT metrics: a map copied to a new path with its keys
 /// `snake_cased` by a helper the script names itself, so the pattern of the
 /// replacement identifies it rather than the helper's name. `MB` is one
