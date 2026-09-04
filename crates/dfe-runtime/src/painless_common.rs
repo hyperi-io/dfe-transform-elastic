@@ -6530,6 +6530,88 @@ pub fn sum_of_fields(event: &mut Event, pattern: &SumOfFields) -> bool {
 /// a pattern this code does not actually understand, and counting it as handled
 /// would inflate the coverage figure. A field the script names but the EVENT
 /// lacks is a different thing -- the script would have done nothing either.
+/// Every key of every object in a LIST, snake-cased in place.
+///
+/// A THIRD snake rule, and not either [`SnakeRule`]: `ti_recordedfuture`
+/// rewrites keys with a regex substitution rather than by inspecting each
+/// character, so the helpers behind `CamelToSnake` cannot express it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SnakeCaseListElements {
+    list: String,
+}
+
+impl SnakeCaseListElements {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(list: impl Into<String>) -> Self {
+        Self { list: list.into() }
+    }
+}
+
+/// One key under `/_?([a-z])([A-Z]+)/` -> `$1_$2`, then lower-cased.
+///
+/// The `[A-Z]+` run is greedy, so `fooBAR` becomes `foo_bar` rather than
+/// `foo_b_a_r`. A run with no lower-case character before it does not match at
+/// all, which is why `HTTPStatus` only loses its case.
+fn regex_snake_key(key: &str) -> String {
+    // `${1}` rather than `$1`: `$1_` would parse as a capture NAMED `1_`.
+    crate::cached_regex!("_?([a-z])([A-Z]+)")
+        .replace_all(key, "${1}_${2}")
+        .to_lowercase()
+}
+
+/// Rewrite every key, recursing into maps and into maps inside lists.
+fn snake_case_keys(value: &Value) -> Value {
+    match value {
+        Value::Object(map) => Value::Object(
+            map.iter()
+                .map(|(key, value)| (regex_snake_key(key), snake_case_keys(value)))
+                .collect(),
+        ),
+        // The vendor recurses into a list's MAP members only; anything else it
+        // leaves exactly as it found it.
+        Value::Array(items) => Value::Array(
+            items
+                .iter()
+                .map(|item| {
+                    if item.is_object() {
+                        snake_case_keys(item)
+                    } else {
+                        item.clone()
+                    }
+                })
+                .collect(),
+        ),
+        other => other.clone(),
+    }
+}
+
+/// `for (e in ctx.<list>) { out.add(keysToSnakeCase(e)); } ctx.<list> = out;`
+fn parse_snake_case_list_elements(script: &str) -> Option<SnakeCaseListElements> {
+    // The RULE is the trigger, not the helper's name: it is what makes this a
+    // different conversion from the two `SnakeRule` variants.
+    if !script.contains("_?([a-z])([A-Z]+)") || !script.contains("$1_$2") {
+        return None;
+    }
+    let list = clean_path(script.split_once(" in ctx.")?.1.split(')').next()?.trim());
+
+    // The loop must write the rebuilt list back over the one it read.
+    if !script.contains(&format!("ctx.{list} =")) {
+        return None;
+    }
+    (!list.is_empty()).then_some(SnakeCaseListElements { list })
+}
+
+/// Rewrite the list's objects in place.
+pub fn snake_case_list_elements(event: &mut Event, pattern: &SnakeCaseListElements) -> bool {
+    let Some(value @ Value::Array(_)) = event.get(&pattern.list) else {
+        return true;
+    };
+    let converted = snake_case_keys(value);
+    let _ = event.set(&pattern.list, converted);
+    true
+}
+
 /// One member TOTALLED across a list of objects.
 ///
 /// `ti_recordedfuture` reports evidence as a list and the ECS sighting count
@@ -13821,6 +13903,7 @@ pub(crate) enum KnownPattern {
     SumDirections(Vec<&'static str>),
     SumOfFields(Box<SumOfFields>),
     DurationToNanos,
+    SnakeCaseListElements(Box<SnakeCaseListElements>),
     SumMemberOverList(Box<SumMemberOverList>),
     FirstPresentKeyName(Box<FirstPresentKeyName>),
     FloatSecondsToNanos(Box<FloatSecondsToNanos>),
@@ -15007,6 +15090,15 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: a list's objects snake-cased in place by the vendor's own
+    // regex rule. Ahead of the sum below, which also walks `ctx.<list>`.
+    if normalised.contains("$1_$2")
+        && let Some(pattern) = parse_snake_case_list_elements(normalised)
+    {
+        patterns.push(KnownPattern::SnakeCaseListElements(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: one member totalled across a list of objects.
     if normalised.contains(" in ctx.")
         && normalised.contains("+=")
@@ -16168,6 +16260,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::FloatSecondsToNanos(pattern) => float_seconds_to_nanos(event, pattern),
         KnownPattern::FirstPresentKeyName(pattern) => first_present_key_name(event, pattern),
         KnownPattern::SumMemberOverList(pattern) => sum_member_over_list(event, pattern),
+        KnownPattern::SnakeCaseListElements(pattern) => snake_case_list_elements(event, pattern),
         KnownPattern::FlowDuration => try_flow_duration(event, normalised),
         KnownPattern::ParallelDispatch => try_parallel_dispatch(event, normalised),
         KnownPattern::ConcatMessage => try_concat_message(event, normalised),

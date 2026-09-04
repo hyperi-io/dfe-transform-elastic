@@ -3445,6 +3445,41 @@ fn camel_to_snake_writes_the_converted_object_to_its_target() {
     assert!(event.has("json"), "the source object is not consumed");
 }
 
+/// `ti_recordedfuture` snake-cases its evidence list with a REGEX rule.
+///
+/// Verbatim from `-dev/pipelines/ti_recordedfuture/threat/default.yml:143`.
+/// A third rule, and neither `SnakeRule` variant: the greedy `[A-Z]+` run and
+/// the "no lower-case before it, no match" case are what separate them.
+#[test]
+fn a_lists_objects_snake_case_by_the_vendors_regex() {
+    let script = "Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  \
+        def out = [:];\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    \
+        def v = entry.getValue();\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    \
+        }\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    out.put(k, v);\n  }\n  \
+        return out;\n}\nList evidence_details = new ArrayList();\n\
+        for (evidence in ctx.json.evidence_details){\n  \
+        evidence_details.add(keysToSnakeCase(evidence));\n}\n\
+        ctx.json.evidence_details = evidence_details;";
+
+    let mut event = Event::new(json!({ "json": { "evidence_details": [
+        { "sightingsCount": 3, "fooBAR": 1, "HTTPStatus": "ok",
+          "nested": { "innerValue": 2 },
+          "items": [ { "deepKey": 4 }, "left alone" ] }
+    ] } }));
+    assert!(try_known_painless(&mut event, script));
+
+    let first = &event.get("json.evidence_details").expect("the list")[0];
+    assert_eq!(first["sightings_count"], json!(3));
+    // The uppercase run is greedy, so this is not `foo_b_a_r`.
+    assert_eq!(first["foo_bar"], json!(1));
+    // Nothing lower-case precedes the run, so only the case changes.
+    assert_eq!(first["httpstatus"], json!("ok"));
+    // Recurses into maps, and into maps INSIDE lists.
+    assert_eq!(first["nested"]["inner_value"], json!(2));
+    assert_eq!(first["items"][0]["deep_key"], json!(4));
+    assert_eq!(first["items"][1], json!("left alone"));
+}
+
 /// `ti_recordedfuture` totals one member across its evidence list.
 ///
 /// Verbatim from the source's own script. `threat.indicator.sightings` gated
