@@ -10314,6 +10314,23 @@ pub fn scale_field(event: &mut Event, pattern: &ScaleField) -> bool {
             Factor::Double(factor) => json!(n as f64 * factor),
         };
         let _ = event.set(&pattern.target, scaled);
+        return true;
+    }
+
+    // A FRACTIONAL source, which the integer read above declines. gitlab times
+    // a request in seconds -- 0.03275 -- and reading it as an integer scaled
+    // nothing at all, leaving the raw value where 32,750,000 belonged.
+    let fractional = event.get(&pattern.source).and_then(|value| match value {
+        Value::String(text) => text.parse::<f64>().ok(),
+        other => other.as_f64(),
+    });
+    if let Some(n) = fractional {
+        #[allow(clippy::cast_precision_loss)]
+        let factor = match pattern.factor {
+            Factor::Long(factor) => factor as f64,
+            Factor::Double(factor) => factor,
+        };
+        let _ = event.set(&pattern.target, json!(n * factor));
     }
     true
 }

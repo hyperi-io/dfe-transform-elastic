@@ -3445,6 +3445,30 @@ fn camel_to_snake_writes_the_converted_object_to_its_target() {
     assert!(event.has("json"), "the source object is not consumed");
 }
 
+/// gitlab times a request in FRACTIONAL seconds.
+///
+/// Verbatim from `pipelines/gitlab/production/default.yml:116`. The integer
+/// read declined and scaled nothing, so 0.03275 stayed put where
+/// Elasticsearch publishes 3.275E7.
+#[test]
+fn a_scale_reads_a_fractional_source() {
+    let script = "ctx.event['duration'] = ctx.event.duration * 1e9;";
+
+    let mut event = Event::new(json!({ "event": { "duration": 0.03275 } }));
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(event.get("event.duration"), Some(&json!(32_750_000.0)));
+
+    // A grok leaves numbers as strings, so the string form scales too.
+    let mut text = Event::new(json!({ "event": { "duration": "0.00627" } }));
+    assert!(try_known_painless(&mut text, script));
+    assert_eq!(text.get("event.duration"), Some(&json!(6_270_000.0)));
+
+    // A whole number still takes the integer path and stays exact.
+    let mut whole = Event::new(json!({ "event": { "duration": 2 } }));
+    assert!(try_known_painless(&mut whole, script));
+    assert_eq!(whole.get("event.duration"), Some(&json!(2e9)));
+}
+
 /// `jamf_protect` names the telemetry event by WHICH key is populated.
 ///
 /// Verbatim from `pipelines/jamf_protect/telemetry/default.yml:71`. The ECS
