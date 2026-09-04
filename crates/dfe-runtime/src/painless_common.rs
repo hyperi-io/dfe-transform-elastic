@@ -11912,6 +11912,10 @@ pub(crate) struct CollectFromList {
     /// The list the entries come from.
     source: String,
     columns: Vec<CollectedColumn>,
+    /// `if (<collected>.size() > 0) { ctx.<target> = <collected>[0]; }` -- the
+    /// first of a collected column, kept beside the whole list. gdacs writes
+    /// its country lists and then names the leading country.
+    firsts: Vec<(String, String)>,
 }
 
 /// One member of the list's entries, and the array its values land in.
@@ -12045,7 +12049,35 @@ fn parse_collect_from_list(script: &str) -> Option<CollectFromList> {
             upper: arm.contains(".toUpperCase()"),
         });
     }
-    (!columns.is_empty()).then_some(CollectFromList { source, columns })
+    // `if (<local>.size() > 0) { ctx.<target> = <local>[0]; }` after the loop.
+    let mut firsts = Vec::new();
+    for arm in script.split(".size() > 0)").skip(1) {
+        let Some((assignment, _)) = arm.split_once("[0]") else {
+            continue;
+        };
+        let Some((head, local)) = assignment.rsplit_once('=') else {
+            continue;
+        };
+        let Some(target) = head.trim().rsplit_once("ctx.").map(|(_, p)| clean_path(p.trim()))
+        else {
+            continue;
+        };
+        // The local has to be one this loop collected, or the first member
+        // belongs to a list nothing here built.
+        let local = local.trim();
+        if let Some(collected) = assigned_to_ctx(script, local)
+            && columns.iter().any(|column| column.target == collected)
+            && !target.is_empty()
+        {
+            firsts.push((target, collected));
+        }
+    }
+
+    (!columns.is_empty()).then_some(CollectFromList {
+        source,
+        columns,
+        firsts,
+    })
 }
 
 fn run_collect_from_list(event: &mut Event, shape: &CollectFromList) -> bool {
@@ -12084,6 +12116,15 @@ fn run_collect_from_list(event: &mut Event, shape: &CollectFromList) -> bool {
         // The script builds the array before the loop, so a list that
         // contributes nothing still leaves an empty one behind.
         let _ = event.set(&column.target, Value::Array(collected));
+    }
+
+    // The script's own `size() > 0` guard: an empty collection names nothing.
+    for (target, collected) in &shape.firsts {
+        if let Some(Value::Array(items)) = event.get(collected)
+            && let Some(first) = items.first().cloned()
+        {
+            let _ = event.set(target, first);
+        }
     }
     true
 }

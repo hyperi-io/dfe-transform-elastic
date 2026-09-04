@@ -135,7 +135,7 @@
     "fortinet_fortiproxy": { "events": 33, "events_total": 33, "fields_wrong": 0 },
     "gcp": { "events": 382, "events_total": 382, "fields_wrong": 0 },
     "gcp_vertexai": { "events": 5, "events_total": 5, "fields_wrong": 0 },
-    "gdacs": { "events": 0, "events_total": 42, "fields_wrong": 540 },
+    "gdacs": { "events": 0, "events_total": 42, "fields_wrong": 456 },
     "gigamon": { "events": 20, "events_total": 78, "fields_wrong": 272 },
     "github": { "events": 216, "events_total": 237, "fields_wrong": 37 },
     "gitlab": { "events": 10, "events_total": 68, "fields_wrong": 891 },
