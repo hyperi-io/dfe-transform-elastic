@@ -4964,10 +4964,25 @@ fn assigned_once(body: &str, name: &str) -> bool {
         }
         let after = body[at..].trim_start();
         if after.starts_with('=') && !after.starts_with("==") {
+            // A SELF-FOLD is not a second value: `level = level.toLowerCase()`
+            // narrows what the local already holds, so it stays resolvable.
+            if after
+                .trim_start_matches('=')
+                .trim_start()
+                .strip_prefix(name)
+                .is_some_and(|tail| tail.trim_start().starts_with(".toLowerCase()"))
+            {
+                continue;
+            }
             assignments += 1;
         }
     }
     assignments == 1
+}
+
+/// Whether `name` narrows itself with `<name> = <name>.toLowerCase();`.
+fn folds_itself(body: &str, name: &str) -> bool {
+    body.contains(&format!("{name} = {name}.toLowerCase()"))
 }
 
 /// Replace `needle` with `with`, skipping a match that is the tail of a longer
@@ -5066,6 +5081,15 @@ fn one_alias_pass(body: &str) -> Option<String> {
         };
         if !assigned_once(&out, &name) {
             continue;
+        }
+        // The fold travels with the path, and its own statement goes: left in
+        // place it would rewrite to `ctx.<p>.toLowerCase() = ...`. It sits
+        // AFTER the declaration, so the offsets taken above stay valid.
+        let mut resolved = resolved;
+        if folds_itself(&out, &name) {
+            resolved = format!("{resolved}.toLowerCase()");
+            out = out.replace(&format!("{name} = {name}.toLowerCase();"), "");
+            changed = true;
         }
 
         // Forward of the declaration only, so the binding itself is untouched.
