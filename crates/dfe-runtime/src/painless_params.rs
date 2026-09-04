@@ -129,6 +129,7 @@ pub(crate) enum ParamsPattern {
         target: String,
     },
     EventBlockTable(Box<EventBlockTable>),
+    MoveKeysIntoChild(Box<MoveKeysIntoChild>),
     MimecastLogType,
     InvocationDetails,
     ScheduledTask,
@@ -654,6 +655,14 @@ fn params_pattern_tail(normalised: &str) -> Option<ParamsPattern> {
         && let Some((source, target)) = parse_lookup_wrap_list(normalised)
     {
         return Some(ParamsPattern::LookupWrapList { source, target });
+    }
+
+    // Pattern: a named set of keys moved from a map into a child of it.
+    if normalised.contains(".forEach(k ->")
+        && normalised.contains("[k] = ctx.")
+        && let Some(pattern) = parse_move_keys_into_child(normalised)
+    {
+        return Some(ParamsPattern::MoveKeysIntoChild(Box::new(pattern)));
     }
 
     // Pattern: the ECS event block a params table names, keyed on one field.
@@ -1437,6 +1446,9 @@ pub(crate) fn run_params_pattern(
             true
         }
         ParamsPattern::EventBlockTable(pattern) => run_event_block_table(event, pattern, params),
+        ParamsPattern::MoveKeysIntoChild(pattern) => {
+            run_move_keys_into_child(event, pattern, params)
+        }
         ParamsPattern::ProtocolPrefix {
             list,
             fallback,
@@ -3670,6 +3682,74 @@ fn parse_event_block_table(script: &str) -> Option<EventBlockTable> {
         action_types,
         action_field,
     })
+}
+
+/// A named set of keys MOVED from a map into a child of it.
+///
+/// stormshield lifts its metadata this way -- `params.names` lists the keys,
+/// and each one found is copied under `stormshield.metadata` and removed from
+/// where it was. The remove is half the point: leaving the original behind
+/// would emit a field Elasticsearch does not.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct MoveKeysIntoChild {
+    parent: String,
+    child: String,
+    names: String,
+}
+
+/// `params.<names>.forEach(k -> { ctx.<parent>.<child>[k] = ctx.<parent>[k];
+/// ctx.<parent>.remove(k); })`
+fn parse_move_keys_into_child(script: &str) -> Option<MoveKeysIntoChild> {
+    let names = script
+        .split_once("params.")?
+        .1
+        .split_once(".forEach(")?
+        .0
+        .trim();
+    if names.is_empty() || names.contains(char::is_whitespace) {
+        return None;
+    }
+
+    // The move itself names both halves: the destination on the left, the
+    // parent it is read from on the right.
+    let (head, tail) = script.split_once("[k] = ctx.")?;
+    let destination = clean_path(head.rsplit("ctx.").next()?.trim());
+    let parent = clean_path(tail.split_once('[')?.0.trim());
+    let child = destination.strip_prefix(&format!("{parent}."))?.to_owned();
+
+    // Without the remove this is a COPY, which leaves the source behind and is
+    // a different pattern.
+    if !script.contains(&format!("ctx.{parent}.remove(k)")) {
+        return None;
+    }
+    (!parent.is_empty() && !child.is_empty()).then(|| MoveKeysIntoChild {
+        parent,
+        child,
+        names: names.to_owned(),
+    })
+}
+
+fn run_move_keys_into_child(
+    event: &mut Event,
+    pattern: &MoveKeysIntoChild,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(names) = params.get(&pattern.names).and_then(Value::as_array) else {
+        return true;
+    };
+    for name in names.iter().filter_map(Value::as_str) {
+        let source = format!("{}.{name}", pattern.parent);
+        // A key the document does not carry is skipped, not created empty.
+        let Some(value) = event.get(&source).cloned() else {
+            continue;
+        };
+        let _ = event.set(
+            &format!("{}.{}.{name}", pattern.parent, pattern.child),
+            value,
+        );
+        event.remove(&source);
+    }
+    true
 }
 
 /// Write the block the table names, then the action's extra type.

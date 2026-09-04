@@ -2686,6 +2686,35 @@ fn a_params_named_total_sums_every_direction() {
     assert_eq!(untyped.get("network.bytes"), None);
 }
 
+/// stormshield lifts its metadata keys into a child map, and REMOVES them.
+///
+/// Verbatim from `pipelines/stormshield/log/default.yml:613`. Leaving the
+/// original behind would emit a field Elasticsearch does not.
+#[test]
+fn a_named_set_of_keys_moves_into_a_child_map() {
+    let script = "if (!ctx.stormshield.containsKey(\"metadata\")) {\n    \
+        ctx.stormshield.metadata = [:];\n}\nparams.names.forEach(k -> {\n    \
+        if (ctx.stormshield.containsKey(k)) {\n        \
+        ctx.stormshield.metadata[k] = ctx.stormshield[k];\n        \
+        ctx.stormshield.remove(k);\n    }\n    return true;\n});";
+    let params = json!({ "names": ["id", "pri", "absent"] });
+
+    let mut event = Event::new(json!({
+        "stormshield": { "id": "7", "pri": "5", "logtype": "alarm" }
+    }));
+    assert!(try_params_painless(&mut event, script, &params));
+
+    assert_eq!(event.get_str("stormshield.metadata.id"), Some("7"));
+    assert_eq!(event.get_str("stormshield.metadata.pri"), Some("5"));
+    // MOVED, not copied.
+    assert!(!event.has("stormshield.id"));
+    assert!(!event.has("stormshield.pri"));
+    // A key the script does not name is untouched.
+    assert_eq!(event.get_str("stormshield.logtype"), Some("alarm"));
+    // A named key the document lacks is not created empty.
+    assert!(!event.has("stormshield.metadata.absent"));
+}
+
 /// stormshield keys its whole ECS event block off `logtype`.
 ///
 /// Verbatim from `pipelines/stormshield/log/default.yml:699`, with the tables
