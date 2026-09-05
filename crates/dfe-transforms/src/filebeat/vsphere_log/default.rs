@@ -56,15 +56,9 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: if (ctx.log?.syslog?.priority != null) {\n  def severity = new HashMap();\n  severity['code'] = ctx.log.syslog.priority&0x7;\n  ctx.log.syslog['severity'] = severity;\n  def facility = new HashMap();\n  facility['code'] = ctx.log.syslog.priority>>3;\n  ctx.log.syslog['facility'] = facility;\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
-                event,
-                cached_painless!(
-                    r#"if (ctx.log?.syslog?.priority != null) {\n  def severity = new HashMap();\n  severity['code'] = ctx.log.syslog.priority&0x7;\n  ctx.log.syslog['severity'] = severity;\n  def facility = new HashMap();\n  facility['code'] = ctx.log.syslog.priority>>3;\n  ctx.log.syslog['facility'] = facility;\n}\n"#
-                ),
-            )?;
+            syslog_priority(event, &SyslogPriorityScript::new(None, true, true, false));
 
             // Painless script
             // Source: if (ctx.log?.syslog?.facility?.code == null || !params.containsKey((ctx.log.syslog.facility.code).toString())) {\n  return;\n}\nctx.log.syslog.facility.name = params[(ctx.log.syslog.facility.code).toString()];
@@ -360,9 +354,16 @@ impl Transform for Default {
             };
             if _cond {
                 // Begin nested pipeline: "login"
-                // SKIPPED: condition not transpiled: ctx.message?.contains('Authenticated user') ?: false
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.get("message").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => {
+                            a.iter().any(|x| x.as_str() == Some("Authenticated user"))
+                        }
+                        serde_json::Value::String(s) => s.contains("Authenticated user"),
+                        _ => false,
+                    })
+                };
+                if _cond {
                     if let Some(input) = event.get_string("message") {
                         let mut remaining: &str = &input;
                         let mut captured: Vec<(&str, &str)> = Vec::new();
@@ -641,9 +642,16 @@ impl Transform for Default {
                 if _cond {
                     event.set("_tmp.event", json!("logged in"))?;
                 }
-                // SKIPPED: condition not transpiled: ctx.message?.contains('logged out') ?: false
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.get("message").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => {
+                            a.iter().any(|x| x.as_str() == Some("logged out"))
+                        }
+                        serde_json::Value::String(s) => s.contains("logged out"),
+                        _ => false,
+                    })
+                };
+                if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("message") {
@@ -732,9 +740,16 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                // SKIPPED: condition not transpiled: ctx.message?.contains('logged out') ?: false
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.get("message").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => {
+                            a.iter().any(|x| x.as_str() == Some("logged out"))
+                        }
+                        serde_json::Value::String(s) => s.contains("logged out"),
+                        _ => false,
+                    })
+                };
+                if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("message") {
@@ -778,9 +793,16 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                // SKIPPED: condition not transpiled: ctx.message?.contains('Failed login') ?: false
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.get("message").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => {
+                            a.iter().any(|x| x.as_str() == Some("Failed login"))
+                        }
+                        serde_json::Value::String(s) => s.contains("Failed login"),
+                        _ => false,
+                    })
+                };
+                if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("message") {
@@ -845,9 +867,12 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                // SKIPPED: condition not transpiled: ctx.message?.startsWith('Received') ?: false
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event
+                        .get_str("message")
+                        .is_some_and(|s| s.starts_with("Received"))
+                };
+                if _cond {
                     if let Some(input) = event.get_string("message") {
                         let mut remaining: &str = &input;
                         let mut captured: Vec<(&str, &str)> = Vec::new();
@@ -906,9 +931,12 @@ impl Transform for Default {
                         }
                     }
                 }
-                // SKIPPED: condition not transpiled: ctx.message?.startsWith('Disconnected') ?: false
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event
+                        .get_str("message")
+                        .is_some_and(|s| s.starts_with("Disconnected"))
+                };
+                if _cond {
                     if let Some(input) = event.get_string("message") {
                         let mut remaining: &str = &input;
                         let mut captured: Vec<(&str, &str)> = Vec::new();
@@ -954,9 +982,12 @@ impl Transform for Default {
                         }
                     }
                 }
-                // SKIPPED: condition not transpiled: ctx.message?.startsWith('Connection') ?: false
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event
+                        .get_str("message")
+                        .is_some_and(|s| s.starts_with("Connection"))
+                };
+                if _cond {
                     if let Some(input) = event.get_string("message") {
                         // Grok pattern: Connection %{DATA:_tmp.status} by %{IPORHOST:client.ip} port %{POSINT:client.port}( %{GREEDYDATA})?$
                         if !cached_grok!("Connection %{DATA:_tmp.status} by %{IPORHOST:client.ip} port %{POSINT:client.port}( %{GREEDYDATA})?$").extract_into(&input, event)? {
@@ -964,9 +995,16 @@ impl Transform for Default {
                 }
                     }
                 }
-                // SKIPPED: condition not transpiled: ctx.message?.contains('Logged in user:') ?: false
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.get("message").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => {
+                            a.iter().any(|x| x.as_str() == Some("Logged in user:"))
+                        }
+                        serde_json::Value::String(s) => s.contains("Logged in user:"),
+                        _ => false,
+                    })
+                };
+                if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("message") {
@@ -1011,9 +1049,16 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                // SKIPPED: condition not transpiled: ctx?.message?.contains('logged in successfully') ?: false
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.get("message").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => a
+                            .iter()
+                            .any(|x| x.as_str() == Some("logged in successfully")),
+                        serde_json::Value::String(s) => s.contains("logged in successfully"),
+                        _ => false,
+                    })
+                };
+                if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
                         if let Some(input) = event.get_string("message") {
@@ -1057,9 +1102,14 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                // SKIPPED: condition not transpiled: ctx.user?.name?.contains('\\') ?: false
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.get("user.name").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("\\")),
+                        serde_json::Value::String(s) => s.contains("\\"),
+                        _ => false,
+                    })
+                };
+                if _cond {
                     if let Some(input) = event.get_string("user.name") {
                         let mut remaining: &str = &input;
                         let mut captured: Vec<(&str, &str)> = Vec::new();
@@ -1183,14 +1233,20 @@ impl Transform for Default {
                         ),
                     )?;
                 }
-                // SKIPPED: condition not transpiled: ctx.message?.toLowerCase().contains('logged in') ?: false
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event
+                        .get_str("message")
+                        .is_some_and(|s| s.to_lowercase().contains("logged in"))
+                };
+                if _cond {
                     event.set("event.action", json!("login"))?;
                 }
-                // SKIPPED: condition not transpiled: ctx.message?.toLowerCase().contains('logged out') ?: false
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event
+                        .get_str("message")
+                        .is_some_and(|s| s.to_lowercase().contains("logged out"))
+                };
+                if _cond {
                     event.set("event.action", json!("logout"))?;
                 }
                 event.append("event.type", json!("info"))?;
@@ -1274,13 +1330,27 @@ impl Transform for Default {
                 // End nested pipeline: "login"
             }
 
-            // SKIPPED: condition not transpiled: ctx.message?.contains("'Upload' for path") ?: false
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get("message").is_some_and(|v| match v {
+                    serde_json::Value::Array(a) => {
+                        a.iter().any(|x| x.as_str() == Some("'Upload' for path"))
+                    }
+                    serde_json::Value::String(s) => s.contains("'Upload' for path"),
+                    _ => false,
+                })
+            };
+            if _cond {
                 // Begin nested pipeline: "file"
-                // SKIPPED: condition not transpiled: ctx.message.contains('Upload') ?: false
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.get("message").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => {
+                            a.iter().any(|x| x.as_str() == Some("Upload"))
+                        }
+                        serde_json::Value::String(s) => s.contains("Upload"),
+                        _ => false,
+                    })
+                };
+                if _cond {
                     if let Some(input) = event.get_string("message") {
                         let mut remaining: &str = &input;
                         let mut captured: Vec<(&str, &str)> = Vec::new();
@@ -1388,15 +1458,16 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n                for (def x : map.values()) {\n                  if (x instanceof Map) {\n                    handleMap(x);\n                  } else if (x instanceof List) {\n                    handleList(x);\n                  }\n                }\n                map.values().removeIf(v -> v == null);\n              }\n              void handleList(List list) {\n                for (def x : list) {\n                  if (x instanceof Map) {\n                    handleMap(x);\n                  } else if (x instanceof List) {\n                    handleList(x);\n                  }\n                }\n              }\n              handleMap(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n                for (def x : map.values()) {\n                  if (x instanceof Map) {\n                    handleMap(x);\n                  } else if (x instanceof List) {\n                    handleList(x);\n                  }\n                }\n                map.values().removeIf(v -> v == null);\n              }\n              void handleList(List list) {\n                for (def x : list) {\n                  if (x instanceof Map) {\n                    handleMap(x);\n                  } else if (x instanceof List) {\n                    handleList(x);\n                  }\n                }\n              }\n              handleMap(ctx);\n              "#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             Ok(TransformResult::Continue)
         })(event);

@@ -14,39 +14,68 @@ impl Transform for File {
     }
 
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
-        // SKIPPED: condition not transpiled: ctx.message.contains('Upload') ?: false
-        #[allow(unreachable_code, unused_variables)]
-        if false {
+        let _cond = {
+            event.get("message").is_some_and(|v| match v {
+                serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("Upload")),
+                serde_json::Value::String(s) => s.contains("Upload"),
+                _ => false,
+            })
+        };
+        if _cond {
             if let Some(input) = event.get_string("message") {
                 let mut remaining: &str = &input;
                 let mut captured: Vec<(&str, &str)> = Vec::new();
                 let matched = 'dissect: {
-                    let Some(pos) = remaining.find(" 'Upload' for path '") else { break 'dissect false };
+                    let Some(pos) = remaining.find(" 'Upload' for path '") else {
+                        break 'dissect false;
+                    };
                     remaining = &remaining[pos..];
-                    let Some(rest) = remaining.strip_prefix(" 'Upload' for path '") else { break 'dissect false };
+                    let Some(rest) = remaining.strip_prefix(" 'Upload' for path '") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                    let Some(pos) = remaining.find("' ") else { break 'dissect false };
+                    let Some(pos) = remaining.find("' ") else {
+                        break 'dissect false;
+                    };
                     captured.push(("vsphere.log.file.path", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                    let Some(rest) = remaining.strip_prefix("' ") else { break 'dissect false };
+                    let Some(rest) = remaining.strip_prefix("' ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                    let Some(pos) = remaining.find(" '") else { break 'dissect false };
+                    let Some(pos) = remaining.find(" '") else {
+                        break 'dissect false;
+                    };
                     remaining = &remaining[pos..];
-                    let Some(rest) = remaining.strip_prefix(" '") else { break 'dissect false };
+                    let Some(rest) = remaining.strip_prefix(" '") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                    let Some(pos) = remaining.find("' ") else { break 'dissect false };
+                    let Some(pos) = remaining.find("' ") else {
+                        break 'dissect false;
+                    };
                     captured.push(("client.ip", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                    let Some(rest) = remaining.strip_prefix("' ") else { break 'dissect false };
+                    let Some(rest) = remaining.strip_prefix("' ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                    let Some(pos) = remaining.find(" '") else { break 'dissect false };
+                    let Some(pos) = remaining.find(" '") else {
+                        break 'dissect false;
+                    };
                     remaining = &remaining[pos..];
-                    let Some(rest) = remaining.strip_prefix(" '") else { break 'dissect false };
+                    let Some(rest) = remaining.strip_prefix(" '") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                    let Some(pos) = remaining.find("'") else { break 'dissect false };
+                    let Some(pos) = remaining.find("'") else {
+                        break 'dissect false;
+                    };
                     captured.push(("event.outcome", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                    let Some(rest) = remaining.strip_prefix("'") else { break 'dissect false };
+                    let Some(rest) = remaining.strip_prefix("'") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
                     true
                 };
@@ -54,8 +83,7 @@ impl Transform for File {
                     for (path, value) in captured {
                         event.set(path, value)?;
                     }
-                }
-                else {
+                } else {
                     return Err(TransformError::ParseError {
                         path: "message".into(),
                         message: "dissect pattern did not match".into(),
@@ -69,20 +97,27 @@ impl Transform for File {
             map_strings(event, "event.outcome", "event.outcome", str::to_lowercase)?;
         }
 
-            event.append("event.category", json!("file"))?;
+        event.append("event.category", json!("file"))?;
 
-            event.append("event.type", json!("creation"))?;
-
-        let _cond = { event.has_value("client.ip") };
-        if _cond {
-        if let Some(v) = event.get("client.ip").cloned() {
-            event.set("source.ip", v)?;
-        }
-        }
+        event.append("event.type", json!("creation"))?;
 
         let _cond = { event.has_value("client.ip") };
         if _cond {
-            event.append_unique("related.ip", json!(event.get("client.ip").map_or_else(String::new, template_to_string)))?;
+            if let Some(v) = event.get("client.ip").cloned() {
+                event.set("source.ip", v)?;
+            }
+        }
+
+        let _cond = { event.has_value("client.ip") };
+        if _cond {
+            event.append_unique(
+                "related.ip",
+                json!(
+                    event
+                        .get("client.ip")
+                        .map_or_else(String::new, template_to_string)
+                ),
+            )?;
         }
 
         Ok(TransformResult::Continue)

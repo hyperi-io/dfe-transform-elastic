@@ -14,26 +14,42 @@ impl Transform for Dns {
     }
 
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
-        let _cond = { event.get_str("message").is_some_and(|s| s.starts_with("query[")) };
+        let _cond = {
+            event
+                .get_str("message")
+                .is_some_and(|s| s.starts_with("query["))
+        };
         if _cond {
             if let Some(input) = event.get_string("message") {
                 let mut remaining: &str = &input;
                 let mut captured: Vec<(&str, &str)> = Vec::new();
                 let matched = 'dissect: {
-                    let Some(pos) = remaining.find("[") else { break 'dissect false };
+                    let Some(pos) = remaining.find("[") else {
+                        break 'dissect false;
+                    };
                     captured.push(("dns.op_code", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                    let Some(rest) = remaining.strip_prefix("[") else { break 'dissect false };
+                    let Some(rest) = remaining.strip_prefix("[") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                    let Some(pos) = remaining.find("] ") else { break 'dissect false };
+                    let Some(pos) = remaining.find("] ") else {
+                        break 'dissect false;
+                    };
                     captured.push(("dns.question.type", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                    let Some(rest) = remaining.strip_prefix("] ") else { break 'dissect false };
+                    let Some(rest) = remaining.strip_prefix("] ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                    let Some(pos) = remaining.find(" from ") else { break 'dissect false };
+                    let Some(pos) = remaining.find(" from ") else {
+                        break 'dissect false;
+                    };
                     captured.push(("dns.question.name", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                    let Some(rest) = remaining.strip_prefix(" from ") else { break 'dissect false };
+                    let Some(rest) = remaining.strip_prefix(" from ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
                     true
                 };
@@ -41,8 +57,7 @@ impl Transform for Dns {
                     for (path, value) in captured {
                         event.set(path, value)?;
                     }
-                }
-                else {
+                } else {
                     return Err(TransformError::ParseError {
                         path: "message".into(),
                         message: "dissect pattern did not match".into(),
@@ -51,18 +66,28 @@ impl Transform for Dns {
             }
         }
 
-        let _cond = { event.get_str("message").is_some_and(|s| s.starts_with("cached")) };
+        let _cond = {
+            event
+                .get_str("message")
+                .is_some_and(|s| s.starts_with("cached"))
+        };
         if _cond {
             if let Some(input) = event.get_string("message") {
                 let mut remaining: &str = &input;
                 let mut captured: Vec<(&str, &str)> = Vec::new();
                 let matched = 'dissect: {
-                    let Some(rest) = remaining.strip_prefix("cached ") else { break 'dissect false };
+                    let Some(rest) = remaining.strip_prefix("cached ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                    let Some(pos) = remaining.find(" is ") else { break 'dissect false };
+                    let Some(pos) = remaining.find(" is ") else {
+                        break 'dissect false;
+                    };
                     captured.push(("dns.question.name", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                    let Some(rest) = remaining.strip_prefix(" is ") else { break 'dissect false };
+                    let Some(rest) = remaining.strip_prefix(" is ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
                     captured.push(("_tmp.dns.resolved_ip", remaining));
                     true
@@ -71,8 +96,7 @@ impl Transform for Dns {
                     for (path, value) in captured {
                         event.set(path, value)?;
                     }
-                }
-                else {
+                } else {
                     return Err(TransformError::ParseError {
                         path: "message".into(),
                         message: "dissect pattern did not match".into(),
@@ -81,18 +105,28 @@ impl Transform for Dns {
             }
         }
 
-        let _cond = { event.get_str("message").is_some_and(|s| s.starts_with("forwarded")) };
+        let _cond = {
+            event
+                .get_str("message")
+                .is_some_and(|s| s.starts_with("forwarded"))
+        };
         if _cond {
             if let Some(input) = event.get_string("message") {
                 let mut remaining: &str = &input;
                 let mut captured: Vec<(&str, &str)> = Vec::new();
                 let matched = 'dissect: {
-                    let Some(rest) = remaining.strip_prefix("forwarded ") else { break 'dissect false };
+                    let Some(rest) = remaining.strip_prefix("forwarded ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                    let Some(pos) = remaining.find(" to ") else { break 'dissect false };
+                    let Some(pos) = remaining.find(" to ") else {
+                        break 'dissect false;
+                    };
                     captured.push(("dns.question.name", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                    let Some(rest) = remaining.strip_prefix(" to ") else { break 'dissect false };
+                    let Some(rest) = remaining.strip_prefix(" to ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
                     captured.push(("_tmp.dns.resolved_ip", remaining));
                     true
@@ -101,8 +135,7 @@ impl Transform for Dns {
                     for (path, value) in captured {
                         event.set(path, value)?;
                     }
-                }
-                else {
+                } else {
                     return Err(TransformError::ParseError {
                         path: "message".into(),
                         message: "dissect pattern did not match".into(),
@@ -136,29 +169,52 @@ impl Transform for Dns {
 
         let _cond = { event.has_value("_tmp.dns.resolved_ip") };
         if _cond {
-            event.append("dns.resolved_ip", json!(event.get("_tmp.dns.resolved_ip").map_or_else(String::new, template_to_string)))?;
+            event.append(
+                "dns.resolved_ip",
+                json!(
+                    event
+                        .get("_tmp.dns.resolved_ip")
+                        .map_or_else(String::new, template_to_string)
+                ),
+            )?;
         }
 
         let _cond = { event.has_value("dns.resolved_ip") };
         if _cond {
-        event.set("dns.answers.data", json!(event.get("dns.resolved_ip").map_or_else(String::new, template_to_string)))?;
+            event.set(
+                "dns.answers.data",
+                json!(
+                    event
+                        .get("dns.resolved_ip")
+                        .map_or_else(String::new, template_to_string)
+                ),
+            )?;
         }
 
         let _cond = { event.has_value("dns.question.name") && event.has_value("dns.resolved_ip") };
         if _cond {
-        event.set("dns.answers.name", json!(event.get("dns.question.name").map_or_else(String::new, template_to_string)))?;
+            event.set(
+                "dns.answers.name",
+                json!(
+                    event
+                        .get("dns.question.name")
+                        .map_or_else(String::new, template_to_string)
+                ),
+            )?;
         }
 
-            event.append("event.category", json!("network"))?;
+        event.append("event.category", json!("network"))?;
 
-            event.append("event.type", json!("protocol"))?;
+        event.append("event.type", json!("protocol"))?;
 
-            event.append("event.type", json!("connection"))?;
+        event.append("event.type", json!("connection"))?;
 
         let _cond = { event.has_value("dns.question.domain") };
         if _cond {
             if event.remove("dns.question.domain").is_none() {
-                return Err(TransformError::FieldNotFound { path: "dns.question.domain".into() });
+                return Err(TransformError::FieldNotFound {
+                    path: "dns.question.domain".into(),
+                });
             }
         }
 
