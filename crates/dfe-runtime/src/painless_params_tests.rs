@@ -2774,3 +2774,242 @@ fn an_event_block_comes_from_the_table_its_subject_keys() {
         "the entry was aliased rather than copied"
     );
 }
+
+/// auditd picks its action by which candidate's fields the record HOLDS.
+///
+/// Verbatim from `pipelines/auditd/log/default.yml:1998`, with the tables cut
+/// to the entries the assertions read. All 83 of its events go through it.
+#[test]
+fn a_record_action_comes_from_the_candidate_whose_fields_are_present() {
+    let script = r#"boolean hasFields(HashMap base, def list) {
+          if (list == null) return true;
+          for (int i=0; i<list.length; i++)
+            if (base[list[i]] == null) return false;
+          return true;
+        }
+        if (ctx?.auditd?.log?.record_type == null) {
+          return;
+        }
+        HashMap base = ctx.auditd.log;
+        def acts = params.types.get(base.record_type);
+        if (acts == null && base.syscall != null) {
+          acts = params.syscalls.get(base?.syscall);
+          if (acts == null) acts = params.syscalls.get('*');
+        }
+        if (acts == null) return;
+        def act = null;
+        for (int i=0; act == null && i<acts.length; i++) {
+          if (hasFields(base, acts[i]["has_fields"])) act = acts[i];
+        }
+        if (act?.event != null) {
+          def hm = new HashMap(act.event);
+          hm.forEach((k, v) -> ctx.event[k] = v);
+        }
+        if (act?.copy != null) {
+          List lst = new ArrayList();
+          for(int i=0; i<act.copy.length; i++) {
+            def value;
+            def srcList = act.copy[i]["from"];
+            for (int j=0; value == null && j<srcList.length; j++) {
+              value = base[srcList[j]];
+            }
+            if (value != null && value instanceof String && value != 'unset' && value != '?') {
+              String suffix = value ==~ /[0-9]+/? ".id" : ".name";
+              lst.add(["target": act.copy[i]["to"] + suffix, "value": value]);
+            }
+          }
+          if (lst.size() > 0) {
+            ctx.auditd.log["copy"] = lst;
+          }
+        }"#;
+    let params = json!({
+        "types": {
+            "AVC": [
+                { "event": { "action": "violated-selinux-policy" },
+                  "has_fields": ["seresult"] },
+                { "event": { "action": "violated-apparmor-policy" },
+                  "has_fields": ["apparmor"] }
+            ],
+            "ACCT_LOCK": [
+                { "event": { "action": "locked-account", "category": ["iam"] },
+                  "copy": [
+                    { "from": ["auid", "AUID"], "to": "user" },
+                    { "from": ["acct"], "to": "user.target" },
+                    { "from": ["missing"], "to": "user.effective" }
+                  ] }
+            ]
+        },
+        "syscalls": {
+            "execve": [{ "event": { "action": "executed" } }],
+            "*": [{ "event": { "action": "used-syscall" } }]
+        }
+    });
+
+    // Two candidates under one key: the one whose field is present wins.
+    let mut apparmor = Event::new(json!({
+        "auditd": { "log": { "record_type": "AVC", "apparmor": "DENIED" } }
+    }));
+    assert!(try_params_painless(&mut apparmor, script, &params));
+    assert_eq!(
+        apparmor.get_str("event.action"),
+        Some("violated-apparmor-policy")
+    );
+
+    let mut selinux = Event::new(json!({
+        "auditd": { "log": { "record_type": "AVC", "seresult": "denied" } }
+    }));
+    assert!(try_params_painless(&mut selinux, script, &params));
+    assert_eq!(
+        selinux.get_str("event.action"),
+        Some("violated-selinux-policy")
+    );
+
+    // Neither candidate's fields are present, so nothing is written.
+    let mut neither = Event::new(json!({
+        "auditd": { "log": { "record_type": "AVC" } }
+    }));
+    assert!(try_params_painless(&mut neither, script, &params));
+    assert!(!neither.has("event.action"));
+
+    // No entry in the primary table falls through to the syscall...
+    let mut syscall = Event::new(json!({
+        "auditd": { "log": { "record_type": "SYSCALL", "syscall": "execve" } }
+    }));
+    assert!(try_params_painless(&mut syscall, script, &params));
+    assert_eq!(syscall.get_str("event.action"), Some("executed"));
+
+    // ... and an unlisted syscall to the wildcard.
+    let mut wildcard = Event::new(json!({
+        "auditd": { "log": { "record_type": "SYSCALL", "syscall": "nosuch" } }
+    }));
+    assert!(try_params_painless(&mut wildcard, script, &params));
+    assert_eq!(wildcard.get_str("event.action"), Some("used-syscall"));
+
+    // A record type in neither table, with no syscall, writes nothing.
+    let mut unknown = Event::new(json!({
+        "auditd": { "log": { "record_type": "NOSUCH" } }
+    }));
+    assert!(try_params_painless(&mut unknown, script, &params));
+    assert!(!unknown.has("event.action"));
+
+    // The copy list: `.id` for a numeric value, `.name` otherwise, the FIRST
+    // source that holds a value, and nothing at all for a source list that
+    // resolves to nothing.
+    let mut copied = Event::new(json!({
+        "auditd": { "log": { "record_type": "ACCT_LOCK", "AUID": "1000", "acct": "root" } }
+    }));
+    assert!(try_params_painless(&mut copied, script, &params));
+    assert_eq!(copied.get_str("event.action"), Some("locked-account"));
+    assert_eq!(
+        copied.get("auditd.log.copy"),
+        Some(&json!([
+            { "target": "user.id", "value": "1000" },
+            { "target": "user.target.name", "value": "root" }
+        ]))
+    );
+}
+
+/// auditd normalises every value of its record map in one pass.
+///
+/// Verbatim from `pipelines/auditd/log/default.yml:20`. Leaving it unbound
+/// leaves a quote on `process.executable`, `process.name`, `user.terminal`
+/// and `auditd.log.hostname` in every record that carries one.
+#[test]
+fn every_value_of_a_map_is_normalised_in_place() {
+    let script = r#"String trimQuotes(def singleQuote, def doubleQuote, def v) {
+            if (v.startsWith(singleQuote) || v.startsWith(doubleQuote)) {
+                v = v.substring(1, v.length());
+            }
+            if (v.endsWith(singleQuote) || v.endsWith(doubleQuote)) {
+                v = v.substring(0, v.length()-1);
+            }
+            return v;
+        }
+        def processFieldValue(String k, def v, def possibleHexKeys, def possibleBooleanKeys) {
+            if (v == "?" || v == "(null)" || v == "") {
+                return null;
+            }
+            if (possibleHexKeys.contains(k) && isHexAscii(v)) {
+                v = convertHexToString(v);
+            }
+            if (possibleBooleanKeys.contains(k) && v instanceof String) {
+                v = convertStringToBoolean(v);
+            }
+            if (v instanceof String) {
+                v = trimQuotes("'", "\"", v);
+            }
+            if (k == "arch" && v == "c000003e") {
+                v = "x86_64";
+            }
+            return v;
+        }
+        def audit = ctx.auditd.get("log");
+        Iterator entries = audit.entrySet().iterator();
+        while (entries.hasNext()) {
+            def e = entries.next();
+            def k = e.getKey();
+            def v = e.getValue();
+            if (v instanceof List) {
+                int j = 0;
+                for (int i = 0; i < v.length; i++) {
+                    v[j] = processFieldValue(k, v[i], params.possibleHexKeys, params.possibleBooleanKeys);
+                    if (v[j] != null) {
+                        j++;
+                    }
+                }
+                if (j < v.length) {
+                    if (j == 0) {
+                        entries.remove();
+                        continue;
+                    }
+                    audit.put(k, v.subList(0, j));
+                }
+                continue;
+            }
+            v = processFieldValue(k, v, params.possibleHexKeys, params.possibleBooleanKeys);
+            if (v == null) {
+                entries.remove();
+            } else {
+                audit.put(k, v);
+            }
+        }"#;
+    let params = json!({
+        "possibleHexKeys": ["exe", "cmd", "cwd", "comm"],
+        "possibleBooleanKeys": ["success"]
+    });
+
+    let mut event = Event::new(json!({ "auditd": { "log": {
+        "exe": "\"/usr/sbin/sshd\"",
+        "comm": "'sshd'",
+        "cmd": "6C73202D6C",
+        "cwd": "2F686F6D65",
+        "success": "yes",
+        "arch": "c000003e",
+        "terminal": "?",
+        "acct": "(null)",
+        "empty": "",
+        "pid": 1234,
+        "a0": ["\"one\"", "?"],
+        "a1": ["?"]
+    } } }));
+    assert!(try_params_painless(&mut event, script, &params));
+
+    // Both quote spellings, one from each end.
+    assert_eq!(event.get_str("auditd.log.exe"), Some("/usr/sbin/sshd"));
+    assert_eq!(event.get_str("auditd.log.comm"), Some("sshd"));
+    // Hex that DECODES, because the result carries a space.
+    assert_eq!(event.get_str("auditd.log.cmd"), Some("ls -l"));
+    // Hex that does not: every byte lands above `"`, so the original stands.
+    assert_eq!(event.get_str("auditd.log.cwd"), Some("2F686F6D65"));
+    assert_eq!(event.get("auditd.log.success"), Some(&json!(true)));
+    assert_eq!(event.get_str("auditd.log.arch"), Some("x86_64"));
+    // The three spellings of absent remove the key outright.
+    assert!(!event.has("auditd.log.terminal"));
+    assert!(!event.has("auditd.log.acct"));
+    assert!(!event.has("auditd.log.empty"));
+    // A non-string is not a candidate for any of it.
+    assert_eq!(event.get("auditd.log.pid"), Some(&json!(1234)));
+    // A list drops its absent elements, and goes entirely when none survive.
+    assert_eq!(event.get("auditd.log.a0"), Some(&json!(["one"])));
+    assert!(!event.has("auditd.log.a1"));
+}

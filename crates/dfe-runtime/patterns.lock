@@ -229,23 +229,25 @@
  43 LookupPut
  44 LookupWrapList
  45 MoveKeysIntoChild
- 46 EventBlockTable
- 47 ProtocolPrefix
- 48 ReversibleLookup
- 49 LookupMerge
- 50 KeyedActionRow
- 51 KeyedRowAppends
- 52 LookupColumns
- 53 LookupNormalise
- 54 IndexedLookup
- 55 Scale
- 56 Replace
- 57 AddUniqueRow
- 58 FrameworkPreference
- 59 NormalisedLookup
- 60 StringifiedLookup
- 61 LookupNormalise
- 62 GuardedLookup
- 63 MergeRowOrFallback
- 64 RowOrDefaults
+ 46 NormaliseMapValues
+ 47 RecordActionTable
+ 48 EventBlockTable
+ 49 ProtocolPrefix
+ 50 ReversibleLookup
+ 51 LookupMerge
+ 52 KeyedActionRow
+ 53 KeyedRowAppends
+ 54 LookupColumns
+ 55 LookupNormalise
+ 56 IndexedLookup
+ 57 Scale
+ 58 Replace
+ 59 AddUniqueRow
+ 60 FrameworkPreference
+ 61 NormalisedLookup
+ 62 StringifiedLookup
+ 63 LookupNormalise
+ 64 GuardedLookup
+ 65 MergeRowOrFallback
+ 66 RowOrDefaults
 

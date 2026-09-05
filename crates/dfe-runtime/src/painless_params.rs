@@ -129,6 +129,8 @@ pub(crate) enum ParamsPattern {
         target: String,
     },
     EventBlockTable(Box<EventBlockTable>),
+    RecordActionTable(Box<RecordActionTable>),
+    NormaliseMapValues(Box<NormaliseMapValues>),
     MoveKeysIntoChild(Box<MoveKeysIntoChild>),
     MimecastLogType,
     InvocationDetails,
@@ -663,6 +665,25 @@ fn params_pattern_tail(normalised: &str) -> Option<ParamsPattern> {
         && let Some(pattern) = parse_move_keys_into_child(normalised)
     {
         return Some(ParamsPattern::MoveKeysIntoChild(Box::new(pattern)));
+    }
+
+    // Pattern: every value of a map, normalised in place. Its own trigger is
+    // the helper the script declares, which nothing else spells.
+    if normalised.contains("trimQuotes(")
+        && normalised.contains("processFieldValue(k, ")
+        && let Some(pattern) = parse_normalise_map_values(normalised)
+    {
+        return Some(ParamsPattern::NormaliseMapValues(Box::new(pattern)));
+    }
+
+    // Pattern: the record's ECS action, chosen by which candidate's fields are
+    // present. Ahead of the single-entry table matchers below, which read the
+    // primary lookup as an ordinary one and would claim the script without
+    // ever choosing between the candidates.
+    if normalised.contains("has_fields")
+        && let Some(pattern) = parse_record_action_table(normalised)
+    {
+        return Some(ParamsPattern::RecordActionTable(Box::new(pattern)));
     }
 
     // Pattern: the ECS event block a params table names, keyed on one field.
@@ -1446,6 +1467,12 @@ pub(crate) fn run_params_pattern(
             true
         }
         ParamsPattern::EventBlockTable(pattern) => run_event_block_table(event, pattern, params),
+        ParamsPattern::RecordActionTable(pattern) => {
+            run_record_action_table(event, pattern, params)
+        }
+        ParamsPattern::NormaliseMapValues(pattern) => {
+            run_normalise_map_values(event, pattern, params)
+        }
         ParamsPattern::MoveKeysIntoChild(pattern) => {
             run_move_keys_into_child(event, pattern, params)
         }
@@ -3684,6 +3711,314 @@ fn parse_event_block_table(script: &str) -> Option<EventBlockTable> {
     })
 }
 
+/// The record's ECS action, chosen by which candidate's fields are PRESENT.
+///
+/// auditd keys a params table on the record type, falls back to a second table
+/// keyed on the syscall and then to a `'*'` catch-all, and every entry is a
+/// LIST of candidates rather than one. The winner is the first whose
+/// `has_fields` are all present on the record -- `AVC` is `violated-selinux-policy`
+/// when the record carries `seresult` and `violated-apparmor-policy` when it
+/// carries `apparmor`. The chosen entry writes the ECS event block, and stages
+/// a list of `{target, value}` pairs that a later `foreach` renders into
+/// fields. All 83 of auditd's events go through it, and none of it was written.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct RecordActionTable {
+    /// The container the candidates' fields are read from.
+    base: String,
+    /// The field keying the primary table.
+    subject: String,
+    primary: String,
+    /// The second table, and the field keying it. Both or neither.
+    fallback: Option<String>,
+    fallback_subject: String,
+    /// Where the chosen entry's event block is merged.
+    target: String,
+    /// Where the rendered pairs are staged for the `foreach` that follows.
+    copy_field: String,
+}
+
+/// `def acts = params.<table>.get(<local>.<field>); ... hasFields(<local>, acts[i]["has_fields"])`
+fn parse_record_action_table(script: &str) -> Option<RecordActionTable> {
+    // The CALL site names the caller's local; the signature names its own
+    // parameter, so read the last occurrence rather than the first.
+    let local = script
+        .rsplit_once("hasFields(")?
+        .1
+        .split_once(',')?
+        .0
+        .trim()
+        .to_owned();
+    if local.is_empty() || local.contains(char::is_whitespace) {
+        return None;
+    }
+    let base = crate::painless_common::ctx_path_bound_to(script, &local)?;
+
+    // The primary lookup names its table and the field keying it.
+    let (primary, rest) = script.split_once("= params.")?.1.split_once(".get(")?;
+    let primary = primary.trim();
+    let subject = subject_under(rest.split_once(')')?.0, &local, &base)?;
+    if primary.is_empty() {
+        return None;
+    }
+
+    // The fallback: a second table, keyed on another field, with a wildcard
+    // entry when that misses. All three or none -- a single-table script is an
+    // ordinary lookup and has its own arms.
+    let fallback = rest
+        .split_once("= params.")
+        .and_then(|(_, tail)| tail.split_once(".get("))
+        .filter(|_| script.contains(".get('*')") || script.contains(".get(\"*\")"))
+        .and_then(|(table, tail)| {
+            let subject = subject_under(tail.split_once(')')?.0, &local, &base)?;
+            Some((table.trim().to_owned(), subject))
+        });
+    let (fallback, fallback_subject) = match fallback {
+        Some((table, subject)) if !table.is_empty() => (Some(table), subject),
+        _ => (None, String::new()),
+    };
+
+    // The merge target, off the lambda that writes the block.
+    let target = clean_path(script.split_once("-> ctx.")?.1.split_once('[')?.0.trim());
+
+    // The staged list -- its container and the key it is written under.
+    let (head, _) = script.split_once("] = lst")?;
+    let (path, key) = head.rsplit("ctx.").next()?.trim().split_once('[')?;
+    let key = key.trim().trim_matches(['\'', '"']);
+    if target.is_empty() || path.is_empty() || key.is_empty() {
+        return None;
+    }
+    let copy_field = format!("{}.{key}", clean_path(path.trim()));
+
+    Some(RecordActionTable {
+        base,
+        subject,
+        primary: primary.to_owned(),
+        fallback,
+        fallback_subject,
+        target,
+        copy_field,
+    })
+}
+
+/// `base.record_type` / `base?.syscall` -> the full path of that field.
+fn subject_under(argument: &str, local: &str, base: &str) -> Option<String> {
+    let field = argument
+        .trim()
+        .strip_prefix(local)?
+        .trim_start_matches('?')
+        .strip_prefix('.')?
+        .trim();
+    if field.is_empty() || field.contains(['(', ' ']) {
+        return None;
+    }
+    Some(format!("{base}.{field}"))
+}
+
+/// Every value of a map, normalised in place.
+///
+/// auditd's records arrive as the daemon wrote them: values quoted, some
+/// hex-encoded, some spelling a boolean as `yes`, and absent ones written as
+/// `?` or `(null)`. One script walks the whole map and fixes all of it, so
+/// leaving it unbound leaves a quote on `process.executable`, `process.name`,
+/// `user.terminal` and `auditd.log.hostname` in every record that carries one.
+///
+/// The hex decode has a guard worth stating, because it reads as a bug and is
+/// not one: a decoded value is kept only if it needed the encoding -- if every
+/// byte lands above `"` and below DEL, the ORIGINAL hex is returned. A path
+/// like `/home` survives as `2F686F6D65`, and only a value with a space, a
+/// quote or a control character is actually decoded.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct NormaliseMapValues {
+    /// The map whose values are rewritten.
+    container: String,
+    /// The values that mean absent, and remove the key.
+    placeholders: Vec<String>,
+    /// The params lists naming the keys that take each conversion.
+    hex_keys: String,
+    boolean_keys: String,
+    /// The one key rewritten wholesale: its name, the value, the replacement.
+    rewrite: Option<(String, String, String)>,
+}
+
+/// `trimQuotes(...)` over `audit.entrySet().iterator()`, driven by params.
+fn parse_normalise_map_values(script: &str) -> Option<NormaliseMapValues> {
+    // `def audit = ctx.auditd.get("log");` -- the map being walked.
+    let (head, tail) = script.split_once(".get(")?;
+    let path = clean_path(head.rsplit("ctx.").next()?.trim());
+    let key = tail.split_once(')')?.0.trim().trim_matches(['\'', '"']);
+    if path.is_empty() || key.is_empty() || path.contains(' ') {
+        return None;
+    }
+    let container = format!("{path}.{key}");
+
+    // The placeholder arm, which removes the key rather than rewriting it.
+    let placeholders = crate::painless_common::quoted_members(
+        script.split_once("if (v == ")?.1.split_once(") {")?.0,
+    );
+    if placeholders.is_empty() {
+        return None;
+    }
+
+    // Both key lists come off the call, where they are still `params.<name>`.
+    let arguments = script.split_once("processFieldValue(k, ")?.1.split_once(')')?.0;
+    let mut lists = arguments
+        .split(',')
+        .filter_map(|argument| argument.trim().strip_prefix("params."))
+        .map(|name| name.trim().to_owned());
+    let hex_keys = lists.next()?;
+    let boolean_keys = lists.next()?;
+    if hex_keys.is_empty() || boolean_keys.is_empty() {
+        return None;
+    }
+
+    // The optional wholesale rewrite of one key's value.
+    let rewrite = script
+        .split_once("if (k == ")
+        .and_then(|(_, rest)| {
+            let (condition, body) = rest.split_once(") {")?;
+            let mut literals = crate::painless_common::quoted_members(condition).into_iter();
+            let key = literals.next()?;
+            let from = literals.next()?;
+            let to = crate::painless_common::quoted_members(body.split_once(';')?.0)
+                .into_iter()
+                .next()?;
+            Some((key, from, to))
+        })
+        .filter(|(key, from, to)| !key.is_empty() && !from.is_empty() && !to.is_empty());
+
+    Some(NormaliseMapValues {
+        container,
+        placeholders,
+        hex_keys,
+        boolean_keys,
+        rewrite,
+    })
+}
+
+/// Is this the even-length, all-hex-digit string the decode accepts?
+fn is_hex_ascii(value: &str) -> bool {
+    !value.is_empty()
+        && value.len().is_multiple_of(2)
+        && value.bytes().all(|byte| byte.is_ascii_hexdigit())
+}
+
+/// Decode the pairs, and keep the result ONLY if it needed the encoding.
+fn decode_hex_ascii(hex: &str) -> Option<String> {
+    let bytes = hex.as_bytes();
+    let mut decoded = String::with_capacity(bytes.len() / 2);
+    let mut needed = false;
+    for pair in bytes.as_chunks::<2>().0 {
+        let pair = std::str::from_utf8(pair).ok()?;
+        let mut code = u32::from_str_radix(pair, 16).ok()?;
+        if code < 33 || code == 34 || code == 127 {
+            needed = true;
+        }
+        if code < 32 || code == 127 {
+            decoded.push('^');
+            code ^= 64;
+        }
+        decoded.push(char::from_u32(code)?);
+    }
+    needed.then_some(decoded)
+}
+
+/// The script's `processFieldValue`: `None` removes the key.
+fn normalise_one_value(
+    key: &str,
+    value: &Value,
+    pattern: &NormaliseMapValues,
+    hex_keys: &[&str],
+    boolean_keys: &[&str],
+) -> Option<Value> {
+    let mut value = value.clone();
+
+    if let Value::String(text) = &value
+        && pattern.placeholders.iter().any(|spelling| spelling == text)
+    {
+        return None;
+    }
+
+    if let Value::String(text) = &value
+        && hex_keys.contains(&key)
+        && is_hex_ascii(text)
+        && let Some(decoded) = decode_hex_ascii(text)
+    {
+        value = Value::String(decoded);
+    }
+
+    if let Value::String(text) = &value
+        && boolean_keys.contains(&key)
+    {
+        let text = text.to_lowercase();
+        return Some(Value::Bool(text == "yes" || text == "true" || text == "1"));
+    }
+
+    if let Value::String(text) = &value {
+        // ONE quote each end, and the two ends are independent -- the script
+        // strips a leading quote whether or not a trailing one follows.
+        let trimmed = text.strip_prefix(['\'', '"']).unwrap_or(text);
+        let trimmed = trimmed.strip_suffix(['\'', '"']).unwrap_or(trimmed);
+        if trimmed.len() != text.len() {
+            value = Value::String(trimmed.to_owned());
+        }
+    }
+
+    if let Some((rewrite_key, from, to)) = &pattern.rewrite
+        && key == rewrite_key
+        && value.as_str() == Some(from.as_str())
+    {
+        value = Value::String(to.clone());
+    }
+
+    Some(value)
+}
+
+/// Walk the map, rewriting each value and dropping the ones that mean absent.
+fn run_normalise_map_values(
+    event: &mut Event,
+    pattern: &NormaliseMapValues,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(container) = event.get(&pattern.container).and_then(Value::as_object) else {
+        return true;
+    };
+
+    let list = |name: &str| -> Vec<&str> {
+        params
+            .get(name)
+            .and_then(Value::as_array)
+            .map(|names| names.iter().filter_map(Value::as_str).collect())
+            .unwrap_or_default()
+    };
+    let hex_keys = list(&pattern.hex_keys);
+    let boolean_keys = list(&pattern.boolean_keys);
+
+    // REBUILT in order rather than edited in place: a removal must not move
+    // another key, and the surviving keys keep the positions they had.
+    let mut rebuilt = Map::with_capacity(container.len());
+    for (key, value) in container {
+        let kept = match value {
+            Value::Array(values) => {
+                let kept: Vec<Value> = values
+                    .iter()
+                    .filter_map(|value| {
+                        normalise_one_value(key, value, pattern, &hex_keys, &boolean_keys)
+                    })
+                    .collect();
+                // Every element dropped removes the key, the same as a scalar.
+                (!kept.is_empty()).then(|| Value::Array(kept))
+            }
+            other => normalise_one_value(key, other, pattern, &hex_keys, &boolean_keys),
+        };
+        if let Some(kept) = kept {
+            rebuilt.insert(key.clone(), kept);
+        }
+    }
+
+    let _ = event.set(&pattern.container, Value::Object(rebuilt));
+    true
+}
+
 /// A named set of keys MOVED from a map into a child of it.
 ///
 /// stormshield lifts its metadata this way -- `params.names` lists the keys,
@@ -3748,6 +4083,99 @@ fn run_move_keys_into_child(
             value,
         );
         event.remove(&source);
+    }
+    true
+}
+
+/// Choose the candidate whose fields are present, then write its block.
+fn run_record_action_table(
+    event: &mut Event,
+    pattern: &RecordActionTable,
+    params: &Map<String, Value>,
+) -> bool {
+    // No record type at all is the script's own early return.
+    let Some(key) = event.get_as_string(&pattern.subject) else {
+        return true;
+    };
+    // CLONED: the candidates' fields are read off this container while the
+    // block below writes to the document.
+    let Some(base) = event.get(&pattern.base).and_then(Value::as_object).cloned() else {
+        return true;
+    };
+
+    let lookup = |table: &str, key: &str| {
+        params
+            .get(table)
+            .and_then(Value::as_object)
+            .and_then(|table| table.get(key))
+            .and_then(Value::as_array)
+    };
+
+    let candidates = lookup(&pattern.primary, &key).or_else(|| {
+        // The fallback runs only when the record names a syscall, and the
+        // wildcard only when that syscall is not itself listed.
+        let fallback = pattern.fallback.as_deref()?;
+        let syscall = event.get_as_string(&pattern.fallback_subject)?;
+        lookup(fallback, &syscall).or_else(|| lookup(fallback, "*"))
+    });
+    let Some(candidates) = candidates else {
+        return true;
+    };
+
+    let chosen = candidates.iter().find(|candidate| {
+        // No `has_fields` is an unconditional candidate, which is why the
+        // FIRST match wins rather than the best one.
+        candidate.get("has_fields").is_none_or(|required| {
+            required.as_array().is_some_and(|required| {
+                required.iter().all(|field| {
+                    field
+                        .as_str()
+                        .and_then(|field| base.get(field))
+                        .is_some_and(|value| !value.is_null())
+                })
+            })
+        })
+    });
+    let Some(chosen) = chosen else {
+        return true;
+    };
+
+    if let Some(block) = chosen.get("event").and_then(Value::as_object) {
+        for (field, value) in block {
+            let _ = event.set(&format!("{}.{field}", pattern.target), value.clone());
+        }
+    }
+
+    let Some(copies) = chosen.get("copy").and_then(Value::as_array) else {
+        return true;
+    };
+    let mut staged: Vec<Value> = Vec::with_capacity(copies.len());
+    for copy in copies {
+        // The first source that HOLDS a value, not the first that is named.
+        let value = copy
+            .get("from")
+            .and_then(Value::as_array)
+            .into_iter()
+            .flatten()
+            .filter_map(|name| base.get(name.as_str()?))
+            .find(|value| !value.is_null());
+        // `instanceof String` in the script, and auditd writes these two for a
+        // field it could not resolve.
+        let (Some(Value::String(value)), Some(target)) =
+            (value, copy.get("to").and_then(Value::as_str))
+        else {
+            continue;
+        };
+        if value == "unset" || value == "?" {
+            continue;
+        }
+        // `==~ /[0-9]+/` is a WHOLE-string match in Painless.
+        let numeric = !value.is_empty() && value.bytes().all(|byte| byte.is_ascii_digit());
+        let suffix = if numeric { "id" } else { "name" };
+        staged.push(json!({ "target": format!("{target}.{suffix}"), "value": value }));
+    }
+    if !staged.is_empty() {
+        let _ = event.set(&pattern.copy_field, Value::Array(staged));
     }
     true
 }
