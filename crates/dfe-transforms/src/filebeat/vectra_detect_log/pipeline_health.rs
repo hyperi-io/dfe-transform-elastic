@@ -18,58 +18,98 @@ impl Transform for PipelineHealth {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             event.set("event.kind", json!("event"))?;
 
-                if event.has_value("json.result") {
-                    event.rename("json.result", "vectra_detect.log.result")?;
-                }
+            if event.has_value("json.result") {
+                event.rename("json.result", "vectra_detect.log.result")?;
+            }
 
-            if let Some(v) = event.get("vectra_detect.log.result").filter(|v| !painless_is_empty_value(v)).cloned() {
+            if let Some(v) = event
+                .get("vectra_detect.log.result")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
                 event.set("event.outcome", v)?;
             }
 
-                if event.has_value("json.dvchost") {
-                    event.rename("json.dvchost", "vectra_detect.log.dvchost")?;
-                }
+            if event.has_value("json.dvchost") {
+                event.rename("json.dvchost", "vectra_detect.log.dvchost")?;
+            }
 
-            if let Some(v) = event.get("vectra_detect.log.dvchost").filter(|v| !painless_is_empty_value(v)).cloned() {
+            if let Some(v) = event
+                .get("vectra_detect.log.dvchost")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
                 event.set("observer.hostname", v)?;
             }
 
             let _cond = { event.get_str("json.source_ip") != Some("") };
             if _cond {
-            // on_failure: 1 handler(s)
-            if let Err(err) = (|| -> Result<()> {
-            if event.has_value("json.source_ip") {
-                if let Some(val) = event.get("json.source_ip") {
-                    let converted = convert_value(val, "ip")
-                        .map_err(|message| TransformError::ParseError {
-                            path: "json.source_ip".into(),
-                            message,
-                        })?;
-                    event.set("vectra_detect.log.source.ip", converted)?;
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if event.has_value("json.source_ip") {
+                        if let Some(val) = event.get("json.source_ip") {
+                            let converted = convert_value(val, "ip").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "json.source_ip".into(),
+                                    message,
+                                }
+                            })?;
+                            event.set("vectra_detect.log.source.ip", converted)?;
+                        }
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "convert")?;
+                    event.set(
+                        "_ingest.on_failure_processor_tag",
+                        "convert_source_ip_to_ip",
+                    )?;
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.pipeline")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
-            }
-                Ok(())
-            })() {
-                event.set("_ingest.on_failure_message", err.to_string())?;
-                event.set("_ingest.on_failure_processor_type", "convert")?;
-                event.set("_ingest.on_failure_processor_tag", "convert_source_ip_to_ip")?;
-                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                event.remove("_ingest.on_failure_message");
-                event.remove("_ingest.on_failure_processor_type");
-                event.remove("_ingest.on_failure_processor_tag");
-                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                    event.remove("_ingest");
-                }
-            }
             }
 
-            if let Some(v) = event.get("vectra_detect.log.source.ip").filter(|v| !painless_is_empty_value(v)).cloned() {
+            if let Some(v) = event
+                .get("vectra_detect.log.source.ip")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
                 event.set("source.ip", v)?;
             }
 
             let _cond = { event.has_value("vectra_detect.log.source.ip") };
             if _cond {
-                event.append_unique("related.ip", json!(event.get("vectra_detect.log.source.ip").map_or_else(String::new, template_to_string)))?;
+                event.append_unique(
+                    "related.ip",
+                    json!(
+                        event
+                            .get("vectra_detect.log.source.ip")
+                            .map_or_else(String::new, template_to_string)
+                    ),
+                )?;
             }
 
             if event.has_value("source.ip") {
@@ -105,17 +145,24 @@ impl Transform for PipelineHealth {
                 }
             }
 
-                if event.has_value("json.type") {
-                    event.rename("json.type", "vectra_detect.log.type")?;
-                }
+            if event.has_value("json.type") {
+                event.rename("json.type", "vectra_detect.log.type")?;
+            }
 
-                if event.has_value("json.message") {
-                    event.rename("json.message", "vectra_detect.log.message")?;
-                }
+            if event.has_value("json.message") {
+                event.rename("json.message", "vectra_detect.log.message")?;
+            }
 
             let _cond = { event.has_value("observer.hostname") };
             if _cond {
-                event.append_unique("related.hosts", json!(event.get("observer.hostname").map_or_else(String::new, template_to_string)))?;
+                event.append_unique(
+                    "related.hosts",
+                    json!(
+                        event
+                            .get("observer.hostname")
+                            .map_or_else(String::new, template_to_string)
+                    ),
+                )?;
             }
 
             Ok(TransformResult::Continue)
@@ -126,7 +173,14 @@ impl Transform for PipelineHealth {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.append("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string)))?;
+                event.append(
+                    "error.message",
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    ),
+                )?;
                 event.set("event.kind", json!("pipeline_error"))?;
                 event.remove("_ingest.on_failure_message");
             }

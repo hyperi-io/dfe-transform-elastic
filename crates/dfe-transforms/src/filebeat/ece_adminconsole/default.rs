@@ -34,9 +34,8 @@ impl Transform for Default {
                 event.rename("tmp.ece.log.message", "message")?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.tmp?.ece?.log['@timestamp'] != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.has_value("tmp.ece.log.@timestamp") };
+            if _cond {
                 if let Some(date_str) = event.get_as_string("tmp.ece.log.@timestamp") {
                     match parse_date_out(&date_str, &["ISO8601"], None, None) {
                         Some(parsed) => event.set("@timestamp", parsed)?,
@@ -50,9 +49,12 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.message =~ /^\d{3} /
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get_str("message")
+                    .is_some_and(|s| cached_regex!(r"^\d{3} ").is_match(s))
+            };
+            if _cond {
                 // Begin nested pipeline: "api"
                 if event.has_value("tmp.ece.log.process.thread.name") {
                     event.rename("tmp.ece.log.process.thread.name", "process.thread.name")?;
@@ -177,15 +179,16 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        // Painless script
+                        // Painless script, resolved to its runners at generation time
                         // Source: ctx.event.duration = Long.parseLong(ctx.tmp.ece.log.response_time) * 1000000\n
-                        // TODO: Transpile Painless to Rust (2.2.3)
-                        painless_exec_plan(
+                        scale_field(
                             event,
-                            cached_painless!(
-                                r#"ctx.event.duration = Long.parseLong(ctx.tmp.ece.log.response_time) * 1000000\n"#
+                            &ScaleField::new(
+                                "tmp.ece.log.response_time",
+                                "event.duration",
+                                Factor::Long(1000000),
                             ),
-                        )?;
+                        );
                         Ok(())
                     })();
                 }
@@ -485,27 +488,38 @@ impl Transform for Default {
                 // End nested pipeline: "api"
             }
 
-            // SKIPPED: condition not transpiled: ctx.message =~ /^\D{3}/
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get_str("message")
+                    .is_some_and(|s| cached_regex!(r"^\D{3}").is_match(s))
+            };
+            if _cond {
                 event.set("event.kind", json!("event"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.message =~ /^\D{3}/
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get_str("message")
+                    .is_some_and(|s| cached_regex!(r"^\D{3}").is_match(s))
+            };
+            if _cond {
                 event.set("event.action", json!("non-api"))?;
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\nif (object == null || object == \"\" || object == '\"-\"') {\n    return true;\n} else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n} else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n}\nreturn false;\n}\ndropEmptyFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropEmptyFields(Object object) {\nif (object == null || object == \"\" || object == '\"-\"') {\n    return true;\n} else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n} else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n}\nreturn false;\n}\ndropEmptyFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    sentinels: vec!["\"-\"".into()],
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {

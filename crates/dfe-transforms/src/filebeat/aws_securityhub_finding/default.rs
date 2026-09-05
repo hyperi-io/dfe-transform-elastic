@@ -25739,21 +25739,39 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.aws_securityhub?.finding?.class_uid != null && ( ctx.aws_securityhub.finding.class_uid.equals('2004') || ctx.aws_securityhub.finding.class_uid.equals('2006') )
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("aws_securityhub.finding.class_uid")
+                    && (event
+                        .get_str("aws_securityhub.finding.class_uid")
+                        .is_some_and(|s| s == "2004")
+                        || event
+                            .get_str("aws_securityhub.finding.class_uid")
+                            .is_some_and(|s| s == "2006"))
+            };
+            if _cond {
                 event.set("event.kind", json!("alert"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.aws_securityhub?.finding?.class_uid != null && ( ctx.aws_securityhub.finding.class_uid.equals('2002') || ctx.aws_securityhub.finding.class_uid.equals('2003') )
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("aws_securityhub.finding.class_uid")
+                    && (event
+                        .get_str("aws_securityhub.finding.class_uid")
+                        .is_some_and(|s| s == "2002")
+                        || event
+                            .get_str("aws_securityhub.finding.class_uid")
+                            .is_some_and(|s| s == "2003"))
+            };
+            if _cond {
                 event.set("event.kind", json!("state"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.aws_securityhub?.finding?.class_uid != null && ctx.aws_securityhub.finding.class_uid.equals('2002')
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("aws_securityhub.finding.class_uid")
+                    && event
+                        .get_str("aws_securityhub.finding.class_uid")
+                        .is_some_and(|s| s == "2002")
+            };
+            if _cond {
                 event.append_unique("event.category", json!("vulnerability"))?;
             }
 
@@ -25788,15 +25806,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("aws_securityhub.finding.duration") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.event.duration = ctx.aws_securityhub.finding.duration * 1000000;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scale_field(
                     event,
-                    cached_painless!(
-                        r#"ctx.event.duration = ctx.aws_securityhub.finding.duration * 1000000;"#
+                    &ScaleField::new(
+                        "aws_securityhub.finding.duration",
+                        "event.duration",
+                        Factor::Long(1000000),
                     ),
-                )?;
+                );
             }
 
             if let Some(v) = event
@@ -25872,15 +25891,32 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.aws_securityhub?.finding?.status_id != null && ( ctx.aws_securityhub.finding.status_id.equals('0') || ctx.aws_securityhub.finding.status_id.equals('1') || ctx.aws_securityhub.finding.status_id.equ ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("aws_securityhub.finding.status_id")
+                    && (event
+                        .get_str("aws_securityhub.finding.status_id")
+                        .is_some_and(|s| s == "0")
+                        || event
+                            .get_str("aws_securityhub.finding.status_id")
+                            .is_some_and(|s| s == "1")
+                        || event
+                            .get_str("aws_securityhub.finding.status_id")
+                            .is_some_and(|s| s == "2"))
+            };
+            if _cond {
                 event.set("event.outcome", json!("unknown"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.aws_securityhub?.finding?.status_id != null && ( ctx.aws_securityhub.finding.status_id.equals('3') || ctx.aws_securityhub.finding.status_id.equals('4') )
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("aws_securityhub.finding.status_id")
+                    && (event
+                        .get_str("aws_securityhub.finding.status_id")
+                        .is_some_and(|s| s == "3")
+                        || event
+                            .get_str("aws_securityhub.finding.status_id")
+                            .is_some_and(|s| s == "4"))
+            };
+            if _cond {
                 event.set("event.outcome", json!("success"))?;
             }
 
@@ -27145,15 +27181,19 @@ impl Transform for Default {
                 event.remove("aws_securityhub.finding.finding_info.src_url");
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

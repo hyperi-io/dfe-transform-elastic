@@ -301,9 +301,13 @@ impl Transform for Default {
                 event.remove("duration");
                 event.remove("time");
                 event.remove("temp_message");
-                // SKIPPED: condition not transpiled: ctx.proto.charAt(0) != (char)("-")
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event
+                        .get_str("proto")
+                        .and_then(|s| s.chars().nth(0))
+                        .is_some_and(|c| c != '-')
+                };
+                if _cond {
                     // Begin nested pipeline: "http"
                     let _cond = { event.has_value("proto") && event.get_str("proto") != Some("-") };
                     if _cond {
@@ -427,9 +431,13 @@ impl Transform for Default {
                     event.set("network.protocol", json!("http"))?;
                     // End nested pipeline: "http"
                 }
-                // SKIPPED: condition not transpiled: ctx.proto.charAt(0) == (char)("-")
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event
+                        .get_str("proto")
+                        .and_then(|s| s.chars().nth(0))
+                        .is_some_and(|c| c == '-')
+                };
+                if _cond {
                     // Begin nested pipeline: "tcp"
                     if event.remove("upstream_service_time").is_none() {
                         return Err(TransformError::FieldNotFound {
@@ -535,9 +543,13 @@ impl Transform for Default {
                 // End nested pipeline: "json"
             }
 
-            // SKIPPED: condition not transpiled: ctx.message.charAt(0) != (char)("{")
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get_str("message")
+                    .and_then(|s| s.chars().nth(0))
+                    .is_some_and(|c| c != '{')
+            };
+            if _cond {
                 // Begin nested pipeline: "plaintext"
                 // Painless script
                 // Source: if (ctx.message.charAt(0) == (char)(\"[\")) {\n  ctx.temp_message = \"ACCESS \" + ctx.message;\n} else if (ctx.message.substring(0, 7) == \"ACCESS \") {\n  ctx.temp_message = ctx.message;\n} else {\n  throw new Exception(\"Not a valid envoyproxy access log\");\n}
@@ -784,9 +796,13 @@ impl Transform for Default {
                 event.remove("duration");
                 event.remove("time");
                 event.remove("temp_message");
-                // SKIPPED: condition not transpiled: ctx.proto.charAt(0) != (char)("-")
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event
+                        .get_str("proto")
+                        .and_then(|s| s.chars().nth(0))
+                        .is_some_and(|c| c != '-')
+                };
+                if _cond {
                     // Begin nested pipeline: "http"
                     let _cond = { event.has_value("proto") && event.get_str("proto") != Some("-") };
                     if _cond {
@@ -910,9 +926,13 @@ impl Transform for Default {
                     event.set("network.protocol", json!("http"))?;
                     // End nested pipeline: "http"
                 }
-                // SKIPPED: condition not transpiled: ctx.proto.charAt(0) == (char)("-")
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event
+                        .get_str("proto")
+                        .and_then(|s| s.chars().nth(0))
+                        .is_some_and(|c| c == '-')
+                };
+                if _cond {
                     // Begin nested pipeline: "tcp"
                     if event.remove("upstream_service_time").is_none() {
                         return Err(TransformError::FieldNotFound {
@@ -1197,15 +1217,20 @@ impl Transform for Default {
                 });
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object o) {\n  if (o == null || o == '' || o == '-') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object o) {\n  if (o == null || o == '' || o == '-') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    sentinels: vec!["-".into()],
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

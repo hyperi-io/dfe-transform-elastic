@@ -16,9 +16,15 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            // SKIPPED: condition not transpiled: ctx.message =~ /^[^0-9]/ || ctx.message =~ /^#/
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get_str("message")
+                    .is_some_and(|s| cached_regex!(r"^[^0-9]").is_match(s))
+                    || event
+                        .get_str("message")
+                        .is_some_and(|s| cached_regex!(r"^#").is_match(s))
+            };
+            if _cond {
                 return Ok(TransformResult::Drop);
             }
 
@@ -128,9 +134,12 @@ impl Transform for Default {
                 })();
             }
 
-            // SKIPPED: condition not transpiled: ctx.log?.file?.path =~ /Imap4/
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get_str("log.file.path")
+                    .is_some_and(|s| cached_regex!(r"Imap4").is_match(s))
+            };
+            if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     let v = json!("imap4");
@@ -141,9 +150,12 @@ impl Transform for Default {
                 })();
             }
 
-            // SKIPPED: condition not transpiled: ctx.log?.file?.path =~ /Pop3/
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get_str("log.file.path")
+                    .is_some_and(|s| cached_regex!(r"Pop3").is_match(s))
+            };
+            if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     let v = json!("pop3");

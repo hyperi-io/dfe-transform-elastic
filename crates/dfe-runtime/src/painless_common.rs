@@ -4184,6 +4184,267 @@ pub fn join_present_fields(event: &mut Event, pattern: &JoinPresentFields) -> bo
     true
 }
 
+/// A field split at a delimiter, its halves written to named targets.
+///
+/// The pair of scripts a dissect leaves behind. envoyproxy's `dest` holds
+/// `address:port` and its `proto` holds `HTTP/1.1`, and each is cut with
+/// `indexOf` and two `substring`s. Both became REACHABLE only once
+/// [`EnsurePrefix`] made the dissect succeed, which is why they turned up as
+/// newly unbound rather than being there all along.
+///
+/// A value with no delimiter is NOT handled: Painless's `substring` throws on
+/// the `-1` that `indexOf` returns, which is the vendor's own failure path.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SplitAtDelimiter {
+    source: String,
+    delimiter: String,
+    /// Where the part BEFORE the delimiter goes, when the script writes it.
+    head: Option<String>,
+    /// Where the part AFTER it goes.
+    tail: Option<String>,
+    /// A whole value that means "no data" -- the source is dropped and
+    /// nothing is written.
+    sentinel: Option<String>,
+    /// Whether the source is removed once it has been read.
+    remove_source: bool,
+}
+
+impl SplitAtDelimiter {
+    /// The generated call site that rebuilds this pattern.
+    #[cfg(feature = "codegen")]
+    pub(crate) fn direct_call(&self) -> String {
+        let option = |value: &Option<String>| {
+            value
+                .as_ref()
+                .map_or_else(|| "None".to_owned(), |v| format!("Some({}.into())", rust_str(v)))
+        };
+        format!(
+            "split_at_delimiter(event, &SplitAtDelimiter::new({}.into(), {}.into(), {}, {}, {}, {}));",
+            rust_str(&self.source),
+            rust_str(&self.delimiter),
+            option(&self.head),
+            option(&self.tail),
+            option(&self.sentinel),
+            self.remove_source,
+        )
+    }
+
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(
+        source: String,
+        delimiter: String,
+        head: Option<String>,
+        tail: Option<String>,
+        sentinel: Option<String>,
+        remove_source: bool,
+    ) -> Self {
+        Self {
+            source,
+            delimiter,
+            head,
+            tail,
+            sentinel,
+            remove_source,
+        }
+    }
+}
+
+/// `def p = ctx.a.indexOf(':'); ctx.b = ctx.a.substring(0, p); ...`
+fn parse_split_at_delimiter(script: &str) -> Option<SplitAtDelimiter> {
+    // The cut names the source and the delimiter. The vendors write a SPACE
+    // before the paren -- `ctx.dest.indexOf (':')` -- in both of these.
+    let (head_text, rest) = script.split_once(".indexOf")?;
+    let source = clean_path(head_text.rsplit("ctx.").next()?.trim());
+    // The receiver must be that ctx path, not merely follow one: sentinel_one
+    // binds `def path = ...` and calls `path.indexOf`, where reading back to
+    // the last `ctx.` captures half a statement and still parses.
+    if source.is_empty()
+        || source
+            .chars()
+            .any(|c| !(c.is_alphanumeric() || matches!(c, '.' | '_' | '-' | '@')))
+    {
+        return None;
+    }
+    let delimiter = rest
+        .trim_start()
+        .strip_prefix('(')?
+        .trim_start()
+        .strip_prefix(['\'', '"'])?
+        .split(['\'', '"'])
+        .next()?
+        .to_owned();
+    if source.is_empty() || delimiter.is_empty() {
+        return None;
+    }
+
+    // Each half is claimed by the substring that reads it: `(0, p)` is the
+    // part before the delimiter, `(p+1, ..)` the part after.
+    let target_of = |needle: &str| -> Option<String> {
+        let (before, _) = script.split_once(needle)?;
+        let assignment = before.rsplit(['\n', ';', '{', '}']).next()?;
+        let path = assignment.split('=').next()?.trim();
+        let path = clean_path(path.strip_prefix("ctx.")?.trim());
+        (!path.is_empty()).then_some(path)
+    };
+    let head = target_of(".substring(0, ");
+    let tail = script
+        .split_once(".substring(")
+        .and_then(|_| {
+            // `substring(p+1, l)` -- the local's name varies, so anchor on the
+            // `+1` that every one of these writes.
+            let (before, _) = script.split_once("+1, ")?;
+            let assignment = before.rsplit(['\n', ';', '{', '}']).next()?;
+            let path = assignment.split('=').next()?.trim();
+            let path = clean_path(path.strip_prefix("ctx.")?.trim());
+            (!path.is_empty()).then_some(path)
+        });
+    if head.is_none() && tail.is_none() {
+        return None;
+    }
+
+    // The sentinel arm, and whether the source survives being read.
+    let sentinel = script
+        .split_once("if (ctx.")
+        .and_then(|(_, rest)| rest.split_once("=="))
+        .and_then(|(_, rest)| {
+            let literal = rest.trim().strip_prefix(['\'', '"'])?;
+            Some(literal.split(['\'', '"']).next()?.to_owned())
+        })
+        .filter(|value| !value.is_empty());
+    let last = source.rsplit('.').next()?;
+    let remove_source = script.contains(&format!("remove('{last}')"))
+        || script.contains(&format!("remove(\"{last}\")"));
+
+    Some(SplitAtDelimiter::new(
+        source,
+        delimiter,
+        head,
+        tail,
+        sentinel,
+        remove_source,
+    ))
+}
+
+/// Cut the source and write each half the script names.
+pub fn split_at_delimiter(event: &mut Event, pattern: &SplitAtDelimiter) -> bool {
+    let Some(value) = event.get_string(&pattern.source) else {
+        return false;
+    };
+
+    // The sentinel means no data: the source goes and nothing is written.
+    if pattern.sentinel.as_deref() == Some(value.as_str()) {
+        event.remove(&pattern.source);
+        return true;
+    }
+
+    // FIRST occurrence, the way `indexOf` reads it.
+    let Some(at) = value.find(&pattern.delimiter) else {
+        // `indexOf` returns -1 and the vendor's `substring` throws on it.
+        return false;
+    };
+    if let Some(target) = &pattern.head {
+        let _ = event.set(target, json!(&value[..at]));
+    }
+    if let Some(target) = &pattern.tail {
+        let _ = event.set(target, json!(&value[at + pattern.delimiter.len()..]));
+    }
+    if pattern.remove_source {
+        event.remove(&pattern.source);
+    }
+    true
+}
+
+/// A message normalised to carry a known prefix before it is dissected.
+///
+/// envoyproxy's access log arrives two ways: bare, starting `[`, or already
+/// carrying `ACCESS `. One dissect pattern reads both, so the script adds the
+/// prefix to the bare form and passes the other through. Everything
+/// downstream reads the prefixed copy, so leaving this unbound costs the whole
+/// source -- all 7 of its events and 137 fields.
+///
+/// A value that is NEITHER is not handled here. The vendor throws there, which
+/// takes the processor's `on_failure` path, and an arm that quietly wrote
+/// nothing would claim a script it did not apply.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct EnsurePrefix {
+    source: String,
+    target: String,
+    /// The first character that means the prefix is missing.
+    marker: char,
+    prefix: String,
+}
+
+impl EnsurePrefix {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(source: String, target: String, marker: char, prefix: String) -> Self {
+        Self {
+            source,
+            target,
+            marker,
+            prefix,
+        }
+    }
+}
+
+/// `if (ctx.a.charAt(0) == (char)("[")) { ctx.b = "P " + ctx.a; } else if ...`
+fn parse_ensure_prefix(script: &str) -> Option<EnsurePrefix> {
+    // The marker, and the field it is tested on.
+    let (head, rest) = script.split_once(".charAt(0)")?;
+    let source = clean_path(head.rsplit("ctx.").next()?.trim());
+    let marker = rest
+        .split_once("(char)")?
+        .1
+        .trim()
+        .trim_start_matches('(')
+        .trim()
+        .trim_matches(['\'', '"'])
+        .chars()
+        .next()?;
+
+    // The write that ADDS the prefix, anchored on the CONCATENATION rather
+    // than on an `=`: the test above it is `==`, and splitting on the first
+    // `=` lands in the middle of that.
+    let (head, _) = rest.split_once("+ ctx.")?;
+    let head = head.trim_end();
+    let quote = head.chars().last()?;
+    if quote != '"' && quote != '\'' {
+        return None;
+    }
+    let (before, prefix) = head[..head.len() - quote.len_utf8()].rsplit_once(quote)?;
+    let prefix = prefix.to_owned();
+    let target = clean_path(before.rsplit("ctx.").next()?.trim().trim_end_matches('=').trim());
+    if target.is_empty() || prefix.is_empty() || source.is_empty() {
+        return None;
+    }
+
+    // The pass-through arm must test for that same prefix, or this is a
+    // different script that happens to start the same way.
+    if !script.contains(".substring(0, ") || !script.contains(&prefix) {
+        return None;
+    }
+    Some(EnsurePrefix::new(source, target, marker, prefix))
+}
+
+/// Write the prefixed copy; leave a value that is neither form alone.
+pub fn ensure_prefix(event: &mut Event, pattern: &EnsurePrefix) -> bool {
+    let Some(value) = event.get_string(&pattern.source) else {
+        return false;
+    };
+    if value.starts_with(pattern.marker) {
+        let _ = event.set(&pattern.target, json!(format!("{}{value}", pattern.prefix)));
+        return true;
+    }
+    if value.starts_with(&pattern.prefix) {
+        let _ = event.set(&pattern.target, json!(value));
+        return true;
+    }
+    // The vendor throws here. Claiming it would count a script this arm did
+    // not apply, which is exactly what the never_ran ratchet exists to catch.
+    false
+}
+
 /// Named keys of a map dropped when what they hold is an EMPTY map.
 ///
 /// The tidy-up after a dot expansion. sysdig expands `proc.pid.ts` into a
@@ -14013,6 +14274,8 @@ pub(crate) enum KnownPattern {
     /// A vendor flag folded to a boolean by its string spelling.
     CoerceBoolean(CoerceBoolean),
     RemoveEmptyChildMaps(RemoveEmptyChildMaps),
+    EnsurePrefix(EnsurePrefix),
+    SplitAtDelimiter(SplitAtDelimiter),
     /// An ECS `geo_point` built from a `GeoJSON` coordinate array.
     GeoPointFromCoordinates(GeoPointFromCoordinates),
     /// A numbered column map collapsed into a list, in key order.
@@ -14603,6 +14866,24 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_join_present_fields(normalised)
     {
         patterns.push(KnownPattern::JoinPresentFields(pattern));
+        return patterns;
+    }
+
+    // Pattern: a field split at a delimiter, its halves written to targets.
+    if normalised.contains(".indexOf")
+        && normalised.contains(".substring(")
+        && let Some(pattern) = parse_split_at_delimiter(normalised)
+    {
+        patterns.push(KnownPattern::SplitAtDelimiter(pattern));
+        return patterns;
+    }
+
+    // Pattern: a message normalised to carry a known prefix.
+    if normalised.contains(".charAt(0)")
+        && normalised.contains(".substring(0, ")
+        && let Some(pattern) = parse_ensure_prefix(normalised)
+    {
+        patterns.push(KnownPattern::EnsurePrefix(pattern));
         return patterns;
     }
 
@@ -16156,6 +16437,14 @@ impl KnownPattern {
                 pattern.lon_first,
             )),
             Self::RemoveEmptyChildMaps(pattern) => Some(pattern.direct_call()),
+            Self::SplitAtDelimiter(pattern) => Some(pattern.direct_call()),
+            Self::EnsurePrefix(pattern) => Some(format!(
+                "ensure_prefix(event, &EnsurePrefix::new({}.into(), {}.into(), '{}', {}.into()));",
+                rust_str(&pattern.source),
+                rust_str(&pattern.target),
+                pattern.marker,
+                rust_str(&pattern.prefix),
+            )),
             Self::CoerceBoolean(pattern) => Some(pattern.direct_call()),
             Self::JoinPresentFields(pattern) => Some(format!(
                 "join_present_fields(event, &JoinPresentFields::new(vec![{}], {}, {}));",
@@ -16318,6 +16607,8 @@ pub(crate) fn run_known_pattern(
         KnownPattern::JoinPresentFields(pattern) => join_present_fields(event, pattern),
         KnownPattern::CoerceBoolean(pattern) => coerce_boolean(event, pattern),
         KnownPattern::RemoveEmptyChildMaps(pattern) => remove_empty_child_maps(event, pattern),
+        KnownPattern::EnsurePrefix(pattern) => ensure_prefix(event, pattern),
+        KnownPattern::SplitAtDelimiter(pattern) => split_at_delimiter(event, pattern),
         KnownPattern::GeoPointFromCoordinates(pattern) => {
             geo_point_from_coordinates(event, pattern)
         }

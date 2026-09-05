@@ -136,6 +136,115 @@ fn a_flag_folds_to_a_boolean_by_its_spelling() {
     assert_eq!(event.get("gdacs.is_temporary"), Some(&Value::Bool(false)));
 }
 
+/// The two cuts a dissect leaves behind, both from envoyproxy.
+///
+/// Verbatim from `pipelines/envoyproxy/log/plaintext.yml:30` and
+/// `http.yml:7`. Both became reachable only once the prefix arm made the
+/// dissect succeed. Note the SPACE the vendor writes before `indexOf`'s paren.
+#[test]
+fn a_field_splits_at_its_delimiter_into_named_targets() {
+    let with_sentinel = "if (ctx.dest == \"-\") {\n  ctx.remove('dest');\n} else {\n  \
+        ctx['destination'] = new HashMap();\n  def p = ctx.dest.indexOf (':');\n  \
+        def l = ctx.dest.length();\n  ctx.destination.address = ctx.dest.substring(0, p);\n  \
+        ctx.destination.port = ctx.dest.substring(p+1, l);\n}\nctx.remove('dest');";
+    let pattern =
+        parse_split_at_delimiter(&normalise(with_sentinel)).expect("envoyproxy cuts dest");
+    assert_eq!(pattern.source, "dest");
+    assert_eq!(pattern.delimiter, ":");
+    assert_eq!(pattern.head.as_deref(), Some("destination.address"));
+    assert_eq!(pattern.tail.as_deref(), Some("destination.port"));
+    assert_eq!(pattern.sentinel.as_deref(), Some("-"));
+    assert!(pattern.remove_source);
+
+    let mut event = Event::new(serde_json::json!({ "dest": "172.27.0.2:80" }));
+    assert!(split_at_delimiter(&mut event, &pattern));
+    assert_eq!(event.get_str("destination.address"), Some("172.27.0.2"));
+    assert_eq!(event.get_str("destination.port"), Some("80"));
+    // READ, then removed -- leaving it behind emits a field Elastic does not.
+    assert!(!event.has("dest"));
+
+    // The sentinel drops the source and writes nothing.
+    let mut dash = Event::new(serde_json::json!({ "dest": "-" }));
+    assert!(split_at_delimiter(&mut dash, &pattern));
+    assert!(!dash.has("dest"));
+    assert!(!dash.has("destination.address"));
+
+    // No delimiter is NOT handled: `indexOf` gives -1 and the vendor's
+    // `substring` throws on it.
+    let mut bare = Event::new(serde_json::json!({ "dest": "172.27.0.2" }));
+    assert!(!split_at_delimiter(&mut bare, &pattern));
+    assert!(bare.has("dest"));
+
+    // The tail-only form, which keeps its source.
+    let tail_only = "ctx['http'] = new HashMap(); def p = ctx.proto.indexOf ('/'); \
+        def l = ctx.proto.length(); ctx.http.version = ctx.proto.substring(p+1, l);";
+    let proto = parse_split_at_delimiter(&normalise(tail_only)).expect("envoyproxy cuts proto");
+    assert_eq!(proto.source, "proto");
+    assert_eq!(proto.delimiter, "/");
+    assert_eq!(proto.head, None);
+    assert_eq!(proto.tail.as_deref(), Some("http.version"));
+    assert!(!proto.remove_source);
+
+    let mut http = Event::new(serde_json::json!({ "proto": "HTTP/1.1" }));
+    assert!(split_at_delimiter(&mut http, &proto));
+    assert_eq!(http.get_str("http.version"), Some("1.1"));
+    assert_eq!(http.get_str("proto"), Some("HTTP/1.1"));
+
+    // A receiver that is a local, not a ctx path, is refused: sentinel_one
+    // binds `def path = ...` and cuts it four ways, and reading back to the
+    // last `ctx.` captures half a statement that still parses.
+    let local_receiver = "def path = ctx.json.tgt.file.path;\n\
+        int idx = path.lastIndexOf('/');\nif (idx > -1) {\n  \
+        ctx.file.name = path.substring(idx+1);\n  \
+        ctx.file.directory = path.substring(0, idx);\n}\n\
+        if (path.indexOf(':') == 1) {\n  \
+        ctx.file.drive_letter = path.substring(0, 1).toUpperCase();\n}";
+    assert_eq!(parse_split_at_delimiter(&normalise(local_receiver)), None);
+}
+
+/// envoyproxy normalises its access log before one dissect reads both forms.
+///
+/// Verbatim from `pipelines/envoyproxy/log/plaintext.yml:8`. Everything
+/// downstream reads the prefixed copy, so leaving it unbound cost the whole
+/// source -- 7 events and 137 fields.
+#[test]
+fn a_message_is_normalised_to_carry_a_known_prefix() {
+    let script = "if (ctx.message.charAt(0) == (char)(\"[\")) {\n  \
+        ctx.temp_message = \"ACCESS \" + ctx.message;\n\
+        } else if (ctx.message.substring(0, 7) == \"ACCESS \") {\n  \
+        ctx.temp_message = ctx.message;\n\
+        } else {\n  \
+        throw new Exception(\"Not a valid envoyproxy access log\");\n}";
+    let pattern = parse_ensure_prefix(&normalise(script)).expect("envoyproxy normalises");
+    assert_eq!(pattern.source, "message");
+    assert_eq!(pattern.target, "temp_message");
+    assert_eq!(pattern.marker, '[');
+    assert_eq!(pattern.prefix, "ACCESS ");
+
+    // The bare form GAINS the prefix.
+    let mut bare = Event::new(serde_json::json!({ "message": "[2025-01-01] \"GET / HTTP/1.1\"" }));
+    assert!(ensure_prefix(&mut bare, &pattern));
+    assert_eq!(
+        bare.get_str("temp_message"),
+        Some("ACCESS [2025-01-01] \"GET / HTTP/1.1\"")
+    );
+
+    // The prefixed form passes through unchanged, not doubled.
+    let mut already = Event::new(serde_json::json!({ "message": "ACCESS [2025-01-01] x" }));
+    assert!(ensure_prefix(&mut already, &pattern));
+    assert_eq!(already.get_str("temp_message"), Some("ACCESS [2025-01-01] x"));
+
+    // Neither form is NOT handled -- the vendor throws, and claiming it would
+    // count a script this arm did not apply.
+    let mut other = Event::new(serde_json::json!({ "message": "something else" }));
+    assert!(!ensure_prefix(&mut other, &pattern));
+    assert!(!other.has("temp_message"));
+
+    // No message at all is not handled either.
+    let mut absent = Event::new(serde_json::json!({ "other": 1 }));
+    assert!(!ensure_prefix(&mut absent, &pattern));
+}
+
 /// sysdig's tidy-up after a dot expansion.
 ///
 /// Verbatim from `pipelines/sysdig/event/default.yml:217`. Expanding

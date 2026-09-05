@@ -644,7 +644,47 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("event.reference") };
                 if _cond {
-                    uri_parts(event, "event.reference", "url", true, false)?;
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if !uri_parts(event, "event.reference", "url", true, false)?
+                            && event
+                                .get_str("event.reference")
+                                .is_some_and(|value| !value.is_empty())
+                        {
+                            return Err(TransformError::ParseError {
+                                path: "event.reference".into(),
+                                message: "uri_parts: not a parseable URI".into(),
+                            });
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.pipeline")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, template_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
                 }
                 if event.has_value("json.host_name") {
                     event.rename("json.host_name", "vectra_detect.log.host.name")?;
@@ -2153,7 +2193,47 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("event.reference") };
                 if _cond {
-                    uri_parts(event, "event.reference", "url", true, false)?;
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if !uri_parts(event, "event.reference", "url", true, false)?
+                            && event
+                                .get_str("event.reference")
+                                .is_some_and(|value| !value.is_empty())
+                        {
+                            return Err(TransformError::ParseError {
+                                path: "event.reference".into(),
+                                message: "uri_parts: not a parseable URI".into(),
+                            });
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.pipeline")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, template_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
                 }
                 if event.has_value("json.dvchost") {
                     event.rename("json.dvchost", "vectra_detect.log.dvchost")?;
@@ -3715,7 +3795,47 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("event.reference") };
                 if _cond {
-                    uri_parts(event, "event.reference", "url", true, false)?;
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if !uri_parts(event, "event.reference", "url", true, false)?
+                            && event
+                                .get_str("event.reference")
+                                .is_some_and(|value| !value.is_empty())
+                        {
+                            return Err(TransformError::ParseError {
+                                path: "event.reference".into(),
+                                message: "uri_parts: not a parseable URI".into(),
+                            });
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.pipeline")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, template_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
                 }
                 let _cond = { event.get_str("json.account_id") != Some("") };
                 if _cond {
@@ -4682,7 +4802,47 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("event.reference") };
                 if _cond {
-                    uri_parts(event, "event.reference", "url", true, false)?;
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if !uri_parts(event, "event.reference", "url", true, false)?
+                            && event
+                                .get_str("event.reference")
+                                .is_some_and(|value| !value.is_empty())
+                        {
+                            return Err(TransformError::ParseError {
+                                path: "event.reference".into(),
+                                message: "uri_parts: not a parseable URI".into(),
+                            });
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.pipeline")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, template_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
                 }
                 if event.has_value("json.dvchost") {
                     event.rename("json.dvchost", "vectra_detect.log.dvchost")?;
@@ -5773,7 +5933,47 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("event.reference") };
                 if _cond {
-                    uri_parts(event, "event.reference", "url", true, false)?;
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if !uri_parts(event, "event.reference", "url", true, false)?
+                            && event
+                                .get_str("event.reference")
+                                .is_some_and(|value| !value.is_empty())
+                        {
+                            return Err(TransformError::ParseError {
+                                path: "event.reference".into(),
+                                message: "uri_parts: not a parseable URI".into(),
+                            });
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.pipeline")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, template_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
                 }
                 let _cond = { event.get_str("json.host_id") != Some("") };
                 if _cond {
@@ -5934,7 +6134,47 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("event.reference") };
                 if _cond {
-                    uri_parts(event, "event.reference", "url", true, false)?;
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if !uri_parts(event, "event.reference", "url", true, false)?
+                            && event
+                                .get_str("event.reference")
+                                .is_some_and(|value| !value.is_empty())
+                        {
+                            return Err(TransformError::ParseError {
+                                path: "event.reference".into(),
+                                message: "uri_parts: not a parseable URI".into(),
+                            });
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.pipeline")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, template_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
                 }
                 if event.has_value("json.user") {
                     event.rename("json.user", "vectra_detect.log.user.name")?;
@@ -6727,7 +6967,47 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("event.url") };
                 if _cond {
-                    uri_parts(event, "event.url", "url", true, false)?;
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if !uri_parts(event, "event.url", "url", true, false)?
+                            && event
+                                .get_str("event.url")
+                                .is_some_and(|value| !value.is_empty())
+                        {
+                            return Err(TransformError::ParseError {
+                                path: "event.url".into(),
+                                message: "uri_parts: not a parseable URI".into(),
+                            });
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.pipeline")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, template_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
                 }
                 let _cond = { event.has_value("observer.hostname") };
                 if _cond {
@@ -6811,19 +7091,34 @@ impl Transform for Default {
                 if event.has_value("json.result") {
                     event.rename("json.result", "vectra_detect.log.result")?;
                 }
-                // SKIPPED: condition not transpiled: 'success'.equalsIgnoreCase(ctx.vectra_detect?.log?.result) || 'true'.equalsIgnoreCase(ctx.vectra_detect?.log?.result)
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event
+                        .get_str("vectra_detect.log.result")
+                        .is_some_and(|s| s.eq_ignore_ascii_case("success"))
+                        || event
+                            .get_str("vectra_detect.log.result")
+                            .is_some_and(|s| s.eq_ignore_ascii_case("true"))
+                };
+                if _cond {
                     event.set("event.outcome", json!("success"))?;
                 }
-                // SKIPPED: condition not transpiled: 'failure'.equalsIgnoreCase(ctx.vectra_detect?.log?.result) || 'false'.equalsIgnoreCase(ctx.vectra_detect?.log?.result)
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event
+                        .get_str("vectra_detect.log.result")
+                        .is_some_and(|s| s.eq_ignore_ascii_case("failure"))
+                        || event
+                            .get_str("vectra_detect.log.result")
+                            .is_some_and(|s| s.eq_ignore_ascii_case("false"))
+                };
+                if _cond {
                     event.set("event.outcome", json!("failure"))?;
                 }
-                // SKIPPED: condition not transpiled: 'pending'.equalsIgnoreCase(ctx.vectra_detect?.log?.result)
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event
+                        .get_str("vectra_detect.log.result")
+                        .is_some_and(|s| s.eq_ignore_ascii_case("pending"))
+                };
+                if _cond {
                     event.set("event.outcome", json!("unknown"))?;
                 }
                 if event.has_value("json.dvchost") {
@@ -7902,9 +8197,16 @@ impl Transform for Default {
             event.remove("json");
             event.remove("_tmp");
 
-            // SKIPPED: condition not transpiled: ctx.tags?.contains('preserve_duplicate_custom_fields') != true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                !(event.get("tags").is_some_and(|v| match v {
+                    serde_json::Value::Array(a) => a
+                        .iter()
+                        .any(|x| x.as_str() == Some("preserve_duplicate_custom_fields")),
+                    serde_json::Value::String(s) => s.contains("preserve_duplicate_custom_fields"),
+                    _ => false,
+                }))
+            };
+            if _cond {
                 event.remove("vectra_detect.log.account.id");
                 event.remove("vectra_detect.log.account.name");
                 event.remove("vectra_detect.log.account.uid");
@@ -7958,15 +8260,19 @@ impl Transform for Default {
                 event.remove("vectra_detect.log.timestamp");
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

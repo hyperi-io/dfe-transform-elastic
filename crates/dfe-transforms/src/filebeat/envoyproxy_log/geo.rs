@@ -112,21 +112,24 @@ impl Transform for Geo {
                 }
             }
 
-                if event.has_value("source.as.asn") {
-                    event.rename("source.as.asn", "source.as.number")?;
-                }
+            if event.has_value("source.as.asn") {
+                event.rename("source.as.asn", "source.as.number")?;
+            }
 
-                if event.has_value("source.as.organization_name") {
-                    event.rename("source.as.organization_name", "source.as.organization.name")?;
-                }
+            if event.has_value("source.as.organization_name") {
+                event.rename("source.as.organization_name", "source.as.organization.name")?;
+            }
 
-                if event.has_value("destination.as.asn") {
-                    event.rename("destination.as.asn", "destination.as.number")?;
-                }
+            if event.has_value("destination.as.asn") {
+                event.rename("destination.as.asn", "destination.as.number")?;
+            }
 
-                if event.has_value("destination.as.organization_name") {
-                    event.rename("destination.as.organization_name", "destination.as.organization.name")?;
-                }
+            if event.has_value("destination.as.organization_name") {
+                event.rename(
+                    "destination.as.organization_name",
+                    "destination.as.organization.name",
+                )?;
+            }
 
             Ok(TransformResult::Continue)
         })(event);
@@ -137,7 +140,24 @@ impl Transform for Geo {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                    event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                event.append(
+                    "error.message",
+                    json!(format!(
+                        "Processor {} with tag {} in pipeline {} failed with message: {}",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("_ingest.pipeline")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    )),
+                )?;
                 event.remove("_ingest.on_failure_message");
             }
         }

@@ -102,51 +102,83 @@ impl Transform for Default {
                 event.rename("snyk.audit_logs.event", "event.action")?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.event?.action != null && ctx.event.action =~ /\buser\b/
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("event.action")
+                    && event
+                        .get_str("event.action")
+                        .is_some_and(|s| cached_regex!(r"\buser\b").is_match(s))
+            };
+            if _cond {
                 event.append_unique("event.type", json!("user"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.event?.action != null && ctx.event.action =~ /\b(?:add|create)\b/
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("event.action")
+                    && event
+                        .get_str("event.action")
+                        .is_some_and(|s| cached_regex!(r"\b(?:add|create)\b").is_match(s))
+            };
+            if _cond {
                 event.append_unique("event.type", json!("creation"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.event?.action != null && ctx.event.action =~ /\bedit\b/
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("event.action")
+                    && event
+                        .get_str("event.action")
+                        .is_some_and(|s| cached_regex!(r"\bedit\b").is_match(s))
+            };
+            if _cond {
                 event.append_unique("event.type", json!("change"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.event?.action != null && ctx.event.action =~ /\baccess\b/
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("event.action")
+                    && event
+                        .get_str("event.action")
+                        .is_some_and(|s| cached_regex!(r"\baccess\b").is_match(s))
+            };
+            if _cond {
                 event.append_unique("event.type", json!("access"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.event?.action != null && ctx.event.action =~ /\b(?:remove|delete)\b/
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("event.action")
+                    && event
+                        .get_str("event.action")
+                        .is_some_and(|s| cached_regex!(r"\b(?:remove|delete)\b").is_match(s))
+            };
+            if _cond {
                 event.append_unique("event.type", json!("deletion"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.event?.action != null && ctx.event.action =~ /\bsettings\b/
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("event.action")
+                    && event
+                        .get_str("event.action")
+                        .is_some_and(|s| cached_regex!(r"\bsettings\b").is_match(s))
+            };
+            if _cond {
                 event.append_unique("event.category", json!("configuration"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.event?.action != null && ctx.event.action =~ /\bfiles\b/
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("event.action")
+                    && event
+                        .get_str("event.action")
+                        .is_some_and(|s| cached_regex!(r"\bfiles\b").is_match(s))
+            };
+            if _cond {
                 event.append_unique("event.category", json!("file"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.event?.action != null && ctx.event.action =~ /\buser\b/
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("event.action")
+                    && event
+                        .get_str("event.action")
+                        .is_some_and(|s| cached_regex!(r"\buser\b").is_match(s))
+            };
+            if _cond {
                 event.append_unique("event.category", json!("iam"))?;
             }
 
@@ -205,7 +237,37 @@ impl Transform for Default {
 
             let _cond = { event.has_value("snyk.audit_logs.content.url") };
             if _cond {
-                uri_parts(event, "snyk.audit_logs.content.url", "url", true, false)?;
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if !uri_parts(event, "snyk.audit_logs.content.url", "url", true, false)?
+                        && event
+                            .get_str("snyk.audit_logs.content.url")
+                            .is_some_and(|value| !value.is_empty())
+                    {
+                        return Err(TransformError::ParseError {
+                            path: "snyk.audit_logs.content.url".into(),
+                            message: "uri_parts: not a parseable URI".into(),
+                        });
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    event.append(
+                        "error.message",
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        ),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
             }
 
             let _cond = {
@@ -225,15 +287,19 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n  list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             event.remove("snyk.audit_logs.created");
             event.remove("message");
