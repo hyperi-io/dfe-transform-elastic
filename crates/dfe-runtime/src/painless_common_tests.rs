@@ -136,6 +136,66 @@ fn a_flag_folds_to_a_boolean_by_its_spelling() {
     assert_eq!(event.get("gdacs.is_temporary"), Some(&Value::Bool(false)));
 }
 
+/// A key that holds a dot moves by literal key, in both its spellings.
+///
+/// Verbatim from `pipelines/cybereason/suspicions_process` and
+/// `pipelines/f5_bigip/log/pipeline_bigipsystem.yml:699`. A `rename` cannot do
+/// this: `imageFile.md5String` is one key, and a dotted path reads two fields.
+#[test]
+fn a_dotted_key_moves_out_of_its_map_by_that_key() {
+    let direct = "def obj = ctx.json.simpleValues.remove(\"imageFile.md5String\"); \
+        ctx.cybereason.suspicions_process.simple_values.image_file_md5_string = obj;";
+    let pattern = parse_move_map_entry(&normalise(direct)).expect("cybereason moves one key");
+    assert_eq!(pattern.container, "json.simpleValues");
+    assert_eq!(pattern.key, "imageFile.md5String");
+    assert_eq!(
+        pattern.target,
+        "cybereason.suspicions_process.simple_values.image_file_md5_string"
+    );
+
+    let mut event = Event::new(serde_json::json!({ "json": { "simpleValues": {
+        "imageFile.md5String": "d41d8cd98f00b204e9800998ecf8427e",
+        "imageFile.productName": "kept"
+    } } }));
+    assert!(move_map_entry(&mut event, &pattern));
+    assert_eq!(
+        event.get_str("cybereason.suspicions_process.simple_values.image_file_md5_string"),
+        Some("d41d8cd98f00b204e9800998ecf8427e")
+    );
+    // MOVED: the original key goes, and its neighbour is untouched.
+    assert_eq!(
+        event.get("json.simpleValues"),
+        Some(&serde_json::json!({ "imageFile.productName": "kept" }))
+    );
+
+    // The `put` spelling lands in the same place.
+    let via_put = "def client_side_traffic = new HashMap(); \
+        def obj = ctx.json.system.tmmTraffic.remove('clientSideTraffic.bitsIn'); \
+        client_side_traffic.put('bits_in', obj); \
+        if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  \
+        ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  \
+        ctx.f5_bigip.log.tmm_traffic.put('client_side_traffic', client_side_traffic);\n}\nelse{\n  \
+        ctx.f5_bigip.log.tmm_traffic.client_side_traffic.put('bits_in', obj);\n}";
+    let f5 = parse_move_map_entry(&normalise(via_put)).expect("f5_bigip moves one key");
+    assert_eq!(f5.container, "json.system.tmmTraffic");
+    assert_eq!(f5.key, "clientSideTraffic.bitsIn");
+    assert_eq!(f5.target, "f5_bigip.log.tmm_traffic.client_side_traffic.bits_in");
+
+    let mut traffic = Event::new(serde_json::json!({ "json": { "system": { "tmmTraffic": {
+        "clientSideTraffic.bitsIn": 1234
+    } } } }));
+    assert!(move_map_entry(&mut traffic, &f5));
+    assert_eq!(
+        traffic.get("f5_bigip.log.tmm_traffic.client_side_traffic.bits_in"),
+        Some(&serde_json::json!(1234))
+    );
+
+    // A key the document lacks is not handled, and nothing is created.
+    let mut absent = Event::new(serde_json::json!({ "json": { "simpleValues": {} } }));
+    assert!(!move_map_entry(&mut absent, &pattern));
+    assert!(!absent.has("cybereason.suspicions_process.simple_values.image_file_md5_string"));
+}
+
 /// `eset_protect` ships a whole mail as one `mailto:` URI.
 ///
 /// Verbatim from `pipelines/eset_protect/event/default.yml:569`. Only the

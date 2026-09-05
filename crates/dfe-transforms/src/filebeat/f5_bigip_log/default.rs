@@ -89,15 +89,18 @@ impl Transform for Default {
 
             event.set("observer.vendor", json!("F5"))?;
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == 'N/A' || object == 'NA') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropEmptyFields(Object object) {\n  if (object == 'N/A' || object == 'NA') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    empty_collections: true,
+                    prune_lists: true,
+                    sentinels: vec!["N/A".into(), "NA".into()],
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             if event.has_value("json.hostname") {
                 event.rename("json.hostname", "f5_bigip.log.hostname")?;
@@ -830,7 +833,47 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("f5_bigip.log.http.url") };
                 if _cond {
-                    uri_parts(event, "f5_bigip.log.http.url", "url", true, false)?;
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if !uri_parts(event, "f5_bigip.log.http.url", "url", true, false)?
+                            && event
+                                .get_str("f5_bigip.log.http.url")
+                                .is_some_and(|value| !value.is_empty())
+                        {
+                            return Err(TransformError::ParseError {
+                                path: "f5_bigip.log.http.url".into(),
+                                message: "uri_parts: not a parseable URI".into(),
+                            });
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, template_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
                 }
                 let _cond = { event.get_str("json.node") != Some("") };
                 if _cond {
@@ -3958,7 +4001,47 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("url.original") };
                 if _cond {
-                    uri_parts(event, "url.original", "url", true, false)?;
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if !uri_parts(event, "url.original", "url", true, false)?
+                            && event
+                                .get_str("url.original")
+                                .is_some_and(|value| !value.is_empty())
+                        {
+                            return Err(TransformError::ParseError {
+                                path: "url.original".into(),
+                                message: "uri_parts: not a parseable URI".into(),
+                            });
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, template_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
                 }
                 let _cond = { event.get_str("f5_bigip.log.request.x_forwarded_for") != Some("") };
                 if _cond {
@@ -5298,7 +5381,44 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("f5_bigip.log.url") };
                 if _cond {
-                    uri_parts(event, "f5_bigip.log.url", "url", true, false)?;
+                    // on_failure: 2 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if !uri_parts(event, "f5_bigip.log.url", "url", true, false)?
+                            && event
+                                .get_str("f5_bigip.log.url")
+                                .is_some_and(|value| !value.is_empty())
+                        {
+                            return Err(TransformError::ParseError {
+                                path: "f5_bigip.log.url".into(),
+                                message: "uri_parts: not a parseable URI".into(),
+                            });
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            if let Some(v) = event.get("f5_bigip.log.url").cloned() {
+                                event.set("url.original", v)?;
+                            }
+                            Ok(())
+                        })();
+                        event.append(
+                            "error.message",
+                            json!(
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, template_to_string)
+                            ),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
                 }
                 if event.has_value("json.UserAgent") {
                     event.rename("json.UserAgent", "f5_bigip.log.user.agent")?;
@@ -11535,9 +11655,11 @@ impl Transform for Default {
                         event.remove("_ingest");
                     }
                 }
-                // SKIPPED: condition not transpiled: ctx.json?.system?.tmmTraffic != null && ctx.json?.system?.tmmTraffic['clientSideTraffic.bitsIn'] != null
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("json.system.tmmTraffic")
+                        && event.has_value("json.system.tmmTraffic.clientSideTraffic.bitsIn")
+                };
+                if _cond {
                     // Painless script
                     // Source: def client_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('clientSideTraffic.bitsIn'); client_side_traffic.put('bits_in', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('client_side_traffic', client_side_traffic);\n} else{\n  ctx.f5_bigip.log.tmm_traffic.client_side_traffic.put('bits_in', obj);\n}
                     // TODO: Transpile Painless to Rust (2.2.3)
@@ -11548,9 +11670,11 @@ impl Transform for Default {
                         ),
                     )?;
                 }
-                // SKIPPED: condition not transpiled: ctx.json?.system?.tmmTraffic != null && ctx.json?.system?.tmmTraffic['clientSideTraffic.bitsOut'] != null
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("json.system.tmmTraffic")
+                        && event.has_value("json.system.tmmTraffic.clientSideTraffic.bitsOut")
+                };
+                if _cond {
                     // Painless script
                     // Source: def client_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('clientSideTraffic.bitsOut'); client_side_traffic.put('bits_out', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('client_side_traffic', client_side_traffic);\n} else{\n  ctx.f5_bigip.log.tmm_traffic.client_side_traffic.put('bits_out', obj);\n}
                     // TODO: Transpile Painless to Rust (2.2.3)
@@ -11561,9 +11685,11 @@ impl Transform for Default {
                         ),
                     )?;
                 }
-                // SKIPPED: condition not transpiled: ctx.json?.system?.tmmTraffic != null && ctx.json?.system?.tmmTraffic['serverSideTraffic.bitsIn'] != null
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("json.system.tmmTraffic")
+                        && event.has_value("json.system.tmmTraffic.serverSideTraffic.bitsIn")
+                };
+                if _cond {
                     // Painless script
                     // Source: def server_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('serverSideTraffic.bitsIn'); server_side_traffic.put('bits_in', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('server_side_traffic', server_side_traffic);\n} else{\n    if (ctx.f5_bigip?.log?.tmm_traffic?.server_side_traffic == null) {\n        ctx.f5_bigip.log.tmm_traffic.server_side_traffic = new HashMap();\n    }\n    ctx.f5_bigip.log.tmm_traffic.server_side_traffic.put('bits_in', obj);\n}
                     // TODO: Transpile Painless to Rust (2.2.3)
@@ -11574,9 +11700,11 @@ impl Transform for Default {
                         ),
                     )?;
                 }
-                // SKIPPED: condition not transpiled: ctx.json?.system?.tmmTraffic != null && ctx.json?.system?.tmmTraffic['serverSideTraffic.bitsOut'] != null
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("json.system.tmmTraffic")
+                        && event.has_value("json.system.tmmTraffic.serverSideTraffic.bitsOut")
+                };
+                if _cond {
                     // Painless script
                     // Source: def server_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('serverSideTraffic.bitsOut'); server_side_traffic.put('bits_out', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('server_side_traffic', server_side_traffic);\n} else{\n    if (ctx.f5_bigip?.log?.tmm_traffic?.server_side_traffic == null) {\n        ctx.f5_bigip.log.tmm_traffic.server_side_traffic = new HashMap();\n    }\n    ctx.f5_bigip.log.tmm_traffic.server_side_traffic.put('bits_out', obj);\n}
                     // TODO: Transpile Painless to Rust (2.2.3)
@@ -12254,15 +12382,18 @@ impl Transform for Default {
                         }
                     }
                 }
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: boolean dropEmptyFields(Object object) {\n  if (object == 'N/A' || object == 'NA') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                drop_empty(
                     event,
-                    cached_painless!(
-                        r#"boolean dropEmptyFields(Object object) {\n  if (object == 'N/A' || object == 'NA') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
-                    ),
-                )?;
+                    &DropPolicy {
+                        empty_collections: true,
+                        prune_lists: true,
+                        sentinels: vec!["N/A".into(), "NA".into()],
+                        ..DropPolicy::none()
+                    },
+                    None,
+                );
                 event.append("event.category", json!("network"))?;
                 event.append("event.type", json!("info"))?;
                 event.set("event.kind", json!("alert"))?;
@@ -14310,15 +14441,20 @@ impl Transform for Default {
                 // End nested pipeline: "pipeline_bigip_bot_and_dos"
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'null') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'null') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    sentinels: vec!["null".into()],
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

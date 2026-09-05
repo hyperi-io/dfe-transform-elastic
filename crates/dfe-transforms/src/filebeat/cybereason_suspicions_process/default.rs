@@ -2958,9 +2958,8 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json?.simpleValues["imageFile.companyName"] != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.has_value("json.simpleValues.imageFile.companyName") };
+            if _cond {
                 // Painless script
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.companyName\"); ctx.cybereason.suspicions_process.simple_values.image_file_company_name = obj;
                 // TODO: Transpile Painless to Rust (2.2.3)
@@ -3018,9 +3017,8 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.json?.simpleValues["imageFile.fileHash.iconBase64"] != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.has_value("json.simpleValues.imageFile.fileHash.iconBase64") };
+            if _cond {
                 // Painless script
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.fileHash.iconBase64\"); ctx.cybereason.suspicions_process.simple_values.image_file_hash_icon_base64 = obj;
                 // TODO: Transpile Painless to Rust (2.2.3)
@@ -3078,9 +3076,9 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.json?.simpleValues["imageFile.maliciousClassificationType"] != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond =
+                { event.has_value("json.simpleValues.imageFile.maliciousClassificationType") };
+            if _cond {
                 // Painless script
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.maliciousClassificationType\"); ctx.cybereason.suspicions_process.simple_values.image_file_malicious_classification_type = obj;
                 // TODO: Transpile Painless to Rust (2.2.3)
@@ -3135,9 +3133,8 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.json?.simpleValues["imageFile.md5String"] != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.has_value("json.simpleValues.imageFile.md5String") };
+            if _cond {
                 // Painless script
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.md5String\"); ctx.cybereason.suspicions_process.simple_values.image_file_md5_string = obj;
                 // TODO: Transpile Painless to Rust (2.2.3)
@@ -3232,9 +3229,8 @@ impl Transform for Default {
                 })();
             }
 
-            // SKIPPED: condition not transpiled: ctx.json?.simpleValues["imageFile.productName"] != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.has_value("json.simpleValues.imageFile.productName") };
+            if _cond {
                 // Painless script
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.productName\"); ctx.cybereason.suspicions_process.simple_values.image_file_product_name = obj;
                 // TODO: Transpile Painless to Rust (2.2.3)
@@ -3292,9 +3288,8 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.json?.simpleValues["imageFile.sha1String"] != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.has_value("json.simpleValues.imageFile.sha1String") };
+            if _cond {
                 // Painless script
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.sha1String\"); ctx.cybereason.suspicions_process.simple_values.image_file_sha1_string = obj;
                 // TODO: Transpile Painless to Rust (2.2.3)
@@ -3992,15 +3987,19 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

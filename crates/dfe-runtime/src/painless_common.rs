@@ -4184,6 +4184,107 @@ pub fn join_present_fields(event: &mut Event, pattern: &JoinPresentFields) -> bo
     true
 }
 
+/// One entry MOVED out of a map, addressed by a key that holds a dot.
+///
+/// The rename a `rename` processor cannot do: the key is `imageFile.md5String`
+/// literally, so a dotted path would read two fields. cybereason writes the
+/// value straight to its target; `f5_bigip` builds a `HashMap` around it first
+/// and merges that, which lands in the same place.
+///
+/// The removal is half the point -- leaving the original behind emits a field
+/// Elasticsearch does not.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct MoveMapEntry {
+    /// The map the key sits in.
+    container: String,
+    /// The literal key, dot and all.
+    key: String,
+    target: String,
+}
+
+impl MoveMapEntry {
+    /// The generated call site that rebuilds this pattern.
+    #[cfg(feature = "codegen")]
+    pub(crate) fn direct_call(&self) -> String {
+        format!(
+            "move_map_entry(event, &MoveMapEntry::new({}.into(), {}.into(), {}.into()));",
+            rust_str(&self.container),
+            rust_str(&self.key),
+            rust_str(&self.target),
+        )
+    }
+
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(container: String, key: String, target: String) -> Self {
+        Self {
+            container,
+            key,
+            target,
+        }
+    }
+}
+
+/// `def obj = ctx.a.remove("b.c"); ctx.d = obj;` and the `put` spelling of it.
+fn parse_move_map_entry(script: &str) -> Option<MoveMapEntry> {
+    let (head, rest) = script.split_once(".remove(")?;
+    let container = clean_path(head.rsplit("ctx.").next()?.trim());
+    // The receiver must BE a ctx path, not merely follow one.
+    if container.is_empty()
+        || container
+            .chars()
+            .any(|c| !(c.is_alphanumeric() || matches!(c, '.' | '_' | '-' | '@')))
+    {
+        return None;
+    }
+    let key = rest
+        .trim_start()
+        .strip_prefix(['\'', '"'])?
+        .split(['\'', '"'])
+        .next()?
+        .to_owned();
+    if key.is_empty() {
+        return None;
+    }
+
+    // Written straight to its target, or put into a map that is merged in.
+    // Both spellings end at one path.
+    let target = if let Some((before, _)) = script.split_once(" = obj;") {
+        clean_path(before.rsplit("ctx.").next()?.trim())
+    } else {
+        let (before, _) = script.rsplit_once(", obj)")?;
+        let (path, sub) = before.rsplit_once(".put(")?;
+        let sub = sub.trim().trim_matches(['\'', '"']);
+        let path = clean_path(path.rsplit("ctx.").next()?.trim());
+        if sub.is_empty() || path.is_empty() {
+            return None;
+        }
+        format!("{path}.{sub}")
+    };
+    if target.is_empty() || target.contains(char::is_whitespace) {
+        return None;
+    }
+    Some(MoveMapEntry::new(container, key, target))
+}
+
+/// Take the entry out of the map and write it at the target.
+pub fn move_map_entry(event: &mut Event, pattern: &MoveMapEntry) -> bool {
+    let Some(mut container) = event
+        .get(&pattern.container)
+        .and_then(Value::as_object)
+        .cloned()
+    else {
+        return false;
+    };
+    // `shift_remove`, so taking the key out does not move another into its slot.
+    let Some(value) = container.shift_remove(&pattern.key) else {
+        return false;
+    };
+    let _ = event.set(&pattern.container, Value::Object(container));
+    let _ = event.set(&pattern.target, value);
+    true
+}
+
 /// The ECS email block, read out of a `mailto:` URI's query string.
 ///
 /// `eset_protect` ships the whole mail as one URI and pulls `from`, `subject`
@@ -14386,6 +14487,7 @@ pub(crate) enum KnownPattern {
     EnsurePrefix(EnsurePrefix),
     SplitAtDelimiter(SplitAtDelimiter),
     MailtoUriFields(MailtoUriFields),
+    MoveMapEntry(MoveMapEntry),
     /// An ECS `geo_point` built from a `GeoJSON` coordinate array.
     GeoPointFromCoordinates(GeoPointFromCoordinates),
     /// A numbered column map collapsed into a list, in key order.
@@ -14976,6 +15078,15 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_join_present_fields(normalised)
     {
         patterns.push(KnownPattern::JoinPresentFields(pattern));
+        return patterns;
+    }
+
+    // Pattern: one entry moved out of a map by a key that holds a dot.
+    if normalised.contains(".remove(")
+        && (normalised.contains(" = obj;") || normalised.contains(", obj)"))
+        && let Some(pattern) = parse_move_map_entry(normalised)
+    {
+        patterns.push(KnownPattern::MoveMapEntry(pattern));
         return patterns;
     }
 
@@ -16557,6 +16668,7 @@ impl KnownPattern {
             )),
             Self::RemoveEmptyChildMaps(pattern) => Some(pattern.direct_call()),
             Self::SplitAtDelimiter(pattern) => Some(pattern.direct_call()),
+            Self::MoveMapEntry(pattern) => Some(pattern.direct_call()),
             Self::MailtoUriFields(pattern) => Some(format!(
                 "mailto_uri_fields(event, &MailtoUriFields::new({}.into(), {}.into()));",
                 rust_str(&pattern.source),
@@ -16734,6 +16846,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::EnsurePrefix(pattern) => ensure_prefix(event, pattern),
         KnownPattern::SplitAtDelimiter(pattern) => split_at_delimiter(event, pattern),
         KnownPattern::MailtoUriFields(pattern) => mailto_uri_fields(event, pattern),
+        KnownPattern::MoveMapEntry(pattern) => move_map_entry(event, pattern),
         KnownPattern::GeoPointFromCoordinates(pattern) => {
             geo_point_from_coordinates(event, pattern)
         }

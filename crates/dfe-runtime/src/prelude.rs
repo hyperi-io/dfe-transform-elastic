@@ -27,10 +27,11 @@ pub use crate::painless_plan::{PainlessPlan, painless_exec_plan, painless_exec_p
 // Same functions the ladder dispatches to, so the two paths cannot diverge.
 pub use crate::painless_common::{
     AllowedValueCopy, DropPolicy, EnsureAppend, EnsurePrefix, Factor, GuardedReplace, OctalString,
-    MailtoUriFields, RemoveEmptyChildMaps, ScaleField, SplitAtDelimiter, StringOp, StringOps,
-    SyslogPriorityScript, allowed_value_copy, drop_empty, ensure_append, ensure_prefix,
-    guarded_replace, kv_into_fields, mailto_uri_fields, octal_string, remove_empty_child_maps,
-    scale_field, split_at_delimiter, string_ops, sum_directions, syslog_priority,
+    MailtoUriFields, MoveMapEntry, RemoveEmptyChildMaps, ScaleField, SplitAtDelimiter, StringOp,
+    StringOps, SyslogPriorityScript, allowed_value_copy, drop_empty, ensure_append, ensure_prefix,
+    guarded_replace, kv_into_fields, mailto_uri_fields, move_map_entry, octal_string,
+    remove_empty_child_maps, scale_field, split_at_delimiter, string_ops, sum_directions,
+    syslog_priority,
 };
 // `lookup_normalise` is NOT here: it now takes the call site's parsed literal
 // tail, which is a runtime detail rather than something a generator resolves.
