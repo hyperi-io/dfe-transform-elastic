@@ -251,7 +251,7 @@
     "salesforce": { "events": 7, "events_total": 13, "fields_wrong": 110 },
     "santa": { "events": 17, "events_total": 17, "fields_wrong": 0 },
     "sentinel_one": { "events": 68, "events_total": 68, "fields_wrong": 0 },
-    "sentinel_one_cloud_funnel": { "events": 1, "events_total": 18, "fields_wrong": 109 },
+    "sentinel_one_cloud_funnel": { "events": 1, "events_total": 18, "fields_wrong": 68 },
     "servicenow": { "events": 31, "events_total": 54, "fields_wrong": 170 },
     "slack": { "events": 6, "events_total": 6, "fields_wrong": 0 },
     "snort": { "events": 21, "events_total": 36, "fields_wrong": 30 },

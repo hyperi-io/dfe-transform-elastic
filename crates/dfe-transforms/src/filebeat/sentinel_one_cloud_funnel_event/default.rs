@@ -4192,9 +4192,12 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json != null && ctx.json['sca:atlantisIngestTime'] != null && ctx.json['sca:atlantisIngestTime'] != ''
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("json")
+                    && event.has_value("json.sca:atlantisIngestTime")
+                    && event.get_str("json.sca:atlantisIngestTime") != Some("")
+            };
+            if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.sca:atlantisIngestTime") {
@@ -5760,9 +5763,12 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json != null && ctx.json['sca:ingestTime'] != null && ctx.json['sca:ingestTime'] != ''
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("json")
+                    && event.has_value("json.sca:ingestTime")
+                    && event.get_str("json.sca:ingestTime") != Some("")
+            };
+            if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("json.sca:ingestTime") {
@@ -9143,9 +9149,12 @@ impl Transform for Default {
                             ),
                         )?;
                     }
-                    // SKIPPED: condition not transpiled: ctx.json?.src?.process != null && ctx.json.src.process['crossProcessOutOfStoryline™Count'] != ''
-                    #[allow(unreachable_code, unused_variables)]
-                    if false {
+                    let _cond = {
+                        event.has_value("json.src.process")
+                            && event.get_str("json.src.process.crossProcessOutOfStoryline™Count")
+                                != Some("")
+                    };
+                    if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("json.src.process.crossProcessOutOfStoryline™Count")
@@ -9186,9 +9195,11 @@ impl Transform for Default {
                             "sentinel_one_cloud_funnel.event.src.process.is_storyline_tm_root",
                         )?;
                     }
-                    // SKIPPED: condition not transpiled: ctx.json?.src?.process?.parent != null && ctx.json.src.process.parent['isStoryline™Root'] != ''
-                    #[allow(unreachable_code, unused_variables)]
-                    if false {
+                    let _cond = {
+                        event.has_value("json.src.process.parent")
+                            && event.get_str("json.src.process.parent.isStoryline™Root") != Some("")
+                    };
+                    if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("json.src.process.parent.isStoryline™Root") {
@@ -10824,9 +10835,11 @@ impl Transform for Default {
                             "sentinel_one_cloud_funnel.event.indicator.name",
                         )?;
                     }
-                    // SKIPPED: condition not transpiled: ctx.json?.src?.process != null && ctx.json.src.process['isStoryline™Root'] != ''
-                    #[allow(unreachable_code, unused_variables)]
-                    if false {
+                    let _cond = {
+                        event.has_value("json.src.process")
+                            && event.get_str("json.src.process.isStoryline™Root") != Some("")
+                    };
+                    if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("json.src.process.isStoryline™Root") {
@@ -10859,9 +10872,11 @@ impl Transform for Default {
                             }
                         }
                     }
-                    // SKIPPED: condition not transpiled: ctx.json?.src?.process?.parent != null && ctx.json.src.process.parent['isStoryline™Root'] != ''
-                    #[allow(unreachable_code, unused_variables)]
-                    if false {
+                    let _cond = {
+                        event.has_value("json.src.process.parent")
+                            && event.get_str("json.src.process.parent.isStoryline™Root") != Some("")
+                    };
+                    if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value("json.src.process.parent.isStoryline™Root") {
@@ -11562,14 +11577,23 @@ impl Transform for Default {
                             "sentinel_one_cloud_funnel.event.network.connection_status",
                         )?;
                     }
-                    // SKIPPED: condition not transpiled: ctx.sentinel_one_cloud_funnel?.event?.network?.connection_status != null && ctx.sentinel_one_cloud_funnel.event.network.connection_status.toLowerCase() == ('blocked')
-                    #[allow(unreachable_code, unused_variables)]
-                    if false {
+                    let _cond = {
+                        event.has_value("sentinel_one_cloud_funnel.event.network.connection_status")
+                            && event
+                                .get_str(
+                                    "sentinel_one_cloud_funnel.event.network.connection_status",
+                                )
+                                .is_some_and(|s| s.to_lowercase() == "blocked")
+                    };
+                    if _cond {
                         event.set("event.outcome", json!("unknown"))?;
                     }
-                    // SKIPPED: condition not transpiled: ctx.sentinel_one_cloud_funnel?.event?.network?.connection_status != '' && ctx.event?.outcome != ('unknown')
-                    #[allow(unreachable_code, unused_variables)]
-                    if false {
+                    let _cond = {
+                        event.get_str("sentinel_one_cloud_funnel.event.network.connection_status")
+                            != Some("")
+                            && event.get_str("event.outcome") != Some("unknown")
+                    };
+                    if _cond {
                         // on_failure: 1 handler(s)
                         if let Err(err) = (|| -> Result<()> {
                             if event.has_value(
@@ -11602,14 +11626,22 @@ impl Transform for Default {
                             "sentinel_one_cloud_funnel.event.network.direction",
                         )?;
                     }
-                    // SKIPPED: condition not transpiled: ctx.sentinel_one_cloud_funnel?.event?.network?.direction != null && ctx.sentinel_one_cloud_funnel.event.network.direction.toLowerCase() == ('incoming')
-                    #[allow(unreachable_code, unused_variables)]
-                    if false {
+                    let _cond = {
+                        event.has_value("sentinel_one_cloud_funnel.event.network.direction")
+                            && event
+                                .get_str("sentinel_one_cloud_funnel.event.network.direction")
+                                .is_some_and(|s| s.to_lowercase() == "incoming")
+                    };
+                    if _cond {
                         event.set("network.direction", json!("ingress"))?;
                     }
-                    // SKIPPED: condition not transpiled: ctx.sentinel_one_cloud_funnel?.event?.network?.direction != null && ctx.sentinel_one_cloud_funnel.event.network.direction.toLowerCase() == ('outgoing')
-                    #[allow(unreachable_code, unused_variables)]
-                    if false {
+                    let _cond = {
+                        event.has_value("sentinel_one_cloud_funnel.event.network.direction")
+                            && event
+                                .get_str("sentinel_one_cloud_funnel.event.network.direction")
+                                .is_some_and(|s| s.to_lowercase() == "outgoing")
+                    };
+                    if _cond {
                         event.set("network.direction", json!("egress"))?;
                     }
                     if event.has_value("json.event.network.protocolName") {
@@ -13924,15 +13956,19 @@ impl Transform for Default {
                 event.remove("sentinel_one_cloud_funnel.event.url.address");
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

@@ -16,11 +16,18 @@ impl Transform for PipelineUrl {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-                if event.has_value("json.url.address") {
-                    event.rename("json.url.address", "sentinel_one_cloud_funnel.event.url.address")?;
-                }
+            if event.has_value("json.url.address") {
+                event.rename(
+                    "json.url.address",
+                    "sentinel_one_cloud_funnel.event.url.address",
+                )?;
+            }
 
-            if let Some(v) = event.get("sentinel_one_cloud_funnel.event.url.address").filter(|v| !painless_is_empty_value(v)).cloned() {
+            if let Some(v) = event
+                .get("sentinel_one_cloud_funnel.event.url.address")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
                 event.set("url.original", v)?;
             }
 
@@ -28,7 +35,11 @@ impl Transform for PipelineUrl {
                 uri_parts(event, "url.original", "url", true, false)?;
             }
 
-            if let Some(v) = event.get("url.domain").filter(|v| !painless_is_empty_value(v)).cloned() {
+            if let Some(v) = event
+                .get("url.domain")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
                 event.set("destination.address", v)?;
             }
 
@@ -50,9 +61,12 @@ impl Transform for PipelineUrl {
                 }
             }
 
-                if event.has_value("json.event.url.action") {
-                    event.rename("json.event.url.action", "sentinel_one_cloud_funnel.event.url.action")?;
-                }
+            if event.has_value("json.event.url.action") {
+                event.rename(
+                    "json.event.url.action",
+                    "sentinel_one_cloud_funnel.event.url.action",
+                )?;
+            }
 
             Ok(TransformResult::Continue)
         })(event);
@@ -62,7 +76,34 @@ impl Transform for PipelineUrl {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.append("error.message", json!(format!("Processor '{}' {}failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), if event.get("_ingest.on_failure_processor_tag").is_some_and(|v| !v.is_null() && v.as_str() != Some("") && !matches!(v, Value::Bool(false)) && !v.as_array().is_some_and(Vec::is_empty)) { format!("with tag '{}' ", event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string)) } else { String::new() }, event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                event.append(
+                    "error.message",
+                    json!(format!(
+                        "Processor '{}' {}failed with message '{}'",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, template_to_string),
+                        if event
+                            .get("_ingest.on_failure_processor_tag")
+                            .is_some_and(|v| !v.is_null()
+                                && v.as_str() != Some("")
+                                && !matches!(v, Value::Bool(false))
+                                && !v.as_array().is_some_and(Vec::is_empty))
+                        {
+                            format!(
+                                "with tag '{}' ",
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string)
+                            )
+                        } else {
+                            String::new()
+                        },
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    )),
+                )?;
                 event.remove("_ingest.on_failure_message");
             }
         }
