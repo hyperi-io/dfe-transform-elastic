@@ -16320,7 +16320,7 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
             SnakeRule::BeforeEveryUpper
         };
         patterns.push(KnownPattern::KeysToSnakeCase(
-            extract_target_field(normalised),
+            snake_case_target(normalised).or_else(|| extract_target_field(normalised)),
             rule,
         ));
         return patterns;
@@ -17096,16 +17096,18 @@ pub(crate) fn run_known_pattern(
         KnownPattern::AppendEach(pattern) => try_append_each(event, pattern),
         KnownPattern::LiteralValueMap(pattern) => literal_value_map(event, pattern),
         KnownPattern::KeysToSnakeCase(field, rule) => {
-            if let Some(field) = field {
-                if let Some(val) = event.get(field).cloned() {
-                    let mut val = val;
-                    keys_to_snake_case(&mut val, *rule);
-                    let _ = event.set(field, val);
-                }
-            } else {
-                // Apply to entire event
-                let inner = event.as_value_mut();
-                keys_to_snake_case(inner, *rule);
+            // A script that names no container is NOT a licence to rewrite the
+            // whole document. Converting every key destroyed the vendor's own
+            // spellings elsewhere in the event: tanium's payload keys are
+            // `Computer IP` and `Event Id`, and turning them into
+            // `computer _i_p` left every later read of them empty -- 1,844 of
+            // its 1,968 wrong fields, with no error to show for it.
+            let Some(field) = field else {
+                return false;
+            };
+            if let Some(mut val) = event.get(field).cloned() {
+                keys_to_snake_case(&mut val, *rule);
+                let _ = event.set(field, val);
             }
             true
         }
@@ -17504,6 +17506,48 @@ fn try_replace_dots_in_keys(event: &mut Event, script: &str) -> bool {
 }
 
 /// Try to extract a target field from a Painless script like `ctx.field_name`.
+/// The container a `keysToSnakeCase` script actually converts.
+///
+/// [`extract_target_field`] looks for a bare `ctx.` line and skips any holding
+/// a `(`, which every line of a script that CALLS the helper does. The target
+/// is on the left of the assignment whose right side is the call.
+fn snake_case_target(script: &str) -> Option<String> {
+    // Scanned over the WHOLE text rather than line by line: a stored script
+    // carries its newlines escaped, so it arrives here as one line and any
+    // per-line split lands in the middle of the helper's own body.
+    //
+    // The helper's name is not fixed and the vendors spell it both ways --
+    // `keysToSnakeCase` and `keys_to_snake_case_recursive` -- so the call is
+    // identified by the name CONTAINING it. The LAST assignment wins, the way
+    // the script's own order does.
+    // The target may be spelled with a quoted subscript --
+    // `ctx.cloudflare_logpush['workers_trace']` -- so the path accepts one.
+    let re = crate::cached_regex!(
+        r#"ctx\.([A-Za-z0-9_.?\[\]'"]+?)\s*(?:=\s*|\.putAll\(\s*)([A-Za-z0-9_]+)\(\s*ctx\."#
+    )
+    .fast()?;
+
+    let mut target = None;
+    for caps in re.captures_iter(script) {
+        let Some(name) = caps.get(2) else { continue };
+        let name = name.as_str().to_ascii_lowercase();
+        if name.contains("snakecase") || name.contains("snake_case") {
+            let dotted = caps
+                .get(1)?
+                .as_str()
+                .replace("['", ".")
+                .replace("[\"", ".")
+                .replace("']", "")
+                .replace("\"]", "");
+            let path = clean_path(&dotted);
+            if !path.is_empty() {
+                target = Some(path);
+            }
+        }
+    }
+    target
+}
+
 fn extract_target_field(script: &str) -> Option<String> {
     // Look for patterns like ctx.okta.request or ctx.field
     for line in script.lines() {

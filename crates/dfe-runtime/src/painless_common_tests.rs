@@ -136,6 +136,52 @@ fn a_flag_folds_to_a_boolean_by_its_spelling() {
     assert_eq!(event.get("gdacs.is_temporary"), Some(&Value::Bool(false)));
 }
 
+/// A `keysToSnakeCase` script converts the container it NAMES, nothing else.
+///
+/// Three vendors, three spellings, all verbatim: tanium names a nested path,
+/// cyberarkpas spells the helper `keys_to_snake_case_recursive`, and
+/// cloudflare writes the target as a quoted subscript. Each is given here with
+/// its newlines ESCAPED, which is how a stored script actually arrives -- as
+/// ONE line, so anything reading it line by line lands inside the helper body.
+#[test]
+fn a_snake_case_script_converts_only_the_container_it_names() {
+    let tanium = r"Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def snakeCaseMap = [:];\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    }\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    snakeCaseMap.put(k, v);\n  }\n  return snakeCaseMap;\n}\n\nif(ctx.tanium?.threat_response?.state != null) {\n  ctx.tanium.threat_response.state = keysToSnakeCase(ctx.tanium.threat_response.state);\n}\n";
+    assert_eq!(
+        snake_case_target(tanium).as_deref(),
+        Some("tanium.threat_response.state")
+    );
+
+    let cyberark = r"def keys_to_snake_case_recursive(Map object) {\n  return object.entrySet();\n}\nctx.cyberarkpas.monitor = keys_to_snake_case_recursive(ctx.cyberarkpas.monitor);\n";
+    assert_eq!(
+        snake_case_target(cyberark).as_deref(),
+        Some("cyberarkpas.monitor")
+    );
+
+    let cloudflare = r"Map keysToSnakeCase(Map m) {\n  return m;\n}\nctx.cloudflare_logpush['workers_trace'] = keysToSnakeCase(ctx.cloudflare_logpush.workers_trace);\n";
+    assert_eq!(
+        snake_case_target(cloudflare).as_deref(),
+        Some("cloudflare_logpush.workers_trace")
+    );
+
+    // The whole point: a payload sitting elsewhere is UNTOUCHED. tanium's keys
+    // are `Computer IP` and `Event Id`, and converting the whole document
+    // turned them into `computer _i_p`, leaving every later read empty.
+    let mut event = Event::new(serde_json::json!({
+        "json": { "Computer IP": "81.2.69.192", "Computer Name": "worker-2" },
+        "tanium": { "threat_response": { "state": { "connectionId": "c" } } }
+    }));
+    assert!(try_known_painless(&mut event, tanium));
+    assert_eq!(event.get_str("json.Computer IP"), Some("81.2.69.192"));
+    assert_eq!(event.get_str("json.Computer Name"), Some("worker-2"));
+    assert_eq!(
+        event.get_str("tanium.threat_response.state.connection_id"),
+        Some("c")
+    );
+
+    // A script naming nothing this can resolve writes NOTHING.
+    assert_eq!(snake_case_target("keysToSnakeCase(m);"), None);
+}
+
 /// A key that holds a dot moves by literal key, in both its spellings.
 ///
 /// Verbatim from `pipelines/cybereason/suspicions_process` and
