@@ -109,12 +109,19 @@ fn parse_one(input: &str, format: &str, timezone: Option<&str>) -> Option<DateTi
         // `publish_timestamp` is exactly that. Rejecting it sent 28 of its 59
         // events down the on_failure path with the epoch left as the string
         // "0". A negative is pre-1970 and equally real.
-        "UNIX" => {
+        // `epoch_second` and `epoch_millis` are the same two formats under
+        // Elasticsearch's own names. A pipeline written against the ingest
+        // node spells them that way and never says UNIX, so recognising only
+        // the Beats spelling sent every such date down its on_failure path --
+        // sysdig's cspm stream failed all 10 of its events on one
+        // `epoch_second` field. 73 uses across 19 pipelines, splunk's alert
+        // stream alone holding 30.
+        "UNIX" | "epoch_second" => {
             let seconds = input.parse::<f64>().ok()?;
             #[allow(clippy::cast_possible_truncation)]
             DateTime::from_timestamp_millis((seconds * 1000.0) as i64).map(Into::into)
         }
-        "UNIX_MS" => {
+        "UNIX_MS" | "epoch_millis" => {
             let millis = input.parse::<i64>().ok()?;
             DateTime::from_timestamp_millis(millis).map(Into::into)
         }
@@ -732,6 +739,28 @@ mod tests {
     fn the_first_matching_format_wins() {
         let out = parse_date("1587230269", &["UNIX", "UNIX_MS"], None).unwrap();
         assert_eq!(out, "2020-04-18T17:17:49.000Z");
+    }
+
+    /// Elasticsearch's own names for the two epoch formats.
+    ///
+    /// A pipeline written against the ingest node spells them this way and
+    /// never says UNIX. Recognising only the Beats spelling failed all 10 of
+    /// sysdig's cspm events on one `epoch_second` field.
+    #[test]
+    fn the_elasticsearch_epoch_names_parse_as_their_beats_twins() {
+        assert_eq!(
+            parse_date("1736935526", &["epoch_second"], None).unwrap(),
+            "2025-01-15T10:05:26.000Z"
+        );
+        assert_eq!(
+            parse_date("1736935526000", &["epoch_millis"], None).unwrap(),
+            "2025-01-15T10:05:26.000Z"
+        );
+        // Same value, same answer, whichever spelling the pipeline used.
+        assert_eq!(
+            parse_date("1587230269", &["epoch_second"], None).unwrap(),
+            parse_date("1587230269", &["UNIX"], None).unwrap()
+        );
     }
 
     /// A fractional UNIX second scales to milliseconds WHOLE, the way Elastic

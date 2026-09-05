@@ -136,6 +136,56 @@ fn a_flag_folds_to_a_boolean_by_its_spelling() {
     assert_eq!(event.get("gdacs.is_temporary"), Some(&Value::Bool(false)));
 }
 
+/// sysdig's tidy-up after a dot expansion.
+///
+/// Verbatim from `pipelines/sysdig/event/default.yml:217`. Expanding
+/// `proc.pid.ts` builds a nested `proc.pid`, the rename takes the leaf away,
+/// and `proc.pid` is left holding `{}` -- a container Elasticsearch does not
+/// emit. Only an EMPTY map goes: a populated one is real data.
+#[test]
+fn a_named_key_holding_an_empty_map_is_dropped() {
+    let script = "if (ctx.sysdig.event.content.fields.proc instanceof Map) {\n  \
+        def proc = ctx.sysdig.event.content.fields.proc;\n  \
+        if (proc.containsKey('pid') && proc.pid instanceof Map && proc.pid.size() == 0) {\n    \
+        proc.remove('pid');\n  }\n  \
+        if (proc.containsKey('ppid') && proc.ppid instanceof Map && proc.ppid.size() == 0) {\n    \
+        proc.remove('ppid');\n  }\n}\n";
+    let pattern =
+        parse_remove_empty_child_maps(&normalise(script)).expect("sysdig drops two empty maps");
+    assert_eq!(pattern.container, "sysdig.event.content.fields.proc");
+    assert_eq!(pattern.keys, ["pid", "ppid"]);
+
+    let mut event = Event::new(serde_json::json!({ "sysdig": { "event": { "content": {
+        "fields": { "proc": {
+            "pid": {},
+            "ppid": { "ts": "kept -- not empty" },
+            "name": "sh"
+        } }
+    } } } }));
+    assert!(remove_empty_child_maps(&mut event, &pattern));
+
+    assert!(!event.has("sysdig.event.content.fields.proc.pid"));
+    // A populated map under a named key stays, and so does everything unnamed.
+    assert_eq!(
+        event.get("sysdig.event.content.fields.proc.ppid.ts"),
+        Some(&Value::from("kept -- not empty"))
+    );
+    assert_eq!(
+        event.get("sysdig.event.content.fields.proc.name"),
+        Some(&Value::from("sh"))
+    );
+
+    // A scalar under a named key is not an empty map and is left alone.
+    let mut scalar = Event::new(serde_json::json!({ "sysdig": { "event": { "content": {
+        "fields": { "proc": { "pid": 1_890_726 } }
+    } } } }));
+    assert!(remove_empty_child_maps(&mut scalar, &pattern));
+    assert_eq!(
+        scalar.get("sysdig.event.content.fields.proc.pid"),
+        Some(&Value::from(1_890_726))
+    );
+}
+
 /// gdacs's composite `event.id`, and the reason the accumulator's NAME is
 /// not the trigger: `parts` is gdacs's spelling and nothing else's.
 #[test]

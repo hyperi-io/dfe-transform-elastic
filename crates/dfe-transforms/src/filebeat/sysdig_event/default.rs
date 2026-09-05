@@ -75,15 +75,18 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == '<NA>' || v == '{}' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == '<NA>' || v == '{}' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx.json);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                drop_empty(
                     event,
-                    cached_painless!(
-                        r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == '<NA>' || v == '{}' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == '<NA>' || v == '{}' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx.json);\n"#
-                    ),
-                )?;
+                    &DropPolicy {
+                        empty_collections: true,
+                        prune_lists: true,
+                        sentinels: vec!["<NA>".into(), "{}".into()],
+                        ..DropPolicy::none()
+                    },
+                    Some("json"),
+                );
             }
 
             event.set("observer.vendor", json!("Sysdig"))?;
@@ -348,9 +351,13 @@ impl Transform for Default {
                 event.rename("json.content.fields", "sysdig.event.content.fields")?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.sysdig?.event?.content?.fields instanceof Map && ctx.sysdig.event.content.fields['proc.pid.ts'] != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get("sysdig.event.content.fields")
+                    .is_some_and(|v| v.is_object())
+                    && event.has_value("sysdig.event.content.fields.proc.pid.ts")
+            };
+            if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     dot_expand(event, "sysdig.event.content.fields", "proc.pid.ts")?;
@@ -396,9 +403,13 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.sysdig?.event?.content?.fields instanceof Map && ctx.sysdig.event.content.fields['proc.ppid.ts'] != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get("sysdig.event.content.fields")
+                    .is_some_and(|v| v.is_object())
+                    && event.has_value("sysdig.event.content.fields.proc.ppid.ts")
+            };
+            if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     dot_expand(event, "sysdig.event.content.fields", "proc.ppid.ts")?;
@@ -444,9 +455,16 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.sysdig?.event?.content?.fields instanceof Map && (ctx.sysdig.event.content.fields['proc.pid.ts'] != null || ctx.sysdig.event.content.fields['proc.ppid.ts'] != null || ctx.sysdig?.event?.content?.f ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get("sysdig.event.content.fields")
+                    .is_some_and(|v| v.is_object())
+                    && (event.has_value("sysdig.event.content.fields.proc.pid.ts")
+                        || event.has_value("sysdig.event.content.fields.proc.ppid.ts")
+                        || event.has_value("sysdig.event.content.fields.proc.pid_ts")
+                        || event.has_value("sysdig.event.content.fields.proc.ppid_ts"))
+            };
+            if _cond {
                 // Painless script
                 // Source: if (ctx.sysdig.event.content.fields.proc instanceof Map) {\n  def proc = ctx.sysdig.event.content.fields.proc;\n  if (proc.containsKey('pid') && proc.pid instanceof Map && proc.pid.size() == 0) {\n    proc.remove('pid');\n  }\n  if (proc.containsKey('ppid') && proc.ppid instanceof Map && proc.ppid.size() == 0) {\n    proc.remove('ppid');\n  }\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
@@ -458,9 +476,13 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.sysdig?.event?.content?.fields instanceof Map && ctx.sysdig.event.content.fields['ct.user'] != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get("sysdig.event.content.fields")
+                    .is_some_and(|v| v.is_object())
+                    && event.has_value("sysdig.event.content.fields.ct.user")
+            };
+            if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     dot_expand(event, "sysdig.event.content.fields", "ct.user")?;
@@ -3106,15 +3128,20 @@ impl Transform for Default {
             event.remove("sysdig.event.labels.gcp.instanceId");
             event.remove("sysdig.event.labels.gcp.projectId");
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == '<NA>' || v == '-1' || v == '{}' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == '<NA>' || v == '-1' || v == '{}' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == '<NA>' || v == '-1' || v == '{}' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == '<NA>' || v == '-1' || v == '{}' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    sentinels: vec!["<NA>".into(), "-1".into(), "{}".into()],
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

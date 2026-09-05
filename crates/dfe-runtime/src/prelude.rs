@@ -26,10 +26,10 @@ pub use crate::painless_plan::{PainlessPlan, painless_exec_plan, painless_exec_p
 // Matchers a caller can drive directly, having already resolved the script.
 // Same functions the ladder dispatches to, so the two paths cannot diverge.
 pub use crate::painless_common::{
-    AllowedValueCopy, DropPolicy, EnsureAppend, Factor, GuardedReplace, OctalString, ScaleField,
-    StringOp, StringOps, SyslogPriorityScript, allowed_value_copy, drop_empty, ensure_append,
-    guarded_replace, kv_into_fields, octal_string, scale_field, string_ops, sum_directions,
-    syslog_priority,
+    AllowedValueCopy, DropPolicy, EnsureAppend, Factor, GuardedReplace, OctalString,
+    RemoveEmptyChildMaps, ScaleField, StringOp, StringOps, SyslogPriorityScript,
+    allowed_value_copy, drop_empty, ensure_append, guarded_replace, kv_into_fields, octal_string,
+    remove_empty_child_maps, scale_field, string_ops, sum_directions, syslog_priority,
 };
 // `lookup_normalise` is NOT here: it now takes the call site's parsed literal
 // tail, which is a runtime detail rather than something a generator resolves.

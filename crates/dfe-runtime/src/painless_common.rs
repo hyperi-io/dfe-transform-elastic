@@ -4184,6 +4184,98 @@ pub fn join_present_fields(event: &mut Event, pattern: &JoinPresentFields) -> bo
     true
 }
 
+/// Named keys of a map dropped when what they hold is an EMPTY map.
+///
+/// The tidy-up after a dot expansion. sysdig expands `proc.pid.ts` into a
+/// nested `proc.pid.ts`, renames the leaf to `proc.pid_ts`, and is left with
+/// `proc.pid` holding `{}` -- a container Elasticsearch does not emit. The
+/// script names the keys to check rather than sweeping the map, so an empty
+/// map the vendor means to keep is untouched.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RemoveEmptyChildMaps {
+    /// The map the keys sit in.
+    container: String,
+    /// The keys to drop, in the order the script checks them.
+    keys: Vec<String>,
+}
+
+impl RemoveEmptyChildMaps {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(container: String, keys: Vec<String>) -> Self {
+        Self { container, keys }
+    }
+
+    /// The generated call site that rebuilds this pattern.
+    #[cfg(feature = "codegen")]
+    pub(crate) fn direct_call(&self) -> String {
+        let keys: Vec<String> = self
+            .keys
+            .iter()
+            .map(|key| format!("{}.into()", rust_str(key)))
+            .collect();
+        format!(
+            "remove_empty_child_maps(event, &RemoveEmptyChildMaps::new({}.into(), vec![{}]));",
+            rust_str(&self.container),
+            keys.join(", "),
+        )
+    }
+}
+
+/// `if (p.containsKey('k') && p.k instanceof Map && p.k.size() == 0) p.remove('k');`
+fn parse_remove_empty_child_maps(script: &str) -> Option<RemoveEmptyChildMaps> {
+    // `def proc = ctx.<container>;` -- the local every check reads through.
+    let (head, tail) = script.split_once(" = ctx.")?;
+    let local = head.rsplit(['\n', ';', '{', '}']).next()?.trim();
+    let local = local.strip_prefix("def ").unwrap_or(local).trim();
+    if local.is_empty() || local.contains(char::is_whitespace) {
+        return None;
+    }
+    let container = clean_path(tail.split([';', '\n']).next()?.trim());
+    if container.is_empty() {
+        return None;
+    }
+
+    // Every key checked for an empty map AND removed. Both halves, or the
+    // script is doing something else with it.
+    let mut keys = Vec::new();
+    for piece in script.split(&format!("{local}.containsKey(")).skip(1) {
+        let key = piece
+            .split_once(')')?
+            .0
+            .trim()
+            .trim_matches(['\'', '"'])
+            .to_owned();
+        let (guard, body) = piece.split_once(") {")?;
+        if key.is_empty()
+            || !guard.contains("instanceof Map")
+            || !guard.contains(".size() == 0")
+            || !body.contains(&format!("{local}.remove("))
+        {
+            return None;
+        }
+        keys.push(key);
+    }
+    (!keys.is_empty()).then(|| RemoveEmptyChildMaps::new(container, keys))
+}
+
+/// Drop each named key that holds an empty map; leave everything else.
+pub fn remove_empty_child_maps(event: &mut Event, pattern: &RemoveEmptyChildMaps) -> bool {
+    for key in &pattern.keys {
+        let path = format!("{}.{key}", pattern.container);
+        // An empty map ONLY. A missing key, a populated map and a scalar are
+        // all left where they are.
+        if event
+            .get(&path)
+            .and_then(Value::as_object)
+            .is_some_and(serde_json::Map::is_empty)
+        {
+            event.remove(&path);
+        }
+    }
+    true
+}
+
 /// A vendor flag folded to a real boolean by comparing its string spelling.
 ///
 /// Distinct from [`KnownPattern::TruthyAssignments`], which is m365's
@@ -4203,6 +4295,32 @@ impl CoerceBoolean {
     #[must_use]
     pub fn new(fields: Vec<(String, String)>, truthy: Vec<String>) -> Self {
         Self { fields, truthy }
+    }
+
+    /// The generated call site that rebuilds this pattern.
+    #[cfg(feature = "codegen")]
+    pub(crate) fn direct_call(&self) -> String {
+        let fields: Vec<String> = self
+            .fields
+            .iter()
+            .map(|(source, target)| {
+                format!(
+                    "({}.to_owned(), {}.to_owned())",
+                    rust_str(source),
+                    rust_str(target)
+                )
+            })
+            .collect();
+        let truthy: Vec<String> = self
+            .truthy
+            .iter()
+            .map(|spelling| format!("{}.to_owned()", rust_str(spelling)))
+            .collect();
+        format!(
+            "coerce_boolean(event, &CoerceBoolean::new(vec![{}], vec![{}]));",
+            fields.join(", "),
+            truthy.join(", "),
+        )
     }
 }
 
@@ -13894,6 +14012,7 @@ pub(crate) enum KnownPattern {
     JoinPresentFields(JoinPresentFields),
     /// A vendor flag folded to a boolean by its string spelling.
     CoerceBoolean(CoerceBoolean),
+    RemoveEmptyChildMaps(RemoveEmptyChildMaps),
     /// An ECS `geo_point` built from a `GeoJSON` coordinate array.
     GeoPointFromCoordinates(GeoPointFromCoordinates),
     /// A numbered column map collapsed into a list, in key order.
@@ -14484,6 +14603,16 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_join_present_fields(normalised)
     {
         patterns.push(KnownPattern::JoinPresentFields(pattern));
+        return patterns;
+    }
+
+    // Pattern: named keys dropped when what they hold is an empty map.
+    if normalised.contains("instanceof Map")
+        && normalised.contains(".size() == 0")
+        && normalised.contains(".containsKey(")
+        && let Some(pattern) = parse_remove_empty_child_maps(normalised)
+    {
+        patterns.push(KnownPattern::RemoveEmptyChildMaps(pattern));
         return patterns;
     }
 
@@ -16026,25 +16155,8 @@ impl KnownPattern {
                 pattern.lat_index,
                 pattern.lon_first,
             )),
-            Self::CoerceBoolean(pattern) => Some(format!(
-                "coerce_boolean(event, &CoerceBoolean::new(vec![{}], vec![{}]));",
-                pattern
-                    .fields
-                    .iter()
-                    .map(|(source, target)| format!(
-                        "({}.to_owned(), {}.to_owned())",
-                        rust_str(source),
-                        rust_str(target)
-                    ))
-                    .collect::<Vec<_>>()
-                    .join(", "),
-                pattern
-                    .truthy
-                    .iter()
-                    .map(|spelling| format!("{}.to_owned()", rust_str(spelling)))
-                    .collect::<Vec<_>>()
-                    .join(", "),
-            )),
+            Self::RemoveEmptyChildMaps(pattern) => Some(pattern.direct_call()),
+            Self::CoerceBoolean(pattern) => Some(pattern.direct_call()),
             Self::JoinPresentFields(pattern) => Some(format!(
                 "join_present_fields(event, &JoinPresentFields::new(vec![{}], {}, {}));",
                 pattern
@@ -16205,6 +16317,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::EnsureAppend(pattern) => ensure_append(event, pattern),
         KnownPattern::JoinPresentFields(pattern) => join_present_fields(event, pattern),
         KnownPattern::CoerceBoolean(pattern) => coerce_boolean(event, pattern),
+        KnownPattern::RemoveEmptyChildMaps(pattern) => remove_empty_child_maps(event, pattern),
         KnownPattern::GeoPointFromCoordinates(pattern) => {
             geo_point_from_coordinates(event, pattern)
         }
