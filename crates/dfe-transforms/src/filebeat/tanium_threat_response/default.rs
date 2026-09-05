@@ -330,9 +330,8 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.json['Computer IP'] != ''
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("json.Computer IP") != Some("") };
+            if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("json.Computer IP") {
@@ -683,9 +682,12 @@ impl Transform for Default {
             event.remove("tanium.threat_response.other_parameters.payload");
             event.remove("tanium.threat_response.other_parameters.payload_json");
 
-            // SKIPPED: condition not transpiled: ctx.json['Match Details'] instanceof Map
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get("json.Match Details")
+                    .is_some_and(|v| v.is_object())
+            };
+            if _cond {
                 // Painless script
                 // Source: ctx.tanium.threat_response.match_details = ctx.tanium.threat_response.match_details ?: [:];\nctx.tanium.threat_response.match_details.putAll(ctx.json['Match Details']);\n
                 // TODO: Transpile Painless to Rust (2.2.3)
@@ -704,15 +706,17 @@ impl Transform for Default {
             };
             if _cond {
                 // Begin nested pipeline: "match_details"
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: boolean dropEmptyMapsAndLists(Object object) {\n  if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyMapsAndLists(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyMapsAndLists(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyMapsAndLists(ctx.tanium.threat_response.match_details);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                drop_empty(
                     event,
-                    cached_painless!(
-                        r#"boolean dropEmptyMapsAndLists(Object object) {\n  if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyMapsAndLists(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyMapsAndLists(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyMapsAndLists(ctx.tanium.threat_response.match_details);\n"#
-                    ),
-                )?;
+                    &DropPolicy {
+                        empty_collections: true,
+                        prune_lists: true,
+                        ..DropPolicy::none()
+                    },
+                    Some("tanium.threat_response.match_details"),
+                );
                 if event.has_value(
                     "tanium.threat_response.match_details.match.properties.file.fullpath",
                 ) {
@@ -2087,15 +2091,19 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             Ok(TransformResult::Continue)
         })(event);

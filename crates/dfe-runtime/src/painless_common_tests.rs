@@ -136,6 +136,51 @@ fn a_flag_folds_to_a_boolean_by_its_spelling() {
     assert_eq!(event.get("gdacs.is_temporary"), Some(&Value::Bool(false)));
 }
 
+/// `eset_protect` ships a whole mail as one `mailto:` URI.
+///
+/// Verbatim from `pipelines/eset_protect/event/default.yml:569`. Only the
+/// bracketed addresses are taken -- the display name around them is not one.
+#[test]
+fn an_email_block_comes_out_of_a_mailto_uri() {
+    let script = "String uri = ctx.eset_protect.event.object_uri;\n\
+        java.util.regex.Matcher fromMatch = /(?:\\?|&)from=([^&]+)/.matcher(uri);\n\
+        java.util.regex.Matcher subjectMatch = /(?:\\?|&)subject=([^&]+)/.matcher(uri);\n\
+        java.util.regex.Matcher attachmentMatch = /(?:\\?|&)attachment=([^&]+)/.matcher(uri);\n\
+        ctx.email['from'] = from;\nctx.email['subject'] = subject;\n\
+        ctx.email['attachments'] = attachmentList;";
+    let pattern = parse_mailto_uri_fields(&normalise(script)).expect("eset_protect reads a mailto");
+    assert_eq!(pattern.source, "eset_protect.event.object_uri");
+    assert_eq!(pattern.target, "email");
+
+    let mut event = Event::new(serde_json::json!({ "eset_protect": { "event": { "object_uri":
+        "mailto:x@y.com?from=Alice <alice@example.com>, Bob <bob@example.org>\
+         &subject=Quarterly&attachment=report.pdf" } } }));
+    assert!(mailto_uri_fields(&mut event, &pattern));
+    assert_eq!(
+        event.get("email.from.address"),
+        Some(&serde_json::json!(["alice@example.com", "bob@example.org"]))
+    );
+    assert_eq!(event.get_str("email.subject"), Some("Quarterly"));
+    assert_eq!(
+        event.get("email.attachments"),
+        Some(&serde_json::json!([{ "file": { "name": "report.pdf" } }]))
+    );
+
+    // A URI carrying none of the three writes nothing at all.
+    let mut bare = Event::new(serde_json::json!({ "eset_protect": { "event": {
+        "object_uri": "mailto:x@y.com"
+    } } }));
+    assert!(!mailto_uri_fields(&mut bare, &pattern));
+    assert!(!bare.has("email.subject"));
+
+    // A `from` with no angle brackets yields no address.
+    let mut plain = Event::new(serde_json::json!({ "eset_protect": { "event": {
+        "object_uri": "mailto:x@y.com?from=alice@example.com"
+    } } }));
+    assert!(!mailto_uri_fields(&mut plain, &pattern));
+    assert!(!plain.has("email.from.address"));
+}
+
 /// The two cuts a dissect leaves behind, both from envoyproxy.
 ///
 /// Verbatim from `pipelines/envoyproxy/log/plaintext.yml:30` and

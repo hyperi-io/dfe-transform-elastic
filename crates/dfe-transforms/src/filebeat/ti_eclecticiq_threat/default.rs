@@ -110,39 +110,50 @@ impl Transform for Default {
                 return Ok(TransformResult::Drop);
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["source.names"] != null && ctx.json["source.names"] != ""
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("json.source.names")
+                    && event.get_str("json.source.names") != Some("")
+            };
+            if _cond {
                 dot_expand(event, "json", "source.names")?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.tags"] != null && ctx.json["meta.tags"] != ""
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("json.meta.tags") && event.get_str("json.meta.tags") != Some("")
+            };
+            if _cond {
                 dot_expand(event, "json", "meta.tags")?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.estimated_observed_time"] != null && ctx.json["meta.estimated_observed_time"] != ""
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("json.meta.estimated_observed_time")
+                    && event.get_str("json.meta.estimated_observed_time") != Some("")
+            };
+            if _cond {
                 dot_expand(event, "json", "meta.estimated_observed_time")?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.estimated_threat_start_time"] != null && ctx.json["meta.estimated_threat_start_time"] != ""
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("json.meta.estimated_threat_start_time")
+                    && event.get_str("json.meta.estimated_threat_start_time") != Some("")
+            };
+            if _cond {
                 dot_expand(event, "json", "meta.estimated_threat_start_time")?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.estimated_threat_end_time"] != null && ctx.json["meta.estimated_threat_end_time"] != ""
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("json.meta.estimated_threat_end_time")
+                    && event.get_str("json.meta.estimated_threat_end_time") != Some("")
+            };
+            if _cond {
                 dot_expand(event, "json", "meta.estimated_threat_end_time")?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.ingest_time"] != null && ctx.json["meta.ingest_time"] != ""
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("json.meta.ingest_time")
+                    && event.get_str("json.meta.ingest_time") != Some("")
+            };
+            if _cond {
                 dot_expand(event, "json", "meta.ingest_time")?;
             }
 
@@ -327,87 +338,73 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.classification"] == "unknown"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("json.meta.classification") == Some("unknown") };
+            if _cond {
                 event.set("threat.indicator.confidence", json!("Not Specified"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.classification"] == "good"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("json.meta.classification") == Some("good") };
+            if _cond {
                 event.set("threat.indicator.confidence", json!("None"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.classification"] == "good"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("json.meta.classification") == Some("good") };
+            if _cond {
                 event.set("event.severity", json!(1))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.confidence"] == "low"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("json.meta.confidence") == Some("low") };
+            if _cond {
                 event.set("threat.indicator.confidence", json!("Low"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.confidence"] == "low"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("json.meta.confidence") == Some("low") };
+            if _cond {
                 event.set("event.severity", json!(2))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.confidence"] == "medium"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("json.meta.confidence") == Some("medium") };
+            if _cond {
                 event.set("threat.indicator.confidence", json!("Medium"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.confidence"] == "medium"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("json.meta.confidence") == Some("medium") };
+            if _cond {
                 event.set("event.severity", json!(3))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.confidence"] == "high"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("json.meta.confidence") == Some("high") };
+            if _cond {
                 event.set("threat.indicator.confidence", json!("High"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.confidence"] == "high"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("json.meta.confidence") == Some("high") };
+            if _cond {
                 event.set("event.severity", json!(4))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.tlp"] == "WHITE"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("json.meta.tlp") == Some("WHITE") };
+            if _cond {
                 event.set("threat.indicator.marking.tlp", json!("WHITE"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.tlp"] == "NONE"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("json.meta.tlp") == Some("NONE") };
+            if _cond {
                 event.set("threat.indicator.marking.tlp", json!("CLEAR"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.tlp"] == "GREEN"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("json.meta.tlp") == Some("GREEN") };
+            if _cond {
                 event.set("threat.indicator.marking.tlp", json!("GREEN"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.tlp"] == "AMBER"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("json.meta.tlp") == Some("AMBER") };
+            if _cond {
                 event.set("threat.indicator.marking.tlp", json!("AMBER"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json["meta.tlp"] == "RED"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("json.meta.tlp") == Some("RED") };
+            if _cond {
                 event.set("threat.indicator.marking.tlp", json!("RED"))?;
             }
 

@@ -61,9 +61,11 @@ impl Transform for Default {
                     return Ok(TransformResult::Drop);
                 }
                 event.remove("elasticsearch.audit.type");
-                // SKIPPED: condition not transpiled: ctx.elasticsearch.audit['@timestamp'] != null && ctx.event.timezone != null
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("elasticsearch.audit.@timestamp")
+                        && event.has_value("event.timezone")
+                };
+                if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
                         if let Some(date_str) =
@@ -89,9 +91,11 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                // SKIPPED: condition not transpiled: ctx.elasticsearch.audit['@timestamp'] == null && ctx.event.timezone != null
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    !event.has_value("elasticsearch.audit.@timestamp")
+                        && event.has_value("event.timezone")
+                };
+                if _cond {
                     if event.remove("event.timezone").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "event.timezone".into(),

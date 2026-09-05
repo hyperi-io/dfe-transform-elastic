@@ -379,9 +379,11 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: (!(ctx.containsKey('@timestamp')) || ctx['@timestamp'] == null) && ctx.hackerone?.report?.attributes?.created_at != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                (!(event.has("@timestamp")) || !event.has_value("@timestamp"))
+                    && event.has_value("hackerone.report.attributes.created_at")
+            };
+            if _cond {
                 if let Some(date_str) =
                     event.get_as_string("hackerone.report.attributes.created_at")
                 {

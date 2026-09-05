@@ -29,9 +29,8 @@ impl Transform for Default {
             if event.has_value("message") {
                 event.rename("message", "_ecs_json_message")?;
             }
-            // SKIPPED: condition not transpiled: ctx.containsKey('_ecs_json_message')
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.has("_ecs_json_message") };
+            if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     parse_json_field_to_root(event, "_ecs_json_message", true)?;
@@ -55,9 +54,8 @@ impl Transform for Default {
             }
             event.remove("_ecs_json_message");
             dot_expand(event, "", "*")?;
-            // SKIPPED: condition not transpiled: ctx.error?.stack_trace instanceof Collection
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get("error.stack_trace").is_some_and(|v| v.is_array()) };
+            if _cond {
                 let joined = event
                     .get("error.stack_trace")
                     .and_then(|v| join_values(v, "\n"));

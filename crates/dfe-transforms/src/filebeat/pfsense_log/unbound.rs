@@ -29,7 +29,7 @@ impl Transform for Unbound {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "grok")?;
                 event.set("_ingest.on_failure_processor_tag", "grok_message_88ceaee5")?;
-                        return Ok(TransformResult::Drop);
+                return Ok(TransformResult::Drop);
             }
 
             let _cond = { event.has_value("source.address") };
@@ -37,7 +37,11 @@ impl Transform for Unbound {
                 event.append_unique("event.type", json!("connection"))?;
             }
 
-            let _cond = { event.get_str("message").is_some_and(|s| s.to_lowercase().contains("disconnected")) };
+            let _cond = {
+                event
+                    .get_str("message")
+                    .is_some_and(|s| s.to_lowercase().contains("disconnected"))
+            };
             if _cond {
                 event.append_unique("event.type", json!("end"))?;
             }
@@ -46,7 +50,7 @@ impl Transform for Unbound {
 
             let _cond = { event.has_value("_tmp.question.name") };
             if _cond {
-            event.set("dns.type", json!("question"))?;
+                event.set("dns.type", json!("question"))?;
             }
 
             if event.has_value("_tmp.question.name") {
@@ -66,34 +70,39 @@ impl Transform for Unbound {
                 }
             }
 
-                if event.has_value("dns.question.domain") {
-                    event.rename("dns.question.domain", "dns.question.name")?;
-                }
+            if event.has_value("dns.question.domain") {
+                event.rename("dns.question.domain", "dns.question.name")?;
+            }
 
-                if event.has_value("_tmp.question.type") {
-                    event.rename("_tmp.question.type", "dns.question.type")?;
-                }
+            if event.has_value("_tmp.question.type") {
+                event.rename("_tmp.question.type", "dns.question.type")?;
+            }
 
-                if event.has_value("_tmp.question.class") {
-                    event.rename("_tmp.question.class", "dns.question.class")?;
-                }
+            if event.has_value("_tmp.question.class") {
+                event.rename("_tmp.question.class", "dns.question.class")?;
+            }
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-            if event.has_value("source.address") {
-                if let Some(val) = event.get("source.address") {
-                    let converted = convert_value(val, "ip")
-                        .map_err(|message| TransformError::ParseError {
-                            path: "source.address".into(),
-                            message,
+                if event.has_value("source.address") {
+                    if let Some(val) = event.get("source.address") {
+                        let converted = convert_value(val, "ip").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "source.address".into(),
+                                message,
+                            }
                         })?;
-                    event.set("source.ip", converted)?;
+                        event.set("source.ip", converted)?;
+                    }
                 }
-            }
                 Ok(())
             })();
 
-            if let Some(v) = event.get("source").filter(|v| !painless_is_empty_value(v)).cloned() {
+            if let Some(v) = event
+                .get("source")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
                 event.set("client", v)?;
             }
 
@@ -106,8 +115,38 @@ impl Transform for Unbound {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                    event.append("error.message", json!(format!("Processor '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), if event.get("_ingest.on_failure_processor_tag").is_some_and(|v| !v.is_null() && v.as_str() != Some("") && !matches!(v, Value::Bool(false)) && !v.as_array().is_some_and(Vec::is_empty)) { format!("with tag '{}' ", event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string)) } else { String::new() }, event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
-                    event.append_unique("tags", json!("preserve_original_event"))?;
+                event.append(
+                    "error.message",
+                    json!(format!(
+                        "Processor '{}' {}in pipeline '{}' failed with message '{}'",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, template_to_string),
+                        if event
+                            .get("_ingest.on_failure_processor_tag")
+                            .is_some_and(|v| !v.is_null()
+                                && v.as_str() != Some("")
+                                && !matches!(v, Value::Bool(false))
+                                && !v.as_array().is_some_and(Vec::is_empty))
+                        {
+                            format!(
+                                "with tag '{}' ",
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string)
+                            )
+                        } else {
+                            String::new()
+                        },
+                        event
+                            .get("_ingest.pipeline")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    )),
+                )?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

@@ -9637,9 +9637,19 @@ impl Transform for Default {
                             Ok(())
                         })?;
                     }
-                    // SKIPPED: condition not transpiled: ctx.ses?.attacks instanceof List && ctx.tags?.contains('preserve_duplicate_custom_fields') != true
-                    #[allow(unreachable_code, unused_variables)]
-                    if false {
+                    let _cond = {
+                        event.get("ses.attacks").is_some_and(|v| v.is_array())
+                            && !(event.get("tags").is_some_and(|v| match v {
+                                serde_json::Value::Array(a) => a.iter().any(|x| {
+                                    x.as_str() == Some("preserve_duplicate_custom_fields")
+                                }),
+                                serde_json::Value::String(s) => {
+                                    s.contains("preserve_duplicate_custom_fields")
+                                }
+                                _ => false,
+                            }))
+                    };
+                    if _cond {
                         foreach_array(event, "ses.attacks", |event| {
                             event.remove("_ingest._value.tactic_uids");
                             event.remove("_ingest._value.technique_uid");
@@ -67012,9 +67022,19 @@ impl Transform for Default {
                             Ok(())
                         })?;
                     }
-                    // SKIPPED: condition not transpiled: ctx.ses?.attacks instanceof List && ctx.tags?.contains('preserve_duplicate_custom_fields') != true
-                    #[allow(unreachable_code, unused_variables)]
-                    if false {
+                    let _cond = {
+                        event.get("ses.attacks").is_some_and(|v| v.is_array())
+                            && !(event.get("tags").is_some_and(|v| match v {
+                                serde_json::Value::Array(a) => a.iter().any(|x| {
+                                    x.as_str() == Some("preserve_duplicate_custom_fields")
+                                }),
+                                serde_json::Value::String(s) => {
+                                    s.contains("preserve_duplicate_custom_fields")
+                                }
+                                _ => false,
+                            }))
+                    };
+                    if _cond {
                         foreach_array(event, "ses.attacks", |event| {
                             event.remove("_ingest._value.tactic_uids");
                             event.remove("_ingest._value.technique_uid");
@@ -93599,15 +93619,19 @@ impl Transform for Default {
                 event.remove("ses.uuid");
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

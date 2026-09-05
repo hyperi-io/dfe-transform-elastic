@@ -403,9 +403,8 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.containsKey('http')
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.has("http") };
+            if _cond {
                 if let Some(val) = event.get("haproxy.bytes_read") {
                     let converted = convert_value(val, "long").map_err(|message| {
                         TransformError::ParseError {
@@ -496,15 +495,16 @@ impl Transform for Default {
             event.remove("_conf");
             event.remove("haproxy.request_date");
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             Ok(TransformResult::Continue)
         })(event);

@@ -2626,15 +2626,19 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             {
                 let mut values = Vec::new();
@@ -2646,9 +2650,16 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.tags?.contains('preserve_duplicate_custom_fields') != true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                !(event.get("tags").is_some_and(|v| match v {
+                    serde_json::Value::Array(a) => a
+                        .iter()
+                        .any(|x| x.as_str() == Some("preserve_duplicate_custom_fields")),
+                    serde_json::Value::String(s) => s.contains("preserve_duplicate_custom_fields"),
+                    _ => false,
+                }))
+            };
+            if _cond {
                 event.remove("trend_micro_vision_one.telemetry.dst");
                 event.remove("trend_micro_vision_one.telemetry.endpoint_guid");
                 event.remove("trend_micro_vision_one.telemetry.endpoint_host_name");

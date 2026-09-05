@@ -887,9 +887,10 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.json?.access_device?.security_agents != null && ( !(ctx.json.access_device.security_agents instanceof List) || ctx.json.access_device.security_agents.length == 0 || !(ctx.json.access_device.securi ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("json.access_device.security_agents") && (!(event.get("json.access_device.security_agents").is_some_and(|v| v.is_array())) || event.get("json.access_device.security_agents").is_some_and(|v| match v { serde_json::Value::Array(a) => a.len(), serde_json::Value::Object(o) => o.len(), serde_json::Value::String(s) => s.chars().count(), _ => 0 } == 0) || !(event.has_value("json.access_device.security_agents.0")))
+            };
+            if _cond {
                 if event.remove("json.access_device.security_agents").is_none() {
                     return Err(TransformError::FieldNotFound {
                         path: "json.access_device.security_agents".into(),
@@ -1950,15 +1951,19 @@ impl Transform for Default {
                 })();
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             event.remove("json");
 

@@ -1170,15 +1170,9 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        // Painless script
+                        // Painless script, resolved to its runners at generation time
                         // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
-                        // TODO: Transpile Painless to Rust (2.2.3)
-                        painless_exec_plan(
-                            event,
-                            cached_painless!(
-                                r#"ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes"#
-                            ),
-                        )?;
+                        sum_directions(event, &["bytes"]);
                         Ok(())
                     })();
                 }
@@ -2191,9 +2185,8 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                // SKIPPED: condition not transpiled: ctx.juniper?.srx['nat_destination_port'] != null
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = { event.has_value("juniper.srx.nat_destination_port") };
+                if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
                         if event.has_value("juniper.srx.nat_destination_port") {
@@ -6182,15 +6175,17 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("juniper.srx.system") };
                 if _cond {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: ctx.juniper.srx.system = ctx.juniper.srx.system.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().replace(' ', '_').replace('-', '_').toLowerCase(), e -> e.getValue().trim()));
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    guarded_replace(
                         event,
-                        cached_painless!(
-                            r#"ctx.juniper.srx.system = ctx.juniper.srx.system.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().replace(' ', '_').replace('-', '_').toLowerCase(), e -> e.getValue().trim()));"#
+                        &GuardedReplace::new(
+                            "juniper.srx.system.entrySet().stream().collect(Collectors.toMap(e -> e.getKey()",
+                            "juniper.srx.system",
+                            " ",
+                            "_",
                         ),
-                    )?;
+                    );
                 }
                 let _cond = { event.has_value("juniper.srx.system.aux_spi") };
                 if _cond {
@@ -6665,9 +6660,8 @@ impl Transform for Default {
                         }
                     }
                 }
-                // SKIPPED: condition not transpiled: ctx.juniper?.srx['nat_destination_port'] != null
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = { event.has_value("juniper.srx.nat_destination_port") };
+                if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
                         if event.has_value("juniper.srx.nat_destination_port") {

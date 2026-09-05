@@ -532,9 +532,13 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.event?.outcome == null && ctx.google_workspace?.login?.challenge_status?.toLowerCase()?.contains('passed') == true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                !event.has_value("event.outcome")
+                    && event
+                        .get_str("google_workspace.login.challenge_status")
+                        .is_some_and(|s| s.to_lowercase().contains("passed"))
+            };
+            if _cond {
                 event.set("event.outcome", json!("success"))?;
             }
 

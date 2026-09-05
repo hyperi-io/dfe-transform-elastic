@@ -280,9 +280,13 @@ impl Transform for Default {
                 }
                     }
                 }
-                // SKIPPED: condition not transpiled: ctx.lyve_cloud?.audit?.auditEntry?.requestHeader != null && ctx.lyve_cloud.audit.auditEntry.requestHeader["X-Forwarded-Host"] != ""
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("lyve_cloud.audit.auditEntry.requestHeader")
+                        && event
+                            .get_str("lyve_cloud.audit.auditEntry.requestHeader.X-Forwarded-Host")
+                            != Some("")
+                };
+                if _cond {
                     event.append_unique(
                         "related.hosts",
                         json!(

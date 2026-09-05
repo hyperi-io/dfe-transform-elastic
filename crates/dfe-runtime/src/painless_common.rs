@@ -4184,6 +4184,115 @@ pub fn join_present_fields(event: &mut Event, pattern: &JoinPresentFields) -> bo
     true
 }
 
+/// The ECS email block, read out of a `mailto:` URI's query string.
+///
+/// `eset_protect` ships the whole mail as one URI and pulls `from`, `subject`
+/// and `attachment` back out of it. The `from` value holds RFC 5321 addresses
+/// in angle brackets, and only those are taken -- the display name around them
+/// is not an address.
+///
+/// A URI with none of the three writes NOTHING, which is the script's own
+/// early return rather than an empty block.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct MailtoUriFields {
+    source: String,
+    target: String,
+}
+
+impl MailtoUriFields {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(source: String, target: String) -> Self {
+        Self { source, target }
+    }
+}
+
+/// `String uri = ctx.a.b; ... /(?:\?|&)from=([^&]+)/.matcher(uri) ... ctx.email['from']`
+fn parse_mailto_uri_fields(script: &str) -> Option<MailtoUriFields> {
+    // Every one of the three parameters, or this is a different reader.
+    for parameter in ["from=", "subject=", "attachment="] {
+        if !script.contains(parameter) {
+            return None;
+        }
+    }
+    let (head, _) = script.split_once(".matcher(")?;
+    let source = clean_path(
+        head.split_once("= ctx.")?
+            .1
+            .split([';', '\n'])
+            .next()?
+            .trim(),
+    );
+    let (target_head, _) = script.split_once("['from']")?;
+    let target = clean_path(target_head.rsplit("ctx.").next()?.trim());
+    if source.is_empty() || target.is_empty() {
+        return None;
+    }
+    Some(MailtoUriFields::new(source, target))
+}
+
+/// Read the three parameters, and write only what the URI actually carries.
+pub fn mailto_uri_fields(event: &mut Event, pattern: &MailtoUriFields) -> bool {
+    let Some(uri) = event.get_string(&pattern.source) else {
+        return false;
+    };
+
+    // `fast()` because both patterns are plain: no lookaround, so neither
+    // falls through to the backtracking engine, which exposes no captures.
+    let Some(query) =
+        crate::cached_regex!(r"(?:\?|&)(?P<name>from|subject|attachment)=(?P<value>[^&]+)").fast()
+    else {
+        return false;
+    };
+    let parameter = |name: &str| -> Option<String> {
+        query
+            .captures_iter(&uri)
+            .find(|caps| caps.name("name").is_some_and(|m| m.as_str() == name))
+            .and_then(|caps| Some(caps.name("value")?.as_str().to_owned()))
+    };
+
+    // Only the bracketed addresses: the display name around them is not one.
+    let Some(bracketed) = crate::cached_regex!(
+        r"<\s*([A-Za-z0-9.!#$%&'*+/?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})\s*>"
+    )
+    .fast() else {
+        return false;
+    };
+    let addresses: Vec<Value> = parameter("from")
+        .into_iter()
+        .flat_map(|value| {
+            bracketed
+                .captures_iter(&value)
+                .filter_map(|caps| Some(json!(caps.get(1)?.as_str())))
+                .collect::<Vec<_>>()
+        })
+        .collect();
+    let subject = parameter("subject");
+    let attachment = parameter("attachment");
+
+    // The script's own early return: nothing actionable, nothing written.
+    if addresses.is_empty() && subject.is_none() && attachment.is_none() {
+        return false;
+    }
+
+    if !addresses.is_empty() {
+        let _ = event.set(
+            &format!("{}.from.address", pattern.target),
+            Value::Array(addresses),
+        );
+    }
+    if let Some(subject) = subject {
+        let _ = event.set(&format!("{}.subject", pattern.target), json!(subject));
+    }
+    if let Some(attachment) = attachment {
+        let _ = event.set(
+            &format!("{}.attachments", pattern.target),
+            json!([{ "file": { "name": attachment } }]),
+        );
+    }
+    true
+}
+
 /// A field split at a delimiter, its halves written to named targets.
 ///
 /// The pair of scripts a dissect leaves behind. envoyproxy's `dest` holds
@@ -14276,6 +14385,7 @@ pub(crate) enum KnownPattern {
     RemoveEmptyChildMaps(RemoveEmptyChildMaps),
     EnsurePrefix(EnsurePrefix),
     SplitAtDelimiter(SplitAtDelimiter),
+    MailtoUriFields(MailtoUriFields),
     /// An ECS `geo_point` built from a `GeoJSON` coordinate array.
     GeoPointFromCoordinates(GeoPointFromCoordinates),
     /// A numbered column map collapsed into a list, in key order.
@@ -14866,6 +14976,15 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_join_present_fields(normalised)
     {
         patterns.push(KnownPattern::JoinPresentFields(pattern));
+        return patterns;
+    }
+
+    // Pattern: the ECS email block read out of a `mailto:` URI.
+    if normalised.contains("attachment=")
+        && normalised.contains("['from']")
+        && let Some(pattern) = parse_mailto_uri_fields(normalised)
+    {
+        patterns.push(KnownPattern::MailtoUriFields(pattern));
         return patterns;
     }
 
@@ -16438,6 +16557,11 @@ impl KnownPattern {
             )),
             Self::RemoveEmptyChildMaps(pattern) => Some(pattern.direct_call()),
             Self::SplitAtDelimiter(pattern) => Some(pattern.direct_call()),
+            Self::MailtoUriFields(pattern) => Some(format!(
+                "mailto_uri_fields(event, &MailtoUriFields::new({}.into(), {}.into()));",
+                rust_str(&pattern.source),
+                rust_str(&pattern.target),
+            )),
             Self::EnsurePrefix(pattern) => Some(format!(
                 "ensure_prefix(event, &EnsurePrefix::new({}.into(), {}.into(), '{}', {}.into()));",
                 rust_str(&pattern.source),
@@ -16609,6 +16733,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::RemoveEmptyChildMaps(pattern) => remove_empty_child_maps(event, pattern),
         KnownPattern::EnsurePrefix(pattern) => ensure_prefix(event, pattern),
         KnownPattern::SplitAtDelimiter(pattern) => split_at_delimiter(event, pattern),
+        KnownPattern::MailtoUriFields(pattern) => mailto_uri_fields(event, pattern),
         KnownPattern::GeoPointFromCoordinates(pattern) => {
             geo_point_from_coordinates(event, pattern)
         }

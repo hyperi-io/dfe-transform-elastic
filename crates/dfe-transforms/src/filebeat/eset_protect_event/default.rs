@@ -64,9 +64,12 @@ impl Transform for Default {
                 return Ok(TransformResult::Continue);
             }
 
-            // SKIPPED: condition not transpiled: ctx.event?.original.startsWith("{\"")
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get_str("event.original")
+                    .is_some_and(|s| s.starts_with("{\""))
+            };
+            if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     parse_json_field(event, "event.original", "json")?;
@@ -102,9 +105,12 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ! ctx.event?.original.startsWith("{\"")
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                !(event
+                    .get_str("event.original")
+                    .is_some_and(|s| s.starts_with("{\"")))
+            };
+            if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("event.original") {
@@ -162,9 +168,13 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ! ctx.event?.original.startsWith("{\"") && ctx.json?.hostname != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                !(event
+                    .get_str("event.original")
+                    .is_some_and(|s| s.starts_with("{\"")))
+                    && event.has_value("json.hostname")
+            };
+            if _cond {
                 event.append_unique("tags", json!("eset_notification"))?;
             }
 
@@ -1069,9 +1079,13 @@ impl Transform for Default {
                 event.rename("json.hash", "eset_protect.event.hash")?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.eset_protect?.event?.type == 'BlockedFiles_Event' || 'file'.equalsIgnoreCase(ctx.json?.object_type)
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get_str("eset_protect.event.type") == Some("BlockedFiles_Event")
+                    || event
+                        .get_str("json.object_type")
+                        .is_some_and(|s| s.eq_ignore_ascii_case("file"))
+            };
+            if _cond {
                 if let Some(v) = event
                     .get("eset_protect.event.hash")
                     .filter(|v| !painless_is_empty_value(v))
@@ -1085,9 +1099,13 @@ impl Transform for Default {
                 map_strings(event, "file.hash.sha1", "file.hash.sha1", str::to_lowercase)?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.eset_protect?.event?.type == 'BlockedFiles_Event' || 'file'.equalsIgnoreCase(ctx.json?.object_type)
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get_str("eset_protect.event.type") == Some("BlockedFiles_Event")
+                    || event
+                        .get_str("json.object_type")
+                        .is_some_and(|s| s.eq_ignore_ascii_case("file"))
+            };
+            if _cond {
                 if let Some(v) = event
                     .get("file.hash.sha1")
                     .filter(|v| !painless_is_empty_value(v))
@@ -2114,15 +2132,19 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

@@ -37,9 +37,13 @@ impl Transform for Default {
                 event.set("event.created", v)?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.event.original.charAt(0) == (char)("{")
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get_str("event.original")
+                    .and_then(|s| s.chars().nth(0))
+                    .is_some_and(|c| c == '{')
+            };
+            if _cond {
                 // Begin nested pipeline: "json"
                 parse_json_field(event, "message", "json")?;
                 if let Some(v) = event
@@ -143,15 +147,9 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
-                        event,
-                        cached_painless!(
-                            r#"ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes"#
-                        ),
-                    )?;
+                    sum_directions(event, &["bytes"]);
                     Ok(())
                 })();
             }
@@ -404,15 +402,16 @@ impl Transform for Default {
             event.remove("message");
             event.remove("_tmp");
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             Ok(TransformResult::Continue)
         })(event);

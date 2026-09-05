@@ -28420,13 +28420,27 @@ impl Transform for Default {
                 // End nested pipeline: "pipeline-service-application"
             }
 
-            // SKIPPED: condition not transpiled: ctx.beyondtrust_epm?.event != null && (ctx.beyondtrust_epm.event['@timestamp'] != null || ctx.beyondtrust_epm.event.timestamp != null || ctx.beyondtrust_epm.event.EPMWinMac != null || ctx.beyondtrust_ ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("beyondtrust_epm.event")
+                    && (event.has_value("beyondtrust_epm.event.@timestamp")
+                        || event.has_value("beyondtrust_epm.event.timestamp")
+                        || event.has_value("beyondtrust_epm.event.EPMWinMac")
+                        || event.has_value("beyondtrust_epm.event.message")
+                        || event.has_value("beyondtrust_epm.event.organization")
+                        || event.has_value("beyondtrust_epm.event.related")
+                        || event.has_value("beyondtrust_epm.event.span")
+                        || event.has_value("beyondtrust_epm.event.tags")
+                        || event.has_value("beyondtrust_epm.event.trace")
+                        || event.has_value("beyondtrust_epm.event.transaction"))
+            };
+            if _cond {
                 // Begin nested pipeline: "pipeline-metadata-observability"
-                // SKIPPED: condition not transpiled: ctx.beyondtrust_epm?.event != null && ctx.beyondtrust_epm.event['@timestamp'] != null && ctx.beyondtrust_epm.event['@timestamp'] != ''
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("beyondtrust_epm.event")
+                        && event.has_value("beyondtrust_epm.event.@timestamp")
+                        && event.get_str("beyondtrust_epm.event.@timestamp") != Some("")
+                };
+                if _cond {
                     // on_failure: 2 handler(s)
                     if let Err(err) = (|| -> Result<()> {
                         if let Some(date_str) =
@@ -28736,15 +28750,19 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

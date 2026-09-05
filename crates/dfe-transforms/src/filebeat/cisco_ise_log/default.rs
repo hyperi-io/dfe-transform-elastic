@@ -2798,9 +2798,8 @@ impl Transform for Default {
                     }
                     Ok(())
                 })();
-                // SKIPPED: condition not transpiled: ctx.cisco_ise?.log?.log_details['Event-Timestamp'] != null
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = { event.has_value("cisco_ise.log.log_details.Event-Timestamp") };
+                if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
                         if let Some(date_str) =
@@ -3780,9 +3779,13 @@ impl Transform for Default {
                     }
                     Ok(())
                 })();
-                // SKIPPED: condition not transpiled: ctx.cisco_ise?.log?.log_details['acme-av-pair'] != null && ctx.cisco_ise?.log?.log_details['acme-av-pair'] instanceof List
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("cisco_ise.log.log_details.acme-av-pair")
+                        && event
+                            .get("cisco_ise.log.log_details.acme-av-pair")
+                            .is_some_and(|v| v.is_array())
+                };
+                if _cond {
                     if event.has_value("cisco_ise.log.log_details.acme-av-pair") {
                         {
                             // A foreach walks a LIST or an OBJECT: over an object Elastic
@@ -3898,9 +3901,13 @@ impl Transform for Default {
                         }
                     }
                 }
-                // SKIPPED: condition not transpiled: ctx.cisco_ise?.log?.log_details['acme-av-pair'] != null && !(ctx.cisco_ise?.log?.log_details['acme-av-pair'] instanceof List)
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("cisco_ise.log.log_details.acme-av-pair")
+                        && !(event
+                            .get("cisco_ise.log.log_details.acme-av-pair")
+                            .is_some_and(|v| v.is_array()))
+                };
+                if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
                         if let Some(kv_str) =
@@ -5110,9 +5117,8 @@ impl Transform for Default {
                     }
                 }
                 event.remove("cisco_ise.log.log_details.UserName");
-                // SKIPPED: condition not transpiled: ctx.cisco_ise?.log?.log_details['User-Name'] != null
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = { event.has_value("cisco_ise.log.log_details.User-Name") };
+                if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
                         event.append_unique(
@@ -5143,9 +5149,8 @@ impl Transform for Default {
                         }
                     }
                 }
-                // SKIPPED: condition not transpiled: ctx.cisco_ise?.log?.log_details['User-Name'] != null
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = { event.has_value("cisco_ise.log.log_details.User-Name") };
+                if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
                         event.append_unique(
@@ -6511,9 +6516,11 @@ impl Transform for Default {
                     })();
                 }
                 event.remove("cisco_ise.log.log_details.UserName");
-                // SKIPPED: condition not transpiled: ctx.cisco_ise?.log?.log_details != null && ctx.cisco_ise.log.log_details['User-Name'] != null
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("cisco_ise.log.log_details")
+                        && event.has_value("cisco_ise.log.log_details.User-Name")
+                };
+                if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
                         event.append_unique(
@@ -6527,9 +6534,11 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                // SKIPPED: condition not transpiled: ctx.cisco_ise?.log?.log_details != null && ctx.cisco_ise.log.log_details['User-Name'] != null
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("cisco_ise.log.log_details")
+                        && event.has_value("cisco_ise.log.log_details.User-Name")
+                };
+                if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
                         event.append_unique(
@@ -8412,9 +8421,8 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                // SKIPPED: condition not transpiled: ctx.cisco_ise?.log?.log_details['NAS-IP-Address'] != null
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = { event.has_value("cisco_ise.log.log_details.NAS-IP-Address") };
+                if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
                         if event.has_value("cisco_ise.log.log_details.NAS-IP-Address") {
@@ -9352,18 +9360,30 @@ impl Transform for Default {
                         Ok(())
                     })();
                 }
-                // SKIPPED: condition not transpiled: ctx.cisco_ise?.log?.message?.code == '60084' && (ctx.cisco_ise?.log?.log_details?.OperationMessageText ?: '') =~ /successfully/i
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.get_str("cisco_ise.log.message.code") == Some("60084")
+                        && cached_regex!(r"(?i)successfully").is_match(
+                            event
+                                .get_str("cisco_ise.log.log_details.OperationMessageText")
+                                .unwrap_or(""),
+                        )
+                };
+                if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
                         event.set("event.outcome", json!("success"))?;
                         Ok(())
                     })();
                 }
-                // SKIPPED: condition not transpiled: ctx.cisco_ise?.log?.message?.code == '60084' && (ctx.cisco_ise?.log?.log_details?.OperationMessageText ?: '') =~ /(?:failed|failure|unsuccessful|error)/i
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.get_str("cisco_ise.log.message.code") == Some("60084")
+                        && cached_regex!(r"(?i)(?:failed|failure|unsuccessful|error)").is_match(
+                            event
+                                .get_str("cisco_ise.log.log_details.OperationMessageText")
+                                .unwrap_or(""),
+                        )
+                };
+                if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
                         event.set("event.outcome", json!("failure"))?;
@@ -11116,9 +11136,14 @@ impl Transform for Default {
                     }
                 }
                 event.remove("cisco_ise.log.log_details.AVPair");
-                // SKIPPED: condition not transpiled: ctx.cisco_ise?.log?.log_details != null && ctx.cisco_ise.log.log_details['cisco-av-pair'] != null && !(ctx.cisco_ise.log.log_details['cisco-av-pair'] instanceof List)
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("cisco_ise.log.log_details")
+                        && event.has_value("cisco_ise.log.log_details.cisco-av-pair")
+                        && !(event
+                            .get("cisco_ise.log.log_details.cisco-av-pair")
+                            .is_some_and(|v| v.is_array()))
+                };
+                if _cond {
                     // on_failure: 1 handler(s)
                     if let Err(err) = (|| -> Result<()> {
                         if event.has_value("cisco_ise.log.log_details.cisco-av-pair") {
@@ -13136,15 +13161,19 @@ impl Transform for Default {
                 })();
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {
