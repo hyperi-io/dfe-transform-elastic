@@ -123,29 +123,46 @@ def module_of(opening: str, texts: dict[pathlib.Path, str]) -> list[str]:
 
 
 def best_unlocks(sources: dict[str, dict], top: int) -> None:
-    """Sources ranked by the ONE field that would buy the most events.
+    """Sources ranked by the smallest set of fields that buys the most events.
 
     `fields wrong` is a ceiling and a long tail makes it a lie: ti_opencti is
-    179 wrong, second-biggest of its class, and its best field unlocks FOUR.
-    The unlocks column has predicted the event gain exactly every time it has
-    been used, so it is the honest ranking.
+    179 wrong, second-biggest of its class, and its whole detail list buys
+    FOUR events.
+
+    **`unlocks` is CUMULATIVE, not per-field.** The corpus builds the list by
+    greedy set cover and the column means "events that pass once this path AND
+    EVERYTHING ABOVE IT is fixed" (`compat_corpus.rs:1557`). So the unit is the
+    PREFIX, never one line. gdacs reads `affected_area 0, class 0,
+    polygon_label 40` -- three fields wrong in the same 40 events, and the 40
+    belongs to fixing all three. Reporting it as one field overstates the
+    result and understates the work.
     """
     rows = []
     for name, score in sources.items():
-        if not score["detail"]:
+        detail = score["detail"]
+        if not detail:
             continue
-        wrong, unlocks, field = max(score["detail"], key=lambda found: found[1])
+        # The list is already in greedy-cover order, so the prefix ending at
+        # the best-unlocking line is the set that buys those events.
+        cut = max(range(len(detail)), key=lambda index: detail[index][1])
+        unlocks = detail[cut][1]
         if unlocks < 8:
             continue
-        rows.append((unlocks, score["events_missed"], name, field, wrong, score))
-    rows.sort(reverse=True, key=lambda row: (row[0], row[1], row[2]))
+        rows.append((unlocks, -(cut + 1), score["events_missed"], name, detail[: cut + 1], score))
+    rows.sort(reverse=True, key=lambda row: (row[0], row[1], row[2], row[3]))
 
-    print(f"-- one field worth 8+ events, best first ({len(rows)} sources)")
-    for unlocks, missed, name, field, wrong, score in rows[:top]:
+    print(f"-- fewest fields worth 8+ events, best first ({len(rows)} sources)")
+    for unlocks, negative_needed, missed, name, prefix, score in rows[:top]:
         klass = classify(score["fields_wrong"], score["extra"])
         whole = " -- WHOLE SOURCE" if unlocks == missed else ""
-        print(f"{unlocks:6} unlocks {missed:5} missed  {name}  [{klass}]{whole}")
-        print(f"{'':22}{field}  (wrong in {wrong})")
+        needed = -negative_needed
+        plural = "" if needed == 1 else "s"
+        print(
+            f"{unlocks:6} unlocks {missed:5} missed  {needed} field{plural}  "
+            f"{name}  [{klass}]{whole}"
+        )
+        for wrong, _, field in prefix:
+            print(f"{'':22}{field}  (wrong in {wrong})")
     print()
 
 

@@ -122,6 +122,39 @@ class BestUnlocks(unittest.TestCase):
         best = max(detail, key=lambda found: found[1])
         self.assertEqual(best[2], "related.hosts")
 
+    def test_unlocks_is_cumulative_so_the_unit_is_the_prefix(self) -> None:
+        """gdacs, verbatim: three fields wrong in the same 40 events.
+
+        `compat_corpus.rs:1557` builds this by greedy set cover and the column
+        means "once this path AND everything above it is fixed". Reporting the
+        40 against `polygon_label` alone would overstate the result and
+        understate the work -- it is three fields, and F69 traces all three to
+        one script.
+        """
+        run = (
+            "gdacs                events 2/42 (5%), fields 1931/2051 (94.1%),"
+            " 0 extra, 0 errors\n"
+            "      wrong in    40, unlocks     0   gdacs.affected_area\n"
+            "      wrong in    40, unlocks     0   gdacs.class\n"
+            "      wrong in    40, unlocks    40   gdacs.polygon_label\n"
+        )
+        handle = tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False)
+        handle.write(run)
+        handle.close()
+        path = Path(handle.name)
+        try:
+            sources = next_targets.read_corpus(path)
+            held = io.StringIO()
+            with contextlib.redirect_stdout(held):
+                next_targets.best_unlocks(sources, top=5)
+            printed = held.getvalue()
+            self.assertIn("3 fields", printed)
+            self.assertIn("gdacs.affected_area", printed)
+            self.assertIn("gdacs.class", printed)
+            self.assertNotIn("1 field ", printed)
+        finally:
+            path.unlink()
+
     def test_a_source_with_no_detail_lines_is_skipped(self) -> None:
         # github parses as a source and carries no detail, so it must not
         # reach `max()` on an empty list. Output captured so a passing suite
