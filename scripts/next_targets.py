@@ -29,6 +29,29 @@ Three joins, in order, and each one changes the answer:
 A fourth step stays manual, because no artefact here can answer it: check the
 corpus CONTAINS the data the script keys on. One `rg -cl` over `testdata/compat`
 settled the heaviest unclaimed script in the catalogue as worth exactly zero.
+
+`--classify <run>` answers a different question, from the run ALONE, and it
+exists because the join above is blind to a whole failure class. Ranking
+unclaimed scripts can only ever find a source whose debt has an unclaimed
+script behind it. A source whose matcher IS claimed and derives the WRONG
+policy never appears -- mysql_enterprise sat at 1/34 with its pruner taken by
+a matcher that applied the inverse of it. So does a source whose debt is a
+grok definition rather than a script: pfsense's 57 missing events were a
+missing word boundary in `NONNEGINT`.
+
+What the ratio of EXTRA to WRONG says, before any capture is opened:
+
+    extra ~= 0        the field is genuinely never written
+    extra ~= wrong    fields sit at the WRONG PATH -- each counts twice, once
+                      missing where it belongs and once extra where it sits.
+                      Go looking for a rename or key-fold that never ran
+    extra >> wrong    we EMIT what Elasticsearch does not -- unpruned scratch,
+                      or a writer firing where the vendor's declines
+
+It names the CLASS and never the mechanism. beyondtrust_epm reads as a clean
+95/95 misplacement and is NOT the `field_mappings` fold its sibling BeyondTrust
+package uses. A source can also carry two causes at once, which is why the
+mixed band exists rather than being forced into one of the other three.
 """
 
 from __future__ import annotations
@@ -72,6 +95,23 @@ def read_corpus(path: pathlib.Path) -> dict[str, dict]:
     return sources
 
 
+def classify(wrong: int, extra: int) -> str:
+    """The failure class a source's extra-to-wrong ratio points at.
+
+    Bands rather than exact equality: a source carrying one dominant cause
+    still picks up a stray field or two, and `beyondinsight` is 197 wrong
+    against 163 extra -- mostly misplaced, with some never written at all.
+    The floor of 2 keeps a tiny source out of the mixed band on one field.
+    """
+    if extra == 0:
+        return "never-written"
+    if abs(extra - wrong) <= max(2, round(wrong * 0.15)):
+        return "misplaced"
+    if extra > wrong:
+        return "over-emitted"
+    return "mixed"
+
+
 def module_of(opening: str, texts: dict[pathlib.Path, str]) -> list[str]:
     """The generated modules holding a script, by its opening text.
 
@@ -82,10 +122,64 @@ def module_of(opening: str, texts: dict[pathlib.Path, str]) -> list[str]:
     return sorted({path.parent.name for path, text in texts.items() if needle in text})
 
 
+def report_classes(run: pathlib.Path, top: int) -> int:
+    """Every source with debt, by failure class, from a run alone."""
+    sources = read_corpus(run)
+    if not sources:
+        print(f"no per-source lines in {run} -- is it a corpus run?", file=sys.stderr)
+        return 2
+
+    rows = [
+        (score["fields_wrong"], score["events_missed"], score["extra"], name)
+        for name, score in sources.items()
+        if score["fields_wrong"] or score["events_missed"]
+    ]
+    rows.sort(reverse=True)
+
+    grouped: dict[str, list[tuple[int, int, int, str]]] = {}
+    for row in rows:
+        grouped.setdefault(classify(row[0], row[2]), []).append(row)
+
+    tally = ", ".join(f"{name} {len(found)}" for name, found in sorted(grouped.items()))
+    print(f"{len(rows)} sources with debt -- {tally}\n")
+
+    # Misplacement first: it names a cause rather than a symptom, and a rename
+    # that never ran is one matcher for a whole subtree.
+    order = ["misplaced", "never-written", "mixed", "over-emitted"]
+    for name in order:
+        found = grouped.get(name)
+        if not found:
+            continue
+        print(f"-- {name}")
+        for wrong, missed, extra, source in found[:top]:
+            print(f"{wrong:6} wrong {extra:6} extra {missed:5} events  {source}")
+        print()
+
+    print(
+        "The class names the mechanism NOWHERE. It says where to look:\n"
+        "  misplaced     -> a rename or key-fold that never ran\n"
+        "  never-written -> a writer that never fires\n"
+        "  over-emitted  -> scratch we do not prune, or a writer firing too widely\n"
+        "A source can carry two causes, which is what the mixed band is."
+    )
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("dump", type=pathlib.Path, help="DFE_PAINLESS_UNHANDLED json")
-    parser.add_argument("run", type=pathlib.Path, help="a compat_corpus run's output")
+    parser.add_argument(
+        "dump", type=pathlib.Path, nargs="?", help="DFE_PAINLESS_UNHANDLED json"
+    )
+    parser.add_argument(
+        "run", type=pathlib.Path, nargs="?", help="a compat_corpus run's output"
+    )
+    parser.add_argument(
+        "--classify",
+        type=pathlib.Path,
+        metavar="RUN",
+        help="classify every source with debt by its extra-to-wrong ratio, "
+        "from a run alone -- finds the sources the script join cannot see",
+    )
     parser.add_argument(
         "--min-skips",
         type=int,
@@ -94,6 +188,12 @@ def main() -> int:
     )
     parser.add_argument("--top", type=int, default=20, help="rows to print")
     args = parser.parse_args()
+
+    if args.classify:
+        return report_classes(args.classify, args.top)
+
+    if args.dump is None or args.run is None:
+        parser.error("both <dump> and <run> are required without --classify")
 
     dump = json.loads(args.dump.read_text())
     sources = read_corpus(args.run)

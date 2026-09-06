@@ -95,5 +95,49 @@ class ModuleOf(unittest.TestCase):
         self.assertEqual(next_targets.module_of("def unmatched = 1;", {}), [])
 
 
+class Classify(unittest.TestCase):
+    """The bands, pinned to the real sources that defined each one.
+
+    Every number here is from the 2026-09-07 run, so a band that drifts shows
+    up as a source changing class rather than as an abstract threshold moving.
+    """
+
+    def test_no_extra_means_the_field_is_never_written(self) -> None:
+        # gdacs: three fields one script never writes.
+        self.assertEqual(next_targets.classify(120, 0), "never-written")
+
+    def test_equal_counts_mean_the_fields_sit_at_the_wrong_path(self) -> None:
+        # beyondtrust_epm, the exact 95/95 that named the band.
+        self.assertEqual(next_targets.classify(95, 95), "misplaced")
+
+    def test_a_near_miss_is_still_misplacement(self) -> None:
+        # cloudflare 208/187 and gitlab 189/176 are one cause each, not two.
+        self.assertEqual(next_targets.classify(208, 187), "misplaced")
+        self.assertEqual(next_targets.classify(189, 176), "misplaced")
+
+    def test_far_more_extra_than_wrong_is_over_emission(self) -> None:
+        # mysql_enterprise: we keep the empty strings the vendor prunes.
+        self.assertEqual(next_targets.classify(35, 106), "over-emitted")
+
+    def test_a_large_shortfall_is_mixed_rather_than_forced(self) -> None:
+        # beyondinsight carries TWO causes -- a fold and a drop -- and saying
+        # "misplaced" would hide the second one.
+        self.assertEqual(next_targets.classify(197, 163), "mixed")
+
+    def test_a_tiny_source_does_not_land_in_mixed_on_one_field(self) -> None:
+        # The floor of 2: without it, 3 wrong against 1 extra reads as mixed.
+        self.assertEqual(next_targets.classify(3, 1), "misplaced")
+
+    def test_the_same_root_cause_can_land_in_two_bands(self) -> None:
+        """oracle and mysql_enterprise share F66's inverted drop policy.
+
+        The band follows whichever half of the inversion dominates the counts,
+        so it points at a symptom and never at a mechanism. This is the
+        property that stops the classifier being read as a diagnosis.
+        """
+        self.assertEqual(next_targets.classify(76, 78), "misplaced")
+        self.assertEqual(next_targets.classify(35, 106), "over-emitted")
+
+
 if __name__ == "__main__":
     unittest.main()
