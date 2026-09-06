@@ -7687,7 +7687,15 @@ fn params_ref<'a>(script: &str, params: &'a Map<String, Value>, prefix: &str) ->
 pub(crate) fn ctx_path_before(script: &str, marker: &str) -> Option<String> {
     let end = script.find(marker)?;
     let head = &script[..end];
-    let start = head.rfind("ctx.")? + "ctx.".len();
+    // `ctx?.` is the same root written null-safe, and juniper_srx writes every
+    // one of its paths that way. Reading only the plain spelling left its
+    // sentinel sweep bound to a runner that could not find the map.
+    let start = match (head.rfind("ctx."), head.rfind("ctx?.")) {
+        (Some(plain), Some(safe)) if safe > plain => safe + "ctx?.".len(),
+        (Some(plain), _) => plain + "ctx.".len(),
+        (None, Some(safe)) => safe + "ctx?.".len(),
+        (None, None) => return None,
+    };
     let path = clean_path(&head[start..]);
     (!path.contains([' ', '\t', '\n', ';'])).then_some(path)
 }

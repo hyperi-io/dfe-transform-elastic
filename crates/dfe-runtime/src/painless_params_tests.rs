@@ -2775,6 +2775,36 @@ fn an_event_block_comes_from_the_table_its_subject_keys() {
     );
 }
 
+/// The sentinel sweep reads a `ctx?.` path, not only the plain spelling.
+///
+/// Verbatim from `pipelines/juniper_srx/log`. `try_sentinel_removal` already
+/// did this job; it found no map here because `ctx_path_before` read only
+/// `ctx.`, so all 82 of the source's invocations were skipped.
+#[test]
+fn map_entries_are_dropped_by_the_value_a_params_list_names() {
+    let script =
+        "ctx?.juniper?.srx.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));";
+    assert_eq!(
+        ctx_path_before(script, ".entrySet().removeIf("),
+        Some("juniper.srx".to_owned())
+    );
+
+    let params = json!({ "values": ["N/A", "unknown", ""] });
+    let mut event = Event::new(json!({ "juniper": { "srx": {
+        "source_address": "10.0.0.1",
+        "nat_source_port": "N/A",
+        "policy_name": "unknown",
+        "reason": ""
+    } } }));
+    assert!(try_params_painless(&mut event, script, &params));
+
+    assert_eq!(event.get_str("juniper.srx.source_address"), Some("10.0.0.1"));
+    // Every placeholder goes, whichever key held it.
+    assert!(!event.has("juniper.srx.nat_source_port"));
+    assert!(!event.has("juniper.srx.policy_name"));
+    assert!(!event.has("juniper.srx.reason"));
+}
+
 /// auditd picks its action by which candidate's fields the record HOLDS.
 ///
 /// Verbatim from `pipelines/auditd/log/default.yml:1998`, with the tables cut

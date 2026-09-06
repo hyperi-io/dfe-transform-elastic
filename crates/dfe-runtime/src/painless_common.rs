@@ -4184,6 +4184,77 @@ pub fn join_present_fields(event: &mut Event, pattern: &JoinPresentFields) -> bo
     true
 }
 
+/// Every key of a map rewritten by a single character replacement.
+///
+/// `juniper_srx`'s keys arrive kebab-cased -- `source-address` -- and a script
+/// swaps the hyphen for an underscore across the whole map. This is NOT the
+/// camel-case converter: [`snake_case_apply`] declines a helper with no
+/// `Character.isUpperCase` in it precisely so a bare `replace` does not claim
+/// a runner that cannot apply it, which left this one bound to nothing.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RenameMapKeys {
+    container: String,
+    from: char,
+    to: char,
+}
+
+impl RenameMapKeys {
+    /// The generated call site that rebuilds this pattern.
+    #[cfg(feature = "codegen")]
+    pub(crate) fn direct_call(&self) -> String {
+        format!(
+            "rename_map_keys(event, &RenameMapKeys::new({}.into(), {:?}, {:?}));",
+            rust_str(&self.container),
+            self.from,
+            self.to,
+        )
+    }
+
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(container: String, from: char, to: char) -> Self {
+        Self {
+            container,
+            from,
+            to,
+        }
+    }
+}
+
+/// `ctx.a = ctx.a.entrySet().stream().collect(toMap(e -> e.getKey().replace('-', '_'), ..))`
+fn parse_rename_map_keys(script: &str) -> Option<RenameMapKeys> {
+    let (head, rest) = script.split_once(".getKey().replace(")?;
+    // Both characters of the swap, in the order the script writes them.
+    let mut literals = crate::painless_common::quoted_members(rest.split(')').next()?);
+    let to = literals.pop()?.chars().next()?;
+    let from = literals.pop()?.chars().next()?;
+
+    // The container is the assignment's target, which the script also reads.
+    let (target, _) = head.split_once(" = ")?;
+    let container = clean_path(target.trim().strip_prefix("ctx.")?);
+    if container.is_empty() {
+        return None;
+    }
+    Some(RenameMapKeys::new(container, from, to))
+}
+
+/// Rebuild the map with each key rewritten, in the order it already had.
+pub fn rename_map_keys(event: &mut Event, pattern: &RenameMapKeys) -> bool {
+    let Some(container) = event
+        .get(&pattern.container)
+        .and_then(Value::as_object)
+        .cloned()
+    else {
+        return false;
+    };
+    let mut rebuilt = serde_json::Map::with_capacity(container.len());
+    for (key, value) in container {
+        rebuilt.insert(key.replace(pattern.from, &pattern.to.to_string()), value);
+    }
+    let _ = event.set(&pattern.container, Value::Object(rebuilt));
+    true
+}
+
 /// One entry MOVED out of a map, addressed by a key that holds a dot.
 ///
 /// The rename a `rename` processor cannot do: the key is `imageFile.md5String`
@@ -14488,6 +14559,7 @@ pub(crate) enum KnownPattern {
     SplitAtDelimiter(SplitAtDelimiter),
     MailtoUriFields(MailtoUriFields),
     MoveMapEntry(MoveMapEntry),
+    RenameMapKeys(RenameMapKeys),
     /// An ECS `geo_point` built from a `GeoJSON` coordinate array.
     GeoPointFromCoordinates(GeoPointFromCoordinates),
     /// A numbered column map collapsed into a list, in key order.
@@ -15078,6 +15150,14 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_join_present_fields(normalised)
     {
         patterns.push(KnownPattern::JoinPresentFields(pattern));
+        return patterns;
+    }
+
+    // Pattern: every key of a map rewritten by one character replacement.
+    if normalised.contains(".getKey().replace(")
+        && let Some(pattern) = parse_rename_map_keys(normalised)
+    {
+        patterns.push(KnownPattern::RenameMapKeys(pattern));
         return patterns;
     }
 
@@ -16669,6 +16749,7 @@ impl KnownPattern {
             Self::RemoveEmptyChildMaps(pattern) => Some(pattern.direct_call()),
             Self::SplitAtDelimiter(pattern) => Some(pattern.direct_call()),
             Self::MoveMapEntry(pattern) => Some(pattern.direct_call()),
+            Self::RenameMapKeys(pattern) => Some(pattern.direct_call()),
             Self::MailtoUriFields(pattern) => Some(format!(
                 "mailto_uri_fields(event, &MailtoUriFields::new({}.into(), {}.into()));",
                 rust_str(&pattern.source),
@@ -16847,6 +16928,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::SplitAtDelimiter(pattern) => split_at_delimiter(event, pattern),
         KnownPattern::MailtoUriFields(pattern) => mailto_uri_fields(event, pattern),
         KnownPattern::MoveMapEntry(pattern) => move_map_entry(event, pattern),
+        KnownPattern::RenameMapKeys(pattern) => rename_map_keys(event, pattern),
         KnownPattern::GeoPointFromCoordinates(pattern) => {
             geo_point_from_coordinates(event, pattern)
         }

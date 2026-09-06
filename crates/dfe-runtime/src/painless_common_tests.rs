@@ -136,6 +136,37 @@ fn a_flag_folds_to_a_boolean_by_its_spelling() {
     assert_eq!(event.get("gdacs.is_temporary"), Some(&Value::Bool(false)));
 }
 
+/// `juniper_srx` swaps a hyphen for an underscore across every key it has.
+///
+/// Verbatim from `pipelines/juniper_srx/log`. This is NOT the camel-case
+/// converter: `snake_case_apply` declines a helper with no
+/// `Character.isUpperCase` in it, which is right, and left this bound to
+/// nothing until it had an arm of its own.
+#[test]
+fn every_key_of_a_map_takes_one_character_replacement() {
+    let script = "ctx.juniper.srx = ctx?.juniper?.srx.entrySet().stream()\
+        .collect(Collectors.toMap(e -> e.getKey().replace('-', '_'), e -> e.getValue()));";
+    let pattern = parse_rename_map_keys(&normalise(script)).expect("juniper_srx rewrites keys");
+    assert_eq!(pattern.container, "juniper.srx");
+    assert_eq!(pattern.from, '-');
+    assert_eq!(pattern.to, '_');
+
+    let mut event = Event::new(serde_json::json!({ "juniper": { "srx": {
+        "source-address": "10.0.0.1",
+        "destination-port": 443,
+        "already_fine": "x"
+    } } }));
+    assert!(rename_map_keys(&mut event, &pattern));
+    assert_eq!(event.get_str("juniper.srx.source_address"), Some("10.0.0.1"));
+    assert_eq!(
+        event.get("juniper.srx.destination_port"),
+        Some(&serde_json::json!(443))
+    );
+    // A key with nothing to replace is carried through untouched.
+    assert_eq!(event.get_str("juniper.srx.already_fine"), Some("x"));
+    assert!(!event.has("juniper.srx.source-address"));
+}
+
 /// A `keysToSnakeCase` script converts the container it NAMES, nothing else.
 ///
 /// Three vendors, three spellings, all verbatim: tanium names a nested path,
