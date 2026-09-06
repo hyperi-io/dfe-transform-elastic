@@ -259,6 +259,60 @@ fn a_fingerprint_row_names_the_unlabelled_columns() {
     );
 }
 
+/// Verbatim from `pipelines/checkpoint_email/event/default.yml`: a params
+/// array subscripted 1-BASED, which the runner read as 0-based.
+///
+/// The off-by-one returned the NEXT row rather than missing, so severity 2
+/// wrote `Medium` where the vendor writes `Low` -- a plausible value, in all
+/// 18 events, with the matcher counted as handled throughout.
+#[test]
+fn a_one_based_subscript_counts_from_the_script_not_from_zero() {
+    let script = "def severityValue = ctx.checkpoint_email.event.severity;\n\
+        if (severityValue > 0 && severityValue <= params.severity.length) {\n  \
+        ctx.checkpoint_email.event.put('severity_enum', \
+        params['severity'][(int)severityValue-1]);\n}";
+    let params = json!({ "severity": ["Lowest", "Low", "Medium", "High", "Critical"] });
+
+    for (severity, expected) in [(2, "Low"), (3, "Medium"), (4, "High"), (5, "Critical")] {
+        let mut event = Event::new(json!({
+            "checkpoint_email": { "event": { "severity": severity } }
+        }));
+        assert!(try_params_painless(&mut event, script, &params));
+        assert_eq!(
+            event.get_str("checkpoint_email.event.severity_enum"),
+            Some(expected),
+            "severity {severity}"
+        );
+    }
+}
+
+/// The same subscript with no offset stays 0-based -- several pipelines spell
+/// it that way, and a blanket subtraction would have moved every one of them.
+#[test]
+fn a_subscript_with_no_offset_still_counts_from_zero() {
+    let script = "def n = ctx.a.n;\nctx.a.put('row', params['t'][n]);";
+    let params = json!({ "t": ["zero", "one", "two"] });
+
+    let mut event = Event::new(json!({ "a": { "n": 0 } }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get_str("a.row"), Some("zero"));
+}
+
+/// An index below the offset writes nothing rather than wrapping.
+///
+/// `usize` subtraction would panic and a saturating one would return row 0,
+/// which is a value the vendor never writes. The script's own guard keeps this
+/// unreachable in the corpus; the runner does not get to rely on that.
+#[test]
+fn an_index_below_the_offset_writes_nothing() {
+    let script = "def n = ctx.a.n;\nctx.a.put('row', params['t'][n - 1]);";
+    let params = json!({ "t": ["one", "two"] });
+
+    let mut event = Event::new(json!({ "a": { "n": 0 } }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert!(!event.has("a.row"));
+}
+
 /// Verbatim from `pipelines/symantec_endpoint_security/event/default.yml`:
 /// a table lookup that writes NOTHING when the key misses, where
 /// `LookupNormalise` would write the key back.

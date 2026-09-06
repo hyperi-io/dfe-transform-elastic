@@ -8175,10 +8175,39 @@ fn try_indexed_lookup(event: &mut Event, script: &str, params: &Map<String, Valu
         return false;
     };
 
+    // The script says which end it counts from. `params['t'][value - 1]` is
+    // 1-based and reading it as 0-based returns the NEXT row, which is a
+    // plausible value rather than a miss: checkpoint_email's severity 2 wrote
+    // `Medium` where the vendor writes `Low`, in every event.
+    let Some(index) = index.checked_sub(subscript_offset(script)) else {
+        return true;
+    };
+
     if let Some(value) = table.get(index).cloned() {
         let _ = event.set(&format!("{container}.{key}"), value);
     }
     true
+}
+
+/// The constant a params subscript subtracts from its index, or zero.
+///
+/// Read off the script rather than assumed either way: `checkpoint_email` and
+/// `cyberark_epm` spell `[value - 1]`, and other pipelines subscript with no
+/// offset at all.
+fn subscript_offset(script: &str) -> usize {
+    let Some((_, after)) = script.split_once('[') else {
+        return 0;
+    };
+    let Some((subscript, _)) = after.rsplit_once(']') else {
+        return 0;
+    };
+    // The LAST subscript in the statement is the row index; an earlier one
+    // names the table (`params['severity'][value - 1]`).
+    let subscript = subscript.rsplit('[').next().unwrap_or(subscript);
+    let Some((_, offset)) = subscript.rsplit_once('-') else {
+        return 0;
+    };
+    offset.trim().parse().unwrap_or(0)
 }
 
 /// How a scale script spells its multiply.
