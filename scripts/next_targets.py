@@ -268,17 +268,23 @@ def report_claimed(dump: dict, sources: dict[str, dict], top: int) -> int:
                 continue
             seen.add(key)
             worst = max(n for n, _, field in score["detail"] if field in hit)
-            rows.append((worst, owner, sorted(hit), script))
+            # `unlocks` is CUMULATIVE, so the honest event count for this
+            # script's own fields is the BEST unlocks among them -- never the
+            # `wrong in` count, which is a field tally and reads far larger.
+            unlocks = max(u for _, u, field in score["detail"] if field in hit)
+            rows.append((worst, unlocks, owner, sorted(hit), script))
 
-    rows.sort(reverse=True, key=lambda row: (row[0], row[1]))
+    # By events bought, then by fields damaged: `wrong in` is a field tally, so
+    # six fields each wrong in 22 can still be worth four events.
+    rows.sort(reverse=True, key=lambda row: (row[1], row[0], row[2]))
     print(f"{len(rows)} claimed scripts writing a field their source is WRONG on\n")
-    for worst, owner, hit, script in rows[:top]:
+    for worst, unlocks, owner, hit, script in rows[:top]:
         score = sources[owner]
         klass = classify(score["fields_wrong"], score["extra"])
-        whole = "  -- WHOLE SOURCE" if worst == score["events_missed"] else ""
+        whole = "  -- WHOLE SOURCE" if unlocks and unlocks == score["events_missed"] else ""
         print(
-            f"wrong in {worst:4}  {owner:28} ran {script['ran']:4} [{klass}] "
-            f"{score['events_missed']} missed{whole}"
+            f"wrong in {worst:4}  unlocks {unlocks:4}  {owner:28} ran {script['ran']:4} "
+            f"[{klass}] {score['events_missed']} missed{whole}"
         )
         print(f"        writes: {', '.join(hit)}")
         print(f"        {' '.join(script['script'].split())[:92]}\n")
@@ -286,7 +292,10 @@ def report_claimed(dump: dict, sources: dict[str, dict], top: int) -> int:
     print(
         "`ran > 0` means CLAIMED, never CORRECT. A matcher here recognised the\n"
         "script and ran it, and the field it writes is still wrong -- so read the\n"
-        "matcher's output, not its reach."
+        "matcher's output, not its reach.\n"
+        "`wrong in` is a FIELD tally and is always the bigger number. `unlocks`\n"
+        "is the event count, and it is cumulative -- WHOLE SOURCE is marked only\n"
+        "where this script's own fields carry the whole gap."
     )
     return 0
 
