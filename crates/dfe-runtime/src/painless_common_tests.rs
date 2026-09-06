@@ -136,6 +136,63 @@ fn a_flag_folds_to_a_boolean_by_its_spelling() {
     assert_eq!(event.get("gdacs.is_temporary"), Some(&Value::Bool(false)));
 }
 
+/// Google Workspace ships each application's detail as a parameter list.
+///
+/// Verbatim from `pipelines/google_workspace/calendar/default.yml:60`. Seven
+/// of its streams write the same loop, and the whole per-application block is
+/// absent without it. The value keys are tried in the script's own order,
+/// because that is what its `else if` ladder does.
+#[test]
+fn a_parameter_list_fans_out_into_a_map_under_each_name() {
+    let script = "ctx.google_workspace = ctx.google_workspace ?: [:]; \
+        ctx.google_workspace.calendar = ctx.google_workspace.calendar ?: [:];\n\
+        for (def param : ctx.json.events.parameters) {\n  \
+        if (param.name == null) {\n    continue;\n  }\n  \
+        def lw_case_name = param.name.toLowerCase();\n  \
+        if (param.value != null) {\n    \
+        ctx.google_workspace.calendar[lw_case_name] = param.value;\n  \
+        } else if (param.boolValue != null) {\n    \
+        ctx.google_workspace.calendar[lw_case_name] = param.boolValue;\n  \
+        } else if (param.multiValue != null) {\n    \
+        ctx.google_workspace.calendar[lw_case_name] = param.multiValue;\n  }\n}";
+    let pattern =
+        parse_parameters_into_map(&normalise(script)).expect("google_workspace fans out");
+    assert_eq!(pattern.source, "json.events.parameters");
+    assert_eq!(pattern.target, "google_workspace.calendar");
+    assert_eq!(pattern.name_key, "name");
+    assert!(pattern.lowercase);
+    assert_eq!(pattern.value_keys, ["value", "boolValue", "multiValue"]);
+
+    let mut event = Event::new(serde_json::json!({
+        "json": { "events": { "parameters": [
+            { "name": "calendar_id", "value": "cal-1" },
+            { "name": "API_KIND", "value": "event" },
+            { "name": "is_recurring", "boolValue": true },
+            { "name": "grantees", "multiValue": ["a@x.com", "b@x.com"] },
+            { "name": "nothing_here" },
+            { "value": "no name at all" }
+        ] } },
+        "google_workspace": { "calendar": { "already": "kept" } }
+    }));
+    assert!(parameters_into_map(&mut event, &pattern));
+
+    // The NAME is case-folded, the value is not.
+    assert_eq!(event.get_str("google_workspace.calendar.calendar_id"), Some("cal-1"));
+    assert_eq!(event.get_str("google_workspace.calendar.api_kind"), Some("event"));
+    assert_eq!(
+        event.get("google_workspace.calendar.is_recurring"),
+        Some(&serde_json::json!(true))
+    );
+    assert_eq!(
+        event.get("google_workspace.calendar.grantees"),
+        Some(&serde_json::json!(["a@x.com", "b@x.com"]))
+    );
+    // A parameter with no value key, and one with no name, are both skipped.
+    assert!(!event.has("google_workspace.calendar.nothing_here"));
+    // MERGED into what was already there.
+    assert_eq!(event.get_str("google_workspace.calendar.already"), Some("kept"));
+}
+
 /// `juniper_srx` swaps a hyphen for an underscore across every key it has.
 ///
 /// Verbatim from `pipelines/juniper_srx/log`. This is NOT the camel-case

@@ -4184,6 +4184,159 @@ pub fn join_present_fields(event: &mut Event, pattern: &JoinPresentFields) -> bo
     true
 }
 
+/// A list of `{name, value}` parameters fanned out into a map.
+///
+/// Google Workspace ships every per-application detail as one list of objects,
+/// each naming itself and carrying its value under whichever of six keys suits
+/// its type. Seven of its streams write the same loop -- calendar, chat, meet,
+/// `data_studio`, vault, chrome, keep -- and the per-application block is
+/// absent without it.
+///
+/// The value keys are tried in the ORDER the script writes them, because that
+/// is what its `else if` ladder does: the first one present wins.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ParametersIntoMap {
+    /// The list of parameter objects.
+    source: String,
+    /// The map each one is written into.
+    target: String,
+    /// The key naming the parameter, and whether its value is case-folded.
+    name_key: String,
+    lowercase: bool,
+    /// The value keys, in the script's own order.
+    value_keys: Vec<String>,
+}
+
+impl ParametersIntoMap {
+    /// The generated call site that rebuilds this pattern.
+    #[cfg(feature = "codegen")]
+    pub(crate) fn direct_call(&self) -> String {
+        let keys: Vec<String> = self
+            .value_keys
+            .iter()
+            .map(|key| format!("{}.into()", rust_str(key)))
+            .collect();
+        format!(
+            "parameters_into_map(event, &ParametersIntoMap::new({}.into(), {}.into(), {}.into(), {}, vec![{}]));",
+            rust_str(&self.source),
+            rust_str(&self.target),
+            rust_str(&self.name_key),
+            self.lowercase,
+            keys.join(", "),
+        )
+    }
+
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(
+        source: String,
+        target: String,
+        name_key: String,
+        lowercase: bool,
+        value_keys: Vec<String>,
+    ) -> Self {
+        Self {
+            source,
+            target,
+            name_key,
+            lowercase,
+            value_keys,
+        }
+    }
+}
+
+/// `for (def p : ctx.a.list) { ... ctx.b[name] = p.value; else if p.intValue ... }`
+fn parse_parameters_into_map(script: &str) -> Option<ParametersIntoMap> {
+    // The loop names the element variable and the list it walks.
+    let (head, rest) = script.split_once(" : ctx.")?;
+    let var = head.rsplit("def ").next()?.trim().to_owned();
+    if var.is_empty() || var.contains(char::is_whitespace) {
+        return None;
+    }
+    let source = clean_path(rest.split(')').next()?.trim());
+
+    // The guard names the key that identifies each parameter.
+    let name_key = script
+        .split_once(&format!("{var}."))?
+        .1
+        .split([' ', '.', ')', ';'])
+        .next()?
+        .to_owned();
+    if name_key.is_empty() {
+        return None;
+    }
+    let lowercase = script.contains(&format!("{var}.{name_key}.toLowerCase()"));
+
+    // Every write, in order: the target map and the value key it reads.
+    let re = crate::cached_regex!(
+        r"ctx\.([A-Za-z0-9_.]+)\[[A-Za-z0-9_]+\]\s*=\s*[A-Za-z0-9_]+\.([A-Za-z0-9_]+)"
+    )
+    .fast()?;
+    let mut target = None;
+    let mut value_keys = Vec::new();
+    for caps in re.captures_iter(script) {
+        let path = clean_path(caps.get(1)?.as_str());
+        let key = caps.get(2)?.as_str().to_owned();
+        if key == name_key {
+            continue;
+        }
+        match &target {
+            // Two different maps in one loop is a different pattern.
+            Some(seen) if *seen != path => return None,
+            _ => target = Some(path),
+        }
+        if !value_keys.contains(&key) {
+            value_keys.push(key);
+        }
+    }
+    let target = target?;
+    (!value_keys.is_empty() && !source.is_empty())
+        .then(|| ParametersIntoMap::new(source, target, name_key, lowercase, value_keys))
+}
+
+/// Write each parameter under its own name, merging into what is there.
+pub fn parameters_into_map(event: &mut Event, pattern: &ParametersIntoMap) -> bool {
+    let Some(parameters) = event.get(&pattern.source).and_then(Value::as_array).cloned() else {
+        return false;
+    };
+
+    // MERGED, not replaced: the script's `?: [:]` keeps whatever is there.
+    let mut written = event
+        .get(&pattern.target)
+        .and_then(Value::as_object)
+        .cloned()
+        .unwrap_or_default();
+
+    let mut wrote = false;
+    for parameter in &parameters {
+        let Some(name) = parameter.get(&pattern.name_key).and_then(Value::as_str) else {
+            continue;
+        };
+        let name = if pattern.lowercase {
+            name.to_lowercase()
+        } else {
+            name.to_owned()
+        };
+        // The first key the parameter HOLDS, the way the `else if` ladder runs.
+        let Some(value) = pattern
+            .value_keys
+            .iter()
+            .filter_map(|key| parameter.get(key))
+            .find(|value| !value.is_null())
+        else {
+            continue;
+        };
+        written.insert(name, value.clone());
+        wrote = true;
+    }
+
+    if !wrote {
+        return false;
+    }
+    let _ = event.set(&pattern.target, Value::Object(written));
+    true
+}
+
 /// Every key of a map rewritten by a single character replacement.
 ///
 /// `juniper_srx`'s keys arrive kebab-cased -- `source-address` -- and a script
@@ -14560,6 +14713,7 @@ pub(crate) enum KnownPattern {
     MailtoUriFields(MailtoUriFields),
     MoveMapEntry(MoveMapEntry),
     RenameMapKeys(RenameMapKeys),
+    ParametersIntoMap(ParametersIntoMap),
     /// An ECS `geo_point` built from a `GeoJSON` coordinate array.
     GeoPointFromCoordinates(GeoPointFromCoordinates),
     /// A numbered column map collapsed into a list, in key order.
@@ -15150,6 +15304,15 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_join_present_fields(normalised)
     {
         patterns.push(KnownPattern::JoinPresentFields(pattern));
+        return patterns;
+    }
+
+    // Pattern: a list of {name, value} parameters fanned out into a map.
+    if normalised.contains(".toLowerCase()")
+        && normalised.contains("for (def ")
+        && let Some(pattern) = parse_parameters_into_map(normalised)
+    {
+        patterns.push(KnownPattern::ParametersIntoMap(pattern));
         return patterns;
     }
 
@@ -16750,6 +16913,7 @@ impl KnownPattern {
             Self::SplitAtDelimiter(pattern) => Some(pattern.direct_call()),
             Self::MoveMapEntry(pattern) => Some(pattern.direct_call()),
             Self::RenameMapKeys(pattern) => Some(pattern.direct_call()),
+            Self::ParametersIntoMap(pattern) => Some(pattern.direct_call()),
             Self::MailtoUriFields(pattern) => Some(format!(
                 "mailto_uri_fields(event, &MailtoUriFields::new({}.into(), {}.into()));",
                 rust_str(&pattern.source),
@@ -16929,6 +17093,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::MailtoUriFields(pattern) => mailto_uri_fields(event, pattern),
         KnownPattern::MoveMapEntry(pattern) => move_map_entry(event, pattern),
         KnownPattern::RenameMapKeys(pattern) => rename_map_keys(event, pattern),
+        KnownPattern::ParametersIntoMap(pattern) => parameters_into_map(event, pattern),
         KnownPattern::GeoPointFromCoordinates(pattern) => {
             geo_point_from_coordinates(event, pattern)
         }
