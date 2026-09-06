@@ -2775,6 +2775,48 @@ fn an_event_block_comes_from_the_table_its_subject_keys() {
     );
 }
 
+/// `ti_recordedfuture` names its CSV columns by which layout it read.
+///
+/// Verbatim from `pipelines/ti_recordedfuture/threat/decode_csv.yml:19`. Four
+/// columns for url, domain and IP; five for hash, with `Algorithm` inserted
+/// second. The absence of the last column is the whole discriminator, and
+/// without this the columns never become `json.Name` -- the next processor
+/// raises `field not found` and the event goes down the error path.
+#[test]
+fn csv_columns_are_named_by_the_table_the_layout_picks() {
+    let script = "def cols = params[ ctx._tmp_.col4 == null? \"default\" : \"hash\" ];\n\
+        def src = ctx._tmp_;\ndef dst = new HashMap();\n\
+        for (entry in cols.entrySet()) {\n  \
+        dst[entry.getValue()] = src[entry.getKey()];\n}\nctx['json'] = dst;";
+    let params = json!({
+        "default": { "col0": "Name", "col1": "Risk", "col2": "RiskString",
+                     "col3": "EvidenceDetails" },
+        "hash": { "col0": "Name", "col1": "Algorithm", "col2": "Risk",
+                  "col3": "RiskString", "col4": "EvidenceDetails" }
+    });
+
+    // Four columns: the default layout.
+    let mut four = Event::new(json!({ "_tmp_": {
+        "col0": "1.128.3.4", "col1": "99", "col2": "4/64", "col3": "{}"
+    } }));
+    assert!(try_params_painless(&mut four, script, &params));
+    assert_eq!(four.get_str("json.Name"), Some("1.128.3.4"));
+    assert_eq!(four.get_str("json.Risk"), Some("99"));
+    assert_eq!(four.get_str("json.EvidenceDetails"), Some("{}"));
+    assert!(!four.has("json.Algorithm"));
+
+    // Five columns: the hash layout, which shifts everything after col0.
+    let mut five = Event::new(json!({ "_tmp_": {
+        "col0": "abc123", "col1": "SHA-256", "col2": "89", "col3": "3/50",
+        "col4": "{}"
+    } }));
+    assert!(try_params_painless(&mut five, script, &params));
+    assert_eq!(five.get_str("json.Name"), Some("abc123"));
+    assert_eq!(five.get_str("json.Algorithm"), Some("SHA-256"));
+    assert_eq!(five.get_str("json.Risk"), Some("89"));
+    assert_eq!(five.get_str("json.EvidenceDetails"), Some("{}"));
+}
+
 /// The sentinel sweep reads a `ctx?.` path, not only the plain spelling.
 ///
 /// Verbatim from `pipelines/juniper_srx/log`. `try_sentinel_removal` already

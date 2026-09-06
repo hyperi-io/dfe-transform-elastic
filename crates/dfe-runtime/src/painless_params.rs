@@ -130,6 +130,7 @@ pub(crate) enum ParamsPattern {
     },
     EventBlockTable(Box<EventBlockTable>),
     RecordActionTable(Box<RecordActionTable>),
+    RemapKeysThroughTable(Box<RemapKeysThroughTable>),
     NormaliseMapValues(Box<NormaliseMapValues>),
     MoveKeysIntoChild(Box<MoveKeysIntoChild>),
     MimecastLogType,
@@ -674,6 +675,15 @@ fn params_pattern_tail(normalised: &str) -> Option<ParamsPattern> {
         && let Some(pattern) = parse_normalise_map_values(normalised)
     {
         return Some(ParamsPattern::NormaliseMapValues(Box::new(pattern)));
+    }
+
+    // Pattern: a map's keys renamed through a table picked by a presence test.
+    if normalised.contains("entrySet()")
+        && normalised.contains("== null")
+        && normalised.contains("] = dst")
+        && let Some(pattern) = parse_remap_keys_through_table(normalised)
+    {
+        return Some(ParamsPattern::RemapKeysThroughTable(Box::new(pattern)));
     }
 
     // Pattern: the record's ECS action, chosen by which candidate's fields are
@@ -1469,6 +1479,9 @@ pub(crate) fn run_params_pattern(
         ParamsPattern::EventBlockTable(pattern) => run_event_block_table(event, pattern, params),
         ParamsPattern::RecordActionTable(pattern) => {
             run_record_action_table(event, pattern, params)
+        }
+        ParamsPattern::RemapKeysThroughTable(pattern) => {
+            run_remap_keys_through_table(event, pattern, params)
         }
         ParamsPattern::NormaliseMapValues(pattern) => {
             run_normalise_map_values(event, pattern, params)
@@ -3709,6 +3722,104 @@ fn parse_event_block_table(script: &str) -> Option<EventBlockTable> {
         action_types,
         action_field,
     })
+}
+
+/// A map's keys renamed through a params table, chosen by a presence test.
+///
+/// `ti_recordedfuture` decodes its risklist CSV into `_tmp_.col0..col4`, then
+/// needs to know which layout it read: four columns for url, domain and IP,
+/// five for hash, with `Algorithm` inserted second. The absence of the last
+/// column is the whole discriminator, and the chosen table maps each position
+/// onto its name.
+///
+/// Without it the columns never become `json.Name` and the next processor
+/// raises `field not found`, taking the whole event down the error path.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct RemapKeysThroughTable {
+    source: String,
+    target: String,
+    /// The field whose ABSENCE picks the first table.
+    selector: String,
+    absent: String,
+    present: String,
+}
+
+/// `def cols = params[ctx.a.x == null ? "d" : "h"]; ... dst[v] = src[k]; ctx.b = dst`
+fn parse_remap_keys_through_table(script: &str) -> Option<RemapKeysThroughTable> {
+    // The selector and the two table names, off the ternary that picks one.
+    let (head, rest) = script.split_once("== null")?;
+    let selector = clean_path(head.rsplit("ctx.").next()?.trim());
+    let mut names = crate::painless_common::quoted_members(rest.split(']').next()?);
+    if names.len() < 2 || selector.is_empty() {
+        return None;
+    }
+    let present = names.pop()?;
+    let absent = names.pop()?;
+
+    // The map read through the table, and the one built from it.
+    let source = clean_path(
+        script
+            .split_once("= ctx.")?
+            .1
+            .split([';', '\n'])
+            .next()?
+            .trim(),
+    );
+    let (target_head, _) = script.split_once("] = dst")?;
+    let target = clean_path(
+        target_head
+            .rsplit("ctx[")
+            .next()?
+            .trim()
+            .trim_matches(['\'', '"']),
+    );
+    if source.is_empty() || target.is_empty() {
+        return None;
+    }
+    Some(RemapKeysThroughTable {
+        source,
+        target,
+        selector,
+        absent,
+        present,
+    })
+}
+
+/// Build the renamed map, in the table's own order.
+fn run_remap_keys_through_table(
+    event: &mut Event,
+    pattern: &RemapKeysThroughTable,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(source) = event.get(&pattern.source).and_then(Value::as_object).cloned() else {
+        return false;
+    };
+    // The LAST column's absence is the discriminator, nothing else.
+    let table = if event.has_value(&pattern.selector) {
+        &pattern.present
+    } else {
+        &pattern.absent
+    };
+    let Some(table) = params.get(table).and_then(Value::as_object) else {
+        return false;
+    };
+
+    // In the table's declaration order, which is what `entrySet()` walks.
+    let mut renamed = Map::with_capacity(table.len());
+    for (from, to) in table {
+        let Some(to) = to.as_str() else { continue };
+        // A column the record does not carry is left out rather than written
+        // as an explicit null, which the pipeline's own drop-empty would
+        // remove a moment later anyway.
+        if let Some(value) = source.get(from) {
+            renamed.insert(to.to_owned(), value.clone());
+        }
+    }
+    if renamed.is_empty() {
+        return false;
+    }
+    let _ = event.set(&pattern.target, Value::Object(renamed));
+    true
 }
 
 /// The record's ECS action, chosen by which candidate's fields are PRESENT.
