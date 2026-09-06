@@ -6154,3 +6154,113 @@ fn a_map_prune_declines_a_local_receiver() {
             .any(|pattern| matches!(pattern, KnownPattern::RemoveMapValue { .. }))
     );
 }
+
+/// Verbatim from `o365_metrics/mailbox_usage_detail`, in the ESCAPED form the
+/// call site holds -- one line, `\n` and `\"` unresolved until `normalise`.
+///
+/// The report's own column headings are the JSON keys, and every `convert`,
+/// `rename` and the unguarded `fingerprint` after this script name the
+/// rewritten ones.
+#[test]
+fn a_report_heading_becomes_the_key_the_pipeline_renames() {
+    let script = r#"String underscore(String s) {\n  String result = /[ -]/.matcher(s).replaceAll('_').replace(\"/\", \"_\").toLowerCase();\n  String result1 = /[\\ufeff]/.matcher(result).replaceAll('');\n  return /[()]/.matcher(result1).replaceAll('')\n}\n\ndef out = [:];\nfor (def item : ctx.o365.metrics.mailbox.usage.detail.entrySet()) {\n  out[underscore(item.getKey())] = item.getValue();\n}\nctx.o365.metrics.mailbox.usage.detail = out;      \n"#;
+    let mut event = Event::new(json!({ "o365": { "metrics": { "mailbox": { "usage": {
+        "detail": {
+            "Report Refresh Date": "2024-12-15",
+            "Deleted Item Quota (Byte)": "32212254720",
+            "Prohibit Send/Receive Quota (Byte)": "107374182400",
+            "\u{feff}Created Date": "2024-10-22"
+        }
+    }}}}}));
+
+    assert!(try_known_painless(&mut event, script));
+    let detail = event
+        .get("o365.metrics.mailbox.usage.detail")
+        .and_then(Value::as_object)
+        .expect("the rebuilt map replaces the one it read");
+    let keys: Vec<&str> = detail.keys().map(String::as_str).collect();
+    assert_eq!(
+        keys,
+        [
+            "report_refresh_date",
+            "deleted_item_quota_byte",
+            "prohibit_send_receive_quota_byte",
+            "created_date",
+        ],
+        "the slash swaps for an underscore, the parentheses and the mark go"
+    );
+    // The values ride along untouched -- a later `convert` types them.
+    assert_eq!(
+        detail.get("deleted_item_quota_byte"),
+        Some(&json!("32212254720"))
+    );
+}
+
+/// `o365_metrics`'s other spelling: the control characters come off the key in
+/// the LOOP, before the helper the loop calls ever sees it.
+///
+/// Reading the two spans by their position in the text would run the helper
+/// first, because a helper is DEFINED above the loop and CALLED inside it.
+#[test]
+fn a_csv_heading_loses_its_control_characters_before_the_helper_runs() {
+    let script = r"String sanitize(String s) {\n  String t = /[ -]/.matcher(s).replaceAll('_');\n  return /[\\(\\)]/.matcher(t).replaceAll('').toLowerCase();\n}\n\ndef out = [:];\nfor (def item : ctx.json.entrySet()) {\n  // Remove control characters from CSV header\n  String key = /\\p{C}/.matcher(item.getKey()).replaceAll('');\n  // Replace spaces and hyphens with sanitize and convert to lowercase.\n  out[sanitize(key)] = item.getValue();\n}\nctx.json = out;\n";
+    let mut event = Event::new(json!({ "json": {
+        "Storage Used (Byte)\u{7}": "6370739",
+        "Non-Deleted Total Item Count": "8"
+    }}));
+
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(
+        event.get("json"),
+        Some(&json!({
+            "storage_used_byte": "6370739",
+            "non_deleted_total_item_count": "8"
+        }))
+    );
+}
+
+/// `aws.lambda_logs` breaks the camel case FIRST and stores the rebuilt map at
+/// a different path, leaving the one it read where it was.
+///
+/// The Java match eats an underscore sitting in front of the word break, so
+/// this is not the shared `to_snake_case`.
+#[test]
+fn a_lambda_metric_is_rebuilt_under_a_new_path() {
+    let script = r"String underscore(String s) {\n    def regex = /_?([a-z])([A-Z]+)/;\n    s = regex.matcher(s).replaceAll('$1_$2').toLowerCase();\n    String result = /[ -]/.matcher(s).replaceAll('_').toLowerCase();\n    String result1 = /[\\ufeff]/.matcher(result).replaceAll('');\n    return /[()]/.matcher(result1).replaceAll('')\n}\n\ndef out = [:];\nfor (def item : ctx.parsed.record.metrics.entrySet()) {\n    out[underscore(item.getKey())] = item.getValue();\n}\nctx.aws.lambda.metrics = out\n";
+    let mut event = Event::new(json!({
+        "parsed": { "record": { "metrics": {
+            "durationMs": 1.5,
+            "memorySizeMB": 128,
+            "maxMemoryUsedMB": 74
+        }}},
+        "aws": { "lambda": {} }
+    }));
+
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(
+        event.get("aws.lambda.metrics"),
+        Some(&json!({
+            "duration_ms": 1.5,
+            "memory_size_mb": 128,
+            "max_memory_used_mb": 74
+        }))
+    );
+    // The script assigns, it does not move: the source stays put.
+    assert!(event.get("parsed.record.metrics").is_some());
+}
+
+/// A character RANGE is not a set of literals, so the whole script is declined.
+///
+/// Rewriting a key by only SOME of a helper's steps lands it under a name no
+/// later processor reads, which is worse than leaving the script unclaimed.
+#[test]
+fn a_key_rewrite_declines_a_character_range() {
+    let script = "String underscore(String s) {\n  return /[a-z]/.matcher(s).replaceAll('_');\n}\n\
+        \ndef out = [:];\nfor (def item : ctx.a.b.entrySet()) {\n  \
+        out[underscore(item.getKey())] = item.getValue();\n}\nctx.a.b = out;\n";
+    assert!(
+        !known_patterns(&normalise(script))
+            .iter()
+            .any(|pattern| matches!(pattern, KnownPattern::RewriteKeys(_)))
+    );
+}

@@ -3791,7 +3791,11 @@ fn run_remap_keys_through_table(
     pattern: &RemapKeysThroughTable,
     params: &Map<String, Value>,
 ) -> bool {
-    let Some(source) = event.get(&pattern.source).and_then(Value::as_object).cloned() else {
+    let Some(source) = event
+        .get(&pattern.source)
+        .and_then(Value::as_object)
+        .cloned()
+    else {
         return false;
     };
     // The LAST column's absence is the discriminator, nothing else.

@@ -4526,6 +4526,367 @@ pub fn rename_map_keys(event: &mut Event, pattern: &RenameMapKeys) -> bool {
     true
 }
 
+/// One replacement a key-normalising helper spells out, in its own order.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum KeyRewriteStep {
+    /// `_?([a-z])([A-Z]+)` replaced by `$1_$2`: a word break wherever a
+    /// lowercase run meets an uppercase one. The optional leading underscore is
+    /// CONSUMED by the match and not written back, which is why this is not
+    /// [`crate::painless_helpers::to_snake_case`].
+    CamelBreak,
+    /// `.toLowerCase()`.
+    Lowercase,
+    /// `\p{C}` dropped -- the control characters a CSV heading carries.
+    DropControl,
+    /// Every character of the set replaced by one character, or dropped where
+    /// the script gives no replacement.
+    ReplaceChars(String, Option<char>),
+}
+
+/// Every key of a map rewritten by the replacements the script spells out.
+///
+/// Microsoft's usage reports arrive as their own CSV headings turned into JSON
+/// keys -- `Deleted Item Quota (Byte)`, `Prohibit Send/Receive Quota (Byte)` --
+/// so `o365_metrics` ships a helper per data stream that lowercases them, swaps
+/// spaces, hyphens and slashes for underscores, and drops the parentheses and
+/// the byte-order mark. `qualys_vmdr` and `aws.lambda_logs` ship the same thing.
+///
+/// Every `convert`, `rename`, `date` and `fingerprint` after it names the
+/// RESULT, so leaving the keys as the report wrote them misses the whole tail of
+/// the pipeline -- and the `fingerprint` carries no `ignore_missing`, so it
+/// fails the document and marks it `pipeline_error`.
+///
+/// The steps are read OFF the script rather than pinned to one package: the
+/// fourteen o365 streams spell four different helpers between them, and a
+/// fifth would otherwise need its own arm.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RewriteKeys {
+    /// The map whose keys are rewritten.
+    source: String,
+    /// Where the rebuilt map is stored. The same path, except where the script
+    /// moves it -- `aws.lambda_logs` reads `parsed.record.metrics` and writes
+    /// `aws.lambda.metrics`, leaving the original where it was.
+    target: String,
+    /// Applied left to right, the order the script applies them.
+    steps: Vec<KeyRewriteStep>,
+}
+
+impl RewriteKeys {
+    /// The generated call site that rebuilds this pattern.
+    #[cfg(feature = "codegen")]
+    pub(crate) fn direct_call(&self) -> String {
+        let steps: Vec<String> = self
+            .steps
+            .iter()
+            .map(|step| match step {
+                KeyRewriteStep::CamelBreak => "KeyRewriteStep::CamelBreak".to_owned(),
+                KeyRewriteStep::Lowercase => "KeyRewriteStep::Lowercase".to_owned(),
+                KeyRewriteStep::DropControl => "KeyRewriteStep::DropControl".to_owned(),
+                KeyRewriteStep::ReplaceChars(chars, with) => format!(
+                    "KeyRewriteStep::ReplaceChars({}.into(), {})",
+                    rust_str(chars),
+                    with.map_or_else(|| "None".to_owned(), |c| format!("Some({c:?})")),
+                ),
+            })
+            .collect();
+        format!(
+            "rewrite_keys(event, &RewriteKeys::new({}.into(), {}.into(), vec![{}]));",
+            rust_str(&self.source),
+            rust_str(&self.target),
+            steps.join(", "),
+        )
+    }
+
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(source: String, target: String, steps: Vec<KeyRewriteStep>) -> Self {
+        Self {
+            source,
+            target,
+            steps,
+        }
+    }
+}
+
+/// The character class of a Java regex, as the literal characters it holds.
+///
+/// A RANGE is declined rather than guessed at, so `[a-z]` never reaches the
+/// runner as three characters. A hyphen first or last in the class is a
+/// literal, which is exactly how these helpers spell `[ -]`.
+fn decode_char_class(class: &str) -> Option<String> {
+    let mut out = String::with_capacity(class.len());
+    let mut chars = class.chars().peekable();
+    while let Some(c) = chars.next() {
+        match c {
+            '\\' => {
+                let escaped = chars.next()?;
+                if escaped == 'u' {
+                    let hex: String = chars.by_ref().take(4).collect();
+                    if hex.len() != 4 {
+                        return None;
+                    }
+                    out.push(char::from_u32(u32::from_str_radix(&hex, 16).ok()?)?);
+                } else if "\\()[]{}.-+*?^$|/".contains(escaped) {
+                    out.push(escaped);
+                } else {
+                    return None;
+                }
+            }
+            '-' if !out.is_empty() && chars.peek().is_some() => return None,
+            _ => out.push(c),
+        }
+    }
+    (!out.is_empty()).then_some(out)
+}
+
+/// The regex a `.matcher(` at `at` is called on, written inline or bound to a
+/// local by `def <name> = /.../;` first.
+fn regex_before_matcher(text: &str, at: usize) -> Option<String> {
+    let head = &text[..at];
+    let read_to_slash = |body: &str| -> Option<String> {
+        let mut escaped = false;
+        for (i, c) in body.char_indices() {
+            if escaped {
+                escaped = false;
+            } else if c == '\\' {
+                escaped = true;
+            } else if c == '/' {
+                return Some(body[..i].to_owned());
+            }
+        }
+        None
+    };
+
+    if let Some(body) = head.strip_suffix('/') {
+        // The literal's OPENING slash: the last unescaped one before the close.
+        let mut open = None;
+        for (i, c) in body.char_indices() {
+            if c == '/' && !body[..i].ends_with('\\') {
+                open = Some(i);
+            }
+        }
+        return Some(body[open? + 1..].to_owned());
+    }
+
+    let name: String = head
+        .chars()
+        .rev()
+        .take_while(|c| c.is_alphanumeric() || *c == '_')
+        .collect::<Vec<char>>()
+        .into_iter()
+        .rev()
+        .collect();
+    if name.is_empty() {
+        return None;
+    }
+    read_to_slash(text.split_once(&format!("{name} = /"))?.1)
+}
+
+/// One `<regex> -> <replacement>` pair as the step it performs, or nothing when
+/// the pair is not one this runner can carry out.
+fn key_rewrite_step(pattern: &str, replacement: &str) -> Option<KeyRewriteStep> {
+    // The exact spelling both packages use. A camel-break without the `_?` is
+    // a DIFFERENT rewrite -- it keeps the underscore the match would eat -- so
+    // it is declined rather than folded in here.
+    if pattern == "_?([a-z])([A-Z]+)" && replacement == "$1_$2" {
+        return Some(KeyRewriteStep::CamelBreak);
+    }
+    if pattern == "\\p{C}" && replacement.is_empty() {
+        return Some(KeyRewriteStep::DropControl);
+    }
+    let chars = decode_char_class(pattern.strip_prefix('[')?.strip_suffix(']')?)?;
+    let mut replacement = replacement.chars();
+    let with = replacement.next();
+    if replacement.next().is_some() {
+        return None;
+    }
+    Some(KeyRewriteStep::ReplaceChars(chars, with))
+}
+
+/// Every rewrite one span of the script performs, in the order it writes them.
+///
+/// Declines the whole span on a replacement it cannot carry out: a key rewritten
+/// by only SOME of the script's steps lands under a name no later processor
+/// reads, which is worse than leaving the script unclaimed.
+fn key_rewrite_steps(text: &str) -> Option<Vec<KeyRewriteStep>> {
+    let mut found: Vec<(usize, KeyRewriteStep)> = Vec::new();
+
+    for (at, _) in text.match_indices(".toLowerCase()") {
+        found.push((at, KeyRewriteStep::Lowercase));
+    }
+
+    for (at, _) in text.match_indices(".matcher(") {
+        let pattern = regex_before_matcher(text, at)?;
+        let arguments = &text[at + ".matcher(".len()..];
+        let call = arguments.split_once(".replaceAll(")?.1;
+        found.push((at, key_rewrite_step(&pattern, &quoted_first(call)?)?));
+    }
+
+    // `.replace("/", "_")` -- a literal swap chained onto the same expression.
+    for (at, _) in text.match_indices(".replace(") {
+        let arguments = text[at + ".replace(".len()..].split_once(')')?.0;
+        let literals = quoted_members(arguments);
+        let [from, to] = literals.as_slice() else {
+            return None;
+        };
+        let mut to = to.chars();
+        let with = to.next();
+        if to.next().is_some() || from.chars().count() != 1 {
+            return None;
+        }
+        found.push((at, KeyRewriteStep::ReplaceChars(from.clone(), with)));
+    }
+
+    found.sort_by_key(|(at, _)| *at);
+    Some(found.into_iter().map(|(_, step)| step).collect())
+}
+
+/// Read the map, the helper it rebuilds each key through, and where it lands.
+///
+/// ```painless
+/// String underscore(String s) { return /[ -]/.matcher(s).replaceAll('_'); }
+/// def out = [:];
+/// for (def item : ctx.a.b.entrySet()) { out[underscore(item.getKey())] = item.getValue(); }
+/// ctx.a.b = out;
+/// ```
+fn parse_rewrite_keys(script: &str) -> Option<RewriteKeys> {
+    use crate::painless_params::clean_path;
+
+    let path_ok = |path: &str| {
+        !path.is_empty()
+            && path
+                .chars()
+                .all(|c| c.is_alphanumeric() || "._?".contains(c))
+    };
+
+    let loop_at = script.find(" : ctx.")?;
+    let source = script[loop_at + " : ctx.".len()..]
+        .split_once(".entrySet()")?
+        .0;
+    if !path_ok(source) {
+        return None;
+    }
+
+    let store = script.rfind(" = out")?;
+    let before_store = &script[..store];
+    let target = &before_store[before_store.rfind("ctx.")? + "ctx.".len()..];
+    if !path_ok(target) {
+        return None;
+    }
+
+    // The loop body, and the helper it names. Anything the body does to the key
+    // runs BEFORE the helper does, so the two spans are read in that order and
+    // never by their position in the text -- the helper is DEFINED first and
+    // CALLED last.
+    let body = &script[loop_at..store];
+    if !body.contains("] = item.getValue()") {
+        return None;
+    }
+    let call_at = body.find("out[")?;
+    let helper = body[call_at + "out[".len()..].split_once('(')?.0;
+    if helper.is_empty() || !helper.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+
+    // The definition, which precedes the loop, and its braced body.
+    let head = &script[..loop_at];
+    let define_at = head.find(&format!("{helper}("))?;
+    let open = head[define_at..].find('{')? + define_at;
+    let mut depth = 0usize;
+    let mut close = None;
+    for (i, c) in head[open..].char_indices() {
+        match c {
+            '{' => depth += 1,
+            '}' => {
+                depth -= 1;
+                if depth == 0 {
+                    close = Some(open + i);
+                    break;
+                }
+            }
+            _ => {}
+        }
+    }
+
+    let mut steps = key_rewrite_steps(&body[..call_at])?;
+    steps.extend(key_rewrite_steps(&head[open..close?])?);
+    if steps.is_empty() {
+        return None;
+    }
+
+    Some(RewriteKeys::new(
+        clean_path(source),
+        clean_path(target),
+        steps,
+    ))
+}
+
+/// `_?([a-z])([A-Z]+)` replaced by `$1_$2`, the way Java's matcher walks it.
+///
+/// The optional underscore is part of the MATCH and the replacement does not
+/// write it back, so `aB_cD` comes out `a_Bc_D` and not `a_B_c_D`.
+fn camel_break(key: &str) -> String {
+    let chars: Vec<char> = key.chars().collect();
+    let mut out = String::with_capacity(key.len() + 4);
+    let mut i = 0;
+    while i < chars.len() {
+        let mut at = i;
+        if chars[at] == '_' {
+            at += 1;
+        }
+        if at < chars.len() && chars[at].is_ascii_lowercase() {
+            let mut end = at + 1;
+            while end < chars.len() && chars[end].is_ascii_uppercase() {
+                end += 1;
+            }
+            if end > at + 1 {
+                out.push(chars[at]);
+                out.push('_');
+                out.extend(&chars[at + 1..end]);
+                i = end;
+                continue;
+            }
+        }
+        out.push(chars[i]);
+        i += 1;
+    }
+    out
+}
+
+/// One key through the script's steps, left to right.
+fn rewrite_key(key: &str, steps: &[KeyRewriteStep]) -> String {
+    let mut key = key.to_owned();
+    for step in steps {
+        key = match step {
+            KeyRewriteStep::CamelBreak => camel_break(&key),
+            KeyRewriteStep::Lowercase => key.to_lowercase(),
+            KeyRewriteStep::DropControl => key.chars().filter(|c| !c.is_control()).collect(),
+            KeyRewriteStep::ReplaceChars(chars, with) => key
+                .chars()
+                .filter_map(|c| if chars.contains(c) { *with } else { Some(c) })
+                .collect(),
+        };
+    }
+    key
+}
+
+/// Rebuild the map with every key rewritten, in the order it already had.
+pub fn rewrite_keys(event: &mut Event, pattern: &RewriteKeys) -> bool {
+    let Some(entries) = event
+        .get(&pattern.source)
+        .and_then(Value::as_object)
+        .cloned()
+    else {
+        return false;
+    };
+    let mut rebuilt = serde_json::Map::with_capacity(entries.len());
+    for (key, value) in entries {
+        rebuilt.insert(rewrite_key(&key, &pattern.steps), value);
+    }
+    let _ = event.set(&pattern.target, Value::Object(rebuilt));
+    true
+}
+
 /// One entry MOVED out of a map, addressed by a key that holds a dot.
 ///
 /// The rename a `rename` processor cannot do: the key is `imageFile.md5String`
@@ -14897,6 +15258,8 @@ pub(crate) enum KnownPattern {
     },
     CategoryTypeLadder(Vec<CategoryArm>),
     KeysStripWhitespace(String),
+    /// One map's keys rebuilt by the replacements the script spells out.
+    RewriteKeys(Box<RewriteKeys>),
     SnakeKeyMapCopy {
         source: String,
         target: String,
@@ -15904,6 +16267,19 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         patterns.push(KnownPattern::KeysStripWhitespace(
             crate::painless_params::clean_path(&normalised[start + 4..at]),
         ));
+        return patterns;
+    }
+
+    // Pattern: one map rebuilt key by key through a helper the script defines
+    // itself -- o365's CSV headings, qualys's spaced names, lambda's REPORT
+    // metrics. Ahead of the snake-case copy below, which reads only the camel
+    // break of the same helper and would drop the spaces, slashes, parentheses
+    // and byte-order mark that sit beside it.
+    if normalised.contains("] = item.getValue()")
+        && normalised.contains(".entrySet()")
+        && let Some(pattern) = parse_rewrite_keys(normalised)
+    {
+        patterns.push(KnownPattern::RewriteKeys(Box::new(pattern)));
         return patterns;
     }
 
@@ -16984,6 +17360,7 @@ impl KnownPattern {
     /// the ladder. This is an ALLOWLIST: a pattern is added here only once its
     /// runner takes extracted params and its payload can be written as
     /// literals, so a wrong emit is impossible rather than merely unlikely.
+    #[allow(clippy::too_many_lines)] // One arm per emittable pattern; it grows with the allowlist.
     pub(crate) fn direct_call(&self) -> Option<String> {
         match self {
             Self::DropEmpty { policy, root } => {
@@ -17048,6 +17425,7 @@ impl KnownPattern {
             Self::SplitAtDelimiter(pattern) => Some(pattern.direct_call()),
             Self::MoveMapEntry(pattern) => Some(pattern.direct_call()),
             Self::RenameMapKeys(pattern) => Some(pattern.direct_call()),
+            Self::RewriteKeys(pattern) => Some(pattern.direct_call()),
             Self::ParametersIntoMap(pattern) => Some(pattern.direct_call()),
             Self::UnwrapSuffixedKeys(pattern) => Some(pattern.direct_call()),
             Self::MailtoUriFields(pattern) => Some(format!(
@@ -17283,6 +17661,7 @@ pub(crate) fn run_known_pattern(
             }
             true
         }
+        KnownPattern::RewriteKeys(pattern) => rewrite_keys(event, pattern),
         KnownPattern::SnakeKeyMapCopy { source, target } => {
             if let Some(Value::Object(entries)) = event.get(source).cloned() {
                 let mut rebuilt = Map::new();
