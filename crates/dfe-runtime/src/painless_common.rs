@@ -4509,6 +4509,79 @@ fn parse_rename_map_keys(script: &str) -> Option<RenameMapKeys> {
     Some(RenameMapKeys::new(container, from, to))
 }
 
+/// The same rebuild written as a stream one-liner, with a CHAIN of key
+/// transforms rather than the single replacement [`parse_rename_map_keys`]
+/// reads.
+///
+/// ```painless
+/// ctx.a.b = ctx.a.b.entrySet().stream()
+///     .collect(Collectors.toMap(entry -> entry.getKey().toLowerCase(), Map.Entry::getValue));
+/// ```
+///
+/// oracle's kv processor writes the vendor's own uppercase headings -- `DBID`,
+/// `SESSIONID`, `USERHOST` -- and every `rename` after this script names the
+/// lowercase form, so an unmatched fold misses all six at once. `userhost` is
+/// the one that feeds `server.address`, which feeds `server.domain` and
+/// `related.hosts`.
+///
+/// Two forms are declined rather than half-applied. A single `.replace(a, b)`
+/// belongs to [`parse_rename_map_keys`], whose call sites already exist. A
+/// value lambda that is not the identity -- `juniper_srx`'s
+/// `e -> e.getValue().trim()` -- is a different script, and claiming it would
+/// write the keys right and the values wrong.
+fn parse_stream_rewrite_keys(script: &str) -> Option<RewriteKeys> {
+    use crate::painless_params::{balanced, clean_path};
+
+    let at = script.find("Collectors.toMap")?;
+    let (arguments, _) = balanced(&script[at + "Collectors.toMap".len()..], '(', ')')?;
+    let comma = top_level_comma(arguments)?;
+    let (key_lambda, value_lambda) = arguments.split_at(comma);
+    if !hands_the_value_through(value_lambda[1..].trim()) {
+        return None;
+    }
+
+    // Everything the key lambda does AFTER reading the key, in written order.
+    let steps = key_rewrite_steps(key_lambda.split_once(".getKey()")?.1)?;
+    if steps.is_empty() || matches!(steps.as_slice(), [KeyRewriteStep::ReplaceChars(..)]) {
+        return None;
+    }
+
+    // The container is the assignment's target, which the script also reads.
+    let (target, _) = script[..at].split_once(" = ")?;
+    let path = clean_path(target.trim().strip_prefix("ctx.")?);
+    if path.is_empty() {
+        return None;
+    }
+    Some(RewriteKeys::new(path.clone(), path, steps))
+}
+
+/// The offset of the comma separating `toMap`'s two lambdas, which is the only
+/// one not inside a call of its own -- `.replace(' ', '_')` carries one too.
+fn top_level_comma(arguments: &str) -> Option<usize> {
+    let mut depth = 0usize;
+    let mut quoted = false;
+    for (index, c) in arguments.char_indices() {
+        match c {
+            '\'' | '"' => quoted = !quoted,
+            '(' if !quoted => depth += 1,
+            ')' if !quoted => depth = depth.checked_sub(1)?,
+            ',' if !quoted && depth == 0 => return Some(index),
+            _ => {}
+        }
+    }
+    None
+}
+
+/// Whether the value half of a `toMap` hands the value through untouched.
+fn hands_the_value_through(lambda: &str) -> bool {
+    if lambda == "Map.Entry::getValue" {
+        return true;
+    }
+    lambda
+        .split_once(" -> ")
+        .is_some_and(|(bound, body)| body.trim() == format!("{}.getValue()", bound.trim()))
+}
+
 /// Rebuild the map with each key rewritten, in the order it already had.
 pub fn rename_map_keys(event: &mut Event, pattern: &RenameMapKeys) -> bool {
     let Some(container) = event
@@ -15129,6 +15202,8 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
 /// FIELD NAMES and recognise whose script it is, ending in the two catch-alls.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum KnownPattern {
+    /// A scalar written from arithmetic over other fields.
+    ScalarExpression(Box<crate::painless_expr::ScalarExpression>),
     DropEmpty {
         policy: DropPolicy,
         root: Option<String>,
@@ -15811,6 +15886,17 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_parameters_into_map(normalised)
     {
         patterns.push(KnownPattern::ParametersIntoMap(pattern));
+        return patterns;
+    }
+
+    // Pattern: every key of a map rewritten by a CHAIN of transforms, written
+    // as a `Collectors.toMap` one-liner. Ahead of the single-replacement arm
+    // below, which reads only the first `.replace(` of such a chain.
+    if normalised.contains("Collectors.toMap")
+        && normalised.contains(".getKey()")
+        && let Some(pattern) = parse_stream_rewrite_keys(normalised)
+    {
+        patterns.push(KnownPattern::RewriteKeys(Box::new(pattern)));
         return patterns;
     }
 
@@ -17342,6 +17428,19 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: a scalar written from arithmetic over other fields. LAST, and
+    // deliberately: every arm above returns as soon as it claims a script, so a
+    // general evaluator placed here can only take what nothing else took.
+    //
+    // A script reading `params` is declined -- this lane never sees the params
+    // block, so claiming one would mark it handled and write nothing.
+    if let Some(pattern) = crate::painless_expr::parse_scalar_expression(normalised)
+        && !pattern.reads_params()
+    {
+        patterns.push(KnownPattern::ScalarExpression(Box::new(pattern)));
+        return patterns;
+    }
+
     patterns
 }
 
@@ -17486,6 +17585,7 @@ impl KnownPattern {
                 rust_str(&pattern.from),
                 rust_str(&pattern.to),
             )),
+            Self::ScalarExpression(pattern) => Some(pattern.direct_call()),
             Self::KvIntoFields(target) => {
                 Some(format!("kv_into_fields(event, {});", rust_str(target)))
             }
@@ -17531,6 +17631,9 @@ pub(crate) fn run_known_pattern(
     pattern: &KnownPattern,
 ) -> bool {
     match pattern {
+        KnownPattern::ScalarExpression(pattern) => {
+            crate::painless_expr::scalar_expression(event, pattern)
+        }
         KnownPattern::DropEmpty { policy, root } => drop_empty(event, policy, root.as_deref()),
         KnownPattern::SplitCommandLine(script) => {
             crate::painless_windows::run_argv_script(event, script)

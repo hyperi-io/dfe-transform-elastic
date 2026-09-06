@@ -397,8 +397,8 @@ fn render_path(event: &Event, template: &str) -> String {
     out
 }
 
-/// Returns a `ParseError` naming the field when the text is not JSON, when it
-/// is not an object, or when `merge` meets a conflict it cannot merge.
+/// Returns a `ParseError` naming the field when the text is not JSON or when it
+/// is not an object.
 pub fn parse_json_field_to_root(event: &mut Event, field: &str, merge: bool) -> Result<()> {
     let Some(text) = event.get_string(field) else {
         return Ok(());
@@ -422,11 +422,18 @@ pub fn parse_json_field_to_root(event: &mut Event, field: &str, merge: bool) -> 
             (Some(Value::Object(held)), Value::Object(incoming)) => {
                 merge_object(held, incoming);
             }
-            // `merge` against a non-object on either side is a conflict
-            // Elastic refuses rather than resolving.
-            (Some(held), incoming) if !held.is_null() && !incoming.is_null() => {
-                return Err(fail(format!("cannot merge non-map fields at key {key}")));
-            }
+            // Anything that is not two objects: the incoming value WINS, which
+            // is what `add_to_root_conflict_strategy: merge` does -- it recurses
+            // only where both sides are maps and returns the incoming otherwise.
+            // This used to raise instead, and raising abandoned the loop, so
+            // every key after the conflicting one was never inserted at all.
+            // ti_ticura carries `tags` before `ticura` in the feed line, so one
+            // array meeting another array cost it the whole `ticura` namespace,
+            // the `drop` on a missing uuid then fired, and 7 of 13 events
+            // vanished. Its own pipeline comment states the behaviour: the feed
+            // line's `tags` "replaces ctx.tags and drops the
+            // preserve_original_event tag", which is why the next processor
+            // appends that tag back.
             (_, incoming) => {
                 root.insert(key, incoming);
             }
@@ -1456,7 +1463,14 @@ fn grok_pattern_regex(name: &str) -> &'static str {
             r"(?:\b(?<![0-9A-Fa-f.])(?:[+-]?(?:0x)?(?:(?:[0-9A-Fa-f]+(?:\.[0-9A-Fa-f]*)?)|(?:\.[0-9A-Fa-f]+)))\b)"
         }
         "JAVACLASS" => r"(?:(?:[a-zA-Z$_][a-zA-Z$_0-9]*\.)*[a-zA-Z$_][a-zA-Z$_0-9]*)",
-        "JAVALOGMESSAGE" => r"(?s).*",
+        // `logstash-patterns-core` defines this as `(.*)` -- no dotall. Ours
+        // carried a `(?s)`, which was compensating for a vendor `(?m)` that
+        // used to arrive as a no-op: kafka's header grok stopped at the first
+        // line, so the re-capture after it could swallow the rest and still
+        // land on the right answer. With `(?m)` now respelt as the dotall it
+        // is, the header takes the whole event and this one has to stop at the
+        // newline, exactly as joni does, or a stack trace ends up in `message`.
+        "JAVALOGMESSAGE" => r"(?:.*)",
         // The facility half of a syslog priority: a name or a number.
         "SYSLOGFACILITY" => r"(?:<\d+\.\d+>)",
         // Elastic's own, grouped: an inlined alternation would otherwise reach
@@ -2070,6 +2084,51 @@ pub fn uri_parts(
 mod tests {
     use super::*;
     use serde_json::json;
+
+    // --- parse_json_field_to_root ---
+
+    /// `add_to_root_conflict_strategy: merge` recurses only where BOTH sides
+    /// are maps. An array meeting an array is not a conflict to refuse -- the
+    /// incoming one wins, and the keys after it still have to be merged.
+    #[test]
+    fn a_root_merge_replaces_a_non_map_and_keeps_going() {
+        let mut event = Event::new(json!({
+            "tags": ["preserve_original_event"],
+            "message": r#"{"tags":["Malware"],"ticura":{"indicator":{"uuid":"u-1"}}}"#,
+        }));
+        parse_json_field_to_root(&mut event, "message", true).expect("the merge succeeds");
+
+        assert_eq!(event.get("tags"), Some(&json!(["Malware"])));
+        // The key AFTER the conflicting one, which a mid-loop error lost.
+        assert_eq!(event.get_str("ticura.indicator.uuid"), Some("u-1"));
+    }
+
+    /// Two maps at one key are the case that does recurse, so a key held on
+    /// only one side survives from either.
+    #[test]
+    fn a_root_merge_recurses_where_both_sides_are_maps() {
+        let mut event = Event::new(json!({
+            "event": { "kind": "enrichment" },
+            "message": r#"{"event":{"category":["threat"]}}"#,
+        }));
+        parse_json_field_to_root(&mut event, "message", true).expect("the merge succeeds");
+
+        assert_eq!(event.get_str("event.kind"), Some("enrichment"));
+        assert_eq!(event.get("event.category"), Some(&json!(["threat"])));
+    }
+
+    /// Without `merge` the strategy is `replace`, which is a whole-key putAll.
+    #[test]
+    fn a_root_replace_overwrites_the_whole_key() {
+        let mut event = Event::new(json!({
+            "event": { "kind": "enrichment" },
+            "message": r#"{"event":{"category":["threat"]}}"#,
+        }));
+        parse_json_field_to_root(&mut event, "message", false).expect("the replace succeeds");
+
+        assert_eq!(event.get_str("event.kind"), None);
+        assert_eq!(event.get("event.category"), Some(&json!(["threat"])));
+    }
 
     // --- fingerprint ---
 

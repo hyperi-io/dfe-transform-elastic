@@ -244,6 +244,9 @@ pub(crate) enum ParamsPattern {
     LookupMerge(Program),
     LookupColumns,
     LookupNormalise(LookupNormaliseScript, Program),
+    /// A params lookup written to a NAMED MEMBER of a container the script
+    /// first guarantees exists.
+    MemberLookup(MemberLookupScript),
     /// A params lookup that writes nothing when the table misses.
     GuardedLookup(GuardedLookupScript),
     IndexedLookup,
@@ -764,6 +767,17 @@ fn params_pattern_tail(normalised: &str) -> Option<ParamsPattern> {
     // appending the list-valued ones rather than replacing them.
     if normalised.contains("params.get(") && normalised.matches(".get(").count() >= 3 {
         return Some(ParamsPattern::LookupColumns);
+    }
+
+    // Pattern: the lookup written to a NAMED MEMBER of a container the script
+    // first guarantees exists. Ahead of `LookupNormalise`, which reads that
+    // guarantee as the write and so targets the bare container: chrome stored
+    // a string AT `event`, and every later `event.<sub>` write then failed on
+    // it, scoring zero on six events whose every field was right.
+    if normalised.contains("params.get(")
+        && let Some(pattern) = parse_member_lookup(normalised)
+    {
+        return Some(ParamsPattern::MemberLookup(pattern));
     }
 
     // Pattern: normalise a field through a params table, keeping the input
@@ -1548,6 +1562,7 @@ pub(crate) fn run_params_pattern(
         ParamsPattern::LookupNormalise(pattern, literals) => {
             lookup_normalise(event, pattern, literals, params)
         }
+        ParamsPattern::MemberLookup(pattern) => member_lookup(event, pattern, params),
         ParamsPattern::GuardedLookup(pattern) => guarded_lookup(event, pattern, params),
         ParamsPattern::IndexedLookup => try_indexed_lookup(event, normalised, params),
         ParamsPattern::Scale => try_scale(event, normalised, params),
@@ -5246,6 +5261,289 @@ fn parse_lookup_normalise(script: &str) -> Option<LookupNormaliseScript> {
         .or_else(|| writes.last().map(|(path, _)| path.clone()))?;
     let (key, fold) = lookup_key_path(script, &key_expr)?;
     Some(LookupNormaliseScript { key, fold, target })
+}
+
+/// Where a lookup written to a container's NAMED MEMBER reads and writes.
+///
+/// Distinct from [`LookupNormaliseScript`] on the two points that decide the
+/// output: the container guarantee the script opens with (`ctx.event =
+/// ctx.event ?: [:]`, or the `new HashMap()` spelling) is not a write, and the
+/// member the row lands on is often ECS's array-typed `event.type` or
+/// `event.category`, so the row is wrapped in a one-element list.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct MemberLookupScript {
+    /// The `ctx.` path the lookup key comes from.
+    key: String,
+    fold: Fold,
+    /// The member written, container and leaf joined into one dotted path.
+    target: String,
+    /// The write wraps the row in a one-element list.
+    wrap: bool,
+    miss: LookupMiss,
+}
+
+/// What a script does where the params table holds no row for its key.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum LookupMiss {
+    /// `ctx.<container>.remove('<leaf>')` -- the member goes.
+    Remove,
+    /// The write sits behind a null guard the miss fails, so the member keeps
+    /// whatever it already held.
+    Keep,
+    /// Nothing guards the write, so Painless stores the lookup's own null.
+    Null,
+}
+
+/// Read the key, the member the row is written to, the list wrap and the miss
+/// behaviour out of the script once.
+///
+/// `None` where the script is not this pattern after all, which leaves the text
+/// to `LookupNormalise` below -- deliberately narrow, because that matcher gets
+/// every direct `ctx.<path> = params.get(...)` right and only the member
+/// spellings wrong.
+fn parse_member_lookup(script: &str) -> Option<MemberLookupScript> {
+    // ONE lookup, spelled with `get`, and no `containsKey` guard: a second read
+    // or either of the other spellings means the script says more than this
+    // pattern can, and claiming it would drop the rest.
+    if script.matches("params.get(").count() != 1
+        || script.contains("params[")
+        || script.contains("params.containsKey(")
+    {
+        return None;
+    }
+
+    let lookup_at = script.find("params.get(")?;
+    let statement = enclosing_statement(script, lookup_at);
+    let (local, wrapped_at_binding) = lookup_binding(statement)?;
+
+    // The one write that carries the lookup's value, and the list wrap where
+    // the write rather than the binding spells it.
+    let assignments = ctx_writes(script);
+    let puts = ctx_put_writes(script);
+    let mut carriers = assignments
+        .iter()
+        .chain(puts.iter())
+        .filter(|(_, rhs)| local.as_deref() == Some(unwrapped_value(rhs).0));
+    let (target, value) = match &local {
+        Some(_) => carriers.next()?,
+        // The lookup reaches the member with no local in between, so the write
+        // is the statement it sits in.
+        None => puts.iter().find(|(_, rhs)| rhs.contains("params.get("))?,
+    };
+    let wrap = wrapped_at_binding || unwrapped_value(value).1;
+
+    // Everything else the script writes has to be a container guarantee, or
+    // claiming it would silently drop a write -- qualys_gav puts a literal
+    // `linux` on the same member from the other arm of a branch.
+    let accounted = |path: &String, rhs: &String| {
+        std::ptr::eq(path, target) || is_container_guarantee(path, rhs)
+    };
+    if !assignments
+        .iter()
+        .chain(puts.iter())
+        .all(|(path, rhs)| accounted(path, rhs))
+    {
+        return None;
+    }
+
+    let (key, fold) = lookup_key_path(script, &last_call_argument(script, "params.get(")?)?;
+    Some(MemberLookupScript {
+        key,
+        fold,
+        target: target.clone(),
+        wrap,
+        miss: local.map_or(LookupMiss::Null, |local| {
+            lookup_miss(script, &local, target)
+        }),
+    })
+}
+
+/// The statement `at` sits in, bounded by the semicolons either side of it.
+fn enclosing_statement(script: &str, at: usize) -> &str {
+    let start = script[..at].rfind(';').map_or(0, |semi| semi + 1);
+    let end = script[at..]
+        .find(';')
+        .map_or(script.len(), |offset| at + offset);
+    &script[start..end]
+}
+
+/// The local a lookup statement binds its row to, and whether that binding put
+/// the row in a list.
+///
+/// `None` for a statement that binds nothing -- the `.put(` spelling reads the
+/// table inline, and a direct `ctx.<path> = params.get(...)` is
+/// `LookupNormalise`'s to claim.
+fn lookup_binding(statement: &str) -> Option<(Option<String>, bool)> {
+    // `def type = new ArrayList(); type.add(params.get(...));` -- data_studio.
+    if let Some((head, _)) = statement.split_once(".add(params.get(") {
+        let local = identifier_ending(head)?;
+        return Some((Some(local), true));
+    }
+    // `def type = params.get(...);` -- the guarded spellings.
+    if let Some((head, _)) = statement.split_once("= params.get(")
+        && let Some(local) = identifier_ending(head)
+    {
+        return Some((Some(local), false));
+    }
+    // The lookup is the `.put` value itself, with nothing bound.
+    statement.contains(".put(").then_some((None, false))
+}
+
+/// The bare identifier `head` ends with, or `None` where it ends with anything
+/// else -- a dotted `ctx.` path, a subscript, a call.
+fn identifier_ending(head: &str) -> Option<String> {
+    let head = head.trim_end();
+    let start = head
+        .char_indices()
+        .rev()
+        .find(|(_, c)| !(c.is_alphanumeric() || *c == '_'))
+        .map_or(0, |(at, c)| at + c.len_utf8());
+    // A name reached through a dot, a subscript or a call is the tail of a
+    // PATH, not a local: reading one as a local turns
+    // `ctx.event.severity = params.get(...)` into a binding named `severity`.
+    if head[..start].ends_with(['.', ']', ')']) {
+        return None;
+    }
+    let name = &head[start..];
+    (!name.is_empty() && !name.starts_with(|c: char| c.is_ascii_digit())).then(|| name.to_string())
+}
+
+/// A write's value with a one-element list unwrapped, and whether it was one.
+fn unwrapped_value(value: &str) -> (&str, bool) {
+    let value = value.trim();
+    value
+        .strip_prefix('[')
+        .and_then(|inner| inner.strip_suffix(']'))
+        .map_or((value, false), |inner| (inner.trim(), true))
+}
+
+/// Every `ctx.<container>.put(<leaf>, <value>)` in the script, the member as one
+/// dotted path.
+///
+/// [`ctx_writes`] cannot see these: a `put` carries no `=`, so a script whose
+/// only write is one reads to that helper as writing nothing at all.
+fn ctx_put_writes(script: &str) -> Vec<(String, String)> {
+    let mut writes = Vec::new();
+    for (at, _) in script.match_indices(".put(") {
+        let Some(container) = ctx_path_ending(&script[..at]) else {
+            continue;
+        };
+        // Balanced, because the value is often a call of its own.
+        let Some(arguments) = delimited_from(script, at + ".put".len()) else {
+            continue;
+        };
+        let arguments = arguments.trim_start();
+        let Some(quote) = arguments.chars().next().filter(|c| *c == '\'' || *c == '"') else {
+            continue;
+        };
+        let Some((leaf, rest)) = arguments[quote.len_utf8()..].split_once(quote) else {
+            continue;
+        };
+        let Some(value) = rest.trim_start().strip_prefix(',') else {
+            continue;
+        };
+        writes.push((format!("{container}.{leaf}"), value.trim().to_string()));
+    }
+    writes
+}
+
+/// The `ctx.` path `head` ends with, validated as a plain dotted path.
+fn ctx_path_ending(head: &str) -> Option<String> {
+    let at = head.rfind("ctx.")?;
+    let path = clean_path(&head[at + "ctx.".len()..]);
+    (!path.is_empty()
+        && path
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '.' || c == '_'))
+    .then_some(path)
+}
+
+/// What the parenthesis at `open` encloses, up to its matching close.
+fn delimited_from(script: &str, open: usize) -> Option<&str> {
+    let mut depth = 0usize;
+    for (offset, c) in script[open..].char_indices() {
+        match c {
+            '(' => depth += 1,
+            ')' => {
+                depth -= 1;
+                if depth == 0 {
+                    return Some(&script[open + 1..open + offset]);
+                }
+            }
+            _ => {}
+        }
+    }
+    None
+}
+
+/// Whether a write makes a container EXIST rather than putting a value in it.
+///
+/// The three spellings the integrations use, plus the `?:` guarantee of the
+/// same path. Reading one of these as the script's write is what put a bare
+/// string at `event`.
+fn is_container_guarantee(path: &str, rhs: &str) -> bool {
+    const EMPTY: [&str; 3] = ["[:]", "new HashMap()", "new ArrayList()"];
+    let rhs = rhs.trim();
+    EMPTY.contains(&rhs)
+        || rhs
+            .strip_prefix(&format!("ctx.{path}"))
+            .and_then(|rest| rest.trim_start().strip_prefix("?:"))
+            .is_some_and(|rest| EMPTY.contains(&rest.trim()))
+}
+
+/// What the script does where the table has no row, read off the guard it puts
+/// around the write.
+fn lookup_miss(script: &str, local: &str, target: &str) -> LookupMiss {
+    if script.contains(&format!("{local} == null")) {
+        // `if (<local> == null) { ctx.<container>.remove('<leaf>'); }` --
+        // google_workspace drops the member rather than leaving a stale one.
+        if parse_removes(script).iter().any(|path| path == target) {
+            return LookupMiss::Remove;
+        }
+        // The other spelling returns, so the member is left as it was.
+        return LookupMiss::Keep;
+    }
+    if script.contains(&format!("{local} != null")) {
+        return LookupMiss::Keep;
+    }
+    LookupMiss::Null
+}
+
+/// Write the table's row to the member, in the form the script's own write
+/// spells and with the miss behaviour it declares.
+fn member_lookup(
+    event: &mut Event,
+    pattern: &MemberLookupScript,
+    params: &Map<String, Value>,
+) -> bool {
+    // The key field absent is where Painless would throw on the dereference and
+    // the processor's `on_failure` would run, so writing nothing is right.
+    let Some(raw) = event.get_as_string(&pattern.key) else {
+        return true;
+    };
+    let wrap = |value: Value| {
+        if pattern.wrap {
+            Value::Array(vec![value])
+        } else {
+            value
+        }
+    };
+
+    match params.get(&pattern.fold.apply(&raw)) {
+        Some(row) => {
+            let _ = event.set(&pattern.target, wrap(row.clone()));
+        }
+        None => match pattern.miss {
+            LookupMiss::Remove => {
+                event.remove(&pattern.target);
+            }
+            LookupMiss::Keep => {}
+            LookupMiss::Null => {
+                let _ = event.set(&pattern.target, wrap(Value::Null));
+            }
+        },
+    }
+    true
 }
 
 /// The first member of a params list the subject contains, written to a field.

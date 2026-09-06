@@ -27,6 +27,7 @@ pub mod event;
 pub mod grok_cache;
 pub mod painless_common;
 pub mod painless_entity;
+pub mod painless_expr;
 pub mod painless_helpers;
 pub mod painless_params;
 pub mod painless_plan;

@@ -166,6 +166,10 @@ fn every_grok_literal_compiles() {
     let mut broken = Vec::new();
     for site in &sites {
         let (expanded, _, _) = grok_to_regex_typed(&site.pattern);
+        // What the call site actually compiles: the joni-to-Rust rewrites sit
+        // between the expansion and the engine, so compiling the expansion
+        // alone tests a pattern nothing runs.
+        let expanded = dfe_runtime::grok_cache::to_rust_dialect(&expanded);
         let fast = regex::Regex::new(&expanded);
         if let Err(err) = &fast {
             if fancy_regex::Regex::new(&expanded).is_ok() {

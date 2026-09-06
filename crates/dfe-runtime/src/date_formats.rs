@@ -620,8 +620,13 @@ mod tests {
 
         // The zone still applies: midnight in Sydney is the day before in UTC.
         assert_eq!(
-            parse_date_out("2024-12-15", &["yyyy-MM-dd"], Some("Australia/Sydney"), None)
-                .as_deref(),
+            parse_date_out(
+                "2024-12-15",
+                &["yyyy-MM-dd"],
+                Some("Australia/Sydney"),
+                None
+            )
+            .as_deref(),
             Some("2024-12-15T00:00:00.000+11:00")
         );
 

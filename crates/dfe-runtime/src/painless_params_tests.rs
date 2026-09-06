@@ -246,6 +246,137 @@ fn a_guarded_lookup_writes_only_on_a_hit() {
     assert!(!miss.has("ses.file.type_value"));
 }
 
+/// Verbatim from `pipelines/google_workspace/{chrome,meet}/default.yml`: the
+/// row lands on a NAMED MEMBER of a container the script first guarantees, in
+/// the two spellings the family ships, wrapped in the one-element list ECS's
+/// `event.type` is.
+///
+/// The guarantee is not a write. Reading it as one made `event` itself the
+/// target, so chrome stored the bare string `installation` there and every
+/// later `event.<sub>` write failed on a string -- six events scored zero with
+/// all 300 of their fields right.
+#[test]
+fn a_member_lookup_wraps_the_row_and_writes_past_the_container_guarantee() {
+    let params = json!({ "browser_extension_install": "installation" });
+    for script in [
+        // `put`, keyed on the folded name.
+        "if (ctx.event == null) {\\n  ctx.event = new HashMap();\\n}\\n\
+         def type = params.get(ctx.google_workspace.chrome.name.toLowerCase());\\n\
+         if (type == null) {\\n  ctx.event.remove('type');\\n} else {\\n  \
+         ctx.event.put('type', [type]);\\n}",
+        // The same thing assigned, which is how meet, keep, calendar, chat and
+        // vault spell it.
+        "ctx.event = ctx.event ?: [:];\\n\
+         def type = params.get(ctx.google_workspace.chrome.name.toLowerCase());\\n\
+         if (type == null) {\\n  ctx.event.remove('type');\\n} else {\\n  \
+         ctx.event.type = [type];\\n}",
+    ] {
+        let mut hit = Event::new(json!({
+            "event": { "kind": "event" },
+            "google_workspace": { "chrome": { "name": "BROWSER_EXTENSION_INSTALL" } }
+        }));
+        assert!(try_params_painless(&mut hit, script, &params));
+        assert_eq!(hit.get("event.type"), Some(&json!(["installation"])));
+        assert_eq!(hit.get_str("event.kind"), Some("event"));
+
+        // The miss branch REMOVES, where writing the key back would leave the
+        // vendor's own name sitting in an ECS-vocabulary field.
+        let mut miss = Event::new(json!({
+            "event": { "kind": "event", "type": ["stale"] },
+            "google_workspace": { "chrome": { "name": "UNLISTED" } }
+        }));
+        assert!(try_params_painless(&mut miss, script, &params));
+        assert!(!miss.has("event.type"));
+        assert_eq!(miss.get_str("event.kind"), Some("event"));
+    }
+}
+
+/// Verbatim from `pipelines/macos/*/common-pipeline.yml`, 14 call sites: the
+/// lookup is the `put` value itself, with no local in between.
+///
+/// A `put` carries no `=`, so the only assignment the script makes is the
+/// container guarantee -- which is how the whole row landed at `log` and cost
+/// macos all 23 of its events.
+#[test]
+fn a_member_lookup_reads_the_put_target_where_nothing_is_assigned() {
+    let script = "ctx.log = ctx.log ?: [:];\\n\
+         ctx.log.put(\"level\", params.get(ctx.json.messageType.toLowerCase()));";
+    let params = json!({ "fault": "warning", "error": "error" });
+
+    let mut event = Event::new(json!({ "json": { "messageType": "Fault" } }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get_str("log.level"), Some("warning"));
+}
+
+/// Verbatim from `pipelines/google_workspace/data_studio/default.yml`: the
+/// wrap is spelled at the BINDING rather than at the write, so an unlisted key
+/// stores the list holding the lookup's own null.
+#[test]
+fn a_member_lookup_carries_a_wrap_spelled_at_the_binding() {
+    let script = "ctx.event = ctx.event ?: [:];\\ndef type = new ArrayList();\\n\
+         type.add(params.get(ctx.google_workspace.data_studio.name));\\n\
+         ctx.event.put('type', type);";
+    let params = json!({ "VIEW": "access" });
+
+    let mut hit = Event::new(json!({ "google_workspace": { "data_studio": { "name": "VIEW" } } }));
+    assert!(try_params_painless(&mut hit, script, &params));
+    assert_eq!(hit.get("event.type"), Some(&json!(["access"])));
+
+    let mut miss = Event::new(json!({ "google_workspace": { "data_studio": { "name": "X" } } }));
+    assert!(try_params_painless(&mut miss, script, &params));
+    assert_eq!(miss.get("event.type"), Some(&json!([null])));
+}
+
+/// The miss behaviour is read off the guard the script puts round its write,
+/// never assumed -- a `!= null` guard leaves the member as it was.
+#[test]
+fn a_member_lookup_reads_its_miss_behaviour_off_the_guard() {
+    let script = "def t = params.get(ctx.winlog.task);\\nif (t != null) {\\n  \
+         ctx.winlog.task = t;\\n}";
+    let params = json!({ "13": "Registry value set" });
+
+    let mut miss = Event::new(json!({ "winlog": { "task": "99" } }));
+    assert!(try_params_painless(&mut miss, script, &params));
+    assert_eq!(miss.get_str("winlog.task"), Some("99"));
+}
+
+/// What the pattern must NOT claim, because it cannot say the whole script.
+///
+/// Order is behaviour here: this matcher sits ahead of `LookupNormalise`, so
+/// anything it takes wrongly is a source that silently changes output.
+#[test]
+fn a_member_lookup_declines_what_it_cannot_wholly_say() {
+    for script in [
+        // qualys_gav: a branch writes a LITERAL to the same member, which
+        // claiming the lookup half would drop.
+        "def os_type = ctx.qualys_gav.asset.operating_system.category1.toLowerCase();\\n\\n\
+         ctx.host = ctx.host ?: [:];\\nctx.host.os = ctx.host.os ?: [:];\\n\\n\
+         if (os_type.contains('centos') || os_type.contains('ubuntu')) {\\n  \
+         ctx.host.os.put('type', 'linux');\\n} else {\\n  \
+         ctx.host.os.put('type', params.get(os_type));\\n}\\n",
+        // fortinet: the miss branch writes the folded KEY back, which is
+        // `LookupNormalise`'s whole reason to exist.
+        "def k = ctx.network.direction.toLowerCase(); def normalized = params.get(k); \
+         if (normalized != null) {\\n    ctx.network.direction = normalized;\\n    return;\\n} \
+         ctx.network.direction = k;",
+        // A direct assignment names its own target correctly, so there is
+        // nothing here to fix and taking it would change the miss behaviour of
+        // every source that spells a lookup this way.
+        "ctx.event = ctx.event ?: [:];\\n\
+         ctx.event.severity = params.get(ctx.sysdig.cspm.control.severity.toLowerCase());",
+        // bitwarden reads the table twice and fans the row over four fields.
+        "if (ctx.bitwarden?.event?.type?.value == null || \
+         params.get(ctx.bitwarden.event.type.value) == null) {\\n  return;\\n}\\n\
+         def hm = new HashMap(params.get(ctx.bitwarden.event.type.value));\\n\
+         ctx.event.category = hm.category;\\nctx.event.type = hm.type;",
+    ] {
+        assert!(
+            parse_member_lookup(&crate::painless_common::normalise(script)).is_none(),
+            "claimed a script it cannot wholly say: {script}"
+        );
+    }
+}
+
 /// Verbatim from `pipelines/stan/log/default.yml`: the abbreviation and
 /// its expansion are BOTH params members, so the table is editable without
 /// touching the script.

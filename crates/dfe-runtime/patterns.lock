@@ -248,16 +248,17 @@
  53 KeyedActionRow
  54 KeyedRowAppends
  55 LookupColumns
- 56 LookupNormalise
- 57 IndexedLookup
- 58 Scale
- 59 Replace
- 60 AddUniqueRow
- 61 FrameworkPreference
- 62 NormalisedLookup
- 63 StringifiedLookup
- 64 LookupNormalise
- 65 GuardedLookup
- 66 MergeRowOrFallback
- 67 RowOrDefaults
+ 56 MemberLookup
+ 57 LookupNormalise
+ 58 IndexedLookup
+ 59 Scale
+ 60 Replace
+ 61 AddUniqueRow
+ 62 FrameworkPreference
+ 63 NormalisedLookup
+ 64 StringifiedLookup
+ 65 LookupNormalise
+ 66 GuardedLookup
+ 67 MergeRowOrFallback
+ 68 RowOrDefaults
 

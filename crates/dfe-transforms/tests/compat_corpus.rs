@@ -1835,7 +1835,7 @@ fn score_capture(
                     // correct and still 0/6 and 0/12 events -- and the reason
                     // lived only inside a discarded `Err`. Printed under the
                     // same switch that dumps a document.
-                    if dump.as_deref() == Some(capture.fixture.as_str()) {
+                    if dump == Some(capture.fixture.as_str()) {
                         // The document AS IT STANDS when the error is raised,
                         // not the input: a type mismatch names the path it
                         // tripped on and says nothing about what put the wrong

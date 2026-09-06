@@ -164,9 +164,7 @@ pub fn grok_mapped(pattern: &str, extra: &[(&str, &str)]) -> &'static CompiledGr
         }
     }
     crate::codegen_api::resolve_capture_paths(&mut field_map, &mut capture_types);
-    let literal_angles = ruby_literal_angles(&expanded);
-    let tolerant = tolerate_trailing_terminator(&literal_angles);
-    let expanded = line_anchored(&tolerant);
+    let expanded = to_rust_dialect(&expanded);
 
     let compiled: &'static CompiledGrok = Box::leak(Box::new(CompiledGrok {
         regex: Pattern::compile(&expanded, pattern),
@@ -467,6 +465,20 @@ pub fn extract_first_match_traced(
     patterns[index].extract_into(input, event)
 }
 
+/// Rewrite an expanded grok pattern from Elasticsearch's dialect into Rust's.
+///
+/// Four rules, each with its own function and its own reason below. They are
+/// collected here so `grok_compiles.rs` can compile the pattern that actually
+/// ships: it used to compile the raw expansion, which is not what any call site
+/// runs, so a rule that broke a pattern would have gone unseen.
+#[must_use]
+pub fn to_rust_dialect(expanded: &str) -> String {
+    let literal_angles = ruby_literal_angles(expanded);
+    let dotall = ruby_dotall_flag(&literal_angles);
+    let tolerant = tolerate_trailing_terminator(&dotall);
+    line_anchored(&tolerant).into_owned()
+}
+
 /// Anchor `^` and `$` to LINES, which is what Elasticsearch's grok does.
 ///
 /// Its grok is joni, not `java.util.regex`, and joni follows Ruby: `^` matches
@@ -515,6 +527,59 @@ fn ruby_literal_angles(expanded: &str) -> Cow<'_, str> {
             }
             None => out.push('\\'),
         }
+    }
+    Cow::Owned(out)
+}
+
+/// `(?m)` in a grok pattern is DOT-MATCHES-NEWLINE, which Rust spells `(?s)`.
+///
+/// Same root as the two rules above: joni under `Syntax.RUBY`, where `^` and `$`
+/// are line anchors with no flag at all and `m` is Ruby's `/m` -- the flag that
+/// lets `.` cross a newline. Rust reads `(?m)` as the line anchors it already
+/// gets from `line_anchored`, so a vendor `(?m)` was arriving as a no-op and
+/// every `%{GREEDYDATA}` written to span lines stopped at the first one.
+///
+/// `oracle`'s audit trail is the whole cost of it. Its first pattern reaches
+/// across four lines to capture a wrapped SQL statement and hand the rest to
+/// `audit`; without the dotall it cannot, so the SECOND pattern matched instead,
+/// `audit` was never set, and the key-value processor that fills `DBID`,
+/// `SESSIONID` and `USERHOST` was skipped on 27 of 29 events.
+///
+/// Grok only. An ingest processor's own regex -- `gsub`, and Painless `=~` --
+/// is `java.util.regex`, where `(?m)` really is the line anchors and `(?s)` is
+/// the dotall, so those patterns are already right and must not be touched.
+fn ruby_dotall_flag(expanded: &str) -> Cow<'_, str> {
+    if !expanded.contains("(?m)") {
+        return Cow::Borrowed(expanded);
+    }
+    let mut out = String::with_capacity(expanded.len());
+    let mut rest = expanded;
+    // A character class is the one place `(?m)` is four ordinary characters, so
+    // the scan has to know where it is rather than replacing on sight.
+    let mut in_class = false;
+    while let Some(c) = rest.chars().next() {
+        let width = c.len_utf8();
+        match c {
+            '\\' => {
+                let escape_width = rest
+                    .chars()
+                    .nth(1)
+                    .map_or(width, |next| width + next.len_utf8());
+                out.push_str(&rest[..escape_width]);
+                rest = &rest[escape_width..];
+                continue;
+            }
+            '[' if !in_class => in_class = true,
+            ']' if in_class => in_class = false,
+            '(' if !in_class && rest.starts_with("(?m)") => {
+                out.push_str("(?s)");
+                rest = &rest[4..];
+                continue;
+            }
+            _ => {}
+        }
+        out.push(c);
+        rest = &rest[width..];
     }
     Cow::Owned(out)
 }
@@ -853,6 +918,90 @@ mod tests {
                 .expect("the catch-all compiles")
         );
         assert_eq!(event.get_str("first"), Some("Following entries"));
+    }
+
+    /// joni reads `m` as Ruby does, so the flag the vendor writes to cross a
+    /// newline has to be respelt before Rust reads it as the anchors it already
+    /// has.
+    #[test]
+    fn the_vendors_m_flag_is_the_dotall_one() {
+        assert_eq!(ruby_dotall_flag("a(?m).*"), "a(?s).*");
+        assert_eq!(ruby_dotall_flag("a.*"), "a.*");
+        // Four ordinary characters inside a class, and an escaped bracket does
+        // not open one.
+        assert_eq!(ruby_dotall_flag("[(?m)]"), "[(?m)]");
+        assert_eq!(ruby_dotall_flag("\\[(?m)x"), "\\[(?s)x");
+
+        // oracle's own first pattern, cut to the part that needs the flag: the
+        // SQL statement wraps, and the key-values after it are what the source
+        // is actually scored on.
+        let compiled = grok(
+            "LENGTH : '%{GREEDYDATA:length}'\\nACTION :\\[\\d+\\] (?m)%{GREEDYDATA:action}\
+             (DATABASE USER):\\S+ '(?P<db_user>(?:[^']+))'\\n(?m)%{GREEDYDATA:audit}",
+        );
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into(
+                    "LENGTH : '392'\nACTION :[151] 'select /*+ opt_param('a',\n   'false') */'\n\
+                     DATABASE USER:[1] '/'\nDBID:[10] '2824230686'\nSESSIONID:[1] '0'",
+                    &mut event,
+                )
+                .expect("the oracle pattern compiles")
+        );
+        assert_eq!(event.get_str("length"), Some("392"));
+        assert_eq!(event.get_str("db_user"), Some("/"));
+        assert_eq!(
+            event.get_str("audit"),
+            Some("DBID:[10] '2824230686'\nSESSIONID:[1] '0'")
+        );
+    }
+
+    /// The other half of the same rule: kafka's header grok DOES take the whole
+    /// multi-line event, and the re-capture after it is what puts `message`
+    /// back to one line. Both patterns are needed to see the answer, which is
+    /// why the dotall on `JAVALOGMESSAGE` hid the missing one for so long.
+    #[test]
+    fn a_stack_trace_stays_out_of_the_message() {
+        let event_text = "[2020-01-20 01:32:00,705] [ERROR] [controller-event-thread] \
+             [state.change.logger] - [Controller id=1 epoch=25] Controller 1 epoch 25 failed\n\
+             kafka.common.StateChangeFailedException: Failed to elect leader\n    \
+             at kafka.controller.PartitionStateMachine.doElect(PartitionStateMachine.scala:390)";
+
+        let header = grok(
+            "(?m)\\[%{TIMESTAMP_ISO8601:kafka.log.timestamp}\\] \\[%{LOGLEVEL:log.level} ?\\] \
+             \\[%{NOTSPACE:kafka.log.thread}\\] \\[%{NOTSPACE:kafka.log.class}\\] \\- \
+             %{GREEDYDATA:message}",
+        );
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            header
+                .extract_into(event_text, &mut event)
+                .expect("the header pattern compiles")
+        );
+        assert_eq!(
+            event.get_str("kafka.log.class"),
+            Some("state.change.logger")
+        );
+        // The vendor's `(?m)`: the header takes everything, trace included.
+        assert!(
+            event
+                .get_str("message")
+                .is_some_and(|m| m.contains("StateChangeFailedException"))
+        );
+
+        let component = grok("\\[(?P<component>(?:[^\\]]*))\\][,:.]? +%{JAVALOGMESSAGE:message}");
+        let held = event.get_string("message").expect("the header set message");
+        assert!(
+            component
+                .extract_into(&held, &mut event)
+                .expect("the component pattern compiles")
+        );
+        assert_eq!(event.get_str("component"), Some("Controller id=1 epoch=25"));
+        assert_eq!(
+            event.get_str("message"),
+            Some("Controller 1 epoch 25 failed")
+        );
     }
 
     /// The pattern that made this necessary: an ALB access log begins with the

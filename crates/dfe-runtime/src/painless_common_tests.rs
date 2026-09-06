@@ -287,6 +287,54 @@ fn every_key_of_a_map_takes_one_character_replacement() {
     assert!(!event.has("juniper.srx.source-address"));
 }
 
+/// oracle folds every key to lower case in the same one-liner form, and the
+/// `rename` processors after it all name the lowercase spelling.
+///
+/// Verbatim from `pipelines/oracle/database_audit/default.yml`.
+#[test]
+fn every_key_of_a_map_takes_a_chain_of_transforms() {
+    let script = "ctx.oracle.database_audit = ctx.oracle.database_audit.entrySet()\
+        .stream().collect(Collectors.toMap(entry -> entry.getKey().toLowerCase(), \
+        Map.Entry::getValue));";
+    let pattern = parse_stream_rewrite_keys(&normalise(script)).expect("oracle folds its keys");
+
+    let mut event = Event::new(serde_json::json!({ "oracle": { "database_audit": {
+        "DBID": "2824230686",
+        "SESSIONID": "0",
+        "USERHOST": "testlab.local"
+    } } }));
+    assert!(rewrite_keys(&mut event, &pattern));
+    assert_eq!(
+        event.get_str("oracle.database_audit.dbid"),
+        Some("2824230686")
+    );
+    assert_eq!(event.get_str("oracle.database_audit.sessionid"), Some("0"));
+    assert_eq!(
+        event.get_str("oracle.database_audit.userhost"),
+        Some("testlab.local")
+    );
+    assert!(!event.has("oracle.database_audit.DBID"));
+}
+
+/// The division between the two readers, and the one script neither may claim.
+///
+/// `juniper_srx`'s system stream chains two replacements and a case fold on the
+/// key and trims every value too. `RewriteKeys` does not model the value step, so
+/// claiming it would write the keys right and the values wrong -- which reads
+/// as a source needing polish rather than one needing a different pattern.
+#[test]
+fn a_fold_it_cannot_finish_is_declined_rather_than_half_applied() {
+    let single = "ctx.juniper.srx = ctx?.juniper?.srx.entrySet().stream()\
+        .collect(Collectors.toMap(e -> e.getKey().replace('-', '_'), e -> e.getValue()));";
+    assert!(parse_stream_rewrite_keys(&normalise(single)).is_none());
+    assert!(parse_rename_map_keys(&normalise(single)).is_some());
+
+    let trims_the_value = "ctx.juniper.srx.system = ctx.juniper.srx.system.entrySet().stream()\
+        .collect(Collectors.toMap(e -> e.getKey().replace(' ', '_').replace('-', '_')\
+        .toLowerCase(), e -> e.getValue().trim()));";
+    assert!(parse_stream_rewrite_keys(&normalise(trims_the_value)).is_none());
+}
+
 /// A `keysToSnakeCase` script converts the container it NAMES, nothing else.
 ///
 /// Three vendors, three spellings, all verbatim: tanium names a nested path,
