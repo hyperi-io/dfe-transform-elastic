@@ -3,7 +3,7 @@
   "_lowered": "Six sources were lowered when compare-policy.yaml gained per-source scoping. event.duration was excluded corpus-wide for an azure overflow, and event.kind and error.message for a cisco_nexus date failure, so 4,720 fields were never compared on any source. Scoping those three entries to the sources their reasons name restored them and made 54 events visibly wrong that had been passing on the strength of the blindness -- zscaler_zia 92 to 68, aws 515 to 494, m365_defender 100 to 96, microsoft_defender_endpoint 20 to 17, checkpoint 107 to 105. The transforms did not get worse; the measurement got true. TWO more on 2026-09-06, both set by hand because the tool refuses a fall and both are the gate working rather than a regression. servicenow 31/170 to 32/172: the first whole-tree regeneration brought its three dead guards to life, so processors that had never run now run and their output is compared -- it gains an EVENT and two wrong fields with it, which is what a newly-live guard does. never_ran 474 to 477 against a CHANGED POPULATION: the same regeneration resolved every script the generator recognises to its runner at generation time, taking ladder call sites from 3,490 to 2,475, so the set this counts is no longer the set it counted. There is no --resize for never_ran the way there is for a source whose event total moved.",
   "integrations_sha": "2c934eb5223bdfcf0ea0db9e3230154933352bda",
   "elasticsearch_version": "9.2.2",
-  "never_ran": 472,
+  "never_ran": 470,
   "sources": {
     "1password": { "events": 6, "events_total": 6, "fields_wrong": 0 },
     "abnormal_security": { "events": 23, "events_total": 29, "fields_wrong": 11 },
@@ -36,7 +36,7 @@
     "awsfirehose": { "events": 42, "events_total": 42, "fields_wrong": 0 },
     "axonius": { "events": 85, "events_total": 89, "fields_wrong": 10 },
     "azure": { "events": 181, "events_total": 182, "fields_wrong": 4 },
-    "azure_ai_foundry": { "events": 5, "events_total": 10, "fields_wrong": 5 },
+    "azure_ai_foundry": { "events": 7, "events_total": 10, "fields_wrong": 3 },
     "azure_app_service": { "events": 11, "events_total": 11, "fields_wrong": 0 },
     "azure_frontdoor": { "events": 14, "events_total": 18, "fields_wrong": 84 },
     "azure_functions": { "events": 4, "events_total": 4, "fields_wrong": 0 },

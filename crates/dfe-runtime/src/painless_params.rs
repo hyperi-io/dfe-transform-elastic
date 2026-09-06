@@ -99,6 +99,8 @@ impl Fold {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum ParamsPattern {
+    /// A scalar written from arithmetic that reads a scale out of `params`.
+    ScalarExpression(Box<crate::painless_expr::ScalarExpression>),
     AwsEntity(Box<crate::painless_entity::EntityScript>),
     DropEmptyMembers {
         parent: String,
@@ -881,6 +883,18 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
         return Some(ParamsPattern::RowOrDefaults(Box::new(pattern)));
     }
 
+    // Pattern: a scalar written from arithmetic where `params` supplies a
+    // scale. The same reader the text-only lane uses, which declines these
+    // because it is never handed a params block -- `event.duration =
+    // ctx.ses.duration * params.S_TO_NS` is the common spelling. Last of all,
+    // so every table matcher above keeps what it already claims.
+    if normalised.contains("params.")
+        && let Some(pattern) = crate::painless_expr::parse_scalar_expression(normalised)
+        && pattern.reads_params()
+    {
+        return Some(ParamsPattern::ScalarExpression(Box::new(pattern)));
+    }
+
     None
 }
 
@@ -1353,6 +1367,9 @@ pub(crate) fn run_params_pattern(
     pattern: &ParamsPattern,
 ) -> bool {
     match pattern {
+        ParamsPattern::ScalarExpression(pattern) => {
+            crate::painless_expr::scalar_expression_params(event, pattern, params)
+        }
         ParamsPattern::AwsEntity(script) => {
             crate::painless_entity::run_entity_script(event, script, params)
         }

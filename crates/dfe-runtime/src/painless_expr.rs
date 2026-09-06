@@ -25,7 +25,7 @@
 //! writes a wrong number into every source at once, which is worse than writing
 //! nothing -- so the rule is explicit here and tested on both halves.
 
-use serde_json::{Value, json};
+use serde_json::{Map, Value, json};
 
 use crate::Event;
 
@@ -284,10 +284,10 @@ fn render(value: &Scalar) -> String {
 /// exactly as Rust's `as` does. Clippy's warning is about a conversion that
 /// might not be intended; here it IS the semantics being reproduced.
 #[allow(clippy::cast_possible_truncation)]
-fn eval(expr: &Expr, event: &Event, params: &Value) -> Option<Scalar> {
+fn eval(expr: &Expr, event: &Event, params: Option<&Map<String, Value>>) -> Option<Scalar> {
     match expr {
         Expr::Field(path) => event.get(path).and_then(scalar_of),
-        Expr::Param(name) => params.get(name).and_then(scalar_of),
+        Expr::Param(name) => params?.get(name).and_then(scalar_of),
         Expr::Int(value) => Some(Scalar::Int(*value)),
         Expr::Float(value) => Some(Scalar::Float(value.get())),
         Expr::Str(text) => Some(Scalar::Str(text.clone())),
@@ -340,14 +340,23 @@ fn eval(expr: &Expr, event: &Event, params: &Value) -> Option<Scalar> {
 /// left the document alone, which is not a failure to RECOGNISE it. Returning
 /// false there would push the ladder on to a matcher that fits even less well.
 pub fn scalar_expression(event: &mut Event, pattern: &ScalarExpression) -> bool {
-    scalar_expression_params(event, pattern, &Value::Null)
+    write(event, pattern, None)
 }
 
 /// As [`scalar_expression`], against a `params` block the script reads.
 pub fn scalar_expression_params(
     event: &mut Event,
     pattern: &ScalarExpression,
-    params: &Value,
+    params: &Map<String, Value>,
+) -> bool {
+    write(event, pattern, Some(params))
+}
+
+/// The two entry points' one body.
+fn write(
+    event: &mut Event,
+    pattern: &ScalarExpression,
+    params: Option<&Map<String, Value>>,
 ) -> bool {
     if let Some(value) = eval(&pattern.expr, event, params) {
         let _ = event.set(&pattern.target, value.into_value());
@@ -693,11 +702,9 @@ mod tests {
         assert!(pattern.reads_params());
 
         let mut event = Event::new(json!({ "ses": { "duration": 3 } }));
-        assert!(scalar_expression_params(
-            &mut event,
-            &pattern,
-            &json!({ "S_TO_NS": 1_000_000_000_i64 }),
-        ));
+        let params = json!({ "S_TO_NS": 1_000_000_000_i64 });
+        let params = params.as_object().expect("a params block");
+        assert!(scalar_expression_params(&mut event, &pattern, params));
         assert_eq!(event.get("event.duration"), Some(&json!(3_000_000_000_i64)));
     }
 
