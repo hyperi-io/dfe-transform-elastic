@@ -132,6 +132,29 @@ is now on for every run: its write lock is taken once per script EXECUTION,
 about 70,500 times over the whole corpus, and the run measured 18.6s against
 17.7-19.8s with it off.
 
+### Choosing which unclaimed script to work next
+
+    scripts/next_targets.py <DFE_PAINLESS_UNHANDLED dump> <corpus run>
+
+The catalogue ranks by REACH and the corpus summary ranks by DEBT, and the two
+answer different questions. Ranking by reach alone once sent a delegate at the
+three heaviest unclaimed scripts in the catalogue, worth 44 fields between them,
+because all three of their sources were already at or near 100%.
+
+The tool does the joins: it drops every script with `ran > 0` -- a matcher that
+claims a script and declines on events lacking its field is working correctly,
+which the whole winlog `event.code` family looks like -- maps the rest to their
+owning module, and joins to that source's debt.
+
+Read the wrong-on column beside each row before writing anything. A source's
+debt is the CEILING on what its script can buy, not the value: `filterMassive`
+ranks first on servicenow at 157 wrong fields and writes none of them.
+
+One step the tool cannot do: check the corpus CONTAINS the data the script keys
+on. `rg -cl "<a literal the script tests>" testdata/compat/` answers it in one
+command, and it is what established `cisco_asa`'s heaviest script as worth zero
+-- no certificate event in the corpus, so its own null guard returns on all 512.
+
 ### It does not gate EXTRA fields
 
 `fields_wrong` counts missing and mismatched fields only. A field we emit that
