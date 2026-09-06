@@ -4777,6 +4777,59 @@ fn key_helper(script: &str) -> Option<&str> {
     (!name.is_empty()).then_some(name)
 }
 
+/// The same fold written as an explicit loop into a local map.
+///
+/// ```painless
+/// def lowercaseMap = [:];
+/// for(def entry : ctx.sophos.xg.entrySet()){
+///   lowercaseMap.put(entry.getKey().toLowerCase(), entry.getValue());
+/// }
+/// ctx.sophos.xg = lowercaseMap;
+/// ```
+///
+/// A third spelling of what [`parse_rewrite_keys`] and
+/// [`parse_stream_rewrite_keys`] already read, and the one `sophos` writes. It
+/// is load-bearing there rather than cosmetic: `event.duration` comes from
+/// `ctx.sophos.xg.responsetime`, and `event.start` and `event.end` from two
+/// more lowercase keys, so with the fold unmatched all three are read off names
+/// the document does not carry. 63 events apiece, and 56 unlocked behind
+/// `event.start` alone.
+fn parse_loop_rewrite_keys(script: &str) -> Option<RewriteKeys> {
+    use crate::painless_params::clean_path;
+
+    // The loop, its variable, and the map it walks.
+    let (head, body) = script.split_once(".entrySet()")?;
+    let (before, subject) = head.rsplit_once(" : ")?;
+    let source = clean_path(subject.trim().strip_prefix("ctx.")?);
+    let item = before.split_whitespace().next_back()?;
+    if source.is_empty() || item.is_empty() {
+        return None;
+    }
+
+    // `<local>.put(<key expression>, <item>.getValue())`
+    let put = body.find(".put(")?;
+    let local = body[..put].trim_end().rsplit(['{', '\n', ' ']).next()?;
+    let (arguments, _) = crate::painless_params::balanced(&body[put + ".put".len()..], '(', ')')?;
+    let comma = top_level_comma(arguments)?;
+    let (key, value) = arguments.split_at(comma);
+    if value[1..].trim() != format!("{item}.getValue()") {
+        return None;
+    }
+
+    let steps = key_rewrite_steps(key.split_once(&format!("{item}.getKey()"))?.1)?;
+    if steps.is_empty() {
+        return None;
+    }
+
+    // The store, which is where the rebuilt map lands.
+    let store = body.rfind(&format!("= {local};"))?;
+    let target = clean_path(body[..store].trim_end().rsplit_once("ctx.")?.1);
+    if target.is_empty() {
+        return None;
+    }
+    Some(RewriteKeys::new(source, target, steps))
+}
+
 /// The offset of the comma separating `toMap`'s two lambdas, which is the only
 /// one not inside a call of its own -- `.replace(' ', '_')` carries one too.
 fn top_level_comma(arguments: &str) -> Option<usize> {
@@ -16200,6 +16253,16 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
     if normalised.contains("Collectors.toMap")
         && normalised.contains(".getKey()")
         && let Some(pattern) = parse_stream_rewrite_keys(normalised)
+    {
+        patterns.push(KnownPattern::RewriteKeys(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: the same fold written as an explicit loop into a local map.
+    if normalised.contains(".entrySet()")
+        && normalised.contains(".put(")
+        && normalised.contains(".getKey()")
+        && let Some(pattern) = parse_loop_rewrite_keys(normalised)
     {
         patterns.push(KnownPattern::RewriteKeys(Box::new(pattern)));
         return patterns;

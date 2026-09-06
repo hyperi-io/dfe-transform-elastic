@@ -316,6 +316,34 @@ fn every_key_of_a_map_takes_a_chain_of_transforms() {
     assert!(!event.has("oracle.database_audit.DBID"));
 }
 
+/// `sophos` writes the same fold as an explicit loop, and it is load-bearing:
+/// `event.duration`, `event.start` and `event.end` are all read off lowercase
+/// keys that only exist once it has run.
+///
+/// Verbatim from `pipelines/sophos/xg/default.yml`.
+#[test]
+fn a_fold_written_as_a_loop_is_read_too() {
+    let script = "def lowercaseMap = [:];\nfor(def entry : ctx.sophos.xg.entrySet()){\n  \
+        lowercaseMap.put(entry.getKey().toLowerCase(), entry.getValue());\n}\n\
+        ctx.sophos.xg = lowercaseMap;\n";
+    let pattern = parse_loop_rewrite_keys(&normalise(script)).expect("the loop fold is recognised");
+
+    let mut event = Event::new(serde_json::json!({ "sophos": { "xg": {
+        "RESPONSETIME": 120,
+        "FTP_url": "ftp://example.test"
+    } } }));
+    assert!(rewrite_keys(&mut event, &pattern));
+    assert_eq!(
+        event.get("sophos.xg.responsetime"),
+        Some(&serde_json::json!(120))
+    );
+    assert_eq!(
+        event.get_str("sophos.xg.ftp_url"),
+        Some("ftp://example.test")
+    );
+    assert!(!event.has("sophos.xg.RESPONSETIME"));
+}
+
 /// tetragon's event is one of seven `process_*` keys, and the pipeline lifts
 /// the same members out of whichever arrived so the twenty renames after it can
 /// name ONE path.
