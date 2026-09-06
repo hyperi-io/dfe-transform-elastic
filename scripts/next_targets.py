@@ -95,6 +95,26 @@ def read_corpus(path: pathlib.Path) -> dict[str, dict]:
     return sources
 
 
+# `ctx.a.b.c =` (not `==`), and the `ctx.a.b.put('c', ...)` member write.
+ASSIGN = re.compile(r"ctx\.([A-Za-z0-9_.?]+)\s*=(?!=)")
+PUT = re.compile(r"ctx\.([A-Za-z0-9_.?]+)\.put\(\s*['\"]([^'\"]+)['\"]")
+
+
+def script_writes(script: str) -> set[str]:
+    """The ctx paths a script assigns to, null-safe navigation stripped.
+
+    Text, not a parser, so it is approximate on purpose -- it exists to
+    INTERSECT with a wrong-field list, where a false path simply fails to
+    match and a missed one costs a row nobody would have read anyway.
+    """
+    found = {m.group(1).replace("?", "").rstrip(".") for m in ASSIGN.finditer(script)}
+    found |= {
+        f"{m.group(1).replace('?', '').rstrip('.')}.{m.group(2)}"
+        for m in PUT.finditer(script)
+    }
+    return {path for path in found if path}
+
+
 def classify(wrong: int, extra: int) -> str:
     """The failure class a source's extra-to-wrong ratio points at.
 
@@ -211,6 +231,66 @@ def report_classes(run: pathlib.Path, top: int) -> int:
     return 0
 
 
+def report_claimed(dump: dict, sources: dict[str, dict], top: int) -> int:
+    """Scripts claimed on EVERY event that write a field their source is wrong on.
+
+    The inverse band to the default mode. `ran > 0, skipped 0` means a matcher
+    recognised and ran the script every time it was reached, which reads like
+    success -- `painless_stats::record_handled` says RECOGNISED AND RUN and
+    nothing about the output. checkpoint_email sits there `ran 18, skipped 0`
+    with its field wrong in all 18.
+
+    The band alone is noise: 459 scripts are in it, most working while their
+    source's debt is elsewhere. The signal is the INTERSECTION with the
+    wrong-field list, which cuts it to 43.
+    """
+    texts = {path: path.read_text(errors="replace") for path in GENERATED.rglob("*.rs")}
+    rows = []
+    seen: set[tuple[str, tuple[str, ...]]] = set()
+    for script in dump.get("scripts", []):
+        if script["ran"] == 0 or script["skipped"] != 0:
+            continue
+        target = script_writes(script["script"])
+        if not target:
+            continue
+        for module in module_of(script["script"][:60], texts):
+            owner = max(
+                (name for name in sources if module.startswith(name)), key=len, default=None
+            )
+            if owner is None:
+                continue
+            score = sources[owner]
+            hit = target & {field for _, _, field in score["detail"]}
+            if not hit:
+                continue
+            key = (owner, tuple(sorted(hit)))
+            if key in seen:
+                continue
+            seen.add(key)
+            worst = max(n for n, _, field in score["detail"] if field in hit)
+            rows.append((worst, owner, sorted(hit), script))
+
+    rows.sort(reverse=True, key=lambda row: (row[0], row[1]))
+    print(f"{len(rows)} claimed scripts writing a field their source is WRONG on\n")
+    for worst, owner, hit, script in rows[:top]:
+        score = sources[owner]
+        klass = classify(score["fields_wrong"], score["extra"])
+        whole = "  -- WHOLE SOURCE" if worst == score["events_missed"] else ""
+        print(
+            f"wrong in {worst:4}  {owner:28} ran {script['ran']:4} [{klass}] "
+            f"{score['events_missed']} missed{whole}"
+        )
+        print(f"        writes: {', '.join(hit)}")
+        print(f"        {' '.join(script['script'].split())[:92]}\n")
+
+    print(
+        "`ran > 0` means CLAIMED, never CORRECT. A matcher here recognised the\n"
+        "script and ran it, and the field it writes is still wrong -- so read the\n"
+        "matcher's output, not its reach."
+    )
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -232,6 +312,12 @@ def main() -> int:
         default=40,
         help="ignore scripts reached fewer times than this (default 40)",
     )
+    parser.add_argument(
+        "--claimed",
+        action="store_true",
+        help="the INVERSE band: scripts a matcher claims on every event that "
+        "still write a field their source is wrong on",
+    )
     parser.add_argument("--top", type=int, default=20, help="rows to print")
     args = parser.parse_args()
 
@@ -246,6 +332,9 @@ def main() -> int:
     if not sources:
         print(f"no per-source lines in {args.run} -- is it a corpus run?", file=sys.stderr)
         return 2
+
+    if args.claimed:
+        return report_claimed(dump, sources, args.top)
 
     texts = {path: path.read_text(errors="replace") for path in GENERATED.rglob("*.rs")}
 

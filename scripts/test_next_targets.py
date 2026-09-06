@@ -173,6 +173,29 @@ class BestUnlocks(unittest.TestCase):
         self.assertEqual(max(score["detail"], key=lambda found: found[1])[1], 29)
 
 
+class ScriptWrites(unittest.TestCase):
+    """The write targets a claimed script is judged on."""
+
+    def test_an_assignment_target_is_read_and_a_comparison_is_not(self) -> None:
+        script = "if (ctx.a.b == 'x') { ctx.c.d = 1; }"
+        self.assertEqual(next_targets.script_writes(script), {"c.d"})
+
+    def test_null_safe_navigation_is_stripped(self) -> None:
+        script = "ctx.host?.os?.version = ctx.json.v;"
+        self.assertEqual(next_targets.script_writes(script), {"host.os.version"})
+
+    def test_a_put_names_the_member_it_writes(self) -> None:
+        # checkpoint_email, verbatim -- the field is only reachable through the
+        # put, so missing it would drop the row that named the whole class.
+        script = "ctx.checkpoint_email.event.put('severity_enum', params['severity'][0]);"
+        self.assertIn(
+            "checkpoint_email.event.severity_enum", next_targets.script_writes(script)
+        )
+
+    def test_a_script_writing_nothing_yields_nothing(self) -> None:
+        self.assertEqual(next_targets.script_writes("if (ctx.a == null) { return; }"), set())
+
+
 class Classify(unittest.TestCase):
     """The bands, pinned to the real sources that defined each one.
 
