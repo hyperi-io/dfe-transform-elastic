@@ -4164,6 +4164,100 @@ fn the_full_predicate_reads_as_dropping_everything() {
     assert_eq!(DropPolicy::read(script), drop_everything());
 }
 
+/// Verbatim from `pipelines/mysql_enterprise/audit/default.yml:87`, which
+/// `pipelines/oracle/database_audit/default.yml:116` repeats: the predicate is
+/// `v instanceof String && v.isEmpty() == true`, so empty STRINGS go and every
+/// emptied map stays. Reading `.isEmpty()` as the collection test inverted
+/// both axes and cost the two sources 60 events and 111 fields.
+const STRING_IS_EMPTY: &str = "void handleMap(Map map) {\n  for (def x : map.values()) {\n    \
+    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        \
+    handleList(x);\n    }\n  }\n  \
+    map.values().removeIf(v -> v instanceof String && v.isEmpty() == true);\n}\n\
+    void handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          \
+    handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\n\
+    handleMap(ctx);\n";
+
+#[test]
+fn an_instanceof_string_guard_makes_is_empty_the_string_test() {
+    assert_eq!(
+        DropPolicy::read(STRING_IS_EMPTY),
+        DropPolicy {
+            nulls: false,
+            empty_strings: true,
+            empty_collections: false,
+            prune_lists: false,
+            sentinels: Vec::new(),
+            shallow: false,
+        }
+    );
+
+    let mut event = Event::new(json!({
+        "mysqlenterprise": { "audit": {
+            "account": {},
+            "login": { "user": "root", "os": "", "ip": "", "proxy": "" },
+        } },
+        "keep": null,
+    }));
+
+    assert!(try_known_painless(&mut event, STRING_IS_EMPTY));
+    assert_eq!(
+        event.get("mysqlenterprise.audit.account"),
+        Some(&json!({})),
+        "the empty map the vendor keeps"
+    );
+    assert_eq!(
+        event.get("mysqlenterprise.audit.login"),
+        Some(&json!({ "user": "root" })),
+        "the empty strings the vendor drops"
+    );
+    assert_eq!(event.get("keep"), Some(&Value::Null), "and no null read");
+}
+
+/// The same call under a List/Map guard is still the collection test, with the
+/// string axis set separately by `v == ""`. Verbatim from
+/// `pipelines/aws/waf/default.yml:373`, the capture that motivated reading
+/// `.isEmpty()` at all -- it must not move.
+#[test]
+fn an_instanceof_collection_guard_keeps_the_collection_reading() {
+    let script = "void handleMap(Map map) {\n    for (def x : map.values()) {\n        \
+        if (x instanceof Map) {\n            handleMap(x);\n        }\n    }\n    \
+        map.values().removeIf(v -> v == null || v == \"\" || v == \"-\" \
+        || ((v instanceof List || v instanceof Map) && v.isEmpty()));\n}\nhandleMap(ctx);\n";
+
+    assert_eq!(
+        DropPolicy::read(script),
+        DropPolicy {
+            nulls: true,
+            empty_strings: true,
+            empty_collections: true,
+            prune_lists: false,
+            sentinels: vec!["-".to_string()],
+            shallow: false,
+        }
+    );
+}
+
+/// An `.isEmpty()` with no `instanceof` beside it keeps today's reading. This
+/// is salesforce's and `ti_socradar`'s `return ((Map) object).isEmpty();`, where
+/// the type test is a statement away and a wider window would read it.
+#[test]
+fn an_unguarded_is_empty_stays_the_collection_test() {
+    let script = "boolean dropEmptyFields(def object) {\n  if (object == null) {\n    \
+        return true;\n  } else if (object instanceof Map) {\n    \
+        ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    \
+        return ((Map) object).isEmpty();\n  }\n  return false;\n}\ndropEmptyFields(ctx);";
+
+    let policy = DropPolicy::read(script);
+    assert!(
+        policy.empty_collections,
+        "the collection axis is still read"
+    );
+    assert!(
+        !policy.empty_strings,
+        "and an enclosing `instanceof Map` never sets the string axis"
+    );
+}
+
 #[test]
 fn keys_to_snake_case_converts() {
     let mut val = json!({

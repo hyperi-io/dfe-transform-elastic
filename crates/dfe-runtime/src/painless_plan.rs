@@ -257,10 +257,14 @@ mod tests {
         assert!(std::ptr::eq(site(), site()));
     }
 
-    /// The four patterns a generator can emit today, each rendering to the call
-    /// the ladder would have made. Verbatim scripts from
+    /// The patterns a generator can emit today, each rendering to the call
+    /// the ladder would have made. The first four are verbatim scripts from
     /// `pipelines/fortinet_fortiproxy/log/default.yml`, which is the source
     /// the direct-emit spike regenerates.
+    ///
+    /// The drop-empty pair is here twice on purpose: a direct call BAKES the
+    /// policy into the shipped module, so the runtime reading and the emitted
+    /// literal can drift apart silently. This is what says they have not.
     #[cfg(feature = "codegen")]
     #[test]
     fn an_expressible_plan_renders_the_call_the_ladder_would_make() {
@@ -299,6 +303,21 @@ mod tests {
                 "allowed_value_copy(event, &AllowedValueCopy::new(\"tychon.host.os.family\", \
                  true, vec![\"linux\".into(), \"macos\".into(), \"unix\".into(), \
                  \"windows\".into(), \"ios\".into(), \"android\".into()], \"host.os.type\"));",
+            ),
+            (
+                // The same prune under an `instanceof String` guard means the
+                // OTHER axis -- mysql_enterprise and oracle, one call site
+                // each. Read as a collection test it inverted both.
+                "void handleMap(Map map) {\\n  for (def x : map.values()) {\\n    \
+                 if (x instanceof Map) {\\n        handleMap(x);\\n    } \
+                 else if (x instanceof List) {\\n        handleList(x);\\n    }\\n  }\\n  \
+                 map.values().removeIf(v -> v instanceof String && v.isEmpty() == true);\\n}\\n\
+                 void handleList(List list) {\\n  for (def x : list) {\\n      \
+                 if (x instanceof Map) {\\n          handleMap(x);\\n      } \
+                 else if (x instanceof List) {\\n          handleList(x);\\n      }\\n  }\\n}\\n\
+                 handleMap(ctx);\\n",
+                "drop_empty(event, &DropPolicy { empty_strings: true, \
+                 ..DropPolicy::none() }, None);",
             ),
         ] {
             let plan = PainlessPlan::new(script);

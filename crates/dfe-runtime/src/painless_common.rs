@@ -4066,14 +4066,19 @@ impl DropPolicy {
     /// The reading of a script's predicate, taken off its own text.
     #[must_use]
     pub fn read(script: &str) -> Self {
+        let (is_empty_strings, is_empty_collections) = is_empty_axes(script);
         Self {
             nulls: script.contains("== null"),
-            empty_strings: script.contains("== ''") || script.contains("== \"\""),
-            // `.isEmpty()` is the third spelling and aws/waf's only one, so
-            // every empty list and map it ships survived: four per event.
+            empty_strings: script.contains("== ''")
+                || script.contains("== \"\"")
+                || is_empty_strings,
+            // `.isEmpty()` is the third spelling of the collection test and
+            // aws/waf's only one, so every empty list and map it ships
+            // survived: four per event. Which axis it means is the guard's
+            // to say -- see `is_empty_axes`.
             empty_collections: script.contains(".size() == 0")
                 || script.contains(".length == 0")
-                || script.contains(".isEmpty()"),
+                || is_empty_collections,
             // A list is pruned by a `removeIf` whose receiver is the list
             // itself. `map.values().removeIf` prunes the MAP, which is
             // cisco_asa's only one; gcp's recursive helper walks the map
@@ -4088,6 +4093,60 @@ impl DropPolicy {
             shallow: false,
         }
     }
+}
+
+/// Which drop axes a script's `.isEmpty()` calls report on, as
+/// `(empty_strings, empty_collections)`.
+///
+/// `.isEmpty()` is ONE spelling with TWO intents, and reading it as the
+/// collection test everywhere inverted the policy on both axes for the two
+/// sources that mean the other one. `mysql_enterprise` and oracle prune with
+///
+/// ```painless
+/// map.values().removeIf(v -> v instanceof String && v.isEmpty() == true);
+/// ```
+///
+/// -- empty STRINGS only, every empty map kept -- while aws/waf writes
+/// `((v instanceof List || v instanceof Map) && v.isEmpty())` and sets the
+/// string axis separately with `v == ""`.
+///
+/// The guard SHARING the call's conjunction is what disambiguates it, so the
+/// window read is bounded by `||` and by the statement and block punctuation
+/// either side: an `instanceof String` in some other branch is not this call's
+/// guard. An UNGUARDED `.isEmpty()` keeps the collection reading every other
+/// script rests on -- salesforce and `ti_socradar` both `return ((Map) o)
+/// .isEmpty()` out of a helper, with the `instanceof` an `if` away.
+fn is_empty_axes(script: &str) -> (bool, bool) {
+    const CALL: &str = ".isEmpty()";
+    let (mut strings, mut collections) = (false, false);
+    for (at, _) in script.match_indices(CALL) {
+        let term = conjunction_around(script, at);
+        let on_string = term.contains("instanceof String");
+        let on_collection = term.contains("instanceof List") || term.contains("instanceof Map");
+        strings |= on_string;
+        collections |= on_collection || !on_string;
+    }
+    (strings, collections)
+}
+
+/// The `&&` conjunction the byte at `at` sits in.
+///
+/// Bounded by `||` -- the alternatives of a predicate chain are separate
+/// terms -- and by `;`, `{` and `}`, so a guard in a neighbouring statement or
+/// block cannot be read as this term's.
+fn conjunction_around(script: &str, at: usize) -> &str {
+    let punctuation = |c: char| matches!(c, ';' | '{' | '}');
+    // `;{}` are ASCII, so one past the match is a char boundary.
+    let mut start = script[..at].rfind(punctuation).map_or(0, |i| i + 1);
+    if let Some(i) = script[start..at].rfind("||") {
+        start += i + "||".len();
+    }
+    let rest = &script[at..];
+    let end = rest
+        .find(punctuation)
+        .unwrap_or(rest.len())
+        .min(rest.find("||").unwrap_or(rest.len()));
+    &script[start..at + end]
 }
 
 /// The non-empty literals a drop predicate compares its value against.

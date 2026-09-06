@@ -247,7 +247,7 @@ impl Transform for Default {
                 drop_empty(
                     event,
                     &DropPolicy {
-                        empty_collections: true,
+                        empty_strings: true,
                         ..DropPolicy::none()
                     },
                     None,
