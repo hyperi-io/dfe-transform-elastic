@@ -45,6 +45,11 @@ chrono = { workspace = true }
 tikv-jemallocator = { workspace = true, optional = true }
 
 [dev-dependencies]
+# `tests/unicode.rs` runs its sweeps through `dfe_runtime::testutil`, which is
+# feature-gated. The dependency above asks for no features, so the module is
+# configured out whenever this package is built ALONE -- a whole-workspace
+# build only worked because dfe-transforms happens to ask for it.
+dfe-runtime = { workspace = true, features = ["testutil"] }
 tempfile = { workspace = true }
 testcontainers = { workspace = true }
 testcontainers-modules = { workspace = true }
