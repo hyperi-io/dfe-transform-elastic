@@ -1367,9 +1367,18 @@ const CISCO_TIMESTAMP: &str = concat!(
 /// with it. `cisco_ios`'s syslog header is exactly that pattern.
 const IPV6: &str = r"((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?";
 
-/// The simplified `IPV4`. Elastic's own carries `(?<![0-9])` look-around,
-/// which the regex crate rejects -- and a grok that will not compile matches
-/// nothing at all, which is worse than accepting `999.999.999.999`.
+/// The simplified `IPV4`. Elastic's own guards it with `(?<![0-9])` and
+/// `(?![0-9])` and range-checks every octet; ours does neither, so a greedy
+/// `%{GREEDYDATA}` in front backs off to the shortest satisfying suffix and
+/// `[AF_INET]175.16.199.1:34745` reads a `source.ip` of `5.16.199.1`.
+/// `999.999.999.999` is accepted too.
+///
+/// Taking the guards is a throughput decision rather than a compile one:
+/// `Pattern::compile` falls back to `fancy-regex` for lookaround, the way
+/// `BASE16NUM` below does, and that engine measures 55x slower than `regex` on
+/// a line the pattern does not match. `%{IP}` and `%{IPORHOST}` are spelt
+/// across most of the generated tree, and a line a pattern does not match is
+/// the common case.
 const IPV4: &str = r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}";
 
 /// A hostname as Elastic defines it, for the composites below.
@@ -1416,6 +1425,10 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         }
         "GREEDYDATA" => r".*",
         "DATA" => r".*?",
+        // Elastic's own is `\b\w+\b`. Measured over the whole corpus, taking
+        // the boundaries buys ONE field and costs 7.5% on a matching grok and
+        // 30% on a non-matching one, across 2,194 sites -- so the bare form
+        // stands until that trade is taken deliberately.
         "WORD" => r"\w+",
         "MONTH" => MONTH,
         "MAC" => r"(?:[0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}",
