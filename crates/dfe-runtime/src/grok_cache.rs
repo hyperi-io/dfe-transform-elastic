@@ -105,6 +105,12 @@ pub struct CompiledGrok {
     pub capture_types: HashMap<String, crate::codegen_api::CaptureType>,
     /// A native parser for this pattern, when one covers it exactly.
     native: Option<Native>,
+    /// Capture names whose sub-pattern cannot match the empty string, so an
+    /// empty match reported for one is a group that never participated.
+    ///
+    /// Only ever populated for a pattern on the backtracking engine, and only
+    /// read there. See [`never_empty_captures`].
+    never_empty: std::collections::HashSet<String>,
 }
 
 /// Matches nothing, ever: one character that is both non-whitespace and
@@ -166,11 +172,17 @@ pub fn grok_mapped(pattern: &str, extra: &[(&str, &str)]) -> &'static CompiledGr
     crate::codegen_api::resolve_capture_paths(&mut field_map, &mut capture_types);
     let expanded = to_rust_dialect(&expanded);
 
+    let regex = Pattern::compile(&expanded, pattern);
+    let never_empty = match &regex {
+        Pattern::Fast(_) => std::collections::HashSet::new(),
+        Pattern::Backtracking(_) => never_empty_captures(&expanded),
+    };
     let compiled: &'static CompiledGrok = Box::leak(Box::new(CompiledGrok {
-        regex: Pattern::compile(&expanded, pattern),
+        regex,
         field_map,
         capture_types,
         native: native_form(pattern),
+        never_empty,
     }));
 
     if let Ok(mut guard) = GROK.write() {
@@ -287,6 +299,15 @@ impl CompiledGrok {
                 };
                 for name in re.capture_names().flatten() {
                     if let Some(m) = caps.name(name) {
+                        // The backtracking engine reports a group that never
+                        // participated as an empty match, where Elasticsearch's
+                        // grok and the fast engine report nothing at all. Only a
+                        // capture that cannot match empty is corrected, so a
+                        // `%{DATA:x}` that genuinely matched nothing still
+                        // writes the empty string Elasticsearch writes.
+                        if m.as_str().is_empty() && self.never_empty.contains(name) {
+                            continue;
+                        }
                         self.write_capture(name, m.as_str(), event)?;
                     }
                 }
@@ -463,6 +484,113 @@ pub fn extract_first_match_traced(
     };
     event.set("_ingest._grok_match_index", index)?;
     patterns[index].extract_into(input, event)
+}
+
+/// The names of the captures in `expanded` whose body cannot match the empty
+/// string.
+///
+/// `fancy_regex`'s `optimize_nested_repeats` folds an optional group over a
+/// one-or-more body -- `(?P<x>\w+)?` -- into `(?P<x>\w*)`, which matches the
+/// same text and captures differently: the group now PARTICIPATES with a
+/// zero-width match where Elasticsearch's grok leaves it unset. Reading a body
+/// that cannot match empty is how a zero-width report is recognised as that
+/// fold rather than a real capture.
+///
+/// Conservative by construction: a body that will not compile on its own -- a
+/// backreference to a group outside it, say -- is treated as able to match
+/// empty, which leaves the value written as it is today.
+fn never_empty_captures(expanded: &str) -> std::collections::HashSet<String> {
+    named_group_bodies(expanded)
+        .into_iter()
+        .filter(|(_, body)| !can_match_empty(body))
+        .map(|(name, _)| name)
+        .collect()
+}
+
+/// Whether `body` matches the empty string, on whichever engine compiles it.
+fn can_match_empty(body: &str) -> bool {
+    let anchored = format!("^(?:{body})$");
+    if let Ok(re) = Regex::new(&anchored) {
+        return re.is_match("");
+    }
+    match fancy_regex::Regex::new(&anchored) {
+        Ok(re) => re.is_match("").unwrap_or(true),
+        Err(_) => true,
+    }
+}
+
+/// Every `(?P<name>body)` and `(?<name>body)` in a regex, name and body apart.
+///
+/// A look-behind is spelt `(?<=` / `(?<!` and is not a capture, and a `[...]`
+/// class holds parens that open nothing, so both are stepped over rather than
+/// read.
+fn named_group_bodies(expanded: &str) -> Vec<(String, &str)> {
+    let bytes = expanded.as_bytes();
+    let mut out = Vec::new();
+    let mut at = 0;
+    let mut in_class = false;
+    while at < bytes.len() {
+        match bytes[at] {
+            b'\\' => {
+                at += 2;
+                continue;
+            }
+            b'[' if !in_class => in_class = true,
+            b']' if in_class => in_class = false,
+            b'(' if !in_class => {
+                if let Some((name, body_at)) = group_name_at(expanded, at)
+                    && let Some(close) = closing_paren(expanded, body_at)
+                {
+                    out.push((name, &expanded[body_at..close]));
+                }
+            }
+            _ => {}
+        }
+        at += 1;
+    }
+    out
+}
+
+/// The capture name a `(` at `at` opens, and where its body starts.
+fn group_name_at(expanded: &str, at: usize) -> Option<(String, usize)> {
+    let after = expanded.get(at + 1..)?;
+    let after = after
+        .strip_prefix("?P<")
+        .or_else(|| after.strip_prefix("?<"))?;
+    if after.starts_with('=') || after.starts_with('!') {
+        return None;
+    }
+    let close = after.find('>')?;
+    let name = after[..close].to_string();
+    Some((name, expanded.len() - after.len() + close + 1))
+}
+
+/// The offset of the `)` that closes the group whose body starts at `from`.
+fn closing_paren(expanded: &str, from: usize) -> Option<usize> {
+    let bytes = expanded.as_bytes();
+    let mut depth = 1usize;
+    let mut at = from;
+    let mut in_class = false;
+    while at < bytes.len() {
+        match bytes[at] {
+            b'\\' => {
+                at += 2;
+                continue;
+            }
+            b'[' if !in_class => in_class = true,
+            b']' if in_class => in_class = false,
+            b'(' if !in_class => depth += 1,
+            b')' if !in_class => {
+                depth -= 1;
+                if depth == 0 {
+                    return Some(at);
+                }
+            }
+            _ => {}
+        }
+        at += 1;
+    }
+    None
 }
 
 /// Rewrite an expanded grok pattern from Elasticsearch's dialect into Rust's.
@@ -869,6 +997,110 @@ mod tests {
         );
         assert_eq!(tolerate_trailing_terminator("^a\\$"), "^a\\$");
         assert_eq!(tolerate_trailing_terminator("^a"), "^a");
+    }
+
+    /// `%{NONNEGINT}` is `\b(?:[0-9]+)\b`, so it cannot enter a digit run
+    /// part-way. pfsense reads its vlan out of the interface name with
+    /// `%{DATA}.%{NONNEGINT:...}`, and without the boundaries the lazy `%{DATA}`
+    /// stops at the first digit it can reach -- the `1` of `igb1`.
+    #[test]
+    fn nonnegint_takes_a_whole_digit_run_or_none() {
+        let compiled = grok("%{DATA}.%{NONNEGINT:observer.ingress.vlan.id}");
+
+        for (interface, vlan) in [
+            ("igb1.12", Some("12")),
+            ("vtnet0.27", Some("27")),
+            // No dotted suffix, so Elasticsearch writes no vlan at all.
+            ("em0", None),
+            ("lan", None),
+        ] {
+            let mut event = crate::Event::new(serde_json::json!({}));
+            compiled
+                .extract_into(interface, &mut event)
+                .expect("extraction");
+            assert_eq!(
+                event.get_str("observer.ingress.vlan.id"),
+                vlan,
+                "{interface}"
+            );
+        }
+    }
+
+    /// A capture that did not participate writes nothing, on either engine.
+    ///
+    /// `fancy_regex` folds `(?P<x>\w+)?` into `(?P<x>\w*)`, which reports a
+    /// zero-width match where Elasticsearch's grok leaves the field unset --
+    /// three of pfsense's filterlog fields are optional and usually empty.
+    /// `%{BASE16NUM}`'s look-behind is what puts this pattern on that engine.
+    #[test]
+    fn an_optional_capture_that_did_not_participate_writes_nothing() {
+        let compiled = grok(
+            "%{BASE16NUM:pfsense.ip.tos},%{WORD:pfsense.ip.ecn}?,\
+             %{NONNEGINT:pfsense.ip.ttl:long}",
+        );
+        assert!(
+            compiled.regex.fast().is_none(),
+            "the correction only applies on the backtracking engine, so the \
+             pattern has to reach it for this test to mean anything"
+        );
+
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into("0x0,,63", &mut event)
+                .expect("extraction"),
+        );
+        assert_eq!(event.get_str("pfsense.ip.tos"), Some("0x0"));
+        assert_eq!(event.get_i64("pfsense.ip.ttl"), Some(63));
+        assert!(!event.has("pfsense.ip.ecn"));
+
+        // The same capture, participating, still writes what it read.
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into("0x0,ce,63", &mut event)
+                .expect("extraction"),
+        );
+        assert_eq!(event.get_str("pfsense.ip.ecn"), Some("ce"));
+    }
+
+    /// A capture that CAN match empty keeps its empty string, which is what
+    /// Elasticsearch writes for one.
+    #[test]
+    fn a_capture_that_matched_nothing_still_writes_the_empty_string() {
+        let compiled = grok("%{BASE16NUM:tos},%{DATA:rest}$");
+        assert!(compiled.regex.fast().is_none());
+
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into("0x0,", &mut event)
+                .expect("extraction")
+        );
+        assert_eq!(event.get_str("rest"), Some(""));
+    }
+
+    /// Verbatim from `pipelines/pfsense/log/firewall.yml`: an optional sequence
+    /// number in front of an unnamed one. The boundaries are what stop the
+    /// named capture taking all but the last digit and leaving that digit to
+    /// the unnamed one -- Elasticsearch declines the optional capture and reads
+    /// the whole run into the unnamed group, so the field is never written.
+    #[test]
+    fn an_optional_number_does_not_split_the_run_behind_it() {
+        let compiled = grok(
+            "%{NONNEGINT:pfsense.tcp.length:long},%{WORD:pfsense.tcp.flags}?,\
+             %{NONNEGINT:pfsense.tcp.seq:long}?:?%{NONNEGINT},",
+        );
+
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into("0,S,1891286705,", &mut event)
+                .expect("extraction"),
+        );
+        assert_eq!(event.get_i64("pfsense.tcp.length"), Some(0));
+        assert_eq!(event.get_str("pfsense.tcp.flags"), Some("S"));
+        assert!(!event.has("pfsense.tcp.seq"));
     }
 
     /// Ruby has no word-start escape, so rabbitmq's `\<...\>` is a pair of
@@ -1328,6 +1560,7 @@ mod tests {
             field_map: compiled.field_map.clone(),
             capture_types: compiled.capture_types.clone(),
             native: None,
+            never_empty: compiled.never_empty.clone(),
         };
         let mut regex_event = crate::Event::new(serde_json::json!({}));
         let regex_matched = regex_only

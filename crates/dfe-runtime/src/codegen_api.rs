@@ -1388,7 +1388,18 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         "IP" => IP.as_str(),
         "IPV4" => IPV4,
         "IPV6" => IPV6,
-        "POSINT" | "PORT" | "NONNEGINT" => r"\d+",
+        // Elastic's own, word boundaries and all. Without them a digit run can
+        // be entered part-way or split in two, and both cost real fields:
+        // `%{DATA}.%{NONNEGINT:observer.ingress.vlan.id}` over `igb1.12` read
+        // the `1` out of `igb1` instead of the vlan, and pfsense's TCP grok
+        // spelt `%{NONNEGINT:pfsense.tcp.seq:long}?:?%{NONNEGINT}` split
+        // `1891286705` into a named `189128670` and an unnamed `5` where
+        // Elasticsearch declines the optional capture and reads the whole run.
+        // `PORT` keeps the bare form: Elastic defines it `(?:[\d]{1,5})`, with
+        // no boundary of its own.
+        "NONNEGINT" => r"\b(?:[0-9]+)\b",
+        "POSINT" => r"\b(?:[1-9][0-9]*)\b",
+        "PORT" => r"\d+",
         "INT" => r"[+-]?\d+",
         "NUMBER" | "BASE10NUM" => r"[+-]?(?:\d+\.?\d*|\.\d+)",
         // Elastic's own, look-behind and all, so it compiles on fancy-regex.
