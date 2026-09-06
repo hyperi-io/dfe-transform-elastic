@@ -122,12 +122,41 @@ def module_of(opening: str, texts: dict[pathlib.Path, str]) -> list[str]:
     return sorted({path.parent.name for path, text in texts.items() if needle in text})
 
 
+def best_unlocks(sources: dict[str, dict], top: int) -> None:
+    """Sources ranked by the ONE field that would buy the most events.
+
+    `fields wrong` is a ceiling and a long tail makes it a lie: ti_opencti is
+    179 wrong, second-biggest of its class, and its best field unlocks FOUR.
+    The unlocks column has predicted the event gain exactly every time it has
+    been used, so it is the honest ranking.
+    """
+    rows = []
+    for name, score in sources.items():
+        if not score["detail"]:
+            continue
+        wrong, unlocks, field = max(score["detail"], key=lambda found: found[1])
+        if unlocks < 8:
+            continue
+        rows.append((unlocks, score["events_missed"], name, field, wrong, score))
+    rows.sort(reverse=True, key=lambda row: (row[0], row[1], row[2]))
+
+    print(f"-- one field worth 8+ events, best first ({len(rows)} sources)")
+    for unlocks, missed, name, field, wrong, score in rows[:top]:
+        klass = classify(score["fields_wrong"], score["extra"])
+        whole = " -- WHOLE SOURCE" if unlocks == missed else ""
+        print(f"{unlocks:6} unlocks {missed:5} missed  {name}  [{klass}]{whole}")
+        print(f"{'':22}{field}  (wrong in {wrong})")
+    print()
+
+
 def report_classes(run: pathlib.Path, top: int) -> int:
     """Every source with debt, by failure class, from a run alone."""
     sources = read_corpus(run)
     if not sources:
         print(f"no per-source lines in {run} -- is it a corpus run?", file=sys.stderr)
         return 2
+
+    best_unlocks(sources, top)
 
     rows = [
         (score["fields_wrong"], score["events_missed"], score["extra"], name)

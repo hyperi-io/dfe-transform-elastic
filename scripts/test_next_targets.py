@@ -13,6 +13,8 @@ Run with: python3 -m unittest discover -s scripts -p 'test_*.py'
 
 from __future__ import annotations
 
+import contextlib
+import io
 import sys
 import tempfile
 import unittest
@@ -93,6 +95,49 @@ class ModuleOf(unittest.TestCase):
 
     def test_a_script_no_module_holds_resolves_to_nothing(self) -> None:
         self.assertEqual(next_targets.module_of("def unmatched = 1;", {}), [])
+
+
+class BestUnlocks(unittest.TestCase):
+    """The unlocks ranking, against the same verbatim run."""
+
+    def setUp(self) -> None:
+        handle = tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False)
+        handle.write(ReadCorpus.RUN)
+        handle.close()
+        self.path = Path(handle.name)
+        self.sources = next_targets.read_corpus(self.path)
+
+    def tearDown(self) -> None:
+        self.path.unlink()
+
+    def test_the_best_field_is_the_one_unlocking_most_not_the_one_wrong_most(
+        self,
+    ) -> None:
+        """Two fields, the bigger `wrong in` count worth fewer events.
+
+        This is the whole reason the column exists: ti_opencti's top field is
+        wrong in 31 and unlocks 4, so a `wrong in` sort picks the wrong one.
+        """
+        detail = [(31, 4, "opencti.indicator.invalid_or_revoked_from"), (8, 19, "related.hosts")]
+        best = max(detail, key=lambda found: found[1])
+        self.assertEqual(best[2], "related.hosts")
+
+    def test_a_source_with_no_detail_lines_is_skipped(self) -> None:
+        # github parses as a source and carries no detail, so it must not
+        # reach `max()` on an empty list. Output captured so a passing suite
+        # stays readable.
+        self.assertEqual(self.sources["github"]["detail"], [])
+        held = io.StringIO()
+        with contextlib.redirect_stdout(held):
+            next_targets.best_unlocks(self.sources, top=5)
+        self.assertIn("gigamon", held.getvalue())
+        self.assertNotIn("github", held.getvalue())
+
+    def test_unlocks_equal_to_missed_is_the_whole_source(self) -> None:
+        # gigamon, before its matcher landed: 29 missed, one field worth 29.
+        score = self.sources["gigamon"]
+        self.assertEqual(score["events_missed"], 29)
+        self.assertEqual(max(score["detail"], key=lambda found: found[1])[1], 29)
 
 
 class Classify(unittest.TestCase):
