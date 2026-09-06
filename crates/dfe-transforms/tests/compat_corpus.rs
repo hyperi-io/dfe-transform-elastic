@@ -1828,7 +1828,25 @@ fn score_capture(
 
             let mut event = Event::new(raw.clone());
             match transform.transform(&mut event) {
-                Err(_) => {
+                Err(err) => {
+                    // The count alone is a dead end. An errored event scores
+                    // zero however right its fields are -- google_workspace's
+                    // chrome and data_studio captures were 300/300 and 487/487
+                    // correct and still 0/6 and 0/12 events -- and the reason
+                    // lived only inside a discarded `Err`. Printed under the
+                    // same switch that dumps a document.
+                    if dump.as_deref() == Some(capture.fixture.as_str()) {
+                        // The document AS IT STANDS when the error is raised,
+                        // not the input: a type mismatch names the path it
+                        // tripped on and says nothing about what put the wrong
+                        // value there.
+                        let _ = writeln!(
+                            out.output,
+                            "  {}[{i}] ERRORED: {err}\n    PARTIAL: {}",
+                            capture.fixture,
+                            serde_json::to_string(event.as_value()).unwrap_or_default()
+                        );
+                    }
                     score.events_errored += 1;
                     continue;
                 }
