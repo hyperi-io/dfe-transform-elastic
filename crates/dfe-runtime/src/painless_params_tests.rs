@@ -2798,7 +2798,10 @@ fn map_entries_are_dropped_by_the_value_a_params_list_names() {
     } } }));
     assert!(try_params_painless(&mut event, script, &params));
 
-    assert_eq!(event.get_str("juniper.srx.source_address"), Some("10.0.0.1"));
+    assert_eq!(
+        event.get_str("juniper.srx.source_address"),
+        Some("10.0.0.1")
+    );
     // Every placeholder goes, whichever key held it.
     assert!(!event.has("juniper.srx.nat_source_port"));
     assert!(!event.has("juniper.srx.policy_name"));

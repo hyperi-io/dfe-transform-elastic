@@ -136,6 +136,58 @@ fn a_flag_folds_to_a_boolean_by_its_spelling() {
     assert_eq!(event.get("gdacs.is_temporary"), Some(&Value::Bool(false)));
 }
 
+/// gitlab names every measurement `<thing>.values` and lists the reading.
+///
+/// Verbatim from `pipelines/gitlab/application/default.yml:84`. Leaving it
+/// unbound put every measurement one level too deep -- 688 missing fields
+/// matched by 688 extra ones, which is the raw-shape signature exactly.
+#[test]
+fn a_suffixed_key_is_rewritten_without_it_and_a_lone_value_unwrapped() {
+    let script = "if (ctx.gitlab?.application != null) {\n  \
+        def fieldsToRename = new ArrayList(ctx.gitlab.application.keySet());\n  \
+        for (fieldName in fieldsToRename) {\n    \
+        if (fieldName.endsWith('values')) {\n      \
+        def newField = fieldName.substring(0, fieldName.length() - 7);\n      \
+        def value = ctx.gitlab.application[fieldName];\n      \
+        if (value.size() > 1) {\n        \
+        ctx.gitlab.application[newField] = value;\n      } else {\n        \
+        ctx.gitlab.application[newField] = value[0]\n      }\n      \
+        ctx.gitlab.application.remove(fieldName);\n    }\n  }\n}";
+    let pattern =
+        parse_unwrap_suffixed_keys(&normalise(script)).expect("gitlab renames its measurements");
+    assert_eq!(pattern.container, "gitlab.application");
+    assert_eq!(pattern.suffix, "values");
+    assert_eq!(pattern.trim, 7);
+
+    let mut event = Event::new(serde_json::json!({ "gitlab": { "application": {
+        "mergeability.check_approved_service.db_count.values": [1],
+        "mergeability.check_broken_status_service.duration_s.values": [0.5, 0.75],
+        "correlation_id": "01J0PF6DFMXRC0JJK70AG21DJD"
+    } } }));
+    assert!(unwrap_suffixed_keys(&mut event, &pattern));
+
+    // One reading comes OUT of its list, under the key without the suffix.
+    assert_eq!(
+        event.get("gitlab.application.mergeability.check_approved_service.db_count"),
+        Some(&serde_json::json!(1))
+    );
+    // Several stay a list.
+    assert_eq!(
+        event.get("gitlab.application.mergeability.check_broken_status_service.duration_s"),
+        Some(&serde_json::json!([0.5, 0.75]))
+    );
+    // A key without the suffix is untouched, and the old keys are gone.
+    assert_eq!(
+        event.get_str("gitlab.application.correlation_id"),
+        Some("01J0PF6DFMXRC0JJK70AG21DJD")
+    );
+    let keys: Vec<&String> = event
+        .get_object("gitlab.application")
+        .map(|m| m.keys().collect())
+        .unwrap_or_default();
+    assert!(!keys.iter().any(|k| k.ends_with("values")), "{keys:?}");
+}
+
 /// Google Workspace ships each application's detail as a parameter list.
 ///
 /// Verbatim from `pipelines/google_workspace/calendar/default.yml:60`. Seven
@@ -155,8 +207,7 @@ fn a_parameter_list_fans_out_into_a_map_under_each_name() {
         ctx.google_workspace.calendar[lw_case_name] = param.boolValue;\n  \
         } else if (param.multiValue != null) {\n    \
         ctx.google_workspace.calendar[lw_case_name] = param.multiValue;\n  }\n}";
-    let pattern =
-        parse_parameters_into_map(&normalise(script)).expect("google_workspace fans out");
+    let pattern = parse_parameters_into_map(&normalise(script)).expect("google_workspace fans out");
     assert_eq!(pattern.source, "json.events.parameters");
     assert_eq!(pattern.target, "google_workspace.calendar");
     assert_eq!(pattern.name_key, "name");
@@ -177,8 +228,14 @@ fn a_parameter_list_fans_out_into_a_map_under_each_name() {
     assert!(parameters_into_map(&mut event, &pattern));
 
     // The NAME is case-folded, the value is not.
-    assert_eq!(event.get_str("google_workspace.calendar.calendar_id"), Some("cal-1"));
-    assert_eq!(event.get_str("google_workspace.calendar.api_kind"), Some("event"));
+    assert_eq!(
+        event.get_str("google_workspace.calendar.calendar_id"),
+        Some("cal-1")
+    );
+    assert_eq!(
+        event.get_str("google_workspace.calendar.api_kind"),
+        Some("event")
+    );
     assert_eq!(
         event.get("google_workspace.calendar.is_recurring"),
         Some(&serde_json::json!(true))
@@ -190,7 +247,10 @@ fn a_parameter_list_fans_out_into_a_map_under_each_name() {
     // A parameter with no value key, and one with no name, are both skipped.
     assert!(!event.has("google_workspace.calendar.nothing_here"));
     // MERGED into what was already there.
-    assert_eq!(event.get_str("google_workspace.calendar.already"), Some("kept"));
+    assert_eq!(
+        event.get_str("google_workspace.calendar.already"),
+        Some("kept")
+    );
 }
 
 /// `juniper_srx` swaps a hyphen for an underscore across every key it has.
@@ -214,7 +274,10 @@ fn every_key_of_a_map_takes_one_character_replacement() {
         "already_fine": "x"
     } } }));
     assert!(rename_map_keys(&mut event, &pattern));
-    assert_eq!(event.get_str("juniper.srx.source_address"), Some("10.0.0.1"));
+    assert_eq!(
+        event.get_str("juniper.srx.source_address"),
+        Some("10.0.0.1")
+    );
     assert_eq!(
         event.get("juniper.srx.destination_port"),
         Some(&serde_json::json!(443))
@@ -313,7 +376,10 @@ fn a_dotted_key_moves_out_of_its_map_by_that_key() {
     let f5 = parse_move_map_entry(&normalise(via_put)).expect("f5_bigip moves one key");
     assert_eq!(f5.container, "json.system.tmmTraffic");
     assert_eq!(f5.key, "clientSideTraffic.bitsIn");
-    assert_eq!(f5.target, "f5_bigip.log.tmm_traffic.client_side_traffic.bits_in");
+    assert_eq!(
+        f5.target,
+        "f5_bigip.log.tmm_traffic.client_side_traffic.bits_in"
+    );
 
     let mut traffic = Event::new(serde_json::json!({ "json": { "system": { "tmmTraffic": {
         "clientSideTraffic.bitsIn": 1234
@@ -346,9 +412,11 @@ fn an_email_block_comes_out_of_a_mailto_uri() {
     assert_eq!(pattern.source, "eset_protect.event.object_uri");
     assert_eq!(pattern.target, "email");
 
-    let mut event = Event::new(serde_json::json!({ "eset_protect": { "event": { "object_uri":
+    let mut event = Event::new(
+        serde_json::json!({ "eset_protect": { "event": { "object_uri":
         "mailto:x@y.com?from=Alice <alice@example.com>, Bob <bob@example.org>\
-         &subject=Quarterly&attachment=report.pdf" } } }));
+         &subject=Quarterly&attachment=report.pdf" } } }),
+    );
     assert!(mailto_uri_fields(&mut event, &pattern));
     assert_eq!(
         event.get("email.from.address"),
@@ -471,7 +539,10 @@ fn a_message_is_normalised_to_carry_a_known_prefix() {
     // The prefixed form passes through unchanged, not doubled.
     let mut already = Event::new(serde_json::json!({ "message": "ACCESS [2025-01-01] x" }));
     assert!(ensure_prefix(&mut already, &pattern));
-    assert_eq!(already.get_str("temp_message"), Some("ACCESS [2025-01-01] x"));
+    assert_eq!(
+        already.get_str("temp_message"),
+        Some("ACCESS [2025-01-01] x")
+    );
 
     // Neither form is NOT handled -- the vendor throws, and claiming it would
     // count a script this arm did not apply.

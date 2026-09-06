@@ -4184,6 +4184,120 @@ pub fn join_present_fields(event: &mut Event, pattern: &JoinPresentFields) -> bo
     true
 }
 
+/// Keys carrying a suffix rewritten without it, unwrapping a lone value.
+///
+/// gitlab's structured log names every measurement `<thing>.values` and holds
+/// a LIST under it, even when there is one reading. The script renames the key
+/// without the suffix and takes the single value out of its list, keeping the
+/// list only where there is genuinely more than one.
+///
+/// Leaving it unbound put every measurement one level too deep -- 688 missing
+/// fields matched by 688 extra ones on its application stream, which is the
+/// signature the debt classifier calls a raw shape.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct UnwrapSuffixedKeys {
+    container: String,
+    /// The suffix a key must end with, without its separator.
+    suffix: String,
+    /// How many characters the script takes off, separator included.
+    trim: usize,
+}
+
+impl UnwrapSuffixedKeys {
+    /// The generated call site that rebuilds this pattern.
+    #[cfg(feature = "codegen")]
+    pub(crate) fn direct_call(&self) -> String {
+        format!(
+            "unwrap_suffixed_keys(event, &UnwrapSuffixedKeys::new({}.into(), {}.into(), {}));",
+            rust_str(&self.container),
+            rust_str(&self.suffix),
+            self.trim,
+        )
+    }
+
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(container: String, suffix: String, trim: usize) -> Self {
+        Self {
+            container,
+            suffix,
+            trim,
+        }
+    }
+}
+
+/// `for (f in ctx.a.keySet()) { if (f.endsWith('values')) { ... f.length() - 7 ... } }`
+fn parse_unwrap_suffixed_keys(script: &str) -> Option<UnwrapSuffixedKeys> {
+    let (head, _) = script.split_once(".keySet()")?;
+    let container = clean_path(head.rsplit("ctx.").next()?.trim());
+    if container.is_empty() || container.contains(char::is_whitespace) {
+        return None;
+    }
+
+    let suffix = script
+        .split_once(".endsWith(")?
+        .1
+        .trim_start()
+        .strip_prefix(['\'', '"'])?
+        .split(['\'', '"'])
+        .next()?
+        .to_owned();
+    if suffix.is_empty() {
+        return None;
+    }
+
+    // The script's own arithmetic, not a guess from the suffix: the separator
+    // it strips with the name is part of the count.
+    let trim: usize = script
+        .split_once(".length() - ")?
+        .1
+        .split([')', ' ', ';'])
+        .next()?
+        .parse()
+        .ok()?;
+    (trim >= suffix.len()).then(|| UnwrapSuffixedKeys::new(container, suffix, trim))
+}
+
+/// Rewrite each suffixed key, taking a lone value out of its list.
+pub fn unwrap_suffixed_keys(event: &mut Event, pattern: &UnwrapSuffixedKeys) -> bool {
+    let Some(container) = event
+        .get(&pattern.container)
+        .and_then(Value::as_object)
+        .cloned()
+    else {
+        return false;
+    };
+
+    let mut rebuilt = serde_json::Map::with_capacity(container.len());
+    let mut rewrote = false;
+    for (key, value) in container {
+        let renamed = key
+            .ends_with(&pattern.suffix)
+            .then(|| key.len().checked_sub(pattern.trim))
+            .flatten()
+            .map(|end| key[..end].to_owned())
+            .filter(|renamed| !renamed.is_empty());
+
+        let Some(renamed) = renamed else {
+            rebuilt.insert(key, value);
+            continue;
+        };
+        rewrote = true;
+        // A single reading comes out of its list; several stay a list.
+        let unwrapped = match value {
+            Value::Array(mut values) if values.len() == 1 => values.remove(0),
+            other => other,
+        };
+        rebuilt.insert(renamed, unwrapped);
+    }
+
+    if !rewrote {
+        return false;
+    }
+    let _ = event.set(&pattern.container, Value::Object(rebuilt));
+    true
+}
+
 /// A list of `{name, value}` parameters fanned out into a map.
 ///
 /// Google Workspace ships every per-application detail as one list of objects,
@@ -4296,7 +4410,11 @@ fn parse_parameters_into_map(script: &str) -> Option<ParametersIntoMap> {
 
 /// Write each parameter under its own name, merging into what is there.
 pub fn parameters_into_map(event: &mut Event, pattern: &ParametersIntoMap) -> bool {
-    let Some(parameters) = event.get(&pattern.source).and_then(Value::as_array).cloned() else {
+    let Some(parameters) = event
+        .get(&pattern.source)
+        .and_then(Value::as_array)
+        .cloned()
+    else {
         return false;
     };
 
@@ -4648,9 +4766,10 @@ impl SplitAtDelimiter {
     #[cfg(feature = "codegen")]
     pub(crate) fn direct_call(&self) -> String {
         let option = |value: &Option<String>| {
-            value
-                .as_ref()
-                .map_or_else(|| "None".to_owned(), |v| format!("Some({}.into())", rust_str(v)))
+            value.as_ref().map_or_else(
+                || "None".to_owned(),
+                |v| format!("Some({}.into())", rust_str(v)),
+            )
         };
         format!(
             "split_at_delimiter(event, &SplitAtDelimiter::new({}.into(), {}.into(), {}, {}, {}, {}));",
@@ -4722,17 +4841,15 @@ fn parse_split_at_delimiter(script: &str) -> Option<SplitAtDelimiter> {
         (!path.is_empty()).then_some(path)
     };
     let head = target_of(".substring(0, ");
-    let tail = script
-        .split_once(".substring(")
-        .and_then(|_| {
-            // `substring(p+1, l)` -- the local's name varies, so anchor on the
-            // `+1` that every one of these writes.
-            let (before, _) = script.split_once("+1, ")?;
-            let assignment = before.rsplit(['\n', ';', '{', '}']).next()?;
-            let path = assignment.split('=').next()?.trim();
-            let path = clean_path(path.strip_prefix("ctx.")?.trim());
-            (!path.is_empty()).then_some(path)
-        });
+    let tail = script.split_once(".substring(").and_then(|_| {
+        // `substring(p+1, l)` -- the local's name varies, so anchor on the
+        // `+1` that every one of these writes.
+        let (before, _) = script.split_once("+1, ")?;
+        let assignment = before.rsplit(['\n', ';', '{', '}']).next()?;
+        let path = assignment.split('=').next()?.trim();
+        let path = clean_path(path.strip_prefix("ctx.")?.trim());
+        (!path.is_empty()).then_some(path)
+    });
     if head.is_none() && tail.is_none() {
         return None;
     }
@@ -4848,7 +4965,14 @@ fn parse_ensure_prefix(script: &str) -> Option<EnsurePrefix> {
     }
     let (before, prefix) = head[..head.len() - quote.len_utf8()].rsplit_once(quote)?;
     let prefix = prefix.to_owned();
-    let target = clean_path(before.rsplit("ctx.").next()?.trim().trim_end_matches('=').trim());
+    let target = clean_path(
+        before
+            .rsplit("ctx.")
+            .next()?
+            .trim()
+            .trim_end_matches('=')
+            .trim(),
+    );
     if target.is_empty() || prefix.is_empty() || source.is_empty() {
         return None;
     }
@@ -14714,6 +14838,7 @@ pub(crate) enum KnownPattern {
     MoveMapEntry(MoveMapEntry),
     RenameMapKeys(RenameMapKeys),
     ParametersIntoMap(ParametersIntoMap),
+    UnwrapSuffixedKeys(UnwrapSuffixedKeys),
     /// An ECS `geo_point` built from a `GeoJSON` coordinate array.
     GeoPointFromCoordinates(GeoPointFromCoordinates),
     /// A numbered column map collapsed into a list, in key order.
@@ -15304,6 +15429,16 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_join_present_fields(normalised)
     {
         patterns.push(KnownPattern::JoinPresentFields(pattern));
+        return patterns;
+    }
+
+    // Pattern: keys carrying a suffix rewritten without it.
+    if normalised.contains(".endsWith(")
+        && normalised.contains(".keySet()")
+        && normalised.contains(".length() - ")
+        && let Some(pattern) = parse_unwrap_suffixed_keys(normalised)
+    {
+        patterns.push(KnownPattern::UnwrapSuffixedKeys(pattern));
         return patterns;
     }
 
@@ -16914,6 +17049,7 @@ impl KnownPattern {
             Self::MoveMapEntry(pattern) => Some(pattern.direct_call()),
             Self::RenameMapKeys(pattern) => Some(pattern.direct_call()),
             Self::ParametersIntoMap(pattern) => Some(pattern.direct_call()),
+            Self::UnwrapSuffixedKeys(pattern) => Some(pattern.direct_call()),
             Self::MailtoUriFields(pattern) => Some(format!(
                 "mailto_uri_fields(event, &MailtoUriFields::new({}.into(), {}.into()));",
                 rust_str(&pattern.source),
@@ -17094,6 +17230,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::MoveMapEntry(pattern) => move_map_entry(event, pattern),
         KnownPattern::RenameMapKeys(pattern) => rename_map_keys(event, pattern),
         KnownPattern::ParametersIntoMap(pattern) => parameters_into_map(event, pattern),
+        KnownPattern::UnwrapSuffixedKeys(pattern) => unwrap_suffixed_keys(event, pattern),
         KnownPattern::GeoPointFromCoordinates(pattern) => {
             geo_point_from_coordinates(event, pattern)
         }

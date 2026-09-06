@@ -3860,7 +3860,11 @@ fn parse_normalise_map_values(script: &str) -> Option<NormaliseMapValues> {
     }
 
     // Both key lists come off the call, where they are still `params.<name>`.
-    let arguments = script.split_once("processFieldValue(k, ")?.1.split_once(')')?.0;
+    let arguments = script
+        .split_once("processFieldValue(k, ")?
+        .1
+        .split_once(')')?
+        .0;
     let mut lists = arguments
         .split(',')
         .filter_map(|argument| argument.trim().strip_prefix("params."))
