@@ -16226,6 +16226,8 @@ pub(crate) enum KnownPattern {
     UnreservedKeyPayload(Box<UnreservedKeyPayload>),
     SuffixesByPrefix(Box<SuffixesByPrefix>),
     BranchCopies(Vec<BranchCopy>),
+    /// A value cut at the Nth separator counted from its END, the prefix kept.
+    NthSeparatorPrefix(Box<crate::painless_nth_separator::NthSeparatorPrefix>),
     PrivateCidrDirection {
         source: String,
         destination: String,
@@ -18241,6 +18243,20 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: a value cut at the Nth separator counted from its END, the
+    // prefix kept -- gigamon's DNS subdomain. LAST, because nothing above
+    // claims it today (`binding: []` in the static census, `ran 0` in the
+    // runtime reach dump) and a reader placed here can only take what nothing
+    // else took. The trigger is the helper's own declaration, and the parse is
+    // what decides.
+    if normalised.contains(".charAt(")
+        && normalised.contains(".substring(")
+        && let Some(pattern) = crate::painless_nth_separator::parse_nth_separator_prefix(normalised)
+    {
+        patterns.push(KnownPattern::NthSeparatorPrefix(Box::new(pattern)));
+        return patterns;
+    }
+
     patterns
 }
 
@@ -18868,6 +18884,9 @@ pub(crate) fn run_known_pattern(
         KnownPattern::PositionInList(pattern) => run_position_in_list(event, pattern),
         KnownPattern::SplitFirstLabel(pattern) => run_split_first_label(event, pattern),
         KnownPattern::SuffixesByPrefix(pattern) => run_suffixes_by_prefix(event, pattern),
+        KnownPattern::NthSeparatorPrefix(pattern) => {
+            crate::painless_nth_separator::nth_separator_prefix(event, pattern)
+        }
     }
 }
 
