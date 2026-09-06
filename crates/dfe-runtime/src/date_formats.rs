@@ -298,9 +298,19 @@ fn parse_naive(input: &str, chrono: &str) -> Option<(NaiveDateTime, Option<Strin
         }
         return None;
     }
-    NaiveDateTime::parse_from_str(input, chrono)
+    if let Ok(naive) = NaiveDateTime::parse_from_str(input, chrono) {
+        return Some((naive, None));
+    }
+
+    // A DATE-ONLY pattern. `NaiveDateTime` demands a time component, so
+    // `yyyy-MM-dd` against `2024-12-15` failed here and took the whole
+    // processor down its `on_failure` path -- which then removed the field the
+    // following `rename` wanted, so one unparsed date cost two processors.
+    // Java resolves that pattern to a `LocalDate` and the date processor reads
+    // it at midnight, which is what Elasticsearch stores.
+    NaiveDate::parse_from_str(input, chrono)
         .ok()
-        .map(|naive| (naive, None))
+        .map(|date| (date.into(), None))
 }
 
 /// Zone abbreviations with one unambiguous offset, in minutes east.
@@ -594,6 +604,35 @@ fn token(letter: char, run: usize) -> String {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
+
+    /// Verbatim from `o365_metrics`, whose every stream carries a
+    /// `Report Refresh Date`. Java resolves `yyyy-MM-dd` to a `LocalDate` and
+    /// the date processor reads it at midnight; `NaiveDateTime` demands a time
+    /// component, so this returned None and the processor took its
+    /// `on_failure` -- which removed the field the following `rename` wanted,
+    /// costing two processors for one unparsed date.
+    #[test]
+    fn a_date_with_no_time_parses_at_midnight() {
+        assert_eq!(
+            parse_date_out("2024-12-15", &["yyyy-MM-dd"], Some("UTC"), None).as_deref(),
+            Some("2024-12-15T00:00:00.000Z")
+        );
+
+        // The zone still applies: midnight in Sydney is the day before in UTC.
+        assert_eq!(
+            parse_date_out("2024-12-15", &["yyyy-MM-dd"], Some("Australia/Sydney"), None)
+                .as_deref(),
+            Some("2024-12-15T00:00:00.000+11:00")
+        );
+
+        // A pattern WITH a time is unaffected, and a value that does not match
+        // the pattern still declines.
+        assert_eq!(
+            parse_date_out("2024-12-15 09:30:00", &["yyyy-MM-dd HH:mm:ss"], None, None).as_deref(),
+            Some("2024-12-15T09:30:00.000Z")
+        );
+        assert!(parse_date_out("not a date", &["yyyy-MM-dd"], None, None).is_none());
+    }
 
     #[test]
     fn java_patterns_translate() {
