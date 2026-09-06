@@ -4555,6 +4555,155 @@ fn parse_stream_rewrite_keys(script: &str) -> Option<RewriteKeys> {
     Some(RewriteKeys::new(path.clone(), path, steps))
 }
 
+/// A named member copied out of whichever of several sibling keys is present.
+///
+/// A payload that carries exactly one of a family of keys, and a pipeline that
+/// wants the same member out of whichever one arrived. tetragon's is the case:
+/// its event is `process_exec` or `process_exit` or one of five more, each
+/// holding a `process` and most holding a `parent`, and the pipeline lifts both
+/// to a temporary so the twenty renames after it can name ONE path.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct MemberFromVariantKey {
+    /// The map whose keys are the variants.
+    root: String,
+    /// Where the lifted members are collected.
+    target: String,
+    /// One per member the script lifts, with the keys it accepts for it.
+    /// tetragon's two differ: `process_loader` carries a process and no parent.
+    lifts: Vec<(String, Vec<String>)>,
+}
+
+impl MemberFromVariantKey {
+    /// The generated call site that rebuilds this pattern.
+    #[cfg(feature = "codegen")]
+    pub(crate) fn direct_call(&self) -> String {
+        let lifts: Vec<String> = self
+            .lifts
+            .iter()
+            .map(|(member, keys)| {
+                let keys: Vec<String> = keys.iter().map(|key| rust_str(key)).collect();
+                format!("({}.into(), vec![{}])", rust_str(member), {
+                    let owned: Vec<String> =
+                        keys.iter().map(|key| format!("{key}.into()")).collect();
+                    owned.join(", ")
+                })
+            })
+            .collect();
+        format!(
+            "member_from_variant_key(event, &MemberFromVariantKey::new({}.into(), {}.into(), vec![{}]));",
+            rust_str(&self.root),
+            rust_str(&self.target),
+            lifts.join(", "),
+        )
+    }
+
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(root: String, target: String, lifts: Vec<(String, Vec<String>)>) -> Self {
+        Self {
+            root,
+            target,
+            lifts,
+        }
+    }
+}
+
+/// Copy each member out of whichever variant key the document carries.
+///
+/// The root's keys are walked in the order they arrive and the LAST match wins,
+/// which is what Painless's loop does. In practice a payload carries one.
+pub fn member_from_variant_key(event: &mut Event, pattern: &MemberFromVariantKey) -> bool {
+    let Some(root) = event.get(&pattern.root).and_then(Value::as_object).cloned() else {
+        return true;
+    };
+    for (member, keys) in &pattern.lifts {
+        for (key, value) in &root {
+            if !keys.iter().any(|allowed| allowed == key) {
+                continue;
+            }
+            if let Some(found) = value.get(member) {
+                let _ = event.set(&format!("{}.{member}", pattern.target), found.clone());
+            }
+        }
+    }
+    true
+}
+
+/// ```painless
+/// void run(Map map) {
+///   for (def k : map?.a?.b?.keySet()) {
+///     if (k == "one" || k == "two") {
+///       if (map?._tmp_ == null) { map["_tmp_"] = new HashMap(); }
+///       map["_tmp_"]["process"] = map.a.b[k].process;
+///     }
+///   }
+/// }
+/// run(ctx);
+/// ```
+///
+/// Every write is read, and a write this cannot read declines the whole script:
+/// lifting one member and not another leaves the renames after it half fed,
+/// which reads as a source needing polish rather than one needing a matcher.
+fn parse_member_from_variant_key(script: &str) -> Option<MemberFromVariantKey> {
+    use crate::painless_params::clean_path;
+
+    let (head, body) = script.split_once(".keySet()")?;
+    let root = clean_path(head.rsplit_once("map?")?.1.trim_start_matches('.'));
+    if root.is_empty() {
+        return None;
+    }
+
+    // The right-hand side every lift shares, which also pins the loop variable.
+    let reads = format!("= map.{root}[k].");
+    let mut target: Option<String> = None;
+    let mut lifts: Vec<(String, Vec<String>)> = Vec::new();
+    let mut from = 0usize;
+    while let Some(offset) = body[from..].find(&reads) {
+        let at = from + offset;
+        let member = body[at + reads.len()..]
+            .split_once(';')?
+            .0
+            .trim()
+            .to_owned();
+        if member.is_empty() || !member.chars().all(|c| c.is_alphanumeric() || c == '_') {
+            return None;
+        }
+
+        // The left-hand side, `map["<target>"]["<member>"]`, names where it
+        // lands. A different member either side is a script this misreads.
+        let assigned = body[..at].trim_end();
+        let (holder, written) = assigned.rsplit_once("][")?;
+        if written.trim_end_matches(']').trim_matches(['"', '\'']) != member {
+            return None;
+        }
+        let holder = holder.rsplit_once("map[")?.1.trim_matches(['"', '\'']);
+        if target.get_or_insert_with(|| holder.to_owned()) != holder {
+            return None;
+        }
+
+        // The guard above it, and the keys it names.
+        let guard = assigned.rfind("if (k ==")?;
+        let condition = &assigned[guard..assigned[guard..].find(')')? + guard];
+        let keys: Vec<String> = quoted_members(condition);
+        if keys.is_empty() {
+            return None;
+        }
+        lifts.push((member, keys));
+        from = at + reads.len();
+    }
+
+    // A `for` body doing anything else is not this pattern. The allocation
+    // guard and the loop's own header are all that may sit beside the lifts.
+    let leftover = body.replace('\n', " ");
+    if leftover.contains(".put(") || leftover.contains("remove(") {
+        return None;
+    }
+    if lifts.is_empty() {
+        return None;
+    }
+    Some(MemberFromVariantKey::new(root, target?, lifts))
+}
+
 /// A whole subtree's keys rewritten at every depth, then MOVED to a new path.
 ///
 /// ```painless
@@ -15336,6 +15485,8 @@ pub fn try_known_painless(event: &mut Event, script: &str) -> bool {
 pub(crate) enum KnownPattern {
     /// A scalar written from arithmetic over other fields.
     ScalarExpression(Box<crate::painless_expr::ScalarExpression>),
+    /// A member copied out of whichever sibling key the payload carries.
+    MemberFromVariantKey(Box<MemberFromVariantKey>),
     DropEmpty {
         policy: DropPolicy,
         root: Option<String>,
@@ -16018,6 +16169,16 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_parameters_into_map(normalised)
     {
         patterns.push(KnownPattern::ParametersIntoMap(pattern));
+        return patterns;
+    }
+
+    // Pattern: a named member lifted out of whichever of several sibling keys
+    // the payload carries.
+    if normalised.contains(".keySet()")
+        && normalised.contains("if (k ==")
+        && let Some(pattern) = parse_member_from_variant_key(normalised)
+    {
+        patterns.push(KnownPattern::MemberFromVariantKey(Box::new(pattern)));
         return patterns;
     }
 
@@ -17730,6 +17891,7 @@ impl KnownPattern {
                 rust_str(&pattern.to),
             )),
             Self::ScalarExpression(pattern) => Some(pattern.direct_call()),
+            Self::MemberFromVariantKey(pattern) => Some(pattern.direct_call()),
             Self::KvIntoFields(target) => {
                 Some(format!("kv_into_fields(event, {});", rust_str(target)))
             }
@@ -17778,6 +17940,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::ScalarExpression(pattern) => {
             crate::painless_expr::scalar_expression(event, pattern)
         }
+        KnownPattern::MemberFromVariantKey(pattern) => member_from_variant_key(event, pattern),
         KnownPattern::DropEmpty { policy, root } => drop_empty(event, policy, root.as_deref()),
         KnownPattern::SplitCommandLine(script) => {
             crate::painless_windows::run_argv_script(event, script)

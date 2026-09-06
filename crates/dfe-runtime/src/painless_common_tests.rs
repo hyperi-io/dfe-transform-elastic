@@ -316,6 +316,59 @@ fn every_key_of_a_map_takes_a_chain_of_transforms() {
     assert!(!event.has("oracle.database_audit.DBID"));
 }
 
+/// tetragon's event is one of seven `process_*` keys, and the pipeline lifts
+/// the same members out of whichever arrived so the twenty renames after it can
+/// name ONE path.
+///
+/// Verbatim from `pipelines/tetragon/log/default.yml`. The two members differ in
+/// the keys they accept -- `process_loader` carries a process and no parent --
+/// which is why the keys are read per member rather than once.
+#[test]
+fn a_member_is_lifted_from_whichever_key_arrived() {
+    let script = "void run(Map map) {\n  for (def k : map?.cilium_tetragon?.log?.keySet()) {\n    \
+        /* these tetragon objects have \"process\" */\n    if (k == \"process_exec\" ||\n        \
+        k == \"process_exit\" ||\n        k == \"process_loader\") {\n      \
+        if (map?._tmp_ == null) {\n        map[\"_tmp_\"] = new HashMap();\n      }\n      \
+        map[\"_tmp_\"][\"process\"] = map.cilium_tetragon.log[k].process;\n    }\n\n    \
+        /* these tetragon objects have \"parent\" */\n    if (k == \"process_exec\" ||\n        \
+        k == \"process_exit\") {\n      if (map?._tmp_ == null) {\n        \
+        map[\"_tmp_\"] = new HashMap();\n      }\n      \
+        map[\"_tmp_\"][\"parent\"] = map.cilium_tetragon.log[k].parent;\n    }\n  }\n}\n\nrun(ctx);\n";
+    let pattern =
+        parse_member_from_variant_key(&normalise(script)).expect("the lift is recognised");
+
+    let mut event = Event::new(serde_json::json!({ "cilium_tetragon": { "log": {
+        "process_exec": {
+            "process": { "pid": 224_395, "binary": "/usr/local/bin/x" },
+            "parent": { "pid": 223_965 }
+        }
+    } } }));
+    assert!(member_from_variant_key(&mut event, &pattern));
+    assert_eq!(
+        event.get("_tmp_.process.pid"),
+        Some(&serde_json::json!(224_395))
+    );
+    assert_eq!(
+        event.get("_tmp_.parent.pid"),
+        Some(&serde_json::json!(223_965))
+    );
+
+    // A different variant key, and the member that one does not carry.
+    let mut loader = Event::new(serde_json::json!({ "cilium_tetragon": { "log": {
+        "process_loader": { "process": { "pid": 7 } }
+    } } }));
+    assert!(member_from_variant_key(&mut loader, &pattern));
+    assert_eq!(loader.get("_tmp_.process.pid"), Some(&serde_json::json!(7)));
+    assert!(!loader.has("_tmp_.parent"));
+
+    // A key outside both lists is left alone.
+    let mut other = Event::new(serde_json::json!({ "cilium_tetragon": { "log": {
+        "test_sensor": { "process": { "pid": 9 } }
+    } } }));
+    assert!(member_from_variant_key(&mut other, &pattern));
+    assert!(!other.has("_tmp_"));
+}
+
 /// ti_flashpoint rewrites every key at every depth and MOVES the result, so a
 /// one-level reader would leave the nested maps spelt the vendor's way and the
 /// payload sitting under `json.*` as well.
