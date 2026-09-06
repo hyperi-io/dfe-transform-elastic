@@ -9,6 +9,39 @@
 use super::*;
 use serde_json::json;
 
+/// Painless's `[local: value]` map literal evaluates the KEY as an expression,
+/// so the map's key is the params row's value rather than the word "key".
+///
+/// Verbatim from `pipelines/ti_recordedfuture/threat/default.yml`, and the
+/// captured output confirms the reading -- `{"sha256": "38e9..."}` after the
+/// `rename` that follows.
+#[test]
+fn a_map_literal_takes_its_key_from_the_lookup() {
+    let script = "def key = params[ctx.json.Algorithm];\n\
+        if (key == null) {\n  throw new Exception(\"Unsupported hash algorithm '\" \
+        + ctx.json.Algorithm + \"'\");\n}\n\
+        def hashes = [key:ctx.json.Name];\nctx[\"_hashes\"] = hashes;";
+    let pattern = parse_keyed_by_lookup(&crate::painless_common::normalise(script))
+        .expect("the lookup is recognised");
+
+    let table = json!({ "MD5": "md5", "SHA-256": "sha256" });
+    let table = table.as_object().expect("a params table");
+
+    let mut event = Event::new(json!({
+        "json": { "Algorithm": "SHA-256", "Name": "38e992eb852ab0c4" }
+    }));
+    assert!(run_keyed_by_lookup(&mut event, &pattern, table));
+    assert_eq!(event.get_str("_hashes.sha256"), Some("38e992eb852ab0c4"));
+
+    // An algorithm with no row THROWS in Painless, and the processor's
+    // on_failure appends to error.message rather than storing a fallback key.
+    let mut unknown = Event::new(json!({
+        "json": { "Algorithm": "SHA-3", "Name": "abc" }
+    }));
+    assert!(run_keyed_by_lookup(&mut unknown, &pattern, table));
+    assert!(!unknown.has("_hashes"));
+}
+
 /// Hold the `ctx.` path readers to one answer, or to a stated reason.
 ///
 /// Eighteen helpers read a dotted path out of Painless text and differ on
@@ -3218,4 +3251,98 @@ fn every_value_of_a_map_is_normalised_in_place() {
     // A list drops its absent elements, and goes entirely when none survive.
     assert_eq!(event.get("auditd.log.a0"), Some(&json!(["one"])));
     assert!(!event.has("auditd.log.a1"));
+}
+
+/// `cisco_asa`'s distinguished-name fold, verbatim from
+/// `pipelines/cisco/asa/default.yml` (tag `script_b84935be`), with the params
+/// block that call site carries.
+///
+/// The compat corpus cannot score this one: it holds no ASA
+/// `Certificate was successfully validated` message, so `dn_parts` is never
+/// built and the script's own null guard returns on all 512 events. The test
+/// is what stands in for that.
+const DN_PARTS: &str = "if (ctx._temp_?.cisco?.dn_parts == null) {\n  return;\n}\n\
+    def parts = [:];\nctx._temp_.cisco.dn_parts.forEach((k,v) -> {\n  \
+    if (params.containsKey(k)) {\n    \
+    parts[params[k]] = (v instanceof List) ? v : [v];   \
+    // `[v]` is a Painless list literal\n  } else {\n    return false;\n  }\n});\n\
+    ctx._temp_.cisco.dn_parts = parts;\n";
+
+fn dn_params() -> Value {
+    json!({
+        "ST": "state_or_province",
+        "S": "state_or_province",
+        "P": "state_or_province",
+        "CN": "common_name",
+        "C": "country",
+        "L": "locality",
+        "O": "organization",
+        "OU": "organizational_unit"
+    })
+}
+
+/// Every key the table names is renamed and wrapped, in the MAP's own order.
+#[test]
+fn a_distinguished_name_is_renamed_onto_its_ecs_members() {
+    let mut event = Event::new(json!({ "_temp_": { "cisco": { "dn_parts": {
+        "CN": "vpn.example.com",
+        "OU": "IT",
+        "O": "Example Pty Ltd",
+        "C": "AU"
+    } } } }));
+
+    assert!(try_params_painless(&mut event, DN_PARTS, &dn_params()));
+    assert_eq!(
+        event.get("_temp_.cisco.dn_parts"),
+        Some(&json!({
+            "common_name": ["vpn.example.com"],
+            "organizational_unit": ["IT"],
+            "organization": ["Example Pty Ltd"],
+            "country": ["AU"]
+        }))
+    );
+}
+
+/// A key the table does not name is DROPPED, and a value that is already a
+/// list is not wrapped a second time.
+///
+/// Keeping the unnamed key is what the neighbouring `RenameKeys` does, and it
+/// would carry the vendor's own abbreviation into `tls.server.x509.subject`
+/// beside the ECS member.
+#[test]
+fn an_unnamed_distinguished_name_part_is_dropped() {
+    let mut event = Event::new(json!({ "_temp_": { "cisco": { "dn_parts": {
+        "CN": ["a.example.com", "b.example.com"],
+        "SERIALNUMBER": "1234",
+        "L": "Sydney"
+    } } } }));
+
+    assert!(try_params_painless(&mut event, DN_PARTS, &dn_params()));
+    assert_eq!(
+        event.get("_temp_.cisco.dn_parts"),
+        Some(&json!({
+            "common_name": ["a.example.com", "b.example.com"],
+            "locality": ["Sydney"]
+        }))
+    );
+}
+
+/// The script's own null guard: no map, no write, and nothing counted as run.
+#[test]
+fn a_missing_distinguished_name_writes_nothing() {
+    let mut event = Event::new(json!({ "_temp_": { "cisco": {} } }));
+    assert!(!try_params_painless(&mut event, DN_PARTS, &dn_params()));
+    assert_eq!(event.get("_temp_.cisco"), Some(&json!({})));
+}
+
+/// A stored expression the parse cannot say is declined WHOLE, rather than
+/// claimed and half-run: `v.toString()` is a third behaviour, and writing the
+/// keys right with the values wrong is the worse outcome.
+#[test]
+fn a_fold_storing_something_else_declines() {
+    let script = DN_PARTS.replace("(v instanceof List) ? v : [v]", "v.toString()");
+    assert!(!matches!(
+        params_pattern(&crate::painless_common::normalise(&script)),
+        Some(ParamsPattern::SelectRenameKeys(_))
+    ));
 }

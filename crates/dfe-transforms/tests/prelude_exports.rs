@@ -18,6 +18,14 @@
 //! Static, so it costs milliseconds where compiling this crate costs minutes --
 //! and it fails with the missing NAMES rather than a compiler error in a
 //! generated file nobody wrote.
+//!
+//! What it does NOT catch: a pattern whose arm has never been regenerated names
+//! nothing in the generated tree, so its emitted types can be absent from the
+//! prelude with nothing to say so until a regeneration breaks the build.
+//! Reading the `direct_call` bodies instead was tried and abandoned -- telling a
+//! Rust string literal from code needs a real scanner, and a regex over quote
+//! pairs reports two dozen names that are neither emitted nor missing. Adding a
+//! pattern module means adding its emitted types to the prelude BY HAND.
 
 use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
@@ -31,6 +39,9 @@ use regex::Regex;
 /// passes for a fortnight while measuring nothing.
 const MIN_PUBLIC_SYMBOLS: usize = 60;
 const MIN_FILES_SCANNED: usize = 2_500;
+/// Five modules write a `direct_call` today. A floor rather than the count, so
+/// adding a sixth does not fail this and deleting four does.
+const MIN_EMITTING_MODULES: usize = 4;
 
 fn runtime_src() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("../dfe-runtime/src")
@@ -62,18 +73,40 @@ fn read(path: &Path) -> String {
 fn every_named_runtime_symbol_is_in_the_prelude() {
     let runtime = runtime_src();
 
-    // What the runtime offers publicly from the two files a `direct_call` can
-    // name. Anything else it emits is a macro or a `codegen_api` helper, which
-    // reach the call site by their own path.
+    // Every file that writes a `direct_call`, discovered rather than listed --
+    // a named list cannot see a pattern module added beside it, and the first
+    // sign of one would be a regeneration that does not compile. Anything else
+    // the generator emits is a macro or a `codegen_api` helper, which reach the
+    // call site by their own path.
+    // Anchored at column zero: an indented `pub fn` is an inherent method such
+    // as `new`, reached through its type rather than named by the prelude.
     let declaration = Regex::new(r"(?m)^pub (?:fn|struct|enum) ([A-Za-z_][A-Za-z0-9_]*)")
         .expect("declaration regex");
     let mut public = BTreeSet::new();
-    for name in ["painless_common.rs", "painless_params.rs"] {
-        let text = read(&runtime.join(name));
+    let mut emitting = Vec::new();
+    for entry in std::fs::read_dir(&runtime)
+        .expect("read the runtime source")
+        .flatten()
+    {
+        let path = entry.path();
+        if path.extension().is_none_or(|e| e != "rs") {
+            continue;
+        }
+        let text = read(&path);
+        if !text.contains("fn direct_call") {
+            continue;
+        }
         for caps in declaration.captures_iter(&text) {
             public.insert(caps[1].to_owned());
         }
+        emitting.push(text);
     }
+    assert!(
+        emitting.len() >= MIN_EMITTING_MODULES,
+        "found {} runtime modules writing a `direct_call`, expected at least \
+         {MIN_EMITTING_MODULES} -- the walk is not reaching them",
+        emitting.len()
+    );
     assert!(
         public.len() >= MIN_PUBLIC_SYMBOLS,
         "scanned {} public runtime symbols, expected at least {MIN_PUBLIC_SYMBOLS} -- \

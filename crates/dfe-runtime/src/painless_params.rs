@@ -101,6 +101,10 @@ impl Fold {
 pub(crate) enum ParamsPattern {
     /// A scalar written from arithmetic that reads a scale out of `params`.
     ScalarExpression(Box<crate::painless_expr::ScalarExpression>),
+    /// A one-entry map whose key comes from a params lookup.
+    KeyedByLookup(Box<KeyedByLookup>),
+    /// Named fields parsed from hex text into numbers, in place.
+    HexFields(crate::painless_hex::HexFields),
     AwsEntity(Box<crate::painless_entity::EntityScript>),
     DropEmptyMembers {
         parent: String,
@@ -268,6 +272,9 @@ pub(crate) enum ParamsPattern {
         /// params member holding what to write instead).
         arms: Vec<(String, String)>,
     },
+    /// A map rebuilt from ONLY the keys the params table names, each renamed
+    /// to the table's value.
+    SelectRenameKeys(SelectRenameKeys),
     /// A CSV layout identified by the KEYS its labelled columns produced,
     /// then its unlabelled columns named by index from the matching row.
     CsvFingerprintProvider {
@@ -278,6 +285,9 @@ pub(crate) enum ParamsPattern {
         /// The `ctx.` path holding the joined key list.
         fingerprint: String,
     },
+    /// A run of null-guarded lookups, each field through its OWN named table,
+    /// subscripted `params['<table>'][<key>]`.
+    FieldTables(crate::painless_field_tables::FieldTables),
 }
 
 /// The one matcher this script's text triggers, or `None`.
@@ -883,6 +893,22 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
         return Some(ParamsPattern::RowOrDefaults(Box::new(pattern)));
     }
 
+    // Pattern: named fields parsed from hex text into numbers, the field names
+    // coming from a params list rather than the script.
+    if normalised.contains("for (key in params.")
+        && let Some(pattern) = crate::painless_hex::parse_hex_fields(normalised)
+    {
+        return Some(ParamsPattern::HexFields(pattern));
+    }
+
+    // Pattern: a one-entry map whose KEY is a params row's value, which is what
+    // Painless's `[local: value]` literal builds.
+    if normalised.contains("= params[ctx.")
+        && let Some(pattern) = parse_keyed_by_lookup(normalised)
+    {
+        return Some(ParamsPattern::KeyedByLookup(Box::new(pattern)));
+    }
+
     // Pattern: a scalar written from arithmetic where `params` supplies a
     // scale. The same reader the text-only lane uses, which declines these
     // because it is never handed a params block -- `event.duration =
@@ -895,7 +921,123 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
         return Some(ParamsPattern::ScalarExpression(Box::new(pattern)));
     }
 
+    // Pattern: a map rebuilt from ONLY the keys the table names, each renamed
+    // to the table's value. LAST, so it takes only what nothing above took --
+    // `RenameKeys` further up KEEPS a key the table misses where this one
+    // DROPS it, and letting the general reader claim this script would carry
+    // the vendor's own abbreviations into ECS beside the renamed ones.
+    if normalised.contains("params.containsKey(")
+        && let Some(pattern) = parse_select_rename_keys(normalised)
+    {
+        return Some(ParamsPattern::SelectRenameKeys(pattern));
+    }
+
+    // Pattern: a run of null-guarded lookups, each field through its OWN named
+    // table, subscripted `params['<table>'][ctx.<field>]`. LAST, because the
+    // parse IS the trigger and it reads the WHOLE script: nothing above claims
+    // gigamon's nine lookups today, so it needs to precede nothing.
+    if let Some(pattern) = crate::painless_field_tables::parse_field_tables(normalised) {
+        return Some(ParamsPattern::FieldTables(pattern));
+    }
+
     None
+}
+
+/// A one-entry map whose KEY comes from a params lookup.
+///
+/// ```painless
+/// def key = params[ctx.json.Algorithm];
+/// if (key == null) { throw new Exception("Unsupported hash algorithm ..."); }
+/// def hashes = [key:ctx.json.Name];
+/// ctx["_hashes"] = hashes;
+/// ```
+///
+/// The subtlety is Painless's map literal: `[key: value]` evaluates `key` as an
+/// EXPRESSION, so the map's key is the params row's value, not the word "key".
+/// `ti_recordedfuture` turns `SHA-256` into `sha256` that way and the captured
+/// output confirms it -- `{"sha256": "38e9..."}` -- after a `rename` moves the
+/// map to `threat.indicator.file.hash`.
+///
+/// Unmatched it costs 17 of its 98 events, all on that one field.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct KeyedByLookup {
+    /// The field whose value selects the params row.
+    selector: String,
+    /// The field whose value the map holds.
+    value: String,
+    /// Where the one-entry map lands.
+    target: String,
+}
+
+impl KeyedByLookup {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(selector: String, value: String, target: String) -> Self {
+        Self {
+            selector,
+            value,
+            target,
+        }
+    }
+}
+
+/// Write the one-entry map, or nothing.
+///
+/// A selector with no row in the table writes nothing: the script THROWS there,
+/// and its `on_failure` appends to `error.message` rather than storing a map
+/// under some fallback key.
+fn run_keyed_by_lookup(
+    event: &mut Event,
+    pattern: &KeyedByLookup,
+    params: &Map<String, Value>,
+) -> bool {
+    let (Some(selector), Some(value)) = (
+        event.get(&pattern.selector).and_then(Value::as_str),
+        event.get(&pattern.value).cloned(),
+    ) else {
+        return true;
+    };
+    let Some(key) = params.get(selector).and_then(Value::as_str) else {
+        return true;
+    };
+    let mut held = Map::new();
+    held.insert(key.to_owned(), value);
+    let _ = event.set(&pattern.target, Value::Object(held));
+    true
+}
+
+/// `def k = params[ctx.<selector>]; .. def m = [k:ctx.<value>]; ctx["<target>"] = m;`
+fn parse_keyed_by_lookup(script: &str) -> Option<KeyedByLookup> {
+    let (head, tail) = script.split_once("= params[ctx.")?;
+    let local = head.trim_end().rsplit(' ').next()?.trim();
+    let selector = clean_path(tail.split(']').next()?.trim());
+    if local.is_empty() || selector.is_empty() {
+        return None;
+    }
+
+    // The map literal, whose key is the LOCAL rather than a string.
+    let literal = format!("[{local}:ctx.");
+    let (before, after) = script.split_once(&literal)?;
+    let value = clean_path(after.split(']').next()?.trim());
+    // `def hashes = ` -- the name is the token BEFORE the `=`, not the `=`.
+    let map_local = before
+        .trim_end()
+        .strip_suffix('=')?
+        .trim_end()
+        .rsplit([' ', '\n'])
+        .next()?
+        .trim();
+    if value.is_empty() || map_local.is_empty() {
+        return None;
+    }
+
+    // The store, which names where the map lands.
+    let stored = script.split_once("ctx[")?.1;
+    let target = stored.split(']').next()?.trim().trim_matches(['\'', '"']);
+    if target.is_empty() || !script.contains(&format!("= {map_local};")) {
+        return None;
+    }
+    Some(KeyedByLookup::new(selector, value, target.to_owned()))
 }
 
 /// The ctx path before a literal, accepting a bracket subscript.
@@ -1370,6 +1512,10 @@ pub(crate) fn run_params_pattern(
         ParamsPattern::ScalarExpression(pattern) => {
             crate::painless_expr::scalar_expression_params(event, pattern, params)
         }
+        ParamsPattern::KeyedByLookup(pattern) => run_keyed_by_lookup(event, pattern, params),
+        ParamsPattern::HexFields(pattern) => {
+            crate::painless_hex::hex_fields(event, pattern, params)
+        }
         ParamsPattern::AwsEntity(script) => {
             crate::painless_entity::run_entity_script(event, script, params)
         }
@@ -1554,6 +1700,10 @@ pub(crate) fn run_params_pattern(
             try_first_contained_member(event, normalised, params)
         }
         ParamsPattern::RenameKeys => try_rename_keys(event, normalised, params),
+        ParamsPattern::SelectRenameKeys(pattern) => run_select_rename_keys(event, pattern, params),
+        ParamsPattern::FieldTables(pattern) => {
+            crate::painless_field_tables::field_tables(event, pattern, params)
+        }
         ParamsPattern::ValueMaps => try_value_maps(event, normalised, params),
         ParamsPattern::RowColumns(literals) => try_row_columns(event, normalised, params, literals),
         ParamsPattern::RowColumnAppends(pattern) => run_row_column_appends(event, pattern, params),
@@ -5704,6 +5854,121 @@ fn renamed_keys(value: &Value, names: &Map<String, Value>) -> Value {
         }
         other => other.clone(),
     }
+}
+
+/// A map rebuilt from ONLY the keys the params table names, each key renamed
+/// to the table's value.
+///
+/// `cisco_asa` splits a validated certificate's distinguished name into its
+/// `CN`, `OU`, `O` and `C` abbreviations, folds those onto their ECS names,
+/// and only then renames the map to `tls.server.x509.subject`. A key the table
+/// does not name is DROPPED, which is how the vendor keeps its own
+/// abbreviations out of ECS -- the near neighbour [`ParamsPattern::RenameKeys`]
+/// KEEPS them, so the two are not interchangeable.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct SelectRenameKeys {
+    /// The `ctx.` map read and written back in place.
+    subject: String,
+    /// The script wraps a value that is not already a list in a one-element
+    /// list, which is what ECS's array-typed x509 subject fields want.
+    wrap_in_list: bool,
+}
+
+/// Read the select-and-rename fold: the map walked, and whether each value is
+/// wrapped in a list on the way.
+///
+/// The spelling, from `pipelines/cisco/asa/default.yml`:
+///
+/// ```text
+/// def <out> = [:];
+/// ctx.<subject>.forEach((k,v) -> {
+///   if (params.containsKey(k)) {
+///     <out>[params[k]] = (v instanceof List) ? v : [v];
+///   } else {
+///     return false;
+///   }
+/// });
+/// ctx.<subject> = <out>;
+/// ```
+///
+/// The stored expression is READ rather than assumed: `v` and
+/// `(v instanceof List) ? v : [v]` store different things, and a third
+/// expression is a behaviour this cannot say, so it declines.
+fn parse_select_rename_keys(script: &str) -> Option<SelectRenameKeys> {
+    // The local map the fold builds, and the map it walks.
+    let declaration = script.find("= [:];")?;
+    let out = script[..declaration].split_whitespace().next_back()?;
+    let subject = ctx_path_before(script, ".forEach((")?;
+
+    // Written back over the map it walked. A fold storing its result anywhere
+    // else does more than this pattern.
+    if !ctx_writes(script)
+        .iter()
+        .any(|(path, rhs)| path == &subject && rhs == out)
+    {
+        return None;
+    }
+
+    // The lambda's key and value names, and nothing but those two.
+    let (names, body) = script.split_once(".forEach((")?.1.split_once("->")?;
+    let mut names = names.trim().trim_end_matches(')').split(',');
+    let (Some(key), Some(value), None) = (names.next(), names.next(), names.next()) else {
+        return None;
+    };
+    let (key, value) = (key.trim(), value.trim());
+    if key.is_empty() || value.is_empty() {
+        return None;
+    }
+
+    // The table guard, and the one write it guards.
+    if !body.contains(&format!("params.containsKey({key})")) {
+        return None;
+    }
+    let write = format!("{out}[params[{key}]] = ");
+    let at = body.find(&write)? + write.len();
+    let stored = body[at..].split_once(';')?.0.trim();
+
+    let wrap_in_list = stored == format!("({value} instanceof List) ? {value} : [{value}]");
+    (wrap_in_list || stored == value).then_some(SelectRenameKeys {
+        subject,
+        wrap_in_list,
+    })
+}
+
+/// Rebuild the map from the keys the table names, in the map's OWN order.
+///
+/// A key the table does not name is dropped -- that is the script's `else {
+/// return false; }` arm, which adds nothing for it. An empty result is still
+/// stored, because the script assigns unconditionally once the fold has run.
+fn run_select_rename_keys(
+    event: &mut Event,
+    pattern: &SelectRenameKeys,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(subject) = event
+        .get(&pattern.subject)
+        .and_then(Value::as_object)
+        .cloned()
+    else {
+        // The script's own `== null` guard returns before the fold, so nothing
+        // was written and nothing is counted as having run.
+        return false;
+    };
+
+    let mut renamed = Map::with_capacity(subject.len());
+    for (key, value) in &subject {
+        let Some(name) = params.get(key).and_then(Value::as_str) else {
+            continue;
+        };
+        let value = if pattern.wrap_in_list && !value.is_array() {
+            Value::Array(vec![value.clone()])
+        } else {
+            value.clone()
+        };
+        renamed.insert(name.to_owned(), value);
+    }
+    let _ = event.set(&pattern.subject, Value::Object(renamed));
+    true
 }
 
 /// Normalise several fields, each through a value map of its own.

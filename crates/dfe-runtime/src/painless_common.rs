@@ -393,6 +393,123 @@ fn run_split_token_field(event: &mut Event, pattern: &SplitToken) -> bool {
     true
 }
 
+/// A string trimmed into one field, and its pieces into a list in another.
+///
+/// `cisco_secure_endpoint` carries the whole command line as one string under
+/// `command_line.arguments` and owes ECS both forms of it:
+/// `process.command_line` verbatim and `process.args` as the pieces. One
+/// script, because the trim happens once and both targets carry it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct TrimThenSplit {
+    /// The `ctx.` path the string is read from.
+    source: String,
+    /// Where the trimmed string is stored.
+    text: String,
+    /// Where its non-empty pieces are stored, as a list.
+    list: String,
+    /// The one character the split cuts on.
+    separator: char,
+}
+
+/// The single ORDINARY character a Painless regex literal cuts on, read off
+/// `/<c>/.split(`.
+///
+/// A regex is a language, and this reads one character of it. `/\s+/` cuts in
+/// places a space never does, so anything the engine reads as SYNTAX is
+/// declined rather than taken for the character it looks like.
+fn regex_split_char(script: &str) -> Option<char> {
+    let at = script.find("/.split(")?;
+    let open = script[..at].rfind('/')?;
+    let mut body = script[open + 1..at].chars();
+    let (Some(c), None) = (body.next(), body.next()) else {
+        return None;
+    };
+    (!r"\^$.|?*+()[]{}/".contains(c)).then_some(c)
+}
+
+/// Read the trim-then-split pair off the script.
+///
+/// Every clause the vendor wrote changes what is stored -- the trim, the
+/// empty-string guard, the per-piece empty drop, and the `size() > 0` guard
+/// that keeps an empty list unwritten -- so all four have to be there. A
+/// script missing one of them stores something else, and claiming it would
+/// write the wrong value under the right name.
+fn parse_trim_then_split(script: &str) -> Option<TrimThenSplit> {
+    let (local, source) = local_and_ctx_path(script)?;
+    let separator = regex_split_char(script)?;
+
+    // The trim, the guard that keeps an all-space value unstored, and the
+    // split reading the trimmed local rather than some other string. Painless
+    // takes either quote for the empty literal.
+    let empty_test = |name: &str| {
+        script.contains(&format!("{name} != \"\"")) || script.contains(&format!("{name} != ''"))
+    };
+    if !script.contains(&format!("{local} = {local}.trim()"))
+        || !empty_test(&local)
+        || !script.contains(&format!(".split({local})"))
+    {
+        return None;
+    }
+
+    // The list the loop fills, the loop variable, the per-piece empty drop,
+    // and the guard before the list is stored.
+    let declaration = script.find("= [];")?;
+    let pieces = script[..declaration].split_whitespace().next_back()?;
+    let item = script
+        .split_once("for (")?
+        .1
+        .split_once(':')?
+        .0
+        .trim()
+        .rsplit(' ')
+        .next()?;
+    if !script.contains(&format!("{pieces}.add({item})"))
+        || !empty_test(item)
+        || !script.contains(&format!("{pieces}.size() > 0"))
+    {
+        return None;
+    }
+
+    // Exactly two ctx writes, the trimmed string FIRST: a third write is a
+    // script doing more than this pattern, and the order is what the stored
+    // document comes back in.
+    let writes = crate::painless_params::ctx_writes(script);
+    let [(text, holds_text), (list, holds_list)] = writes.as_slice() else {
+        return None;
+    };
+    (holds_text == &local && holds_list == pieces && text != list).then(|| TrimThenSplit {
+        source,
+        text: text.clone(),
+        list: list.clone(),
+        separator,
+    })
+}
+
+/// Store the trimmed string, then its non-empty pieces.
+///
+/// The pieces go in SECOND because that is the order the script writes them,
+/// and the map preserves insertion order.
+fn run_trim_then_split(event: &mut Event, pattern: &TrimThenSplit) -> bool {
+    let Some(text) = event.get_str(&pattern.source) else {
+        // The script's own `!= null` guard: nothing read, nothing written.
+        return false;
+    };
+    let text = text.trim().to_string();
+    if text.is_empty() {
+        return false;
+    }
+    let pieces: Vec<Value> = text
+        .split(pattern.separator)
+        .filter(|piece| !piece.is_empty())
+        .map(|piece| Value::String(piece.to_owned()))
+        .collect();
+    let _ = event.set(&pattern.text, Value::String(text));
+    if !pieces.is_empty() {
+        let _ = event.set(&pattern.list, Value::Array(pieces));
+    }
+    true
+}
+
 /// Base64-decode one field into another; text that will not decode is left
 /// alone, which is where Elastic's engine throws to `on_failure` instead.
 fn run_decode_base64(event: &mut Event, source: &str, target: &str) -> bool {
@@ -4555,6 +4672,126 @@ fn parse_stream_rewrite_keys(script: &str) -> Option<RewriteKeys> {
     Some(RewriteKeys::new(path.clone(), path, steps))
 }
 
+/// `event.duration`, `event.start` and `event.end` from ONE duration field.
+///
+/// ```painless
+/// ctx.event.duration = Integer.parseInt(ctx.sophos.xg.duration) * 1000000000L;
+/// ctx.event.start = ctx['@timestamp'];
+/// ZonedDateTime start = ZonedDateTime.parse(ctx.event.start);
+/// ctx.event.end = start.plus(ctx.event.duration, ChronoUnit.NANOS);
+/// ```
+///
+/// `sophos` and `juniper_srx` write it identically, differing only in the field
+/// the duration comes from. Unmatched it costs sophos all three fields on 63 of
+/// its events, and `event.start` alone unlocks 56 of them.
+///
+/// The three writes are one pattern rather than three, because the second and
+/// third are derived from the first: reading the arithmetic and leaving the
+/// dates would write a duration with no window around it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DurationWindow {
+    /// The field holding the duration, in whole units.
+    source: String,
+    /// Nanoseconds per unit -- `1_000_000_000` where the vendor counts seconds.
+    scale: i64,
+    /// The timestamp the window starts at, which `event.start` is copied from.
+    base: String,
+}
+
+impl DurationWindow {
+    /// The generated call site that rebuilds this pattern.
+    #[cfg(feature = "codegen")]
+    pub(crate) fn direct_call(&self) -> String {
+        format!(
+            "duration_window(event, &DurationWindow::new({}.into(), {}, {}.into()));",
+            rust_str(&self.source),
+            self.scale,
+            rust_str(&self.base),
+        )
+    }
+
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(source: String, scale: i64, base: String) -> Self {
+        Self {
+            source,
+            scale,
+            base,
+        }
+    }
+}
+
+/// Write the duration and the window around it.
+///
+/// A duration that will not parse leaves all three alone: Painless would have
+/// thrown on `Integer.parseInt`, and the vendor's processor carries no
+/// `on_failure`, so the document keeps what it had.
+pub fn duration_window(event: &mut Event, pattern: &DurationWindow) -> bool {
+    let Some(units) = event.get(&pattern.source).and_then(|value| match value {
+        Value::String(text) => text.trim().parse::<i64>().ok(),
+        other => other.as_i64(),
+    }) else {
+        return true;
+    };
+    let (Some(nanos), Some(start)) = (
+        units.checked_mul(pattern.scale),
+        event.get_string(&pattern.base),
+    ) else {
+        return true;
+    };
+    let Some(end) = crate::date_formats::iso8601_plus_nanos(&start, nanos) else {
+        return true;
+    };
+    let _ = event.set("event.duration", json!(nanos));
+    let _ = event.set("event.start", json!(start));
+    let _ = event.set("event.end", json!(end));
+    true
+}
+
+/// Read the four statements, or decline.
+fn parse_duration_window(script: &str) -> Option<DurationWindow> {
+    use crate::painless_params::{clean_path, subject_path};
+
+    // Every write must be present, or this is a different script that happens
+    // to compute a duration.
+    if !script.contains("ctx.event.duration, ChronoUnit.NANOS")
+        || !script.contains("ZonedDateTime.parse(")
+    {
+        return None;
+    }
+
+    // `ctx.event.duration = Integer.parseInt(ctx.<source>) * <scale>;`
+    let (_, tail) = script.split_once("ctx.event.duration = ")?;
+    let (parsed, rest) = tail.split_once(')')?;
+    let parsed = parsed.trim();
+    let source = clean_path(
+        parsed
+            .strip_prefix("Integer.parseInt(ctx.")
+            .or_else(|| parsed.strip_prefix("Long.parseLong(ctx."))?,
+    );
+    let scale: i64 = rest
+        .split(';')
+        .next()?
+        .trim()
+        .strip_prefix('*')?
+        .trim()
+        .trim_end_matches(['L', 'l'])
+        .parse()
+        .ok()?;
+    if source.is_empty() || scale <= 0 {
+        return None;
+    }
+
+    // `ctx.event.start = ctx['@timestamp'];`
+    let (_, base) = script.split_once("ctx.event.start = ")?;
+    let base = subject_path(base.split(';').next()?.trim());
+    let base = clean_path(base.strip_prefix("ctx.")?);
+    if base.is_empty() {
+        return None;
+    }
+    Some(DurationWindow::new(source, scale, base))
+}
+
 /// A named member copied out of whichever of several sibling keys is present.
 ///
 /// A payload that carries exactly one of a family of keys, and a pipeline that
@@ -6153,6 +6390,76 @@ impl StringOps {
     }
 }
 
+/// The same ops written as ONE chained expression, with no local at all.
+///
+/// ```painless
+/// ctx.source.mac = ctx.gigamon.ami.src_mac.replace(":", "-").toUpperCase();
+/// ```
+///
+/// `gigamon` writes both its MAC normalisers this way, and between them they
+/// are `source.mac` wrong on 49 of its 78 events and `destination.mac` on 53.
+/// [`parse_string_ops`] reads the local-variable spelling and cannot see this
+/// one, so a second reader over the same `StringOps` is the whole fix.
+///
+/// The chain is split on `).` rather than `.`, since a `replace(".", "_")`
+/// carries a dot inside its own arguments. One op off the allowlist rejects the
+/// whole chain, exactly as the other reader does.
+fn parse_chained_string_ops(script: &str) -> Option<StringOps> {
+    use crate::painless_params::clean_path;
+
+    let statement = script.trim().trim_end_matches(';').trim();
+    if statement.contains(';') || statement.contains('\n') {
+        return None;
+    }
+    let (target, expression) = statement.split_once('=')?;
+    let target = clean_path(target.trim().strip_prefix("ctx.")?);
+    let expression = expression.trim().strip_prefix("ctx.")?;
+    if target.is_empty() {
+        return None;
+    }
+
+    // The source is everything up to the first call, and the calls follow it.
+    let (source, chain) = expression.split_once(".replace(").map_or_else(
+        || {
+            expression
+                .split_once(".toUpperCase()")
+                .map(|(s, _)| (s, ""))
+        },
+        |(source, rest)| Some((source, rest)),
+    )?;
+    let source = clean_path(source.trim());
+    if source.is_empty() || source.contains('(') {
+        return None;
+    }
+
+    // Rebuild the call list, putting back the `replace(` the split consumed.
+    let calls = if chain.is_empty() {
+        "toUpperCase()".to_owned()
+    } else {
+        format!("replace({chain}")
+    };
+    let mut ops = Vec::new();
+    for call in split_calls(&calls) {
+        let (name, arguments) = call.split_once('(')?;
+        ops.push(StringOp::parse(name.trim(), arguments.strip_suffix(')')?)?);
+    }
+    (!ops.is_empty()).then(|| StringOps::new(source, target, ops))
+}
+
+/// Cut a chain into its calls at each `).`, which an argument cannot contain.
+fn split_calls(chain: &str) -> Vec<String> {
+    let mut calls = Vec::new();
+    let mut rest = chain;
+    while let Some(at) = rest.find(").") {
+        calls.push(rest[..=at].to_owned());
+        rest = &rest[at + 2..];
+    }
+    if !rest.trim().is_empty() {
+        calls.push(rest.to_owned());
+    }
+    calls
+}
+
 /// `String v = ctx.<source>; v = v.<op>(..); ..; ctx.<target> = v;`
 ///
 /// Every statement has to fit, and one op off the allowlist rejects the whole
@@ -6845,6 +7152,9 @@ enum Cmp {
     Le,
     Gt,
     Ge,
+    /// `ctx.confidence == 0`. A band of one, which `ti_opencti`'s confidence
+    /// ladder spells between its null arm and its ranges.
+    Eq,
 }
 
 impl Band {
@@ -6859,6 +7169,7 @@ impl Band {
                 Cmp::Le => value <= limit,
                 Cmp::Gt => value > limit,
                 Cmp::Ge => value >= limit,
+                Cmp::Eq => (value - limit).abs() < f64::EPSILON,
             }
         };
         if self.all {
@@ -6870,7 +7181,7 @@ impl Band {
 }
 
 fn parse_band_ladder(script: &str) -> Option<BandLadder> {
-    let (local, subject) = local_and_ctx_path(script)?;
+    let (local, subject) = local_and_ctx_path(script).or_else(|| inline_ctx_subject(script))?;
 
     let mut arms = Vec::new();
     let mut written: Option<String> = None;
@@ -6991,6 +7302,52 @@ pub(crate) fn local_and_ctx_path(script: &str) -> Option<(String, String)> {
     })
 }
 
+/// The ctx path a ladder tests when it binds no local, taken from its guards.
+///
+/// `local_and_ctx_path` reads `long severity = ctx.x;` and most ladders write
+/// one. `ti_opencti`'s confidence ladder does not: it names `ctx.confidence` in
+/// every guard directly, so with no local there is nothing for the reader to
+/// key on and the whole ladder declines.
+///
+/// The path has to appear in at least TWO guards. One guard naming a ctx path
+/// is an ordinary conditional, not a ladder over that path.
+fn inline_ctx_subject(script: &str) -> Option<(String, String)> {
+    use crate::painless_params::clean_path;
+
+    let mut counts: Vec<(String, usize)> = Vec::new();
+    for block in script.split("if (").skip(1) {
+        let Some((guard, _)) = block.split_once(") {") else {
+            continue;
+        };
+        let mut seen: Vec<&str> = Vec::new();
+        let mut rest = guard;
+        while let Some(at) = rest.find("ctx.") {
+            let tail = &rest[at..];
+            let end = tail
+                .find(|c: char| !c.is_alphanumeric() && !"._?".contains(c))
+                .unwrap_or(tail.len());
+            let token = tail[..end].trim_end_matches('.');
+            if !token.is_empty() && !seen.contains(&token) {
+                seen.push(token);
+            }
+            rest = &tail[end.max(1)..];
+        }
+        // Once per guard, so a path named twice in one band does not outvote a
+        // path named once in each of two.
+        for token in seen {
+            match counts.iter_mut().find(|(held, _)| held == token) {
+                Some((_, count)) => *count += 1,
+                None => counts.push((token.to_owned(), 1)),
+            }
+        }
+    }
+    let (token, count) = counts.into_iter().max_by_key(|(_, count)| *count)?;
+    (count >= 2).then(|| {
+        let path = clean_path(token.trim_start_matches("ctx."));
+        (token, path)
+    })
+}
+
 /// One guard, as comparisons over `local` joined by `&&` or `||`.
 fn parse_band(guard: &str, local: &str) -> Option<Band> {
     let all = !guard.contains("||");
@@ -7016,6 +7373,8 @@ impl Cmp {
             Self::Le => Self::Ge,
             Self::Gt => Self::Lt,
             Self::Ge => Self::Le,
+            // Equality reads the same from either side.
+            Self::Eq => Self::Eq,
         }
     }
 }
@@ -7023,9 +7382,10 @@ impl Cmp {
 fn parse_bound(clause: &str, local: &str) -> Option<Bound> {
     // Two-character operators first, or `>=` reads as `>` and the band shifts
     // by one.
-    const OPERATORS: [(&str, Cmp); 4] = [
+    const OPERATORS: [(&str, Cmp); 5] = [
         ("<=", Cmp::Le),
         (">=", Cmp::Ge),
+        ("==", Cmp::Eq),
         ("<", Cmp::Lt),
         (">", Cmp::Gt),
     ];
@@ -15540,6 +15900,15 @@ pub(crate) enum KnownPattern {
     ScalarExpression(Box<crate::painless_expr::ScalarExpression>),
     /// A member copied out of whichever sibling key the payload carries.
     MemberFromVariantKey(Box<MemberFromVariantKey>),
+    /// Members renamed inside every item of a list.
+    ListItemRenames(Box<crate::painless_lists::ListItemRenames>),
+    /// ECS fields written from the members of a list's items, under nested
+    /// guards.
+    ItemWrites(Box<crate::painless_item_writes::ItemWrites>),
+    /// A duration, and the window it puts around a timestamp.
+    DurationWindow(Box<DurationWindow>),
+    /// Totals summed from two sides, an absent side counting as zero.
+    SumTotals(Box<crate::painless_totals::SumTotals>),
     DropEmpty {
         policy: DropPolicy,
         root: Option<String>,
@@ -15727,6 +16096,7 @@ pub(crate) enum KnownPattern {
     },
     SplitPipeFields(Vec<String>),
     SplitTokenField(Box<SplitToken>),
+    TrimThenSplit(Box<TrimThenSplit>),
     DecodeBase64 {
         source: String,
         target: String,
@@ -16222,6 +16592,26 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_parameters_into_map(normalised)
     {
         patterns.push(KnownPattern::ParametersIntoMap(pattern));
+        return patterns;
+    }
+
+    // Pattern: a duration and the window it puts around a timestamp.
+    if normalised.contains("ChronoUnit.NANOS")
+        && normalised.contains("ctx.event.duration = ")
+        && let Some(pattern) = parse_duration_window(normalised)
+    {
+        patterns.push(KnownPattern::DurationWindow(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: members renamed inside every item of a list, atlassian's cloud
+    // streams reshaped to match their self-hosted twins.
+    if normalised.contains(".length; j++)")
+        && normalised.contains(".put(")
+        && normalised.contains(".remove(")
+        && let Some(pattern) = crate::painless_lists::parse_list_item_renames(normalised)
+    {
+        patterns.push(KnownPattern::ListItemRenames(Box::new(pattern)));
         return patterns;
     }
 
@@ -17626,6 +18016,13 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // The same ops with no local: one chained expression. Beside its twin, and
+    // after it, because the local spelling is the more constrained of the two.
+    if let Some(pattern) = parse_chained_string_ops(normalised) {
+        patterns.push(KnownPattern::StringOps(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: rewrite one substring of a field in place. The parse decides what
     // BINDS; the arm stops the ladder either way, because letting an unreadable
     // script fall through cost juniper_srx 845 fields to worse matches below.
@@ -17796,6 +18193,16 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: totals summed from two sides through a `getOrZero` helper, so
+    // an absent side counts as zero and a zero total is not written. Kept apart
+    // from `sum_directions`, which requires both sides and is shared.
+    if normalised.contains("getOrZero(")
+        && let Some(pattern) = crate::painless_totals::parse_sum_totals(normalised)
+    {
+        patterns.push(KnownPattern::SumTotals(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: a scalar written from arithmetic over other fields. LAST, and
     // deliberately: every arm above returns as soon as it claims a script, so a
     // general evaluator placed here can only take what nothing else took.
@@ -17806,6 +18213,31 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && !pattern.reads_params()
     {
         patterns.push(KnownPattern::ScalarExpression(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: a string trimmed into one field and split into a list in
+    // another. LAST, so it can only take what nothing above took; its own
+    // parse is the trigger, and the `/<c>/.split(` literal is the cheap
+    // reject.
+    if normalised.contains("/.split(")
+        && let Some(pattern) = parse_trim_then_split(normalised)
+    {
+        patterns.push(KnownPattern::TrimThenSplit(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: ECS fields written from the members of a list's items, under
+    // nested guards -- the script all three Atlassian audit streams ship.
+    // LAST, because nothing above claims it today and a general reader placed
+    // here can only take what nothing else took. It reads a closed grammar
+    // rather than one vendor's spelling, so the arm has to be somewhere it
+    // cannot shadow a narrower matcher.
+    if normalised.contains(".length;")
+        && normalised.contains(".put(")
+        && let Some(pattern) = crate::painless_item_writes::parse_item_writes(normalised)
+    {
+        patterns.push(KnownPattern::ItemWrites(Box::new(pattern)));
         return patterns;
     }
 
@@ -17955,6 +18387,9 @@ impl KnownPattern {
             )),
             Self::ScalarExpression(pattern) => Some(pattern.direct_call()),
             Self::MemberFromVariantKey(pattern) => Some(pattern.direct_call()),
+            Self::ListItemRenames(pattern) => Some(pattern.direct_call()),
+            Self::DurationWindow(pattern) => Some(pattern.direct_call()),
+            Self::SumTotals(pattern) => Some(pattern.direct_call()),
             Self::KvIntoFields(target) => {
                 Some(format!("kv_into_fields(event, {});", rust_str(target)))
             }
@@ -18004,6 +18439,14 @@ pub(crate) fn run_known_pattern(
             crate::painless_expr::scalar_expression(event, pattern)
         }
         KnownPattern::MemberFromVariantKey(pattern) => member_from_variant_key(event, pattern),
+        KnownPattern::ListItemRenames(pattern) => {
+            crate::painless_lists::list_item_renames(event, pattern)
+        }
+        KnownPattern::ItemWrites(pattern) => {
+            crate::painless_item_writes::item_writes(event, pattern)
+        }
+        KnownPattern::DurationWindow(pattern) => duration_window(event, pattern),
+        KnownPattern::SumTotals(pattern) => crate::painless_totals::sum_totals(event, pattern),
         KnownPattern::DropEmpty { policy, root } => drop_empty(event, policy, root.as_deref()),
         KnownPattern::SplitCommandLine(script) => {
             crate::painless_windows::run_argv_script(event, script)
@@ -18235,6 +18678,7 @@ pub(crate) fn run_known_pattern(
         } => crate::painless_windows::run_copy_user_to_base(event, codes, base, sid_field),
         KnownPattern::SplitPipeFields(fields) => run_split_pipe_fields(event, fields),
         KnownPattern::SplitTokenField(pattern) => run_split_token_field(event, pattern),
+        KnownPattern::TrimThenSplit(pattern) => run_trim_then_split(event, pattern),
         KnownPattern::DecodeBase64 { source, target } => run_decode_base64(event, source, target),
         KnownPattern::TokenCount {
             source,

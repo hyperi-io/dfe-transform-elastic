@@ -35,7 +35,11 @@ pub use crate::painless_common::{
     parameters_into_map, remove_empty_child_maps, rename_map_keys, rewrite_keys, scale_field,
     split_at_delimiter, string_ops, sum_directions, syslog_priority, unwrap_suffixed_keys,
 };
-pub use crate::painless_expr::{Expr, Op, ScalarExpression, scalar_expression};
+pub use crate::painless_expr::{Expr, FloatLit, Op, ScalarExpression, scalar_expression};
+pub use crate::painless_lists::{
+    EnsureItem, ItemRename, ListItemRenames, ListWalk, list_item_renames,
+};
+pub use crate::painless_totals::{SumTotals, Total, sum_totals};
 // `lookup_normalise` is NOT here: it now takes the call site's parsed literal
 // tail, which is a runtime detail rather than something a generator resolves.
 pub use crate::painless_params::{Fold, LookupNormaliseScript};

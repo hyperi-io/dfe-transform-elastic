@@ -484,6 +484,24 @@ pub fn iso8601_plus(input: &str, unit: char, count: i64, back: i64) -> Option<St
     )
 }
 
+/// Add NANOSECONDS to an ISO 8601 instant, keeping the offset it arrived with.
+///
+/// [`iso8601_plus`] converts to UTC because its callers want UTC. A duration
+/// window does not: Elasticsearch renders `event.end` in the same zone as
+/// `event.start`, so sophos's captured `+05:30` survives into the output and a
+/// `Z` here would name the right instant in the wrong words.
+///
+/// Returns `None` for a timestamp this cannot read.
+#[must_use]
+pub fn iso8601_plus_nanos(input: &str, nanos: i64) -> Option<String> {
+    let at = parse_iso8601(input.trim())?.checked_add_signed(TimeDelta::nanoseconds(nanos))?;
+    Some(if at.offset().local_minus_utc() == 0 {
+        at.format(ISO_OUT).to_string()
+    } else {
+        at.format(OFFSET_OUT).to_string()
+    })
+}
+
 /// Render epoch SECONDS the way the `date` processor renders a timestamp.
 ///
 /// `ti_misp` holds `misp.attribute.timestamp` in seconds and its decay script
@@ -863,6 +881,25 @@ mod tests {
     fn a_configured_utc_still_prints_z() {
         let out = parse_date("2023 May 2 12:55:19", &["yyyy MMM d HH:mm:ss"], Some("UTC"));
         assert_eq!(out.unwrap(), "2023-05-02T12:55:19.000Z");
+    }
+
+    /// A duration window's end is rendered in the zone its start arrived in.
+    ///
+    /// The instant is the same either way; the TEXT is not, and the text is
+    /// what the corpus compares. sophos's captured `event.end` reads
+    /// `2017-01-31T14:16:49.000+05:30`.
+    #[test]
+    fn adding_nanoseconds_keeps_the_offset_it_arrived_with() {
+        assert_eq!(
+            iso8601_plus_nanos("2017-01-31T14:16:19.000+05:30", 30_000_000_000).unwrap(),
+            "2017-01-31T14:16:49.000+05:30"
+        );
+        // A zero offset still prints `Z`, the same as every other renderer here.
+        assert_eq!(
+            iso8601_plus_nanos("2017-01-31T14:16:19.000Z", 30_000_000_000).unwrap(),
+            "2017-01-31T14:16:49.000Z"
+        );
+        assert_eq!(iso8601_plus_nanos("not a timestamp", 1), None);
     }
 
     /// Elasticsearch's own named formats, not Java patterns. They were read as

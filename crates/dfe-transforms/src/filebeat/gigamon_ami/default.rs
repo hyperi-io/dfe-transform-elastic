@@ -3385,9 +3385,19 @@ impl Transform for Default {
             if _cond {
                 // Painless script, resolved to its runners at generation time
                 // Source: ctx.source.mac = ctx.gigamon.ami.src_mac.replace(\":\", \"-\").toUpperCase();
-                guarded_replace(
+                string_ops(
                     event,
-                    &GuardedReplace::new("gigamon.ami.src_mac", "source.mac", ":", "-"),
+                    &StringOps::new(
+                        "gigamon.ami.src_mac",
+                        "source.mac",
+                        vec![
+                            StringOp::Replace {
+                                from: ":".into(),
+                                to: "-".into(),
+                            },
+                            StringOp::Upper,
+                        ],
+                    ),
                 );
             }
 
@@ -3395,9 +3405,19 @@ impl Transform for Default {
             if _cond {
                 // Painless script, resolved to its runners at generation time
                 // Source: ctx.destination.mac = ctx.gigamon.ami.dst_mac.replace(\":\", \"-\").toUpperCase();
-                guarded_replace(
+                string_ops(
                     event,
-                    &GuardedReplace::new("gigamon.ami.dst_mac", "destination.mac", ":", "-"),
+                    &StringOps::new(
+                        "gigamon.ami.dst_mac",
+                        "destination.mac",
+                        vec![
+                            StringOp::Replace {
+                                from: ":".into(),
+                                to: "-".into(),
+                            },
+                            StringOp::Upper,
+                        ],
+                    ),
                 );
             }
 

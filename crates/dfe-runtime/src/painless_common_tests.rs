@@ -316,6 +316,136 @@ fn every_key_of_a_map_takes_a_chain_of_transforms() {
     assert!(!event.has("oracle.database_audit.DBID"));
 }
 
+/// `ti_opencti` writes its confidence ladder with NO local: every guard names
+/// `ctx.confidence` directly, so there is nothing for the declaration reader to
+/// key on and the whole ladder declined.
+///
+/// Verbatim from `pipelines/ti_opencti/indicator/default.yml`. Both the null
+/// arm and the `== 0` band matter -- `threat.indicator.confidence` is wrong on
+/// all 31 of its events without them.
+#[test]
+fn a_ladder_with_no_local_reads_its_subject_from_the_guards() {
+    let script = "if (ctx.confidence == null) {\n  \
+        ctx.threat.indicator.confidence = 'Not Specified';\n\
+        } else if (ctx.confidence == 0) {\n  ctx.threat.indicator.confidence = 'None';\n\
+        } else if (1 <= ctx.confidence && ctx.confidence <= 29) {\n  \
+        ctx.threat.indicator.confidence = 'Low';\n\
+        } else if (30 <= ctx.confidence && ctx.confidence <= 69) {\n  \
+        ctx.threat.indicator.confidence = 'Medium';\n\
+        } else if (70 <= ctx.confidence && ctx.confidence <= 100) {\n  \
+        ctx.threat.indicator.confidence = 'High';\n\
+        } else {\n  ctx.threat.indicator.confidence = 'Not Specified';\n}";
+    let pattern = parse_band_ladder(&normalise(script)).expect("the ladder is recognised");
+
+    for (confidence, want) in [
+        (serde_json::json!(0), "None"),
+        (serde_json::json!(15), "Low"),
+        (serde_json::json!(30), "Medium"),
+        (serde_json::json!(69), "Medium"),
+        (serde_json::json!(70), "High"),
+        (serde_json::json!(100), "High"),
+        (serde_json::json!(250), "Not Specified"),
+    ] {
+        let mut event = Event::new(serde_json::json!({ "confidence": confidence }));
+        assert!(
+            run_band_ladder(&mut event, &pattern),
+            "{confidence} was declined"
+        );
+        assert_eq!(
+            event.get_str("threat.indicator.confidence"),
+            Some(want),
+            "confidence {confidence}"
+        );
+    }
+
+    // The absent arm is distinct from the default: no value, not a value in no
+    // band. Both spell 'Not Specified' here and the ladder must reach each.
+    let mut absent = Event::new(serde_json::json!({}));
+    assert!(run_band_ladder(&mut absent, &pattern));
+    assert_eq!(
+        absent.get_str("threat.indicator.confidence"),
+        Some("Not Specified")
+    );
+}
+
+/// `gigamon` normalises both its MACs as ONE chained expression, with no local
+/// for the other reader to key on.
+///
+/// Verbatim from `pipelines/gigamon/ami/default.yml`. Between them the two
+/// scripts are `source.mac` wrong on 49 of its 78 events and `destination.mac`
+/// on 53.
+#[test]
+fn a_chain_with_no_local_is_read_too() {
+    let script = "ctx.source.mac = ctx.gigamon.ami.src_mac.replace(\":\", \"-\").toUpperCase();";
+    let pattern = parse_chained_string_ops(&normalise(script)).expect("the chain is recognised");
+
+    let mut event = Event::new(serde_json::json!({
+        "gigamon": { "ami": { "src_mac": "00:50:56:8d:89:41" } }
+    }));
+    assert!(string_ops(&mut event, &pattern));
+    assert_eq!(event.get_str("source.mac"), Some("00-50-56-8D-89-41"));
+}
+
+/// One op off the allowlist rejects the whole chain rather than applying the
+/// part it understood -- `replaceAll` takes a REGEX where `replace` takes a
+/// literal, so accepting it by pattern would quietly change the meaning.
+#[test]
+fn a_chain_holding_an_unknown_op_is_declined() {
+    let script = "ctx.a.b = ctx.c.d.replace(\":\", \"-\").replaceAll(\"[0-9]\", \"\");";
+    assert!(parse_chained_string_ops(&normalise(script)).is_none());
+}
+
+/// `sophos` and `juniper_srx` write the same four statements, and the window's
+/// end keeps the offset its start arrived with.
+///
+/// Verbatim from `pipelines/sophos/xg/default.yml`.
+#[test]
+fn a_duration_writes_the_window_around_it() {
+    let script = "ctx.event.duration = Integer.parseInt(ctx.sophos.xg.duration) * 1000000000L;\n\
+        ctx.event.start = ctx['@timestamp'];\n\
+        ZonedDateTime start = ZonedDateTime.parse(ctx.event.start);\n\
+        ctx.event.end = start.plus(ctx.event.duration, ChronoUnit.NANOS);";
+    let pattern = parse_duration_window(&normalise(script)).expect("the window is recognised");
+
+    let mut event = Event::new(serde_json::json!({
+        "@timestamp": "2017-01-31T14:16:19.000+05:30",
+        "sophos": { "xg": { "duration": "30" } }
+    }));
+    assert!(duration_window(&mut event, &pattern));
+    assert_eq!(
+        event.get("event.duration"),
+        Some(&serde_json::json!(30_000_000_000_i64))
+    );
+    assert_eq!(
+        event.get_str("event.start"),
+        Some("2017-01-31T14:16:19.000+05:30")
+    );
+    // The offset survives; a UTC render would be five and a half hours out.
+    assert_eq!(
+        event.get_str("event.end"),
+        Some("2017-01-31T14:16:49.000+05:30")
+    );
+}
+
+/// A duration that will not parse leaves all three alone, because Painless
+/// would have thrown and the vendor's processor carries no `on_failure`.
+#[test]
+fn a_duration_that_will_not_parse_writes_nothing() {
+    let script = "ctx.event.duration = Integer.parseInt(ctx.a.b) * 1000000000L;\n\
+        ctx.event.start = ctx['@timestamp'];\n\
+        ZonedDateTime start = ZonedDateTime.parse(ctx.event.start);\n\
+        ctx.event.end = start.plus(ctx.event.duration, ChronoUnit.NANOS);";
+    let pattern = parse_duration_window(&normalise(script)).expect("recognised");
+
+    let mut event = Event::new(serde_json::json!({
+        "@timestamp": "2017-01-31T14:16:19.000Z",
+        "a": { "b": "not a number" }
+    }));
+    assert!(duration_window(&mut event, &pattern));
+    assert!(!event.has("event.duration"));
+    assert!(!event.has("event.end"));
+}
+
 /// `sophos` writes the same fold as an explicit loop, and it is load-bearing:
 /// `event.duration`, `event.start` and `event.end` are all read off lowercase
 /// keys that only exist once it has run.
@@ -6420,6 +6550,74 @@ fn a_lambda_metric_is_rebuilt_under_a_new_path() {
     );
     // The script assigns, it does not move: the source stays put.
     assert!(event.get("parsed.record.metrics").is_some());
+}
+
+/// `cisco_secure_endpoint`'s command line, verbatim from the generated call
+/// site in `filebeat/cisco_secure_endpoint_event/default.rs` -- escapes and
+/// all, so the test reads what production reads.
+const COMMAND_LINE: &str = r#"def commandLine = ctx.cisco?.secure_endpoint?.command_line?.arguments;\nif (commandLine != null) {\n  commandLine = commandLine.trim();\n  if (commandLine != \"\") {\n    ctx.process.command_line = commandLine;\n\n    def args = [];\n    for (def v : / /.split(commandLine)) {\n      if (v != \"\") {\n        args.add(v);\n      }\n    }\n    if (args.size() > 0) {\n      ctx.process.args = args;\n    }\n  }\n}\n"#;
+
+/// The trimmed string and its pieces, in the order the script writes them.
+///
+/// `process.args` is what the next processor's `ctx.process?.args != null`
+/// guard opens, and `process.args_count` and `process.executable` follow from
+/// it -- four ECS fields off one script.
+#[test]
+fn a_command_line_becomes_its_ecs_string_and_its_args() {
+    let mut event = Event::new(json!({
+        "cisco": { "secure_endpoint": { "command_line": {
+            "arguments": "  /usr/bin/curl  -sS  https://example.com  "
+        } } },
+        "process": { "hash": { "md5": "d41d8cd98f00b204e9800998ecf8427e" } }
+    }));
+
+    assert!(try_known_painless(&mut event, COMMAND_LINE));
+    assert_eq!(
+        event.get_str("process.command_line"),
+        Some("/usr/bin/curl  -sS  https://example.com")
+    );
+    // Java's split leaves each run of spaces as an empty piece and the vendor
+    // drops every one, so a doubled space is not an empty argument.
+    assert_eq!(
+        event.get("process.args"),
+        Some(&json!(["/usr/bin/curl", "-sS", "https://example.com"]))
+    );
+    // The trimmed string is stored FIRST, which is the order it comes back in.
+    let members: Vec<&str> = event
+        .get("process")
+        .and_then(Value::as_object)
+        .expect("process is a map")
+        .keys()
+        .map(String::as_str)
+        .collect();
+    assert_eq!(members, ["hash", "command_line", "args"]);
+}
+
+/// An all-space value fails the script's own `!= ""` guard, so NEITHER field
+/// is written -- and the `args_count` script downstream stays shut.
+#[test]
+fn an_empty_command_line_writes_neither_field() {
+    let mut event = Event::new(json!({
+        "cisco": { "secure_endpoint": { "command_line": { "arguments": "   " } } },
+        "process": {}
+    }));
+
+    assert!(!try_known_painless(&mut event, COMMAND_LINE));
+    assert_eq!(event.get("process"), Some(&json!({})));
+}
+
+/// A regex literal that is not one ordinary character is declined.
+///
+/// `/\s+/` cuts where a space never does, so reading it AS a space would put
+/// the wrong tokens in `process.args` on every event carrying a tab.
+#[test]
+fn a_trim_then_split_declines_a_regex_it_cannot_read() {
+    let script = COMMAND_LINE.replace("/ /.split(", r"/\s+/.split(");
+    assert!(
+        !known_patterns(&normalise(&script))
+            .iter()
+            .any(|pattern| matches!(pattern, KnownPattern::TrimThenSplit(_)))
+    );
 }
 
 /// A character RANGE is not a set of literals, so the whole script is declined.
