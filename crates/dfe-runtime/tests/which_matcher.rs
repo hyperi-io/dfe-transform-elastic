@@ -32,6 +32,15 @@ const SYSTEM_SSH_CATEGORY: &str = "if (ctx.system.auth.ssh.event == \"Accepted\"
 /// Verbatim from `pipelines/fortinet_fortimanager/log/default.yml:796-798`.
 const FORTIMANAGER_DATE_CONCAT: &str = "if (ctx._temp?.time != null && ctx._temp?.date != null && ctx._temp?.tz != null) {\n  ctx._temp.date = ctx._temp.date + 'T' + ctx._temp.time + ctx._temp.tz;\n}";
 
+/// Verbatim from `pipelines/zoom/webhook/phone.yml:77-81`.
+const ZOOM_DURATION: &str = "ctx.event.start = ctx.zoom.phone.ringing_start_time; ctx.event.end = ctx.zoom.phone.call_end_time; ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ZonedDateTime end = ZonedDateTime.parse(ctx.event.end); ctx.event.duration = ChronoUnit.NANOS.between(start, end);";
+
+/// Verbatim from `pipelines/beyondinsight_password_safe/asset/default.yml:27-30`.
+const BEYONDINSIGHT_DROP: &str = "ctx.beyondinsight_password_safe.asset.entrySet().removeIf(entry ->\n  entry.getValue() == null ||\n  (entry.getValue() instanceof String && entry.getValue().isEmpty())\n);";
+
+/// Verbatim from `pipelines/beyondinsight_password_safe/asset/default.yml:63-73`.
+const BEYONDINSIGHT_RENAME: &str = "Map renamedFields = [:];\nfor (entry in ctx.beyondinsight_password_safe.asset.entrySet()) {\n  def originalKey = entry.getKey();\n  def snakeKey = params.field_mappings[originalKey];\n  if (snakeKey != null) {\n    renamedFields[snakeKey] = entry.getValue();\n  } else {\n    renamedFields[originalKey] = entry.getValue();\n  }\n}\nctx.beyondinsight_password_safe.asset = renamedFields;";
+
 /// The matcher names a script binds to, most specific first.
 fn binding(script: &str) -> Vec<String> {
     PainlessPlan::new(script).binding()
@@ -49,6 +58,33 @@ fn heads(script: &str) -> Vec<String> {
                 .to_string()
         })
         .collect()
+}
+
+#[test]
+fn the_zoom_duration_reads_fields_the_script_writes_first() {
+    // `NanosBetween` takes `event.start` and `event.end` as inputs, and the two
+    // assignments that create them from `zoom.phone.*` are not in the plan.
+    let held = binding(ZOOM_DURATION).join(" ");
+    assert!(held.starts_with("NanosBetween"), "{held}");
+    assert!(held.contains(r#"start: "event.start""#), "{held}");
+    assert!(
+        !held.contains("zoom.phone"),
+        "the plan now carries the source assignments -- re-measure zoom: {held}"
+    );
+}
+
+#[test]
+fn the_beyondinsight_drop_is_claimed_and_its_rename_is_not() {
+    // Two halves of one source, and only the second is a missing matcher.
+    assert_eq!(
+        heads(BEYONDINSIGHT_DROP),
+        ["SentinelRemoval", "SentinelRemovalLiteral"]
+    );
+    assert!(
+        binding(BEYONDINSIGHT_RENAME).is_empty(),
+        "{:?}",
+        binding(BEYONDINSIGHT_RENAME)
+    );
 }
 
 #[test]
