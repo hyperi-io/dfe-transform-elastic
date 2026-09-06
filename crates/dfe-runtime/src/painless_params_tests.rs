@@ -298,6 +298,44 @@ fn a_subscript_with_no_offset_still_counts_from_zero() {
     assert_eq!(event.get_str("a.row"), Some("zero"));
 }
 
+/// Both conventions, verbatim, from ONE pipeline --
+/// `pipelines/cyberark_epm/aggregated_event/default.yml:222-259`.
+///
+/// `DeceptionType` is 1-based and guarded `value >= 1`; `DefenceAction` is
+/// 0-based and guarded `value >= 0`. The second is correct in the corpus today
+/// and a blanket subtraction would have broken it.
+#[test]
+fn two_conventions_in_one_pipeline_each_count_their_own_way() {
+    let one_based = "def value = (int) ctx.cyberark_epm.aggregated_event.deception_type;\n\
+        if (value >= 1 && value <= params.DeceptionType.length) {\n  \
+        ctx.cyberark_epm.aggregated_event.put('deception_type_value', \
+        params['DeceptionType'][value - 1]);\n}";
+    let params =
+        json!({ "DeceptionType": ["\"Local User LSASS\" honeypot", "\"Browsers\" honeypot"] });
+    let mut event = Event::new(json!({
+        "cyberark_epm": { "aggregated_event": { "deception_type": 1 } }
+    }));
+    assert!(try_params_painless(&mut event, one_based, &params));
+    assert_eq!(
+        event.get_str("cyberark_epm.aggregated_event.deception_type_value"),
+        Some("\"Local User LSASS\" honeypot")
+    );
+
+    let zero_based = "def value = (int) ctx.cyberark_epm.aggregated_event.defence_action_id;\n\
+        if (value >= 0 && value < params.DefenceAction.length) {\n  \
+        ctx.cyberark_epm.aggregated_event.put('defence_action_value', \
+        params['DefenceAction'][value]);\n}";
+    let params = json!({ "DefenceAction": ["No action", "Detect", "Block"] });
+    let mut event = Event::new(json!({
+        "cyberark_epm": { "aggregated_event": { "defence_action_id": 0 } }
+    }));
+    assert!(try_params_painless(&mut event, zero_based, &params));
+    assert_eq!(
+        event.get_str("cyberark_epm.aggregated_event.defence_action_value"),
+        Some("No action")
+    );
+}
+
 /// An index below the offset writes nothing rather than wrapping.
 ///
 /// `usize` subtraction would panic and a saturating one would return row 0,
