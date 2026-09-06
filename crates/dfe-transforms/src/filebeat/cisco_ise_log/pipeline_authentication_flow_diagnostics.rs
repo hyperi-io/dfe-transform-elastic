@@ -18,7 +18,7 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             event.set("event.kind", json!("event"))?;
 
-            event.append("event.type", json!("info"))?;
+                event.append("event.type", json!("info"))?;
 
             let _cond = { event.get_i64("cisco_ise.log.segment.number") == Some(0) };
             if _cond {
@@ -30,18 +30,11 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
                 }
             }
 
-            let _cond = {
-                event.has_value("cisco_ise.log.segment.number")
-                    && event
-                        .get_i64("cisco_ise.log.segment.number")
-                        .is_some_and(|n| n > 0)
-            };
+            let _cond = { event.has_value("cisco_ise.log.segment.number") && event.get_i64("cisco_ise.log.segment.number").is_some_and(|n| n > 0) };
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: %{GREEDYDATA:cisco_ise.log.log_details_raw},
-                    if !cached_grok!("%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                        .extract_into(&input, event)?
-                    {
+                    if !cached_grok!("%{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
                         return Err(TransformError::GrokNoMatch { value: input });
                     }
                 }
@@ -50,16 +43,7 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("_tmp.timestamp") {
-                    match parse_date_out(
-                        &date_str,
-                        &[
-                            "yyyy-MM-dd HH:mm:ss.SSS",
-                            "yyyy-MM-dd HH:mm:ss.SSSSSS",
-                            "MMM [ ]d HH:mm:ss[.SSSSSS][.SSS]",
-                        ],
-                        None,
-                        None,
-                    ) {
+                    match parse_date_out(&date_str, &["yyyy-MM-dd HH:mm:ss.SSS", "yyyy-MM-dd HH:mm:ss.SSSSSS", "MMM [ ]d HH:mm:ss[.SSSSSS][.SSS]"], None, None) {
                         Some(parsed) => event.set("@timestamp", parsed)?,
                         None => {
                             return Err(TransformError::ParseError {
@@ -73,19 +57,9 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "date")?;
-                event.set(
-                    "_ingest.on_failure_processor_tag",
-                    "date__tmp_timestamp_9ef85c6a",
-                )?;
-                event.remove("_tmp.timestamp");
-                event.append(
-                    "error.message",
-                    json!(
-                        event
-                            .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, template_to_string)
-                    ),
-                )?;
+                event.set("_ingest.on_failure_processor_tag", "date__tmp_timestamp_9ef85c6a")?;
+                        event.remove("_tmp.timestamp");
+                        event.append("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string)))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -94,56 +68,35 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
                 }
             }
 
-            let _cond = {
-                event.has_value("event.timezone") && event.get_str("event.timezone") != Some("")
-            };
+            let _cond = { event.has_value("event.timezone") && event.get_str("event.timezone") != Some("") };
             if _cond {
-                // on_failure: 2 handler(s)
-                if let Err(err) = (|| -> Result<()> {
-                    if let Some(date_str) = event.get_as_string("_tmp.timestamp") {
-                        match parse_date_out(
-                            &date_str,
-                            &[
-                                "yyyy-MM-dd HH:mm:ss.SSS",
-                                "yyyy-MM-dd HH:mm:ss.SSSSSS",
-                                "MMM [ ]d HH:mm:ss[.SSSSSS][.SSS]",
-                            ],
-                            event.get_str("event.timezone"),
-                            None,
-                        ) {
-                            Some(parsed) => event.set("@timestamp", parsed)?,
-                            None => {
-                                return Err(TransformError::ParseError {
-                                    path: "_tmp.timestamp".into(),
-                                    message: format!("unable to parse date [{date_str}]"),
-                                });
-                            }
+            // on_failure: 2 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+                if let Some(date_str) = event.get_as_string("_tmp.timestamp") {
+                    match parse_date_out(&date_str, &["yyyy-MM-dd HH:mm:ss.SSS", "yyyy-MM-dd HH:mm:ss.SSSSSS", "MMM [ ]d HH:mm:ss[.SSSSSS][.SSS]"], event.get_str("event.timezone") , None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "_tmp.timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
-                    Ok(())
-                })() {
-                    event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.set("_ingest.on_failure_processor_type", "date")?;
-                    event.set(
-                        "_ingest.on_failure_processor_tag",
-                        "date__tmp_timestamp_1d2a12b9",
-                    )?;
-                    event.remove("_tmp.timestamp");
-                    event.append(
-                        "error.message",
-                        json!(
-                            event
-                                .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, template_to_string)
-                        ),
-                    )?;
-                    event.remove("_ingest.on_failure_message");
-                    event.remove("_ingest.on_failure_processor_type");
-                    event.remove("_ingest.on_failure_processor_tag");
-                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                    }
                 }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "date")?;
+                event.set("_ingest.on_failure_processor_tag", "date__tmp_timestamp_1d2a12b9")?;
+                        event.remove("_tmp.timestamp");
+                        event.append("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string)))?;
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
+            }
             }
 
             // ignore_failure: true
@@ -161,11 +114,7 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
                         };
                         {
                             if !key.is_empty() {
-                                kv_put(
-                                    event,
-                                    &format!("cisco_ise.log.log_details.{}", key),
-                                    value,
-                                )?;
+                                kv_put(event, &format!("cisco_ise.log.log_details.{}", key), value)?;
                             }
                         }
                     }
@@ -179,18 +128,12 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
                     let mut remaining: &str = &input;
                     let mut captured: Vec<(&str, &str)> = Vec::new();
                     let matched = 'dissect: {
-                        let Some(rest) = remaining.strip_prefix("{") else {
-                            break 'dissect false;
-                        };
+                        let Some(rest) = remaining.strip_prefix("{") else { break 'dissect false };
                         remaining = rest;
-                        let Some(pos) = remaining.find("}") else {
-                            break 'dissect false;
-                        };
+                        let Some(pos) = remaining.find("}") else { break 'dissect false };
                         captured.push(("_tmp.response", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                        let Some(rest) = remaining.strip_prefix("}") else {
-                            break 'dissect false;
-                        };
+                        let Some(rest) = remaining.strip_prefix("}") else { break 'dissect false };
                         remaining = rest;
                         true
                     };
@@ -203,7 +146,7 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
                 Ok(())
             })();
 
-            event.remove("cisco_ise.log.log_details.Response");
+                event.remove("cisco_ise.log.log_details.Response");
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
@@ -228,21 +171,18 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
                 Ok(())
             })();
 
-            let _cond = {
-                event.has_value("cisco_ise.log.message.description")
-                    && event.get_str("cisco_ise.log.message.description") != Some("")
-            };
+            let _cond = { event.has_value("cisco_ise.log.message.description") && event.get_str("cisco_ise.log.message.description") != Some("") };
             if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    if let Some(input) = event.get_string("cisco_ise.log.message.description") {
-                        // Grok pattern: ^%{DATA:event.action}:
-                        if !cached_grok!("^%{DATA:event.action}:").extract_into(&input, event)? {
-                            return Err(TransformError::GrokNoMatch { value: input });
-                        }
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                if let Some(input) = event.get_string("cisco_ise.log.message.description") {
+                    // Grok pattern: ^%{DATA:event.action}:
+                    if !cached_grok!("^%{DATA:event.action}:").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
                     }
-                    Ok(())
-                })();
+                }
+                Ok(())
+            })();
             }
 
             if event.has_value("event.action") {
@@ -255,26 +195,19 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
                 Ok(())
             })();
 
-            let _cond = {
-                event.has_value("cisco_ise.log.message.code")
-                    && ["22040", "22057", "22061", "22060", "22037"]
-                        .contains(&event.get_str("cisco_ise.log.message.code").unwrap_or(""))
-            };
+            let _cond = { event.has_value("cisco_ise.log.message.code") && ["22040", "22057", "22061", "22060", "22037"].contains(&event.get_str("cisco_ise.log.message.code").unwrap_or("")) };
             if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    event.append("event.category", json!("authentication"))?;
-                    Ok(())
-                })();
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                event.append("event.category", json!("authentication"))?;
+                Ok(())
+            })();
             }
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("cisco_ise.log.log_details.AcsSessionID") {
-                    event.rename(
-                        "cisco_ise.log.log_details.AcsSessionID",
-                        "cisco_ise.log.acs.session.id",
-                    )?;
+                    event.rename("cisco_ise.log.log_details.AcsSessionID", "cisco_ise.log.acs.session.id")?;
                 }
                 Ok(())
             })();
@@ -282,10 +215,7 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("cisco_ise.log.log_details.AuthenticationIdentityStore") {
-                    event.rename(
-                        "cisco_ise.log.log_details.AuthenticationIdentityStore",
-                        "cisco_ise.log.selected.authentication.identity_stores",
-                    )?;
+                    event.rename("cisco_ise.log.log_details.AuthenticationIdentityStore", "cisco_ise.log.selected.authentication.identity_stores")?;
                 }
                 Ok(())
             })();
@@ -293,10 +223,7 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("cisco_ise.log.log_details.AuthenticationMethod") {
-                    event.rename(
-                        "cisco_ise.log.log_details.AuthenticationMethod",
-                        "cisco_ise.log.authentication.method",
-                    )?;
+                    event.rename("cisco_ise.log.log_details.AuthenticationMethod", "cisco_ise.log.authentication.method")?;
                 }
                 Ok(())
             })();
@@ -304,10 +231,7 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("cisco_ise.log.log_details.Calling-Station-ID") {
-                    event.rename(
-                        "cisco_ise.log.log_details.Calling-Station-ID",
-                        "cisco_ise.log.calling_station.id",
-                    )?;
+                    event.rename("cisco_ise.log.log_details.Calling-Station-ID", "cisco_ise.log.calling_station.id")?;
                 }
                 Ok(())
             })();
@@ -315,10 +239,7 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("cisco_ise.log.log_details.CPMSessionID") {
-                    event.rename(
-                        "cisco_ise.log.log_details.CPMSessionID",
-                        "cisco_ise.log.cpm.session.id",
-                    )?;
+                    event.rename("cisco_ise.log.log_details.CPMSessionID", "cisco_ise.log.cpm.session.id")?;
                 }
                 Ok(())
             })();
@@ -326,256 +247,174 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("cisco_ise.log.log_details.CurrentIDStoreName") {
-                    event.rename(
-                        "cisco_ise.log.log_details.CurrentIDStoreName",
-                        "cisco_ise.log.currentid.store_name",
-                    )?;
+                    event.rename("cisco_ise.log.log_details.CurrentIDStoreName", "cisco_ise.log.currentid.store_name")?;
                 }
                 Ok(())
             })();
 
             let _cond = { event.has_value("cisco_ise.log.log_details.DestinationIPAddress") };
             if _cond {
-                // on_failure: 1 handler(s)
-                if let Err(err) = (|| -> Result<()> {
-                    if event.has_value("cisco_ise.log.log_details.DestinationIPAddress") {
-                        if let Some(val) =
-                            event.get("cisco_ise.log.log_details.DestinationIPAddress")
-                        {
-                            let converted = convert_value(val, "ip").map_err(|message| {
-                                TransformError::ParseError {
-                                    path: "cisco_ise.log.log_details.DestinationIPAddress".into(),
-                                    message,
-                                }
-                            })?;
-                            event.set("destination.ip", converted)?;
-                        }
-                    }
-                    Ok(())
-                })() {
-                    event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.set("_ingest.on_failure_processor_type", "convert")?;
-                    event.set("_ingest.on_failure_processor_tag", "convert_cisco_ise_log_log_details_DestinationIPAddress_to_destination_ip_bf35ca8e")?;
-                    event.append(
-                        "error.message",
-                        json!(
-                            event
-                                .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, template_to_string)
-                        ),
-                    )?;
-                    event.remove("_ingest.on_failure_message");
-                    event.remove("_ingest.on_failure_processor_type");
-                    event.remove("_ingest.on_failure_processor_tag");
-                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                    }
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+            if event.has_value("cisco_ise.log.log_details.DestinationIPAddress") {
+                if let Some(val) = event.get("cisco_ise.log.log_details.DestinationIPAddress") {
+                    let converted = convert_value(val, "ip")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "cisco_ise.log.log_details.DestinationIPAddress".into(),
+                            message,
+                        })?;
+                    event.set("destination.ip", converted)?;
                 }
             }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set("_ingest.on_failure_processor_tag", "convert_cisco_ise_log_log_details_DestinationIPAddress_to_destination_ip_bf35ca8e")?;
+                        event.append("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string)))?;
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
+            }
+            }
 
-            event.remove("cisco_ise.log.log_details.DestinationIPAddress");
+                event.remove("cisco_ise.log.log_details.DestinationIPAddress");
 
             let _cond = { event.has_value("destination.ip") };
             if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    event.append_unique(
-                        "related.ip",
-                        json!(
-                            event
-                                .get("destination.ip")
-                                .map_or_else(String::new, template_to_string)
-                        ),
-                    )?;
-                    Ok(())
-                })();
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                event.append_unique("related.ip", json!(event.get("destination.ip").map_or_else(String::new, template_to_string)))?;
+                Ok(())
+            })();
             }
 
             let _cond = { event.has_value("cisco_ise.log.log_details.NAS-IP-Address") };
             if _cond {
-                // on_failure: 1 handler(s)
-                if let Err(err) = (|| -> Result<()> {
-                    if event.has_value("cisco_ise.log.log_details.NAS-IP-Address") {
-                        if let Some(val) = event.get("cisco_ise.log.log_details.NAS-IP-Address") {
-                            let converted = convert_value(val, "ip").map_err(|message| {
-                                TransformError::ParseError {
-                                    path: "cisco_ise.log.log_details.NAS-IP-Address".into(),
-                                    message,
-                                }
-                            })?;
-                            event.set("cisco_ise.log.nas.ip", converted)?;
-                        }
-                    }
-                    Ok(())
-                })() {
-                    event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.set("_ingest.on_failure_processor_type", "convert")?;
-                    event.set("_ingest.on_failure_processor_tag", "convert_cisco_ise_log_log_details_NAS-IP-Address_to_cisco_ise_log_nas_ip_04e2547a")?;
-                    event.append(
-                        "error.message",
-                        json!(
-                            event
-                                .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, template_to_string)
-                        ),
-                    )?;
-                    event.remove("_ingest.on_failure_message");
-                    event.remove("_ingest.on_failure_processor_type");
-                    event.remove("_ingest.on_failure_processor_tag");
-                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                    }
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+            if event.has_value("cisco_ise.log.log_details.NAS-IP-Address") {
+                if let Some(val) = event.get("cisco_ise.log.log_details.NAS-IP-Address") {
+                    let converted = convert_value(val, "ip")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "cisco_ise.log.log_details.NAS-IP-Address".into(),
+                            message,
+                        })?;
+                    event.set("cisco_ise.log.nas.ip", converted)?;
                 }
             }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set("_ingest.on_failure_processor_tag", "convert_cisco_ise_log_log_details_NAS-IP-Address_to_cisco_ise_log_nas_ip_04e2547a")?;
+                        event.append("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string)))?;
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
+            }
+            }
 
-            event.remove("cisco_ise.log.log_details.NAS-IP-Address");
+                event.remove("cisco_ise.log.log_details.NAS-IP-Address");
 
             let _cond = { event.has_value("cisco_ise.log.nas.ip") };
             if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    event.append_unique(
-                        "related.ip",
-                        json!(
-                            event
-                                .get("cisco_ise.log.nas.ip")
-                                .map_or_else(String::new, template_to_string)
-                        ),
-                    )?;
-                    Ok(())
-                })();
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                event.append_unique("related.ip", json!(event.get("cisco_ise.log.nas.ip").map_or_else(String::new, template_to_string)))?;
+                Ok(())
+            })();
             }
 
             let _cond = { event.has_value("cisco_ise.log.log_details.OriginalUserName") };
             if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    event.append_unique(
-                        "user.name",
-                        json!(
-                            event
-                                .get("cisco_ise.log.log_details.OriginalUserName")
-                                .map_or_else(String::new, template_to_string)
-                        ),
-                    )?;
-                    Ok(())
-                })();
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                event.append_unique("user.name", json!(event.get("cisco_ise.log.log_details.OriginalUserName").map_or_else(String::new, template_to_string)))?;
+                Ok(())
+            })();
             }
 
             let _cond = { event.has_value("cisco_ise.log.log_details.OriginalUserName") };
             if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    event.append_unique(
-                        "related.user",
-                        json!(
-                            event
-                                .get("cisco_ise.log.log_details.OriginalUserName")
-                                .map_or_else(String::new, template_to_string)
-                        ),
-                    )?;
-                    Ok(())
-                })();
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                event.append_unique("related.user", json!(event.get("cisco_ise.log.log_details.OriginalUserName").map_or_else(String::new, template_to_string)))?;
+                Ok(())
+            })();
             }
 
-            event.remove("cisco_ise.log.log_details.OriginalUserName");
+                event.remove("cisco_ise.log.log_details.OriginalUserName");
 
             let _cond = { event.has_value("cisco_ise.log.log_details.UserName") };
             if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    event.append_unique(
-                        "user.name",
-                        json!(
-                            event
-                                .get("cisco_ise.log.log_details.UserName")
-                                .map_or_else(String::new, template_to_string)
-                        ),
-                    )?;
-                    Ok(())
-                })();
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                event.append_unique("user.name", json!(event.get("cisco_ise.log.log_details.UserName").map_or_else(String::new, template_to_string)))?;
+                Ok(())
+            })();
             }
 
             let _cond = { event.has_value("cisco_ise.log.log_details.UserName") };
             if _cond {
-                // ignore_failure: true
-                let _ = (|| -> Result<()> {
-                    event.append_unique(
-                        "related.user",
-                        json!(
-                            event
-                                .get("cisco_ise.log.log_details.UserName")
-                                .map_or_else(String::new, template_to_string)
-                        ),
-                    )?;
-                    Ok(())
-                })();
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                event.append_unique("related.user", json!(event.get("cisco_ise.log.log_details.UserName").map_or_else(String::new, template_to_string)))?;
+                Ok(())
+            })();
             }
 
-            event.remove("cisco_ise.log.log_details.UserName");
+                event.remove("cisco_ise.log.log_details.UserName");
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("cisco_ise.log.log_details.SelectedAccessService") {
-                    event.rename(
-                        "cisco_ise.log.log_details.SelectedAccessService",
-                        "cisco_ise.log.selected.access.service",
-                    )?;
+                    event.rename("cisco_ise.log.log_details.SelectedAccessService", "cisco_ise.log.selected.access.service")?;
                 }
                 Ok(())
             })();
 
-            let _cond =
-                { event.has_value("cisco_ise.log.log_details.WorkflowCurrentIDStoreIndex") };
+            let _cond = { event.has_value("cisco_ise.log.log_details.WorkflowCurrentIDStoreIndex") };
             if _cond {
-                // on_failure: 1 handler(s)
-                if let Err(err) = (|| -> Result<()> {
-                    if event.has_value("cisco_ise.log.log_details.WorkflowCurrentIDStoreIndex") {
-                        if let Some(val) =
-                            event.get("cisco_ise.log.log_details.WorkflowCurrentIDStoreIndex")
-                        {
-                            let converted = convert_value(val, "long").map_err(|message| {
-                                TransformError::ParseError {
-                                    path: "cisco_ise.log.log_details.WorkflowCurrentIDStoreIndex"
-                                        .into(),
-                                    message,
-                                }
-                            })?;
-                            event
-                                .set("cisco_ise.log.workflow.current_id.store_index", converted)?;
-                        }
-                    }
-                    Ok(())
-                })() {
-                    event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.set("_ingest.on_failure_processor_type", "convert")?;
-                    event.set("_ingest.on_failure_processor_tag", "convert_cisco_ise_log_log_details_WorkflowCurrentIDStoreIndex_to_cisco_ise_log_workflow_current_id_store_index_8a3cdeab")?;
-                    event.append(
-                        "error.message",
-                        json!(
-                            event
-                                .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, template_to_string)
-                        ),
-                    )?;
-                    event.remove("_ingest.on_failure_message");
-                    event.remove("_ingest.on_failure_processor_type");
-                    event.remove("_ingest.on_failure_processor_tag");
-                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                    }
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+            if event.has_value("cisco_ise.log.log_details.WorkflowCurrentIDStoreIndex") {
+                if let Some(val) = event.get("cisco_ise.log.log_details.WorkflowCurrentIDStoreIndex") {
+                    let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "cisco_ise.log.log_details.WorkflowCurrentIDStoreIndex".into(),
+                            message,
+                        })?;
+                    event.set("cisco_ise.log.workflow.current_id.store_index", converted)?;
                 }
             }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set("_ingest.on_failure_processor_tag", "convert_cisco_ise_log_log_details_WorkflowCurrentIDStoreIndex_to_cisco_ise_log_workflow_current_id_store_index_8a3cdeab")?;
+                        event.append("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string)))?;
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
+            }
+            }
 
-            event.remove("cisco_ise.log.log_details.WorkflowCurrentIDStoreIndex");
+                event.remove("cisco_ise.log.log_details.WorkflowCurrentIDStoreIndex");
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("cisco_ise.log.log_details.WorkflowIfAuthenticationFailed") {
-                    event.rename(
-                        "cisco_ise.log.log_details.WorkflowIfAuthenticationFailed",
-                        "cisco_ise.log.workflow.if.authentication_failed",
-                    )?;
+                    event.rename("cisco_ise.log.log_details.WorkflowIfAuthenticationFailed", "cisco_ise.log.workflow.if.authentication_failed")?;
                 }
                 Ok(())
             })();
@@ -583,10 +422,7 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("cisco_ise.log.log_details.WorkflowIfProcessError") {
-                    event.rename(
-                        "cisco_ise.log.log_details.WorkflowIfProcessError",
-                        "cisco_ise.log.workflow.if.process_error",
-                    )?;
+                    event.rename("cisco_ise.log.log_details.WorkflowIfProcessError", "cisco_ise.log.workflow.if.process_error")?;
                 }
                 Ok(())
             })();
@@ -594,10 +430,7 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("cisco_ise.log.log_details.WorkflowIfUserNotFound") {
-                    event.rename(
-                        "cisco_ise.log.log_details.WorkflowIfUserNotFound",
-                        "cisco_ise.log.workflow.if.user_not_found",
-                    )?;
+                    event.rename("cisco_ise.log.log_details.WorkflowIfUserNotFound", "cisco_ise.log.workflow.if.user_not_found")?;
                 }
                 Ok(())
             })();
@@ -605,10 +438,7 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("cisco_ise.log.log_details.WorkflowSequenceType") {
-                    event.rename(
-                        "cisco_ise.log.log_details.WorkflowSequenceType",
-                        "cisco_ise.log.workflow.sequence.type",
-                    )?;
+                    event.rename("cisco_ise.log.log_details.WorkflowSequenceType", "cisco_ise.log.workflow.sequence.type")?;
                 }
                 Ok(())
             })();
@@ -622,38 +452,8 @@ impl Transform for PipelineAuthenticationFlowDiagnostics {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append(
-                    "error.message",
-                    json!(format!(
-                        "Processor '{}' {}in pipeline '{}' failed with message '{}'",
-                        event
-                            .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, template_to_string),
-                        if event
-                            .get("_ingest.on_failure_processor_tag")
-                            .is_some_and(|v| !v.is_null()
-                                && v.as_str() != Some("")
-                                && !matches!(v, Value::Bool(false))
-                                && !v.as_array().is_some_and(Vec::is_empty))
-                        {
-                            format!(
-                                "with tag '{}' ",
-                                event
-                                    .get("_ingest.on_failure_processor_tag")
-                                    .map_or_else(String::new, template_to_string)
-                            )
-                        } else {
-                            String::new()
-                        },
-                        event
-                            .get("_ingest.pipeline")
-                            .map_or_else(String::new, template_to_string),
-                        event
-                            .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, template_to_string)
-                    )),
-                )?;
-                event.append_unique("tags", json!("preserve_original_event"))?;
+                    event.append("error.message", json!(format!("Processor '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), if event.get("_ingest.on_failure_processor_tag").is_some_and(|v| !v.is_null() && v.as_str() != Some("") && !matches!(v, Value::Bool(false)) && !v.as_array().is_some_and(Vec::is_empty)) { format!("with tag '{}' ", event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string)) } else { String::new() }, event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                    event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

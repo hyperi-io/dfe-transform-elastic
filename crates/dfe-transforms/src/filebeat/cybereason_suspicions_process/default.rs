@@ -2960,15 +2960,17 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.simpleValues.imageFile.companyName") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.companyName\"); ctx.cybereason.suspicions_process.simple_values.image_file_company_name = obj;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                move_map_entry(
                     event,
-                    cached_painless!(
-                        r#"def obj = ctx.json.simpleValues.remove(\"imageFile.companyName\"); ctx.cybereason.suspicions_process.simple_values.image_file_company_name = obj;"#
+                    &MoveMapEntry::new(
+                        "json.simpleValues".into(),
+                        "imageFile.companyName".into(),
+                        "cybereason.suspicions_process.simple_values.image_file_company_name"
+                            .into(),
                     ),
-                )?;
+                );
             }
 
             // on_failure: 1 handler(s)
@@ -3019,15 +3021,17 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.simpleValues.imageFile.fileHash.iconBase64") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.fileHash.iconBase64\"); ctx.cybereason.suspicions_process.simple_values.image_file_hash_icon_base64 = obj;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                move_map_entry(
                     event,
-                    cached_painless!(
-                        r#"def obj = ctx.json.simpleValues.remove(\"imageFile.fileHash.iconBase64\"); ctx.cybereason.suspicions_process.simple_values.image_file_hash_icon_base64 = obj;"#
+                    &MoveMapEntry::new(
+                        "json.simpleValues".into(),
+                        "imageFile.fileHash.iconBase64".into(),
+                        "cybereason.suspicions_process.simple_values.image_file_hash_icon_base64"
+                            .into(),
                     ),
-                )?;
+                );
             }
 
             // on_failure: 1 handler(s)
@@ -3079,15 +3083,9 @@ impl Transform for Default {
             let _cond =
                 { event.has_value("json.simpleValues.imageFile.maliciousClassificationType") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.maliciousClassificationType\"); ctx.cybereason.suspicions_process.simple_values.image_file_malicious_classification_type = obj;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
-                    event,
-                    cached_painless!(
-                        r#"def obj = ctx.json.simpleValues.remove(\"imageFile.maliciousClassificationType\"); ctx.cybereason.suspicions_process.simple_values.image_file_malicious_classification_type = obj;"#
-                    ),
-                )?;
+                move_map_entry(event, &MoveMapEntry::new("json.simpleValues".into(), "imageFile.maliciousClassificationType".into(), "cybereason.suspicions_process.simple_values.image_file_malicious_classification_type".into()));
             }
 
             // on_failure: 1 handler(s)
@@ -3135,15 +3133,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.simpleValues.imageFile.md5String") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.md5String\"); ctx.cybereason.suspicions_process.simple_values.image_file_md5_string = obj;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                move_map_entry(
                     event,
-                    cached_painless!(
-                        r#"def obj = ctx.json.simpleValues.remove(\"imageFile.md5String\"); ctx.cybereason.suspicions_process.simple_values.image_file_md5_string = obj;"#
+                    &MoveMapEntry::new(
+                        "json.simpleValues".into(),
+                        "imageFile.md5String".into(),
+                        "cybereason.suspicions_process.simple_values.image_file_md5_string".into(),
                     ),
-                )?;
+                );
             }
 
             // on_failure: 1 handler(s)
@@ -3231,15 +3230,17 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.simpleValues.imageFile.productName") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.productName\"); ctx.cybereason.suspicions_process.simple_values.image_file_product_name = obj;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                move_map_entry(
                     event,
-                    cached_painless!(
-                        r#"def obj = ctx.json.simpleValues.remove(\"imageFile.productName\"); ctx.cybereason.suspicions_process.simple_values.image_file_product_name = obj;"#
+                    &MoveMapEntry::new(
+                        "json.simpleValues".into(),
+                        "imageFile.productName".into(),
+                        "cybereason.suspicions_process.simple_values.image_file_product_name"
+                            .into(),
                     ),
-                )?;
+                );
             }
 
             // on_failure: 1 handler(s)
@@ -3290,15 +3291,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.simpleValues.imageFile.sha1String") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.sha1String\"); ctx.cybereason.suspicions_process.simple_values.image_file_sha1_string = obj;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                move_map_entry(
                     event,
-                    cached_painless!(
-                        r#"def obj = ctx.json.simpleValues.remove(\"imageFile.sha1String\"); ctx.cybereason.suspicions_process.simple_values.image_file_sha1_string = obj;"#
+                    &MoveMapEntry::new(
+                        "json.simpleValues".into(),
+                        "imageFile.sha1String".into(),
+                        "cybereason.suspicions_process.simple_values.image_file_sha1_string".into(),
                     ),
-                )?;
+                );
             }
 
             // on_failure: 1 handler(s)

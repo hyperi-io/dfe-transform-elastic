@@ -18,9 +18,9 @@ impl Transform for PipelinePostureAndClientProvisioningAudit {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             event.set("event.kind", json!("event"))?;
 
-            event.append("event.category", json!("malware"))?;
+                event.append("event.category", json!("malware"))?;
 
-            event.append("event.type", json!("info"))?;
+                event.append("event.type", json!("info"))?;
 
             let _cond = { event.get_i64("cisco_ise.log.segment.number") == Some(0) };
             if _cond {
@@ -32,18 +32,11 @@ impl Transform for PipelinePostureAndClientProvisioningAudit {
                 }
             }
 
-            let _cond = {
-                event.has_value("cisco_ise.log.segment.number")
-                    && event
-                        .get_i64("cisco_ise.log.segment.number")
-                        .is_some_and(|n| n > 0)
-            };
+            let _cond = { event.has_value("cisco_ise.log.segment.number") && event.get_i64("cisco_ise.log.segment.number").is_some_and(|n| n > 0) };
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     // Grok pattern: ^%{GREEDYDATA:cisco_ise.log.log_details_raw},
-                    if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},")
-                        .extract_into(&input, event)?
-                    {
+                    if !cached_grok!("^%{GREEDYDATA:cisco_ise.log.log_details_raw},").extract_into(&input, event)? {
                         return Err(TransformError::GrokNoMatch { value: input });
                     }
                 }
@@ -52,16 +45,7 @@ impl Transform for PipelinePostureAndClientProvisioningAudit {
             // on_failure: 2 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if let Some(date_str) = event.get_as_string("_tmp.timestamp") {
-                    match parse_date_out(
-                        &date_str,
-                        &[
-                            "yyyy-MM-dd HH:mm:ss.SSS",
-                            "yyyy-MM-dd HH:mm:ss.SSSSSS",
-                            "MMM [ ]d HH:mm:ss[.SSSSSS][.SSS]",
-                        ],
-                        None,
-                        None,
-                    ) {
+                    match parse_date_out(&date_str, &["yyyy-MM-dd HH:mm:ss.SSS", "yyyy-MM-dd HH:mm:ss.SSSSSS", "MMM [ ]d HH:mm:ss[.SSSSSS][.SSS]"], None, None) {
                         Some(parsed) => event.set("@timestamp", parsed)?,
                         None => {
                             return Err(TransformError::ParseError {
@@ -75,19 +59,9 @@ impl Transform for PipelinePostureAndClientProvisioningAudit {
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("_ingest.on_failure_processor_type", "date")?;
-                event.set(
-                    "_ingest.on_failure_processor_tag",
-                    "date__tmp_timestamp_9ef85c6a",
-                )?;
-                event.remove("_tmp.timestamp");
-                event.append(
-                    "error.message",
-                    json!(
-                        event
-                            .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, template_to_string)
-                    ),
-                )?;
+                event.set("_ingest.on_failure_processor_tag", "date__tmp_timestamp_9ef85c6a")?;
+                        event.remove("_tmp.timestamp");
+                        event.append("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string)))?;
                 event.remove("_ingest.on_failure_message");
                 event.remove("_ingest.on_failure_processor_type");
                 event.remove("_ingest.on_failure_processor_tag");
@@ -96,56 +70,35 @@ impl Transform for PipelinePostureAndClientProvisioningAudit {
                 }
             }
 
-            let _cond = {
-                event.has_value("event.timezone") && event.get_str("event.timezone") != Some("")
-            };
+            let _cond = { event.has_value("event.timezone") && event.get_str("event.timezone") != Some("") };
             if _cond {
-                // on_failure: 2 handler(s)
-                if let Err(err) = (|| -> Result<()> {
-                    if let Some(date_str) = event.get_as_string("_tmp.timestamp") {
-                        match parse_date_out(
-                            &date_str,
-                            &[
-                                "yyyy-MM-dd HH:mm:ss.SSS",
-                                "yyyy-MM-dd HH:mm:ss.SSSSSS",
-                                "MMM [ ]d HH:mm:ss[.SSSSSS][.SSS]",
-                            ],
-                            event.get_str("event.timezone"),
-                            None,
-                        ) {
-                            Some(parsed) => event.set("@timestamp", parsed)?,
-                            None => {
-                                return Err(TransformError::ParseError {
-                                    path: "_tmp.timestamp".into(),
-                                    message: format!("unable to parse date [{date_str}]"),
-                                });
-                            }
+            // on_failure: 2 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+                if let Some(date_str) = event.get_as_string("_tmp.timestamp") {
+                    match parse_date_out(&date_str, &["yyyy-MM-dd HH:mm:ss.SSS", "yyyy-MM-dd HH:mm:ss.SSSSSS", "MMM [ ]d HH:mm:ss[.SSSSSS][.SSS]"], event.get_str("event.timezone") , None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "_tmp.timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
-                    Ok(())
-                })() {
-                    event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.set("_ingest.on_failure_processor_type", "date")?;
-                    event.set(
-                        "_ingest.on_failure_processor_tag",
-                        "date__tmp_timestamp_d0798b77",
-                    )?;
-                    event.remove("_tmp.timestamp");
-                    event.append(
-                        "error.message",
-                        json!(
-                            event
-                                .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, template_to_string)
-                        ),
-                    )?;
-                    event.remove("_ingest.on_failure_message");
-                    event.remove("_ingest.on_failure_processor_type");
-                    event.remove("_ingest.on_failure_processor_tag");
-                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                    }
                 }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "date")?;
+                event.set("_ingest.on_failure_processor_tag", "date__tmp_timestamp_d0798b77")?;
+                        event.remove("_tmp.timestamp");
+                        event.append("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string)))?;
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
+            }
             }
 
             // ignore_failure: true
@@ -163,11 +116,7 @@ impl Transform for PipelinePostureAndClientProvisioningAudit {
                         };
                         {
                             if !key.is_empty() {
-                                kv_put(
-                                    event,
-                                    &format!("cisco_ise.log.log_details.{}", key),
-                                    value,
-                                )?;
+                                kv_put(event, &format!("cisco_ise.log.log_details.{}", key), value)?;
                             }
                         }
                     }
@@ -180,21 +129,13 @@ impl Transform for PipelinePostureAndClientProvisioningAudit {
                 // Painless script
                 // Source: ctx.event.action = ctx.cisco_ise?.log?.message?.description?.splitOnToken(\":\")[0]?.toLowerCase();
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
-                    event,
-                    cached_painless!(
-                        r#"ctx.event.action = ctx.cisco_ise?.log?.message?.description?.splitOnToken(\":\")[0]?.toLowerCase();"#
-                    ),
-                )?;
+                painless_exec_plan(event, cached_painless!(r#"ctx.event.action = ctx.cisco_ise?.log?.message?.description?.splitOnToken(\":\")[0]?.toLowerCase();"#))?;
             }
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("cisco_ise.log.log_details.OperationID") {
-                    event.rename(
-                        "cisco_ise.log.log_details.OperationID",
-                        "cisco_ise.log.operation.id",
-                    )?;
+                    event.rename("cisco_ise.log.log_details.OperationID", "cisco_ise.log.operation.id")?;
                 }
                 Ok(())
             })();
@@ -202,10 +143,7 @@ impl Transform for PipelinePostureAndClientProvisioningAudit {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("cisco_ise.log.log_details.OperationType") {
-                    event.rename(
-                        "cisco_ise.log.log_details.OperationType",
-                        "cisco_ise.log.operation.type",
-                    )?;
+                    event.rename("cisco_ise.log.log_details.OperationType", "cisco_ise.log.operation.type")?;
                 }
                 Ok(())
             })();
@@ -213,10 +151,7 @@ impl Transform for PipelinePostureAndClientProvisioningAudit {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if event.has_value("cisco_ise.log.log_details.OperationStatus") {
-                    event.rename(
-                        "cisco_ise.log.log_details.OperationStatus",
-                        "cisco_ise.log.operation.status",
-                    )?;
+                    event.rename("cisco_ise.log.log_details.OperationStatus", "cisco_ise.log.operation.status")?;
                 }
                 Ok(())
             })();
@@ -238,38 +173,8 @@ impl Transform for PipelinePostureAndClientProvisioningAudit {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append(
-                    "error.message",
-                    json!(format!(
-                        "Processor '{}' {}in pipeline '{}' failed with message '{}'",
-                        event
-                            .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, template_to_string),
-                        if event
-                            .get("_ingest.on_failure_processor_tag")
-                            .is_some_and(|v| !v.is_null()
-                                && v.as_str() != Some("")
-                                && !matches!(v, Value::Bool(false))
-                                && !v.as_array().is_some_and(Vec::is_empty))
-                        {
-                            format!(
-                                "with tag '{}' ",
-                                event
-                                    .get("_ingest.on_failure_processor_tag")
-                                    .map_or_else(String::new, template_to_string)
-                            )
-                        } else {
-                            String::new()
-                        },
-                        event
-                            .get("_ingest.pipeline")
-                            .map_or_else(String::new, template_to_string),
-                        event
-                            .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, template_to_string)
-                    )),
-                )?;
-                event.append_unique("tags", json!("preserve_original_event"))?;
+                    event.append("error.message", json!(format!("Processor '{}' {}in pipeline '{}' failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), if event.get("_ingest.on_failure_processor_tag").is_some_and(|v| !v.is_null() && v.as_str() != Some("") && !matches!(v, Value::Bool(false)) && !v.as_array().is_some_and(Vec::is_empty)) { format!("with tag '{}' ", event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string)) } else { String::new() }, event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                    event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

@@ -32,10 +32,9 @@ impl Transform for PipelineAlertsV2 {
                     }
                 }
 
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == '-' || v == 'N/A' || v == 'NotChecked' || v == 'NotAvailable' || v == 'NoSSL'\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == '-' || v == 'N/A' || v == 'NotChecked' || v == 'NotAvailable' || v == 'NoSSL'\n  });\n}\nhandleMap(ctx);
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == '-' || v == 'N/A' || v == 'NotChecked' || v == 'NotAvailable' || v == 'NoSSL'\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == '-' || v == 'N/A' || v == 'NotChecked' || v == 'NotAvailable' || v == 'NoSSL'\n  });\n}\nhandleMap(ctx);"#))?;
+                drop_empty(event, &DropPolicy { prune_lists: true, sentinels: vec!["-".into(), "N/A".into(), "NotChecked".into(), "NotAvailable".into(), "NoSSL".into()], ..DropPolicy::none() }, None);
 
             let _cond = { event.get("netskope.alert_v2.custom_attr").is_some_and(|v| v.is_string()) || event.get("netskope.alert_v2.custom_attr").is_some_and(|v| v.is_object()) };
             if _cond {
@@ -1930,10 +1929,9 @@ impl Transform for PipelineAlertsV2 {
 
                 event.remove("json");
 
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n"#))?;
+                drop_empty(event, &DropPolicy { nulls: true, empty_strings: true, empty_collections: true, prune_lists: true, ..DropPolicy::none() }, None);
 
             event.set("event.kind", json!("alert"))?;
 

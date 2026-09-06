@@ -202,15 +202,12 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: if (ctx?.temp_properties != null) {\n  ctx.temp_properties = ctx.temp_properties.replace(\"'\", \"\\\"\");\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                guarded_replace(
                     event,
-                    cached_painless!(
-                        r#"if (ctx?.temp_properties != null) {\n  ctx.temp_properties = ctx.temp_properties.replace(\"'\", \"\\\"\");\n}"#
-                    ),
-                )?;
+                    &GuardedReplace::new("temp_properties", "temp_properties", "'", "\""),
+                );
                 Ok(())
             })();
 

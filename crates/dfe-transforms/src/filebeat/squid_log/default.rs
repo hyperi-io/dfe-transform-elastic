@@ -90,12 +90,11 @@ impl Transform for Default {
                 }
             }
 
-            // A map's values() is non-null exactly when the map is there, so
-            // the vendor's `ctx._tmp?.values() != null` is a presence test.
             let _cond = { event.get("_tmp").is_some_and(|v| v.is_object()) };
             if _cond {
                 // Painless script
                 // Source: ctx._tmp?.values().removeIf(value -> value == \"-\");
+                // TODO: Transpile Painless to Rust (2.2.3)
                 painless_exec_plan(
                     event,
                     cached_painless!(r#"ctx._tmp?.values().removeIf(value -> value == \"-\");"#),
@@ -120,13 +119,12 @@ impl Transform for Default {
 
             let _cond = { event.get("_tmp.elapsed").is_some_and(|v| v.is_number()) };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.event[\"duration\"] = ctx._tmp.elapsed * 1000000;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scale_field(
                     event,
-                    cached_painless!(r#"ctx.event[\"duration\"] = ctx._tmp.elapsed * 1000000;"#),
-                )?;
+                    &ScaleField::new("_tmp.elapsed", "event.duration", Factor::Long(1000000)),
+                );
             }
 
             if event.has_value("_tmp.user_name") {
@@ -243,13 +241,32 @@ impl Transform for Default {
 
             let _cond = { event.get_str("http.request.method") != Some("CONNECT") };
             if _cond {
-                if event.has_value("_tmp.url") {
-                    // on_failure set_url_original_on_fail: a URI Java will not
-                    // parse still keeps its raw text on url.original.
-                    if !uri_parts(event, "_tmp.url", "url", true, false)?
-                        && let Some(original) = event.get("_tmp.url").cloned()
-                    {
-                        event.set("url.original", original)?;
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if event.has_value("_tmp.url") {
+                        if !uri_parts(event, "_tmp.url", "url", true, false)?
+                            && event
+                                .get_str("_tmp.url")
+                                .is_some_and(|value| !value.is_empty())
+                        {
+                            return Err(TransformError::ParseError {
+                                path: "_tmp.url".into(),
+                                message: "uri_parts: not a parseable URI".into(),
+                            });
+                        }
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    if let Some(v) = event.get("_tmp.url").cloned() {
+                        event.set("url.original", v)?;
+                    }
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
                     }
                 }
             }

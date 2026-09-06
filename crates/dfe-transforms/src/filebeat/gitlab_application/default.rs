@@ -135,15 +135,12 @@ impl Transform for Default {
                 event.rename("gitlab.application.pid", "process.pid")?;
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: if (ctx.gitlab?.application != null) {\n  def fieldsToRename = new ArrayList(ctx.gitlab.application.keySet());\n  for (fieldName in fieldsToRename) {\n    if (fieldName.endsWith('values')) {\n      def newField = fieldName.substring(0, fieldName.length() - 7);\n      def value = ctx.gitlab.application[fieldName];\n      if (value.size() > 1) {\n        ctx.gitlab.application[newField] = value;\n      } else {\n        ctx.gitlab.application[newField] = value[0]\n      }\n      ctx.gitlab.application.remove(fieldName);\n    }\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            unwrap_suffixed_keys(
                 event,
-                cached_painless!(
-                    r#"if (ctx.gitlab?.application != null) {\n  def fieldsToRename = new ArrayList(ctx.gitlab.application.keySet());\n  for (fieldName in fieldsToRename) {\n    if (fieldName.endsWith('values')) {\n      def newField = fieldName.substring(0, fieldName.length() - 7);\n      def value = ctx.gitlab.application[fieldName];\n      if (value.size() > 1) {\n        ctx.gitlab.application[newField] = value;\n      } else {\n        ctx.gitlab.application[newField] = value[0]\n      }\n      ctx.gitlab.application.remove(fieldName);\n    }\n  }\n}\n"#
-                ),
-            )?;
+                &UnwrapSuffixedKeys::new("gitlab.application".into(), "values".into(), 7),
+            );
 
             dot_expand(event, "gitlab.application", "*")?;
 
@@ -810,15 +807,19 @@ impl Transform for Default {
                 event.append("event.category", json!("configuration"))?;
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

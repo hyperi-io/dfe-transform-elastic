@@ -96,15 +96,20 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_object())
             };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: String underscore(String s) {\n  String result = /[ -]/.matcher(s).replaceAll('_').toLowerCase();\n  return /[\\ufeff]/.matcher(result).replaceAll('')\n}\n\ndef out = [:];\nfor (def item : ctx.o365.metrics.outlook.activity.entrySet()) {\n  out[underscore(item.getKey())] = item.getValue();\n}\nctx.o365.metrics.outlook.activity = out;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                rewrite_keys(
                     event,
-                    cached_painless!(
-                        r#"String underscore(String s) {\n  String result = /[ -]/.matcher(s).replaceAll('_').toLowerCase();\n  return /[\\ufeff]/.matcher(result).replaceAll('')\n}\n\ndef out = [:];\nfor (def item : ctx.o365.metrics.outlook.activity.entrySet()) {\n  out[underscore(item.getKey())] = item.getValue();\n}\nctx.o365.metrics.outlook.activity = out;\n"#
+                    &RewriteKeys::new(
+                        "o365.metrics.outlook.activity".into(),
+                        "o365.metrics.outlook.activity".into(),
+                        vec![
+                            KeyRewriteStep::ReplaceChars(" -".into(), Some('_')),
+                            KeyRewriteStep::Lowercase,
+                            KeyRewriteStep::ReplaceChars("\u{feff}".into(), None),
+                        ],
                     ),
-                )?;
+                );
             }
 
             let _cond = {
@@ -543,15 +548,19 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                drop_empty(
                     event,
-                    cached_painless!(
-                        r#"boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n"#
-                    ),
-                )?;
+                    &DropPolicy {
+                        nulls: true,
+                        empty_strings: true,
+                        empty_collections: true,
+                        prune_lists: true,
+                        ..DropPolicy::none()
+                    },
+                    None,
+                );
                 Ok(())
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;

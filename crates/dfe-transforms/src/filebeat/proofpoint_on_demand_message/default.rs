@@ -3036,15 +3036,20 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object o) {\n  if (o == null || o == '' || o == '**' || o == '0' || (o instanceof String && ((String) o).trim() == '')) {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).entrySet().removeIf(e -> e.getKey().trim() == '' || drop(e.getValue()));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object o) {\n  if (o == null || o == '' || o == '**' || o == '0' || (o instanceof String && ((String) o).trim() == '')) {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).entrySet().removeIf(e -> e.getKey().trim() == '' || drop(e.getValue()));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    sentinels: vec!["**".into(), "0".into()],
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

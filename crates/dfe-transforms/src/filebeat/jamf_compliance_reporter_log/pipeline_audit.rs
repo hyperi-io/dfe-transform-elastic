@@ -1072,10 +1072,9 @@ impl Transform for PipelineAudit {
                 }
                 let _cond = { event.has_value("json.file_access_mode") };
                 if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n"#))?;
+                octal_string(event, &OctalString::new("json.file_access_mode", "jamf_compliance_reporter.log.attributes.file.access_mode"));
                 }
                 // End nested pipeline: "pipeline_aue_chdir"
             }
@@ -1281,10 +1280,9 @@ impl Transform for PipelineAudit {
                 // End nested pipeline: "pipeline_exec_chain_child_object"
                 let _cond = { event.has_value("json.file_access_mode") };
                 if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n"#))?;
+                octal_string(event, &OctalString::new("json.file_access_mode", "jamf_compliance_reporter.log.attributes.file.access_mode"));
                 }
                 // End nested pipeline: "pipeline_aue_chroot"
             }
@@ -1527,10 +1525,9 @@ impl Transform for PipelineAudit {
                 painless_exec_plan(event, cached_painless!(r#"def args_list = new ArrayList();\nctx.process.args = args_list;\nif (ctx.json?.args != null) {\n  for (Map.Entry m : ctx.json.args.entrySet()) {\n    ctx.process.args.add(m.getValue());\n  }\n}\n"#))?;
                 let _cond = { event.has_value("json.file_access_mode") };
                 if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n"#))?;
+                octal_string(event, &OctalString::new("json.file_access_mode", "jamf_compliance_reporter.log.attributes.file.access_mode"));
                 }
                 // End nested pipeline: "pipeline_aue_execve"
             }
@@ -2239,10 +2236,9 @@ impl Transform for PipelineAudit {
                 })();
                 let _cond = { event.has_value("json.file_access_mode") };
                 if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: int temp = (int)ctx.json?.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"int temp = (int)ctx.json?.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n"#))?;
+                octal_string(event, &OctalString::new("json.file_access_mode", "jamf_compliance_reporter.log.attributes.file.access_mode"));
                 }
                 // End nested pipeline: "pipeline_aue_mount"
             }
@@ -2947,10 +2943,9 @@ impl Transform for PipelineAudit {
                 }
                 let _cond = { event.has_value("json.file_access_mode") };
                 if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n"#))?;
+                octal_string(event, &OctalString::new("json.file_access_mode", "jamf_compliance_reporter.log.attributes.file.access_mode"));
                 }
                 // End nested pipeline: "pipeline_aue_unmount"
             }

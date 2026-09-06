@@ -1166,13 +1166,53 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.packageVulnerabilityDetails.sourceUrl") };
             if _cond {
-                uri_parts(
-                    event,
-                    "json.packageVulnerabilityDetails.sourceUrl",
-                    "aws.inspector.package_vulnerability_details.source.url",
-                    true,
-                    false,
-                )?;
+                // on_failure: 2 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if !uri_parts(
+                        event,
+                        "json.packageVulnerabilityDetails.sourceUrl",
+                        "aws.inspector.package_vulnerability_details.source.url",
+                        true,
+                        false,
+                    )? && event
+                        .get_str("json.packageVulnerabilityDetails.sourceUrl")
+                        .is_some_and(|value| !value.is_empty())
+                    {
+                        return Err(TransformError::ParseError {
+                            path: "json.packageVulnerabilityDetails.sourceUrl".into(),
+                            message: "uri_parts: not a parseable URI".into(),
+                        });
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    event.remove("json.packageVulnerabilityDetails.sourceUrl");
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
             }
 
             let _cond = {
@@ -1580,13 +1620,53 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.remediation.recommendation.Url") };
             if _cond {
-                uri_parts(
-                    event,
-                    "json.remediation.recommendation.Url",
-                    "aws.inspector.remediation.recommendation.url",
-                    true,
-                    false,
-                )?;
+                // on_failure: 2 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if !uri_parts(
+                        event,
+                        "json.remediation.recommendation.Url",
+                        "aws.inspector.remediation.recommendation.url",
+                        true,
+                        false,
+                    )? && event
+                        .get_str("json.remediation.recommendation.Url")
+                        .is_some_and(|value| !value.is_empty())
+                    {
+                        return Err(TransformError::ParseError {
+                            path: "json.remediation.recommendation.Url".into(),
+                            message: "uri_parts: not a parseable URI".into(),
+                        });
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    event.remove("json.remediation.recommendation.Url");
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
             }
 
             let _cond = { event.get("json.resources").is_some_and(|v| v.is_array()) };
@@ -3016,15 +3096,19 @@ impl Transform for Default {
                 event.remove("aws.inspector.title");
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

@@ -143,7 +143,37 @@ impl Transform for Default {
 
             let _cond = { event.has_value("zeek.http.uri") };
             if _cond {
-                uri_parts(event, "zeek.http.uri", "url", true, false)?;
+                // on_failure: 2 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if !uri_parts(event, "zeek.http.uri", "url", true, false)?
+                        && event
+                            .get_str("zeek.http.uri")
+                            .is_some_and(|value| !value.is_empty())
+                    {
+                        return Err(TransformError::ParseError {
+                            path: "zeek.http.uri".into(),
+                            message: "uri_parts: not a parseable URI".into(),
+                        });
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    // ignore_failure: true
+                    let _ = (|| -> Result<()> {
+                        if let Some(v) = event.get("zeek.http.uri").cloned() {
+                            event.set("url.original", v)?;
+                        }
+                        Ok(())
+                    })();
+                    event.append("tags", json!("_zeek_http_url_parse_failure"))?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
             }
 
             event.remove("zeek.http.uri");

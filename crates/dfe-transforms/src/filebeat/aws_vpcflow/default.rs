@@ -2081,15 +2081,16 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v instanceof String && v == \"-\");\n} void handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n} handleMap(ctx.aws);
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    drop_empty(
                         event,
-                        cached_painless!(
-                            r#"void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v instanceof String && v == \"-\");\n} void handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n} handleMap(ctx.aws);"#
-                        ),
-                    )?;
+                        &DropPolicy {
+                            sentinels: vec!["-".into()],
+                            ..DropPolicy::none()
+                        },
+                        Some("aws"),
+                    );
                     Ok(())
                 })();
             }

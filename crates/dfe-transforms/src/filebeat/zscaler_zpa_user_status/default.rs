@@ -534,9 +534,8 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // SKIPPED: condition not transpiled: ctx.json?.PosturesHit instanceof java.lang.String
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get("json.PosturesHit").is_some_and(|v| v.is_string()) };
+            if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if let Some(s) = event.get_string("json.PosturesHit") {
@@ -550,9 +549,12 @@ impl Transform for Default {
                 })();
             }
 
-            // SKIPPED: condition not transpiled: ctx.json?.PosturesMiss instanceof java.lang.String
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get("json.PosturesMiss")
+                    .is_some_and(|v| v.is_string())
+            };
+            if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if let Some(s) = event.get_string("json.PosturesMiss") {
@@ -576,15 +578,19 @@ impl Transform for Default {
                 event.rename("json.PosturesMiss", "zscaler_zpa.user_status.postures.miss")?;
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             event.remove("json.LogTimestamp");
             event.remove("json.PublicIP");

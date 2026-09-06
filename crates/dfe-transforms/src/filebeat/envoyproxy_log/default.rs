@@ -56,15 +56,17 @@ impl Transform for Default {
                     });
                 }
                 // Begin nested pipeline: "plaintext"
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: if (ctx.message.charAt(0) == (char)(\"[\")) {\n  ctx.temp_message = \"ACCESS \" + ctx.message;\n} else if (ctx.message.substring(0, 7) == \"ACCESS \") {\n  ctx.temp_message = ctx.message;\n} else {\n  throw new Exception(\"Not a valid envoyproxy access log\");\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                ensure_prefix(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.message.charAt(0) == (char)(\"[\")) {\n  ctx.temp_message = \"ACCESS \" + ctx.message;\n} else if (ctx.message.substring(0, 7) == \"ACCESS \") {\n  ctx.temp_message = ctx.message;\n} else {\n  throw new Exception(\"Not a valid envoyproxy access log\");\n}"#
+                    &EnsurePrefix::new(
+                        "message".into(),
+                        "temp_message".into(),
+                        '[',
+                        "ACCESS ".into(),
                     ),
-                )?;
+                );
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("temp_message") {
@@ -250,15 +252,19 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("dest") };
                 if _cond {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: if (ctx.dest == \"-\") {\n  ctx.remove('dest');\n} else {\n  ctx['destination'] = new HashMap();\n  def p = ctx.dest.indexOf (':');\n  def l = ctx.dest.length();\n  ctx.destination.address = ctx.dest.substring(0, p);\n  ctx.destination.port = ctx.dest.substring(p+1, l);\n} ctx.remove('dest');
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    split_at_delimiter(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.dest == \"-\") {\n  ctx.remove('dest');\n} else {\n  ctx['destination'] = new HashMap();\n  def p = ctx.dest.indexOf (':');\n  def l = ctx.dest.length();\n  ctx.destination.address = ctx.dest.substring(0, p);\n  ctx.destination.port = ctx.dest.substring(p+1, l);\n} ctx.remove('dest');"#
+                        &SplitAtDelimiter::new(
+                            "dest".into(),
+                            ":".into(),
+                            Some("destination.address".into()),
+                            Some("destination.port".into()),
+                            Some("-".into()),
+                            true,
                         ),
-                    )?;
+                    );
                 }
                 let _cond = { event.has_value("destination.port") };
                 if _cond {
@@ -311,15 +317,19 @@ impl Transform for Default {
                     // Begin nested pipeline: "http"
                     let _cond = { event.has_value("proto") && event.get_str("proto") != Some("-") };
                     if _cond {
-                        // Painless script
+                        // Painless script, resolved to its runners at generation time
                         // Source: ctx['http'] = new HashMap(); def p = ctx.proto.indexOf ('/'); def l = ctx.proto.length(); ctx.http.version = ctx.proto.substring(p+1, l);
-                        // TODO: Transpile Painless to Rust (2.2.3)
-                        painless_exec_plan(
+                        split_at_delimiter(
                             event,
-                            cached_painless!(
-                                r#"ctx['http'] = new HashMap(); def p = ctx.proto.indexOf ('/'); def l = ctx.proto.length(); ctx.http.version = ctx.proto.substring(p+1, l);"#
+                            &SplitAtDelimiter::new(
+                                "proto".into(),
+                                "/".into(),
+                                None,
+                                Some("http.version".into()),
+                                None,
+                                false,
                             ),
-                        )?;
+                        );
                     }
                     event.rename("method", "http.request.method")?;
                     event.rename_over("path", "url.path")?;
@@ -551,15 +561,17 @@ impl Transform for Default {
             };
             if _cond {
                 // Begin nested pipeline: "plaintext"
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: if (ctx.message.charAt(0) == (char)(\"[\")) {\n  ctx.temp_message = \"ACCESS \" + ctx.message;\n} else if (ctx.message.substring(0, 7) == \"ACCESS \") {\n  ctx.temp_message = ctx.message;\n} else {\n  throw new Exception(\"Not a valid envoyproxy access log\");\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                ensure_prefix(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.message.charAt(0) == (char)(\"[\")) {\n  ctx.temp_message = \"ACCESS \" + ctx.message;\n} else if (ctx.message.substring(0, 7) == \"ACCESS \") {\n  ctx.temp_message = ctx.message;\n} else {\n  throw new Exception(\"Not a valid envoyproxy access log\");\n}"#
+                    &EnsurePrefix::new(
+                        "message".into(),
+                        "temp_message".into(),
+                        '[',
+                        "ACCESS ".into(),
                     ),
-                )?;
+                );
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("temp_message") {
@@ -745,15 +757,19 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("dest") };
                 if _cond {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: if (ctx.dest == \"-\") {\n  ctx.remove('dest');\n} else {\n  ctx['destination'] = new HashMap();\n  def p = ctx.dest.indexOf (':');\n  def l = ctx.dest.length();\n  ctx.destination.address = ctx.dest.substring(0, p);\n  ctx.destination.port = ctx.dest.substring(p+1, l);\n} ctx.remove('dest');
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    split_at_delimiter(
                         event,
-                        cached_painless!(
-                            r#"if (ctx.dest == \"-\") {\n  ctx.remove('dest');\n} else {\n  ctx['destination'] = new HashMap();\n  def p = ctx.dest.indexOf (':');\n  def l = ctx.dest.length();\n  ctx.destination.address = ctx.dest.substring(0, p);\n  ctx.destination.port = ctx.dest.substring(p+1, l);\n} ctx.remove('dest');"#
+                        &SplitAtDelimiter::new(
+                            "dest".into(),
+                            ":".into(),
+                            Some("destination.address".into()),
+                            Some("destination.port".into()),
+                            Some("-".into()),
+                            true,
                         ),
-                    )?;
+                    );
                 }
                 let _cond = { event.has_value("destination.port") };
                 if _cond {
@@ -806,15 +822,19 @@ impl Transform for Default {
                     // Begin nested pipeline: "http"
                     let _cond = { event.has_value("proto") && event.get_str("proto") != Some("-") };
                     if _cond {
-                        // Painless script
+                        // Painless script, resolved to its runners at generation time
                         // Source: ctx['http'] = new HashMap(); def p = ctx.proto.indexOf ('/'); def l = ctx.proto.length(); ctx.http.version = ctx.proto.substring(p+1, l);
-                        // TODO: Transpile Painless to Rust (2.2.3)
-                        painless_exec_plan(
+                        split_at_delimiter(
                             event,
-                            cached_painless!(
-                                r#"ctx['http'] = new HashMap(); def p = ctx.proto.indexOf ('/'); def l = ctx.proto.length(); ctx.http.version = ctx.proto.substring(p+1, l);"#
+                            &SplitAtDelimiter::new(
+                                "proto".into(),
+                                "/".into(),
+                                None,
+                                Some("http.version".into()),
+                                None,
+                                false,
                             ),
-                        )?;
+                        );
                     }
                     event.rename("method", "http.request.method")?;
                     event.rename_over("path", "url.path")?;

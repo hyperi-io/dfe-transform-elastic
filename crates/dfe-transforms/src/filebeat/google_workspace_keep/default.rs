@@ -99,15 +99,25 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: ctx.google_workspace = ctx.google_workspace ?: [:]; ctx.google_workspace.keep = ctx.google_workspace.keep ?: [:]; for (def param : ctx.json.events.parameters) {\n  if (param.name == null) {\n    continue;\n  }\n  def lw_case_name = param.name.toLowerCase();\n  if (param.value != null) {\n    ctx.google_workspace.keep[lw_case_name] = param.value;\n  } else if (param.boolValue != null) {\n    ctx.google_workspace.keep[lw_case_name] = param.boolValue;\n  } else if (param.intValue != null) {\n    ctx.google_workspace.keep[lw_case_name] = param.intValue;\n  } else if (param.multiValue != null) {\n    ctx.google_workspace.keep[lw_case_name] = param.multiValue;\n  } else if (param.multiIntValue != null) {\n    ctx.google_workspace.keep[lw_case_name] = param.multiIntValue;\n  } else if (param.multiBoolValue != null) {\n    ctx.google_workspace.keep[lw_case_name] = param.multiBoolValue;\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    parameters_into_map(
                         event,
-                        cached_painless!(
-                            r#"ctx.google_workspace = ctx.google_workspace ?: [:]; ctx.google_workspace.keep = ctx.google_workspace.keep ?: [:]; for (def param : ctx.json.events.parameters) {\n  if (param.name == null) {\n    continue;\n  }\n  def lw_case_name = param.name.toLowerCase();\n  if (param.value != null) {\n    ctx.google_workspace.keep[lw_case_name] = param.value;\n  } else if (param.boolValue != null) {\n    ctx.google_workspace.keep[lw_case_name] = param.boolValue;\n  } else if (param.intValue != null) {\n    ctx.google_workspace.keep[lw_case_name] = param.intValue;\n  } else if (param.multiValue != null) {\n    ctx.google_workspace.keep[lw_case_name] = param.multiValue;\n  } else if (param.multiIntValue != null) {\n    ctx.google_workspace.keep[lw_case_name] = param.multiIntValue;\n  } else if (param.multiBoolValue != null) {\n    ctx.google_workspace.keep[lw_case_name] = param.multiBoolValue;\n  }\n}\n"#
+                        &ParametersIntoMap::new(
+                            "json.events.parameters".into(),
+                            "google_workspace.keep".into(),
+                            "name".into(),
+                            true,
+                            vec![
+                                "value".into(),
+                                "boolValue".into(),
+                                "intValue".into(),
+                                "multiValue".into(),
+                                "multiIntValue".into(),
+                                "multiBoolValue".into(),
+                            ],
                         ),
-                    )?;
+                    );
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
@@ -688,15 +698,19 @@ impl Transform for Default {
 
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                drop_empty(
                     event,
-                    cached_painless!(
-                        r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                    ),
-                )?;
+                    &DropPolicy {
+                        nulls: true,
+                        empty_strings: true,
+                        empty_collections: true,
+                        prune_lists: true,
+                        ..DropPolicy::none()
+                    },
+                    None,
+                );
                 Ok(())
             })() {
                 event.set("_ingest.on_failure_message", err.to_string())?;

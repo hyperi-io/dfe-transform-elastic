@@ -515,15 +515,18 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) { handleMap((Map) v); return ((Map) v).isEmpty(); }\n    else if (v instanceof List) { handleList((List) v); return ((List) v).isEmpty(); }\n    else if (v instanceof String) { return ((String) v).isEmpty(); }\n    return v == null;\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) { handleMap((Map) v); return ((Map) v).isEmpty(); }\n    else if (v instanceof List) { handleList((List) v); return ((List) v).isEmpty(); }\n    else if (v instanceof String) { return ((String) v).isEmpty(); }\n    return v == null;\n  });\n}\nhandleMap(ctx);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                drop_empty(
                     event,
-                    cached_painless!(
-                        r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) { handleMap((Map) v); return ((Map) v).isEmpty(); }\n    else if (v instanceof List) { handleList((List) v); return ((List) v).isEmpty(); }\n    else if (v instanceof String) { return ((String) v).isEmpty(); }\n    return v == null;\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) { handleMap((Map) v); return ((Map) v).isEmpty(); }\n    else if (v instanceof List) { handleList((List) v); return ((List) v).isEmpty(); }\n    else if (v instanceof String) { return ((String) v).isEmpty(); }\n    return v == null;\n  });\n}\nhandleMap(ctx);\n"#
-                    ),
-                )?;
+                    &DropPolicy {
+                        nulls: true,
+                        empty_collections: true,
+                        prune_lists: true,
+                        ..DropPolicy::none()
+                    },
+                    None,
+                );
                 Ok(())
             })();
 

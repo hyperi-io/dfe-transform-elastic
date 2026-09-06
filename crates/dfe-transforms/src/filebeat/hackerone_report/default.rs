@@ -151,9 +151,22 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.hackerone?.report?.attributes?.cve_ids instanceof List && ((List) ctx.hackerone.report.attributes.cve_ids).isEmpty() == false && ((List) ctx.hackerone.report.attributes.cve_ids).get(0) != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .get("hackerone.report.attributes.cve_ids")
+                    .is_some_and(|v| v.is_array())
+                    && !(event
+                        .get("hackerone.report.attributes.cve_ids")
+                        .is_some_and(|v| match v {
+                            serde_json::Value::String(s) => s.is_empty(),
+                            serde_json::Value::Array(a) => a.is_empty(),
+                            serde_json::Value::Object(o) => o.is_empty(),
+                            serde_json::Value::Null => true,
+                            _ => false,
+                        }))
+                    && event.has_value("hackerone.report.attributes.cve_ids.0")
+            };
+            if _cond {
                 event.set(
                     "vulnerability.id",
                     json!(
@@ -222,15 +235,25 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.hackerone?.report?.relationships?.weakness?.data?.attributes?.external_id != null && ((String) ctx.hackerone.report.relationships.weakness.data.attributes.external_id).toLowerCase().startsWith('cw ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value(
+                    "hackerone.report.relationships.weakness.data.attributes.external_id",
+                ) && event
+                    .get_str("hackerone.report.relationships.weakness.data.attributes.external_id")
+                    .is_some_and(|s| s.to_lowercase().starts_with("cwe-"))
+            };
+            if _cond {
                 event.set("vulnerability.enumeration", json!("CWE"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.hackerone?.report?.relationships?.weakness?.data?.attributes?.external_id != null && ((String) ctx.hackerone.report.relationships.weakness.data.attributes.external_id).toLowerCase().startsWith('ca ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value(
+                    "hackerone.report.relationships.weakness.data.attributes.external_id",
+                ) && event
+                    .get_str("hackerone.report.relationships.weakness.data.attributes.external_id")
+                    .is_some_and(|s| s.to_lowercase().starts_with("capec-"))
+            };
+            if _cond {
                 event.set("vulnerability.enumeration", json!("CAPEC"))?;
             }
 
@@ -290,9 +313,10 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.hackerone?.report?.relationships?.structured_scope?.data?.attributes?.asset_identifier != null && ctx.hackerone.report.relationships.structured_scope.data.attributes.asset_type instanceof String & ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("hackerone.report.relationships.structured_scope.data.attributes.asset_identifier") && event.get("hackerone.report.relationships.structured_scope.data.attributes.asset_type").is_some_and(|v| v.is_string()) && event.get_str("hackerone.report.relationships.structured_scope.data.attributes.asset_type").is_some_and(|s| s.to_lowercase() == "url")
+            };
+            if _cond {
                 if event.has_value("hackerone.report.relationships.structured_scope.data.attributes.asset_identifier") {
                     event.rename("hackerone.report.relationships.structured_scope.data.attributes.asset_identifier", "url.original")?;
                 }
@@ -319,9 +343,10 @@ impl Transform for Default {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.hackerone?.report?.relationships?.structured_scope?.data?.attributes?.asset_identifier != null && ctx.hackerone.report.relationships.structured_scope.data.attributes.asset_type instanceof String & ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("hackerone.report.relationships.structured_scope.data.attributes.asset_identifier") && event.get("hackerone.report.relationships.structured_scope.data.attributes.asset_type").is_some_and(|v| v.is_string()) && event.get_str("hackerone.report.relationships.structured_scope.data.attributes.asset_type").is_some_and(|s| s.to_lowercase() == "domain")
+            };
+            if _cond {
                 if event.has_value("hackerone.report.relationships.structured_scope.data.attributes.asset_identifier") {
                     event.rename("hackerone.report.relationships.structured_scope.data.attributes.asset_identifier", "_temp.domain_host")?;
                 }

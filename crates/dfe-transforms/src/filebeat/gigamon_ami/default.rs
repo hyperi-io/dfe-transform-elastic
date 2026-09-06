@@ -2843,15 +2843,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("gigamon.ami.dns_response_time") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.event.duration = ctx.gigamon.ami.dns_response_time * 1000000000L;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scale_field(
                     event,
-                    cached_painless!(
-                        r#"ctx.event.duration = ctx.gigamon.ami.dns_response_time * 1000000000L;"#
+                    &ScaleField::new(
+                        "gigamon.ami.dns_response_time",
+                        "event.duration",
+                        Factor::Long(1000000000),
                     ),
-                )?;
+                );
             }
 
             let _cond = { event.has_value("gigamon.ami.dns_query") };
@@ -3008,15 +3009,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("gigamon.ami.http_rtt") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.event.duration = ctx.gigamon.ami.http_rtt * 1000000000L;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scale_field(
                     event,
-                    cached_painless!(
-                        r#"ctx.event.duration = ctx.gigamon.ami.http_rtt * 1000000000L;"#
+                    &ScaleField::new(
+                        "gigamon.ami.http_rtt",
+                        "event.duration",
+                        Factor::Long(1000000000),
                     ),
-                )?;
+                );
             }
 
             let _cond = { event.has_value("gigamon.ami.http_user_agent") };
@@ -3381,28 +3383,22 @@ impl Transform for Default {
 
             let _cond = { event.has_value("gigamon.ami.src_mac") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.source.mac = ctx.gigamon.ami.src_mac.replace(\":\", \"-\").toUpperCase();
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                guarded_replace(
                     event,
-                    cached_painless!(
-                        r#"ctx.source.mac = ctx.gigamon.ami.src_mac.replace(\":\", \"-\").toUpperCase();"#
-                    ),
-                )?;
+                    &GuardedReplace::new("gigamon.ami.src_mac", "source.mac", ":", "-"),
+                );
             }
 
             let _cond = { event.has_value("gigamon.ami.dst_mac") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.destination.mac = ctx.gigamon.ami.dst_mac.replace(\":\", \"-\").toUpperCase();
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                guarded_replace(
                     event,
-                    cached_painless!(
-                        r#"ctx.destination.mac = ctx.gigamon.ami.dst_mac.replace(\":\", \"-\").toUpperCase();"#
-                    ),
-                )?;
+                    &GuardedReplace::new("gigamon.ami.dst_mac", "destination.mac", ":", "-"),
+                );
             }
 
             let _cond = {
@@ -3422,15 +3418,19 @@ impl Transform for Default {
                 event.remove("json");
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             Ok(TransformResult::Continue)
         })(event);

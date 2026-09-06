@@ -2338,13 +2338,12 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.duration") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.event.duration = ctx.event.duration * 1000000000L
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scale_field(
                     event,
-                    cached_painless!(r#"ctx.event.duration = ctx.event.duration * 1000000000L"#),
-                )?;
+                    &ScaleField::new("event.duration", "event.duration", Factor::Long(1000000000)),
+                );
             }
 
             if event.has_value("checkpoint.update_count") {
@@ -2660,15 +2659,9 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
-                        event,
-                        cached_painless!(
-                            r#"ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes"#
-                        ),
-                    )?;
+                    sum_directions(event, &["bytes"]);
                     Ok(())
                 })();
             }
@@ -2681,15 +2674,9 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: ctx.network.packets = ctx.source.packets + ctx.destination.packets
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
-                        event,
-                        cached_painless!(
-                            r#"ctx.network.packets = ctx.source.packets + ctx.destination.packets"#
-                        ),
-                    )?;
+                    sum_directions(event, &["packets"]);
                     Ok(())
                 })();
             }
@@ -3050,15 +3037,19 @@ impl Transform for Default {
                 })();
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

@@ -3078,15 +3078,20 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'undefined') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\n// Prevent empty fields in correlated arrays from being removed.\n// The first two cases should never happen, but are included\n// defensively. The remediationActions elements may be validly\n// empty.\nctx.bitdefender?.event?.filePath?.replaceAll(e -> e == \"\" ? \"-\" : e);\nctx.bitdefender?.event?.fileSizes?.replaceAll(e -> e == \"\" ? \"-\" : e);\nctx.bitdefender?.event?.remediationActions?.replaceAll(e -> e == \"\" ? \"-\" : e);\ndropEmptyFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'undefined') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\n// Prevent empty fields in correlated arrays from being removed.\n// The first two cases should never happen, but are included\n// defensively. The remediationActions elements may be validly\n// empty.\nctx.bitdefender?.event?.filePath?.replaceAll(e -> e == \"\" ? \"-\" : e);\nctx.bitdefender?.event?.fileSizes?.replaceAll(e -> e == \"\" ? \"-\" : e);\nctx.bitdefender?.event?.remediationActions?.replaceAll(e -> e == \"\" ? \"-\" : e);\ndropEmptyFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    sentinels: vec!["undefined".into()],
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {

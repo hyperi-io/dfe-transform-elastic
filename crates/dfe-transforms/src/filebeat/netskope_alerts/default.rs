@@ -986,21 +986,72 @@ impl Transform for Default {
                 }
             }
 
-            uri_parts(
-                event,
-                "netskope.alerts.url",
-                "netskope.alerts.url",
-                true,
-                false,
-            )?;
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+                if !uri_parts(
+                    event,
+                    "netskope.alerts.url",
+                    "netskope.alerts.url",
+                    true,
+                    false,
+                )? && event
+                    .get_str("netskope.alerts.url")
+                    .is_some_and(|value| !value.is_empty())
+                {
+                    return Err(TransformError::ParseError {
+                        path: "netskope.alerts.url".into(),
+                        message: "uri_parts: not a parseable URI".into(),
+                    });
+                }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                if event.has_value("netskope.alerts.url") {
+                    event.rename("netskope.alerts.url", "netskope.alerts.url.original")?;
+                }
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
+            }
 
-            uri_parts(
-                event,
-                "netskope.alerts.web.url",
-                "netskope.alerts.web.url",
-                true,
-                false,
-            )?;
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+                if !uri_parts(
+                    event,
+                    "netskope.alerts.web.url",
+                    "netskope.alerts.web.url",
+                    true,
+                    false,
+                )? && event
+                    .get_str("netskope.alerts.web.url")
+                    .is_some_and(|value| !value.is_empty())
+                {
+                    return Err(TransformError::ParseError {
+                        path: "netskope.alerts.web.url".into(),
+                        message: "uri_parts: not a parseable URI".into(),
+                    });
+                }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                if event.has_value("netskope.alerts.web.url") {
+                    event.rename(
+                        "netskope.alerts.web.url",
+                        "netskope.alerts.web.url.original",
+                    )?;
+                }
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
+            }
 
             let _cond = { event.get_str("netskope.alerts.page.url") == Some(" ") };
             if _cond {
@@ -1011,29 +1062,110 @@ impl Transform for Default {
                 }
             }
 
-            uri_parts(
-                event,
-                "netskope.alerts.page.url",
-                "netskope.alerts.page.url",
-                true,
-                false,
-            )?;
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+                if !uri_parts(
+                    event,
+                    "netskope.alerts.page.url",
+                    "netskope.alerts.page.url",
+                    true,
+                    false,
+                )? && event
+                    .get_str("netskope.alerts.page.url")
+                    .is_some_and(|value| !value.is_empty())
+                {
+                    return Err(TransformError::ParseError {
+                        path: "netskope.alerts.page.url".into(),
+                        message: "uri_parts: not a parseable URI".into(),
+                    });
+                }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                if event.has_value("netskope.alerts.page.url") {
+                    event.rename(
+                        "netskope.alerts.page.url",
+                        "netskope.alerts.page.url.original",
+                    )?;
+                }
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
+            }
 
-            uri_parts(
-                event,
-                "netskope.alerts.login.url",
-                "netskope.alerts.login.url",
-                true,
-                false,
-            )?;
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+                if !uri_parts(
+                    event,
+                    "netskope.alerts.login.url",
+                    "netskope.alerts.login.url",
+                    true,
+                    false,
+                )? && event
+                    .get_str("netskope.alerts.login.url")
+                    .is_some_and(|value| !value.is_empty())
+                {
+                    return Err(TransformError::ParseError {
+                        path: "netskope.alerts.login.url".into(),
+                        message: "uri_parts: not a parseable URI".into(),
+                    });
+                }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                if event.has_value("netskope.alerts.login.url") {
+                    event.rename(
+                        "netskope.alerts.login.url",
+                        "netskope.alerts.login.url.original",
+                    )?;
+                }
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
+            }
 
-            uri_parts(
-                event,
-                "netskope.alerts.referer",
-                "netskope.alerts.referer",
-                true,
-                false,
-            )?;
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+                if !uri_parts(
+                    event,
+                    "netskope.alerts.referer",
+                    "netskope.alerts.referer",
+                    true,
+                    false,
+                )? && event
+                    .get_str("netskope.alerts.referer")
+                    .is_some_and(|value| !value.is_empty())
+                {
+                    return Err(TransformError::ParseError {
+                        path: "netskope.alerts.referer".into(),
+                        message: "uri_parts: not a parseable URI".into(),
+                    });
+                }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                if event.has_value("netskope.alerts.referer") {
+                    event.rename(
+                        "netskope.alerts.referer",
+                        "netskope.alerts.referer.original",
+                    )?;
+                }
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
+            }
 
             let _cond = {
                 event
@@ -6213,15 +6345,20 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'null') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'null') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    sentinels: vec!["null".into()],
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             Ok(TransformResult::Continue)
         })(event);

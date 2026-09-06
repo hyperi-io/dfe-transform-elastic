@@ -18,215 +18,118 @@ impl Transform for PipelineIndicator {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             let _cond = { event.get_str("json.src.process.tid") != Some("") };
             if _cond {
-                // on_failure: 1 handler(s)
-                if let Err(err) = (|| -> Result<()> {
-                    if event.has_value("json.src.process.tid") {
-                        if let Some(val) = event.get("json.src.process.tid") {
-                            let converted = convert_value(val, "long").map_err(|message| {
-                                TransformError::ParseError {
-                                    path: "json.src.process.tid".into(),
-                                    message,
-                                }
-                            })?;
-                            event.set(
-                                "sentinel_one_cloud_funnel.event.src.process.tid",
-                                converted,
-                            )?;
-                        }
-                    }
-                    Ok(())
-                })() {
-                    event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.set("_ingest.on_failure_processor_type", "convert")?;
-                    event.set(
-                        "_ingest.on_failure_processor_tag",
-                        "convert_json_src_process_tid",
-                    )?;
-                    event.append(
-                        "error.message",
-                        json!(format!(
-                            "Processor {} with tag {} in pipeline {} failed with message: {}",
-                            event
-                                .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, template_to_string),
-                            event
-                                .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, template_to_string),
-                            event
-                                .get("_ingest.pipeline")
-                                .map_or_else(String::new, template_to_string),
-                            event
-                                .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, template_to_string)
-                        )),
-                    )?;
-                    event.remove("_ingest.on_failure_message");
-                    event.remove("_ingest.on_failure_processor_type");
-                    event.remove("_ingest.on_failure_processor_tag");
-                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                    }
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+            if event.has_value("json.src.process.tid") {
+                if let Some(val) = event.get("json.src.process.tid") {
+                    let converted = convert_value(val, "long")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.src.process.tid".into(),
+                            message,
+                        })?;
+                    event.set("sentinel_one_cloud_funnel.event.src.process.tid", converted)?;
                 }
             }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set("_ingest.on_failure_processor_tag", "convert_json_src_process_tid")?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
+            }
+            }
 
-            if let Some(v) = event
-                .get("sentinel_one_cloud_funnel.event.src.process.tid")
-                .filter(|v| !painless_is_empty_value(v))
-                .cloned()
-            {
+            if let Some(v) = event.get("sentinel_one_cloud_funnel.event.src.process.tid").filter(|v| !painless_is_empty_value(v)).cloned() {
                 event.set("process.thread.id", v)?;
             }
 
-            if event.has_value("json.indicator.category") {
-                event.rename(
-                    "json.indicator.category",
-                    "sentinel_one_cloud_funnel.event.indicator.category",
-                )?;
-            }
+                if event.has_value("json.indicator.category") {
+                    event.rename("json.indicator.category", "sentinel_one_cloud_funnel.event.indicator.category")?;
+                }
 
-            if event.has_value("json.indicator.description") {
-                event.rename(
-                    "json.indicator.description",
-                    "sentinel_one_cloud_funnel.event.indicator.description",
-                )?;
-            }
+                if event.has_value("json.indicator.description") {
+                    event.rename("json.indicator.description", "sentinel_one_cloud_funnel.event.indicator.description")?;
+                }
 
-            if event.has_value("json.indicator.metadata") {
-                event.rename(
-                    "json.indicator.metadata",
-                    "sentinel_one_cloud_funnel.event.indicator.metadata",
-                )?;
-            }
+                if event.has_value("json.indicator.metadata") {
+                    event.rename("json.indicator.metadata", "sentinel_one_cloud_funnel.event.indicator.metadata")?;
+                }
 
-            if event.has_value("json.indicator.name") {
-                event.rename(
-                    "json.indicator.name",
-                    "sentinel_one_cloud_funnel.event.indicator.name",
-                )?;
-            }
+                if event.has_value("json.indicator.name") {
+                    event.rename("json.indicator.name", "sentinel_one_cloud_funnel.event.indicator.name")?;
+                }
 
-            let _cond = {
-                event.has_value("json.src.process")
-                    && event.get_str("json.src.process.isStoryline™Root") != Some("")
-            };
+            let _cond = { event.has_value("json.src.process") && event.get_str("json.src.process.isStoryline™Root") != Some("") };
             if _cond {
-                // on_failure: 1 handler(s)
-                if let Err(err) = (|| -> Result<()> {
-                    if event.has_value("json.src.process.isStoryline™Root") {
-                        if let Some(val) = event.get("json.src.process.isStoryline™Root") {
-                            let converted = convert_value(val, "boolean").map_err(|message| {
-                                TransformError::ParseError {
-                                    path: "json.src.process.isStoryline™Root".into(),
-                                    message,
-                                }
-                            })?;
-                            event.set(
-                                "sentinel_one_cloud_funnel.event.src.process.is_storyline_tm_root",
-                                converted,
-                            )?;
-                        }
-                    }
-                    Ok(())
-                })() {
-                    event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.set("_ingest.on_failure_processor_type", "convert")?;
-                    event.set(
-                        "_ingest.on_failure_processor_tag",
-                        "convert_json_src_process_isStoryline™Root",
-                    )?;
-                    event.append(
-                        "error.message",
-                        json!(format!(
-                            "Processor {} with tag {} in pipeline {} failed with message: {}",
-                            event
-                                .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, template_to_string),
-                            event
-                                .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, template_to_string),
-                            event
-                                .get("_ingest.pipeline")
-                                .map_or_else(String::new, template_to_string),
-                            event
-                                .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, template_to_string)
-                        )),
-                    )?;
-                    event.remove("_ingest.on_failure_message");
-                    event.remove("_ingest.on_failure_processor_type");
-                    event.remove("_ingest.on_failure_processor_tag");
-                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                    }
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+            if event.has_value("json.src.process.isStoryline™Root") {
+                if let Some(val) = event.get("json.src.process.isStoryline™Root") {
+                    let converted = convert_value(val, "boolean")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.src.process.isStoryline™Root".into(),
+                            message,
+                        })?;
+                    event.set("sentinel_one_cloud_funnel.event.src.process.is_storyline_tm_root", converted)?;
                 }
             }
-
-            let _cond = {
-                event.has_value("json.src.process.parent")
-                    && event.get_str("json.src.process.parent.isStoryline™Root") != Some("")
-            };
-            if _cond {
-                // on_failure: 1 handler(s)
-                if let Err(err) = (|| -> Result<()> {
-                    if event.has_value("json.src.process.parent.isStoryline™Root") {
-                        if let Some(val) = event.get("json.src.process.parent.isStoryline™Root") {
-                            let converted = convert_value(val, "boolean").map_err(|message| {
-                                TransformError::ParseError {
-                                    path: "json.src.process.parent.isStoryline™Root".into(),
-                                    message,
-                                }
-                            })?;
-                            event.set("sentinel_one_cloud_funnel.event.src.process.parent.is_storyline_tm_root", converted)?;
-                        }
-                    }
-                    Ok(())
-                })() {
-                    event.set("_ingest.on_failure_message", err.to_string())?;
-                    event.set("_ingest.on_failure_processor_type", "convert")?;
-                    event.set(
-                        "_ingest.on_failure_processor_tag",
-                        "json_src_process_parent_isStoryline™Root",
-                    )?;
-                    event.append(
-                        "error.message",
-                        json!(format!(
-                            "Processor {} with tag {} in pipeline {} failed with message: {}",
-                            event
-                                .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, template_to_string),
-                            event
-                                .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, template_to_string),
-                            event
-                                .get("_ingest.pipeline")
-                                .map_or_else(String::new, template_to_string),
-                            event
-                                .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, template_to_string)
-                        )),
-                    )?;
-                    event.remove("_ingest.on_failure_message");
-                    event.remove("_ingest.on_failure_processor_type");
-                    event.remove("_ingest.on_failure_processor_tag");
-                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
-                        event.remove("_ingest");
-                    }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set("_ingest.on_failure_processor_tag", "convert_json_src_process_isStoryline™Root")?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
                 }
             }
-
-            if event.has_value("json.src.process.parent.Storyline™.id") {
-                event.rename(
-                    "json.src.process.parent.Storyline™.id",
-                    "sentinel_one_cloud_funnel.event.src.process.parent.storyline_tm_id",
-                )?;
             }
 
-            if event.has_value("json.src.process.Storyline™.id") {
-                event.rename(
-                    "json.src.process.Storyline™.id",
-                    "sentinel_one_cloud_funnel.event.src.process.storyline_tm_id",
-                )?;
+            let _cond = { event.has_value("json.src.process.parent") && event.get_str("json.src.process.parent.isStoryline™Root") != Some("") };
+            if _cond {
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+            if event.has_value("json.src.process.parent.isStoryline™Root") {
+                if let Some(val) = event.get("json.src.process.parent.isStoryline™Root") {
+                    let converted = convert_value(val, "boolean")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "json.src.process.parent.isStoryline™Root".into(),
+                            message,
+                        })?;
+                    event.set("sentinel_one_cloud_funnel.event.src.process.parent.is_storyline_tm_root", converted)?;
+                }
             }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "convert")?;
+                event.set("_ingest.on_failure_processor_tag", "json_src_process_parent_isStoryline™Root")?;
+                        event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
+            }
+            }
+
+                if event.has_value("json.src.process.parent.Storyline™.id") {
+                    event.rename("json.src.process.parent.Storyline™.id", "sentinel_one_cloud_funnel.event.src.process.parent.storyline_tm_id")?;
+                }
+
+                if event.has_value("json.src.process.Storyline™.id") {
+                    event.rename("json.src.process.Storyline™.id", "sentinel_one_cloud_funnel.event.src.process.storyline_tm_id")?;
+                }
 
             Ok(TransformResult::Continue)
         })(event);
@@ -236,34 +139,7 @@ impl Transform for PipelineIndicator {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.append(
-                    "error.message",
-                    json!(format!(
-                        "Processor '{}' {}failed with message '{}'",
-                        event
-                            .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, template_to_string),
-                        if event
-                            .get("_ingest.on_failure_processor_tag")
-                            .is_some_and(|v| !v.is_null()
-                                && v.as_str() != Some("")
-                                && !matches!(v, Value::Bool(false))
-                                && !v.as_array().is_some_and(Vec::is_empty))
-                        {
-                            format!(
-                                "with tag '{}' ",
-                                event
-                                    .get("_ingest.on_failure_processor_tag")
-                                    .map_or_else(String::new, template_to_string)
-                            )
-                        } else {
-                            String::new()
-                        },
-                        event
-                            .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, template_to_string)
-                    )),
-                )?;
+                    event.append("error.message", json!(format!("Processor '{}' {}failed with message '{}'", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), if event.get("_ingest.on_failure_processor_tag").is_some_and(|v| !v.is_null() && v.as_str() != Some("") && !matches!(v, Value::Bool(false)) && !v.as_array().is_some_and(Vec::is_empty)) { format!("with tag '{}' ", event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string)) } else { String::new() }, event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.remove("_ingest.on_failure_message");
             }
         }

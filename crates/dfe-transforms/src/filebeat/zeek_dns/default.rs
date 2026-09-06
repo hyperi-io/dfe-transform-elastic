@@ -179,13 +179,12 @@ impl Transform for Default {
 
             let _cond = { event.has_value("zeek.dns.rtt") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.event.duration = ctx.zeek.dns.rtt * 1000000000L;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scale_field(
                     event,
-                    cached_painless!(r#"ctx.event.duration = ctx.zeek.dns.rtt * 1000000000L;"#),
-                )?;
+                    &ScaleField::new("zeek.dns.rtt", "event.duration", Factor::Long(1000000000)),
+                );
             }
 
             let _cond = { event.has_value("zeek.dns.answers") && event.has_value("zeek.dns.TTLs") };

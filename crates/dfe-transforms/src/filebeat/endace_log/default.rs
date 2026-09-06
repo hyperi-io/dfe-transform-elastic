@@ -374,15 +374,16 @@ impl Transform for Default {
                         && event.get_str("_conf.endace_view_window") != Some("")
                 };
                 if _cond {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: ctx._conf.timedelta = ctx._conf.endace_view_window * 60 * 1000
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    scale_field(
                         event,
-                        cached_painless!(
-                            r#"ctx._conf.timedelta = ctx._conf.endace_view_window * 60 * 1000"#
+                        &ScaleField::new(
+                            "_conf.endace_view_window",
+                            "_conf.timedelta",
+                            Factor::Long(1000),
                         ),
-                    )?;
+                    );
                 }
                 let _cond = {
                     event.has_value("_conf.event.end")

@@ -555,7 +555,32 @@ impl Transform for Default {
 
             let _cond = { event.get_str("threat.indicator.type") == Some("url") };
             if _cond {
-                uri_parts(event, "json.Name", "threat.indicator.url", true, false)?;
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if !uri_parts(event, "json.Name", "threat.indicator.url", true, false)?
+                        && event
+                            .get_str("json.Name")
+                            .is_some_and(|value| !value.is_empty())
+                    {
+                        return Err(TransformError::ParseError {
+                            path: "json.Name".into(),
+                            message: "uri_parts: not a parseable URI".into(),
+                        });
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    if let Some(v) = event.get("json.Name").cloned() {
+                        event.set("threat.indicator.url.original", v)?;
+                    }
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
             }
 
             let _cond = { event.get_str("threat.indicator.type") == Some("url") };

@@ -26,8 +26,15 @@ use sha2::{Digest, Sha256};
 const SITE: &str = "cached_painless!(";
 
 /// Below this the scanner has stopped seeing the tree rather than the tree
-/// having shrunk -- 3,490 sites when this was written.
-const MIN_SITES: usize = 3_000;
+/// having shrunk.
+///
+/// Was 3,000 against 3,490 sites. The first whole-tree regeneration took the
+/// count to 2,475: a script the generator recognises now resolves to its
+/// runner AT GENERATION TIME, so it no longer carries a literal for the ladder
+/// to re-match per event, and only the ones no arm claims still do. That is a
+/// structural change, which is the one thing a floor moves for -- and the same
+/// ratio to the live count as before.
+const MIN_SITES: usize = 2_100;
 
 /// Where the ratchets live, relative to this crate.
 fn workspace_root() -> std::path::PathBuf {

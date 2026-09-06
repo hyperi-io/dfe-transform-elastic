@@ -58,15 +58,16 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_object())
             };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: String underscore(String s) {\n  return /[ -]/.matcher(s).replaceAll('_');\n}\n\ndef out = [:];\nfor (def item : ctx.qualys_vmdr.user_activity.entrySet()) {\n  out[underscore(item.getKey())] = item.getValue();\n}\nctx.qualys_vmdr.user_activity = out;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                rewrite_keys(
                     event,
-                    cached_painless!(
-                        r#"String underscore(String s) {\n  return /[ -]/.matcher(s).replaceAll('_');\n}\n\ndef out = [:];\nfor (def item : ctx.qualys_vmdr.user_activity.entrySet()) {\n  out[underscore(item.getKey())] = item.getValue();\n}\nctx.qualys_vmdr.user_activity = out;\n"#
+                    &RewriteKeys::new(
+                        "qualys_vmdr.user_activity".into(),
+                        "qualys_vmdr.user_activity".into(),
+                        vec![KeyRewriteStep::ReplaceChars(" -".into(), Some('_'))],
                     ),
-                )?;
+                );
             }
 
             {

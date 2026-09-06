@@ -154,15 +154,22 @@ impl Transform for Default {
 
             event.rename("x_opencti_main_observable_type", "threat.indicator.type")?;
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: String type = ctx.threat.indicator.type;\ntype = type.toLowerCase();\ntype = type.replace('stixfile', 'file');\nctx.threat.indicator.type = type;\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            string_ops(
                 event,
-                cached_painless!(
-                    r#"String type = ctx.threat.indicator.type;\ntype = type.toLowerCase();\ntype = type.replace('stixfile', 'file');\nctx.threat.indicator.type = type;\n"#
+                &StringOps::new(
+                    "threat.indicator.type",
+                    "threat.indicator.type",
+                    vec![
+                        StringOp::Lower,
+                        StringOp::Replace {
+                            from: "stixfile".into(),
+                            to: "file".into(),
+                        },
+                    ],
                 ),
-            )?;
+            );
 
             if event.has_value("createdBy.name") {
                 event.rename("createdBy.name", "threat.indicator.provider")?;
@@ -546,15 +553,12 @@ impl Transform for Default {
                                         .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
-                            // Painless script
+                            // Painless script, resolved to its runners at generation time
                             // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.as = ctx.threat.indicator.as ?: [];\nctx.threat.indicator.as.add(ctx._tmp_as);\n
-                            // TODO: Transpile Painless to Rust (2.2.3)
-                            painless_exec_plan(
+                            ensure_append(
                                 event,
-                                cached_painless!(
-                                    r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.as = ctx.threat.indicator.as ?: [];\nctx.threat.indicator.as.add(ctx._tmp_as);\n"#
-                                ),
-                            )?;
+                                &EnsureAppend::new("_tmp_as", "threat.indicator.as"),
+                            );
                             if event.remove("_tmp_as").is_none() {
                                 return Err(TransformError::FieldNotFound {
                                     path: "_tmp_as".into(),
@@ -646,15 +650,12 @@ impl Transform for Default {
                                     ),
                                 )?;
                             }
-                            // Painless script
+                            // Painless script, resolved to its runners at generation time
                             // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.registry = ctx.threat.indicator.registry ?: [];\nctx.threat.indicator.registry.add(ctx._tmp_registry);\n
-                            // TODO: Transpile Painless to Rust (2.2.3)
-                            painless_exec_plan(
+                            ensure_append(
                                 event,
-                                cached_painless!(
-                                    r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.registry = ctx.threat.indicator.registry ?: [];\nctx.threat.indicator.registry.add(ctx._tmp_registry);\n"#
-                                ),
-                            )?;
+                                &EnsureAppend::new("_tmp_registry", "threat.indicator.registry"),
+                            );
                             if event.remove("_tmp_registry").is_none() {
                                 return Err(TransformError::FieldNotFound {
                                     path: "_tmp_registry".into(),
@@ -749,15 +750,12 @@ impl Transform for Default {
                                         .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
-                            // Painless script
+                            // Painless script, resolved to its runners at generation time
                             // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.registry = ctx.threat.indicator.registry ?: [];\nctx.threat.indicator.registry.add(ctx._tmp_registry);\n
-                            // TODO: Transpile Painless to Rust (2.2.3)
-                            painless_exec_plan(
+                            ensure_append(
                                 event,
-                                cached_painless!(
-                                    r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.registry = ctx.threat.indicator.registry ?: [];\nctx.threat.indicator.registry.add(ctx._tmp_registry);\n"#
-                                ),
-                            )?;
+                                &EnsureAppend::new("_tmp_registry", "threat.indicator.registry"),
+                            );
                             if event.remove("_tmp_registry").is_none() {
                                 return Err(TransformError::FieldNotFound {
                                     path: "_tmp_registry".into(),
@@ -906,15 +904,12 @@ impl Transform for Default {
                                         .map_or_else(String::new, template_to_string)
                                 ),
                             )?;
-                            // Painless script
+                            // Painless script, resolved to its runners at generation time
                             // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.x509 = ctx.threat.indicator.x509 ?: [];\nctx.threat.indicator.x509.add(ctx._tmp_x509);\n
-                            // TODO: Transpile Painless to Rust (2.2.3)
-                            painless_exec_plan(
+                            ensure_append(
                                 event,
-                                cached_painless!(
-                                    r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.x509 = ctx.threat.indicator.x509 ?: [];\nctx.threat.indicator.x509.add(ctx._tmp_x509);\n"#
-                                ),
-                            )?;
+                                &EnsureAppend::new("_tmp_x509", "threat.indicator.x509"),
+                            );
                             if event.remove("_tmp_x509").is_none() {
                                 return Err(TransformError::FieldNotFound {
                                     path: "_tmp_x509".into(),
@@ -1100,15 +1095,12 @@ impl Transform for Default {
                             if let Some(v) = event.get("_tmp_url.original").cloned() {
                                 event.set("_tmp_url.full", v)?;
                             }
-                            // Painless script
+                            // Painless script, resolved to its runners at generation time
                             // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.url = ctx.threat.indicator.url ?: [];\nctx.threat.indicator.url.add(ctx._tmp_url);\n
-                            // TODO: Transpile Painless to Rust (2.2.3)
-                            painless_exec_plan(
+                            ensure_append(
                                 event,
-                                cached_painless!(
-                                    r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.url = ctx.threat.indicator.url ?: [];\nctx.threat.indicator.url.add(ctx._tmp_url);\n"#
-                                ),
-                            )?;
+                                &EnsureAppend::new("_tmp_url", "threat.indicator.url"),
+                            );
                             if event.remove("_tmp_url").is_none() {
                                 return Err(TransformError::FieldNotFound {
                                     path: "_tmp_url".into(),
@@ -1230,15 +1222,12 @@ impl Transform for Default {
                                     }
                                 }
                             }
-                            // Painless script
+                            // Painless script, resolved to its runners at generation time
                             // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.url = ctx.threat.indicator.url ?: [];\nctx.threat.indicator.url.add(ctx._tmp_url);\n
-                            // TODO: Transpile Painless to Rust (2.2.3)
-                            painless_exec_plan(
+                            ensure_append(
                                 event,
-                                cached_painless!(
-                                    r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.url = ctx.threat.indicator.url ?: [];\nctx.threat.indicator.url.add(ctx._tmp_url);\n"#
-                                ),
-                            )?;
+                                &EnsureAppend::new("_tmp_url", "threat.indicator.url"),
+                            );
                             if event.remove("_tmp_url").is_none() {
                                 return Err(TransformError::FieldNotFound {
                                     path: "_tmp_url".into(),
@@ -1399,15 +1388,12 @@ impl Transform for Default {
                             {
                                 event.set("_tmp_file.hash", v)?;
                             }
-                            // Painless script
+                            // Painless script, resolved to its runners at generation time
                             // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.file = ctx.threat.indicator.file ?: [];\nctx.threat.indicator.file.add(ctx._tmp_file);\n
-                            // TODO: Transpile Painless to Rust (2.2.3)
-                            painless_exec_plan(
+                            ensure_append(
                                 event,
-                                cached_painless!(
-                                    r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.file = ctx.threat.indicator.file ?: [];\nctx.threat.indicator.file.add(ctx._tmp_file);\n"#
-                                ),
-                            )?;
+                                &EnsureAppend::new("_tmp_file", "threat.indicator.file"),
+                            );
                             if event.remove("_tmp_file").is_none() {
                                 return Err(TransformError::FieldNotFound {
                                     path: "_tmp_file".into(),
@@ -1605,15 +1591,15 @@ impl Transform for Default {
                                             {
                                                 event.set("_tmp_file.hash", v)?;
                                             }
-                                            // Painless script
+                                            // Painless script, resolved to its runners at generation time
                                             // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.file = ctx.threat.indicator.file ?: [];\nctx.threat.indicator.file.add(ctx._tmp_file);\n
-                                            // TODO: Transpile Painless to Rust (2.2.3)
-                                            painless_exec_plan(
+                                            ensure_append(
                                                 event,
-                                                cached_painless!(
-                                                    r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.file = ctx.threat.indicator.file ?: [];\nctx.threat.indicator.file.add(ctx._tmp_file);\n"#
+                                                &EnsureAppend::new(
+                                                    "_tmp_file",
+                                                    "threat.indicator.file",
                                                 ),
-                                            )?;
+                                            );
                                             if event.remove("_tmp_file").is_none() {
                                                 return Err(TransformError::FieldNotFound {
                                                     path: "_tmp_file".into(),
@@ -1752,15 +1738,12 @@ impl Transform for Default {
                             if !painless_is_empty_value(&v) {
                                 event.set("_tmp_file.type", v)?;
                             }
-                            // Painless script
+                            // Painless script, resolved to its runners at generation time
                             // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.file = ctx.threat.indicator.file ?: [];\nctx.threat.indicator.file.add(ctx._tmp_file);\n
-                            // TODO: Transpile Painless to Rust (2.2.3)
-                            painless_exec_plan(
+                            ensure_append(
                                 event,
-                                cached_painless!(
-                                    r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.file = ctx.threat.indicator.file ?: [];\nctx.threat.indicator.file.add(ctx._tmp_file);\n"#
-                                ),
-                            )?;
+                                &EnsureAppend::new("_tmp_file", "threat.indicator.file"),
+                            );
                             if event.remove("_tmp_file").is_none() {
                                 return Err(TransformError::FieldNotFound {
                                     path: "_tmp_file".into(),
@@ -1870,15 +1853,12 @@ impl Transform for Default {
                             {
                                 event.set("_tmp_file.hash", v)?;
                             }
-                            // Painless script
+                            // Painless script, resolved to its runners at generation time
                             // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.file = ctx.threat.indicator.file ?: [];\nctx.threat.indicator.file.add(ctx._tmp_file);\n
-                            // TODO: Transpile Painless to Rust (2.2.3)
-                            painless_exec_plan(
+                            ensure_append(
                                 event,
-                                cached_painless!(
-                                    r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.file = ctx.threat.indicator.file ?: [];\nctx.threat.indicator.file.add(ctx._tmp_file);\n"#
-                                ),
-                            )?;
+                                &EnsureAppend::new("_tmp_file", "threat.indicator.file"),
+                            );
                             if event.remove("_tmp_file").is_none() {
                                 return Err(TransformError::FieldNotFound {
                                     path: "_tmp_file".into(),
@@ -2429,21 +2409,35 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.threat.indicator.containsKey('as') || ctx.threat.indicator.containsKey('email') || ctx.threat.indicator.containsKey('file') || ctx.threat.indicator.containsKey('ip') || ctx.threat.indicator.contai ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has("threat.indicator.as")
+                    || event.has("threat.indicator.email")
+                    || event.has("threat.indicator.file")
+                    || event.has("threat.indicator.ip")
+                    || event.has("threat.indicator.port")
+                    || event.has("threat.indicator.registry")
+                    || event.has("threat.indicator.url")
+                    || event.has("threat.indicator.x509")
+                    || false
+            };
+            if _cond {
                 event.append_unique("tags", json!("ecs-indicator-detail"))?;
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == '-' || v == 'none' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == '-' || v == 'none' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == '-' || v == 'none' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || v == '-' || v == 'none' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    sentinels: vec!["-".into(), "none".into()],
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             Ok(TransformResult::Continue)
         })(event);

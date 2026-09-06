@@ -15756,15 +15756,9 @@ impl Transform for Default {
                     }
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        // Painless script
+                        // Painless script, resolved to its runners at generation time
                         // Source: if (ctx.network == null) {\n  ctx.network = new HashMap();\n} if (ctx.source.bytes != null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes\n} else if (ctx.source.bytes == null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.destination.bytes\n} else if (ctx.source.bytes != null && ctx.destination.bytes == null) {\n  ctx.network.bytes = ctx.source.bytes\n}
-                        // TODO: Transpile Painless to Rust (2.2.3)
-                        painless_exec_plan(
-                            event,
-                            cached_painless!(
-                                r#"if (ctx.network == null) {\n  ctx.network = new HashMap();\n} if (ctx.source.bytes != null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes\n} else if (ctx.source.bytes == null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.destination.bytes\n} else if (ctx.source.bytes != null && ctx.destination.bytes == null) {\n  ctx.network.bytes = ctx.source.bytes\n}"#
-                            ),
-                        )?;
+                        sum_directions(event, &["bytes"]);
                         Ok(())
                     })();
                     let _cond = {
@@ -16276,15 +16270,16 @@ impl Transform for Default {
                     }
                     let _cond = { event.has_value("watchguard_firebox.log.duration") };
                     if _cond {
-                        // Painless script
+                        // Painless script, resolved to its runners at generation time
                         // Source: if (ctx.event == null) {\n  HashMap hm = new HashMap();\n  ctx.put('event', hm);\n} ctx.event.duration = ctx.watchguard_firebox.log.duration * 1000000000;
-                        // TODO: Transpile Painless to Rust (2.2.3)
-                        painless_exec_plan(
+                        scale_field(
                             event,
-                            cached_painless!(
-                                r#"if (ctx.event == null) {\n  HashMap hm = new HashMap();\n  ctx.put('event', hm);\n} ctx.event.duration = ctx.watchguard_firebox.log.duration * 1000000000;"#
+                            &ScaleField::new(
+                                "watchguard_firebox.log.duration",
+                                "event.duration",
+                                Factor::Long(1000000000),
                             ),
-                        )?;
+                        );
                     }
                     // on_failure: 2 handler(s)
                     if let Err(err) = (|| -> Result<()> {
@@ -18193,15 +18188,19 @@ impl Transform for Default {
                 event.remove("watchguard_firebox.log.syslog_timestamp");
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

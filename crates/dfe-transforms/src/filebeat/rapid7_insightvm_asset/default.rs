@@ -437,15 +437,19 @@ impl Transform for Default {
 
             let _cond = { event.has_value("host.name") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: int idx = ctx.host.name.indexOf(\".\");\nif (idx == -1) {\n  ctx.host.hostname = ctx.host.name;\n} else {\n  ctx.host.hostname = ctx.host.name.substring(0, idx);\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                split_at_delimiter(
                     event,
-                    cached_painless!(
-                        r#"int idx = ctx.host.name.indexOf(\".\");\nif (idx == -1) {\n  ctx.host.hostname = ctx.host.name;\n} else {\n  ctx.host.hostname = ctx.host.name.substring(0, idx);\n}\n"#
+                    &SplitAtDelimiter::new(
+                        "host.name".into(),
+                        ".".into(),
+                        Some("host.hostname".into()),
+                        None,
+                        None,
+                        false,
                     ),
-                )?;
+                );
             }
 
             let _cond = { event.has_value("host.hostname") };
@@ -2375,15 +2379,19 @@ impl Transform for Default {
                 })();
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

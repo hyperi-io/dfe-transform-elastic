@@ -1599,14 +1599,53 @@ impl Transform for Default {
                 event.set("threat.indicator.name", v)?;
             }
 
-            if event.has_value("zscaler_zia.saas_security.file.full_url") {
-                uri_parts(
-                    event,
-                    "zscaler_zia.saas_security.file.full_url",
-                    "url",
-                    true,
-                    false,
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+                if event.has_value("zscaler_zia.saas_security.file.full_url") {
+                    if !uri_parts(
+                        event,
+                        "zscaler_zia.saas_security.file.full_url",
+                        "url",
+                        true,
+                        false,
+                    )? && event
+                        .get_str("zscaler_zia.saas_security.file.full_url")
+                        .is_some_and(|value| !value.is_empty())
+                    {
+                        return Err(TransformError::ParseError {
+                            path: "zscaler_zia.saas_security.file.full_url".into(),
+                            message: "uri_parts: not a parseable URI".into(),
+                        });
+                    }
+                }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                event.append(
+                    "error.message",
+                    json!(format!(
+                        "Processor {} with tag {} in pipeline {} failed with message: {}",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("_ingest.on_failure_pipeline")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    )),
                 )?;
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
             }
 
             if let Some(v) = event
@@ -1985,15 +2024,26 @@ impl Transform for Default {
 
             event.remove("_conf");
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropScalar(Object v) {\n  return v == null || v == '' || v == 'N/A'\n    || v == 'None' || v == 'Unknown' || v == 'Unknown Host' || v == 'Unknown URL';\n}\nvoid handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nhandleMap(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropScalar(Object v) {\n  return v == null || v == '' || v == 'N/A'\n    || v == 'None' || v == 'Unknown' || v == 'Unknown Host' || v == 'Unknown URL';\n}\nvoid handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap((Map) v);\n    } else if (v instanceof List) {\n      handleList((List) v);\n    }\n    return dropScalar(v)\n      || (v instanceof Map && ((Map) v).size() == 0)\n      || (v instanceof List && ((List) v).size() == 0);\n  });\n}\nhandleMap(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    sentinels: vec![
+                        "N/A".into(),
+                        "None".into(),
+                        "Unknown".into(),
+                        "Unknown Host".into(),
+                        "Unknown URL".into(),
+                    ],
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

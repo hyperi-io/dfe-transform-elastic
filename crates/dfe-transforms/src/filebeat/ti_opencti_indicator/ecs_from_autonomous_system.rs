@@ -18,10 +18,9 @@ impl Transform for EcsFromAutonomousSystem {
 
         event.set("_tmp_as.organization.name", json!(event.get("_ingest._value.name").map_or_else(String::new, template_to_string)))?;
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.as = ctx.threat.indicator.as ?: [];\nctx.threat.indicator.as.add(ctx._tmp_as);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(event, cached_painless!(r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.as = ctx.threat.indicator.as ?: [];\nctx.threat.indicator.as.add(ctx._tmp_as);\n"#))?;
+            ensure_append(event, &EnsureAppend::new("_tmp_as", "threat.indicator.as"));
 
             if event.remove("_tmp_as").is_none() {
                 return Err(TransformError::FieldNotFound { path: "_tmp_as".into() });

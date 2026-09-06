@@ -99,15 +99,25 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: ctx.google_workspace = ctx.google_workspace ?: [:]; ctx.google_workspace.meet = ctx.google_workspace.meet ?: [:]; for (def param : ctx.json.events.parameters) {\n  if (param.name == null) {\n    continue;\n  }\n  def lw_case_name = param.name.toLowerCase();\n  if (param.value != null) {\n    ctx.google_workspace.meet[lw_case_name] = param.value;\n  } else if (param.boolValue != null) {\n    ctx.google_workspace.meet[lw_case_name] = param.boolValue;\n  } else if (param.intValue != null) {\n    ctx.google_workspace.meet[lw_case_name] = param.intValue;\n  } else if (param.multiValue != null) {\n    ctx.google_workspace.meet[lw_case_name] = param.multiValue;\n  } else if (param.multiIntValue != null) {\n    ctx.google_workspace.meet[lw_case_name] = param.multiIntValue;\n  } else if (param.multiBoolValue != null) {\n    ctx.google_workspace.meet[lw_case_name] = param.multiBoolValue;\n  }\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    parameters_into_map(
                         event,
-                        cached_painless!(
-                            r#"ctx.google_workspace = ctx.google_workspace ?: [:]; ctx.google_workspace.meet = ctx.google_workspace.meet ?: [:]; for (def param : ctx.json.events.parameters) {\n  if (param.name == null) {\n    continue;\n  }\n  def lw_case_name = param.name.toLowerCase();\n  if (param.value != null) {\n    ctx.google_workspace.meet[lw_case_name] = param.value;\n  } else if (param.boolValue != null) {\n    ctx.google_workspace.meet[lw_case_name] = param.boolValue;\n  } else if (param.intValue != null) {\n    ctx.google_workspace.meet[lw_case_name] = param.intValue;\n  } else if (param.multiValue != null) {\n    ctx.google_workspace.meet[lw_case_name] = param.multiValue;\n  } else if (param.multiIntValue != null) {\n    ctx.google_workspace.meet[lw_case_name] = param.multiIntValue;\n  } else if (param.multiBoolValue != null) {\n    ctx.google_workspace.meet[lw_case_name] = param.multiBoolValue;\n  }\n}\n"#
+                        &ParametersIntoMap::new(
+                            "json.events.parameters".into(),
+                            "google_workspace.meet".into(),
+                            "name".into(),
+                            true,
+                            vec![
+                                "value".into(),
+                                "boolValue".into(),
+                                "intValue".into(),
+                                "multiValue".into(),
+                                "multiIntValue".into(),
+                                "multiBoolValue".into(),
+                            ],
                         ),
-                    )?;
+                    );
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
@@ -3785,15 +3795,19 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

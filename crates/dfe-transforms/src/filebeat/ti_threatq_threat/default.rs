@@ -964,13 +964,42 @@ impl Transform for Default {
 
             let _cond = { event.get_str("threatq.type.name") == Some("URL") };
             if _cond {
-                uri_parts(
-                    event,
-                    "threatq.indicator_value",
-                    "threat.indicator.url",
-                    true,
-                    true,
-                )?;
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if !uri_parts(
+                        event,
+                        "threatq.indicator_value",
+                        "threat.indicator.url",
+                        true,
+                        true,
+                    )? && event
+                        .get_str("threatq.indicator_value")
+                        .is_some_and(|value| !value.is_empty())
+                    {
+                        return Err(TransformError::ParseError {
+                            path: "threatq.indicator_value".into(),
+                            message: "uri_parts: not a parseable URI".into(),
+                        });
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    let v = json!(
+                        event
+                            .get("threatq.indicator_value")
+                            .map_or_else(String::new, template_to_string)
+                    );
+                    if !painless_is_empty_value(&v) {
+                        event.set("threat.indicator.url.full", v)?;
+                    }
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
             }
 
             let _cond = { event.get_str("threatq.type.name") == Some("URL") };
@@ -3100,15 +3129,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("threat") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\nmap.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                drop_empty(
                     event,
-                    cached_painless!(
-                        r#"void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\nmap.values().removeIf(v -> v == null);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n"#
-                    ),
-                )?;
+                    &DropPolicy {
+                        nulls: true,
+                        ..DropPolicy::none()
+                    },
+                    None,
+                );
             }
 
             let _cond = { event.get("threatq.sources").is_some_and(|v| v.is_array()) };
@@ -3156,15 +3186,19 @@ impl Transform for Default {
 
             event.remove("_conf");
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

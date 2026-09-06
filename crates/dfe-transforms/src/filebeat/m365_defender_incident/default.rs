@@ -414,13 +414,57 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.incidentWebUrl") };
             if _cond {
-                uri_parts(
-                    event,
-                    "json.incidentWebUrl",
-                    "m365_defender.incident.web_url",
-                    true,
-                    false,
-                )?;
+                // on_failure: 2 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if !uri_parts(
+                        event,
+                        "json.incidentWebUrl",
+                        "m365_defender.incident.web_url",
+                        true,
+                        false,
+                    )? && event
+                        .get_str("json.incidentWebUrl")
+                        .is_some_and(|value| !value.is_empty())
+                    {
+                        return Err(TransformError::ParseError {
+                            path: "json.incidentWebUrl".into(),
+                            message: "uri_parts: not a parseable URI".into(),
+                        });
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    if event.remove("json.incidentWebUrl").is_none() {
+                        return Err(TransformError::FieldNotFound {
+                            path: "json.incidentWebUrl".into(),
+                        });
+                    }
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
             }
 
             // ignore_failure: true
@@ -560,13 +604,57 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.alerts.alertWebUrl") };
             if _cond {
-                uri_parts(
-                    event,
-                    "json.alerts.alertWebUrl",
-                    "m365_defender.incident.alert.alert_web_url",
-                    true,
-                    false,
-                )?;
+                // on_failure: 2 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if !uri_parts(
+                        event,
+                        "json.alerts.alertWebUrl",
+                        "m365_defender.incident.alert.alert_web_url",
+                        true,
+                        false,
+                    )? && event
+                        .get_str("json.alerts.alertWebUrl")
+                        .is_some_and(|value| !value.is_empty())
+                    {
+                        return Err(TransformError::ParseError {
+                            path: "json.alerts.alertWebUrl".into(),
+                            message: "uri_parts: not a parseable URI".into(),
+                        });
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    if event.remove("json.alerts.alertWebUrl").is_none() {
+                        return Err(TransformError::FieldNotFound {
+                            path: "json.alerts.alertWebUrl".into(),
+                        });
+                    }
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
             }
 
             if event.has_value("json.alerts.assignedTo") {
@@ -696,15 +784,18 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.alerts.evidence") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: boolean drop(Object object) {\n  if (object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx.json.alerts.evidence);
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                drop_empty(
                     event,
-                    cached_painless!(
-                        r#"boolean drop(Object object) {\n  if (object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx.json.alerts.evidence);"#
-                    ),
-                )?;
+                    &DropPolicy {
+                        empty_strings: true,
+                        empty_collections: true,
+                        prune_lists: true,
+                        ..DropPolicy::none()
+                    },
+                    Some("json.alerts.evidence"),
+                );
             }
 
             let _cond = {
@@ -906,13 +997,57 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.alerts.incidentWebUrl") };
             if _cond {
-                uri_parts(
-                    event,
-                    "json.alerts.incidentWebUrl",
-                    "m365_defender.incident.alert.incident_web_url",
-                    true,
-                    false,
-                )?;
+                // on_failure: 2 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if !uri_parts(
+                        event,
+                        "json.alerts.incidentWebUrl",
+                        "m365_defender.incident.alert.incident_web_url",
+                        true,
+                        false,
+                    )? && event
+                        .get_str("json.alerts.incidentWebUrl")
+                        .is_some_and(|value| !value.is_empty())
+                    {
+                        return Err(TransformError::ParseError {
+                            path: "json.alerts.incidentWebUrl".into(),
+                            message: "uri_parts: not a parseable URI".into(),
+                        });
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    if event.remove("json.alerts.incidentWebUrl").is_none() {
+                        return Err(TransformError::FieldNotFound {
+                            path: "json.alerts.incidentWebUrl".into(),
+                        });
+                    }
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_pipeline")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
             }
 
             let _cond = { event.has_value("json.alerts.lastActivityDateTime") };
@@ -6823,15 +6958,19 @@ impl Transform for Default {
                 })();
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == \"\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             Ok(TransformResult::Continue)
         })(event);

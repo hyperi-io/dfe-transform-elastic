@@ -160,15 +160,19 @@ impl Transform for Default {
                 event.remove("forescout.event.command");
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n\tmap.values().removeIf(v -> {\n\t\tif (v instanceof Map) {\n\t\t\thandleMap(v);\n\t\t} else if (v instanceof List) {\n\t\t\thandleList(v);\n\t\t}\n\t\treturn v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n\t});\n}\nvoid handleList(List list) {\n\tlist.removeIf(v -> {\n\t\tif (v instanceof Map) {\n\t\t\thandleMap(v);\n\t\t} else if (v instanceof List) {\n\t\t\thandleList(v);\n\t\t}\n\t\treturn v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n\t});\n}\nhandleMap(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n\tmap.values().removeIf(v -> {\n\t\tif (v instanceof Map) {\n\t\t\thandleMap(v);\n\t\t} else if (v instanceof List) {\n\t\t\thandleList(v);\n\t\t}\n\t\treturn v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n\t});\n}\nvoid handleList(List list) {\n\tlist.removeIf(v -> {\n\t\tif (v instanceof Map) {\n\t\t\thandleMap(v);\n\t\t} else if (v instanceof List) {\n\t\t\thandleList(v);\n\t\t}\n\t\treturn v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n\t});\n}\nhandleMap(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

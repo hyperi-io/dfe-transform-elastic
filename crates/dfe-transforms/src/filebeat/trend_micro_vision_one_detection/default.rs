@@ -816,15 +816,15 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.trend_micro_vision_one?.detection?.apt_related == '0';
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond =
+                { event.get_str("trend_micro_vision_one.detection.apt_related") == Some("0") };
+            if _cond {
                 event.set("trend_micro_vision_one.detection.related_apt", json!(false))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.trend_micro_vision_one?.detection?.apt_related == '1';
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond =
+                { event.get_str("trend_micro_vision_one.detection.apt_related") == Some("1") };
+            if _cond {
                 event.set("trend_micro_vision_one.detection.related_apt", json!(true))?;
             }
 
@@ -3703,15 +3703,19 @@ impl Transform for Default {
                 event.remove("trend_micro_vision_one.detection.client_ip");
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

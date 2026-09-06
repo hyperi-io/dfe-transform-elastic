@@ -16,9 +16,21 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            // SKIPPED: condition not transpiled: (ctx.tags instanceof List && ctx.tags.contains('preserve_original_event')) || (ctx.attributes instanceof Map && ctx.attributes.containsKey('elastic.preserve_original_event') && ctx.attributes.get('ela ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                (event.get("tags").is_some_and(|v| v.is_array())
+                    && event.get("tags").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => a
+                            .iter()
+                            .any(|x| x.as_str() == Some("preserve_original_event")),
+                        serde_json::Value::String(s) => s.contains("preserve_original_event"),
+                        _ => false,
+                    }))
+                    || (event.get("attributes").is_some_and(|v| v.is_object())
+                        && event.has("attributes.elastic.preserve_original_event")
+                        && event.get_str("attributes.elastic.preserve_original_event")
+                            == Some("true"))
+            };
+            if _cond {
                 // Painless script
                 // Source: ctx.event = ctx.event ?: [:]; ctx.event.original = Json.dump(ctx); ctx.tags = ctx.tags ?: []; if (!ctx.tags.contains('preserve_original_event')) {\n  ctx.tags.add('preserve_original_event');\n}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
@@ -467,15 +479,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("claude_cowork.events.duration_ms") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.event.duration = ((long)ctx.claude_cowork.events.duration_ms) * 1000000L;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scale_field(
                     event,
-                    cached_painless!(
-                        r#"ctx.event.duration = ((long)ctx.claude_cowork.events.duration_ms) * 1000000L;\n"#
+                    &ScaleField::new(
+                        "claude_cowork.events.duration_ms",
+                        "event.duration",
+                        Factor::Long(1000000),
                     ),
-                )?;
+                );
             }
 
             event.remove("claude_cowork.events.duration_ms");
@@ -549,15 +562,19 @@ impl Transform for Default {
                 )?;
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n    map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n    });\n}\nvoid handleList(List list) {\n    list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n    });\n}\nhandleMap(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n    map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n    });\n}\nvoid handleList(List list) {\n    list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n    });\n}\nhandleMap(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

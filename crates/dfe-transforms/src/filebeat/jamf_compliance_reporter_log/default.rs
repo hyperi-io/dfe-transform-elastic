@@ -1803,15 +1803,15 @@ impl Transform for Default {
                     }
                     let _cond = { event.has_value("json.file_access_mode") };
                     if _cond {
-                        // Painless script
+                        // Painless script, resolved to its runners at generation time
                         // Source: int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
-                        // TODO: Transpile Painless to Rust (2.2.3)
-                        painless_exec_plan(
+                        octal_string(
                             event,
-                            cached_painless!(
-                                r#"int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n"#
+                            &OctalString::new(
+                                "json.file_access_mode",
+                                "jamf_compliance_reporter.log.attributes.file.access_mode",
                             ),
-                        )?;
+                        );
                     }
                     // End nested pipeline: "pipeline_aue_chdir"
                 }
@@ -2103,15 +2103,15 @@ impl Transform for Default {
                     // End nested pipeline: "pipeline_exec_chain_child_object"
                     let _cond = { event.has_value("json.file_access_mode") };
                     if _cond {
-                        // Painless script
+                        // Painless script, resolved to its runners at generation time
                         // Source: int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
-                        // TODO: Transpile Painless to Rust (2.2.3)
-                        painless_exec_plan(
+                        octal_string(
                             event,
-                            cached_painless!(
-                                r#"int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n"#
+                            &OctalString::new(
+                                "json.file_access_mode",
+                                "jamf_compliance_reporter.log.attributes.file.access_mode",
                             ),
-                        )?;
+                        );
                     }
                     // End nested pipeline: "pipeline_aue_chroot"
                 }
@@ -2474,15 +2474,15 @@ impl Transform for Default {
                     )?;
                     let _cond = { event.has_value("json.file_access_mode") };
                     if _cond {
-                        // Painless script
+                        // Painless script, resolved to its runners at generation time
                         // Source: int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
-                        // TODO: Transpile Painless to Rust (2.2.3)
-                        painless_exec_plan(
+                        octal_string(
                             event,
-                            cached_painless!(
-                                r#"int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n"#
+                            &OctalString::new(
+                                "json.file_access_mode",
+                                "jamf_compliance_reporter.log.attributes.file.access_mode",
                             ),
-                        )?;
+                        );
                     }
                     // End nested pipeline: "pipeline_aue_execve"
                 }
@@ -3509,15 +3509,15 @@ impl Transform for Default {
                     })();
                     let _cond = { event.has_value("json.file_access_mode") };
                     if _cond {
-                        // Painless script
+                        // Painless script, resolved to its runners at generation time
                         // Source: int temp = (int)ctx.json?.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
-                        // TODO: Transpile Painless to Rust (2.2.3)
-                        painless_exec_plan(
+                        octal_string(
                             event,
-                            cached_painless!(
-                                r#"int temp = (int)ctx.json?.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n"#
+                            &OctalString::new(
+                                "json.file_access_mode",
+                                "jamf_compliance_reporter.log.attributes.file.access_mode",
                             ),
-                        )?;
+                        );
                     }
                     // End nested pipeline: "pipeline_aue_mount"
                 }
@@ -4545,15 +4545,15 @@ impl Transform for Default {
                     }
                     let _cond = { event.has_value("json.file_access_mode") };
                     if _cond {
-                        // Painless script
+                        // Painless script, resolved to its runners at generation time
                         // Source: int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
-                        // TODO: Transpile Painless to Rust (2.2.3)
-                        painless_exec_plan(
+                        octal_string(
                             event,
-                            cached_painless!(
-                                r#"int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n"#
+                            &OctalString::new(
+                                "json.file_access_mode",
+                                "jamf_compliance_reporter.log.attributes.file.access_mode",
                             ),
-                        )?;
+                        );
                     }
                     // End nested pipeline: "pipeline_aue_unmount"
                 }
@@ -10868,15 +10868,19 @@ impl Transform for Default {
 
             event.remove("json");
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             Ok(TransformResult::Continue)
         })(event);

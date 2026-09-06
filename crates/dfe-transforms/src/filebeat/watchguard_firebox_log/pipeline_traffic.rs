@@ -291,10 +291,9 @@ impl Transform for PipelineTraffic {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: if (ctx.network == null) {\n  ctx.network = new HashMap();\n} if (ctx.source.bytes != null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes\n} else if (ctx.source.bytes == null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.destination.bytes\n} else if (ctx.source.bytes != null && ctx.destination.bytes == null) {\n  ctx.network.bytes = ctx.source.bytes\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"if (ctx.network == null) {\n  ctx.network = new HashMap();\n} if (ctx.source.bytes != null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes\n} else if (ctx.source.bytes == null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.destination.bytes\n} else if (ctx.source.bytes != null && ctx.destination.bytes == null) {\n  ctx.network.bytes = ctx.source.bytes\n}"#))?;
+                sum_directions(event, &["bytes"]);
                 Ok(())
             })();
 
@@ -616,10 +615,9 @@ impl Transform for PipelineTraffic {
 
             let _cond = { event.has_value("watchguard_firebox.log.duration") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: if (ctx.event == null) {\n  HashMap hm = new HashMap();\n  ctx.put('event', hm);\n} ctx.event.duration = ctx.watchguard_firebox.log.duration * 1000000000;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"if (ctx.event == null) {\n  HashMap hm = new HashMap();\n  ctx.put('event', hm);\n} ctx.event.duration = ctx.watchguard_firebox.log.duration * 1000000000;"#))?;
+                scale_field(event, &ScaleField::new("watchguard_firebox.log.duration", "event.duration", Factor::Long(1000000000)));
             }
 
             // on_failure: 2 handler(s)

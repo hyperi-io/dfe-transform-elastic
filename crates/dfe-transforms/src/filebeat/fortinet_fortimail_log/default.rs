@@ -475,8 +475,33 @@ impl Transform for Default {
                 event.rename("temp.url", "fortinet_fortimail.log.url")?;
             }
 
-            if event.has_value("fortinet_fortimail.log.url") {
-                uri_parts(event, "fortinet_fortimail.log.url", "url", true, false)?;
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+                if event.has_value("fortinet_fortimail.log.url") {
+                    if !uri_parts(event, "fortinet_fortimail.log.url", "url", true, false)?
+                        && event
+                            .get_str("fortinet_fortimail.log.url")
+                            .is_some_and(|value| !value.is_empty())
+                    {
+                        return Err(TransformError::ParseError {
+                            path: "fortinet_fortimail.log.url".into(),
+                            message: "uri_parts: not a parseable URI".into(),
+                        });
+                    }
+                }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                if let Some(v) = event.get("fortinet_fortimail.log.url").cloned() {
+                    event.set("url.original", v)?;
+                }
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
             }
 
             let _cond = {
@@ -488,15 +513,9 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: ArrayList severities = new ArrayList(['emergency','alert','critical','error','warning','notice','information','debug']);\nHashMap sevrityMap = new HashMap();\nHashMap facilityMap = new HashMap();\nString severity = ctx.log.level.toLowerCase();\nLong priority = ctx.log.syslog.priority;\nfor (def i = 0; i < severities.length; i++) {\n  if (severities[i] == severity){\n    sevrityMap.put('code',i);\n    ctx.log.syslog.severity = sevrityMap;\n    facilityMap.put('code', (priority-i)/8);\n    ctx.log.syslog.facility = facilityMap;\n    break;\n  }\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
-                        event,
-                        cached_painless!(
-                            r#"ArrayList severities = new ArrayList(['emergency','alert','critical','error','warning','notice','information','debug']);\nHashMap sevrityMap = new HashMap();\nHashMap facilityMap = new HashMap();\nString severity = ctx.log.level.toLowerCase();\nLong priority = ctx.log.syslog.priority;\nfor (def i = 0; i < severities.length; i++) {\n  if (severities[i] == severity){\n    sevrityMap.put('code',i);\n    ctx.log.syslog.severity = sevrityMap;\n    facilityMap.put('code', (priority-i)/8);\n    ctx.log.syslog.facility = facilityMap;\n    break;\n  }\n}"#
-                        ),
-                    )?;
+                    syslog_priority(event, &SyslogPriorityScript::new(None, true, true, false));
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
@@ -2384,15 +2403,19 @@ impl Transform for Default {
                 event.remove("event.original");
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object o) {\n  if (o == null || o == '') {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

@@ -155,9 +155,13 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.hashicorp_vault?.audit?.request?.headers?.get('user-agent') != null && !ctx.hashicorp_vault.audit.request.headers['user-agent'].get(0).startsWith('hmac-')
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("hashicorp_vault.audit.request.headers.user-agent")
+                    && !(event
+                        .get_str("hashicorp_vault.audit.request.headers.user-agent.0")
+                        .is_some_and(|s| s.starts_with("hmac-")))
+            };
+            if _cond {
                 if let Some(v) = event
                     .get("hashicorp_vault.audit.request.headers.user-agent.0")
                     .filter(|v| !painless_is_empty_value(v))

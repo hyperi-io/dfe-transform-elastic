@@ -330,15 +330,18 @@ impl Transform for Default {
                 event.remove("event.original");
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null) {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> dropEmptyFields(v));\n    return ((Map) object).isEmpty();\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> dropEmptyFields(v));\n    return ((List) object).isEmpty();\n  } else if (object instanceof String) {\n    return ((String) object).isEmpty();\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null) {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> dropEmptyFields(v));\n    return ((Map) object).isEmpty();\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> dropEmptyFields(v));\n    return ((List) object).isEmpty();\n  } else if (object instanceof String) {\n    return ((String) object).isEmpty();\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             Ok(TransformResult::Continue)
         })(event);

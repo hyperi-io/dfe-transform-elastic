@@ -417,8 +417,38 @@ impl Transform for Default {
 
             let _cond = { event.has_value("url.original") };
             if _cond {
-                if event.has_value("url.original") {
-                    uri_parts(event, "url.original", "url", true, false)?;
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if event.has_value("url.original") {
+                        if !uri_parts(event, "url.original", "url", true, false)?
+                            && event
+                                .get_str("url.original")
+                                .is_some_and(|value| !value.is_empty())
+                        {
+                            return Err(TransformError::ParseError {
+                                path: "url.original".into(),
+                                message: "uri_parts: not a parseable URI".into(),
+                            });
+                        }
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    event.append(
+                        "error.message",
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        ),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 

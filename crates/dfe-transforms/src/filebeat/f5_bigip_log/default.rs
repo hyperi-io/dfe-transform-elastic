@@ -11660,60 +11660,64 @@ impl Transform for Default {
                         && event.has_value("json.system.tmmTraffic.clientSideTraffic.bitsIn")
                 };
                 if _cond {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: def client_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('clientSideTraffic.bitsIn'); client_side_traffic.put('bits_in', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('client_side_traffic', client_side_traffic);\n} else{\n  ctx.f5_bigip.log.tmm_traffic.client_side_traffic.put('bits_in', obj);\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    move_map_entry(
                         event,
-                        cached_painless!(
-                            r#"def client_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('clientSideTraffic.bitsIn'); client_side_traffic.put('bits_in', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('client_side_traffic', client_side_traffic);\n} else{\n  ctx.f5_bigip.log.tmm_traffic.client_side_traffic.put('bits_in', obj);\n}"#
+                        &MoveMapEntry::new(
+                            "json.system.tmmTraffic".into(),
+                            "clientSideTraffic.bitsIn".into(),
+                            "f5_bigip.log.tmm_traffic.client_side_traffic.bits_in".into(),
                         ),
-                    )?;
+                    );
                 }
                 let _cond = {
                     event.has_value("json.system.tmmTraffic")
                         && event.has_value("json.system.tmmTraffic.clientSideTraffic.bitsOut")
                 };
                 if _cond {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: def client_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('clientSideTraffic.bitsOut'); client_side_traffic.put('bits_out', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('client_side_traffic', client_side_traffic);\n} else{\n  ctx.f5_bigip.log.tmm_traffic.client_side_traffic.put('bits_out', obj);\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    move_map_entry(
                         event,
-                        cached_painless!(
-                            r#"def client_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('clientSideTraffic.bitsOut'); client_side_traffic.put('bits_out', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('client_side_traffic', client_side_traffic);\n} else{\n  ctx.f5_bigip.log.tmm_traffic.client_side_traffic.put('bits_out', obj);\n}"#
+                        &MoveMapEntry::new(
+                            "json.system.tmmTraffic".into(),
+                            "clientSideTraffic.bitsOut".into(),
+                            "f5_bigip.log.tmm_traffic.client_side_traffic.bits_out".into(),
                         ),
-                    )?;
+                    );
                 }
                 let _cond = {
                     event.has_value("json.system.tmmTraffic")
                         && event.has_value("json.system.tmmTraffic.serverSideTraffic.bitsIn")
                 };
                 if _cond {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: def server_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('serverSideTraffic.bitsIn'); server_side_traffic.put('bits_in', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('server_side_traffic', server_side_traffic);\n} else{\n    if (ctx.f5_bigip?.log?.tmm_traffic?.server_side_traffic == null) {\n        ctx.f5_bigip.log.tmm_traffic.server_side_traffic = new HashMap();\n    }\n    ctx.f5_bigip.log.tmm_traffic.server_side_traffic.put('bits_in', obj);\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    move_map_entry(
                         event,
-                        cached_painless!(
-                            r#"def server_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('serverSideTraffic.bitsIn'); server_side_traffic.put('bits_in', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('server_side_traffic', server_side_traffic);\n} else{\n    if (ctx.f5_bigip?.log?.tmm_traffic?.server_side_traffic == null) {\n        ctx.f5_bigip.log.tmm_traffic.server_side_traffic = new HashMap();\n    }\n    ctx.f5_bigip.log.tmm_traffic.server_side_traffic.put('bits_in', obj);\n}"#
+                        &MoveMapEntry::new(
+                            "json.system.tmmTraffic".into(),
+                            "serverSideTraffic.bitsIn".into(),
+                            "f5_bigip.log.tmm_traffic.server_side_traffic.bits_in".into(),
                         ),
-                    )?;
+                    );
                 }
                 let _cond = {
                     event.has_value("json.system.tmmTraffic")
                         && event.has_value("json.system.tmmTraffic.serverSideTraffic.bitsOut")
                 };
                 if _cond {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: def server_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('serverSideTraffic.bitsOut'); server_side_traffic.put('bits_out', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('server_side_traffic', server_side_traffic);\n} else{\n    if (ctx.f5_bigip?.log?.tmm_traffic?.server_side_traffic == null) {\n        ctx.f5_bigip.log.tmm_traffic.server_side_traffic = new HashMap();\n    }\n    ctx.f5_bigip.log.tmm_traffic.server_side_traffic.put('bits_out', obj);\n}
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    move_map_entry(
                         event,
-                        cached_painless!(
-                            r#"def server_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('serverSideTraffic.bitsOut'); server_side_traffic.put('bits_out', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('server_side_traffic', server_side_traffic);\n} else{\n    if (ctx.f5_bigip?.log?.tmm_traffic?.server_side_traffic == null) {\n        ctx.f5_bigip.log.tmm_traffic.server_side_traffic = new HashMap();\n    }\n    ctx.f5_bigip.log.tmm_traffic.server_side_traffic.put('bits_out', obj);\n}"#
+                        &MoveMapEntry::new(
+                            "json.system.tmmTraffic".into(),
+                            "serverSideTraffic.bitsOut".into(),
+                            "f5_bigip.log.tmm_traffic.server_side_traffic.bits_out".into(),
                         ),
-                    )?;
+                    );
                 }
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {

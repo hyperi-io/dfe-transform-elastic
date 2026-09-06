@@ -82,9 +82,12 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.oracle_event_type == "database" && ctx?.audit != null && ctx?.audit.length() != 0
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get_str("oracle_event_type") == Some("database")
+                    && event.has_value("audit")
+                    && event.get_as_string("audit").is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
                 if let Some(kv_str) = event.get_string("audit") {
                     for pair in cached_regex!("\\\n(?=[a-zA-Z])").split(&kv_str).into_iter() {
                         if pair.trim().is_empty() {
@@ -114,9 +117,12 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.oracle_event_type == "object" && ctx?.audit != null && ctx?.audit.length() != 0
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get_str("oracle_event_type") == Some("object")
+                    && event.has_value("audit")
+                    && event.get_as_string("audit").is_some_and(|s| !s.is_empty())
+            };
+            if _cond {
                 if let Some(kv_str) = event.get_string("audit") {
                     for pair in kv_str.split("\" ") {
                         if pair.trim().is_empty() {
@@ -186,15 +192,12 @@ impl Transform for Default {
                 ),
             )?;
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: ctx.oracle.database_audit = ctx?.oracle?.database_audit.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().replace(' ', '_'), e -> e.getValue()));
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            rename_map_keys(
                 event,
-                cached_painless!(
-                    r#"ctx.oracle.database_audit = ctx?.oracle?.database_audit.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().replace(' ', '_'), e -> e.getValue()));"#
-                ),
-            )?;
+                &RenameMapKeys::new("oracle.database_audit".into(), ' ', '_'),
+            );
 
             gsub_field(
                 event,
@@ -239,15 +242,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("oracle.database_audit") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v instanceof String && v.isEmpty() == true);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                drop_empty(
                     event,
-                    cached_painless!(
-                        r#"void handleMap(Map map) {\n  for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v instanceof String && v.isEmpty() == true);\n}\nvoid handleList(List list) {\n  for (def x : list) {\n      if (x instanceof Map) {\n          handleMap(x);\n      } else if (x instanceof List) {\n          handleList(x);\n      }\n  }\n}\nhandleMap(ctx);\n"#
-                    ),
-                )?;
+                    &DropPolicy {
+                        empty_collections: true,
+                        ..DropPolicy::none()
+                    },
+                    None,
+                );
             }
 
             event.remove("@timestamp");

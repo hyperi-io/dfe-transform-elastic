@@ -307,29 +307,17 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.network.packets = ctx.source.packets + ctx.destination.packets
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
-                    event,
-                    cached_painless!(
-                        r#"ctx.network.packets = ctx.source.packets + ctx.destination.packets"#
-                    ),
-                )?;
+                sum_directions(event, &["packets"]);
                 Ok(())
             })();
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
-                    event,
-                    cached_painless!(
-                        r#"ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes"#
-                    ),
-                )?;
+                sum_directions(event, &["bytes"]);
                 Ok(())
             })();
 

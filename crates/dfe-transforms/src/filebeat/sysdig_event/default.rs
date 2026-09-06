@@ -465,15 +465,15 @@ impl Transform for Default {
                         || event.has_value("sysdig.event.content.fields.proc.ppid_ts"))
             };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: if (ctx.sysdig.event.content.fields.proc instanceof Map) {\n  def proc = ctx.sysdig.event.content.fields.proc;\n  if (proc.containsKey('pid') && proc.pid instanceof Map && proc.pid.size() == 0) {\n    proc.remove('pid');\n  }\n  if (proc.containsKey('ppid') && proc.ppid instanceof Map && proc.ppid.size() == 0) {\n    proc.remove('ppid');\n  }\n}\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                remove_empty_child_maps(
                     event,
-                    cached_painless!(
-                        r#"if (ctx.sysdig.event.content.fields.proc instanceof Map) {\n  def proc = ctx.sysdig.event.content.fields.proc;\n  if (proc.containsKey('pid') && proc.pid instanceof Map && proc.pid.size() == 0) {\n    proc.remove('pid');\n  }\n  if (proc.containsKey('ppid') && proc.ppid instanceof Map && proc.ppid.size() == 0) {\n    proc.remove('ppid');\n  }\n}\n"#
+                    &RemoveEmptyChildMaps::new(
+                        "sysdig.event.content.fields.proc".into(),
+                        vec!["pid".into(), "ppid".into()],
                     ),
-                )?;
+                );
             }
 
             let _cond = {

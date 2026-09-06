@@ -764,12 +764,95 @@ impl Transform for Default {
 
             let _cond = { event.get("_tmp.links").is_some_and(|v| v.is_array()) };
             if _cond {
-                foreach_array(event, "_tmp.links", |event| {
-                    if event.has_value("_ingest._value") {
-                        uri_parts(event, "_ingest._value", "_ingest._value", true, false)?;
+                {
+                    // A foreach walks a LIST or an OBJECT: over an object Elastic
+                    // binds `_ingest._key` per entry, which is what a target of
+                    // `<field>.{{{_ingest._key}}}` reads.
+                    let subject = event.get("_tmp.links").cloned();
+                    let keyed = matches!(subject, Some(Value::Object(_)));
+                    let entries: Vec<(Option<String>, Value)> = match subject {
+                        Some(Value::Array(items)) => items.into_iter().map(|v| (None, v)).collect(),
+                        Some(Value::Object(fields)) => {
+                            fields.into_iter().map(|(k, v)| (Some(k), v)).collect()
+                        }
+                        _ => Vec::new(),
+                    };
+                    if !entries.is_empty() {
+                        // A NESTED loop borrows the same slots, so the enclosing
+                        // entry is saved and put back afterwards.
+                        let enclosing = event.get("_ingest._value").cloned();
+                        let enclosing_key = event.get("_ingest._key").cloned();
+                        let mut list = Vec::with_capacity(entries.len());
+                        let mut fields = Map::new();
+                        for (key, item) in entries {
+                            if let Some(key) = key.as_deref() {
+                                event.set("_ingest._key", Value::String(key.to_string()))?;
+                            }
+                            event.set("_ingest._value", item)?;
+                            // on_failure: 1 handler(s)
+                            if let Err(err) = (|| -> Result<()> {
+                                if event.has_value("_ingest._value") {
+                                    if !uri_parts(
+                                        event,
+                                        "_ingest._value",
+                                        "_ingest._value",
+                                        true,
+                                        false,
+                                    )? && event
+                                        .get_str("_ingest._value")
+                                        .is_some_and(|value| !value.is_empty())
+                                    {
+                                        return Err(TransformError::ParseError {
+                                            path: "_ingest._value".into(),
+                                            message: "uri_parts: not a parseable URI".into(),
+                                        });
+                                    }
+                                }
+                                Ok(())
+                            })() {
+                                event.set("_ingest.on_failure_message", err.to_string())?;
+                                event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                                event.append("error.message", json!(format!("Processor {} with tag {} in pipeline {} failed with message: {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
+                                event.remove("_ingest.on_failure_message");
+                                event.remove("_ingest.on_failure_processor_type");
+                                event.remove("_ingest.on_failure_processor_tag");
+                                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                                    event.remove("_ingest");
+                                }
+                            }
+                            let left = event.remove("_ingest._value");
+                            match key {
+                                // An entry the body renamed AWAY is gone from the
+                                // object, which is how a foreach lifts fields up.
+                                Some(key) => {
+                                    if let Some(value) = left {
+                                        fields.insert(key, value);
+                                    }
+                                }
+                                None => list.push(left.unwrap_or(Value::Null)),
+                            }
+                        }
+                        match enclosing {
+                            Some(previous) => {
+                                event.set("_ingest._value", previous)?;
+                            }
+                            None => {
+                                event.remove("_ingest");
+                            }
+                        }
+                        if let Some(previous) = enclosing_key {
+                            event.set("_ingest._key", previous)?;
+                        }
+                        event.set(
+                            "_tmp.links",
+                            if keyed {
+                                Value::Object(fields)
+                            } else {
+                                Value::Array(list)
+                            },
+                        )?;
                     }
-                    Ok(())
-                })?;
+                }
             }
 
             let _cond = { event.get("_tmp.links").is_some_and(|v| v.is_array()) };
@@ -994,15 +1077,20 @@ impl Transform for Default {
                 event.remove("cloudflare_logpush.email_security_alerts.reply_to");
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || v == 'N/A' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || v == 'N/A' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    sentinels: vec!["N/A".into()],
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

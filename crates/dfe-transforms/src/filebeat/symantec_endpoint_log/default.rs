@@ -786,13 +786,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.duration") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.event['duration'] = ctx.event.duration * 1e9;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scale_field(
                     event,
-                    cached_painless!(r#"ctx.event['duration'] = ctx.event.duration * 1e9;\n"#),
-                )?;
+                    &ScaleField::new(
+                        "event.duration",
+                        "event.duration",
+                        Factor::Double(1000000000.0),
+                    ),
+                );
             }
 
             // ignore_failure: true

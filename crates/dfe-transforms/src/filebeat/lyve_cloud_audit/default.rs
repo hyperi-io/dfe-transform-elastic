@@ -350,9 +350,8 @@ impl Transform for Default {
                         Ok(())
                     })?;
                 }
-                // SKIPPED: condition not transpiled: ctx.related?.ip != null && ctx["_failed_ips"] != null;
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = { event.has_value("related.ip") && event.has_value("_failed_ips") };
+                if _cond {
                     // Painless script
                     // Source: ctx.related.ip.removeAll(ctx[\"_failed_ips\"]);
                     // TODO: Transpile Painless to Rust (2.2.3)

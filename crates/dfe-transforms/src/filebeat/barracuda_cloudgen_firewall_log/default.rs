@@ -295,15 +295,12 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("json.duration") };
                 if _cond {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: ctx.event.duration = (long)ctx.json.duration * 1000000;
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    scale_field(
                         event,
-                        cached_painless!(
-                            r#"ctx.event.duration = (long)ctx.json.duration * 1000000;"#
-                        ),
-                    )?;
+                        &ScaleField::new("json.duration", "event.duration", Factor::Long(1000000)),
+                    );
                 }
                 let _cond = {
                     event.has_value("source.bytes")
@@ -313,15 +310,9 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        // Painless script
+                        // Painless script, resolved to its runners at generation time
                         // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
-                        // TODO: Transpile Painless to Rust (2.2.3)
-                        painless_exec_plan(
-                            event,
-                            cached_painless!(
-                                r#"ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes"#
-                            ),
-                        )?;
+                        sum_directions(event, &["bytes"]);
                         Ok(())
                     })();
                 }
@@ -333,15 +324,9 @@ impl Transform for Default {
                 if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
-                        // Painless script
+                        // Painless script, resolved to its runners at generation time
                         // Source: ctx.network.packets = ctx.source.packets + ctx.destination.packets
-                        // TODO: Transpile Painless to Rust (2.2.3)
-                        painless_exec_plan(
-                            event,
-                            cached_painless!(
-                                r#"ctx.network.packets = ctx.source.packets + ctx.destination.packets"#
-                            ),
-                        )?;
+                        sum_directions(event, &["packets"]);
                         Ok(())
                     })();
                 }
@@ -520,9 +505,14 @@ impl Transform for Default {
                     uri_parts(event, "json.name", "url", true, false)?;
                     Ok(())
                 })();
-                // SKIPPED: condition not transpiled: ctx.json?.domain != null && ctx.json?.domain != "" && (/^https?:\/\/.*$/.matcher(ctx.json?.domain)).matches()
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("json.domain")
+                        && event.get_str("json.domain") != Some("")
+                        && event
+                            .get_str("json.domain")
+                            .is_some_and(|s| cached_regex!(r"^(?:^https?:\/\/.*$)$").is_match(s))
+                };
+                if _cond {
                     if event.has_value("json.domain") {
                         event.rename("json.domain", "http.request.referrer")?;
                     }
@@ -1023,15 +1013,19 @@ impl Transform for Default {
             event.remove("lumberjack");
             event.remove("_tmp");
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n    for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n    }\n    map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n    for (def x : list) {\n        if (x instanceof Map) {\n            handleMap(x);\n        } else if (x instanceof List) {\n            handleList(x);\n        }\n    }\n    list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n    for (def x : map.values()) {\n    if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n        handleList(x);\n    }\n    }\n    map.values().removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nvoid handleList(List list) {\n    for (def x : list) {\n        if (x instanceof Map) {\n            handleMap(x);\n        } else if (x instanceof List) {\n            handleList(x);\n        }\n    }\n    list.removeIf(v -> v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0));\n}\nhandleMap(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             Ok(TransformResult::Continue)
         })(event);

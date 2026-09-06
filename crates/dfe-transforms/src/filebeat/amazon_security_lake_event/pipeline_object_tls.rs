@@ -64,10 +64,9 @@ impl Transform for PipelineObjectTls {
 
             let _cond = { event.get("json.tls.sans").is_some_and(|v| v.is_array()) };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: boolean dropDash(Object object) {\n  if (object == '-') {\n    // We do not need to handle null or ' ' since they were done in default.\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> dropDash(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> dropDash(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropDash(ctx.ocsf);
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"boolean dropDash(Object object) {\n  if (object == '-') {\n    // We do not need to handle null or ' ' since they were done in default.\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> dropDash(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> dropDash(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropDash(ctx.ocsf);"#))?;
+                drop_empty(event, &DropPolicy { empty_collections: true, prune_lists: true, sentinels: vec!["-".into()], ..DropPolicy::none() }, Some("ocsf"));
             }
 
             let _cond = { event.get("json.tls.sans").is_some_and(|v| v.is_array()) };

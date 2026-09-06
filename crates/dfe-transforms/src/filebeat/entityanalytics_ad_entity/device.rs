@@ -619,9 +619,21 @@ impl Transform for Device {
                 )?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.host?.name instanceof String && ctx.host?.hostname instanceof String && ctx.host.name.contains('.') && ctx.host.name.startsWith(ctx.host.hostname.toLowerCase()+'.')
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get("host.name").is_some_and(|v| v.is_string())
+                    && event.get("host.hostname").is_some_and(|v| v.is_string())
+                    && event.get("host.name").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some(".")),
+                        serde_json::Value::String(s) => s.contains("."),
+                        _ => false,
+                    })
+                    && event.get_str("host.hostname").is_some_and(|p| {
+                        event
+                            .get_str("host.name")
+                            .is_some_and(|s| s.starts_with((p.to_lowercase() + ".").as_str()))
+                    })
+            };
+            if _cond {
                 if let Some(input) = event.get_string("host.name") {
                     let mut remaining: &str = &input;
                     let mut captured: Vec<(&str, &str)> = Vec::new();

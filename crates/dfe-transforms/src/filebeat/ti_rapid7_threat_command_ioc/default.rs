@@ -125,7 +125,47 @@ impl Transform for Default {
 
             let _cond = { event.get_str("json.type") == Some("Urls") };
             if _cond {
-                uri_parts(event, "json.value", "threat.indicator.url", true, false)?;
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if !uri_parts(event, "json.value", "threat.indicator.url", true, false)?
+                        && event
+                            .get_str("json.value")
+                            .is_some_and(|value| !value.is_empty())
+                    {
+                        return Err(TransformError::ParseError {
+                            path: "json.value".into(),
+                            message: "uri_parts: not a parseable URI".into(),
+                        });
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    let _cond = {
+                        event.get_str("json.type") == Some("Urls")
+                            && !(event.has("threat.indicator.url"))
+                    };
+                    if _cond {
+                        // ignore_failure: true
+                        let _ = (|| -> Result<()> {
+                            let v = json!(
+                                event
+                                    .get("json.value")
+                                    .map_or_else(String::new, template_to_string)
+                            );
+                            if !painless_is_empty_value(&v) {
+                                event.set("threat.indicator.url.original", v)?;
+                            }
+                            Ok(())
+                        })();
+                    }
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
             }
 
             // ignore_failure: true
@@ -847,15 +887,19 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n} drop(ctx);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                drop_empty(
                     event,
-                    cached_painless!(
-                        r#"boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n} drop(ctx);\n"#
-                    ),
-                )?;
+                    &DropPolicy {
+                        nulls: true,
+                        empty_strings: true,
+                        empty_collections: true,
+                        prune_lists: true,
+                        ..DropPolicy::none()
+                    },
+                    None,
+                );
                 Ok(())
             })();
 

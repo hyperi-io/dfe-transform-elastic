@@ -352,15 +352,21 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: if (ctx.gdacs?.is_current != null) {\n  def val = ctx.gdacs.is_current.toString().toLowerCase();\n  ctx.gdacs.is_current = (val == \"true\" || val == \"1\");\n}\nif (ctx.gdacs?.is_temporary != null) {\n  def val = ctx.gdacs.is_temporary.toString().toLowerCase();\n  ctx.gdacs.is_temporary = (val == \"true\" || val == \"1\");\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            coerce_boolean(
                 event,
-                cached_painless!(
-                    r#"if (ctx.gdacs?.is_current != null) {\n  def val = ctx.gdacs.is_current.toString().toLowerCase();\n  ctx.gdacs.is_current = (val == \"true\" || val == \"1\");\n}\nif (ctx.gdacs?.is_temporary != null) {\n  def val = ctx.gdacs.is_temporary.toString().toLowerCase();\n  ctx.gdacs.is_temporary = (val == \"true\" || val == \"1\");\n}\n"#
+                &CoerceBoolean::new(
+                    vec![
+                        ("gdacs.is_current".to_owned(), "gdacs.is_current".to_owned()),
+                        (
+                            "gdacs.is_temporary".to_owned(),
+                            "gdacs.is_temporary".to_owned(),
+                        ),
+                    ],
+                    vec!["true".to_owned(), "1".to_owned()],
                 ),
-            )?;
+            );
 
             // Painless script
             // Source: String gdacsRingToWkt(def ring) {\n  StringBuilder builder = new StringBuilder();\n  builder.append(\"(\");\n  for (int i = 0; i < ring.size(); i++) {\n    if (i > 0) { builder.append(\", \"); }\n    def point = ring[i];\n    builder.append(point[0].toString());\n    builder.append(\" \");\n    builder.append(point[1].toString());\n  }\n  builder.append(\")\");\n  return builder.toString();\n}\n\nString gdacsPolygonToWkt(def rings) {\n  StringBuilder builder = new StringBuilder();\n  builder.append(\"(\");\n  for (int i = 0; i < rings.size(); i++) {\n    if (i > 0) { builder.append(\", \"); }\n    builder.append(gdacsRingToWkt(rings[i]));\n  }\n  builder.append(\")\");\n  return builder.toString();\n}\n\nString gdacsShapeToWkt(def geom) {\n  if (geom == null || geom.coordinates == null || geom.type == null) {\n    return null;\n  }\n  if (geom.type == \"LineString\") {\n    return \"LINESTRING \" + gdacsRingToWkt(geom.coordinates);\n  }\n  if (geom.type == \"MultiLineString\") {\n    StringBuilder builder = new StringBuilder();\n    builder.append(\"MULTILINESTRING (\");\n    for (int i = 0; i < geom.coordinates.size(); i++) {\n      if (i > 0) { builder.append(\", \"); }\n      builder.append(gdacsRingToWkt(geom.coordinates[i]));\n    }\n    builder.append(\")\");\n    return builder.toString();\n  }\n  if (geom.type == \"Polygon\") {\n    return \"POLYGON \" + gdacsPolygonToWkt(geom.coordinates);\n  }\n  if (geom.type == \"MultiPolygon\") {\n    StringBuilder builder = new StringBuilder();\n    builder.append(\"MULTIPOLYGON (\");\n    for (int i = 0; i < geom.coordinates.size(); i++) {\n      if (i > 0) { builder.append(\", \"); }\n      builder.append(gdacsPolygonToWkt(geom.coordinates[i]));\n    }\n    builder.append(\")\");\n    return builder.toString();\n  }\n  return null;\n}\n\nif (ctx.gdacs == null) { ctx.gdacs = new HashMap(); }\nif (ctx.gdacs.geo == null) { ctx.gdacs.geo = new HashMap(); }\n\n// Extract centroid from the event-level Point geometry.\ndef geom = ctx.geometry;\nif (geom != null) {\n  String geomType = geom.type;\n  if (geomType == \"Point\" && geom.coordinates != null && geom.coordinates.size() >= 2) {\n    ctx.gdacs.geo.location = ['lon': geom.coordinates[0], 'lat': geom.coordinates[1]];\n  }\n}\n\n// Extract affected area from the enriched polygon geometry.\ndef polyGeom = ctx.polygon_geometry;\nif (polyGeom != null) {\n  String polyType = polyGeom.type;\n  if (polyType == \"Polygon\" || polyType == \"MultiPolygon\" || polyType == \"LineString\" || polyType == \"MultiLineString\") {\n    if (ctx.gdacs == null) { ctx.gdacs = new HashMap(); }\n    ctx.gdacs.affected_area = gdacsShapeToWkt(polyGeom);\n    ctx.gdacs.geometry_type = polyType;\n\n    // Update class and polygon_label from enrichment if present.\n    if (ctx.polygon_class != null) { ctx.gdacs.class = ctx.polygon_class; }\n    if (ctx.polygon_label != null && ctx.polygon_label != \"\") { ctx.gdacs.polygon_label = ctx.polygon_label; }\n  }\n}\n
@@ -635,15 +641,20 @@ impl Transform for Default {
 
             event.set("event.provider", json!("gdacs"))?;
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: if (ctx.event == null) { ctx.event = new HashMap(); }\ndef parts = new ArrayList();\nif (ctx.gdacs?.event_id != null) { parts.add(ctx.gdacs.event_id.toString()); }\nif (ctx.gdacs?.episode_id != null) { parts.add(ctx.gdacs.episode_id.toString()); }\nif (ctx.gdacs?.geometry_id != null) { parts.add(ctx.gdacs.geometry_id.toString()); }\nif (parts.size() > 0) {\n  ctx.event.id = String.join(\"-\", parts);\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            join_present_fields(
                 event,
-                cached_painless!(
-                    r#"if (ctx.event == null) { ctx.event = new HashMap(); }\ndef parts = new ArrayList();\nif (ctx.gdacs?.event_id != null) { parts.add(ctx.gdacs.event_id.toString()); }\nif (ctx.gdacs?.episode_id != null) { parts.add(ctx.gdacs.episode_id.toString()); }\nif (ctx.gdacs?.geometry_id != null) { parts.add(ctx.gdacs.geometry_id.toString()); }\nif (parts.size() > 0) {\n  ctx.event.id = String.join(\"-\", parts);\n}\n"#
+                &JoinPresentFields::new(
+                    vec![
+                        "gdacs.event_id".to_owned(),
+                        "gdacs.episode_id".to_owned(),
+                        "gdacs.geometry_id".to_owned(),
+                    ],
+                    "-",
+                    "event.id",
                 ),
-            )?;
+            );
 
             {
                 let mut values = Vec::new();
@@ -706,15 +717,19 @@ impl Transform for Default {
             event.remove("gdacs.geometry_doc");
             event.remove("gdacs.geometry_id");
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             Ok(TransformResult::Continue)
         })(event);

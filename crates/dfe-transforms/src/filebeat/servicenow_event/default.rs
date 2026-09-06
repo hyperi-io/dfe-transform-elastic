@@ -156,15 +156,17 @@ impl Transform for Default {
                 }
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object object) {\n  if ((object instanceof String && ((String) object).equalsIgnoreCase('unknown')) || (object instanceof String && ((String) object).equalsIgnoreCase('none')) || (object instanceof String && ((String) object).equalsIgnoreCase('null')) || (object instanceof String && ((String) object).equalsIgnoreCase('n/a')) || (object instanceof String && ((String) object).equalsIgnoreCase('na'))) {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object object) {\n  if ((object instanceof String && ((String) object).equalsIgnoreCase('unknown')) || (object instanceof String && ((String) object).equalsIgnoreCase('none')) || (object instanceof String && ((String) object).equalsIgnoreCase('null')) || (object instanceof String && ((String) object).equalsIgnoreCase('n/a')) || (object instanceof String && ((String) object).equalsIgnoreCase('na'))) {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = {
                 event.has_value("servicenow.event.table_name")
@@ -13683,18 +13685,104 @@ impl Transform for Default {
                     && event.get_str("servicenow.event.url.display_value") != Some("")
             };
             if _cond {
-                uri_parts(
-                    event,
-                    "servicenow.event.url.display_value",
-                    "url",
-                    true,
-                    false,
-                )?;
+                // on_failure: 4 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if !uri_parts(
+                        event,
+                        "servicenow.event.url.display_value",
+                        "url",
+                        true,
+                        false,
+                    )? && event
+                        .get_str("servicenow.event.url.display_value")
+                        .is_some_and(|value| !value.is_empty())
+                    {
+                        return Err(TransformError::ParseError {
+                            path: "servicenow.event.url.display_value".into(),
+                            message: "uri_parts: not a parseable URI".into(),
+                        });
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    // Painless script
+                    // Source: String encode(String path) {\nStringBuilder sb = new StringBuilder();\nfor (int i = 0; i < path.length(); i++) {\n  char c = path.charAt(i);\n  if (\n    (c >= (char)'a' && c <= (char)'z') ||\n    (c >= (char)'A' && c <= (char)'Z') ||\n    (c >= (char)'0' && c <= (char)'9') ||\n    c != (char)' ' && c != (char)'^'\n  ) {\n      sb.append(c);\n      continue;\n    }\n    sb.append('%');\n    sb.append(Integer.toHexString((int)c));\n  }\n  return sb.toString();\n}\nctx._tmp_url = encode(ctx.servicenow.event.url.display_value);
+                    // TODO: Transpile Painless to Rust (2.2.3)
+                    painless_exec_plan(
+                        event,
+                        cached_painless!(
+                            r#"String encode(String path) {\nStringBuilder sb = new StringBuilder();\nfor (int i = 0; i < path.length(); i++) {\n  char c = path.charAt(i);\n  if (\n    (c >= (char)'a' && c <= (char)'z') ||\n    (c >= (char)'A' && c <= (char)'Z') ||\n    (c >= (char)'0' && c <= (char)'9') ||\n    c != (char)' ' && c != (char)'^'\n  ) {\n      sb.append(c);\n      continue;\n    }\n    sb.append('%');\n    sb.append(Integer.toHexString((int)c));\n  }\n  return sb.toString();\n}\nctx._tmp_url = encode(ctx.servicenow.event.url.display_value);"#
+                        ),
+                    )?;
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if !uri_parts(event, "_tmp_url", "url", false, false)?
+                            && event
+                                .get_str("_tmp_url")
+                                .is_some_and(|value| !value.is_empty())
+                        {
+                            return Err(TransformError::ParseError {
+                                path: "_tmp_url".into(),
+                                message: "uri_parts: not a parseable URI".into(),
+                            });
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, template_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
+                    let _cond = { event.has_value("url") };
+                    if _cond {
+                        if let Some(v) = event.get("servicenow.event.url.display_value").cloned() {
+                            event.set("url.original", v)?;
+                        }
+                    }
+                    if event.remove("_tmp_url").is_none() {
+                        return Err(TransformError::FieldNotFound {
+                            path: "_tmp_url".into(),
+                        });
+                    }
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
             }
 
-            // SKIPPED: condition not transpiled: ctx.url != null && ctx.servicenow?.event?.url?.display_value =~ /^([a-z][a-z0-9+\-.]*):/
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("url")
+                    && event
+                        .get_str("servicenow.event.url.display_value")
+                        .is_some_and(|s| cached_regex!(r"^([a-z][a-z0-9+\-.]*):").is_match(s))
+            };
+            if _cond {
                 if let Some(v) = event
                     .get("servicenow.event.url.display_value")
                     .filter(|v| !painless_is_empty_value(v))
@@ -28157,9 +28245,12 @@ impl Transform for Default {
                 // End nested pipeline: "pipeline_task_ci"
             }
 
-            // SKIPPED: condition not transpiled: ctx.containsKey('@timestamp') && ctx['@timestamp'] != null && ctx._conf?.date_format_preference == "ddMM"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has("@timestamp")
+                    && event.has_value("@timestamp")
+                    && event.get_str("_conf.date_format_preference") == Some("ddMM")
+            };
+            if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("@timestamp") {
@@ -28234,9 +28325,12 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.containsKey('@timestamp') && ctx['@timestamp'] != null && ctx._conf?.date_format_preference == "MMdd"
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has("@timestamp")
+                    && event.has_value("@timestamp")
+                    && event.get_str("_conf.date_format_preference") == Some("MMdd")
+            };
+            if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("@timestamp") {
@@ -28362,15 +28456,19 @@ impl Transform for Default {
             event.remove("_conf.table_name");
             event.remove("servicenow.event.timestamp_field");
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             // Painless script
             // Source: def filterMassive(def src) {\n  if (src instanceof Map) {\n    for (def entry: src.entrySet()) {\n      entry.setValue(filterMassive(entry.getValue()));\n    }\n    return src;\n  } else if (src instanceof List) {\n    for (int i = 0; i < src.length; i++) {\n      src[i] = filterMassive(src[i]);\n    }\n    return src;\n  } else if (src instanceof String && src.length() > 32766) {\n    return src.substring(0, 32700)+' (truncated)';\n  }\n  return src;\n}\nfilterMassive(ctx);

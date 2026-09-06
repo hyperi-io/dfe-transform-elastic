@@ -167,13 +167,12 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.duration") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.event.duration = ctx.event.duration * 1000000000L;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scale_field(
                     event,
-                    cached_painless!(r#"ctx.event.duration = ctx.event.duration * 1000000000L;\n"#),
-                )?;
+                    &ScaleField::new("event.duration", "event.duration", Factor::Long(1000000000)),
+                );
             }
 
             let _cond = { event.has_value("beyondinsight_password_safe.session.status") };

@@ -474,7 +474,32 @@ impl Transform for Utm {
 
             let _cond = { event.has_value("fortinet.firewall.url") };
             if _cond {
-                uri_parts(event, "fortinet.firewall.url", "url", false, false)?;
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if !uri_parts(event, "fortinet.firewall.url", "url", false, false)?
+                        && event
+                            .get_str("fortinet.firewall.url")
+                            .is_some_and(|value| !value.is_empty())
+                    {
+                        return Err(TransformError::ParseError {
+                            path: "fortinet.firewall.url".into(),
+                            message: "uri_parts: not a parseable URI".into(),
+                        });
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    if let Some(v) = event.get("fortinet.firewall.url").cloned() {
+                        event.set("url.original", v)?;
+                    }
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
             }
 
             if let Some(v) = event

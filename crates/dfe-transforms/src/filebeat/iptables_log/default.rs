@@ -469,9 +469,14 @@ impl Transform for Default {
                 }
             }
 
-            // SKIPPED: condition not transpiled: ctx.network?.iana_number == null && ctx.network?.transport != null && ctx.network.transport.chars().allMatch(Character::isDigit)
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                !event.has_value("network.iana_number")
+                    && event.has_value("network.transport")
+                    && event
+                        .get_str("network.transport")
+                        .is_some_and(|s| s.bytes().all(|b| b.is_ascii_digit()))
+            };
+            if _cond {
                 if event.has_value("network.transport") {
                     event.rename("network.transport", "network.iana_number")?;
                 }
@@ -634,9 +639,9 @@ impl Transform for Default {
                             "icmp" | "1" | "icmpv6" | "ipv6-icmp" | "58",
                         );
                         let (src_field, dst_field) = if icmp {
-                            ("iptables.icmp.type", "iptables.icmp.code:int")
+                            ("iptables.icmp.type", "iptables.icmp.code")
                         } else {
-                            ("source.port", "destination.port:int")
+                            ("source.port", "destination.port")
                         };
                         let src_port =
                             u16::try_from(event.get_as_i64(src_field).unwrap_or(0)).unwrap_or(0);

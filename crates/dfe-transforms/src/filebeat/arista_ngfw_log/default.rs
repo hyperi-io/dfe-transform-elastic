@@ -32,15 +32,9 @@ impl Transform for Default {
                     }
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: if (ctx.log?.syslog?.priority != null) {\n  def severity = new HashMap();\n  severity['code'] = ctx.log.syslog.priority&0x7;\n  ctx.log.syslog['severity'] = severity;\n  def facility = new HashMap();\n  facility['code'] = ctx.log.syslog.priority>>3;\n  ctx.log.syslog['facility'] = facility;\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
-                event,
-                cached_painless!(
-                    r#"if (ctx.log?.syslog?.priority != null) {\n  def severity = new HashMap();\n  severity['code'] = ctx.log.syslog.priority&0x7;\n  ctx.log.syslog['severity'] = severity;\n  def facility = new HashMap();\n  facility['code'] = ctx.log.syslog.priority>>3;\n  ctx.log.syslog['facility'] = facility;\n}\n"#
-                ),
-            )?;
+            syslog_priority(event, &SyslogPriorityScript::new(None, true, true, false));
 
             // Painless script
             // Source: if (ctx.log?.syslog?.facility?.code == null || !params.containsKey((ctx.log.syslog.facility.code).toString())) {\n  return;\n}\nctx.log.syslog.facility.name = params[(ctx.log.syslog.facility.code).toString()];
@@ -1395,15 +1389,9 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: if (ctx.network == null) {\n  ctx.network = new HashMap();\n}\nif (ctx.source.bytes != null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes\n} else if (ctx.source.bytes == null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.destination.bytes\n} else if (ctx.source.bytes != null && ctx.destination.bytes == null) {\n  ctx.network.bytes = ctx.source.bytes\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
-                        event,
-                        cached_painless!(
-                            r#"if (ctx.network == null) {\n  ctx.network = new HashMap();\n}\nif (ctx.source.bytes != null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes\n} else if (ctx.source.bytes == null && ctx.destination.bytes != null) {\n  ctx.network.bytes = ctx.destination.bytes\n} else if (ctx.source.bytes != null && ctx.destination.bytes == null) {\n  ctx.network.bytes = ctx.source.bytes\n}\n"#
-                        ),
-                    )?;
+                    sum_directions(event, &["bytes"]);
                     Ok(())
                 })();
             }
@@ -1415,15 +1403,9 @@ impl Transform for Default {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: if (ctx.network == null) {\n  ctx.network = new HashMap();\n}\nif (ctx.source.packets != null && ctx.destination.packets != null) {\n  ctx.network.packets = ctx.source.packets + ctx.destination.packets\n} else if (ctx.source.packets == null && ctx.destination.packets != null) {\n  ctx.network.packets = ctx.destination.packets\n} else if (ctx.source.packets != null && ctx.destination.packets == null) {\n  ctx.network.packets = ctx.source.packets\n}\n
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
-                        event,
-                        cached_painless!(
-                            r#"if (ctx.network == null) {\n  ctx.network = new HashMap();\n}\nif (ctx.source.packets != null && ctx.destination.packets != null) {\n  ctx.network.packets = ctx.source.packets + ctx.destination.packets\n} else if (ctx.source.packets == null && ctx.destination.packets != null) {\n  ctx.network.packets = ctx.destination.packets\n} else if (ctx.source.packets != null && ctx.destination.packets == null) {\n  ctx.network.packets = ctx.source.packets\n}\n"#
-                        ),
-                    )?;
+                    sum_directions(event, &["packets"]);
                     Ok(())
                 })();
             }

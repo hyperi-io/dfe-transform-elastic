@@ -196,10 +196,9 @@ impl Transform for PipelineAueChdir {
 
             let _cond = { event.has_value("json.file_access_mode") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"int temp = (int)ctx.json.file_access_mode;\nctx.jamf_compliance_reporter.log.attributes.file.access_mode = Integer.toOctalString(temp);\n"#))?;
+                octal_string(event, &OctalString::new("json.file_access_mode", "jamf_compliance_reporter.log.attributes.file.access_mode"));
             }
 
             Ok(TransformResult::Continue)

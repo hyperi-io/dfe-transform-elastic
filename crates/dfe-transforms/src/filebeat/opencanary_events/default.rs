@@ -1044,9 +1044,20 @@ impl Transform for Default {
                 })();
             }
 
-            // SKIPPED: condition not transpiled: ctx.tags != null && ctx.tags.contains("redact_passwords") && ctx.event?.original =~ /(?i)password\\*"\: *\\*"[^\\"]+?/
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("tags")
+                    && event.get("tags").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => {
+                            a.iter().any(|x| x.as_str() == Some("redact_passwords"))
+                        }
+                        serde_json::Value::String(s) => s.contains("redact_passwords"),
+                        _ => false,
+                    })
+                    && event.get_str("event.original").is_some_and(|s| {
+                        cached_regex!(r#"(?i)password\\*"\: *\\*"[^\\"]+?"#).is_match(s)
+                    })
+            };
+            if _cond {
                 if event.has_value("event.original") {
                     gsub_field(
                         event,
@@ -1247,15 +1258,20 @@ impl Transform for Default {
                 })?;
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'undefined') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'undefined') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    sentinels: vec!["undefined".into()],
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

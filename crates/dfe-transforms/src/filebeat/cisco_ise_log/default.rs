@@ -10013,9 +10013,15 @@ impl Transform for Default {
                     }
                     Ok(())
                 })();
-                // SKIPPED: condition not transpiled: ctx.user?.name == null && ctx.client?.user?.name != null && ctx.client.user.name.indexOf('@') <= 0
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    !event.has_value("user.name")
+                        && event.has_value("client.user.name")
+                        && event
+                            .get_str("client.user.name")
+                            .map(|s| s.find("@").map(|b| s[..b].chars().count()))
+                            .is_some_and(|i| i.is_none_or(|i| i == 0))
+                };
+                if _cond {
                     // ignore_failure: true
                     let _ = (|| -> Result<()> {
                         if let Some(v) = event.get("client.user.name").cloned() {

@@ -164,10 +164,9 @@ impl Transform for CommonHost {
             event.set("host.os.family", v)?;
         }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: def value = ctx.tychon.host?.os?.family?.toLowerCase();\nif (['linux', 'macos', 'unix', 'windows', 'ios', 'android'].contains(value)) {\n  if (ctx.host == null) {\n    ctx.host = [:];\n  }\n  if (ctx.host.os == null) {\n    ctx.host.os = [:];\n  }\n  ctx.host.os.type = value;\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(event, cached_painless!(r#"def value = ctx.tychon.host?.os?.family?.toLowerCase();\nif (['linux', 'macos', 'unix', 'windows', 'ios', 'android'].contains(value)) {\n  if (ctx.host == null) {\n    ctx.host = [:];\n  }\n  if (ctx.host.os == null) {\n    ctx.host.os = [:];\n  }\n  ctx.host.os.type = value;\n}\n"#))?;
+            allowed_value_copy(event, &AllowedValueCopy::new("tychon.host.os.family", true, vec!["linux".into(), "macos".into(), "unix".into(), "windows".into(), "ios".into(), "android".into()], "host.os.type"));
 
         if let Some(v) = event.get("tychon.host.os.name").filter(|v| !painless_is_empty_value(v)).cloned() {
             event.set("host.os.name", v)?;

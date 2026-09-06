@@ -29,10 +29,9 @@ impl Transform for EcsFromWindowsRegistryKey {
             painless_exec_plan_params(event, cached_painless!(r#"def name = ctx._tmp_registry.hive.toUpperCase();\nctx._tmp_registry.hive = params.getOrDefault(name, name);\n"#), cached_params!("{\"HKEY_CLASSES_ROOT\":\"HKCR\",\"HKEY_CURRENT_USER\":\"HKCU\",\"HKEY_LOCAL_MACHINE\":\"HKLM\",\"HKEY_USERS\":\"HKU\",\"HKEY_CURRENT_CONFIG\":\"HKCC\"}"))?;
         }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.registry = ctx.threat.indicator.registry ?: [];\nctx.threat.indicator.registry.add(ctx._tmp_registry);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(event, cached_painless!(r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.registry = ctx.threat.indicator.registry ?: [];\nctx.threat.indicator.registry.add(ctx._tmp_registry);\n"#))?;
+            ensure_append(event, &EnsureAppend::new("_tmp_registry", "threat.indicator.registry"));
 
             if event.remove("_tmp_registry").is_none() {
                 return Err(TransformError::FieldNotFound { path: "_tmp_registry".into() });

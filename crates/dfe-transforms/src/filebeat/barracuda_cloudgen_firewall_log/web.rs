@@ -143,9 +143,8 @@ impl Transform for Web {
                 Ok(())
             })();
 
-            // SKIPPED: condition not transpiled: ctx.json?.domain != null && ctx.json?.domain != "" && (/^https?:\/\/.*$/.matcher(ctx.json?.domain)).matches()
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.has_value("json.domain") && event.get_str("json.domain") != Some("") && event.get_str("json.domain").is_some_and(|s| cached_regex!(r"^(?:^https?:\/\/.*$)$").is_match(s)) };
+            if _cond {
                 if event.has_value("json.domain") {
                     event.rename("json.domain", "http.request.referrer")?;
                 }

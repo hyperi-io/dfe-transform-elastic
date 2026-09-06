@@ -106,15 +106,9 @@ impl Transform for Default {
 
             let _cond = { event.has_value("juniper.srx") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.juniper.srx = ctx?.juniper?.srx.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().replace('-', '_'), e -> e.getValue()));
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
-                    event,
-                    cached_painless!(
-                        r#"ctx.juniper.srx = ctx?.juniper?.srx.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().replace('-', '_'), e -> e.getValue()));"#
-                    ),
-                )?;
+                rename_map_keys(event, &RenameMapKeys::new("juniper.srx".into(), '-', '_'));
             }
 
             let _cond = { !event.has_value("event.timezone") };
@@ -6177,14 +6171,9 @@ impl Transform for Default {
                 if _cond {
                     // Painless script, resolved to its runners at generation time
                     // Source: ctx.juniper.srx.system = ctx.juniper.srx.system.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().replace(' ', '_').replace('-', '_').toLowerCase(), e -> e.getValue().trim()));
-                    guarded_replace(
+                    rename_map_keys(
                         event,
-                        &GuardedReplace::new(
-                            "juniper.srx.system.entrySet().stream().collect(Collectors.toMap(e -> e.getKey()",
-                            "juniper.srx.system",
-                            " ",
-                            "_",
-                        ),
+                        &RenameMapKeys::new("juniper.srx.system".into(), ' ', '_'),
                     );
                 }
                 let _cond = { event.has_value("juniper.srx.system.aux_spi") };

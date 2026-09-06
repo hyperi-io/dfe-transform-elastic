@@ -18,15 +18,18 @@ impl Transform for Default {
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             // Begin nested pipeline: "common_init"
             parse_json_field(event, "message", "tychon")?;
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: def keys = new ArrayList(ctx.tychon.keySet());\nfor (key in keys) {\n  if (ctx.tychon[key] == \"\" || ctx.tychon[key] == null) {\n    ctx.tychon.remove(key);\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"def keys = new ArrayList(ctx.tychon.keySet());\nfor (key in keys) {\n  if (ctx.tychon[key] == \"\" || ctx.tychon[key] == null) {\n    ctx.tychon.remove(key);\n  }\n}\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    shallow: true,
+                    ..DropPolicy::none()
+                },
+                Some("tychon"),
+            );
             dot_expand(event, "tychon", "*")?;
             let _cond = { !event.has_value("event.original") };
             if _cond {
@@ -263,15 +266,24 @@ impl Transform for Default {
             {
                 event.set("host.os.family", v)?;
             }
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: def value = ctx.tychon.host?.os?.family?.toLowerCase();\nif (['linux', 'macos', 'unix', 'windows', 'ios', 'android'].contains(value)) {\n  if (ctx.host == null) {\n    ctx.host = [:];\n  }\n  if (ctx.host.os == null) {\n    ctx.host.os = [:];\n  }\n  ctx.host.os.type = value;\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            allowed_value_copy(
                 event,
-                cached_painless!(
-                    r#"def value = ctx.tychon.host?.os?.family?.toLowerCase();\nif (['linux', 'macos', 'unix', 'windows', 'ios', 'android'].contains(value)) {\n  if (ctx.host == null) {\n    ctx.host = [:];\n  }\n  if (ctx.host.os == null) {\n    ctx.host.os = [:];\n  }\n  ctx.host.os.type = value;\n}\n"#
+                &AllowedValueCopy::new(
+                    "tychon.host.os.family",
+                    true,
+                    vec![
+                        "linux".into(),
+                        "macos".into(),
+                        "unix".into(),
+                        "windows".into(),
+                        "ios".into(),
+                        "android".into(),
+                    ],
+                    "host.os.type",
                 ),
-            )?;
+            );
             if let Some(v) = event
                 .get("tychon.host.os.name")
                 .filter(|v| !painless_is_empty_value(v))

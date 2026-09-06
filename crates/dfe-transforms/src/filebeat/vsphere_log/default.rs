@@ -1145,14 +1145,31 @@ impl Transform for Default {
                 if _cond {
                     event.set("event.outcome", json!("success"))?;
                 }
-                // SKIPPED: condition not transpiled: ctx.event?.outcome?.toLowerCase()?.startsWith('f') ?: false
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event
+                        .get_str("event.outcome")
+                        .is_some_and(|s| s.to_lowercase().starts_with("f"))
+                };
+                if _cond {
                     event.set("event.outcome", json!("failure"))?;
                 }
-                // SKIPPED: condition not transpiled: ctx.user_agent?.original != null && (ctx.user_agent.original.contains(')') || ctx.user_agent.original.contains(']'))
-                #[allow(unreachable_code, unused_variables)]
-                if false {
+                let _cond = {
+                    event.has_value("user_agent.original")
+                        && (event.get("user_agent.original").is_some_and(|v| match v {
+                            serde_json::Value::Array(a) => {
+                                a.iter().any(|x| x.as_str() == Some(")"))
+                            }
+                            serde_json::Value::String(s) => s.contains(")"),
+                            _ => false,
+                        }) || event.get("user_agent.original").is_some_and(|v| match v {
+                            serde_json::Value::Array(a) => {
+                                a.iter().any(|x| x.as_str() == Some("]"))
+                            }
+                            serde_json::Value::String(s) => s.contains("]"),
+                            _ => false,
+                        }))
+                };
+                if _cond {
                     if let Some(input) = event.get_string("user_agent.original") {
                         // Grok pattern: %{DATA:user_agent.original}(?:\\]|\\)+)
                         if !cached_grok!("%{DATA:user_agent.original}(?:\\]|\\)+)")

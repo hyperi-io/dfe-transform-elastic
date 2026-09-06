@@ -167,10 +167,9 @@ impl Transform for Phone {
 
             let _cond = { event.has_value("zoom.duration") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.event.duration = ctx.zoom.phone.duration * 60L * 1000000000L;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"ctx.event.duration = ctx.zoom.phone.duration * 60L * 1000000000L;"#))?;
+                scale_field(event, &ScaleField::new("zoom.phone.duration", "event.duration", Factor::Long(1000000000)));
             }
 
                 if event.has_value("zoom.phone.callee_user_id") {

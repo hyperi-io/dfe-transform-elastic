@@ -22,15 +22,19 @@ impl Transform for Default {
 
             event.set("ecs.version", json!("8.11.0"))?;
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object o) {\n    if (o == null || o == \"\") {\n    return true;\n    } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n    } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n    }\n    return false;\n}\ndrop(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object o) {\n    if (o == null || o == \"\") {\n    return true;\n    } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n    } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n    }\n    return false;\n}\ndrop(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             event.append("event.kind", json!("event"))?;
 
@@ -460,15 +464,16 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("zoom.meeting.duration") };
                 if _cond {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: ctx.event.duration = ctx.zoom.meeting.duration * 60L * 1000000000L;
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    scale_field(
                         event,
-                        cached_painless!(
-                            r#"ctx.event.duration = ctx.zoom.meeting.duration * 60L * 1000000000L;"#
+                        &ScaleField::new(
+                            "zoom.meeting.duration",
+                            "event.duration",
+                            Factor::Long(1000000000),
                         ),
-                    )?;
+                    );
                 }
                 let _cond = { event.get_str("event.action") == Some("meeting.started") };
                 if _cond {
@@ -1115,15 +1120,16 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("zoom.duration") };
                 if _cond {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: ctx.event.duration = ctx.zoom.phone.duration * 60L * 1000000000L;
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    scale_field(
                         event,
-                        cached_painless!(
-                            r#"ctx.event.duration = ctx.zoom.phone.duration * 60L * 1000000000L;"#
+                        &ScaleField::new(
+                            "zoom.phone.duration",
+                            "event.duration",
+                            Factor::Long(1000000000),
                         ),
-                    )?;
+                    );
                 }
                 if event.has_value("zoom.phone.callee_user_id") {
                     event.rename("zoom.phone.callee_user_id", "zoom.phone.callee.user_id")?;

@@ -16,10 +16,9 @@ impl Transform for CommonInit {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
             parse_json_field(event, "message", "tychon")?;
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: def keys = new ArrayList(ctx.tychon.keySet());\nfor (key in keys) {\n  if (ctx.tychon[key] == \"\" || ctx.tychon[key] == null) {\n    ctx.tychon.remove(key);\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(event, cached_painless!(r#"def keys = new ArrayList(ctx.tychon.keySet());\nfor (key in keys) {\n  if (ctx.tychon[key] == \"\" || ctx.tychon[key] == null) {\n    ctx.tychon.remove(key);\n  }\n}\n"#))?;
+            drop_empty(event, &DropPolicy { nulls: true, empty_strings: true, shallow: true, ..DropPolicy::none() }, Some("tychon"));
 
             dot_expand(event, "tychon", "*")?;
 

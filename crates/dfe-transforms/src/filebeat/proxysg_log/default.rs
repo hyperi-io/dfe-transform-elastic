@@ -813,15 +813,18 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropUnsetFields(Object object) {\n  if (object == \"-\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropUnsetFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropUnsetFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropUnsetFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropUnsetFields(Object object) {\n  if (object == \"-\") {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropUnsetFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropUnsetFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropUnsetFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    empty_collections: true,
+                    prune_lists: true,
+                    sentinels: vec!["-".into()],
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             if event.has_value("proxysg.client_to_server.uri_port") {
                 if let Some(val) = event.get("proxysg.client_to_server.uri_port") {
@@ -989,13 +992,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("proxysg.time_taken") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.event.duration = ctx.proxysg.time_taken * 1000000\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scale_field(
                     event,
-                    cached_painless!(r#"ctx.event.duration = ctx.proxysg.time_taken * 1000000\n"#),
-                )?;
+                    &ScaleField::new(
+                        "proxysg.time_taken",
+                        "event.duration",
+                        Factor::Long(1000000),
+                    ),
+                );
             }
 
             if event.has_value("url.domain") {

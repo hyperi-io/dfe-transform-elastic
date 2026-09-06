@@ -781,7 +781,30 @@ impl Transform for PipelineEmail {
 
             let _cond = { event.has_value("m365_defender.event.url") };
             if _cond {
-                uri_parts(event, "m365_defender.event.url", "url", true, false)?;
+            // on_failure: 1 handler(s)
+            if let Err(err) = (|| -> Result<()> {
+                if !uri_parts(event, "m365_defender.event.url", "url", true, false)?
+                    && event.get_str("m365_defender.event.url").is_some_and(|value| !value.is_empty())
+                {
+                    return Err(TransformError::ParseError {
+                        path: "m365_defender.event.url".into(),
+                        message: "uri_parts: not a parseable URI".into(),
+                    });
+                }
+                Ok(())
+            })() {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    if let Some(v) = event.get("m365_defender.event.url").filter(|v| !painless_is_empty_value(v)).cloned() {
+                        event.set("url.original", v)?;
+                    }
+                event.remove("_ingest.on_failure_message");
+                event.remove("_ingest.on_failure_processor_type");
+                event.remove("_ingest.on_failure_processor_tag");
+                if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                    event.remove("_ingest");
+                }
+            }
             }
 
             if let Some(v) = event.get("m365_defender.event.group_name").filter(|v| !painless_is_empty_value(v)).cloned() {

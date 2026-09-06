@@ -1982,15 +1982,9 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: ctx.network = ctx.network ?: [:];\nctx.network.packets = ctx.source.packets + ctx.destination.packets;
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
-                        event,
-                        cached_painless!(
-                            r#"ctx.network = ctx.network ?: [:];\nctx.network.packets = ctx.source.packets + ctx.destination.packets;"#
-                        ),
-                    )?;
+                    sum_directions(event, &["packets"]);
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
@@ -2027,15 +2021,9 @@ impl Transform for Default {
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: ctx.network = ctx.network ?: [:];\nctx.network.bytes = ctx.source.bytes + ctx.destination.bytes;
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
-                        event,
-                        cached_painless!(
-                            r#"ctx.network = ctx.network ?: [:];\nctx.network.bytes = ctx.source.bytes + ctx.destination.bytes;"#
-                        ),
-                    )?;
+                    sum_directions(event, &["bytes"]);
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;

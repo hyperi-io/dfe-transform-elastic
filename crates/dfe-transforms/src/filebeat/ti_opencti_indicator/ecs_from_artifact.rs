@@ -40,10 +40,9 @@ impl Transform for EcsFromArtifact {
             event.set("_tmp_file.hash", v)?;
         }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.file = ctx.threat.indicator.file ?: [];\nctx.threat.indicator.file.add(ctx._tmp_file);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(event, cached_painless!(r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.file = ctx.threat.indicator.file ?: [];\nctx.threat.indicator.file.add(ctx._tmp_file);\n"#))?;
+            ensure_append(event, &EnsureAppend::new("_tmp_file", "threat.indicator.file"));
 
             if event.remove("_tmp_file").is_none() {
                 return Err(TransformError::FieldNotFound { path: "_tmp_file".into() });

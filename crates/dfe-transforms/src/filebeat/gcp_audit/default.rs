@@ -1392,15 +1392,19 @@ impl Transform for Default {
             event.remove("_temp");
             event.remove("json");
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    def m = ((Map) o);\n    def it = m.entrySet().iterator();\n    while (it.hasNext()) {\n      def e = ((Map.Entry) it.next());\n      def key = ((String) e.getKey());\n      def value = e.getValue();\n      Pattern onlyDotsRegex = /^\\.+$/;\n      if (onlyDotsRegex.matcher(key).matches() || drop(value)) {\n        it.remove();\n      }\n    }\n    return (m.size() == 0);\n  } else if (o instanceof List) {\n    def l = ((List) o);\n    l.removeIf(v -> drop(v));\n    return (l.length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    def m = ((Map) o);\n    def it = m.entrySet().iterator();\n    while (it.hasNext()) {\n      def e = ((Map.Entry) it.next());\n      def key = ((String) e.getKey());\n      def value = e.getValue();\n      Pattern onlyDotsRegex = /^\\.+$/;\n      if (onlyDotsRegex.matcher(key).matches() || drop(value)) {\n        it.remove();\n      }\n    }\n    return (m.size() == 0);\n  } else if (o instanceof List) {\n    def l = ((List) o);\n    l.removeIf(v -> drop(v));\n    return (l.length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             Ok(TransformResult::Continue)
         })(event);

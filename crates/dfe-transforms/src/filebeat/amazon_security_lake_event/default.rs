@@ -61,15 +61,19 @@ impl Transform for Default {
 
             let _cond = { event.get("ocsf").is_some_and(|v| v.is_object()) };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx.ocsf);
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                drop_empty(
                     event,
-                    cached_painless!(
-                        r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx.ocsf);"#
-                    ),
-                )?;
+                    &DropPolicy {
+                        nulls: true,
+                        empty_strings: true,
+                        empty_collections: true,
+                        prune_lists: true,
+                        ..DropPolicy::none()
+                    },
+                    Some("ocsf"),
+                );
             }
 
             // on_failure: 1 handler(s)
@@ -846,13 +850,12 @@ impl Transform for Default {
 
             let _cond = { event.has_value("ocsf.duration") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.event.duration = ctx.ocsf.duration * 1000000;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scale_field(
                     event,
-                    cached_painless!(r#"ctx.event.duration = ctx.ocsf.duration * 1000000;"#),
-                )?;
+                    &ScaleField::new("ocsf.duration", "event.duration", Factor::Long(1000000)),
+                );
             }
 
             if let Some(v) = event
@@ -19029,15 +19032,18 @@ impl Transform for Default {
                 }
                 let _cond = { event.get("json.tls.sans").is_some_and(|v| v.is_array()) };
                 if _cond {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: boolean dropDash(Object object) {\n  if (object == '-') {\n    // We do not need to handle null or ' ' since they were done in default.\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> dropDash(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> dropDash(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropDash(ctx.ocsf);
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    drop_empty(
                         event,
-                        cached_painless!(
-                            r#"boolean dropDash(Object object) {\n  if (object == '-') {\n    // We do not need to handle null or ' ' since they were done in default.\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> dropDash(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> dropDash(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropDash(ctx.ocsf);"#
-                        ),
-                    )?;
+                        &DropPolicy {
+                            empty_collections: true,
+                            prune_lists: true,
+                            sentinels: vec!["-".into()],
+                            ..DropPolicy::none()
+                        },
+                        Some("ocsf"),
+                    );
                 }
                 let _cond = { event.get("json.tls.sans").is_some_and(|v| v.is_array()) };
                 if _cond {
@@ -28352,7 +28358,47 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("ocsf.finding.src_url") };
                 if _cond {
-                    uri_parts(event, "ocsf.finding.src_url", "url", true, false)?;
+                    // on_failure: 1 handler(s)
+                    if let Err(err) = (|| -> Result<()> {
+                        if !uri_parts(event, "ocsf.finding.src_url", "url", true, false)?
+                            && event
+                                .get_str("ocsf.finding.src_url")
+                                .is_some_and(|value| !value.is_empty())
+                        {
+                            return Err(TransformError::ParseError {
+                                path: "ocsf.finding.src_url".into(),
+                                message: "uri_parts: not a parseable URI".into(),
+                            });
+                        }
+                        Ok(())
+                    })() {
+                        event.set("_ingest.on_failure_message", err.to_string())?;
+                        event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                        event.append(
+                            "error.message",
+                            json!(format!(
+                                "Processor {} with tag {} in pipeline {} failed with message: {}",
+                                event
+                                    .get("_ingest.on_failure_processor_type")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_pipeline")
+                                    .map_or_else(String::new, template_to_string),
+                                event
+                                    .get("_ingest.on_failure_message")
+                                    .map_or_else(String::new, template_to_string)
+                            )),
+                        )?;
+                        event.remove("_ingest.on_failure_message");
+                        event.remove("_ingest.on_failure_processor_type");
+                        event.remove("_ingest.on_failure_processor_tag");
+                        if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                            event.remove("_ingest");
+                        }
+                    }
                 }
                 if event.has_value("ocsf.analytic.type_id") {
                     if let Some(val) = event.get("ocsf.analytic.type_id") {
@@ -39628,15 +39674,19 @@ impl Transform for Default {
                 event.remove("ocsf.url.url_string");
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.get("dns.answers.ttl").is_some_and(|v| v.is_array()) };
             if _cond {

@@ -42,9 +42,9 @@ impl Transform for Default {
                 ),
             )?;
 
-            // SKIPPED: condition not transpiled: ctx.hadoop.datanode.temp["tag.Context"] == 'FSDatasetState'
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond =
+                { event.get_str("hadoop.datanode.temp.tag.Context") == Some("FSDatasetState") };
+            if _cond {
                 // Begin nested pipeline: "pipeline-dataset"
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -165,9 +165,8 @@ impl Transform for Default {
                 // End nested pipeline: "pipeline-dataset"
             }
 
-            // SKIPPED: condition not transpiled: ctx.hadoop.datanode.temp["tag.Context"] == 'dfs'
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get_str("hadoop.datanode.temp.tag.Context") == Some("dfs") };
+            if _cond {
                 // Begin nested pipeline: "pipeline-dfs"
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
@@ -198,15 +197,19 @@ impl Transform for Default {
                 Ok(())
             })();
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean drop(Object o) {\n  if (o == null || o == \"\") {\n    return true;\n  } else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n  } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n    return (((List) o).length == 0);\n  }\n  return false;\n}\ndrop(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             Ok(TransformResult::Continue)
         })(event);

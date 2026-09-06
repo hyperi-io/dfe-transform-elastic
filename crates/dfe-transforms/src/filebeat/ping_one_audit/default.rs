@@ -59,34 +59,103 @@ impl Transform for Default {
                 event.append("event.category", json!("configuration"))?;
             }
 
-            // A `?.`-chained `contains` compared to true. An absent field
-            // makes the chain null, and `null == true` is false, which is
-            // exactly what `is_some_and` answers.
-            for (needle, field, value) in [
-                ("created", "event.type", "creation"),
-                ("deleted", "event.type", "deletion"),
-                ("updated", "event.type", "change"),
-                ("user", "event.type", "user"),
-                ("group", "event.type", "group"),
-                ("allowed", "event.type", "info"),
-                ("denied", "event.type", "denied"),
-                ("started", "event.type", "start"),
-                ("access_allowed", "event.type", "access"),
-                (
-                    "password.check_succeeded",
-                    "event.category",
-                    "authentication",
-                ),
-                ("email", "event.category", "email"),
-            ] {
-                let _cond = {
-                    event
-                        .get_str("json.action.type")
-                        .is_some_and(|s| s.to_lowercase().contains(needle))
-                };
-                if _cond {
-                    event.append(field, json!(value))?;
-                }
+            let _cond = {
+                event
+                    .get_str("json.action.type")
+                    .is_some_and(|s| s.to_lowercase().contains("created"))
+            };
+            if _cond {
+                event.append("event.type", json!("creation"))?;
+            }
+
+            let _cond = {
+                event
+                    .get_str("json.action.type")
+                    .is_some_and(|s| s.to_lowercase().contains("deleted"))
+            };
+            if _cond {
+                event.append("event.type", json!("deletion"))?;
+            }
+
+            let _cond = {
+                event
+                    .get_str("json.action.type")
+                    .is_some_and(|s| s.to_lowercase().contains("updated"))
+            };
+            if _cond {
+                event.append("event.type", json!("change"))?;
+            }
+
+            let _cond = {
+                event
+                    .get_str("json.action.type")
+                    .is_some_and(|s| s.to_lowercase().contains("user"))
+            };
+            if _cond {
+                event.append("event.type", json!("user"))?;
+            }
+
+            let _cond = {
+                event
+                    .get_str("json.action.type")
+                    .is_some_and(|s| s.to_lowercase().contains("group"))
+            };
+            if _cond {
+                event.append("event.type", json!("group"))?;
+            }
+
+            let _cond = {
+                event
+                    .get_str("json.action.type")
+                    .is_some_and(|s| s.to_lowercase().contains("allowed"))
+            };
+            if _cond {
+                event.append("event.type", json!("info"))?;
+            }
+
+            let _cond = {
+                event
+                    .get_str("json.action.type")
+                    .is_some_and(|s| s.to_lowercase().contains("denied"))
+            };
+            if _cond {
+                event.append("event.type", json!("denied"))?;
+            }
+
+            let _cond = {
+                event
+                    .get_str("json.action.type")
+                    .is_some_and(|s| s.to_lowercase().contains("started"))
+            };
+            if _cond {
+                event.append("event.type", json!("start"))?;
+            }
+
+            let _cond = {
+                event
+                    .get_str("json.action.type")
+                    .is_some_and(|s| s.to_lowercase().contains("access_allowed"))
+            };
+            if _cond {
+                event.append("event.type", json!("access"))?;
+            }
+
+            let _cond = {
+                event
+                    .get_str("json.action.type")
+                    .is_some_and(|s| s.to_lowercase().contains("password.check_succeeded"))
+            };
+            if _cond {
+                event.append("event.category", json!("authentication"))?;
+            }
+
+            let _cond = {
+                event
+                    .get_str("json.action.type")
+                    .is_some_and(|s| s.to_lowercase().contains("email"))
+            };
+            if _cond {
+                event.append("event.category", json!("email"))?;
             }
 
             let _cond = { !event.has_value("event.type") };
@@ -747,15 +816,19 @@ impl Transform for Default {
                 })();
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"void handleMap(Map map) {\n  map.values().removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nvoid handleList(List list) {\n  list.removeIf(v -> {\n    if (v instanceof Map) {\n      handleMap(v);\n    } else if (v instanceof List) {\n      handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n  });\n}\nhandleMap(ctx);"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

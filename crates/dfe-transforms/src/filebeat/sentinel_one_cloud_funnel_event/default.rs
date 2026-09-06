@@ -13975,9 +13975,23 @@ impl Transform for Default {
                 event.set("event.kind", json!("pipeline_error"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx._conf?.reroute?.contains(ctx.sentinel_one_cloud_funnel?.event?.category?.toLowerCase()) == true
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get("_conf.reroute").is_some_and(|v| {
+                    match (
+                        v,
+                        event
+                            .get_str("sentinel_one_cloud_funnel.event.category")
+                            .map(|s| s.to_lowercase()),
+                    ) {
+                        (serde_json::Value::Array(a), Some(n)) => {
+                            a.iter().any(|x| x.as_str() == Some(n.as_str()))
+                        }
+                        (serde_json::Value::String(s), Some(n)) => s.contains(n.as_str()),
+                        _ => false,
+                    }
+                })
+            };
+            if _cond {
                 event.set("sentinel_one_cloud_funnel.event.rerouted", json!(true))?;
             }
 

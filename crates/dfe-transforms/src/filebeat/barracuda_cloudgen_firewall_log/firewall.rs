@@ -229,20 +229,18 @@ impl Transform for Firewall {
 
             let _cond = { event.has_value("json.duration") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.event.duration = (long)ctx.json.duration * 1000000;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"ctx.event.duration = (long)ctx.json.duration * 1000000;"#))?;
+                scale_field(event, &ScaleField::new("json.duration", "event.duration", Factor::Long(1000000)));
             }
 
             let _cond = { event.has_value("source.bytes") && event.has_value("destination.bytes") && !event.has_value("network.bytes") };
             if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes"#))?;
+                sum_directions(event, &["bytes"]);
                 Ok(())
             })();
             }
@@ -251,10 +249,9 @@ impl Transform for Firewall {
             if _cond {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.network.packets = ctx.source.packets + ctx.destination.packets
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"ctx.network.packets = ctx.source.packets + ctx.destination.packets"#))?;
+                sum_directions(event, &["packets"]);
                 Ok(())
             })();
             }

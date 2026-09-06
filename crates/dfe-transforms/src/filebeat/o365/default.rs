@@ -2679,6 +2679,9 @@ impl Transform for Default {
                 event
                     .get_str("o365audit.Data.f3u")
                     .is_some_and(|s| s.split('@').count() == 2)
+                    && event
+                        .get_as_string("o365audit.Data.f3u")
+                        .is_some_and(|s| s.len() >= 3)
             };
             if _cond {
                 event.append_unique(
@@ -2696,6 +2699,9 @@ impl Transform for Default {
                     && event
                         .get_str("o365audit.Data.f3u")
                         .is_some_and(|s| s.split('@').count() == 2)
+                    && event
+                        .get_as_string("o365audit.Data.f3u")
+                        .is_some_and(|s| s.len() >= 3)
             };
             if _cond {
                 let v = json!(
@@ -2712,6 +2718,9 @@ impl Transform for Default {
                 event
                     .get_str("o365audit.Data.suid")
                     .is_some_and(|s| s.split('@').count() == 2)
+                    && event
+                        .get_as_string("o365audit.Data.suid")
+                        .is_some_and(|s| s.len() >= 3)
             };
             if _cond {
                 event.append_unique(
@@ -2743,6 +2752,9 @@ impl Transform for Default {
                 event
                     .get_str("o365audit.Data.tsd")
                     .is_some_and(|s| s.split('@').count() == 2)
+                    && event
+                        .get_as_string("o365audit.Data.tsd")
+                        .is_some_and(|s| s.len() >= 3)
             };
             if _cond {
                 event.append_unique(
@@ -2774,6 +2786,9 @@ impl Transform for Default {
                 event
                     .get_str("o365audit.Data.trc")
                     .is_some_and(|s| s.split('@').count() == 2)
+                    && event
+                        .get_as_string("o365audit.Data.trc")
+                        .is_some_and(|s| s.len() >= 3)
             };
             if _cond {
                 event.append_unique(
@@ -3496,15 +3511,19 @@ impl Transform for Default {
             event.remove("_conf");
             event.remove("_tmp");
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            drop_empty(
                 event,
-                cached_painless!(
-                    r#"boolean dropEmptyFields(Object object) {\n  if (object == null || object == '') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);\n"#
-                ),
-            )?;
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
 
             let _cond = { event.has_value("error.message") };
             if _cond {

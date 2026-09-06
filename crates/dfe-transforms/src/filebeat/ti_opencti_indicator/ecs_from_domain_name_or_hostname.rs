@@ -33,10 +33,9 @@ impl Transform for EcsFromDomainNameOrHostname {
             }
         }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.url = ctx.threat.indicator.url ?: [];\nctx.threat.indicator.url.add(ctx._tmp_url);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(event, cached_painless!(r#"ctx.threat = ctx.threat ?: [:];\nctx.threat.indicator = ctx.threat.indicator ?: [:];\nctx.threat.indicator.url = ctx.threat.indicator.url ?: [];\nctx.threat.indicator.url.add(ctx._tmp_url);\n"#))?;
+            ensure_append(event, &EnsureAppend::new("_tmp_url", "threat.indicator.url"));
 
             if event.remove("_tmp_url").is_none() {
                 return Err(TransformError::FieldNotFound { path: "_tmp_url".into() });
