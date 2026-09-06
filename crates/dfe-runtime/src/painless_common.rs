@@ -4555,6 +4555,79 @@ fn parse_stream_rewrite_keys(script: &str) -> Option<RewriteKeys> {
     Some(RewriteKeys::new(path.clone(), path, steps))
 }
 
+/// A whole subtree's keys rewritten at every depth, then MOVED to a new path.
+///
+/// ```painless
+/// String normalize(String str) { return str.replace('-', '_'); }
+/// def normalizeFields(def obj) {
+///   if (obj instanceof Map) { ... newObj.put(normalize(entry.getKey()),
+///                                            normalizeFields(entry.getValue())); ... }
+///   else if (obj instanceof List) { ... newList.add(normalizeFields(item)); ... }
+///   return obj;
+/// }
+/// if (ctx.json != null) {
+///   ctx.ti_flashpoint = ctx.ti_flashpoint ?: [:];
+///   ctx.ti_flashpoint.alert = normalizeFields(ctx.json);
+///   ctx.remove('json');
+/// }
+/// ```
+///
+/// `ti_flashpoint` ships it on all three streams and scores 0 of 9 events
+/// at 8.9% of its fields without it: the payload stays under `json.*`, which is
+/// the whole of its 215 extra, and every `date`, `rename` and `convert` after it
+/// names `ti_flashpoint.<stream>.*` and finds nothing.
+///
+/// The recursion and the removal are both read off the script rather than
+/// assumed. A one-level rewrite that leaves the source where it is
+/// ([`parse_rewrite_keys`]) is a different script with a different result.
+fn parse_recursive_rewrite_keys(script: &str) -> Option<RewriteKeys> {
+    use crate::painless_params::clean_path;
+
+    // The helper must recurse through BOTH containers, or a nested map keeps
+    // the vendor's spelling and half the payload lands unrenamed.
+    let (helper, _) = script.split_once("(def ")?;
+    let helper = helper.rsplit_once(' ')?.1;
+    if helper.is_empty() || !script.contains("instanceof List") {
+        return None;
+    }
+    let recurses = format!("{helper}(entry.getValue())");
+    if !script.contains(&recurses) || !script.contains(&format!("{helper}(item)")) {
+        return None;
+    }
+
+    // The call that stores the result names both ends of the move.
+    let call = format!(" = {helper}(ctx.");
+    let at = script.find(&call)?;
+    let source = clean_path(script[at + call.len()..].split_once(')')?.0.trim());
+    let target = clean_path(script[..at].trim_end().rsplit_once("ctx.")?.1);
+    if source.is_empty() || target.is_empty() || source == target {
+        return None;
+    }
+
+    // Everything the key helper does, read from its own body.
+    let define = script.find(&format!("String {}(", key_helper(script)?))?;
+    let steps = key_rewrite_steps(&script[define..at])?;
+    if steps.is_empty() {
+        return None;
+    }
+
+    let removes = script.contains(&format!("ctx.remove('{source}')"))
+        || script.contains(&format!("ctx.remove(\"{source}\")"));
+    let pattern = RewriteKeys::new(source, target, steps).recursive();
+    Some(if removes {
+        pattern.removing_source()
+    } else {
+        pattern
+    })
+}
+
+/// The name of the `String`-returning helper the key is rebuilt through.
+fn key_helper(script: &str) -> Option<&str> {
+    let (head, _) = script.split_once("(String ")?;
+    let name = head.rsplit_once(' ')?.1;
+    (!name.is_empty()).then_some(name)
+}
+
 /// The offset of the comma separating `toMap`'s two lambdas, which is the only
 /// one not inside a call of its own -- `.replace(' ', '_')` carries one too.
 fn top_level_comma(arguments: &str) -> Option<usize> {
@@ -4642,6 +4715,11 @@ pub struct RewriteKeys {
     target: String,
     /// Applied left to right, the order the script applies them.
     steps: Vec<KeyRewriteStep>,
+    /// Whether the script walks nested maps and lists rather than one level.
+    recursive: bool,
+    /// Whether the source is taken away once the rebuilt map is stored, which
+    /// makes this a MOVE. Leaving it behind emits the whole payload twice.
+    remove_source: bool,
 }
 
 impl RewriteKeys {
@@ -4662,12 +4740,21 @@ impl RewriteKeys {
                 ),
             })
             .collect();
-        format!(
-            "rewrite_keys(event, &RewriteKeys::new({}.into(), {}.into(), vec![{}]));",
+        // The two extras are BUILDERS rather than arguments, so the 21 call
+        // sites that want neither stay exactly as they were written.
+        let mut call = format!(
+            "RewriteKeys::new({}.into(), {}.into(), vec![{}])",
             rust_str(&self.source),
             rust_str(&self.target),
             steps.join(", "),
-        )
+        );
+        if self.recursive {
+            call.push_str(".recursive()");
+        }
+        if self.remove_source {
+            call.push_str(".removing_source()");
+        }
+        format!("rewrite_keys(event, &{call});")
     }
 
     /// Build one from resolved parts, for a caller that already knows them.
@@ -4677,7 +4764,23 @@ impl RewriteKeys {
             source,
             target,
             steps,
+            recursive: false,
+            remove_source: false,
         }
+    }
+
+    /// The script walks nested maps and lists, not just the top level.
+    #[must_use]
+    pub fn recursive(mut self) -> Self {
+        self.recursive = true;
+        self
+    }
+
+    /// The script takes the source away once it has stored the rebuilt map.
+    #[must_use]
+    pub fn removing_source(mut self) -> Self {
+        self.remove_source = true;
+        self
     }
 }
 
@@ -4954,10 +5057,39 @@ pub fn rewrite_keys(event: &mut Event, pattern: &RewriteKeys) -> bool {
     };
     let mut rebuilt = serde_json::Map::with_capacity(entries.len());
     for (key, value) in entries {
+        let value = if pattern.recursive {
+            rewrite_nested(value, &pattern.steps)
+        } else {
+            value
+        };
         rebuilt.insert(rewrite_key(&key, &pattern.steps), value);
+    }
+    // The removal is half the point where the script MOVES the payload: leaving
+    // the source behind emits every field of it a second time.
+    if pattern.remove_source && pattern.source != pattern.target {
+        event.remove(&pattern.source);
     }
     let _ = event.set(&pattern.target, Value::Object(rebuilt));
     true
+}
+
+/// The same key rewrite applied at every depth, through lists as well as maps.
+fn rewrite_nested(value: Value, steps: &[KeyRewriteStep]) -> Value {
+    match value {
+        Value::Object(members) => Value::Object(
+            members
+                .into_iter()
+                .map(|(key, value)| (rewrite_key(&key, steps), rewrite_nested(value, steps)))
+                .collect(),
+        ),
+        Value::Array(items) => Value::Array(
+            items
+                .into_iter()
+                .map(|item| rewrite_nested(item, steps))
+                .collect(),
+        ),
+        scalar => scalar,
+    }
 }
 
 /// One entry MOVED out of a map, addressed by a key that holds a dot.
@@ -15886,6 +16018,18 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_parameters_into_map(normalised)
     {
         patterns.push(KnownPattern::ParametersIntoMap(pattern));
+        return patterns;
+    }
+
+    // Pattern: a whole subtree's keys rewritten at every depth and MOVED to a
+    // new path. Ahead of both one-level readers, which would take the top level
+    // and leave every nested map spelt the vendor's way.
+    if normalised.contains("instanceof Map")
+        && normalised.contains("instanceof List")
+        && normalised.contains(".getKey()")
+        && let Some(pattern) = parse_recursive_rewrite_keys(normalised)
+    {
+        patterns.push(KnownPattern::RewriteKeys(Box::new(pattern)));
         return patterns;
     }
 

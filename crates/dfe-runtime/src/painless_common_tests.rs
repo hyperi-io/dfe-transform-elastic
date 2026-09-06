@@ -316,6 +316,50 @@ fn every_key_of_a_map_takes_a_chain_of_transforms() {
     assert!(!event.has("oracle.database_audit.DBID"));
 }
 
+/// ti_flashpoint rewrites every key at every depth and MOVES the result, so a
+/// one-level reader would leave the nested maps spelt the vendor's way and the
+/// payload sitting under `json.*` as well.
+///
+/// Verbatim from `pipelines/ti_flashpoint/alert/default.yml`.
+#[test]
+fn a_whole_subtree_is_rewritten_and_moved() {
+    let script = "String normalize(String str) {\n  return str.replace('-', '_');\n}\n\
+        def normalizeFields(def obj) {\n  if (obj instanceof Map) {\n    \
+        def newObj = new HashMap();\n    for (entry in obj.entrySet()) {\n      \
+        String newKey = normalize(entry.getKey());\n      \
+        newObj.put(newKey, normalizeFields(entry.getValue()));\n    }\n    \
+        return newObj;\n  } else if (obj instanceof List) {\n    \
+        def newList = new ArrayList();\n    for (item in obj) {\n      \
+        newList.add(normalizeFields(item));\n    }\n    return newList;\n  }\n  \
+        return obj;\n}\n\nif (ctx.json != null) {\n  \
+        ctx.ti_flashpoint = ctx.ti_flashpoint ?: [:];\n  \
+        ctx.ti_flashpoint.alert = normalizeFields(ctx.json);\n  \
+        ctx.remove('json');\n}";
+    let pattern = parse_recursive_rewrite_keys(&normalise(script)).expect("the move is recognised");
+
+    let mut event = Event::new(serde_json::json!({ "json": {
+        "id": "a-1",
+        "reason": { "some-key": "v", "list": [{ "nested-key": 1 }] }
+    } }));
+    assert!(rewrite_keys(&mut event, &pattern));
+
+    assert_eq!(event.get_str("ti_flashpoint.alert.id"), Some("a-1"));
+    // Every depth, lists included.
+    assert_eq!(
+        event.get_str("ti_flashpoint.alert.reason.some_key"),
+        Some("v")
+    );
+    assert_eq!(
+        event
+            .get("ti_flashpoint.alert.reason.list")
+            .and_then(|v| v.get(0))
+            .and_then(|v| v.get("nested_key")),
+        Some(&serde_json::json!(1))
+    );
+    // The source is taken away, or the whole payload ships twice.
+    assert!(!event.has("json"));
+}
+
 /// The division between the two readers, and the one script neither may claim.
 ///
 /// `juniper_srx`'s system stream chains two replacements and a case fold on the
