@@ -121,6 +121,11 @@ const CLOUDFLARE_WHEN_TO_MILLI: &str = r"long t = (long)(ctx.json.When);\nif (t 
 /// the helper spelling.
 const CLOUDFLARE_SESSION_TO_MILLI: &str = r"def convertToMillis(long timestamp) {\n  if (timestamp > (long)(1e18)) {\n    return timestamp/(long)(1e6)\n  } else if (timestamp < (long)(1e10))  {\n    return timestamp*(long)(1e3)\n  }\n  return timestamp\n}\nif (ctx.json?.SessionStartTime != null && ctx.json.SessionStartTime instanceof Number) {\n  ctx.json.SessionStartTime = convertToMillis(ctx.json.SessionStartTime);\n}\nif (ctx.json?.SessionEndTime != null && ctx.json.SessionEndTime instanceof Number) {\n  ctx.json.SessionEndTime = convertToMillis(ctx.json.SessionEndTime);\n}\n";
 
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/rapid7_insightvm_asset_vulnerability/default.rs`,
+/// which is `pipelines/rapid7_insightvm/asset_vulnerability/default.yml`.
+const RAPID7_SCANNER_NAME: &str = r"ctx.vulnerability = ctx.vulnerability ?: [:];\nctx.vulnerability.scanner = ctx.vulnerability.scanner ?: [:];\nfor (def o: ctx.rapid7_insightvm.asset_vulnerability.unique_identifiers) {\n  if (o.source == 'R7 Agent') {\n    ctx.vulnerability.scanner.put('name', o.id);\n    return;\n  }\n}\n";
+
 /// The matcher names a script binds to, most specific first.
 fn binding(script: &str) -> Vec<String> {
     PainlessPlan::new(script).binding()
@@ -408,6 +413,26 @@ fn fortimanager_date_concat_is_read_by_guarded_copy_and_still_joins() {
         "{held}"
     );
     assert!(PainlessPlan::new(FORTIMANAGER_DATE_CONCAT).matches());
+}
+
+#[test]
+fn the_rapid7_scanner_name_binds_to_the_list_member_select() {
+    // The binding was EMPTY, and the whole of rapid7_insightvm's remaining debt
+    // is this one field on twenty events. The matcher that reads the same loop
+    // for crowdstrike's boolean flag now reads the member copy as well, so the
+    // key it compares and the member it takes both have to show here.
+    let held = binding(RAPID7_SCANNER_NAME).join(" ");
+    assert!(held.starts_with("ListMemberSelect"), "{held}");
+    assert!(
+        held.contains(r#"list: "rapid7_insightvm.asset_vulnerability.unique_identifiers""#),
+        "{held}"
+    );
+    assert!(held.contains(r#"key: "source""#), "{held}");
+    assert!(held.contains(r#"values: ["R7 Agent"]"#), "{held}");
+    assert!(
+        held.contains(r#"Copy { member: "id", target: "vulnerability.scanner.name" }"#),
+        "{held}"
+    );
 }
 
 #[test]

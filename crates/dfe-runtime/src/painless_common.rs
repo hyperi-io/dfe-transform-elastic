@@ -12601,21 +12601,38 @@ fn quoted_after(script: &str, after: &str) -> Vec<String> {
     found
 }
 
-/// `for (def <item>: ctx.<list>) { if (<item>.<member> == '<v1>' || <item>.<member> == '<v2>' ...) { ctx.<target> = true; return; } } ctx.<target> = false;`
-///
-/// True when any list member's field equals one of a short set of literals,
-/// false otherwise -- crowdstrike derives `has_script_or_module_ioc` from
-/// `ioc_context` this way.
+/// What the loop writes once a list member's key holds one of the literals.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ListMemberFlag {
+pub enum MemberWrite {
+    /// `ctx.<target> = true;` inside the loop and `= false;` after it, so the
+    /// answer is whether ANY member matched and never which one.
+    Flag(String),
+    /// The FIRST matching member's `<member>` copied to `<target>`, and
+    /// nothing written when no member matches.
+    Copy { member: String, target: String },
+}
+
+/// `for (def <item>: ctx.<list>) { if (<item>.<key> == '<v1>' || <item>.<key> == '<v2>' ...) { <write> return; } }`
+///
+/// One list, one member compared against string literals, one write on a hit.
+/// crowdstrike derives `has_script_or_module_ioc` from `ioc_context` as the
+/// flag; `rapid7_insightvm` takes `vulnerability.scanner.name` off the
+/// `unique_identifiers` entry whose `source` is the agent.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ListMemberSelect {
     list: String,
-    member: String,
+    key: String,
     values: Vec<String>,
-    target: String,
+    write: MemberWrite,
+}
+
+/// Either spelling of the write, over the one selection.
+fn parse_list_member_select(script: &str) -> Option<ListMemberSelect> {
+    parse_list_member_flag(script).or_else(|| parse_list_member_copy(script))
 }
 
 /// The loop variable here has no space before its colon (`c:` not `c :`), unlike [`for_binding`].
-fn parse_list_member_flag(script: &str) -> Option<ListMemberFlag> {
+fn parse_list_member_flag(script: &str) -> Option<ListMemberSelect> {
     let (_, rest) = script.split_once("for (def ")?;
     let (item, rest) = rest.split_once(':')?;
     let item = item.trim();
@@ -12642,26 +12659,259 @@ fn parse_list_member_flag(script: &str) -> Option<ListMemberFlag> {
 
     let true_target = ctx_assignment_target_before(script, " = true;")?;
     let false_target = ctx_assignment_target_before(script, " = false;")?;
-    (true_target == false_target).then_some(ListMemberFlag {
+    (true_target == false_target).then_some(ListMemberSelect {
         list,
-        member: member.to_string(),
+        key: member.to_string(),
         values,
-        target: true_target,
+        write: MemberWrite::Flag(true_target),
     })
 }
 
-/// The loop exits (`return`) on the first hit, so this is `list.any(member in
-/// values)` -- never which element or which literal, only whether one exists.
-fn run_list_member_flag(event: &mut Event, pattern: &ListMemberFlag) -> bool {
+/// The copy spelling, read STRUCTURALLY rather than by `contains`.
+///
+/// The loop stops on its hit, so this reproduces exactly one write and any
+/// other statement in the body is work it would silently drop. The whole
+/// script therefore has to be the loop: only map-ensure scaffolding before it,
+/// nothing after it, and a body that is one guard around one write and the
+/// `return` that ends the walk.
+fn parse_list_member_copy(script: &str) -> Option<ListMemberSelect> {
+    let (item, list, body, head, tail) = for_loop_parts(script)?;
+    if !tail.trim().is_empty() || !only_map_ensures(head) {
+        return None;
+    }
+
+    let guard = body.trim().strip_prefix("if (")?;
+    let (cond, rest) = split_at_close_paren(guard)?;
+    let inner = rest
+        .trim()
+        .strip_prefix('{')?
+        .trim_end()
+        .strip_suffix('}')?;
+
+    let (key, values) = parse_member_equality(cond, &item)?;
+
+    // `<write>; return;` and nothing else -- `break` reads the same, because
+    // the loop is the last statement either way.
+    let statements: Vec<&str> = inner
+        .split(';')
+        .map(str::trim)
+        .filter(|statement| !statement.is_empty())
+        .collect();
+    let [write, "return" | "break"] = statements.as_slice() else {
+        return None;
+    };
+    let (member, target) = parse_member_copy_write(write, &item)?;
+
+    Some(ListMemberSelect {
+        list,
+        key,
+        values,
+        write: MemberWrite::Copy { member, target },
+    })
+}
+
+/// The loop variable, the list it walks, its body, and the text either side.
+///
+/// Takes the colon with or without a space before it, unlike [`for_binding`],
+/// and hands back the BODY so a matcher can refuse a loop that does more than
+/// the one thing it reproduces.
+fn for_loop_parts(script: &str) -> Option<(String, String, &str, &str, &str)> {
+    let (head, rest) = script.split_once("for (def ")?;
+    let (item, rest) = rest.split_once(':')?;
+    let item = item.trim();
+    if item.is_empty() || !item.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+    let (walked, rest) = rest.split_once(')')?;
+    let list = clean_path(walked.trim().strip_prefix("ctx.")?.trim());
+    if list.is_empty() {
+        return None;
+    }
+
+    let rest = rest.trim_start();
+    let close = matching_brace(rest)?;
+    Some((
+        item.to_string(),
+        list,
+        &rest[1..close],
+        head,
+        &rest[close + 1..],
+    ))
+}
+
+/// The offset of the `}` closing the `{` that `text` opens with.
+///
+/// Quoted text is stepped over: a brace inside a string literal would
+/// otherwise end the body early and leave the rest of the script unread.
+fn matching_brace(text: &str) -> Option<usize> {
+    if !text.starts_with('{') {
+        return None;
+    }
+    let mut depth = 0usize;
+    let mut quote: Option<char> = None;
+    for (at, c) in text.char_indices() {
+        match (quote, c) {
+            (Some(open), c) if c == open => quote = None,
+            (None, '\'' | '"') => quote = Some(c),
+            (None, '{') => depth += 1,
+            (None, '}') => {
+                depth -= 1;
+                if depth == 0 {
+                    return Some(at);
+                }
+            }
+            _ => {}
+        }
+    }
+    None
+}
+
+/// The condition and the rest, split at the `)` that closes it.
+///
+/// Quoted text is stepped over, so a literal carrying a bracket cannot end the
+/// condition early.
+fn split_at_close_paren(text: &str) -> Option<(&str, &str)> {
+    let mut depth = 1usize;
+    let mut quote: Option<char> = None;
+    for (at, c) in text.char_indices() {
+        match (quote, c) {
+            (Some(open), c) if c == open => quote = None,
+            (None, '\'' | '"') => quote = Some(c),
+            (None, '(') => depth += 1,
+            (None, ')') => {
+                depth -= 1;
+                if depth == 0 {
+                    return Some((&text[..at], &text[at + 1..]));
+                }
+            }
+            _ => {}
+        }
+    }
+    None
+}
+
+/// `<item>.<key> == '<v1>' || <item>.<key> == '<v2>' ...`, one key throughout.
+fn parse_member_equality(cond: &str, item: &str) -> Option<(String, Vec<String>)> {
+    let mut key: Option<String> = None;
+    let mut values = Vec::new();
+    for clause in cond.split("||") {
+        let (lhs, rhs) = clause.split_once("==")?;
+        let named = lhs.trim().strip_prefix(item)?.strip_prefix('.')?.trim();
+        if named.is_empty()
+            || !named
+                .chars()
+                .all(|c| c.is_alphanumeric() || c == '_' || c == '.')
+        {
+            return None;
+        }
+        if key.get_or_insert_with(|| named.to_string()) != named {
+            return None;
+        }
+        let literal = quoted_first(rhs)?;
+        // A quote that opens and never closes would land here as the rest of
+        // the clause, which is not a literal the vendor wrote.
+        if rhs.trim() != format!("'{literal}'") && rhs.trim() != format!("\"{literal}\"") {
+            return None;
+        }
+        values.push(literal);
+    }
+    Some((key?, values))
+}
+
+/// `ctx.<a>.<b>.put('<leaf>', <item>.<member>)` or `ctx.<target> = <item>.<member>`.
+fn parse_member_copy_write(statement: &str, item: &str) -> Option<(String, String)> {
+    let member_of = |value: &str| {
+        let member = value.trim().strip_prefix(item)?.strip_prefix('.')?.trim();
+        (!member.is_empty()
+            && member
+                .chars()
+                .all(|c| c.is_alphanumeric() || c == '_' || c == '.'))
+        .then(|| member.to_string())
+    };
+
+    if let Some((receiver, args)) = statement.split_once(".put(") {
+        let container = painless_path(receiver)?;
+        if !receiver.trim_start().starts_with("ctx") {
+            return None;
+        }
+        let args = args.trim_end().strip_suffix(')')?;
+        let (leaf, value) = args.split_once(',')?;
+        let leaf = quoted_first(leaf)?;
+        if leaf.is_empty() {
+            return None;
+        }
+        return Some((member_of(value)?, format!("{container}.{leaf}")));
+    }
+
+    let (lhs, rhs) = statement.split_once('=')?;
+    if !lhs.trim_start().starts_with("ctx") {
+        return None;
+    }
+    Some((member_of(rhs)?, painless_path(lhs)?))
+}
+
+/// Every statement is `ctx.<p> = ctx.<p> ?: [:];`, which creates the target's
+/// parent maps and changes nothing else.
+fn only_map_ensures(preamble: &str) -> bool {
+    preamble
+        .split(';')
+        .map(str::trim)
+        .filter(|statement| !statement.is_empty())
+        .all(|statement| {
+            let Some((target, rhs)) = statement.split_once('=') else {
+                return false;
+            };
+            let Some((kept, empty)) = rhs.split_once("?:") else {
+                return false;
+            };
+            let target = target.trim();
+            target.starts_with("ctx.")
+                && target == kept.trim()
+                && matches!(empty.trim(), "[:]" | "new HashMap()")
+        })
+}
+
+/// A list item's member, by its dotted name.
+///
+/// The whole name is tried first, because a vendor that flattened its payload
+/// carries `a.b` as one key rather than as two levels.
+fn item_member<'a>(item: &'a Value, path: &str) -> Option<&'a Value> {
+    if let Some(value) = item.get(path) {
+        return Some(value);
+    }
+    let mut current = item;
+    for segment in path.split('.') {
+        current = current.get(segment)?;
+    }
+    Some(current)
+}
+
+/// The loop exits on the first hit, so the flag is `list.any(key in values)` --
+/// never which element -- and the copy takes that first element's member.
+fn run_list_member_select(event: &mut Event, pattern: &ListMemberSelect) -> bool {
     let Some(Value::Array(items)) = event.get(&pattern.list) else {
         return true;
     };
-    let hit = items.iter().any(|item| {
-        item.get(&pattern.member)
+    let matched = |item: &&Value| {
+        item_member(item, &pattern.key)
             .and_then(Value::as_str)
-            .is_some_and(|v| pattern.values.iter().any(|want| want == v))
-    });
-    let _ = event.set(&pattern.target, json!(hit));
+            .is_some_and(|held| pattern.values.iter().any(|want| want == held))
+    };
+    match &pattern.write {
+        MemberWrite::Flag(target) => {
+            let hit = items.iter().any(|item| matched(&item));
+            let _ = event.set(target, json!(hit));
+        }
+        MemberWrite::Copy { member, target } => {
+            let hit = items
+                .iter()
+                .find(matched)
+                .and_then(|item| item_member(item, member).cloned());
+            if let Some(value) = hit {
+                let _ = event.set(target, value);
+            }
+        }
+    }
     true
 }
 
@@ -17406,7 +17656,7 @@ pub(crate) enum KnownPattern {
     CaseInsensitiveLadder,
     EqualityLadder(Ladder),
     SentinelRemovalLiteral,
-    ListMemberFlag(Box<ListMemberFlag>),
+    ListMemberSelect(Box<ListMemberSelect>),
     RowLookupWithFallback(Box<RowLookup>),
     SchemelessUrl,
     VersionSplit,
@@ -18874,13 +19124,14 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
     }
 
     // Checked ahead of `RowLookupWithFallback`, whose `" : ctx."` trigger needs
-    // a space before the colon this pattern's loop variable never has.
+    // a space before the colon this pattern's loop variable never has. Gated on
+    // the parse alone, because each half already enforces its own write: the
+    // flag needs the `= true;`/`= false;` pair and the copy needs a body that is
+    // one guard around one statement.
     if normalised.contains("for (def ")
-        && normalised.contains(" = true;")
-        && normalised.contains(" = false;")
-        && let Some(pattern) = parse_list_member_flag(normalised)
+        && let Some(pattern) = parse_list_member_select(normalised)
     {
-        patterns.push(KnownPattern::ListMemberFlag(Box::new(pattern)));
+        patterns.push(KnownPattern::ListMemberSelect(Box::new(pattern)));
         return patterns;
     }
 
@@ -20159,7 +20410,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::CaseInsensitiveLadder => try_case_insensitive_ladder(event, normalised),
         KnownPattern::EqualityLadder(ladder) => try_ladder(event, ladder),
         KnownPattern::SentinelRemovalLiteral => try_sentinel_removal_literal(event, normalised),
-        KnownPattern::ListMemberFlag(pattern) => run_list_member_flag(event, pattern),
+        KnownPattern::ListMemberSelect(pattern) => run_list_member_select(event, pattern),
         KnownPattern::RowLookupWithFallback(pattern) => {
             try_row_lookup_with_fallback(event, normalised, pattern)
         }

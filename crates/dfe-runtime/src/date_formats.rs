@@ -261,6 +261,12 @@ fn parse_java_exact(
         return Some(dt);
     }
 
+    // Java's `z` takes a zone NAME or a numeric OFFSET, and chrono's `%Z` takes
+    // only the name.
+    if let Some(dt) = parse_offset_for_zone_name(&input, &chrono) {
+        return Some(dt);
+    }
+
     // A zone NAME cannot be resolved to an offset by chrono, so the text is
     // re-parsed without it and the trailing abbreviation is read separately.
     let (naive, named) = parse_naive(&input, &chrono)?;
@@ -270,6 +276,19 @@ fn parse_java_exact(
         .or_else(|| timezone.and_then(resolve_zone))
         .unwrap_or(ProcessorZone::Fixed(UTC_OFFSET))
         .read_local(&naive)
+}
+
+/// The same text read with the pattern's trailing `%Z` taken as an offset.
+///
+/// `ZoneTextPrinterParser` falls back to a zone id, so `+00:00`, `+0000` and
+/// `Z` all satisfy a Java `z`. Only the TRAILING `%Z` is rewritten, because a
+/// zone in the middle of a pattern is followed by text that decides where it
+/// ends.
+fn parse_offset_for_zone_name(input: &str, chrono: &str) -> Option<DateTime<FixedOffset>> {
+    let stem = chrono.strip_suffix("%Z")?;
+    ["%:z", "%z", "%#z"]
+        .iter()
+        .find_map(|offset| DateTime::parse_from_str(input, &format!("{stem}{offset}")).ok())
 }
 
 /// A naive datetime plus the zone name the pattern asked for, if any.
@@ -698,6 +717,44 @@ mod tests {
             dated.starts_with("2018-10-10T12:34:56.000"),
             "the year in the text must win: {dated}"
         );
+    }
+
+    /// Java's `z` reads a zone NAME or a numeric OFFSET, and chrono's `%Z`
+    /// reads only the name. Verbatim from
+    /// `pipelines/ti_eclecticiq/threat/default.yml`, whose every date carries
+    /// `+00:00`: the first date processor took its `on_failure`, the pipeline's
+    /// own handler stamped `pipeline_error`, and the removes behind it never
+    /// ran -- all 27 of its scored events, on this one reading.
+    #[test]
+    fn a_numeric_offset_parses_where_the_pattern_spells_a_zone_name() {
+        const FORMATS: [&str; 4] = [
+            "yyyy-MM-dd HH:mm:ss.SSSSSSz",
+            "yyyy-MM-dd HH:mm:ssz",
+            "yyyy-MM-dd'T'HH:mm:ss.SSSSSSz",
+            "yyyy-MM-dd'T'HH:mm:ssz",
+        ];
+
+        assert_eq!(
+            parse_date_out("2023-06-20 18:06:08.725000+00:00", &FORMATS, None, None).as_deref(),
+            Some("2023-06-20T18:06:08.725Z")
+        );
+        assert_eq!(
+            parse_date_out("2023-06-20 18:06:08+00:00", &FORMATS, None, None).as_deref(),
+            Some("2023-06-20T18:06:08.000Z")
+        );
+        assert_eq!(
+            parse_date_out("2023-06-08T12:00:29.962000+05:30", &FORMATS, None, None).as_deref(),
+            Some("2023-06-08T06:30:29.962Z")
+        );
+
+        // A zone NAME still resolves through the same `z`.
+        assert_eq!(
+            parse_date_out("2023-06-20 18:06:08 AEST", &FORMATS, None, None).as_deref(),
+            Some("2023-06-20T08:06:08.000Z")
+        );
+        // And a `z` with nothing to read still declines, as Java's mandatory
+        // zone does.
+        assert!(parse_date_out("2023-06-20 18:06:08", &FORMATS, None, None).is_none());
     }
 
     /// `ZoneId.of` accepts every IANA region id, so a processor configured

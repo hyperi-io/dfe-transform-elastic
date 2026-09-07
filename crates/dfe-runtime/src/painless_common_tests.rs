@@ -5496,6 +5496,96 @@ fn ioc_context_flag_false_with_no_script_or_module_entry() {
     );
 }
 
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/rapid7_insightvm_asset_vulnerability/default.rs`,
+/// tagged `script_map_vulnerability_scanner_name`.
+const UNIQUE_IDENTIFIER_COPY: &str = r"ctx.vulnerability = ctx.vulnerability ?: [:];\nctx.vulnerability.scanner = ctx.vulnerability.scanner ?: [:];\nfor (def o: ctx.rapid7_insightvm.asset_vulnerability.unique_identifiers) {\n  if (o.source == 'R7 Agent') {\n    ctx.vulnerability.scanner.put('name', o.id);\n    return;\n  }\n}\n";
+
+#[test]
+fn a_selected_member_is_copied_from_the_first_matching_entry() {
+    let mut event = Event::new(json!({
+        "rapid7_insightvm": { "asset_vulnerability": { "unique_identifiers": [
+            { "source": "R7 Console", "id": "1111" },
+            { "source": "R7 Agent", "id": "8ec1a3f0a2f14b1d9a0e6c2b7d3f5a91" },
+            { "source": "R7 Agent", "id": "later" },
+        ]}}
+    }));
+    assert!(try_known_painless(&mut event, UNIQUE_IDENTIFIER_COPY));
+    assert_eq!(
+        event.get("vulnerability.scanner.name"),
+        Some(&json!("8ec1a3f0a2f14b1d9a0e6c2b7d3f5a91"))
+    );
+}
+
+#[test]
+fn no_matching_entry_writes_nothing() {
+    let mut event = Event::new(json!({
+        "vulnerability": { "scanner": { "vendor": "Rapid7" } },
+        "rapid7_insightvm": { "asset_vulnerability": { "unique_identifiers": [
+            { "source": "R7 Console", "id": "1111" },
+        ]}}
+    }));
+    assert!(try_known_painless(&mut event, UNIQUE_IDENTIFIER_COPY));
+    assert_eq!(event.get("vulnerability.scanner.name"), None);
+    assert_eq!(
+        event.get("vulnerability.scanner.vendor"),
+        Some(&json!("Rapid7"))
+    );
+}
+
+/// The copy half claims a script only when the loop IS the script.
+///
+/// It reproduces one write and stops, so anything else in the body -- a second
+/// statement, a second arm, a walk that carries on -- is work it would drop
+/// without leaving an error behind. Each of these is a real vendor loop that
+/// reaches this position in the ladder.
+#[test]
+fn the_member_copy_declines_a_loop_that_does_more_than_one_write() {
+    for (name, script) in [
+        (
+            // aws_securityhub fans one list out over four targets, appending.
+            "several arms",
+            r"for (def o: ctx.aws_securityhub.finding.osint) {\n  if (o.type_id == '1') {\n    ctx.related.ip.add(o.value);\n  } else if (o.type_id == '4') {\n    ctx.related.hash.add(o.value);\n  }\n}\n",
+        ),
+        (
+            // A second statement under the guard: the loop writes two fields.
+            "two writes",
+            r"for (def o: ctx.a.list) {\n  if (o.source == 'x') {\n    ctx.b.put('name', o.id);\n    ctx.b.put('kind', o.kind);\n    return;\n  }\n}\n",
+        ),
+        (
+            // No `return`, so the LAST match wins rather than the first.
+            "no stop",
+            r"for (def o: ctx.a.list) {\n  if (o.source == 'x') {\n    ctx.b.put('name', o.id);\n  }\n}\n",
+        ),
+        (
+            // A guard that is not an equality against a literal.
+            "presence guard",
+            r"for (def o: ctx.a.list) {\n  if (o.source != null) {\n    ctx.b.put('name', o.id);\n    return;\n  }\n}\n",
+        ),
+        (
+            // A statement after the loop the matcher would never run.
+            "work after the loop",
+            r"for (def o: ctx.a.list) {\n  if (o.source == 'x') {\n    ctx.b.put('name', o.id);\n    return;\n  }\n}\nctx.b.put('checked', true);\n",
+        ),
+        (
+            // A preamble that is more than map scaffolding.
+            "work before the loop",
+            r"ctx.b = ctx.a.remove('b');\nfor (def o: ctx.a.list) {\n  if (o.source == 'x') {\n    ctx.b.put('name', o.id);\n    return;\n  }\n}\n",
+        ),
+        (
+            // Two literals joined by `&&`, so one member is not the whole test.
+            "compound guard",
+            r"for (def o: ctx.a.list) {\n  if (o.source == 'x' && o.kind == 'y') {\n    ctx.b.put('name', o.id);\n    return;\n  }\n}\n",
+        ),
+    ] {
+        // The parse is asked directly rather than through the ladder: an
+        // earlier position claiming the script would make a ladder assertion
+        // pass without this half ever declining.
+        let claimed = parse_list_member_select(&normalise(script));
+        assert!(claimed.is_none(), "{name}: {claimed:?}");
+    }
+}
+
 /// Verbatim from `crowdstrike/alert/elasticsearch/ingest_pipeline/default.yml`,
 /// tagged `script_to_combine_latitude_and_longitude`.
 #[test]
