@@ -6370,6 +6370,161 @@ pub fn geo_point_from_coordinates(event: &mut Event, pattern: &GeoPointFromCoord
     true
 }
 
+/// A `GeoJSON` geometry rendered as WKT text, with everything else the same
+/// script writes.
+///
+/// gdacs enriches a feature with a second geometry -- the area the event
+/// affects -- and stores it as WKT rather than as `GeoJSON`, then overwrites two
+/// fields from the enrichment's own copies. The centroid point and those copies
+/// are carried HERE rather than left to `GeoPointFromCoordinates` and
+/// `BranchCopies`, because all three are ONE script and the dispatch runs only
+/// the first matcher that claims it. The point matcher answers true for every
+/// script its trigger fires on, so anything after it never ran: gdacs lost the
+/// WKT text and both copies to that.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct WktGeometry {
+    /// The `GeoJSON` geometry the text is rendered from.
+    geometry: String,
+    /// Where the rendered text is written.
+    target: String,
+    /// Where the geometry's own type is written. gdacs keeps it as scratch and
+    /// removes it downstream; a vendor that keeps no copy still binds here.
+    type_target: Option<String>,
+    /// The centroid the same script writes, when it writes one.
+    point: Option<GeoPointFromCoordinates>,
+    /// The copies the same type guard encloses.
+    branches: Vec<BranchCopy>,
+}
+
+/// One `GeoJSON` position, as WKT's `<x> <y>`.
+///
+/// The numbers are spelled the way Painless's `toString` spells them, which is
+/// what the script appends: an integer keeps its integer text and a double keeps
+/// its decimal point, so a whole-number coordinate reads `163.0` and not `163`.
+/// The two engines still part company below `1e-3`, where Java switches to
+/// `1.0E-4` and this does not -- no coordinate in the corpus is that small, so
+/// the divergence is recorded rather than engineered around.
+fn wkt_position(position: &Value, out: &mut String) -> Option<()> {
+    let position = position.as_array()?;
+    let (x, y) = (position.first()?, position.get(1)?);
+    // Painless raises on a null here rather than appending four letters, so a
+    // position carrying one declines the whole render.
+    if x.is_null() || y.is_null() {
+        return None;
+    }
+    out.push_str(&crate::painless_helpers::painless_to_string(x));
+    out.push(' ');
+    out.push_str(&crate::painless_helpers::painless_to_string(y));
+    Some(())
+}
+
+/// A coordinate list at `depth` nestings of parentheses: 1 is a line or one
+/// ring, 2 a polygon's rings, 3 a multipolygon's polygons.
+///
+/// WKT separates positions with `, ` and wraps each level in its own
+/// parentheses, and that nesting is the whole difference between the four
+/// spellings the vendor's helper writes.
+fn wkt_coordinates(coordinates: &Value, depth: u8, out: &mut String) -> Option<()> {
+    let items = coordinates.as_array()?;
+    out.push('(');
+    for (index, item) in items.iter().enumerate() {
+        if index > 0 {
+            out.push_str(", ");
+        }
+        if depth <= 1 {
+            wkt_position(item, out)?;
+        } else {
+            wkt_coordinates(item, depth - 1, out)?;
+        }
+    }
+    out.push(')');
+    Some(())
+}
+
+/// The geometry as WKT, or `None` for a type this does not spell.
+///
+/// The four it does spell are the four the vendor's own guard admits, so a
+/// geometry that declines here is one the guard excludes.
+fn geojson_to_wkt(geometry: &Value) -> Option<String> {
+    let (name, depth) = match geometry.get("type")?.as_str()? {
+        "LineString" => ("LINESTRING ", 1),
+        "Polygon" => ("POLYGON ", 2),
+        // A multi-line's rings nest exactly as a polygon's do; only the name
+        // differs, which is why the vendor's helper shares its body.
+        "MultiLineString" => ("MULTILINESTRING ", 2),
+        "MultiPolygon" => ("MULTIPOLYGON ", 3),
+        _ => return None,
+    };
+    let mut out = String::from(name);
+    wkt_coordinates(geometry.get("coordinates")?, depth, &mut out)?;
+    Some(out)
+}
+
+/// `ctx.<target> = <helper>(<local>);`, where `<helper>` renders WKT.
+///
+/// The helper's NAME is read off the script rather than assumed, so a second
+/// vendor writing the same rendering binds here too. What identifies it is the
+/// `POLYGON` literal it appends: the declaration that literal sits inside is the
+/// one whose result is stored.
+fn parse_wkt_geometry(script: &str) -> Option<WktGeometry> {
+    let polygon_at = script.find("\"POLYGON \"")?;
+    let declaration = script[..polygon_at].rfind("(def ")?;
+    let name = script[..declaration]
+        .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
+        .next()
+        .filter(|name| !name.is_empty())?;
+
+    // Where the rendered text lands, and the geometry handed to the helper.
+    let call = format!("= {name}(");
+    let at = script.find(&call)?;
+    let target = painless_path(&script[..at])?;
+    let subject = script[at + call.len()..].split_once(')')?.0.trim();
+    let geometry = resolve_subject(script, subject, 3)?;
+
+    // `String <local> = <subject>.type;` and then `ctx.<target> = <local>;`.
+    let type_target = script
+        .split_once(&format!(" = {subject}.type;"))
+        .and_then(|(head, _)| head.rsplit(char::is_whitespace).next())
+        .filter(|local| !local.is_empty())
+        .and_then(|local| {
+            let at = script.find(&format!(" = {local};"))?;
+            painless_path(&script[..at])
+        });
+
+    Some(WktGeometry {
+        geometry,
+        target,
+        type_target,
+        point: parse_geo_point_from_coordinates(script),
+        branches: parse_branch_copies(script).unwrap_or_default(),
+    })
+}
+
+/// Write the centroid, the rendered geometry and the guarded copies -- the
+/// three things the one script does.
+///
+/// A geometry the renderer declines writes NOTHING, the scratch type included:
+/// that is the vendor's type guard, which admits exactly the four spellings the
+/// renderer knows.
+fn wkt_geometry(event: &mut Event, pattern: &WktGeometry) -> bool {
+    if let Some(point) = &pattern.point {
+        geo_point_from_coordinates(event, point);
+    }
+
+    let rendered = event.get(&pattern.geometry).and_then(|geometry| {
+        let kind = geometry.get("type")?.as_str()?.to_owned();
+        Some((geojson_to_wkt(geometry)?, kind))
+    });
+    if let Some((wkt, kind)) = rendered {
+        let _ = event.set(&pattern.target, wkt);
+        if let Some(target) = &pattern.type_target {
+            let _ = event.set(target, kind);
+        }
+    }
+
+    run_branch_copies(event, &pattern.branches)
+}
+
 /// A number rendered as an octal string, which is how a file mode reads.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct OctalString {
@@ -16041,6 +16196,9 @@ pub(crate) enum KnownPattern {
     UnwrapSuffixedKeys(UnwrapSuffixedKeys),
     /// An ECS `geo_point` built from a `GeoJSON` coordinate array.
     GeoPointFromCoordinates(GeoPointFromCoordinates),
+    /// A `GeoJSON` geometry rendered as WKT, with the point and the copies the
+    /// same script writes.
+    WktGeometry(Box<WktGeometry>),
     /// A numbered column map collapsed into a list, in key order.
     CsvMapToArray {
         source: String,
@@ -18181,9 +18339,22 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
-    // Pattern: an ECS geo_point from a `GeoJSON` position. It does not return --
-    // gdacs writes the point and the polygon's copies in one script, and both
-    // are wanted.
+    // Pattern: a `GeoJSON` geometry rendered as WKT text, with the centroid and
+    // the guarded copies the same script writes. AHEAD of the geo_point arm
+    // below, which claims a script on its own `'lon':` trigger and answers true
+    // for every event, so no arm after it can ever run -- gdacs writes all
+    // three in ONE script, and this parse carries the other two.
+    if normalised.contains("\"POLYGON \"")
+        && let Some(pattern) = parse_wkt_geometry(normalised)
+    {
+        patterns.push(KnownPattern::WktGeometry(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: an ECS geo_point from a `GeoJSON` position. The runner answers
+    // true whatever the event holds, so this arm claims everything it triggers
+    // on; a script that writes more than the point belongs to a matcher ABOVE
+    // it, never to a second matcher below.
     if normalised.contains("'lon':")
         && let Some(pattern) = parse_geo_point_from_coordinates(normalised)
     {
@@ -18603,6 +18774,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::GeoPointFromCoordinates(pattern) => {
             geo_point_from_coordinates(event, pattern)
         }
+        KnownPattern::WktGeometry(pattern) => wkt_geometry(event, pattern),
         KnownPattern::CsvMapToArray { source, target } => {
             run_csv_map_to_array(event, source, target)
         }

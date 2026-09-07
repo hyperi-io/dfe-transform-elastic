@@ -134,12 +134,20 @@ fn the_dropped_concat_reaches_three_sources_in_both_quote_styles() {
             "A user authentication happened using ",
             "authentication_method",
         ),
-        ("wiz", WIZ_EVENT_URL, "https://app.wiz.io/issues", "event.id"),
+        (
+            "wiz",
+            WIZ_EVENT_URL,
+            "https://app.wiz.io/issues",
+            "event.id",
+        ),
     ] {
         let held = binding(script).join(" ");
         assert!(held.starts_with("PlainAssignments"), "{name}: {held}");
         assert!(held.contains(literal), "{name}: {held}");
-        assert!(!held.contains(dropped), "{name} now keeps the field: {held}");
+        assert!(
+            !held.contains(dropped),
+            "{name} now keeps the field: {held}"
+        );
     }
 }
 

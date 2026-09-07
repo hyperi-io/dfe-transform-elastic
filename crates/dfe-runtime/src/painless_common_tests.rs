@@ -6729,3 +6729,132 @@ fn a_key_rewrite_declines_a_character_range() {
             .any(|pattern| matches!(pattern, KnownPattern::RewriteKeys(_)))
     );
 }
+
+/// gdacs's `extract_geometry`, verbatim from the shipped call site.
+///
+/// Escaped, because that is how a stored script arrives: a copy written with
+/// real newlines passes a test the production text would fail.
+const GDACS_EXTRACT_GEOMETRY: &str = r#"String gdacsRingToWkt(def ring) {\n  StringBuilder builder = new StringBuilder();\n  builder.append(\"(\");\n  for (int i = 0; i < ring.size(); i++) {\n    if (i > 0) { builder.append(\", \"); }\n    def point = ring[i];\n    builder.append(point[0].toString());\n    builder.append(\" \");\n    builder.append(point[1].toString());\n  }\n  builder.append(\")\");\n  return builder.toString();\n}\n\nString gdacsPolygonToWkt(def rings) {\n  StringBuilder builder = new StringBuilder();\n  builder.append(\"(\");\n  for (int i = 0; i < rings.size(); i++) {\n    if (i > 0) { builder.append(\", \"); }\n    builder.append(gdacsRingToWkt(rings[i]));\n  }\n  builder.append(\")\");\n  return builder.toString();\n}\n\nString gdacsShapeToWkt(def geom) {\n  if (geom == null || geom.coordinates == null || geom.type == null) {\n    return null;\n  }\n  if (geom.type == \"LineString\") {\n    return \"LINESTRING \" + gdacsRingToWkt(geom.coordinates);\n  }\n  if (geom.type == \"MultiLineString\") {\n    StringBuilder builder = new StringBuilder();\n    builder.append(\"MULTILINESTRING (\");\n    for (int i = 0; i < geom.coordinates.size(); i++) {\n      if (i > 0) { builder.append(\", \"); }\n      builder.append(gdacsRingToWkt(geom.coordinates[i]));\n    }\n    builder.append(\")\");\n    return builder.toString();\n  }\n  if (geom.type == \"Polygon\") {\n    return \"POLYGON \" + gdacsPolygonToWkt(geom.coordinates);\n  }\n  if (geom.type == \"MultiPolygon\") {\n    StringBuilder builder = new StringBuilder();\n    builder.append(\"MULTIPOLYGON (\");\n    for (int i = 0; i < geom.coordinates.size(); i++) {\n      if (i > 0) { builder.append(\", \"); }\n      builder.append(gdacsPolygonToWkt(geom.coordinates[i]));\n    }\n    builder.append(\")\");\n    return builder.toString();\n  }\n  return null;\n}\n\nif (ctx.gdacs == null) { ctx.gdacs = new HashMap(); }\nif (ctx.gdacs.geo == null) { ctx.gdacs.geo = new HashMap(); }\n\n// Extract centroid from the event-level Point geometry.\ndef geom = ctx.geometry;\nif (geom != null) {\n  String geomType = geom.type;\n  if (geomType == \"Point\" && geom.coordinates != null && geom.coordinates.size() >= 2) {\n    ctx.gdacs.geo.location = ['lon': geom.coordinates[0], 'lat': geom.coordinates[1]];\n  }\n}\n\n// Extract affected area from the enriched polygon geometry.\ndef polyGeom = ctx.polygon_geometry;\nif (polyGeom != null) {\n  String polyType = polyGeom.type;\n  if (polyType == \"Polygon\" || polyType == \"MultiPolygon\" || polyType == \"LineString\" || polyType == \"MultiLineString\") {\n    if (ctx.gdacs == null) { ctx.gdacs = new HashMap(); }\n    ctx.gdacs.affected_area = gdacsShapeToWkt(polyGeom);\n    ctx.gdacs.geometry_type = polyType;\n\n    // Update class and polygon_label from enrichment if present.\n    if (ctx.polygon_class != null) { ctx.gdacs.class = ctx.polygon_class; }\n    if (ctx.polygon_label != null && ctx.polygon_label != \"\") { ctx.gdacs.polygon_label = ctx.polygon_label; }\n  }\n}\n"#;
+
+/// The rendered text IS the expectation -- Elasticsearch stores what the script
+/// built and the corpus compares it as a string. Both spellings the corpus
+/// carries are here with values it carries; the other two are held here alone,
+/// because no capture exercises them.
+#[test]
+fn a_wkt_geometry_renders_the_four_geojson_spellings() {
+    let normalised = normalise(GDACS_EXTRACT_GEOMETRY);
+    let pattern = parse_wkt_geometry(&normalised).expect("gdacs renders a geometry");
+    assert_eq!(pattern.geometry, "polygon_geometry");
+    assert_eq!(pattern.target, "gdacs.affected_area");
+    assert_eq!(pattern.type_target.as_deref(), Some("gdacs.geometry_type"));
+
+    for (geometry, expected) in [
+        (
+            json!({ "type": "LineString", "coordinates": [[128.7, 20.8], [127.6, 23.9]] }),
+            "LINESTRING (128.7 20.8, 127.6 23.9)",
+        ),
+        (
+            json!({
+                "type": "Polygon",
+                "coordinates": [[[163.364, -10.54], [163.362, -10.477], [163.35, -10.383]]]
+            }),
+            "POLYGON ((163.364 -10.54, 163.362 -10.477, 163.35 -10.383))",
+        ),
+        (
+            json!({
+                "type": "MultiLineString",
+                "coordinates": [[[1.5, 2.5], [3.5, 4.5]], [[5.5, 6.5], [7.5, 8.5]]]
+            }),
+            "MULTILINESTRING ((1.5 2.5, 3.5 4.5), (5.5 6.5, 7.5 8.5))",
+        ),
+        (
+            json!({
+                "type": "MultiPolygon",
+                "coordinates": [[[[1.5, 2.5], [3.5, 4.5]]], [[[5.5, 6.5], [7.5, 8.5]]]]
+            }),
+            "MULTIPOLYGON (((1.5 2.5, 3.5 4.5)), ((5.5 6.5, 7.5 8.5)))",
+        ),
+    ] {
+        let mut event = Event::new(json!({ "polygon_geometry": geometry }));
+        assert!(wkt_geometry(&mut event, &pattern));
+        assert_eq!(event.get_str("gdacs.affected_area"), Some(expected));
+    }
+}
+
+/// One script writes three things and the dispatch runs ONE matcher, so all
+/// three have to come out of the same arm. Only the centroid landed before:
+/// the `geo_point` arm claimed the script and answered true, and the WKT text
+/// and both copies were never reached.
+#[test]
+fn one_gdacs_script_writes_the_point_the_geometry_and_the_copies() {
+    let normalised = normalise(GDACS_EXTRACT_GEOMETRY);
+    let found = known_patterns(&normalised);
+    assert!(
+        matches!(found.as_slice(), [KnownPattern::WktGeometry(_)]),
+        "the WKT arm has to claim the script ahead of the geo_point arm: {found:?}"
+    );
+
+    let mut event = Event::new(json!({
+        "geometry": { "type": "Point", "coordinates": [162.4478, -10.5397] },
+        "polygon_geometry": {
+            "type": "Polygon",
+            "coordinates": [[[163.364, -10.54], [161.531, -10.508]]]
+        },
+        "polygon_class": "Poly_Circle",
+        "polygon_label": "100km",
+        "gdacs": { "class": "Point_Centroid", "polygon_label": "Centroid" }
+    }));
+    assert!(
+        found
+            .iter()
+            .any(|pattern| run_known_pattern(&mut event, &normalised, pattern)),
+        "the script must be claimed"
+    );
+    assert_eq!(
+        event.get("gdacs.geo.location"),
+        Some(&json!({ "lon": 162.4478, "lat": -10.5397 }))
+    );
+    assert_eq!(
+        event.get_str("gdacs.affected_area"),
+        Some("POLYGON ((163.364 -10.54, 161.531 -10.508))")
+    );
+    assert_eq!(event.get_str("gdacs.geometry_type"), Some("Polygon"));
+    // The enrichment OVERWRITES what the earlier renames put there.
+    assert_eq!(event.get_str("gdacs.class"), Some("Poly_Circle"));
+    assert_eq!(event.get_str("gdacs.polygon_label"), Some("100km"));
+}
+
+/// A geometry the vendor's guard excludes writes NOTHING -- not the text, not
+/// the scratch type, and not the copies, which would otherwise overwrite what
+/// the earlier renames put in `gdacs.class`.
+#[test]
+fn a_geometry_outside_the_guard_writes_nothing() {
+    let normalised = normalise(GDACS_EXTRACT_GEOMETRY);
+    let pattern = parse_wkt_geometry(&normalised).expect("gdacs renders a geometry");
+
+    let mut event = Event::new(json!({
+        "polygon_geometry": { "type": "Point", "coordinates": [1.5, 2.5] },
+        "polygon_class": "Poly_Circle",
+        "gdacs": { "class": "Point_Centroid" }
+    }));
+    assert!(wkt_geometry(&mut event, &pattern));
+    assert_eq!(event.get("gdacs.affected_area"), None);
+    assert_eq!(event.get("gdacs.geometry_type"), None);
+    assert_eq!(event.get_str("gdacs.class"), Some("Point_Centroid"));
+}
+
+/// The script appends `point[0].toString()`, and Java spells a double with a
+/// decimal point always -- so a whole-number coordinate reads `163.0` where
+/// Rust's own `{}` would have written `163`.
+#[test]
+fn a_coordinate_is_spelled_the_way_painless_spells_it() {
+    let mut doubles = String::new();
+    wkt_position(&json!([163.0, -10.0]), &mut doubles).expect("two doubles render");
+    assert_eq!(doubles, "163.0 -10.0");
+
+    // An integer in the payload is an Integer in Painless, and that one has no
+    // decimal point on either side.
+    let mut integers = String::new();
+    wkt_position(&json!([163, -10]), &mut integers).expect("two integers render");
+    assert_eq!(integers, "163 -10");
+}

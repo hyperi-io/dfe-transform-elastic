@@ -192,17 +192,18 @@
 191 MoveKeys
 192 ClassifyLadder
 193 PrivateCidrDirection
-194 GeoPointFromCoordinates
-195 BranchCopies
-196 GuardedDivide
-197 ScaleField
-198 GuardedCopy
-199 PlainAssignments
-200 SumTotals
-201 ScalarExpression
-202 TrimThenSplit
-203 ItemWrites
-204 NthSeparatorPrefix
+194 WktGeometry
+195 GeoPointFromCoordinates
+196 BranchCopies
+197 GuardedDivide
+198 ScaleField
+199 GuardedCopy
+200 PlainAssignments
+201 SumTotals
+202 ScalarExpression
+203 TrimThenSplit
+204 ItemWrites
+205 NthSeparatorPrefix
 
 [params_pattern]
   1 AwsEntity
