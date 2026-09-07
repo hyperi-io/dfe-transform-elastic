@@ -108,9 +108,11 @@ fn the_kolide_categorise_binds_to_a_structurally_correct_row_lookup() {
 }
 
 #[test]
-fn the_zeek_duration_scale_drops_its_rounding() {
+fn the_zeek_duration_binds_to_a_bare_scale() {
     // The script is `Math.round(<field> * params.scale)` and the plan is a bare
-    // `Scale`, which carries no rounding step.
+    // `Scale`. That is NOT the defect: `try_scale` stores an integer whenever
+    // the product is whole, and zeek's durations are -- 0.103708982 * 1e9 is
+    // exactly 103708982.0 in f64. Its eight wrong durations have another cause.
     assert_eq!(heads(ZEEK_DURATION), ["Scale"]);
 }
 
