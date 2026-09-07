@@ -108,6 +108,19 @@ const FALCO_ARGS: &str = r#"if (ctx.falco.output_fields?.proc?.exepath != null &
 /// `pipelines/jamf_pro/events/default.yml`.
 const JAMF_PRO_CATEGORIES: &str = r#"def action = ctx.event?.action;\nif (action == null) {\n  return;\n}\ndef entry = params.actions.get(action);\nif (entry == null) {\n  return;\n}\ndef cats = new ArrayList();\ndef types = new ArrayList();\nif (entry.category != null) { cats.addAll(entry.category); }\nif (entry.type != null) { types.addAll(entry.type); }\nif (types.isEmpty()) { types.add('info'); }\nctx.event = ctx.event ?: [:];\nif (!cats.isEmpty()) { ctx.event.category = cats; }\nctx.event.type = types;"#;
 
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/cloudflare_logpush_firewall_event/default.rs`,
+/// which is `pipelines/cloudflare_logpush/firewall_event/default.yml`.
+const CLOUDFLARE_QUERY_CUT: &str = r"ctx.url.query = ctx.url.query.substring(1);\n";
+
+/// Verbatim from `pipelines/cloudflare_logpush/audit/default.yml:59-65`, the
+/// single-field spelling that seventeen call sites share.
+const CLOUDFLARE_WHEN_TO_MILLI: &str = r"long t = (long)(ctx.json.When);\nif (t > (long)(1e18)) {\n  ctx.json.When = t/(long)(1e6)\n} else if (t < (long)(1e10))  {\n  ctx.json.When = t*(long)(1e3)\n}\n";
+
+/// Verbatim from `pipelines/cloudflare_logpush/network_session/default.yml`,
+/// the helper spelling.
+const CLOUDFLARE_SESSION_TO_MILLI: &str = r"def convertToMillis(long timestamp) {\n  if (timestamp > (long)(1e18)) {\n    return timestamp/(long)(1e6)\n  } else if (timestamp < (long)(1e10))  {\n    return timestamp*(long)(1e3)\n  }\n  return timestamp\n}\nif (ctx.json?.SessionStartTime != null && ctx.json.SessionStartTime instanceof Number) {\n  ctx.json.SessionStartTime = convertToMillis(ctx.json.SessionStartTime);\n}\nif (ctx.json?.SessionEndTime != null && ctx.json.SessionEndTime instanceof Number) {\n  ctx.json.SessionEndTime = convertToMillis(ctx.json.SessionEndTime);\n}\n";
+
 /// The matcher names a script binds to, most specific first.
 fn binding(script: &str) -> Vec<String> {
     PainlessPlan::new(script).binding()
@@ -395,4 +408,35 @@ fn fortimanager_date_concat_is_read_by_guarded_copy_and_still_joins() {
         "{held}"
     );
     assert!(PainlessPlan::new(FORTIMANAGER_DATE_CONCAT).matches());
+}
+
+#[test]
+fn the_cloudflare_query_cut_binds_to_the_leading_cut_and_carries_its_count() {
+    // `PlainAssignments` sits above and declines: its right-hand-side grammar
+    // has no method call, so `substring` is not a value it can read.
+    assert_eq!(
+        binding(CLOUDFLARE_QUERY_CUT),
+        [r#"DropLeadingChars { field: "url.query", count: 1 }"#]
+    );
+}
+
+#[test]
+fn both_cloudflare_epoch_spellings_bind_to_the_one_rescale() {
+    // Seventeen call sites spell the conversion inline over one field and
+    // three declare a helper and call it per field. One matcher reads both,
+    // and the fields it recovered are what the binding has to show.
+    assert_eq!(
+        binding(CLOUDFLARE_WHEN_TO_MILLI),
+        [
+            r#"EpochToMillis(EpochToMillis { fields: [("json.When", false)], parse_strings: false })"#
+        ]
+    );
+    assert_eq!(
+        binding(CLOUDFLARE_SESSION_TO_MILLI),
+        [concat!(
+            r#"EpochToMillis(EpochToMillis { fields: ["#,
+            r#"("json.SessionStartTime", false), ("json.SessionEndTime", false)"#,
+            r#"], parse_strings: false })"#
+        )]
+    );
 }

@@ -7356,3 +7356,178 @@ fn a_prepend_split_declines_when_the_loop_appends_something_else() {
     let script = r#"def path = ctx.a.path;\ndef args = ctx.a.args;\ndef argItems = args.splitOnToken(' ');\ndef out = [];\nout.add(path);\nfor (int i = 0; i < ctx.a.other.length; i++) {\n  out.add(ctx.a.other[i]);\n}\nctx['a.out'] = out;\n"#;
     assert!(parse_prepend_split(&normalise(script)).is_none());
 }
+
+/// Run a script through the ladder and hand back the event it wrote.
+fn run_script(script: &str, document: Value) -> (bool, Event) {
+    let normalised = normalise(script);
+    let mut event = Event::new(document);
+    let claimed = known_patterns(&normalised)
+        .iter()
+        .any(|pattern| run_known_pattern(&mut event, &normalised, pattern));
+    (claimed, event)
+}
+
+/// Whether the ladder claims `script` with the named variant.
+fn binds_variant(script: &str, wanted: fn(&KnownPattern) -> bool) -> bool {
+    known_patterns(&normalise(script)).iter().any(wanted)
+}
+
+/// The count is read off the statement, so the general form binds rather than
+/// cloudflare's cut of one alone.
+#[test]
+fn a_leading_cut_reads_its_own_count() {
+    let (claimed, event) = run_script(
+        r"ctx.url.query = ctx.url.query.substring(1);\n",
+        json!({ "url": { "query": "?a=1&b=2" } }),
+    );
+    assert!(claimed);
+    assert_eq!(event.get_str("url.query"), Some("a=1&b=2"));
+
+    let (claimed, event) = run_script(
+        "ctx.a.b = ctx.a.b.substring(3);",
+        json!({ "a": { "b": "abcdef" } }),
+    );
+    assert!(claimed);
+    assert_eq!(event.get_str("a.b"), Some("def"));
+}
+
+/// A cut past the end throws in Painless, so the vendor's processor fails and
+/// the field keeps what it had.
+#[test]
+fn a_leading_cut_past_the_end_writes_nothing() {
+    let (_, event) = run_script(
+        "ctx.a.b = ctx.a.b.substring(3);",
+        json!({ "a": { "b": "xy" } }),
+    );
+    assert_eq!(event.get_str("a.b"), Some("xy"));
+}
+
+/// Every form this reader declines, each for its own reason.
+#[test]
+fn a_leading_cut_declines_what_it_cannot_reproduce() {
+    for script in [
+        // A cut into a DIFFERENT field keeps two values.
+        "ctx.a.c = ctx.a.b.substring(1);",
+        // A second argument is a cut with an end.
+        "ctx.a.b = ctx.a.b.substring(1, 4);",
+        // The count is not a literal, so it is unknown without running.
+        "ctx.a.b = ctx.a.b.substring(ctx.a.n);",
+        // A second statement means the script does more than this reads.
+        r"ctx.a.b = ctx.a.b.substring(1);\nctx.a.c = null;",
+    ] {
+        assert!(
+            !binds_variant(script, |pattern| matches!(
+                pattern,
+                KnownPattern::DropLeadingChars { .. }
+            )),
+            "claimed: {script}"
+        );
+    }
+}
+
+/// Verbatim from `pipelines/cloudflare_logpush/audit/default.yml:59-65`.
+const CLOUDFLARE_WHEN_TO_MILLI: &str = r"long t = (long)(ctx.json.When);\nif (t > (long)(1e18)) {\n  ctx.json.When = t/(long)(1e6)\n} else if (t < (long)(1e10))  {\n  ctx.json.When = t*(long)(1e3)\n}\n";
+
+/// Verbatim from `pipelines/cloudflare_logpush/spectrum_event/default.yml:71-85`,
+/// cut after the second field.
+const CLOUDFLARE_SPECTRUM_TO_MILLI: &str = r"def convertToMillis(long timestamp) {\n  if (timestamp > (long)(1e18)) {\n    return timestamp/(long)(1e6)\n  } else if (timestamp < (long)(1e10))  {\n    return timestamp*(long)(1e3)\n  }\n  return timestamp\n}\nif (ctx.json?.Timestamp != null && ctx.json.Timestamp instanceof Number) {\n  ctx.json.Timestamp = convertToMillis(ctx.json.Timestamp);\n}\nif (ctx.json?.ConnectTimestamp != null && ctx.json.ConnectTimestamp instanceof Number) {\n  if (ctx.json.ConnectTimestamp == 0) {\n    ctx.json.ConnectTimestamp = null;\n  } else {\n    ctx.json.ConnectTimestamp = convertToMillis(ctx.json.ConnectTimestamp);\n  }\n}\n";
+
+/// Verbatim from `pipelines/cloudflare/logpull/http.yml:9-25`.
+const CLOUDFLARE_LOGPULL_TO_MILLI: &str = r"try {\n  long t;\n  if (ctx.json.EdgeStartTimestamp instanceof String) {\n    t = Long.parseLong(ctx.json.EdgeStartTimestamp);\n  } else if (ctx.json.EdgeStartTimestamp instanceof Number) {\n    t = (long)(ctx.json.EdgeStartTimestamp);\n  } else {\n    return;\n  }\n  if (t > (long)(1e18)) {\n    ctx.json.EdgeStartTimestamp = t/(long)(1e6)\n  } else if (t < (long)(1e10))  {\n    ctx.json.EdgeStartTimestamp = t*(long)(1e3)\n  }\n}\ncatch (Exception e) {}\n";
+
+/// Seconds up, nanoseconds down, milliseconds untouched.
+#[test]
+fn an_epoch_field_is_rescaled_by_its_own_magnitude() {
+    for (input, expected) in [
+        (json!(1_638_303_588_i64), 1_638_303_588_000_i64),
+        (json!(1_638_303_588_000_000_000_i64), 1_638_303_588_000_i64),
+        (json!(1_638_303_588_000_i64), 1_638_303_588_000_i64),
+    ] {
+        let (claimed, event) = run_script(
+            CLOUDFLARE_WHEN_TO_MILLI,
+            json!({ "json": { "When": input } }),
+        );
+        assert!(claimed);
+        assert_eq!(event.get("json.When"), Some(&json!(expected)));
+    }
+}
+
+/// This spelling has no string branch, so a value the `convert` processor
+/// ahead of it could not read stays for the date processor's `ISO8601` rung.
+#[test]
+fn an_epoch_field_leaves_a_string_alone() {
+    let (claimed, event) = run_script(
+        CLOUDFLARE_WHEN_TO_MILLI,
+        json!({ "json": { "When": "2021-11-30T20:19:48Z" } }),
+    );
+    assert!(claimed);
+    assert_eq!(event.get_str("json.When"), Some("2021-11-30T20:19:48Z"));
+}
+
+/// The helper spelling converts each field it names, and writes null where the
+/// vendor's zero means the connection never happened.
+#[test]
+fn the_helper_spelling_converts_every_field_and_nulls_a_zero() {
+    let (claimed, event) = run_script(
+        CLOUDFLARE_SPECTRUM_TO_MILLI,
+        json!({ "json": { "Timestamp": 1_653_557_040_i64, "ConnectTimestamp": 0 } }),
+    );
+    assert!(claimed);
+    assert_eq!(
+        event.get("json.Timestamp"),
+        Some(&json!(1_653_557_040_000_i64))
+    );
+    assert_eq!(event.get("json.ConnectTimestamp"), Some(&Value::Null));
+    assert!(!event.has_value("json.ConnectTimestamp"));
+}
+
+/// Only the wrapped spelling parses a string, because nothing converts the
+/// value ahead of it.
+#[test]
+fn the_wrapped_spelling_parses_a_string_and_leaves_what_will_not_parse() {
+    let (claimed, event) = run_script(
+        CLOUDFLARE_LOGPULL_TO_MILLI,
+        json!({ "json": { "EdgeStartTimestamp": "1653485126" } }),
+    );
+    assert!(claimed);
+    assert_eq!(
+        event.get("json.EdgeStartTimestamp"),
+        Some(&json!(1_653_485_126_000_i64))
+    );
+
+    let (_, event) = run_script(
+        CLOUDFLARE_LOGPULL_TO_MILLI,
+        json!({ "json": { "EdgeStartTimestamp": "2022-05-25T13:25:26Z" } }),
+    );
+    assert_eq!(
+        event.get_str("json.EdgeStartTimestamp"),
+        Some("2022-05-25T13:25:26Z")
+    );
+}
+
+/// This runner's arithmetic is hard-coded, so a ladder spelling different
+/// thresholds, factors or targets is declined whole rather than converted on
+/// rungs the vendor did not write.
+#[test]
+fn an_epoch_rescale_declines_a_ladder_it_did_not_read() {
+    for script in [
+        // A different nanosecond threshold.
+        r"long t = (long)(ctx.json.When);\nif (t > (long)(1e19)) {\n  ctx.json.When = t/(long)(1e6)\n} else if (t < (long)(1e10))  {\n  ctx.json.When = t*(long)(1e3)\n}\n",
+        // A different factor on the seconds rung.
+        r"long t = (long)(ctx.json.When);\nif (t > (long)(1e18)) {\n  ctx.json.When = t/(long)(1e6)\n} else if (t < (long)(1e10))  {\n  ctx.json.When = t*(long)(1e6)\n}\n",
+        // A second field written from the first one's magnitude.
+        r"long t = (long)(ctx.json.When);\nif (t > (long)(1e18)) {\n  ctx.json.Other = t/(long)(1e6)\n} else if (t < (long)(1e10))  {\n  ctx.json.When = t*(long)(1e3)\n}\n",
+        // A statement after the ladder that this reader does not run.
+        r"long t = (long)(ctx.json.When);\nif (t > (long)(1e18)) {\n  ctx.json.When = t/(long)(1e6)\n} else if (t < (long)(1e10))  {\n  ctx.json.When = t*(long)(1e3)\n}\nctx.json.Other = 1;\n",
+        // A helper block writing somewhere other than the field it read.
+        r"def convertToMillis(long timestamp) {\n  if (timestamp > (long)(1e18)) {\n    return timestamp/(long)(1e6)\n  } else if (timestamp < (long)(1e10))  {\n    return timestamp*(long)(1e3)\n  }\n  return timestamp\n}\nif (ctx.json?.Timestamp != null && ctx.json.Timestamp instanceof Number) {\n  ctx.json.Other = convertToMillis(ctx.json.Timestamp);\n}\n",
+    ] {
+        assert!(
+            !binds_variant(script, |pattern| matches!(
+                pattern,
+                KnownPattern::EpochToMillis(_)
+            )),
+            "claimed: {script}"
+        );
+    }
+}

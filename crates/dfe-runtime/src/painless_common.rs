@@ -1780,6 +1780,58 @@ fn run_drop_last_char(event: &mut Event, field: &str) -> bool {
     true
 }
 
+/// `ctx.<f> = ctx.<f>.substring(<n>);` -- drop the first `n` characters.
+///
+/// `cloudflare_logpush`'s firewall pipeline takes the leading `?` off
+/// `url.query` this way. The count is READ rather than pinned at one: the
+/// statement is a general one and a matcher written for the literal would
+/// decline the next pipeline that cuts two.
+fn parse_drop_leading_chars(script: &str) -> Option<KnownPattern> {
+    use crate::painless_params::clean_path;
+
+    // ONE whole statement. Anything else in the script would be silently
+    // dropped, which is the half-run this ladder refuses.
+    let statement = script.trim().strip_suffix(';')?;
+    if statement.contains(';') {
+        return None;
+    }
+
+    let (before, after) = statement.split_once(" = ctx.")?;
+    let target = clean_path(before.strip_prefix("ctx.")?);
+    let (source, count) = after.split_once(".substring(")?;
+
+    // The SAME field on both sides -- a substring of one field into another
+    // keeps two values and is a different pattern.
+    if target.is_empty() || clean_path(source) != target {
+        return None;
+    }
+
+    // A bare character count and nothing else. A second argument is a cut with
+    // an end, and an expression in place of the literal is a count this cannot
+    // know without running the script.
+    let count: usize = count.strip_suffix(')')?.parse().ok()?;
+    Some(KnownPattern::DropLeadingChars {
+        field: target,
+        count,
+    })
+}
+
+/// Remove the first `count` characters of a string field.
+fn run_drop_leading_chars(event: &mut Event, field: &str, count: usize) -> bool {
+    let Some(text) = event.get_string(field) else {
+        return true;
+    };
+    // By CHARACTER, matching Painless. A count past the end writes nothing:
+    // Java's `substring` throws there, so the vendor's processor fails and
+    // leaves the field as it was rather than storing an empty string.
+    if text.chars().count() < count {
+        return true;
+    }
+    let kept: String = text.chars().skip(count).collect();
+    let _ = event.set(field, Value::String(kept));
+    true
+}
+
 /// A list deduplicated in place, and UNWRAPPED when one member is left.
 ///
 /// suricata writes `destination.domain` as a list and then collapses it, so
@@ -13484,6 +13536,170 @@ fn as_milliseconds(value: &Value) -> Option<i64> {
     })
 }
 
+/// Named epoch fields rescaled to MILLISECONDS by their own magnitude.
+///
+/// Above `1e18` the value is nanoseconds and divides by `1e6`; below `1e10` it
+/// is seconds and multiplies by `1e3`; between the two it is already
+/// milliseconds. Every cloudflare stream runs this ahead of a `UNIX_MS` date
+/// processor, so an unclaimed script leaves epoch seconds to be read as
+/// milliseconds -- and a nanosecond value out of range of any date at all,
+/// which fails the date processor and raises an error Elasticsearch does not.
+///
+/// Distinct from [`MillisecondLadder`], which walks a whole SUBTREE choosing
+/// fields by name suffix over a four-rung ladder. This one converts the fields
+/// the script names, on the vendor's two rungs.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct EpochToMillis {
+    /// Each field, and whether a zero is written as null instead of rescaled.
+    /// spectrum's connect and disconnect times use zero for "never happened".
+    fields: Vec<(String, bool)>,
+    /// Whether a STRING is read through `Long.parseLong` first. Only the
+    /// logpull spelling does; the rest guard on `instanceof Number` and leave
+    /// a string for the date processor's own `ISO8601` rung.
+    parse_strings: bool,
+}
+
+/// The helper the multi-field spelling declares before its guarded blocks.
+const CONVERT_TO_MILLIS: &str = "def convertToMillis(long timestamp) { \
+     if (timestamp > (long)(1e18)) { return timestamp/(long)(1e6) } \
+     else if (timestamp < (long)(1e10)) { return timestamp*(long)(1e3) } \
+     return timestamp }";
+
+/// A script with every run of whitespace collapsed to one space and `?.`
+/// written as `.`, so one template can carry both path spellings.
+fn collapse_script(script: &str) -> String {
+    let mut out = String::with_capacity(script.len());
+    for word in script.split_whitespace() {
+        if !out.is_empty() {
+            out.push(' ');
+        }
+        out.push_str(word);
+    }
+    out.replace("?.", ".")
+}
+
+/// A dotted path, ending where `terminator` begins, or `None` where what is
+/// there is not a path at all.
+fn epoch_path<'a>(text: &'a str, terminator: &str) -> Option<&'a str> {
+    let path = text.split(terminator).next()?;
+    let readable = !path.is_empty()
+        && path
+            .chars()
+            .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_'));
+    readable.then_some(path)
+}
+
+/// The whole single-field script this pattern would have to be, for `path`.
+///
+/// The parse works by REBUILDING the text and comparing it, rather than
+/// reading statement by statement: a vendor edit to a threshold or a factor
+/// then declines here instead of having this runner's hard-coded arithmetic
+/// applied to a ladder that no longer means it.
+fn epoch_inline_script(path: &str, wrapped: bool) -> String {
+    let ladder = format!(
+        "if (t > (long)(1e18)) {{ ctx.{path} = t/(long)(1e6) }} \
+         else if (t < (long)(1e10)) {{ ctx.{path} = t*(long)(1e3) }}"
+    );
+    if wrapped {
+        format!(
+            "try {{ long t; if (ctx.{path} instanceof String) {{ \
+             t = Long.parseLong(ctx.{path}); }} else if (ctx.{path} instanceof Number) {{ \
+             t = (long)(ctx.{path}); }} else {{ return; }} {ladder} }} catch (Exception e) {{}}"
+        )
+    } else {
+        format!("long t = (long)(ctx.{path}); {ladder}")
+    }
+}
+
+/// One guarded block of the multi-field spelling, and the text after it.
+fn epoch_block(text: &str) -> Option<((String, bool), &str)> {
+    let path = epoch_path(text.strip_prefix("if (ctx.")?, " ")?;
+    let rest = text.strip_prefix(&format!(
+        "if (ctx.{path} != null && ctx.{path} instanceof Number) {{ "
+    ))?;
+
+    let plain = format!("ctx.{path} = convertToMillis(ctx.{path}); }}");
+    if let Some(tail) = rest.strip_prefix(&plain) {
+        return Some(((path.to_owned(), false), tail));
+    }
+
+    let zeroed = format!(
+        "if (ctx.{path} == 0) {{ ctx.{path} = null; }} \
+         else {{ ctx.{path} = convertToMillis(ctx.{path}); }} }}"
+    );
+    let tail = rest.strip_prefix(&zeroed)?;
+    Some(((path.to_owned(), true), tail))
+}
+
+/// Read the fields the vendor's three spellings of this conversion name.
+fn parse_epoch_to_millis(script: &str) -> Option<EpochToMillis> {
+    let text = collapse_script(script);
+
+    if let Some(rest) = text.strip_prefix("long t = (long)(ctx.") {
+        let path = epoch_path(rest, ")")?;
+        return (text == epoch_inline_script(path, false)).then(|| EpochToMillis {
+            fields: vec![(path.to_owned(), false)],
+            parse_strings: false,
+        });
+    }
+
+    // The same conversion wrapped in a try/catch, which reaches a value that
+    // arrived as a string because no `convert` processor runs ahead of it.
+    if let Some(rest) = text.strip_prefix("try { long t; if (ctx.") {
+        let path = epoch_path(rest, " ")?;
+        return (text == epoch_inline_script(path, true)).then(|| EpochToMillis {
+            fields: vec![(path.to_owned(), false)],
+            parse_strings: true,
+        });
+    }
+
+    // The multi-field spelling: one helper, then a guarded block per field.
+    // Every block has to parse, so a block this cannot read declines the whole
+    // script rather than converting the fields either side of it.
+    let mut rest = text.strip_prefix(CONVERT_TO_MILLIS)?.trim_start();
+    let mut fields = Vec::new();
+    while !rest.is_empty() {
+        let (field, tail) = epoch_block(rest)?;
+        fields.push(field);
+        rest = tail.trim_start();
+    }
+    (!fields.is_empty()).then_some(EpochToMillis {
+        fields,
+        parse_strings: false,
+    })
+}
+
+/// Rescale each named field to epoch milliseconds.
+fn run_epoch_to_millis(event: &mut Event, pattern: &EpochToMillis) -> bool {
+    for (field, null_on_zero) in &pattern.fields {
+        // Painless truncates a number through `(long)`, and a string reaches
+        // the cast only in the spelling that parses one.
+        #[allow(clippy::cast_possible_truncation)]
+        let number = match event.get(field) {
+            Some(Value::String(text)) if pattern.parse_strings => text.parse::<i64>().ok(),
+            Some(Value::String(_)) | None => None,
+            Some(other) => other.as_i64().or_else(|| other.as_f64().map(|n| n as i64)),
+        };
+        let Some(number) = number else {
+            continue;
+        };
+        if *null_on_zero && number == 0 {
+            let _ = event.set(field, Value::Null);
+            continue;
+        }
+        let millis = if number > 1_000_000_000_000_000_000 {
+            number / 1_000_000
+        } else if number < 10_000_000_000 {
+            // Java's long arithmetic wraps rather than trapping.
+            number.wrapping_mul(1_000)
+        } else {
+            number
+        };
+        let _ = event.set(field, Value::from(millis));
+    }
+    true
+}
+
 /// `double <v> = ((Number) ctx.<source>).doubleValue(); ctx.<target> = (long)
 /// Math.round(<v> * <factor>);`
 ///
@@ -17028,6 +17244,13 @@ pub(crate) enum KnownPattern {
     },
     DedupeUnwrap(String),
     DropLastChar(String),
+    /// Drop the first `count` characters of a string field, in place.
+    DropLeadingChars {
+        field: String,
+        count: usize,
+    },
+    /// Named epoch fields rescaled to milliseconds by their own magnitude.
+    EpochToMillis(Box<EpochToMillis>),
     M365ProcessEvidence(String),
     M365IdentityEvidence(String),
     Route53Answers,
@@ -19366,8 +19589,8 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
-    // The two below sit LAST, so each can only take a script nothing above
-    // took and neither can shadow a narrower arm.
+    // The four below sit LAST, so each can only take a script nothing above
+    // took and none can shadow a narrower arm.
 
     // Pattern: what a regex matched in the first list member it matched at all.
     if normalised.contains(".matcher(")
@@ -19387,6 +19610,27 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_long_divide(normalised)
     {
         patterns.push(KnownPattern::LongDivide(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: a field cut back to everything past its first n characters, in
+    // place -- the `?` off the front of cloudflare's `url.query`. The parse
+    // decides; the literal is the cheap reject.
+    if normalised.contains(".substring(")
+        && let Some(pattern) = parse_drop_leading_chars(normalised)
+    {
+        patterns.push(pattern);
+        return patterns;
+    }
+
+    // Pattern: named epoch fields rescaled to milliseconds by magnitude, which
+    // every cloudflare stream runs ahead of a `UNIX_MS` date processor. All
+    // ten spellings in the tree read `binding: []` before this arm, so it
+    // shadows nothing.
+    if normalised.contains("(long)(1e18)")
+        && let Some(pattern) = parse_epoch_to_millis(normalised)
+    {
+        patterns.push(KnownPattern::EpochToMillis(Box::new(pattern)));
         return patterns;
     }
 
@@ -19692,6 +19936,10 @@ pub(crate) fn run_known_pattern(
         } => run_csv_colon_pairs(event, list, map_target, fingerprint_target, aliases),
         KnownPattern::DedupeUnwrap(field) => run_dedupe_unwrap(event, field),
         KnownPattern::DropLastChar(field) => run_drop_last_char(event, field),
+        KnownPattern::DropLeadingChars { field, count } => {
+            run_drop_leading_chars(event, field, *count)
+        }
+        KnownPattern::EpochToMillis(pattern) => run_epoch_to_millis(event, pattern),
         KnownPattern::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
         KnownPattern::M365IdentityEvidence(path) => run_m365_identity_evidence(event, path),
         KnownPattern::Route53Answers => run_route53_answers(event),

@@ -210,6 +210,8 @@
 209 NthSeparatorPrefix
 210 FirstMatchInList
 211 LongDivide
+212 DropLeadingChars
+213 EpochToMillis
 
 [params_pattern]
   1 AwsEntity
