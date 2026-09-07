@@ -445,7 +445,7 @@ mod tests {
         // tests read; one lock keeps those honest.
         let _guard = crate::painless_stats::serialised();
         let plan = crate::painless_plan::PainlessPlan::new(
-            r#"def subdomain(String s) {\n  int n;\n  for (int i = s.length()-1; i >= 0; i--) {\n    if (s.charAt(i) == (char)'.') {\n      n++;\n      if (n == 2) {\n        return s.substring(0, i);\n      }\n    }\n  }\n  return null;\n} def sub = subdomain(ctx.dns.question.name); if (sub != null) {\n  ctx.dns.question.subdomain = sub;\n}"#,
+            r"def subdomain(String s) {\n  int n;\n  for (int i = s.length()-1; i >= 0; i--) {\n    if (s.charAt(i) == (char)'.') {\n      n++;\n      if (n == 2) {\n        return s.substring(0, i);\n      }\n    }\n  }\n  return null;\n} def sub = subdomain(ctx.dns.question.name); if (sub != null) {\n  ctx.dns.question.subdomain = sub;\n}",
         );
         assert!(plan.matches(), "the call site's own literal binds nothing");
 

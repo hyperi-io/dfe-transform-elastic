@@ -198,12 +198,13 @@
 197 GuardedDivide
 198 ScaleField
 199 GuardedCopy
-200 PlainAssignments
-201 SumTotals
-202 ScalarExpression
-203 TrimThenSplit
-204 ItemWrites
-205 NthSeparatorPrefix
+200 ConcatAssignment
+201 PlainAssignments
+202 SumTotals
+203 ScalarExpression
+204 TrimThenSplit
+205 ItemWrites
+206 NthSeparatorPrefix
 
 [params_pattern]
   1 AwsEntity

@@ -527,7 +527,7 @@ fn a_member_is_lifted_from_whichever_key_arrived() {
     assert!(!other.has("_tmp_"));
 }
 
-/// ti_flashpoint rewrites every key at every depth and MOVES the result, so a
+/// `ti_flashpoint` rewrites every key at every depth and MOVES the result, so a
 /// one-level reader would leave the nested maps spelt the vendor's way and the
 /// payload sitting under `json.*` as well.
 ///
@@ -6857,4 +6857,205 @@ fn a_coordinate_is_spelled_the_way_painless_spells_it() {
     let mut integers = String::new();
     wkt_position(&json!([163, -10]), &mut integers).expect("two integers render");
     assert_eq!(integers, "163 -10");
+}
+
+/// fortimanager's script, verbatim from `fortinet_fortimanager/log/default.yml`
+/// with its newlines ESCAPED -- which is how a stored script reaches a call
+/// site, and what a matcher scanning it has to cope with.
+const FORTIMANAGER_CONCAT: &str = "if (ctx._temp?.time != null && ctx._temp?.date != null && \
+    ctx._temp?.tz != null) {\\n  ctx._temp.date = ctx._temp.date + 'T' + ctx._temp.time + \
+    ctx._temp.tz;\\n}";
+
+/// Run `script` against `input`, answering whether any matcher claimed it.
+fn run_concat_script(script: &str, input: Value) -> (bool, Event) {
+    let normalised = normalise(script);
+    let mut event = Event::new(input);
+    let claimed = known_patterns(&normalised)
+        .iter()
+        .any(|pattern| run_known_pattern(&mut event, &normalised, pattern));
+    (claimed, event)
+}
+
+/// Whether any matcher the text binds is the concat-assignment arm.
+fn binds_concat_assignment(script: &str) -> bool {
+    known_patterns(&normalise(script))
+        .iter()
+        .any(|pattern| matches!(pattern, KnownPattern::ConcatAssignment(_)))
+}
+
+/// The three parts join in place, and the `date` processor behind the script
+/// then reads the instant Elasticsearch wrote.
+///
+/// `_temp.date` is both the target and the first source, so every part has to
+/// be read before the write.
+#[test]
+fn a_concat_assignment_joins_fortimanagers_date_time_and_offset() {
+    let (claimed, event) = run_concat_script(
+        FORTIMANAGER_CONCAT,
+        json!({ "_temp": { "date": "2023-02-23", "time": "22:49:29", "tz": "+0500" } }),
+    );
+    assert!(claimed, "the concat has to be claimed");
+    assert_eq!(
+        event.get_str("_temp.date"),
+        Some("2023-02-23T22:49:29+0500")
+    );
+    assert_eq!(
+        crate::date_formats::parse_date_out("2023-02-23T22:49:29+0500", &["ISO8601"], None, None)
+            .as_deref(),
+        Some("2023-02-23T17:49:29.000Z"),
+    );
+}
+
+/// The script is joined WHATEVER reads it, which is the property that matters.
+///
+/// This used to name the arm. It cannot any more, and the change is legitimate:
+/// `GuardedCopy` sits one position above `ConcatAssignment` and is gated on an
+/// inline `!= null`, which this script alone among the joins carries, so once
+/// `Program` learned to read a concatenation (`Rhs::Concat` in
+/// `painless_params`) that arm claims it first. The two readers agree on the
+/// answer -- all three parts, the separator, and nothing written when one is
+/// absent -- so the OUTPUT is the assertion and the timezone-carrying tail is
+/// what proves the whole join ran rather than a prefix of it.
+///
+/// The ladder position itself is pinned in `tests/which_matcher.rs`, which is
+/// the file that exists to fail with both names when a script changes hands.
+#[test]
+fn fortimanagers_concat_joins_every_part_however_it_is_read() {
+    let (claimed, event) = run_concat_script(
+        FORTIMANAGER_CONCAT,
+        json!({ "_temp": { "date": "2024-11-05", "time": "01:02:03", "tz": "-0800" } }),
+    );
+    assert!(claimed, "the join has to be read by something");
+    assert_eq!(
+        event.get_str("_temp.date"),
+        Some("2024-11-05T01:02:03-0800")
+    );
+}
+
+/// cloudfront moves every detail: another namespace, two parts rather than
+/// three, a separate target, and the guard on the processor rather than in the
+/// script.
+#[test]
+fn a_concat_assignment_reads_a_separate_target_and_two_parts() {
+    let (claimed, event) = run_concat_script(
+        "ctx._tmp.timestamp = ctx._tmp.date + 'T' + ctx._tmp.time;",
+        json!({ "_tmp": { "date": "2024-05-01", "time": "03:14:15" } }),
+    );
+    assert!(claimed, "the concat has to be claimed");
+    assert_eq!(event.get_str("_tmp.timestamp"), Some("2024-05-01T03:14:15"));
+}
+
+/// The separator is whatever the script wrote, and a numeric part renders the
+/// way Painless renders it.
+#[test]
+fn a_concat_assignment_takes_any_separator_and_stringifies_a_number() {
+    let (claimed, event) = run_concat_script(
+        "ctx.host.id = ctx.host.name + ':' + ctx.host.port;",
+        json!({ "host": { "name": "edge-1", "port": 8080 } }),
+    );
+    assert!(claimed, "the concat has to be claimed");
+    assert_eq!(event.get_str("host.id"), Some("edge-1:8080"));
+}
+
+/// A leading and a trailing literal, which is how wiz builds an event URL out
+/// of two ids.
+#[test]
+fn a_concat_assignment_takes_a_literal_at_either_end() {
+    let (claimed, event) = run_concat_script(
+        "ctx.event.url = \"https://app.wiz.io/f#~(rule~(~'\" + ctx.json.rule.id + \
+         \")~entity~(~'\" + ctx.event.id + \"))\";",
+        json!({ "json": { "rule": { "id": "r-1" } }, "event": { "id": "e-2" } }),
+    );
+    assert!(claimed, "the concat has to be claimed");
+    assert_eq!(
+        event.get_str("event.url"),
+        Some("https://app.wiz.io/f#~(rule~(~'r-1)~entity~(~'e-2))")
+    );
+}
+
+/// The target is the PARENT of both sources, so the join replaces the map it
+/// read -- proofpoint collapses a size object into its own string this way.
+#[test]
+fn a_concat_assignment_replaces_the_map_it_read() {
+    let (claimed, event) = run_concat_script(
+        "ctx.proofpoint.email.size = ctx.proofpoint.email.size.value + ' ' + \
+         ctx.proofpoint.email.size.unit;",
+        json!({ "proofpoint": { "email": { "size": { "value": 21, "unit": "KB" } } } }),
+    );
+    assert!(claimed, "the concat has to be claimed");
+    assert_eq!(event.get_str("proofpoint.email.size"), Some("21 KB"));
+    assert!(event.get("proofpoint.email.size.value").is_none());
+}
+
+/// A hyphen between two reads is SUBTRACTION, never part of a key, so the term
+/// is not a plain read and the script is declined.
+#[test]
+fn a_concat_assignment_declines_a_hyphen_between_two_reads() {
+    assert!(!binds_concat_assignment(
+        "ctx.a.id = ctx.a.b-ctx.a.c + ' ' + ctx.a.d;"
+    ));
+}
+
+/// An absent part writes nothing, so the target keeps what it already held.
+///
+/// The OUTCOME is what this asserts, and it is the same whichever reader wins.
+/// What differs is the report: `run_concat_assignment` answers "claimed" even
+/// when it writes nothing, and `GuardedCopy` -- which claims this script, see
+/// above -- answers "not claimed", because a `Program` that wrote nothing is
+/// how every other script says a matcher did not fit. So an event missing a
+/// part is COUNTED as an unhandled script now. That is a counting difference,
+/// not a data one, and `painless_stats` is where it shows.
+#[test]
+fn a_concat_assignment_writes_nothing_when_a_part_is_absent() {
+    let (_, event) = run_concat_script(
+        FORTIMANAGER_CONCAT,
+        json!({ "_temp": { "date": "2023-02-23", "time": "22:49:29" } }),
+    );
+    assert_eq!(event.get_str("_temp.date"), Some("2023-02-23"));
+    assert!(event.get("_temp.tz").is_none(), "the guard's own field");
+}
+
+/// No literal separator means arithmetic, which `ScalarExpression` owns.
+#[test]
+fn a_concat_assignment_declines_a_sum_with_no_separator() {
+    assert!(!binds_concat_assignment(
+        "ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes;"
+    ));
+}
+
+/// A guard testing anything but `!= null` on the joined fields is declined --
+/// the script then means more than "every part is there".
+#[test]
+fn a_concat_assignment_declines_a_guard_over_something_else() {
+    assert!(!binds_concat_assignment(
+        "if (ctx.event?.kind == 'event') {\\n  ctx.a.id = ctx.a.b + '-' + ctx.a.c;\\n}"
+    ));
+}
+
+/// A guard over a SUBSET of the parts is declined too: the unguarded part can
+/// still be null, and the vendor would then write the four letters where this
+/// would write nothing.
+#[test]
+fn a_concat_assignment_declines_a_guard_over_only_some_parts() {
+    assert!(!binds_concat_assignment(
+        "if (ctx._temp?.date != null) {\\n  ctx._temp.date = ctx._temp.date + 'T' + \
+         ctx._temp.time;\\n}"
+    ));
+}
+
+/// A term that is a method call is not a plain field read, so the script is
+/// declined rather than joining a path no event carries.
+#[test]
+fn a_concat_assignment_declines_a_method_call_term() {
+    assert!(!binds_concat_assignment(
+        "ctx.a.id = ctx.a.b.toString() + '-' + ctx.a.c;"
+    ));
+}
+
+/// A second statement means the script does more than this reads.
+#[test]
+fn a_concat_assignment_declines_a_second_statement() {
+    assert!(!binds_concat_assignment(
+        "ctx.a.id = ctx.a.b + '-' + ctx.a.c;\\nctx.a.b = null;"
+    ));
 }

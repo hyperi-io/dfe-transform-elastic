@@ -3980,6 +3980,243 @@ fn split_outside_quotes(text: &str, sep: char) -> Vec<&str> {
     parts
 }
 
+/// A string assembled by ONE assignment: named fields and literal separators
+/// joined with `+`.
+///
+/// fortimanager and cloudfront write the idiom with every detail moved -- the
+/// namespace, the number of parts, and whether the target is also one of the
+/// sources -- so all of that is read off the script rather than assumed:
+///
+/// ```painless
+/// ctx._temp.date = ctx._temp.date + 'T' + ctx._temp.time + ctx._temp.tz;
+/// ctx._tmp.timestamp = ctx._tmp.date + 'T' + ctx._tmp.time;
+/// ```
+///
+/// Distinct from [`ConcatScript`], which accumulates into a LOCAL over a run of
+/// guarded `+=` statements and assigns it out once at the end.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ConcatAssignment {
+    /// Where the joined string lands. Often one of the sources -- fortimanager
+    /// rewrites `_temp.date` in place -- but cloudfront writes a sibling.
+    target: String,
+    /// The right-hand side in order, each term a field read or literal text.
+    terms: Vec<ConcatTerm>,
+}
+
+/// Read a one-statement `ctx.<target> = <term> + <term> ...` as a
+/// [`KnownPattern::ConcatAssignment`].
+///
+/// The WHOLE script has to be that statement, optionally wrapped in a single
+/// `if` whose every test is `!= null` on a field the statement joins -- the
+/// guard fortimanager writes inline and cloudfront puts on the processor
+/// instead. Anything else in the guard means the script does something this
+/// does not read, so it declines rather than running half of it.
+fn parse_concat_assignment(script: &str) -> Option<ConcatAssignment> {
+    let (guard, statement) = if_wrapped(script.trim())
+        .map_or((None, script.trim()), |(guard, body)| (Some(guard), body));
+
+    // ONE statement, and the whole of it -- a second would be a script this
+    // reads only part of.
+    let statement = statement.trim().strip_suffix(';')?;
+    if statement.contains(';') {
+        return None;
+    }
+
+    let (lhs, rhs) = split_assignment(statement)?;
+    let target = ctx_field_path(lhs)?;
+    let terms = concat_assignment_terms(rhs)?;
+
+    let mut fields: Vec<String> = terms
+        .iter()
+        .filter_map(|term| match term {
+            ConcatTerm::Field(path) => Some(path.clone()),
+            ConcatTerm::Literal(_) => None,
+        })
+        .collect();
+    // A literal separator is what tells a string join from arithmetic. Without
+    // one this is `ctx.a = ctx.b + ctx.c`, which `ScalarExpression` owns and
+    // reads as a sum.
+    if fields.len() < 2 || fields.len() == terms.len() {
+        return None;
+    }
+
+    if let Some(guard) = guard {
+        fields.sort();
+        fields.dedup();
+        // Exactly the fields the join reads. A guard over a SUBSET would let a
+        // null through, and Painless renders one as the four letters -- a value
+        // worth declining rather than writing.
+        if null_guard_paths(guard)? != fields {
+            return None;
+        }
+    }
+
+    Some(ConcatAssignment { target, terms })
+}
+
+/// A script that is nothing but `if (<guard>) { <body> }`, as its two halves.
+///
+/// `None` where the script is not one guarded block: an `else` arm, or anything
+/// at all after the closing brace, is a different pattern.
+fn if_wrapped(script: &str) -> Option<(&str, &str)> {
+    let after = script.strip_prefix("if")?.trim_start().strip_prefix('(')?;
+    let mut depth = 1usize;
+    let mut close = None;
+    for (at, c) in after.char_indices() {
+        if c == '(' {
+            depth += 1;
+        } else if c == ')' {
+            depth -= 1;
+            if depth == 0 {
+                close = Some(at);
+                break;
+            }
+        }
+    }
+    let close = close?;
+    let body = after[close + 1..].trim_start().strip_prefix('{')?;
+    let end = body.rfind('}')?;
+    body[end + 1..]
+        .trim()
+        .is_empty()
+        .then(|| (&after[..close], &body[..end]))
+}
+
+/// The two halves of a plain `=` assignment.
+///
+/// `None` where the first `=` belongs to a comparison or a compound operator,
+/// which means the statement assigns nothing this can read.
+fn split_assignment(statement: &str) -> Option<(&str, &str)> {
+    let bytes = statement.as_bytes();
+    let at = statement.find('=')?;
+    if bytes.get(at + 1) == Some(&b'=')
+        || at
+            .checked_sub(1)
+            .is_some_and(|index| b"=!<>+-*/%&|^".contains(&bytes[index]))
+    {
+        return None;
+    }
+    Some((&statement[..at], &statement[at + 1..]))
+}
+
+/// The right-hand side as its ordered terms: a quoted literal, or one plain
+/// `ctx` field read, joined by `+`.
+fn concat_assignment_terms(expression: &str) -> Option<Vec<ConcatTerm>> {
+    let mut terms = Vec::new();
+    let mut rest = expression.trim();
+    loop {
+        let consumed = if let Some(quote) = rest.chars().next().filter(|c| *c == '\'' || *c == '"')
+        {
+            let body = &rest[quote.len_utf8()..];
+            let end = body.find(quote)?;
+            terms.push(ConcatTerm::Literal(body[..end].to_string()));
+            quote.len_utf8() + end + quote.len_utf8()
+        } else {
+            // Up to the next `+`; a plain field read never holds one.
+            let end = rest.find('+').unwrap_or(rest.len());
+            terms.push(ConcatTerm::Field(ctx_field_path(&rest[..end])?));
+            end
+        };
+        rest = rest[consumed..].trim_start();
+        let Some(next) = rest.strip_prefix('+') else {
+            break;
+        };
+        rest = next.trim_start();
+    }
+    rest.is_empty().then_some(terms)
+}
+
+/// One plain `ctx` field read as its dotted path -- `ctx.a.b`, `ctx?.a?.b` and
+/// `ctx['a']['b']` all resolve, and nothing may follow it.
+///
+/// STRICTER than [`painless_path`], which stops at the first character it does
+/// not accept and so reads `ctx.a.toString()` as the path `a.toString`. Here a
+/// method call or an operator after the path means the term is not a plain
+/// read, and the match declines rather than naming a field no event carries.
+///
+/// A dotted segment takes no `-`, which [`painless_path`] does accept: Painless
+/// reads `ctx.a-ctx.b` as SUBTRACTION, so a hyphen there is an operator and
+/// never part of a key. A hyphenated key is spelled `ctx['a-b']` and still
+/// resolves through the subscript arm.
+fn ctx_field_path(term: &str) -> Option<String> {
+    let mut rest = term.trim().strip_prefix("ctx")?;
+    let mut path = String::new();
+    loop {
+        if let Some(after) = rest.strip_prefix('?') {
+            rest = after;
+        } else if let Some(after) = rest.strip_prefix('.') {
+            let end = after
+                .find(|c: char| !(c.is_alphanumeric() || matches!(c, '_' | '@')))
+                .unwrap_or(after.len());
+            if end == 0 {
+                return None;
+            }
+            if !path.is_empty() {
+                path.push('.');
+            }
+            path.push_str(&after[..end]);
+            rest = &after[end..];
+        } else if let Some(after) = rest.strip_prefix('[') {
+            let quote = after.chars().next().filter(|c| *c == '\'' || *c == '"')?;
+            let body = &after[quote.len_utf8()..];
+            let end = body.find(quote)?;
+            if !path.is_empty() {
+                path.push('.');
+            }
+            path.push_str(&body[..end]);
+            rest = body[end + quote.len_utf8()..].strip_prefix(']')?;
+        } else {
+            break;
+        }
+    }
+    (rest.trim().is_empty() && !path.is_empty()).then_some(path)
+}
+
+/// The fields a `&&` chain of `<field> != null` tests names, sorted.
+///
+/// `None` where any test is something else -- the guard then means more than
+/// "every part is there", which is all the runner reproduces.
+fn null_guard_paths(guard: &str) -> Option<Vec<String>> {
+    let mut paths = Vec::new();
+    for test in guard.split("&&") {
+        let (field, null) = test.split_once("!=")?;
+        if null.trim() != "null" {
+            return None;
+        }
+        paths.push(ctx_field_path(field)?);
+    }
+    paths.sort();
+    paths.dedup();
+    Some(paths)
+}
+
+/// Join the parts, writing nothing unless every field the script names is
+/// there.
+///
+/// Painless renders an absent part as the four letters `null`, and the guard
+/// the vendor writes is there to stop exactly that -- so a missing part means
+/// write nothing. Every read happens before the write, which is what lets
+/// fortimanager join `_temp.date` back into itself.
+fn run_concat_assignment(event: &mut Event, script: &ConcatAssignment) -> bool {
+    let mut joined = String::new();
+    for term in &script.terms {
+        match term {
+            ConcatTerm::Literal(text) => joined.push_str(text),
+            ConcatTerm::Field(path) => match event.get(path) {
+                // Borrowed, because every part of a timestamp is a string and
+                // rendering one would copy it before appending it.
+                Some(Value::String(text)) => joined.push_str(text),
+                Some(value) if !value.is_null() => {
+                    joined.push_str(&crate::painless_helpers::painless_to_string(value));
+                }
+                _ => return true,
+            },
+        }
+    }
+    let _ = event.set(&script.target, json!(joined));
+    true
+}
+
 /// Read elb's `tlsv12` split as a [`KnownPattern::TlsVersionSplit`].
 ///
 /// s3access spells the same thing `ctx.<p>.toLowerCase().splitOnToken("v")`,
@@ -16246,6 +16483,9 @@ pub(crate) enum KnownPattern {
         source: String,
     },
     ConcatParts(ConcatScript),
+    /// A string joined from named fields and literal separators, in ONE
+    /// assignment.
+    ConcatAssignment(ConcatAssignment),
     TrimListInPlace(String),
     StartsWithAppend {
         source: String,
@@ -18411,6 +18651,22 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         }
     }
 
+    // Pattern: a string joined from named fields and literal separators in ONE
+    // assignment -- fortimanager's date, time and offset, cloudfront's date and
+    // time.
+    //
+    // BEFORE `PlainAssignments`, which shadows it: that walk's right-hand-side
+    // grammar has no concatenation, so the assignment reads as an EMPTY block,
+    // `is_whole()` still answers true, and the ladder returns on a matcher that
+    // then writes nothing -- which is why both scripts read `ran 0` in the
+    // runtime reach dump. Every narrower arm above keeps first refusal.
+    if normalised.contains('+')
+        && let Some(pattern) = parse_concat_assignment(normalised)
+    {
+        patterns.push(KnownPattern::ConcatAssignment(pattern));
+        return patterns;
+    }
+
     // Pattern: nothing BUT statements the walk can run -- allocations, copies,
     // literals, and branches on comparisons it can decide. Running the
     // readable statements of ANY script was tried as a catch-all and rejected,
@@ -18728,6 +18984,7 @@ pub(crate) fn run_known_pattern(
         } => run_substring_before_last(event, source, target, needle),
         KnownPattern::TlsVersionSplit { source } => run_tls_version_split(event, source),
         KnownPattern::ConcatParts(script) => run_concat_parts(event, script),
+        KnownPattern::ConcatAssignment(script) => run_concat_assignment(event, script),
         KnownPattern::TrimListInPlace(field) => run_trim_list(event, field),
         KnownPattern::StartsWithAppend {
             source,

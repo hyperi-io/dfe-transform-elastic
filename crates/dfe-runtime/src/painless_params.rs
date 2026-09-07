@@ -6328,7 +6328,26 @@ enum Rhs {
     /// The `.toString()` is the point of the pattern: the field arrives as a
     /// string on some events and a number on others.
     LongOf(String),
+    /// `'<literal>' + ctx.<path> + ...` -- a string spliced together from
+    /// literal text and the event's own fields, in the order the script writes
+    /// them. `first_epss` builds a CVE lookup URL this way, wiz an issue URL,
+    /// `jamf_protect` an English sentence and tychon a CPE name. Overlaps
+    /// `KnownPattern::ConcatAssignment` -- see [`parse_concat`].
+    Concat(Vec<ConcatPiece>),
     Literal(Value),
+}
+
+/// One term of a [`Rhs::Concat`].
+///
+/// [`crate::painless_common`] holds the same two cases for cloudfront's `+=`
+/// assembly. They are not one type because that one is a run of `+=`
+/// statements each guarded by its own `if`, and this is a single expression.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum ConcatPiece {
+    Literal(String),
+    /// Read off the event and rendered as text. A field the event does not
+    /// carry declines the whole write -- see [`resolve_rhs`].
+    Field(String),
 }
 
 /// Whether `name` is assigned exactly once in `body` -- its own declaration.
@@ -7412,6 +7431,14 @@ fn parse_literal_statement(statement: &str) -> Option<Literal> {
 /// event.
 fn parse_rhs(text: &str) -> Option<Rhs> {
     let text = text.trim().trim_end_matches(';').trim();
+    // A concatenation is read BEFORE every reader below, because the literal
+    // one at the bottom answers the leading literal ALONE and reports the
+    // write done. first_epss's whole source is one such expression, and all
+    // nine of its events carried the bare prefix of the URL where the CVE id
+    // belonged.
+    if let Some(pieces) = parse_concat(text) {
+        return Some(Rhs::Concat(pieces));
+    }
     if let Some(inner) = text
         .strip_prefix("String.valueOf(")
         .and_then(|rest| rest.strip_suffix(')'))
@@ -7483,6 +7510,107 @@ fn parse_rhs(text: &str) -> Option<Rhs> {
             .then(|| Rhs::Field(clean_path(path)));
     }
     literal_value(text).map(Rhs::Literal)
+}
+
+/// `'<literal>' + ctx.<path> + ...` as its terms, in order.
+///
+/// Deliberately narrow: every term is a quoted literal or a bare `ctx.` path,
+/// they alternate with `+`, and there is at least one of each. Anything else
+/// answers `None` and leaves the readers in [`parse_rhs`] to decide, so a
+/// plain literal assignment -- the bulk of what `PlainAssignments` claims --
+/// reads exactly as it did.
+///
+/// A literal is required because all-fields is ambiguous: Painless
+/// concatenates two strings and ADDS two numbers, and the text alone does not
+/// say which the event will hold. All-literals is a constant, which the
+/// literal reader already answers.
+///
+/// **This overlaps `KnownPattern::ConcatAssignment`, and the overlap is
+/// deliberate.** That arm reads the same join, but only where it is the WHOLE
+/// script -- one statement, optionally one `if`-wrapped block. This one reads
+/// a join wherever a statement sits, so it covers the forms that arm declines:
+/// a statement with no terminator (tychon's `package.cpe`), and a join inside
+/// a longer script. Where both can read a script the ladder decides, and a
+/// `Program` that can write promotes `GuardedCopy` above `ConcatAssignment` --
+/// fortimanager's date join goes that way. That costs nothing because the two
+/// agree on the answer, including writing NOTHING when a part is absent; it
+/// would cost a source the day they stop agreeing, which is what the pins in
+/// `tests/which_matcher.rs` are for.
+fn parse_concat(text: &str) -> Option<Vec<ConcatPiece>> {
+    // This reader runs ahead of every other, so the overwhelmingly common
+    // right-hand side -- one quoted literal -- gets a byte scan rather than a
+    // parse and a discarded allocation.
+    if !text.contains('+') {
+        return None;
+    }
+
+    let mut pieces = Vec::new();
+    let mut rest = text.trim();
+    loop {
+        if let Some((literal, tail)) = quoted_literal(rest) {
+            pieces.push(ConcatPiece::Literal(literal));
+            rest = tail.trim_start();
+        } else {
+            // A term is everything up to the next `+`. One inside a literal
+            // cannot reach here, because the literal arm above consumed it.
+            let end = rest.find('+').unwrap_or(rest.len());
+            let path = subject_path(rest[..end].trim())
+                .strip_prefix("ctx.")
+                .map(str::to_owned)?;
+            if path.is_empty()
+                || !path
+                    .chars()
+                    .all(|c| c.is_alphanumeric() || "._?@".contains(c))
+            {
+                return None;
+            }
+            pieces.push(ConcatPiece::Field(clean_path(&path)));
+            rest = rest[end..].trim_start();
+        }
+        let Some(tail) = rest.strip_prefix('+') else {
+            break;
+        };
+        rest = tail.trim_start();
+    }
+
+    let fields = pieces
+        .iter()
+        .filter(|piece| matches!(piece, ConcatPiece::Field(_)))
+        .count();
+    (rest.is_empty() && fields > 0 && fields < pieces.len()).then_some(pieces)
+}
+
+/// A quoted string literal at the head of `text`, as its body and whatever
+/// follows the closing quote.
+///
+/// Either quote character opens one, and a backslash escapes the character
+/// after it rather than ending the literal. The call site's own escaping is
+/// already resolved by [`crate::painless_common::normalise`] -- wiz's URL
+/// reaches the generated module as `\"https://...\"` and arrives here with
+/// plain quotes -- so a backslash here is one the vendor wrote.
+fn quoted_literal(text: &str) -> Option<(String, &str)> {
+    let quote = text.chars().next().filter(|c| *c == '\'' || *c == '"')?;
+    let body = &text[quote.len_utf8()..];
+    let mut out = String::with_capacity(body.len());
+    let mut chars = body.char_indices();
+    while let Some((at, c)) = chars.next() {
+        if c == quote {
+            return Some((out, &body[at + c.len_utf8()..]));
+        }
+        if c != '\\' {
+            out.push(c);
+            continue;
+        }
+        match chars.next() {
+            Some((_, 'n')) => out.push('\n'),
+            Some((_, 't')) => out.push('\t'),
+            Some((_, 'r')) => out.push('\r'),
+            Some((_, escaped)) => out.push(escaped),
+            // An unterminated literal is not a literal.
+            None => return None,
+        }
+    }
+    None
 }
 
 /// Make one parsed write, reporting whether the event had a value for it.
@@ -7561,6 +7689,37 @@ fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
                 _ => None,
             })
             .map(|number| Value::from(number.trunc() as i64)),
+        // A field the event does not carry writes NOTHING, where Painless
+        // would splice in the text `null`. Every site is guarded by its
+        // processor's own `if` on that field, so an absent one means this is
+        // not the event the script was written for -- and a URL with `null`
+        // inside it is a worse answer than no URL.
+        Rhs::Concat(pieces) => {
+            // The literals' length is known here; the fields are whatever the
+            // event holds, so the growth left is theirs alone.
+            let literals: usize = pieces
+                .iter()
+                .map(|piece| match piece {
+                    ConcatPiece::Literal(text) => text.len(),
+                    ConcatPiece::Field(_) => 0,
+                })
+                .sum();
+            let mut built = String::with_capacity(literals);
+            for piece in pieces {
+                match piece {
+                    ConcatPiece::Literal(text) => built.push_str(text),
+                    ConcatPiece::Field(path) => match event.get(path)? {
+                        Value::String(text) => built.push_str(text),
+                        Value::Number(number) => built.push_str(&number.to_string()),
+                        Value::Bool(flag) => built.push_str(if *flag { "true" } else { "false" }),
+                        // A container has no text rendering Elasticsearch and
+                        // this would agree on.
+                        Value::Null | Value::Array(_) | Value::Object(_) => return None,
+                    },
+                }
+            }
+            Some(Value::String(built))
+        }
         Rhs::Literal(value) => Some(value.clone()),
     }
 }

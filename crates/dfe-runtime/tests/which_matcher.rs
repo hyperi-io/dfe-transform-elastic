@@ -23,8 +23,10 @@ use dfe_runtime::painless_plan::PainlessPlan;
 /// Verbatim from `pipelines/checkpoint_email/event/default.yml:434-438`.
 const CHECKPOINT_EMAIL_SEVERITY: &str = "def severityValue = ctx.checkpoint_email.event.severity;\nif (severityValue > 0 && severityValue <= params.severity.length) {\n  ctx.checkpoint_email.event.put('severity_enum', params['severity'][(int)severityValue-1]);\n}";
 
-/// Verbatim from `pipelines/first_epss/vulnerability/default.yml:86`.
-const FIRST_EPSS_REFERENCE: &str = "ctx.vulnerability.reference = 'https://api.first.org/data/v1/epss?pretty=true&cve=' + ctx.vulnerability.id;";
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/first_epss_vulnerability/default.rs`,
+/// which is `pipelines/first_epss/vulnerability/default.yml:86`.
+const FIRST_EPSS_REFERENCE: &str = r#"ctx.vulnerability.reference = 'https://api.first.org/data/v1/epss?pretty=true&cve=' + ctx.vulnerability.id;"#;
 
 /// Verbatim from `pipelines/system/auth/message.yml:573-583`.
 const SYSTEM_SSH_CATEGORY: &str = "if (ctx.system.auth.ssh.event == \"Accepted\") {\n  ctx.event.type = [\"info\"];\n  ctx.event.category = [\"authentication\", \"session\"];\n  ctx.event.action = \"ssh_login\";\n  ctx.event.outcome = \"success\";\n} else if (ctx.system.auth.ssh.event == \"Invalid\" || ctx.system.auth.ssh.event == \"Failed\") {\n  ctx.event.type = [\"info\"];\n  ctx.event.category = [\"authentication\"];\n  ctx.event.action = \"ssh_login\";\n  ctx.event.outcome = \"failure\";\n}";
@@ -47,12 +49,36 @@ const KOLIDE_CATEGORIZE: &str = "def action = ctx.event.action;\nctx.event.kind 
 /// Verbatim from zeek's duration scale.
 const ZEEK_DURATION: &str = "ctx.event.duration = Math.round(ctx.temp.duration * params.scale)";
 
-/// Verbatim from `pipelines/jamf_protect/telemetry/pipeline_event_authentication.yml:30`.
-const JAMF_PROTECT_REASON: &str = "ctx.event.reason = 'A user authentication happened using ' + ctx.jamf_protect.telemetry.authentication_method;";
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/jamf_protect_telemetry/default.rs`,
+/// which is `pipelines/jamf_protect/telemetry/pipeline_event_authentication.yml:30`.
+///
+/// This one and the three concat constants after it are the ESCAPED call-site
+/// text, not the pipeline's own: the generator writes a folded YAML block out
+/// as an escaped string, so wiz's double quotes reach the runtime as `\"` and
+/// jamf's newline as two characters. `normalise` resolves both before any
+/// matcher reads them, and a test written in the resolved form would pass over
+/// a defect in that step.
+const JAMF_PROTECT_REASON: &str = r#"ctx.event.reason = 'A user authentication happened using ' + ctx.jamf_protect.telemetry.authentication_method;\n"#;
 
-/// Verbatim from `pipelines/wiz/issue/default.yml:103`.
-const WIZ_EVENT_URL: &str =
-    "ctx.event.url = \"https://app.wiz.io/issues#~(filters~(status~())~issue~'\" + ctx.event.id";
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/wiz_issue/default.rs`, which is
+/// `pipelines/wiz/issue/default.yml:103`.
+const WIZ_EVENT_URL: &str = r#"ctx.event.url = \"https://app.wiz.io/issues#~(filters~(status~())~issue~'\" + ctx.event.id + \")\";\n"#;
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/wiz_cloud_configuration_finding/default.rs`,
+/// which is `pipelines/wiz/cloud_configuration_finding/default.yml:134`.
+const WIZ_CONFIGURATION_URL: &str = r#"ctx.event.url = \"https://app.wiz.io/findings/configuration-findings/cloud#~(filters~(status~()~rule~(equals~(~'\" + ctx.json.rule.id + \")))~groupBy~(~)~entity~(~'\" + ctx.event.id + \"*2cCONFIGURATION_FINDING))\";\n"#;
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/tychon_softwareinventory/rest.rs`, which
+/// is `pipelines/tychon/softwareinventory/rest.yml:72`.
+const TYCHON_PACKAGE_CPE: &str = r#"ctx.tychon.package.cpe = \"cpe:/a:\" + ctx.tychon.package.name + \":\" + ctx.tychon.package.version"#;
+
+/// Verbatim from `pipelines/endace/flow/endace.yml:64`.
+const ENDACE_HALF_TIMEDELTA: &str =
+    "ctx._conf.event.end = ctx._conf.event.end + ctx._conf.timedelta/2";
 
 /// The matcher names a script binds to, most specific first.
 fn binding(script: &str) -> Vec<String> {
@@ -124,31 +150,68 @@ fn the_zeek_duration_binds_to_a_bare_scale() {
 }
 
 #[test]
-fn the_dropped_concat_reaches_three_sources_in_both_quote_styles() {
-    // The same defect as first_epss: the literal survives, the concatenated
-    // field does not. Single quotes and double quotes alike.
-    for (name, script, literal, dropped) in [
+fn the_concat_keeps_its_fields_in_both_quote_styles() {
+    // `Rhs::Concat` reads the whole expression. Before it, `literal_value`
+    // answered the LEADING LITERAL alone and reported the write done, so each
+    // of these wrote a bare prefix where the joined string belonged. Single
+    // quotes and double quotes alike, and the double-quoted ones arrive
+    // escaped.
+    //
+    // tychon is here because it is the form `ConcatAssignment` cannot take:
+    // its statement carries no terminator and that arm opens with
+    // `strip_suffix(';')?`. Two readers of one grammar, and this is the half
+    // only the `Program` one reaches.
+    for (name, script, literal, fields) in [
         (
             "jamf_protect",
             JAMF_PROTECT_REASON,
             "A user authentication happened using ",
-            "authentication_method",
+            &["jamf_protect.telemetry.authentication_method"][..],
         ),
         (
-            "wiz",
+            "wiz issue",
             WIZ_EVENT_URL,
             "https://app.wiz.io/issues",
-            "event.id",
+            &["event.id"][..],
+        ),
+        (
+            "tychon",
+            TYCHON_PACKAGE_CPE,
+            "cpe:/a:",
+            &["tychon.package.name", "tychon.package.version"][..],
         ),
     ] {
         let held = binding(script).join(" ");
         assert!(held.starts_with("PlainAssignments"), "{name}: {held}");
         assert!(held.contains(literal), "{name}: {held}");
-        assert!(
-            !held.contains(dropped),
-            "{name} now keeps the field: {held}"
-        );
+        assert!(held.contains("Concat("), "{name}: {held}");
+        for field in fields {
+            assert!(
+                held.contains(&format!("Field({field:?})")),
+                "{name} lost {field}: {held}"
+            );
+        }
     }
+}
+
+#[test]
+fn the_wiz_configuration_url_stays_with_the_concat_assignment_arm() {
+    // The one place the two readers of this grammar are told apart. wiz's
+    // configuration URL carries no inline `!= null`, so `GuardedCopy` -- the
+    // position above -- declines it whatever `Program` can parse, and the arm
+    // written for the join keeps it. Contrast fortimanager below.
+    let held = binding(WIZ_CONFIGURATION_URL).join(" ");
+    assert!(held.starts_with("ConcatAssignment"), "{held}");
+    assert!(held.contains(r#"Field("json.rule.id")"#), "{held}");
+    assert!(held.contains(r#"Field("event.id")"#), "{held}");
+}
+
+#[test]
+fn report_the_endace_binding() {
+    println!(
+        "endace half-timedelta: {:?}",
+        binding(ENDACE_HALF_TIMEDELTA)
+    );
 }
 
 #[test]
@@ -157,16 +220,13 @@ fn checkpoint_email_severity_binds_to_the_indexed_lookup() {
 }
 
 #[test]
-fn first_epss_reference_keeps_the_literal_and_drops_the_field() {
-    // `PlainAssignments` reads `'<literal>' + ctx.<path>` as the literal alone
-    // and reports the plan whole, so the field never reaches the value.
+fn first_epss_reference_keeps_both_halves_of_its_url() {
+    // The whole source was this one expression, and reading the literal alone
+    // put the same bare prefix on all nine of its events.
     let held = binding(FIRST_EPSS_REFERENCE).join(" ");
     assert!(held.starts_with("PlainAssignments"), "{held}");
     assert!(held.contains("epss?pretty=true&cve="), "{held}");
-    assert!(
-        !held.contains("vulnerability.id"),
-        "the concatenated field now reaches the plan -- re-measure first_epss: {held}"
-    );
+    assert!(held.contains(r#"Field("vulnerability.id")"#), "{held}");
 }
 
 #[test]
@@ -186,14 +246,25 @@ fn the_system_ssh_ladder_flattens_its_list_literals() {
 }
 
 #[test]
-fn fortimanager_date_concat_parses_to_an_empty_program() {
-    // Static match and runtime apply are different questions: `matches()` is
-    // true, the parsed `then` is empty, and the catalogue reads `ran 0`.
+fn fortimanager_date_concat_is_read_by_guarded_copy_and_still_joins() {
+    // The one script both readers of this grammar can take, and the winner is
+    // NOT the arm named after it. `GuardedCopy` is gated on an inline
+    // `!= null`, which this script alone among the joins carries, and it sits
+    // one position ABOVE `ConcatAssignment`; a `Program` that can write the
+    // join is enough to make it claim the script.
+    //
+    // That is recorded rather than corrected because the two agree on the
+    // answer -- all three fields, the separator, and nothing written when a
+    // part is absent. The pin is here so the day they stop agreeing this
+    // fails with both names, instead of surfacing as a corpus swing nobody can
+    // attribute. Fortimanager measured 31/31 either way.
     let held = binding(FORTIMANAGER_DATE_CONCAT).join(" ");
-    assert!(held.starts_with("PlainAssignments"), "{held}");
+    assert!(held.starts_with("GuardedCopy"), "{held}");
     assert!(
-        held.contains("then: []"),
-        "the concat now parses to something -- re-measure fortimanager: {held}"
+        held.contains(
+            r#"Concat([Field("_temp.date"), Literal("T"), Field("_temp.time"), Field("_temp.tz")])"#
+        ),
+        "{held}"
     );
     assert!(PainlessPlan::new(FORTIMANAGER_DATE_CONCAT).matches());
 }
