@@ -1497,6 +1497,129 @@ fn a_band_ladder_reads_a_numeric_string() {
     );
 }
 
+/// Verbatim from `pipelines/infoblox_threat_defense/event/default.yml`: no
+/// local, a full `ctx` path in every guard, an `||` pair for the top two
+/// bands, and the ECS number rather than a name.
+const INFOBLOX_SEVERITY: &str = "ctx.event = ctx.event ?: [:];\\n\
+    if (ctx.infoblox_threat_defense.event.severity >= 0 && \
+    ctx.infoblox_threat_defense.event.severity <= 3 ) { \
+    // Severity level - 0,1,2,3 denotes Low severity\\n  ctx.event.severity = 21;\\n\
+    } else if (ctx.infoblox_threat_defense.event.severity >= 4 && \
+    ctx.infoblox_threat_defense.event.severity <= 6) { \
+    // Severity level - 4,5,6 denotes Medium severity\\n  ctx.event.severity = 47;\\n\
+    } else if (ctx.infoblox_threat_defense.event.severity == 7 || \
+    ctx.infoblox_threat_defense.event.severity == 8) { \
+    // Severity level - 7 and 8 denotes High severity\\n  ctx.event.severity = 73;\\n\
+    } else if (ctx.infoblox_threat_defense.event.severity == 9 || \
+    ctx.infoblox_threat_defense.event.severity == 10) { \
+    // Severity level - 9 and 10 denotes Critical severity\\n  ctx.event.severity = 99;\\n}";
+
+/// The value is a LONG in Elasticsearch's output, so a quoted band name
+/// scores wrong however right the band was.
+#[test]
+fn a_numeric_band_ladder_writes_the_number_the_vendor_wrote() {
+    for (severity, expected) in [
+        (0, Some(json!(21))),
+        (3, Some(json!(21))),
+        (4, Some(json!(47))),
+        (6, Some(json!(47))),
+        (7, Some(json!(73))),
+        (8, Some(json!(73))),
+        (9, Some(json!(99))),
+        (10, Some(json!(99))),
+        // Past the last band the vendor writes nothing.
+        (11, None),
+    ] {
+        let mut event = Event::new(json!({
+            "infoblox_threat_defense": { "event": { "severity": severity } },
+        }));
+        assert!(try_known_painless(&mut event, INFOBLOX_SEVERITY));
+        assert_eq!(
+            event.get("event.severity"),
+            expected.as_ref(),
+            "severity {severity}"
+        );
+    }
+}
+
+/// crowdstrike's alert ladder is the same numeric bands plus a `risk_score`
+/// the band reader cannot write, so it declines and `ScoreSeverityBands`
+/// takes the script.
+#[test]
+fn a_numeric_ladder_writing_a_second_field_is_left_to_its_own_matcher() {
+    let script = "long score = ctx.crowdstrike.alert.score;\\nctx.event = ctx.event ?: [:];\\n\
+        ctx.event.risk_score = (double) score;\\nif (score < 40) {\\n  ctx.event.severity = 21;\\n\
+        } else if (score < 60) {\\n  ctx.event.severity = 47;\\n\
+        } else if (score < 80) {\\n  ctx.event.severity = 73;\\n\
+        } else {\\n  ctx.event.severity = 99;\\n}";
+    assert!(
+        parse_band_ladder(&normalise(script)).is_none(),
+        "the band reader would drop event.risk_score"
+    );
+
+    let mut event = Event::new(json!({ "crowdstrike": { "alert": { "score": 70 } } }));
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(event.get("event.risk_score"), Some(&json!(70.0)));
+    assert_eq!(event.get("event.severity"), Some(&json!(73)));
+}
+
+/// Verbatim from `pipelines/infoblox_threat_defense/event/default.yml`.
+const STRIP_MESSAGE_QUOTES: &str =
+    "if (ctx.cef.extensions.containsKey('message') && ctx.cef.extensions.message != null && \
+     ctx.cef.extensions.message instanceof String) {\\n  \
+     if (ctx.cef.extensions.message.startsWith('\\\"') && \
+     ctx.cef.extensions.message.endsWith('\\\"') && \
+     ctx.cef.extensions.message.length() >= 2) {\\n    \
+     ctx.cef.extensions.message = \
+     ctx.cef.extensions.message.substring(1, ctx.cef.extensions.message.length() - 1);\\n  }\\n}\\n";
+
+/// The CEF extension arrives quoted and is copied to `message` and renamed to
+/// `infoblox_threat_defense.event.message` afterwards, so the strip has to
+/// happen here.
+#[test]
+fn a_quoted_value_loses_one_character_from_each_end() {
+    let mut event = Event::new(json!({
+        "cef": { "extensions": { "message": "\"Service API Key created\"" } },
+    }));
+    assert!(try_known_painless(&mut event, STRIP_MESSAGE_QUOTES));
+    assert_eq!(
+        event.get_str("cef.extensions.message"),
+        Some("Service API Key created")
+    );
+}
+
+/// Only the pair the script names, and only when BOTH ends carry it.
+#[test]
+fn a_value_without_the_pair_is_left_alone() {
+    for text in ["Service API Key created", "\"unbalanced", "unbalanced\"", "\""] {
+        let mut event = Event::new(json!({ "cef": { "extensions": { "message": text } } }));
+        assert!(try_known_painless(&mut event, STRIP_MESSAGE_QUOTES));
+        assert_eq!(event.get_str("cef.extensions.message"), Some(text));
+    }
+}
+
+/// An absent field is the script's own `containsKey` guard, and claiming it
+/// would count the script handled on every event that does not carry one.
+#[test]
+fn an_absent_field_declines_the_strip() {
+    let pattern =
+        parse_strip_surrounding_pair(&normalise(STRIP_MESSAGE_QUOTES)).expect("the pair is read");
+    assert_eq!(pattern.field, "cef.extensions.message");
+    assert_eq!((pattern.open, pattern.close), ('"', '"'));
+
+    let mut event = Event::new(json!({ "cef": { "extensions": {} } }));
+    assert!(!run_strip_surrounding_pair(&mut event, &pattern));
+}
+
+/// A cut of a different width takes different characters, so it is a
+/// different script.
+#[test]
+fn a_wider_cut_declines() {
+    let script = "if (ctx.a.b.startsWith('<') && ctx.a.b.endsWith('>')) {\\n  \
+        ctx.a.b = ctx.a.b.substring(2, ctx.a.b.length() - 1);\\n}";
+    assert!(parse_strip_surrounding_pair(&normalise(script)).is_none());
+}
+
 /// Verbatim from `testdata/compat/ti_abusech/url/test-abusechurl-dump`:
 /// 2021-10-05 plus the configured 90 days.
 #[test]

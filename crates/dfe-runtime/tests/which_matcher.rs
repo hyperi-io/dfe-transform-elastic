@@ -83,6 +83,14 @@ const ENDACE_HALF_TIMEDELTA: &str =
 /// Verbatim from `pipelines/iptables/log/default.yml:264-280`.
 const IPTABLES_MAPPINGS: &str = r"for (action in params.mappings) {\n  def src = ctx[action.source.object];\n  if (src != null) {\n    Map map = action.map;\n    String key = src[action.source.key];\n    String mapping = map[key];\n    if (mapping != null) {\n      Map dst = ctx[action.destination.object];\n      if (dst == null) {\n          dst = new HashMap();\n          ctx[action.destination.object] = dst;\n      }\n      dst[action.destination.key] = mapping;\n    }\n  }\n}";
 
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/infoblox_threat_defense_event/default.rs`,
+/// which is `pipelines/infoblox_threat_defense/event/default.yml`.
+const INFOBLOX_SEVERITY: &str = "ctx.event = ctx.event ?: [:];\\nif (ctx.infoblox_threat_defense.event.severity >= 0 && ctx.infoblox_threat_defense.event.severity <= 3 ) { // Severity level - 0,1,2,3 denotes Low severity\\n  ctx.event.severity = 21;\\n} else if (ctx.infoblox_threat_defense.event.severity >= 4 && ctx.infoblox_threat_defense.event.severity <= 6) { // Severity level - 4,5,6 denotes Medium severity\\n  ctx.event.severity = 47;\\n} else if (ctx.infoblox_threat_defense.event.severity == 7 || ctx.infoblox_threat_defense.event.severity == 8) { // Severity level - 7 and 8 denotes High severity\\n  ctx.event.severity = 73;\\n} else if (ctx.infoblox_threat_defense.event.severity == 9 || ctx.infoblox_threat_defense.event.severity == 10) { // Severity level - 9 and 10 denotes Critical severity\\n  ctx.event.severity = 99;\\n}";
+
+/// Verbatim from the same file, the processor above the severity ladder.
+const INFOBLOX_MESSAGE_QUOTES: &str = r#"if (ctx.cef.extensions.containsKey('message') && ctx.cef.extensions.message != null && ctx.cef.extensions.message instanceof String) {\n  if (ctx.cef.extensions.message.startsWith('\"') && ctx.cef.extensions.message.endsWith('\"') && ctx.cef.extensions.message.length() >= 2) {\n    ctx.cef.extensions.message = ctx.cef.extensions.message.substring(1, ctx.cef.extensions.message.length() - 1);\n  }\n}\n"#;
+
 /// The matcher names a script binds to, most specific first.
 fn binding(script: &str) -> Vec<String> {
     PainlessPlan::new(script).binding()
@@ -258,6 +266,37 @@ fn the_iptables_mappings_bind_only_to_member_mappings() {
         binding(IPTABLES_MAPPINGS),
         [r#"MemberMappings("mappings")"#]
     );
+}
+
+#[test]
+fn the_infoblox_severity_ladder_binds_to_the_band_reader_with_numbers() {
+    // The bands are written subject-first over a full `ctx` path with no local
+    // and the values are numbers. `RangeLadder`, the position above, declines
+    // each of those.
+    let held = binding(INFOBLOX_SEVERITY).join(" ");
+    assert!(held.starts_with("BandLadder"), "{held}");
+    assert!(
+        held.contains(r#"subject: "infoblox_threat_defense.event.severity""#),
+        "{held}"
+    );
+    assert!(held.contains("Number(21)"), "{held}");
+    assert!(held.contains("Number(99)"), "{held}");
+    assert!(
+        !held.contains("Text("),
+        "a band naming a string writes the wrong type here: {held}"
+    );
+}
+
+#[test]
+fn the_infoblox_message_quotes_bind_to_the_strip_and_not_to_guarded_copy() {
+    // The outer guard carries a `!= null`, which is `GuardedCopy`'s trigger,
+    // and it sits BELOW this arm. Reverse that order and the field is copied
+    // onto itself with its quotes intact, taking every later copy with it.
+    let held = binding(INFOBLOX_MESSAGE_QUOTES).join(" ");
+    assert!(held.starts_with("StripSurroundingPair"), "{held}");
+    assert!(held.contains(r#"field: "cef.extensions.message""#), "{held}");
+    assert!(held.contains(&format!("open: {:?}", '"')), "{held}");
+    assert!(held.contains(&format!("close: {:?}", '"')), "{held}");
 }
 
 #[test]

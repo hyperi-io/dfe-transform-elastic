@@ -195,16 +195,17 @@
 194 WktGeometry
 195 GeoPointFromCoordinates
 196 BranchCopies
-197 GuardedDivide
-198 ScaleField
-199 GuardedCopy
-200 ConcatAssignment
-201 PlainAssignments
-202 SumTotals
-203 ScalarExpression
-204 TrimThenSplit
-205 ItemWrites
-206 NthSeparatorPrefix
+197 StripSurroundingPair
+198 GuardedDivide
+199 ScaleField
+200 GuardedCopy
+201 ConcatAssignment
+202 PlainAssignments
+203 SumTotals
+204 ScalarExpression
+205 TrimThenSplit
+206 ItemWrites
+207 NthSeparatorPrefix
 
 [params_pattern]
   1 AwsEntity

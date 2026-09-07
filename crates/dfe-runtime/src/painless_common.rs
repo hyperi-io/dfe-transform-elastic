@@ -3414,6 +3414,93 @@ fn parse_strip_angle_pairs(script: &str) -> Option<KnownPattern> {
         .then_some(KnownPattern::StripAnglePairs { scalars, lists })
 }
 
+/// One field unwrapped from a surrounding pair of characters, in place.
+///
+/// ```painless
+/// if (ctx.a.b.containsKey('message') && ctx.a.b.message != null && ctx.a.b.message instanceof String) {
+///   if (ctx.a.b.message.startsWith('"') && ctx.a.b.message.endsWith('"') && ctx.a.b.message.length() >= 2) {
+///     ctx.a.b.message = ctx.a.b.message.substring(1, ctx.a.b.message.length() - 1);
+///   }
+/// }
+/// ```
+///
+/// `infoblox_threat_defense`'s CEF `message` arrives quoted, and it is copied
+/// to `message` and renamed to `infoblox_threat_defense.event.message` after
+/// this runs -- so a miss here is wrong on all three.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct StripSurroundingPair {
+    field: String,
+    open: char,
+    close: char,
+}
+
+/// Read the pair, the field, and the cut that takes one character off each end.
+///
+/// The cut is required to be exactly `substring(1, <field>.length() - 1)`: a
+/// script cutting a different width means different characters, and reading it
+/// as this one would truncate the value.
+fn parse_strip_surrounding_pair(script: &str) -> Option<StripSurroundingPair> {
+    let opens_at = script.find(".startsWith(")?;
+    let open = single_char(&quoted_argument(&script[opens_at + ".startsWith(".len()..])?)?;
+    let field = painless_path(&script[..opens_at])?;
+
+    let closes_at = script.find(".endsWith(")?;
+    let close = single_char(&quoted_argument(&script[closes_at + ".endsWith(".len()..])?)?;
+    if painless_path(&script[..closes_at])? != field {
+        return None;
+    }
+
+    // The write lands back on the same field, off the same field's own value.
+    let cuts_at = script.find(".substring(")?;
+    let head = &script[..cuts_at];
+    if painless_path(head)? != field {
+        return None;
+    }
+    let (assigned, _) = head.rsplit_once('=')?;
+    if painless_path(assigned)? != field {
+        return None;
+    }
+
+    let (start, tail) = script[cuts_at + ".substring(".len()..].split_once(',')?;
+    if start.trim() != "1" {
+        return None;
+    }
+    let (measured, after) = tail.split_once(".length()")?;
+    if painless_path(measured)? != field || after.split(')').next()?.replace(' ', "") != "-1" {
+        return None;
+    }
+
+    Some(StripSurroundingPair { field, open, close })
+}
+
+/// A literal of exactly one character, or `None`.
+fn single_char(literal: &str) -> Option<char> {
+    let mut chars = literal.chars();
+    let first = chars.next()?;
+    chars.next().is_none().then_some(first)
+}
+
+/// Strip the pair where both ends carry it and something sits between them.
+fn run_strip_surrounding_pair(event: &mut Event, pattern: &StripSurroundingPair) -> bool {
+    // Absent, or not a string: the script's own `containsKey` and `instanceof
+    // String` guards. Declining rather than claiming it keeps the miss
+    // countable, since a matcher answering true reads as handled.
+    let Some(text) = event.get_str(&pattern.field) else {
+        return false;
+    };
+    let stripped = (text.chars().count() >= 2
+        && text.starts_with(pattern.open)
+        && text.ends_with(pattern.close))
+    .then(|| text[pattern.open.len_utf8()..text.len() - pattern.close.len_utf8()].to_string());
+
+    // A present value carrying no pair is the inner `if` not holding, which
+    // writes nothing and is still a run.
+    if let Some(stripped) = stripped {
+        let _ = event.set(&pattern.field, json!(stripped));
+    }
+    true
+}
+
 /// cloudtrail's resources pass: ARN and accountId rename to their snake
 /// names (appended, as a Java put is), and duplicates of the
 /// `arn_account_type` composite collapse -- last one wins, keeping the first's
@@ -7569,16 +7656,47 @@ pub(crate) struct BandLadder {
     /// Where the number is read from.
     subject: String,
     /// Bands in the script's own order; the first that holds wins.
-    arms: Vec<(Band, String)>,
+    arms: Vec<(Band, BandLabel)>,
     /// The label when no band holds -- a local's initialiser, or a trailing
     /// bare `else`. `None` where the script writes nothing, which is what
     /// `ti_anomali`'s threatstream ladder does between its bands.
-    default: Option<String>,
+    default: Option<BandLabel>,
     /// The label for an ABSENT or null subject, where the script spells that
     /// arm (`if (value == null)`). Distinct from `default`: one is "no value",
     /// the other "a value in no band".
-    absent: Option<String>,
+    absent: Option<BandLabel>,
     target: String,
+}
+
+/// What an arm writes, in the type the vendor wrote it.
+///
+/// Most ladders name the band -- "Low", "High". `infoblox_threat_defense`'s
+/// severity ladder writes the ECS NUMBER instead (`ctx.event.severity = 21`),
+/// and a string there scores wrong against Elasticsearch's long.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) enum BandLabel {
+    Text(String),
+    Number(i64),
+}
+
+impl BandLabel {
+    fn value(&self) -> Value {
+        match self {
+            Self::Text(text) => json!(text),
+            Self::Number(number) => json!(number),
+        }
+    }
+}
+
+/// The literal an arm writes: a quoted string, or a bare whole number.
+///
+/// The number is read only where the fragment is NOTHING else, so a copy
+/// (`= ctx.x`) or an expression declines the whole ladder rather than writing
+/// a literal the vendor never wrote.
+fn band_label(text: &str) -> Option<BandLabel> {
+    quoted_first(text)
+        .map(BandLabel::Text)
+        .or_else(|| whole_number(text).map(BandLabel::Number))
 }
 
 /// One arm's guard: comparisons over the subject, joined one way.
@@ -7637,7 +7755,7 @@ fn parse_band_ladder(script: &str) -> Option<BandLadder> {
     let mut arms = Vec::new();
     let mut written: Option<String> = None;
     let mut label_local: Option<String> = None;
-    let mut absent: Option<String> = None;
+    let mut absent: Option<BandLabel> = None;
 
     for block in script.split("if (").skip(1) {
         let (guard, body) = block.split_once(") {")?;
@@ -7651,7 +7769,7 @@ fn parse_band_ladder(script: &str) -> Option<BandLadder> {
         if let Some(rest) = guard.trim().strip_prefix(&local)
             && rest.trim().trim_start_matches('=').trim() == "null"
         {
-            absent = quoted_first(body.split(';').next()?.split_once('=')?.1);
+            absent = band_label(body.split(';').next()?.split_once('=')?.1);
             continue;
         }
         let band = parse_band(guard, &local)?;
@@ -7659,7 +7777,7 @@ fn parse_band_ladder(script: &str) -> Option<BandLadder> {
         // `ctx["x"] = "Label";` or `label = "Label";` -- the second form needs
         // the closing `.put()` to say where it lands.
         let (lhs, rhs) = body.split(';').next()?.split_once('=')?;
-        let label = quoted_first(rhs)?;
+        let label = band_label(rhs)?;
         // Every arm has to agree on where it writes, or this is two patterns.
         if let Some(path) = painless_path(lhs) {
             if written.get_or_insert_with(|| path.clone()) != &path {
@@ -7695,13 +7813,27 @@ fn parse_band_ladder(script: &str) -> Option<BandLadder> {
         .and_then(|name| {
             script
                 .split_once(&format!(" {name} = "))
-                .and_then(|(_, rest)| quoted_first(rest.split(';').next()?))
+                .and_then(|(_, rest)| band_label(rest.split(';').next()?))
         })
         .or_else(|| {
             let (_, tail) = script.rsplit_once(" else {")?;
             let (lhs, rhs) = tail.split(';').next()?.split_once('=')?;
-            (painless_path(lhs)? == target).then(|| quoted_first(rhs))?
+            (painless_path(lhs)? == target).then(|| band_label(rhs))?
         });
+
+    // A NUMERIC ladder has to be the whole script, bar the map it creates
+    // first. `ScoreSeverityBands` writes `event.risk_score` beside the same
+    // bands, and claiming that script here would drop the field. Label ladders
+    // are not audited, so their reading is unchanged.
+    let numeric = arms
+        .iter()
+        .map(|(_, label)| label)
+        .chain(default.iter())
+        .chain(absent.iter())
+        .any(|label| matches!(label, BandLabel::Number(_)));
+    if numeric && !ladder_is_the_whole_script(script, &target) {
+        return None;
+    }
 
     Some(BandLadder {
         subject,
@@ -7710,6 +7842,23 @@ fn parse_band_ladder(script: &str) -> Option<BandLadder> {
         absent,
         target,
     })
+}
+
+/// Whether the ladder's target is the only field the script writes.
+///
+/// A container the ladder creates to write into (`ctx.event = ctx.event ?:
+/// [:]`) does not count against it -- that is the ladder's own prelude, not
+/// other work.
+fn ladder_is_the_whole_script(script: &str, target: &str) -> bool {
+    crate::painless_params::ctx_writes(script)
+        .iter()
+        .all(|(path, rhs)| path == target || creates_container(rhs))
+}
+
+/// `ctx.<path> = ctx.<path> ?: [:]` and its spellings.
+fn creates_container(rhs: &str) -> bool {
+    let rhs = rhs.trim().trim_end_matches(';').trim();
+    rhs.ends_with("[:]") || rhs.ends_with("new HashMap()") || rhs.ends_with("new TreeMap()")
 }
 
 /// Whether `token` appears in `text` as a whole identifier.
@@ -7888,7 +8037,7 @@ fn run_band_ladder(event: &mut Event, pattern: &BandLadder) -> bool {
         // processor's `if` gates on the field and this declines.
         return match &pattern.absent {
             Some(label) => {
-                let _ = event.set(&pattern.target, json!(label));
+                let _ = event.set(&pattern.target, label.value());
                 true
             }
             None => false,
@@ -7903,7 +8052,7 @@ fn run_band_ladder(event: &mut Event, pattern: &BandLadder) -> bool {
         .or_else(|| pattern.default.clone());
 
     if let Some(label) = label {
-        let _ = event.set(&pattern.target, json!(label));
+        let _ = event.set(&pattern.target, label.value());
     }
     true
 }
@@ -16729,6 +16878,8 @@ pub(crate) enum KnownPattern {
     UnreservedKeyPayload(Box<UnreservedKeyPayload>),
     SuffixesByPrefix(Box<SuffixesByPrefix>),
     BranchCopies(Vec<BranchCopy>),
+    /// A field unwrapped from a surrounding pair of characters, in place.
+    StripSurroundingPair(Box<StripSurroundingPair>),
     /// A value cut at the Nth separator counted from its END, the prefix kept.
     NthSeparatorPrefix(Box<crate::painless_nth_separator::NthSeparatorPrefix>),
     PrivateCidrDirection {
@@ -18659,6 +18810,18 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: a field unwrapped from a surrounding pair of characters. Ahead
+    // of `GuardedCopy`, which claims it on the `!= null` in its outer guard and
+    // then copies the field onto itself unchanged.
+    if normalised.contains(".startsWith(")
+        && normalised.contains(".endsWith(")
+        && normalised.contains(".substring(")
+        && let Some(pattern) = parse_strip_surrounding_pair(normalised)
+    {
+        patterns.push(KnownPattern::StripSurroundingPair(Box::new(pattern)));
+        return patterns;
+    }
+
     // The two catch-alls below are patterns a longer script also CONTAINS, so
     // they run only after every structural matcher has declined.
 
@@ -19393,6 +19556,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::StringifyLongs(fields) => run_stringify_longs(event, fields),
         KnownPattern::CopyByLabel(pattern) => run_copy_by_label(event, pattern),
         KnownPattern::BandLadder(pattern) => run_band_ladder(event, pattern),
+        KnownPattern::StripSurroundingPair(pattern) => run_strip_surrounding_pair(event, pattern),
         KnownPattern::IocExpiry(pattern) => run_ioc_expiry(event, pattern),
         KnownPattern::GuardedCopy(literals) => try_guarded_copy(event, normalised, literals),
         KnownPattern::PlainAssignments(literals) => literals.run(event),
