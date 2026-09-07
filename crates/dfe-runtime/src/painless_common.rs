@@ -10307,48 +10307,94 @@ fn try_crowdstrike_timeline_entity_accounts(event: &mut Event) -> bool {
     true
 }
 
-/// `ctx.<target> = ctx.<array>[0];`, either bare or guarded on `ctx.<target>
-/// == null || ctx.<target> == ''`.
+/// Every `ctx.<target> = ctx.<array>[0];` a script writes.
 ///
 /// crowdstrike's correlation-detection alerts take the first of several
 /// source/destination/user lists this way -- unconditionally for a target
 /// nothing else could have set yet, guarded where an earlier processor might
-/// already have written one.
+/// already have written one. checkpoint_harmony_endpoint spells a third guard
+/// that UNWRAPS rather than selects: a value grok left as a one-element list
+/// becomes the scalar Elasticsearch stores.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FirstElement {
+    /// EVERY take the script writes, in the order it writes them.
+    ///
+    /// One script is not one take. checkpoint_harmony_endpoint unwraps
+    /// `host.os.name` and `host.os.version` in the same script, and reading
+    /// only the first `[0];` left `host.os.version` a one-element list on all
+    /// 19 of the source's events.
+    takes: Vec<FirstOf>,
+}
+
+/// One `ctx.<target> = ctx.<array>[0];` and the guard it sits under.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FirstOf {
     array: String,
     target: String,
+    /// Guarded on `ctx.<target> == null || ctx.<target> == ''`.
     only_if_unset: bool,
+    /// Guarded on `ctx.<array>.size() == 1`, so a longer list keeps every
+    /// element instead of losing all but the first.
+    only_if_single: bool,
 }
 
 fn parse_first_element(script: &str) -> Option<FirstElement> {
-    let at = script.find("[0];")?;
-    let before = &script[..at];
-    let array = clean_path(before[before.rfind("ctx.")? + "ctx.".len()..].trim());
+    let mut takes = Vec::new();
+    let mut from = 0;
+    while let Some(rel) = script[from..].find("[0];") {
+        let at = from + rel;
+        from = at + "[0];".len();
 
-    // The marker anchors on THIS array, so an earlier statement's own `=`
-    // (the `ctx.<container> = ctx.<container> ?: [:];` init) is not mistaken
-    // for the assignment.
-    let target = ctx_assignment_target_before(script, &format!(" = ctx.{array}[0];"))?;
+        // Anchored on THIS statement's own `ctx.`, so an earlier statement's
+        // `=` (the `ctx.<container> = ctx.<container> ?: [:];` init) is not
+        // mistaken for the assignment.
+        let Some(rhs_at) = script[..at].rfind("ctx.") else {
+            // Skipped, never failed: declining the whole script would drop the
+            // takes that DO parse, and those are what the claim is for.
+            continue;
+        };
+        let array = clean_path(script[rhs_at + "ctx.".len()..at].trim());
+        let Some(lhs) = script[..rhs_at].strip_suffix(" = ") else {
+            continue;
+        };
+        let Some(target_at) = lhs.rfind("ctx.") else {
+            continue;
+        };
+        let target = clean_path(lhs[target_at + "ctx.".len()..].trim());
 
-    let only_if_unset =
-        script.contains(&format!("if (ctx.{target} == null || ctx.{target} == '')"));
-    Some(FirstElement {
-        array,
-        target,
-        only_if_unset,
-    })
+        let only_if_unset =
+            script.contains(&format!("if (ctx.{target} == null || ctx.{target} == '')"));
+        let only_if_single = script.contains(&format!("ctx.{array}.size() == 1)"));
+        takes.push(FirstOf {
+            array,
+            target,
+            only_if_unset,
+            only_if_single,
+        });
+    }
+    if takes.is_empty() {
+        return None;
+    }
+    Some(FirstElement { takes })
 }
 
 fn run_first_element(event: &mut Event, pattern: &FirstElement) -> bool {
-    if pattern.only_if_unset && event.has_value(&pattern.target) {
-        return true;
-    }
-    let Some(Value::Array(items)) = event.get(&pattern.array) else {
-        return true;
-    };
-    if let Some(first) = items.first().cloned() {
-        let _ = event.set(&pattern.target, first);
+    for take in &pattern.takes {
+        if take.only_if_unset && event.has_value(&take.target) {
+            continue;
+        }
+        let first = match event.get(&take.array) {
+            // The script's own `size() == 1` guard. Painless leaves a longer
+            // list alone, and taking its first element would drop the rest.
+            Some(Value::Array(items)) if !(take.only_if_single && items.len() != 1) => {
+                match items.first() {
+                    Some(first) => first.clone(),
+                    None => continue,
+                }
+            }
+            _ => continue,
+        };
+        let _ = event.set(&take.target, first);
     }
     true
 }

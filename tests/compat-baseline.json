@@ -67,7 +67,7 @@
     "ceph": { "events": 8, "events_total": 9, "fields_wrong": 1 },
     "checkpoint": { "events": 109, "events_total": 111, "fields_wrong": 3 },
     "checkpoint_email": { "events": 18, "events_total": 18, "fields_wrong": 0 },
-    "checkpoint_harmony_endpoint": { "events": 0, "events_total": 19, "fields_wrong": 19 },
+    "checkpoint_harmony_endpoint": { "events": 19, "events_total": 19, "fields_wrong": 0 },
     "cisa_kevs": { "events": 3, "events_total": 3, "fields_wrong": 0 },
     "cisco_aironet": { "events": 74, "events_total": 116, "fields_wrong": 196 },
     "cisco_asa": { "events": 510, "events_total": 512, "fields_wrong": 20 },
