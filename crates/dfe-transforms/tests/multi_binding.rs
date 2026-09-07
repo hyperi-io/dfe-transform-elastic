@@ -25,6 +25,9 @@ use dfe_runtime::painless_plan::PainlessPlan;
 
 /// Scripts binding to more than one pattern, as of 2026-09-07.
 ///
+/// An arm whose every claimant binds to it ALONE does not move this, so a
+/// ladder edit is not on its own a reason to expect the number to change.
+///
 /// **Not a defect count.** Where the first pattern DECLINES, dispatch falls
 /// through and the second runs correctly -- 20 of these are
 /// `SentinelRemoval + SentinelRemovalLiteral`, and the params half declines on
@@ -35,7 +38,7 @@ use dfe_runtime::painless_plan::PainlessPlan;
 /// on ordinary parity work. A RISE means a script that used to resolve to one
 /// matcher now resolves to two -- check whether the first returns `true`
 /// without doing the whole job, which is how gdacs lost `BranchCopies`.
-const MULTI_BINDING: usize = 62;
+const MULTI_BINDING: usize = 63;
 
 /// The `cached_painless!` literals a generated file holds, in full.
 ///

@@ -2753,6 +2753,27 @@ fn run_mapping_row(event: &mut Event, pattern: &MappingRow, params: &Map<String,
     true
 }
 
+/// What a column writes when its row member is absent, null or an empty list.
+///
+/// The plain `ctx.<target> = <row>.<member>` form writes whatever the member
+/// holds and skips only an explicit null. Where the script routes the member
+/// through a list accumulator instead, three more answers become possible and
+/// the difference is the whole value written: `jamf_pro`'s `event.type` reads
+/// `['info']` from an EMPTY column and `event.category` is not written at all.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum EmptyColumn {
+    /// Not accumulated: write the member as it stands, skip an explicit null.
+    Verbatim,
+    /// Accumulated, and an empty accumulator is written as the empty list.
+    Empty,
+    /// Accumulated, and an empty accumulator is not written --
+    /// `if (!cats.isEmpty()) { ctx.event.category = cats; }`.
+    Skip,
+    /// Accumulated, and an empty accumulator is filled first --
+    /// `if (types.isEmpty()) { types.add('info'); }`.
+    Fill(Value),
+}
+
 /// One column a row fans out, and where it lands.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RowColumn {
@@ -2761,6 +2782,8 @@ pub struct RowColumn {
     /// The script guards the write on the target still being unset --
     /// `if (m.containsKey('outcome') && ctx.event.outcome == null)`.
     only_if_unset: bool,
+    /// What the script writes where the member carries nothing.
+    empty: EmptyColumn,
 }
 
 /// A row of a NAMED params table fanned onto ctx, with a whole set of literal
@@ -3030,6 +3053,7 @@ fn guarded_columns(block: &str, row: &str) -> (Vec<RowColumn>, String) {
                 target,
                 member,
                 only_if_unset: test.contains("== null"),
+                empty: EmptyColumn::Verbatim,
             });
         }
         rest = after;
@@ -3037,6 +3061,224 @@ fn guarded_columns(block: &str, row: &str) -> (Vec<RowColumn>, String) {
 
     plain.push_str(rest);
     (columns, plain)
+}
+
+/// A list local the script builds from one row member before writing it.
+struct Accumulator {
+    /// The row member `addAll` feeds it, once one is seen.
+    member: Option<String>,
+    /// What an `isEmpty` fallback puts in it, once one is seen.
+    fill: Option<Value>,
+    /// Whether a write has consumed it, which is what makes the local
+    /// accounted for.
+    written: bool,
+}
+
+/// The local a `def <local> = new ArrayList();` statement opens.
+///
+/// The EMPTY parens are the whole trigger: `new ArrayList(m.category)` is the
+/// kolide form, which copies a member rather than accumulating one, and
+/// reading it as an accumulator would leave the copy unwritten.
+fn opened_accumulator(statement: &str) -> Option<String> {
+    let (local, value) = statement.trim().strip_prefix("def ")?.split_once('=')?;
+    let local = local.trim();
+    if value.trim() != "new ArrayList()"
+        || local.is_empty()
+        || !local.chars().all(|c| c.is_alphanumeric() || c == '_')
+    {
+        return None;
+    }
+    Some(local.to_string())
+}
+
+/// The value a `{ L.add(<literal>); ... }` block leaves in an empty `L`.
+fn added_literals(block: &str, local: &str) -> Option<Value> {
+    let opens = format!("{local}.add(");
+    let mut members = Vec::new();
+    for statement in block.split(';') {
+        let statement = skip_trivia(statement);
+        if statement.is_empty() {
+            continue;
+        }
+        let inner = statement.strip_prefix(opens.as_str())?.strip_suffix(')')?;
+        members.push(literal_value(inner)?);
+    }
+    (!members.is_empty()).then(|| Value::Array(members))
+}
+
+/// The columns a script accumulates into a list local before writing them.
+///
+/// ```painless
+/// def cats = new ArrayList();
+/// def types = new ArrayList();
+/// if (entry.category != null) { cats.addAll(entry.category); }
+/// if (entry.type != null) { types.addAll(entry.type); }
+/// if (types.isEmpty()) { types.add('info'); }
+/// if (!cats.isEmpty()) { ctx.event.category = cats; }
+/// ctx.event.type = types;
+/// ```
+///
+/// Every statement this reads is cut out of the returned block, so the plain
+/// scan after it neither takes a write without its guard nor trips the
+/// caller's `if (` bail-out on a guard already accounted for. It declines any
+/// block it cannot account for whole, because a claim that reproduces some
+/// columns and drops the rest leaves no error behind.
+fn accumulated_columns(block: &str, row: &str) -> Option<(Vec<RowColumn>, String)> {
+    let mut opened: Vec<(String, Accumulator)> = Vec::new();
+    let mut columns = Vec::new();
+    let mut plain = String::with_capacity(block.len());
+    let mut rest = block;
+
+    while !rest.is_empty() {
+        let head = skip_trivia(rest);
+        plain.push_str(&rest[..rest.len() - head.len()]);
+        rest = head;
+        if rest.is_empty() {
+            break;
+        }
+
+        // `if (<test>) { <body> }`, which is where every accumulator statement
+        // but the bare write lives.
+        if let Some(after_if) = rest.strip_prefix("if")
+            && let Some((test, after)) = balanced(skip_trivia(after_if), '(', ')')
+            && let Some((body, after)) = balanced(skip_trivia(after), '{', '}')
+        {
+            let taken = read_accumulator_guard(test, body, row, &mut opened, &mut columns);
+            if !taken {
+                plain.push_str(&rest[..rest.len() - after.len()]);
+            }
+            rest = after;
+            continue;
+        }
+
+        // Anything else is a statement: the `def <local> = new ArrayList();`
+        // that opens an accumulator, or the unguarded `ctx.<t> = <local>;`
+        // that closes one.
+        let (statement, after) = match rest.split_once(';') {
+            Some((statement, after)) => (statement, after),
+            None => (rest, ""),
+        };
+        let taken = match opened_accumulator(statement) {
+            Some(local) => {
+                if opened.iter().any(|(name, _)| *name == local) {
+                    return None;
+                }
+                opened.push((
+                    local,
+                    Accumulator {
+                        member: None,
+                        fill: None,
+                        written: false,
+                    },
+                ));
+                true
+            }
+            None => read_accumulator_write(statement, &mut opened, &mut columns, false),
+        };
+        if !taken {
+            plain.push_str(&rest[..rest.len() - after.len()]);
+        }
+        rest = after;
+    }
+
+    // A local fed from the row but never written, or one the block still
+    // names after the walk, means the model of the block is incomplete. A
+    // local nothing ever fed is dead and drops without loss.
+    for (local, state) in &opened {
+        if (state.member.is_some() && !state.written) || plain.contains(local.as_str()) {
+            return None;
+        }
+    }
+    Some((columns, plain))
+}
+
+/// Read one `if (<test>) { <body> }` as an accumulator statement, reporting
+/// whether it was one.
+fn read_accumulator_guard(
+    test: &str,
+    body: &str,
+    row: &str,
+    opened: &mut [(String, Accumulator)],
+    columns: &mut Vec<RowColumn>,
+) -> bool {
+    let test = test.trim();
+
+    // `if (<row>.<member> != null) { <local>.addAll(<row>.<member>); }`
+    if let Some(member) = test
+        .strip_prefix(&format!("{row}."))
+        .and_then(|rest| rest.strip_suffix("!= null").map(str::trim_end))
+        .filter(|member| member.chars().all(|c| c.is_alphanumeric() || c == '_'))
+        && let Some((local, _)) = skip_trivia(body).split_once(".addAll(")
+        && skip_trivia(body).trim_end().trim_end_matches(';')
+            == format!("{local}.addAll({row}.{member})")
+        && let Some((_, state)) = opened.iter_mut().find(|(name, _)| name == local)
+        && state.member.is_none()
+    {
+        state.member = Some(member.to_string());
+        return true;
+    }
+
+    // `if (<local>.isEmpty()) { <local>.add('info'); }`
+    if let Some(local) = test.strip_suffix(".isEmpty()")
+        && let Some((_, state)) = opened.iter_mut().find(|(name, _)| name == local)
+        && state.fill.is_none()
+        && let Some(filled) = added_literals(body, local)
+    {
+        state.fill = Some(filled);
+        return true;
+    }
+
+    // `if (!<local>.isEmpty()) { ctx.<target> = <local>; }`
+    if let Some(local) = test
+        .strip_prefix('!')
+        .and_then(|rest| rest.trim_start().strip_suffix(".isEmpty()"))
+        && opened.iter().any(|(name, _)| name == local)
+    {
+        return read_accumulator_write(body, opened, columns, true);
+    }
+
+    false
+}
+
+/// Read a `ctx.<target> = <local>` statement as an accumulator's write,
+/// reporting whether it was one.
+fn read_accumulator_write(
+    statement: &str,
+    opened: &mut [(String, Accumulator)],
+    columns: &mut Vec<RowColumn>,
+    guarded: bool,
+) -> bool {
+    let Some((target, local)) = statement.trim().trim_end_matches(';').split_once('=') else {
+        return false;
+    };
+    let Some(target) = target.trim().strip_prefix("ctx.") else {
+        return false;
+    };
+    let local = local.trim();
+    let Some((_, state)) = opened.iter_mut().find(|(name, _)| name == local) else {
+        return false;
+    };
+    // A local written before anything fed it from the row does not depend on
+    // the row at all, and reproducing it as a column would invent a member.
+    let (Some(member), false) = (state.member.clone(), state.written) else {
+        return false;
+    };
+
+    columns.push(RowColumn {
+        target: clean_path(target),
+        member,
+        only_if_unset: false,
+        // A fill runs before the write, so it settles the empty case whatever
+        // the guard says. Without one, the guard separates writing nothing
+        // from writing `[]`.
+        empty: match (state.fill.clone(), guarded) {
+            (Some(filled), _) => EmptyColumn::Fill(filled),
+            (None, true) => EmptyColumn::Skip,
+            (None, false) => EmptyColumn::Empty,
+        },
+    });
+    state.written = true;
+    true
 }
 
 /// Read the key, the table and both branches off the script.
@@ -3114,6 +3356,8 @@ fn parse_row_or_defaults(script: &str) -> Option<RowOrDefaults> {
     }
 
     let (mut columns, plain) = guarded_columns(then, &row);
+    let (accumulated, plain) = accumulated_columns(&plain, &row)?;
+    columns.extend(accumulated);
     // Every conditional in the branch has to have been one of those columns,
     // or the scan below reads a guarded write without its guard.
     if plain.contains("if (") {
@@ -3144,6 +3388,7 @@ fn parse_row_or_defaults(script: &str) -> Option<RowOrDefaults> {
             target: clean_path(target.trim()),
             member,
             only_if_unset: false,
+            empty: EmptyColumn::Verbatim,
         });
     }
     if columns.is_empty() {
@@ -3183,11 +3428,37 @@ fn run_row_or_defaults(
         if column.only_if_unset && event.has_value(&column.target) {
             continue;
         }
-        if let Some(held) = row.get(&column.member).filter(|v| !v.is_null()) {
-            let _ = event.set(&column.target, held.clone());
+        let held = row.get(&column.member).filter(|value| !value.is_null());
+        let written = match &column.empty {
+            EmptyColumn::Verbatim => held.cloned(),
+            rule => accumulated_value(held, rule),
+        };
+        if let Some(written) = written {
+            let _ = event.set(&column.target, written);
         }
     }
     true
+}
+
+/// What an accumulated column writes for the member it read.
+///
+/// `addAll` takes a collection, so the write is always a LIST -- a scalar
+/// member is wrapped rather than dropped, which is the closest reading of a
+/// table Painless itself would throw on.
+fn accumulated_value(held: Option<&Value>, rule: &EmptyColumn) -> Option<Value> {
+    let members = match held {
+        Some(Value::Array(members)) => members.clone(),
+        Some(other) => vec![other.clone()],
+        None => Vec::new(),
+    };
+    if !members.is_empty() {
+        return Some(Value::Array(members));
+    }
+    match rule {
+        EmptyColumn::Fill(filled) => Some(filled.clone()),
+        EmptyColumn::Empty => Some(Value::Array(members)),
+        EmptyColumn::Skip | EmptyColumn::Verbatim => None,
+    }
 }
 
 /// A row of a NAMED params table merged WHOLE onto ctx, with further params

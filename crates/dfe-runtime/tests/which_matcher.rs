@@ -91,6 +91,23 @@ const INFOBLOX_SEVERITY: &str = "ctx.event = ctx.event ?: [:];\\nif (ctx.infoblo
 /// Verbatim from the same file, the processor above the severity ladder.
 const INFOBLOX_MESSAGE_QUOTES: &str = r#"if (ctx.cef.extensions.containsKey('message') && ctx.cef.extensions.message != null && ctx.cef.extensions.message instanceof String) {\n  if (ctx.cef.extensions.message.startsWith('\"') && ctx.cef.extensions.message.endsWith('\"') && ctx.cef.extensions.message.length() >= 2) {\n    ctx.cef.extensions.message = ctx.cef.extensions.message.substring(1, ctx.cef.extensions.message.length() - 1);\n  }\n}\n"#;
 
+/// The four generated call sites in
+/// `crates/dfe-transforms/src/filebeat/falco_alerts/default.rs`, which are the
+/// whole of falco's parity debt. sysdig_alerts ships the technique script over
+/// its own tag list.
+const FALCO_MOUNTS: &str = r#"if (ctx.falco.output_fields?.container?.mounts != null) {\n    def mountsString = ctx.falco.output_fields.container.mounts;\n    def mountItems = mountsString.splitOnToken(' ');            \n    def mountsList = [];\n    for (int i = 0; i < mountItems.length; i++) {\n        def mountItem = mountItems[i];\n        def parts = mountItem.splitOnToken(':');\n        def mountRecord = [:];\n        mountRecord.source = parts.length > 0 ? parts[0] : null;\n        mountRecord.dest = parts.length > 1 ? parts[1] : null;\n        mountRecord.mode = parts.length > 2 ? parts[2] : null;\n        mountRecord.rdrw = parts.length > 3 ? parts[3] : null;\n        mountRecord.propagation = parts.length > 4 ? parts[4] : null;\n        mountsList.add(mountRecord);\n    }\n    ctx['falco.container.mounts'] = mountsList;\n} else {\n    ctx['falco.container.mounts'] = null;\n}\n"#;
+
+const FALCO_TECHNIQUE: &str = r#"def mitreRegex = /T\\d{4}/;\nfor (int i = 0; i < ctx?.falco?.tags.length; i++) {\n    def tag = ctx?.falco?.tags[i];\n    def matcher = mitreRegex.matcher(tag);\n    if (matcher.find()) {\n        ctx['threat.technique.id'] = [matcher.group()];\n        break;\n    }\n}\n"#;
+
+const FALCO_ISO8601: &str = r#"if (ctx.falco?.output_fields?.evt?.time != null) {\n    def timeField = ctx.falco.output_fields.evt.time;\n    def inputFormat = new SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSSZ\");\n        if (timeField.iso8601 != null) {\n            if (timeField.iso8601 instanceof String) {\n                def formatted = inputFormat.parse(timeField.iso8601);\n                ctx['@timestamp'] = formatted;\n                ctx.falco.output_fields.evt.time.iso8601 = formatted;\n            } else if (timeField.iso8601 instanceof Long) {\n                long milliseconds = timeField.iso8601 / 1000000;\n                ctx['@timestamp'] = new Date(milliseconds);\n                ctx.falco.output_fields.evt.time.iso8601 = milliseconds;\n            }\n        } else if (timeField.rawtime != null) {\n            if (timeField.rawtime instanceof String) {\n                def formatted = inputFormat.parse(timeField.rawtime);\n                ctx['@timestamp'] = formatted;\n            } else if (timeField.rawtime instanceof Long) {\n                long milliseconds = timeField.rawtime / 1000000;\n                ctx['@timestamp'] = new Date(milliseconds);\n            }\n        } else {\n            if (timeField instanceof String) {\n                def formatted = inputFormat.parse(timeField);\n                ctx['@timestamp'] = formatted;\n            } else if (timeField instanceof Long) {\n                long milliseconds = timeField / 1000000;\n                ctx['@timestamp'] = new Date(milliseconds);\n            }\n        }\n} else {\n    def timeField = ctx.falco.output_fields.event.time;\n    def inputFormat = new SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSSZ\");\n    if (ctx.falco?.output_fields?.event?.time != null) {\n      if (timeField instanceof String) {\n          def formatted = inputFormat.parse(timeField);\n          ctx['@timestamp'] = formatted;\n      } else if (timeField instanceof Long) {\n          long milliseconds = timeField / 1000000;\n          ctx['@timestamp'] = new Date(milliseconds);\n      }\n    }\n}\n"#;
+
+const FALCO_ARGS: &str = r#"if (ctx.falco.output_fields?.proc?.exepath != null && ctx.falco.output_fields?.proc?.args != null) {\n    def path = ctx.falco.output_fields.proc.exepath;\n    def args = ctx.falco.output_fields.proc.args;\n    def argItems = args.splitOnToken(' ');\n    def finalList = [];\n    finalList.add(path);\n    for (int i = 0; i < argItems.length; i++) {\n        finalList.add(argItems[i]);\n    }\n    ctx['process']['args'] = finalList;\n}\n"#;
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/jamf_pro_events/default.rs`, which is
+/// `pipelines/jamf_pro/events/default.yml`.
+const JAMF_PRO_CATEGORIES: &str = r#"def action = ctx.event?.action;\nif (action == null) {\n  return;\n}\ndef entry = params.actions.get(action);\nif (entry == null) {\n  return;\n}\ndef cats = new ArrayList();\ndef types = new ArrayList();\nif (entry.category != null) { cats.addAll(entry.category); }\nif (entry.type != null) { types.addAll(entry.type); }\nif (types.isEmpty()) { types.add('info'); }\nctx.event = ctx.event ?: [:];\nif (!cats.isEmpty()) { ctx.event.category = cats; }\nctx.event.type = types;"#;
+
 /// The matcher names a script binds to, most specific first.
 fn binding(script: &str) -> Vec<String> {
     PainlessPlan::new(script).binding()
@@ -218,6 +235,32 @@ fn the_wiz_configuration_url_stays_with_the_concat_assignment_arm() {
 }
 
 #[test]
+fn the_jamf_pro_categories_bind_to_the_row_lookup_with_both_empty_rules() {
+    // The binding was EMPTY, and the whole source read as needing polish: 22 of
+    // its 24 captures were short by `event.category` and `event.type` alone.
+    // Both writes are LISTS, and the two columns take different answers to an
+    // empty one -- `category` is not written, `type` reads `['info']`.
+    let held = binding(JAMF_PRO_CATEGORIES).join(" ");
+    assert!(held.starts_with("RowOrDefaults"), "{held}");
+    assert!(held.contains(r#"subject: "event.action""#), "{held}");
+    assert!(held.contains(r#"table: "actions""#), "{held}");
+    assert!(
+        held.contains(
+            r#"target: "event.category", member: "category", only_if_unset: false, empty: Skip"#
+        ),
+        "{held}"
+    );
+    assert!(
+        held.contains(
+            r#"target: "event.type", member: "type", only_if_unset: false, empty: Fill(Array [String("info")])"#
+        ),
+        "{held}"
+    );
+    // An action with no row writes nothing at all -- the script returns early.
+    assert!(held.contains("defaults: []"), "{held}");
+}
+
+#[test]
 fn report_the_endace_binding() {
     println!(
         "endace half-timedelta: {:?}",
@@ -297,6 +340,37 @@ fn the_infoblox_message_quotes_bind_to_the_strip_and_not_to_guarded_copy() {
     assert!(held.contains(r#"field: "cef.extensions.message""#), "{held}");
     assert!(held.contains(&format!("open: {:?}", '"')), "{held}");
     assert!(held.contains(&format!("close: {:?}", '"')), "{held}");
+}
+
+#[test]
+fn falco_binds_all_four_of_its_scripts_to_their_own_matchers() {
+    // The mounts and args arms sit ABOVE `AppendEach`, whose arm returns
+    // whether or not its own parse succeeded. Below it both scripts bind to
+    // nothing at all, which is where falco's 22 events went.
+    let held = binding(FALCO_MOUNTS).join(" ");
+    assert!(held.starts_with("SplitIntoRecords"), "{held}");
+    assert!(held.contains("null_when_absent: true"), "{held}");
+    assert!(held.contains(r#"("propagation", 4)"#), "{held}");
+
+    let held = binding(FALCO_ARGS).join(" ");
+    assert!(held.starts_with("PrependSplit"), "{held}");
+    assert!(
+        held.contains(r#"head: "falco.output_fields.proc.exepath""#),
+        "{held}"
+    );
+
+    let held = binding(FALCO_TECHNIQUE).join(" ");
+    assert!(held.starts_with("FirstMatchInList"), "{held}");
+    assert!(held.contains(r#"list: "falco.tags""#), "{held}");
+    assert!(held.contains("wrap_in_list: true"), "{held}");
+
+    let held = binding(FALCO_ISO8601).join(" ");
+    assert!(held.starts_with("LongDivide"), "{held}");
+    assert!(held.contains("divisor: 1000000"), "{held}");
+    assert!(
+        held.contains(r#"target: "falco.output_fields.evt.time.iso8601""#),
+        "{held}"
+    );
 }
 
 #[test]

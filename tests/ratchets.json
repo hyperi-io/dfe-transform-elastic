@@ -1,6 +1,6 @@
 {
   "_why": "Counts over the GENERATED TREE that may only go down, written by the test that measures them under DFE_UPDATE_RATCHETS=1. A ratchet moves on every improvement, so it lives here rather than as a constant a person retypes with a changelog beside it. A FLOOR -- proof that a scan was not empty -- stays a const, because it moves only on a structural change. Corpus-scoped numbers belong in compat-baseline.json, which is skipped on a provenance mismatch.",
-  "dead_branch_sites": 193,
+  "dead_branch_sites": 191,
   "sources_without_fixtures": 130,
   "skipped_processors": 13,
   "skipped_drops": 2,

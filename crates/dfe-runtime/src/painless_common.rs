@@ -10461,14 +10461,14 @@ fn try_crowdstrike_timeline_entity_accounts(event: &mut Event) -> bool {
 /// crowdstrike's correlation-detection alerts take the first of several
 /// source/destination/user lists this way -- unconditionally for a target
 /// nothing else could have set yet, guarded where an earlier processor might
-/// already have written one. checkpoint_harmony_endpoint spells a third guard
+/// already have written one. `checkpoint_harmony_endpoint` spells a third guard
 /// that UNWRAPS rather than selects: a value grok left as a one-element list
 /// becomes the scalar Elasticsearch stores.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FirstElement {
     /// EVERY take the script writes, in the order it writes them.
     ///
-    /// One script is not one take. checkpoint_harmony_endpoint unwraps
+    /// One script is not one take. `checkpoint_harmony_endpoint` unwraps
     /// `host.os.name` and `host.os.version` in the same script, and reading
     /// only the first `[0];` left `host.os.version` a one-element list on all
     /// 19 of the source's events.
@@ -16517,6 +16517,385 @@ fn run_move_keys(event: &mut Event, moves: &[(String, String)]) -> bool {
     true
 }
 
+/// `def <name> = <receiver>.splitOnToken('<separator>')`, as its three parts.
+fn split_binding(statement: &str) -> Option<(&str, &str, String)> {
+    let (name, value) = statement.strip_prefix("def ")?.split_once(" = ")?;
+    let (receiver, arguments) = value.split_once(".splitOnToken(")?;
+    Some((name.trim(), receiver.trim(), quoted_first(arguments)?))
+}
+
+/// A delimited string cut into a LIST OF RECORDS.
+///
+/// The outer separator cuts items and the inner one cuts each item into
+/// positional members, whose NAMES come off the script because the vendor
+/// writes one ternary per position. falco's `container.mounts` is the pattern:
+/// `<source>:<dest>:<mode>:<rdrw>:<propagation>` per mount, space separated.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct SplitIntoRecords {
+    source: String,
+    target: String,
+    outer: String,
+    inner: String,
+    /// Member name and the position in the item it reads, in the order the
+    /// script assigns them. A position the item does not reach is written
+    /// null, which is what `parts.length > N ? parts[N] : null` says.
+    ///
+    /// Painless `[:]` is a `HashMap`, so what Elasticsearch iterates is the
+    /// hash's order rather than the writer's. Nothing here can settle which,
+    /// because `compat.py` writes its captures with `sort_keys=True` and the
+    /// comparison holds two maps equal whatever their key order -- so the
+    /// order the vendor WROTE is what is kept.
+    members: Vec<(String, usize)>,
+    /// The `else` arm writes an explicit null rather than leaving the target
+    /// absent. Elasticsearch stores that null and `has_value` fails it, so an
+    /// absent field and a null one are not the same document.
+    null_when_absent: bool,
+}
+
+/// Read both splits, the record's members and the target off the script.
+fn parse_split_into_records(script: &str) -> Option<SplitIntoRecords> {
+    let statements: Vec<&str> = script.split([';', '\n']).map(str::trim).collect();
+
+    // The two locals the loop fills: the record, and the list it is added to.
+    let record = statements
+        .iter()
+        .find_map(|statement| statement.strip_prefix("def ")?.strip_suffix(" = [:]"))?;
+    let list = statements
+        .iter()
+        .find_map(|statement| statement.strip_prefix("def ")?.strip_suffix(" = []"))?;
+
+    let splits: Vec<(&str, &str, String)> = statements
+        .iter()
+        .filter_map(|statement| split_binding(statement))
+        .collect();
+    if splits.len() != 2 {
+        return None;
+    }
+
+    // Which split is the OUTER one is decided by what it READS -- the document
+    // for the outer, a local for the inner -- not by which comes first.
+    let outer_at = (0..2).find(|at| resolve_subject(script, splits[*at].1, 3).is_some())?;
+    let inner_at = 1 - outer_at;
+    let source = resolve_subject(script, splits[outer_at].1, 3)?;
+    // The inner split has to cut an ITEM of the outer one. Two splits over
+    // unrelated values would build a record from parts that never shared an
+    // item.
+    if !local_expression(script, splits[inner_at].1)?
+        .trim_start()
+        .starts_with(splits[outer_at].0)
+    {
+        return None;
+    }
+
+    let subscript = format!("{}[", splits[inner_at].0);
+    let prefix = format!("{record}.");
+    let mut members = Vec::new();
+    for statement in &statements {
+        let Some(rest) = statement.strip_prefix(prefix.as_str()) else {
+            continue;
+        };
+        let (name, value) = rest.split_once(" = ")?;
+        // A member read some other way is a script this cannot reproduce, and
+        // half a record is worse than none of it.
+        let index = value
+            .split_once(subscript.as_str())?
+            .1
+            .split(']')
+            .next()?
+            .trim()
+            .parse::<usize>()
+            .ok()?;
+        members.push((name.trim().to_string(), index));
+    }
+    if members.is_empty() {
+        return None;
+    }
+
+    let store = format!(" = {list}");
+    let target = statements
+        .iter()
+        .find(|statement| statement.ends_with(store.as_str()))
+        .and_then(|statement| painless_path(statement))?;
+    let null_when_absent = statements.iter().any(|statement| {
+        statement.ends_with(" = null") && painless_path(statement).as_deref() == Some(&target)
+    });
+
+    Some(SplitIntoRecords {
+        source,
+        target,
+        outer: splits[outer_at].2.clone(),
+        inner: splits[inner_at].2.clone(),
+        members,
+        null_when_absent,
+    })
+}
+
+/// Cut the source twice and write the records, or the else arm's null.
+fn run_split_into_records(event: &mut Event, pattern: &SplitIntoRecords) -> bool {
+    let Some(text) = event.get_string(&pattern.source) else {
+        if pattern.null_when_absent {
+            let _ = event.set(&pattern.target, Value::Null);
+        }
+        return true;
+    };
+    let records: Vec<Value> = text
+        .split(pattern.outer.as_str())
+        .map(|item| {
+            let parts: Vec<&str> = item.split(pattern.inner.as_str()).collect();
+            let record: Map<String, Value> = pattern
+                .members
+                .iter()
+                .map(|(name, at)| {
+                    (
+                        name.clone(),
+                        parts.get(*at).map_or(Value::Null, |part| json!(part)),
+                    )
+                })
+                .collect();
+            Value::Object(record)
+        })
+        .collect();
+    let _ = event.set(&pattern.target, Value::Array(records));
+    true
+}
+
+/// The first list member a regex finds a match in, and WHAT it matched.
+///
+/// `matcher.find()` is a substring search and `group()` is the matched text
+/// rather than the member: falco's tag `mitre_T1555_credential_access` yields
+/// `T1555`. The walk stops at the first member that matches, because the
+/// script breaks out of its loop.
+#[derive(Debug, Clone)]
+pub(crate) struct FirstMatchInList {
+    list: String,
+    target: String,
+    /// The regex as the script spells it. `Regex` carries no equality of its
+    /// own, so this is what the two impls below compare.
+    pattern: String,
+    matcher: regex::Regex,
+    /// The script wraps the match in a one-element list.
+    wrap_in_list: bool,
+}
+
+impl PartialEq for FirstMatchInList {
+    fn eq(&self, other: &Self) -> bool {
+        self.list == other.list
+            && self.target == other.target
+            && self.pattern == other.pattern
+            && self.wrap_in_list == other.wrap_in_list
+    }
+}
+
+impl Eq for FirstMatchInList {}
+
+/// `def <rx> = /<pattern>/;` walked over a list, the first match written out.
+///
+/// The regex is COMPILED here, once per call site: Rust's `regex` has no
+/// lookaround or backreferences where Java's does, so a pattern that will not
+/// build declines the script instead of panicking on the first event to reach
+/// it.
+fn parse_first_match_in_list(script: &str) -> Option<FirstMatchInList> {
+    let statements: Vec<&str> = script.split([';', '\n']).map(str::trim).collect();
+
+    let pattern = statements.iter().find_map(|statement| {
+        let value = statement.strip_prefix("def ")?.split_once(" = ")?.1.trim();
+        value.strip_prefix('/')?.strip_suffix('/')
+    })?;
+    let matcher = regex::Regex::new(pattern).ok()?;
+
+    // What `matcher(...)` was handed, and the list that local indexes.
+    //
+    // The `?.` is dropped before the read because `painless_path` finds a root
+    // spelled `ctx.` or `ctx[` and falco writes `ctx?.falco?.tags`, which is
+    // neither -- it skips a `?` inside a path but not at the root.
+    let subject = script.split_once(".matcher(")?.1.split_once(')')?.0.trim();
+    let indexed = local_expression(script, subject)?.trim();
+    let list = painless_path(&indexed.rsplit_once('[')?.0.replace("?.", "."))?;
+
+    let assignment = statements
+        .iter()
+        .find(|statement| statement.contains(".group()"))?;
+    let (head, value) = split_assignment_once(assignment)?;
+
+    Some(FirstMatchInList {
+        list,
+        target: painless_path(head)?,
+        pattern: pattern.to_string(),
+        matcher,
+        wrap_in_list: value.trim().starts_with('['),
+    })
+}
+
+/// Write what the first matching member matched, or nothing at all.
+fn run_first_match_in_list(event: &mut Event, pattern: &FirstMatchInList) -> bool {
+    let Some(Value::Array(items)) = event.get(&pattern.list) else {
+        return true;
+    };
+    let Some(found) = items
+        .iter()
+        .filter_map(Value::as_str)
+        .find_map(|item| pattern.matcher.find(item))
+        .map(|found| found.as_str().to_string())
+    else {
+        return true;
+    };
+    let value = if pattern.wrap_in_list {
+        Value::Array(vec![json!(found)])
+    } else {
+        json!(found)
+    };
+    let _ = event.set(&pattern.target, value);
+    true
+}
+
+/// An integer field divided by a literal and written back, through a local.
+///
+/// [`parse_guarded_divide`] reads the divide written inline in the assignment;
+/// this reads the one written through a local, which is the form a script must
+/// use when it needs the quotient twice. falco's `evt.time.iso8601` is
+/// nanoseconds, and the quotient is both that field and the `@timestamp`
+/// beside it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct LongDivide {
+    source: String,
+    target: String,
+    divisor: i64,
+}
+
+/// `<type> <local> = <expr> / <literal>; ctx.<target> = <local>;`
+fn parse_long_divide(script: &str) -> Option<LongDivide> {
+    for statement in script.split([';', '\n']).map(str::trim) {
+        let Some((head, value)) = split_assignment_once(statement) else {
+            continue;
+        };
+        // A bare local on the right, which is what makes this the two-statement
+        // form rather than the inline one.
+        let local = value.trim();
+        if local.is_empty()
+            || !local.chars().all(|c| c.is_alphanumeric() || c == '_')
+            || local.starts_with(|c: char| c.is_ascii_digit())
+        {
+            continue;
+        }
+        let (Some(target), Some(bound)) = (painless_path(head), local_expression(script, local))
+        else {
+            continue;
+        };
+        let Some((expression, divisor)) = bound.rsplit_once('/') else {
+            continue;
+        };
+        // A plain integer divisor only. A fractional one gives a fractional
+        // result, which is a different type from the one this writes.
+        let Some(divisor) = divisor
+            .trim()
+            .trim_end_matches(['L', 'l'])
+            .parse::<i64>()
+            .ok()
+            .filter(|literal| *literal != 0)
+        else {
+            continue;
+        };
+        // The divide has to sit under the guard that says the value IS an
+        // integer, or the runner's own type test is a guess rather than the
+        // script's.
+        let expression = expression.trim();
+        if !script.contains(&format!("{expression} instanceof Long")) {
+            continue;
+        }
+        let Some(source) = resolve_subject(script, expression, 3) else {
+            continue;
+        };
+        return Some(LongDivide {
+            source,
+            target,
+            divisor,
+        });
+    }
+    None
+}
+
+/// Divide and write back, but only where the value really is an integer.
+///
+/// `as_i64` IS the script's `instanceof Long` guard. A string there takes the
+/// date-parsing branch, which is deliberately not carried -- writing nothing
+/// beats guessing at a Java `Date`'s serialisation.
+fn run_long_divide(event: &mut Event, pattern: &LongDivide) -> bool {
+    let Some(value) = event.get(&pattern.source).and_then(Value::as_i64) else {
+        return true;
+    };
+    let _ = event.set(&pattern.target, json!(value / pattern.divisor));
+    true
+}
+
+/// A list led by one field, then every part of a second field's split.
+///
+/// falco's `process.args` is the executable's path followed by its argument
+/// string cut on spaces. Both fields are required, which is the script's own
+/// two-clause guard.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct PrependSplit {
+    head: String,
+    list: String,
+    separator: String,
+    target: String,
+}
+
+/// `<out>.add(ctx.<head>); for (...) { <out>.add(<items>[i]); } ctx.<t> = <out>;`
+fn parse_prepend_split(script: &str) -> Option<PrependSplit> {
+    let statements: Vec<&str> = script.split([';', '\n']).map(str::trim).collect();
+
+    let out = statements
+        .iter()
+        .find_map(|statement| statement.strip_prefix("def ")?.strip_suffix(" = []"))?;
+    let splits: Vec<(&str, &str, String)> = statements
+        .iter()
+        .filter_map(|statement| split_binding(statement))
+        .collect();
+    let [(items, receiver, separator)] = splits.as_slice() else {
+        return None;
+    };
+
+    // The two appends are not interchangeable: the FIRST is the scalar that
+    // leads and the second walks the split.
+    let append = format!("{out}.add(");
+    let appended: Vec<&str> = statements
+        .iter()
+        .filter_map(|statement| statement.strip_prefix(append.as_str())?.strip_suffix(')'))
+        .collect();
+    let [first, rest] = appended.as_slice() else {
+        return None;
+    };
+    if !rest.trim().starts_with(items) {
+        return None;
+    }
+
+    let store = format!(" = {out}");
+    Some(PrependSplit {
+        head: resolve_subject(script, first.trim(), 3)?,
+        list: resolve_subject(script, receiver, 3)?,
+        separator: separator.clone(),
+        target: statements
+            .iter()
+            .find(|statement| statement.ends_with(store.as_str()))
+            .and_then(|statement| painless_path(statement))?,
+    })
+}
+
+/// Build the list, and only where BOTH fields are there to build it from.
+fn run_prepend_split(event: &mut Event, pattern: &PrependSplit) -> bool {
+    let (Some(first), Some(text)) = (
+        event.get(&pattern.head).cloned(),
+        event.get_string(&pattern.list),
+    ) else {
+        return true;
+    };
+    let mut parts = Vec::with_capacity(text.matches(pattern.separator.as_str()).count() + 2);
+    parts.push(first);
+    parts.extend(text.split(pattern.separator.as_str()).map(|part| json!(part)));
+    let _ = event.set(&pattern.target, Value::Array(parts));
+    true
+}
+
 /// Check if a Painless script source matches a known pattern.
 ///
 /// Returns true if the script was handled, false if it should fall through
@@ -16887,6 +17266,14 @@ pub(crate) enum KnownPattern {
         destination: String,
         target: String,
     },
+    /// A delimited string cut twice, into a list of positional records.
+    SplitIntoRecords(Box<SplitIntoRecords>),
+    /// A list led by one field, then the parts of a second field's split.
+    PrependSplit(Box<PrependSplit>),
+    /// What a regex matched in the first list member it matched at all.
+    FirstMatchInList(Box<FirstMatchInList>),
+    /// An integer divided by a literal and written back, through a local.
+    LongDivide(Box<LongDivide>),
 }
 
 /// Copies that apply only where `guard` holds `literal`.
@@ -18493,6 +18880,33 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // The two below sit AHEAD of `AppendEach`, whose arm returns whether or not
+    // its own parse succeeded -- a deliberate stop, so every split-then-append
+    // script ends there. Both of these build a LOCAL list and store it, where
+    // `AppendEach` appends to a ctx path, so the two never read the same script.
+
+    // Pattern: a delimited string cut twice, into a list of positional records.
+    // Ahead of the prepend below, whose `.splitOnToken(` and `.add(` triggers
+    // this also spells.
+    if normalised.contains("[:]")
+        && normalised.contains(".splitOnToken(")
+        && let Some(pattern) = parse_split_into_records(normalised)
+    {
+        patterns.push(KnownPattern::SplitIntoRecords(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: a list led by one field, then the parts of a second field's
+    // split. `PrependToArray` reads the same idea written `.add(ctx.<path>)`
+    // over a list that is already one; this is the one built from a cut.
+    if normalised.contains(".splitOnToken(")
+        && normalised.contains(".add(")
+        && let Some(pattern) = parse_prepend_split(normalised)
+    {
+        patterns.push(KnownPattern::PrependSplit(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: flatten a field into an array, either by splitting a delimited
     // string or by joining each map's two keys. The source has to come BEFORE
     // the append -- you split, THEN add -- or the pair is two unrelated
@@ -18949,6 +19363,30 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = crate::painless_nth_separator::parse_nth_separator_prefix(normalised)
     {
         patterns.push(KnownPattern::NthSeparatorPrefix(Box::new(pattern)));
+        return patterns;
+    }
+
+    // The two below sit LAST, so each can only take a script nothing above
+    // took and neither can shadow a narrower arm.
+
+    // Pattern: what a regex matched in the first list member it matched at all.
+    if normalised.contains(".matcher(")
+        && normalised.contains(".find()")
+        && let Some(pattern) = parse_first_match_in_list(normalised)
+    {
+        patterns.push(KnownPattern::FirstMatchInList(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: an integer divided by a literal and written back through a
+    // local. Gated on the `instanceof Long` the parse then ties to the divided
+    // expression itself, so a script that divides something else under one is
+    // declined.
+    if normalised.contains("instanceof Long")
+        && normalised.contains('/')
+        && let Some(pattern) = parse_long_divide(normalised)
+    {
+        patterns.push(KnownPattern::LongDivide(Box::new(pattern)));
         return patterns;
     }
 
@@ -19585,6 +20023,10 @@ pub(crate) fn run_known_pattern(
         KnownPattern::NthSeparatorPrefix(pattern) => {
             crate::painless_nth_separator::nth_separator_prefix(event, pattern)
         }
+        KnownPattern::SplitIntoRecords(pattern) => run_split_into_records(event, pattern),
+        KnownPattern::PrependSplit(pattern) => run_prepend_split(event, pattern),
+        KnownPattern::FirstMatchInList(pattern) => run_first_match_in_list(event, pattern),
+        KnownPattern::LongDivide(pattern) => run_long_divide(event, pattern),
     }
 }
 

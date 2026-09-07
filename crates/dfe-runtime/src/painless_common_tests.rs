@@ -7182,3 +7182,177 @@ fn a_concat_assignment_declines_a_second_statement() {
         "ctx.a.id = ctx.a.b + '-' + ctx.a.c;\\nctx.a.b = null;"
     ));
 }
+
+/// falco's mounts string is two cuts deep, and the else arm writes an EXPLICIT
+/// null -- Elasticsearch stores that, so an absent field is a different
+/// document.
+#[test]
+fn a_mounts_string_becomes_a_list_of_records() {
+    let script = r#"if (ctx.falco.output_fields?.container?.mounts != null) {\n    def mountsString = ctx.falco.output_fields.container.mounts;\n    def mountItems = mountsString.splitOnToken(' ');            \n    def mountsList = [];\n    for (int i = 0; i < mountItems.length; i++) {\n        def mountItem = mountItems[i];\n        def parts = mountItem.splitOnToken(':');\n        def mountRecord = [:];\n        mountRecord.source = parts.length > 0 ? parts[0] : null;\n        mountRecord.dest = parts.length > 1 ? parts[1] : null;\n        mountRecord.mode = parts.length > 2 ? parts[2] : null;\n        mountRecord.rdrw = parts.length > 3 ? parts[3] : null;\n        mountRecord.propagation = parts.length > 4 ? parts[4] : null;\n        mountsList.add(mountRecord);\n    }\n    ctx['falco.container.mounts'] = mountsList;\n} else {\n    ctx['falco.container.mounts'] = null;\n}\n"#;
+    let normalised = normalise(script);
+    let pattern = parse_split_into_records(&normalised).expect("falco cuts its mounts twice");
+    assert_eq!(pattern.source, "falco.output_fields.container.mounts");
+    assert_eq!(pattern.target, "falco.container.mounts");
+    assert_eq!((pattern.outer.as_str(), pattern.inner.as_str()), (" ", ":"));
+    assert!(pattern.null_when_absent);
+    assert_eq!(pattern.members.len(), 5);
+    assert_eq!(pattern.members[0], ("source".to_string(), 0));
+    assert_eq!(pattern.members[4], ("propagation".to_string(), 4));
+
+    let mut event = Event::new(serde_json::json!({
+        "falco": { "output_fields": { "container": {
+            "mounts": "/proc/sys/fs/binfmt_misc:/tmp/binary:bind:ro:private /var/log:/mnt/log:bind:rw:shared"
+        } } }
+    }));
+    assert!(run_split_into_records(&mut event, &pattern));
+    assert_eq!(
+        event.get("falco.container.mounts"),
+        Some(&serde_json::json!([
+            { "source": "/proc/sys/fs/binfmt_misc", "dest": "/tmp/binary",
+              "mode": "bind", "rdrw": "ro", "propagation": "private" },
+            { "source": "/var/log", "dest": "/mnt/log",
+              "mode": "bind", "rdrw": "rw", "propagation": "shared" }
+        ]))
+    );
+
+    // No mounts: the else arm, and it writes null rather than nothing.
+    let mut absent = Event::new(serde_json::json!({ "falco": { "output_fields": {} } }));
+    assert!(run_split_into_records(&mut absent, &pattern));
+    assert_eq!(absent.get("falco.container.mounts"), Some(&Value::Null));
+
+    // A short mount still writes every member; the ones past its end are null.
+    let mut short = Event::new(serde_json::json!({
+        "falco": { "output_fields": { "container": { "mounts": "/var/log:/mnt/log" } } }
+    }));
+    assert!(run_split_into_records(&mut short, &pattern));
+    assert_eq!(
+        short.get("falco.container.mounts"),
+        Some(&serde_json::json!([
+            { "source": "/var/log", "dest": "/mnt/log",
+              "mode": null, "rdrw": null, "propagation": null }
+        ]))
+    );
+}
+
+/// Two cuts over UNRELATED values would build a record from parts that never
+/// shared an item, so the parse declines rather than guessing.
+#[test]
+fn a_record_split_declines_when_the_inner_cut_is_not_of_the_outer() {
+    let script = r#"def left = ctx.a.left.splitOnToken(' ');\ndef right = ctx.a.right.splitOnToken(':');\ndef out = [];\nfor (int i = 0; i < left.length; i++) {\n  def record = [:];\n  record.first = right.length > 0 ? right[0] : null;\n  out.add(record);\n}\nctx['a.out'] = out;\n"#;
+    assert!(parse_split_into_records(&normalise(script)).is_none());
+}
+
+/// `find()` is a SUBSTRING search, so a mitre tag yields the technique inside
+/// it, and the write is a one-element list rather than a scalar.
+#[test]
+fn the_first_matching_tag_writes_what_it_matched() {
+    let script = r#"def mitreRegex = /T\\d{4}/;\nfor (int i = 0; i < ctx?.falco?.tags.length; i++) {\n    def tag = ctx?.falco?.tags[i];\n    def matcher = mitreRegex.matcher(tag);\n    if (matcher.find()) {\n        ctx['threat.technique.id'] = [matcher.group()];\n        break;\n    }\n}\n"#;
+    let normalised = normalise(script);
+    let pattern = parse_first_match_in_list(&normalised).expect("falco walks its tags");
+    assert_eq!(pattern.list, "falco.tags");
+    assert_eq!(pattern.target, "threat.technique.id");
+    assert!(pattern.wrap_in_list);
+
+    let mut event = Event::new(serde_json::json!({
+        "falco": { "tags": ["NIST_800-53_AC-2", "mitre_T1059_execution", "container"] }
+    }));
+    assert!(run_first_match_in_list(&mut event, &pattern));
+    assert_eq!(
+        event.get("threat.technique.id"),
+        Some(&serde_json::json!(["T1059"]))
+    );
+
+    // Nothing matches, so nothing is written -- the loop's own behaviour.
+    let mut none = Event::new(serde_json::json!({ "falco": { "tags": ["", "TA0003"] } }));
+    assert!(run_first_match_in_list(&mut none, &pattern));
+    assert!(!none.has("threat.technique.id"));
+}
+
+/// Rust's `regex` has no lookaround and Java's does. Compiling at PARSE time
+/// turns that into a decline instead of a panic on the first event.
+#[test]
+fn a_lookaround_regex_declines_rather_than_panicking() {
+    let script = r#"def rx = /^(?![a-zA-Z0-9]+:)/;\nfor (int i = 0; i < ctx.a.list.length; i++) {\n  def item = ctx.a.list[i];\n  def matcher = rx.matcher(item);\n  if (matcher.find()) {\n    ctx['a.first'] = [matcher.group()];\n    break;\n  }\n}\n"#;
+    assert!(parse_first_match_in_list(&normalise(script)).is_none());
+}
+
+/// The divide is written through a local because the quotient is used twice,
+/// and `instanceof Long` is what says the value is an integer at all.
+#[test]
+fn a_nanosecond_field_folds_to_milliseconds_in_place() {
+    let script = r#"if (ctx.falco?.output_fields?.evt?.time != null) {\n    def timeField = ctx.falco.output_fields.evt.time;\n    def inputFormat = new SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSSZ\");\n        if (timeField.iso8601 != null) {\n            if (timeField.iso8601 instanceof String) {\n                def formatted = inputFormat.parse(timeField.iso8601);\n                ctx['@timestamp'] = formatted;\n                ctx.falco.output_fields.evt.time.iso8601 = formatted;\n            } else if (timeField.iso8601 instanceof Long) {\n                long milliseconds = timeField.iso8601 / 1000000;\n                ctx['@timestamp'] = new Date(milliseconds);\n                ctx.falco.output_fields.evt.time.iso8601 = milliseconds;\n            }\n        }\n}\n"#;
+    let normalised = normalise(script);
+    let pattern = parse_long_divide(&normalised).expect("falco rescales its iso8601");
+    assert_eq!(pattern.source, "falco.output_fields.evt.time.iso8601");
+    assert_eq!(pattern.target, "falco.output_fields.evt.time.iso8601");
+    assert_eq!(pattern.divisor, 1_000_000);
+
+    let mut event = Event::new(serde_json::json!({
+        "falco": { "output_fields": { "evt": { "time": {
+            "iso8601": 1_715_108_059_341_081_180_i64
+        } } } }
+    }));
+    assert!(run_long_divide(&mut event, &pattern));
+    assert_eq!(
+        event.get("falco.output_fields.evt.time.iso8601"),
+        Some(&serde_json::json!(1_715_108_059_341_i64))
+    );
+
+    // A String takes the branch this does not carry, so nothing is rewritten.
+    let mut text = Event::new(serde_json::json!({
+        "falco": { "output_fields": { "evt": { "time": {
+            "iso8601": "2024-05-07T18:54:19.341Z"
+        } } } }
+    }));
+    assert!(run_long_divide(&mut text, &pattern));
+    assert_eq!(
+        text.get_str("falco.output_fields.evt.time.iso8601"),
+        Some("2024-05-07T18:54:19.341Z")
+    );
+}
+
+/// The divide has to sit under the guard that says THAT value is an integer,
+/// or the runner's own type test is a guess rather than the script's.
+#[test]
+fn a_divide_outside_its_long_guard_declines() {
+    let script = r#"if (ctx.a.b instanceof Long) {\n  def held = ctx.a.other / 1000;\n  ctx.a.scaled = held;\n}\n"#;
+    assert!(parse_long_divide(&normalise(script)).is_none());
+}
+
+/// The executable's path leads, then every argument the cut produced.
+#[test]
+fn a_path_leads_the_arguments_it_was_split_from() {
+    let script = r#"if (ctx.falco.output_fields?.proc?.exepath != null && ctx.falco.output_fields?.proc?.args != null) {\n    def path = ctx.falco.output_fields.proc.exepath;\n    def args = ctx.falco.output_fields.proc.args;\n    def argItems = args.splitOnToken(' ');\n    def finalList = [];\n    finalList.add(path);\n    for (int i = 0; i < argItems.length; i++) {\n        finalList.add(argItems[i]);\n    }\n    ctx['process']['args'] = finalList;\n}\n"#;
+    let normalised = normalise(script);
+    let pattern = parse_prepend_split(&normalised).expect("falco leads its args with the path");
+    assert_eq!(pattern.head, "falco.output_fields.proc.exepath");
+    assert_eq!(pattern.list, "falco.output_fields.proc.args");
+    assert_eq!(pattern.separator, " ");
+    assert_eq!(pattern.target, "process.args");
+
+    let mut event = Event::new(serde_json::json!({
+        "falco": { "output_fields": { "proc": {
+            "exepath": "/bin/event-generator", "args": "run --loop"
+        } } }
+    }));
+    assert!(run_prepend_split(&mut event, &pattern));
+    assert_eq!(
+        event.get("process.args"),
+        Some(&serde_json::json!(["/bin/event-generator", "run", "--loop"]))
+    );
+
+    // The script guards on BOTH fields, so one alone writes nothing.
+    let mut half = Event::new(serde_json::json!({
+        "falco": { "output_fields": { "proc": { "args": "run --loop" } } }
+    }));
+    assert!(run_prepend_split(&mut half, &pattern));
+    assert!(!half.has("process.args"));
+}
+
+/// A second append that does NOT walk the cut is a different list, and
+/// building it from the cut would drop what the vendor appended.
+#[test]
+fn a_prepend_split_declines_when_the_loop_appends_something_else() {
+    let script = r#"def path = ctx.a.path;\ndef args = ctx.a.args;\ndef argItems = args.splitOnToken(' ');\ndef out = [];\nout.add(path);\nfor (int i = 0; i < ctx.a.other.length; i++) {\n  out.add(ctx.a.other[i]);\n}\nctx['a.out'] = out;\n"#;
+    assert!(parse_prepend_split(&normalise(script)).is_none());
+}

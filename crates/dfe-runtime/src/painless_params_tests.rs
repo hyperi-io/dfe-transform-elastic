@@ -773,6 +773,113 @@ fn a_rows_list_columns_append_and_the_copy_runs_regardless() {
     assert_eq!(unlisted.get("event.type"), Some(&json!(["info"])));
 }
 
+/// Verbatim from `pipelines/jamf_pro/events/default.yml`: the same row
+/// lookup with its columns routed through a list accumulator, which gives
+/// each one its own answer to an EMPTY column.
+#[test]
+fn an_accumulated_column_writes_a_list_and_takes_its_own_empty_rule() {
+    let script = "def action = ctx.event?.action;\nif (action == null) {\n  return;\n}\n\
+        def entry = params.actions.get(action);\nif (entry == null) {\n  return;\n}\n\
+        def cats = new ArrayList();\ndef types = new ArrayList();\n\
+        if (entry.category != null) { cats.addAll(entry.category); }\n\
+        if (entry.type != null) { types.addAll(entry.type); }\n\
+        if (types.isEmpty()) { types.add('info'); }\nctx.event = ctx.event ?: [:];\n\
+        if (!cats.isEmpty()) { ctx.event.category = cats; }\nctx.event.type = types;";
+    let params = json!({ "actions": {
+        "ComputerAdded": { "category": ["host"], "type": ["change"] },
+        "ComputerCheckIn": { "category": ["host"], "type": [] },
+        "SCEPChallenge": { "category": ["host", "authentication"], "type": ["start"] },
+        "RestAPIOperation": { "category": ["api"], "type": ["change", "admin"] },
+        "Uncategorised": { "category": [], "type": ["info"] },
+    }});
+
+    let mut added = Event::new(json!({ "event": { "action": "ComputerAdded" } }));
+    assert!(try_params_painless(&mut added, script, &params));
+    assert_eq!(added.get("event.category"), Some(&json!(["host"])));
+    assert_eq!(added.get("event.type"), Some(&json!(["change"])));
+
+    // An empty `type` column is the `isEmpty` fallback, not an empty list.
+    let mut checked_in = Event::new(json!({ "event": { "action": "ComputerCheckIn" } }));
+    assert!(try_params_painless(&mut checked_in, script, &params));
+    assert_eq!(checked_in.get("event.category"), Some(&json!(["host"])));
+    assert_eq!(checked_in.get("event.type"), Some(&json!(["info"])));
+
+    // An empty `category` column writes NOTHING, where `type` always writes.
+    let mut uncategorised = Event::new(json!({ "event": { "action": "Uncategorised" } }));
+    assert!(try_params_painless(&mut uncategorised, script, &params));
+    assert_eq!(uncategorised.get("event.category"), None);
+    assert_eq!(uncategorised.get("event.type"), Some(&json!(["info"])));
+
+    // A row holding several values keeps all of them, in the table's order.
+    let mut challenge = Event::new(json!({ "event": { "action": "SCEPChallenge" } }));
+    assert!(try_params_painless(&mut challenge, script, &params));
+    assert_eq!(
+        challenge.get("event.category"),
+        Some(&json!(["host", "authentication"]))
+    );
+    assert_eq!(challenge.get("event.type"), Some(&json!(["start"])));
+
+    let mut rest_api = Event::new(json!({ "event": { "action": "RestAPIOperation" } }));
+    assert!(try_params_painless(&mut rest_api, script, &params));
+    assert_eq!(
+        rest_api.get("event.type"),
+        Some(&json!(["change", "admin"]))
+    );
+
+    // The script returns before the branch when the action has no row, so an
+    // unlisted key keeps whatever an earlier processor wrote.
+    let mut unlisted = Event::new(json!({
+        "event": { "action": "SomethingElse", "category": ["network"] },
+    }));
+    assert!(try_params_painless(&mut unlisted, script, &params));
+    assert_eq!(unlisted.get("event.category"), Some(&json!(["network"])));
+    assert_eq!(unlisted.get("event.type"), None);
+}
+
+/// The accumulator reader declines every block it cannot account for whole,
+/// because a claim that reproduces some columns and drops the rest leaves no
+/// error behind.
+#[test]
+fn an_accumulator_the_reader_cannot_account_for_declines() {
+    // A local fed from the row and then never written.
+    let unwritten = "def action = ctx.event.action;\ndef entry = params.actions.get(action);\n\
+        if (entry == null) {\n  return;\n}\ndef cats = new ArrayList();\n\
+        if (entry.category != null) { cats.addAll(entry.category); }";
+    assert!(parse_row_or_defaults(unwritten).is_none());
+
+    // A local the block also reads somewhere this does not model.
+    let read_elsewhere = "def action = ctx.event.action;\ndef entry = params.actions.get(action);\n\
+        if (entry == null) {\n  return;\n}\ndef cats = new ArrayList();\n\
+        if (entry.category != null) { cats.addAll(entry.category); }\n\
+        ctx.event.category = cats;\nctx.event.count = cats.size();";
+    assert!(parse_row_or_defaults(read_elsewhere).is_none());
+
+    // A local written before anything fed it from the row does not depend on
+    // the row, so there is no member to reproduce.
+    let unfed = "def action = ctx.event.action;\ndef entry = params.actions.get(action);\n\
+        if (entry == null) {\n  return;\n}\ndef cats = new ArrayList();\n\
+        ctx.event.category = cats;";
+    assert!(parse_row_or_defaults(unfed).is_none());
+}
+
+/// `new ArrayList(m.category)` copies a member and `new ArrayList()` opens an
+/// accumulator, so the kolide form must not be read as the jamf one.
+#[test]
+fn a_copy_constructor_is_not_an_accumulator() {
+    assert_eq!(
+        super::opened_accumulator("def cats = new ArrayList()"),
+        Some("cats".to_string())
+    );
+    assert_eq!(
+        super::opened_accumulator("def cats = new ArrayList(m.category)"),
+        None
+    );
+    assert_eq!(
+        super::opened_accumulator("ctx.event.category = new ArrayList()"),
+        None
+    );
+}
+
 /// Verbatim from `pipelines/m365_defender/alert/default.yml`: the
 /// categories come off the evidence list through the params table, and the
 /// TYPE is picked from what the category set holds so far rather than from
