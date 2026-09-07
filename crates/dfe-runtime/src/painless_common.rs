@@ -14,7 +14,7 @@ use serde_json::{Map, Value, json};
 
 use crate::error::Result;
 use crate::event::Event;
-use crate::painless_helpers::{SnakeRule, to_snake_case};
+use crate::painless_helpers::{SnakeRule, camel_break, to_snake_case};
 use crate::painless_params::{Program, clean_path};
 
 /// A script's text with its JSON escapes resolved.
@@ -5871,44 +5871,12 @@ fn parse_rewrite_keys(script: &str) -> Option<RewriteKeys> {
     ))
 }
 
-/// `_?([a-z])([A-Z]+)` replaced by `$1_$2`, the way Java's matcher walks it.
-///
-/// The optional underscore is part of the MATCH and the replacement does not
-/// write it back, so `aB_cD` comes out `a_Bc_D` and not `a_B_c_D`.
-fn camel_break(key: &str) -> String {
-    let chars: Vec<char> = key.chars().collect();
-    let mut out = String::with_capacity(key.len() + 4);
-    let mut i = 0;
-    while i < chars.len() {
-        let mut at = i;
-        if chars[at] == '_' {
-            at += 1;
-        }
-        if at < chars.len() && chars[at].is_ascii_lowercase() {
-            let mut end = at + 1;
-            while end < chars.len() && chars[end].is_ascii_uppercase() {
-                end += 1;
-            }
-            if end > at + 1 {
-                out.push(chars[at]);
-                out.push('_');
-                out.extend(&chars[at + 1..end]);
-                i = end;
-                continue;
-            }
-        }
-        out.push(chars[i]);
-        i += 1;
-    }
-    out
-}
-
 /// One key through the script's steps, left to right.
 fn rewrite_key(key: &str, steps: &[KeyRewriteStep]) -> String {
     let mut key = key.to_owned();
     for step in steps {
         key = match step {
-            KeyRewriteStep::CamelBreak => camel_break(&key),
+            KeyRewriteStep::CamelBreak => camel_break(&key, true),
             KeyRewriteStep::Lowercase => key.to_lowercase(),
             KeyRewriteStep::DropControl => key.chars().filter(|c| !c.is_control()).collect(),
             KeyRewriteStep::ReplaceChars(chars, with) => key
@@ -9486,9 +9454,9 @@ fn run_emails_to_related_users(event: &mut Event, pattern: &EmailsToRelatedUsers
 
 /// Every key of every object in a LIST, snake-cased in place.
 ///
-/// A THIRD snake rule, and not either [`SnakeRule`]: `ti_recordedfuture`
-/// rewrites keys with a regex substitution rather than by inspecting each
-/// character, so the helpers behind `CamelToSnake` cannot express it.
+/// `ti_recordedfuture` rewrites keys with the regex substitution
+/// [`SnakeRule::CamelBreak`] names, over a LIST rather than a map, which is
+/// what separates this from the `KeysToSnakeCase` pattern.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SnakeCaseListElements {
     list: String,
@@ -9507,6 +9475,10 @@ impl SnakeCaseListElements {
 /// The `[A-Z]+` run is greedy, so `fooBAR` becomes `foo_bar` rather than
 /// `foo_b_a_r`. A run with no lower-case character before it does not match at
 /// all, which is why `HTTPStatus` only loses its case.
+///
+/// The same rule as [`SnakeRule::CamelBreak`], run by the regex rather than by
+/// a character walk. `the_regex_rule_and_the_character_walk_agree` in
+/// `painless_common_tests.rs` holds the two together.
 fn regex_snake_key(key: &str) -> String {
     // `${1}` rather than `$1`: `$1_` would parse as a capture NAMED `1_`.
     crate::cached_regex!("_?([a-z])([A-Z]+)")
@@ -9542,8 +9514,8 @@ fn snake_case_keys(value: &Value) -> Value {
 
 /// `for (e in ctx.<list>) { out.add(keysToSnakeCase(e)); } ctx.<list> = out;`
 fn parse_snake_case_list_elements(script: &str) -> Option<SnakeCaseListElements> {
-    // The RULE is the trigger, not the helper's name: it is what makes this a
-    // different conversion from the two `SnakeRule` variants.
+    // The RULE is the trigger, not the helper's name. Only the `_?` spelling is
+    // taken here, because that is the one the list form ships with.
     if !script.contains("_?([a-z])([A-Z]+)") || !script.contains("$1_$2") {
         return None;
     }
@@ -19581,18 +19553,11 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
     }
 
     // Pattern: keys_to_snake_case. The helper is COPIED between packages and
-    // the copies disagree on an acronym, so the rule comes off the script:
-    // a run counter with a `setCharAt` fix-up breaks before the run's last
-    // character, where the plain copies break before every uppercase.
+    // the copies disagree on an acronym, so the rule comes off the script.
     if normalised.contains("keys_to_snake_case") || normalised.contains("keysToSnakeCase") {
-        let rule = if normalised.contains("setCharAt(") {
-            SnakeRule::AcronymRun
-        } else {
-            SnakeRule::BeforeEveryUpper
-        };
         patterns.push(KnownPattern::KeysToSnakeCase(
             snake_case_target(normalised).or_else(|| extract_target_field(normalised)),
-            rule,
+            snake_rule_of(normalised),
         ));
         return patterns;
     }
@@ -20970,6 +20935,37 @@ fn try_replace_dots_in_keys(event: &mut Event, script: &str) -> bool {
 
     *obj = new_map;
     true
+}
+
+/// Which snake rule a copy of the `keysToSnakeCase` helper implements.
+///
+/// Read off the BODY, because the copies disagree and the name does not say
+/// which one shipped. Three spellings:
+///
+/// - a run counter with a `setCharAt` fix-up, which breaks before the run's
+///   last character;
+/// - a regex substitution, which needs a lowercase character in FRONT of the
+///   run and so leaves an acronym alone -- `HTTPServer` is `httpserver`;
+/// - a plain character walk, which breaks before every uppercase and writes
+///   `h_t_t_p_server` for the same key.
+///
+/// The `_?` in the regex is not decoration: it eats an underscore already in
+/// front of the break, and two packages ship the spelling without it.
+fn snake_rule_of(script: &str) -> SnakeRule {
+    if script.contains("setCharAt(") {
+        return SnakeRule::AcronymRun;
+    }
+    // The replacement is checked too. The character classes alone would take a
+    // regex that rewrites keys some other way.
+    if script.contains("$1_$2") {
+        if script.contains("_?([a-z])([A-Z]+)") {
+            return SnakeRule::CamelBreak;
+        }
+        if script.contains("([a-z])([A-Z]+)") {
+            return SnakeRule::CamelBreakKeepingUnderscore;
+        }
+    }
+    SnakeRule::BeforeEveryUpper
 }
 
 /// Try to extract a target field from a Painless script like `ctx.field_name`.

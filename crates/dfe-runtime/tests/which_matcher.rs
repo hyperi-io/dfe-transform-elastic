@@ -521,6 +521,36 @@ fn the_rapid7_scanner_name_binds_to_the_list_member_select() {
     );
 }
 
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/jamf_pro_inventory/default.rs`, which is
+/// `pipelines/jamf_pro/inventory/default.yml`.
+const JAMF_PRO_SNAKE_CASE: &str = r#"Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def snakeCaseMap = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    snakeCaseMap.put(k, v);\n  }\n  return snakeCaseMap;\n}\n\nif (ctx.jamf_pro.inventory != null) {\n  ctx.jamf_pro.inventory = keysToSnakeCase(ctx.jamf_pro.inventory);\n}\n"#;
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/azure_signinlogs/default.rs`, the same
+/// helper WITHOUT the regex's leading `_?`.
+const AZURE_SIGNINLOGS_SNAKE_CASE: &str = r#"Map keysToSnakeCase(Map m) {\n  def regex = /([a-z])([A-Z]+)/;\n  def out = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    out.put(k, v);\n  }\n\n  return out;\n}\n\nctx.azure['signinlogs'] = keysToSnakeCase(ctx.azure.signinlogs);\n"#;
+
+#[test]
+fn the_snake_case_helper_binds_to_the_rule_its_own_body_spells() {
+    // Both bound to `BeforeEveryUpper`, which is the character-walk copy of the
+    // helper and not the one either of these ships. jamf_pro's inventory then
+    // wrote `file_vault2_status` where Elasticsearch writes `file_vault2status`.
+    let held = binding(JAMF_PRO_SNAKE_CASE).join(" ");
+    assert_eq!(
+        held,
+        r#"KeysToSnakeCase(Some("jamf_pro.inventory"), CamelBreak)"#
+    );
+
+    // The same helper minus the `_?`, which is a different rewrite: it keeps
+    // the underscore the other spelling's match eats.
+    let held = binding(AZURE_SIGNINLOGS_SNAKE_CASE).join(" ");
+    assert_eq!(
+        held,
+        r#"KeysToSnakeCase(Some("azure.signinlogs"), CamelBreakKeepingUnderscore)"#
+    );
+}
+
 #[test]
 fn the_cloudflare_query_cut_binds_to_the_leading_cut_and_carries_its_count() {
     // `PlainAssignments` sits above and declines: its right-hand-side grammar

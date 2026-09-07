@@ -4394,6 +4394,94 @@ fn keys_to_snake_case_converts() {
     assert!(val.get("eventType").is_none());
 }
 
+/// The keys the regex rule and the character walk have to agree on.
+///
+/// `regex_snake_key` runs the substitution and [`SnakeRule::CamelBreak`] walks
+/// the characters, so two implementations answer one rule and a drift between
+/// them would be silent: the list form would keep the regex answer and the map
+/// form would quietly take the other.
+#[test]
+fn the_regex_rule_and_the_character_walk_agree() {
+    for key in [
+        "fileVault2Status",
+        "HTTPServer",
+        "HTTPStatus",
+        "fooBAR",
+        "userName",
+        "sightingsCount",
+        "cve2021Id",
+        "already_snake",
+        "tag_aB",
+        "a_bCD",
+        "__aB",
+        "aB_cD",
+        "",
+        "X",
+        "MessageID",
+        "Computer IP",
+        "smtp.mailFrom",
+        "\u{e9}Bc",
+    ] {
+        assert_eq!(
+            regex_snake_key(key),
+            to_snake_case(key, SnakeRule::CamelBreak),
+            "the two implementations of the regex rule disagree on {key:?}"
+        );
+    }
+}
+
+/// The `_?` is the whole difference between the two regex spellings.
+#[test]
+fn the_two_regex_spellings_differ_only_on_the_underscore_they_eat() {
+    // The match consumes the underscore in front of the break and the
+    // replacement does not write it back.
+    assert_eq!(to_snake_case("tag_aB", SnakeRule::CamelBreak), "taga_b");
+    assert_eq!(
+        to_snake_case("tag_aB", SnakeRule::CamelBreakKeepingUnderscore),
+        "tag_a_b"
+    );
+
+    // Everything else is the same rule, and neither writes `h_t_t_p_server`.
+    for key in ["fileVault2Status", "HTTPServer", "fooBAR", "userName"] {
+        assert_eq!(
+            to_snake_case(key, SnakeRule::CamelBreak),
+            to_snake_case(key, SnakeRule::CamelBreakKeepingUnderscore),
+            "{key:?}"
+        );
+    }
+    assert_eq!(
+        to_snake_case("fileVault2Status", SnakeRule::CamelBreak),
+        "file_vault2status"
+    );
+    assert_eq!(
+        to_snake_case("fileVault2Status", SnakeRule::BeforeEveryUpper),
+        "file_vault2_status"
+    );
+}
+
+/// Which rule each shipped spelling of the helper selects.
+#[test]
+fn the_snake_rule_comes_off_the_helpers_body() {
+    assert_eq!(
+        snake_rule_of("k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();"),
+        SnakeRule::BeforeEveryUpper,
+        "the character classes are what name the rule, so a bare replacement is not it"
+    );
+    assert_eq!(
+        snake_rule_of("def regex = /_?([a-z])([A-Z]+)/; ... replaceAll('$1_$2')"),
+        SnakeRule::CamelBreak
+    );
+    assert_eq!(
+        snake_rule_of("def regex = /([a-z])([A-Z]+)/; ... replaceAll('$1_$2')"),
+        SnakeRule::CamelBreakKeepingUnderscore
+    );
+    assert_eq!(
+        snake_rule_of("sb.setCharAt(i, Character.toLowerCase(c));"),
+        SnakeRule::AcronymRun,
+        "the run counter wins over any regex the same helper also spells"
+    );
+}
+
 /// The twenty-line `camelToSnake` / `convertToSnakeCase` pair, cut down to
 /// what the matcher keys on plus the apply line it reads the paths from.
 const CAMEL_TO_SNAKE: &str = "String camelToSnake(String str) {\n\
@@ -4502,8 +4590,8 @@ fn a_maps_values_collect_into_a_deduplicated_list() {
 /// `ti_recordedfuture` snake-cases its evidence list with a REGEX rule.
 ///
 /// Verbatim from `-dev/pipelines/ti_recordedfuture/threat/default.yml:143`.
-/// A third rule, and neither `SnakeRule` variant: the greedy `[A-Z]+` run and
-/// the "no lower-case before it, no match" case are what separate them.
+/// The rule is [`SnakeRule::CamelBreak`]: the greedy `[A-Z]+` run and the "no
+/// lower-case before it, no match" case are what separate it from the walks.
 #[test]
 fn a_lists_objects_snake_case_by_the_vendors_regex() {
     let script = "Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  \

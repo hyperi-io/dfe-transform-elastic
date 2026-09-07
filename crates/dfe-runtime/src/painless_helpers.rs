@@ -444,6 +444,19 @@ pub enum SnakeRule {
     /// packages that copied its helper walk the run with a counter and move
     /// the separator back once they see the run end.
     AcronymRun,
+    /// Underscore before an uppercase RUN that follows a lowercase, and an
+    /// underscore already sitting in front of that lowercase is DROPPED because
+    /// the match consumes it: `tag_aB` is `taga_b`.
+    ///
+    /// This is the regex `_?([a-z])([A-Z]+)` -> `$1_$2` that several packages
+    /// write instead of walking the characters. It needs a lowercase character
+    /// in FRONT of the run, so `HTTPServer` matches nothing and only loses its
+    /// case -- where [`Self::BeforeEveryUpper`] writes `h_t_t_p_server`.
+    CamelBreak,
+    /// [`Self::CamelBreak`] without the regex's leading `_?`, so an underscore
+    /// in front of the break is KEPT: `tag_aB` is `tag_a_b`. azure's
+    /// `signinlogs` and cloudflare's `workers_trace` spell it this way.
+    CamelBreakKeepingUnderscore,
 }
 
 /// Convert a string to `snake_case` under `rule`.
@@ -453,8 +466,13 @@ pub enum SnakeRule {
 /// than one -- U+0130 becomes `i` plus a combining dot.
 #[must_use]
 pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
-    if rule == SnakeRule::AcronymRun {
-        return acronym_run_snake(s);
+    // The rules that scan for a RUN cannot be expressed by the per-character
+    // loop below, so each returns from its own walk.
+    match rule {
+        SnakeRule::AcronymRun => return acronym_run_snake(s),
+        SnakeRule::CamelBreak => return camel_break(s, true).to_lowercase(),
+        SnakeRule::CamelBreakKeepingUnderscore => return camel_break(s, false).to_lowercase(),
+        SnakeRule::OnWordBreak | SnakeRule::BeforeEveryUpper | SnakeRule::AfterNonUpper => {}
     }
 
     let mut result = String::with_capacity(s.len() + 4);
@@ -468,8 +486,10 @@ pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
                 SnakeRule::OnWordBreak => prev_was_lowercase,
                 SnakeRule::BeforeEveryUpper => !first,
                 SnakeRule::AfterNonUpper => !first && !prev_was_uppercase,
-                SnakeRule::AcronymRun => {
-                    unreachable!("the run rule returns above, before this loop")
+                SnakeRule::AcronymRun
+                | SnakeRule::CamelBreak
+                | SnakeRule::CamelBreakKeepingUnderscore => {
+                    unreachable!("the run rules return above, before this loop")
                 }
             };
             if separate {
@@ -522,6 +542,44 @@ fn acronym_run_snake(s: &str) -> String {
         result.extend(ch.to_lowercase());
     }
     result
+}
+
+/// `([a-z])([A-Z]+)` replaced by `$1_$2`, the way Java's matcher walks it.
+///
+/// `eat_underscore` is the regex's leading `_?`. It is part of the MATCH and
+/// the replacement does not write it back, so with the flag set `aB_cD` comes
+/// out `a_Bc_D` and not `a_B_c_D`. The character classes are ASCII because the
+/// regex's are: a non-ASCII uppercase does not start a run.
+///
+/// Does NOT lowercase -- the vendors spell that as a separate step, and
+/// [`KeyRewriteStep::Lowercase`](crate::painless_common::KeyRewriteStep) may or
+/// may not follow.
+pub(crate) fn camel_break(key: &str, eat_underscore: bool) -> String {
+    let chars: Vec<char> = key.chars().collect();
+    let mut out = String::with_capacity(key.len() + 4);
+    let mut i = 0;
+    while i < chars.len() {
+        let mut at = i;
+        if eat_underscore && chars[at] == '_' {
+            at += 1;
+        }
+        if at < chars.len() && chars[at].is_ascii_lowercase() {
+            let mut end = at + 1;
+            while end < chars.len() && chars[end].is_ascii_uppercase() {
+                end += 1;
+            }
+            if end > at + 1 {
+                out.push(chars[at]);
+                out.push('_');
+                out.extend(&chars[at + 1..end]);
+                i = end;
+                continue;
+            }
+        }
+        out.push(chars[i]);
+        i += 1;
+    }
+    out
 }
 
 /// Convert a camelCase or `PascalCase` string to `snake_case`.

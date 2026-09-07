@@ -27,6 +27,7 @@ them. The test marks those `RESIZE` and this only rewrites them under
 from __future__ import annotations
 
 import json
+import os
 import pathlib
 import re
 import subprocess
@@ -74,9 +75,15 @@ def corpus_run() -> str:
         "dfe-transforms",
         "--test",
         "compat_corpus",
+        # The baseline records release scores, so a debug run is not comparable.
+        "--release",
         "--",
         "--nocapture",
     ]
+    # A worktree has no `testdata/`, and the run SKIPS silently without it.
+    env = dict(os.environ)
+    env.setdefault("DFE_COMPAT_CORPUS", str(BASELINE.parent.parent / "testdata" / "compat"))
+
     print(f"  running {' '.join(command)}", file=sys.stderr)
     done = subprocess.run(
         command,
@@ -86,6 +93,7 @@ def corpus_run() -> str:
         encoding="utf-8",
         errors="replace",
         check=False,
+        env=env,
     )
     return done.stdout + done.stderr
 
