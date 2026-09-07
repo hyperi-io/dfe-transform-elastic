@@ -3438,3 +3438,168 @@ fn a_fold_storing_something_else_declines() {
         Some(ParamsPattern::SelectRenameKeys(_))
     ));
 }
+
+/// Verbatim from `pipelines/iptables/log/default.yml`, escapes and all.
+const MEMBER_MAPPINGS: &str = r"for (action in params.mappings) {\n  def src = ctx[action.source.object];\n  if (src != null) {\n    Map map = action.map;\n    String key = src[action.source.key];\n    String mapping = map[key];\n    if (mapping != null) {\n      Map dst = ctx[action.destination.object];\n      if (dst == null) {\n          dst = new HashMap();\n          ctx[action.destination.object] = dst;\n      }\n      dst[action.destination.key] = mapping;\n    }\n  }\n}";
+
+/// The four specs the same pipeline ships, in the order it ships them.
+fn mapping_specs() -> Value {
+    json!({ "mappings": [
+        {
+            "source": { "object": "iptables", "key": "ether_type" },
+            "destination": { "object": "network", "key": "type" },
+            "map": { "08:00": "ipv4", "86:dd": "ipv6" }
+        },
+        {
+            "source": { "object": "event", "key": "action" },
+            "destination": { "object": "event", "key": "action" },
+            "map": { "d": "drop", "a": "accept" }
+        },
+        {
+            "source": { "object": "event", "key": "action" },
+            "destination": { "object": "event", "key": "type" },
+            "map": {
+                "drop": "denied",
+                "accept": "allowed",
+                "deny": "denied",
+                "drop_input": "denied"
+            }
+        },
+        {
+            "source": { "object": "network", "key": "transport" },
+            "destination": { "object": "network", "key": "transport" },
+            "map": { "icmpv6": "ipv6-icmp" }
+        }
+    ] })
+}
+
+/// The parse names the params list the specs sit under.
+#[test]
+fn the_mapping_loop_binds_its_params_list() {
+    let normalised = crate::painless_common::normalise(MEMBER_MAPPINGS);
+    assert_eq!(
+        params_pattern(&normalised),
+        Some(ParamsPattern::MemberMappings("mappings".to_owned()))
+    );
+}
+
+/// A spec reads what the specs before it wrote.
+///
+/// The second spec folds `event.action` `d` into `drop` in place, and the
+/// third keys the same field to write `denied`; reading the original `d` would
+/// find no row and leave `event.type` absent.
+#[test]
+fn a_folded_field_keys_the_spec_that_follows_it() {
+    let mut event = Event::new(json!({
+        "iptables": { "ether_type": "08:00" },
+        "event": { "action": "d" },
+        "network": { "transport": "tcp" }
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        MEMBER_MAPPINGS,
+        &mapping_specs()
+    ));
+    assert_eq!(event.get_str("network.type"), Some("ipv4"));
+    assert_eq!(event.get_str("event.action"), Some("drop"));
+    assert_eq!(event.get_str("event.type"), Some("denied"));
+    // The transport map names only icmpv6, so tcp keeps its own value.
+    assert_eq!(event.get_str("network.transport"), Some("tcp"));
+}
+
+/// A spec whose source and destination are one field rewrites it in place.
+#[test]
+fn a_mapped_transport_replaces_the_value_it_was_keyed_by() {
+    let mut event = Event::new(json!({ "network": { "transport": "icmpv6" } }));
+    assert!(try_params_painless(
+        &mut event,
+        MEMBER_MAPPINGS,
+        &mapping_specs()
+    ));
+    assert_eq!(event.get_str("network.transport"), Some("ipv6-icmp"));
+}
+
+/// The destination object is created where the script's `new HashMap()` is.
+#[test]
+fn an_absent_destination_object_is_created() {
+    let mut event = Event::new(json!({ "iptables": { "ether_type": "86:dd" } }));
+    assert!(try_params_painless(
+        &mut event,
+        MEMBER_MAPPINGS,
+        &mapping_specs()
+    ));
+    assert_eq!(event.get_str("network.type"), Some("ipv6"));
+}
+
+/// Three ways a spec declines, none of which writes anything.
+#[test]
+fn a_spec_the_table_or_the_event_declines_writes_nothing() {
+    // The source object is absent.
+    let mut absent = Event::new(json!({ "event": { "action": "d" } }));
+    assert!(try_params_painless(
+        &mut absent,
+        MEMBER_MAPPINGS,
+        &mapping_specs()
+    ));
+    assert!(!absent.has("network"));
+
+    // The member is there and the map has no row for it.
+    let mut unlisted = Event::new(json!({ "iptables": { "ether_type": "81:00" } }));
+    assert!(try_params_painless(
+        &mut unlisted,
+        MEMBER_MAPPINGS,
+        &mapping_specs()
+    ));
+    assert!(!unlisted.has("network"));
+
+    // `String key = src[...]` is a ClassCastException on a number, so the
+    // member is not rendered into a table key.
+    let mut numeric = Event::new(json!({ "iptables": { "ether_type": 2048 } }));
+    assert!(try_params_painless(
+        &mut numeric,
+        MEMBER_MAPPINGS,
+        &mapping_specs()
+    ));
+    assert!(!numeric.has("network"));
+}
+
+/// A destination that is present and not a map is left alone.
+///
+/// `Map dst = ctx[<object>]` throws there and the vendor's document fails,
+/// which is not something to reproduce by overwriting the value.
+#[test]
+fn a_scalar_standing_where_an_object_should_be_is_left_alone() {
+    let mut event = Event::new(json!({
+        "iptables": { "ether_type": "08:00" },
+        "network": "not-a-map"
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        MEMBER_MAPPINGS,
+        &mapping_specs()
+    ));
+    assert_eq!(event.get("network"), Some(&json!("not-a-map")));
+}
+
+/// Params carrying no list under that name is not this pattern's block.
+#[test]
+fn params_without_the_named_list_declines() {
+    let mut event = Event::new(json!({ "iptables": { "ether_type": "08:00" } }));
+    assert!(!try_params_painless(
+        &mut event,
+        MEMBER_MAPPINGS,
+        &json!({ "other": [] })
+    ));
+    assert!(!event.has("network"));
+}
+
+/// A loop over some other params list spells none of the accessors.
+#[test]
+fn a_loop_that_is_not_the_pattern_declines_at_the_parse() {
+    let script = r"for (name in params.fields) {\n  ctx[name] = null;\n}";
+    assert_eq!(
+        params_pattern(&crate::painless_common::normalise(script)),
+        None
+    );
+}

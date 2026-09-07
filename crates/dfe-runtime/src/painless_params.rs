@@ -288,6 +288,13 @@ pub(crate) enum ParamsPattern {
     /// A run of null-guarded lookups, each field through its OWN named table,
     /// subscripted `params['<table>'][<key>]`.
     FieldTables(crate::painless_field_tables::FieldTables),
+    /// Every mapping the named params LIST describes, applied in order.
+    ///
+    /// The script names nothing: each spec in the list carries its own source
+    /// object and key, its own destination object and key, and its own value
+    /// map, so the table is the whole pattern. The `String` is the params key
+    /// the list sits under.
+    MemberMappings(String),
 }
 
 /// The one matcher this script's text triggers, or `None`.
@@ -933,14 +940,157 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
     }
 
     // Pattern: a run of null-guarded lookups, each field through its OWN named
-    // table, subscripted `params['<table>'][ctx.<field>]`. LAST, because the
+    // table, subscripted `params['<table>'][ctx.<field>]`. Late, because the
     // parse IS the trigger and it reads the WHOLE script: nothing above claims
     // gigamon's nine lookups today, so it needs to precede nothing.
     if let Some(pattern) = crate::painless_field_tables::parse_field_tables(normalised) {
         return Some(ParamsPattern::FieldTables(pattern));
     }
 
+    // Pattern: a params LIST of mapping specs, each naming its own source
+    // object and key, destination object and key, and value map. LAST, because
+    // the parse IS the trigger and reads the whole loop: nothing above claims
+    // iptables' script today, so it needs to precede nothing.
+    if let Some(list) = parse_member_mappings(normalised) {
+        return Some(ParamsPattern::MemberMappings(list));
+    }
+
     None
+}
+
+/// The params key holding a list of mapping specs, or `None`.
+///
+/// ```painless
+/// for (action in params.mappings) {
+///   def src = ctx[action.source.object];
+///   if (src != null) {
+///     Map map = action.map;
+///     String key = src[action.source.key];
+///     String mapping = map[key];
+///     if (mapping != null) {
+///       Map dst = ctx[action.destination.object];
+///       if (dst == null) {
+///           dst = new HashMap();
+///           ctx[action.destination.object] = dst;
+///       }
+///       dst[action.destination.key] = mapping;
+///     }
+///   }
+/// }
+/// ```
+///
+/// The loop's local is read off the `in params.` it binds over, and every one
+/// of the five accessors the body needs is required against that local. A loop
+/// over some other params list spells none of them and declines here.
+fn parse_member_mappings(script: &str) -> Option<String> {
+    let marker = " in params.";
+    let local = identifier_before(script, marker)?;
+    let list = leading_name(&script[script.find(marker)? + marker.len()..]);
+    if list.is_empty() {
+        return None;
+    }
+    let accessors = [
+        format!("ctx[{local}.source.object]"),
+        format!("{local}.source.key"),
+        format!("ctx[{local}.destination.object]"),
+        format!("{local}.destination.key"),
+        format!("{local}.map"),
+    ];
+    accessors
+        .iter()
+        .all(|accessor| script.contains(accessor.as_str()))
+        .then_some(list)
+}
+
+/// One member of a top-level object, the way `ctx[<object>][<key>]` reads it.
+///
+/// Both names are LITERAL keys rather than dotted paths: `ctx["a.b"]` is one
+/// key in Painless where [`Event::get`] would walk two levels. Nothing is
+/// joined either, so a spec costs no allocation on a path that runs at 20,000
+/// events a batch.
+fn member<'a>(event: &'a Event, object: &str, key: &str) -> Option<&'a Value> {
+    event
+        .as_value()
+        .as_object()?
+        .get(object)?
+        .as_object()?
+        .get(key)
+}
+
+/// Write one member of a top-level object, creating the object where the
+/// script's own `new HashMap()` would.
+///
+/// A present non-map at `object` is a `ClassCastException` in Painless, so the
+/// vendor's document fails there rather than growing a member: write nothing.
+fn set_member(event: &mut Event, object: &str, key: &str, value: Value) {
+    let Some(root) = event.as_value_mut().as_object_mut() else {
+        return;
+    };
+    let vacant = match root.get(object) {
+        Some(Value::Object(_)) => false,
+        None | Some(Value::Null) => true,
+        Some(_) => return,
+    };
+    if vacant {
+        root.insert(object.to_owned(), Value::Object(Map::new()));
+    }
+    let Some(Value::Object(destination)) = root.get_mut(object) else {
+        return;
+    };
+    if let Some(slot) = destination.get_mut(key) {
+        *slot = value;
+    } else {
+        destination.insert(key.to_owned(), value);
+    }
+}
+
+/// Apply every mapping the params list describes, in order.
+///
+/// Order is behaviour, because a spec sees what the specs before it wrote:
+/// iptables folds `event.action` `d -> drop` in one spec and reads that `drop`
+/// in the next to write `event.type = denied`.
+///
+/// A spec writes NOTHING where its source object is absent, where its source
+/// member is not a string, or where the map has no row for that member. The
+/// script declares `String key = src[...]`, so a non-string member is a
+/// `ClassCastException` there rather than a key rendered into the table.
+///
+/// Returns false only where `params` carries no list under this name, which
+/// says the block is not this pattern's and something else should have it.
+fn run_member_mappings(event: &mut Event, list: &str, params: &Map<String, Value>) -> bool {
+    let Some(specs) = params.get(list).and_then(Value::as_array) else {
+        return false;
+    };
+    for spec in specs {
+        let (Some(source), Some(destination), Some(table)) = (
+            spec.get("source").and_then(Value::as_object),
+            spec.get("destination").and_then(Value::as_object),
+            spec.get("map").and_then(Value::as_object),
+        ) else {
+            continue;
+        };
+        let (Some(source_object), Some(source_key)) = (
+            source.get("object").and_then(Value::as_str),
+            source.get("key").and_then(Value::as_str),
+        ) else {
+            continue;
+        };
+        let (Some(destination_object), Some(destination_key)) = (
+            destination.get("object").and_then(Value::as_str),
+            destination.get("key").and_then(Value::as_str),
+        ) else {
+            continue;
+        };
+        let Some(mapped) = member(event, source_object, source_key)
+            .and_then(Value::as_str)
+            .and_then(|key| table.get(key))
+            .cloned()
+        else {
+            continue;
+        };
+        set_member(event, destination_object, destination_key, mapped);
+    }
+    true
 }
 
 /// A one-entry map whose KEY comes from a params lookup.
@@ -1704,6 +1854,7 @@ pub(crate) fn run_params_pattern(
         ParamsPattern::FieldTables(pattern) => {
             crate::painless_field_tables::field_tables(event, pattern, params)
         }
+        ParamsPattern::MemberMappings(list) => run_member_mappings(event, list, params),
         ParamsPattern::ValueMaps => try_value_maps(event, normalised, params),
         ParamsPattern::RowColumns(literals) => try_row_columns(event, normalised, params, literals),
         ParamsPattern::RowColumnAppends(pattern) => run_row_column_appends(event, pattern, params),

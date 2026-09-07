@@ -280,4 +280,5 @@
  71 ScalarExpression
  72 SelectRenameKeys
  73 FieldTables
+ 74 MemberMappings
 

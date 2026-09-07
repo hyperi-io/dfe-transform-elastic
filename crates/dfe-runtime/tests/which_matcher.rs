@@ -80,6 +80,9 @@ const TYCHON_PACKAGE_CPE: &str = r#"ctx.tychon.package.cpe = \"cpe:/a:\" + ctx.t
 const ENDACE_HALF_TIMEDELTA: &str =
     "ctx._conf.event.end = ctx._conf.event.end + ctx._conf.timedelta/2";
 
+/// Verbatim from `pipelines/iptables/log/default.yml:264-280`.
+const IPTABLES_MAPPINGS: &str = r"for (action in params.mappings) {\n  def src = ctx[action.source.object];\n  if (src != null) {\n    Map map = action.map;\n    String key = src[action.source.key];\n    String mapping = map[key];\n    if (mapping != null) {\n      Map dst = ctx[action.destination.object];\n      if (dst == null) {\n          dst = new HashMap();\n          ctx[action.destination.object] = dst;\n      }\n      dst[action.destination.key] = mapping;\n    }\n  }\n}";
+
 /// The matcher names a script binds to, most specific first.
 fn binding(script: &str) -> Vec<String> {
     PainlessPlan::new(script).binding()
@@ -242,6 +245,18 @@ fn the_system_ssh_ladder_flattens_its_list_literals() {
     assert!(
         !held.contains("session"),
         "the ladder now carries the second list element -- re-measure system: {held}"
+    );
+}
+
+#[test]
+fn the_iptables_mappings_bind_only_to_member_mappings() {
+    // `MemberMappings` sits LAST in the params ladder, and the params ladder
+    // runs before the text one. A single head is therefore two facts: no
+    // earlier matcher claims the script, and no text matcher does either.
+    assert_eq!(heads(IPTABLES_MAPPINGS), ["MemberMappings"]);
+    assert_eq!(
+        binding(IPTABLES_MAPPINGS),
+        [r#"MemberMappings("mappings")"#]
     );
 }
 
