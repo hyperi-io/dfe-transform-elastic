@@ -41,6 +41,12 @@ const BEYONDINSIGHT_DROP: &str = "ctx.beyondinsight_password_safe.asset.entrySet
 /// Verbatim from `pipelines/beyondinsight_password_safe/asset/default.yml:63-73`.
 const BEYONDINSIGHT_RENAME: &str = "Map renamedFields = [:];\nfor (entry in ctx.beyondinsight_password_safe.asset.entrySet()) {\n  def originalKey = entry.getKey();\n  def snakeKey = params.field_mappings[originalKey];\n  if (snakeKey != null) {\n    renamedFields[snakeKey] = entry.getValue();\n  } else {\n    renamedFields[originalKey] = entry.getValue();\n  }\n}\nctx.beyondinsight_password_safe.asset = renamedFields;";
 
+/// Verbatim from `pipelines/kolide/auth/categorize.yml:38-51`.
+const KOLIDE_CATEGORIZE: &str = "def action = ctx.event.action;\nctx.event.kind = 'event';\n\ndef m = params.exact.get(action);\nif (m != null) {\n  ctx.event.category = new ArrayList(m.category);\n  ctx.event.type = new ArrayList(m.type);\n  if (m.containsKey('outcome') && ctx.event.outcome == null) {\n    ctx.event.outcome = m.outcome;\n  }\n} else {\n  ctx.event.category = ['authentication'];\n  ctx.event.type = ['info'];\n}";
+
+/// Verbatim from zeek's duration scale.
+const ZEEK_DURATION: &str = "ctx.event.duration = Math.round(ctx.temp.duration * params.scale)";
+
 /// The matcher names a script binds to, most specific first.
 fn binding(script: &str) -> Vec<String> {
     PainlessPlan::new(script).binding()
@@ -85,6 +91,27 @@ fn the_beyondinsight_drop_is_claimed_and_its_rename_is_not() {
         "{:?}",
         binding(BEYONDINSIGHT_RENAME)
     );
+}
+
+#[test]
+fn the_kolide_categorise_binds_to_a_structurally_correct_row_lookup() {
+    // `RowOrDefaults` records the table, the three columns and both defaults,
+    // so kolide's defect is not visible in the binding and needs the corpus.
+    let held = binding(KOLIDE_CATEGORIZE).join(" ");
+    assert!(held.starts_with("RowOrDefaults"), "{held}");
+    assert!(held.contains(r#"subject: "event.action""#), "{held}");
+    assert!(held.contains(r#"table: "exact""#), "{held}");
+    assert!(
+        held.contains(r#"defaults: [("event.category", Array [String("authentication")])"#),
+        "{held}"
+    );
+}
+
+#[test]
+fn the_zeek_duration_scale_drops_its_rounding() {
+    // The script is `Math.round(<field> * params.scale)` and the plan is a bare
+    // `Scale`, which carries no rounding step.
+    assert_eq!(heads(ZEEK_DURATION), ["Scale"]);
 }
 
 #[test]
