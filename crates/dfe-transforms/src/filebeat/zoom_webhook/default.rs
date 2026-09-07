@@ -471,7 +471,7 @@ impl Transform for Default {
                         &ScaleField::new(
                             "zoom.meeting.duration",
                             "event.duration",
-                            Factor::Long(1000000000),
+                            Factor::Long(60000000000),
                         ),
                     );
                 }
@@ -1127,7 +1127,7 @@ impl Transform for Default {
                         &ScaleField::new(
                             "zoom.phone.duration",
                             "event.duration",
-                            Factor::Long(1000000000),
+                            Factor::Long(60000000000),
                         ),
                     );
                 }

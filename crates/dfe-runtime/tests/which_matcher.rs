@@ -278,12 +278,98 @@ fn the_jamf_pro_categories_bind_to_the_row_lookup_with_both_empty_rules() {
     assert!(held.contains("defaults: []"), "{held}");
 }
 
+/// Verbatim from `pipelines/endace/flow/endace.yml:69`, the subtraction beside
+/// the addition above.
+const ENDACE_HALF_TIMEDELTA_START: &str =
+    "ctx._conf.event.start = ctx._conf.event.start - ctx._conf.timedelta/2";
+
+/// Verbatim from `pipelines/endace/flow/endace.yml:59`, the multiply that
+/// builds the window the two above halve.
+const ENDACE_TIMEDELTA: &str = "ctx._conf.timedelta = ctx._conf.endace_view_window * 60 * 1000";
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/citrix_adc_log/default.rs`, which is
+/// `pipelines/citrix_adc/log/default.yml`.
+const CITRIX_CUSTOM_DATE: &str = r#"def zone = ctx.event?.timezone != null ? ZoneId.of(ctx.event.timezone) : null;\ndef formatter = DateTimeFormatter.ofPattern(ctx._conf.custom_date_format);\ndef outFormatter = DateTimeFormatter.ofPattern(\"yyyy-MM-dd'T'HH:mm:ss.SSSXXX\");\n\nparams.fields.forEach(field -> {\n  if (!ctx._tmp?.containsKey(field)) {\n    return true;\n  }\n\n  try {\n    def localDateTime = LocalDateTime.parse(ctx._tmp[field], formatter);\n    ctx.citrix_adc.log[field] = outFormatter.format(ZonedDateTime.of(localDateTime, zone));\n  } catch (Exception e) {\n    /* Intentionally ignored */\n    return true;\n  }\n});"#;
+
+/// endace's three arithmetic scripts, which between them build the URL in
+/// `event.reference`.
+///
+/// The two halves were CLAIMED and wrote nothing: `SumOfFields` read
+/// `_conf.timedelta/2` as a field name, and `GuardedDivide` read
+/// `_conf.event.start - ctx._conf.timedelta` as one. Both then found no such
+/// field and returned handled, so the epochs reached the URL unshifted and
+/// nothing counted the miss.
 #[test]
-fn report_the_endace_binding() {
-    println!(
-        "endace half-timedelta: {:?}",
-        binding(ENDACE_HALF_TIMEDELTA)
+fn the_endace_arithmetic_binds_to_the_combination_with_its_divisor() {
+    for (name, script, op) in [
+        ("end", ENDACE_HALF_TIMEDELTA, "Add"),
+        ("start", ENDACE_HALF_TIMEDELTA_START, "Subtract"),
+    ] {
+        let held = binding(script).join(" ");
+        assert!(held.starts_with("CombineFields"), "{name}: {held}");
+        assert!(held.contains(&format!("op: {op}")), "{name}: {held}");
+        assert!(
+            held.contains(r#"path: "_conf.timedelta", divisor: Some(2)"#),
+            "{name}: {held}"
+        );
+    }
+
+    // The window is MINUTES, so both literals belong to the factor.
+    let held = binding(ENDACE_TIMEDELTA).join(" ");
+    assert!(held.starts_with("ScaleField"), "{held}");
+    assert!(held.contains("Long(60000)"), "{held}");
+}
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/nagios_xi_service/default.rs`.
+const NAGIOS_FREE_SPACE: &str = r#"if(ctx.nagios_xi?.service?.containsKey(\"root_partition\") == true) {\n    ctx.nagios_xi.service.root_partition.free_space = ctx.nagios_xi.service.root_partition.total_space - ctx.nagios_xi.service.root_partition.used_space\n}\n"#;
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/rubrik_managed_volumes/default.rs`,
+/// truncated at the second block, which reads a different subtree.
+const RUBRIK_FREE_SIZE: &str = r"if (ctx.rubrik.managed_volumes?.volume_size?.bytes != null && ctx.rubrik.managed_volumes?.used_size?.bytes != null) {\n    ctx.rubrik.managed_volumes.free_size = [:];\n    ctx.rubrik.managed_volumes.free_size.bytes = ctx.rubrik.managed_volumes.volume_size.bytes - ctx.rubrik.managed_volumes.used_size.bytes;\n} else {\n    ctx.rubrik.managed_volumes.free_size = [:];\n    ctx.rubrik.managed_volumes.free_size.bytes = 0;\n}\n";
+
+/// The other two subtractions in the tree, which the same widening reaches.
+///
+/// rubrik is the audit: it writes the SAME target in both arms of an `if`, so
+/// a matcher that reads one arm would drop the zero the other writes.
+#[test]
+fn a_subtraction_binds_only_where_the_target_is_written_once() {
+    let held = binding(NAGIOS_FREE_SPACE).join(" ");
+    assert!(held.starts_with("CombineFields"), "{held}");
+    assert!(held.contains("op: Subtract"), "{held}");
+    assert!(
+        held.contains(r#"path: "nagios_xi.service.root_partition.total_space", divisor: None"#),
+        "{held}"
     );
+
+    assert!(
+        !binding(RUBRIK_FREE_SIZE)
+            .first()
+            .is_some_and(|held| held.starts_with("CombineFields")),
+        "{:?}",
+        binding(RUBRIK_FREE_SIZE)
+    );
+}
+
+/// citrix_adc's five dates, reparsed with the pattern the document carries.
+///
+/// The binding was EMPTY, so nothing wrote `citrix_adc.log.*` and the date
+/// processors behind it read `10/08/2024` with their own hard-coded
+/// `MM/dd/yyyy`. Every such event landed in October.
+#[test]
+fn the_citrix_custom_date_binds_to_the_configured_format() {
+    let held = binding(CITRIX_CUSTOM_DATE).join(" ");
+    assert!(held.starts_with("ConfiguredDateFormat"), "{held}");
+    assert!(held.contains(r#"names: "fields""#), "{held}");
+    assert!(
+        held.contains(r#"format: "_conf.custom_date_format""#),
+        "{held}"
+    );
+    assert!(held.contains(r#"zone: Some("event.timezone")"#), "{held}");
+    assert!(held.contains(r#"source: "_tmp""#), "{held}");
+    assert!(held.contains(r#"target: "citrix_adc.log""#), "{held}");
 }
 
 #[test]

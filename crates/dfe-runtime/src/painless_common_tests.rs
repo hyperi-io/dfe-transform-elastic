@@ -6181,7 +6181,59 @@ fn a_field_is_the_sum_of_two_others() {
 /// satisfies.
 #[test]
 fn an_addition_that_is_not_an_assignment_declines() {
-    assert!(parse_sum_of_fields("if (ctx.a + ctx.b > 10) { ctx.big = true; }").is_none());
+    assert!(parse_combine_fields("if (ctx.a + ctx.b > 10) { ctx.big = true; }").is_none());
+    assert!(parse_combine_fields("if (ctx.a - ctx.b > 10) { ctx.big = true; }").is_none());
+}
+
+/// endace's two halves, verbatim from `pipelines/endace/flow/endace.yml`.
+///
+/// The divisor used to be read as part of the field NAME, so the matcher
+/// claimed both scripts and wrote nothing -- and the epoch that reached the
+/// URL builder was the unshifted one.
+#[test]
+fn a_field_shifts_by_a_fraction_of_another() {
+    let mut event = Event::new(json!({
+        "_conf": { "event": { "start": 1_719_830_919_852i64, "end": 1_719_830_984_684i64 },
+                   "timedelta": 600_000 }
+    }));
+    assert!(try_known_painless(
+        &mut event,
+        "ctx._conf.event.end = ctx._conf.event.end + ctx._conf.timedelta/2"
+    ));
+    assert!(try_known_painless(
+        &mut event,
+        "ctx._conf.event.start = ctx._conf.event.start - ctx._conf.timedelta/2"
+    ));
+    assert_eq!(
+        event
+            .get("_conf.event.start")
+            .and_then(serde_json::Value::as_i64),
+        Some(1_719_830_619_852)
+    );
+    assert_eq!(
+        event
+            .get("_conf.event.end")
+            .and_then(serde_json::Value::as_i64),
+        Some(1_719_831_284_684)
+    );
+}
+
+/// An operand that is not a plain field path declines the whole script.
+///
+/// The matcher writes to the target unconditionally once both operands read,
+/// so a call, a literal or a second operator inside one operand has to stop
+/// the claim rather than become a field name nothing carries.
+#[test]
+fn an_operand_that_is_not_a_field_declines() {
+    for script in [
+        "ctx.total = ctx.a + ctx.b.length()",
+        "ctx.total = ctx.a + ctx.b * 2",
+        "ctx.total = ctx.a - ctx.b - ctx.c",
+        "ctx.total = ctx.a + ctx.b/0",
+        "ctx.total = ctx.a + ctx.b/half",
+    ] {
+        assert!(parse_combine_fields(script).is_none(), "{script}");
+    }
 }
 
 /// The chain still binds and still takes the first matching arm.

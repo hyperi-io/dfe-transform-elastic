@@ -123,7 +123,7 @@
 122 CamelToSnake
 123 SplitTrimCollect
 124 SumDirections
-125 SumOfFields
+125 CombineFields
 126 DurationToNanos
 127 DedupeMapValues
 128 SnakeCaseListElements
@@ -288,4 +288,5 @@
  72 SelectRenameKeys
  73 FieldTables
  74 MemberMappings
+ 75 ConfiguredDateFormat
 

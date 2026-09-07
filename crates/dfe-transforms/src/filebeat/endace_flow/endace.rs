@@ -89,7 +89,7 @@ impl Transform for Endace {
             if _cond {
                 // Painless script, resolved to its runners at generation time
                 // Source: ctx._conf.timedelta = ctx._conf.endace_view_window * 60 * 1000
-                scale_field(event, &ScaleField::new("_conf.endace_view_window", "_conf.timedelta", Factor::Long(1000)));
+                scale_field(event, &ScaleField::new("_conf.endace_view_window", "_conf.timedelta", Factor::Long(60000)));
             }
 
             let _cond = { (event.has_value("_conf.event.end") && event.get_str("_conf.event.end") != Some("")) && (event.has_value("_conf.timedelta") && event.get_str("_conf.timedelta") != Some("")) };

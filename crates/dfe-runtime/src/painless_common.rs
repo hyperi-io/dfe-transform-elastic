@@ -9157,48 +9157,117 @@ pub fn sum_directions(event: &mut Event, units: &[&str]) -> bool {
     true
 }
 
-/// `ctx.<target> = ctx.<left> + ctx.<right>`, whatever the three are called.
+/// `ctx.<target> = ctx.<left> <+|-> ctx.<right>`, whatever the three are
+/// called, with an optional literal divisor on either operand.
 ///
 /// The directional-bytes matcher above only knows `source`/`destination` into
 /// `network`, and fortinet sums `rcvddelta` and `sentdelta` into `deltabytes`.
 /// Reading all three names out of the script covers both and whatever comes
 /// next.
 ///
+/// The divisor and the subtraction are endace, which shifts an epoch by half a
+/// view window at both ends -- `ctx._conf.event.start = ctx._conf.event.start -
+/// ctx._conf.timedelta/2`. Reading the divided operand as a bare path made
+/// `_conf.timedelta/2` the field name, which no event carries, so the matcher
+/// claimed the script and wrote nothing.
+///
 /// Skips when either side is absent or non-numeric: Elastic's script would
-/// throw, and its `if` gates on both being a Number. The addition saturates,
+/// throw, and its `if` gates on both being a Number. The arithmetic saturates,
 /// since both operands came off the wire.
-/// `ctx.<target> = ctx.<left> + ctx.<right>`.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct SumOfFields {
+pub struct CombineFields {
     target: String,
-    left: String,
-    right: String,
+    op: CombineOp,
+    left: CombineOperand,
+    right: CombineOperand,
 }
 
-impl SumOfFields {
+/// Which way round the two operands go.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CombineOp {
+    Add,
+    Subtract,
+}
+
+/// One operand: a field path, and the literal it is divided by, if any.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CombineOperand {
+    path: String,
+    divisor: Option<i64>,
+}
+
+impl CombineOperand {
     /// Build one from resolved parts, for a caller that already knows them.
     #[must_use]
-    pub fn new(
-        target: impl Into<String>,
-        left: impl Into<String>,
-        right: impl Into<String>,
-    ) -> Self {
+    pub fn new(path: impl Into<String>, divisor: Option<i64>) -> Self {
         Self {
-            target: target.into(),
-            left: left.into(),
-            right: right.into(),
+            path: path.into(),
+            divisor,
         }
     }
 }
 
-fn parse_sum_of_fields(script: &str) -> Option<SumOfFields> {
+impl CombineFields {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(
+        target: impl Into<String>,
+        op: CombineOp,
+        left: CombineOperand,
+        right: CombineOperand,
+    ) -> Self {
+        Self {
+            target: target.into(),
+            op,
+            left,
+            right,
+        }
+    }
+}
+
+/// One operand of the combination: `ctx.<path>`, optionally `/ <literal>`.
+///
+/// Declines anything else, which is what keeps the matcher off a script it
+/// cannot read: a method call, a literal, or a second operator in the same
+/// operand all fail the path test rather than becoming a field name.
+fn combine_operand(text: &str) -> Option<CombineOperand> {
     use crate::painless_params::clean_path;
 
-    // The assignment is the one whose RHS holds the addition: taking the
+    let text = text.trim().strip_prefix("ctx.")?;
+    let (path, divisor) = match text.split_once('/') {
+        Some((path, divisor)) => {
+            let literal = divisor
+                .trim()
+                .trim_end_matches(['L', 'l', 'd', 'D', 'f', 'F'])
+                .trim();
+            (path, Some(literal.parse::<i64>().ok().filter(|n| *n != 0)?))
+        }
+        None => (text, None),
+    };
+
+    let path = clean_path(path.trim());
+    (!path.is_empty()
+        && path
+            .chars()
+            .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_' | '-' | '@')))
+    .then_some(CombineOperand { path, divisor })
+}
+
+fn parse_combine_fields(script: &str) -> Option<CombineFields> {
+    use crate::painless_params::clean_path;
+
+    // The assignment is the one whose RHS holds the arithmetic: taking the
     // script's FIRST `=` reads a preamble that creates the target container,
-    // and the sum is never found.
-    let sum_at = script.find(" + ctx.")?;
-    let assign = script[..sum_at].rfind(" = ")?;
+    // and the combination is never found.
+    let (at, separator, op) = [(" + ", CombineOp::Add), (" - ", CombineOp::Subtract)]
+        .into_iter()
+        .filter_map(|(separator, op)| {
+            script
+                .find(&format!("{separator}ctx."))
+                .map(|at| (at, separator, op))
+        })
+        .min_by_key(|(at, _, _)| *at)?;
+    let assign = script[..at].rfind(" = ")?;
     let target = script[..assign].trim().rsplit("ctx.").next()?;
 
     let rhs = &script[assign + " = ".len()..];
@@ -9208,34 +9277,56 @@ fn parse_sum_of_fields(script: &str) -> Option<SumOfFields> {
         .strip_prefix('(')
         .and_then(|inner| inner.strip_suffix(')'))
         .unwrap_or(rhs);
-    let (left, right) = rhs.split_once(" + ")?;
-    let left = left.trim().strip_prefix("ctx.")?;
-    let right = right.trim().strip_prefix("ctx.")?;
+    let (left, right) = rhs.split_once(separator)?;
 
-    Some(SumOfFields::new(
-        clean_path(target),
-        clean_path(left),
-        clean_path(right),
-    ))
+    // A target the script assigns TWICE needs a matcher that reads both
+    // writes: rubrik computes a free size in one branch of an `if` and zeroes
+    // it in the other, and claiming that here would drop the zero.
+    if script.matches(&format!("ctx.{target} = ")).count() != 1 {
+        return None;
+    }
+
+    Some(CombineFields {
+        target: clean_path(target),
+        op,
+        left: combine_operand(left)?,
+        right: combine_operand(right)?,
+    })
 }
 
-/// Add two fields into a third, leaving the target alone where either is absent.
-pub fn sum_of_fields(event: &mut Event, pattern: &SumOfFields) -> bool {
+/// Combine two fields into a third, leaving the target alone where either is
+/// absent.
+pub fn combine_fields(event: &mut Event, pattern: &CombineFields) -> bool {
     let (Some(a), Some(b)) = (
-        event.get(&pattern.left).cloned(),
-        event.get(&pattern.right).cloned(),
+        event.get(&pattern.left.path).cloned(),
+        event.get(&pattern.right.path).cloned(),
     ) else {
         return true;
     };
-    // Painless adds two integers as an integer and anything else as a double,
-    // so a percentage stays fractional rather than truncating to zero.
+    // Painless combines two integers as an integer and anything else as a
+    // double, so a percentage stays fractional rather than truncating to zero.
+    // An integer divisor truncates for the same reason.
     let total = if let (Some(x), Some(y)) = (a.as_i64(), b.as_i64()) {
-        json!(x.saturating_add(y))
+        let x = pattern.left.divisor.map_or(x, |n| x / n);
+        let y = pattern.right.divisor.map_or(y, |n| y / n);
+        match pattern.op {
+            CombineOp::Add => json!(x.saturating_add(y)),
+            CombineOp::Subtract => json!(x.saturating_sub(y)),
+        }
     } else {
         let (Some(x), Some(y)) = (a.as_f64(), b.as_f64()) else {
             return true;
         };
-        json!(x + y)
+        #[allow(clippy::cast_precision_loss)]
+        let divide = |value: f64, divisor: Option<i64>| divisor.map_or(value, |n| value / n as f64);
+        let (x, y) = (
+            divide(x, pattern.left.divisor),
+            divide(y, pattern.right.divisor),
+        );
+        match pattern.op {
+            CombineOp::Add => json!(x + y),
+            CombineOp::Subtract => json!(x - y),
+        }
     };
     let _ = event.set(&pattern.target, total);
     true
@@ -9478,7 +9569,7 @@ pub fn snake_case_list_elements(event: &mut Event, pattern: &SnakeCaseListElemen
 /// One member TOTALLED across a list of objects.
 ///
 /// `ti_recordedfuture` reports evidence as a list and the ECS sighting count
-/// is the sum of one member over it. Distinct from [`KnownPattern::SumOfFields`],
+/// is the sum of one member over it. Distinct from [`KnownPattern::CombineFields`],
 /// which adds up named fields at fixed paths rather than walking a list.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SumMemberOverList {
@@ -13588,14 +13679,20 @@ impl Eq for Factor {}
 /// preamble, so the target read as `event` and nothing was written: 25 zscaler
 /// events with no `event.duration` at all.
 fn parse_scale_field(script: &str) -> Option<ScaleField> {
-    let (head, factor) = script.rsplit_once('*')?;
-    let literal = factor.trim().trim_end_matches([';', ')', ' ']).trim();
-    // `L` is Java's long suffix, which checkpoint writes on its 1e9 constant;
-    // symantec_endpoint writes the same magnitude as `1e9` and gets a double.
-    let factor = match literal.trim_end_matches(['L', 'l']).trim().parse::<i64>() {
-        Ok(long) => Factor::Long(long),
-        Err(_) => Factor::Double(literal.parse::<f64>().ok()?),
-    };
+    let (mut head, factor) = script.rsplit_once('*')?;
+    let mut factor = literal_factor(factor)?;
+
+    // A CHAIN of literal factors is ONE factor: endace writes `* 60 * 1000`
+    // and zoom `* 60L * 1000000000L`, and reading only the last one scaled
+    // both by a fraction of what the pipeline meant. The walk stops at the
+    // first operand that is not a literal, which is the source path.
+    while let Some((rest, next)) = head.rsplit_once('*') {
+        let Some(next) = literal_factor(next) else {
+            break;
+        };
+        factor = multiply_factors(factor, next);
+        head = rest;
+    }
 
     let at = last_assignment(head)?;
     let target = painless_path(&head[..at])?;
@@ -13608,6 +13705,30 @@ fn parse_scale_field(script: &str) -> Option<ScaleField> {
         target,
         factor,
     })
+}
+
+/// One multiply's right-hand operand, when it is a numeric literal.
+///
+/// `L` is Java's long suffix, which checkpoint writes on its 1e9 constant;
+/// `symantec_endpoint` writes the same magnitude as `1e9` and gets a double.
+fn literal_factor(text: &str) -> Option<Factor> {
+    let literal = text.trim().trim_end_matches([';', ')', ' ']).trim();
+    match literal.trim_end_matches(['L', 'l']).trim().parse::<i64>() {
+        Ok(long) => Some(Factor::Long(long)),
+        Err(_) => literal.parse::<f64>().ok().map(Factor::Double),
+    }
+}
+
+/// Fold two literal factors, a double on either side making the product one.
+#[allow(clippy::cast_precision_loss)]
+fn multiply_factors(one: Factor, two: Factor) -> Factor {
+    match (one, two) {
+        (Factor::Long(a), Factor::Long(b)) => Factor::Long(a.saturating_mul(b)),
+        (Factor::Double(a), Factor::Double(b)) => Factor::Double(a * b),
+        (Factor::Long(a), Factor::Double(b)) | (Factor::Double(b), Factor::Long(a)) => {
+            Factor::Double(a as f64 * b)
+        }
+    }
 }
 
 /// The byte offset of the last `=` that ASSIGNS, rather than compares.
@@ -14949,7 +15070,15 @@ fn parse_guarded_divide(script: &str) -> Option<KnownPattern> {
     };
     let divisor = literal.parse::<i64>().ok().filter(|n| *n != 0)?;
     let source = clean_path(value.trim().strip_prefix("ctx.")?);
-    if target.is_empty() || source.is_empty() {
+    // The dividend has to be a plain field path. Read loosely it took endace's
+    // `ctx._conf.event.start - ctx._conf.timedelta` whole, claimed the script,
+    // and then wrote nothing, because no event carries a field of that name.
+    if target.is_empty()
+        || source.is_empty()
+        || !source
+            .chars()
+            .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_' | '-' | '@'))
+    {
         return None;
     }
 
@@ -17640,7 +17769,7 @@ pub(crate) enum KnownPattern {
     },
     SplitTrimCollect,
     SumDirections(Vec<&'static str>),
-    SumOfFields(Box<SumOfFields>),
+    CombineFields(Box<CombineFields>),
     DurationToNanos,
     DedupeMapValues(Box<DedupeMapValues>),
     EmailsToRelatedUsers(Box<EmailsToRelatedUsers>),
@@ -18985,12 +19114,12 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
-    // Pattern: one ctx field as the sum of two others. Gated on the parse, so a
+    // Pattern: one ctx field combined from two others. Gated on the parse, so a
     // script that merely adds two fields somewhere no longer claims the pattern.
-    if normalised.contains(" + ctx.")
-        && let Some(pattern) = parse_sum_of_fields(normalised)
+    if (normalised.contains(" + ctx.") || normalised.contains(" - ctx."))
+        && let Some(pattern) = parse_combine_fields(normalised)
     {
-        patterns.push(KnownPattern::SumOfFields(Box::new(pattern)));
+        patterns.push(KnownPattern::CombineFields(Box::new(pattern)));
     }
 
     // Pattern: seconds to nanoseconds for event.duration.
@@ -20394,7 +20523,7 @@ pub(crate) fn run_known_pattern(
         }
         KnownPattern::SplitTrimCollect => try_split_trim_collect(event, normalised),
         KnownPattern::SumDirections(totals) => sum_directions(event, totals),
-        KnownPattern::SumOfFields(pattern) => sum_of_fields(event, pattern),
+        KnownPattern::CombineFields(pattern) => combine_fields(event, pattern),
         KnownPattern::DurationToNanos => try_duration_to_nanos(event, normalised),
         KnownPattern::FloatSecondsToNanos(pattern) => float_seconds_to_nanos(event, pattern),
         KnownPattern::FirstPresentKeyName(pattern) => first_present_key_name(event, pattern),

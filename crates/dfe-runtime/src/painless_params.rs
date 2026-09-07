@@ -295,6 +295,9 @@ pub(crate) enum ParamsPattern {
     /// map, so the table is the whole pattern. The `String` is the params key
     /// the list sits under.
     MemberMappings(String),
+    /// Several scratch fields reparsed with a date pattern the DOCUMENT
+    /// carries, into a sibling container.
+    ConfiguredDateFormat(Box<ConfiguredDateFormat>),
 }
 
 /// The one matcher this script's text triggers, or `None`.
@@ -955,7 +958,143 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
         return Some(ParamsPattern::MemberMappings(list));
     }
 
+    // Pattern: each of the params-named fields reparsed with a date pattern the
+    // DOCUMENT carries rather than the pipeline. LAST, because nothing above
+    // claims citrix_adc's script and it needs to precede nothing.
+    if normalised.contains("DateTimeFormatter.ofPattern(ctx.")
+        && let Some(pattern) = parse_configured_date_format(normalised)
+    {
+        return Some(ParamsPattern::ConfiguredDateFormat(Box::new(pattern)));
+    }
+
     None
+}
+
+/// Several scratch fields reparsed with a date pattern the document supplies.
+///
+/// ```painless
+/// def zone = ctx.event?.timezone != null ? ZoneId.of(ctx.event.timezone) : null;
+/// def formatter = DateTimeFormatter.ofPattern(ctx._conf.custom_date_format);
+/// def outFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+/// params.fields.forEach(field -> {
+///   if (!ctx._tmp?.containsKey(field)) { return true; }
+///   try {
+///     def localDateTime = LocalDateTime.parse(ctx._tmp[field], formatter);
+///     ctx.citrix_adc.log[field] = outFormatter.format(ZonedDateTime.of(localDateTime, zone));
+///   } catch (Exception e) { return true; }
+/// });
+/// ```
+///
+/// `citrix_adc` ships this over five fields at once, and its `_conf` carries
+/// `dd/MM/yyyy:HH:mm:ss`. Unclaimed, the fallback date processors behind it
+/// read `10/08/2024` with their own hard-coded `MM/dd/yyyy` and every such
+/// event landed in October.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ConfiguredDateFormat {
+    /// The params key listing the field names.
+    names: String,
+    /// The document path holding the input pattern.
+    format: String,
+    /// The document path holding the zone, which the output is rendered in.
+    zone: Option<String>,
+    /// The container the values are read from.
+    source: String,
+    /// The container the parsed values are written to.
+    target: String,
+}
+
+/// The one output pattern this matcher can render, which is what
+/// [`crate::date_formats::parse_date`] already writes: milliseconds, and `Z`
+/// at a zero offset where Java's `XXX` writes `Z` too.
+const ISO_OFFSET_PATTERN: &str = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+
+fn parse_configured_date_format(script: &str) -> Option<ConfiguredDateFormat> {
+    // The INPUT formatter is the one built from a ctx path; the output one is
+    // a literal, and reading either for the other inverts the whole pattern.
+    let format = clean_path(
+        script
+            .split_once("DateTimeFormatter.ofPattern(ctx.")?
+            .1
+            .split_once(')')?
+            .0
+            .trim(),
+    );
+    if !script.contains(ISO_OFFSET_PATTERN) {
+        return None;
+    }
+
+    let (head, body) = script.split_once(".forEach(")?;
+    let names = head.rsplit_once("params.")?.1.trim();
+    if names.is_empty() || names.contains(char::is_whitespace) {
+        return None;
+    }
+
+    // Both containers are subscripted by the loop's OWN variable; anything
+    // else reads a different field from the one the loop is walking.
+    let subscript = format!("[{}]", body.split_once("->")?.0.trim());
+    let source = clean_path(
+        body.split_once("LocalDateTime.parse(ctx.")?
+            .1
+            .split_once(subscript.as_str())?
+            .0
+            .trim(),
+    );
+    let target = clean_path(
+        body.split_once(&format!("{subscript} = "))?
+            .0
+            .rsplit("ctx.")
+            .next()?
+            .trim(),
+    );
+
+    let zone = script
+        .split_once("ZoneId.of(ctx.")
+        .and_then(|(_, tail)| tail.split_once(')'))
+        .map(|(path, _)| clean_path(path.trim()));
+
+    (!format.is_empty() && !source.is_empty() && !target.is_empty()).then(|| ConfiguredDateFormat {
+        names: names.to_owned(),
+        format,
+        zone,
+        source,
+        target,
+    })
+}
+
+/// Reparse each named field with the document's own pattern.
+///
+/// A value the pattern cannot read is SKIPPED, which is the script's own
+/// `catch`: the target stays absent and the date processor behind it -- the
+/// one carrying the pipeline's hard-coded format list -- takes the field.
+fn run_configured_date_format(
+    event: &mut Event,
+    pattern: &ConfiguredDateFormat,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(format) = event.get_str(&pattern.format).map(str::to_owned) else {
+        return true;
+    };
+    let Some(names) = params.get(&pattern.names).and_then(Value::as_array) else {
+        return true;
+    };
+    let zone = pattern
+        .zone
+        .as_deref()
+        .and_then(|path| event.get_str(path))
+        .map(str::to_owned);
+
+    for name in names.iter().filter_map(Value::as_str) {
+        let Some(text) = event
+            .get_str(&format!("{}.{name}", pattern.source))
+            .map(str::to_owned)
+        else {
+            continue;
+        };
+        if let Some(parsed) = crate::date_formats::parse_date(&text, &[&format], zone.as_deref()) {
+            let _ = event.set(&format!("{}.{name}", pattern.target), Value::String(parsed));
+        }
+    }
+    true
 }
 
 /// The params key holding a list of mapping specs, or `None`.
@@ -1855,6 +1994,9 @@ pub(crate) fn run_params_pattern(
             crate::painless_field_tables::field_tables(event, pattern, params)
         }
         ParamsPattern::MemberMappings(list) => run_member_mappings(event, list, params),
+        ParamsPattern::ConfiguredDateFormat(pattern) => {
+            run_configured_date_format(event, pattern, params)
+        }
         ParamsPattern::ValueMaps => try_value_maps(event, normalised, params),
         ParamsPattern::RowColumns(literals) => try_row_columns(event, normalised, params, literals),
         ParamsPattern::RowColumnAppends(pattern) => run_row_column_appends(event, pattern, params),

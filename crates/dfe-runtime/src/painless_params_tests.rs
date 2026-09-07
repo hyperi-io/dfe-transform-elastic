@@ -3710,3 +3710,93 @@ fn a_loop_that_is_not_the_pattern_declines_at_the_parse() {
         None
     );
 }
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/citrix_adc_log/default.rs`, which is
+/// `pipelines/citrix_adc/log/default.yml`.
+const CONFIGURED_DATE: &str = r#"def zone = ctx.event?.timezone != null ? ZoneId.of(ctx.event.timezone) : null;\ndef formatter = DateTimeFormatter.ofPattern(ctx._conf.custom_date_format);\ndef outFormatter = DateTimeFormatter.ofPattern(\"yyyy-MM-dd'T'HH:mm:ss.SSSXXX\");\n\nparams.fields.forEach(field -> {\n  if (!ctx._tmp?.containsKey(field)) {\n    return true;\n  }\n\n  try {\n    def localDateTime = LocalDateTime.parse(ctx._tmp[field], formatter);\n    ctx.citrix_adc.log[field] = outFormatter.format(ZonedDateTime.of(localDateTime, zone));\n  } catch (Exception e) {\n    /* Intentionally ignored */\n    return true;\n  }\n});"#;
+
+fn configured_date_params() -> Value {
+    json!({ "fields": ["timestamp_native", "start_time", "end_time"] })
+}
+
+/// The document's own pattern decides the day and the month.
+///
+/// `10/08/2024` under `dd/MM/yyyy` is 10 August. Unclaimed, the date
+/// processors behind this script read it with their own hard-coded
+/// `MM/dd/yyyy` and put every such event in October.
+#[test]
+fn a_configured_date_format_reads_the_documents_own_pattern() {
+    let mut event = Event::new(json!({
+        "_conf": { "custom_date_format": "dd/MM/yyyy:HH:mm:ss" },
+        "event": { "timezone": "UTC" },
+        "_tmp": {
+            "timestamp_native": "10/08/2024:09:38:41",
+            "start_time": "10/08/2024:09:37:54"
+        }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        CONFIGURED_DATE,
+        &configured_date_params()
+    ));
+    assert_eq!(
+        event.get_str("citrix_adc.log.timestamp_native"),
+        Some("2024-08-10T09:38:41.000Z")
+    );
+    assert_eq!(
+        event.get_str("citrix_adc.log.start_time"),
+        Some("2024-08-10T09:37:54.000Z")
+    );
+    // A field the params list names but the document does not carry.
+    assert!(!event.has("citrix_adc.log.end_time"));
+}
+
+/// A value the pattern cannot read is left for the processor behind it.
+///
+/// The script's own `catch` swallows it, and `11/18/2024` has no
+/// eighteenth month -- so the target must stay ABSENT, or the fallback date
+/// processor's `!has_value` guard skips and the field is never written.
+#[test]
+fn a_value_the_configured_pattern_cannot_read_writes_nothing() {
+    let mut event = Event::new(json!({
+        "_conf": { "custom_date_format": "dd/MM/yyyy:HH:mm:ss" },
+        "event": { "timezone": "GMT" },
+        "_tmp": { "timestamp_native": "11/18/2024:12:18:56" }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        CONFIGURED_DATE,
+        &configured_date_params()
+    ));
+    assert!(!event.has("citrix_adc.log.timestamp_native"));
+}
+
+/// The zone the document names is the OUTPUT zone, as Java's `XXX` prints it.
+#[test]
+fn a_configured_date_renders_in_the_documents_zone() {
+    let mut event = Event::new(json!({
+        "_conf": { "custom_date_format": "dd/MM/yyyy:HH:mm:ss" },
+        "event": { "timezone": "Australia/Sydney" },
+        "_tmp": { "start_time": "10/08/2024:09:37:54" }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        CONFIGURED_DATE,
+        &configured_date_params()
+    ));
+    assert_eq!(
+        event.get_str("citrix_adc.log.start_time"),
+        Some("2024-08-10T09:37:54.000+10:00")
+    );
+}
+
+/// An output format the runner cannot render declines the whole script.
+#[test]
+fn a_configured_date_with_another_output_format_declines() {
+    let script = CONFIGURED_DATE.replace("SSSXXX", "SSSSSS");
+    assert_eq!(
+        params_pattern(&crate::painless_common::normalise(&script)),
+        None
+    );
+}

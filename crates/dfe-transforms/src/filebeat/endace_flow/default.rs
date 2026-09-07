@@ -511,7 +511,7 @@ impl Transform for Default {
                         &ScaleField::new(
                             "_conf.endace_view_window",
                             "_conf.timedelta",
-                            Factor::Long(1000),
+                            Factor::Long(60000),
                         ),
                     );
                 }

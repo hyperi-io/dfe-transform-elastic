@@ -83,8 +83,60 @@ pub fn parse_date_out(
     if let Some(zone) = configured {
         return Some(parsed.with_timezone(&zone).format(OFFSET_OUT).to_string());
     }
+    // The reserved words are reserved on the OUTPUT side too, and none of them
+    // is a Java pattern.
+    if let Some(named) = output_format.and_then(|name| named_output(name, &parsed)) {
+        return Some(named);
+    }
     let out = output_format.map_or(Cow::Borrowed(ISO_OUT), java_to_chrono);
     Some(parsed.with_timezone(&Utc).format(&out).to_string())
+}
+
+/// An `output_format` naming one of Elasticsearch's own formats rather than
+/// spelling a Java pattern, rendered the way Elasticsearch renders it.
+///
+/// `None` for anything else, which leaves a real Java pattern to
+/// [`java_to_chrono`]. That translator reads EVERY letter of its input as a
+/// pattern letter, so a reserved word reaching it comes back as arithmetic on
+/// the wrong fields: `epoch_millis` resolves to `%-I_%-M%-S`, which turned
+/// endace's epoch into `10_4839` and threw in the `convert` after it, taking
+/// the whole pipeline down its `on_failure` path.
+fn named_output(name: &str, parsed: &DateTime<FixedOffset>) -> Option<String> {
+    let utc = parsed.with_timezone(&Utc);
+    Some(match name {
+        "UNIX_MS" | "epoch_millis" => utc.timestamp_millis().to_string(),
+        "UNIX" | "epoch_second" => {
+            let fraction = utc.format("%9f").to_string();
+            let fraction = fraction.trim_end_matches('0');
+            if fraction.is_empty() {
+                utc.timestamp().to_string()
+            } else {
+                format!("{}.{fraction}", utc.timestamp())
+            }
+        }
+        // Elasticsearch's nanosecond printer takes between three and nine
+        // fraction digits, dropping trailing zeros above the third.
+        "strict_date_optional_time_nanos" => {
+            let nanos = utc.format("%9f").to_string();
+            let trimmed = nanos.trim_end_matches('0');
+            let fraction = if trimmed.len() < 3 {
+                &nanos[..3]
+            } else {
+                trimmed
+            };
+            format!("{}.{fraction}Z", utc.format("%Y-%m-%dT%H:%M:%S"))
+        }
+        "date_time_no_millis" | "strict_date_time_no_millis" => {
+            utc.format("%Y-%m-%dT%H:%M:%SZ").to_string()
+        }
+        "ISO8601"
+        | "strict_date_optional_time"
+        | "date_optional_time"
+        | "date_time"
+        | "strict_date_time" => utc.format(ISO_OUT).to_string(),
+        // A Java pattern, or `TAI64N`, which the parse side declines too.
+        _ => return None,
+    })
 }
 
 /// Whether the TEXT carried a zone of its own, which beats the processor's.
@@ -1019,5 +1071,85 @@ mod tests {
     fn a_bare_date_parses_as_midnight_utc() {
         let out = parse_date("2025-03-01", &["ISO8601"], None);
         assert_eq!(out.as_deref(), Some("2025-03-01T00:00:00.000Z"));
+    }
+
+    /// A reserved word as the OUTPUT format, which is not a Java pattern.
+    ///
+    /// endace names `epoch_millis` on four call sites, and `java_to_chrono`
+    /// read every letter of it as a pattern letter: `h`, `m` and `s` survived
+    /// as `%-I_%-M%-S` and `2024-07-01T10:48:39.852Z` came back as `10_4839`.
+    /// The `convert` processor after it could not read that as a long, threw,
+    /// and took the whole pipeline with it -- so the `_conf` scratch was never
+    /// pruned and `event.reference` never built.
+    #[test]
+    fn an_epoch_output_format_writes_the_epoch() {
+        let out = parse_date_out(
+            "2024-07-01T10:48:39.852Z",
+            &["ISO8601"],
+            None,
+            Some("epoch_millis"),
+        );
+        assert_eq!(out.as_deref(), Some("1719830919852"));
+
+        // The Beats spelling of the same format, and the seconds pair.
+        assert_eq!(
+            parse_date_out(
+                "2024-07-01T10:48:39.852Z",
+                &["ISO8601"],
+                None,
+                Some("UNIX_MS")
+            )
+            .as_deref(),
+            Some("1719830919852")
+        );
+        assert_eq!(
+            parse_date_out(
+                "2024-07-01T10:48:39.000Z",
+                &["ISO8601"],
+                None,
+                Some("epoch_second")
+            )
+            .as_deref(),
+            Some("1719830919")
+        );
+    }
+
+    /// The nanosecond printer keeps between three and nine fraction digits.
+    ///
+    /// sysdig and google_workspace_meet name this one, and read as a Java
+    /// pattern it resolved to `%-S_%-d%p_%9f%p_%-M_%9f%p%9f%-S`. The digit
+    /// counts here are Elasticsearch's own output, captured in the corpus.
+    #[test]
+    fn the_nanosecond_output_format_trims_to_three_digits() {
+        for (input, expected) in [
+            (
+                "2025-04-16T03:01:01.1951498Z",
+                "2025-04-16T03:01:01.1951498Z",
+            ),
+            ("2025-04-15T07:13:45.52835Z", "2025-04-15T07:13:45.52835Z"),
+            ("2026-05-28T11:35:32.639354Z", "2026-05-28T11:35:32.639354Z"),
+            // Nothing below the millisecond leaves the minimum three.
+            ("2025-04-16T03:01:01Z", "2025-04-16T03:01:01.000Z"),
+        ] {
+            let out = parse_date_out(
+                input,
+                &["ISO8601"],
+                None,
+                Some("strict_date_optional_time_nanos"),
+            );
+            assert_eq!(out.as_deref(), Some(expected), "{input}");
+        }
+    }
+
+    /// A real Java pattern still goes through the translator.
+    #[test]
+    fn a_java_output_pattern_is_unaffected() {
+        let out = parse_date_out(
+            "2024-07-01T10:48:39.852Z",
+            &["ISO8601"],
+            None,
+            Some("yyyy-MM-dd HH:mm:ss"),
+        );
+        assert_eq!(out.as_deref(), Some("2024-07-01 10:48:39"));
     }
 }

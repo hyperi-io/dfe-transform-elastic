@@ -314,7 +314,7 @@ impl Transform for Meeting {
             if _cond {
                 // Painless script, resolved to its runners at generation time
                 // Source: ctx.event.duration = ctx.zoom.meeting.duration * 60L * 1000000000L;
-                scale_field(event, &ScaleField::new("zoom.meeting.duration", "event.duration", Factor::Long(1000000000)));
+                scale_field(event, &ScaleField::new("zoom.meeting.duration", "event.duration", Factor::Long(60000000000)));
             }
 
             let _cond = { event.get_str("event.action") == Some("meeting.started") };
