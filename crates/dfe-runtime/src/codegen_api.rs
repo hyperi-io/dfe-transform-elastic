@@ -1431,7 +1431,16 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // stands until that trade is taken deliberately.
         "WORD" => r"\w+",
         "MONTH" => MONTH,
-        "MAC" => r"(?:[0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}",
+        // Elastic's `MAC` is `(?:%{CISCOMAC}|%{WINDOWSMAC}|%{COMMONMAC})`, and
+        // the Cisco form is the one this used to miss. `0200.0000.0000` failed
+        // cisco_aironet's whole AWIPS grok, which took `cisco.ap_name`, both
+        // MACs and the alarm fields with it, raised a `pipeline_error`
+        // Elasticsearch does not, and left the `_temp_` scratch unpruned
+        // because the prune sits after the step that failed -- 42 events and
+        // 399 extra fields on one missing alternative.
+        // Wrapped, because an unnamed `%{MAC}` substitutes BARE and a top-level
+        // `|` would then split the whole enclosing pattern rather than itself.
+        "MAC" => r"(?:(?:[A-Fa-f0-9]{4}\.){2}[A-Fa-f0-9]{4}|(?:[0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2})",
         "EMAILADDRESS" => r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
         // Elastic's own three. A Windows path admits SPACES between its
         // backslashes, which `[^\s]+` refused: sophos_central's
