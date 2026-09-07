@@ -302,8 +302,9 @@ def report_claimed(dump: dict, sources: dict[str, dict], top: int) -> int:
         "script and ran it, and the field it writes is still wrong -- so read the\n"
         "matcher's output, not its reach.\n"
         "`wrong in` is a FIELD tally and is always the bigger number. `unlocks`\n"
-        "is the event count, and it is cumulative -- WHOLE SOURCE is marked only\n"
-        "where this script's own fields carry the whole gap."
+        "is the event count, per-step, so a prefix is worth the SUM of its lines\n"
+        "-- WHOLE SOURCE is marked only where this script's own fields carry the\n"
+        "whole gap."
     )
     return 0
 
