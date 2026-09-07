@@ -1582,36 +1582,423 @@ mod unicode_class_tests {
     }
 }
 
-/// The text of an HTML fragment, with its tags removed.
+/// Lucene's inline elements. Every other element is block level.
 ///
-/// Elastic's `html_strip` runs Lucene's `HTMLStripCharFilter`, which drops
-/// everything between `<` and the matching `>` and decodes the five predefined
-/// entities. A `<` with no `>` after it is not a tag and stands for itself.
-/// `rapid7_insightvm` writes its remediation as markup, and `doppler` and
-/// `servicenow` each carry one field of it.
+/// This is the `InlineElment` macro from Lucene's
+/// `analysis/common/src/java/org/apache/lucene/analysis/charfilter/HTMLStripCharFilter.jflex`
+/// (the misspelling is upstream's), folded to lower case and sorted so the
+/// lookup is a binary search. The macro's first alternative is the character
+/// class `[aAbBiIqQsSuU]`, which is the six single-letter names here.
+///
+/// It is shorter than HTML's own inline list: `applet`, `button`, `del`,
+/// `iframe`, `ins`, `map`, `object` and `param` are absent, so Lucene treats
+/// those as block level and so do we.
+const INLINE_ELEMENTS: [&str; 31] = [
+    "a", "abbr", "acronym", "b", "basefont", "bdo", "big", "cite", "code", "dfn", "em", "font",
+    "i", "img", "input", "kbd", "label", "q", "s", "samp", "select", "small", "span", "strike",
+    "strong", "sub", "sup", "textarea", "tt", "u", "var",
+];
+
+/// The longest name in [`INLINE_ELEMENTS`] -- `basefont` and `textarea`.
+const MAX_INLINE_NAME: usize = 8;
+
+/// The longest reference [`decode_entity`] resolves: `#x10FFFF` and `#1114111`
+/// are both 8 characters between the `&` and the `;`.
+const MAX_ENTITY_BODY: usize = 8;
+
+/// The text of an HTML fragment, with its markup removed.
+///
+/// Elastic's `html_strip` processor runs Lucene's `HTMLStripCharFilter`, and
+/// that filter does NOT drop a tag silently: it emits a **newline** where a
+/// block-level element opened or closed, and nothing where an inline one did.
+/// Running the sentences together is the difference between
+/// `... 22.04\n\n\n\nVulnerable software ...` and one unreadable line, and it
+/// fails the field on every event that carries markup.
+/// [`INLINE_ELEMENTS`] holds the list Lucene draws that line with.
+///
+/// Trimming is NOT part of this. `rapid7_insightvm` puts a `trim` processor
+/// after each `html_strip` precisely because the leading `<p><p>` leaves two
+/// newlines behind; `doppler` has no trim and keeps what the markup implied.
+///
+/// Entity decoding runs AFTER the tag scan, and the order is the point:
+/// Lucene resolves an entity inline, so a decoded `<` is text and never opens
+/// a tag. rapid7's GRUB remediation depends on it -- `password &lt;password&gt;`
+/// has to survive as `password <password>` rather than lose the word between
+/// the brackets. Decoding first would strip it.
+///
+/// One behaviour here is Elastic's rather than Lucene's, and it is reproduced:
+/// the processor hands back a value holding no `<` or no `>` untouched, before
+/// Lucene ever sees it, so `a &lt; b` with no markup keeps its entity.
+///
+/// What this does NOT reproduce:
+/// - Lucene's full HTML4 entity table, all 253 names. Only the five predefined
+///   XML names and numeric character references are resolved, which is every
+///   entity the corpus carries. The table is Apache-2.0 source data, so
+///   vendoring it into a BUSL file is a licensing call, not a coding one.
+/// - A `>` inside a quoted attribute value, which Lucene's longest-match
+///   grammar keeps inside the tag and this scan closes the tag on.
+/// - Lucene DROPS a trailing `<name` that never closes; this keeps it as text,
+///   which loses nothing.
 #[must_use]
 pub fn html_strip(text: &str) -> String {
-    let mut out = String::with_capacity(text.len());
-    let mut rest = text;
-
-    while let Some(open) = rest.find('<') {
-        let Some(close) = rest[open..].find('>') else {
-            break;
-        };
-        out.push_str(&rest[..open]);
-        rest = &rest[open + close + 1..];
+    // Elasticsearch's own shortcut, and it is behaviour rather than an
+    // optimisation: with no tag to strip the value is returned verbatim,
+    // entities included.
+    if !text.contains('<') || !text.contains('>') {
+        return text.to_string();
     }
-    out.push_str(rest);
+
+    let mut out = String::with_capacity(text.len());
+    let mut cursor = 0;
+
+    while let Some(offset) = text[cursor..].find('<') {
+        let open = cursor + offset;
+        out.push_str(&text[cursor..open]);
+        cursor = strip_one_construct(text, open, &mut out);
+    }
+    out.push_str(&text[cursor..]);
 
     if out.contains('&') {
-        out = out
-            .replace("&lt;", "<")
-            .replace("&gt;", ">")
-            .replace("&quot;", "\"")
-            .replace("&apos;", "'")
-            .replace("&amp;", "&");
+        out = decode_entities(&out);
     }
     out
+}
+
+/// Consume the construct opening at the `<` at `open`, appending whatever
+/// Lucene emits in its place, and answer the byte index to resume at.
+///
+/// The answer is always greater than `open`, so the caller's scan advances.
+fn strip_one_construct(text: &str, open: usize, out: &mut String) -> usize {
+    let after = open + 1;
+    let rest = &text[after..];
+
+    // A comment carries no element, so no newline. Lucene swallows the rest of
+    // the input when the comment never closes.
+    if let Some(body) = rest.strip_prefix("!--") {
+        return body
+            .find("-->")
+            .map_or_else(|| text.len(), |at| after + 3 + at + 3);
+    }
+
+    // A CDATA section is text, delimiters aside.
+    if let Some(body) = rest.strip_prefix("![CDATA[") {
+        let Some(at) = body.find("]]>") else {
+            out.push_str(body);
+            return text.len();
+        };
+        out.push_str(&body[..at]);
+        return after + 8 + at + 3;
+    }
+
+    // A doctype or other declaration, and a processing instruction: dropped,
+    // and neither is an element, so neither earns a newline.
+    if rest.starts_with(['!', '?']) {
+        let Some(at) = rest.find('>') else {
+            out.push_str(&text[open..]);
+            return text.len();
+        };
+        return after + at + 1;
+    }
+
+    let closing = rest.starts_with('/');
+    let name_at = skip_whitespace(text, after + usize::from(closing));
+    let Some((name, name_end)) = read_element_name(text, name_at) else {
+        // Not a tag at all. Lucene pushes the `<` back as ordinary text and
+        // carries on scanning, which is what keeps `1 < 2 > 3` intact.
+        out.push('<');
+        return after;
+    };
+
+    // `script` and `style` hold raw text rather than markup. Lucene drops the
+    // content and emits one newline at the closing tag, so a page's JavaScript
+    // never lands in a keyword field.
+    if !closing && (name.eq_ignore_ascii_case("script") || name.eq_ignore_ascii_case("style")) {
+        let Some(end) = skip_raw_text_element(text, name, name_end) else {
+            // Unclosed: Lucene drops everything from the `<` onwards.
+            return text.len();
+        };
+        out.push('\n');
+        return end;
+    }
+
+    let Some(at) = text[name_end..].find('>') else {
+        out.push_str(&text[open..]);
+        return text.len();
+    };
+    if !is_inline_element(name) {
+        out.push('\n');
+    }
+    name_end + at + 1
+}
+
+/// Whether Lucene calls `name` an inline element, matched without regard to
+/// case the way its character classes are written.
+fn is_inline_element(name: &str) -> bool {
+    if name.len() > MAX_INLINE_NAME || !name.is_ascii() {
+        return false;
+    }
+    let mut folded = [0_u8; MAX_INLINE_NAME];
+    folded[..name.len()].copy_from_slice(name.as_bytes());
+    folded[..name.len()].make_ascii_lowercase();
+    let key = std::str::from_utf8(&folded[..name.len()]).unwrap_or_default();
+    INLINE_ELEMENTS.binary_search(&key).is_ok()
+}
+
+/// The byte index of the first non-whitespace character at or after `from`.
+fn skip_whitespace(text: &str, from: usize) -> usize {
+    text[from..]
+        .char_indices()
+        .find(|(_, ch)| !ch.is_whitespace())
+        .map_or_else(|| text.len(), |(idx, _)| from + idx)
+}
+
+/// The element name starting at `from`, with the byte index just past it.
+///
+/// Lucene spells the name with XML's production,
+/// `[:_\p{ID_Start}] [-.:_\p{ID_Continue}]*`. `char::is_alphabetic` stands in
+/// for `ID_Start` and `is_alphanumeric` for `ID_Continue`; they part company
+/// only on characters no vendor spells a tag with.
+fn read_element_name(text: &str, from: usize) -> Option<(&str, usize)> {
+    let rest = text.get(from..)?;
+    let mut chars = rest.char_indices();
+    let (_, first) = chars.next()?;
+    if !(first.is_alphabetic() || first == '_' || first == ':') {
+        return None;
+    }
+    let end = chars
+        .find(|(_, ch)| !(ch.is_alphanumeric() || matches!(ch, '-' | '.' | ':' | '_')))
+        .map_or_else(|| rest.len(), |(idx, _)| idx);
+    Some((&rest[..end], from + end))
+}
+
+/// The byte index past the `</script>` or `</style>` closing the element whose
+/// name ends at `name_end`, or `None` when the text never closes it.
+fn skip_raw_text_element(text: &str, name: &str, name_end: usize) -> Option<usize> {
+    let mut from = name_end + text[name_end..].find('>')? + 1;
+    while let Some(offset) = text[from..].find("</") {
+        let at = from + offset;
+        let after = skip_whitespace(text, at + 2);
+        if let Some((found, found_end)) = read_element_name(text, after)
+            && found.eq_ignore_ascii_case(name)
+            && let Some(shut) = text[found_end..].find('>')
+        {
+            return Some(found_end + shut + 1);
+        }
+        from = at + 2;
+    }
+    None
+}
+
+/// Resolve every character reference in `text` in one left-to-right pass.
+///
+/// One pass is also what makes `&amp;lt;` come back as the text `&lt;` rather
+/// than as `<`: the `&amp;` is consumed and the scan resumes past it.
+fn decode_entities(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    let mut cursor = 0;
+
+    while let Some(offset) = text[cursor..].find('&') {
+        let amp = cursor + offset;
+        out.push_str(&text[cursor..amp]);
+        let body_at = amp + 1;
+        // A reference longer than the window is not one, so the search for the
+        // terminator is bounded rather than running to the end of the field.
+        let window_end = text.len().min(body_at + MAX_ENTITY_BODY + 1);
+        let resolved = text.as_bytes()[body_at..window_end]
+            .iter()
+            .position(|byte| *byte == b';')
+            .and_then(|at| decode_entity(&text[body_at..body_at + at]).map(|ch| (ch, at)));
+
+        if let Some((ch, at)) = resolved {
+            out.push(ch);
+            cursor = body_at + at + 1;
+        } else {
+            out.push('&');
+            cursor = body_at;
+        }
+    }
+    out.push_str(&text[cursor..]);
+    out
+}
+
+/// The character a `&<body>;` reference stands for, or `None` when `body` is
+/// not a reference Lucene resolves -- which leaves it as the text it was.
+fn decode_entity(body: &str) -> Option<char> {
+    let Some(numeric) = body.strip_prefix('#') else {
+        return named_entity(body);
+    };
+    // Lucene bounds the digits at what a code point can hold: 6 hexadecimal or
+    // 7 decimal. Anything else is text -- an empty reference, a sign, or more
+    // digits than a code point has room for.
+    let point = match numeric.strip_prefix(['x', 'X']) {
+        Some(hex) if is_digit_run(hex, 6, u8::is_ascii_hexdigit) => {
+            u32::from_str_radix(hex, 16).ok()?
+        }
+        None if is_digit_run(numeric, 7, u8::is_ascii_digit) => numeric.parse().ok()?,
+        _ => return None,
+    };
+    // A lone surrogate is not a character, and Lucene substitutes U+FFFD for
+    // it rather than dropping the reference.
+    if (0xD800..=0xDFFF).contains(&point) {
+        return Some(char::REPLACEMENT_CHARACTER);
+    }
+    char::from_u32(point)
+}
+
+/// Whether `digits` is a run of one to `max` characters that all pass `class`.
+fn is_digit_run(digits: &str, max: usize, class: fn(&u8) -> bool) -> bool {
+    (1..=max).contains(&digits.len()) && digits.bytes().all(|byte| class(&byte))
+}
+
+/// The five predefined entity names, plus the upper-case spellings Lucene's
+/// `upperCaseVariantsAccepted` table admits. `apos` has no such variant there.
+fn named_entity(name: &str) -> Option<char> {
+    Some(match name {
+        "lt" | "LT" => '<',
+        "gt" | "GT" => '>',
+        "quot" | "QUOT" => '"',
+        "apos" => '\'',
+        "amp" | "AMP" => '&',
+        _ => return None,
+    })
+}
+
+#[cfg(test)]
+mod html_strip_tests {
+    use super::html_strip;
+
+    /// Every expectation below the sorted check came back from Elasticsearch
+    /// 9.2.2 in the compat corpus at
+    /// `rapid7_insightvm/asset_vulnerability/test-asset-vulnerability` and
+    /// `doppler/activity/test-doppler-activity`, so they are the engine's
+    /// answer rather than a restatement of the code above.
+    #[test]
+    fn the_inline_table_is_sorted() {
+        // `binary_search` answers nonsense on an unsorted table, and a wrong
+        // answer here is a missing or a spurious newline, not a crash.
+        assert!(super::INLINE_ELEMENTS.is_sorted());
+        assert!(
+            super::INLINE_ELEMENTS
+                .iter()
+                .all(|name| name.len() <= super::MAX_INLINE_NAME)
+        );
+    }
+
+    /// The four tags between rapid7's two sentences leave four newlines, and
+    /// the two that open and the two that close the document leave the ones
+    /// the pipeline's own `trim` processor then takes off.
+    #[test]
+    fn a_block_element_leaves_a_newline_where_it_opened_and_closed() {
+        let raw = "<p><p>Vulnerable OS: Ubuntu Linux 22.04<p></p></p><p>Vulnerable software \
+                   installed: Azul Systems JRE 17.54.22 \
+                   (/root/infaagent/jdk/lib/jrt-fs.jar)</p></p>";
+        let stripped = html_strip(raw);
+
+        assert_eq!(
+            stripped,
+            "\n\nVulnerable OS: Ubuntu Linux 22.04\n\n\n\nVulnerable software installed: Azul \
+             Systems JRE 17.54.22 (/root/infaagent/jdk/lib/jrt-fs.jar)\n\n"
+        );
+        // What the corpus holds, once the pipeline's `trim` has run.
+        assert_eq!(
+            stripped.trim(),
+            "Vulnerable OS: Ubuntu Linux 22.04\n\n\n\nVulnerable software installed: Azul Systems \
+             JRE 17.54.22 (/root/infaagent/jdk/lib/jrt-fs.jar)"
+        );
+    }
+
+    /// doppler's description runs `<a>` and `<br>` together. The anchor is
+    /// inline and contributes nothing; `br` is not in Lucene's inline list, so
+    /// it breaks the line. The hrefs are shortened -- nothing else is.
+    #[test]
+    fn an_inline_anchor_and_a_line_break_are_told_apart() {
+        let raw = "Modified secrets in <a class=\"text-purple-500 hover:underline\" rel=\"noopener\" \
+                   href=\"https://x/y\">example-config-1</a> project with <a \
+                   href=\"https://x/z\">3 added</a>:<br>\u{2022} EXAMPLE_SECRET_1";
+
+        assert_eq!(
+            html_strip(raw),
+            "Modified secrets in example-config-1 project with 3 added:\n\u{2022} EXAMPLE_SECRET_1"
+        );
+    }
+
+    /// rapid7's GRUB remediation is why the entities are resolved AFTER the
+    /// tag scan and not before: decoding first would turn `&lt;password&gt;`
+    /// into a tag and lose the word between the brackets.
+    #[test]
+    fn an_entity_is_decoded_once_the_tag_scan_has_finished() {
+        assert_eq!(
+            html_strip("<pre>   password &lt;password&gt;</pre>"),
+            "\n   password <password>\n"
+        );
+    }
+
+    /// Three of rapid7's events carry `&#39;`, which the five predefined names
+    /// do not cover.
+    #[test]
+    fn a_numeric_character_reference_is_decoded_too() {
+        let raw = "<p><ul><li>Running CIFS service</li><li>Configuration item smb2-enabled set to \
+                   &#39;true&#39; matched</li></ul></p>";
+
+        assert_eq!(
+            html_strip(raw).trim(),
+            "Running CIFS service\n\nConfiguration item smb2-enabled set to 'true' matched"
+        );
+        assert_eq!(html_strip("<p>&#x41;&#66;</p>"), "\nAB\n");
+        // A lone surrogate is not a character; Lucene writes U+FFFD for it.
+        assert_eq!(html_strip("<p>&#xD800;</p>"), "\n\u{FFFD}\n");
+        // Past the last code point it is text, not a reference.
+        assert_eq!(html_strip("<p>&#x110000;</p>"), "\n&#x110000;\n");
+    }
+
+    /// A single pass is what keeps an escaped ampersand escaped: `&amp;lt;` is
+    /// the TEXT `&lt;`, not a second reference to resolve.
+    #[test]
+    fn an_escaped_ampersand_does_not_decode_twice() {
+        assert_eq!(html_strip("<p>&amp;lt;</p>"), "\n&lt;\n");
+    }
+
+    /// Elasticsearch's own processor returns a value holding no `<` or no `>`
+    /// untouched, entities and all, before Lucene ever sees it.
+    #[test]
+    fn a_value_with_no_markup_keeps_its_entities() {
+        assert_eq!(html_strip("a &lt; b"), "a &lt; b");
+        assert_eq!(html_strip("2 > 1"), "2 > 1");
+    }
+
+    /// `<` opens a tag only when a name follows it. Lucene pushes the bracket
+    /// back as text otherwise, so an inequality survives.
+    #[test]
+    fn a_bare_angle_bracket_is_still_text() {
+        assert_eq!(html_strip("1 < 2 > 3"), "1 < 2 > 3");
+    }
+
+    /// A comment, a declaration and a CDATA section are not elements, so none
+    /// of them earns a newline -- and a `>` inside a comment does not end it.
+    #[test]
+    fn the_non_element_constructs_leave_no_newline() {
+        assert_eq!(html_strip("<p>a<!-- a > b -->c</p>"), "\nac\n");
+        assert_eq!(html_strip("<!doctype html><p>a</p>"), "\na\n");
+        assert_eq!(
+            html_strip("<p>a<![CDATA[raw > text]]>b</p>"),
+            "\naraw > textb\n"
+        );
+    }
+
+    /// `script` holds raw text rather than markup, so Lucene drops the body
+    /// and emits one newline at the closing tag. Emitting the JavaScript as
+    /// text is the failure this stops.
+    #[test]
+    fn a_script_body_never_reaches_the_output() {
+        assert_eq!(
+            html_strip("<p>a</p><script>if (1 > 0) { x(); }</script><p>b</p>"),
+            "\na\n\n\nb\n"
+        );
+        assert_eq!(
+            html_strip("<p>a</p><style>i > b { top: 0 }</style>"),
+            "\na\n\n"
+        );
+    }
 }
 
 /// Whether an address falls in any of the ranges `network_direction` names.
