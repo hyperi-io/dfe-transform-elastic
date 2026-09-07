@@ -278,12 +278,14 @@ def report_claimed(dump: dict, sources: dict[str, dict], top: int) -> int:
             worst = max(n for n, _, field in score["detail"] if field in hit)
             # `unlocks` is CUMULATIVE, so the honest event count for this
             # script's own fields is the BEST unlocks among them -- never the
-            # `wrong in` count, which is a field tally and reads far larger.
+            # `wrong in` count, which counts every failing event a path appears
+            # in and reads far larger.
             unlocks = max(u for _, u, field in score["detail"] if field in hit)
             rows.append((worst, unlocks, owner, sorted(hit), script))
 
-    # By events bought, then by fields damaged: `wrong in` is a field tally, so
-    # six fields each wrong in 22 can still be worth four events.
+    # By events bought, then by how widely the fields fail: `wrong in` counts
+    # appearances across failing events, so six fields each wrong in 22 can
+    # still be worth four events.
     rows.sort(reverse=True, key=lambda row: (row[1], row[0], row[2]))
     print(f"{len(rows)} claimed scripts writing a field their source is WRONG on\n")
     for worst, unlocks, owner, hit, script in rows[:top]:
@@ -301,10 +303,16 @@ def report_claimed(dump: dict, sources: dict[str, dict], top: int) -> int:
         "`ran > 0` means CLAIMED, never CORRECT. A matcher here recognised the\n"
         "script and ran it, and the field it writes is still wrong -- so read the\n"
         "matcher's output, not its reach.\n"
-        "`wrong in` is a FIELD tally and is always the bigger number. `unlocks`\n"
-        "is the event count, per-step, so a prefix is worth the SUM of its lines\n"
-        "-- WHOLE SOURCE is marked only where this script's own fields carry the\n"
-        "whole gap."
+        "`wrong in` counts the failing EVENTS a path appears in, and it counts\n"
+        "EXTRAS alongside missing and mismatched fields (`compat_corpus.rs`\n"
+        "collects every diff path, while `fields_wrong` takes only Missing and\n"
+        "Mismatch). So a path can be `wrong in 38` and move the field percentage\n"
+        "by nothing: that is the over-emitted class, and fixing it pays in events\n"
+        "and in the extras count instead. Say which of the two a target moves\n"
+        "before starting it.\n"
+        "`unlocks` is the events this path alone would finish, per-step, so a\n"
+        "prefix is worth the SUM of its lines -- WHOLE SOURCE is marked only\n"
+        "where this script's own fields carry the whole gap."
     )
     return 0
 
