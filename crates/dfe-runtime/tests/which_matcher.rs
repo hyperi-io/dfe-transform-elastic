@@ -47,6 +47,13 @@ const KOLIDE_CATEGORIZE: &str = "def action = ctx.event.action;\nctx.event.kind 
 /// Verbatim from zeek's duration scale.
 const ZEEK_DURATION: &str = "ctx.event.duration = Math.round(ctx.temp.duration * params.scale)";
 
+/// Verbatim from `pipelines/jamf_protect/telemetry/pipeline_event_authentication.yml:30`.
+const JAMF_PROTECT_REASON: &str = "ctx.event.reason = 'A user authentication happened using ' + ctx.jamf_protect.telemetry.authentication_method;";
+
+/// Verbatim from `pipelines/wiz/issue/default.yml:103`.
+const WIZ_EVENT_URL: &str =
+    "ctx.event.url = \"https://app.wiz.io/issues#~(filters~(status~())~issue~'\" + ctx.event.id";
+
 /// The matcher names a script binds to, most specific first.
 fn binding(script: &str) -> Vec<String> {
     PainlessPlan::new(script).binding()
@@ -114,6 +121,26 @@ fn the_zeek_duration_binds_to_a_bare_scale() {
     // the product is whole, and zeek's durations are -- 0.103708982 * 1e9 is
     // exactly 103708982.0 in f64. Its eight wrong durations have another cause.
     assert_eq!(heads(ZEEK_DURATION), ["Scale"]);
+}
+
+#[test]
+fn the_dropped_concat_reaches_three_sources_in_both_quote_styles() {
+    // The same defect as first_epss: the literal survives, the concatenated
+    // field does not. Single quotes and double quotes alike.
+    for (name, script, literal, dropped) in [
+        (
+            "jamf_protect",
+            JAMF_PROTECT_REASON,
+            "A user authentication happened using ",
+            "authentication_method",
+        ),
+        ("wiz", WIZ_EVENT_URL, "https://app.wiz.io/issues", "event.id"),
+    ] {
+        let held = binding(script).join(" ");
+        assert!(held.starts_with("PlainAssignments"), "{name}: {held}");
+        assert!(held.contains(literal), "{name}: {held}");
+        assert!(!held.contains(dropped), "{name} now keeps the field: {held}");
+    }
 }
 
 #[test]
