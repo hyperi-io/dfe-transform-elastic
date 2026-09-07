@@ -212,6 +212,7 @@
 211 LongDivide
 212 DropLeadingChars
 213 EpochToMillis
+214 EpochNanosToDateTime
 
 [params_pattern]
   1 AwsEntity

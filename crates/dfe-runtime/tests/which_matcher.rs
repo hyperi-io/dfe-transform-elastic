@@ -126,6 +126,36 @@ const CLOUDFLARE_SESSION_TO_MILLI: &str = r"def convertToMillis(long timestamp) 
 /// which is `pipelines/rapid7_insightvm/asset_vulnerability/default.yml`.
 const RAPID7_SCANNER_NAME: &str = r"ctx.vulnerability = ctx.vulnerability ?: [:];\nctx.vulnerability.scanner = ctx.vulnerability.scanner ?: [:];\nfor (def o: ctx.rapid7_insightvm.asset_vulnerability.unique_identifiers) {\n  if (o.source == 'R7 Agent') {\n    ctx.vulnerability.scanner.put('name', o.id);\n    return;\n  }\n}\n";
 
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/sysdig_event/default.rs`, which is
+/// `pipelines/sysdig/event/default.yml`.
+const SYSDIG_PARSE_DATE: &str = r"def parseDate(def rawtimestamp) {\n  long timestamp;\n  if (rawtimestamp instanceof String) {\n    timestamp = Long.parseLong(rawtimestamp);\n  } else if (rawtimestamp instanceof long) {\n    timestamp = (long) rawtimestamp;\n  }\n  if (String.valueOf(timestamp).length() == 19) {\n    long epoch = timestamp / 1000000000L;\n    long seconds = timestamp % 1000000000L;\n    return Instant.ofEpochSecond(epoch, seconds).atZone(ZoneOffset.UTC);\n  }\n  return '';\n} if (ctx.json?.timestamp != null) {\n  ctx.json.timestamp = parseDate(ctx.json.timestamp);\n} if (ctx.sysdig?.event?.content?.fields?.proc?.pid_ts != null) {\n  ctx.sysdig.event.content.fields.proc.pid_ts = parseDate(ctx.sysdig.event.content.fields.proc.pid_ts);\n} if (ctx.sysdig?.event?.content?.fields?.proc?.ppid_ts != null) {\n  ctx.sysdig.event.content.fields.proc.ppid_ts = parseDate(ctx.sysdig.event.content.fields.proc.ppid_ts);\n}\n";
+
+/// The other two scripts in the tree that call `Instant.ofEpochSecond`, which
+/// the reader for sysdig's helper must decline.
+///
+/// slack builds `@timestamp` from a microsecond field with no helper
+/// declaration at all; jamf_protect calls the same constructor inline, once per
+/// process, inside a hundred-line mapping that writes forty other fields. A
+/// reader triggered on the constructor rather than on the helper would claim
+/// both and write almost nothing.
+const SLACK_ACTION_TIMESTAMP: &str = r#"def secs = (long)(ctx.slack.audit.details.action_timestamp/1e6);\ndef nanos = (long)(ctx.slack.audit.details.action_timestamp % 1e6) * 1000;\nctx[\"@timestamp\"] = Instant.ofEpochSecond(secs, nanos).atZone(ZoneId.of(\"UTC\"));\nctx.slack.audit.details.remove(\"action_timestamp\");\n"#;
+
+const JAMF_PROTECT_PROCESS_START: &str = r"if (ctx.jamf_protect?.alerts?.input?.related?.processes != null && ctx.jamf_protect.alerts.input.related.processes.size() > 0) {\n    def process = ctx.jamf_protect.alerts.input.related.processes[0];\n    ctx.process = ctx.process ?: new HashMap();\n    ctx.process.name = process.name;\n    if (process.containsKey('startTimestamp')) {\n        ctx.process.start = Instant.ofEpochSecond(process.startTimestamp).toString();\n    }\n}\n";
+
+/// Verbatim from the generated call sites in
+/// `crates/dfe-transforms/src/filebeat/gitlab_api/default.rs` and
+/// `.../gitlab_production/default.rs`, which are the whole of gitlab's
+/// remaining parity debt once its date processor stopped aborting.
+///
+/// One vendor pattern, two answers: the api stream folds each `{key, value}`
+/// entry into a single-key map and keeps the LIST, the production stream folds
+/// the whole list into ONE map and dumps a `variables` member to JSON on the
+/// way.
+const GITLAB_API_PARAMS: &str = r"def keyValuePairs = [];\nfor (item in ctx.gitlab.api.params) {\n  def key = item.key;\n  def value = item.value;\n  def keyValueObject = [key: value];\n  keyValuePairs.add(keyValueObject)\n}\nctx.gitlab.api.params = keyValuePairs;\n";
+
+const GITLAB_PRODUCTION_PARAMS: &str = r#"Map map = [:];\nfor (item in ctx.gitlab.production.params) {\n  def key = item.key;\n  def value = item.value;\n  if (key == \"variables\" && value instanceof Map) {\n    map[key] = Json.dump(value);\n  } else {\n    map[key] = value;\n  }\n}\nctx.gitlab.production.params = map;\n"#;
+
 /// The matcher names a script binds to, most specific first.
 fn binding(script: &str) -> Vec<String> {
     PainlessPlan::new(script).binding()
@@ -548,6 +578,58 @@ fn the_snake_case_helper_binds_to_the_rule_its_own_body_spells() {
     assert_eq!(
         held,
         r#"KeysToSnakeCase(Some("azure.signinlogs"), CamelBreakKeepingUnderscore)"#
+    );
+}
+
+/// gitlab's two key/value folds, recorded UNCLAIMED.
+///
+/// Both sat behind the date processor that aborted the pipeline, so neither
+/// had ever been reached and the debt they carry was invisible. They are 17 of
+/// gitlab's remaining 17 failing events -- 9 on the api stream and 8 on
+/// production -- and the entry is here so the next reader starts from the
+/// measurement rather than the ladder.
+#[test]
+fn the_gitlab_key_value_folds_are_unclaimed() {
+    assert!(
+        binding(GITLAB_API_PARAMS).is_empty(),
+        "{:?}",
+        binding(GITLAB_API_PARAMS)
+    );
+    assert!(
+        binding(GITLAB_PRODUCTION_PARAMS).is_empty(),
+        "{:?}",
+        binding(GITLAB_PRODUCTION_PARAMS)
+    );
+}
+
+#[test]
+fn the_sysdig_helper_binds_its_three_fields_and_declines_the_other_callers() {
+    // The binding was EMPTY, and every one of sysdig's date processors reads a
+    // field this helper is what fills: the 19-digit integer reached an
+    // `ISO8601` parser that cannot take it, and the throw aborted the pipeline.
+    let held = binding(SYSDIG_PARSE_DATE).join(" ");
+    assert!(held.starts_with("EpochNanosToDateTime"), "{held}");
+    for field in [
+        "json.timestamp",
+        "sysdig.event.content.fields.proc.pid_ts",
+        "sysdig.event.content.fields.proc.ppid_ts",
+    ] {
+        assert!(held.contains(&format!("{field:?}")), "lost {field}: {held}");
+    }
+
+    // The audit. Both call `Instant.ofEpochSecond` and neither declares the
+    // helper, so a reader triggered on the constructor would take them.
+    assert!(
+        binding(SLACK_ACTION_TIMESTAMP).is_empty(),
+        "{:?}",
+        binding(SLACK_ACTION_TIMESTAMP)
+    );
+    assert!(
+        !binding(JAMF_PROTECT_PROCESS_START)
+            .first()
+            .is_some_and(|held| held.starts_with("EpochNanosToDateTime")),
+        "{:?}",
+        binding(JAMF_PROTECT_PROCESS_START)
     );
 }
 

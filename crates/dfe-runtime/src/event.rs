@@ -264,7 +264,15 @@ impl Event {
     /// put one heap allocation on every call, and a generated transform calls
     /// this constantly -- the sampled profile charges it 78 allocations an
     /// event on okta and 56 on fortinet, none of which bought anything.
+    ///
+    /// A TRAILING dot is not a segment. Elasticsearch splits a `FieldPath` with
+    /// Java's `String.split`, which discards trailing empty strings, so its
+    /// `remove` of `json.` removes `json` -- and `qualys_was`'s knowledge-base
+    /// pipeline ships exactly that spelling with `ignore_missing: false`.
+    /// Reading the empty tail as a key found nothing, raised, and aborted the
+    /// pipeline one processor short of its own prune.
     pub fn remove(&mut self, path: &str) -> Option<Value> {
+        let path = path.trim_end_matches('.');
         let (parents, last) = path
             .rsplit_once('.')
             .map_or((None, path), |(head, last)| (Some(head), last));
@@ -796,6 +804,20 @@ mod tests {
         let mut event = Event::new(json!({"a": 1}));
         assert_eq!(event.remove("b"), None);
         assert_eq!(event.remove("a.b.c"), None);
+    }
+
+    /// A trailing dot names no segment, the way Java's `split` reads it.
+    ///
+    /// `qualys_was/vulnerability/pipeline_knowledge_base.yml` spells its scratch
+    /// removal `field: json.` with `ignore_missing: false`. Elasticsearch
+    /// removes `json`; reading the empty tail as a key removed nothing and the
+    /// raise took the pipeline down before its prune.
+    #[test]
+    fn remove_ignores_a_trailing_dot() {
+        let mut event = Event::new(json!({"json": {"a": 1}, "keep": 2}));
+        assert_eq!(event.remove("json."), Some(json!({"a": 1})));
+        assert!(!event.has("json"));
+        assert!(event.has("keep"));
     }
 
     /// Removing a key must not move any other key.

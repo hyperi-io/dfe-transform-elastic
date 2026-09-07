@@ -14043,6 +14043,90 @@ fn run_epoch_to_millis(event: &mut Event, pattern: &EpochToMillis) -> bool {
     true
 }
 
+/// Named epoch-NANOSECOND fields rendered as UTC datetimes, through the
+/// vendor's own `parseDate` helper.
+///
+/// sysdig ships every timestamp as a 19-digit epoch nanosecond count and reads
+/// it back with `date` processors whose only format is `ISO8601`, so this
+/// helper is what turns one into the other. Unclaimed, the integer reached a
+/// parser that cannot take it and all three processors threw -- which aborted
+/// the pipeline before its own prune and left scratch behind.
+///
+/// The 19-digit test is the vendor's own, and anything failing it is written as
+/// an EMPTY STRING rather than a date. That is not a quirk to round off: the
+/// generated date guards read `!= ""`, so the empty string is what makes them
+/// skip instead of fail.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct EpochNanosToDateTime {
+    fields: Vec<String>,
+}
+
+/// The helper the script declares before its guarded calls, whitespace
+/// collapsed to match [`collapse_script`].
+const PARSE_DATE_HELPER: &str = "def parseDate(def rawtimestamp) { long timestamp; \
+     if (rawtimestamp instanceof String) { timestamp = Long.parseLong(rawtimestamp); } \
+     else if (rawtimestamp instanceof long) { timestamp = (long) rawtimestamp; } \
+     if (String.valueOf(timestamp).length() == 19) { \
+     long epoch = timestamp / 1000000000L; long seconds = timestamp % 1000000000L; \
+     return Instant.ofEpochSecond(epoch, seconds).atZone(ZoneOffset.UTC); } return ''; }";
+
+/// One guarded call of the helper, and the text after it.
+fn parse_date_block(text: &str) -> Option<(String, &str)> {
+    let path = epoch_path(text.strip_prefix("if (ctx.")?, " ")?;
+    let rest = text.strip_prefix(&format!(
+        "if (ctx.{path} != null) {{ ctx.{path} = parseDate(ctx.{path}); }}"
+    ))?;
+    Some((path.to_owned(), rest.trim_start()))
+}
+
+/// Read the fields sysdig's nanosecond helper is called on.
+///
+/// The trigger is the HELPER's own declaration, rebuilt and compared whole, not
+/// the `Instant.ofEpochSecond` inside it. Two other scripts in the tree call
+/// that constructor -- slack builds `@timestamp` from microseconds with no
+/// helper, and `jamf_protect` calls it inline in a hundred-line process mapping
+/// -- and a reader triggered on the constructor would claim both and write
+/// almost nothing. Every block has to parse, so a block this cannot read
+/// declines the whole script rather than converting the fields either side.
+fn parse_epoch_nanos_to_datetime(script: &str) -> Option<EpochNanosToDateTime> {
+    let text = collapse_script(script);
+    let mut rest = text.strip_prefix(PARSE_DATE_HELPER)?.trim_start();
+    let mut fields = Vec::new();
+    while !rest.is_empty() {
+        let (field, tail) = parse_date_block(rest)?;
+        fields.push(field);
+        rest = tail;
+    }
+    (!fields.is_empty()).then_some(EpochNanosToDateTime { fields })
+}
+
+/// Render each named field's epoch nanoseconds as a UTC datetime.
+///
+/// Nine fraction digits, because the `date` processor behind this reads the
+/// text back and prints it under `strict_date_optional_time_nanos` -- a
+/// millisecond rendering here would lose six digits Elasticsearch keeps.
+fn run_epoch_nanos_to_datetime(event: &mut Event, pattern: &EpochNanosToDateTime) -> bool {
+    for field in &pattern.fields {
+        // Painless `ctx.x != null` skips an absent field and an explicit null
+        // alike, leaving whatever is there for the guard behind it.
+        let nanos = match event.get(field) {
+            None | Some(Value::Null) => continue,
+            Some(Value::String(text)) => text.parse::<i64>().ok(),
+            Some(other) => other.as_i64(),
+        };
+        let rendered = nanos
+            .filter(|value| value.to_string().len() == 19)
+            .map(|value| {
+                chrono::DateTime::from_timestamp_nanos(value)
+                    .format("%Y-%m-%dT%H:%M:%S%.9fZ")
+                    .to_string()
+            })
+            .unwrap_or_default();
+        let _ = event.set(field, Value::String(rendered));
+    }
+    true
+}
+
 /// `double <v> = ((Number) ctx.<source>).doubleValue(); ctx.<target> = (long)
 /// Math.round(<v> * <factor>);`
 ///
@@ -17602,6 +17686,8 @@ pub(crate) enum KnownPattern {
     },
     /// Named epoch fields rescaled to milliseconds by their own magnitude.
     EpochToMillis(Box<EpochToMillis>),
+    /// Named epoch-nanosecond fields rendered as UTC datetimes.
+    EpochNanosToDateTime(Box<EpochNanosToDateTime>),
     M365ProcessEvidence(String),
     M365IdentityEvidence(String),
     Route53Answers,
@@ -19979,6 +20065,18 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: an epoch-nanosecond helper, called on the fields its own date
+    // processors read. Last, so it can only take a script nothing above took,
+    // and gated on the helper's DECLARATION rather than the constructor inside
+    // it -- the tree's two other callers of `Instant.ofEpochSecond` declare no
+    // such helper and must not be claimed here.
+    if normalised.contains("def parseDate(")
+        && let Some(pattern) = parse_epoch_nanos_to_datetime(normalised)
+    {
+        patterns.push(KnownPattern::EpochNanosToDateTime(Box::new(pattern)));
+        return patterns;
+    }
+
     patterns
 }
 
@@ -20285,6 +20383,7 @@ pub(crate) fn run_known_pattern(
             run_drop_leading_chars(event, field, *count)
         }
         KnownPattern::EpochToMillis(pattern) => run_epoch_to_millis(event, pattern),
+        KnownPattern::EpochNanosToDateTime(pattern) => run_epoch_nanos_to_datetime(event, pattern),
         KnownPattern::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
         KnownPattern::M365IdentityEvidence(path) => run_m365_identity_evidence(event, path),
         KnownPattern::Route53Answers => run_route53_answers(event),

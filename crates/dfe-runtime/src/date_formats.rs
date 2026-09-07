@@ -129,6 +129,8 @@ fn named_output(name: &str, parsed: &DateTime<FixedOffset>) -> Option<String> {
         "date_time_no_millis" | "strict_date_time_no_millis" => {
             utc.format("%Y-%m-%dT%H:%M:%SZ").to_string()
         }
+        "strict_date" | "date" => utc.format("%Y-%m-%d").to_string(),
+        "basic_date" => utc.format("%Y%m%d").to_string(),
         "ISO8601"
         | "strict_date_optional_time"
         | "date_optional_time"
@@ -191,6 +193,15 @@ fn parse_one(input: &str, format: &str, timezone: Option<&str>) -> Option<DateTi
         | "date_time_no_millis"
         | "strict_date_time"
         | "strict_date_time_no_millis" => parse_iso8601(input),
+        // Two more of Elasticsearch's own names, and DATE-ONLY: `strict_date`
+        // is `yyyy-MM-dd` and `basic_date` the same without separators, both
+        // resolved to a `LocalDate` and stored at midnight UTC. Unnamed they
+        // reach the Java translator, which reads every letter of `strict_date`
+        // as a pattern letter and matches nothing -- which cost sysdig's
+        // vulnerability stream its disclosure and solution dates and every
+        // processor behind them.
+        "strict_date" | "date" => parse_java(input, "yyyy-MM-dd", timezone),
+        "basic_date" => parse_java(input, "yyyyMMdd", timezone),
         java => parse_java(input, java, timezone),
     }
 }
@@ -313,6 +324,12 @@ fn parse_java_exact(
         return Some(dt);
     }
 
+    // Java's `X` spells a zero offset as the single letter `Z`, and chrono's
+    // `%z` family takes only the numeric forms.
+    if let Some(dt) = parse_zulu_offset(&input, &chrono) {
+        return Some(dt);
+    }
+
     // Java's `z` takes a zone NAME or a numeric OFFSET, and chrono's `%Z` takes
     // only the name.
     if let Some(dt) = parse_offset_for_zone_name(&input, &chrono) {
@@ -328,6 +345,30 @@ fn parse_java_exact(
         .or_else(|| timezone.and_then(resolve_zone))
         .unwrap_or(ProcessorZone::Fixed(UTC_OFFSET))
         .read_local(&naive)
+}
+
+/// The same text read with Java's `Z` spelling of a zero offset.
+///
+/// `OffsetIdPrinterParser` prints and parses UTC as the single letter `Z` for
+/// every width of `X`, and chrono's `%z`, `%:z` and `%#z` all demand digits --
+/// so an ISO-8601 date ending in `Z` matched no pattern that spells its zone
+/// with `X`. gitlab's production stream reads `yyyy-MM-dd'T'HH:mm:ss.SSSX`
+/// against `2024-04-03T21:02:19.168Z` and threw on all 18 of its events,
+/// aborting before the eleven processors that build the ECS fields.
+///
+/// Only a TRAILING offset directive is rewritten, and only against a text that
+/// ends in `Z`, so this can turn a failed parse into a match and never a
+/// matched one into something else.
+fn parse_zulu_offset(input: &str, chrono: &str) -> Option<DateTime<FixedOffset>> {
+    let head = input.strip_suffix('Z')?;
+    let stem = ["%:z", "%z", "%#z"]
+        .into_iter()
+        .find_map(|offset| chrono.strip_suffix(offset))?;
+    [("%:z", "+00:00"), ("%z", "+0000"), ("%#z", "+00")]
+        .iter()
+        .find_map(|(offset, zero)| {
+            DateTime::parse_from_str(&format!("{head}{zero}"), &format!("{stem}{offset}")).ok()
+        })
 }
 
 /// The same text read with the pattern's trailing `%Z` taken as an offset.
@@ -768,6 +809,88 @@ mod tests {
         assert!(
             dated.starts_with("2018-10-10T12:34:56.000"),
             "the year in the text must win: {dated}"
+        );
+    }
+
+    /// `strict_date` and `basic_date` are Elasticsearch's names, not Java
+    /// patterns. Verbatim from `pipelines/sysdig/vulnerability/default.yml`,
+    /// whose disclosure and solution dates carry no time at all: read as a
+    /// pattern, `strict_date` matched nothing and the removes in its
+    /// `on_failure` deleted the fields the processors behind it copy.
+    #[test]
+    fn a_date_only_named_format_is_not_a_java_pattern() {
+        assert_eq!(
+            parse_date_out("1999-01-01", &["strict_date"], None, None).as_deref(),
+            Some("1999-01-01T00:00:00.000Z")
+        );
+        assert_eq!(
+            parse_date_out("20250116", &["basic_date"], None, None).as_deref(),
+            Some("2025-01-16T00:00:00.000Z")
+        );
+        // Reserved on the OUTPUT side too, where the same translator turned
+        // endace's `epoch_millis` into arithmetic on the wrong fields.
+        assert_eq!(
+            parse_date_out(
+                "2025-01-16T04:05:06Z",
+                &["ISO8601"],
+                None,
+                Some("strict_date")
+            )
+            .as_deref(),
+            Some("2025-01-16")
+        );
+    }
+
+    /// Java's `X` reads a zero offset as the letter `Z`, and chrono's `%z`
+    /// family reads only digits. Verbatim from
+    /// `pipelines/gitlab/production/default.yml`, whose every date is
+    /// ISO-8601 with a `Z`: the date processor threw, the pipeline's own
+    /// handler stamped `pipeline_error`, and the eleven processors behind it
+    /// never ran -- all 18 of its scored events, on this one reading.
+    #[test]
+    fn a_zulu_offset_parses_where_the_pattern_spells_x() {
+        assert_eq!(
+            parse_date_out(
+                "2024-04-03T21:02:19.168Z",
+                &["yyyy-MM-dd'T'HH:mm:ss.SSSX"],
+                None,
+                None
+            )
+            .as_deref(),
+            Some("2024-04-03T21:02:19.168Z")
+        );
+
+        // Every width of `X` prints UTC the same way, and a real offset still
+        // parses through the directive itself.
+        for format in ["yyyy-MM-dd'T'HH:mm:ssX", "yyyy-MM-dd'T'HH:mm:ssXXX"] {
+            assert_eq!(
+                parse_date_out("2024-04-03T21:02:19Z", &[format], None, None).as_deref(),
+                Some("2024-04-03T21:02:19.000Z"),
+                "{format}"
+            );
+        }
+        assert_eq!(
+            parse_date_out(
+                "2024-04-03T21:02:19+05:30",
+                &["yyyy-MM-dd'T'HH:mm:ssXXX"],
+                None,
+                None
+            )
+            .as_deref(),
+            Some("2024-04-03T15:32:19.000Z")
+        );
+
+        // A `Z` the pattern does not ask for is still no match: the rewrite
+        // fires only where the pattern's last directive is an offset.
+        assert_eq!(
+            parse_date_out(
+                "2024-04-03T21:02:19Z",
+                &["yyyy-MM-dd'T'HH:mm:ss"],
+                None,
+                None
+            )
+            .as_deref(),
+            None
         );
     }
 
