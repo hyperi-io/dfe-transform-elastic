@@ -149,23 +149,31 @@ def best_unlocks(sources: dict[str, dict], top: int) -> None:
     179 wrong, second-biggest of its class, and its whole detail list buys
     FOUR events.
 
-    **`unlocks` is CUMULATIVE, not per-field.** The corpus builds the list by
-    greedy set cover and the column means "events that pass once this path AND
-    EVERYTHING ABOVE IT is fixed" (`compat_corpus.rs:1557`). So the unit is the
-    PREFIX, never one line. gdacs reads `affected_area 0, class 0,
-    polygon_label 40` -- three fields wrong in the same 40 events, and the 40
-    belongs to fixing all three. Reporting it as one field overstates the
-    result and understates the work.
+    **`unlocks` is PER-STEP, and a prefix is worth their SUM.** The corpus
+    builds the list by greedy set cover: at each line it counts the failing
+    events for which that path is the LAST one still wrong, then strips the
+    path (`compat_corpus.rs:1595-1601`). So the events a prefix buys is the sum
+    of its lines, not the largest of them.
+
+    The sums check out against the sources measured this session: gdacs
+    `0 + 0 + 40` = its 40 missing events, zoom `16 + 0 + 3` = 19, fortimanager
+    `31` = 31. Taking the maximum instead undercounts every target whose debt
+    spreads over several fields -- zoom read 16 rather than 19, jamf_protect 6
+    rather than 12.
     """
     rows = []
     for name, score in sources.items():
         detail = score["detail"]
         if not detail:
             continue
-        # The list is already in greedy-cover order, so the prefix ending at
-        # the best-unlocking line is the set that buys those events.
-        cut = max(range(len(detail)), key=lambda index: detail[index][1])
-        unlocks = detail[cut][1]
+        # The last line that finishes any event: nothing below it buys one, so
+        # the prefix ends there.
+        cut = max(
+            (index for index, found in enumerate(detail) if found[1] > 0), default=None
+        )
+        if cut is None:
+            continue
+        unlocks = sum(found[1] for found in detail[: cut + 1])
         if unlocks < 8:
             continue
         rows.append((unlocks, -(cut + 1), score["events_missed"], name, detail[: cut + 1], score))

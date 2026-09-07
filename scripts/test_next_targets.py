@@ -122,6 +122,36 @@ class BestUnlocks(unittest.TestCase):
         best = max(detail, key=lambda found: found[1])
         self.assertEqual(best[2], "related.hosts")
 
+    def test_a_prefix_is_worth_the_sum_of_its_lines(self) -> None:
+        """zoom, verbatim: 16 + 0 + 3 is 19, which is exactly its missed count.
+
+        Taking the largest line instead reports 16 and undercounts every source
+        whose debt spreads over several fields.
+        """
+        run = (
+            "zoom                 events 81/100 (81%), fields 1671/1696 (98.5%),"
+            " 0 extra, 0 errors\n"
+            "      wrong in    19, unlocks    16   event.duration\n"
+            "      wrong in     3, unlocks     0   event.end\n"
+            "      wrong in     3, unlocks     3   event.start\n"
+        )
+        handle = tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False)
+        handle.write(run)
+        handle.close()
+        path = Path(handle.name)
+        try:
+            sources = next_targets.read_corpus(path)
+            self.assertEqual(sources["zoom"]["events_missed"], 19)
+            held = io.StringIO()
+            with contextlib.redirect_stdout(held):
+                next_targets.best_unlocks(sources, top=5)
+            printed = held.getvalue()
+            self.assertIn("19 unlocks", printed)
+            self.assertIn("3 fields", printed)
+            self.assertIn("WHOLE SOURCE", printed)
+        finally:
+            path.unlink()
+
     def test_unlocks_is_cumulative_so_the_unit_is_the_prefix(self) -> None:
         """gdacs, verbatim: three fields wrong in the same 40 events.
 
