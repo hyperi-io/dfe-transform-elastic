@@ -6905,6 +6905,43 @@ fn a_map_prune_declines_a_local_receiver() {
     );
 }
 
+/// Verbatim from `qualys_gav/asset`, in the ESCAPED form the call site holds.
+///
+/// The sentinel is a bare `0`, not a quoted one, and the lambda wraps its
+/// comparison in a braced `return`. Every timestamp that survived the prune
+/// went on to a date processor that rendered it `1970-01-01T00:00:00.000Z`.
+#[test]
+fn a_map_prune_reads_a_bare_numeric_sentinel() {
+    let script = r#"ctx.qualys_gav.asset.sensor.values().removeIf(v -> { return v == 0 });\n"#;
+    let mut event = Event::new(json!({ "qualys_gav": { "asset": { "sensor": {
+        "last_vm_scan": 0,
+        "last_compliance_scan": 1_699_999_999_000_i64,
+        "activated_for_modules": "VM",
+    }}}}));
+
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(
+        event.get("qualys_gav.asset.sensor"),
+        Some(&json!({
+            "last_compliance_scan": 1_699_999_999_000_i64,
+            "activated_for_modules": "VM",
+        }))
+    );
+}
+
+/// A quoted `\"0\"` is a different sentinel from a bare `0`.
+///
+/// Painless compares a String to a long as unequal, so reading the two as one
+/// value would prune a member the vendor pipeline keeps.
+#[test]
+fn a_numeric_sentinel_does_not_prune_its_string_spelling() {
+    let script = r#"ctx.a.b.values().removeIf(v -> v == 0);"#;
+    let mut event = Event::new(json!({ "a": { "b": { "x": 0, "y": "0" } } }));
+
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(event.get("a.b"), Some(&json!({ "y": "0" })));
+}
+
 /// Verbatim from `o365_metrics/mailbox_usage_detail`, in the ESCAPED form the
 /// call site holds -- one line, `\n` and `\"` unresolved until `normalise`.
 ///

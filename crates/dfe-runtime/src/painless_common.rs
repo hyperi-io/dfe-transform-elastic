@@ -2688,7 +2688,7 @@ fn run_date_plus_days(event: &mut Event, source: &str, target: &str, days: i64) 
     true
 }
 
-/// `ctx.<f>.values().removeIf(v -> v == '<literal>')` as a
+/// `ctx.<f>.values().removeIf(v -> v == <literal>)` as a
 /// [`KnownPattern::RemoveMapValue`].
 ///
 /// The MAP counterpart of [`parse_remove_list_value`], which declines this
@@ -2697,6 +2697,10 @@ fn run_date_plus_days(event: &mut Event, source: &str, target: &str, days: i64) 
 /// writes `-` for "no value" in a dozen grok captures, so this single script
 /// is what stands between its `_tmp` scratch map and every field derived from
 /// it.
+///
+/// The sentinel is not always a string. qualys_gav clears its unscanned sensor
+/// timestamps with a bare `v == 0`, and reading only the quoted spelling left
+/// all sixteen of them on the event as fields Elasticsearch does not emit.
 fn parse_remove_map_value(script: &str) -> Option<KnownPattern> {
     use crate::painless_params::clean_path;
 
@@ -2721,8 +2725,24 @@ fn parse_remove_map_value(script: &str) -> Option<KnownPattern> {
         return None;
     }
     let (_, rhs) = lambda.split_once("==")?;
-    let value = quoted_first(rhs)?.replace("\\\\", "\\");
+    let value = sentinel_literal(rhs)?;
     (!field.is_empty()).then_some(KnownPattern::RemoveMapValue { field, value })
+}
+
+/// The literal a sentinel comparison names, quoted or bare.
+///
+/// `null` is declined: a `v == null` prune is the drop-empty family's, and
+/// reading it here would take a script those matchers answer more fully.
+fn sentinel_literal(rhs: &str) -> Option<Value> {
+    if let Some(text) = quoted_first(rhs) {
+        return Some(Value::String(text.replace("\\\\", "\\")));
+    }
+    let bare = rhs.trim().trim_end_matches(['}', ';', ' ']).trim();
+    match bare {
+        "true" => Some(Value::Bool(true)),
+        "false" => Some(Value::Bool(false)),
+        _ => bare.parse::<serde_json::Number>().ok().map(Value::Number),
+    }
 }
 
 /// Drop every ENTRY of a map whose value equals one literal.
@@ -2731,13 +2751,19 @@ fn parse_remove_map_value(script: &str) -> Option<KnownPattern> {
 /// the map is an `IndexMap`, and collecting the survivors in iteration order is
 /// exactly what a run of `shift_remove` would leave, without going near the
 /// forbidden `Map::remove`.
-fn run_remove_map_value(event: &mut Event, field: &str, value: &str) -> bool {
+fn run_remove_map_value(event: &mut Event, field: &str, value: &Value) -> bool {
     let Some(Value::Object(map)) = event.get(field).cloned() else {
         return true;
     };
+    // Numbers compare by VALUE, not by their JSON form: Painless holds these as
+    // longs and `0` must match a member serde read back as `0.0`.
+    let same = |member: &Value| match (member, value) {
+        (Value::Number(held), Value::Number(want)) => held.as_f64() == want.as_f64(),
+        _ => member == value,
+    };
     let kept: serde_json::Map<String, Value> = map
         .into_iter()
-        .filter(|(_, member)| member.as_str() != Some(value))
+        .filter(|(_, member)| !same(member))
         .collect();
     let _ = event.set(field, Value::Object(kept));
     true
@@ -17823,7 +17849,7 @@ pub(crate) enum KnownPattern {
     },
     RemoveMapValue {
         field: String,
-        value: String,
+        value: Value,
     },
     DatePlusDays {
         source: String,
