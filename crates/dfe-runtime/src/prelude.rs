@@ -51,6 +51,9 @@ pub use crate::painless_common::{
 };
 pub use crate::painless_expr::{Expr, FloatLit, Op, ScalarExpression, scalar_expression};
 pub use crate::painless_item_writes::{ItemWrites, item_writes};
+pub use crate::painless_list_records::{
+    EntryValue, ListRebuild, ScanTaggedList, list_rebuild, scan_tagged_list,
+};
 pub use crate::painless_lists::{
     EnsureItem, ItemRename, ListItemRenames, ListWalk, list_item_renames,
 };
@@ -58,6 +61,7 @@ pub use crate::painless_nth_separator::{NthSeparatorPrefix, nth_separator_prefix
 pub use crate::painless_records::{
     RecordFromFields, RecordRenames, record_from_fields, record_renames,
 };
+pub use crate::painless_seconds_between::{SecondsBetween, seconds_between};
 pub use crate::painless_totals::{SumTotals, Total, sum_totals};
 // `lookup_normalise` is NOT here: it now takes the call site's parsed literal
 // tail, which is a runtime detail rather than something a generator resolves.

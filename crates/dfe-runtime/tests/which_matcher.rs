@@ -807,6 +807,88 @@ fn the_three_qualys_coercions_bind_and_cloudflare_keeps_its_rescale() {
     assert_eq!(heads(SYSDIG_PARSE_DATE), ["EpochNanosToDateTime"]);
 }
 
+/// github's five unbound scripts, verbatim from the generated call sites in
+/// `crates/dfe-transforms/src/filebeat/github_*/default.rs`.
+///
+/// Every one of them measured an EMPTY binding, which is the whole of the
+/// source's parity debt: 8 events on the dependabot pair, 5 on the issues
+/// labels, and 7 across the two spans.
+const GITHUB_DEPENDABOT_IDENTIFIERS: &str = r#"def enumeration = \"GHSA\";\ndef id = \"\";\ndef sa_ids = ctx.github.dependabot.security_advisory.identifiers;\nfor (def sa_id: sa_ids) {\n    id = sa_id.value;\n    if (!sa_id.type.equals(\"GHSA\")) {\n        enumeration = sa_id.type;\n        break;\n    }\n}\nctx.vulnerability.enumeration = enumeration;\nctx.vulnerability.id = id;\n"#;
+
+const GITHUB_DEPENDABOT_REFERENCES: &str = r#"List references = new ArrayList();\ndef sa_references = ctx.github.dependabot.security_advisory.references;\nfor (def ref: sa_references) {\n    references.add(ref.url);\n}\nctx.vulnerability.reference = references;\n"#;
+
+const GITHUB_ISSUES_LABELS: &str = r#"Map label;\nList labels = new ArrayList();\nList labels_raw = ctx._temp_.labels;\nString label_key, label_value;\nfor (Map label_raw: labels_raw) {\n    label = new HashMap();\n    label.put(\"name\", label_raw.name);\n    label.put(\"description\", label_raw.description);\n    labels.add(label);\n}\nctx.github.issues.labels = labels;\n"#;
+
+const GITHUB_CODE_SCANNING_SPAN: &str = r#"def time_to_resolution = new HashMap();\ndef fixedAtDt = ctx.github.code_scanning.fixed_at;\ndef dismissedAtDt = ctx.github.code_scanning.dismissed_at;\ndef createdAtDt = ctx.github.code_scanning.created_at;\nZonedDateTime zdt = ZonedDateTime.parse(createdAtDt);\nlong createdAtEpoch = zdt.toEpochSecond();\nif (fixedAtDt != null) {\n    zdt = ZonedDateTime.parse(fixedAtDt);\n    long fixedAtEpoch = zdt.toEpochSecond();\n    time_to_resolution.put(\"sec\", fixedAtEpoch - createdAtEpoch);\n    ctx.github.code_scanning.time_to_resolution = time_to_resolution;\n}\nelse {\n    zdt = ZonedDateTime.parse(dismissedAtDt);\n    long dismissedAtEpoch = zdt.toEpochSecond();\n    time_to_resolution.put(\"sec\", dismissedAtEpoch - createdAtEpoch);\n    ctx.github.code_scanning.time_to_resolution = time_to_resolution;\n}\n"#;
+
+const GITHUB_SECRET_SCANNING_SPAN: &str = r#"def time_to_resolution = new HashMap();\ndef resolvedAtDt = ctx.github.secret_scanning.resolved_at;\ndef createdAtDt = ctx.github.secret_scanning.created_at;\nZonedDateTime zdt = ZonedDateTime.parse(createdAtDt);\nlong createdAtEpoch = zdt.toEpochSecond();\nzdt = ZonedDateTime.parse(resolvedAtDt);\nlong resolvedAtEpoch = zdt.toEpochSecond();\ntime_to_resolution.put(\"sec\", resolvedAtEpoch - createdAtEpoch);\nctx.github.secret_scanning.time_to_resolution = time_to_resolution;\n"#;
+
+/// A `Map` allocated per entry and one allocated once are the same loop from
+/// the body alone, and the difference is what the accumulator is handed.
+///
+/// Read as a member collection the labels script would write a list of names
+/// and lose the descriptions, so the binding has to show both keys.
+#[test]
+fn the_github_list_walks_bind_to_the_job_their_accumulator_declares() {
+    assert_eq!(
+        binding(GITHUB_DEPENDABOT_REFERENCES),
+        [concat!(
+            r#"ListRebuild(ListRebuild { list: "github.dependabot.security_advisory"#,
+            r#".references", target: "vulnerability.reference", take: Member("url") })"#
+        )]
+    );
+    assert_eq!(
+        binding(GITHUB_ISSUES_LABELS),
+        [concat!(
+            r#"ListRebuild(ListRebuild { list: "_temp_.labels", target: "#,
+            r#""github.issues.labels", take: Record([("name", "name"), "#,
+            r#"("description", "description")]) })"#
+        )]
+    );
+
+    // The scan writes two fields off one walk, and the seed it excludes is
+    // also the answer when no entry differs from it.
+    let held = binding(GITHUB_DEPENDABOT_IDENTIFIERS).join(" ");
+    assert!(held.starts_with("ScanTaggedList"), "{held}");
+    assert!(held.contains(r#"value_member: "value""#), "{held}");
+    assert!(held.contains(r#"tag_member: "type""#), "{held}");
+    assert!(held.contains(r#"default_tag: "GHSA""#), "{held}");
+    assert!(
+        held.contains(r#"tag_target: "vulnerability.enumeration""#),
+        "{held}"
+    );
+    assert!(
+        held.contains(r#"value_target: "vulnerability.id""#),
+        "{held}"
+    );
+}
+
+/// One span, two spellings, and the branch reduces to an order of candidates.
+///
+/// The code scanning spelling carries an inline `!= null`, which is
+/// `GuardedCopy`'s trigger, so the arm has to sit above it or the script is
+/// claimed and nothing is written.
+#[test]
+fn both_github_span_spellings_bind_to_the_one_subtraction() {
+    assert_eq!(
+        binding(GITHUB_SECRET_SCANNING_SPAN),
+        [concat!(
+            r#"SecondsBetween(SecondsBetween { from: "github.secret_scanning"#,
+            r#".created_at", to: ["github.secret_scanning.resolved_at"], "#,
+            r#"key: "sec", target: "github.secret_scanning.time_to_resolution" })"#
+        )]
+    );
+    assert_eq!(
+        binding(GITHUB_CODE_SCANNING_SPAN),
+        [concat!(
+            r#"SecondsBetween(SecondsBetween { from: "github.code_scanning"#,
+            r#".created_at", to: ["github.code_scanning.fixed_at", "#,
+            r#""github.code_scanning.dismissed_at"], key: "sec", "#,
+            r#"target: "github.code_scanning.time_to_resolution" })"#
+        )]
+    );
+}
+
 #[test]
 fn both_cloudflare_epoch_spellings_bind_to_the_one_rescale() {
     // Seventeen call sites spell the conversion inline over one field and

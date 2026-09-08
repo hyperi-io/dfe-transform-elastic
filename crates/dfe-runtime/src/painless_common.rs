@@ -18829,6 +18829,12 @@ pub(crate) enum KnownPattern {
     ListFold(Box<ListFold>),
     /// One record assembled from whichever named fields the event carries.
     RecordFromFields(Box<crate::painless_records::RecordFromFields>),
+    /// A list rebuilt from a named member of each of its own entries.
+    ListRebuild(Box<crate::painless_list_records::ListRebuild>),
+    /// A list scanned for the first entry whose tag is not the default one.
+    ScanTaggedList(Box<crate::painless_list_records::ScanTaggedList>),
+    /// Whole seconds between two parsed timestamps, as one map member.
+    SecondsBetween(Box<crate::painless_seconds_between::SecondsBetween>),
     /// A run of fields decoded in place through `Long.decode`.
     DecodedFields(Box<crate::painless_coercion::DecodedFields>),
     /// Every record of a list renamed onto ECS keys, one member gathered.
@@ -20890,6 +20896,43 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: whole seconds between two parsed timestamps, put under one key.
+    //
+    // ABOVE `GuardedCopy`, which claims any `!= null` script with no loop --
+    // github's code scanning spelling carries exactly that guard, and a copy
+    // is not what the branch decides. Three call sites name `toEpochSecond`,
+    // all github's.
+    if normalised.contains(".toEpochSecond()")
+        && let Some(pattern) = crate::painless_seconds_between::parse_seconds_between(normalised)
+    {
+        patterns.push(KnownPattern::SecondsBetween(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: a list rebuilt from a named member of each of its own entries,
+    // or from a record of several. The parse reads every statement, so a loop
+    // that writes anything else falls through to the readers below.
+    if normalised.contains("new ArrayList()")
+        && let Some(pattern) = crate::painless_list_records::parse_list_rebuild(normalised)
+    {
+        patterns.push(KnownPattern::ListRebuild(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: a list scanned for the first entry whose tag is not the one the
+    // script seeds, keeping the last value it read. Beside the rebuild above,
+    // which reads the same list of records for the other job.
+    //
+    // github's dependabot stream needs both to land: all three of its wrong
+    // fields are on the same eight events.
+    if normalised.contains(".equals(")
+        && normalised.contains("break;")
+        && let Some(pattern) = crate::painless_list_records::parse_scan_tagged_list(normalised)
+    {
+        patterns.push(KnownPattern::ScanTaggedList(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: copy one field to another when the source is set.
     //
     // Gated on the two reads the runner actually has: a tree holding at least
@@ -21727,6 +21770,15 @@ pub(crate) fn run_known_pattern(
         KnownPattern::ListFold(pattern) => run_list_fold(event, pattern),
         KnownPattern::RecordFromFields(pattern) => {
             crate::painless_records::record_from_fields(event, pattern)
+        }
+        KnownPattern::ListRebuild(pattern) => {
+            crate::painless_list_records::list_rebuild(event, pattern)
+        }
+        KnownPattern::ScanTaggedList(pattern) => {
+            crate::painless_list_records::scan_tagged_list(event, pattern)
+        }
+        KnownPattern::SecondsBetween(pattern) => {
+            crate::painless_seconds_between::seconds_between(event, pattern)
         }
         KnownPattern::DecodedFields(pattern) => {
             crate::painless_coercion::decoded_fields(event, pattern)
