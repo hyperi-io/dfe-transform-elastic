@@ -12490,37 +12490,242 @@ fn concat_expression(expr: &str, bound: &[(&str, &String)]) -> String {
     out
 }
 
-/// Collapse an array of `{key, value}` maps into one object.
+/// Where a `{key, value}` fold puts each pair.
 ///
-/// `[{key: 'k1', value: 'v1'}]` becomes `{k1: 'v1'}`, in place.
-fn try_key_value_pairs(event: &mut Event, script: &str) -> bool {
-    use crate::painless_params::{clean_path, ctx_path_before};
+/// One vendor loop, two answers, and nothing in the loop body says which --
+/// only the accumulator's declaration does. azure and gitlab.production build
+/// a map and gitlab.api builds a list, off the same four lines otherwise.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum FoldInto {
+    /// The whole list into one map: `map[key] = value`.
+    OneMap,
+    /// One single-key map per record, and the list kept: `[key: value]`.
+    MapPerRecord,
+}
 
-    let Some(field) = ctx_path_before(script, " = tmp") else {
-        return false;
+/// A loop over a list of `{key, value}` records, folded back over the path it
+/// read.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct KeyValueFold {
+    /// The list read and the path written. The vendor scripts write the fold
+    /// back over the list they read; two different paths is another pattern.
+    path: String,
+    into: FoldInto,
+    /// The key whose MAP value the script serialises rather than stores.
+    dump_key: Option<String>,
+}
+
+/// A Painless local: a bare identifier, so a subscript or a call declines.
+fn is_local(name: &str) -> bool {
+    !name.is_empty()
+        && !name.starts_with(|c: char| c.is_ascii_digit())
+        && name.chars().all(|c| c.is_alphanumeric() || c == '_')
+}
+
+/// The local a statement in `body` binds to `rhs`, with the statement's own
+/// text -- the declaration keyword varies between `def`, `Map` and `String`,
+/// and the caller needs the text verbatim to account for it.
+fn local_bound_in(body: &str, rhs: &str) -> Option<(String, String)> {
+    let at = body.find(&format!(" = {rhs};"))?;
+    let start = body[..at].rfind(['\n', ';', '{', '}']).map_or(0, |n| n + 1);
+    let declaration = body[start..at].trim();
+    let name = declaration.rsplit(char::is_whitespace).next()?;
+    is_local(name).then(|| (name.to_string(), format!("{declaration} = {rhs}")))
+}
+
+/// The quoted literal `text` opens with, and the raw text it occupies.
+fn leading_quoted(text: &str) -> Option<(String, String)> {
+    let quote = text.chars().next().filter(|c| *c == '\'' || *c == '"')?;
+    let inner = text[quote.len_utf8()..].split_once(quote)?.0;
+    // A literal carrying its own quote would be read short, and a key that
+    // needs escaping is not one of these.
+    (!inner.contains('\\')).then(|| (inner.to_string(), format!("{quote}{inner}{quote}")))
+}
+
+/// Read a `{key, value}` fold, or decline.
+///
+/// The audit is the LEFTOVER check at the end: every statement the loop body
+/// holds has to be one this reads, so a script that does the fold and then
+/// something else declines rather than having its extra work silently dropped.
+fn parse_key_value_fold(script: &str) -> Option<KeyValueFold> {
+    use crate::painless_params::clean_path;
+
+    // One loop. A second means the script folds more than this list, and
+    // writing only the first fold would lose the rest.
+    let (head, after_for) = script.split_once("for (")?;
+    if after_for.contains("for (") {
+        return None;
+    }
+
+    let (header, after_header) = after_for.split_once(')')?;
+    let (item, list) = header.split_once(" in ")?;
+    let item = item.trim();
+    if !is_local(item) {
+        return None;
+    }
+    let list = list.trim();
+    let list = list
+        .strip_prefix("ctx?.")
+        .or_else(|| list.strip_prefix("ctx."))?;
+    let path = clean_path(list);
+    if path.is_empty()
+        || !path
+            .chars()
+            .all(|c| c.is_alphanumeric() || "._".contains(c))
+    {
+        return None;
+    }
+
+    // The tail is everything after the loop's own close.
+    let (body, tail) = after_header.rsplit_once('}')?;
+    let (written, accumulator) = tail.trim().strip_suffix(';')?.split_once(" = ")?;
+    let written = written
+        .trim()
+        .strip_prefix("ctx?.")
+        .or_else(|| written.trim().strip_prefix("ctx."))?;
+    if clean_path(written) != path {
+        return None;
+    }
+    let accumulator = accumulator.trim();
+    if !is_local(accumulator) {
+        return None;
+    }
+
+    // The declaration is the WHOLE of the text before the loop, and `[:]`
+    // against `[]` is the only thing that says where each pair lands.
+    let declaration = head.trim();
+    let declaration = ["def ", "Map ", "List "]
+        .iter()
+        .find_map(|keyword| declaration.strip_prefix(keyword))
+        .unwrap_or(declaration);
+    let into = match declaration.strip_prefix(accumulator)?.trim() {
+        "= [:];" => FoldInto::OneMap,
+        "= [];" => FoldInto::MapPerRecord,
+        _ => return None,
     };
-    let field = clean_path(&field);
 
-    // Already an object, or absent -- the processor's `instanceof List` guards
-    // both, so there is nothing to do either way.
-    let Some(Value::Array(items)) = event.get(&field).cloned() else {
+    // Either the pair is lifted into locals first, or it is read inline.
+    let mut fragments: Vec<String> = Vec::new();
+    let mut read = |member: &str| {
+        let inline = format!("{item}.{member}");
+        match local_bound_in(body, &inline) {
+            Some((name, statement)) => {
+                fragments.push(statement);
+                name
+            }
+            None => inline,
+        }
+    };
+    let key = read("key");
+    let value = read("value");
+
+    let mut dump_key = None;
+    match into {
+        FoldInto::OneMap => {
+            let write = format!("{accumulator}[{key}] = {value}");
+            if !body.contains(&write) {
+                return None;
+            }
+            if body.contains("Json.dump(") {
+                // Both writes, or the guard drops every key it does not name.
+                let dumped = format!("{accumulator}[{key}] = Json.dump({value})");
+                let open = format!("if ({key} == ");
+                let close = format!(" && {value} instanceof Map)");
+                let after = body.split_once(&open)?.1;
+                let (name, quoted) = leading_quoted(after)?;
+                if !body.contains(&dumped) || !after[quoted.len()..].starts_with(&close) {
+                    return None;
+                }
+                fragments.push(format!("{open}{quoted}{close}"));
+                fragments.push(dumped);
+                dump_key = Some(name);
+            }
+            fragments.push(write);
+        }
+        FoldInto::MapPerRecord => {
+            let literal = format!("[{key}: {value}]");
+            let added = if body.contains(&format!("{accumulator}.add({literal})")) {
+                literal
+            } else {
+                let (name, statement) = local_bound_in(body, &literal)?;
+                fragments.push(statement);
+                name
+            };
+            let add = format!("{accumulator}.add({added})");
+            if !body.contains(&add) {
+                return None;
+            }
+            fragments.push(add);
+        }
+    }
+
+    // Longest first, so the plain write is not read out of the dumped one.
+    fragments.sort_by_key(|fragment| std::cmp::Reverse(fragment.len()));
+    let mut rest = body.to_string();
+    for fragment in &fragments {
+        let at = rest.find(fragment.as_str())?;
+        rest.replace_range(at..at + fragment.len(), "");
+    }
+    let leftover: String = rest
+        .chars()
+        .filter(|c| !c.is_whitespace() && !"{};".contains(*c))
+        .collect();
+    if !(leftover.is_empty() || leftover == "else") {
+        return None;
+    }
+
+    Some(KeyValueFold {
+        path,
+        into,
+        dump_key,
+    })
+}
+
+/// Fold each `{key, value}` record onto the path the loop read.
+///
+/// `[{key: 'k1', value: 'v1'}]` becomes `{k1: 'v1'}` for [`FoldInto::OneMap`]
+/// and `[{k1: 'v1'}]` for [`FoldInto::MapPerRecord`].
+fn run_key_value_fold(event: &mut Event, pattern: &KeyValueFold) -> bool {
+    // Already folded, or absent -- the processor's own guard covers both, so
+    // there is nothing to do either way.
+    let Some(Value::Array(items)) = event.get(&pattern.path).cloned() else {
         return true;
     };
 
-    let mut out = Map::new();
-    for item in &items {
-        let Some(obj) = item.as_object() else {
-            continue;
-        };
-        let Some(key) = obj.get("key").and_then(Value::as_str) else {
-            continue;
-        };
-        out.insert(
-            key.to_string(),
-            obj.get("value").cloned().unwrap_or(Value::Null),
-        );
-    }
-    let _ = event.set(&field, Value::Object(out));
+    let entry = |item: &Value| -> Option<(String, Value)> {
+        let object = item.as_object()?;
+        let key = object.get("key").and_then(Value::as_str)?;
+        let mut value = object.get("value").cloned().unwrap_or(Value::Null);
+        // `Json.dump` serialises a MAP. Anything else the vendor left alone,
+        // which is how a redacted "[FILTERED]" reaches the output verbatim.
+        if pattern.dump_key.as_deref() == Some(key)
+            && value.is_object()
+            && let Ok(dumped) = serde_json::to_string(&value)
+        {
+            value = Value::String(dumped);
+        }
+        Some((key.to_string(), value))
+    };
+
+    let folded = match pattern.into {
+        FoldInto::OneMap => {
+            let mut out = Map::new();
+            for (key, value) in items.iter().filter_map(entry) {
+                out.insert(key, value);
+            }
+            Value::Object(out)
+        }
+        FoldInto::MapPerRecord => {
+            let mut out = Vec::with_capacity(items.len());
+            for (key, value) in items.iter().filter_map(entry) {
+                let mut one = Map::new();
+                one.insert(key, value);
+                out.push(Value::Object(one));
+            }
+            Value::Array(out)
+        }
+    };
+    let _ = event.set(&pattern.path, folded);
     true
 }
 
@@ -17855,7 +18060,7 @@ pub(crate) enum KnownPattern {
     SplitUnquotedKv(Box<SplitKv>),
     ArrayToIndexedObject,
     ListRenameTable(Box<ListRenameTable>),
-    KeyValuePairs,
+    KeyValuePairs(Box<KeyValueFold>),
     JoinOptional,
     AppendEach(Box<AppendEach>),
     LiteralValueMap(Box<LiteralValueMap>),
@@ -19372,9 +19577,13 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
-    // Pattern: collapse an array of `{key, value}` maps into one object.
-    if normalised.contains("[item.key] = item.value") {
-        patterns.push(KnownPattern::KeyValuePairs);
+    // Pattern: fold an array of `{key, value}` maps, into one object or into
+    // one single-key object per record.
+    if normalised.contains(".key")
+        && normalised.contains(".value")
+        && let Some(pattern) = parse_key_value_fold(normalised)
+    {
+        patterns.push(KnownPattern::KeyValuePairs(Box::new(pattern)));
         return patterns;
     }
 
@@ -20614,7 +20823,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::SplitUnquotedKv(split) => run_split_unquoted_kv(event, split),
         KnownPattern::ArrayToIndexedObject => try_array_to_indexed_object(event, normalised),
         KnownPattern::ListRenameTable(pattern) => run_list_rename_table(event, pattern),
-        KnownPattern::KeyValuePairs => try_key_value_pairs(event, normalised),
+        KnownPattern::KeyValuePairs(pattern) => run_key_value_fold(event, pattern),
         KnownPattern::JoinOptional => try_join_optional(event, normalised),
         KnownPattern::AppendEach(pattern) => try_append_each(event, pattern),
         KnownPattern::LiteralValueMap(pattern) => literal_value_map(event, pattern),

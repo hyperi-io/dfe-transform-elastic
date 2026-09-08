@@ -581,25 +581,86 @@ fn the_snake_case_helper_binds_to_the_rule_its_own_body_spells() {
     );
 }
 
-/// gitlab's two key/value folds, recorded UNCLAIMED.
+/// azure's spelling of the same loop, and the one `KeyValuePairs` was written
+/// for. It is the audit for the widening: the merge answer must not move.
+const AZURE_AUTH_DETAILS: &str = r#"def tmp = [:];\nfor (item in ctx.azure.signinlogs.properties.authentication_processing_details) {\n    tmp[item.key] = item.value;\n}\nctx.azure.signinlogs.properties.authentication_processing_details = tmp;\n"#;
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/tenable_io_audit/default.rs`. The
+/// sharpest near-miss in the tree: one loop, the same `ctx.` path read and
+/// written, and the key LOWERCASED on the way in.
+const TENABLE_AUDIT_FIELDS: &str = r#"def fields = new HashMap();\nfor (f in ctx.tenable_io.audit.fields) {\n  fields.put(f.key.toLowerCase(), f.value);\n}\nctx.tenable_io.audit.fields = fields;"#;
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/ti_opencti_indicator/default.rs`. The
+/// fold is over a member of a LIST ITEM, so the path written is a local's.
+const OPENCTI_STARTUP_INFO: &str = r#"if (ctx.observables?.edges instanceof List) {\n  for (def edge : ctx.observables.edges) {\n    if (edge.node?.startup_info instanceof List) {\n      def result = [:];\n      for (def kv : edge.node.startup_info) {\n        result[kv.key] = kv.value;\n      }\n      edge.node.startup_info = result;\n    }\n  }\n}\n"#;
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/google_secops_alert_v2/default.rs`, and
+/// the whole of google_secops's parity debt. Three nested loops, a second
+/// member read when the value is empty, and the key dropped when it is.
+const GOOGLE_SECOPS_KV_FIELDS: &str = r#"String[] kvFields = new String[] {\"detection_fields\", \"outcomes\", \"rule_labels\"};\nfor (def detection : ctx.google_secops.alert_v2.detection) {\n  for (def fieldName : kvFields) {\n    if (!(detection[fieldName] instanceof List)) {\n      continue;\n    }\n    def flat = new HashMap();\n    for (def entry : detection[fieldName]) {\n      if (entry?.key == null || entry.key == '') {\n        continue;\n      }\n      if (entry.value != null && entry.value != '') {\n        flat[entry.key] = entry.value;\n      } else if (entry.source != null && entry.source != '') {\n        flat[entry.key] = entry.source;\n      }\n    }\n    if (flat.isEmpty()) {\n      detection.remove(fieldName);\n    } else {\n      detection[fieldName] = flat;\n    }\n  }\n}\n"#;
+
+/// gitlab's two key/value folds, and azure's beside them.
 ///
-/// Both sat behind the date processor that aborted the pipeline, so neither
-/// had ever been reached and the debt they carry was invisible. They are 17 of
-/// gitlab's remaining 17 failing events -- 9 on the api stream and 8 on
-/// production -- and the entry is here so the next reader starts from the
-/// measurement rather than the ladder.
+/// Both gitlab folds bound to NOTHING, and both sat behind the date processor
+/// that aborted the pipeline, so neither had ever been reached. They are 17 of
+/// gitlab's failing events -- 9 on the api stream and 8 on production.
+///
+/// One loop with two answers, and only the ACCUMULATOR'S DECLARATION says
+/// which: `[:]` folds the list into one map, `[]` keeps the list and folds
+/// each record into a single-key map of its own. Read from the loop body
+/// alone, all three of these are the same script.
 #[test]
-fn the_gitlab_key_value_folds_are_unclaimed() {
-    assert!(
-        binding(GITLAB_API_PARAMS).is_empty(),
-        "{:?}",
-        binding(GITLAB_API_PARAMS)
+fn the_gitlab_key_value_folds_bind_to_the_accumulator_they_declare() {
+    assert_eq!(
+        binding(GITLAB_API_PARAMS),
+        [concat!(
+            r#"KeyValuePairs(KeyValueFold { path: "gitlab.api.params", "#,
+            r#"into: MapPerRecord, dump_key: None })"#
+        )]
     );
-    assert!(
-        binding(GITLAB_PRODUCTION_PARAMS).is_empty(),
-        "{:?}",
-        binding(GITLAB_PRODUCTION_PARAMS)
+    assert_eq!(
+        binding(GITLAB_PRODUCTION_PARAMS),
+        [concat!(
+            r#"KeyValuePairs(KeyValueFold { path: "gitlab.production.params", "#,
+            r#"into: OneMap, dump_key: Some("variables") })"#
+        )]
     );
+    assert_eq!(
+        binding(AZURE_AUTH_DETAILS),
+        [concat!(
+            r#"KeyValuePairs(KeyValueFold { path: "azure.signinlogs.properties"#,
+            r#".authentication_processing_details", into: OneMap, dump_key: None })"#
+        )]
+    );
+}
+
+#[test]
+fn the_key_value_fold_declines_the_three_loops_that_read_the_same_pair() {
+    // Every one of these reads `<item>.key` and `<item>.value`, so the trigger
+    // takes all three and only the parse turns them away. Claiming any would
+    // write the fold and drop the rest of what the script does, with no error.
+    //
+    // tenable lowercases the key, so a claim would keep the vendor's own
+    // casing where Elasticsearch writes lowercase; opencti folds a member of a
+    // list ITEM, so the path written is a local's rather than the loop's; and
+    // google_secops falls back to a second member and drops the key when both
+    // are empty -- and it is that source's whole parity debt, sitting at 0/5.
+    for (name, script) in [
+        ("tenable_io", TENABLE_AUDIT_FIELDS),
+        ("ti_opencti", OPENCTI_STARTUP_INFO),
+        ("google_secops", GOOGLE_SECOPS_KV_FIELDS),
+    ] {
+        assert!(
+            !binding(script)
+                .iter()
+                .any(|held| held.starts_with("KeyValuePairs")),
+            "{name}: {:?}",
+            binding(script)
+        );
+    }
 }
 
 #[test]
