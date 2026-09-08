@@ -13252,6 +13252,32 @@ fn try_append_each(event: &mut Event, pattern: &AppendEach) -> bool {
     true
 }
 
+/// The text the first `.add(` is given, up to its closing bracket.
+fn append_argument(script: &str) -> Option<&str> {
+    let rest = script.split_once(".add(")?.1;
+    Some(rest[..rest.find(')')?].trim())
+}
+
+/// Whether an expression is one element of a local taken by index.
+///
+/// `splitmail[0]` is, and both spellings the append ladder keeps are not:
+/// crowdstrike's `tag["Key"] + ":" + tag["ValueString"]` has a subscript that
+/// is not a number, and o365's `attachmentObj` has none.
+fn is_indexed_element(argument: &str) -> bool {
+    let Some((local, index)) = argument.split_once('[') else {
+        return false;
+    };
+    let Some(index) = index.strip_suffix(']') else {
+        return false;
+    };
+    !local.is_empty()
+        && local
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '_')
+        && !index.is_empty()
+        && index.chars().all(|c| c.is_ascii_digit())
+}
+
 /// The field the append reads from -- the one the `instanceof` ladder tests.
 fn append_source_path(script: &str) -> Option<String> {
     use crate::painless_params::{clean_path, ctx_path_before};
@@ -20530,10 +20556,19 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
     // statements and this claims a script it cannot run: windows' connection
     // events append an address and separately split an executable, and reading
     // them as one pair put the path segments into `related.ip`.
+    //
+    // An append of ONE indexed part is a different intent: this appends EVERY
+    // part, so google_workspace's `related.user.add(splitmail[0])` gained the
+    // address's domain beside its name. The test sits on the arm rather than in
+    // the parse because the arm is a hard stop -- declining inside
+    // `parse_append_each` binds the script to nothing instead of to
+    // `EmailSplit` below. crowdstrike joins two map keys and o365 appends a
+    // loop variable, so neither answers to it.
     if let Some(add_at) = normalised.find(".add(")
         && [".splitOnToken(", "instanceof Map"]
             .iter()
             .any(|marker| normalised.find(marker).is_some_and(|at| at < add_at))
+        && !append_argument(normalised).is_some_and(is_indexed_element)
     {
         if let Some(pattern) = parse_append_each(normalised) {
             patterns.push(KnownPattern::AppendEach(Box::new(pattern)));
@@ -21872,6 +21907,11 @@ pub(crate) struct EmailSplit {
     domains: Vec<String>,
     /// Paths taking the whole address back.
     emails: Vec<String>,
+    /// Lists one half is APPENDED to, with which half each takes.
+    ///
+    /// `ctx.related.user.add(splitmail[0])` carries no `=`, so the assignment
+    /// reader below cannot see it.
+    appends: Vec<(String, usize)>,
 }
 
 /// Read the split's source and targets off the script.
@@ -21889,9 +21929,14 @@ fn parse_email_split(script: &str) -> Option<EmailSplit> {
         names: Vec::new(),
         domains: Vec::new(),
         emails: Vec::new(),
+        appends: Vec::new(),
     };
 
     for statement in script.split(';') {
+        if let Some(append) = parse_split_append(statement) {
+            split.appends.push(append);
+            continue;
+        }
         let Some((lhs, rhs)) = statement.split_once('=') else {
             continue;
         };
@@ -21922,12 +21967,34 @@ fn parse_email_split(script: &str) -> Option<EmailSplit> {
 
     // A script that names neither half is one of the truncated forms, and both
     // land beside the address -- where every spelled-out variant puts them.
-    if split.names.is_empty() && split.domains.is_empty() {
+    // An append is a named target, so a script carrying one is not truncated:
+    // google_workspace's drive stream appends and assigns nothing, and guessing
+    // here invented `google_workspace.drive.name` and `.domain`.
+    if split.names.is_empty() && split.domains.is_empty() && split.appends.is_empty() {
         let parent = split.source.rsplit_once('.').map_or("", |(head, _)| head);
         split.names.push(format!("{parent}.name"));
         split.domains.push(format!("{parent}.domain"));
     }
     Some(split)
+}
+
+/// The list an `<path>.add(<local>[<n>])` statement appends one half to.
+fn parse_split_append(statement: &str) -> Option<(String, usize)> {
+    use crate::painless_params::clean_path;
+
+    let (lhs, rhs) = statement.split_once(".add(")?;
+    let target = lhs
+        .rsplit(['\n', '{', '}'])
+        .next()
+        .map(str::trim)?
+        .strip_prefix("ctx.")
+        .map(clean_path)?;
+    let argument = rhs[..rhs.find(')')?].trim();
+    if !is_indexed_element(argument) {
+        return None;
+    }
+    let index = argument.split_once('[')?.1.strip_suffix(']')?;
+    Some((target, index.parse().ok()?))
 }
 
 fn run_email_split(event: &mut Event, split: &EmailSplit) -> bool {
@@ -21949,6 +22016,17 @@ fn run_email_split(event: &mut Event, split: &EmailSplit) -> bool {
     }
     for path in &split.domains {
         let _ = event.set(path, json!(parts[1]));
+    }
+    for (path, half) in &split.appends {
+        let Some(part) = parts.get(*half) else {
+            continue;
+        };
+        let mut list = match event.get(path) {
+            Some(Value::Array(items)) => items.clone(),
+            _ => Vec::new(),
+        };
+        list.push(json!(part));
+        let _ = event.set(path, Value::Array(list));
     }
     true
 }

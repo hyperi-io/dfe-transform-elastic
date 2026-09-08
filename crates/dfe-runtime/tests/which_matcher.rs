@@ -19,7 +19,7 @@
 //! different defect from claiming it and writing the wrong thing.
 
 use dfe_runtime::Event;
-use dfe_runtime::painless_plan::{PainlessPlan, painless_exec_plan_params};
+use dfe_runtime::painless_plan::{PainlessPlan, painless_exec_plan, painless_exec_plan_params};
 use serde_json::json;
 
 /// Verbatim from `pipelines/checkpoint_email/event/default.yml:434-438`.
@@ -1036,4 +1036,105 @@ fn both_cloudflare_epoch_spellings_bind_to_the_one_rescale() {
             r#"], parse_strings: false })"#
         )]
     );
+}
+
+/// google_workspace's three email splits that also append a half to a list,
+/// verbatim from the generated call sites in
+/// `crates/dfe-transforms/src/filebeat/google_workspace_{login,groups,drive}/default.rs`.
+const GOOGLE_WORKSPACE_LOGIN_AFFECTED: &str = r#"String[] splitmail = ctx.google_workspace.login.affected_email_address.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} if (ctx.user.target == null) {\n  ctx.user.target = new HashMap();\n} ctx.user.target.name = splitmail[0]; ctx.user.target.domain = splitmail[1]; ctx.related.user.add(splitmail[0]);\n"#;
+
+const GOOGLE_WORKSPACE_GROUPS_MEMBER: &str = r#"String[] splitmail = ctx.google_workspace.groups.member.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} if (ctx.user.target == null) {\n  ctx.user.target = new HashMap();\n} if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} ctx.related.user.add(splitmail[0]); ctx.user.target.name = splitmail[0]; ctx.user.target.domain = splitmail[1]; ctx.user.target.email = ctx.google_workspace.groups.member.email;\n"#;
+
+const GOOGLE_WORKSPACE_DRIVE_TARGET: &str = r#"String[] splitmail = ctx.google_workspace.drive.target.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} ctx.related.user.add(splitmail[0]);\n"#;
+
+/// The two appends that must STAY with `AppendEach`, which is the audit for the
+/// narrowing: crowdstrike is the script it was written for, and o365 appends a
+/// loop variable over a list.
+const CROWDSTRIKE_TAGS: &str = r#"if (ctx.crowdstrike.event.Tags instanceof List) {\n    for (tag in ctx.crowdstrike.event.Tags) {\n        if (tag instanceof Map) { ctx.tags.add(tag[\"Key\"] + \":\" + tag[\"ValueString\"]); }\n    }\n} else if (ctx.crowdstrike.event.Tags instanceof String) {\n    for (value in ctx.crowdstrike.event.Tags.splitOnToken(',')) { ctx.tags.add(value.trim()); }\n}"#;
+
+#[test]
+fn the_google_workspace_splits_bind_to_the_split_and_not_to_append_each() {
+    // All three bound to `AppendEach`, which appends EVERY part of the split.
+    // The address's domain therefore joined its name in `related.user`, and
+    // because that arm is a hard stop `EmailSplit` never ran, so
+    // `user.target.*` was never written at all.
+    let held = binding(GOOGLE_WORKSPACE_LOGIN_AFFECTED).join(" ");
+    assert!(held.starts_with("EmailSplit"), "{held}");
+    assert!(held.contains(r#"names: ["user.target.name"]"#), "{held}");
+    assert!(
+        held.contains(r#"domains: ["user.target.domain"]"#),
+        "{held}"
+    );
+    assert!(held.contains(r#"appends: [("related.user", 0)]"#), "{held}");
+
+    let held = binding(GOOGLE_WORKSPACE_GROUPS_MEMBER).join(" ");
+    assert!(held.starts_with("EmailSplit"), "{held}");
+    assert!(
+        held.contains(r#"emails: ["user.target.email"]"#),
+        "{held}"
+    );
+    assert!(held.contains(r#"appends: [("related.user", 0)]"#), "{held}");
+
+    // drive assigns NOTHING, so the truncated-form fallback would invent
+    // `google_workspace.drive.name` and `.domain`. An append is a named target.
+    assert_eq!(
+        binding(GOOGLE_WORKSPACE_DRIVE_TARGET),
+        [concat!(
+            r#"EmailSplit(EmailSplit { source: "google_workspace.drive.target", "#,
+            r#"names: [], domains: [], emails: [], appends: [("related.user", 0)] })"#
+        )]
+    );
+
+    // The audit: both keep `AppendEach`.
+    assert_eq!(heads(CROWDSTRIKE_TAGS), ["AppendEach"]);
+    assert_eq!(heads(O365_ATTACHMENTS), ["AppendEach"]);
+}
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/o365/default.rs`.
+const O365_ATTACHMENTS: &str = r#"if (ctx.o365audit?.Item?.Attachments != null) {\n  for (attachmentObj in ctx.o365audit.Item.Attachments.splitOnToken(';')) {\n    if (attachmentObj != \"\") {\n      ctx.email.attachments.add(attachmentObj);\n    }\n  }\n}\n"#;
+
+#[test]
+fn the_google_workspace_splits_write_both_halves_where_the_script_puts_them() {
+    // The WRITTEN values, against the corpus captures. `related.user` keeps its
+    // duplicates -- login's expected list is ["foo", "foo"] -- so the append is
+    // a plain push and never a set.
+    let plan = PainlessPlan::new(GOOGLE_WORKSPACE_LOGIN_AFFECTED);
+    let mut event = Event::new(json!({
+        "google_workspace": { "login": { "affected_email_address": "foo@elastic.co" } },
+        "related": { "user": ["foo"] },
+    }));
+    assert!(painless_exec_plan(&mut event, &plan).is_ok());
+    assert_eq!(event.get("related.user"), Some(&json!(["foo", "foo"])));
+    assert_eq!(event.get("user.target.name"), Some(&json!("foo")));
+    assert_eq!(event.get("user.target.domain"), Some(&json!("elastic.co")));
+
+    let plan = PainlessPlan::new(GOOGLE_WORKSPACE_GROUPS_MEMBER);
+    let mut event = Event::new(json!({
+        "google_workspace": { "groups": { "member": { "email": "user@example.com" } } },
+        "related": { "user": ["foo"] },
+    }));
+    assert!(painless_exec_plan(&mut event, &plan).is_ok());
+    assert_eq!(event.get("related.user"), Some(&json!(["foo", "user"])));
+    assert_eq!(event.get("user.target.name"), Some(&json!("user")));
+    assert_eq!(event.get("user.target.domain"), Some(&json!("example.com")));
+    assert_eq!(
+        event.get("user.target.email"),
+        Some(&json!("user@example.com"))
+    );
+
+    // An address that does not cut in two writes NOTHING -- the script's own
+    // `if (splitmail.length != 2) { return; }`. drive's capture carries a
+    // markdown-wrapped address with two `@`, and Elasticsearch emits no
+    // `related.user` for it.
+    let plan = PainlessPlan::new(GOOGLE_WORKSPACE_DRIVE_TARGET);
+    let mut event = Event::new(json!({
+        "google_workspace": {
+            "drive": { "target": "[jane.smith@example.org](mailto:jane.smith@example.org)" }
+        },
+    }));
+    assert!(painless_exec_plan(&mut event, &plan).is_ok());
+    assert_eq!(event.get("related.user"), None);
+    assert_eq!(event.get("google_workspace.drive.name"), None);
+    assert_eq!(event.get("google_workspace.drive.domain"), None);
 }
