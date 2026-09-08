@@ -202,21 +202,22 @@
 201 LongCoercion
 202 GuardedDivide
 203 ScaleField
-204 GuardedCopy
-205 ConcatAssignment
-206 PlainAssignments
-207 SumTotals
-208 ScalarExpression
-209 TrimThenSplit
-210 ItemWrites
-211 NthSeparatorPrefix
-212 FirstMatchInList
-213 SubstringRejoin
-214 ListFold
-215 LongDivide
-216 DropLeadingChars
-217 EpochToMillis
-218 EpochNanosToDateTime
+204 RecordFromFields
+205 GuardedCopy
+206 ConcatAssignment
+207 PlainAssignments
+208 SumTotals
+209 ScalarExpression
+210 TrimThenSplit
+211 ItemWrites
+212 NthSeparatorPrefix
+213 FirstMatchInList
+214 SubstringRejoin
+215 ListFold
+216 LongDivide
+217 DropLeadingChars
+218 EpochToMillis
+219 EpochNanosToDateTime
 
 [params_pattern]
   1 AwsEntity

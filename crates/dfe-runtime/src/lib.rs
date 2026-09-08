@@ -37,6 +37,7 @@ pub mod painless_lists;
 pub mod painless_nth_separator;
 pub mod painless_params;
 pub mod painless_plan;
+pub mod painless_records;
 pub mod painless_scheduled_task;
 pub mod painless_sddl;
 pub mod painless_stats;

@@ -18631,6 +18631,8 @@ pub(crate) enum KnownPattern {
     SubstringRejoin(Box<SubstringRejoin>),
     /// A list reduced to one value inside a `try`, nulled on failure.
     ListFold(Box<ListFold>),
+    /// One record assembled from whichever named fields the event carries.
+    RecordFromFields(Box<crate::painless_records::RecordFromFields>),
     /// An integer divided by a literal and written back, through a local.
     LongDivide(Box<LongDivide>),
     /// A value that may arrive as text or as a number, written back as a
@@ -20643,6 +20645,20 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: one record assembled from whichever named fields the event
+    // carries, written as a list of one.
+    //
+    // ABOVE `GuardedCopy`, which claims any `!= null` script with no loop and
+    // whose `Program` cannot read a subscript assignment on a LOCAL -- so it
+    // took suricata's DNS answer and wrote nothing.
+    if normalised.contains("= [:]")
+        && normalised.contains(".isEmpty()")
+        && let Some(pattern) = crate::painless_records::parse_record_from_fields(normalised)
+    {
+        patterns.push(KnownPattern::RecordFromFields(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: copy one field to another when the source is set.
     //
     // Gated on the two reads the runner actually has: a tree holding at least
@@ -21477,6 +21493,9 @@ pub(crate) fn run_known_pattern(
         KnownPattern::FirstMatchInList(pattern) => run_first_match_in_list(event, pattern),
         KnownPattern::SubstringRejoin(pattern) => run_substring_rejoin(event, pattern),
         KnownPattern::ListFold(pattern) => run_list_fold(event, pattern),
+        KnownPattern::RecordFromFields(pattern) => {
+            crate::painless_records::record_from_fields(event, pattern)
+        }
         KnownPattern::LongDivide(pattern) => run_long_divide(event, pattern),
     }
 }
