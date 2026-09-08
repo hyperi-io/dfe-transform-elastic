@@ -7135,7 +7135,7 @@ enum Rhs {
     /// `KnownPattern::ConcatAssignment` -- see [`parse_concat`].
     ///
     /// The fold is the case call on the JOIN, which only a parenthesised
-    /// expression can carry -- digital_guardian's
+    /// expression can carry -- `digital_guardian`'s
     /// `(ctx.<a> + "-" + ctx.<b>).toLowerCase()`. Unparenthesised, the call
     /// binds to the last term alone and is a different expression.
     Concat {
@@ -7143,7 +7143,7 @@ enum Rhs {
         fold: Fold,
     },
     /// `ctx.<path>.splitOnToken("<sep>")[<n>]` -- one part of a split,
-    /// optionally case-folded. cisco_ise takes the word before the first colon
+    /// optionally case-folded. `cisco_ise` takes the word before the first colon
     /// of a message description as `event.action` at 24 sites, and okta's admin
     /// URL gives up its tail after an API prefix at four more.
     SplitPart {
@@ -8421,17 +8421,17 @@ fn parse_concat(text: &str) -> Option<Vec<ConcatPiece>> {
 /// `(ctx.a) + ctx.b` closes early and is declined -- which is what the depth
 /// walk checks.
 ///
-/// digital_guardian is the source: `ctx.event.action` is
+/// `digital_guardian` is the source: `ctx.event.action` is
 /// `(dg_utype + "-" + inc_state).toLowerCase()` on every one of its events.
 fn parse_folded_concat(text: &str) -> Option<(Vec<ConcatPiece>, Fold)> {
     let text = text.trim();
-    let (head, fold) = if let Some(head) = text.strip_suffix(".toLowerCase()") {
-        (head, Fold::Lower)
-    } else if let Some(head) = text.strip_suffix(".toUpperCase()") {
-        (head, Fold::Upper)
-    } else {
-        return None;
-    };
+    let (head, fold) = text
+        .strip_suffix(".toLowerCase()")
+        .map(|head| (head, Fold::Lower))
+        .or_else(|| {
+            text.strip_suffix(".toUpperCase()")
+                .map(|head| (head, Fold::Upper))
+        })?;
 
     let inner = head.trim().strip_prefix('(')?.strip_suffix(')')?;
     // The opening paren has to be the one the closing paren matches, or this is
@@ -8594,7 +8594,8 @@ fn parse_guarded_params_row(script: &str) -> Option<GuardedParamsRow> {
     })
 }
 
-/// `ctx.<path> != null`, optionally ANDed with `ctx.<same path> == <literal>`.
+/// `ctx.<path> != null`, optionally joined by `&&` to `ctx.<same path> ==
+/// <literal>`.
 fn guard_terms(guard: &str) -> Option<(String, Option<Value>)> {
     let mut terms = guard.split("&&").map(str::trim);
     let path = clean_path(
@@ -8859,7 +8860,7 @@ fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
 /// **The WHOLE text has to be that literal.** This is the last reader
 /// [`parse_rhs`] tries, so an expression none of the others could read arrives
 /// here intact -- and a scan for the first quoted run ANYWHERE answers such an
-/// expression with a fragment of itself. digital_guardian writes
+/// expression with a fragment of itself. `digital_guardian` writes
 /// `ctx.event.action = (ctx.<a> + "-" + ctx.<b>).toLowerCase()`, and every one
 /// of its events carried the literal `-` as its action, with `PlainAssignments`
 /// reporting the write done.
@@ -9800,6 +9801,29 @@ pub(crate) fn clean_path(path: &str) -> String {
     } else {
         path.to_string()
     }
+}
+
+/// The `ctx` path each `def <name> = ctx?...;` line reads, keyed by the local.
+///
+/// The prefix must be `ctx.` or `ctx?.` in full. Stripping a bare `ctx` and
+/// then trimming the punctuation reads `ctxfoo.bar` as the path `foo.bar`,
+/// which binds a local to a field the script never named.
+///
+/// A call or a subscript is declined: the value is not a path this can resolve.
+pub(crate) fn ctx_locals(script: &str) -> Vec<(String, String)> {
+    script
+        .split(';')
+        .filter_map(|statement| {
+            let (name, value) = statement.trim().strip_prefix("def ")?.split_once('=')?;
+            let value = value.trim();
+            let path = value
+                .strip_prefix("ctx?.")
+                .or_else(|| value.strip_prefix("ctx."))?;
+            let path = clean_path(path);
+            (!path.is_empty() && !path.contains(['(', ' ', '[']))
+                .then(|| (name.trim().to_owned(), path))
+        })
+        .collect()
 }
 
 /// A mutable reference to the value at a dotted path.

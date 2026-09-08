@@ -29,7 +29,7 @@
 use serde_json::Value;
 
 use crate::Event;
-use crate::painless_params::clean_path;
+use crate::painless_params::{clean_path, ctx_locals as locals};
 
 /// One member gathered out of a list's records and removed from each.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -41,23 +41,6 @@ pub struct HoistMember {
 }
 
 /// The `ctx` path a `def <name> = ctx...;` line reads, keyed by the local.
-fn locals(script: &str) -> Vec<(String, String)> {
-    script
-        .split(';')
-        .filter_map(|statement| {
-            let (name, value) = statement.trim().strip_prefix("def ")?.split_once('=')?;
-            let path = clean_path(
-                value
-                    .trim()
-                    .strip_prefix("ctx")?
-                    .trim_start_matches(['?', '.']),
-            );
-            (!path.is_empty() && !path.contains(['(', ' ', '[']))
-                .then(|| (name.trim().to_owned(), path))
-        })
-        .collect()
-}
-
 /// Read the hoist, or decline it.
 ///
 /// The key gathered and the key removed have to be the same one, taken from the

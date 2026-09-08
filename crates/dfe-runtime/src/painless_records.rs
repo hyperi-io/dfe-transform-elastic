@@ -34,7 +34,7 @@
 use serde_json::{Map, Value};
 
 use crate::Event;
-use crate::painless_params::clean_path;
+use crate::painless_params::{clean_path, ctx_locals as locals};
 
 /// The second write: one field copied out when another names a listed value.
 ///
@@ -60,23 +60,6 @@ pub struct RecordFromFields {
     members: Vec<(String, String)>,
     target: String,
     also: Option<RecordAlso>,
-}
-
-/// The `ctx` path a `def <name> = ctx?...;` line reads, keyed by the local.
-fn locals(script: &str) -> Vec<(String, String)> {
-    script
-        .split(';')
-        .filter_map(|statement| {
-            let (name, value) = statement.trim().strip_prefix("def ")?.split_once('=')?;
-            let path = value
-                .trim()
-                .strip_prefix("ctx?.")
-                .or(value.trim().strip_prefix("ctx."))?;
-            let path = clean_path(path);
-            (!path.is_empty() && !path.contains(['(', ' ', '[']))
-                .then(|| (name.trim().to_owned(), path))
-        })
-        .collect()
 }
 
 /// Read the assembly, or decline it.

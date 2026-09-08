@@ -88,6 +88,33 @@ fn clean_path_leaves_map_syntax_alone() {
     assert_eq!(clean_path("host?.name"), "host.name");
 }
 
+/// Both null-safe spellings bind, and a local is read only when the prefix is
+/// the WHOLE of `ctx.` or `ctx?.`.
+#[test]
+fn ctx_locals_reads_both_spellings_and_declines_a_longer_word() {
+    assert_eq!(
+        ctx_locals("def a = ctx.host.name; def b = ctx?.user?.id;"),
+        vec![
+            ("a".to_owned(), "host.name".to_owned()),
+            ("b".to_owned(), "user.id".to_owned()),
+        ]
+    );
+}
+
+/// `ctxfoo` is not `ctx`. Stripping a bare `ctx` and then trimming the
+/// punctuation bound the local to `foo.bar`, a field the script never named.
+#[test]
+fn ctx_locals_declines_a_local_bound_to_something_that_merely_starts_with_ctx() {
+    assert!(ctx_locals("def a = ctxfoo.bar;").is_empty());
+}
+
+/// A call or a subscript is not a path this can resolve to a field.
+#[test]
+fn ctx_locals_declines_a_call_and_a_subscript() {
+    assert!(ctx_locals("def a = ctx.list.entrySet();").is_empty());
+    assert!(ctx_locals("def a = ctx.list[0];").is_empty());
+}
+
 /// The readers do NOT agree on which characters a path may hold, and the
 /// difference is pinned rather than resolved.
 ///

@@ -2698,7 +2698,7 @@ fn run_date_plus_days(event: &mut Event, source: &str, target: &str, days: i64) 
 /// is what stands between its `_tmp` scratch map and every field derived from
 /// it.
 ///
-/// The sentinel is not always a string. qualys_gav clears its unscanned sensor
+/// The sentinel is not always a string. `qualys_gav` clears its unscanned sensor
 /// timestamps with a bare `v == 0`, and reading only the quoted spelling left
 /// all sixteen of them on the event as fields Elasticsearch does not emit.
 fn parse_remove_map_value(script: &str) -> Option<KnownPattern> {
@@ -18039,7 +18039,7 @@ enum RejoinPart {
 
 /// A field re-spaced by its own substrings, behind a whole-string regex match.
 ///
-/// cisco_aironet normalises a MAC the vendor writes four-and-four:
+/// `cisco_aironet` normalises a MAC the vendor writes four-and-four:
 ///
 /// ```painless
 /// def mac = ctx.client.mac;
@@ -18190,7 +18190,7 @@ enum FoldStep {
 /// A list reduced to one value inside a `try`, with the target nulled on
 /// failure.
 ///
-/// nginx_ingress_controller writes it four times over the lists its access log
+/// `nginx_ingress_controller` writes it four times over the lists its access log
 /// carries per upstream:
 ///
 /// ```painless

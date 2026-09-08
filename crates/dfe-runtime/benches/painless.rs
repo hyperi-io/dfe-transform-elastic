@@ -55,8 +55,38 @@ const GUARDED_COPIES: &str = "if (ctx.winlog.event_data.SubjectUserName != null)
                               \\n}\\nif (ctx.user.name != null) \
                               {\\n  ctx.related.user.add(ctx.user.name);\\n}\\n";
 
+/// zeek's connection stream: one field decided by a truth table over two
+/// others, written as four sequential `if`s each ending in a `return`.
+/// `KnownPattern::PairTable` claims it. The event below takes the LAST row, so
+/// all four comparisons run -- the first row would measure one.
+const PAIR_TABLE: &str = "if (ctx.zeek?.connection?.local_orig == null ||\\n    \
+                          ctx.zeek?.connection?.local_resp == null) {\\n  return;\\n}\\n\
+                          if (ctx.zeek.connection.local_orig == true &&\\n    \
+                          ctx.zeek.connection.local_resp == true) {\\n  \
+                          ctx.network.direction = \"internal\";\\n  return;\\n}\\n\
+                          if (ctx.zeek.connection.local_orig == true &&\\n    \
+                          ctx.zeek.connection.local_resp == false) {\\n  \
+                          ctx.network.direction = \"outbound\";\\n  return;\\n}\\n\
+                          if (ctx.zeek.connection.local_orig == false &&\\n    \
+                          ctx.zeek.connection.local_resp == true) {\\n  \
+                          ctx.network.direction = \"inbound\";\\n  return;\\n}\\n\
+                          if (ctx.zeek.connection.local_orig == false &&\\n    \
+                          ctx.zeek.connection.local_resp == false) {\\n  \
+                          ctx.network.direction = \"external\";\\n  return;\\n}";
+
+/// zeek's DNS stream: one member lifted out of every record of a list into a
+/// list of its own, and dropped from the record it came from.
+/// `KnownPattern::HoistMember` claims it. The cost scales with the list, so
+/// the event below carries several answers rather than one.
+const HOIST_MEMBER: &str = "def answers = ctx.dns.answers; def iplist = new ArrayList(); \
+                            for (def i = 0; i < ctx.dns.answers.length; i++) {\\n  \
+                            if (answers[i].containsKey(\"tmpip\")) {\\n    \
+                            iplist.add(answers[i].tmpip);\\n    \
+                            answers[i].remove(\"tmpip\");\\n  }\\n} \
+                            ctx.dns.resolved_ip = iplist;";
+
 /// Nothing matches this, so every matcher's scan runs before it is counted.
-const UNHANDLED: &str = "def splitUnquoted(String input, String sep) {\\n  def tokens = [];\\n  \
+const UNHANDLED: &str ="def splitUnquoted(String input, String sep) {\\n  def tokens = [];\\n  \
                          def startPosition = 0;\\n  boolean inQuotes = false;\\n  for (int i = 0; \
                          i < input.length(); ++i) {\\n    if (input.charAt(i) == (char)34) {\\n   \
                          inQuotes = !inQuotes;\\n    } else if (!inQuotes && \
@@ -201,6 +231,56 @@ fn bench_guarded_copies(c: &mut Criterion) {
     });
 }
 
+/// The truth table, through the plan the runtime holds.
+fn bench_pair_table(c: &mut Criterion) {
+    let plan = PainlessPlan::new(PAIR_TABLE);
+    assert!(
+        plan.binding().iter().any(|b| b.starts_with("PairTable")),
+        "the pair-table bench no longer measures PairTable: {:?}",
+        plan.binding(),
+    );
+
+    c.bench_function("painless_exec/pair_table_planned", |b| {
+        b.iter_batched_ref(
+            || {
+                Event::new(json!({
+                    "zeek": { "connection": { "local_orig": false, "local_resp": false } },
+                    "network": { "transport": "tcp" },
+                }))
+            },
+            |event| painless_exec_plan(event, black_box(&plan)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
+/// The member hoist, through the plan the runtime holds.
+fn bench_hoist_member(c: &mut Criterion) {
+    let plan = PainlessPlan::new(HOIST_MEMBER);
+    assert!(
+        plan.binding().iter().any(|b| b.starts_with("HoistMember")),
+        "the hoist bench no longer measures HoistMember: {:?}",
+        plan.binding(),
+    );
+
+    c.bench_function("painless_exec/hoist_member_planned", |b| {
+        b.iter_batched_ref(
+            || {
+                Event::new(json!({
+                    "dns": { "answers": [
+                        { "data": "a.example.com", "ttl": 60, "tmpip": "10.0.0.1" },
+                        { "data": "b.example.com", "ttl": 120 },
+                        { "data": "c.example.com", "ttl": 30, "tmpip": "10.0.0.2" },
+                        { "data": "d.example.com", "ttl": 300, "tmpip": "10.0.0.3" },
+                    ] },
+                }))
+            },
+            |event| painless_exec_plan(event, black_box(&plan)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
 criterion_group!(
     benches,
     bench_params_matcher,
@@ -208,6 +288,8 @@ criterion_group!(
     bench_unhandled,
     bench_cached,
     bench_planned,
-    bench_guarded_copies
+    bench_guarded_copies,
+    bench_pair_table,
+    bench_hoist_member
 );
 criterion_main!(benches);
