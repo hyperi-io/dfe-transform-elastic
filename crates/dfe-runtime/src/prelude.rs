@@ -32,7 +32,7 @@ pub use crate::painless_plan::{PainlessPlan, painless_exec_plan, painless_exec_p
 // first time a source using it is regenerated. Held by
 // `every_matcher_runner_reaches_the_prelude` in
 // `crates/dfe-transforms/tests/prelude_exports.rs`.
-pub use crate::painless_coercion::{LongCoercion, long_coercion};
+pub use crate::painless_coercion::{DecodedFields, LongCoercion, decoded_fields, long_coercion};
 pub use crate::painless_common::{
     AllowedValueCopy, BasenameCuts, CoerceBoolean, CombineFields, DedupeMapValues, DropPolicy,
     DurationWindow, EnsureAppend, EnsurePrefix, Factor, FirstPresentKeyName, FloatSecondsToNanos,
@@ -55,6 +55,9 @@ pub use crate::painless_lists::{
     EnsureItem, ItemRename, ListItemRenames, ListWalk, list_item_renames,
 };
 pub use crate::painless_nth_separator::{NthSeparatorPrefix, nth_separator_prefix};
+pub use crate::painless_records::{
+    RecordFromFields, RecordRenames, record_from_fields, record_renames,
+};
 pub use crate::painless_totals::{SumTotals, Total, sum_totals};
 // `lookup_normalise` is NOT here: it now takes the call site's parsed literal
 // tail, which is a runtime detail rather than something a generator resolves.

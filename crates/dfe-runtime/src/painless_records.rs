@@ -232,6 +232,217 @@ pub fn record_from_fields(event: &mut Event, pattern: &RecordFromFields) -> bool
     true
 }
 
+/// The collect beside a rename walk: one member gathered when another names a
+/// listed value.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RenameCollect {
+    /// The OLD key whose value decides.
+    decider: String,
+    values: Vec<String>,
+    /// The OLD key whose value is gathered.
+    member: String,
+    /// Where the gathered list lands, when it came to anything.
+    target: String,
+}
+
+/// Every record of a list renamed onto ECS keys, one member gathered on the way.
+///
+/// The suricata DNS answers that arrive as a LIST take the same three names as
+/// the flat form above, but a record at a time:
+///
+/// ```painless
+/// for (def answer : ctx?.dns?.answers) {
+///     def name = answer.remove("rrname");
+///     if (name != null) { answer["name"] = name; }
+///     ...
+///     if (type == "A" || type == "AAAA") { resolvedIps.add(data); }
+/// }
+/// if (resolvedIps.size() > 0) { ctx.dns.resolved_ip = resolvedIps; }
+/// ```
+///
+/// The rename MOVES the key to the end, because Painless removes it and then
+/// assigns a new one -- so the runner uses `shift_remove` and a plain insert,
+/// which is the same order Elasticsearch's own map keeps.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct RecordRenames {
+    list: String,
+    /// `(old key, new key)`, in the order the script renames them.
+    renames: Vec<(String, String)>,
+    collect: Option<RenameCollect>,
+}
+
+/// Read the rename walk, or decline it.
+///
+/// Every rename has to remove from the loop's own item and write back to it: a
+/// walk that moves a member somewhere else is a different script.
+#[must_use]
+pub fn parse_record_renames(script: &str) -> Option<RecordRenames> {
+    let (head, rest) = script.split_once(" : ctx")?;
+    let item = head.rsplit_once("for (def ")?.1.trim().to_owned();
+    let (list, body) = rest.split_once(')')?;
+    let list = clean_path(list.trim().trim_start_matches(['?', '.']));
+    if list.is_empty() || item.is_empty() {
+        return None;
+    }
+
+    // `def <local> = <item>.remove("<old>");` bound to the key it took.
+    let taken = format!("= {item}.remove(");
+    let mut locals: Vec<(String, String)> = Vec::new();
+    for statement in body.split(';') {
+        let Some((name, argument)) = statement.split_once(&taken) else {
+            continue;
+        };
+        let key = argument.split_once(')')?.0.trim().trim_matches(['"', '\'']);
+        let name = name.trim().rsplit_once("def ")?.1.trim();
+        locals.push((name.to_owned(), key.to_owned()));
+    }
+
+    // `if (<local> != null) { <item>["<new>"] = <local>; }`
+    let mut renames = Vec::new();
+    for block in body.split("if (").skip(1) {
+        let Some((guard, tail)) = block.split_once(')') else {
+            continue;
+        };
+        let Some(local) = guard.trim().strip_suffix("!= null").map(str::trim) else {
+            continue;
+        };
+        let Some(assignment) = tail.split_once('{').and_then(|(_, r)| r.split_once('}')) else {
+            continue;
+        };
+        let Some((target, value)) = assignment.0.trim().split_once('=') else {
+            continue;
+        };
+        let Some(new) = target
+            .trim()
+            .strip_prefix(&format!("{item}["))
+            .and_then(|rest| rest.strip_suffix(']'))
+            .map(|inner| inner.trim().trim_matches(['"', '\'']).to_owned())
+        else {
+            continue;
+        };
+        if value.trim().trim_end_matches(';').trim() != local {
+            return None;
+        }
+        let old = locals
+            .iter()
+            .find(|(name, _)| name == local)
+            .map(|(_, key)| key.clone())?;
+        renames.push((old, new));
+    }
+    if renames.is_empty() {
+        return None;
+    }
+
+    Some(RecordRenames {
+        list,
+        renames,
+        collect: parse_rename_collect(script, body, &locals),
+    })
+}
+
+/// `if (<local> == "<v>" || ...) { <acc>.add(<other>); }` and the write after
+/// the loop.
+fn parse_rename_collect(
+    script: &str,
+    body: &str,
+    locals: &[(String, String)],
+) -> Option<RenameCollect> {
+    let key_of = |name: &str| {
+        locals
+            .iter()
+            .find(|(local, _)| local == name)
+            .map(|(_, key)| key.clone())
+    };
+
+    // The gathering block, found by its `.add(` rather than by position: the
+    // `if` after the loop tests the accumulator's size and would be taken by a
+    // search from the end.
+    let (guard, added) = body
+        .split("if (")
+        .skip(1)
+        .filter_map(|block| block.split_once(')'))
+        .find(|(guard, tail)| guard.contains("==") && tail.contains(".add("))?;
+    let mut decider = None;
+    let mut values = Vec::new();
+    for term in guard.split("||") {
+        let (local, literal) = term.trim().split_once("==")?;
+        let local = local.trim().to_owned();
+        if *decider.get_or_insert(local.clone()) != local {
+            return None;
+        }
+        values.push(literal.trim().trim_matches(['"', '\'']).to_owned());
+    }
+    let decider = key_of(&decider?)?;
+
+    let (accumulator, member) = added.split_once(".add(")?;
+    let accumulator = accumulator.trim().trim_start_matches('{').trim();
+    let member = key_of(member.split_once(')')?.0.trim())?;
+
+    // `if (<acc>.size() > 0) { ctx.<target> = <acc>; }` after the loop.
+    let (_, written) = script.split_once(&format!("{accumulator}.size() > 0"))?;
+    let written = written.split_once('{')?.1.split_once('}')?.0;
+    let (target, value) = written.trim().split_once('=')?;
+    let target = clean_path(target.trim().strip_prefix("ctx.")?);
+    if target.is_empty() || value.trim().trim_end_matches(';').trim() != accumulator {
+        return None;
+    }
+
+    Some(RenameCollect {
+        decider,
+        values,
+        member,
+        target,
+    })
+}
+
+/// Rename every record's members in place, gathering the one the guard names.
+///
+/// A record that is not a map is left as it stands, and a key it does not carry
+/// is not created -- both are what the script's own `!= null` guard says.
+#[must_use]
+pub fn record_renames(event: &mut Event, pattern: &RecordRenames) -> bool {
+    let Some(Value::Array(records)) = event.get(&pattern.list).cloned() else {
+        return true;
+    };
+
+    let mut gathered = Vec::new();
+    let mut renamed = Vec::with_capacity(records.len());
+    for record in records {
+        let Value::Object(mut members) = record else {
+            renamed.push(record);
+            continue;
+        };
+        // The rename MOVES the key to the end, which is what removing and
+        // re-assigning does in Painless.
+        let mut taken: Vec<(String, Value)> = Vec::new();
+        for (old, new) in &pattern.renames {
+            if let Some(value) = members.shift_remove(old.as_str()) {
+                taken.push((old.clone(), value.clone()));
+                members.insert(new.clone(), value);
+            }
+        }
+        if let Some(collect) = &pattern.collect {
+            let held = |key: &str| taken.iter().find(|(k, _)| k == key).map(|(_, v)| v);
+            if held(&collect.decider)
+                .and_then(Value::as_str)
+                .is_some_and(|value| collect.values.iter().any(|want| want == value))
+                && let Some(value) = held(&collect.member)
+            {
+                gathered.push(value.clone());
+            }
+        }
+        renamed.push(Value::Object(members));
+    }
+
+    let _ = event.set(&pattern.list, Value::Array(renamed));
+    if let Some(collect) = &pattern.collect
+        && !gathered.is_empty()
+    {
+        let _ = event.set(&collect.target, Value::Array(gathered));
+    }
+    true
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -301,6 +512,57 @@ mod tests {
             &mut quiet, script
         ));
         assert_eq!(quiet.get("dns.answers"), None);
+    }
+
+    /// Verbatim from `suricata_eve/default.rs`, in the escaped one-line form
+    /// the call site holds.
+    #[test]
+    fn a_list_of_answers_is_renamed_onto_ecs_keys() {
+        let script = r#"def resolvedIps = new ArrayList();\nfor (def answer : ctx?.dns?.answers) {\n    // Normalize field names to match ECS.\n    def name = answer.remove(\"rrname\");\n    if (name != null) {\n        answer[\"name\"] = name;\n    }\n    def type = answer.remove(\"rrtype\");\n    if (type != null) {\n        answer[\"type\"] = type;\n    }\n    def data = answer.remove(\"rdata\");\n    if (data != null) {\n        answer[\"data\"] = data;\n    }\n\n    if (type == \"A\" || type == \"AAAA\") {\n        resolvedIps.add(data);\n    }\n}\n\nif (resolvedIps.size() > 0) {\n    ctx.dns.resolved_ip = resolvedIps;\n}\n"#;
+        let mut event = Event::new(json!({ "dns": { "answers": [
+            { "rrname": "example.com", "rrtype": "A", "rdata": "93.184.216.34", "ttl": 300 },
+            { "rrname": "example.com", "rrtype": "NS", "rdata": "ns.example.com" },
+        ]}}));
+
+        assert!(crate::painless_common::try_known_painless(
+            &mut event, script
+        ));
+        // The rename MOVES each key to the END, which is what removing and
+        // re-assigning does in Painless.
+        assert_eq!(
+            event.get("dns.answers"),
+            Some(&json!([
+                {
+                    "ttl": 300,
+                    "name": "example.com",
+                    "type": "A",
+                    "data": "93.184.216.34",
+                },
+                { "name": "example.com", "type": "NS", "data": "ns.example.com" },
+            ]))
+        );
+        assert_eq!(
+            event.get("dns.resolved_ip"),
+            Some(&json!(["93.184.216.34"]))
+        );
+
+        // No A or AAAA record gathers nothing, and the empty list is not
+        // written -- the script's own `size() > 0` guard.
+        let mut none = Event::new(json!({ "dns": { "answers": [
+            { "rrname": "example.com", "rrtype": "NS", "rdata": "ns.example.com" },
+        ]}}));
+        assert!(crate::painless_common::try_known_painless(
+            &mut none, script
+        ));
+        assert_eq!(none.get("dns.resolved_ip"), None);
+    }
+
+    /// A rename that writes somewhere other than the loop's own item moves a
+    /// member, so it is declined.
+    #[test]
+    fn a_rename_out_of_the_record_is_declined() {
+        let script = r#"for (def a : ctx.x.list) {\n  def n = a.remove(\"old\");\n  if (n != null) {\n    ctx.y.new = n;\n  }\n}\n"#;
+        assert!(parse_record_renames(&crate::painless_common::normalise(script)).is_none());
     }
 
     /// A member that is not the local its guard tested is a different script.

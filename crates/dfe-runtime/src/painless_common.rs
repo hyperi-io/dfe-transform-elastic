@@ -18831,6 +18831,8 @@ pub(crate) enum KnownPattern {
     RecordFromFields(Box<crate::painless_records::RecordFromFields>),
     /// A run of fields decoded in place through `Long.decode`.
     DecodedFields(Box<crate::painless_coercion::DecodedFields>),
+    /// Every record of a list renamed onto ECS keys, one member gathered.
+    RecordRenames(Box<crate::painless_records::RecordRenames>),
     /// An integer divided by a literal and written back, through a local.
     LongDivide(Box<LongDivide>),
     /// A value that may arrive as text or as a number, written back as a
@@ -20854,6 +20856,17 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: every record of a list renamed onto ECS keys, one member
+    // gathered on the way. The `.remove(` on the loop's own item is the
+    // trigger, and the parse demands every rename write back to that item.
+    if normalised.contains("for (def ")
+        && normalised.contains(".remove(")
+        && let Some(pattern) = crate::painless_records::parse_record_renames(normalised)
+    {
+        patterns.push(KnownPattern::RecordRenames(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: a run of fields decoded in place through `Long.decode`. Above
     // `GuardedCopy` for the reason the arm below gives.
     if normalised.contains("Long.decode(")
@@ -21717,6 +21730,9 @@ pub(crate) fn run_known_pattern(
         }
         KnownPattern::DecodedFields(pattern) => {
             crate::painless_coercion::decoded_fields(event, pattern)
+        }
+        KnownPattern::RecordRenames(pattern) => {
+            crate::painless_records::record_renames(event, pattern)
         }
         KnownPattern::LongDivide(pattern) => run_long_divide(event, pattern),
     }
