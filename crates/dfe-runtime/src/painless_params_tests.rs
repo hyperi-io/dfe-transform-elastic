@@ -3878,3 +3878,47 @@ fn the_other_get_or_default_spellings_are_declined() {
         );
     }
 }
+
+/// Verbatim from `digital_guardian_arc/default.rs`, in the escaped one-line
+/// form the call site holds.
+///
+/// The join is parenthesised and folded as a whole, which is what
+/// `parse_concat` alone cannot read. Before this it fell through to the literal
+/// reader, which answered with the separator: every event carried
+/// `event.action = "-"`.
+#[test]
+fn a_parenthesised_join_is_folded_as_a_whole() {
+    let script = r#"if (ctx.event == null) {\n  ctx.event = new HashMap();\n}\nctx.event.action = (ctx.digital_guardian.arc.dg_utype + \"-\" + ctx.digital_guardian.arc.inc_state).toLowerCase();"#;
+    let mut event = Event::new(json!({ "digital_guardian": { "arc": {
+        "dg_utype": "Alert",
+        "inc_state": "New",
+    }}}));
+
+    assert!(crate::painless_common::try_known_painless(&mut event, script));
+    assert_eq!(event.get_str("event.action"), Some("alert-new"));
+}
+
+/// Without the parentheses the case call binds to the LAST TERM, so the whole
+/// expression is a different one and this reader declines it.
+#[test]
+fn an_unparenthesised_join_is_not_folded_as_a_whole() {
+    assert!(parse_folded_concat(r#"ctx.a + "-" + ctx.b.toLowerCase()"#).is_none());
+    // A bracket that closes before the end is a call on something else.
+    assert!(parse_folded_concat(r#"(ctx.a) + "-" + ctx.b.toLowerCase()"#).is_none());
+}
+
+/// The literal reader is the LAST one tried, so whatever no other could read
+/// arrives there whole -- and answering it with a quoted run from inside it is
+/// a wrong value written with no error behind it.
+#[test]
+fn an_expression_is_not_read_as_a_literal_it_merely_contains() {
+    assert_eq!(literal_value(r#""alert""#), Some(json!("alert")));
+    assert_eq!(literal_value("['info', 'warn']"), Some(json!(["info", "warn"])));
+    assert_eq!(literal_value("null"), Some(Value::Null));
+
+    // The separator of a join, the argument of a call, and a list holding a
+    // field read: each used to come back as its first quoted run.
+    assert_eq!(literal_value(r#"ctx.a + "-" + ctx.b"#), None);
+    assert_eq!(literal_value(r#"ctx.a.replace("x", "y")"#), None);
+    assert_eq!(literal_value(r#"['ok', ctx.a]"#), None);
+}

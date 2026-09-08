@@ -7011,7 +7011,15 @@ enum Rhs {
     /// them. `first_epss` builds a CVE lookup URL this way, wiz an issue URL,
     /// `jamf_protect` an English sentence and tychon a CPE name. Overlaps
     /// `KnownPattern::ConcatAssignment` -- see [`parse_concat`].
-    Concat(Vec<ConcatPiece>),
+    ///
+    /// The fold is the case call on the JOIN, which only a parenthesised
+    /// expression can carry -- digital_guardian's
+    /// `(ctx.<a> + "-" + ctx.<b>).toLowerCase()`. Unparenthesised, the call
+    /// binds to the last term alone and is a different expression.
+    Concat {
+        pieces: Vec<ConcatPiece>,
+        fold: Fold,
+    },
     Literal(Value),
 }
 
@@ -8115,7 +8123,16 @@ fn parse_rhs(text: &str) -> Option<Rhs> {
     // nine of its events carried the bare prefix of the URL where the CVE id
     // belonged.
     if let Some(pieces) = parse_concat(text) {
-        return Some(Rhs::Concat(pieces));
+        return Some(Rhs::Concat {
+            pieces,
+            fold: Fold::None,
+        });
+    }
+    // The same join wrapped in parentheses and case-folded as a whole. The
+    // parentheses are what make the fold the JOIN's rather than the last term's,
+    // so a bare `ctx.a + ctx.b.toLowerCase()` is left to the readers below.
+    if let Some((pieces, fold)) = parse_folded_concat(text) {
+        return Some(Rhs::Concat { pieces, fold });
     }
     if let Some(inner) = text
         .strip_prefix("String.valueOf(")
@@ -8258,6 +8275,45 @@ fn parse_concat(text: &str) -> Option<Vec<ConcatPiece>> {
     (rest.is_empty() && fields > 0 && fields < pieces.len()).then_some(pieces)
 }
 
+/// `(<join>).toLowerCase()` -- the join [`parse_concat`] reads, parenthesised
+/// and case-folded as a whole.
+///
+/// The parentheses are the whole point and are required: without them the call
+/// binds to the LAST TERM, so `ctx.a + ctx.b.toUpperCase()` folds only `b` and
+/// is not this pattern. They must also wrap the entire remainder -- a stray
+/// `(ctx.a) + ctx.b` closes early and is declined -- which is what the depth
+/// walk checks.
+///
+/// digital_guardian is the source: `ctx.event.action` is
+/// `(dg_utype + "-" + inc_state).toLowerCase()` on every one of its events.
+fn parse_folded_concat(text: &str) -> Option<(Vec<ConcatPiece>, Fold)> {
+    let text = text.trim();
+    let (head, fold) = if let Some(head) = text.strip_suffix(".toLowerCase()") {
+        (head, Fold::Lower)
+    } else if let Some(head) = text.strip_suffix(".toUpperCase()") {
+        (head, Fold::Upper)
+    } else {
+        return None;
+    };
+
+    let inner = head.trim().strip_prefix('(')?.strip_suffix(')')?;
+    // The opening paren has to be the one the closing paren matches, or this is
+    // a call on something else that happens to end in a bracket.
+    let mut depth = 0usize;
+    for c in inner.chars() {
+        match c {
+            '(' => depth += 1,
+            ')' => depth = depth.checked_sub(1)?,
+            _ => {}
+        }
+    }
+    if depth != 0 {
+        return None;
+    }
+
+    parse_concat(inner).map(|pieces| (pieces, fold))
+}
+
 /// A quoted string literal at the head of `text`, as its body and whatever
 /// follows the closing quote.
 ///
@@ -8372,7 +8428,7 @@ fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
         // processor's own `if` on that field, so an absent one means this is
         // not the event the script was written for -- and a URL with `null`
         // inside it is a worse answer than no URL.
-        Rhs::Concat(pieces) => {
+        Rhs::Concat { pieces, fold } => {
             // The literals' length is known here; the fields are whatever the
             // event holds, so the growth left is theirs alone.
             let literals: usize = pieces
@@ -8396,7 +8452,7 @@ fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
                     },
                 }
             }
-            Some(Value::String(built))
+            Some(Value::String(fold.apply(&built)))
         }
         Rhs::Literal(value) => Some(value.clone()),
     }
@@ -8407,6 +8463,14 @@ fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
 /// `ctx.event.type = ['info']` is as common as the scalar form and was read as
 /// the bare string `info`, so the field came out a string where Elastic writes
 /// a one-element array.
+///
+/// **The WHOLE text has to be that literal.** This is the last reader
+/// [`parse_rhs`] tries, so an expression none of the others could read arrives
+/// here intact -- and a scan for the first quoted run ANYWHERE answers such an
+/// expression with a fragment of itself. digital_guardian writes
+/// `ctx.event.action = (ctx.<a> + "-" + ctx.<b>).toLowerCase()`, and every one
+/// of its events carried the literal `-` as its action, with `PlainAssignments`
+/// reporting the write done.
 fn literal_value(text: &str) -> Option<Value> {
     let text = text.trim();
     // Painless reads a present-but-null field as null, and several pipelines
@@ -8418,13 +8482,21 @@ fn literal_value(text: &str) -> Option<Value> {
         .strip_prefix('[')
         .and_then(|rest| rest.strip_suffix(']'))
     else {
-        return quoted_after(text, "").map(Value::String);
+        let (literal, tail) = quoted_literal(text)?;
+        return tail.trim().is_empty().then_some(Value::String(literal));
     };
-    let members: Vec<Value> = inner
-        .split(',')
-        .filter_map(|member| quoted_after(member, ""))
-        .map(Value::String)
-        .collect();
+    // EVERY member has to be a literal, on the same reading as the scalar arm.
+    // Skipping the ones this cannot read wrote a SHORTER list than the vendor's
+    // -- `['ok', ctx.a]` came out as one element -- which is a wrong value
+    // rather than a missing one.
+    let mut members = Vec::new();
+    for member in inner.split(',') {
+        let (literal, tail) = quoted_literal(member.trim())?;
+        if !tail.trim().is_empty() {
+            return None;
+        }
+        members.push(Value::String(literal));
+    }
     (!members.is_empty()).then_some(Value::Array(members))
 }
 
