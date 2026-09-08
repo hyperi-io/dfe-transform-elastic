@@ -17782,6 +17782,139 @@ fn run_substring_rejoin(event: &mut Event, pattern: &SubstringRejoin) -> bool {
     true
 }
 
+/// How a [`ListFold`] reduces its list to one value.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum FoldStep {
+    /// The last member, as it stands.
+    LastRaw,
+    /// The last member through `Integer.parseInt` or `Long.parseLong`.
+    LastWhole,
+    /// Every member summed through `Float.parseFloat`, in Java `float`.
+    SumFloat,
+}
+
+/// A list reduced to one value inside a `try`, with the target nulled on
+/// failure.
+///
+/// nginx_ingress_controller writes it four times over the lists its access log
+/// carries per upstream:
+///
+/// ```painless
+/// try {
+///   if (ctx.<list>.length == null) { return; }
+///   int last_length = 0;
+///   for (def item : ctx.<list>) { last_length = Integer.parseInt(item); }
+///   ctx.<target> = last_length;
+/// } catch (Exception e) { ctx.<target> = null; }
+/// ```
+///
+/// `upstream.address` is the one that pays twice: the grok after it splits the
+/// last address into `upstream.ip` and `upstream.port`, so those two are
+/// unlocked here rather than by anything of their own.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ListFold {
+    list: String,
+    target: String,
+    step: FoldStep,
+}
+
+/// Read the guarded fold as a [`ListFold`].
+///
+/// The guard, the loop and both writes have to name the same two paths: a
+/// script folding one list into another field's value is a different one and is
+/// declined rather than half-read.
+fn parse_list_fold(script: &str) -> Option<ListFold> {
+    use crate::painless_params::clean_path;
+
+    let (guarded, caught) = script.split_once("catch (Exception")?;
+    let body = guarded.split_once("try {")?.1;
+
+    let (head, rest) = body.split_once(" : ctx.")?;
+    let item = head.rsplit_once("for (def ")?.1.trim().to_owned();
+    let (list, after) = rest.split_once(')')?;
+    let list = clean_path(list.trim());
+    if list.is_empty() || item.is_empty() {
+        return None;
+    }
+    // The guard tests the SAME list, which is what makes the catch reachable
+    // only through it.
+    if !body.contains(&format!("ctx.{list}.length == null")) {
+        return None;
+    }
+
+    let loop_body = after.split_once('{')?.1.split_once('}')?.0;
+    let (accumulator, value) = loop_body.split_once('=')?;
+    let accumulator = accumulator.trim();
+    let value = value.trim().trim_end_matches(';').trim();
+
+    let step = if value == item {
+        FoldStep::LastRaw
+    } else if value == format!("Integer.parseInt({item})")
+        || value == format!("Long.parseLong({item})")
+    {
+        FoldStep::LastWhole
+    } else if value == format!("{accumulator} + Float.parseFloat({item})") {
+        FoldStep::SumFloat
+    } else {
+        return None;
+    };
+
+    let assigned = after.rsplit_once(&format!("= {accumulator}"))?.0;
+    let target = clean_path(assigned.rsplit_once("ctx.")?.1.trim());
+    if target.is_empty() || !caught.contains(&format!("ctx.{target} = null")) {
+        return None;
+    }
+
+    Some(ListFold { list, target, step })
+}
+
+/// Fold the list, or leave the target alone.
+///
+/// An absent list writes NOTHING where the script writes null: Painless throws
+/// on the guard, the catch stores null, and Elasticsearch's own prune takes the
+/// field before it is emitted -- which the capture confirms, since an event with
+/// no upstream carries no `upstream.response` at all. An EMPTY list is the same
+/// answer for the same reason: two of the four accumulators are declared without
+/// a value, so an empty loop leaves them unassigned and Painless throws.
+fn run_list_fold(event: &mut Event, pattern: &ListFold) -> bool {
+    let Some(Value::Array(items)) = event.get(&pattern.list) else {
+        return true;
+    };
+    let Some(last) = items.last() else {
+        return true;
+    };
+
+    let value = match pattern.step {
+        FoldStep::LastRaw => Some(last.clone()),
+        FoldStep::LastWhole => match last {
+            Value::String(text) => text.trim().parse::<i64>().ok(),
+            other => other.as_i64(),
+        }
+        .map(Value::from),
+        // Accumulated in Java's `float`, then rendered from the SHORTEST form
+        // that reads back as the same `float`. Widening to `f64` instead
+        // publishes the binary tail -- 0.001 arrives as 0.001000000047497451
+        // and no longer matches what Elasticsearch prints for the same field.
+        FoldStep::SumFloat => {
+            let mut total = 0f32;
+            for item in items {
+                let Some(part) = (match item {
+                    Value::String(text) => text.trim().parse::<f32>().ok(),
+                    other => other.as_f64().map(|number| number as f32),
+                }) else {
+                    return true;
+                };
+                total += part;
+            }
+            format!("{total}").parse::<f64>().ok().map(Value::from)
+        }
+    };
+    if let Some(value) = value {
+        let _ = event.set(&pattern.target, value);
+    }
+    true
+}
+
 /// An integer field divided by a literal and written back, through a local.
 ///
 /// [`parse_guarded_divide`] reads the divide written inline in the assignment;
@@ -18320,6 +18453,8 @@ pub(crate) enum KnownPattern {
     FirstMatchInList(Box<FirstMatchInList>),
     /// A field re-spaced by its own substrings, behind a whole-string match.
     SubstringRejoin(Box<SubstringRejoin>),
+    /// A list reduced to one value inside a `try`, nulled on failure.
+    ListFold(Box<ListFold>),
     /// An integer divided by a literal and written back, through a local.
     LongDivide(Box<LongDivide>),
     /// A value that may arrive as text or as a number, written back as a
@@ -20452,6 +20587,17 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: a list reduced to one value inside a `try`, with the target
+    // nulled on failure. The `catch` is what tells it from the plain walks
+    // above: it is how the vendor says an unfoldable list writes nothing.
+    if normalised.contains("catch (Exception")
+        && normalised.contains("for (def ")
+        && let Some(pattern) = parse_list_fold(normalised)
+    {
+        patterns.push(KnownPattern::ListFold(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: an integer divided by a literal and written back through a
     // local. Gated on the `instanceof Long` the parse then ties to the divided
     // expression itself, so a script that divides something else under one is
@@ -21142,6 +21288,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::PrependSplit(pattern) => run_prepend_split(event, pattern),
         KnownPattern::FirstMatchInList(pattern) => run_first_match_in_list(event, pattern),
         KnownPattern::SubstringRejoin(pattern) => run_substring_rejoin(event, pattern),
+        KnownPattern::ListFold(pattern) => run_list_fold(event, pattern),
         KnownPattern::LongDivide(pattern) => run_long_divide(event, pattern),
     }
 }

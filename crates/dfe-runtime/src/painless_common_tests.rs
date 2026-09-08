@@ -7575,6 +7575,45 @@ fn a_mac_is_respaced_into_pairs_behind_its_own_pattern() {
     assert_eq!(inside.get_str("client.mac"), Some("x AABB-CCDD-EEFF"));
 }
 
+/// Verbatim from `nginx_ingress_controller_access/default.rs`, which writes the
+/// family four times over the lists its access log carries per upstream.
+///
+/// Elasticsearch emits `response.length: 59`, `status_code: 200` and
+/// `time: 0.001` for these, so the `try` succeeds and the catch is the vendor's
+/// way of saying an unfoldable list writes nothing.
+#[test]
+fn a_list_folds_to_its_last_member_or_its_sum() {
+    let last = r#"try {\n  if (ctx.a.length_list.length == null) {\n    return;\n  }\n  int last_length = 0;\n  for (def item : ctx.a.length_list) {\n    last_length =  Integer.parseInt(item);\n  }\n  ctx.a.length = last_length;\n} catch (Exception e) {\n  ctx.a.length = null;\n}"#;
+    let mut event = Event::new(json!({ "a": { "length_list": ["12", "59"] } }));
+    assert!(try_known_painless(&mut event, last));
+    assert_eq!(event.get("a.length"), Some(&json!(59)));
+
+    // Summed in Java `float`, and rendered from the shortest form that reads
+    // back as the same float -- 0.001 widened to `f64` would publish its tail.
+    let summed = r#"try {\n  if (ctx.a.time_list.length == null) {\n    return;\n  }\n  float res_time = 0;\n  for (def item : ctx.a.time_list) {\n    res_time = res_time + Float.parseFloat(item);\n  }\n  ctx.a.time = res_time;\n} catch (Exception e) {\n  ctx.a.time = null;\n}"#;
+    let mut timed = Event::new(json!({ "a": { "time_list": ["0.001"] } }));
+    assert!(try_known_painless(&mut timed, summed));
+    assert_eq!(timed.get("a.time"), Some(&json!(0.001)));
+
+    // An absent list writes nothing: Painless throws on the guard, the catch
+    // stores null, and Elasticsearch's own prune takes the field.
+    let mut quiet = Event::new(json!({ "a": {} }));
+    assert!(try_known_painless(&mut quiet, last));
+    assert_eq!(quiet.get("a.length"), None);
+}
+
+/// The guard, the loop and both writes have to name the same two paths.
+#[test]
+fn a_fold_declines_a_list_it_does_not_guard() {
+    // The guard tests one list and the loop walks another.
+    let crossed = r#"try {\n  if (ctx.a.other.length == null) {\n    return;\n  }\n  def last = \"\";\n  for (def item : ctx.a.list) {\n    last = item;\n  }\n  ctx.a.value = last;\n} catch (Exception e) {\n  ctx.a.value = null;\n}"#;
+    assert!(parse_list_fold(&normalise(crossed)).is_none());
+
+    // The catch nulls a different field from the one the loop feeds.
+    let elsewhere = r#"try {\n  if (ctx.a.list.length == null) {\n    return;\n  }\n  def last = \"\";\n  for (def item : ctx.a.list) {\n    last = item;\n  }\n  ctx.a.value = last;\n} catch (Exception e) {\n  ctx.a.other = null;\n}"#;
+    assert!(parse_list_fold(&normalise(elsewhere)).is_none());
+}
+
 /// Every slice has to come off the local the matcher tested, and the write has
 /// to go back to the field that local was read from.
 #[test]
