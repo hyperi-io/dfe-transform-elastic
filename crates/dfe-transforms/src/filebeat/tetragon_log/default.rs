@@ -33,15 +33,40 @@ impl Transform for Default {
 
             parse_json_field(event, "event.original", "_tmp_")?;
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: void run(Map map) {\n  for (def k : map?.cilium_tetragon?.log?.keySet()) {\n    /* these tetragon objects have \"process\" */\n    if (k == \"process_exec\" ||\n        k == \"process_exit\" ||\n        k == \"process_kprobe\" ||\n        k == \"process_tracepoint\" ||\n        k == \"process_loader\" ||\n        k == \"process_lsm\" ||\n        k == \"process_uprobe\") {\n      if (map?._tmp_ == null) {\n        map[\"_tmp_\"] = new HashMap();\n      }\n      map[\"_tmp_\"][\"process\"] = map.cilium_tetragon.log[k].process;\n    }\n\n    /* these tetragon objects have \"parent\" */\n    if (k == \"process_exec\" ||\n        k == \"process_exit\" ||\n        k == \"process_kprobe\" ||\n        k == \"process_tracepoint\" ||\n        k == \"process_lsm\" ||\n        k == \"process_uprobe\") {\n      if (map?._tmp_ == null) {\n        map[\"_tmp_\"] = new HashMap();\n      }\n      map[\"_tmp_\"][\"parent\"] = map.cilium_tetragon.log[k].parent;\n    }\n  }\n}\n\nrun(ctx);\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            member_from_variant_key(
                 event,
-                cached_painless!(
-                    r#"void run(Map map) {\n  for (def k : map?.cilium_tetragon?.log?.keySet()) {\n    /* these tetragon objects have \"process\" */\n    if (k == \"process_exec\" ||\n        k == \"process_exit\" ||\n        k == \"process_kprobe\" ||\n        k == \"process_tracepoint\" ||\n        k == \"process_loader\" ||\n        k == \"process_lsm\" ||\n        k == \"process_uprobe\") {\n      if (map?._tmp_ == null) {\n        map[\"_tmp_\"] = new HashMap();\n      }\n      map[\"_tmp_\"][\"process\"] = map.cilium_tetragon.log[k].process;\n    }\n\n    /* these tetragon objects have \"parent\" */\n    if (k == \"process_exec\" ||\n        k == \"process_exit\" ||\n        k == \"process_kprobe\" ||\n        k == \"process_tracepoint\" ||\n        k == \"process_lsm\" ||\n        k == \"process_uprobe\") {\n      if (map?._tmp_ == null) {\n        map[\"_tmp_\"] = new HashMap();\n      }\n      map[\"_tmp_\"][\"parent\"] = map.cilium_tetragon.log[k].parent;\n    }\n  }\n}\n\nrun(ctx);\n"#
+                &MemberFromVariantKey::new(
+                    "cilium_tetragon.log".into(),
+                    "_tmp_".into(),
+                    vec![
+                        (
+                            "process".into(),
+                            vec![
+                                "process_exec".into(),
+                                "process_exit".into(),
+                                "process_kprobe".into(),
+                                "process_tracepoint".into(),
+                                "process_loader".into(),
+                                "process_lsm".into(),
+                                "process_uprobe".into(),
+                            ],
+                        ),
+                        (
+                            "parent".into(),
+                            vec![
+                                "process_exec".into(),
+                                "process_exit".into(),
+                                "process_kprobe".into(),
+                                "process_tracepoint".into(),
+                                "process_lsm".into(),
+                                "process_uprobe".into(),
+                            ],
+                        ),
+                    ],
                 ),
-            )?;
+            );
 
             if event.has_value("_tmp_.process.arguments") {
                 event.rename("_tmp_.process.arguments", "process.args")?;

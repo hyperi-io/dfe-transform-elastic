@@ -38,15 +38,18 @@ impl Transform for Default {
                 )
             };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.kafka.controller.kafka_controller.last_applied_record_timestamp_epoch =\n  (long)(ctx.kafka.controller.kafka_controller.last_applied_record_timestamp_epoch);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scalar_expression(
                     event,
-                    cached_painless!(
-                        r#"ctx.kafka.controller.kafka_controller.last_applied_record_timestamp_epoch =\n  (long)(ctx.kafka.controller.kafka_controller.last_applied_record_timestamp_epoch);\n"#
+                    &ScalarExpression::new(
+                        "kafka.controller.kafka_controller.last_applied_record_timestamp_epoch",
+                        Expr::ToLong(Box::new(Expr::Field(
+                            "kafka.controller.kafka_controller.last_applied_record_timestamp_epoch"
+                                .into(),
+                        ))),
                     ),
-                )?;
+                );
             }
 
             let _cond = {

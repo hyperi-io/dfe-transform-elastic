@@ -259,15 +259,47 @@ impl Transform for Default {
 
             let _cond = { event.has_value("admin_by_request_epm.auditlog.response_time") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.admin_by_request_epm.auditlog.response_time_in_seconds = (Integer.parseInt(ctx.hours) * 3600) + \n                      (Integer.parseInt(ctx.minutes) * 60) + \n                      Integer.parseInt(ctx.seconds) + \n                      (Integer.parseInt(ctx.nanoseconds) / 10000000.0);\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scalar_expression(
                     event,
-                    cached_painless!(
-                        r#"ctx.admin_by_request_epm.auditlog.response_time_in_seconds = (Integer.parseInt(ctx.hours) * 3600) + \n                      (Integer.parseInt(ctx.minutes) * 60) + \n                      Integer.parseInt(ctx.seconds) + \n                      (Integer.parseInt(ctx.nanoseconds) / 10000000.0);\n"#
+                    &ScalarExpression::new(
+                        "admin_by_request_epm.auditlog.response_time_in_seconds",
+                        Expr::Binary(
+                            Box::new(Expr::Binary(
+                                Box::new(Expr::Binary(
+                                    Box::new(Expr::Binary(
+                                        Box::new(Expr::ParseNumber(Box::new(Expr::Field(
+                                            "hours".into(),
+                                        )))),
+                                        Op::Mul,
+                                        Box::new(Expr::Int(3600)),
+                                    )),
+                                    Op::Add,
+                                    Box::new(Expr::Binary(
+                                        Box::new(Expr::ParseNumber(Box::new(Expr::Field(
+                                            "minutes".into(),
+                                        )))),
+                                        Op::Mul,
+                                        Box::new(Expr::Int(60)),
+                                    )),
+                                )),
+                                Op::Add,
+                                Box::new(Expr::ParseNumber(Box::new(Expr::Field(
+                                    "seconds".into(),
+                                )))),
+                            )),
+                            Op::Add,
+                            Box::new(Expr::Binary(
+                                Box::new(Expr::ParseNumber(Box::new(Expr::Field(
+                                    "nanoseconds".into(),
+                                )))),
+                                Op::Div,
+                                Box::new(Expr::Float(FloatLit::new(10000000.0))),
+                            )),
+                        ),
                     ),
-                )?;
+                );
             }
 
             event.remove("admin_by_request_epm.auditlog.request_time");

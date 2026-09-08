@@ -2958,7 +2958,12 @@ impl Transform for Default {
                 )?;
             }
 
-            let _cond = { event.has_value("json.simpleValues.imageFile.companyName") };
+            let _cond = {
+                event
+                    .get("json.simpleValues")
+                    .and_then(|v| v.get("imageFile.companyName"))
+                    .is_some_and(|v| !v.is_null())
+            };
             if _cond {
                 // Painless script, resolved to its runners at generation time
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.companyName\"); ctx.cybereason.suspicions_process.simple_values.image_file_company_name = obj;
@@ -3019,7 +3024,12 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has_value("json.simpleValues.imageFile.fileHash.iconBase64") };
+            let _cond = {
+                event
+                    .get("json.simpleValues")
+                    .and_then(|v| v.get("imageFile.fileHash.iconBase64"))
+                    .is_some_and(|v| !v.is_null())
+            };
             if _cond {
                 // Painless script, resolved to its runners at generation time
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.fileHash.iconBase64\"); ctx.cybereason.suspicions_process.simple_values.image_file_hash_icon_base64 = obj;
@@ -3080,8 +3090,12 @@ impl Transform for Default {
                 }
             }
 
-            let _cond =
-                { event.has_value("json.simpleValues.imageFile.maliciousClassificationType") };
+            let _cond = {
+                event
+                    .get("json.simpleValues")
+                    .and_then(|v| v.get("imageFile.maliciousClassificationType"))
+                    .is_some_and(|v| !v.is_null())
+            };
             if _cond {
                 // Painless script, resolved to its runners at generation time
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.maliciousClassificationType\"); ctx.cybereason.suspicions_process.simple_values.image_file_malicious_classification_type = obj;
@@ -3131,7 +3145,12 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has_value("json.simpleValues.imageFile.md5String") };
+            let _cond = {
+                event
+                    .get("json.simpleValues")
+                    .and_then(|v| v.get("imageFile.md5String"))
+                    .is_some_and(|v| !v.is_null())
+            };
             if _cond {
                 // Painless script, resolved to its runners at generation time
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.md5String\"); ctx.cybereason.suspicions_process.simple_values.image_file_md5_string = obj;
@@ -3228,7 +3247,12 @@ impl Transform for Default {
                 })();
             }
 
-            let _cond = { event.has_value("json.simpleValues.imageFile.productName") };
+            let _cond = {
+                event
+                    .get("json.simpleValues")
+                    .and_then(|v| v.get("imageFile.productName"))
+                    .is_some_and(|v| !v.is_null())
+            };
             if _cond {
                 // Painless script, resolved to its runners at generation time
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.productName\"); ctx.cybereason.suspicions_process.simple_values.image_file_product_name = obj;
@@ -3289,7 +3313,12 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has_value("json.simpleValues.imageFile.sha1String") };
+            let _cond = {
+                event
+                    .get("json.simpleValues")
+                    .and_then(|v| v.get("imageFile.sha1String"))
+                    .is_some_and(|v| !v.is_null())
+            };
             if _cond {
                 // Painless script, resolved to its runners at generation time
                 // Source: def obj = ctx.json.simpleValues.remove(\"imageFile.sha1String\"); ctx.cybereason.suspicions_process.simple_values.image_file_sha1_string = obj;

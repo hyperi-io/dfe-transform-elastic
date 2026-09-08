@@ -27,7 +27,10 @@ impl Transform for Default {
                     }))
                     || (event.get("attributes").is_some_and(|v| v.is_object())
                         && event.has("attributes.elastic.preserve_original_event")
-                        && event.get_str("attributes.elastic.preserve_original_event")
+                        && event
+                            .get("attributes")
+                            .and_then(|v| v.get("elastic.preserve_original_event"))
+                            .and_then(|v| v.as_str())
                             == Some("true"))
             };
             if _cond {

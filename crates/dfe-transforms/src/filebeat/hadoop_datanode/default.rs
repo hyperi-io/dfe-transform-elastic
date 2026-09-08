@@ -42,8 +42,13 @@ impl Transform for Default {
                 ),
             )?;
 
-            let _cond =
-                { event.get_str("hadoop.datanode.temp.tag.Context") == Some("FSDatasetState") };
+            let _cond = {
+                event
+                    .get("hadoop.datanode.temp")
+                    .and_then(|v| v.get("tag.Context"))
+                    .and_then(|v| v.as_str())
+                    == Some("FSDatasetState")
+            };
             if _cond {
                 // Begin nested pipeline: "pipeline-dataset"
                 // ignore_failure: true
@@ -165,7 +170,13 @@ impl Transform for Default {
                 // End nested pipeline: "pipeline-dataset"
             }
 
-            let _cond = { event.get_str("hadoop.datanode.temp.tag.Context") == Some("dfs") };
+            let _cond = {
+                event
+                    .get("hadoop.datanode.temp")
+                    .and_then(|v| v.get("tag.Context"))
+                    .and_then(|v| v.as_str())
+                    == Some("dfs")
+            };
             if _cond {
                 // Begin nested pipeline: "pipeline-dfs"
                 // ignore_failure: true

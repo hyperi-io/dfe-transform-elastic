@@ -36,15 +36,19 @@ impl Transform for Default {
                 });
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: ctx.goflow2.time_flow_start_ns = (ctx.goflow2?.time_flow_start_ns / 1000000);
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            scalar_expression(
                 event,
-                cached_painless!(
-                    r#"ctx.goflow2.time_flow_start_ns = (ctx.goflow2?.time_flow_start_ns / 1000000);"#
+                &ScalarExpression::new(
+                    "goflow2.time_flow_start_ns",
+                    Expr::Binary(
+                        Box::new(Expr::Field("goflow2.time_flow_start_ns".into())),
+                        Op::Div,
+                        Box::new(Expr::Int(1000000)),
+                    ),
                 ),
-            )?;
+            );
 
             let _cond = {
                 event.has_value("goflow2.bytes")
@@ -53,15 +57,19 @@ impl Transform for Default {
                     && event.get_str("goflow2.sampling_rate") != Some("")
             };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.goflow2.flow_size = ctx.goflow2?.bytes * ctx.goflow2?.sampling_rate;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scalar_expression(
                     event,
-                    cached_painless!(
-                        r#"ctx.goflow2.flow_size = ctx.goflow2?.bytes * ctx.goflow2?.sampling_rate;"#
+                    &ScalarExpression::new(
+                        "goflow2.flow_size",
+                        Expr::Binary(
+                            Box::new(Expr::Field("goflow2.bytes".into())),
+                            Op::Mul,
+                            Box::new(Expr::Field("goflow2.sampling_rate".into())),
+                        ),
                     ),
-                )?;
+                );
             }
 
             if let Some(date_str) = event.get_as_string("goflow2.time_flow_start_ns") {

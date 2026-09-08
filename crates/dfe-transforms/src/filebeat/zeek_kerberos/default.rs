@@ -303,15 +303,23 @@ impl Transform for Default {
                     && event.has_value("zeek.kerberos.valid.until")
             };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.zeek.kerberos.valid.days = Math.round( (ctx.zeek.kerberos.valid.until - ctx.zeek.kerberos.valid.from) / 86400 )
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scalar_expression(
                     event,
-                    cached_painless!(
-                        r#"ctx.zeek.kerberos.valid.days = Math.round( (ctx.zeek.kerberos.valid.until - ctx.zeek.kerberos.valid.from) / 86400 )"#
+                    &ScalarExpression::new(
+                        "zeek.kerberos.valid.days",
+                        Expr::Round(Box::new(Expr::Binary(
+                            Box::new(Expr::Binary(
+                                Box::new(Expr::Field("zeek.kerberos.valid.until".into())),
+                                Op::Sub,
+                                Box::new(Expr::Field("zeek.kerberos.valid.from".into())),
+                            )),
+                            Op::Div,
+                            Box::new(Expr::Int(86400)),
+                        ))),
                     ),
-                )?;
+                );
             }
 
             let _cond = { event.has_value("zeek.kerberos.valid.until") };

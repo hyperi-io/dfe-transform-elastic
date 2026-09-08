@@ -74,15 +74,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("sophos.xg") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: def lowercaseMap = [:];\nfor(def entry : ctx.sophos.xg.entrySet()){\n  lowercaseMap.put(entry.getKey().toLowerCase(), entry.getValue());\n}\nctx.sophos.xg = lowercaseMap;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                rewrite_keys(
                     event,
-                    cached_painless!(
-                        r#"def lowercaseMap = [:];\nfor(def entry : ctx.sophos.xg.entrySet()){\n  lowercaseMap.put(entry.getKey().toLowerCase(), entry.getValue());\n}\nctx.sophos.xg = lowercaseMap;\n"#
+                    &RewriteKeys::new(
+                        "sophos.xg".into(),
+                        "sophos.xg".into(),
+                        vec![KeyRewriteStep::Lowercase],
                     ),
-                )?;
+                );
             }
 
             let _cond = { event.has_value("sophos.xg.timestamp") };
@@ -388,15 +389,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("sophos.xg.duration") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.event.duration = Integer.parseInt(ctx.sophos.xg.duration) * 1000000000L; ctx.event.start = ctx['@timestamp']; ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ctx.event.end = start.plus(ctx.event.duration, ChronoUnit.NANOS);
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                duration_window(
                     event,
-                    cached_painless!(
-                        r#"ctx.event.duration = Integer.parseInt(ctx.sophos.xg.duration) * 1000000000L; ctx.event.start = ctx['@timestamp']; ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ctx.event.end = start.plus(ctx.event.duration, ChronoUnit.NANOS);"#
+                    &DurationWindow::new(
+                        "sophos.xg.duration".into(),
+                        1000000000,
+                        "@timestamp".into(),
                     ),
-                )?;
+                );
             }
 
             // Painless script

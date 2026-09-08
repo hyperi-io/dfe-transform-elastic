@@ -1120,28 +1120,28 @@ impl Transform for PipelineBigipsystem {
             }
         }
 
-        let _cond = { event.has_value("json.system.tmmTraffic") && event.has_value("json.system.tmmTraffic.clientSideTraffic.bitsIn") };
+        let _cond = { event.has_value("json.system.tmmTraffic") && event.get("json.system.tmmTraffic").and_then(|v| v.get("clientSideTraffic.bitsIn")).is_some_and(|v| !v.is_null()) };
         if _cond {
             // Painless script, resolved to its runners at generation time
             // Source: def client_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('clientSideTraffic.bitsIn'); client_side_traffic.put('bits_in', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('client_side_traffic', client_side_traffic);\n} else{\n  ctx.f5_bigip.log.tmm_traffic.client_side_traffic.put('bits_in', obj);\n}
             move_map_entry(event, &MoveMapEntry::new("json.system.tmmTraffic".into(), "clientSideTraffic.bitsIn".into(), "f5_bigip.log.tmm_traffic.client_side_traffic.bits_in".into()));
         }
 
-        let _cond = { event.has_value("json.system.tmmTraffic") && event.has_value("json.system.tmmTraffic.clientSideTraffic.bitsOut") };
+        let _cond = { event.has_value("json.system.tmmTraffic") && event.get("json.system.tmmTraffic").and_then(|v| v.get("clientSideTraffic.bitsOut")).is_some_and(|v| !v.is_null()) };
         if _cond {
             // Painless script, resolved to its runners at generation time
             // Source: def client_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('clientSideTraffic.bitsOut'); client_side_traffic.put('bits_out', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('client_side_traffic', client_side_traffic);\n} else{\n  ctx.f5_bigip.log.tmm_traffic.client_side_traffic.put('bits_out', obj);\n}
             move_map_entry(event, &MoveMapEntry::new("json.system.tmmTraffic".into(), "clientSideTraffic.bitsOut".into(), "f5_bigip.log.tmm_traffic.client_side_traffic.bits_out".into()));
         }
 
-        let _cond = { event.has_value("json.system.tmmTraffic") && event.has_value("json.system.tmmTraffic.serverSideTraffic.bitsIn") };
+        let _cond = { event.has_value("json.system.tmmTraffic") && event.get("json.system.tmmTraffic").and_then(|v| v.get("serverSideTraffic.bitsIn")).is_some_and(|v| !v.is_null()) };
         if _cond {
             // Painless script, resolved to its runners at generation time
             // Source: def server_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('serverSideTraffic.bitsIn'); server_side_traffic.put('bits_in', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('server_side_traffic', server_side_traffic);\n} else{\n    if (ctx.f5_bigip?.log?.tmm_traffic?.server_side_traffic == null) {\n        ctx.f5_bigip.log.tmm_traffic.server_side_traffic = new HashMap();\n    }\n    ctx.f5_bigip.log.tmm_traffic.server_side_traffic.put('bits_in', obj);\n}
             move_map_entry(event, &MoveMapEntry::new("json.system.tmmTraffic".into(), "serverSideTraffic.bitsIn".into(), "f5_bigip.log.tmm_traffic.server_side_traffic.bits_in".into()));
         }
 
-        let _cond = { event.has_value("json.system.tmmTraffic") && event.has_value("json.system.tmmTraffic.serverSideTraffic.bitsOut") };
+        let _cond = { event.has_value("json.system.tmmTraffic") && event.get("json.system.tmmTraffic").and_then(|v| v.get("serverSideTraffic.bitsOut")).is_some_and(|v| !v.is_null()) };
         if _cond {
             // Painless script, resolved to its runners at generation time
             // Source: def server_side_traffic = new HashMap(); def obj = ctx.json.system.tmmTraffic.remove('serverSideTraffic.bitsOut'); server_side_traffic.put('bits_out', obj); if (ctx.f5_bigip?.log?.tmm_traffic == null) {\n  ctx.f5_bigip.log.tmm_traffic = new HashMap();\n  ctx.f5_bigip.log.tmm_traffic.put('server_side_traffic', server_side_traffic);\n} else{\n    if (ctx.f5_bigip?.log?.tmm_traffic?.server_side_traffic == null) {\n        ctx.f5_bigip.log.tmm_traffic.server_side_traffic = new HashMap();\n    }\n    ctx.f5_bigip.log.tmm_traffic.server_side_traffic.put('bits_out', obj);\n}

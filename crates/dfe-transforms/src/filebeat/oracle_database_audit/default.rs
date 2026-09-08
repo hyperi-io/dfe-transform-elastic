@@ -182,15 +182,16 @@ impl Transform for Default {
                 event.rename("db_user", "oracle.database_audit.database_user")?;
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: ctx.oracle.database_audit = ctx.oracle.database_audit.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().toLowerCase(), Map.Entry::getValue));
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            rewrite_keys(
                 event,
-                cached_painless!(
-                    r#"ctx.oracle.database_audit = ctx.oracle.database_audit.entrySet().stream().collect(Collectors.toMap(entry -> entry.getKey().toLowerCase(), Map.Entry::getValue));"#
+                &RewriteKeys::new(
+                    "oracle.database_audit".into(),
+                    "oracle.database_audit".into(),
+                    vec![KeyRewriteStep::Lowercase],
                 ),
-            )?;
+            );
 
             // Painless script, resolved to its runners at generation time
             // Source: ctx.oracle.database_audit = ctx?.oracle?.database_audit.entrySet().stream().collect(Collectors.toMap(e -> e.getKey().replace(' ', '_'), e -> e.getValue()));

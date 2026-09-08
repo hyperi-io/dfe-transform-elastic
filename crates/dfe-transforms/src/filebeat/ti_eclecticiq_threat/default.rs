@@ -111,47 +111,90 @@ impl Transform for Default {
             }
 
             let _cond = {
-                event.has_value("json.source.names")
-                    && event.get_str("json.source.names") != Some("")
+                event
+                    .get("json")
+                    .and_then(|v| v.get("source.names"))
+                    .is_some_and(|v| !v.is_null())
+                    && event
+                        .get("json")
+                        .and_then(|v| v.get("source.names"))
+                        .and_then(|v| v.as_str())
+                        != Some("")
             };
             if _cond {
                 dot_expand(event, "json", "source.names")?;
             }
 
             let _cond = {
-                event.has_value("json.meta.tags") && event.get_str("json.meta.tags") != Some("")
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.tags"))
+                    .is_some_and(|v| !v.is_null())
+                    && event
+                        .get("json")
+                        .and_then(|v| v.get("meta.tags"))
+                        .and_then(|v| v.as_str())
+                        != Some("")
             };
             if _cond {
                 dot_expand(event, "json", "meta.tags")?;
             }
 
             let _cond = {
-                event.has_value("json.meta.estimated_observed_time")
-                    && event.get_str("json.meta.estimated_observed_time") != Some("")
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.estimated_observed_time"))
+                    .is_some_and(|v| !v.is_null())
+                    && event
+                        .get("json")
+                        .and_then(|v| v.get("meta.estimated_observed_time"))
+                        .and_then(|v| v.as_str())
+                        != Some("")
             };
             if _cond {
                 dot_expand(event, "json", "meta.estimated_observed_time")?;
             }
 
             let _cond = {
-                event.has_value("json.meta.estimated_threat_start_time")
-                    && event.get_str("json.meta.estimated_threat_start_time") != Some("")
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.estimated_threat_start_time"))
+                    .is_some_and(|v| !v.is_null())
+                    && event
+                        .get("json")
+                        .and_then(|v| v.get("meta.estimated_threat_start_time"))
+                        .and_then(|v| v.as_str())
+                        != Some("")
             };
             if _cond {
                 dot_expand(event, "json", "meta.estimated_threat_start_time")?;
             }
 
             let _cond = {
-                event.has_value("json.meta.estimated_threat_end_time")
-                    && event.get_str("json.meta.estimated_threat_end_time") != Some("")
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.estimated_threat_end_time"))
+                    .is_some_and(|v| !v.is_null())
+                    && event
+                        .get("json")
+                        .and_then(|v| v.get("meta.estimated_threat_end_time"))
+                        .and_then(|v| v.as_str())
+                        != Some("")
             };
             if _cond {
                 dot_expand(event, "json", "meta.estimated_threat_end_time")?;
             }
 
             let _cond = {
-                event.has_value("json.meta.ingest_time")
-                    && event.get_str("json.meta.ingest_time") != Some("")
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.ingest_time"))
+                    .is_some_and(|v| !v.is_null())
+                    && event
+                        .get("json")
+                        .and_then(|v| v.get("meta.ingest_time"))
+                        .and_then(|v| v.as_str())
+                        != Some("")
             };
             if _cond {
                 dot_expand(event, "json", "meta.ingest_time")?;
@@ -338,72 +381,156 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.get_str("json.meta.classification") == Some("unknown") };
+            let _cond = {
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.classification"))
+                    .and_then(|v| v.as_str())
+                    == Some("unknown")
+            };
             if _cond {
                 event.set("threat.indicator.confidence", json!("Not Specified"))?;
             }
 
-            let _cond = { event.get_str("json.meta.classification") == Some("good") };
+            let _cond = {
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.classification"))
+                    .and_then(|v| v.as_str())
+                    == Some("good")
+            };
             if _cond {
                 event.set("threat.indicator.confidence", json!("None"))?;
             }
 
-            let _cond = { event.get_str("json.meta.classification") == Some("good") };
+            let _cond = {
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.classification"))
+                    .and_then(|v| v.as_str())
+                    == Some("good")
+            };
             if _cond {
                 event.set("event.severity", json!(1))?;
             }
 
-            let _cond = { event.get_str("json.meta.confidence") == Some("low") };
+            let _cond = {
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.confidence"))
+                    .and_then(|v| v.as_str())
+                    == Some("low")
+            };
             if _cond {
                 event.set("threat.indicator.confidence", json!("Low"))?;
             }
 
-            let _cond = { event.get_str("json.meta.confidence") == Some("low") };
+            let _cond = {
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.confidence"))
+                    .and_then(|v| v.as_str())
+                    == Some("low")
+            };
             if _cond {
                 event.set("event.severity", json!(2))?;
             }
 
-            let _cond = { event.get_str("json.meta.confidence") == Some("medium") };
+            let _cond = {
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.confidence"))
+                    .and_then(|v| v.as_str())
+                    == Some("medium")
+            };
             if _cond {
                 event.set("threat.indicator.confidence", json!("Medium"))?;
             }
 
-            let _cond = { event.get_str("json.meta.confidence") == Some("medium") };
+            let _cond = {
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.confidence"))
+                    .and_then(|v| v.as_str())
+                    == Some("medium")
+            };
             if _cond {
                 event.set("event.severity", json!(3))?;
             }
 
-            let _cond = { event.get_str("json.meta.confidence") == Some("high") };
+            let _cond = {
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.confidence"))
+                    .and_then(|v| v.as_str())
+                    == Some("high")
+            };
             if _cond {
                 event.set("threat.indicator.confidence", json!("High"))?;
             }
 
-            let _cond = { event.get_str("json.meta.confidence") == Some("high") };
+            let _cond = {
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.confidence"))
+                    .and_then(|v| v.as_str())
+                    == Some("high")
+            };
             if _cond {
                 event.set("event.severity", json!(4))?;
             }
 
-            let _cond = { event.get_str("json.meta.tlp") == Some("WHITE") };
+            let _cond = {
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.tlp"))
+                    .and_then(|v| v.as_str())
+                    == Some("WHITE")
+            };
             if _cond {
                 event.set("threat.indicator.marking.tlp", json!("WHITE"))?;
             }
 
-            let _cond = { event.get_str("json.meta.tlp") == Some("NONE") };
+            let _cond = {
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.tlp"))
+                    .and_then(|v| v.as_str())
+                    == Some("NONE")
+            };
             if _cond {
                 event.set("threat.indicator.marking.tlp", json!("CLEAR"))?;
             }
 
-            let _cond = { event.get_str("json.meta.tlp") == Some("GREEN") };
+            let _cond = {
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.tlp"))
+                    .and_then(|v| v.as_str())
+                    == Some("GREEN")
+            };
             if _cond {
                 event.set("threat.indicator.marking.tlp", json!("GREEN"))?;
             }
 
-            let _cond = { event.get_str("json.meta.tlp") == Some("AMBER") };
+            let _cond = {
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.tlp"))
+                    .and_then(|v| v.as_str())
+                    == Some("AMBER")
+            };
             if _cond {
                 event.set("threat.indicator.marking.tlp", json!("AMBER"))?;
             }
 
-            let _cond = { event.get_str("json.meta.tlp") == Some("RED") };
+            let _cond = {
+                event
+                    .get("json")
+                    .and_then(|v| v.get("meta.tlp"))
+                    .and_then(|v| v.as_str())
+                    == Some("RED")
+            };
             if _cond {
                 event.set("threat.indicator.marking.tlp", json!("RED"))?;
             }

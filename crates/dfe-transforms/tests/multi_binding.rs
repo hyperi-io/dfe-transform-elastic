@@ -34,11 +34,17 @@ use dfe_runtime::painless_plan::PainlessPlan;
 /// a script carrying no `params` block. The number is the SEARCH SPACE for
 /// shadowing, cut from 2,456 call sites to this.
 ///
-/// A FLOOR, not a ratchet: it moves when the ladder gains or loses an arm, not
-/// on ordinary parity work. A RISE means a script that used to resolve to one
-/// matcher now resolves to two -- check whether the first returns `true`
+/// A FLOOR, not a ratchet: it moves when the ladder gains or loses an arm, or
+/// when a regeneration changes which scripts still reach the ladder at all --
+/// not on ordinary parity work. A RISE means a script that used to resolve to
+/// one matcher now resolves to two: check whether the first returns `true`
 /// without doing the whole job, which is how gdacs lost `BranchCopies`.
-const MULTI_BINDING: usize = 63;
+///
+/// 63 to 59 with the flat-subscript regeneration, which resolved twelve more
+/// scripts to their runners at generation time and so took them out of this
+/// search space entirely. Distinct ladder scripts 1,200 to 1,188 on the same
+/// run.
+const MULTI_BINDING: usize = 59;
 
 /// The `cached_painless!` literals a generated file holds, in full.
 ///

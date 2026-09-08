@@ -1326,7 +1326,12 @@ impl Transform for Default {
                 }
             }
 
-            let _cond = { event.has_value("json.elementValues.ownerProcess.user") };
+            let _cond = {
+                event
+                    .get("json.elementValues")
+                    .and_then(|v| v.get("ownerProcess.user"))
+                    .is_some_and(|v| !v.is_null())
+            };
             if _cond {
                 // Painless script
                 // Source: def obj = ctx.json.elementValues.remove(\"ownerProcess.user\"); ctx.cybereason.malop_connection.element_values.owner_process_user= obj;

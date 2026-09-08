@@ -431,15 +431,16 @@ impl Transform for Default {
                     .is_some_and(|v| v.is_object())
             };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: def lowercaseMap = [:];\nfor(def entry : ctx.json.event.Headers.entrySet()){\n  lowercaseMap.put(entry.getKey().toLowerCase(), entry.getValue());\n}\nctx.json.event.Headers = lowercaseMap;\n
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                rewrite_keys(
                     event,
-                    cached_painless!(
-                        r#"def lowercaseMap = [:];\nfor(def entry : ctx.json.event.Headers.entrySet()){\n  lowercaseMap.put(entry.getKey().toLowerCase(), entry.getValue());\n}\nctx.json.event.Headers = lowercaseMap;\n"#
+                    &RewriteKeys::new(
+                        "json.event.Headers".into(),
+                        "json.event.Headers".into(),
+                        vec![KeyRewriteStep::Lowercase],
                     ),
-                )?;
+                );
             }
 
             let _cond = { !event.has_value("http.request.referrer") };

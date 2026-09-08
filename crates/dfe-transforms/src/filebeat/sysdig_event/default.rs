@@ -355,7 +355,10 @@ impl Transform for Default {
                 event
                     .get("sysdig.event.content.fields")
                     .is_some_and(|v| v.is_object())
-                    && event.has_value("sysdig.event.content.fields.proc.pid.ts")
+                    && event
+                        .get("sysdig.event.content.fields")
+                        .and_then(|v| v.get("proc.pid.ts"))
+                        .is_some_and(|v| !v.is_null())
             };
             if _cond {
                 // on_failure: 1 handler(s)
@@ -407,7 +410,10 @@ impl Transform for Default {
                 event
                     .get("sysdig.event.content.fields")
                     .is_some_and(|v| v.is_object())
-                    && event.has_value("sysdig.event.content.fields.proc.ppid.ts")
+                    && event
+                        .get("sysdig.event.content.fields")
+                        .and_then(|v| v.get("proc.ppid.ts"))
+                        .is_some_and(|v| !v.is_null())
             };
             if _cond {
                 // on_failure: 1 handler(s)
@@ -459,8 +465,14 @@ impl Transform for Default {
                 event
                     .get("sysdig.event.content.fields")
                     .is_some_and(|v| v.is_object())
-                    && (event.has_value("sysdig.event.content.fields.proc.pid.ts")
-                        || event.has_value("sysdig.event.content.fields.proc.ppid.ts")
+                    && (event
+                        .get("sysdig.event.content.fields")
+                        .and_then(|v| v.get("proc.pid.ts"))
+                        .is_some_and(|v| !v.is_null())
+                        || event
+                            .get("sysdig.event.content.fields")
+                            .and_then(|v| v.get("proc.ppid.ts"))
+                            .is_some_and(|v| !v.is_null())
                         || event.has_value("sysdig.event.content.fields.proc.pid_ts")
                         || event.has_value("sysdig.event.content.fields.proc.ppid_ts"))
             };
@@ -480,7 +492,10 @@ impl Transform for Default {
                 event
                     .get("sysdig.event.content.fields")
                     .is_some_and(|v| v.is_object())
-                    && event.has_value("sysdig.event.content.fields.ct.user")
+                    && event
+                        .get("sysdig.event.content.fields")
+                        .and_then(|v| v.get("ct.user"))
+                        .is_some_and(|v| !v.is_null())
             };
             if _cond {
                 // on_failure: 1 handler(s)

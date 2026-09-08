@@ -1,14 +1,13 @@
 {
   "_why": "Counts over the GENERATED TREE that may only go down, written by the test that measures them under DFE_UPDATE_RATCHETS=1. A ratchet moves on every improvement, so it lives here rather than as a constant a person retypes with a changelog beside it. A FLOOR -- proof that a scan was not empty -- stays a const, because it moves only on a structural change. Corpus-scoped numbers belong in compat-baseline.json, which is skipped on a provenance mismatch.",
-  "dead_branch_sites": 191,
+  "dead_branch_sites": 187,
   "sources_without_fixtures": 130,
-  "skipped_processors": 13,
+  "skipped_processors": 11,
   "skipped_drops": 2,
   "skipped_per_source": {
     "arista_ngfw_log": 1,
     "bitdefender_push_notifications": 1,
     "ece_adminconsole": 2,
-    "elastic_agent_elastic_agent_logs": 2,
     "forcepoint_web_logs": 2,
     "kibana_audit": 1,
     "kibana_log": 1,

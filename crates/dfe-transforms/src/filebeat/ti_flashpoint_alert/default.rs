@@ -69,15 +69,18 @@ impl Transform for Default {
 
             event.set("event.kind", json!("alert"))?;
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: // Replace '-' with '_' in field names\nString normalize(String str) {\n  return str.replace('-', '_');\n}\n\n// Recursive function to process objects\ndef normalizeFields(def obj) {\n  if (obj instanceof Map) {\n    def newObj = new HashMap();\n    for (entry in obj.entrySet()) {\n      String newKey = normalize(entry.getKey());\n      newObj.put(newKey, normalizeFields(entry.getValue()));\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = new ArrayList();\n    for (item in obj) {\n      newList.add(normalizeFields(item));\n    }\n    return newList;\n  }\n  return obj;\n}\n\n// NOTE:\n// - Normalizes all field names (hyphen -> underscore)\n// - Populates ctx.ti_flashpoint.alert with normalized data\n// - Removes ctx.json after processing\nif (ctx.json != null) {\n  ctx.ti_flashpoint = ctx.ti_flashpoint ?: [:];\n  ctx.ti_flashpoint.alert = normalizeFields(ctx.json);\n  ctx.remove('json');\n}
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            rewrite_keys(
                 event,
-                cached_painless!(
-                    r#"// Replace '-' with '_' in field names\nString normalize(String str) {\n  return str.replace('-', '_');\n}\n\n// Recursive function to process objects\ndef normalizeFields(def obj) {\n  if (obj instanceof Map) {\n    def newObj = new HashMap();\n    for (entry in obj.entrySet()) {\n      String newKey = normalize(entry.getKey());\n      newObj.put(newKey, normalizeFields(entry.getValue()));\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = new ArrayList();\n    for (item in obj) {\n      newList.add(normalizeFields(item));\n    }\n    return newList;\n  }\n  return obj;\n}\n\n// NOTE:\n// - Normalizes all field names (hyphen -> underscore)\n// - Populates ctx.ti_flashpoint.alert with normalized data\n// - Removes ctx.json after processing\nif (ctx.json != null) {\n  ctx.ti_flashpoint = ctx.ti_flashpoint ?: [:];\n  ctx.ti_flashpoint.alert = normalizeFields(ctx.json);\n  ctx.remove('json');\n}"#
-                ),
-            )?;
+                &RewriteKeys::new(
+                    "json".into(),
+                    "ti_flashpoint.alert".into(),
+                    vec![KeyRewriteStep::ReplaceChars("-".into(), Some('_'))],
+                )
+                .recursive()
+                .removing_source(),
+            );
 
             let _cond = {
                 event.has_value("ti_flashpoint.alert.created_at")

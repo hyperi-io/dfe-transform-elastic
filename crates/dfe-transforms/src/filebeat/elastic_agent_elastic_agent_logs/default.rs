@@ -16,15 +16,29 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            // SKIPPED: condition not transpiled: ctx['log.level'] != null
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event
+                    .as_value()
+                    .get("log.level")
+                    .is_some_and(|v| !v.is_null())
+            };
+            if _cond {
                 dot_expand(event, "", "log.level")?;
             }
 
-            // SKIPPED: condition not transpiled: ctx.context == "command output" && ctx['log.logger'] instanceof String && ctx['log.logger'].startsWith('component.runtime.endpoint-')
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.get_str("context") == Some("command output")
+                    && event
+                        .as_value()
+                        .get("log.logger")
+                        .is_some_and(|v| v.is_string())
+                    && event
+                        .as_value()
+                        .get("log.logger")
+                        .and_then(|v| v.as_str())
+                        .is_some_and(|s| s.starts_with("component.runtime.endpoint-"))
+            };
+            if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if event.has_value("message") {

@@ -1513,15 +1513,15 @@ impl Transform for Default {
                 event.rename("suricata.eve.flow.bytes_toserver", "source.bytes")?;
             }
 
-            // Painless script
+            // Painless script, resolved to its runners at generation time
             // Source: long getOrZero(def map, def key) {\n  if (map!=null && map[key]!=null) {\n    return map[key];\n  }\n  return 0;\n} def network=ctx['network'], source=ctx['source'], dest=ctx['destination']; def sp=getOrZero(source,'packets'), sb=getOrZero(source,'bytes'), dp=getOrZero(dest,'packets'), db=getOrZero(dest,'bytes'); if (sb+db+sp+dp > 0) {\n  if (network == null) {\n    network=new HashMap();\n    ctx['network']=network;\n  }\n  if (sb+db > 0) {\n    network['bytes'] = sb+db;\n  }\n  if(sp+dp>0) {\n    network['packets'] = sp+dp;\n  }\n}\n
-            // TODO: Transpile Painless to Rust (2.2.3)
-            painless_exec_plan(
+            sum_totals(
                 event,
-                cached_painless!(
-                    r#"long getOrZero(def map, def key) {\n  if (map!=null && map[key]!=null) {\n    return map[key];\n  }\n  return 0;\n} def network=ctx['network'], source=ctx['source'], dest=ctx['destination']; def sp=getOrZero(source,'packets'), sb=getOrZero(source,'bytes'), dp=getOrZero(dest,'packets'), db=getOrZero(dest,'bytes'); if (sb+db+sp+dp > 0) {\n  if (network == null) {\n    network=new HashMap();\n    ctx['network']=network;\n  }\n  if (sb+db > 0) {\n    network['bytes'] = sb+db;\n  }\n  if(sp+dp>0) {\n    network['packets'] = sp+dp;\n  }\n}\n"#
-                ),
-            )?;
+                &SumTotals::new(vec![
+                    Total::new("network.bytes", "source.bytes", "destination.bytes"),
+                    Total::new("network.packets", "source.packets", "destination.packets"),
+                ]),
+            );
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {

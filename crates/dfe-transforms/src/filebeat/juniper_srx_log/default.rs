@@ -170,15 +170,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("juniper.srx.duration") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ctx.event.duration = Integer.parseInt(ctx.juniper.srx.duration) * 1000000000L; ctx.event.start = ctx['@timestamp']; ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ctx.event.end = start.plus(ctx.event.duration, ChronoUnit.NANOS);
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                duration_window(
                     event,
-                    cached_painless!(
-                        r#"ctx.event.duration = Integer.parseInt(ctx.juniper.srx.duration) * 1000000000L; ctx.event.start = ctx['@timestamp']; ZonedDateTime start = ZonedDateTime.parse(ctx.event.start); ctx.event.end = start.plus(ctx.event.duration, ChronoUnit.NANOS);"#
+                    &DurationWindow::new(
+                        "juniper.srx.duration".into(),
+                        1000000000,
+                        "@timestamp".into(),
                     ),
-                )?;
+                );
             }
 
             let _cond = { event.has_value("juniper.srx") };

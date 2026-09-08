@@ -11657,7 +11657,10 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("json.system.tmmTraffic")
-                        && event.has_value("json.system.tmmTraffic.clientSideTraffic.bitsIn")
+                        && event
+                            .get("json.system.tmmTraffic")
+                            .and_then(|v| v.get("clientSideTraffic.bitsIn"))
+                            .is_some_and(|v| !v.is_null())
                 };
                 if _cond {
                     // Painless script, resolved to its runners at generation time
@@ -11673,7 +11676,10 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("json.system.tmmTraffic")
-                        && event.has_value("json.system.tmmTraffic.clientSideTraffic.bitsOut")
+                        && event
+                            .get("json.system.tmmTraffic")
+                            .and_then(|v| v.get("clientSideTraffic.bitsOut"))
+                            .is_some_and(|v| !v.is_null())
                 };
                 if _cond {
                     // Painless script, resolved to its runners at generation time
@@ -11689,7 +11695,10 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("json.system.tmmTraffic")
-                        && event.has_value("json.system.tmmTraffic.serverSideTraffic.bitsIn")
+                        && event
+                            .get("json.system.tmmTraffic")
+                            .and_then(|v| v.get("serverSideTraffic.bitsIn"))
+                            .is_some_and(|v| !v.is_null())
                 };
                 if _cond {
                     // Painless script, resolved to its runners at generation time
@@ -11705,7 +11714,10 @@ impl Transform for Default {
                 }
                 let _cond = {
                     event.has_value("json.system.tmmTraffic")
-                        && event.has_value("json.system.tmmTraffic.serverSideTraffic.bitsOut")
+                        && event
+                            .get("json.system.tmmTraffic")
+                            .and_then(|v| v.get("serverSideTraffic.bitsOut"))
+                            .is_some_and(|v| !v.is_null())
                 };
                 if _cond {
                     // Painless script, resolved to its runners at generation time
