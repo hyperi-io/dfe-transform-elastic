@@ -57,7 +57,7 @@
 use serde_json::{Map, Value};
 
 use crate::Event;
-use crate::painless_params::{balanced, clean_path};
+use crate::painless_params::{balanced, clean_path, ctx_path_term as ctx_path};
 
 /// What each entry of the list becomes.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -213,12 +213,6 @@ fn member_of(term: &str, item: &str) -> Option<String> {
 ///
 /// Declines a call or a subscript: `ctx.a.entrySet()` and `ctx.a[0]` name
 /// something this reader cannot resolve to a field.
-fn ctx_path(term: &str) -> Option<String> {
-    let path = clean_path(term);
-    let path = path.strip_prefix("ctx.")?;
-    (!path.is_empty() && !path.contains(['(', ')', '[', ']', ' ', '\t'])).then(|| path.to_owned())
-}
-
 /// The `ctx` path a local was bound to, or the path itself when it is written
 /// out at the loop header.
 fn list_path(bound: &[(String, String)], source: &str) -> Option<String> {

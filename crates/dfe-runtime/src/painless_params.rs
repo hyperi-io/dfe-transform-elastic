@@ -9826,6 +9826,37 @@ pub(crate) fn ctx_locals(script: &str) -> Vec<(String, String)> {
         .collect()
 }
 
+/// One `ctx.<path>` TERM as a dotted path, declining a call or a subscript.
+///
+/// Accepts any other character, `@timestamp` included, and refuses only what
+/// says the term is not a bare path: parentheses, brackets and whitespace.
+///
+/// The strict counterpart below refuses `@timestamp` as well, and the two are
+/// deliberately NOT one reader --
+/// `the_readers_differ_on_the_at_sign_and_that_is_deliberate` pins why.
+/// Widening the strict one opens matchers that have never been exposed to a
+/// bad path; narrowing this one refuses ECS fields that are real. Either is a
+/// parity change rather than a tidy-up.
+pub(crate) fn ctx_path_term(term: &str) -> Option<String> {
+    let path = clean_path(term);
+    let path = path.strip_prefix("ctx.")?;
+    (!path.is_empty() && !path.contains(['(', ')', '[', ']', ' ', '\t'])).then(|| path.to_owned())
+}
+
+/// One `ctx.<path>` term, admitting only alphanumerics, `_` and `.`.
+///
+/// So `@timestamp` is REFUSED here and accepted by `ctx_path_term` -- see the
+/// note there before making them agree.
+pub(crate) fn ctx_path_plain(text: &str) -> Option<String> {
+    let path = clean_path(text);
+    let path = path.strip_prefix("ctx.")?;
+    (!path.is_empty()
+        && path
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '_' || c == '.'))
+    .then(|| path.to_string())
+}
+
 /// A mutable reference to the value at a dotted path.
 pub(crate) fn pointer_mut<'a>(event: &'a mut Event, path: &str) -> Option<&'a mut Value> {
     let mut pointer = String::with_capacity(path.len() + 1);

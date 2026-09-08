@@ -40,7 +40,7 @@
 use serde_json::{Map, Value};
 
 use crate::Event;
-use crate::painless_params::{balanced, clean_path, skip_trivia};
+use crate::painless_params::{balanced, clean_path, ctx_path_plain as ctx_path, skip_trivia};
 
 /// One field looked up in one named `params` table.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -324,16 +324,6 @@ fn table_subscript(expression: &str) -> Option<(String, &str)> {
 }
 
 /// A bare `ctx.<path>`, with null-safe navigation stripped.
-fn ctx_path(text: &str) -> Option<String> {
-    let path = clean_path(text);
-    let path = path.strip_prefix("ctx.")?;
-    (!path.is_empty()
-        && path
-            .chars()
-            .all(|c| c.is_alphanumeric() || c == '_' || c == '.'))
-    .then(|| path.to_string())
-}
-
 /// A single- or double-quoted literal's contents.
 fn quoted(text: &str) -> Option<String> {
     let text = text.trim();

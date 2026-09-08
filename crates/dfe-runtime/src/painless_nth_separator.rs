@@ -28,7 +28,7 @@
 use serde_json::Value;
 
 use crate::Event;
-use crate::painless_params::{balanced, clean_path, skip_trivia};
+use crate::painless_params::{balanced, clean_path, ctx_path_plain as ctx_path, skip_trivia};
 
 /// One value cut at the `count`-th separator counted from its end, the part
 /// BEFORE the cut landing on `target`.
@@ -255,16 +255,6 @@ fn declared<'a>(text: &'a str, keyword: &str) -> Option<&'a str> {
 }
 
 /// A bare `ctx.<path>`, with null-safe navigation stripped.
-fn ctx_path(text: &str) -> Option<String> {
-    let path = clean_path(text);
-    let path = path.strip_prefix("ctx.")?;
-    (!path.is_empty()
-        && path
-            .chars()
-            .all(|c| c.is_alphanumeric() || c == '_' || c == '.'))
-    .then(|| path.to_string())
-}
-
 /// A local's name, or `None` where the text is not one identifier.
 fn identifier(text: &str) -> Option<&str> {
     let name = text.trim();

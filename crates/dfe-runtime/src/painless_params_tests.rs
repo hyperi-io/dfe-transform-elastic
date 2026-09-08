@@ -115,6 +115,34 @@ fn ctx_locals_declines_a_call_and_a_subscript() {
     assert!(ctx_locals("def a = ctx.list[0];").is_empty());
 }
 
+/// The two shared term readers are NOT interchangeable, and this is the pin
+/// that stops a later tidy-up collapsing them: the loose one carries
+/// `@timestamp`, the plain one refuses it. Four modules shared two identical
+/// copies of these before they were named.
+#[test]
+fn the_two_term_readers_disagree_on_the_at_sign_by_design() {
+    assert_eq!(
+        ctx_path_term("ctx.@timestamp"),
+        Some("@timestamp".to_owned())
+    );
+    assert_eq!(ctx_path_plain("ctx.@timestamp"), None);
+
+    // Everything else they agree on, which is why the split is only the one
+    // character class and not two different jobs.
+    for term in ["ctx.host.name", "ctx?.user.id"] {
+        assert_eq!(ctx_path_term(term), ctx_path_plain(term), "{term}");
+    }
+}
+
+/// Both decline what says the term is not a bare path.
+#[test]
+fn the_term_readers_decline_a_call_and_a_subscript() {
+    for term in ["ctx.a.entrySet()", "ctx.a[0]", "ctx.a b"] {
+        assert_eq!(ctx_path_term(term), None, "{term}");
+        assert_eq!(ctx_path_plain(term), None, "{term}");
+    }
+}
+
 /// The readers do NOT agree on which characters a path may hold, and the
 /// difference is pinned rather than resolved.
 ///

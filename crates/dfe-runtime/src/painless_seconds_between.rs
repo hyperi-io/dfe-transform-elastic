@@ -34,7 +34,7 @@
 use serde_json::{Map, Value};
 
 use crate::Event;
-use crate::painless_params::{balanced, clean_path};
+use crate::painless_params::{balanced, clean_path, ctx_path_term as ctx_path};
 
 /// The seconds between one timestamp and whichever candidate is present.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -83,12 +83,6 @@ fn declaration(statement: &str) -> Option<(&str, &str)> {
 }
 
 /// A `ctx.<path>` term as a dotted path, declining a call or a subscript.
-fn ctx_path(term: &str) -> Option<String> {
-    let path = clean_path(term);
-    let path = path.strip_prefix("ctx.")?;
-    (!path.is_empty() && !path.contains(['(', ')', '[', ']', ' ', '\t'])).then(|| path.to_owned())
-}
-
 /// The value bound to `local`, from a list of `(local, value)` pairs.
 fn bound_to(pairs: &[(String, String)], local: &str) -> Option<String> {
     pairs
