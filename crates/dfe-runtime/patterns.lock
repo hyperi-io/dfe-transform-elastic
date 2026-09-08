@@ -198,24 +198,25 @@
 197 GeoPointFromCoordinates
 198 BranchCopies
 199 StripSurroundingPair
-200 LongCoercion
-201 GuardedDivide
-202 ScaleField
-203 GuardedCopy
-204 ConcatAssignment
-205 PlainAssignments
-206 SumTotals
-207 ScalarExpression
-208 TrimThenSplit
-209 ItemWrites
-210 NthSeparatorPrefix
-211 FirstMatchInList
-212 SubstringRejoin
-213 ListFold
-214 LongDivide
-215 DropLeadingChars
-216 EpochToMillis
-217 EpochNanosToDateTime
+200 HashByWidthOrPrefix
+201 LongCoercion
+202 GuardedDivide
+203 ScaleField
+204 GuardedCopy
+205 ConcatAssignment
+206 PlainAssignments
+207 SumTotals
+208 ScalarExpression
+209 TrimThenSplit
+210 ItemWrites
+211 NthSeparatorPrefix
+212 FirstMatchInList
+213 SubstringRejoin
+214 ListFold
+215 LongDivide
+216 DropLeadingChars
+217 EpochToMillis
+218 EpochNanosToDateTime
 
 [params_pattern]
   1 AwsEntity
@@ -285,12 +286,13 @@
  65 LookupNormalise
  66 GuardedLookup
  67 MergeRowOrFallback
- 68 RowOrDefaults
- 69 HexFields
- 70 KeyedByLookup
- 71 ScalarExpression
- 72 SelectRenameKeys
- 73 FieldTables
- 74 MemberMappings
- 75 ConfiguredDateFormat
+ 68 GuardedParamsRow
+ 69 RowOrDefaults
+ 70 HexFields
+ 71 KeyedByLookup
+ 72 ScalarExpression
+ 73 SelectRenameKeys
+ 74 FieldTables
+ 75 MemberMappings
+ 76 ConfiguredDateFormat
 

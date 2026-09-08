@@ -3581,6 +3581,179 @@ fn run_strip_surrounding_pair(event: &mut Event, pattern: &StripSurroundingPair)
     true
 }
 
+/// One hash written from a field that either IS the digest or carries it
+/// behind an algorithm tag.
+///
+/// ```painless
+/// def hash = ctx.a.b.hash;
+/// if (ctx.file == null) {
+///   ctx.put('file', new HashMap());
+/// }
+/// if (ctx.file.hash == null) {
+///   ctx.file.put('hash', new HashMap());
+/// }
+/// if (hash.length() == 40) {
+///   ctx.file.hash.sha1 = hash;
+/// } else if (hash.startsWith('sha1##') || hash.startsWith('SHA1##')) {
+///   ctx.file.hash.sha1 = hash.substring(6);
+/// }
+/// ```
+///
+/// `cyberark_epm` ships this once per data stream, over `hash` in each of
+/// `raw_event`, `aggregated_event`, `policyaudit_raw_event` and
+/// `policyaudit_aggregated_event`. Nothing claimed it, and `file.hash.sha1` is
+/// then copied to `package.checksum` and appended to `related.hash` by the
+/// processors after it, so one unread script was three wrong fields on each of
+/// that source's 20 failing events -- 60 fields and 5 events on the corpus.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct HashByWidthOrPrefix {
+    /// The `ctx.` path the local reads.
+    source: String,
+    /// Where the digest lands.
+    target: String,
+    /// The character width at which the value IS the digest.
+    width: usize,
+    /// The tags that mark a prefixed digest, in the order the script tests them.
+    prefixes: Vec<String>,
+    /// Characters the script cuts off a tagged value.
+    cut: usize,
+}
+
+/// Read the whole script, or decline.
+///
+/// The parse walks every statement rather than searching for the two arms: a
+/// script that also writes somewhere else is a different script, and claiming
+/// it would write the digest and silently drop the rest.
+fn parse_hash_by_width_or_prefix(script: &str) -> Option<HashByWidthOrPrefix> {
+    use crate::painless_params::{balanced, clean_path, skip_trivia, subject_path};
+
+    // `def <local> = ctx.<source>;`
+    let (declaration, mut rest) = skip_trivia(script).strip_prefix("def ")?.split_once(';')?;
+    let (local, read) = declaration.split_once('=')?;
+    let local = local.trim();
+    if local.is_empty() || !local.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+    let source = clean_path(subject_path(read.trim()).strip_prefix("ctx.")?);
+    if source.is_empty() || source.contains(char::is_whitespace) {
+        return None;
+    }
+
+    // Painless needs each parent map to exist before it can write through it;
+    // `Event::set` builds them, so the guards that create them are skipped.
+    // Anything else under a `== null` guard is a script this cannot reproduce.
+    loop {
+        let head = skip_trivia(rest);
+        let Some(after_if) = head.strip_prefix("if ") else {
+            break;
+        };
+        let (test, after) = balanced(skip_trivia(after_if), '(', ')')?;
+        if !test.contains("== null") {
+            break;
+        }
+        let (body, after_body) = balanced(skip_trivia(after), '{', '}')?;
+        let statement = skip_trivia(body).trim_end().strip_suffix(';')?;
+        if statement.contains(';')
+            || !(statement.contains("new HashMap()") || statement.contains("[:]"))
+        {
+            return None;
+        }
+        rest = after_body;
+    }
+
+    // `if (<local>.length() == <width>) { <target> = <local>; }`
+    let head = skip_trivia(rest);
+    let (test, after) = balanced(skip_trivia(head.strip_prefix("if ")?), '(', ')')?;
+    let width: usize = test
+        .trim()
+        .strip_prefix(&format!("{local}.length()"))?
+        .trim()
+        .strip_prefix("==")?
+        .trim()
+        .parse()
+        .ok()?;
+    let (body, after_body) = balanced(skip_trivia(after), '{', '}')?;
+    let (assigned, value) = one_assignment(body)?;
+    if value != local {
+        return None;
+    }
+    let target = painless_path(assigned)?;
+
+    // `else if (<local>.startsWith('<tag>') || ...) { <target> = <local>.substring(<cut>); }`
+    let head = skip_trivia(after_body);
+    let (test, after) = balanced(skip_trivia(head.strip_prefix("else if ")?), '(', ')')?;
+    let call = format!("{local}.startsWith(");
+    let mut prefixes = Vec::new();
+    for alternative in test.split("||") {
+        let quoted = alternative.trim().strip_prefix(&call)?.strip_suffix(')')?;
+        let tag = quoted_argument(quoted)?;
+        // The whole alternative is that literal, so a second argument or a
+        // trailing comparison declines rather than being read as the tag.
+        if tag.is_empty() || quoted.len() != tag.len() + 2 {
+            return None;
+        }
+        prefixes.push(tag);
+    }
+    let (body, tail) = balanced(skip_trivia(after), '{', '}')?;
+    let (assigned, value) = one_assignment(body)?;
+    if painless_path(assigned)? != target {
+        return None;
+    }
+    let cut: usize = value
+        .strip_prefix(&format!("{local}.substring("))?
+        .strip_suffix(')')?
+        .trim()
+        .parse()
+        .ok()?;
+
+    // Nothing follows the ladder, so the two arms are the whole of the writing.
+    (cut > 0 && skip_trivia(tail).is_empty()).then_some(HashByWidthOrPrefix {
+        source,
+        target,
+        width,
+        prefixes,
+        cut,
+    })
+}
+
+/// The single `<lhs> = <rhs>;` a block holds, or `None` where it holds more.
+fn one_assignment(body: &str) -> Option<(&str, &str)> {
+    use crate::painless_params::skip_trivia;
+
+    let statement = skip_trivia(body).trim_end().strip_suffix(';')?;
+    if statement.contains(';') {
+        return None;
+    }
+    let (assigned, value) = statement.split_once('=')?;
+    Some((assigned, value.trim()))
+}
+
+/// Write the digest where the value's own width or tag says which it is.
+fn run_hash_by_width_or_prefix(event: &mut Event, pattern: &HashByWidthOrPrefix) -> bool {
+    // Absent, or not a string: Painless would have thrown on `.length()` and
+    // the call site's own `!= null` guard is what stops it. Declining keeps the
+    // miss countable, since a matcher answering true reads as handled.
+    let Some(text) = event.get_string(&pattern.source) else {
+        return false;
+    };
+
+    // A value that is neither the width nor tagged writes NOTHING, because the
+    // tags the script lists are the only ones whose tail is this digest.
+    let digest = if text.chars().count() == pattern.width {
+        Some(text.clone())
+    } else {
+        pattern
+            .prefixes
+            .iter()
+            .any(|tag| text.starts_with(tag.as_str()))
+            .then(|| text.chars().skip(pattern.cut).collect::<String>())
+    };
+    if let Some(digest) = digest {
+        let _ = event.set(&pattern.target, json!(digest));
+    }
+    true
+}
+
 /// cloudtrail's resources pass: ARN and accountId rename to their snake
 /// names (appended, as a Java put is), and duplicates of the
 /// `arn_account_type` composite collapse -- last one wins, keeping the first's
@@ -18438,6 +18611,9 @@ pub(crate) enum KnownPattern {
     BranchCopies(Vec<BranchCopy>),
     /// A field unwrapped from a surrounding pair of characters, in place.
     StripSurroundingPair(Box<StripSurroundingPair>),
+    /// One digest, taken whole where the width says so and past a tag where it
+    /// does not.
+    HashByWidthOrPrefix(Box<HashByWidthOrPrefix>),
     /// A value cut at the Nth separator counted from its END, the prefix kept.
     NthSeparatorPrefix(Box<crate::painless_nth_separator::NthSeparatorPrefix>),
     PrivateCidrDirection {
@@ -20420,6 +20596,17 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: one digest written from a field that either IS it or carries it
+    // behind an algorithm tag. Beside the unwrap above, which reads the same
+    // `startsWith` and `substring` grammar.
+    if normalised.contains(".startsWith(")
+        && normalised.contains(".length() ==")
+        && let Some(pattern) = parse_hash_by_width_or_prefix(normalised)
+    {
+        patterns.push(KnownPattern::HashByWidthOrPrefix(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: a value that may arrive as text or as a number, coerced to a
     // number -- `instanceof String` picking `Long.parseLong`, everything else a
     // `(long)` cast. LATE, because far richer scripts spell the same two arms:
@@ -21256,6 +21443,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::CopyByLabel(pattern) => run_copy_by_label(event, pattern),
         KnownPattern::BandLadder(pattern) => run_band_ladder(event, pattern),
         KnownPattern::StripSurroundingPair(pattern) => run_strip_surrounding_pair(event, pattern),
+        KnownPattern::HashByWidthOrPrefix(pattern) => run_hash_by_width_or_prefix(event, pattern),
         KnownPattern::IocExpiry(pattern) => run_ioc_expiry(event, pattern),
         KnownPattern::GuardedCopy(literals) => try_guarded_copy(event, normalised, literals),
         KnownPattern::PlainAssignments(literals) => literals.run(event),

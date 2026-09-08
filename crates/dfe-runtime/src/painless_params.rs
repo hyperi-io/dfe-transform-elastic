@@ -261,6 +261,8 @@ pub(crate) enum ParamsPattern {
     AddUniqueRow,
     FrameworkPreference,
     RowOrDefaults(Box<RowOrDefaults>),
+    /// A guard chain picking ONE params row to write to a single target.
+    GuardedParamsRow(Box<GuardedParamsRow>),
     MergeRowOrFallback(Box<MergeRowOrFallback>),
     SelectMembers {
         subject: String,
@@ -904,6 +906,17 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
         && let Some(pattern) = parse_merge_row_or_fallback(normalised)
     {
         return Some(ParamsPattern::MergeRowOrFallback(Box::new(pattern)));
+    }
+
+    // Pattern: a guard chain choosing ONE params row for a single target.
+    // Above `RowOrDefaults` only because that one reads a table keyed by a
+    // field, which these scripts do not have -- the params block here is three
+    // sentences and the guards decide which is written.
+    if normalised.contains("} else {")
+        && normalised.contains("= params.")
+        && let Some(pattern) = parse_guarded_params_row(normalised)
+    {
+        return Some(ParamsPattern::GuardedParamsRow(Box::new(pattern)));
     }
 
     // Pattern: a NAMED params table's row fanned onto ctx, with literal
@@ -2047,6 +2060,23 @@ pub(crate) fn run_params_pattern(
         ParamsPattern::AddUniqueRow => try_add_unique_row(event, normalised, params),
         ParamsPattern::FrameworkPreference => try_framework_preference(event, normalised, params),
         ParamsPattern::RowOrDefaults(pattern) => run_row_or_defaults(event, pattern, params),
+        // The arms are tried in the order the script writes them, and the
+        // fallback runs unguarded -- the vendor's `else` has no condition, so
+        // the field is written on every event the processor reaches.
+        ParamsPattern::GuardedParamsRow(pattern) => {
+            let chosen = pattern
+                .arms
+                .iter()
+                .find(|(path, wanted, _)| match wanted {
+                    None => event.has_value(path),
+                    Some(value) => event.get(path).is_some_and(|held| held == value),
+                })
+                .map_or(pattern.fallback.as_str(), |(_, _, key)| key.as_str());
+            if let Some(value) = params.get(chosen) {
+                let _ = event.set(&pattern.target, value.clone());
+            }
+            true
+        }
         ParamsPattern::MergeRowOrFallback(pattern) => {
             run_merge_row_or_fallback(event, pattern, params)
         }
@@ -8327,6 +8357,119 @@ fn parse_folded_concat(text: &str) -> Option<(Vec<ConcatPiece>, Fold)> {
     }
 
     parse_concat(inner).map(|pieces| (pieces, fold))
+}
+
+/// A guard chain choosing ONE params row to write to a single target.
+///
+/// Every threat-intel package decides an expiry reason the same way, and the
+/// params block is three sentences rather than a table keyed by a field:
+///
+/// ```painless
+/// if (ctx.<ns>.valid_until != null) {
+///   ctx.<ns>.ioc_expiration_reason = params.valid_until;
+/// } else if (ctx.<ns>.revoked != null && ctx.<ns>.revoked == true) {
+///   ctx.<ns>.ioc_expiration_reason = params.revoked;
+/// } else {
+///   ctx.<ns>.ioc_expiration_reason = params.default;
+/// }
+/// ```
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct GuardedParamsRow {
+    target: String,
+    /// In order: the field that must be present, the literal it must equal
+    /// where the guard names one, and the params key to write when it holds.
+    arms: Vec<(String, Option<Value>, String)>,
+    /// Written when no arm holds.
+    fallback: String,
+}
+
+/// Read the chain, or decline it.
+///
+/// Every arm has to write the SAME target, and every value has to be a params
+/// key rather than an expression: a chain that writes two fields, or computes
+/// one of its values, is a different script and running half of it would put a
+/// value where the vendor puts another.
+fn parse_guarded_params_row(script: &str) -> Option<GuardedParamsRow> {
+    let (head, tail) = script.trim().split_once("} else {")?;
+    let otherwise = tail.split_once('}')?.0;
+    let fallback = params_key(otherwise)?;
+
+    // The `else` writes the same field as every arm, or the chain decides
+    // between two targets and running it would put a value where the vendor
+    // puts another.
+    let mut target = Some(clean_path(
+        otherwise.split_once('=')?.0.trim().strip_prefix("ctx.")?,
+    ));
+    let mut arms = Vec::new();
+    for block in head.split("} else if") {
+        let (guard, body) = block
+            .trim()
+            .trim_start_matches("if")
+            .trim()
+            .split_once('{')?;
+        let guard = guard
+            .trim()
+            .strip_prefix('(')?
+            .trim_end()
+            .strip_suffix(')')?;
+        let (path, wanted) = guard_terms(guard)?;
+        let key = params_key(body)?;
+
+        let written = clean_path(body.split_once('=')?.0.trim().strip_prefix("ctx.")?);
+        if *target.get_or_insert(written.clone()) != written {
+            return None;
+        }
+        arms.push((path, wanted, key));
+    }
+    (!arms.is_empty()).then(|| GuardedParamsRow {
+        target: target.unwrap_or_default(),
+        arms,
+        fallback,
+    })
+}
+
+/// `ctx.<path> != null`, optionally ANDed with `ctx.<same path> == <literal>`.
+fn guard_terms(guard: &str) -> Option<(String, Option<Value>)> {
+    let mut terms = guard.split("&&").map(str::trim);
+    let path = clean_path(
+        terms
+            .next()?
+            .strip_suffix("!= null")?
+            .trim()
+            .strip_prefix("ctx.")?,
+    );
+    if path.is_empty() {
+        return None;
+    }
+    let Some(second) = terms.next() else {
+        return Some((path, None));
+    };
+    if terms.next().is_some() {
+        return None;
+    }
+    // The second term has to test the SAME field, or the guard reads two.
+    let (subject, value) = second.split_once("==")?;
+    if clean_path(subject.trim().strip_prefix("ctx.")?) != path {
+        return None;
+    }
+    let wanted = match value.trim() {
+        "true" => Value::Bool(true),
+        "false" => Value::Bool(false),
+        text => literal_value(text)?,
+    };
+    Some((path, Some(wanted)))
+}
+
+/// `ctx.<path> = params.<key>;` as its key alone.
+fn params_key(body: &str) -> Option<String> {
+    let key = body
+        .split_once("= params.")?
+        .1
+        .trim()
+        .trim_end_matches(';')
+        .trim();
+    (!key.is_empty() && key.chars().all(|c| c.is_alphanumeric() || c == '_'))
+        .then(|| key.to_owned())
 }
 
 /// `ctx.<path>.splitOnToken("<sep>")[<n>]`, with `?.` and a trailing case fold.

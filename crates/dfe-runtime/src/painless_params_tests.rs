@@ -3909,6 +3909,58 @@ fn an_unparenthesised_join_is_not_folded_as_a_whole() {
     assert!(parse_folded_concat(r#"(ctx.a) + "-" + ctx.b.toLowerCase()"#).is_none());
 }
 
+/// Verbatim from `ti_custom_indicator/default.rs`, and written again with a
+/// package namespace by `ti_socradar_taxii_indicator`.
+///
+/// The params block is three sentences rather than a table keyed by a field, so
+/// the guards decide which is written and the `else` writes on every event the
+/// processor reaches.
+#[test]
+fn a_guard_chain_picks_one_params_row() {
+    let script = r#"if (ctx.stix.valid_until != null) {\n  ctx.stix.ioc_expiration_reason = params.valid_until;\n} else if (ctx.stix.revoked != null && ctx.stix.revoked == true) {\n  ctx.stix.ioc_expiration_reason = params.revoked;\n} else {\n  ctx.stix.ioc_expiration_reason = params.default;\n}\n"#;
+    let table = json!({
+        "valid_until": "Expiration set from valid_until field",
+        "revoked": "Expiration set from revoked field",
+        "default": "Expiration set by Elastic",
+    });
+    let table = table.as_object().expect("a params table");
+
+    let mut dated = Event::new(json!({ "stix": { "valid_until": "2026-01-01" } }));
+    assert!(try_params_painless(&mut dated, script, &json!(table)));
+    assert_eq!(
+        dated.get_str("stix.ioc_expiration_reason"),
+        Some("Expiration set from valid_until field")
+    );
+
+    // The second arm needs the field PRESENT and equal to true, so a false one
+    // falls through to the else.
+    let mut revoked = Event::new(json!({ "stix": { "revoked": true } }));
+    assert!(try_params_painless(&mut revoked, script, &json!(table)));
+    assert_eq!(
+        revoked.get_str("stix.ioc_expiration_reason"),
+        Some("Expiration set from revoked field")
+    );
+
+    let mut plain = Event::new(json!({ "stix": { "revoked": false } }));
+    assert!(try_params_painless(&mut plain, script, &json!(table)));
+    assert_eq!(
+        plain.get_str("stix.ioc_expiration_reason"),
+        Some("Expiration set by Elastic")
+    );
+}
+
+/// Every arm has to write the SAME target, or running the chain would put a
+/// value where the vendor puts another.
+#[test]
+fn a_guard_chain_writing_two_fields_is_declined() {
+    let split = r#"if (ctx.a.x != null) {\n  ctx.a.one = params.first;\n} else {\n  ctx.a.two = params.second;\n}\n"#;
+    assert!(parse_guarded_params_row(&crate::painless_common::normalise(split)).is_none());
+
+    // A value that is not a bare params key is an expression this does not read.
+    let computed = r#"if (ctx.a.x != null) {\n  ctx.a.one = params.first + \"!\";\n} else {\n  ctx.a.one = params.second;\n}\n"#;
+    assert!(parse_guarded_params_row(&crate::painless_common::normalise(computed)).is_none());
+}
+
 /// Verbatim from `cisco_ise_log/default.rs`, which writes it at 24 sites.
 ///
 /// The description reads `Passed-Authentication: Authentication succeeded`, and

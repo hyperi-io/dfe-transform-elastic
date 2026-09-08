@@ -7884,3 +7884,73 @@ fn an_epoch_rescale_declines_a_ladder_it_did_not_read() {
         );
     }
 }
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/cyberark_epm_raw_event/default.rs`,
+/// which is `pipelines/cyberark_epm/raw_event/default.yml`.
+///
+/// Written in the ESCAPED form the call site holds, because a stored script
+/// arrives as one line and a test using real newlines passes over a defect in
+/// `normalise`.
+const CYBERARK_EPM_FILE_SHA1: &str = r#"def hash = ctx.cyberark_epm.raw_event.hash;\nif (ctx.file == null) {\n  ctx.put('file', new HashMap());\n}\nif (ctx.file.hash == null) {\n  ctx.file.put('hash', new HashMap());\n}\nif (hash.length() == 40) {\n  ctx.file.hash.sha1 = hash;\n} else if (hash.startsWith('sha1##') || hash.startsWith('SHA1##')) {\n  ctx.file.hash.sha1 = hash.substring(6);\n}"#;
+
+/// The width takes the value whole and either tag takes its tail.
+#[test]
+fn a_hash_is_written_whole_at_its_width_and_past_its_tag() {
+    assert!(binds_variant(CYBERARK_EPM_FILE_SHA1, |pattern| matches!(
+        pattern,
+        KnownPattern::HashByWidthOrPrefix(_)
+    )));
+
+    let digest = "B3F2AE7945E98A998D998E58771C649A7A8A6591";
+    for value in [
+        digest.to_owned(),
+        format!("sha1##{digest}"),
+        format!("SHA1##{digest}"),
+    ] {
+        let (claimed, event) = run_script(
+            CYBERARK_EPM_FILE_SHA1,
+            json!({ "cyberark_epm": { "raw_event": { "hash": value } } }),
+        );
+        assert!(claimed, "declined: {value}");
+        assert_eq!(event.get_str("file.hash.sha1"), Some(digest), "{value}");
+    }
+}
+
+/// A value that is neither the width nor tagged leaves the field unwritten.
+///
+/// Taking the tail of a tag the script does not list would put another
+/// algorithm's digest in `file.hash.sha1`.
+#[test]
+fn a_hash_of_another_algorithm_writes_nothing() {
+    for value in ["md5##0cc175b9c0f1b6a831c399e269772661", "not-a-hash"] {
+        let (claimed, event) = run_script(
+            CYBERARK_EPM_FILE_SHA1,
+            json!({ "cyberark_epm": { "raw_event": { "hash": value } } }),
+        );
+        assert!(claimed, "declined: {value}");
+        assert_eq!(event.get("file.hash.sha1"), None, "{value}");
+    }
+}
+
+/// The parse reads the whole script, so a second target or a trailing
+/// statement declines rather than being claimed and half-applied.
+#[test]
+fn a_hash_reader_declines_a_script_that_writes_somewhere_else() {
+    for script in [
+        // The tagged arm lands on a different field from the width arm.
+        r#"def hash = ctx.cyberark_epm.raw_event.hash;\nif (hash.length() == 40) {\n  ctx.file.hash.sha1 = hash;\n} else if (hash.startsWith('sha1##')) {\n  ctx.file.hash.other = hash.substring(6);\n}"#,
+        // A write after the ladder that this reader does not run.
+        r#"def hash = ctx.cyberark_epm.raw_event.hash;\nif (hash.length() == 40) {\n  ctx.file.hash.sha1 = hash;\n} else if (hash.startsWith('sha1##')) {\n  ctx.file.hash.sha1 = hash.substring(6);\n}\nctx.related.hash = hash;"#,
+        // A guard that does something other than create the parent map.
+        r#"def hash = ctx.cyberark_epm.raw_event.hash;\nif (ctx.file == null) {\n  ctx.file = hash;\n}\nif (hash.length() == 40) {\n  ctx.file.hash.sha1 = hash;\n} else if (hash.startsWith('sha1##')) {\n  ctx.file.hash.sha1 = hash.substring(6);\n}"#,
+    ] {
+        assert!(
+            !binds_variant(script, |pattern| matches!(
+                pattern,
+                KnownPattern::HashByWidthOrPrefix(_)
+            )),
+            "claimed: {script}"
+        );
+    }
+}
