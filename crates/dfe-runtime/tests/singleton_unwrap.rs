@@ -6,6 +6,7 @@
 //! checkpoint_harmony_endpoint unwraps two paths in one script, and reading
 //! only the first `[0];` left `host.os.version` a one-element list on all 19
 //! of the source's events.
+#![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
 use dfe_runtime::Event;
 use dfe_runtime::painless_plan::{PainlessPlan, painless_exec_plan};

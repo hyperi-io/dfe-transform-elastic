@@ -2,6 +2,7 @@
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! An optional grok capture that matched nothing must write nothing.
+#![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
 use dfe_runtime::Event;
 
