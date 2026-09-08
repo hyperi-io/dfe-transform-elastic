@@ -25,21 +25,36 @@ pub use crate::painless_plan::{PainlessPlan, painless_exec_plan, painless_exec_p
 
 // Matchers a caller can drive directly, having already resolved the script.
 // Same functions the ladder dispatches to, so the two paths cannot diverge.
+//
+// EVERY runner belongs here, not the ones a regeneration has already named:
+// a `pub fn <name>(event: &mut Event, pattern: &<Type>)` is what a
+// `direct_call` emits, and one missing from this list breaks the build the
+// first time a source using it is regenerated. Held by
+// `every_matcher_runner_reaches_the_prelude` in
+// `crates/dfe-transforms/tests/prelude_exports.rs`.
 pub use crate::painless_coercion::{LongCoercion, long_coercion};
 pub use crate::painless_common::{
-    AllowedValueCopy, CoerceBoolean, DropPolicy, EnsureAppend, EnsurePrefix, Factor,
-    GuardedReplace, JoinPresentFields, KeyRewriteStep, MailtoUriFields, MoveMapEntry, OctalString,
-    ParametersIntoMap, RemoveEmptyChildMaps, RenameMapKeys, RewriteKeys, ScaleField,
-    SplitAtDelimiter, StringOp, StringOps, SyslogPriorityScript, UnwrapSuffixedKeys,
-    allowed_value_copy, coerce_boolean, drop_empty, ensure_append, ensure_prefix, guarded_replace,
-    join_present_fields, kv_into_fields, mailto_uri_fields, move_map_entry, octal_string,
-    parameters_into_map, remove_empty_child_maps, rename_map_keys, rewrite_keys, scale_field,
-    split_at_delimiter, string_ops, sum_directions, syslog_priority, unwrap_suffixed_keys,
+    AllowedValueCopy, BasenameCuts, CoerceBoolean, CombineFields, DedupeMapValues, DropPolicy,
+    DurationWindow, EnsureAppend, EnsurePrefix, Factor, FirstPresentKeyName, FloatSecondsToNanos,
+    GeoPointFromCoordinates, GuardedReplace, JoinPresentFields, KeyRewriteStep, LiteralValueMap,
+    MailtoUriFields, MemberFromVariantKey, MoveMapEntry, OctalString, ParametersIntoMap,
+    RemoveEmptyChildMaps, RenameMapKeys, RewriteKeys, ScaleField, SnakeCaseListElements,
+    SplitAtDelimiter, StringOp, StringOps, SumMemberOverList, SyslogPriorityScript,
+    UnwrapSuffixedKeys, allowed_value_copy, basename_cuts, coerce_boolean, combine_fields,
+    dedupe_map_values, drop_empty, duration_window, ensure_append, ensure_prefix,
+    first_present_key_name, float_seconds_to_nanos, geo_point_from_coordinates, guarded_replace,
+    join_present_fields, kv_into_fields, literal_value_map, mailto_uri_fields,
+    member_from_variant_key, move_map_entry, octal_string, parameters_into_map,
+    remove_empty_child_maps, rename_map_keys, rewrite_keys, scale_field, snake_case_list_elements,
+    split_at_delimiter, string_ops, sum_directions, sum_member_over_list, syslog_priority,
+    unwrap_suffixed_keys,
 };
 pub use crate::painless_expr::{Expr, FloatLit, Op, ScalarExpression, scalar_expression};
+pub use crate::painless_item_writes::{ItemWrites, item_writes};
 pub use crate::painless_lists::{
     EnsureItem, ItemRename, ListItemRenames, ListWalk, list_item_renames,
 };
+pub use crate::painless_nth_separator::{NthSeparatorPrefix, nth_separator_prefix};
 pub use crate::painless_totals::{SumTotals, Total, sum_totals};
 // `lookup_normalise` is NOT here: it now takes the call site's parsed literal
 // tail, which is a runtime detail rather than something a generator resolves.

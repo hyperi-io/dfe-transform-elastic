@@ -19,13 +19,17 @@
 //! and it fails with the missing NAMES rather than a compiler error in a
 //! generated file nobody wrote.
 //!
-//! What it does NOT catch: a pattern whose arm has never been regenerated names
-//! nothing in the generated tree, so its emitted types can be absent from the
-//! prelude with nothing to say so until a regeneration breaks the build.
-//! Reading the `direct_call` bodies instead was tried and abandoned -- telling a
-//! Rust string literal from code needs a real scanner, and a regex over quote
-//! pairs reports two dozen names that are neither emitted nor missing. Adding a
-//! pattern module means adding its emitted types to the prelude BY HAND.
+//! The first test reads what the TREE names, so a pattern whose arm has never
+//! been regenerated is invisible to it. The second closes that by asking the
+//! RUNTIME instead: every `pub fn <name>(event: &mut Event, pattern: &<Type>)`
+//! is a runner by construction, so both its names belong in the prelude whether
+//! or not a generated file mentions them yet. It found 13 such runners missing,
+//! of which only two had surfaced.
+//!
+//! Reading the `direct_call` bodies was tried and abandoned -- telling a Rust
+//! string literal from code needs a real scanner, and a regex over quote pairs
+//! reports two dozen names that are neither emitted nor missing. A signature
+//! match has none of that ambiguity.
 
 use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
@@ -42,6 +46,8 @@ const MIN_FILES_SCANNED: usize = 2_500;
 /// Five modules write a `direct_call` today. A floor rather than the count, so
 /// adding a sixth does not fail this and deleting four does.
 const MIN_EMITTING_MODULES: usize = 4;
+/// 35 runners carry the signature today, across seven runtime modules.
+const MIN_RUNNERS: usize = 30;
 
 fn runtime_src() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("../dfe-runtime/src")
@@ -154,6 +160,72 @@ fn every_named_runtime_symbol_is_in_the_prelude() {
         "the generated tree names {} runtime symbol(s) the prelude does not export: {missing:?}\n  \
          A generated module imports only `dfe_runtime::prelude::*`, so these cannot resolve. \
          Add them to the `painless_common` re-export in crates/dfe-runtime/src/prelude.rs.",
+        missing.len()
+    );
+}
+
+/// Every matcher runner and its pattern type reaches the prelude, whether or
+/// not the generated tree names one today.
+///
+/// The test above reads what the TREE names, so a matcher whose `direct_call`
+/// has never been regenerated is invisible to it -- which is how four symbols
+/// broke the first whole-tree regeneration and two more broke the next. This
+/// asks the RUNTIME instead. A `pub fn <name>(event: &mut Event, pattern:
+/// &<Type>)` is a runner by construction, and the prelude's own comment already
+/// claims it re-exports every one of them; the export list was a hand-kept
+/// subset, which is the defect.
+///
+/// A signature match, not a scan for names inside string literals -- that
+/// reader was tried and abandoned for reporting two dozen names that were
+/// neither emitted nor missing.
+#[test]
+fn every_matcher_runner_reaches_the_prelude() {
+    let runtime = runtime_src();
+    let runner = Regex::new(
+        r"(?m)^pub fn ([a-z_][a-z0-9_]*)\(event: &mut Event, pattern: &([A-Za-z][A-Za-z0-9_]*)\)",
+    )
+    .expect("runner regex");
+
+    let mut runners: Vec<(String, String)> = Vec::new();
+    for entry in std::fs::read_dir(&runtime)
+        .expect("read the runtime source")
+        .flatten()
+    {
+        let path = entry.path();
+        if path.extension().is_none_or(|e| e != "rs") {
+            continue;
+        }
+        for caps in runner.captures_iter(&read(&path)) {
+            runners.push((caps[1].to_owned(), caps[2].to_owned()));
+        }
+    }
+    assert!(
+        runners.len() >= MIN_RUNNERS,
+        "found {} matcher runners, expected at least {MIN_RUNNERS} -- the walk is \
+         not reaching the runtime source",
+        runners.len()
+    );
+
+    let prelude = read(&runtime.join("prelude.rs"));
+    let word = Regex::new(r"\b([A-Za-z_][A-Za-z0-9_]*)\b").expect("word regex");
+    let exported: BTreeSet<String> = word
+        .captures_iter(&prelude)
+        .map(|caps| caps[1].to_owned())
+        .collect();
+
+    let missing: Vec<String> = runners
+        .iter()
+        .flat_map(|(function, kind)| [function, kind])
+        .filter(|name| !exported.contains(*name))
+        .cloned()
+        .collect();
+
+    assert!(
+        missing.is_empty(),
+        "{} runner symbol(s) are not re-exported by the prelude: {missing:?}\n  \
+         A generated module imports only `dfe_runtime::prelude::*`, so the first \
+         regeneration of a source using one of these will not compile. Add them to \
+         crates/dfe-runtime/src/prelude.rs.",
         missing.len()
     );
 }
