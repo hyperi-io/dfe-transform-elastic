@@ -25,6 +25,7 @@ pub use crate::painless_plan::{PainlessPlan, painless_exec_plan, painless_exec_p
 
 // Matchers a caller can drive directly, having already resolved the script.
 // Same functions the ladder dispatches to, so the two paths cannot diverge.
+pub use crate::painless_coercion::{LongCoercion, long_coercion};
 pub use crate::painless_common::{
     AllowedValueCopy, CoerceBoolean, DropPolicy, EnsureAppend, EnsurePrefix, Factor,
     GuardedReplace, JoinPresentFields, KeyRewriteStep, MailtoUriFields, MoveMapEntry, OctalString,

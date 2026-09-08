@@ -190,18 +190,18 @@ pub(crate) enum ParamsPattern {
         member: String,
         source: String,
     },
-    /// A NAMED params table read through a ternary, with a LITERAL default.
+    /// A NAMED params table read with a default, in either of the two
+    /// spellings the tree ships.
     ///
-    /// `jamf_protect` writes one of these per telemetry field -- 40 sites over
-    /// 13 files. Sibling to [`ParamsPattern::UppercaseLookupDefault`], which
-    /// differs on four points: it folds case, reads the whole `params` map,
-    /// spells the lookup `getOrDefault`, and defaults to the KEY rather than
-    /// to a literal.
+    /// `jamf_protect` writes the ternary one per telemetry field -- 40 sites
+    /// over 13 files -- and qualys writes the `getOrDefault` one over its
+    /// severity table. Sibling to [`ParamsPattern::UppercaseLookupDefault`],
+    /// which folds case, reads the whole `params` map, and defaults to the KEY.
     TableLookupOrLiteral {
         source: String,
         table: String,
         target: String,
-        default: String,
+        default: TableDefault,
     },
     UppercaseLookupDefault {
         source: String,
@@ -298,6 +298,16 @@ pub(crate) enum ParamsPattern {
     /// Several scratch fields reparsed with a date pattern the DOCUMENT
     /// carries, into a sibling container.
     ConfiguredDateFormat(Box<ConfiguredDateFormat>),
+}
+
+/// What a table lookup falls back to when the key has no row.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) enum TableDefault {
+    /// A quoted literal, frozen into the script.
+    Literal(String),
+    /// Another ROW of the same table, named by its key, so the fallback moves
+    /// with the table -- qualys's severity falls back to `vuln_level["0"]`.
+    Row(String),
 }
 
 /// The one matcher this script's text triggers, or `None`.
@@ -466,11 +476,11 @@ pub(crate) fn params_pattern(normalised: &str) -> Option<ParamsPattern> {
         return Some(pattern);
     }
 
-    // Pattern: the same lookup through a NAMED table with a LITERAL default --
-    // jamf_protect's telemetry, one per field. The trigger is the parse, with
-    // only the ternary as a cheap reject.
-    if normalised.contains(".containsKey(")
-        && normalised.contains(".toString();")
+    // Pattern: the same lookup through a NAMED table with a default -- a
+    // literal in jamf_protect's telemetry, another row of the table in
+    // qualys's severity. The trigger is the parse, with the two lookup
+    // spellings as a cheap reject.
+    if (normalised.contains(".containsKey(") || normalised.contains(".getOrDefault("))
         && let Some(pattern) = parse_table_lookup_or_literal(normalised)
     {
         return Some(pattern);
@@ -1922,16 +1932,23 @@ pub(crate) fn run_params_pattern(
             target,
             default,
         } => {
-            // The script's own `!= null` guard: an absent source writes
-            // nothing at all, not the default.
+            // The script's own guard: an absent source writes nothing at all,
+            // not the default.
             if let Some(key) = event.get_as_string(source) {
-                let value = params
-                    .get(table)
-                    .and_then(Value::as_object)
-                    .and_then(|rows| rows.get(&key))
-                    .cloned()
-                    .unwrap_or_else(|| json!(default));
-                let _ = event.set(target, value);
+                let rows = params.get(table).and_then(Value::as_object);
+                // A fallback ROW the table does not carry writes nothing --
+                // Painless would store the null `getOrDefault` handed back, and
+                // an explicit null is a field Elasticsearch's own prune removes.
+                let value =
+                    rows.and_then(|rows| rows.get(&key))
+                        .cloned()
+                        .or_else(|| match default {
+                            TableDefault::Literal(text) => Some(json!(text)),
+                            TableDefault::Row(row) => rows.and_then(|rows| rows.get(row)).cloned(),
+                        });
+                if let Some(value) = value {
+                    let _ = event.set(target, value);
+                }
             }
             true
         }
@@ -2317,18 +2334,29 @@ fn try_first_asset(event: &mut Event, params: &Map<String, Value>) -> bool {
     true
 }
 
-/// mimecast's scored log-type classifier, tables from params.
+/// One NAMED params table read with a default, in either spelling.
 ///
-/// Keys lowercase into a Java `HashSet`; a `definite_positive` hit wins
-/// outright, then candidate ELIMINATION through the `negative` table (a lone
-/// survivor wins), then the `positive` table scores what remains and every
-/// co-equal winner is listed. Iteration orders are Java's hash orders, which
-/// [`crate::painless_helpers::java_bucket`] reproduces -- the corpus's own
-/// single-winner strings depend on them.
-/// `def name = ctx.<source>.toUpperCase(); ... ctx.<target> = params.getOrDefault(name, name);`
-///
-/// The default being the KEY itself is what makes this its own pattern: a name
-/// the table does not abbreviate stands for itself rather than going missing.
+/// Two readers, one pattern: [`parse_ternary_table_lookup`] takes the
+/// `containsKey` ternary and [`parse_table_lookup_or_row`] the `getOrDefault`.
+fn parse_table_lookup_or_literal(script: &str) -> Option<ParamsPattern> {
+    let lookup =
+        parse_ternary_table_lookup(script).or_else(|| parse_table_lookup_or_row(script))?;
+    Some(ParamsPattern::TableLookupOrLiteral {
+        source: lookup.source,
+        table: lookup.table,
+        target: lookup.target,
+        default: lookup.default,
+    })
+}
+
+/// The four parts either spelling of the lookup resolves to.
+struct TableLookup {
+    source: String,
+    table: String,
+    target: String,
+    default: TableDefault,
+}
+
 /// `params.<table>.containsKey(k) ? params.<table>[k] : '<default>'`, written
 /// to a target and guarded on the source being present.
 ///
@@ -2345,7 +2373,7 @@ fn try_first_asset(event: &mut Event, params: &Map<String, Value>) -> bool {
 /// ```
 ///
 /// The allocation line is noise: `Event::set` builds the parents anyway.
-fn parse_table_lookup_or_literal(script: &str) -> Option<ParamsPattern> {
+fn parse_ternary_table_lookup(script: &str) -> Option<TableLookup> {
     let (head, rest) = script.split_once(".toString();")?;
     let source = clean_path(head.rsplit("ctx.").next()?);
     if source.is_empty() || source.contains(char::is_whitespace) {
@@ -2366,7 +2394,7 @@ fn parse_table_lookup_or_literal(script: &str) -> Option<ParamsPattern> {
     // `? params.<table>[key] : '<default>'` -- the default is the quoted half.
     let (_, defaulted) = after.split_once('?')?;
     let (_, literal) = defaulted.split_once(':')?;
-    let default = quoted_after(literal.split(';').next()?, "")?;
+    let default = TableDefault::Literal(quoted_after(literal.split(';').next()?, "")?);
 
     // The LAST `ctx.` in the script is the write. The allocation line above it
     // names the root only, and `Event::set` builds that anyway.
@@ -2376,7 +2404,7 @@ fn parse_table_lookup_or_literal(script: &str) -> Option<ParamsPattern> {
         return None;
     }
 
-    Some(ParamsPattern::TableLookupOrLiteral {
+    Some(TableLookup {
         source,
         table,
         target,
@@ -2384,6 +2412,84 @@ fn parse_table_lookup_or_literal(script: &str) -> Option<ParamsPattern> {
     })
 }
 
+/// The same NAMED table, spelled `getOrDefault`, falling back to another ROW
+/// of itself rather than to a literal.
+///
+/// The whole script, as qualys writes it over its severity table:
+///
+/// ```painless
+/// if (!(ctx.<source> instanceof String)) { return; }
+/// String level = ctx.<source>;
+/// ctx.<target> = params.<table>.getOrDefault(level, params.<table>["0"]);
+/// ```
+///
+/// The fallback has to name the SAME table and subscript it with a literal.
+/// Every other `getOrDefault` in the tree defaults to `null`, to the key, or to
+/// the field's own current value, and each of those is a different pattern.
+fn parse_table_lookup_or_row(script: &str) -> Option<TableLookup> {
+    let (head, rest) = script.split_once(".getOrDefault(")?;
+
+    // The assignment sits at the script's TOP LEVEL. qualys_vmdr writes the
+    // same lookup only inside `if (params.vuln_types.contains(vuln_type))`, and
+    // running it regardless would rewrite every other vulnerability type's
+    // severity.
+    if head.matches('{').count() != head.matches('}').count() {
+        return None;
+    }
+
+    let table = head.rsplit("params.").next()?.trim().to_string();
+    if table.is_empty() || table.contains(['.', ' ', '(', '[', '?']) {
+        return None;
+    }
+
+    let (key, fallback) = rest.split_once(',')?;
+    let key = key.trim();
+    let row = fallback
+        .trim_start()
+        .strip_prefix(&format!("params.{table}["))?
+        .split(']')
+        .next()?
+        .trim()
+        .trim_matches(['\'', '"'])
+        .to_owned();
+    if row.is_empty() {
+        return None;
+    }
+
+    // The key is either the ctx path itself or a local bound to one.
+    let source = match key.strip_prefix("ctx.") {
+        Some(path) => clean_path(path),
+        None => clean_path(
+            script
+                .split_once(&format!(" {key} = ctx."))?
+                .1
+                .split([';', '\n'])
+                .next()?
+                .trim(),
+        ),
+    };
+    if source.is_empty() || source.contains(char::is_whitespace) {
+        return None;
+    }
+
+    // The assignment the lookup feeds is the `ctx.` immediately before it.
+    let target = clean_path(head.rsplit("ctx.").next()?.split('=').next()?.trim());
+    if target.is_empty() || target.contains(char::is_whitespace) {
+        return None;
+    }
+
+    Some(TableLookup {
+        source,
+        table,
+        target,
+        default: TableDefault::Row(row),
+    })
+}
+
+/// `def name = ctx.<source>.toUpperCase(); ... ctx.<target> = params.getOrDefault(name, name);`
+///
+/// The default being the KEY itself is what makes this its own pattern: a name
+/// the table does not abbreviate stands for itself rather than going missing.
 fn parse_uppercase_lookup_default(script: &str) -> Option<ParamsPattern> {
     let (head, rest) = script.split_once(".toUpperCase();")?;
     let source = clean_path(head.rsplit("ctx.").next()?);
@@ -4280,6 +4386,14 @@ fn try_invocation_details(event: &mut Event, params: &Map<String, Value>) -> boo
     true
 }
 
+/// mimecast's scored log-type classifier, tables from params.
+///
+/// Keys lowercase into a Java `HashSet`; a `definite_positive` hit wins
+/// outright, then candidate ELIMINATION through the `negative` table (a lone
+/// survivor wins), then the `positive` table scores what remains and every
+/// co-equal winner is listed. Iteration orders are Java's hash orders, which
+/// [`crate::painless_helpers::java_bucket`] reproduces -- the corpus's own
+/// single-winner strings depend on them.
 fn try_mimecast_log_type(event: &mut Event, params: &Map<String, Value>) -> bool {
     use crate::painless_helpers::{java_bucket, java_table_size};
 

@@ -25,6 +25,7 @@ pub mod enrichment;
 pub mod error;
 pub mod event;
 pub mod grok_cache;
+pub mod painless_coercion;
 pub mod painless_common;
 pub mod painless_entity;
 pub mod painless_expr;

@@ -18139,6 +18139,9 @@ pub(crate) enum KnownPattern {
     FirstMatchInList(Box<FirstMatchInList>),
     /// An integer divided by a literal and written back, through a local.
     LongDivide(Box<LongDivide>),
+    /// A value that may arrive as text or as a number, written back as a
+    /// number -- in place, per list item, or per list element.
+    LongCoercion(Box<crate::painless_coercion::LongCoercion>),
 }
 
 /// Copies that apply only where `guard` holds `literal`.
@@ -20099,6 +20102,18 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: a value that may arrive as text or as a number, coerced to a
+    // number -- `instanceof String` picking `Long.parseLong`, everything else a
+    // `(long)` cast. LATE, because far richer scripts spell the same two arms:
+    // cloudflare and sysdig read them into a LOCAL and rescale it, and claiming
+    // either would write the raw epoch instead.
+    if normalised.contains(" instanceof String)")
+        && let Some(pattern) = crate::painless_coercion::parse_long_coercion(normalised)
+    {
+        patterns.push(KnownPattern::LongCoercion(Box::new(pattern)));
+        return patterns;
+    }
+
     // The two catch-alls below are patterns a longer script also CONTAINS, so
     // they run only after every structural matcher has declined.
 
@@ -20893,6 +20908,9 @@ pub(crate) fn run_known_pattern(
         } => run_guarded_divide(event, target, source, absent.as_ref(), *divisor),
         KnownPattern::FlattenMapInto(pattern) => run_flatten_map_into(event, pattern),
         KnownPattern::StringifyLongs(fields) => run_stringify_longs(event, fields),
+        KnownPattern::LongCoercion(pattern) => {
+            crate::painless_coercion::long_coercion(event, pattern)
+        }
         KnownPattern::CopyByLabel(pattern) => run_copy_by_label(event, pattern),
         KnownPattern::BandLadder(pattern) => run_band_ladder(event, pattern),
         KnownPattern::StripSurroundingPair(pattern) => run_strip_surrounding_pair(event, pattern),

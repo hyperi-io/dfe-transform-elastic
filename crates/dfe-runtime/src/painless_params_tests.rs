@@ -3800,3 +3800,81 @@ fn a_configured_date_with_another_output_format_declines() {
         None
     );
 }
+
+/// The severity table's `getOrDefault` spelling, verbatim from the call sites
+/// in `qualys_was_vulnerability/default.rs` and
+/// `qualys_vmdr_asset_host_detection/default.rs`.
+const SEVERITY_ROW_DEFAULT: &str = r#"if (!(ctx.json?.knowledge_base?.SEVERITY_LEVEL instanceof String)) {\n  return;\n} String level = ctx.json.knowledge_base.SEVERITY_LEVEL; ctx.vulnerability.severity = params.vuln_level.getOrDefault(level, params.vuln_level[\"0\"]);"#;
+
+fn vuln_level() -> Value {
+    json!({ "vuln_level": {
+        "0": "None", "1": "Minimal", "2": "Medium",
+        "3": "Serious", "4": "Critical", "5": "Urgent"
+    } })
+}
+
+/// A key the table carries takes its row; one it does not takes the FALLBACK
+/// ROW rather than the key or a literal.
+#[test]
+fn a_row_defaulted_lookup_falls_back_to_another_row_of_its_own_table() {
+    let mut hit = Event::new(json!({
+        "json": { "knowledge_base": { "SEVERITY_LEVEL": "1" } }
+    }));
+    assert!(try_params_painless(
+        &mut hit,
+        SEVERITY_ROW_DEFAULT,
+        &vuln_level()
+    ));
+    assert_eq!(hit.get_str("vulnerability.severity"), Some("Minimal"));
+
+    let mut miss = Event::new(json!({
+        "json": { "knowledge_base": { "SEVERITY_LEVEL": "9" } }
+    }));
+    assert!(try_params_painless(
+        &mut miss,
+        SEVERITY_ROW_DEFAULT,
+        &vuln_level()
+    ));
+    assert_eq!(miss.get_str("vulnerability.severity"), Some("None"));
+}
+
+/// The script's own type guard: a level the document does not carry returns
+/// before the lookup, so the target stays absent.
+#[test]
+fn a_row_defaulted_lookup_with_no_source_writes_nothing() {
+    let mut event = Event::new(json!({ "json": { "knowledge_base": {} } }));
+    assert!(try_params_painless(
+        &mut event,
+        SEVERITY_ROW_DEFAULT,
+        &vuln_level()
+    ));
+    assert!(!event.has("vulnerability.severity"));
+}
+
+/// Every other `getOrDefault` in the generated tree, which the widened trigger
+/// now reaches and each of which the row reader has to decline: a default of
+/// `null`, of the key itself, of the field's own current value, of a quoted
+/// literal, and a table that is `params` rather than a named member of it.
+#[test]
+fn the_other_get_or_default_spellings_are_declined() {
+    for script in [
+        r#"def value = ctx.a.result;\nif (value != null) {\n  ctx.b.result = params.error_codes.getOrDefault(value, null);\n}\n"#,
+        r#"ctx.salesforce.login.api.type = params.api_type_map.getOrDefault(ctx.salesforce?.login?.api?.type, ctx.salesforce.login.api.type);\n"#,
+        r#"def sev = ctx.digital_guardian.arc.inc_sev;\nctx.event.severity = params.getOrDefault(sev, params['Unknown']);"#,
+        r#"def severity = String.valueOf(ctx.event.severity);\nctx.event.severity_label = params.descriptions.getOrDefault(\n  severity,\n  \"unknown\"\n);\n"#,
+        r#"def getField(Map src, String[] path) {\n for (int i=0; i<path.length-1; i++) {\n  src = src.getOrDefault(path[i], null);\n }\n return src;\n}"#,
+        // qualys_vmdr's twin, which writes the SAME table's row only where a
+        // second params list holds the finding's vuln_type. Verbatim from
+        // `qualys_vmdr_asset_host_detection/default.rs`.
+        r#"if (!(ctx.qualys_vmdr?.asset_host_detection?.knowledge_base?.SEVERITY_LEVEL instanceof String)) {\n  return;\n} def vuln_type = ctx.qualys_vmdr?.asset_host_detection?.knowledge_base?.vuln_type; if (!(vuln_type instanceof String)) {\n  return;\n} String level = ctx.qualys_vmdr.asset_host_detection.knowledge_base.SEVERITY_LEVEL; if (params.vuln_types.contains(vuln_type)) {\n  ctx.qualys_vmdr.asset_host_detection.knowledge_base.SEVERITY_LEVEL = params.vuln_level.getOrDefault(level, params.vuln_level[\"0\"]);\n}"#,
+    ] {
+        let normalised = crate::painless_common::normalise(script);
+        assert!(
+            !matches!(
+                params_pattern(&normalised),
+                Some(ParamsPattern::TableLookupOrLiteral { .. })
+            ),
+            "the row reader claimed a script it must decline: {script}"
+        );
+    }
+}

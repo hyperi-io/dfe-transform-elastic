@@ -666,13 +666,13 @@ pub fn convert_value(value: &Value, kind: &str) -> std::result::Result<Value, St
                 _ => Err(cannot("float")),
             }
         }
-        "string" => match value {
-            Value::String(_) => Ok(value.clone()),
-            Value::Number(n) => Ok(Value::from(n.to_string())),
-            Value::Bool(b) => Ok(Value::from(b.to_string())),
-            Value::Null => Ok(Value::from("null")),
-            other => Ok(Value::from(other.to_string())),
-        },
+        // Elastic's `string` convert is `String.valueOf(Object)`, so a
+        // container renders as Java's `{k=v, k=v}` / `[a, b]` and never as its
+        // JSON. qualys_was keeps a rendered copy of every finding's result list
+        // in exactly that form.
+        "string" => Ok(Value::from(crate::painless_helpers::painless_to_string(
+            value,
+        ))),
         // Elastic accepts only the exact strings, case insensitively, and
         // throws on anything else.
         "boolean" => match value {
@@ -3094,6 +3094,28 @@ mod tests {
     #[test]
     fn one_unconvertible_member_fails_the_array() {
         assert!(convert_value(&json!(["7", "not a number"]), "long").is_err());
+    }
+
+    /// A CONTAINER converts through Java's `String.valueOf`, so it renders
+    /// `{k=v, k=v}` with the members in Java's hash order -- not its JSON.
+    ///
+    /// Verbatim from `qualys_was/vulnerability/test-verbose-findings`, whose
+    /// `result_list_text` Elasticsearch wrote with `offset` ahead of `length`
+    /// though the document carries them the other way round.
+    #[test]
+    fn a_container_converts_to_java_text_and_not_to_json() {
+        assert_eq!(
+            convert_value(
+                &json!([{ "payloadResponse": { "length": 25, "offset": 271 } }]),
+                "string"
+            )
+            .unwrap(),
+            json!(["{payloadResponse={offset=271, length=25}}"])
+        );
+        assert_eq!(
+            convert_value(&json!({ "a": ["x", 1], "b": null }), "string").unwrap(),
+            json!("{a=[x, 1], b=null}")
+        );
     }
 
     /// Verbatim from the compat corpus: `m365_defender/event/test-device`

@@ -704,6 +704,39 @@ fn the_cloudflare_query_cut_binds_to_the_leading_cut_and_carries_its_count() {
     );
 }
 
+/// The three placements qualys writes its numeric coercion in, verbatim from
+/// the call sites in `qualys_was_vulnerability/default.rs`.
+const QUALYS_SCALAR: &str = r#"if (ctx.json.detection.detectionScore instanceof String) {\n  ctx.qualys_was.vulnerability.detection_score = Long.parseLong(ctx.json.detection.detectionScore);\n} else {\n  ctx.qualys_was.vulnerability.detection_score = (long)ctx.json.detection.detectionScore;\n}\n"#;
+
+const QUALYS_COLLECT_MEMBERS: &str = r#"def wascList = new ArrayList(); for (wasc in ctx.json.detection.wasc.list) {\n  if (wasc.WASC?.code != null) {\n    if (wasc.WASC.code instanceof String) {\n      wasc.WASC.code = Long.parseLong(wasc.WASC.code);\n    } else {\n      wasc.WASC.code = (long)wasc.WASC.code;\n    }\n   }     \n   wascList.add(wasc.WASC);        \n} ctx.qualys_was.vulnerability.wasc_references = wascList;\n"#;
+
+const QUALYS_COLLECT_STRINGS: &str = r#"ctx.vulnerability.id = new ArrayList(); for (cwe in ctx.json.detection.cwe.list) {\n  if (cwe instanceof String) {\n    ctx.vulnerability.id.add(cwe);\n  } else {\n    ctx.vulnerability.id.add(((long)cwe).toString());\n  } \n  \n}\n"#;
+
+/// cloudflare reads the same two arms into a LOCAL and rescales it, so it must
+/// keep its own matcher after `LongCoercion` joined the ladder.
+#[test]
+fn the_three_qualys_coercions_bind_and_cloudflare_keeps_its_rescale() {
+    let held = binding(QUALYS_SCALAR).join(" ");
+    assert!(held.starts_with("LongCoercion"), "{held}");
+    assert!(
+        held.contains(r#"source: "json.detection.detectionScore""#),
+        "{held}"
+    );
+
+    let held = binding(QUALYS_COLLECT_MEMBERS).join(" ");
+    assert!(held.contains(r#"member: "WASC""#), "{held}");
+    assert!(held.contains(r#"key: "code""#), "{held}");
+
+    let held = binding(QUALYS_COLLECT_STRINGS).join(" ");
+    assert!(
+        held.contains(r#"CollectStrings { list: "json.detection.cwe.list""#),
+        "{held}"
+    );
+
+    assert_eq!(heads(CLOUDFLARE_WHEN_TO_MILLI), ["EpochToMillis"]);
+    assert_eq!(heads(SYSDIG_PARSE_DATE), ["EpochNanosToDateTime"]);
+}
+
 #[test]
 fn both_cloudflare_epoch_spellings_bind_to_the_one_rescale() {
     // Seventeen call sites spell the conversion inline over one field and
