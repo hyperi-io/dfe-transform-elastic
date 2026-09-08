@@ -359,6 +359,106 @@ fn clean(term: &str) -> String {
     term.trim().replace("?.", ".").trim().to_owned()
 }
 
+/// A run of fields decoded in place through `Long.decode`.
+///
+/// snort's grok captures five packet-header fields with `%{BASE16NUM}`, so each
+/// arrives as text in whichever base the sensor printed, and the pipeline
+/// decodes them all in one script:
+///
+/// ```painless
+/// if (ctx.snort?.ip?.tos != null && ctx.snort.ip.tos instanceof String) {
+///     ctx.snort.ip.tos = Long.decode(ctx.snort.ip.tos);
+/// } ...
+/// ```
+///
+/// Unclaimed it is the whole source: `snort` scores 0 of 15 events on these five
+/// fields alone.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct DecodedFields {
+    /// Every path the script decodes, in the order it writes them.
+    paths: Vec<String>,
+}
+
+/// Read the run of decodes, or decline it.
+///
+/// Every arm has to guard, decode and write the SAME path: a script decoding
+/// one field into another is a different one, and running it would move a value.
+#[must_use]
+pub fn parse_decoded_fields(script: &str) -> Option<DecodedFields> {
+    let mut paths = Vec::new();
+    for block in script.split("if (").skip(1) {
+        let (guard, body) = block.split_once(')')?;
+        let (present, typed) = guard.split_once("&&")?;
+        let path = clean(
+            present
+                .trim()
+                .strip_suffix("!= null")?
+                .strip_prefix("ctx")?,
+        )
+        .trim_start_matches('.')
+        .to_owned();
+        if path.is_empty() || !is_path(&path) {
+            return None;
+        }
+        // The type guard and the write both name the field the guard tested.
+        if clean(typed).trim() != format!("ctx.{path} instanceof String") {
+            return None;
+        }
+        let written = body.split_once('{')?.1.split_once('}')?.0;
+        if clean(written).trim().trim_end_matches(';').trim()
+            != format!("ctx.{path} = Long.decode(ctx.{path})")
+        {
+            return None;
+        }
+        paths.push(path);
+    }
+    (!paths.is_empty()).then_some(DecodedFields { paths })
+}
+
+/// Decode each field in place, leaving anything that is not text alone.
+///
+/// Java's `Long.decode` reads a leading `0x`, `0X` or `#` as hexadecimal, a
+/// leading `0` as octal and everything else as decimal, and takes a sign before
+/// the prefix. Text it cannot read THROWS, so the field is left as it stands --
+/// the call site carries the vendor's own `on_failure` handler, and a substitute
+/// would be a number Elasticsearch never emitted.
+#[must_use]
+pub fn decoded_fields(event: &mut Event, pattern: &DecodedFields) -> bool {
+    for path in &pattern.paths {
+        let Some(text) = event.get_str(path) else {
+            continue;
+        };
+        if let Some(number) = java_decode(text) {
+            let _ = event.set(path, Value::from(number));
+        }
+    }
+    true
+}
+
+/// Java's `Long.decode`, which is not `parse` with a base.
+fn java_decode(text: &str) -> Option<i64> {
+    let text = text.trim();
+    let (negative, digits) = match text.strip_prefix('-') {
+        Some(rest) => (true, rest),
+        None => (false, text.strip_prefix('+').unwrap_or(text)),
+    };
+
+    let (radix, digits) = if let Some(rest) = digits
+        .strip_prefix("0x")
+        .or_else(|| digits.strip_prefix("0X"))
+        .or_else(|| digits.strip_prefix('#'))
+    {
+        (16, rest)
+    } else if digits.len() > 1 && digits.starts_with('0') {
+        (8, &digits[1..])
+    } else {
+        (10, digits)
+    };
+
+    let value = i64::from_str_radix(digits, radix).ok()?;
+    Some(if negative { -value } else { value })
+}
+
 #[cfg(test)]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
@@ -626,5 +726,61 @@ mod tests {
     fn a_bare_parse_with_no_type_guard_is_declined() {
         let script = r#"String packetsStr = ctx.checkpoint.packets.trim();\nctx.checkpoint.packets = Long.parseLong(packetsStr);\n"#;
         assert_eq!(parse(script), None);
+    }
+
+    /// Verbatim from `snort_log/default.rs`, in the escaped one-line form the
+    /// call site holds.
+    #[test]
+    fn a_run_of_fields_is_decoded_in_place() {
+        let script = r#"if (ctx.snort?.ip?.tos != null && ctx.snort.ip.tos instanceof String) {\n    ctx.snort.ip.tos = Long.decode(ctx.snort.ip.tos);\n} if (ctx.snort?.eth?.length != null && ctx.snort.eth.length instanceof String) {\n    ctx.snort.eth.length = Long.decode(ctx.snort.eth.length);\n} if (ctx.snort?.tcp?.ack != null && ctx.snort.tcp.ack instanceof String) {\n    ctx.snort.tcp.ack = Long.decode(ctx.snort.tcp.ack);\n} if (ctx.snort?.tcp?.seq != null && ctx.snort.tcp.seq instanceof String) {\n    ctx.snort.tcp.seq = Long.decode(ctx.snort.tcp.seq);\n} if (ctx.snort?.tcp?.window != null && ctx.snort.tcp.window instanceof String) {\n    ctx.snort.tcp.window = Long.decode(ctx.snort.tcp.window);\n}"#;
+        let mut event = Event::new(serde_json::json!({ "snort": {
+            "ip": { "tos": "0x0" },
+            "eth": { "length": "0x3C" },
+            "tcp": { "ack": "0x0", "seq": "0xF9D5A8CE", "window": "0x2000" },
+        }}));
+
+        assert!(crate::painless_common::try_known_painless(
+            &mut event, script
+        ));
+        assert_eq!(event.get("snort.ip.tos"), Some(&serde_json::json!(0)));
+        assert_eq!(event.get("snort.eth.length"), Some(&serde_json::json!(60)));
+        assert_eq!(
+            event.get("snort.tcp.seq"),
+            Some(&serde_json::json!(4_191_529_166_i64))
+        );
+        assert_eq!(
+            event.get("snort.tcp.window"),
+            Some(&serde_json::json!(8192))
+        );
+
+        // A field already decoded is not text, so the guard skips it and the
+        // value stands.
+        let mut done = Event::new(serde_json::json!({ "snort": { "ip": { "tos": 16 } } }));
+        assert!(crate::painless_common::try_known_painless(
+            &mut done, script
+        ));
+        assert_eq!(done.get("snort.ip.tos"), Some(&serde_json::json!(16)));
+    }
+
+    /// Java's `decode` is not `parse` with a base: the prefix chooses it, and a
+    /// bare leading zero means OCTAL.
+    #[test]
+    fn decode_reads_the_base_off_the_prefix() {
+        assert_eq!(java_decode("0x1F"), Some(31));
+        assert_eq!(java_decode("#1F"), Some(31));
+        assert_eq!(java_decode("017"), Some(15));
+        assert_eq!(java_decode("17"), Some(17));
+        assert_eq!(java_decode("0"), Some(0));
+        assert_eq!(java_decode("-0x10"), Some(-16));
+        // Text it cannot read THROWS in Painless, so nothing is written.
+        assert_eq!(java_decode("0x"), None);
+        assert_eq!(java_decode("09"), None);
+    }
+
+    /// A decode that writes somewhere else moves a value, so it is declined.
+    #[test]
+    fn a_decode_into_another_field_is_declined() {
+        let script = r#"if (ctx.a.x != null && ctx.a.x instanceof String) {\n    ctx.a.y = Long.decode(ctx.a.x);\n}"#;
+        assert!(parse_decoded_fields(&crate::painless_common::normalise(script)).is_none());
     }
 }

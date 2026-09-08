@@ -18633,6 +18633,8 @@ pub(crate) enum KnownPattern {
     ListFold(Box<ListFold>),
     /// One record assembled from whichever named fields the event carries.
     RecordFromFields(Box<crate::painless_records::RecordFromFields>),
+    /// A run of fields decoded in place through `Long.decode`.
+    DecodedFields(Box<crate::painless_coercion::DecodedFields>),
     /// An integer divided by a literal and written back, through a local.
     LongDivide(Box<LongDivide>),
     /// A value that may arrive as text or as a number, written back as a
@@ -20645,6 +20647,15 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: a run of fields decoded in place through `Long.decode`. Above
+    // `GuardedCopy` for the reason the arm below gives.
+    if normalised.contains("Long.decode(")
+        && let Some(pattern) = crate::painless_coercion::parse_decoded_fields(normalised)
+    {
+        patterns.push(KnownPattern::DecodedFields(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: one record assembled from whichever named fields the event
     // carries, written as a list of one.
     //
@@ -21495,6 +21506,9 @@ pub(crate) fn run_known_pattern(
         KnownPattern::ListFold(pattern) => run_list_fold(event, pattern),
         KnownPattern::RecordFromFields(pattern) => {
             crate::painless_records::record_from_fields(event, pattern)
+        }
+        KnownPattern::DecodedFields(pattern) => {
+            crate::painless_coercion::decoded_fields(event, pattern)
         }
         KnownPattern::LongDivide(pattern) => run_long_divide(event, pattern),
     }
