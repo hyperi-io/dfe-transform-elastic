@@ -407,6 +407,73 @@ fn checkpoint_email_severity_binds_to_the_indexed_lookup() {
     assert_eq!(heads(CHECKPOINT_EMAIL_SEVERITY), ["IndexedLookup"]);
 }
 
+/// Verbatim from the generated call sites in
+/// `crates/dfe-transforms/src/filebeat/cyberark_epm_raw_event/default.rs`, and
+/// the whole of that stream's parity debt beside the file mode below.
+const CYBERARK_LOGON_STATUS: &str = r"def value = Long.toString(ctx.cyberark_epm.raw_event.logon_status_id);\nif (params.containsKey(value)) {\n  ctx.cyberark_epm.raw_event.put('logon_status_value', params[value]);\n}";
+
+const CYBERARK_LOGON_ATTEMPT: &str = r"def value = Long.toString(ctx.cyberark_epm.raw_event.logon_attempt_type_id);\nif (params.containsKey(value)) {\n  ctx.cyberark_epm.raw_event.put('logon_attempt_value', params[value]);\n}";
+
+const CYBERARK_FILE_MODE: &str = r"def getOctalValue(String permissions) {\n  def value = 0;\n  if (permissions.charAt(0) == (char) 'r') value += 4;\n  if (permissions.charAt(1) == (char) 'w') value += 2;\n  if (permissions.charAt(2) == (char) 'x') value += 1;\n  return value;\n}\nString permissionString = ctx.cyberark_epm.raw_event.file_access_permission;\nif (permissionString.length() != 10) {\n  return;\n}\nint owner = getOctalValue(permissionString.substring(1, 4));\nint group = getOctalValue(permissionString.substring(4, 7));\nint other = getOctalValue(permissionString.substring(7, 10));\nif (ctx.file == null) {\n  ctx.put('file', new HashMap());\n}\nctx.file.put('mode', Integer.toString(owner) + Integer.toString(group) + Integer.toString(other));";
+
+#[test]
+fn the_cyberark_logon_tables_bind_to_the_stringified_lookup() {
+    // Both bound to `IndexedLookup`, the checkpoint_email arm above, which
+    // indexes a params LIST by an offset. These stringify a long and read a
+    // params MAP, so its runner declined and 19 fields over 10 events reached
+    // nothing. The two arms sit next to each other and only the parse
+    // separates them.
+    for (name, script, source, target) in [
+        (
+            "status",
+            CYBERARK_LOGON_STATUS,
+            "cyberark_epm.raw_event.logon_status_id",
+            "cyberark_epm.raw_event.logon_status_value",
+        ),
+        (
+            "attempt",
+            CYBERARK_LOGON_ATTEMPT,
+            "cyberark_epm.raw_event.logon_attempt_type_id",
+            "cyberark_epm.raw_event.logon_attempt_value",
+        ),
+    ] {
+        let held = binding(script).join(" ");
+        assert!(held.starts_with("StringifiedLookup"), "{name}: {held}");
+        assert!(
+            held.contains(&format!("source: {source:?}")),
+            "{name}: {held}"
+        );
+        assert!(
+            held.contains(&format!("target: {target:?}")),
+            "{name}: {held}"
+        );
+    }
+}
+
+#[test]
+fn the_cyberark_file_mode_binds_to_the_permission_scoring() {
+    // The binding was EMPTY: `OctalString` triggers on
+    // `Integer.toOctalString(`, and this script converts by scoring characters
+    // and names no base. The width, the triplet bounds and the score table are
+    // read off the script, so all three have to show here.
+    let held = binding(CYBERARK_FILE_MODE).join(" ");
+    assert!(held.starts_with("PermissionOctal"), "{held}");
+    assert!(
+        held.contains(r#"source: "cyberark_epm.raw_event.file_access_permission""#),
+        "{held}"
+    );
+    assert!(held.contains(r#"target: "file.mode""#), "{held}");
+    assert!(held.contains("length: 10"), "{held}");
+    assert!(
+        held.contains("triplets: [(1, 4), (4, 7), (7, 10)]"),
+        "{held}"
+    );
+    assert!(
+        held.contains("scores: [(0, 'r', 4), (1, 'w', 2), (2, 'x', 1)]"),
+        "{held}"
+    );
+}
+
 #[test]
 fn first_epss_reference_keeps_both_halves_of_its_url() {
     // The whole source was this one expression, and reading the literal alone

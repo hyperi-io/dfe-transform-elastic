@@ -263,6 +263,8 @@ pub(crate) enum ParamsPattern {
     RowOrDefaults(Box<RowOrDefaults>),
     /// A guard chain picking ONE params row to write to a single target.
     GuardedParamsRow(Box<GuardedParamsRow>),
+    /// Named MEMBERS of a params row, each to its own target.
+    RowMembers(Box<RowMembers>),
     MergeRowOrFallback(Box<MergeRowOrFallback>),
     SelectMembers {
         subject: String,
@@ -318,6 +320,18 @@ pub(crate) enum TableDefault {
 /// where it does; a script can spell several triggers and the FIRST wins,
 /// exactly as the old inline dispatch behaved.
 pub(crate) fn params_pattern(normalised: &str) -> Option<ParamsPattern> {
+    // Pattern: NAMED MEMBERS of a params row, each to its own target. FIRST,
+    // because every reader below takes a row WHOLE and so writes the members as
+    // children of one field rather than to the ones the script names. The
+    // trigger is the double subscript, and the parse is the real gate: it
+    // demands every `params[` in the script be the same lookup.
+    if normalised.contains("params.containsKey(ctx.")
+        && normalised.contains("][")
+        && let Some(pattern) = parse_row_members(normalised)
+    {
+        return Some(ParamsPattern::RowMembers(Box::new(pattern)));
+    }
+
     // Pattern: aws cloudtrail's entity classifier, per-service enrichment
     // into TreeSets then classification through the params tables. First,
     // because its 950 lines spell half the other triggers somewhere. The
@@ -823,6 +837,18 @@ fn params_pattern_tail(normalised: &str) -> Option<ParamsPattern> {
             pattern,
             Program::parse(normalised),
         ));
+    }
+
+    // Pattern: the same flat table keyed by a field's STRING form, with the key
+    // bound to a local and the guard written as a positive `containsKey`.
+    // Above `IndexedLookup`, whose `.put(` plus `params` trigger claims the
+    // script while its runner declines on it -- the table is a map, not an
+    // array. cyberark_epm's two logon tables are 19 fields over 10 events that
+    // reached no runner at all.
+    if normalised.contains("params.containsKey(")
+        && let Some(pattern) = parse_local_key_lookup(normalised)
+    {
+        return Some(pattern);
     }
 
     // Pattern: index a params array by a numeric field.
@@ -2063,6 +2089,23 @@ pub(crate) fn run_params_pattern(
         // The arms are tried in the order the script writes them, and the
         // fallback runs unguarded -- the vendor's `else` has no condition, so
         // the field is written on every event the processor reaches.
+        // A key the table does not carry writes NOTHING, which is what the
+        // script's own `containsKey` guard says.
+        ParamsPattern::RowMembers(pattern) => {
+            if let Some(row) = event
+                .get_str(&pattern.key)
+                .and_then(|key| params.get(key))
+                .and_then(Value::as_object)
+                .cloned()
+            {
+                for (member, target) in &pattern.writes {
+                    if let Some(value) = row.get(member) {
+                        let _ = event.set(target, value.clone());
+                    }
+                }
+            }
+            true
+        }
         ParamsPattern::GuardedParamsRow(pattern) => {
             let chosen = pattern
                 .arms
@@ -2694,6 +2737,55 @@ fn parse_stringified_lookup(script: &str) -> Option<ParamsPattern> {
     })?;
 
     Some(ParamsPattern::StringifiedLookup { source, target })
+}
+
+/// `def <k> = Long.toString(ctx.<source>); if (params.containsKey(<k>)) {
+/// ctx.<container>.put('<leaf>', params[<k>]); }`
+///
+/// One lookup, a second spelling: the key is bound to a LOCAL, the guard is
+/// positive rather than an early return, and the write is a `.put`. The local
+/// is what ties the three halves together, so a script guarding on one key and
+/// writing another declines -- `symantec_endpoint_security` spells the same
+/// guard over a set it built elsewhere, on 70 call sites.
+fn parse_local_key_lookup(script: &str) -> Option<ParamsPattern> {
+    const GUARD: &str = "params.containsKey(";
+    // `!params.containsKey(` is the early-return spelling above, which reads
+    // its key inline and must keep its own position in the ladder.
+    let (at, _) = script
+        .match_indices(GUARD)
+        .find(|(at, _)| !script[..*at].ends_with('!'))?;
+    let local = balanced_argument(&script[at + GUARD.len()..])?;
+    if local.is_empty() || !local.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+
+    let binder = format!("def {local} = ");
+    let bound = script.split_once(&binder)?.1;
+    let source = stringified_key_path(bound.split(';').next()?)?;
+
+    // The write must read the SAME key, or this is a different script that
+    // happens to spell both halves.
+    let subscript = format!("params[{local}]");
+    let target = ctx_put_writes(script)
+        .into_iter()
+        .find_map(|(path, value)| (value == subscript).then_some(path))?;
+
+    Some(ParamsPattern::StringifiedLookup { source, target })
+}
+
+/// The `ctx.` path a key expression names, through the calls Painless wraps a
+/// stringify in.
+///
+/// [`key_path`] reads the trailing `.toString()` spelling already; these are
+/// the ones written as a call around the path.
+fn stringified_key_path(expr: &str) -> Option<String> {
+    let expr = expr.trim();
+    for call in ["Long.toString(", "Integer.toString(", "String.valueOf("] {
+        if let Some(inner) = expr.strip_prefix(call) {
+            return key_path(inner.strip_suffix(')')?);
+        }
+    }
+    key_path(expr)
 }
 
 fn run_stringified_lookup(
@@ -8357,6 +8449,80 @@ fn parse_folded_concat(text: &str) -> Option<(Vec<ConcatPiece>, Fold)> {
     }
 
     parse_concat(inner).map(|pieces| (pieces, fold))
+}
+
+/// Named MEMBERS of a params row, each written to its own target.
+///
+/// zeek expands a connection state code through a table whose rows carry two
+/// members, and takes one for the vendor field and the other for ECS:
+///
+/// ```painless
+/// if (ctx.zeek?.connection?.state == null) { return; }
+/// if (params.containsKey(ctx.zeek.connection.state)) {
+///   ctx.zeek.connection.state_message = params[ctx.zeek.connection.state]["conn_str"];
+///   ctx.event.type = params[ctx.zeek.connection.state]["types"];
+/// }
+/// ```
+///
+/// A reader that takes the row WHOLE writes both members as children of the
+/// first target, which is why `state_message.conn_str` and
+/// `state_message.types` read as wrong on 18 events beside `state_message`
+/// itself.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct RowMembers {
+    /// The `ctx` path holding the row's key.
+    key: String,
+    /// `(member of the row, target)`, in the order the script writes them.
+    writes: Vec<(String, String)>,
+}
+
+/// Read the member writes, or decline them.
+///
+/// Every write has to subscript the SAME lookup: a script that reads two rows,
+/// or writes anything the row does not supply, is a different one.
+fn parse_row_members(script: &str) -> Option<RowMembers> {
+    let key = clean_path(
+        script
+            .split_once("params.containsKey(ctx.")?
+            .1
+            .split_once(')')?
+            .0
+            .trim(),
+    );
+    if key.is_empty() || key.contains(['(', ' ']) {
+        return None;
+    }
+
+    let lookup = format!("params[ctx.{key}][");
+    let mut writes = Vec::new();
+    for statement in script.split(';') {
+        let Some((target, value)) = statement.split_once('=') else {
+            continue;
+        };
+        // The LAST `ctx.` on the left, because the first statement of a block
+        // carries the `if` header in front of its assignment.
+        let Some((_, target)) = target.rsplit_once("ctx.") else {
+            continue;
+        };
+        let value = value.trim().replace("?.", ".");
+        let Some(member) = value
+            .strip_prefix(&lookup)
+            .and_then(|rest| rest.strip_suffix(']'))
+        else {
+            // A statement that assigns something else means the script does
+            // more than these writes, and running only these would leave it
+            // half done.
+            if value.contains("params[") {
+                return None;
+            }
+            continue;
+        };
+        writes.push((
+            member.trim().trim_matches(['"', '\'']).to_owned(),
+            clean_path(target.trim()),
+        ));
+    }
+    (!writes.is_empty()).then_some(RowMembers { key, writes })
 }
 
 /// A guard chain choosing ONE params row to write to a single target.

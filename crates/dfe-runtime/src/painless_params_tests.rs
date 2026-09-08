@@ -371,6 +371,78 @@ fn a_guarded_lookup_writes_only_on_a_hit() {
     assert!(!miss.has("ses.file.type_value"));
 }
 
+/// Verbatim from the generated call sites in
+/// `crates/dfe-transforms/src/filebeat/cyberark_epm_raw_event/default.rs`: the
+/// same flat table, with the key bound to a LOCAL and the guard positive.
+///
+/// Both bound to `IndexedLookup`, whose runner wants a params ARRAY and so
+/// declined on a map -- 19 fields over 10 events reached no runner at all.
+///
+/// Written in the ESCAPED one-line form the call site holds: a stored script
+/// arrives with its newlines escaped, and a test spelling them for real passes
+/// over a defect in `normalise`.
+#[test]
+fn a_local_key_lookup_writes_the_row_and_nothing_on_a_miss() {
+    let status = r"def value = Long.toString(ctx.cyberark_epm.raw_event.logon_status_id);\nif (params.containsKey(value)) {\n  ctx.cyberark_epm.raw_event.put('logon_status_value', params[value]);\n}";
+    let params = json!({
+        "3221225583": "User logon outside authorized hours",
+        "0": "Status OK."
+    });
+
+    let mut hit = Event::new(json!({
+        "cyberark_epm": { "raw_event": { "logon_status_id": 3_221_225_583i64 } }
+    }));
+    assert!(try_params_painless(&mut hit, status, &params));
+    assert_eq!(
+        hit.get_str("cyberark_epm.raw_event.logon_status_value"),
+        Some("User logon outside authorized hours")
+    );
+
+    // The key is the number's decimal text, so a status the table has no row
+    // for writes nothing.
+    let mut miss = Event::new(json!({
+        "cyberark_epm": { "raw_event": { "logon_status_id": 12 } }
+    }));
+    assert!(try_params_painless(&mut miss, status, &params));
+    assert!(!miss.has("cyberark_epm.raw_event.logon_status_value"));
+
+    // The second table on the same stream, keyed by a small integer.
+    let attempt = r"def value = Long.toString(ctx.cyberark_epm.raw_event.logon_attempt_type_id);\nif (params.containsKey(value)) {\n  ctx.cyberark_epm.raw_event.put('logon_attempt_value', params[value]);\n}";
+    let types = json!({ "10": "RemoteInteractive (Terminal Services, Remote Desktop or Remote Assistance)" });
+
+    let mut event = Event::new(json!({
+        "cyberark_epm": { "raw_event": { "logon_attempt_type_id": 10 } }
+    }));
+    assert!(try_params_painless(&mut event, attempt, &types));
+    assert_eq!(
+        event.get_str("cyberark_epm.raw_event.logon_attempt_value"),
+        Some("RemoteInteractive (Terminal Services, Remote Desktop or Remote Assistance)")
+    );
+}
+
+/// The two vendor scripts closest to that one, which the arm must decline.
+///
+/// `symantec_endpoint_security` guards on a CALL rather than a local and adds
+/// to a set, on 70 call sites; `amazon_security_lake` binds a local from a LIST
+/// element and puts the set it collected. Claiming either would write the
+/// guard's own row in place of what the script builds, so both stay on
+/// `IndexedLookup`.
+#[test]
+fn a_local_key_lookup_declines_a_guard_over_another_write() {
+    let symantec = r"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var);";
+    let security_lake = r"if (ctx.dns == null) {\n  ctx.dns = new HashMap();\n} def list = new HashSet(); for (def answer : ctx.ocsf.answers) {\n  if (answer.flags != null)\n  {\n    for (int i = 0; i < answer.flags.length; i++) {\n      def flag = answer.flags[i];\n      if(params.containsKey(flag))\n      {\n        list.add(params.get(flag));\n      }\n    }\n  }\n} ctx.dns.put('header_flags', list);";
+
+    for script in [symantec, security_lake] {
+        let normalised = crate::painless_common::normalise(script);
+        assert_eq!(parse_local_key_lookup(&normalised), None, "{script}");
+        assert_eq!(
+            params_pattern(&normalised),
+            Some(ParamsPattern::IndexedLookup),
+            "{script}"
+        );
+    }
+}
+
 /// Verbatim from `pipelines/google_workspace/{chrome,meet}/default.yml`: the
 /// row lands on a NAMED MEMBER of a container the script first guarantees, in
 /// the two spellings the family ships, wrapped in the one-element list ECS's
@@ -3907,6 +3979,57 @@ fn an_unparenthesised_join_is_not_folded_as_a_whole() {
     assert!(parse_folded_concat(r#"ctx.a + "-" + ctx.b.toLowerCase()"#).is_none());
     // A bracket that closes before the end is a call on something else.
     assert!(parse_folded_concat(r#"(ctx.a) + "-" + ctx.b.toLowerCase()"#).is_none());
+}
+
+/// Verbatim from `zeek_connection/default.rs`.
+///
+/// The row carries two members and the script takes one for the vendor field
+/// and the other for ECS. A reader that takes the row WHOLE writes both as
+/// children of the first target, which is why `state_message.conn_str` and
+/// `state_message.types` read as wrong on 18 events beside `state_message`.
+#[test]
+fn a_rows_named_members_go_to_their_own_targets() {
+    let script = r#"if (ctx.zeek?.connection?.state == null) {\n  return;\n} if (params.containsKey(ctx.zeek.connection.state)) {\n  ctx.zeek.connection.state_message = params[ctx.zeek.connection.state][\"conn_str\"];\n  ctx.event.type = params[ctx.zeek.connection.state][\"types\"];\n}"#;
+    let table = json!({
+        "SF": { "conn_str": "Normal establishment and termination", "types": ["allowed"] },
+    });
+
+    let parsed = parse_row_members(&crate::painless_common::normalise(script))
+        .expect("the member writes are recognised");
+    assert_eq!(parsed.key, "zeek.connection.state");
+    assert_eq!(
+        parsed.writes,
+        vec![
+            (
+                "conn_str".to_owned(),
+                "zeek.connection.state_message".to_owned()
+            ),
+            ("types".to_owned(), "event.type".to_owned()),
+        ]
+    );
+
+    let mut event = Event::new(json!({ "zeek": { "connection": { "state": "SF" } } }));
+    assert!(try_params_painless(&mut event, script, &table));
+    assert_eq!(
+        event.get_str("zeek.connection.state_message"),
+        Some("Normal establishment and termination")
+    );
+    assert_eq!(event.get("event.type"), Some(&json!(["allowed"])));
+
+    // A key the table does not carry writes NOTHING, which is what the
+    // script's own `containsKey` guard says.
+    let mut unknown = Event::new(json!({ "zeek": { "connection": { "state": "ZZ" } } }));
+    assert!(try_params_painless(&mut unknown, script, &table));
+    assert_eq!(unknown.get("zeek.connection.state_message"), None);
+    assert_eq!(unknown.get("event.type"), None);
+}
+
+/// Every write has to subscript the SAME lookup, or the script reads two rows
+/// and running only these writes would leave it half done.
+#[test]
+fn row_members_decline_a_second_lookup() {
+    let two = r#"if (params.containsKey(ctx.a.k)) {\n  ctx.a.one = params[ctx.a.k][\"x\"];\n  ctx.a.two = params[ctx.b.k][\"y\"];\n}"#;
+    assert!(parse_row_members(&crate::painless_common::normalise(two)).is_none());
 }
 
 /// Verbatim from `ti_custom_indicator/default.rs`, and written again with a

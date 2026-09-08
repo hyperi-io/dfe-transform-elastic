@@ -7088,6 +7088,28 @@ impl OctalString {
     }
 }
 
+/// An rwx permission string scored into one octal digit per triplet.
+///
+/// The other way a file mode is written down: `-rwxr-xr-x` becomes the string
+/// `755`, with no number in the script at any point. `cyberark_epm` ships it
+/// on its `raw_event` and `policyaudit_raw_event` streams, 9 events between
+/// them.
+///
+/// Every part is read off the script rather than assumed -- the width its guard
+/// demands, the triplet bounds, and which character scores what at which
+/// offset -- so a vendor spelling the walk differently is still right.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PermissionOctal {
+    source: String,
+    target: String,
+    /// The exact length the script's own guard demands of the source.
+    length: usize,
+    /// The `substring` bounds of each triplet, in the order the digits join.
+    triplets: Vec<(usize, usize)>,
+    /// `(offset within the triplet, the character that scores, its value)`.
+    scores: Vec<(usize, char, u32)>,
+}
+
 /// One step of a string-op chain, its literal arguments already resolved.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum StringOp {
@@ -7295,6 +7317,178 @@ fn parse_octal_string(script: &str) -> Option<OctalString> {
     let target = painless_path(head)?;
     (!source.is_empty() && !target.is_empty())
         .then(|| OctalString::new(source, clean_path(&target)))
+}
+
+/// `def <fn>(String s) { ... s.charAt(<i>) == (char) '<c>' ... value += <n>; }`
+/// over `<local>.substring(<a>, <b>)`, joined by `Integer.toString`.
+///
+/// `OctalString` cannot reach this: that arm triggers on
+/// `Integer.toOctalString(`, and this script converts by scoring characters and
+/// never names a base.
+fn parse_permission_octal(script: &str) -> Option<PermissionOctal> {
+    let scores = parse_permission_scores(script);
+    if scores.is_empty() {
+        return None;
+    }
+
+    let (head, tail) = script.split_once(".length() !=")?;
+    let local = head.rsplit(['(', ' ', '\n', '\t']).next()?.trim();
+    if local.is_empty() || !local.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+    let length: usize = tail.split(')').next()?.trim().parse().ok()?;
+    let source = painless_path(
+        script
+            .split_once(&format!(" {local} = "))?
+            .1
+            .split(';')
+            .next()?,
+    )?;
+
+    let bounds = parse_permission_triplets(script, local);
+    if bounds.is_empty() {
+        return None;
+    }
+
+    // The write's own order, not the binding order: the concat is what decides
+    // which triplet is the leading digit.
+    let statement = script
+        .split(';')
+        .find(|s| s.contains("Integer.toString("))?;
+    let put = statement.find(".put(")?;
+    let arguments = &statement[put + ".put(".len()..];
+    let (leaf, joined) = arguments.split_once(',')?;
+    let leaf = leaf.trim().trim_matches(['\'', '"']);
+    let target = painless_path(&statement[..put])?;
+    if leaf.is_empty() || target.is_empty() {
+        return None;
+    }
+
+    let mut triplets = Vec::with_capacity(bounds.len());
+    for piece in joined.trim().strip_suffix(')')?.split('+') {
+        let name = piece
+            .trim()
+            .strip_prefix("Integer.toString(")?
+            .strip_suffix(')')?
+            .trim();
+        triplets.push(
+            *bounds
+                .iter()
+                .find(|(bound, _)| bound == name)
+                .map(|(_, b)| b)?,
+        );
+    }
+
+    Some(PermissionOctal {
+        source,
+        target: format!("{target}.{leaf}"),
+        length,
+        triplets,
+        scores,
+    })
+}
+
+/// Every `charAt(<i>) == (char) '<c>'` guard and the value it adds.
+fn parse_permission_scores(script: &str) -> Vec<(usize, char, u32)> {
+    let mut scores = Vec::new();
+    for (at, _) in script.match_indices(".charAt(") {
+        let rest = &script[at + ".charAt(".len()..];
+        let Some((index, rest)) = rest.split_once(')') else {
+            continue;
+        };
+        let Ok(index) = index.trim().parse::<usize>() else {
+            continue;
+        };
+        // The statement, so an absent `+=` cannot be read off the next line.
+        let Some((statement, _)) = rest.split_once(';') else {
+            continue;
+        };
+        let Some(literal) = statement.trim_start().strip_prefix("==") else {
+            continue;
+        };
+        let literal = literal
+            .trim_start()
+            .trim_start_matches("(char)")
+            .trim_start();
+        let Some(literal) = literal.strip_prefix('\'') else {
+            continue;
+        };
+        let Some(wanted) = literal.chars().next() else {
+            continue;
+        };
+        // A closed one-character literal, since a longer one is not a `char`
+        // and the guard then means something else.
+        let Some(tail) = literal[wanted.len_utf8()..].strip_prefix('\'') else {
+            continue;
+        };
+        let Some((_, added)) = tail.split_once("+=") else {
+            continue;
+        };
+        let Ok(value) = added.trim().parse::<u32>() else {
+            continue;
+        };
+        scores.push((index, wanted, value));
+    }
+    scores
+}
+
+/// Each `<name> = <fn>(<local>.substring(<a>, <b>))`, as (name, bounds).
+fn parse_permission_triplets(script: &str, local: &str) -> Vec<(String, (usize, usize))> {
+    let needle = format!("{local}.substring(");
+    let mut found = Vec::new();
+    for (at, _) in script.match_indices(needle.as_str()) {
+        let rest = &script[at + needle.len()..];
+        let Some((arguments, _)) = rest.split_once(')') else {
+            continue;
+        };
+        let Some((start, end)) = arguments.split_once(',') else {
+            continue;
+        };
+        let (Ok(start), Ok(end)) = (start.trim().parse::<usize>(), end.trim().parse::<usize>())
+        else {
+            continue;
+        };
+        let Some((assigned, _)) = script[..at].rsplit_once('=') else {
+            continue;
+        };
+        let Some(name) = assigned.trim_end().rsplit([' ', '\n', '\t']).next() else {
+            continue;
+        };
+        if name.is_empty() || !name.chars().all(|c| c.is_alphanumeric() || c == '_') {
+            continue;
+        }
+        found.push((name.to_string(), (start, end)));
+    }
+    found
+}
+
+/// Score each triplet of an rwx permission string and write the digits joined.
+pub fn permission_octal(event: &mut Event, pattern: &PermissionOctal) -> bool {
+    let Some(text) = event.get_str(&pattern.source).map(str::to_owned) else {
+        return true;
+    };
+    let characters: Vec<char> = text.chars().collect();
+    // The vendor's own guard: any other width is not the permission string this
+    // walk reads, and the script returns before writing.
+    if characters.len() != pattern.length {
+        return true;
+    }
+
+    let mut digits = String::with_capacity(pattern.triplets.len());
+    for (start, end) in &pattern.triplets {
+        let Some(triplet) = characters.get(*start..*end) else {
+            return true;
+        };
+        let value: u32 = pattern
+            .scores
+            .iter()
+            .filter(|(at, wanted, _)| triplet.get(*at) == Some(wanted))
+            .map(|(_, _, value)| value)
+            .sum();
+        digits.push_str(&value.to_string());
+    }
+    let _ = event.set(&pattern.target, json!(digits));
+    true
 }
 
 /// Write the source as octal, the way Painless's 32-bit `(int)` cast renders.
@@ -18334,6 +18528,8 @@ pub(crate) enum KnownPattern {
     AllowedValueCopy(AllowedValueCopy),
     /// A number written back as an octal string.
     OctalString(OctalString),
+    /// An rwx permission string scored into one octal digit per triplet.
+    PermissionOctal(PermissionOctal),
     /// A value appended to a list the script first ensures exists.
     EnsureAppend(EnsureAppend),
     /// A composite key joined from whichever named fields are present.
@@ -19134,6 +19330,17 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_octal_string(normalised)
     {
         patterns.push(KnownPattern::OctalString(pattern));
+        return patterns;
+    }
+
+    // Pattern: the same file mode built by SCORING rwx characters. It names no
+    // base, so `OctalString` above cannot see it and cyberark_epm's `file.mode`
+    // was missing on 9 events.
+    if normalised.contains(".charAt(")
+        && normalised.contains("Integer.toString(")
+        && let Some(pattern) = parse_permission_octal(normalised)
+    {
+        patterns.push(KnownPattern::PermissionOctal(pattern));
         return patterns;
     }
 
@@ -21131,6 +21338,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::KvIntoFields(target) => kv_into_fields(event, target),
         KnownPattern::AllowedValueCopy(pattern) => allowed_value_copy(event, pattern),
         KnownPattern::OctalString(pattern) => octal_string(event, pattern),
+        KnownPattern::PermissionOctal(pattern) => permission_octal(event, pattern),
         KnownPattern::EnsureAppend(pattern) => ensure_append(event, pattern),
         KnownPattern::JoinPresentFields(pattern) => join_present_fields(event, pattern),
         KnownPattern::CoerceBoolean(pattern) => coerce_boolean(event, pattern),

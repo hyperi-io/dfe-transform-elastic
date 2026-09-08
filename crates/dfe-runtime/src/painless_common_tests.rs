@@ -6250,6 +6250,68 @@ fn a_file_mode_is_written_back_as_octal() {
     assert!(!empty.has("jamf_compliance_reporter.log.attributes.file.access_mode"));
 }
 
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/cyberark_epm_raw_event/default.rs`: the
+/// same file mode, built by SCORING rwx characters and naming no base at all.
+///
+/// `OctalString` triggers on `Integer.toOctalString(` and cannot see this, so
+/// the binding was EMPTY and `file.mode` was missing on 9 events across
+/// `cyberark_epm`'s `raw_event` and `policyaudit_raw_event` streams.
+///
+/// Written in the ESCAPED one-line form the call site holds: a stored script
+/// arrives with its newlines escaped, and a test spelling them for real passes
+/// over a defect in `normalise`.
+#[test]
+fn an_rwx_permission_string_scores_into_a_file_mode() {
+    let script = r"def getOctalValue(String permissions) {\n  def value = 0;\n  if (permissions.charAt(0) == (char) 'r') value += 4;\n  if (permissions.charAt(1) == (char) 'w') value += 2;\n  if (permissions.charAt(2) == (char) 'x') value += 1;\n  return value;\n}\nString permissionString = ctx.cyberark_epm.raw_event.file_access_permission;\nif (permissionString.length() != 10) {\n  return;\n}\nint owner = getOctalValue(permissionString.substring(1, 4));\nint group = getOctalValue(permissionString.substring(4, 7));\nint other = getOctalValue(permissionString.substring(7, 10));\nif (ctx.file == null) {\n  ctx.put('file', new HashMap());\n}\nctx.file.put('mode', Integer.toString(owner) + Integer.toString(group) + Integer.toString(other));";
+
+    let mut event = Event::new(json!({
+        "cyberark_epm": { "raw_event": { "file_access_permission": "-rwxr-xr-x" } }
+    }));
+    assert!(try_known_painless(&mut event, script));
+    // A string, which is what Elasticsearch stores for this field.
+    assert_eq!(event.get_str("file.mode"), Some("755"));
+
+    // Each triplet scores by POSITION, so an `x` in the third slot counts
+    // whether or not the `r` and `w` before it are set.
+    let mut sparse = Event::new(json!({
+        "cyberark_epm": { "raw_event": { "file_access_permission": "-r-x-----x" } }
+    }));
+    assert!(try_known_painless(&mut sparse, script));
+    assert_eq!(sparse.get_str("file.mode"), Some("501"));
+
+    // The script's own width guard returns before writing anything.
+    let mut short = Event::new(json!({
+        "cyberark_epm": { "raw_event": { "file_access_permission": "rwxr-xr-x" } }
+    }));
+    assert!(try_known_painless(&mut short, script));
+    assert!(!short.has("file.mode"));
+
+    // An absent source leaves the target alone.
+    let mut absent = Event::new(json!({ "cyberark_epm": { "raw_event": {} } }));
+    assert!(try_known_painless(&mut absent, script));
+    assert!(!absent.has("file.mode"));
+}
+
+/// The arm declines the other `charAt` script in the tree.
+///
+/// envoyproxy's prefix normalisation sits ABOVE this position and reads the
+/// same `.charAt(0)`; claiming it would cost that source its whole message.
+#[test]
+fn the_permission_scoring_declines_the_prefix_normalisation() {
+    let script = "if (ctx.message.charAt(0) == (char)(\"[\")) {\n  \
+        ctx.temp_message = \"ACCESS \" + ctx.message;\n\
+        } else if (ctx.message.substring(0, 7) == \"ACCESS \") {\n  \
+        ctx.temp_message = ctx.message;\n\
+        } else {\n  \
+        throw new Exception(\"Not a valid envoyproxy access log\");\n}";
+    assert_eq!(parse_permission_octal(&normalise(script)), None);
+    assert!(matches!(
+        known_patterns(&normalise(script)).as_slice(),
+        [KnownPattern::EnsurePrefix(_)]
+    ));
+}
+
 /// The sum still binds, and Painless keeps two integers integral.
 #[test]
 fn a_field_is_the_sum_of_two_others() {
