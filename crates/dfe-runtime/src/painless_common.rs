@@ -10995,6 +10995,13 @@ pub struct FirstOf {
     /// Guarded on `ctx.<array>.size() == 1`, so a longer list keeps every
     /// element instead of losing all but the first.
     only_if_single: bool,
+    /// The script drops the list once it has taken from it:
+    /// `ctx.<parent>.remove('<key>')` naming this same array.
+    ///
+    /// zeek's files stream spells it on both hosts, and leaving the list behind
+    /// put `zeek.files.rx_hosts` and `zeek.files.tx_hosts` on all 8 of its
+    /// events as fields Elasticsearch does not emit.
+    consumes_array: bool,
 }
 
 fn parse_first_element(script: &str) -> Option<FirstElement> {
@@ -11024,11 +11031,15 @@ fn parse_first_element(script: &str) -> Option<FirstElement> {
         let only_if_unset =
             script.contains(&format!("if (ctx.{target} == null || ctx.{target} == '')"));
         let only_if_single = script.contains(&format!("ctx.{array}.size() == 1)"));
+        // Only a removal naming THIS take's own array counts, so a script that
+        // drops some other key is left to the matchers that read one.
+        let consumes_array = arm_removes(script).contains(&array);
         takes.push(FirstOf {
             array,
             target,
             only_if_unset,
             only_if_single,
+            consumes_array,
         });
     }
     if takes.is_empty() {
@@ -11054,6 +11065,11 @@ fn run_first_element(event: &mut Event, pattern: &FirstElement) -> bool {
             _ => continue,
         };
         let _ = event.set(&take.target, first);
+        // The list is dropped only once the take has written, which is the
+        // order the script's two statements run in.
+        if take.consumes_array {
+            let _ = event.remove(&take.array);
+        }
     }
     true
 }
@@ -15412,12 +15428,15 @@ fn run_flags_present(event: &mut Event, pattern: &FlagsPresent) -> bool {
 struct ZipColumn {
     key: String,
     source: String,
+    /// The script's own `(long)` or `(int)` narrowing, both of which truncate
+    /// towards zero.
     to_long: bool,
 }
 
 /// Parallel lists zipped into a list of objects, one object per index.
 ///
-/// `m365_defender` pairs the DNS answers with their TTLs this way. Lists of
+/// `m365_defender` pairs the DNS answers with their TTLs this way, and zeek's
+/// DNS stream spells the same pairing with an `(int)` cast on the TTL. Lists of
 /// different lengths are the script's own error case, and it names the message.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ZipLists {
@@ -15431,11 +15450,19 @@ fn parse_zip_lists(script: &str) -> Option<ZipLists> {
     let mut columns = Vec::new();
     for part in body.split(',') {
         let (key, expr) = part.split_once(':')?;
-        let local = expr.trim().trim_start_matches("(long)").trim();
+        // Both narrowing casts the vendored pipelines spell. Reading only
+        // `(long)` left the local named `(int)ttls`, which is bound to nothing,
+        // so zeek's whole DNS zip declined and took `dns.resolved_ip` with it.
+        let to_long = expr.contains("(long)") || expr.contains("(int)");
+        let local = expr
+            .trim()
+            .trim_start_matches("(long)")
+            .trim_start_matches("(int)")
+            .trim();
         columns.push(ZipColumn {
             key: key.trim().trim_matches(['"', '\'']).to_string(),
             source: ctx_path_bound_to(script, local.split('[').next()?.trim())?,
-            to_long: expr.contains("(long)"),
+            to_long,
         });
     }
     let at = last_assignment(script)?;
@@ -18839,6 +18866,10 @@ pub(crate) enum KnownPattern {
     DecodedFields(Box<crate::painless_coercion::DecodedFields>),
     /// Every record of a list renamed onto ECS keys, one member gathered.
     RecordRenames(Box<crate::painless_records::RecordRenames>),
+    /// One field decided by a truth table over two others.
+    PairTable(Box<crate::painless_pair_table::PairTable>),
+    /// One member lifted out of every record of a list.
+    HoistMember(Box<crate::painless_hoist::HoistMember>),
     /// An integer divided by a literal and written back, through a local.
     LongDivide(Box<LongDivide>),
     /// A value that may arrive as text or as a number, written back as a
@@ -20882,6 +20913,22 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: one field decided by a truth table over two others, written as
+    // sequential `if`s rather than an `else if` chain.
+    //
+    // ABOVE the assignment readers below, whose grammar takes each arm's write
+    // on its own and would put the LAST row on every event. zeek's connection
+    // stream is the only call site and the field is `network.direction` on all
+    // 18 of its events.
+    if normalised.contains("== null ||")
+        && normalised.contains("return;")
+        && normalised.contains("&&")
+        && let Some(pattern) = crate::painless_pair_table::parse_pair_table(normalised)
+    {
+        patterns.push(KnownPattern::PairTable(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: one record assembled from whichever named fields the event
     // carries, written as a list of one.
     //
@@ -20906,6 +20953,20 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = crate::painless_seconds_between::parse_seconds_between(normalised)
     {
         patterns.push(KnownPattern::SecondsBetween(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: one member lifted out of every record of a list, into a list of
+    // its own, and dropped from the record it came from.
+    //
+    // ABOVE `ListRebuild`, which is gated on the same `new ArrayList()` and
+    // reads a walk that rebuilds the list rather than pruning it. It is the
+    // second half of zeek's DNS chain and reads only what the zip above wrote.
+    if normalised.contains("[i].containsKey(")
+        && normalised.contains("new ArrayList()")
+        && let Some(pattern) = crate::painless_hoist::parse_hoist_member(normalised)
+    {
+        patterns.push(KnownPattern::HoistMember(Box::new(pattern)));
         return patterns;
     }
 
@@ -21780,6 +21841,8 @@ pub(crate) fn run_known_pattern(
         KnownPattern::SecondsBetween(pattern) => {
             crate::painless_seconds_between::seconds_between(event, pattern)
         }
+        KnownPattern::PairTable(pattern) => crate::painless_pair_table::pair_table(event, pattern),
+        KnownPattern::HoistMember(pattern) => crate::painless_hoist::hoist_member(event, pattern),
         KnownPattern::DecodedFields(pattern) => {
             crate::painless_coercion::decoded_fields(event, pattern)
         }

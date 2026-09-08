@@ -9556,8 +9556,16 @@ fn try_scale(event: &mut Event, script: &str, params: &Map<String, Value>) -> bo
     };
 
     let scaled = current * factor;
-    // Whole results stay integers: a duration in nanoseconds is not a float.
-    if scaled.fract() == 0.0 && scaled.abs() < 9.007_199_254_740_992e15 {
+    // `Math.round(<field> * params.<name>)`, which ten sources spell over
+    // `event.duration` -- zeek's connection stream scales 0.10412883758544922
+    // seconds to the 104128838 Elasticsearch writes, on 8 of its 18 events.
+    // Java rounds a half TOWARDS positive infinity, which `f64::round` does not
+    // do for a negative operand.
+    if script.contains("Math.round(") {
+        #[allow(clippy::cast_possible_truncation)]
+        let _ = event.set(&path, (scaled + 0.5).floor() as i64);
+    } else if scaled.fract() == 0.0 && scaled.abs() < 9.007_199_254_740_992e15 {
+        // Whole results stay integers: a duration in nanoseconds is not a float.
         #[allow(clippy::cast_possible_truncation)]
         let _ = event.set(&path, scaled as i64);
     } else {

@@ -18,7 +18,9 @@
 //! a legitimate entry -- it records that NOTHING claims the script, which is a
 //! different defect from claiming it and writing the wrong thing.
 
-use dfe_runtime::painless_plan::PainlessPlan;
+use dfe_runtime::Event;
+use dfe_runtime::painless_plan::{PainlessPlan, painless_exec_plan_params};
+use serde_json::json;
 
 /// Verbatim from `pipelines/checkpoint_email/event/default.yml:434-438`.
 const CHECKPOINT_EMAIL_SEVERITY: &str = "def severityValue = ctx.checkpoint_email.event.severity;\nif (severityValue > 0 && severityValue <= params.severity.length) {\n  ctx.checkpoint_email.event.put('severity_enum', params['severity'][(int)severityValue-1]);\n}";
@@ -217,12 +219,31 @@ fn the_kolide_categorise_binds_to_a_structurally_correct_row_lookup() {
 }
 
 #[test]
-fn the_zeek_duration_binds_to_a_bare_scale() {
+fn the_zeek_duration_binds_to_a_bare_scale_and_rounds_its_product() {
     // The script is `Math.round(<field> * params.scale)` and the plan is a bare
-    // `Scale`. That is NOT the defect: `try_scale` stores an integer whenever
-    // the product is whole, and zeek's durations are -- 0.103708982 * 1e9 is
-    // exactly 103708982.0 in f64. Its eight wrong durations have another cause.
+    // `Scale`, which is the claim. The defect was under it: `try_scale` stored
+    // the raw product wherever it was not whole, so 8 of the connection
+    // stream's 11 durations landed as a float ending in a fraction where
+    // Elasticsearch writes the rounded integer.
     assert_eq!(heads(ZEEK_DURATION), ["Scale"]);
+
+    // The WRITTEN value, over both halves of the stream's own data: a whole
+    // product and a fractional one.
+    let plan = PainlessPlan::new(ZEEK_DURATION);
+    let params = json!({ "scale": 1_000_000_000_i64 });
+    for (seconds, want) in [
+        (0.076_967_f64, 76_967_000_i64),
+        (0.104_128_837_585_449_22, 104_128_838),
+        (0.000_908_851_623_535_156_2, 908_852),
+    ] {
+        let mut event = Event::new(json!({ "temp": { "duration": seconds } }));
+        assert!(painless_exec_plan_params(&mut event, &plan, &params).is_ok());
+        assert_eq!(
+            event.get("event.duration"),
+            Some(&json!(want)),
+            "{seconds} scaled wrong"
+        );
+    }
 }
 
 #[test]
@@ -885,6 +906,113 @@ fn both_github_span_spellings_bind_to_the_one_subtraction() {
             r#".created_at", to: ["github.code_scanning.fixed_at", "#,
             r#""github.code_scanning.dismissed_at"], key: "sec", "#,
             r#"target: "github.code_scanning.time_to_resolution" })"#
+        )]
+    );
+}
+
+/// zeek's four unbound scripts, verbatim from the generated call sites in
+/// `crates/dfe-transforms/src/filebeat/zeek_connection/default.rs`,
+/// `.../zeek_files/default.rs` and `.../zeek_dns/default.rs`.
+const ZEEK_DIRECTION: &str = r#"if (ctx.zeek?.connection?.local_orig == null ||\n    ctx.zeek?.connection?.local_resp == null) {\n  return;\n}\nif (ctx.zeek.connection.local_orig == true &&\n    ctx.zeek.connection.local_resp == true) {\n  ctx.network.direction = \"internal\";\n  return;\n}\nif (ctx.zeek.connection.local_orig == true &&\n    ctx.zeek.connection.local_resp == false) {\n  ctx.network.direction = \"outbound\";\n  return;\n}\nif (ctx.zeek.connection.local_orig == false &&\n    ctx.zeek.connection.local_resp == true) {\n  ctx.network.direction = \"inbound\";\n  return;\n}\nif (ctx.zeek.connection.local_orig == false &&\n    ctx.zeek.connection.local_resp == false) {\n  ctx.network.direction = \"external\";\n  return;\n}"#;
+
+const ZEEK_TX_HOST: &str =
+    r"ctx.zeek.files.tx_host = ctx.zeek.files.tx_hosts[0]; ctx.zeek.files.remove('tx_hosts');";
+
+const ZEEK_RX_HOST: &str =
+    r"ctx.zeek.files.rx_host = ctx.zeek.files.rx_hosts[0]; ctx.zeek.files.remove('rx_hosts');";
+
+const ZEEK_SESSION_ID: &str = r"ctx.zeek.session_id = ctx.zeek.files.session_ids[0];";
+
+const ZEEK_DNS_ZIP: &str = r#"def answers = ctx.zeek.dns.answers; def ttls = ctx.zeek.dns.TTLs; if (answers.isEmpty() || ttls.isEmpty() || answers.length != ttls.length) {\n  return;\n} def lst = new ArrayList(); for (def i = 0; i < answers.length; i++) {\n  lst.add([\n    \"data\": answers[i],\n    \"ttl\": (int)ttls[i]\n  ])\n} if (ctx.dns == null) {\n  ctx.dns = new HashMap();\n} ctx.dns.answers = lst;"#;
+
+const ZEEK_DNS_HOIST: &str = r#"def answers = ctx.dns.answers; def iplist = new ArrayList(); for (def i = 0; i < ctx.dns.answers.length; i++) {\n  if (answers[i].containsKey(\"tmpip\")) {\n    iplist.add(answers[i].tmpip);\n    answers[i].remove(\"tmpip\");\n  }\n} ctx.dns.resolved_ip = iplist;"#;
+
+/// The locality table was UNBOUND, and it is `network.direction` on all 18
+/// events of zeek's connection stream.
+#[test]
+fn the_zeek_locality_binds_to_the_pair_table_with_all_four_rows() {
+    let held = binding(ZEEK_DIRECTION).join(" ");
+    assert!(held.starts_with("PairTable"), "{held}");
+    assert!(
+        held.contains(r#"left: "zeek.connection.local_orig""#),
+        "{held}"
+    );
+    assert!(
+        held.contains(r#"right: "zeek.connection.local_resp""#),
+        "{held}"
+    );
+    assert!(held.contains(r#"target: "network.direction""#), "{held}");
+    // Four rows, and the pair each names -- reading three would leave one
+    // locality on whatever an earlier processor had written.
+    for row in [
+        r#"((Bool(true), Bool(true)), String("internal"))"#,
+        r#"((Bool(true), Bool(false)), String("outbound"))"#,
+        r#"((Bool(false), Bool(true)), String("inbound"))"#,
+        r#"((Bool(false), Bool(false)), String("external"))"#,
+    ] {
+        assert!(held.contains(row), "lost {row}: {held}");
+    }
+}
+
+/// The two host takes were CLAIMED and wrote their target, and the list each
+/// consumed stayed behind as a field Elasticsearch does not emit -- 16 extras
+/// over the 8 events of zeek's files stream.
+#[test]
+fn the_zeek_host_takes_drop_the_list_and_the_session_take_does_not() {
+    for (name, script, array, target) in [
+        (
+            "tx",
+            ZEEK_TX_HOST,
+            "zeek.files.tx_hosts",
+            "zeek.files.tx_host",
+        ),
+        (
+            "rx",
+            ZEEK_RX_HOST,
+            "zeek.files.rx_hosts",
+            "zeek.files.rx_host",
+        ),
+    ] {
+        let held = binding(script).join(" ");
+        assert!(held.starts_with("FirstElement"), "{name}: {held}");
+        assert!(
+            held.contains(&format!("array: {array:?}")),
+            "{name}: {held}"
+        );
+        assert!(
+            held.contains(&format!("target: {target:?}")),
+            "{name}: {held}"
+        );
+        assert!(held.contains("consumes_array: true"), "{name}: {held}");
+    }
+
+    // The audit, from the same file: an identical take with NO removal beside
+    // it keeps its list, and `zeek.files.session_ids` is a field Elasticsearch
+    // does emit.
+    let held = binding(ZEEK_SESSION_ID).join(" ");
+    assert!(held.contains("consumes_array: false"), "{held}");
+}
+
+/// Both halves of zeek's DNS chain were UNBOUND, and the second reads only what
+/// the first writes -- `dns.answers` and `dns.resolved_ip` on 6 of 7 events.
+#[test]
+fn the_zeek_dns_chain_binds_its_zip_and_the_hoist_that_follows_it() {
+    // The zip declined on ONE word: it read `(long)` alone, so the `(int)` cast
+    // on the TTL left a local named `(int)ttls` that is bound to nothing.
+    assert_eq!(
+        binding(ZEEK_DNS_ZIP),
+        [concat!(
+            r#"ZipLists(ZipLists { columns: [ZipColumn { key: "data", "#,
+            r#"source: "zeek.dns.answers", to_long: false }, ZipColumn { "#,
+            r#"key: "ttl", source: "zeek.dns.TTLs", to_long: true }], "#,
+            r#"target: "dns.answers", mismatch: None })"#
+        )]
+    );
+    assert_eq!(
+        binding(ZEEK_DNS_HOIST),
+        [concat!(
+            r#"HoistMember(HoistMember { list: "dns.answers", "#,
+            r#"member: "tmpip", target: "dns.resolved_ip" })"#
         )]
     );
 }

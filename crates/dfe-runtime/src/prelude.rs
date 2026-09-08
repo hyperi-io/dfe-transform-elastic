@@ -50,6 +50,7 @@ pub use crate::painless_common::{
     unwrap_suffixed_keys,
 };
 pub use crate::painless_expr::{Expr, FloatLit, Op, ScalarExpression, scalar_expression};
+pub use crate::painless_hoist::{HoistMember, hoist_member};
 pub use crate::painless_item_writes::{ItemWrites, item_writes};
 pub use crate::painless_list_records::{
     EntryValue, ListRebuild, ScanTaggedList, list_rebuild, scan_tagged_list,
@@ -58,6 +59,7 @@ pub use crate::painless_lists::{
     EnsureItem, ItemRename, ListItemRenames, ListWalk, list_item_renames,
 };
 pub use crate::painless_nth_separator::{NthSeparatorPrefix, nth_separator_prefix};
+pub use crate::painless_pair_table::{PairTable, pair_table};
 pub use crate::painless_records::{
     RecordFromFields, RecordRenames, record_from_fields, record_renames,
 };
