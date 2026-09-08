@@ -471,7 +471,10 @@ fn the_infoblox_message_quotes_bind_to_the_strip_and_not_to_guarded_copy() {
     // onto itself with its quotes intact, taking every later copy with it.
     let held = binding(INFOBLOX_MESSAGE_QUOTES).join(" ");
     assert!(held.starts_with("StripSurroundingPair"), "{held}");
-    assert!(held.contains(r#"field: "cef.extensions.message""#), "{held}");
+    assert!(
+        held.contains(r#"field: "cef.extensions.message""#),
+        "{held}"
+    );
     assert!(held.contains(&format!("open: {:?}", '"')), "{held}");
     assert!(held.contains(&format!("close: {:?}", '"')), "{held}");
 }

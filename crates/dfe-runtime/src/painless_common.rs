@@ -3519,7 +3519,9 @@ pub(crate) struct StripSurroundingPair {
 /// as this one would truncate the value.
 fn parse_strip_surrounding_pair(script: &str) -> Option<StripSurroundingPair> {
     let opens_at = script.find(".startsWith(")?;
-    let open = single_char(&quoted_argument(&script[opens_at + ".startsWith(".len()..])?)?;
+    let open = single_char(&quoted_argument(
+        &script[opens_at + ".startsWith(".len()..],
+    )?)?;
     let field = painless_path(&script[..opens_at])?;
 
     let closes_at = script.find(".endsWith(")?;
@@ -17630,6 +17632,156 @@ fn run_first_match_in_list(event: &mut Event, pattern: &FirstMatchInList) -> boo
     true
 }
 
+/// One term of a [`SubstringRejoin`]'s right-hand side.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum RejoinPart {
+    /// `<local>.substring(start, end)`, in Java's half-open character range.
+    Slice {
+        start: usize,
+        end: usize,
+    },
+    Literal(String),
+}
+
+/// A field re-spaced by its own substrings, behind a whole-string regex match.
+///
+/// cisco_aironet normalises a MAC the vendor writes four-and-four:
+///
+/// ```painless
+/// def mac = ctx.client.mac;
+/// def pattern = /^[A-F0-9]{4}(-[A-F0-9]{4}){2}$/;
+/// def matcher = pattern.matcher(mac);
+/// if (matcher.matches()) {
+///    ctx.client.mac = mac.substring(0,2) + "-" + mac.substring(2,4) + ...;
+/// }
+/// ```
+///
+/// The regex is what makes this safe to run: a value already in the target form
+/// does not match, so the rebuild is not applied twice. It is COMPILED at parse
+/// time for the reason [`parse_first_match_in_list`] gives -- Rust's `regex`
+/// has no lookaround where Java's does, and a pattern that will not build must
+/// decline the script rather than panic on the first event.
+#[derive(Debug, Clone)]
+pub(crate) struct SubstringRejoin {
+    field: String,
+    /// The regex as the script spells it, since `Regex` carries no equality.
+    pattern: String,
+    matcher: regex::Regex,
+    parts: Vec<RejoinPart>,
+}
+
+impl PartialEq for SubstringRejoin {
+    fn eq(&self, other: &Self) -> bool {
+        self.field == other.field && self.pattern == other.pattern && self.parts == other.parts
+    }
+}
+
+impl Eq for SubstringRejoin {}
+
+/// Read the regex-gated substring rebuild as a [`SubstringRejoin`].
+///
+/// Every part is tied to the SAME local and the SAME field: the local the
+/// matcher tested, and the field that local was read from. A rebuild that
+/// writes somewhere else, or slices something else, is a different script and
+/// is declined rather than half-read.
+fn parse_substring_rejoin(script: &str) -> Option<SubstringRejoin> {
+    let statements: Vec<&str> = script.split([';', '\n']).map(str::trim).collect();
+
+    // `def <local> = ctx.<field>` -- the value the rest of the script works on.
+    let (local, field) = statements.iter().find_map(|statement| {
+        let (name, value) = statement.strip_prefix("def ")?.split_once(" = ")?;
+        let field = painless_path(value.trim())?;
+        Some((name.trim(), field))
+    })?;
+
+    let pattern = statements.iter().find_map(|statement| {
+        let value = statement.strip_prefix("def ")?.split_once(" = ")?.1.trim();
+        value.strip_prefix('/')?.strip_suffix('/')
+    })?;
+    let matcher = regex::Regex::new(&format!("^(?:{pattern})$")).ok()?;
+
+    // `matcher(<local>)`, and `.matches()` rather than `.find()` -- the whole
+    // string, which is what the anchoring above reproduces.
+    if script.split_once(".matcher(")?.1.split_once(')')?.0.trim() != local {
+        return None;
+    }
+    if !script.contains(".matches()") {
+        return None;
+    }
+
+    // The assignment inside the guard, writing back to the field it read.
+    let (head, value) = statements
+        .iter()
+        .find(|statement| statement.contains(".substring("))
+        .and_then(|statement| split_assignment_once(statement))?;
+    if painless_path(head.trim().trim_start_matches(['{', ' ']))? != field {
+        return None;
+    }
+
+    let mut parts = Vec::new();
+    for term in split_outside_quotes(value, '+') {
+        let term = term.trim();
+        if let Some(literal) = quoted_first(term) {
+            parts.push(RejoinPart::Literal(literal));
+            continue;
+        }
+        let (subject, range) = term.split_once(".substring(")?;
+        if subject.trim() != local {
+            return None;
+        }
+        let (start, end) = range.trim_end_matches(['}', ')', ' ']).split_once(',')?;
+        parts.push(RejoinPart::Slice {
+            start: start.trim().parse().ok()?,
+            end: end.trim().parse().ok()?,
+        });
+    }
+    // A rebuild is at least two slices and the separator between them;
+    // anything shorter is a plain copy or a literal, both of which have their
+    // own matchers.
+    let slices = parts
+        .iter()
+        .filter(|part| matches!(part, RejoinPart::Slice { .. }))
+        .count();
+    (slices >= 2 && slices < parts.len()).then_some(SubstringRejoin {
+        field,
+        pattern: pattern.to_string(),
+        matcher,
+        parts,
+    })
+}
+
+/// Rebuild the field, or leave it exactly as it was.
+///
+/// Indexed by CHARACTER, which is what Java's `substring` counts for anything
+/// in the basic plane. A range the value is too short for writes nothing, the
+/// way Painless throws and its processor's `on_failure` leaves the field --
+/// the regex has already agreed the value is the right length, so reaching
+/// this means the value is not what the script was written for.
+fn run_substring_rejoin(event: &mut Event, pattern: &SubstringRejoin) -> bool {
+    let Some(text) = event.get_str(&pattern.field) else {
+        return true;
+    };
+    if !pattern.matcher.is_match(text) {
+        return true;
+    }
+
+    let chars: Vec<char> = text.chars().collect();
+    let mut built = String::with_capacity(text.len());
+    for part in &pattern.parts {
+        match part {
+            RejoinPart::Literal(literal) => built.push_str(literal),
+            RejoinPart::Slice { start, end } => {
+                if end < start || *end > chars.len() {
+                    return true;
+                }
+                built.extend(&chars[*start..*end]);
+            }
+        }
+    }
+    let _ = event.set(&pattern.field, Value::String(built));
+    true
+}
+
 /// An integer field divided by a literal and written back, through a local.
 ///
 /// [`parse_guarded_divide`] reads the divide written inline in the assignment;
@@ -17773,7 +17925,10 @@ fn run_prepend_split(event: &mut Event, pattern: &PrependSplit) -> bool {
     };
     let mut parts = Vec::with_capacity(text.matches(pattern.separator.as_str()).count() + 2);
     parts.push(first);
-    parts.extend(text.split(pattern.separator.as_str()).map(|part| json!(part)));
+    parts.extend(
+        text.split(pattern.separator.as_str())
+            .map(|part| json!(part)),
+    );
     let _ = event.set(&pattern.target, Value::Array(parts));
     true
 }
@@ -18163,6 +18318,8 @@ pub(crate) enum KnownPattern {
     PrependSplit(Box<PrependSplit>),
     /// What a regex matched in the first list member it matched at all.
     FirstMatchInList(Box<FirstMatchInList>),
+    /// A field re-spaced by its own substrings, behind a whole-string match.
+    SubstringRejoin(Box<SubstringRejoin>),
     /// An integer divided by a literal and written back, through a local.
     LongDivide(Box<LongDivide>),
     /// A value that may arrive as text or as a number, written back as a
@@ -20270,7 +20427,7 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
-    // The four below sit LAST, so each can only take a script nothing above
+    // The five below sit LAST, so each can only take a script nothing above
     // took and none can shadow a narrower arm.
 
     // Pattern: what a regex matched in the first list member it matched at all.
@@ -20279,6 +20436,19 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_first_match_in_list(normalised)
     {
         patterns.push(KnownPattern::FirstMatchInList(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: a field re-spaced by its own substrings, behind a whole-string
+    // match. The sibling of the arm above and told apart from it by the call:
+    // `.find()` searches and writes what it found, `.matches()` tests the whole
+    // string and writes something built from it.
+    if normalised.contains(".matcher(")
+        && normalised.contains(".matches()")
+        && normalised.contains(".substring(")
+        && let Some(pattern) = parse_substring_rejoin(normalised)
+    {
+        patterns.push(KnownPattern::SubstringRejoin(Box::new(pattern)));
         return patterns;
     }
 
@@ -20971,6 +21141,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::SplitIntoRecords(pattern) => run_split_into_records(event, pattern),
         KnownPattern::PrependSplit(pattern) => run_prepend_split(event, pattern),
         KnownPattern::FirstMatchInList(pattern) => run_first_match_in_list(event, pattern),
+        KnownPattern::SubstringRejoin(pattern) => run_substring_rejoin(event, pattern),
         KnownPattern::LongDivide(pattern) => run_long_divide(event, pattern),
     }
 }

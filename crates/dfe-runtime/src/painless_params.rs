@@ -7020,6 +7020,16 @@ enum Rhs {
         pieces: Vec<ConcatPiece>,
         fold: Fold,
     },
+    /// `ctx.<path>.splitOnToken("<sep>")[<n>]` -- one part of a split,
+    /// optionally case-folded. cisco_ise takes the word before the first colon
+    /// of a message description as `event.action` at 24 sites, and okta's admin
+    /// URL gives up its tail after an API prefix at four more.
+    SplitPart {
+        path: String,
+        separator: String,
+        index: usize,
+        fold: Fold,
+    },
     Literal(Value),
 }
 
@@ -8134,6 +8144,11 @@ fn parse_rhs(text: &str) -> Option<Rhs> {
     if let Some((pieces, fold)) = parse_folded_concat(text) {
         return Some(Rhs::Concat { pieces, fold });
     }
+    // A part of a split, before the bare-path read below takes the whole
+    // expression for a field name.
+    if let Some(part) = parse_split_part(text) {
+        return Some(part);
+    }
     if let Some(inner) = text
         .strip_prefix("String.valueOf(")
         .and_then(|rest| rest.strip_suffix(')'))
@@ -8314,6 +8329,62 @@ fn parse_folded_concat(text: &str) -> Option<(Vec<ConcatPiece>, Fold)> {
     parse_concat(inner).map(|pieces| (pieces, fold))
 }
 
+/// `ctx.<path>.splitOnToken("<sep>")[<n>]`, with `?.` and a trailing case fold.
+///
+/// Painless splits on a literal token rather than a pattern, so the separator is
+/// taken as text and `str::split` reproduces it -- both keep the empty parts a
+/// repeated separator leaves. An empty separator is declined: Painless throws on
+/// one where `str::split` would answer with a boundary at every character.
+fn parse_split_part(text: &str) -> Option<Rhs> {
+    let (head, fold) = match text.trim() {
+        rest if rest.ends_with(".toLowerCase()") => (
+            rest.trim_end_matches(".toLowerCase()")
+                .trim_end_matches('?'),
+            Fold::Lower,
+        ),
+        rest if rest.ends_with(".toUpperCase()") => (
+            rest.trim_end_matches(".toUpperCase()")
+                .trim_end_matches('?'),
+            Fold::Upper,
+        ),
+        rest => (rest, Fold::None),
+    };
+
+    let (subject, rest) = head.split_once("splitOnToken(")?;
+    let subject = subject.trim_end_matches(['.', '?']);
+    let path = clean_path(
+        subject
+            .strip_prefix("ctx.")
+            .or_else(|| subject.strip_prefix("ctx?."))?,
+    );
+    if path.is_empty() || path.contains(['(', ' ']) {
+        return None;
+    }
+
+    let (separator, after) = quoted_literal(rest)?;
+    if separator.is_empty() {
+        return None;
+    }
+    let index = after
+        .trim_start()
+        .strip_prefix(')')?
+        .trim_start()
+        .strip_prefix('[')?
+        .split_once(']')
+        .filter(|(_, tail)| tail.trim().is_empty())?
+        .0
+        .trim()
+        .parse()
+        .ok()?;
+
+    Some(Rhs::SplitPart {
+        path,
+        separator,
+        index,
+        fold,
+    })
+}
+
 /// A quoted string literal at the head of `text`, as its body and whatever
 /// follows the closing quote.
 ///
@@ -8454,6 +8525,18 @@ fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
             }
             Some(Value::String(fold.apply(&built)))
         }
+        // A field the split does not reach that far into writes NOTHING, the
+        // way Painless throws and the processor's `on_failure` leaves the
+        // field.
+        Rhs::SplitPart {
+            path,
+            separator,
+            index,
+            fold,
+        } => event
+            .get_str(path)
+            .and_then(|text| text.split(separator.as_str()).nth(*index))
+            .map(|part| Value::String(fold.apply(part))),
         Rhs::Literal(value) => Some(value.clone()),
     }
 }

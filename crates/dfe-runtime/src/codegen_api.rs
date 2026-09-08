@@ -1440,7 +1440,9 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // 399 extra fields on one missing alternative.
         // Wrapped, because an unnamed `%{MAC}` substitutes BARE and a top-level
         // `|` would then split the whole enclosing pattern rather than itself.
-        "MAC" => r"(?:(?:[A-Fa-f0-9]{4}\.){2}[A-Fa-f0-9]{4}|(?:[0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2})",
+        "MAC" => {
+            r"(?:(?:[A-Fa-f0-9]{4}\.){2}[A-Fa-f0-9]{4}|(?:[0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2})"
+        }
         "EMAILADDRESS" => r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
         // Elastic's own three. A Windows path admits SPACES between its
         // backslashes, which `[^\s]+` refused: sophos_central's

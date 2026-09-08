@@ -3894,7 +3894,9 @@ fn a_parenthesised_join_is_folded_as_a_whole() {
         "inc_state": "New",
     }}}));
 
-    assert!(crate::painless_common::try_known_painless(&mut event, script));
+    assert!(crate::painless_common::try_known_painless(
+        &mut event, script
+    ));
     assert_eq!(event.get_str("event.action"), Some("alert-new"));
 }
 
@@ -3907,13 +3909,69 @@ fn an_unparenthesised_join_is_not_folded_as_a_whole() {
     assert!(parse_folded_concat(r#"(ctx.a) + "-" + ctx.b.toLowerCase()"#).is_none());
 }
 
+/// Verbatim from `cisco_ise_log/default.rs`, which writes it at 24 sites.
+///
+/// The description reads `Passed-Authentication: Authentication succeeded`, and
+/// ECS wants the word before the colon. Before this the literal reader answered
+/// with the separator, so `event.action` was the single character `:`.
+#[test]
+fn a_split_part_is_the_word_before_the_separator() {
+    let script = r#"ctx.event.action = ctx.cisco_ise?.log?.message?.description?.splitOnToken(\":\")[0]?.toLowerCase();"#;
+    let mut event = Event::new(json!({ "cisco_ise": { "log": { "message": {
+        "description": "Passed-Authentication: Authentication succeeded"
+    }}}}));
+
+    assert!(crate::painless_common::try_known_painless(
+        &mut event, script
+    ));
+    assert_eq!(event.get_str("event.action"), Some("passed-authentication"));
+}
+
+/// The index, the separator and the fold are all read off the script.
+#[test]
+fn a_split_part_reads_its_index_and_declines_what_it_cannot() {
+    assert!(matches!(
+        parse_split_part(r#"ctx.url.original.splitOnToken("/api/v1/")[1]"#),
+        Some(Rhs::SplitPart {
+            index: 1,
+            fold: Fold::None,
+            ..
+        })
+    ));
+    // An empty separator throws in Painless, where `str::split` would answer
+    // with a boundary at every character.
+    assert!(parse_split_part(r#"ctx.a.splitOnToken("")[0]"#).is_none());
+    // A subscript that is not the whole expression is a different one.
+    assert!(parse_split_part(r#"ctx.a.splitOnToken(":")[0].length()"#).is_none());
+}
+
+/// A source shorter than the index writes nothing, rather than an empty string.
+///
+/// The whole script reports UNHANDLED, which is the contract every `Rhs` here
+/// already has: a value the event cannot supply means this is not the event the
+/// script was written for, and saying so leaves the ladder free to try another
+/// arm rather than writing a partial result.
+#[test]
+fn a_split_the_value_is_too_short_for_writes_nothing() {
+    let script = r#"ctx.event.action = ctx.a.splitOnToken(\":\")[3];"#;
+    let mut event = Event::new(json!({ "a": "one:two" }));
+
+    assert!(!crate::painless_common::try_known_painless(
+        &mut event, script
+    ));
+    assert_eq!(event.get("event.action"), None);
+}
+
 /// The literal reader is the LAST one tried, so whatever no other could read
 /// arrives there whole -- and answering it with a quoted run from inside it is
 /// a wrong value written with no error behind it.
 #[test]
 fn an_expression_is_not_read_as_a_literal_it_merely_contains() {
     assert_eq!(literal_value(r#""alert""#), Some(json!("alert")));
-    assert_eq!(literal_value("['info', 'warn']"), Some(json!(["info", "warn"])));
+    assert_eq!(
+        literal_value("['info', 'warn']"),
+        Some(json!(["info", "warn"]))
+    );
     assert_eq!(literal_value("null"), Some(Value::Null));
 
     // The separator of a join, the argument of a call, and a list holding a

@@ -1564,8 +1564,7 @@ fn a_numeric_ladder_writing_a_second_field_is_left_to_its_own_matcher() {
 }
 
 /// Verbatim from `pipelines/infoblox_threat_defense/event/default.yml`.
-const STRIP_MESSAGE_QUOTES: &str =
-    "if (ctx.cef.extensions.containsKey('message') && ctx.cef.extensions.message != null && \
+const STRIP_MESSAGE_QUOTES: &str = "if (ctx.cef.extensions.containsKey('message') && ctx.cef.extensions.message != null && \
      ctx.cef.extensions.message instanceof String) {\\n  \
      if (ctx.cef.extensions.message.startsWith('\\\"') && \
      ctx.cef.extensions.message.endsWith('\\\"') && \
@@ -1591,7 +1590,12 @@ fn a_quoted_value_loses_one_character_from_each_end() {
 /// Only the pair the script names, and only when BOTH ends carry it.
 #[test]
 fn a_value_without_the_pair_is_left_alone() {
-    for text in ["Service API Key created", "\"unbalanced", "unbalanced\"", "\""] {
+    for text in [
+        "Service API Key created",
+        "\"unbalanced",
+        "unbalanced\"",
+        "\"",
+    ] {
         let mut event = Event::new(json!({ "cef": { "extensions": { "message": text } } }));
         assert!(try_known_painless(&mut event, STRIP_MESSAGE_QUOTES));
         assert_eq!(event.get_str("cef.extensions.message"), Some(text));
@@ -7543,6 +7547,45 @@ fn a_lookaround_regex_declines_rather_than_panicking() {
     assert!(parse_first_match_in_list(&normalise(script)).is_none());
 }
 
+/// Verbatim from `cisco_aironet_log/default.rs`, in the escaped one-line form
+/// the call site holds.
+///
+/// The vendor writes a MAC four-and-four and ECS wants it in pairs. The same
+/// script appears twice, once for `client.mac` and once for `destination.mac`,
+/// and both were unbound.
+#[test]
+fn a_mac_is_respaced_into_pairs_behind_its_own_pattern() {
+    let script = r#"def mac = ctx.client.mac;\ndef pattern = /^[A-F0-9]{4}(-[A-F0-9]{4}){2}$/;\ndef matcher = pattern.matcher(mac);\nif (matcher.matches()) {\n   ctx.client.mac = mac.substring(0,2) + \"-\" + mac.substring(2,4) + \"-\" + mac.substring(5,7) + \"-\" + mac.substring(7,9) + \"-\" + mac.substring(10,12) + \"-\" + mac.substring(12,14);\n}\n"#;
+    let mut event = Event::new(json!({ "client": { "mac": "AABB-CCDD-EEFF" } }));
+
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(event.get_str("client.mac"), Some("AA-BB-CC-DD-EE-FF"));
+
+    // A value already in the target form does not match the pattern, so the
+    // rebuild does not run twice.
+    let mut done = Event::new(json!({ "client": { "mac": "AA-BB-CC-DD-EE-FF" } }));
+    assert!(try_known_painless(&mut done, script));
+    assert_eq!(done.get_str("client.mac"), Some("AA-BB-CC-DD-EE-FF"));
+
+    // The guard is the whole string: a longer value carrying the form inside
+    // it is left alone, which is what Java's `matches()` says and its `find()`
+    // would not.
+    let mut inside = Event::new(json!({ "client": { "mac": "x AABB-CCDD-EEFF" } }));
+    assert!(try_known_painless(&mut inside, script));
+    assert_eq!(inside.get_str("client.mac"), Some("x AABB-CCDD-EEFF"));
+}
+
+/// Every slice has to come off the local the matcher tested, and the write has
+/// to go back to the field that local was read from.
+#[test]
+fn a_rejoin_declines_a_slice_of_something_else() {
+    let other = r#"def mac = ctx.client.mac;\ndef pattern = /^[A-F0-9]{4}$/;\ndef matcher = pattern.matcher(mac);\nif (matcher.matches()) {\n   ctx.client.mac = ctx.host.name.substring(0,2) + \"-\" + mac.substring(2,4);\n}\n"#;
+    assert!(parse_substring_rejoin(&normalise(other)).is_none());
+
+    let elsewhere = r#"def mac = ctx.client.mac;\ndef pattern = /^[A-F0-9]{4}$/;\ndef matcher = pattern.matcher(mac);\nif (matcher.matches()) {\n   ctx.server.mac = mac.substring(0,2) + \"-\" + mac.substring(2,4);\n}\n"#;
+    assert!(parse_substring_rejoin(&normalise(elsewhere)).is_none());
+}
+
 /// The divide is written through a local because the quotient is used twice,
 /// and `instanceof Long` is what says the value is an integer at all.
 #[test]
@@ -7605,7 +7648,11 @@ fn a_path_leads_the_arguments_it_was_split_from() {
     assert!(run_prepend_split(&mut event, &pattern));
     assert_eq!(
         event.get("process.args"),
-        Some(&serde_json::json!(["/bin/event-generator", "run", "--loop"]))
+        Some(&serde_json::json!([
+            "/bin/event-generator",
+            "run",
+            "--loop"
+        ]))
     );
 
     // The script guards on BOTH fields, so one alone writes nothing.

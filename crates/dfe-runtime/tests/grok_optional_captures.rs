@@ -25,5 +25,8 @@ fn probe() {
     let mut event = Event::new(serde_json::json!({}));
     let matched = compiled.extract_into(TCP_LINE, &mut event).unwrap();
     println!("matched: {matched}");
-    println!("{}", serde_json::to_string_pretty(event.as_value()).unwrap());
+    println!(
+        "{}",
+        serde_json::to_string_pretty(event.as_value()).unwrap()
+    );
 }

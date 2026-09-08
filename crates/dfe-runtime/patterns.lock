@@ -210,10 +210,11 @@
 209 ItemWrites
 210 NthSeparatorPrefix
 211 FirstMatchInList
-212 LongDivide
-213 DropLeadingChars
-214 EpochToMillis
-215 EpochNanosToDateTime
+212 SubstringRejoin
+213 LongDivide
+214 DropLeadingChars
+215 EpochToMillis
+216 EpochNanosToDateTime
 
 [params_pattern]
   1 AwsEntity
