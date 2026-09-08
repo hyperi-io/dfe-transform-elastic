@@ -260,7 +260,7 @@ fn the_concat_keeps_its_fields_in_both_quote_styles() {
         let held = binding(script).join(" ");
         assert!(held.starts_with("PlainAssignments"), "{name}: {held}");
         assert!(held.contains(literal), "{name}: {held}");
-        assert!(held.contains("Concat("), "{name}: {held}");
+        assert!(held.contains("Concat {"), "{name}: {held}");
         for field in fields {
             assert!(
                 held.contains(&format!("Field({field:?})")),
@@ -527,7 +527,7 @@ fn fortimanager_date_concat_is_read_by_guarded_copy_and_still_joins() {
     assert!(held.starts_with("GuardedCopy"), "{held}");
     assert!(
         held.contains(
-            r#"Concat([Field("_temp.date"), Literal("T"), Field("_temp.time"), Field("_temp.tz")])"#
+            r#"Concat { pieces: [Field("_temp.date"), Literal("T"), Field("_temp.time"), Field("_temp.tz")], fold: None }"#
         ),
         "{held}"
     );
