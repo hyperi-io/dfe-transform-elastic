@@ -78,6 +78,15 @@ macro_rules! cached_regex {
 /// good at that and hand-rolling it would be a source of bugs.
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum Native {
+    /// `%{GREEDYDATA:field}` alone -- the input's FIRST LINE into one field.
+    ///
+    /// 194 call sites over 35 distinct patterns, the widest single form in the
+    /// tree, running a regex to copy a string. Not the whole input:
+    /// `line_anchored` makes this `(?m)^.*$` because joni anchors to lines, so
+    /// the leftmost match is line one. It always matches -- `.*` accepts an
+    /// empty line. An unnamed `%{GREEDYDATA}` has nothing to write and stays
+    /// on the regex.
+    FirstLine { field: String },
     /// `^%{IPV4:field}$`
     Ipv4 { field: String },
     /// `^%{IPV4:addr}:%{PORT:port}$`
@@ -219,8 +228,24 @@ fn cache_key(pattern: &str, extra: &[(&str, &str)]) -> String {
 /// use rather than parsing grok generally. A near-miss must fall through to
 /// the regex, never guess.
 fn native_form(pattern: &str) -> Option<Native> {
+    // A lone `%{GREEDYDATA:field}` reads the same anchored or not: `.*` cannot
+    // cross a newline, so the leftmost match at position 0 is the first line
+    // either way. The other forms below are anchored-only, because an
+    // unanchored address would match one ANYWHERE in the input.
+    if let Some(field) = capture_of(pattern.trim_start_matches('^').trim_end_matches('$'), "GREEDYDATA")
+    {
+        return Some(Native::FirstLine {
+            field: field.to_string(),
+        });
+    }
+
     let body = pattern.strip_prefix('^')?.strip_suffix('$')?;
 
+    // `^%{DATA:field}$` is NOT this form, though it reads like it. `%{DATA}`
+    // is the lazy `.*?`, and on a `\r\n` line ending the two disagree: greedy
+    // keeps the `\r` in the capture and lazy stops before it. 19 call sites
+    // spell it, and they stay on the regex rather than take a rule inferred
+    // from one input.
     if let Some(field) = capture_of(body, "IPV4") {
         return Some(Native::Ipv4 {
             field: field.to_string(),
@@ -368,6 +393,16 @@ impl CompiledGrok {
         event: &mut crate::Event,
     ) -> crate::Result<bool> {
         match native {
+            // `line_anchored` has already made this `(?m)^.*$`, so the
+            // leftmost match is the first line and `.*` never fails -- an
+            // empty first line is an empty capture, not a miss. A `\r` stays
+            // in the capture because Rust's `.` matches it, which is what the
+            // regex path does too.
+            Native::FirstLine { field } => {
+                let first = input.split_once('\n').map_or(input, |(head, _)| head);
+                event.set(field, first)?;
+                Ok(true)
+            }
             Native::Ipv4 { field } => match dfe_parse::ip::parse_ipv4(input) {
                 // Anchored: a trailing remainder means the whole input was not
                 // an address, which is what `^...$` demands.
@@ -1576,6 +1611,64 @@ mod tests {
             regex_event.as_value(),
             "{pattern} on {input:?}: native and regex produced different fields"
         );
+    }
+
+    /// The widest form in the tree, so the two paths have to agree on every
+    /// awkward input rather than the happy one. The newline cases are the
+    /// whole risk, and they are the opposite of the obvious reading:
+    /// `line_anchored` makes this `(?m)^.*$`, so a multi-line input MATCHES
+    /// and yields line one, an empty first line is an empty capture rather
+    /// than a miss, and a `\r` stays in because Rust's `.` matches it.
+    #[test]
+    fn native_and_regex_agree_on_whole_input() {
+        for input in [
+            "a plain message",
+            "",
+            " leading and trailing ",
+            "with:colons and %{braces}",
+            "unicode -- \u{5bff}\u{53f8} and an emoji \u{1f600}",
+            "tab\there",
+            // The newline cases, which decide the fast path.
+            "two\nlines",
+            "trailing\n",
+            "\nleading",
+            "\n",
+            "\r\n",
+            "carriage\rreturn",
+        ] {
+            assert_paths_agree("^%{GREEDYDATA:event.original}$", input);
+            // The unanchored spelling, which `.*` reads the same way: it
+            // cannot cross a newline, so the leftmost match is line one.
+            assert_paths_agree("%{GREEDYDATA:event.original}", input);
+        }
+    }
+
+    /// `^%{DATA:field}$` looks like the same form and is not, so the reason it
+    /// stays on the regex is pinned rather than left to be rediscovered.
+    #[test]
+    fn the_lazy_catch_all_is_not_the_first_line_form() {
+        assert!(
+            grok("^%{DATA:event.original}$").native.is_none(),
+            "the lazy catch-all took a native path"
+        );
+
+        // Where they part: greedy keeps the carriage return, lazy stops before
+        // it.
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            grok("^%{DATA:event.original}$")
+                .extract_into("\r\n", &mut event)
+                .expect("the lazy catch-all compiles")
+        );
+        assert_eq!(event.get_str("event.original"), Some(""));
+
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            grok("^%{GREEDYDATA:event.original}$")
+                .extract_into("\r\n", &mut event)
+                .expect("the greedy catch-all compiles")
+        );
+        assert_eq!(event.get_str("event.original"), Some("\r"));
     }
 
     #[test]

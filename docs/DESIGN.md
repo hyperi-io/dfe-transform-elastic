@@ -445,6 +445,32 @@ Zero-regex native Rust parsers for the 15 most common grok patterns:
 | `%{URI}` | `parse_uri()` | scheme://authority/path?query#fragment |
 | `%{UUID}` | `parse_uuid()` | Fixed 8-4-4-4-12 hex pattern |
 
+**What is WIRED is a much smaller set than what exists.** The table above is
+`dfe-parse`'s capability, not the dispatch. `grok_cache::native_form` recognises
+whole-pattern forms only, and by design refuses a near-miss rather than guessing
+at one — a pattern with literal text around its captures stays on the regex,
+because the regex engine is good at exactly that. Three forms are dispatched
+today:
+
+| Pattern | Path | Measured |
+|---|---|---|
+| `^%{IPV4:f}$` | `dfe_parse::ip::parse_ipv4` | 29 ns against 214 ns |
+| `^%{IPV4:a}:%{PORT:p}$` | the two chained | 47 ns against 208 ns |
+| `%{GREEDYDATA:f}`, anchored or not | `split_once('\n')` | 11 ns against 1,098 ns |
+
+The third reaches no parser at all: `line_anchored` makes it `(?m)^.*$` because
+joni anchors to lines, so it captures the FIRST LINE and the native form is a
+newline scan. It covers 194 call sites over 35 distinct patterns, 10.2% of the
+1,906 grok sites in the generated tree.
+
+`^%{DATA:f}$` is deliberately excluded despite reading the same: `%{DATA}` is
+the lazy `.*?`, and on a `\r\n` line ending greedy keeps the `\r` in the capture
+where lazy stops before it.
+
+Every dispatched form carries an equivalence test running both paths over the
+same inputs, because the native path is an optimisation over the regex and never
+a replacement for it.
+
 **Parser convention:** All parsers take `&str`, return `ParseResult<'_, T>` where
 `T` is the parsed value (often `&str` for zero-copy):
 

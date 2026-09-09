@@ -62,6 +62,14 @@ simd-json = { workspace = true }
 name = "painless"
 harness = false
 
+# The grok call site, native path against the compiled regex. Here rather than
+# in dfe-transforms because it needs only grok_cache and dfe-parse, and
+# benching it there meant an opt-level=3, codegen-units=1 build of a crate
+# holding one module per data stream.
+[[bench]]
+name = "grok"
+harness = false
+
 # The dotted-path accessors. Field plumbing is the hot path -- rename, set and
 # append outnumber script and grok by an order of magnitude in the vendored
 # pipelines -- so one path walk is the number that multiplies out to a batch.
