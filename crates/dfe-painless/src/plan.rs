@@ -380,6 +380,25 @@ mod tests {
                 "drop_empty(event, &DropPolicy { empty_strings: true, \
                  ..DropPolicy::none() }, None);",
             ),
+            (
+                // servicenow's prune drops five WORDS as well as the empty
+                // containers, and the words were being discarded: the call
+                // ran, five fields Elasticsearch does not emit survived it.
+                "boolean drop(Object object) {\\n  if ((object instanceof String && \
+                 ((String) object).equalsIgnoreCase('unknown')) || (object instanceof String \
+                 && ((String) object).equalsIgnoreCase('none')) || (object instanceof String \
+                 && ((String) object).equalsIgnoreCase('null')) || (object instanceof String \
+                 && ((String) object).equalsIgnoreCase('n/a')) || (object instanceof String \
+                 && ((String) object).equalsIgnoreCase('na'))) {\\n    return true;\\n  } \
+                 else if (object instanceof Map) {\\n    \
+                 ((Map) object).values().removeIf(v -> drop(v));\\n    \
+                 return (((Map) object).size() == 0);\\n  } else if (object instanceof List) \
+                 {\\n    ((List) object).removeIf(v -> drop(v));\\n    \
+                 return (((List) object).length == 0);\\n  }\\n  return false;\\n}\\ndrop(ctx);",
+                "drop_empty(event, &DropPolicy { empty_collections: true, prune_lists: true, \
+                 sentinels_ci: vec![\"unknown\".into(), \"none\".into(), \"null\".into(), \
+                 \"n/a\".into(), \"na\".into()], ..DropPolicy::none() }, None);",
+            ),
         ] {
             let plan = PainlessPlan::new(script);
             assert_eq!(

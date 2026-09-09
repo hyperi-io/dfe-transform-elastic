@@ -1251,3 +1251,56 @@ fn the_servicenow_chain_binds_both_of_the_steps_the_source_is_written_against() 
         Some(&json!("alm_hardware"))
     );
 }
+
+/// The third step of the same chain, verbatim from the same call site.
+const SERVICENOW_DROP: &str = r#"boolean drop(Object object) {\n  if ((object instanceof String && ((String) object).equalsIgnoreCase('unknown')) || (object instanceof String && ((String) object).equalsIgnoreCase('none')) || (object instanceof String && ((String) object).equalsIgnoreCase('null')) || (object instanceof String && ((String) object).equalsIgnoreCase('n/a')) || (object instanceof String && ((String) object).equalsIgnoreCase('na'))) {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#;
+
+#[test]
+fn the_servicenow_prune_binds_the_words_as_well_as_the_containers() {
+    // `DropEmpty` claimed it from the start and read only the CONTAINER half of
+    // the predicate, so the call ran and the five words it names survived it:
+    // 37 extras over the corpus, and 12 events that could not match on them.
+    let held = binding(SERVICENOW_DROP).join(" ");
+    assert!(held.starts_with("DropEmpty"), "{held}");
+    assert!(held.contains("empty_collections: true"), "{held}");
+    assert!(held.contains("prune_lists: true"), "{held}");
+    assert!(
+        held.contains(r#"sentinels_ci: ["unknown", "none", "null", "n/a", "na"]"#),
+        "{held}"
+    );
+    // The `==` list stays empty: this predicate spells no exact comparison, and
+    // reading one into it would drop values the script keeps.
+    assert!(held.contains("sentinels: []"), "{held}");
+    assert!(held.contains("nulls: false"), "{held}");
+    assert!(held.contains("empty_strings: false"), "{held}");
+
+    // The WRITTEN document, at the shape the wrap above leaves behind.
+    let mut event = Event::new(json!({
+        "servicenow": { "event": {
+            "table_name": "alm_hardware",
+            "contact": { "display_value": "N/A", "value": "N/A" },
+            "asset": { "display_value": "Unknown", "value": "0196612a37c4" },
+            "parent": { "value": "" },
+        }},
+        "device": { "model": { "name": ["Unknown"] } },
+    }));
+    let prune = PainlessPlan::new(SERVICENOW_DROP);
+    assert!(painless_exec_plan(&mut event, &prune).is_ok());
+
+    assert_eq!(event.get("servicenow.event.contact"), None);
+    assert_eq!(event.get("servicenow.event.asset.display_value"), None);
+    assert_eq!(
+        event.get("servicenow.event.asset.value"),
+        Some(&json!("0196612a37c4"))
+    );
+    assert_eq!(event.get("device.model"), None);
+    assert_eq!(
+        event.get("servicenow.event.table_name"),
+        Some(&json!("alm_hardware"))
+    );
+    assert_eq!(
+        event.get("servicenow.event.parent.value"),
+        Some(&json!("")),
+        "this predicate names no empty string, so one stays"
+    );
+}

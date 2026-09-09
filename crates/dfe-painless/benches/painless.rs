@@ -481,6 +481,8 @@ const SN_TIMESTAMP_FIELD: &str = r#"def obj = ctx.servicenow.event; if (obj.cont
 
 const SN_WRAP: &str = r#"for (def entry: ctx.servicenow.event.entrySet()) {\n  if (entry.getKey() == 'table_name') {\n    continue;\n  }\n  def v = entry.getValue();\n  if (v instanceof Map) {\n    continue;\n  }\n  Map n = [:];\n  if (ctx._conf.data_has_display_values == \"true\") {\n    n.display_value = v;\n  } else {\n    n.value = v;\n  }\n  entry.setValue(n);\n}\n"#;
 
+const SN_DROP: &str = r#"boolean drop(Object object) {\n  if ((object instanceof String && ((String) object).equalsIgnoreCase('unknown')) || (object instanceof String && ((String) object).equalsIgnoreCase('none')) || (object instanceof String && ((String) object).equalsIgnoreCase('null')) || (object instanceof String && ((String) object).equalsIgnoreCase('n/a')) || (object instanceof String && ((String) object).equalsIgnoreCase('na'))) {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#;
+
 /// The 40 columns of a servicenow asset record, from `test-event-aws.log`.
 ///
 /// A slice rather than a `json!` literal: a map this wide exceeds rustc's macro
@@ -555,6 +557,50 @@ fn bench_wrap_entries(c: &mut Criterion) {
     c.bench_function("painless_exec/wrap_entries_planned", |b| {
         b.iter_batched_ref(
             || Event::new(servicenow_event()),
+            |event| painless_exec_plan(event, black_box(&plan)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
+/// The same record AFTER the wrap, with the vendor's sentinel words where its
+/// own capture has them.
+///
+/// The prune walks the wrapped form, and the wrap doubles the node count -- a
+/// measurement over the flat columns would miss half the walk. One column in
+/// eight carries a word, which is the ratio the capture shows: five of forty.
+fn servicenow_wrapped_event() -> serde_json::Value {
+    const WORDS: &[&str] = &["UNKNOWN", "N/A", "Unknown", "None", "na"];
+    let columns: serde_json::Map<String, serde_json::Value> = SERVICENOW_COLUMNS
+        .iter()
+        .enumerate()
+        .map(|(index, (key, value))| {
+            let held = if index % 8 == 0 {
+                WORDS[(index / 8) % WORDS.len()]
+            } else {
+                *value
+            };
+            ((*key).to_owned(), json!({ "display_value": held }))
+        })
+        .collect();
+    json!({ "servicenow": { "event": columns } })
+}
+
+/// The word prune over that width: five words, compared case-insensitively
+/// against every scalar the walk reaches.
+fn bench_sentinel_word_prune(c: &mut Criterion) {
+    let plan = PainlessPlan::new(SN_DROP);
+    assert!(
+        plan.binding()
+            .iter()
+            .any(|b| b.contains(r#"sentinels_ci: ["unknown""#)),
+        "the word bench no longer measures the words: {:?}",
+        plan.binding(),
+    );
+
+    c.bench_function("painless_exec/sentinel_word_prune_planned", |b| {
+        b.iter_batched_ref(
+            || Event::new(servicenow_wrapped_event()),
             |event| painless_exec_plan(event, black_box(&plan)),
             BatchSize::SmallInput,
         );
@@ -775,6 +821,7 @@ criterion_group!(
     bench_armed_table,
     bench_issue_lifecycle,
     bench_wrap_entries,
+    bench_sentinel_word_prune,
     bench_key_named_by_field,
     bench_member_from_variant_key,
     bench_aliased_renames,

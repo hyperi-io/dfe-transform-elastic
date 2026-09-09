@@ -4616,6 +4616,11 @@ pub struct DropPolicy {
     /// reads `**` and `0` as "no value", and they are its own literals rather
     /// than anything general.
     pub sentinels: Vec<String>,
+    /// The same, for a script that compares with `equalsIgnoreCase` instead of
+    /// `==`. Separate because the case-sensitive list must stay that way:
+    /// `forescout_host` spells `n/a` and `unknown` as `==` terms and means the
+    /// lower-case spellings only.
+    pub sentinels_ci: Vec<String>,
     /// The script prunes the root's DIRECT values only. tychon walks
     /// `keySet()` and removes at the top level, so descending would take
     /// nested nulls it keeps.
@@ -4635,6 +4640,7 @@ impl DropPolicy {
             empty_collections: false,
             prune_lists: false,
             sentinels: Vec::new(),
+            sentinels_ci: Vec::new(),
             shallow: false,
         }
     }
@@ -4664,10 +4670,24 @@ impl DropPolicy {
                 .take(script.matches(".removeIf(").count())
                 .any(|head| !head.trim_end().ends_with("values()")),
             sentinels: predicate_sentinels(script),
+            sentinels_ci: predicate_sentinels_ignoring_case(script),
             // The recursive spellings this reads all descend; only the
             // `keySet()` walk sets it, and it does so at its own trigger.
             shallow: false,
         }
+    }
+
+    /// Whether this text is one of the words the script drops.
+    ///
+    /// The two lists are read off DIFFERENT operators, so they answer
+    /// separately: `==` is exact and `equalsIgnoreCase` is not.
+    #[must_use]
+    pub fn is_sentinel(&self, text: &str) -> bool {
+        self.sentinels.iter().any(|s| s == text)
+            || self
+                .sentinels_ci
+                .iter()
+                .any(|s| s.eq_ignore_ascii_case(text))
     }
 }
 
@@ -4773,6 +4793,56 @@ fn predicate_sentinels(script: &str) -> Vec<String> {
     for lambda in script.split("removeIf(").skip(1) {
         if let Some(body) = lambda.split(';').next() {
             collect(body);
+        }
+    }
+    found
+}
+
+/// The words a drop predicate compares against case-INSENSITIVELY.
+///
+/// servicenow spells the scalar half of the recurring prune as
+///
+/// ```painless
+/// (object instanceof String && ((String) object).equalsIgnoreCase('unknown'))
+///   || (object instanceof String && ((String) object).equalsIgnoreCase('none')) || ...
+/// ```
+///
+/// with the container half after it, so [`DropPolicy::read`] claimed the script
+/// on `removeIf` and resolved it to the containers alone. The words then
+/// survived the prune: five fields Elasticsearch does not emit, on every
+/// servicenow event.
+///
+/// The `instanceof String` guard SHARING the call's conjunction is the anchor,
+/// and it is what keeps the severity ladders out. 63 of the 64
+/// `equalsIgnoreCase` lines in the generated tree are
+/// `risk_score_value.equalsIgnoreCase("low")` -- no type test beside the call,
+/// and a value to MAP rather than a value to drop. Reading those as sentinels
+/// would delete every severity a source records.
+///
+/// Java folds the whole of Unicode and this folds ASCII, which drops strictly
+/// FEWER values than the script does. Every literal a pipeline names here is
+/// ASCII, and a prune that guesses wide leaves no error behind.
+fn predicate_sentinels_ignoring_case(script: &str) -> Vec<String> {
+    const CALL: &str = ".equalsIgnoreCase(";
+    let mut found: Vec<String> = Vec::new();
+    for (at, _) in script.match_indices(CALL) {
+        if !conjunction_around(script, at).contains("instanceof String") {
+            continue;
+        }
+        // A quoted literal, and only that: the exchange-online pipeline passes
+        // `ctx._conf?.drop_status` to the same call, and a field name read as
+        // a word would drop the value that field NAMES.
+        let argument = &script[at + CALL.len()..];
+        let Some(quote) = argument.chars().next().filter(|c| matches!(c, '\'' | '"')) else {
+            continue;
+        };
+        let inner = &argument[quote.len_utf8()..];
+        let Some(end) = inner.find(quote) else {
+            continue;
+        };
+        let literal = &inner[..end];
+        if !literal.is_empty() && !found.iter().any(|f| f == literal) {
+            found.push(literal.to_string());
         }
     }
     found
@@ -7617,7 +7687,7 @@ fn drop_shallow(event: &mut Event, policy: &DropPolicy, root: &str) {
         .filter(|(_, value)| match value {
             Value::Null => policy.nulls,
             Value::String(text) if text.is_empty() => policy.empty_strings,
-            Value::String(text) => policy.sentinels.iter().any(|s| s == text),
+            Value::String(text) => policy.is_sentinel(text),
             _ => false,
         })
         .map(|(key, _)| key.clone())
@@ -7681,7 +7751,7 @@ fn drop_value(
     match value {
         Value::Null => policy.nulls,
         Value::String(s) if s.is_empty() => policy.empty_strings,
-        Value::String(s) if policy.sentinels.iter().any(|v| v == s) => true,
+        Value::String(s) if policy.is_sentinel(s) => true,
         Value::Object(map) => {
             let built = map.len();
             let mark = marks.path.len();
@@ -21457,13 +21527,18 @@ impl KnownPattern {
                 .filter(|(_, on)| *on)
                 .map(|(name, _)| format!("{name}: true"))
                 .collect();
-                if !policy.sentinels.is_empty() {
-                    let literals: Vec<String> = policy
-                        .sentinels
+                for (name, words) in [
+                    ("sentinels", &policy.sentinels),
+                    ("sentinels_ci", &policy.sentinels_ci),
+                ] {
+                    if words.is_empty() {
+                        continue;
+                    }
+                    let literals: Vec<String> = words
                         .iter()
                         .map(|s| format!("{}.into()", rust_str(s)))
                         .collect();
-                    set.push(format!("sentinels: vec![{}]", literals.join(", ")));
+                    set.push(format!("{name}: vec![{}]", literals.join(", ")));
                 }
                 let root = root
                     .as_deref()

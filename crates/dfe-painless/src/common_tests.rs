@@ -4307,6 +4307,7 @@ fn drop_everything() -> DropPolicy {
         empty_collections: true,
         prune_lists: true,
         sentinels: Vec::new(),
+        sentinels_ci: Vec::new(),
         shallow: false,
     }
 }
@@ -4349,6 +4350,7 @@ fn a_null_only_predicate_keeps_empty_strings_and_objects() {
             empty_collections: false,
             prune_lists: false,
             sentinels: Vec::new(),
+            sentinels_ci: Vec::new(),
             shallow: false,
         }
     );
@@ -4407,6 +4409,7 @@ fn an_instanceof_string_guard_makes_is_empty_the_string_test() {
             empty_collections: false,
             prune_lists: false,
             sentinels: Vec::new(),
+            sentinels_ci: Vec::new(),
             shallow: false,
         }
     );
@@ -4452,6 +4455,7 @@ fn an_instanceof_collection_guard_keeps_the_collection_reading() {
             empty_collections: true,
             prune_lists: false,
             sentinels: vec!["-".to_string()],
+            sentinels_ci: Vec::new(),
             shallow: false,
         }
     );
@@ -4475,6 +4479,163 @@ fn an_unguarded_is_empty_stays_the_collection_test() {
     assert!(
         !policy.empty_strings,
         "and an enclosing `instanceof Map` never sets the string axis"
+    );
+}
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/servicenow_event/default.rs`, in the
+/// ESCAPED form the site holds -- a stored script arrives as one line, so a
+/// test written with real newlines passes over the shape production runs.
+///
+/// The scalar half of the predicate is five `equalsIgnoreCase` terms and the
+/// container half is the recurring prune. Reading only the containers left the
+/// five words in the document.
+const SERVICENOW_DROP: &str = r#"boolean drop(Object object) {\n  if ((object instanceof String && ((String) object).equalsIgnoreCase('unknown')) || (object instanceof String && ((String) object).equalsIgnoreCase('none')) || (object instanceof String && ((String) object).equalsIgnoreCase('null')) || (object instanceof String && ((String) object).equalsIgnoreCase('n/a')) || (object instanceof String && ((String) object).equalsIgnoreCase('na'))) {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#;
+
+#[test]
+fn an_equals_ignore_case_chain_names_the_words_the_prune_drops() {
+    let policy = DropPolicy::read(&normalise(SERVICENOW_DROP));
+    assert_eq!(
+        policy,
+        DropPolicy {
+            nulls: false,
+            empty_strings: false,
+            empty_collections: true,
+            prune_lists: true,
+            sentinels: Vec::new(),
+            sentinels_ci: vec![
+                "unknown".to_string(),
+                "none".to_string(),
+                "null".to_string(),
+                "n/a".to_string(),
+                "na".to_string(),
+            ],
+            shallow: false,
+        },
+        "the five words are read off the chain, and no other axis with them"
+    );
+}
+
+/// The values servicenow's own capture leaves behind, and what has to survive
+/// beside them. Asserted on the WRITTEN DOCUMENT, not on the parse.
+#[test]
+fn the_words_go_and_everything_the_script_keeps_stays() {
+    let mut event = Event::new(json!({
+        "servicenow": { "event": {
+            "table_name": "alm_hardware",
+            "sla_due": { "display_value": "UNKNOWN", "value": "2024-09-10 08:15:50" },
+            "contact": { "display_value": "N/A", "value": "N/A" },
+            "asset": { "display_value": "Unknown", "value": "0196612a37c4" },
+            "short_description": "unknown device on the guest vlan",
+            "parent": { "value": "" },
+            "owned_by": { "value": null },
+        } },
+        "device": { "model": { "name": ["Unknown"] } },
+        "host": { "name": ["esx-04", "Unknown"] },
+    }));
+
+    assert!(try_known_painless(&mut event, SERVICENOW_DROP));
+
+    assert!(
+        !event.has("servicenow.event.sla_due.display_value"),
+        "the word goes"
+    );
+    assert_eq!(
+        event.get_str("servicenow.event.sla_due.value"),
+        Some("2024-09-10 08:15:50"),
+        "and its sibling stays"
+    );
+    assert!(
+        !event.has("servicenow.event.contact"),
+        "a map emptied by the prune goes with its entries"
+    );
+    assert!(!event.has("servicenow.event.asset.display_value"));
+    assert_eq!(
+        event.get_str("servicenow.event.asset.value"),
+        Some("0196612a37c4")
+    );
+    assert!(
+        !event.has("device.model"),
+        "a list emptied by the prune goes, and the map holding it with it"
+    );
+    assert_eq!(
+        event.get("host.name"),
+        Some(&json!(["esx-04"])),
+        "a list keeps the entries the words do not name"
+    );
+    assert_eq!(
+        event.get_str("servicenow.event.short_description"),
+        Some("unknown device on the guest vlan"),
+        "a value CONTAINING a word is not one: equalsIgnoreCase is equality"
+    );
+    assert_eq!(
+        event.get_str("servicenow.event.table_name"),
+        Some("alm_hardware")
+    );
+    assert_eq!(
+        event.get_str("servicenow.event.parent.value"),
+        Some(""),
+        "this predicate names no empty string, so one stays"
+    );
+    assert_eq!(
+        event.get("servicenow.event.owned_by.value"),
+        Some(&Value::Null),
+        "and it names no null either"
+    );
+}
+
+/// The `==` list stays EXACT. `forescout_host` spells `n/a` and `unknown` as
+/// `==` terms, and folding both lists together would drop the capitalised
+/// spellings that script keeps.
+#[test]
+fn an_equals_list_is_not_made_case_insensitive_by_a_neighbour() {
+    let policy = DropPolicy {
+        sentinels: vec!["n/a".to_string()],
+        sentinels_ci: vec!["unknown".to_string()],
+        ..DropPolicy::none()
+    };
+    assert!(policy.is_sentinel("n/a"));
+    assert!(!policy.is_sentinel("N/A"), "the `==` list is exact");
+    assert!(policy.is_sentinel("unknown"));
+    assert!(policy.is_sentinel("UNKNOWN"), "the other list is not");
+}
+
+/// The severity ladders are 63 of the 64 `equalsIgnoreCase` lines in the
+/// generated tree, and their literals are values to MAP, not values to drop.
+/// The `instanceof String` guard sharing the conjunction is what separates
+/// them; folded into a drop script without one, nothing is read.
+#[test]
+fn an_unguarded_equals_ignore_case_names_no_sentinel() {
+    let script = "boolean drop(Object o) { if (o.equalsIgnoreCase('low')) { return true; } \
+        else if (o instanceof Map) { ((Map) o).values().removeIf(v -> drop(v)); \
+        return ((Map) o).size() == 0; } else if (o instanceof List) { \
+        ((List) o).removeIf(v -> drop(v)); return ((List) o).length == 0; } return false; } \
+        drop(ctx);";
+
+    let policy = DropPolicy::read(script);
+    assert!(
+        policy.sentinels_ci.is_empty(),
+        "no type test beside the call, so no word: {:?}",
+        policy.sentinels_ci
+    );
+    assert!(policy.empty_collections && policy.prune_lists, "{policy:?}");
+}
+
+/// A call whose argument is a FIELD, not a literal. The exchange-online
+/// pipeline passes `ctx._conf.drop_status` to `equalsIgnoreCase`, and reading
+/// a path as a word would drop the value that field names.
+#[test]
+fn an_equals_ignore_case_against_a_field_names_no_sentinel() {
+    let script = "boolean drop(Object object) { if ((object instanceof String \
+        && ((String) object).equalsIgnoreCase(ctx._conf.drop_status))) { return true; } \
+        else if (object instanceof Map) { ((Map) object).values().removeIf(v -> drop(v)); \
+        return ((Map) object).size() == 0; } else if (object instanceof List) { \
+        ((List) object).removeIf(v -> drop(v)); return ((List) object).length == 0; } \
+        return false; } drop(ctx);";
+
+    assert!(
+        DropPolicy::read(script).sentinels_ci.is_empty(),
+        "an unquoted argument is not a word"
     );
 }
 

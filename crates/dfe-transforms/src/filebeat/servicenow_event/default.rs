@@ -163,6 +163,13 @@ impl Transform for Default {
                 &DropPolicy {
                     empty_collections: true,
                     prune_lists: true,
+                    sentinels_ci: vec![
+                        "unknown".into(),
+                        "none".into(),
+                        "null".into(),
+                        "n/a".into(),
+                        "na".into(),
+                    ],
                     ..DropPolicy::none()
                 },
                 None,
