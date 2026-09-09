@@ -43,9 +43,12 @@ surface, not the current one.
 | dfe-transform-elastic | the whole `dfe-painless` crate, and `codegen_api.rs` in `dfe-runtime` — Painless semantics have no Splunk counterpart |
 | dfe-transform-splack | Splunk eval expressions and lookup transforms |
 
-Putting the Painless matchers in their own crate makes that boundary a
-dependency edge rather than a note in a table: a crate that does not depend on
-`dfe-painless` cannot have picked any of it up.
+Putting the Painless matchers in their own crate makes that boundary explicit
+in the manifest rather than a note in a table. It does not by itself prove
+non-use: `dfe-runtime` re-exports `dfe-painless` at the old `painless_*` paths,
+and `dfe-transforms` reaches the matchers that way rather than through a direct
+edge. So a copy has to be checked for BOTH — a `dfe-painless` dependency, and
+the re-export paths through `dfe-runtime`.
 
 ## Extracting later
 
