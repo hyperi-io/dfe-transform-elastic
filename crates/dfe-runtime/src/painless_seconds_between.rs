@@ -34,7 +34,7 @@
 use serde_json::{Map, Value};
 
 use crate::Event;
-use crate::painless_params::{balanced, clean_path, ctx_path_term as ctx_path};
+use crate::painless_params::{balanced, ctx_path_term as ctx_path};
 
 /// The seconds between one timestamp and whichever candidate is present.
 #[derive(Debug, Clone, PartialEq, Eq)]

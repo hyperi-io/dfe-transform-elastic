@@ -40,7 +40,7 @@
 use serde_json::{Map, Value};
 
 use crate::Event;
-use crate::painless_params::{balanced, clean_path, ctx_path_plain as ctx_path, skip_trivia};
+use crate::painless_params::{balanced, ctx_path_plain as ctx_path, skip_trivia};
 
 /// One field looked up in one named `params` table.
 #[derive(Debug, Clone, PartialEq, Eq)]

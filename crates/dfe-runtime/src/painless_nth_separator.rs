@@ -28,7 +28,7 @@
 use serde_json::Value;
 
 use crate::Event;
-use crate::painless_params::{balanced, clean_path, ctx_path_plain as ctx_path, skip_trivia};
+use crate::painless_params::{balanced, ctx_path_plain as ctx_path, skip_trivia};
 
 /// One value cut at the `count`-th separator counted from its end, the part
 /// BEFORE the cut landing on `target`.
