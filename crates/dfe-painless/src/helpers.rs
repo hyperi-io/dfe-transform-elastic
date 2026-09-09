@@ -513,6 +513,13 @@ pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
 /// sit before the run's LAST character -- that character starts the next word.
 /// `MessageID` is `message_id`, and reading it as one underscore per uppercase
 /// gave `message_i_d`, which the `rename` to `event.code` then missed.
+///
+/// This is cyberarkpas's rule and it is CORRECT as written -- the run's
+/// separator moves back whatever ends the run. Narrowing that to "ends at a
+/// lowercase letter", plus refusing to double a separator, reproduces
+/// beyondtrust_epm's capture exactly (211/211 against 199) and improves eight
+/// further fixtures, and it costs cyberarkpas an event and 5 fields. Those two
+/// conditions belong in a SEVENTH rule bound per script, never in this one.
 fn acronym_run_snake(s: &str) -> String {
     // The script's own fast path: nothing after the first character is
     // uppercase, so there is no word to break.

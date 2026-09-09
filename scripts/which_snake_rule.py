@@ -137,6 +137,26 @@ def leaves(obj, prefix=""):
         yield prefix
 
 
+def payload(message):
+    """The vendor payload inside `message`, however it is wrapped.
+
+    A bare JSON string is the easy case. The one that matters is JSON EMBEDDED
+    after a wrapper -- cyberarkpas ships `<7>1 <ts> VAULT {...}` -- because
+    skipping those silently is how a sweep reports a clean result while never
+    seeing the source that disproves it.
+    """
+    if not isinstance(message, str):
+        return message
+    try:
+        return json.loads(message)
+    except json.JSONDecodeError:
+        pass
+    start = message.find("{")
+    if start < 0:
+        raise ValueError("no JSON payload in message")
+    return json.loads(message[start:])
+
+
 def load(fixture):
     base = pathlib.Path(fixture)
     first = (base / "input.ndjson").read_text(encoding="utf-8", errors="replace").splitlines()[0]
@@ -144,8 +164,7 @@ def load(fixture):
     exp = json.loads(
         (base / "expected.ndjson").read_text(encoding="utf-8", errors="replace").splitlines()[0]
     )
-    message = inp.get("message")
-    return (json.loads(message) if isinstance(message, str) else message), exp
+    return payload(inp.get("message")), exp
 
 
 CORPUS = pathlib.Path(__file__).resolve().parent.parent / "testdata" / "compat"
@@ -166,14 +185,17 @@ def sweep(left, right, engaged_at=0.5):
     to an existing rule, or a new convention? A rule that never scores lower
     anywhere is a fix.
     """
-    better, worse, skipped, same = [], [], 0, 0
+    better, worse, skipped, same, unreadable = [], [], 0, 0, 0
     for fixture in sorted(CORPUS.glob("*/*/*")):
         if not (fixture / "expected.ndjson").exists():
             continue
         source = fixture.parts[len(CORPUS.parts)]
         try:
             parsed, expected = load(fixture)
-        except (json.JSONDecodeError, IndexError, UnicodeDecodeError, KeyError):
+        except (json.JSONDecodeError, IndexError, UnicodeDecodeError, KeyError, ValueError):
+            # Counted, because a fixture whose pre-conversion keys are not
+            # visible in the input is unscored, not undifferentiated.
+            unreadable += 1
             continue
         if not isinstance(parsed, dict) or not isinstance(expected, dict):
             continue
@@ -201,6 +223,7 @@ def sweep(left, right, engaged_at=0.5):
         else:
             same += 1
 
+    print(f"UNSCORED, input keys not visible:                {unreadable}")
     print(f"not snake-cased, skipped ({left} under {engaged_at:.0%}): {skipped}")
     print(f"a rule engaged and the two agree:                {same}\n")
     print(f"{right} SCORES HIGHER on {len(better)}:")
@@ -209,8 +232,15 @@ def sweep(left, right, engaged_at=0.5):
     print(f"\n{right} SCORES LOWER on {len(worse)}:")
     for src, fx, a, b in worse:
         print(f"  {src}/{fx}: {a[0]}/{a[1]} -> {b[0]}/{b[1]}")
+    scored = len(better) + len(worse) + same
     if not worse:
-        print("  (none -- it is a fix to the incumbent, not a separate convention)")
+        print(f"  (none among the {scored} fixtures this can score)")
+    print(
+        f"\nCoverage: {scored} scored, {skipped} not snake-cased, {unreadable} unscored."
+        "\nA candidate that never scores lower is NOT thereby safe -- cyberarkpas defines"
+        "\nAcronymRun, is unscorable here because its keys are not visible pre-conversion,"
+        "\nand loses an event to the strict variant. Only the corpus run decides."
+    )
     return 0
 
 
