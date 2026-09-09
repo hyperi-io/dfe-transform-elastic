@@ -35,6 +35,7 @@ pub use crate::painless_plan::{PainlessPlan, painless_exec_plan, painless_exec_p
 // `every_matcher_runner_reaches_the_prelude` in
 // `crates/dfe-transforms/tests/prelude_exports.rs`.
 pub use crate::painless_coercion::{DecodedFields, LongCoercion, decoded_fields, long_coercion};
+pub use crate::painless_collect_present::{CollectPresent, collect_present};
 pub use crate::painless_common::{
     AllowedValueCopy, BasenameCuts, CoerceBoolean, CombineFields, DedupeMapValues, DropPolicy,
     DurationWindow, EnsureAppend, EnsurePrefix, Factor, FirstPresentKeyName, FloatSecondsToNanos,

@@ -4203,3 +4203,141 @@ fn an_expression_is_not_read_as_a_literal_it_merely_contains() {
     assert_eq!(literal_value(r#"ctx.a.replace("x", "y")"#), None);
     assert_eq!(literal_value(r#"['ok', ctx.a]"#), None);
 }
+
+/// The elvis-keyed lookup, verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_telemetry/default.rs`,
+/// which is `pipelines/trend_micro_vision_one/telemetry/default.yml:122-128`.
+const TMV1_EVENT_TYPE: &str = r#"def key = (ctx.trend_micro_vision_one?.telemetry?.event_id ?: \"\").toString();\nif (params.containsKey(key)) {\n  ctx.trend_micro_vision_one.telemetry.event_type = params[key];\n} else {\n  ctx.trend_micro_vision_one.telemetry.event_type = 'Other';\n}\n"#;
+
+fn tmv1_event_types() -> Value {
+    json!({ "1": "TELEMETRY_PROCESS", "2": "TELEMETRY_FILE", "3": "TELEMETRY_CONNECTION" })
+}
+
+/// The three parts are read off the script: the key's path, the elvis literal
+/// an absent field stands in as, and the `else` arm's default.
+#[test]
+fn the_elvis_lookup_reads_its_key_its_absent_stand_in_and_its_default() {
+    let pattern = params_pattern(&crate::common::normalise(TMV1_EVENT_TYPE));
+    assert_eq!(
+        pattern,
+        Some(ParamsPattern::StringifiedLookupOrLiteral {
+            source: "trend_micro_vision_one.telemetry.event_id".into(),
+            absent_key: String::new(),
+            target: "trend_micro_vision_one.telemetry.event_type".into(),
+            default: json!("Other"),
+        })
+    );
+}
+
+/// A NUMERIC field keys the table, because the script stringifies it. The
+/// captured events carry `eventId` as the integer 3 and Elasticsearch writes
+/// `TELEMETRY_CONNECTION`.
+#[test]
+fn a_numeric_key_finds_its_row() {
+    let script = crate::common::normalise(TMV1_EVENT_TYPE);
+    let mut event =
+        Event::new(json!({ "trend_micro_vision_one": { "telemetry": { "event_id": 3 } } }));
+    assert!(try_params_painless(
+        &mut event,
+        &script,
+        &tmv1_event_types()
+    ));
+    assert_eq!(
+        event.get_str("trend_micro_vision_one.telemetry.event_type"),
+        Some("TELEMETRY_CONNECTION")
+    );
+}
+
+/// A key with no row writes the `else` arm's LITERAL, where every other lookup
+/// in this ladder writes nothing.
+#[test]
+fn a_key_with_no_row_writes_the_scripts_own_default() {
+    let script = crate::common::normalise(TMV1_EVENT_TYPE);
+    let mut event =
+        Event::new(json!({ "trend_micro_vision_one": { "telemetry": { "event_id": 99 } } }));
+    assert!(try_params_painless(
+        &mut event,
+        &script,
+        &tmv1_event_types()
+    ));
+    assert_eq!(
+        event.get_str("trend_micro_vision_one.telemetry.event_type"),
+        Some("Other")
+    );
+}
+
+/// An ABSENT field is the elvis literal, not a null, so the default is written
+/// rather than the processor throwing.
+#[test]
+fn an_absent_field_falls_through_the_elvis_to_the_default() {
+    let script = crate::common::normalise(TMV1_EVENT_TYPE);
+    let mut event = Event::new(json!({ "trend_micro_vision_one": { "telemetry": {} } }));
+    assert!(try_params_painless(
+        &mut event,
+        &script,
+        &tmv1_event_types()
+    ));
+    assert_eq!(
+        event.get_str("trend_micro_vision_one.telemetry.event_type"),
+        Some("Other")
+    );
+}
+
+/// A CONTAINER keys nothing: Painless stringifies it to `[a, b]`, which no
+/// vendored table carries, so the default is written rather than the elvis
+/// literal's row.
+#[test]
+fn a_container_source_writes_the_default_and_not_the_elvis_row() {
+    let script = crate::common::normalise(TMV1_EVENT_TYPE);
+    let mut table = tmv1_event_types();
+    table[""] = json!("EMPTY_KEY_ROW");
+    let mut event =
+        Event::new(json!({ "trend_micro_vision_one": { "telemetry": { "event_id": [1, 2] } } }));
+    assert!(try_params_painless(&mut event, &script, &table));
+    assert_eq!(
+        event.get_str("trend_micro_vision_one.telemetry.event_type"),
+        Some("Other")
+    );
+
+    // The same table DOES answer for a genuinely absent field.
+    let mut event = Event::new(json!({ "trend_micro_vision_one": { "telemetry": {} } }));
+    assert!(try_params_painless(&mut event, &script, &table));
+    assert_eq!(
+        event.get_str("trend_micro_vision_one.telemetry.event_type"),
+        Some("EMPTY_KEY_ROW")
+    );
+}
+
+/// Without the elvis this is a different script: Painless throws on an absent
+/// field there, so the reader declines rather than guessing at the outcome.
+#[test]
+fn the_same_lookup_without_an_elvis_declines() {
+    let bare = TMV1_EVENT_TYPE.replace(r#" ?: \"\""#, "");
+    assert_ne!(bare, TMV1_EVENT_TYPE, "the replacement has to bite");
+    assert!(parse_stringified_lookup_or_literal(&crate::common::normalise(&bare)).is_none());
+}
+
+/// Two arms writing DIFFERENT fields is two lookups sharing a key, and is
+/// declined -- claiming it would drop whichever field the reader did not keep.
+#[test]
+fn arms_writing_different_fields_decline() {
+    let split = TMV1_EVENT_TYPE.replace(
+        r"} else {\n  ctx.trend_micro_vision_one.telemetry.event_type = 'Other';",
+        r"} else {\n  ctx.trend_micro_vision_one.telemetry.event_kind = 'Other';",
+    );
+    assert_ne!(split, TMV1_EVENT_TYPE, "the replacement has to bite");
+    assert!(parse_stringified_lookup_or_literal(&crate::common::normalise(&split)).is_none());
+}
+
+/// The `.put` spelling of a `containsKey` guard stays with `StringifiedLookup`,
+/// which sits above this in the ladder.
+#[test]
+fn the_put_spelling_is_left_to_the_matcher_above() {
+    let script = "def k = Long.toString(ctx.a.b); if (params.containsKey(k)) { \
+                  ctx.c.put('d', params[k]); }";
+    assert!(parse_stringified_lookup_or_literal(script).is_none());
+    assert!(matches!(
+        params_pattern(script),
+        Some(ParamsPattern::StringifiedLookup { .. })
+    ));
+}

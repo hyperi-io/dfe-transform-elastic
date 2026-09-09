@@ -26,6 +26,7 @@
 //! The modules drop the `painless_` prefix the crate name already carries.
 
 pub mod coercion;
+pub mod collect_present;
 pub mod common;
 pub mod entity;
 pub mod expr;

@@ -222,6 +222,21 @@ pub(crate) enum ParamsPattern {
         source: String,
         target: String,
     },
+    /// The same flat table, where the key carries an ELVIS default and a key
+    /// with no row writes a LITERAL rather than nothing.
+    ///
+    /// `(ctx.a.b ?: "").toString()` never throws on an absent field and never
+    /// yields null, so the `else` arm runs on every event the table misses --
+    /// which makes the target unconditional, where every other lookup in this
+    /// ladder leaves it alone.
+    StringifiedLookupOrLiteral {
+        source: String,
+        /// The key an absent or null source stands in as, off the elvis.
+        absent_key: String,
+        target: String,
+        /// What the `else` arm writes.
+        default: Value,
+    },
     SentinelRemoval,
     FiletimeFieldList,
     BitFlags,
@@ -852,6 +867,17 @@ fn params_pattern_tail(normalised: &str) -> Option<ParamsPattern> {
     // reached no runner at all.
     if normalised.contains("params.containsKey(")
         && let Some(pattern) = parse_local_key_lookup(normalised)
+    {
+        return Some(pattern);
+    }
+
+    // Pattern: the same table, keyed through an ELVIS so an absent field is a
+    // literal rather than a null, with an `else` arm writing a literal default.
+    // The key expression carries no `params[ctx.` and no `.put(`, so every
+    // other trigger in this ladder misses it.
+    if normalised.contains("params.containsKey(")
+        && normalised.contains("?:")
+        && let Some(pattern) = parse_stringified_lookup_or_literal(normalised)
     {
         return Some(pattern);
     }
@@ -2097,6 +2123,12 @@ pub(crate) fn run_params_pattern(
         ParamsPattern::StringifiedLookup { source, target } => {
             run_stringified_lookup(event, source, target, params)
         }
+        ParamsPattern::StringifiedLookupOrLiteral {
+            source,
+            absent_key,
+            target,
+            default,
+        } => run_stringified_lookup_or_literal(event, source, absent_key, target, default, params),
         ParamsPattern::LookupNormalise(pattern, literals) => {
             lookup_normalise(event, pattern, literals, params)
         }
@@ -2828,6 +2860,135 @@ fn run_stringified_lookup(
     if let Some(value) = params.get(&key) {
         let _ = event.set(target, value.clone());
     }
+    true
+}
+
+/// ```painless
+/// def <local> = (ctx.<source> ?: '<absent>').toString();
+/// if (params.containsKey(<local>)) { ctx.<target> = params[<local>]; }
+/// else { ctx.<target> = <default>; }
+/// ```
+///
+/// The `?:` is what separates this from [`parse_stringified_lookup`]: an
+/// absent source is the elvis literal rather than a null, so the script always
+/// reaches one arm or the other and the target is always written.
+fn parse_stringified_lookup_or_literal(script: &str) -> Option<ParamsPattern> {
+    let (statement, rest) = skip_trivia(script).strip_prefix("def ")?.split_once(';')?;
+    let (local, expression) = statement.split_once('=')?;
+    let local = identifier(local)?;
+    let (source, absent_key) = elvis_key(expression)?;
+
+    let rest = skip_trivia(rest).strip_prefix("if")?;
+    let (test, rest) = balanced(skip_trivia(rest), '(', ')')?;
+    if without_spaces(test) != format!("params.containsKey({local})") {
+        return None;
+    }
+
+    let (found, rest) = balanced(skip_trivia(rest), '{', '}')?;
+    let (target, expression) = only_ctx_assignment(found)?;
+    if without_spaces(expression) != format!("params[{local}]") {
+        return None;
+    }
+
+    let rest = skip_trivia(rest).strip_prefix("else")?;
+    let (missing, rest) = balanced(skip_trivia(rest), '{', '}')?;
+    // The two arms must write the SAME field, or this is two lookups sharing a
+    // key rather than one lookup with a fallback.
+    let (fallback, literal) = only_ctx_assignment(missing)?;
+    if fallback != target || !skip_trivia(rest).is_empty() {
+        return None;
+    }
+    let default = crate::common::painless_literal(literal)?;
+
+    Some(ParamsPattern::StringifiedLookupOrLiteral {
+        source,
+        absent_key,
+        target,
+        default,
+    })
+}
+
+/// `(ctx.<path> ?: '<literal>').toString()` as the path and the literal.
+///
+/// Both halves are required: without the elvis, Painless throws on an absent
+/// field, which is a different script and a different outcome.
+fn elvis_key(expression: &str) -> Option<(String, String)> {
+    let inner = skip_trivia(expression)
+        .trim_end()
+        .strip_suffix(".toString()")?;
+    let (inner, rest) = balanced(skip_trivia(inner), '(', ')')?;
+    if !rest.trim().is_empty() {
+        return None;
+    }
+    let (path, default) = inner.split_once("?:")?;
+    Some((ctx_path_plain(path)?, quoted_whole(default)?))
+}
+
+/// A whole trimmed text that is one single- or double-quoted literal.
+///
+/// Unlike the readers that hunt for the first quote, this admits the EMPTY
+/// string, which is what the elvis defaults to.
+fn quoted_whole(text: &str) -> Option<String> {
+    let text = text.trim();
+    for quote in ['\'', '"'] {
+        if let Some(inner) = text
+            .strip_prefix(quote)
+            .and_then(|rest| rest.strip_suffix(quote))
+            && !inner.contains(quote)
+        {
+            return Some(inner.to_string());
+        }
+    }
+    None
+}
+
+/// The one `ctx.<path> = <expression>;` a block holds, and nothing else.
+fn only_ctx_assignment(block: &str) -> Option<(String, &str)> {
+    let (statement, tail) = skip_trivia(block).split_once(';')?;
+    if !skip_trivia(tail).is_empty() {
+        return None;
+    }
+    let (lhs, rhs) = statement.split_once('=')?;
+    Some((ctx_path_plain(lhs)?, rhs))
+}
+
+/// A local's name, or `None` where the text is not one identifier.
+fn identifier(text: &str) -> Option<&str> {
+    let name = text.trim();
+    (!name.is_empty()
+        && !name.starts_with(|c: char| c.is_ascii_digit())
+        && name.chars().all(|c| c.is_alphanumeric() || c == '_'))
+    .then_some(name)
+}
+
+/// An expression with every space removed, so spacing is not part of a match.
+fn without_spaces(text: &str) -> String {
+    text.chars().filter(|c| !c.is_whitespace()).collect()
+}
+
+/// Look the key up, falling back to the script's own literal.
+///
+/// An absent or null source is the elvis literal, so the target is written on
+/// every event -- the miss writes the default rather than nothing.
+fn run_stringified_lookup_or_literal(
+    event: &mut Event,
+    source: &str,
+    absent_key: &str,
+    target: &str,
+    default: &Value,
+    params: &Map<String, Value>,
+) -> bool {
+    // A CONTAINER is neither the elvis case nor a key: Painless stringifies it
+    // to `[a, b]`, which no vendored table is keyed by. Standing the elvis
+    // literal in for it would find a row the script cannot reach.
+    let key = match event.get(source) {
+        None | Some(Value::Null) => Some(absent_key.to_owned()),
+        Some(_) => event.get_as_string(source),
+    };
+    let value = key
+        .and_then(|key| params.get(&key).cloned())
+        .unwrap_or_else(|| default.clone());
+    let _ = event.set(target, value);
     true
 }
 

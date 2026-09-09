@@ -195,42 +195,43 @@
 194 FieldsIntoMap
 195 CrowdstrikeTimelineEntityIdentity
 196 CrowdstrikeTimelineEntityAccounts
-197 FirstElement
-198 IndexedFieldCopies
-199 MoveKeys
-200 ClassifyLadder
-201 PrivateCidrDirection
-202 WktGeometry
-203 GeoPointFromCoordinates
-204 BranchCopies
-205 StripSurroundingPair
-206 HashByWidthOrPrefix
-207 LongCoercion
-208 GuardedDivide
-209 ScaleField
-210 RecordRenames
-211 DecodedFields
-212 PairTable
-213 RecordFromFields
-214 SecondsBetween
-215 HoistMember
-216 ListRebuild
-217 ScanTaggedList
-218 GuardedCopy
-219 ConcatAssignment
-220 PlainAssignments
-221 SumTotals
-222 ScalarExpression
-223 TrimThenSplit
-224 ItemWrites
-225 NthSeparatorPrefix
-226 FirstMatchInList
-227 SubstringRejoin
-228 ListFold
-229 LongDivide
-230 DropLeadingChars
-231 EpochToMillis
-232 EpochNanosToDateTime
+197 CollectPresent
+198 FirstElement
+199 IndexedFieldCopies
+200 MoveKeys
+201 ClassifyLadder
+202 PrivateCidrDirection
+203 WktGeometry
+204 GeoPointFromCoordinates
+205 BranchCopies
+206 StripSurroundingPair
+207 HashByWidthOrPrefix
+208 LongCoercion
+209 GuardedDivide
+210 ScaleField
+211 RecordRenames
+212 DecodedFields
+213 PairTable
+214 RecordFromFields
+215 SecondsBetween
+216 HoistMember
+217 ListRebuild
+218 ScanTaggedList
+219 GuardedCopy
+220 ConcatAssignment
+221 PlainAssignments
+222 SumTotals
+223 ScalarExpression
+224 TrimThenSplit
+225 ItemWrites
+226 NthSeparatorPrefix
+227 FirstMatchInList
+228 SubstringRejoin
+229 ListFold
+230 LongDivide
+231 DropLeadingChars
+232 EpochToMillis
+233 EpochNanosToDateTime
 
 [params_pattern]
   1 RowMembers
@@ -292,25 +293,26 @@
  57 MemberLookup
  58 LookupNormalise
  59 StringifiedLookup
- 60 IndexedLookup
- 61 Scale
- 62 Replace
- 63 AddUniqueRow
- 64 FrameworkPreference
- 65 NormalisedLookup
- 66 StringifiedLookup
- 67 LookupNormalise
- 68 GuardedLookup
- 69 MergeRowOrFallback
- 70 GuardedParamsRow
- 71 IssueLifecycle
- 72 ArmedTable
- 73 RowOrDefaults
- 74 HexFields
- 75 KeyedByLookup
- 76 ScalarExpression
- 77 SelectRenameKeys
- 78 FieldTables
- 79 MemberMappings
- 80 ConfiguredDateFormat
+ 60 StringifiedLookupOrLiteral
+ 61 IndexedLookup
+ 62 Scale
+ 63 Replace
+ 64 AddUniqueRow
+ 65 FrameworkPreference
+ 66 NormalisedLookup
+ 67 StringifiedLookup
+ 68 LookupNormalise
+ 69 GuardedLookup
+ 70 MergeRowOrFallback
+ 71 GuardedParamsRow
+ 72 IssueLifecycle
+ 73 ArmedTable
+ 74 RowOrDefaults
+ 75 HexFields
+ 76 KeyedByLookup
+ 77 ScalarExpression
+ 78 SelectRenameKeys
+ 79 FieldTables
+ 80 MemberMappings
+ 81 ConfiguredDateFormat
 

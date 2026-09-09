@@ -1347,3 +1347,93 @@ fn the_cisco_ise_alarm_fold_binds_to_the_key_rewriter() {
         }))
     );
 }
+
+/// Verbatim from the generated call sites in
+/// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_telemetry/default.rs`,
+/// which are `pipelines/trend_micro_vision_one/telemetry/default.yml:755-768`
+/// and `:882-893`.
+const TMV1_FILE_SIZE: &str = r#"if (ctx.file == null) ctx.file = [:];\nctx.file.size = [\n  ctx.trend_micro_vision_one?.telemetry?.object_current_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.object_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.src_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.process_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.parent_file_size\n];\nctx.file.size.removeIf(v -> v == null);\nif (ctx.file.size.size() == 1) ctx.file.size = ctx.file.size[0];\n"#;
+
+const TMV1_PROCESS_NAME: &str = r#"if (ctx.process == null) ctx.process = [:];\nctx.process.name = [\n  ctx.trend_micro_vision_one?.telemetry?.process_name,\n  ctx.trend_micro_vision_one?.telemetry?.object_name\n];\nctx.process.name.removeIf(v -> v == null);\nif (ctx.process.name.size() == 1) ctx.process.name = ctx.process.name[0];\n"#;
+
+/// Verbatim from the same module, `:118-128` in the pipeline.
+const TMV1_EVENT_TYPE: &str = r#"def key = (ctx.trend_micro_vision_one?.telemetry?.event_id ?: \"\").toString();\nif (params.containsKey(key)) {\n  ctx.trend_micro_vision_one.telemetry.event_type = params[key];\n} else {\n  ctx.trend_micro_vision_one.telemetry.event_type = 'Other';\n}\n"#;
+
+/// `FirstElement` claimed both of these on the closing `[0];` and wrote
+/// nothing, because it read that statement without the two that build the list.
+#[test]
+fn the_trend_micro_candidate_lists_bind_to_the_collector_and_not_to_first_element() {
+    for (name, script, target, width) in [
+        ("file.size", TMV1_FILE_SIZE, "file.size", 5),
+        ("process.name", TMV1_PROCESS_NAME, "process.name", 2),
+    ] {
+        let held = binding(script).join(" ");
+        assert!(held.starts_with("CollectPresent"), "{name}: {held}");
+        assert!(
+            held.contains(&format!(r#"target: "{target}""#)),
+            "{name}: {held}"
+        );
+        assert_eq!(
+            held.matches("trend_micro_vision_one.telemetry.").count(),
+            width,
+            "{name} lost a candidate: {held}"
+        );
+    }
+
+    // Three of the five present: a LIST, in script order, duplicates kept.
+    let mut event = Event::new(json!({ "trend_micro_vision_one": { "telemetry": {
+        "object_current_file_size": 334_168,
+        "object_file_size": 334_168,
+        "src_file_size": 57_528,
+    } } }));
+    assert!(painless_exec_plan(&mut event, &PainlessPlan::new(TMV1_FILE_SIZE)).is_ok());
+    assert_eq!(
+        event.get("file.size"),
+        Some(&json!([334_168, 334_168, 57_528]))
+    );
+
+    // One present: the SCALAR, which is the script's own singleton unwrap.
+    let mut event = Event::new(json!({ "trend_micro_vision_one": { "telemetry": {
+        "object_name": "svchost.exe",
+    } } }));
+    assert!(painless_exec_plan(&mut event, &PainlessPlan::new(TMV1_PROCESS_NAME)).is_ok());
+    assert_eq!(event.get("process.name"), Some(&json!("svchost.exe")));
+}
+
+/// The elvis in the key is what separates this from `StringifiedLookup`: the
+/// target is written on every event, with the script's own literal where the
+/// table has no row.
+#[test]
+fn the_trend_micro_event_type_binds_to_the_lookup_that_carries_its_default() {
+    let held = binding(TMV1_EVENT_TYPE).join(" ");
+    assert!(held.starts_with("StringifiedLookupOrLiteral"), "{held}");
+    assert!(
+        held.contains(r#"source: "trend_micro_vision_one.telemetry.event_id""#),
+        "{held}"
+    );
+    assert!(
+        held.contains(r#"target: "trend_micro_vision_one.telemetry.event_type""#),
+        "{held}"
+    );
+    assert!(held.contains(r#"default: String("Other")"#), "{held}");
+
+    let params = json!({ "1": "TELEMETRY_PROCESS", "3": "TELEMETRY_CONNECTION" });
+    let plan = PainlessPlan::new(TMV1_EVENT_TYPE);
+
+    // The captured events carry `eventId` as an INTEGER, which the script
+    // stringifies before the lookup.
+    let mut event =
+        Event::new(json!({ "trend_micro_vision_one": { "telemetry": { "event_id": 3 } } }));
+    assert!(painless_exec_plan_params(&mut event, &plan, &params).is_ok());
+    assert_eq!(
+        event.get_str("trend_micro_vision_one.telemetry.event_type"),
+        Some("TELEMETRY_CONNECTION")
+    );
+
+    let mut event = Event::new(json!({ "trend_micro_vision_one": { "telemetry": {} } }));
+    assert!(painless_exec_plan_params(&mut event, &plan, &params).is_ok());
+    assert_eq!(
+        event.get_str("trend_micro_vision_one.telemetry.event_type"),
+        Some("Other")
+    );
+}

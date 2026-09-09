@@ -19027,6 +19027,9 @@ pub(crate) enum KnownPattern {
     CrowdstrikeTimelineEntityIdentity,
     CrowdstrikeTimelineEntityAccounts,
     FirstElement(Box<FirstElement>),
+    /// Several candidate fields collected into one list, the absent ones
+    /// dropped, and a lone survivor unwrapped.
+    CollectPresent(Box<crate::collect_present::CollectPresent>),
     NamedMapEntry(Box<NamedMapEntry>),
     TitleCase(Box<TitleCase>),
     SuffixAfterSeparator {
@@ -21189,6 +21192,18 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: several candidate fields collected into one list, the absent
+    // ones dropped, and a lone survivor unwrapped.
+    //
+    // Above `FirstElement`, whose `[0];` trigger reads the closing statement
+    // alone and unwraps a list the two statements before it are what build.
+    if normalised.contains(".removeIf(v -> v == null);")
+        && let Some(pattern) = crate::collect_present::parse_collect_present(normalised)
+    {
+        patterns.push(KnownPattern::CollectPresent(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: the first element of a list, bare or guarded on the target
     // being unset.
     if normalised.contains("[0];")
@@ -22041,6 +22056,9 @@ pub(crate) fn run_known_pattern(
             try_crowdstrike_timeline_entity_accounts(event)
         }
         KnownPattern::FirstElement(pattern) => run_first_element(event, pattern),
+        KnownPattern::CollectPresent(pattern) => {
+            crate::collect_present::collect_present(event, pattern)
+        }
         KnownPattern::NamedMapEntry(pattern) => run_named_map_entry(event, pattern),
         KnownPattern::TitleCase(pattern) => run_title_case(event, pattern),
         KnownPattern::SuffixAfterSeparator {

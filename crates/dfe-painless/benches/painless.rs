@@ -854,6 +854,95 @@ fn bench_foreach_rewrite_keys(c: &mut Criterion) {
     });
 }
 
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_telemetry/default.rs`,
+/// the widest of the source's eight candidate lists.
+const TMV1_FILE_SIZE: &str = r#"if (ctx.file == null) ctx.file = [:];\nctx.file.size = [\n  ctx.trend_micro_vision_one?.telemetry?.object_current_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.object_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.src_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.process_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.parent_file_size\n];\nctx.file.size.removeIf(v -> v == null);\nif (ctx.file.size.size() == 1) ctx.file.size = ctx.file.size[0];\n"#;
+
+/// Verbatim from the same module: the event-type table keyed through an elvis.
+const TMV1_EVENT_TYPE: &str = r#"def key = (ctx.trend_micro_vision_one?.telemetry?.event_id ?: \"\").toString();\nif (params.containsKey(key)) {\n  ctx.trend_micro_vision_one.telemetry.event_type = params[key];\n} else {\n  ctx.trend_micro_vision_one.telemetry.event_type = 'Other';\n}\n"#;
+
+/// One telemetry event at the width the vendor sends the size candidates.
+fn tmv1_telemetry_event() -> serde_json::Value {
+    json!({ "trend_micro_vision_one": { "telemetry": {
+        "event_id": 3,
+        "object_current_file_size": 334_168,
+        "object_file_size": 334_168,
+        "src_file_size": 57_528,
+    } } })
+}
+
+/// The candidate collection over five sources, three of them present.
+fn bench_collect_present(c: &mut Criterion) {
+    let plan = PainlessPlan::new(TMV1_FILE_SIZE);
+    assert!(
+        plan.binding()
+            .iter()
+            .any(|b| b.starts_with("CollectPresent")),
+        "the candidate bench no longer measures CollectPresent: {:?}",
+        plan.binding(),
+    );
+
+    c.bench_function("painless_exec/collect_present_planned", |b| {
+        b.iter_batched_ref(
+            || Event::new(tmv1_telemetry_event()),
+            |event| painless_exec_plan(event, black_box(&plan)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
+/// The event-type table, at the width the vendor ships it.
+///
+/// Built from a slice rather than a `json!` literal: a wide literal is what
+/// blows rustc's macro recursion limit at other call sites.
+fn bench_stringified_lookup_or_literal(c: &mut Criterion) {
+    const ROWS: &[(&str, &str)] = &[
+        ("1", "TELEMETRY_PROCESS"),
+        ("2", "TELEMETRY_FILE"),
+        ("3", "TELEMETRY_CONNECTION"),
+        ("4", "TELEMETRY_DNS"),
+        ("5", "TELEMETRY_REGISTRY"),
+        ("6", "TELEMETRY_ACCOUNT"),
+        ("7", "TELEMETRY_INTERNET"),
+        ("8", "TELEMETRY_MODIFIED_PROCESS"),
+        ("9", "TELEMETRY_WINDOWS_HOOK"),
+        ("10", "TELEMETRY_WINDOWS_EVENT"),
+        ("11", "TELEMETRY_AMSI"),
+        ("12", "TELEMETRY_WMI"),
+        ("13", "TELEMETRY_MEMORY"),
+        ("14", "TELEMETRY_BM"),
+        ("15", "TELEMETRY_APP"),
+        ("16", "TELEMETRY_SYSTEM_EVENT"),
+        ("17", "TELEMETRY_EVENT_PIPE"),
+        ("18", "TELEMETRY_MAC_SYS_LOG"),
+        ("19", "TELEMETRY_DDR"),
+        ("101", "TELEMETRY_ASSOCIATION"),
+    ];
+
+    let plan = PainlessPlan::new(TMV1_EVENT_TYPE);
+    assert!(
+        plan.binding()
+            .iter()
+            .any(|b| b.starts_with("StringifiedLookupOrLiteral")),
+        "the elvis-lookup bench no longer measures StringifiedLookupOrLiteral: {:?}",
+        plan.binding(),
+    );
+    let params = serde_json::Value::Object(
+        ROWS.iter()
+            .map(|(key, value)| ((*key).to_owned(), json!(value)))
+            .collect(),
+    );
+
+    c.bench_function("painless_exec/stringified_lookup_or_literal_planned", |b| {
+        b.iter_batched_ref(
+            || Event::new(tmv1_telemetry_event()),
+            |event| painless_exec_plan_params(event, black_box(&plan), black_box(&params)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
 criterion_group!(
     benches,
     bench_params_matcher,
@@ -874,6 +963,8 @@ criterion_group!(
     bench_member_from_variant_key,
     bench_aliased_renames,
     bench_empty_arm_prune,
-    bench_foreach_rewrite_keys
+    bench_foreach_rewrite_keys,
+    bench_collect_present,
+    bench_stringified_lookup_or_literal
 );
 criterion_main!(benches);
