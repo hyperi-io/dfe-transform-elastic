@@ -18558,6 +18558,10 @@ pub(crate) enum KnownPattern {
     MemberFromVariantKey(Box<MemberFromVariantKey>),
     /// Members renamed inside every item of a list.
     ListItemRenames(Box<crate::lists::ListItemRenames>),
+    /// One entry copied out of a map, its key named by another field's value.
+    KeyNamedByField(Box<crate::map_entries::KeyNamedByField>),
+    /// Every scalar entry of a map wrapped into a one-key record.
+    WrapEntries(Box<crate::map_entries::WrapEntries>),
     /// ECS fields written from the members of a list's items, under nested
     /// guards.
     ItemWrites(Box<crate::item_writes::ItemWrites>),
@@ -19050,6 +19054,37 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_nest_under(normalised)
     {
         patterns.push(KnownPattern::NestUnder(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: every scalar entry of a map wrapped into a one-key record, the
+    // key chosen by a config flag.
+    //
+    // ABOVE `NamedMapEntry`, which triggers on the same `.entrySet()` and
+    // `.getKey()`: servicenow's `getKey() == 'table_name'` reads there as one
+    // named entry being lifted out, where it is a key the wrap SKIPS.
+    //
+    // The accumulator declaration is the rest of the trigger, because the three
+    // recursive helpers that also call `entry.setValue(` -- `filterMassive`,
+    // `unescape` and `truncateMap` -- declare none.
+    if normalised.contains(".setValue(")
+        && normalised.contains("= [:]")
+        && let Some(pattern) = crate::map_entries::parse_wrap_entries(normalised)
+    {
+        patterns.push(KnownPattern::WrapEntries(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: one entry copied out of a map, its key held in another FIELD
+    // rather than written in the script.
+    //
+    // The receiver has to be a local bound to a `ctx` path, which is what
+    // separates it from the nine `params.containsKey(<field>)` sites -- those
+    // are lookup tables keyed by a field and the params ladder claims them.
+    if normalised.contains(".containsKey(ctx")
+        && let Some(pattern) = crate::map_entries::parse_key_named_by_field(normalised)
+    {
+        patterns.push(KnownPattern::KeyNamedByField(Box::new(pattern)));
         return patterns;
     }
 
@@ -21504,6 +21539,10 @@ pub(crate) fn run_known_pattern(
         KnownPattern::ScalarExpression(pattern) => crate::expr::scalar_expression(event, pattern),
         KnownPattern::MemberFromVariantKey(pattern) => member_from_variant_key(event, pattern),
         KnownPattern::ListItemRenames(pattern) => crate::lists::list_item_renames(event, pattern),
+        KnownPattern::KeyNamedByField(pattern) => {
+            crate::map_entries::key_named_by_field(event, pattern)
+        }
+        KnownPattern::WrapEntries(pattern) => crate::map_entries::wrap_entries(event, pattern),
         KnownPattern::ItemWrites(pattern) => crate::item_writes::item_writes(event, pattern),
         KnownPattern::DurationWindow(pattern) => duration_window(event, pattern),
         KnownPattern::SumTotals(pattern) => crate::totals::sum_totals(event, pattern),

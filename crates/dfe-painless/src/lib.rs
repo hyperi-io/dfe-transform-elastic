@@ -38,6 +38,7 @@ pub mod issue_lifecycle;
 pub mod item_writes;
 pub mod list_records;
 pub mod lists;
+pub mod map_entries;
 pub mod named_arms;
 pub mod nth_separator;
 pub mod pair_table;

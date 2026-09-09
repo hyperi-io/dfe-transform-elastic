@@ -1135,3 +1135,64 @@ fn the_google_workspace_splits_write_both_halves_where_the_script_puts_them() {
     assert_eq!(event.get("google_workspace.drive.name"), None);
     assert_eq!(event.get("google_workspace.drive.domain"), None);
 }
+
+/// servicenow's first two processors, verbatim from the generated call sites in
+/// `crates/dfe-transforms/src/filebeat/servicenow_event/default.rs`.
+const SERVICENOW_TIMESTAMP_FIELD: &str = r#"def obj = ctx.servicenow.event; if (obj.containsKey(ctx._conf.timestamp_field)) {\n    ctx.servicenow.event.timestamp_field = obj.get(ctx._conf.timestamp_field);\n}"#;
+
+const SERVICENOW_WRAP: &str = r#"for (def entry: ctx.servicenow.event.entrySet()) {\n  if (entry.getKey() == 'table_name') {\n    continue;\n  }\n  def v = entry.getValue();\n  if (v instanceof Map) {\n    continue;\n  }\n  Map n = [:];\n  if (ctx._conf.data_has_display_values == \"true\") {\n    n.display_value = v;\n  } else {\n    n.value = v;\n  }\n  entry.setValue(n);\n}\n"#;
+
+#[test]
+fn the_servicenow_chain_binds_both_of_the_steps_the_source_is_written_against() {
+    // Both bindings were EMPTY, and the source reported 0 handled across all
+    // four of its scripts. The whole rest of the module reads the WRAPPED form
+    // -- `sys_id.value` for the fingerprint, `timestamp_field.value` for
+    // `@timestamp` -- so with the wrap not running every scalar sat one level
+    // too shallow. Nothing was lost, everything was misplaced.
+    let held = binding(SERVICENOW_TIMESTAMP_FIELD).join(" ");
+    assert!(held.starts_with("KeyNamedByField"), "{held}");
+    assert!(held.contains(r#"path: "servicenow.event""#), "{held}");
+    assert!(
+        held.contains(r#"key_from: "_conf.timestamp_field""#),
+        "{held}"
+    );
+
+    let held = binding(SERVICENOW_WRAP).join(" ");
+    assert!(held.starts_with("WrapEntries"), "{held}");
+    assert!(held.contains(r#"skip_keys: ["table_name"]"#), "{held}");
+    assert!(
+        held.contains(r#"flag: "_conf.data_has_display_values""#),
+        "{held}"
+    );
+    assert!(held.contains(r#"key_when_set: "display_value""#), "{held}");
+    assert!(held.contains(r#"key_when_unset: "value""#), "{held}");
+
+    // The WRITTEN values, in the order the pipeline runs them: the copy creates
+    // the entry, and the wrap is what makes `.value` resolve on it.
+    let mut event = Event::new(json!({
+        "_conf": { "timestamp_field": "sys_updated_on" },
+        "servicenow": { "event": {
+            "table_name": "alm_hardware",
+            "sys_id": "0196612a37c4200044e0bfc8bcbe5d3a",
+            "sys_updated_on": "2024-09-10 08:15:50",
+        }},
+    }));
+    let copy = PainlessPlan::new(SERVICENOW_TIMESTAMP_FIELD);
+    let wrap = PainlessPlan::new(SERVICENOW_WRAP);
+    assert!(painless_exec_plan(&mut event, &copy).is_ok());
+    assert!(painless_exec_plan(&mut event, &wrap).is_ok());
+
+    assert_eq!(
+        event.get("servicenow.event.timestamp_field.value"),
+        Some(&json!("2024-09-10 08:15:50"))
+    );
+    assert_eq!(
+        event.get("servicenow.event.sys_id.value"),
+        Some(&json!("0196612a37c4200044e0bfc8bcbe5d3a"))
+    );
+    // The table name is the one key the wrap skips.
+    assert_eq!(
+        event.get("servicenow.event.table_name"),
+        Some(&json!("alm_hardware"))
+    );
+}

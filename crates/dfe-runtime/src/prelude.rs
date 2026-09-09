@@ -61,6 +61,9 @@ pub use crate::painless_list_records::{
 pub use crate::painless_lists::{
     EnsureItem, ItemRename, ListItemRenames, ListWalk, list_item_renames,
 };
+pub use crate::painless_map_entries::{
+    KeyNamedByField, WrapEntries, key_named_by_field, wrap_entries,
+};
 pub use crate::painless_nth_separator::{NthSeparatorPrefix, nth_separator_prefix};
 pub use crate::painless_pair_table::{PairTable, pair_table};
 pub use crate::painless_records::{

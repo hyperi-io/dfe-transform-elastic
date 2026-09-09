@@ -9,13 +9,15 @@
 //! nothing matches -- the last being the worst case and, at ~45% of scripts,
 //! the common one.
 //!
-//! Run with: `cargo bench -p dfe-runtime`
+//! Run with: `cargo bench -p dfe-painless`
 
 use criterion::{BatchSize, Criterion, black_box, criterion_group, criterion_main};
-use dfe_runtime::codegen_api::{painless_exec, painless_exec_params};
-use dfe_runtime::event::Event;
-use dfe_runtime::painless_common::normalise;
-use dfe_runtime::painless_plan::{PainlessPlan, painless_exec_plan, painless_exec_plan_params};
+use dfe_core::event::Event;
+use dfe_painless::common::normalise;
+use dfe_painless::plan::{
+    PainlessPlan, painless_exec, painless_exec_params, painless_exec_plan,
+    painless_exec_plan_params,
+};
 use serde_json::json;
 
 /// Verbatim from `pipelines/crowdstrike/default.yml`, escapes and all -- the
@@ -470,6 +472,115 @@ fn bench_issue_lifecycle(c: &mut Criterion) {
     });
 }
 
+/// servicenow's first two processors, verbatim from the generated call sites
+/// in `crates/dfe-transforms/src/filebeat/servicenow_event/default.rs`.
+///
+/// The copy runs first and creates the entry the wrap then wraps, which is what
+/// makes `servicenow.event.timestamp_field.value` resolve downstream.
+const SN_TIMESTAMP_FIELD: &str = r#"def obj = ctx.servicenow.event; if (obj.containsKey(ctx._conf.timestamp_field)) {\n    ctx.servicenow.event.timestamp_field = obj.get(ctx._conf.timestamp_field);\n}"#;
+
+const SN_WRAP: &str = r#"for (def entry: ctx.servicenow.event.entrySet()) {\n  if (entry.getKey() == 'table_name') {\n    continue;\n  }\n  def v = entry.getValue();\n  if (v instanceof Map) {\n    continue;\n  }\n  Map n = [:];\n  if (ctx._conf.data_has_display_values == \"true\") {\n    n.display_value = v;\n  } else {\n    n.value = v;\n  }\n  entry.setValue(n);\n}\n"#;
+
+/// The 40 columns of a servicenow asset record, from `test-event-aws.log`.
+///
+/// A slice rather than a `json!` literal: a map this wide exceeds rustc's macro
+/// recursion limit on its own, the same way the o365 operation table does.
+const SERVICENOW_COLUMNS: &[(&str, &str)] = &[
+    ("table_name", "alm_hardware"),
+    ("parent", ""),
+    ("skip_sync", "false"),
+    ("product_instance_id", ""),
+    ("residual_date", "2024-09-10"),
+    ("residual", "509.95"),
+    ("sys_updated_on", "2024-09-10 08:15:50"),
+    ("request_line", ""),
+    ("resold_value", "0"),
+    ("sys_updated_by", "system"),
+    ("due_in", ""),
+    ("model_category", "81feb9c137101000deeabfc8bcbe5dc4"),
+    ("sys_created_on", "2023-08-31 18:16:40"),
+    ("sys_domain", "global"),
+    ("disposal_reason", ""),
+    ("model", "46bbf3cba9fe1981000545a67695b505"),
+    ("install_date", "2023-05-02 07:00:00"),
+    ("gl_account", ""),
+    ("invoice_number", ""),
+    ("sys_created_by", "admin"),
+    ("warranty_expiration", ""),
+    ("asset_tag", "P1000241"),
+    ("depreciated_amount", "190.04"),
+    ("substatus", ""),
+    ("pre_allocated", "false"),
+    ("owned_by", ""),
+    ("checked_out", ""),
+    ("display_name", "P1000241 - Gateway DX Series"),
+    ("sys_domain_path", "/"),
+    ("asset_function", ""),
+    ("delivery_date", ""),
+    ("retirement_date", ""),
+    ("model_component_id", ""),
+    ("beneficiary", ""),
+    ("install_status", "1"),
+    ("cost_center", "7fb1cc99c0a80a6d30c04574d14c0acf"),
+    ("supported_by", ""),
+    ("assigned", "2023-08-01 08:00:00"),
+    ("sys_class_name", "alm_hardware"),
+    ("sys_id", "0196612a37c4200044e0bfc8bcbe5d3a"),
+];
+
+/// A servicenow asset record, at the width the vendor sends.
+///
+/// The wrap's cost is per ENTRY, so the width is the measurement: a two-key
+/// event would measure the dispatch and nothing else.
+fn servicenow_event() -> serde_json::Value {
+    let columns: serde_json::Map<String, serde_json::Value> = SERVICENOW_COLUMNS
+        .iter()
+        .map(|(key, value)| ((*key).to_owned(), json!(value)))
+        .collect();
+    json!({
+        "_conf": { "timestamp_field": "sys_updated_on" },
+        "servicenow": { "event": columns },
+    })
+}
+
+/// The one-key wrap over a real record's width, through the plan.
+fn bench_wrap_entries(c: &mut Criterion) {
+    let plan = PainlessPlan::new(SN_WRAP);
+    assert!(
+        plan.binding().iter().any(|b| b.starts_with("WrapEntries")),
+        "the wrap bench no longer measures WrapEntries: {:?}",
+        plan.binding(),
+    );
+
+    c.bench_function("painless_exec/wrap_entries_planned", |b| {
+        b.iter_batched_ref(
+            || Event::new(servicenow_event()),
+            |event| painless_exec_plan(event, black_box(&plan)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
+/// The dynamically-keyed copy that runs before it.
+fn bench_key_named_by_field(c: &mut Criterion) {
+    let plan = PainlessPlan::new(SN_TIMESTAMP_FIELD);
+    assert!(
+        plan.binding()
+            .iter()
+            .any(|b| b.starts_with("KeyNamedByField")),
+        "the copy bench no longer measures KeyNamedByField: {:?}",
+        plan.binding(),
+    );
+
+    c.bench_function("painless_exec/key_named_by_field_planned", |b| {
+        b.iter_batched_ref(
+            || Event::new(servicenow_event()),
+            |event| painless_exec_plan(event, black_box(&plan)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
 criterion_group!(
     benches,
     bench_params_matcher,
@@ -483,6 +594,8 @@ criterion_group!(
     bench_split_fan_out,
     bench_gather_members,
     bench_armed_table,
-    bench_issue_lifecycle
+    bench_issue_lifecycle,
+    bench_wrap_entries,
+    bench_key_named_by_field
 );
 criterion_main!(benches);
