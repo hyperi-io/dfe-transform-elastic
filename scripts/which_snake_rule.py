@@ -148,12 +148,94 @@ def load(fixture):
     return (json.loads(message) if isinstance(message, str) else message), exp
 
 
+CORPUS = pathlib.Path(__file__).resolve().parent.parent / "testdata" / "compat"
+
+
+def _score(parsed, target, convert):
+    want = set(leaves(target))
+    if not want:
+        return None
+    got = {".".join(convert(seg) for seg in path.split(".")) for path in leaves(parsed)}
+    return len(want & got), len(want)
+
+
+def sweep(left, right, engaged_at=0.5):
+    """Compare two rules across the whole corpus.
+
+    Answers the question a single fixture cannot: is a proposed condition a FIX
+    to an existing rule, or a new convention? A rule that never scores lower
+    anywhere is a fix.
+    """
+    better, worse, skipped, same = [], [], 0, 0
+    for fixture in sorted(CORPUS.glob("*/*/*")):
+        if not (fixture / "expected.ndjson").exists():
+            continue
+        source = fixture.parts[len(CORPUS.parts)]
+        try:
+            parsed, expected = load(fixture)
+        except (json.JSONDecodeError, IndexError, UnicodeDecodeError, KeyError):
+            continue
+        if not isinstance(parsed, dict) or not isinstance(expected, dict):
+            continue
+        target = expected.get(source)
+        if not isinstance(target, dict):
+            continue
+
+        # A stream often nests one level further (beyondtrust_epm.audit) while
+        # the input leaves carry no such prefix. Take the level that scores best.
+        candidates = [target]
+        candidates.extend(v for v in target.values() if isinstance(v, dict))
+        target = max(candidates, key=lambda c: (_score(parsed, c, RULES[left]) or (0, 1))[0])
+
+        a = _score(parsed, target, RULES[left])
+        b = _score(parsed, target, RULES[right])
+        if not a or not b or a[1] < 5:
+            continue
+        if max(a[0], b[0]) / a[1] < engaged_at:
+            skipped += 1
+            continue
+        if b[0] > a[0]:
+            better.append((source, fixture.name, a, b))
+        elif b[0] < a[0]:
+            worse.append((source, fixture.name, a, b))
+        else:
+            same += 1
+
+    print(f"not snake-cased, skipped ({left} under {engaged_at:.0%}): {skipped}")
+    print(f"a rule engaged and the two agree:                {same}\n")
+    print(f"{right} SCORES HIGHER on {len(better)}:")
+    for src, fx, a, b in better:
+        print(f"  {src}/{fx}: {a[0]}/{a[1]} -> {b[0]}/{b[1]}")
+    print(f"\n{right} SCORES LOWER on {len(worse)}:")
+    for src, fx, a, b in worse:
+        print(f"  {src}/{fx}: {a[0]}/{a[1]} -> {b[0]}/{b[1]}")
+    if not worse:
+        print("  (none -- it is a fix to the incumbent, not a separate convention)")
+    return 0
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("fixture", help="a testdata/compat/<source>/<stream>/<fixture> directory")
-    parser.add_argument("namespace", help="dotted path in the expected doc, e.g. beyondtrust_epm.audit")
+    parser.add_argument("fixture", nargs="?", help="a testdata/compat/<source>/<stream>/<fixture> directory")
+    parser.add_argument("namespace", nargs="?", help="dotted path in the expected doc, e.g. beyondtrust_epm.audit")
     parser.add_argument("--show", type=int, default=12, help="how many misses to print per rule")
+    parser.add_argument(
+        "--sweep",
+        nargs=2,
+        metavar=("INCUMBENT", "CANDIDATE"),
+        help="compare two rules across the whole corpus instead of one fixture",
+    )
     args = parser.parse_args(argv)
+
+    if args.sweep:
+        left, right = args.sweep
+        for name in (left, right):
+            if name not in RULES:
+                parser.error(f"unknown rule {name!r}; choose from {', '.join(RULES)}")
+        return sweep(left, right)
+
+    if not args.fixture or not args.namespace:
+        parser.error("fixture and namespace are required unless --sweep is given")
 
     parsed, expected = load(args.fixture)
     target = expected
