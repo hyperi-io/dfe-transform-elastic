@@ -1,46 +1,62 @@
-# Shared crates: dfe-parse and dfe-runtime
+# Shared crates: what dfe-transform-splack took a copy of
 
 ## Today: independent copies
 
-`dfe-parse` and `dfe-runtime` are workspace crates here, and `dfe-transform-splack`
-(the Splunk equivalent) took a copy of both. The two projects evolve their copies
-independently, and that is deliberate: both are still changing shape, and extracting
-them now would make every breaking change block both projects at once.
+`dfe-transform-splack` (the Splunk equivalent) took a copy of `dfe-parse` and
+`dfe-runtime`. The two projects evolve their copies independently, and that is
+deliberate: both are still changing shape, and extracting them now would make
+every breaking change block both projects at once.
 
 The duplication costs less than that coordination would.
 
+**The workspace has since split to five crates** — `dfe-core`, `dfe-painless`,
+`dfe-parse`, `dfe-runtime`, `dfe-transforms` — so what was one copy boundary is
+now four. `dfe-runtime` re-exports the moved modules at their old paths, so a
+copy taken against the old layout still compiles; it is reading a compatibility
+surface, not the current one.
+
 ## What is common, conceptually
 
-| Component | dfe-parse | dfe-runtime |
-|-----------|-----------|-------------|
-| IP parsers (v4, v6, host) | Yes | |
-| Timestamp parsers (ISO 8601, syslog, epoch) | Yes | |
-| Numeric parsers (int, float) | Yes | |
-| String parsers (word, quoted, greedy) | Yes | |
-| Network parsers (MAC, hostname, URI) | Yes | |
-| Composite parser builder | Yes | |
-| DFA fallback (pre-compiled regex) | Yes | |
-| `Event` (dotted-path JSON wrapper) | | Yes |
-| `Transform` trait and `TransformChain` | | Yes |
-| Enrichment (GeoIP, user agent, community ID) | | Yes |
-| Error types | | Yes |
-| Prelude re-exports | | Yes |
-| Test utilities (harness, diff, flatten) | | Yes |
+| Component | dfe-core | dfe-parse | dfe-runtime |
+|-----------|----------|-----------|-------------|
+| IP parsers (v4, v6, host) | | Yes | |
+| Timestamp parsers (ISO 8601, syslog, epoch) | | Yes | |
+| Numeric parsers (int, float) | | Yes | |
+| String parsers (word, quoted, greedy) | | Yes | |
+| Network parsers (MAC, hostname, URI) | | Yes | |
+| Composite parser builder | | Yes | |
+| DFA fallback (pre-compiled regex) | | Yes | |
+| `Event` (dotted-path JSON wrapper) | Yes | | |
+| Error types | Yes | | |
+| Date formats and syslog priority | Yes | | |
+| Regex cache and `cached_regex!` | Yes | | |
+| `Transform` trait and `TransformChain` | | | Yes |
+| Enrichment (GeoIP, user agent, community ID) | | | Yes |
+| Grok cache | | | Yes |
+| Prelude re-exports | | | Yes |
+| Test utilities (harness, diff, flatten) | | | Yes |
 
 ## What is not
 
 | Project | Specific code |
 |---------|---------------|
-| dfe-transform-elastic | `painless_helpers.rs`, `painless_common.rs`, `codegen_api.rs` — Painless semantics have no Splunk counterpart |
+| dfe-transform-elastic | the whole `dfe-painless` crate, and `codegen_api.rs` in `dfe-runtime` — Painless semantics have no Splunk counterpart |
 | dfe-transform-splack | Splunk eval expressions and lookup transforms |
+
+Putting the Painless matchers in their own crate makes that boundary a
+dependency edge rather than a note in a table: a crate that does not depend on
+`dfe-painless` cannot have picked any of it up.
 
 ## Extracting later
 
 When both sides settle:
 
 1. Diff the two copies to find what is genuinely common, rather than assuming.
-2. Stand up a shared private workspace repo. **`dfe-core` is already taken**, so the
-   name is an open question.
+2. Stand up a shared private workspace repo. **The name `dfe-core` is not
+   available for it**, and there are now two reasons rather than one:
+   `hyperi-io/dfe-core` is an existing repo, and this workspace ships a crate
+   called `dfe-core` that is a different thing — workspace-internal, never
+   published. Anything extracted needs a third name.
 3. Move the common code there; project-specific code stays put.
 4. Both projects depend on it by git reference.
 
