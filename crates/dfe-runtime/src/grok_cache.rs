@@ -232,8 +232,10 @@ fn native_form(pattern: &str) -> Option<Native> {
     // cross a newline, so the leftmost match at position 0 is the first line
     // either way. The other forms below are anchored-only, because an
     // unanchored address would match one ANYWHERE in the input.
-    if let Some(field) = capture_of(pattern.trim_start_matches('^').trim_end_matches('$'), "GREEDYDATA")
-    {
+    if let Some(field) = capture_of(
+        pattern.trim_start_matches('^').trim_end_matches('$'),
+        "GREEDYDATA",
+    ) {
         return Some(Native::FirstLine {
             field: field.to_string(),
         });
