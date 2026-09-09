@@ -10,6 +10,10 @@
 //!
 //! Run with: `cargo bench -p dfe-runtime --bench grok`
 
+// A bench that cannot build its own fixture has nothing to measure, so it
+// should stop rather than report a number for the wrong thing.
+#![allow(clippy::expect_used)]
+
 use criterion::{Criterion, black_box, criterion_group, criterion_main};
 
 /// A typical syslog body: one line, no newline in it.

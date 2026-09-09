@@ -731,7 +731,13 @@ fn token(letter: char, run: usize) -> String {
 }
 
 #[cfg(test)]
-#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
+// A format string is quoted verbatim from the pipeline that spells it.
+#[allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::panic,
+    clippy::needless_raw_string_hashes
+)]
 mod tests {
     use super::*;
 

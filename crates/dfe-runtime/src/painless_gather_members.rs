@@ -255,6 +255,9 @@ pub fn gather_members(event: &mut Event, pattern: &GatherMembers) -> bool {
 }
 
 #[cfg(test)]
+// The script constants are quoted verbatim from generated call sites, which
+// spell them `r#"..."#`.
+#[allow(clippy::needless_raw_string_hashes)]
 mod tests {
     use super::*;
     use serde_json::json;

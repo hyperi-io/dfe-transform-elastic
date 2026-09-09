@@ -6,6 +6,11 @@
 //! compilation unit either way, and a flat layout keeps `use super::*`
 //! meaning exactly what it did before the split.
 
+// The script constants are quoted verbatim from generated call sites, which
+// spell them `r#"..."#`. Keeping them character-identical is what lets a script
+// be copied straight from a module into a test.
+#![allow(clippy::needless_raw_string_hashes)]
+
 use super::*;
 use serde_json::json;
 

@@ -405,6 +405,9 @@ pub fn issue_lifecycle(
 }
 
 #[cfg(test)]
+// The script constants are quoted verbatim from generated call sites, which
+// spell them `r#"..."#`.
+#[allow(clippy::needless_raw_string_hashes)]
 mod tests {
     use super::*;
     use crate::painless_plan::{PainlessPlan, painless_exec_plan_params};

@@ -460,7 +460,15 @@ fn java_decode(text: &str) -> Option<i64> {
 }
 
 #[cfg(test)]
-#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
+// The script constants are quoted verbatim from generated call sites, which
+// spell them `r#"..."#`. Keeping them character-identical is what lets a script
+// be copied straight from a module into a test.
+#[allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::panic,
+    clippy::needless_raw_string_hashes
+)]
 mod tests {
     use super::*;
     use crate::painless_common::normalise;
