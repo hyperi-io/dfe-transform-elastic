@@ -20,6 +20,7 @@ use crate::error::{Result, TransformError};
 pub struct Event {
     inner: Value,
     capacities: Vec<(String, usize)>,
+    aliases: Vec<(String, String)>,
 }
 
 impl Event {
@@ -28,6 +29,7 @@ impl Event {
         Self {
             inner: value,
             capacities: Vec::new(),
+            aliases: Vec::new(),
         }
     }
 
@@ -83,6 +85,48 @@ impl Event {
     /// Whether any map's table survived a prune that shrank it.
     pub fn has_map_capacities(&self) -> bool {
         !self.capacities.is_empty()
+    }
+
+    /// Record that `name` is a SECOND name for the subtree already at `of`.
+    ///
+    /// Painless assigns a map by REFERENCE, so tetragon's
+    /// `ctx._tmp_.parent = ctx.cilium_tetragon.log.process_exec.parent` leaves
+    /// ONE object reachable by two paths, and the twenty renames that pull
+    /// `_tmp_.parent.binary` out take the field from both. Elasticsearch's own
+    /// capture is unambiguous about it: across all 14 corpus events the leaves
+    /// missing from `cilium_tetragon.log.<variant>.<member>` are exactly the
+    /// leaves the pipeline renames out of `_tmp_`, and no others.
+    ///
+    /// A `serde_json` tree has no references, so the second name is recorded
+    /// here and removals BELOW it are mirrored onto the first by
+    /// [`Self::remove`]. Registering the same name twice replaces the earlier
+    /// entry, matching the last-write-wins of the assignment itself.
+    pub fn alias(&mut self, name: String, of: String) {
+        if let Some(slot) = self
+            .aliases
+            .iter_mut()
+            .find(|(existing, _)| *existing == name)
+        {
+            slot.1 = of;
+            return;
+        }
+        self.aliases.push((name, of));
+    }
+
+    /// The aliased paths a removal of `path` must also reach.
+    ///
+    /// STRICTLY BELOW only. Removing the alias itself -- or an ancestor of it,
+    /// which is what the vendor pipeline's closing `remove: _tmp_` does --
+    /// drops the REFERENCE, and the object goes on living under its own name.
+    /// Mirroring that would delete the subtree Elasticsearch keeps.
+    fn mirrored(&self, path: &str) -> Vec<String> {
+        self.aliases
+            .iter()
+            .filter_map(|(name, of)| {
+                let tail = path.strip_prefix(name.as_str())?.strip_prefix('.')?;
+                Some(format!("{of}.{tail}"))
+            })
+            .collect()
     }
 
     /// Mutably borrow the inner value.
@@ -272,6 +316,22 @@ impl Event {
     /// Reading the empty tail as a key found nothing, raised, and aborted the
     /// pipeline one processor short of its own prune.
     pub fn remove(&mut self, path: &str) -> Option<Value> {
+        // A path that is a second NAME for a subtree the document already
+        // holds elsewhere takes the field out of BOTH, the way removing
+        // through one Java reference does. The list is empty for every event
+        // that registered no alias, so the cost off tetragon's path is the
+        // one branch.
+        if !self.aliases.is_empty() {
+            for target in self.mirrored(path.trim_end_matches('.')) {
+                self.remove_at(&target);
+            }
+        }
+        self.remove_at(path)
+    }
+
+    /// The removal itself, with no alias mirroring. The half [`Self::remove`]
+    /// calls for the aliased path, so one mirror cannot trigger another.
+    fn remove_at(&mut self, path: &str) -> Option<Value> {
         let path = path.trim_end_matches('.');
         let (parents, last) = path
             .rsplit_once('.')
@@ -838,6 +898,78 @@ mod tests {
         };
         let order: Vec<&str> = map.keys().map(String::as_str).collect();
         assert_eq!(order, ["a", "c", "d", "e"]);
+    }
+
+    /// tetragon's `_tmp_` lift is a Painless REFERENCE, so a rename that takes
+    /// a leaf out of the alias takes it out of the subtree the alias names.
+    #[test]
+    fn a_removal_below_an_alias_reaches_the_subtree_it_names() {
+        let mut event = Event::new(json!({
+            "cilium_tetragon": { "log": { "process_exec": {
+                "parent": { "binary": "/bin/sh", "flags": "procFS auid" }
+            } } },
+            "_tmp_": { "parent": { "binary": "/bin/sh", "flags": "procFS auid" } }
+        }));
+        event.alias(
+            "_tmp_.parent".to_string(),
+            "cilium_tetragon.log.process_exec.parent".to_string(),
+        );
+
+        event
+            .rename("_tmp_.parent.binary", "process.parent.executable")
+            .unwrap();
+
+        assert_eq!(
+            event.get_str("process.parent.executable"),
+            Some("/bin/sh"),
+            "the rename still lands its value"
+        );
+        assert!(
+            !event.has("cilium_tetragon.log.process_exec.parent.binary"),
+            "the renamed leaf is gone from the aliased subtree too"
+        );
+        assert_eq!(
+            event.get_str("cilium_tetragon.log.process_exec.parent.flags"),
+            Some("procFS auid"),
+            "a leaf nothing renamed survives"
+        );
+    }
+
+    /// Removing the alias ITSELF -- or an ancestor of it, which is the vendor
+    /// pipeline's closing `remove: _tmp_` -- drops the reference. The object
+    /// goes on living under its own name, which is what Elasticsearch keeps.
+    #[test]
+    fn removing_an_alias_itself_leaves_the_subtree_it_named() {
+        let mut event = Event::new(json!({
+            "a": { "b": { "parent": { "flags": "procFS" } } },
+            "_tmp_": { "parent": { "flags": "procFS" }, "other": 1 }
+        }));
+        event.alias("_tmp_.parent".to_string(), "a.b.parent".to_string());
+
+        event.remove("_tmp_");
+
+        assert!(!event.has("_tmp_"), "the reference is dropped");
+        assert_eq!(
+            event.get_str("a.b.parent.flags"),
+            Some("procFS"),
+            "the object it named survives"
+        );
+    }
+
+    /// The prefix match is on whole segments, so a sibling key that merely
+    /// starts with the alias's text is not mirrored.
+    #[test]
+    fn an_alias_does_not_capture_a_sibling_sharing_its_prefix() {
+        let mut event = Event::new(json!({
+            "a": { "parent": { "x": 1 } },
+            "_tmp_": { "parent": { "x": 1 } },
+            "_tmp_parental": { "x": 1 }
+        }));
+        event.alias("_tmp_.parent".to_string(), "a.parent".to_string());
+
+        event.remove("_tmp_parental.x");
+
+        assert_eq!(event.get("a.parent.x"), Some(&json!(1)));
     }
 
     #[test]

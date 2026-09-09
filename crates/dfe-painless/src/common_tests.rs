@@ -532,6 +532,56 @@ fn a_member_is_lifted_from_whichever_key_arrived() {
     assert!(!other.has("_tmp_"));
 }
 
+/// The lift is a REFERENCE, so the renames that empty `_tmp_` empty the
+/// variant subtree with it.
+///
+/// Elasticsearch's capture settles this: across all 14 tetragon corpus events
+/// the leaves missing from `cilium_tetragon.log.<variant>.<member>` are exactly
+/// the ones the pipeline renames out of `_tmp_`. Copying instead left all 300
+/// behind, which is the whole of the source's extras.
+#[test]
+fn the_lifted_member_is_a_reference_into_the_variant_subtree() {
+    let script = "void run(Map map) {\n  for (def k : map?.cilium_tetragon?.log?.keySet()) {\n    \
+        if (k == \"process_exec\" ||\n        k == \"process_kprobe\") {\n      \
+        if (map?._tmp_ == null) {\n        map[\"_tmp_\"] = new HashMap();\n      }\n      \
+        map[\"_tmp_\"][\"parent\"] = map.cilium_tetragon.log[k].parent;\n    }\n  }\n}\n\nrun(ctx);\n";
+    let pattern =
+        parse_member_from_variant_key(&normalise(script)).expect("the lift is recognised");
+
+    let mut event = Event::new(serde_json::json!({ "cilium_tetragon": { "log": {
+        "process_kprobe": { "parent": {
+            "binary": "/usr/local/bin/containerd-shim-runc-v2",
+            "pid": 223_965,
+            "flags": "procFS auid"
+        } }
+    } } }));
+    assert!(member_from_variant_key(&mut event, &pattern));
+
+    // The twenty renames the pipeline runs after the lift, two of them here.
+    event
+        .rename("_tmp_.parent.binary", "process.parent.executable")
+        .expect("the binary renames");
+    event
+        .rename("_tmp_.parent.pid", "process.parent.pid")
+        .expect("the pid renames");
+    event.remove("_tmp_");
+
+    assert_eq!(
+        event.get_str("process.parent.executable"),
+        Some("/usr/local/bin/containerd-shim-runc-v2")
+    );
+    assert!(
+        !event.has("cilium_tetragon.log.process_kprobe.parent.binary"),
+        "a renamed leaf leaves the variant subtree as well"
+    );
+    assert!(!event.has("cilium_tetragon.log.process_kprobe.parent.pid"));
+    assert_eq!(
+        event.get_str("cilium_tetragon.log.process_kprobe.parent.flags"),
+        Some("procFS auid"),
+        "a leaf nothing renames survives, which is what the capture keeps"
+    );
+}
+
 /// `ti_flashpoint` rewrites every key at every depth and MOVES the result, so a
 /// one-level reader would leave the nested maps spelt the vendor's way and the
 /// payload sitting under `json.*` as well.
@@ -6179,6 +6229,89 @@ fn a_map_prune_drops_every_entry_holding_the_sentinel() {
     assert_eq!(
         event.get("_tmp"),
         Some(&json!({ "method": "GET", "url": "http://example.com/" }))
+    );
+}
+
+/// zerofox's prune, verbatim from its generated call site.
+///
+/// The predicate names no sentinel at all -- it calls the value EMPTY, in four
+/// spellings -- so the literal reader found nothing and the prune never ran.
+/// Elasticsearch's capture has no empty left under `zerofox` on any of the
+/// three corpus events.
+#[test]
+fn a_map_prune_reads_a_predicate_that_names_emptiness_rather_than_a_literal() {
+    let script = r#"ctx?.zerofox?.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue().equals(\"\") || (entry.getValue() instanceof List && entry.getValue().length == 0) || (entry.getValue() instanceof Map && entry.getValue().size() == 0));"#;
+    let mut event = Event::new(json!({ "zerofox": {
+        "assignee": "",
+        "status": "open",
+        "protected_account": null,
+        "reviews": [],
+        "metadata": {},
+        "escalated": false,
+        "tags": ["a"],
+        "severity": 3,
+    }}));
+
+    assert!(try_known_painless(&mut event, script));
+    // Every empty the predicate names is gone; the survivors keep their order,
+    // and `false` and `3` are values rather than emptiness.
+    assert_eq!(
+        event.get("zerofox"),
+        Some(&json!({
+            "status": "open",
+            "escalated": false,
+            "tags": ["a"],
+            "severity": 3,
+        }))
+    );
+}
+
+/// beyondinsight spells the empty string as a guarded `.isEmpty()` and names
+/// no collection arm, so its empty lists and maps stay.
+#[test]
+fn a_map_prune_drops_only_the_empties_its_own_predicate_names() {
+    let script = "ctx.beyondinsight_password_safe.asset.entrySet().removeIf(entry ->\n  \
+        entry.getValue() == null ||\n  \
+        (entry.getValue() instanceof String && entry.getValue().isEmpty())\n);\n";
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "asset": {
+        "name": "",
+        "id": 7,
+        "dns": null,
+        "ports": [],
+    }}}));
+
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(
+        event.get("beyondinsight_password_safe.asset"),
+        Some(&json!({ "id": 7, "ports": [] })),
+        "the empty list survives a predicate with no collection arm"
+    );
+}
+
+/// A predicate naming neither a literal nor an emptiness prunes nothing.
+///
+/// The declining half of the widening: the arms are read off the
+/// `entrySet().removeIf` lambda alone, so a recursive helper's own
+/// `size() == 0` return -- which `microsoft_defender_endpoint`'s script carries
+/// one `.removeIf(` earlier -- cannot be read as this predicate's arm.
+#[test]
+fn a_map_prune_declines_a_predicate_whose_arms_belong_to_another_lambda() {
+    let script = "boolean drop(Object o) {\n  if (o == null) {\n    return true;\n  } \
+        else if (o instanceof Map) {\n    ((Map) o).values().removeIf(v -> drop(v));\n    \
+        return (((Map) o).size() == 0);\n  }\n  return false;\n}\n\
+        ctx.json.evidence.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n";
+
+    let mut event = Event::new(json!({ "json": { "evidence": {
+        "kept": {},
+        "also": [],
+    }}}));
+    let before = event.get("json.evidence").cloned();
+
+    try_known_painless(&mut event, script);
+    assert_eq!(
+        event.get("json.evidence").cloned(),
+        before,
+        "the helper's own empty test is not this predicate's arm"
     );
 }
 

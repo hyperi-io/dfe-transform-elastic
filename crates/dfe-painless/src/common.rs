@@ -5484,6 +5484,14 @@ impl MemberFromVariantKey {
 ///
 /// The root's keys are walked in the order they arrive and the LAST match wins,
 /// which is what Painless's loop does. In practice a payload carries one.
+///
+/// The lift is an ALIAS, not a copy. `map["_tmp_"]["parent"] = map.a.b[k].parent`
+/// stores a REFERENCE, so the renames that pull `_tmp_.parent.binary` out take
+/// the leaf from `a.b[k].parent` as well, and only the leaves nothing renames
+/// survive there. Copying instead left every renamed leaf behind: tetragon's
+/// whole 300-field extras count, and the sole reason a source at 742/742
+/// fields scored no events. The clone is kept -- the renames need somewhere to
+/// read from -- and [`Event::alias`] carries the second half of the reference.
 pub fn member_from_variant_key(event: &mut Event, pattern: &MemberFromVariantKey) -> bool {
     let Some(root) = event.get(&pattern.root).and_then(Value::as_object).cloned() else {
         return true;
@@ -5494,7 +5502,9 @@ pub fn member_from_variant_key(event: &mut Event, pattern: &MemberFromVariantKey
                 continue;
             }
             if let Some(found) = value.get(member) {
-                let _ = event.set(&format!("{}.{member}", pattern.target), found.clone());
+                let target = format!("{}.{member}", pattern.target);
+                let _ = event.set(&target, found.clone());
+                event.alias(target, format!("{}.{key}.{member}", pattern.root));
             }
         }
     }
@@ -13903,7 +13913,13 @@ fn try_sentinel_removal_literal(event: &mut Event, script: &str) -> bool {
         drops_null = list.contains("null");
     }
     let drops_odd_keys = script.contains("entry.getKey()") && script.contains(r"\W+");
-    if sentinels.is_empty() && !drops_odd_keys && !drops_null {
+
+    // The third spelling names no sentinel at all: it calls the value EMPTY.
+    // Read off the lambda's own predicate rather than the whole script, so a
+    // `.equals("")` belonging to some other statement cannot widen the prune.
+    let empty = EmptyArms::read(remove_if_predicate(script));
+
+    if sentinels.is_empty() && !drops_odd_keys && !drops_null && !empty.any() {
         return false;
     }
 
@@ -13912,10 +13928,81 @@ fn try_sentinel_removal_literal(event: &mut Event, script: &str) -> bool {
             let sentinel = (drops_null && v.is_null())
                 || v.as_str().is_some_and(|s| sentinels.iter().any(|x| x == s));
             let odd_key = drops_odd_keys && k.chars().any(|c| !c.is_alphanumeric() && c != '_');
-            !sentinel && !odd_key
+            !sentinel && !odd_key && !empty.drops(v)
         });
     }
     true
+}
+
+/// The arms of a `removeIf` predicate that call a value EMPTY rather than
+/// naming a literal to match.
+///
+/// Each arm is set by its own spelling and drops nothing on its own, so a
+/// predicate this cannot read prunes exactly as much as it did before.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+struct EmptyArms {
+    /// `entry.getValue() == null`.
+    nulls: bool,
+    /// `.equals("")`, `== ""`, or an `instanceof String` guarding `.isEmpty()`.
+    empty_strings: bool,
+    /// `.length == 0`, `.size() == 0`, or an `instanceof List`/`Map` guarding
+    /// `.isEmpty()`.
+    empty_collections: bool,
+}
+
+impl EmptyArms {
+    /// Read the arms a predicate spells.
+    fn read(predicate: &str) -> Self {
+        let (is_empty_strings, is_empty_collections) = is_empty_axes(predicate);
+        Self {
+            nulls: predicate.contains("== null"),
+            empty_strings: predicate.contains(".equals(\"\")")
+                || predicate.contains(".equals('')")
+                || predicate.contains("== \"\"")
+                || predicate.contains("== ''")
+                || is_empty_strings,
+            empty_collections: predicate.contains(".length == 0")
+                || predicate.contains(".size() == 0")
+                || is_empty_collections,
+        }
+    }
+
+    /// Whether the predicate named any empty at all.
+    fn any(self) -> bool {
+        self.nulls || self.empty_strings || self.empty_collections
+    }
+
+    /// Whether this value is one of the empties the predicate named.
+    fn drops(self, value: &Value) -> bool {
+        match value {
+            Value::Null => self.nulls,
+            Value::String(text) => self.empty_strings && text.is_empty(),
+            Value::Array(items) => self.empty_collections && items.is_empty(),
+            Value::Object(entries) => self.empty_collections && entries.is_empty(),
+            _ => false,
+        }
+    }
+}
+
+/// The lambda body of the `entrySet().removeIf(` call, bounded to its own
+/// statement.
+///
+/// Bounded at both ends, because neither loose end is safe. Splitting on the
+/// first `.removeIf(` finds the RECURSIVE HELPER's lambda in the two scripts
+/// that carry one -- `microsoft_defender_endpoint`'s `((Map) o).values()
+/// .removeIf(v -> drop(v))` -- and reading to the end of the script then
+/// collects that helper's `size() == 0` return as if it were this predicate's
+/// own arm. Anchoring on `entrySet()` picks the right call and stopping at the
+/// statement keeps the rest of the script out.
+///
+/// An empty answer where the call is absent, so a caller cannot read arms off
+/// a script that never spelled the prune.
+fn remove_if_predicate(script: &str) -> &str {
+    let Some((_, body)) = script.split_once(".entrySet().removeIf(") else {
+        return "";
+    };
+    body.split_once(");")
+        .map_or(body, |(predicate, _)| predicate)
 }
 
 /// `if (ctx.<src> != null) { ctx.<dst> = ctx.<src>; }`

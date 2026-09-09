@@ -31,7 +31,7 @@
 use std::hint::black_box;
 
 use criterion::{Criterion, criterion_group, criterion_main};
-use dfe_runtime::Event;
+use dfe_core::Event;
 use serde_json::{Value, json};
 
 /// An event shaped like the ones the transforms actually see: a wide root, a

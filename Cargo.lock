@@ -843,7 +843,6 @@ dependencies = [
  "regex",
  "serde",
  "serde_json",
- "simd-json",
  "thiserror",
  "tracing",
 ]
@@ -902,6 +901,7 @@ dependencies = [
  "serde_yaml_ng",
  "sha1",
  "sha2",
+ "simd-json",
  "tempfile",
  "thiserror",
  "tracing",

@@ -36,9 +36,6 @@ criterion = { workspace = true }
 # `benches/hashing.rs` only. serde_json's preserve_order map is an IndexMap
 # with the std hasher, and that bench measures what the hasher costs.
 indexmap = { version = "2", default-features = false, features = ["std"] }
-# `benches/json_parse.rs` only, which is what demoted it from a runtime
-# dependency: both hot-path uses measured slower than serde_json.
-simd-json = { workspace = true }
 
 # The dotted-path accessors. Field plumbing is the hot path -- rename, set and
 # append outnumber script and grok by an order of magnitude in the vendored
@@ -53,8 +50,3 @@ harness = false
 name = "hashing"
 harness = false
 
-# Reading the vendor payload, which every JSON-carrying source does first.
-# Tests the "simd-json is 2-3x faster" premise against this workload.
-[[bench]]
-name = "json_parse"
-harness = false

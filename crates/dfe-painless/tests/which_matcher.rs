@@ -204,6 +204,61 @@ fn the_beyondinsight_drop_is_claimed_and_its_rename_is_not() {
     );
 }
 
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/tetragon_log/default.rs`, which is
+/// `pipelines/tetragon/log/default.yml:37-69`.
+const TETRAGON_LIFT: &str = r#"void run(Map map) {\n  for (def k : map?.cilium_tetragon?.log?.keySet()) {\n    if (k == \"process_exec\" ||\n        k == \"process_kprobe\") {\n      if (map?._tmp_ == null) {\n        map[\"_tmp_\"] = new HashMap();\n      }\n      map[\"_tmp_\"][\"parent\"] = map.cilium_tetragon.log[k].parent;\n    }\n  }\n}\n\nrun(ctx);\n"#;
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/zerofox_alerts/default.rs`.
+const ZEROFOX_PRUNE: &str = r#"ctx?.zerofox?.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue().equals(\"\") || (entry.getValue() instanceof List && entry.getValue().length == 0) || (entry.getValue() instanceof Map && entry.getValue().size() == 0));"#;
+
+/// The claim was never the defect for either of these: both were claimed and
+/// both wrote too little, which is why the binding alone does not show it.
+#[test]
+fn the_two_over_emitting_sources_are_claimed_and_now_write_what_they_claim() {
+    // tetragon's lift is read whole -- both members and every variant key.
+    let held = binding(TETRAGON_LIFT).join(" ");
+    assert!(held.starts_with("MemberFromVariantKey"), "{held}");
+    assert!(held.contains(r#"root: "cilium_tetragon.log""#), "{held}");
+    assert!(held.contains(r#"target: "_tmp_""#), "{held}");
+
+    // The WRITTEN document: the lift is a reference, so a rename out of
+    // `_tmp_` empties the variant subtree and only unrenamed leaves survive.
+    let mut event = Event::new(json!({ "cilium_tetragon": { "log": {
+        "process_kprobe": { "parent": { "binary": "/bin/sh", "flags": "procFS" } }
+    } } }));
+    assert!(painless_exec_plan(&mut event, &PainlessPlan::new(TETRAGON_LIFT)).is_ok());
+    assert!(
+        event
+            .rename("_tmp_.parent.binary", "process.parent.executable")
+            .is_ok()
+    );
+    event.remove("_tmp_");
+    assert_eq!(event.get_str("process.parent.executable"), Some("/bin/sh"));
+    assert!(!event.has("cilium_tetragon.log.process_kprobe.parent.binary"));
+    assert_eq!(
+        event.get_str("cilium_tetragon.log.process_kprobe.parent.flags"),
+        Some("procFS")
+    );
+
+    // zerofox shares beyondinsight's two claimants and names its emptiness
+    // rather than a sentinel, which is what the literal reader now reads.
+    assert_eq!(
+        heads(ZEROFOX_PRUNE),
+        ["SentinelRemoval", "SentinelRemovalLiteral"]
+    );
+    let mut alert = Event::new(json!({ "zerofox": {
+        "assignee": "", "status": "open", "reviews": [], "metadata": {},
+        "protected_account": null, "escalated": false,
+    }}));
+    assert!(painless_exec_plan(&mut alert, &PainlessPlan::new(ZEROFOX_PRUNE)).is_ok());
+    assert_eq!(
+        alert.get("zerofox"),
+        Some(&json!({ "status": "open", "escalated": false }))
+    );
+}
+
 #[test]
 fn the_kolide_categorise_binds_to_a_structurally_correct_row_lookup() {
     // `RowOrDefaults` records the table, the three columns and both defaults,

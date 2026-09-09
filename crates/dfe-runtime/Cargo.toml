@@ -53,6 +53,9 @@ serde_yaml_ng = { workspace = true, optional = true }
 [dev-dependencies]
 tempfile = { workspace = true }
 criterion = { workspace = true }
+# `benches/json_parse.rs` only, which is what demoted it from a runtime
+# dependency: both hot-path uses measured slower than serde_json.
+simd-json = { workspace = true }
 
 # The grok call site, native path against the compiled regex. Here rather than
 # in dfe-transforms because it needs only grok_cache and dfe-parse, and
@@ -60,4 +63,12 @@ criterion = { workspace = true }
 # holding one module per data stream.
 [[bench]]
 name = "grok"
+harness = false
+
+# Reading the vendor payload, which every JSON-carrying source does first.
+# Tests the "simd-json is 2-3x faster" premise against this workload. Here
+# rather than in dfe-core because it benches `codegen_api::parse_json_str`
+# alongside `Event::from_bytes`.
+[[bench]]
+name = "json_parse"
 harness = false

@@ -581,6 +581,185 @@ fn bench_key_named_by_field(c: &mut Criterion) {
     });
 }
 
+/// tetragon's lift, verbatim from its generated call site.
+const TETRAGON_LIFT: &str = r#"void run(Map map) {\n  for (def k : map?.cilium_tetragon?.log?.keySet()) {\n    if (k == \"process_exec\" ||\n        k == \"process_exit\" ||\n        k == \"process_kprobe\") {\n      if (map?._tmp_ == null) {\n        map[\"_tmp_\"] = new HashMap();\n      }\n      map[\"_tmp_\"][\"process\"] = map.cilium_tetragon.log[k].process;\n    }\n\n    if (k == \"process_exec\" ||\n        k == \"process_exit\" ||\n        k == \"process_kprobe\") {\n      if (map?._tmp_ == null) {\n        map[\"_tmp_\"] = new HashMap();\n      }\n      map[\"_tmp_\"][\"parent\"] = map.cilium_tetragon.log[k].parent;\n    }\n  }\n}\n\nrun(ctx);\n"#;
+
+/// zerofox's root prune, verbatim from its generated call site.
+const ZEROFOX_PRUNE: &str = r#"ctx?.zerofox?.entrySet().removeIf(entry -> entry.getValue() == null || entry.getValue().equals(\"\") || (entry.getValue() instanceof List && entry.getValue().length == 0) || (entry.getValue() instanceof Map && entry.getValue().size() == 0));"#;
+
+/// A tetragon `process_exec` event, at the width the vendor sends.
+///
+/// The lift clones two subtrees and the aliasing is per RENAME, so the members
+/// carry their real field counts rather than a token key apiece.
+fn tetragon_event() -> serde_json::Value {
+    json!({ "cilium_tetragon": { "log": {
+        "node_name": "kind-control-plane",
+        "process_exec": {
+            "process": {
+                "exec_id": "a2luZC1jb250cm9sLXBsYW5lOjY5NjM5MjAwMDAwMDAwOjIyNDM5NQ==",
+                "pid": 224_395, "uid": 0, "cwd": "/",
+                "binary": "/usr/local/bin/local-path-provisioner",
+                "arguments": "--debug start --config /etc/config/config.json",
+                "flags": "procFS auid rootcwd",
+                "start_time": "2024-10-18T22:12:37.150989227Z",
+                "auid": 4_294_967_295i64,
+                "pod": {
+                    "namespace": "local-path-storage",
+                    "name": "local-path-provisioner-57c5987fd4-vd668",
+                    "container": {
+                        "id": "containerd://aac7662884b96b0351a3529cf7c38311a48b7468",
+                        "name": "local-path-provisioner",
+                        "image": { "id": "sha256:282f619d10d4", "name": "docker.io/kindest/x" },
+                        "start_time": "2024-10-18T22:12:37Z", "pid": 1
+                    },
+                    "workload": "local-path-provisioner", "workload_kind": "Deployment"
+                },
+                "tid": 224_395
+            },
+            "parent": {
+                "exec_id": "a2luZC1jb250cm9sLXBsYW5lOjY5NjM3MTYwMDAwMDAwOjIyMzk2NQ==",
+                "pid": 223_965, "uid": 0,
+                "cwd": "/run/containerd/io.containerd.runtime.v2.task/k8s.io/6aa99f632d",
+                "binary": "/usr/local/bin/containerd-shim-runc-v2",
+                "arguments": "-namespace k8s.io -address /run/containerd/containerd.sock",
+                "flags": "procFS auid",
+                "start_time": "2024-10-18T22:12:35.110989185Z",
+                "auid": 4_294_967_295i64, "tid": 223_965
+            }
+        },
+        "time": "2024-10-18T22:12:37.150989102Z"
+    } } })
+}
+
+/// A zerofox alert at the width the vendor sends, half of it empty.
+///
+/// Built from a slice rather than a `json!` literal: the map is wide enough
+/// that the macro's recursion is worth avoiding, and the prune's cost is per
+/// ENTRY, so the width IS the measurement.
+fn zerofox_event() -> serde_json::Value {
+    const FILLED: &[(&str, &str)] = &[
+        ("alert_type", "email"),
+        ("status", "open"),
+        ("severity", "3"),
+        ("rule_name", "Impersonation"),
+        ("network", "twitter"),
+        ("offending_content_url", "https://example.invalid/x"),
+        ("content_created_at", "2024-10-18T22:12:37Z"),
+        ("last_modified", "2024-10-18T22:14:00Z"),
+        ("timestamp", "2024-10-18T22:12:37Z"),
+        ("id", "1234567"),
+    ];
+    const BLANK: &[&str] = &[
+        "asset_term",
+        "assignee",
+        "entity_term",
+        "protected_account",
+        "protected_locations",
+        "darkweb_term",
+        "business_network",
+        "protected_social_object",
+        "notes",
+        "entity_account",
+        "entity_email_receiver_id",
+    ];
+
+    let mut zerofox = serde_json::Map::new();
+    for (key, value) in FILLED {
+        zerofox.insert((*key).to_owned(), json!(value));
+    }
+    for key in BLANK {
+        zerofox.insert((*key).to_owned(), json!(""));
+    }
+    zerofox.insert("reviews".to_owned(), json!([]));
+    zerofox.insert("content_actions".to_owned(), json!([]));
+    zerofox.insert("tags".to_owned(), json!([]));
+    zerofox.insert("metadata".to_owned(), json!({}));
+    zerofox.insert("logs".to_owned(), serde_json::Value::Null);
+
+    json!({ "zerofox": zerofox })
+}
+
+/// The variant-key lift, whose members are now aliased rather than copied.
+fn bench_member_from_variant_key(c: &mut Criterion) {
+    let plan = PainlessPlan::new(TETRAGON_LIFT);
+    assert!(
+        plan.binding()
+            .iter()
+            .any(|b| b.starts_with("MemberFromVariantKey")),
+        "the lift bench no longer measures MemberFromVariantKey: {:?}",
+        plan.binding(),
+    );
+
+    c.bench_function("painless_exec/member_from_variant_key_planned", |b| {
+        b.iter_batched_ref(
+            || Event::new(tetragon_event()),
+            |event| painless_exec_plan(event, black_box(&plan)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
+/// The renames the lift feeds, which are what the aliasing costs: each one
+/// mirrors its removal onto the variant subtree.
+fn bench_aliased_renames(c: &mut Criterion) {
+    const RENAMES: &[(&str, &str)] = &[
+        ("_tmp_.process.arguments", "process.args"),
+        ("_tmp_.process.binary", "process.executable"),
+        ("_tmp_.process.cwd", "process.working_directory"),
+        ("_tmp_.process.pid", "process.pid"),
+        ("_tmp_.process.exec_id", "process.entity_id"),
+        ("_tmp_.process.tid", "process.thread.id"),
+        ("_tmp_.process.uid", "process.user.id"),
+        ("_tmp_.process.start_time", "process.start"),
+        ("_tmp_.parent.arguments", "process.parent.args"),
+        ("_tmp_.parent.binary", "process.parent.executable"),
+        ("_tmp_.parent.cwd", "process.parent.working_directory"),
+        ("_tmp_.parent.pid", "process.parent.pid"),
+        ("_tmp_.parent.exec_id", "process.parent.entity_id"),
+        ("_tmp_.parent.tid", "process.parent.thread.id"),
+        ("_tmp_.parent.uid", "process.parent.user.id"),
+        ("_tmp_.parent.start_time", "process.parent.start"),
+    ];
+    let plan = PainlessPlan::new(TETRAGON_LIFT);
+
+    c.bench_function("painless_exec/aliased_renames", |b| {
+        b.iter_batched_ref(
+            || {
+                let mut event = Event::new(tetragon_event());
+                painless_exec_plan(&mut event, &plan);
+                event
+            },
+            |event| {
+                for (from, to) in RENAMES {
+                    let _ = event.rename(black_box(from), black_box(to));
+                }
+                event.remove("_tmp_")
+            },
+            BatchSize::SmallInput,
+        );
+    });
+}
+
+/// The shallow prune over a real alert's width.
+fn bench_empty_arm_prune(c: &mut Criterion) {
+    let plan = PainlessPlan::new(ZEROFOX_PRUNE);
+    assert!(
+        plan.binding()
+            .iter()
+            .any(|b| b.starts_with("SentinelRemovalLiteral")),
+        "the prune bench no longer measures SentinelRemovalLiteral: {:?}",
+        plan.binding(),
+    );
+
+    c.bench_function("painless_exec/empty_arm_prune_planned", |b| {
+        b.iter_batched_ref(
+            || Event::new(zerofox_event()),
+            |event| painless_exec_plan(event, black_box(&plan)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
 criterion_group!(
     benches,
     bench_params_matcher,
@@ -596,6 +775,9 @@ criterion_group!(
     bench_armed_table,
     bench_issue_lifecycle,
     bench_wrap_entries,
-    bench_key_named_by_field
+    bench_key_named_by_field,
+    bench_member_from_variant_key,
+    bench_aliased_renames,
+    bench_empty_arm_prune
 );
 criterion_main!(benches);
