@@ -8422,6 +8422,131 @@ fn an_epoch_rescale_declines_a_ladder_it_did_not_read() {
 }
 
 /// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/cisco_ise_log/pipeline_tacacs_accounting.rs`,
+/// which is `pipelines/cisco_ise/log/pipeline_tacacs_accounting.yml:241-250`.
+const ISE_AVPAIR_TIMES: &str = r#"def avpair = ctx.cisco_ise.log.avpair;\nfor (def field : ['start_time', 'stop_time']) {\n  def s = avpair[field];\n  if (!(s instanceof String) || s == \"0\" || !(s ==~ /^\\d+$/)) { continue; }\n  long v = Long.parseLong(s);\n  if      (v >= 1000000000000000000L) { v /= 1000000L; } // ns -> ms\n  else if (v >= 1000000000000000L)    { v /= 1000L; }    // us -> ms\n  else if (v <  10000000000L)         { v *= 1000L; }    // s  -> ms\n  avpair[field] = v;\n}\n"#;
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_network_activity/default.rs`,
+/// which is `pipelines/trend_micro_vision_one/network_activity/default.yml:316-319`.
+const TMV1_EVENT_TIME: &str = r#"def eventTime = Long.parseLong(ctx.trend_micro_vision_one.network_activity.event.time.toString()); if (eventTime < 10000000000L) {\n  ctx.trend_micro_vision_one.network_activity.event.time = eventTime * 1000L;\n}"#;
+
+/// Both fields the list names are rescaled, each on its own rung.
+#[test]
+fn a_looped_epoch_ladder_rescales_every_field_it_names() {
+    let (claimed, event) = run_script(
+        ISE_AVPAIR_TIMES,
+        json!({ "cisco_ise": { "log": { "avpair": {
+            "start_time": "1585185432",
+            "stop_time": "1585222372000000000"
+        } } } }),
+    );
+    assert!(claimed);
+    assert_eq!(
+        event.get("cisco_ise.log.avpair.start_time"),
+        Some(&json!(1_585_185_432_000_i64)),
+        "seconds multiply up"
+    );
+    assert_eq!(
+        event.get("cisco_ise.log.avpair.stop_time"),
+        Some(&json!(1_585_222_372_000_i64)),
+        "nanoseconds divide down"
+    );
+}
+
+/// A value already in milliseconds still reaches the assignment, because the
+/// script writes it back OUTSIDE the ladder.
+#[test]
+fn a_millisecond_epoch_is_written_back_unchanged() {
+    let (_, event) = run_script(
+        ISE_AVPAIR_TIMES,
+        json!({ "cisco_ise": { "log": { "avpair": { "start_time": "1585185432000" } } } }),
+    );
+    assert_eq!(
+        event.get("cisco_ise.log.avpair.start_time"),
+        Some(&json!(1_585_185_432_000_i64))
+    );
+}
+
+/// The vendor's own skip test: `"0"` means unset, a number is not a string,
+/// and text that is not all digits is left for the date processor.
+#[test]
+fn the_looped_epoch_guard_skips_what_the_script_skips() {
+    for value in [json!("0"), json!(1_585_185_432_i64), json!("2020-03-26")] {
+        let (_, event) = run_script(
+            ISE_AVPAIR_TIMES,
+            json!({ "cisco_ise": { "log": { "avpair": { "start_time": value } } } }),
+        );
+        assert_eq!(
+            event.get("cisco_ise.log.avpair.start_time"),
+            Some(&value),
+            "the guard skipped nothing"
+        );
+    }
+}
+
+/// The inline spelling scales below its threshold and leaves anything else
+/// exactly as it arrived, because it assigns INSIDE its single rung.
+#[test]
+fn an_inline_epoch_rung_writes_only_where_its_test_holds() {
+    let (claimed, event) = run_script(
+        TMV1_EVENT_TIME,
+        json!({ "trend_micro_vision_one": { "network_activity": {
+            "event": { "time": 1_699_877_654_i64 }
+        } } }),
+    );
+    assert!(claimed);
+    assert_eq!(
+        event.get("trend_micro_vision_one.network_activity.event.time"),
+        Some(&json!(1_699_877_654_000_i64))
+    );
+
+    let (_, event) = run_script(
+        TMV1_EVENT_TIME,
+        json!({ "trend_micro_vision_one": { "network_activity": {
+            "event": { "time": "1699877654000" }
+        } } }),
+    );
+    assert_eq!(
+        event.get("trend_micro_vision_one.network_activity.event.time"),
+        Some(&json!("1699877654000")),
+        "no rung held, so the string is untouched"
+    );
+}
+
+/// The ladder is read OFF the script, so a rung the vendor did not write is
+/// never applied and a script this cannot read is declined whole.
+#[test]
+fn an_epoch_rung_ladder_declines_what_it_cannot_read() {
+    for script in [
+        // A guard over a local the loop did not bind.
+        r#"def avpair = ctx.a.b;\nfor (def field : ['t']) {\n  def s = avpair[field];\n  if (!(s instanceof String) || s == \"0\" || !(s ==~ /^\\d+$/)) { continue; }\n  long v = Long.parseLong(s);\n  if (w < 10000000000L) { v *= 1000L; }\n  avpair[field] = v;\n}\n"#,
+        // A WIDENED skip test, which would rescale what the vendor skips.
+        r#"def avpair = ctx.a.b;\nfor (def field : ['t']) {\n  def s = avpair[field];\n  if (!(s instanceof String)) { continue; }\n  long v = Long.parseLong(s);\n  if (v < 10000000000L) { v *= 1000L; }\n  avpair[field] = v;\n}\n"#,
+        // A name carrying a dot, which the map subscript and `Event::set`
+        // read differently.
+        r#"def avpair = ctx.a.b;\nfor (def field : ['t.u']) {\n  def s = avpair[field];\n  if (!(s instanceof String) || s == \"0\" || !(s ==~ /^\\d+$/)) { continue; }\n  long v = Long.parseLong(s);\n  if (v < 10000000000L) { v *= 1000L; }\n  avpair[field] = v;\n}\n"#,
+        // A statement after the loop that this reader does not run.
+        r#"def avpair = ctx.a.b;\nfor (def field : ['t']) {\n  def s = avpair[field];\n  if (!(s instanceof String) || s == \"0\" || !(s ==~ /^\\d+$/)) { continue; }\n  long v = Long.parseLong(s);\n  if (v < 10000000000L) { v *= 1000L; }\n  avpair[field] = v;\n}\nctx.a.done = true;\n"#,
+        // The inline spelling writing a DIFFERENT field than it read.
+        r"def t = Long.parseLong(ctx.a.b.toString()); if (t < 10000000000L) {\n  ctx.a.c = t * 1000L;\n}",
+        // A comparison this reader does not take, rather than one rounded into
+        // a rung it can.
+        r"def t = Long.parseLong(ctx.a.b.toString()); if (t <= 10000000000L) {\n  ctx.a.b = t * 1000L;\n}",
+        // A statement after the inline ladder.
+        r"def t = Long.parseLong(ctx.a.b.toString()); if (t < 10000000000L) {\n  ctx.a.b = t * 1000L;\n}\nctx.a.done = true;",
+    ] {
+        assert!(
+            !binds_variant(script, |pattern| matches!(
+                pattern,
+                KnownPattern::EpochRungs(_)
+            )),
+            "claimed: {script}"
+        );
+    }
+}
+
+/// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/cyberark_epm_raw_event/default.rs`,
 /// which is `pipelines/cyberark_epm/raw_event/default.yml`.
 ///

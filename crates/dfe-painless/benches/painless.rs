@@ -943,6 +943,103 @@ fn bench_stringified_lookup_or_literal(c: &mut Criterion) {
     });
 }
 
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_endpoint_activity/default.rs`.
+const TMV1_ENDPOINT_TABLES: &str = r#"def eventId = ctx.trend_micro_vision_one.endpoint_activity.event?.id;\nif (eventId != null && params.eventId.containsKey(eventId.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.event.id_value = params.eventId[eventId.toString()];\n}\ndef eventSubId = ctx.trend_micro_vision_one.endpoint_activity.event?.sub_id;\nif (eventSubId != null && params.eventSubId.containsKey(eventSubId.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.event.sub_id_value = params.eventSubId[eventSubId.toString()];\n}\ndef winEventId = ctx.trend_micro_vision_one.endpoint_activity.win_event_id;\nif (winEventId != null && params.winEventId.containsKey(winEventId.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.win_event_id_value = params.winEventId[winEventId.toString()];\n}"#;
+
+/// Six lookups in one script, each through its own named table.
+///
+/// The tables are built from slices rather than `json!` literals: the vendor's
+/// `winEventId` block alone is 60 rows, and a wide literal is what blows
+/// rustc's macro recursion limit at other call sites.
+fn bench_named_table_lookups(c: &mut Criterion) {
+    const EVENT_IDS: &[(&str, &str)] = &[
+        ("1", "EVENT_PROCESS"),
+        ("2", "EVENT_FILE"),
+        ("3", "EVENT_CONNECTIO"),
+        ("4", "EVENT_DNS"),
+        ("5", "EVENT_REGISTRY"),
+        ("6", "EVENT_ACCOUNT"),
+        ("7", "EVENT_INTERNET"),
+    ];
+    const SUB_IDS: &[(&str, &str)] = &[
+        ("101", "XDR_PROCESS_CREATE"),
+        ("201", "XDR_FILE_CREATE"),
+        ("301", "XDR_CONNECTION_CONNECT"),
+        ("401", "XDR_DNS_QUERY"),
+    ];
+    const WIN_EVENT_IDS: &[(&str, &str)] = &[
+        ("4624", "An account was successfully logged on"),
+        ("4720", "A user account was created"),
+        (
+            "5156",
+            "The Windows Filtering Platform has permitted a connection.",
+        ),
+        ("7045", "A service was installed in the system"),
+    ];
+
+    let plan = PainlessPlan::new(TMV1_ENDPOINT_TABLES);
+    assert!(
+        plan.binding().iter().any(|b| b.contains("StringKeyedRow")),
+        "the named-table bench no longer measures the string-keyed lookup: {:?}",
+        plan.binding(),
+    );
+
+    let table = |rows: &[(&str, &str)]| {
+        serde_json::Value::Object(
+            rows.iter()
+                .map(|(key, value)| ((*key).to_owned(), json!(value)))
+                .collect(),
+        )
+    };
+    let params = json!({
+        "eventId": table(EVENT_IDS),
+        "eventSubId": table(SUB_IDS),
+        "winEventId": table(WIN_EVENT_IDS),
+    });
+
+    c.bench_function("painless_exec/named_table_lookups_planned", |b| {
+        b.iter_batched_ref(
+            || {
+                Event::new(json!({ "trend_micro_vision_one": { "endpoint_activity": {
+                    "event": { "id": 1, "sub_id": 101 },
+                    "win_event_id": 4624,
+                } } }))
+            },
+            |event| painless_exec_plan_params(event, black_box(&plan), black_box(&params)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/cisco_ise_log/pipeline_tacacs_accounting.rs`.
+const ISE_AVPAIR_TIMES: &str = r#"def avpair = ctx.cisco_ise.log.avpair;\nfor (def field : ['start_time', 'stop_time']) {\n  def s = avpair[field];\n  if (!(s instanceof String) || s == \"0\" || !(s ==~ /^\\d+$/)) { continue; }\n  long v = Long.parseLong(s);\n  if      (v >= 1000000000000000000L) { v /= 1000000L; } // ns -> ms\n  else if (v >= 1000000000000000L)    { v /= 1000L; }    // us -> ms\n  else if (v <  10000000000L)         { v *= 1000L; }    // s  -> ms\n  avpair[field] = v;\n}\n"#;
+
+/// Two fields over a three-rung ladder, at the widths the vendor ships.
+fn bench_epoch_rungs(c: &mut Criterion) {
+    let plan = PainlessPlan::new(ISE_AVPAIR_TIMES);
+    assert!(
+        plan.binding().iter().any(|b| b.starts_with("EpochRungs")),
+        "the epoch bench no longer measures EpochRungs: {:?}",
+        plan.binding(),
+    );
+
+    c.bench_function("painless_exec/epoch_rungs_planned", |b| {
+        b.iter_batched_ref(
+            || {
+                Event::new(json!({ "cisco_ise": { "log": { "avpair": {
+                    "start_time": "1585222245",
+                    "stop_time": "1585222372000000000",
+                    "task_id": "35585",
+                } } } }))
+            },
+            |event| painless_exec_plan(event, black_box(&plan)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
 criterion_group!(
     benches,
     bench_params_matcher,
@@ -965,6 +1062,8 @@ criterion_group!(
     bench_empty_arm_prune,
     bench_foreach_rewrite_keys,
     bench_collect_present,
-    bench_stringified_lookup_or_literal
+    bench_stringified_lookup_or_literal,
+    bench_named_table_lookups,
+    bench_epoch_rungs
 );
 criterion_main!(benches);

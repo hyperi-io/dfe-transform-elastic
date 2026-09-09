@@ -15091,6 +15091,407 @@ fn run_epoch_nanos_to_datetime(event: &mut Event, pattern: &EpochNanosToDateTime
     true
 }
 
+/// An epoch rescaled to MILLISECONDS by a ladder the SCRIPT itself spells.
+///
+/// [`EpochToMillis`] carries cloudflare's ladder as hard-coded arithmetic and
+/// proves the script means it by rebuilding the text. Two vendors ship the same
+/// intent over a DIFFERENT ladder, so neither can be read that way: `cisco_ise`
+/// walks ns / us / s, `trend_micro` only s, and cloudflare only ns / s. This one
+/// reads the thresholds and the factors off the script instead.
+///
+/// Both sit in front of a `date` processor whose only format is `UNIX_MS`.
+/// Unclaimed, epoch seconds are read as milliseconds and every such event lands
+/// in January 1970 -- and `cisco_ise`'s one nanosecond event is out of range of
+/// any date at all, so its date processor throws and appends an `error.message`
+/// Elasticsearch does not.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct EpochRungs {
+    /// Each `ctx.` path the script rescales, in script order.
+    fields: Vec<String>,
+    /// The ladder in script order; the first rung whose test holds wins.
+    rungs: Vec<Rung>,
+    /// Which values the script's own guard lets through.
+    guard: EpochGuard,
+    /// Whether the value is written back when NO rung holds.
+    ///
+    /// `cisco_ise` assigns outside its ladder, so a value already in milliseconds
+    /// is written back as a long; `trend_micro` assigns inside its single rung,
+    /// so such a value is left exactly as it arrived.
+    always_write: bool,
+}
+
+/// Which values a script rescales at all.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum EpochGuard {
+    /// Anything whose text is a whole number, which is what
+    /// `Long.parseLong(x.toString())` accepts.
+    Numeric,
+    /// A STRING of digits other than `"0"`, which is the `cisco_ise` guard's own
+    /// three-part test -- `"0"` is how TACACS+ spells "this time is unset".
+    DigitStringExceptZero,
+}
+
+/// The magnitude test one rung makes.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Magnitude {
+    /// `<`
+    Below(i64),
+    /// `>=`
+    AtLeast(i64),
+}
+
+impl Magnitude {
+    fn holds(self, value: i64) -> bool {
+        match self {
+            Self::Below(threshold) => value < threshold,
+            Self::AtLeast(threshold) => value >= threshold,
+        }
+    }
+}
+
+/// What a rung scales its value by.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum Scale {
+    /// `*`
+    Times(i64),
+    /// `/`
+    Over(i64),
+}
+
+impl Scale {
+    fn apply(self, value: i64) -> i64 {
+        match self {
+            // Java's long arithmetic wraps rather than trapping.
+            Self::Times(factor) => value.wrapping_mul(factor),
+            // A zero divisor is refused at parse time.
+            Self::Over(factor) => value / factor,
+        }
+    }
+}
+
+/// One rung of the ladder.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct Rung {
+    magnitude: Magnitude,
+    scale: Scale,
+}
+
+/// What a rung's body has to write for the ladder to be this pattern.
+#[derive(Debug, Clone, Copy)]
+enum RungWrite<'a> {
+    /// `<target> = <var> <op> <literal>;`, where `target` is the read path as
+    /// the script spells it.
+    Path { var: &'a str, target: &'a str },
+    /// `<var> <op>= <literal>;`
+    Compound { var: &'a str },
+}
+
+impl<'a> RungWrite<'a> {
+    fn var(self) -> &'a str {
+        match self {
+            Self::Path { var, .. } | Self::Compound { var } => var,
+        }
+    }
+}
+
+/// Rescale each named field, on the rung its own magnitude selects.
+fn run_epoch_rungs(event: &mut Event, pattern: &EpochRungs) -> bool {
+    for field in &pattern.fields {
+        let Some(value) = epoch_value(event, field, pattern.guard) else {
+            continue;
+        };
+        match pattern
+            .rungs
+            .iter()
+            .find(|rung| rung.magnitude.holds(value))
+        {
+            Some(rung) => {
+                let _ = event.set(field, Value::from(rung.scale.apply(value)));
+            }
+            None if pattern.always_write => {
+                let _ = event.set(field, Value::from(value));
+            }
+            None => {}
+        }
+    }
+    true
+}
+
+/// The number a field offers the ladder, or `None` where the guard skips it.
+///
+/// The `Numeric` arm reads a value Painless would have stringified and parsed,
+/// and a text that is not a whole number writes NOTHING -- Painless throws
+/// there and the processor's `on_failure` appends an `error.message`, which no
+/// matcher can raise. No corpus event reaches it.
+fn epoch_value(event: &Event, field: &str, guard: EpochGuard) -> Option<i64> {
+    match guard {
+        EpochGuard::Numeric => event.get_as_string(field)?.trim().parse().ok(),
+        EpochGuard::DigitStringExceptZero => {
+            let text = event.get_str(field)?;
+            if text == "0" || text.is_empty() || !text.bytes().all(|b| b.is_ascii_digit()) {
+                return None;
+            }
+            text.parse().ok()
+        }
+    }
+}
+
+/// A `long` literal as the script writes it, `L` suffix included.
+fn long_literal(text: &str) -> Option<i64> {
+    let digits = text.trim().trim_end_matches(['L', 'l']);
+    if digits.is_empty() || !digits.bytes().all(|b| b.is_ascii_digit()) {
+        return None;
+    }
+    digits.parse().ok()
+}
+
+/// The magnitude test a rung spells, keyed on the local it has to name.
+///
+/// Only `<` and `>=` are read. `<=` and `>` are a different ladder and decline
+/// here rather than being rounded into one of these.
+fn epoch_magnitude(test: &str, var: &str) -> Option<Magnitude> {
+    let squeezed: String = test.chars().filter(|c| !c.is_whitespace()).collect();
+    let rest = squeezed.strip_prefix(var)?;
+    if let Some(literal) = rest.strip_prefix(">=") {
+        return Some(Magnitude::AtLeast(long_literal(literal)?));
+    }
+    Some(Magnitude::Below(long_literal(rest.strip_prefix('<')?)?))
+}
+
+/// The scale a rung's body applies, in whichever of the two spellings the
+/// caller asked for.
+fn epoch_rung_scale(body: &str, write: RungWrite<'_>) -> Option<Scale> {
+    let (statement, tail) = crate::params::skip_trivia(body).split_once(';')?;
+    if !crate::params::skip_trivia(tail).is_empty() {
+        return None;
+    }
+    let squeezed: String = statement.chars().filter(|c| !c.is_whitespace()).collect();
+    let (marker, literal) = match write {
+        RungWrite::Path { var, target } => {
+            let rest = squeezed
+                .strip_prefix(&format!("{target}="))?
+                .strip_prefix(var)?;
+            (rest.get(..1)?, rest.get(1..)?)
+        }
+        RungWrite::Compound { var } => {
+            let rest = squeezed.strip_prefix(var)?;
+            (rest.get(..2)?, rest.get(2..)?)
+        }
+    };
+    let factor = long_literal(literal)?;
+    if factor == 0 {
+        return None;
+    }
+    match marker {
+        "*" | "*=" => Some(Scale::Times(factor)),
+        "/" | "/=" => Some(Scale::Over(factor)),
+        _ => None,
+    }
+}
+
+/// The `if / else if` chain at the head of `text`, and whatever follows it.
+fn epoch_ladder<'a>(script: &'a str, write: RungWrite<'_>) -> Option<(Vec<Rung>, &'a str)> {
+    let mut rungs = Vec::new();
+    let mut rest = script;
+    loop {
+        let opened = if rungs.is_empty() {
+            crate::params::skip_trivia(rest).strip_prefix("if")?
+        } else {
+            let Some(after) = crate::params::skip_trivia(rest).strip_prefix("else if") else {
+                break;
+            };
+            after
+        };
+        let (condition, after) =
+            crate::params::balanced(crate::params::skip_trivia(opened), '(', ')')?;
+        let magnitude = epoch_magnitude(condition, write.var())?;
+        let (body, after) = crate::params::balanced(crate::params::skip_trivia(after), '{', '}')?;
+        rungs.push(Rung {
+            magnitude,
+            scale: epoch_rung_scale(body, write)?,
+        });
+        rest = after;
+    }
+    (!rungs.is_empty()).then_some((rungs, rest))
+}
+
+/// The single-field spelling, which parses one field's own text and rescales it
+/// in place.
+///
+/// ```painless
+/// def eventTime = Long.parseLong(ctx.<path>.toString());
+/// if (eventTime < 10000000000L) { ctx.<path> = eventTime * 1000L; }
+/// ```
+///
+/// The write has to name the path the read named, character for character, so
+/// a script rescaling one field into ANOTHER declines rather than being read as
+/// an in-place rescale.
+fn parse_inline_epoch_rungs(script: &str) -> Option<EpochRungs> {
+    let (statement, rest) = crate::params::skip_trivia(script)
+        .strip_prefix("def ")?
+        .split_once(';')?;
+    let (local, expression) = statement.split_once('=')?;
+    let local = epoch_identifier(local)?;
+
+    let squeezed: String = expression.chars().filter(|c| !c.is_whitespace()).collect();
+    let read = squeezed
+        .strip_prefix("Long.parseLong(")?
+        .strip_suffix(".toString())")?;
+    let field = crate::params::ctx_path_plain(read)?;
+
+    let (rungs, rest) = epoch_ladder(
+        rest,
+        RungWrite::Path {
+            var: local,
+            target: read,
+        },
+    )?;
+    if !crate::params::skip_trivia(rest).is_empty() {
+        return None;
+    }
+
+    Some(EpochRungs {
+        fields: vec![field],
+        rungs,
+        guard: EpochGuard::Numeric,
+        always_write: false,
+    })
+}
+
+/// The looped spelling, which rescales each name in a literal list against a
+/// map the script binds first.
+///
+/// ```painless
+/// def avpair = ctx.<root>;
+/// for (def field : ['start_time', 'stop_time']) {
+///   def s = avpair[field];
+///   if (!(s instanceof String) || s == "0" || !(s ==~ /^\d+$/)) { continue; }
+///   long v = Long.parseLong(s);
+///   if      (v >= 1000000000000000000L) { v /= 1000000L; }
+///   else if (v >= 1000000000000000L)    { v /= 1000L; }
+///   else if (v <  10000000000L)         { v *= 1000L; }
+///   avpair[field] = v;
+/// }
+/// ```
+///
+/// The trailing assignment sits OUTSIDE the ladder, which is what
+/// `always_write` records.
+fn parse_looped_epoch_rungs(script: &str) -> Option<EpochRungs> {
+    let (statement, rest) = crate::params::skip_trivia(script)
+        .strip_prefix("def ")?
+        .split_once(';')?;
+    let (map, bound) = statement.split_once('=')?;
+    let map = epoch_identifier(map)?;
+    let root = crate::params::ctx_path_plain(bound)?;
+
+    let rest = crate::params::skip_trivia(rest).strip_prefix("for")?;
+    let (header, rest) = crate::params::balanced(crate::params::skip_trivia(rest), '(', ')')?;
+    let (name, names) = epoch_loop_names(header)?;
+    let (body, rest) = crate::params::balanced(crate::params::skip_trivia(rest), '{', '}')?;
+    if !crate::params::skip_trivia(rest).is_empty() {
+        return None;
+    }
+
+    // `def <raw> = <map>[<name>];`
+    let (statement, rest) = crate::params::skip_trivia(body)
+        .strip_prefix("def ")?
+        .split_once(';')?;
+    let (raw, bound) = statement.split_once('=')?;
+    let raw = epoch_identifier(raw)?;
+    if collapse_script(bound).trim() != format!("{map}[{name}]") {
+        return None;
+    }
+
+    // The vendor's own skip test, matched whole: a widened guard would rescale
+    // what the script leaves alone.
+    let rest = crate::params::skip_trivia(rest).strip_prefix("if")?;
+    let (condition, rest) = crate::params::balanced(crate::params::skip_trivia(rest), '(', ')')?;
+    if collapse_script(condition).trim() != epoch_digit_guard(raw) {
+        return None;
+    }
+    let (skipped, rest) = crate::params::balanced(crate::params::skip_trivia(rest), '{', '}')?;
+    if collapse_script(skipped).trim() != "continue;" {
+        return None;
+    }
+
+    // `long <value> = Long.parseLong(<raw>);`
+    let (statement, rest) = crate::params::skip_trivia(rest)
+        .strip_prefix("long ")?
+        .split_once(';')?;
+    let (value, bound) = statement.split_once('=')?;
+    let value = epoch_identifier(value)?;
+    if collapse_script(bound).trim() != format!("Long.parseLong({raw})") {
+        return None;
+    }
+
+    let (rungs, rest) = epoch_ladder(rest, RungWrite::Compound { var: value })?;
+
+    let (statement, rest) = crate::params::skip_trivia(rest).split_once(';')?;
+    if collapse_script(statement).trim() != format!("{map}[{name}] = {value}")
+        || !crate::params::skip_trivia(rest).is_empty()
+    {
+        return None;
+    }
+
+    Some(EpochRungs {
+        fields: names.iter().map(|name| format!("{root}.{name}")).collect(),
+        rungs,
+        guard: EpochGuard::DigitStringExceptZero,
+        always_write: true,
+    })
+}
+
+/// The `cisco_ise` skip test, as it would be written over `local`.
+fn epoch_digit_guard(local: &str) -> String {
+    format!(r#"!({local} instanceof String) || {local} == "0" || !({local} ==~ /^\d+$/)"#)
+}
+
+/// `def <name> : ['a', 'b']` as the loop local and the names it walks.
+///
+/// A name carrying a dot is refused: Painless subscripts the map with the
+/// literal key, where [`Event::set`] would read the dot as nesting.
+fn epoch_loop_names(header: &str) -> Option<(&str, Vec<String>)> {
+    let (binding, list) = header.split_once(':')?;
+    let name = epoch_identifier(binding.trim().strip_prefix("def ")?)?;
+    let (inner, rest) = crate::params::balanced(crate::params::skip_trivia(list), '[', ']')?;
+    if !crate::params::skip_trivia(rest).is_empty() {
+        return None;
+    }
+    let names: Option<Vec<String>> = inner.split(',').map(epoch_quoted_name).collect();
+    let names = names?;
+    (!names.is_empty()).then_some((name, names))
+}
+
+/// A quoted name holding nothing but word characters.
+fn epoch_quoted_name(text: &str) -> Option<String> {
+    let text = text.trim();
+    for quote in ['\'', '"'] {
+        if let Some(inner) = text
+            .strip_prefix(quote)
+            .and_then(|rest| rest.strip_suffix(quote))
+            && !inner.is_empty()
+            && inner.chars().all(|c| c.is_alphanumeric() || c == '_')
+        {
+            return Some(inner.to_string());
+        }
+    }
+    None
+}
+
+/// A local's name, or `None` where the text is not one identifier.
+fn epoch_identifier(text: &str) -> Option<&str> {
+    let name = text.trim();
+    (!name.is_empty()
+        && !name.starts_with(|c: char| c.is_ascii_digit())
+        && name.chars().all(|c| c.is_alphanumeric() || c == '_'))
+    .then_some(name)
+}
+
+/// Either spelling of the rescale.
+fn parse_epoch_rungs(script: &str) -> Option<EpochRungs> {
+    parse_inline_epoch_rungs(script).or_else(|| parse_looped_epoch_rungs(script))
+}
+
 /// `double <v> = ((Number) ctx.<source>).doubleValue(); ctx.<target> = (long)
 /// Math.round(<v> * <factor>);`
 ///
@@ -18951,6 +19352,8 @@ pub(crate) enum KnownPattern {
     EpochToMillis(Box<EpochToMillis>),
     /// Named epoch-nanosecond fields rendered as UTC datetimes.
     EpochNanosToDateTime(Box<EpochNanosToDateTime>),
+    /// The same rescale on a ladder the script spells rather than a fixed one.
+    EpochRungs(Box<EpochRungs>),
     M365ProcessEvidence(String),
     M365IdentityEvidence(String),
     Route53Answers,
@@ -21635,6 +22038,17 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: the same rescale on a ladder the SCRIPT spells, over the fields
+    // it names -- cisco_ise's TACACS+ accounting times and trend_micro's
+    // network_activity event time. Last, so it takes only a script nothing
+    // above took; both spellings read `binding: []` before this arm.
+    if normalised.contains("Long.parseLong(")
+        && let Some(pattern) = parse_epoch_rungs(normalised)
+    {
+        patterns.push(KnownPattern::EpochRungs(Box::new(pattern)));
+        return patterns;
+    }
+
     patterns
 }
 
@@ -21950,6 +22364,7 @@ pub(crate) fn run_known_pattern(
         }
         KnownPattern::EpochToMillis(pattern) => run_epoch_to_millis(event, pattern),
         KnownPattern::EpochNanosToDateTime(pattern) => run_epoch_nanos_to_datetime(event, pattern),
+        KnownPattern::EpochRungs(pattern) => run_epoch_rungs(event, pattern),
         KnownPattern::M365ProcessEvidence(path) => run_m365_process_evidence(event, path),
         KnownPattern::M365IdentityEvidence(path) => run_m365_identity_evidence(event, path),
         KnownPattern::Route53Answers => run_route53_answers(event),

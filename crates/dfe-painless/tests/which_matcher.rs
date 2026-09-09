@@ -1437,3 +1437,146 @@ fn the_trend_micro_event_type_binds_to_the_lookup_that_carries_its_default() {
         Some("Other")
     );
 }
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_endpoint_activity/default.rs`,
+/// which is `pipelines/trend_micro_vision_one/endpoint_activity/default.yml:1018-1041`.
+const TMV1_ENDPOINT_TABLES: &str = r#"def eventId = ctx.trend_micro_vision_one.endpoint_activity.event?.id;\nif (eventId != null && params.eventId.containsKey(eventId.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.event.id_value = params.eventId[eventId.toString()];\n}\ndef objectTrueType = ctx.trend_micro_vision_one.endpoint_activity.object?.true_type;\nif (objectTrueType != null && params.objectTrueType.containsKey(objectTrueType.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.object.true_type_value = params.objectTrueType[objectTrueType.toString()];\n}\ndef winEventId = ctx.trend_micro_vision_one.endpoint_activity.win_event_id;\nif (winEventId != null && params.winEventId.containsKey(winEventId.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.win_event_id_value = params.winEventId[winEventId.toString()];\n}"#;
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_network_activity/default.rs`,
+/// which is `pipelines/trend_micro_vision_one/network_activity/default.yml:369-372`.
+const TMV1_ACT_TABLE: &str = r#"def act = ctx.trend_micro_vision_one.network_activity.act;\nif (params.act.containsKey(act.toString())) {\n  ctx.trend_micro_vision_one.network_activity.act_value = params.act[act.toString()];\n}"#;
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_detection/default.rs`,
+/// which is `pipelines/trend_micro_vision_one/detection/default.yml:966-969`.
+const TMV1_RISK_TABLE: &str = r#"def cccaRiskLevel = ctx.trend_micro_vision_one.detection.risk_level;\nif (params.cccaRiskLevel.containsKey(cccaRiskLevel.toString())) {\n  ctx.trend_micro_vision_one.detection.risk_level_value = params.cccaRiskLevel[cccaRiskLevel.toString()];\n}"#;
+
+/// The dotted `params.<table>` spelling, keyed through a local, over three
+/// streams. `FieldTables` reads the quoted-subscript spelling as well, and the
+/// `StringKeyedRow` in the binding is which of the two ran.
+#[test]
+fn the_trend_micro_tables_bind_to_the_string_keyed_row_in_all_three_streams() {
+    for script in [TMV1_ENDPOINT_TABLES, TMV1_ACT_TABLE, TMV1_RISK_TABLE] {
+        let held = binding(script).join(" ");
+        assert!(held.starts_with("FieldTables"), "{held}");
+        assert!(held.contains("StringKeyedRow"), "{held}");
+    }
+
+    let held = binding(TMV1_ACT_TABLE).join(" ");
+    assert!(
+        held.contains(r#"source: "trend_micro_vision_one.network_activity.act""#),
+        "{held}"
+    );
+    assert!(held.contains(r#"table: "act""#), "{held}");
+    assert!(
+        held.contains(r#"target: "trend_micro_vision_one.network_activity.act_value""#),
+        "{held}"
+    );
+
+    // The captured events carry `act` as an INTEGER, and the table is keyed by
+    // string -- the `.toString()` in the script is what joins the two.
+    let params = json!({ "act": { "1": "monitor", "2": "block" } });
+    let plan = PainlessPlan::new(TMV1_ACT_TABLE);
+    let mut event = Event::new(json!({
+        "trend_micro_vision_one": { "network_activity": { "act": 1 } }
+    }));
+    assert!(painless_exec_plan_params(&mut event, &plan, &params).is_ok());
+    assert_eq!(
+        event.get_str("trend_micro_vision_one.network_activity.act_value"),
+        Some("monitor")
+    );
+
+    // Six lookups in one script, each through its own table.
+    let params = json!({
+        "eventId": { "1": "EVENT_PROCESS" },
+        "objectTrueType": { "1": "EXE" },
+        "winEventId": { "4624": "An account was successfully logged on" }
+    });
+    let plan = PainlessPlan::new(TMV1_ENDPOINT_TABLES);
+    let mut event = Event::new(json!({ "trend_micro_vision_one": { "endpoint_activity": {
+        "event": { "id": 1 },
+        "object": { "true_type": 1 },
+        "win_event_id": 4624
+    } } }));
+    assert!(painless_exec_plan_params(&mut event, &plan, &params).is_ok());
+    assert_eq!(
+        event.get_str("trend_micro_vision_one.endpoint_activity.event.id_value"),
+        Some("EVENT_PROCESS")
+    );
+    assert_eq!(
+        event.get_str("trend_micro_vision_one.endpoint_activity.win_event_id_value"),
+        Some("An account was successfully logged on")
+    );
+}
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/cisco_ise_log/pipeline_tacacs_accounting.rs`,
+/// which is `pipelines/cisco_ise/log/pipeline_tacacs_accounting.yml:241-250`.
+const ISE_AVPAIR_TIMES: &str = r#"def avpair = ctx.cisco_ise.log.avpair;\nfor (def field : ['start_time', 'stop_time']) {\n  def s = avpair[field];\n  if (!(s instanceof String) || s == \"0\" || !(s ==~ /^\\d+$/)) { continue; }\n  long v = Long.parseLong(s);\n  if      (v >= 1000000000000000000L) { v /= 1000000L; } // ns -> ms\n  else if (v >= 1000000000000000L)    { v /= 1000L; }    // us -> ms\n  else if (v <  10000000000L)         { v *= 1000L; }    // s  -> ms\n  avpair[field] = v;\n}\n"#;
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_network_activity/default.rs`,
+/// which is `pipelines/trend_micro_vision_one/network_activity/default.yml:316-319`.
+const TMV1_NETWORK_EVENT_TIME: &str = r#"def eventTime = Long.parseLong(ctx.trend_micro_vision_one.network_activity.event.time.toString()); if (eventTime < 10000000000L) {\n  ctx.trend_micro_vision_one.network_activity.event.time = eventTime * 1000L;\n}"#;
+
+/// Two sources, one defect CLASS, two SCRIPTS: each sits in front of a `date`
+/// processor whose only format is `UNIX_MS`, and each spells its own ladder --
+/// so `EpochToMillis`, whose arithmetic is fixed and proven by rebuilding
+/// cloudflare's text, can read neither. The rungs in the binding are read off
+/// the script, which is what says the arithmetic is the vendor's.
+#[test]
+fn both_epoch_rescales_bind_and_carry_the_ladder_their_own_script_spells() {
+    let held = binding(ISE_AVPAIR_TIMES).join(" ");
+    assert!(held.starts_with("EpochRungs"), "{held}");
+    assert!(
+        held.contains(
+            r#"fields: ["cisco_ise.log.avpair.start_time", "cisco_ise.log.avpair.stop_time"]"#
+        ),
+        "{held}"
+    );
+    assert!(
+        held.contains("AtLeast(1000000000000000000), scale: Over(1000000)"),
+        "{held}"
+    );
+    assert!(
+        held.contains("Below(10000000000), scale: Times(1000)"),
+        "{held}"
+    );
+    assert!(held.contains("guard: DigitStringExceptZero"), "{held}");
+
+    let held = binding(TMV1_NETWORK_EVENT_TIME).join(" ");
+    assert!(held.starts_with("EpochRungs"), "{held}");
+    assert!(
+        held.contains(r#"fields: ["trend_micro_vision_one.network_activity.event.time"]"#),
+        "{held}"
+    );
+    assert!(held.contains("guard: Numeric"), "{held}");
+    assert!(held.contains("always_write: false"), "{held}");
+
+    // The corpus values: cisco_ise ships seconds on most events and one in
+    // nanoseconds, and both must land on the same millisecond.
+    let mut event = Event::new(json!({ "cisco_ise": { "log": { "avpair": {
+        "start_time": "1585222245",
+        "stop_time": "1585222372000000000"
+    } } } }));
+    assert!(painless_exec_plan(&mut event, &PainlessPlan::new(ISE_AVPAIR_TIMES)).is_ok());
+    assert_eq!(
+        event.get("cisco_ise.log.avpair.start_time"),
+        Some(&json!(1_585_222_245_000_i64))
+    );
+    assert_eq!(
+        event.get("cisco_ise.log.avpair.stop_time"),
+        Some(&json!(1_585_222_372_000_i64))
+    );
+
+    let mut event = Event::new(json!({ "trend_micro_vision_one": { "network_activity": {
+        "event": { "time": 1_699_877_654_i64 }
+    } } }));
+    assert!(painless_exec_plan(&mut event, &PainlessPlan::new(TMV1_NETWORK_EVENT_TIME)).is_ok());
+    assert_eq!(
+        event.get("trend_micro_vision_one.network_activity.event.time"),
+        Some(&json!(1_699_877_654_000_i64))
+    );
+}

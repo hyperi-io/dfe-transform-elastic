@@ -1050,6 +1050,15 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
         return Some(ParamsPattern::FieldTables(pattern));
     }
 
+    // Pattern: the same run of lookups in the DOTTED spelling, each keyed
+    // through a local the block binds -- `params.<table>.containsKey(
+    // k.toString())` then `params.<table>[k.toString()]`. After its sibling
+    // above, because the parse IS the trigger and reads the whole script: all
+    // three trend_micro spellings read `binding: []` before this arm.
+    if let Some(pattern) = crate::field_tables::parse_named_table_lookups(normalised) {
+        return Some(ParamsPattern::FieldTables(pattern));
+    }
+
     // Pattern: a params LIST of mapping specs, each naming its own source
     // object and key, destination object and key, and value map. LAST, because
     // the parse IS the trigger and reads the whole loop: nothing above claims
