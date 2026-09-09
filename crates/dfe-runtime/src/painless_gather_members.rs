@@ -4,7 +4,7 @@
 //! Named members gathered out of every record of a list, each into a list of
 //! its own, written only where the walk came to something.
 //!
-//! ti_threatq walks its sources once and takes two members out of them, the
+//! `ti_threatq` walks its sources once and takes two members out of them, the
 //! second filtered against a literal allow-list:
 //!
 //! ```painless

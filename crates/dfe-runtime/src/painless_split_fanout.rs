@@ -4,7 +4,7 @@
 //! Every element of a list cut on one separator, its parts fanned out to
 //! parallel lists, deduped.
 //!
-//! panw_cortex_xdr ships its MITRE mapping as a list of `"<id> - <name>"`
+//! `panw_cortex_xdr` ships its MITRE mapping as a list of `"<id> - <name>"`
 //! strings and declares a helper that appends the two halves to two lists,
 //! creating each container on the way and skipping a value already held:
 //!

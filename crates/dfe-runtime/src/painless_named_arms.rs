@@ -4,7 +4,7 @@
 //! A params table read for one key, with literal arms answering the names the
 //! table does not carry.
 //!
-//! claude_code and claude_cowork classify their events this way -- two names
+//! `claude_code` and `claude_cowork` classify their events this way -- two names
 //! answered inline, one answered with no write at all, and the rest looked up:
 //!
 //! ```painless
