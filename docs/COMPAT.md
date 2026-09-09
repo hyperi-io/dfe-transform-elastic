@@ -221,14 +221,34 @@ right value and record the divergence -- we do not reproduce the bug.
 
 Two live examples. Elasticsearch 9.2.2 overflows a 2,826 ms duration to
 `event.duration: -1468967296` where the correct value is 2,826,000,000, because
-it multiplies into a 32-bit int. And cisco_nexus ships 27 events whose
-timestamp its own date processor cannot parse, so it emits
-`event.kind: pipeline_error` where we emit a correctly parsed event.
+it multiplies into a 32-bit int. And symantec_endpoint_security carries 51
+events with a non-JSON `event.original`, so both engines fail the same `json`
+processor and report it in their own words -- the failure agrees and only the
+wording is the runtime's own.
 
 Both are recorded in `tests/compare-policy.yaml` with the reason attached, so
 the difference is excluded from scoring and stays visible to anyone reading it.
 A divergence taken this way is a decision with a name on it, and it is never
 the quiet option: matching the bug would have scored better.
+
+### Most of Elasticsearch's own failures never reach a policy entry
+
+`compat_corpus.rs` drops any expected document whose `event.kind` is
+`pipeline_error`, or that carries a bare `_compat_error` object, BEFORE
+comparing -- counting it as `events_unanswered`, because scoring against a
+failed run counts our correct output as a miss. 405 captured events carry an
+Elasticsearch-side `error.message` and that gate excludes 336 of them.
+
+So a policy entry is needed only where the failed document is still SCORED,
+which means Elasticsearch failed a processor and its `on_failure` left
+`event.kind` as `event`. That is why cisco_nexus needs no entry in this
+harness despite 27 unparseable timestamps -- all 27 set `pipeline_error` and
+the source scores 45/45. Its entries in `compare-policy.yaml` still do work
+for `scripts/compat.py`, which applies the rules globally.
+
+**Read the scorer before concluding an Elasticsearch failure costs anything.**
+A scan of `testdata/` cannot see this gate, and sizing a prize off the captures
+alone over-counts it by roughly six times.
 
 ## Older stacks
 
