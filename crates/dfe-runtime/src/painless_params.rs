@@ -261,6 +261,11 @@ pub(crate) enum ParamsPattern {
     AddUniqueRow,
     FrameworkPreference,
     RowOrDefaults(Box<RowOrDefaults>),
+    /// Literal arms answering the keys a params table does not carry, then the
+    /// table.
+    ArmedTable(Box<crate::painless_named_arms::ArmedTable>),
+    /// An issue classified from a params row and a block deadline.
+    IssueLifecycle(Box<crate::painless_issue_lifecycle::IssueLifecycle>),
     /// A guard chain picking ONE params row to write to a single target.
     GuardedParamsRow(Box<GuardedParamsRow>),
     /// Named MEMBERS of a params row, each to its own target.
@@ -943,6 +948,26 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
         && let Some(pattern) = parse_guarded_params_row(normalised)
     {
         return Some(ParamsPattern::GuardedParamsRow(Box::new(pattern)));
+    }
+
+    // Pattern: an issue classified from a params row, a security-domain table
+    // and a block deadline measured against the event's own timestamp. Above
+    // `RowOrDefaults`, which declines the script because its branch is not the
+    // end of the text, leaving it to `GuardedCopy` in the ladder below.
+    if normalised.contains(".isAfter(")
+        && normalised.contains("params.")
+        && let Some(pattern) = crate::painless_issue_lifecycle::parse_issue_lifecycle(normalised)
+    {
+        return Some(ParamsPattern::IssueLifecycle(Box::new(pattern)));
+    }
+
+    // Pattern: literal arms answering the keys a params table does not carry,
+    // then the table itself. Above `RowOrDefaults`, which reads the lookup
+    // without the arms and cannot take the `getOrDefault` spelling.
+    if normalised.contains(".getOrDefault(")
+        && let Some(pattern) = crate::painless_named_arms::parse_armed_table(normalised)
+    {
+        return Some(ParamsPattern::ArmedTable(Box::new(pattern)));
     }
 
     // Pattern: a NAMED params table's row fanned onto ctx, with literal
@@ -2086,6 +2111,12 @@ pub(crate) fn run_params_pattern(
         ParamsPattern::AddUniqueRow => try_add_unique_row(event, normalised, params),
         ParamsPattern::FrameworkPreference => try_framework_preference(event, normalised, params),
         ParamsPattern::RowOrDefaults(pattern) => run_row_or_defaults(event, pattern, params),
+        ParamsPattern::ArmedTable(pattern) => {
+            crate::painless_named_arms::armed_table(event, pattern, params)
+        }
+        ParamsPattern::IssueLifecycle(pattern) => {
+            crate::painless_issue_lifecycle::issue_lifecycle(event, pattern, params)
+        }
         // The arms are tried in the order the script writes them, and the
         // fallback runs unguarded -- the vendor's `else` has no condition, so
         // the field is written on every event the processor reaches.
@@ -8864,7 +8895,7 @@ fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
 /// `ctx.event.action = (ctx.<a> + "-" + ctx.<b>).toLowerCase()`, and every one
 /// of its events carried the literal `-` as its action, with `PlainAssignments`
 /// reporting the write done.
-fn literal_value(text: &str) -> Option<Value> {
+pub(crate) fn literal_value(text: &str) -> Option<Value> {
     let text = text.trim();
     // Painless reads a present-but-null field as null, and several pipelines
     // write one deliberately so their own drop-empty pass takes the field.

@@ -44,7 +44,16 @@ use dfe_runtime::painless_plan::PainlessPlan;
 /// scripts to their runners at generation time and so took them out of this
 /// search space entirely. Distinct ladder scripts 1,200 to 1,188 on the same
 /// run.
-const MULTI_BINDING: usize = 59;
+///
+/// 59 to 60 with the `ArmedTable` arm, which claude_code and claude_cowork
+/// share one script for. It shadows `GuardedCopy` deliberately: that pattern
+/// reads the literal arms correctly, then cannot resolve the params row and
+/// takes the else branch for every key the table carries.
+///
+/// 60 to 61 with the `IssueLifecycle` arm, kolide's issues stream. It shadows
+/// `GuardedCopy` for the same reason: every guard there is over a boolean local
+/// and resolves to `Never`, so `event.type` was never written at all.
+const MULTI_BINDING: usize = 61;
 
 /// The `cached_painless!` literals a generated file holds, in full.
 ///

@@ -85,8 +85,84 @@ const HOIST_MEMBER: &str = "def answers = ctx.dns.answers; def iplist = new Arra
                             answers[i].remove(\"tmpip\");\\n  }\\n} \
                             ctx.dns.resolved_ip = iplist;";
 
+/// panw_cortex_xdr's MITRE list, cut on one separator and fanned out to two
+/// deduped lists. `KnownPattern::SplitFanOut` claims it. The cost scales with
+/// the list and with the dedup scan, so the event below carries the four
+/// techniques and the repeated tactic its own stream sends.
+const SPLIT_FAN_OUT: &str = "void addTechnique(def ctx, def x, def y) {\\n  \
+                             if (ctx.threat == null) {\\n    ctx.threat = new HashMap();\\n  }\\n  \
+                             if (ctx.threat.technique == null) {\\n    \
+                             ctx.threat.technique = new HashMap();\\n  }\\n  \
+                             if (ctx.threat.technique.id == null) {\\n    \
+                             ctx.threat.technique.id = new ArrayList();\\n  }\\n  \
+                             if (ctx.threat.technique.name == null) {\\n    \
+                             ctx.threat.technique.name = new ArrayList();\\n  }\\n  \
+                             if (!ctx.threat.technique.id.contains(x)) {\\n    \
+                             ctx.threat.technique.id.add(x);\\n  }\\n  \
+                             if (!ctx.threat.technique.name.contains(y)) {\\n    \
+                             ctx.threat.technique.name.add(y);\\n  }\\n}\\n\
+                             for (mitre_technique in \
+                             ctx.panw_cortex.xdr.mitre_technique_id_and_name) {\\n  \
+                             addTechnique(ctx, mitre_technique.splitOnToken(' - ')[0], \
+                             mitre_technique.splitOnToken(' - ')[1]);\\n}";
+
+/// ti_threatq's sources, giving up two members in one walk with an allow-list
+/// on the second. `KnownPattern::GatherMembers` claims it. The cost scales with
+/// the record count and is paid once per column, so the event carries several.
+const GATHER_MEMBERS: &str = "def ecsTlps = ['WHITE', 'GREEN', 'AMBER', 'RED', 'CLEAR', 'AMBER+STRICT'];\\n\
+     def providers = new ArrayList();\\ndef tlps = new ArrayList();\\n\
+     for (source in ctx.threatq.sources) {\\n  if (source == null) {\\n    return;\\n  }\\n  \
+     if (source.containsKey(\"name\") && source[\"name\"] != null) {\\n    \
+     providers.add(source[\"name\"]);\\n  }\\n  \
+     if (source.containsKey(\"tlp_name\") && source[\"tlp_name\"] != null && \
+     ecsTlps.contains(source[\"tlp_name\"])) {\\n    tlps.add(source[\"tlp_name\"]);\\n  }\\n}\\n\
+     if (tlps.size() > 0) {\\n  if (ctx.threat.indicator.marking == null) {\\n    \
+     ctx.threat.indicator.marking = new HashMap();\\n  }\\n  \
+     ctx.threat.indicator.marking.tlp = tlps;\\n}\\nif (providers.size() > 0) {\\n  \
+     if (ctx.threat.indicator.provider == null) {\\n    \
+     ctx.threat.indicator.provider = new HashMap();\\n  }\\n  \
+     ctx.threat.indicator.provider = providers;\\n}";
+
+/// claude_code's classification: two literal arms, then a params table.
+/// `ParamsPattern::ArmedTable` claims it. Benched on a name the TABLE answers,
+/// which is the branch the arms fall through to and the one that carries the
+/// lookup.
+const ARMED_TABLE: &str = "def name = ctx.event_name; ctx.event = ctx.event ?: new HashMap(); \
+                           ctx.event.kind = 'event'; \
+                           if (name == 'user_prompt' || name == 'skill_activated') {\\n  \
+                           return;\\n} if (name == 'tool_decision') {\\n  \
+                           ctx.event.category = ['iam'];\\n  ctx.event.type = ['info'];\\n  \
+                           return;\\n} def entry = params.categories.getOrDefault(name, null); \
+                           if (entry != null) {\\n  ctx.event.category = entry.category;\\n  \
+                           ctx.event.type = entry.type;\\n} else {\\n  \
+                           ctx.event.category = ['host'];\\n  ctx.event.type = ['info'];\\n}\\n";
+
+/// kolide's issue lifecycle: two params tables and a deadline compared against
+/// the event's own timestamp. `ParamsPattern::IssueLifecycle` claims it.
+/// Benched on the document that takes every branch -- a row miss, a domain
+/// append, and both timestamps parsed.
+const ISSUE_LIFECYCLE: &str = "def action = ctx.event.action;\\ndef m = params.exact.get(action);\\n\
+     if (m != null) {\\n  ctx.event.kind = m.kind;\\n  \
+     ctx.event.category = new ArrayList(m.category);\\n} else {\\n  \
+     ctx.event.kind = 'event';\\n  ctx.event.category = ['configuration'];\\n}\\n\\n\
+     if (ctx.rule?.id != null) {\\n  def domain = params.check_category.get(ctx.rule.id);\\n  \
+     if (domain != null && !ctx.event.category.contains(domain)) {\\n    \
+     ctx.event.category.add(domain);\\n  }\\n}\\n\\n\
+     boolean pendingBlock = (ctx.kolide?.issues?.blocks_device_at != null);\\n\
+     boolean blocked = false;\\nif (pendingBlock && ctx['@timestamp'] != null) {\\n  \
+     ZonedDateTime blockAt = ZonedDateTime.parse(ctx.kolide.issues.blocks_device_at);\\n  \
+     ZonedDateTime eventTime = ZonedDateTime.parse(ctx['@timestamp']);\\n  \
+     blocked = !blockAt.isAfter(eventTime);\\n}\\n\
+     boolean resolved = (ctx.kolide?.issues?.resolved_at != null) || \
+     (action == 'issues.resolved');\\n\
+     ctx.event.type = (pendingBlock || resolved) ? ['change'] : ['creation'];\\n\\n\
+     ctx._tmp = ctx._tmp == null ? [:] : ctx._tmp;\\nctx._tmp.blocked = blocked;\\n\\n\
+     if (action == 'issue') {\\n  if (resolved) {\\n    ctx.event.action = 'resolved';\\n  } \
+     else if (blocked) {\\n    ctx.event.action = 'blocked';\\n  } else if (pendingBlock) {\\n    \
+     ctx.event.action = 'will_be_blocked';\\n  }\\n}";
+
 /// Nothing matches this, so every matcher's scan runs before it is counted.
-const UNHANDLED: &str ="def splitUnquoted(String input, String sep) {\\n  def tokens = [];\\n  \
+const UNHANDLED: &str = "def splitUnquoted(String input, String sep) {\\n  def tokens = [];\\n  \
                          def startPosition = 0;\\n  boolean inQuotes = false;\\n  for (int i = 0; \
                          i < input.length(); ++i) {\\n    if (input.charAt(i) == (char)34) {\\n   \
                          inQuotes = !inQuotes;\\n    } else if (!inQuotes && \
@@ -281,6 +357,119 @@ fn bench_hoist_member(c: &mut Criterion) {
     });
 }
 
+/// The split fan-out, through the plan the runtime holds.
+fn bench_split_fan_out(c: &mut Criterion) {
+    let plan = PainlessPlan::new(SPLIT_FAN_OUT);
+    assert!(
+        plan.binding().iter().any(|b| b.starts_with("SplitFanOut")),
+        "the fan-out bench no longer measures SplitFanOut: {:?}",
+        plan.binding(),
+    );
+
+    c.bench_function("painless_exec/split_fan_out_planned", |b| {
+        b.iter_batched_ref(
+            || {
+                Event::new(json!({
+                    "panw_cortex": { "xdr": { "mitre_technique_id_and_name": [
+                        "T1018 - Remote System Discovery",
+                        "T1082 - System Information Discovery",
+                        "T1016 - System Network Configuration Discovery",
+                        "T1007 - System Service Discovery",
+                        "T1018 - Remote System Discovery",
+                    ] } },
+                }))
+            },
+            |event| painless_exec_plan(event, black_box(&plan)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
+/// The member gather, through the plan the runtime holds.
+fn bench_gather_members(c: &mut Criterion) {
+    let plan = PainlessPlan::new(GATHER_MEMBERS);
+    assert!(
+        plan.binding()
+            .iter()
+            .any(|b| b.starts_with("GatherMembers")),
+        "the gather bench no longer measures GatherMembers: {:?}",
+        plan.binding(),
+    );
+
+    c.bench_function("painless_exec/gather_members_planned", |b| {
+        b.iter_batched_ref(
+            || {
+                Event::new(json!({
+                    "threatq": { "sources": [
+                        { "name": "TAXII Feed", "tlp_name": "AMBER" },
+                        { "name": "Internal Research" },
+                        { "name": "Partner Feed", "tlp_name": "PURPLE" },
+                        { "name": "Vendor Feed", "tlp_name": "GREEN" },
+                    ] },
+                }))
+            },
+            |event| painless_exec_plan(event, black_box(&plan)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
+/// The armed table, through the plan the runtime holds.
+fn bench_armed_table(c: &mut Criterion) {
+    let plan = PainlessPlan::new(ARMED_TABLE);
+    assert!(
+        plan.binding().iter().any(|b| b.starts_with("ArmedTable")),
+        "the armed-table bench no longer measures ArmedTable: {:?}",
+        plan.binding(),
+    );
+    let params = json!({ "categories": {
+        "tool_result": { "category": ["process"], "type": ["info"] },
+        "api_request": { "category": ["api"], "type": ["info"] },
+        "api_refusal": { "category": ["api"], "type": ["denied"] },
+        "mcp_server_connection": { "category": ["network"], "type": ["connection"] },
+        "hook_execution_start": { "category": ["process"], "type": ["start"] },
+    }});
+
+    c.bench_function("painless_exec/armed_table_planned", |b| {
+        b.iter_batched_ref(
+            || Event::new(json!({ "event_name": "mcp_server_connection" })),
+            |event| painless_exec_plan_params(event, black_box(&plan), black_box(&params)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
+/// The issue lifecycle, through the plan the runtime holds.
+fn bench_issue_lifecycle(c: &mut Criterion) {
+    let plan = PainlessPlan::new(ISSUE_LIFECYCLE);
+    assert!(
+        plan.binding()
+            .iter()
+            .any(|b| b.starts_with("IssueLifecycle")),
+        "the lifecycle bench no longer measures IssueLifecycle: {:?}",
+        plan.binding(),
+    );
+    let params = json!({
+        "exact": {},
+        "check_category": { "20": "malware", "41": "vulnerability" },
+    });
+
+    c.bench_function("painless_exec/issue_lifecycle_planned", |b| {
+        b.iter_batched_ref(
+            || {
+                Event::new(json!({
+                    "event": { "action": "issue" },
+                    "@timestamp": "2026-06-16T00:00:00Z",
+                    "rule": { "id": "20" },
+                    "kolide": { "issues": { "blocks_device_at": "2026-06-16T00:00:00.000Z" } },
+                }))
+            },
+            |event| painless_exec_plan_params(event, black_box(&plan), black_box(&params)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
 criterion_group!(
     benches,
     bench_params_matcher,
@@ -290,6 +479,10 @@ criterion_group!(
     bench_planned,
     bench_guarded_copies,
     bench_pair_table,
-    bench_hoist_member
+    bench_hoist_member,
+    bench_split_fan_out,
+    bench_gather_members,
+    bench_armed_table,
+    bench_issue_lifecycle
 );
 criterion_main!(benches);

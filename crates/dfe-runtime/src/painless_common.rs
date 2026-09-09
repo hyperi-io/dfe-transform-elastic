@@ -13271,9 +13271,7 @@ fn is_indexed_element(argument: &str) -> bool {
         return false;
     };
     !local.is_empty()
-        && local
-            .chars()
-            .all(|c| c.is_ascii_alphanumeric() || c == '_')
+        && local.chars().all(|c| c.is_ascii_alphanumeric() || c == '_')
         && !index.is_empty()
         && index.chars().all(|c| c.is_ascii_digit())
 }
@@ -18896,6 +18894,12 @@ pub(crate) enum KnownPattern {
     PairTable(Box<crate::painless_pair_table::PairTable>),
     /// One member lifted out of every record of a list.
     HoistMember(Box<crate::painless_hoist::HoistMember>),
+    /// A list's elements cut on one separator, their parts fanned out to
+    /// parallel deduped lists.
+    SplitFanOut(Box<crate::painless_split_fanout::SplitFanOut>),
+    /// Named members gathered out of a list's records, written where the walk
+    /// came to something.
+    GatherMembers(Box<crate::painless_gather_members::GatherMembers>),
     /// An integer divided by a literal and written back, through a local.
     LongDivide(Box<LongDivide>),
     /// A value that may arrive as text or as a number, written back as a
@@ -19015,6 +19019,34 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_emails_to_related_users(normalised)
     {
         patterns.push(KnownPattern::EmailsToRelatedUsers(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: every element of a list cut on one separator, its parts fanned
+    // out to parallel deduped lists by a helper.
+    //
+    // Ahead of the collect below, which shares the loop-and-append trigger but
+    // reads a MEMBER name off the loop body. There is no member here -- the
+    // value is cut out of the element itself.
+    if normalised.contains("void ")
+        && normalised.contains(".splitOnToken(")
+        && normalised.contains(".add(")
+        && let Some(pattern) = crate::painless_split_fanout::parse_split_fan_out(normalised)
+    {
+        patterns.push(KnownPattern::SplitFanOut(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: named members gathered out of a list's records, each written
+    // only where the walk came to something.
+    //
+    // Ahead of the collect below, which reads the member name off the GUARD
+    // and answers `containsKey` for the subscript spelling.
+    if normalised.contains(".size() > 0")
+        && normalised.contains("new ArrayList()")
+        && let Some(pattern) = crate::painless_gather_members::parse_gather_members(normalised)
+    {
+        patterns.push(KnownPattern::GatherMembers(Box::new(pattern)));
         return patterns;
     }
 
@@ -21878,6 +21910,12 @@ pub(crate) fn run_known_pattern(
         }
         KnownPattern::PairTable(pattern) => crate::painless_pair_table::pair_table(event, pattern),
         KnownPattern::HoistMember(pattern) => crate::painless_hoist::hoist_member(event, pattern),
+        KnownPattern::SplitFanOut(pattern) => {
+            crate::painless_split_fanout::split_fan_out(event, pattern)
+        }
+        KnownPattern::GatherMembers(pattern) => {
+            crate::painless_gather_members::gather_members(event, pattern)
+        }
         KnownPattern::DecodedFields(pattern) => {
             crate::painless_coercion::decoded_fields(event, pattern)
         }

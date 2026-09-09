@@ -1069,10 +1069,7 @@ fn the_google_workspace_splits_bind_to_the_split_and_not_to_append_each() {
 
     let held = binding(GOOGLE_WORKSPACE_GROUPS_MEMBER).join(" ");
     assert!(held.starts_with("EmailSplit"), "{held}");
-    assert!(
-        held.contains(r#"emails: ["user.target.email"]"#),
-        "{held}"
-    );
+    assert!(held.contains(r#"emails: ["user.target.email"]"#), "{held}");
     assert!(held.contains(r#"appends: [("related.user", 0)]"#), "{held}");
 
     // drive assigns NOTHING, so the truncated-form fallback would invent
