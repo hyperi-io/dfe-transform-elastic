@@ -479,6 +479,138 @@ fn a_fold_written_as_a_loop_is_read_too() {
     assert!(!event.has("sophos.xg.RESPONSETIME"));
 }
 
+/// cisco_ise writes the same fold as a `forEach` storing by SUBSCRIPT, and its
+/// whole alarm pipeline is read off the result.
+///
+/// Verbatim from `pipelines/cisco_ise/log/pipeline_alarm.yml:18-25`, in the
+/// ESCAPED form a stored script actually arrives in. The `kv` before it writes
+/// the vendor's own headings and the ten renames after it name the folded form,
+/// so an unmatched fold costs `cisco_ise.log.cause`, `server.address`,
+/// `cisco_ise.log.error_message` and everything `related.hosts` and
+/// `related.ip` are appended from.
+#[test]
+fn a_fold_written_as_a_foreach_subscript_is_read_too() {
+    let script = r"def c = [:];\nctx.cisco_ise.log.log_details_raw.forEach((k, v) -> c[k.replace(' ', '_').toLowerCase()] = v);\nctx.cisco_ise.log.log_details_raw = c;";
+    let pattern =
+        parse_foreach_rewrite_keys(&normalise(script)).expect("the forEach fold is recognised");
+
+    // The steps are READ off the script, in the order it writes them: spaces
+    // swapped first, then the whole key folded down.
+    assert_eq!(
+        pattern,
+        RewriteKeys::new(
+            "cisco_ise.log.log_details_raw".into(),
+            "cisco_ise.log.log_details_raw".into(),
+            vec![
+                KeyRewriteStep::ReplaceChars(" ".into(), Some('_')),
+                KeyRewriteStep::Lowercase,
+            ],
+        )
+    );
+
+    // The vendor's real headings, from the alarm fixtures.
+    let mut event = Event::new(serde_json::json!({ "cisco_ise": { "log": {
+        "log_details_raw": {
+            "Message": "From a.example.test To b.example.test",
+            "Cause": "{tls_alert}",
+            "NAS IP Address": "81.2.69.192",
+            "Error Message": "SNMP request failed"
+        }
+    } } }));
+    assert!(rewrite_keys(&mut event, &pattern));
+    assert_eq!(
+        event.get_str("cisco_ise.log.log_details_raw.cause"),
+        Some("{tls_alert}")
+    );
+    assert_eq!(
+        event.get_str("cisco_ise.log.log_details_raw.nas_ip_address"),
+        Some("81.2.69.192")
+    );
+    assert_eq!(
+        event.get_str("cisco_ise.log.log_details_raw.error_message"),
+        Some("SNMP request failed")
+    );
+    assert_eq!(
+        event.get_str("cisco_ise.log.log_details_raw.message"),
+        Some("From a.example.test To b.example.test")
+    );
+    assert!(!event.has("cisco_ise.log.log_details_raw.Cause"));
+
+    // And the ladder hands it to that reader rather than to a neighbour.
+    assert!(
+        known_patterns(&normalise(script))
+            .iter()
+            .any(|pattern| matches!(pattern, KnownPattern::RewriteKeys(_)))
+    );
+}
+
+/// The three `forEach` folds this reader must NOT claim, each verbatim.
+///
+/// Claiming any of them writes SOME keys right and the rest wrong, which reads
+/// as a source wanting polish rather than one wanting a different pattern.
+#[test]
+fn a_foreach_fold_it_cannot_finish_is_declined() {
+    // hid_bravura_monitor rebuilds through TWO folds and a removal: the first
+    // stores by `.put(`, the second by an UNTOUCHED key. Neither half is this
+    // pattern, and reading the pair as one would drop the removal.
+    let hid_bravura = "Map m = new HashMap(); ctx['hid_bravura_monitor']['perf'].forEach((k,v) \
+        -> m.put(k.toLowerCase(), v)); ctx['hid_bravura_monitor'].remove('perf'); \
+        ctx['hid_bravura_monitor']['perf'] = new HashMap(); m.forEach((k,v) -> \
+        ctx['hid_bravura_monitor']['perf'][k] = v );";
+    assert!(parse_foreach_rewrite_keys(&normalise(hid_bravura)).is_none());
+
+    // The nearest true neighbour: cisco's ASA folds into a `[:]` local by
+    // subscript too, but the key is a TABLE LOOKUP rather than a rewrite of the
+    // key itself. That is `ParamsPattern::SelectRenameKeys`, which also DROPS
+    // every key the table does not name.
+    let asa_dn_parts = "if (ctx._temp_?.cisco?.dn_parts == null) {\n  return;\n}\n\
+        def parts = [:];\nctx._temp_.cisco.dn_parts.forEach((k,v) -> {\n  \
+        if (params.containsKey(k)) {\n    parts[params[k]] = (v instanceof List) ? v : [v];\n  \
+        } else {\n    return false;\n  }\n});\nctx._temp_.cisco.dn_parts = parts;";
+    assert!(parse_foreach_rewrite_keys(&normalise(asa_dn_parts)).is_none());
+
+    // stormshield builds a MAP per key out of `params`, so the subscript is not
+    // a rewritten key and the value is not handed through.
+    let stormshield = "def deviceStats = [:];\nctx.stormshield.forEach((k, v) -> {\n  \
+        params.devices.forEach(d -> {\n    if (k.startsWith(d)) {\n      \
+        deviceStats[k] = [:];\n      deviceStats[k][\"value\"] = v;\n    }\n    \
+        return true;\n  });\n});";
+    assert!(parse_foreach_rewrite_keys(&normalise(stormshield)).is_none());
+
+    // A key stored UNCHANGED rewrites nothing, so there is no step to apply and
+    // claiming it would report a fold that did no work.
+    let unchanged = "def c = [:];\nctx.a.b.forEach((k, v) -> c[k] = v);\nctx.a.b = c;";
+    assert!(parse_foreach_rewrite_keys(&normalise(unchanged)).is_none());
+
+    // A ONE-argument `forEach` walks a list. There are no keys to rewrite.
+    let list = "def c = [:];\nctx.a.b.forEach(v -> c[v.toLowerCase()] = v);\nctx.a.b = c;";
+    assert!(parse_foreach_rewrite_keys(&normalise(list)).is_none());
+
+    // cisco_ise's OWN neighbour, on the stream next to the one this serves: it
+    // folds a list of `k=v` strings into a `[:]` local, so the single bound name
+    // is the whole difference between the two.
+    let av_pair = r#"def attributes = [:];\nctx.cisco_ise.log.log_details.get(\"cisco-av-pair\")?.forEach((v) -> {\n  def firstEq = v.indexOf('=');\n  if (firstEq <= 0) {\n    return true;\n  }\n  attributes[v.substring(0, firstEq).trim()] = v.substring(firstEq + 1);\n  return true;\n});\nctx.cisco_ise.log.cisco_av_pair = attributes;"#;
+    assert!(parse_foreach_rewrite_keys(&normalise(av_pair)).is_none());
+
+    // The local is not the empty map the script declares, so where the fold
+    // lands is not something this can follow.
+    let other_local = "def acc = [:];\nctx.a.b.forEach((k, v) -> c[k.toLowerCase()] = v);\n\
+        ctx.a.b = acc;";
+    assert!(parse_foreach_rewrite_keys(&normalise(other_local)).is_none());
+
+    // The subject is an EXPRESSION, so the path read back names no field. A
+    // claim here writes nothing and still shuts out the arm below.
+    let entry_set = "def c = [:];\nctx.a.b.entrySet().forEach((k, v) -> c[k.toLowerCase()] = v);\n\
+        ctx.a.b = c;";
+    assert!(parse_foreach_rewrite_keys(&normalise(entry_set)).is_none());
+
+    // The VALUE is transformed too. `RewriteKeys` does not model that step, so
+    // claiming it would write the keys right and the values wrong.
+    let trims_the_value =
+        "def c = [:];\nctx.a.b.forEach((k, v) -> c[k.toLowerCase()] = v.trim());\nctx.a.b = c;";
+    assert!(parse_foreach_rewrite_keys(&normalise(trims_the_value)).is_none());
+}
+
 /// tetragon's event is one of seven `process_*` keys, and the pipeline lifts
 /// the same members out of whichever arrived so the twenty renames after it can
 /// name ONE path.

@@ -5782,6 +5782,126 @@ fn parse_loop_rewrite_keys(script: &str) -> Option<RewriteKeys> {
     Some(RewriteKeys::new(source, target, steps))
 }
 
+/// The same fold written as a `forEach` lambda that stores by SUBSCRIPT.
+///
+/// ```painless
+/// def c = [:];
+/// ctx.cisco_ise.log.log_details_raw.forEach((k, v) -> c[k.replace(' ', '_').toLowerCase()] = v);
+/// ctx.cisco_ise.log.log_details_raw = c;
+/// ```
+///
+/// A fifth spelling of what [`parse_rewrite_keys`], [`parse_stream_rewrite_keys`],
+/// [`parse_recursive_rewrite_keys`] and [`parse_loop_rewrite_keys`] already read,
+/// and the only one of it in the vendor tree: a raw-text scan of every
+/// `.forEach((k, v) ->` whose body writes `<local>[<expression over the key>] =
+/// <value>` finds ONE, in `pipelines/cisco_ise/log/pipeline_alarm.yml:18-25`.
+///
+/// It carries that whole pipeline. The `kv` before it writes the vendor's own
+/// headings -- `Message`, `Cause`, `Server`, `Error Message`, `NAS IP Address`
+/// -- and every processor after it names the space-swapped lowercase form, so
+/// an unmatched fold misses ten renames and a grok at once. `cause`, `server`
+/// and `error_message` are read straight off it, and `related.hosts` and
+/// `related.ip` are appended from what those and the grok produce.
+///
+/// Three vendor neighbours are DECLINED rather than half-applied.
+/// `hid_bravura_monitor` rebuilds a map through two `forEach`es and a `remove`,
+/// the first storing by `.put(` and the second by an untouched key.
+/// `stormshield`'s monitor fold builds a map per key out of `params`. cisco's
+/// ASA subscripts a `[:]` local too, but by a TABLE LOOKUP on the key, which is
+/// `ParamsPattern::SelectRenameKeys` and also drops the keys the table omits.
+///
+/// Unlike [`parse_stream_rewrite_keys`] a lone `ReplaceChars` is kept: that
+/// reader hands the single-replacement case to [`parse_rename_map_keys`], whose
+/// trigger is `.getKey().replace(` and which therefore never sees this spelling.
+fn parse_foreach_rewrite_keys(script: &str) -> Option<RewriteKeys> {
+    use crate::params::{balanced, clean_path, ctx_path_before};
+
+    // A field path, not an expression. `ctx.a.b.entrySet().forEach(...)` reads
+    // back as the path `a.b.entrySet()`, which no event holds -- claimed, it
+    // would write nothing and still shut out the arm below.
+    let path_ok = |path: &str| {
+        !path.is_empty()
+            && path
+                .chars()
+                .all(|c| c.is_alphanumeric() || "._@-".contains(c))
+    };
+
+    // The map walked. Read BACK from the marker, so an earlier binding in the
+    // same statement cannot be mistaken for the subject. Both this and the call
+    // below anchor on the SAME marker, or a script spelling `forEach` twice
+    // reads its subject from one and its body from the other.
+    let source = ctx_path_before(script, ".forEach")?;
+    if !path_ok(&source) {
+        return None;
+    }
+
+    // The whole call, so the lambda body is BOUNDED by the closing paren rather
+    // than running on into the statement that stores the result -- a store
+    // written `ctx.a['b'] = c;` carries a `] = ` of its own.
+    let at = script.find(".forEach")? + ".forEach".len();
+    let (call, _) = balanced(&script[at..], '(', ')')?;
+
+    // The lambda's bound names, and nothing but those two. A one-argument
+    // `forEach` walks a LIST, which is not a map whose keys can be rewritten.
+    let (arguments, body) = call.split_once("->")?;
+    let (arguments, _) = balanced(arguments.trim(), '(', ')')?;
+    let mut names = arguments.split(',');
+    let (Some(key), Some(value), None) = (names.next(), names.next(), names.next()) else {
+        return None;
+    };
+    let (key, value) = (key.trim(), value.trim());
+    if key.is_empty() || value.is_empty() {
+        return None;
+    }
+
+    // `<local>[<key expression>] = <value>`, where the local is a bare name
+    // declared as an empty map. `stormshield` opens its lambda with a brace, so
+    // the text before its first `[` is a block rather than an identifier.
+    let (head, subscript) = body.split_once('[')?;
+    let local = head.trim();
+    if local.is_empty()
+        || !local.chars().all(|c| c.is_alphanumeric() || c == '_')
+        || !declares_empty_map(script, local)
+    {
+        return None;
+    }
+    let (expression, stored) = subscript.rsplit_once("] = ")?;
+    if stored.trim() != value {
+        return None;
+    }
+
+    // Everything the lambda does to the key, in written order. Anchored on the
+    // bound name so a transform applied to the VALUE cannot be read as one.
+    let steps = key_rewrite_steps(expression.strip_prefix(key)?)?;
+    if steps.is_empty() {
+        return None;
+    }
+
+    // Where the rebuilt map lands, which the script assigns last.
+    let store = script.rfind(&format!(" = {local};"))?;
+    let target = clean_path(script[..store].trim_end().rsplit_once("ctx.")?.1);
+    if !path_ok(&target) {
+        return None;
+    }
+    Some(RewriteKeys::new(source, target, steps))
+}
+
+/// Whether `local` is declared as an empty map -- `def c = [:];`, or the typed
+/// `Map c = [:];` Painless also accepts.
+///
+/// The name is matched WHOLE. A bare `contains` of `c = [:];` is also true of
+/// `def acc = [:];`, which would let a fold into one local pass on another's
+/// declaration.
+fn declares_empty_map(script: &str, local: &str) -> bool {
+    let needle = format!("{local} = [:];");
+    script.match_indices(&needle).any(|(at, _)| {
+        script[..at]
+            .chars()
+            .next_back()
+            .is_some_and(|c| !c.is_alphanumeric() && c != '_')
+    })
+}
+
 /// The offset of the comma separating `toMap`'s two lambdas, which is the only
 /// one not inside a call of its own -- `.replace(' ', '_')` carries one too.
 fn top_level_comma(arguments: &str) -> Option<usize> {
@@ -19595,6 +19715,15 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && normalised.contains(".put(")
         && normalised.contains(".getKey()")
         && let Some(pattern) = parse_loop_rewrite_keys(normalised)
+    {
+        patterns.push(KnownPattern::RewriteKeys(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: the same fold written as a `forEach` lambda storing by subscript.
+    if normalised.contains(".forEach")
+        && normalised.contains("[:]")
+        && let Some(pattern) = parse_foreach_rewrite_keys(normalised)
     {
         patterns.push(KnownPattern::RewriteKeys(Box::new(pattern)));
         return patterns;

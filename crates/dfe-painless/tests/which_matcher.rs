@@ -1304,3 +1304,46 @@ fn the_servicenow_prune_binds_the_words_as_well_as_the_containers() {
         "this predicate names no empty string, so one stays"
     );
 }
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/cisco_ise_log/pipeline_alarm.rs:54`,
+/// which is `pipelines/cisco_ise/log/pipeline_alarm.yml:18-25`.
+const CISCO_ISE_ALARM_FOLD: &str = r#"def c = [:];\nctx.cisco_ise.log.log_details_raw.forEach((k, v) -> c[k.replace(' ', '_').toLowerCase()] = v);\nctx.cisco_ise.log.log_details_raw = c;"#;
+
+#[test]
+fn the_cisco_ise_alarm_fold_binds_to_the_key_rewriter() {
+    // A fourth spelling of one intent rather than a fourth pattern: the steps
+    // are read off the script, so the runner is the one the other three use.
+    let held = binding(CISCO_ISE_ALARM_FOLD).join(" ");
+    assert!(held.starts_with("RewriteKeys"), "{held}");
+    assert!(
+        held.contains(r#"source: "cisco_ise.log.log_details_raw""#),
+        "{held}"
+    );
+    assert!(
+        held.contains(r#"target: "cisco_ise.log.log_details_raw""#),
+        "{held}"
+    );
+    assert!(
+        held.contains(r#"steps: [ReplaceChars(" ", Some('_')), Lowercase]"#),
+        "{held}"
+    );
+
+    // The WRITTEN keys, which is what the ten renames after it read. The kv
+    // before it writes the vendor's own headings.
+    let mut event = Event::new(json!({ "cisco_ise": { "log": { "log_details_raw": {
+        "Message": "From a.example.test To b.example.test",
+        "Cause": "{tls_alert}",
+        "NAS IP Address": "81.2.69.192",
+    } } } }));
+    let fold = PainlessPlan::new(CISCO_ISE_ALARM_FOLD);
+    assert!(painless_exec_plan(&mut event, &fold).is_ok());
+    assert_eq!(
+        event.get("cisco_ise.log.log_details_raw"),
+        Some(&json!({
+            "message": "From a.example.test To b.example.test",
+            "cause": "{tls_alert}",
+            "nas_ip_address": "81.2.69.192",
+        }))
+    );
+}

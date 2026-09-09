@@ -806,6 +806,54 @@ fn bench_empty_arm_prune(c: &mut Criterion) {
     });
 }
 
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/cisco_ise_log/pipeline_alarm.rs:54`.
+const CISCO_ISE_ALARM_FOLD: &str = r#"def c = [:];\nctx.cisco_ise.log.log_details_raw.forEach((k, v) -> c[k.replace(' ', '_').toLowerCase()] = v);\nctx.cisco_ise.log.log_details_raw = c;"#;
+
+/// The keys of one alarm's `kv` output, at the width the vendor sends.
+///
+/// Built from a slice rather than a `json!` literal: a wide literal is what
+/// blows rustc's macro recursion limit at other call sites.
+fn cisco_ise_alarm_event() -> serde_json::Value {
+    const DETAILS: &[(&str, &str)] = &[
+        ("Message", "From a.example.test To b.example.test"),
+        ("Cause", "{tls_alert;\"unknown Ca\"}"),
+        ("Server", "ise-psn-01"),
+        ("Error Message", "Request timed out."),
+        ("NAS IP Address", "81.2.69.192"),
+        ("NAS Identifier", "N/A"),
+        ("Failure Reason", "11213 No response received"),
+        ("Network Device Name", "AAAAA-173-4-2"),
+        ("Network Device IP", "81.2.69.144"),
+        ("Calling Station ID", "AA-FF-FF-FE-4E-EE"),
+        ("NAD Address", "89.160.20.112"),
+        ("ConfigVersionId", "132"),
+    ];
+    let details: serde_json::Map<String, serde_json::Value> = DETAILS
+        .iter()
+        .map(|(key, value)| ((*key).to_owned(), json!(value)))
+        .collect();
+    json!({ "cisco_ise": { "log": { "log_details_raw": details } } })
+}
+
+/// The key rewrite over the width one alarm carries.
+fn bench_foreach_rewrite_keys(c: &mut Criterion) {
+    let plan = PainlessPlan::new(CISCO_ISE_ALARM_FOLD);
+    assert!(
+        plan.binding().iter().any(|b| b.starts_with("RewriteKeys")),
+        "the cisco_ise fold bench no longer measures RewriteKeys: {:?}",
+        plan.binding(),
+    );
+
+    c.bench_function("painless_exec/foreach_rewrite_keys_planned", |b| {
+        b.iter_batched_ref(
+            || Event::new(cisco_ise_alarm_event()),
+            |event| painless_exec_plan(event, black_box(&plan)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
 criterion_group!(
     benches,
     bench_params_matcher,
@@ -825,6 +873,7 @@ criterion_group!(
     bench_key_named_by_field,
     bench_member_from_variant_key,
     bench_aliased_renames,
-    bench_empty_arm_prune
+    bench_empty_arm_prune,
+    bench_foreach_rewrite_keys
 );
 criterion_main!(benches);
