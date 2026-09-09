@@ -48,8 +48,8 @@ pub use crate::painless_common::{
     join_present_fields, kv_into_fields, literal_value_map, mailto_uri_fields,
     member_from_variant_key, move_map_entry, octal_string, parameters_into_map, permission_octal,
     remove_empty_child_maps, rename_map_keys, rewrite_keys, scale_field, snake_case_list_elements,
-    split_at_delimiter, string_ops, sum_directions, sum_member_over_list, syslog_priority,
-    unwrap_suffixed_keys,
+    split_at_delimiter, string_ops, sum_directions, sum_directions_into_existing,
+    sum_member_over_list, syslog_priority, unwrap_suffixed_keys,
 };
 pub use crate::painless_expr::{Expr, FloatLit, Op, ScalarExpression, scalar_expression};
 pub use crate::painless_gather_members::{GatherMembers, gather_members};

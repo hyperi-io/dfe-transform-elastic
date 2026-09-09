@@ -3371,11 +3371,15 @@ fn a_fragment_without_the_pair_separator_is_skipped() {
     assert_eq!(map.get("a").and_then(Value::as_str), Some("1"));
 }
 
+/// `network` is present because both scripts here are the BARE form, which
+/// Painless cannot write into an absent parent -- see
+/// `a_bare_sum_writes_nothing_when_the_parent_is_absent`.
 #[test]
 fn sums_bytes_and_packets_across_directions() {
     let mut event = Event::new(json!({
         "source": { "bytes": 100, "packets": 3 },
         "destination": { "bytes": 250, "packets": 4 },
+        "network": { "transport": "tcp" },
     }));
 
     assert!(try_known_painless(&mut event, SUM_BYTES));
@@ -3383,6 +3387,39 @@ fn sums_bytes_and_packets_across_directions() {
 
     assert_eq!(event.get_i64("network.bytes"), Some(350));
     assert_eq!(event.get_i64("network.packets"), Some(7));
+}
+
+/// `ctx.network.bytes = ...` THROWS when `ctx.network` is absent, and the
+/// vendor call sites carry `ignore_failure: true`, so Elasticsearch writes
+/// nothing. sophos/xg has 13 events that carry both operands and no `network`.
+#[test]
+fn a_bare_sum_writes_nothing_when_the_parent_is_absent() {
+    let mut event = Event::new(json!({
+        "source": { "bytes": 700 },
+        "destination": { "bytes": 1120 },
+    }));
+
+    assert!(try_known_painless(&mut event, SUM_BYTES));
+    assert_eq!(event.get("network.bytes"), None);
+}
+
+/// A script that creates the container first has no such limit, and the
+/// vendors spell the creation three ways.
+#[test]
+fn a_creating_sum_writes_without_a_parent_however_it_is_spelled() {
+    for script in [
+        "ctx.network = new HashMap();\nctx.network.bytes = ctx.source.bytes + ctx.destination.bytes",
+        "ctx.network = [:];\nctx.network.bytes = ctx.source.bytes + ctx.destination.bytes",
+        "ctx.network = ctx.network ?: [:];\nctx.network.bytes = ctx.source.bytes + ctx.destination.bytes",
+        "if (ctx.network == null) {\n  ctx.network = new HashMap();\n}\nctx.network.bytes = ctx.source.bytes + ctx.destination.bytes",
+    ] {
+        let mut event = Event::new(json!({
+            "source": { "bytes": 700 },
+            "destination": { "bytes": 1120 },
+        }));
+        assert!(try_known_painless(&mut event, script), "declined: {script}");
+        assert_eq!(event.get_i64("network.bytes"), Some(1820), "{script}");
+    }
 }
 
 /// Elastic's script throws when a side is missing; skipping is what the
@@ -3950,6 +3987,7 @@ fn a_nonsense_byte_count_saturates_rather_than_wrapping() {
     let mut event = Event::new(json!({
         "source": { "bytes": i64::MAX },
         "destination": { "bytes": 1 },
+        "network": { "transport": "tcp" },
     }));
 
     assert!(try_known_painless(&mut event, SUM_BYTES));

@@ -701,7 +701,7 @@ impl Transform for Flow {
             let _ = (|| -> Result<()> {
                 // Painless script, resolved to its runners at generation time
                 // Source: ctx.network.bytes = ctx.source.bytes + ctx.destination.bytes
-                sum_directions(event, &["bytes"]);
+                sum_directions_into_existing(event, &["bytes"]);
                 Ok(())
             })();
             }

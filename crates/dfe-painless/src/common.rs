@@ -9470,6 +9470,36 @@ pub fn epoch_to_timestamp(event: &mut Event, source_field: &str, target_field: &
     Ok(())
 }
 
+/// Whether the script assigns `ctx.network` itself, rather than only a member
+/// of it.
+///
+/// Painless will not create a parent: `ctx.network.bytes = ...` THROWS when
+/// `ctx.network` is absent, and every vendor call site carries
+/// `ignore_failure: true`, so Elasticsearch writes nothing there. A script that
+/// creates the container first has no such limit. The vendors spell the
+/// creation three ways -- `new HashMap()`, `[:]`, and `ctx.network ?: [:]` --
+/// so this reads the ASSIGNMENT rather than any one of them.
+///
+/// `==` is excluded: `if (ctx.network == null)` is a test, not an assignment,
+/// and it sits inside two of the three creating forms.
+///
+/// An unrecognised script counts as creating, which is the reading that WRITES
+/// -- a wrong answer that way costs a field Elasticsearch emits, and the other
+/// way costs one it does not.
+fn assigns_network_container(script: &str) -> bool {
+    let mut rest = script;
+    while let Some(at) = rest.find("ctx.network") {
+        let tail = rest[at + "ctx.network".len()..].trim_start();
+        if let Some(after) = tail.strip_prefix('=')
+            && !after.starts_with('=')
+        {
+            return true;
+        }
+        rest = &rest[at + "ctx.network".len()..];
+    }
+    false
+}
+
 /// The ECS field a `ctx.source.X + ctx.destination.X` script totals into.
 ///
 /// Both `bytes` and `packets` appear verbatim across the network sources.
@@ -9513,6 +9543,25 @@ fn try_sum_directions(event: &mut Event, unit: &str) -> bool {
 /// packets still writes the bytes total when only the packet operands are
 /// missing.
 pub fn sum_directions(event: &mut Event, units: &[&str]) -> bool {
+    for unit in units {
+        try_sum_directions(event, unit);
+    }
+    true
+}
+
+/// The same sum for a script that does NOT create `ctx.network` first.
+///
+/// Painless throws on `ctx.network.<unit> = ...` when `ctx.network` is absent,
+/// and `ignore_failure: true` swallows it, so Elasticsearch writes nothing.
+/// sophos/xg is where it shows: 13 events carry both operands, have no
+/// `network` object, and each was a single extra field.
+///
+/// 16 of the 27 call sites spell the script this way; the other 11 create the
+/// container and keep [`sum_directions`].
+pub fn sum_directions_into_existing(event: &mut Event, units: &[&str]) -> bool {
+    if !event.get("network").is_some_and(Value::is_object) {
+        return true;
+    }
     for unit in units {
         try_sum_directions(event, unit);
     }
@@ -18759,7 +18808,12 @@ pub(crate) enum KnownPattern {
         removes: Vec<String>,
     },
     SplitTrimCollect,
-    SumDirections(Vec<&'static str>),
+    SumDirections {
+        units: Vec<&'static str>,
+        /// The script creates `ctx.network` before writing into it, so an
+        /// absent parent is not the throw Painless would otherwise raise.
+        creates_parent: bool,
+    },
     CombineFields(Box<CombineFields>),
     DurationToNanos,
     DedupeMapValues(Box<DedupeMapValues>),
@@ -20172,7 +20226,10 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
     // Pattern: network.bytes / network.packets as the sum of both directions.
     let totals = sum_of_directions(normalised);
     if !totals.is_empty() {
-        patterns.push(KnownPattern::SumDirections(totals));
+        patterns.push(KnownPattern::SumDirections {
+            units: totals,
+            creates_parent: assigns_network_container(normalised),
+        });
         return patterns;
     }
 
@@ -21394,9 +21451,17 @@ impl KnownPattern {
             Self::KvIntoFields(target) => {
                 Some(format!("kv_into_fields(event, {});", rust_str(target)))
             }
-            Self::SumDirections(units) => {
+            Self::SumDirections {
+                units,
+                creates_parent,
+            } => {
                 let list: Vec<String> = units.iter().map(|unit| rust_str(unit)).collect();
-                Some(format!("sum_directions(event, &[{}]);", list.join(", ")))
+                let runner = if *creates_parent {
+                    "sum_directions"
+                } else {
+                    "sum_directions_into_existing"
+                };
+                Some(format!("{runner}(event, &[{}]);", list.join(", ")))
             }
             Self::ScaleField(pattern) => {
                 let factor = match pattern.factor {
@@ -21732,7 +21797,16 @@ pub(crate) fn run_known_pattern(
             true
         }
         KnownPattern::SplitTrimCollect => try_split_trim_collect(event, normalised),
-        KnownPattern::SumDirections(totals) => sum_directions(event, totals),
+        KnownPattern::SumDirections {
+            units,
+            creates_parent,
+        } => {
+            if *creates_parent {
+                sum_directions(event, units)
+            } else {
+                sum_directions_into_existing(event, units)
+            }
+        }
         KnownPattern::CombineFields(pattern) => combine_fields(event, pattern),
         KnownPattern::DurationToNanos => try_duration_to_nanos(event, normalised),
         KnownPattern::FloatSecondsToNanos(pattern) => float_seconds_to_nanos(event, pattern),
