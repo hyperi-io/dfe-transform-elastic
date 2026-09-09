@@ -49,8 +49,15 @@ const MIN_EMITTING_MODULES: usize = 4;
 /// 35 runners carry the signature today, across seven runtime modules.
 const MIN_RUNNERS: usize = 30;
 
+/// Where the runners live.
 fn runtime_src() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR")).join("../dfe-runtime/src")
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("../dfe-painless/src")
+}
+
+/// The prelude that has to export them, which stays in `dfe-runtime` because
+/// that is the crate every generated module imports.
+fn prelude_path() -> PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("../dfe-runtime/src/prelude.rs")
 }
 
 fn generated_src() -> PathBuf {
@@ -120,7 +127,7 @@ fn every_named_runtime_symbol_is_in_the_prelude() {
         public.len()
     );
 
-    let prelude = read(&runtime.join("prelude.rs"));
+    let prelude = read(&prelude_path());
     let word = Regex::new(r"\b([A-Za-z_][A-Za-z0-9_]*)\b").expect("word regex");
     let exported: BTreeSet<String> = word
         .captures_iter(&prelude)
@@ -206,7 +213,7 @@ fn every_matcher_runner_reaches_the_prelude() {
         runners.len()
     );
 
-    let prelude = read(&runtime.join("prelude.rs"));
+    let prelude = read(&prelude_path());
     let word = Regex::new(r"\b([A-Za-z_][A-Za-z0-9_]*)\b").expect("word regex");
     let exported: BTreeSet<String> = word
         .captures_iter(&prelude)

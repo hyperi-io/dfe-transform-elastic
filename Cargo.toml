@@ -84,6 +84,8 @@ missing_errors_doc = "allow"
 
 [workspace]
 members = [
+    "crates/dfe-core",
+    "crates/dfe-painless",
     "crates/dfe-parse",
     "crates/dfe-runtime",
     "crates/dfe-transforms",
@@ -120,6 +122,8 @@ rust-version = "1.95"
 
 [workspace.dependencies]
 # Workspace crates
+dfe-core = { path = "crates/dfe-core" }
+dfe-painless = { path = "crates/dfe-painless" }
 dfe-parse = { path = "crates/dfe-parse" }
 dfe-runtime = { path = "crates/dfe-runtime" }
 dfe-transforms = { path = "crates/dfe-transforms" }

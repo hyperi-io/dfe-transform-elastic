@@ -1,14 +1,14 @@
 # Project:   dfe-transform-elastic
-# File:      crates/dfe-runtime/Cargo.toml
-# Purpose:   Runtime crate manifest
+# File:      crates/dfe-painless/Cargo.toml
+# Purpose:   Painless script matching and the runners it dispatches to
 # Language:  TOML
 #
 # License:   BUSL-1.1
 # Copyright: (c) 2026 HYPERI PTY LIMITED
 
 [package]
-name = "dfe-runtime"
-description = "Core runtime for dfe-transform-elastic: Event type, Transform trait, enrichment"
+name = "dfe-painless"
+description = "Painless script pattern matching for dfe-transform-elastic"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -21,43 +21,30 @@ publish.workspace = true
 workspace = true
 
 [features]
-testutil = ["dep:serde_yaml_ng"]
 # The generator resolves a script to its runner call at generation time by
-# asking dfe-painless, so the two paths cannot diverge. The service never
+# asking this crate, so the two paths cannot diverge. The service never
 # enables it and never compiles the emitters.
-codegen = ["dfe-painless/codegen"]
+codegen = []
 
 [dependencies]
 dfe-core = { workspace = true }
-dfe-painless = { workspace = true }
-dfe-parse = { workspace = true }
-scalo = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 chrono = { workspace = true }
 chrono-tz = { workspace = true }
-maxminddb = { workspace = true }
 thiserror = { workspace = true }
-anyhow = { workspace = true }
 tracing = { workspace = true }
-rustc-hash = { workspace = true }
 uuid = { workspace = true }
 sha1 = { workspace = true }
 sha2 = { workspace = true }
 base64 = { workspace = true }
 regex = { workspace = true }
 fancy-regex = { workspace = true }
-psl = { workspace = true }
-serde_yaml_ng = { workspace = true, optional = true }
 
 [dev-dependencies]
-tempfile = { workspace = true }
 criterion = { workspace = true }
 
-# The grok call site, native path against the compiled regex. Here rather than
-# in dfe-transforms because it needs only grok_cache and dfe-parse, and
-# benching it there meant an opt-level=3, codegen-units=1 build of a crate
-# holding one module per data stream.
+# What `painless_exec` costs per EVENT, through the plan the runtime holds.
 [[bench]]
-name = "grok"
+name = "painless"
 harness = false

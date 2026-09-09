@@ -832,6 +832,43 @@ dependencies = [
 ]
 
 [[package]]
+name = "dfe-core"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "chrono-tz",
+ "criterion",
+ "fancy-regex",
+ "indexmap 2.13.0",
+ "regex",
+ "serde",
+ "serde_json",
+ "simd-json",
+ "thiserror",
+ "tracing",
+]
+
+[[package]]
+name = "dfe-painless"
+version = "0.1.0"
+dependencies = [
+ "base64 0.22.1",
+ "chrono",
+ "chrono-tz",
+ "criterion",
+ "dfe-core",
+ "fancy-regex",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha1",
+ "sha2",
+ "thiserror",
+ "tracing",
+ "uuid",
+]
+
+[[package]]
 name = "dfe-parse"
 version = "0.1.0"
 dependencies = [
@@ -851,9 +888,10 @@ dependencies = [
  "chrono",
  "chrono-tz",
  "criterion",
+ "dfe-core",
+ "dfe-painless",
  "dfe-parse",
  "fancy-regex",
- "indexmap 2.13.0",
  "maxminddb",
  "psl",
  "regex",
@@ -864,7 +902,6 @@ dependencies = [
  "serde_yaml_ng",
  "sha1",
  "sha2",
- "simd-json",
  "tempfile",
  "thiserror",
  "tracing",

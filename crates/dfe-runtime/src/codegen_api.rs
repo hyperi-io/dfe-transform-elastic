@@ -12,7 +12,6 @@ use std::collections::HashMap;
 use std::sync::LazyLock;
 
 use serde_json::{Map, Value};
-use tracing::debug;
 
 use crate::enrichment::user_agent;
 use crate::error::Result;
@@ -141,41 +140,11 @@ fn subdomain_of(domain: &str, registered: &str) -> Option<String> {
         .map(str::to_string)
 }
 
-/// Execute a Painless script against an event.
-///
-/// Tries known common patterns first (drop nulls, command line extraction,
-/// `keys_to_snake_case`, etc.). Falls back to a no-op for unrecognised scripts.
-pub fn painless_exec(event: &mut Event, script: &str) -> Result<()> {
-    painless_exec_params(event, script, &serde_json::Value::Null)
-}
-
-/// Execute a Painless script that carries a `params` block.
-///
-/// The recurring params patterns -- sentinel lists, field lists, lookup tables --
-/// read their whole behaviour out of `params`, so the script text alone cannot
-/// run them. The generated code passes the pipeline's params block verbatim.
-pub fn painless_exec_params(
-    event: &mut Event,
-    script: &str,
-    params: &serde_json::Value,
-) -> Result<()> {
-    if crate::painless_params::try_params_painless(event, script, params) {
-        crate::painless_stats::record_handled(script);
-        return Ok(());
-    }
-    if crate::painless_common::try_known_painless(event, script) {
-        crate::painless_stats::record_handled(script);
-        return Ok(());
-    }
-    // Counted, because an uncounted skip is indistinguishable from a script
-    // that did nothing.
-    crate::painless_stats::record_unhandled(script);
-    debug!(
-        script_len = script.len(),
-        "painless_exec: unrecognised script skipped"
-    );
-    Ok(())
-}
+// The unplanned script path reads only the Painless matchers and their
+// counters, so it lives beside the planned one in `dfe-painless`. Re-exported
+// here because the generated call sites and the prelude name it through this
+// module.
+pub use dfe_painless::plan::{painless_exec, painless_exec_params};
 
 /// Run one processor over every element of an array field, the way Elastic's
 /// `foreach` does: each element is exposed at `_ingest._value` for the body,
@@ -3527,28 +3496,8 @@ mod tests {
         assert!(result.is_ok());
     }
 
-    // --- painless_exec ---
-
-    #[test]
-    fn painless_exec_unknown_script_noop() {
-        let _guard = crate::painless_stats::serialised();
-        let mut event = Event::new(json!({"field": "value"}));
-        let result = painless_exec(&mut event, "unknown_script_that_does_nothing();");
-        assert!(result.is_ok());
-        // Field should be unchanged
-        assert_eq!(event.get_str("field"), Some("value"));
-    }
-
-    #[test]
-    fn painless_exec_drop_empty_known() {
-        let _guard = crate::painless_stats::serialised();
-        let mut event = Event::new(json!({"a": "", "b": "keep", "c": null}));
-        let result = painless_exec(
-            &mut event,
-            r#"boolean drop(Object o) { if (o == null || o == "") { return true; } }"#,
-        );
-        assert!(result.is_ok());
-    }
+    // `painless_exec`'s own tests live beside it in `dfe_painless::plan`, with
+    // the counter lock they take.
 
     // --- community_id_v1 ---
 

@@ -14,10 +14,12 @@ pub use serde_json::{Map, Value, json};
 
 pub use chrono::{DateTime, FixedOffset, NaiveDateTime, Utc};
 
-// Compiled once per process, then looked up once per call site.
-pub use crate::{
-    cached_grok, cached_grok_mapped, cached_painless, cached_params, cached_regex, cached_script,
-};
+// Compiled once per process, then looked up once per call site. A
+// `#[macro_export]` macro sits at its own crate's root, so these come from the
+// three crates that define them rather than one.
+pub use crate::{cached_grok, cached_grok_mapped};
+pub use dfe_core::cached_regex;
+pub use dfe_painless::{cached_painless, cached_params, cached_script};
 
 pub use crate::grok_cache::{extract_first_match, extract_first_match_traced};
 

@@ -1,0 +1,60 @@
+# Project:   dfe-transform-elastic
+# File:      crates/dfe-core/Cargo.toml
+# Purpose:   Core primitives: the Event document, its error type, the date and
+#            syslog parsers, and the regex cache
+# Language:  TOML
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
+[package]
+name = "dfe-core"
+description = "Event document, error type and the primitives dfe-painless and dfe-runtime share"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+chrono-tz = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+regex = { workspace = true }
+fancy-regex = { workspace = true }
+
+[dev-dependencies]
+criterion = { workspace = true }
+# `benches/hashing.rs` only. serde_json's preserve_order map is an IndexMap
+# with the std hasher, and that bench measures what the hasher costs.
+indexmap = { version = "2", default-features = false, features = ["std"] }
+# `benches/json_parse.rs` only, which is what demoted it from a runtime
+# dependency: both hot-path uses measured slower than serde_json.
+simd-json = { workspace = true }
+
+# The dotted-path accessors. Field plumbing is the hot path -- rename, set and
+# append outnumber script and grok by an order of magnitude in the vendored
+# pipelines -- so one path walk is the number that multiplies out to a batch.
+[[bench]]
+name = "event"
+harness = false
+
+# What the map's hasher costs, against the lookup it is part of. A measurement,
+# not a proposal: serde_json::Map does not let a caller choose the hasher.
+[[bench]]
+name = "hashing"
+harness = false
+
+# Reading the vendor payload, which every JSON-carrying source does first.
+# Tests the "simd-json is 2-3x faster" premise against this workload.
+[[bench]]
+name = "json_parse"
+harness = false

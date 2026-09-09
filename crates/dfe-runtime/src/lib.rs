@@ -16,47 +16,37 @@
 
 //! Core runtime for dfe-transform-elastic.
 //!
-//! The Event type, the Transform trait, the enrichment modules and the
-//! processor-shaped API every transform is written against.
+//! The Transform trait, grok compilation, the enrichment modules and the
+//! processor-shaped API every transform is written against. The event document
+//! itself lives in `dfe-core` and the Painless matchers in `dfe-painless`;
+//! both are re-exported here so a generated module still needs only
+//! [`prelude`].
 
 pub mod codegen_api;
-pub mod date_formats;
 pub mod enrichment;
-pub mod error;
-pub mod event;
 pub mod grok_cache;
-pub mod painless_coercion;
-pub mod painless_common;
-pub mod painless_entity;
-pub mod painless_expr;
-pub mod painless_field_tables;
-pub mod painless_gather_members;
-pub mod painless_helpers;
-pub mod painless_hex;
-pub mod painless_hoist;
-pub mod painless_issue_lifecycle;
-pub mod painless_item_writes;
-pub mod painless_list_records;
-pub mod painless_lists;
-pub mod painless_named_arms;
-pub mod painless_nth_separator;
-pub mod painless_pair_table;
-pub mod painless_params;
-pub mod painless_plan;
-pub mod painless_records;
-pub mod painless_scheduled_task;
-pub mod painless_sddl;
-pub mod painless_seconds_between;
-pub mod painless_split_fanout;
-pub mod painless_stats;
-pub mod painless_totals;
-pub mod painless_windows;
 pub mod prelude;
-pub mod syslog_pri;
 pub mod transform;
 
-pub use error::{Result, TransformError};
-pub use event::Event;
+// The layers below, re-exported at their original paths. Over 2,800 generated
+// modules and the -dev generator name them through this crate, so the split
+// stays invisible to both.
+pub use dfe_core::{date_formats, error, event, syslog_pri};
+pub use dfe_painless::{
+    coercion as painless_coercion, common as painless_common, entity as painless_entity,
+    expr as painless_expr, field_tables as painless_field_tables,
+    gather_members as painless_gather_members, helpers as painless_helpers, hex as painless_hex,
+    hoist as painless_hoist, issue_lifecycle as painless_issue_lifecycle,
+    item_writes as painless_item_writes, list_records as painless_list_records,
+    lists as painless_lists, named_arms as painless_named_arms,
+    nth_separator as painless_nth_separator, pair_table as painless_pair_table,
+    params as painless_params, plan as painless_plan, records as painless_records,
+    scheduled_task as painless_scheduled_task, sddl as painless_sddl,
+    seconds_between as painless_seconds_between, split_fanout as painless_split_fanout,
+    stats as painless_stats, totals as painless_totals, windows as painless_windows,
+};
+
+pub use dfe_core::{Event, Result, TransformError};
 pub use transform::{Transform, TransformChain, TransformResult};
 
 // Re-export scalo types used by the runtime and downstream consumers
