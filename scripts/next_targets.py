@@ -71,6 +71,12 @@ SUMMARY = re.compile(
 )
 # `      wrong in    27, unlocks     4   some.field`
 DETAIL = re.compile(r"^\s+wrong in\s+(\d+), unlocks\s+(\d+)\s+(\S+)$")
+# `[<source>/<fixture>] events 0/11 (0%), fields 163/362 (45.0%), 0 extra`
+#
+# Per FIXTURE, because a source aggregate hides one bad stream among good ones:
+# jamf_protect reads 92% across the source and 45% on the stream that holds all
+# of its debt.
+FIXTURE = re.compile(r"^\[([a-z0-9_]+)/(\S+)\] events \d+/\d+ .*?fields (\d+)/(\d+)")
 
 
 def read_corpus(path: pathlib.Path) -> dict[str, dict]:
@@ -81,14 +87,30 @@ def read_corpus(path: pathlib.Path) -> dict[str, dict]:
         if found := SUMMARY.match(line):
             name, events, total, ok, fields, extra, errors = found.groups()
             current = name
+            # Per-fixture lines precede this one, so carry what they found
+            # rather than replacing the entry and losing it.
+            carried = sources.get(name, {}).get("worst_fixture")
             sources[name] = {
+                "worst_fixture": carried,
                 "events_missed": int(total) - int(events),
                 "events_total": int(total),
                 "fields_wrong": int(fields) - int(ok),
+                # The RATIO, not just the difference. A ranked field list sorts
+                # by how many events a field is wrong on, which is frequency
+                # rather than weight -- jamf_protect's alerts read 45% correct
+                # while its top five fields accounted for a quarter of the gap.
+                "fields_ok": int(ok),
+                "fields_total": int(fields),
                 "extra": int(extra),
                 "errors": int(errors),
                 "detail": [],
             }
+        elif found := FIXTURE.match(line):
+            source, fixture, ok, fields = found.groups()
+            worst = sources.setdefault(source, {}).get("worst_fixture")
+            share = int(ok) / int(fields) if int(fields) else 1.0
+            if worst is None or share < worst[0]:
+                sources[source]["worst_fixture"] = (share, fixture, int(ok), int(fields))
         elif current and (found := DETAIL.match(line)):
             wrong, unlocks, field = found.groups()
             sources[current]["detail"].append((int(wrong), int(unlocks), field))
@@ -189,6 +211,15 @@ def best_unlocks(sources: dict[str, dict], top: int) -> None:
             f"{unlocks:6} unlocks {missed:5} missed  {needed} field{plural}  "
             f"{name}  [{klass}]{whole}"
         )
+        # Only where it changes the reading. A source at 99% needs no caveat,
+        # and an unconditional one is the noise a real warning hides behind.
+        if worst := score.get("worst_fixture"):
+            share, fixture, ok, fields = worst
+            if share < 0.9:
+                print(
+                    f"{'':22}WORST FIXTURE {fixture} at {ok}/{fields} ({100 * share:.0f}%)"
+                    f" -- the fields below are frequency, not weight"
+                )
         for wrong, _, field in prefix:
             print(f"{'':22}{field}  (wrong in {wrong})")
     print()
