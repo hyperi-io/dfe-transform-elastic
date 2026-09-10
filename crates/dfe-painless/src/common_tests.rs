@@ -8507,7 +8507,10 @@ mod infoblox_nios {
             (
                 // A window, so the fields past it are dropped with no trace.
                 "a subList that stops short of the record",
-                DNS_ANSWERS.replace("response.subList(4, response.length)", "response.subList(4, 6)"),
+                DNS_ANSWERS.replace(
+                    "response.subList(4, response.length)",
+                    "response.subList(4, 6)",
+                ),
             ),
             (
                 // An exact width takes a different set of records.
@@ -8583,7 +8586,10 @@ mod infoblox_nios {
             event.get_str("infoblox_nios.log.audit.to"),
             Some("Serial Console")
         );
-        assert_eq!(event.get_str("infoblox_nios.log.audit.ip"), Some("10.0.0.2"));
+        assert_eq!(
+            event.get_str("infoblox_nios.log.audit.ip"),
+            Some("10.0.0.2")
+        );
         // The replace is under `instanceof String`, so a number is untouched.
         assert_eq!(event.get("infoblox_nios.log.audit.cid"), Some(&json!(7)));
         // The pipeline's own `remove` takes the source, not this script.
@@ -8707,7 +8713,10 @@ mod infoblox_nios {
             json!({ "infoblox_nios": { "log": { "audit": { "ip": r"2a02\07" } } } }),
         );
         assert!(claimed);
-        assert_eq!(event.get_str("infoblox_nios.log.audit.ip"), Some(r"2a02\07"));
+        assert_eq!(
+            event.get_str("infoblox_nios.log.audit.ip"),
+            Some(r"2a02\07")
+        );
     }
 }
 

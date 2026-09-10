@@ -9406,8 +9406,7 @@ fn parse_contains_flags(script: &str) -> Option<ContainsFlags> {
         || flat.matches(&format!("{bucket}.add(")).count() != 3
         || !flat[put..].contains(&format!(", {bucket})"))
         || flat.matches(".put(").count() > 2
-        || (flat.matches(".put(").count() == 2
-            && !flat.contains(&format!("ctx.put('{parent}',")))
+        || (flat.matches(".put(").count() == 2 && !flat.contains(&format!("ctx.put('{parent}',")))
         || parent.is_empty()
         || key.is_empty()
     {
