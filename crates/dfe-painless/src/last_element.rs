@@ -4,7 +4,7 @@
 //! One member taken from the LAST element of a list, into a map the script
 //! creates.
 //!
-//! lyve_cloud's audit stream reaches the client's own address through a chain
+//! `lyve_cloud`'s audit stream reaches the client's own address through a chain
 //! of proxies. `related.ip` holds every hop in order and the vendor's comment
 //! says which one matters -- "setting client's ip as the last element of the
 //! ' related.ip ' field ( the rest are proxies)":
@@ -114,6 +114,15 @@ pub fn run_last_element_member(event: &mut Event, pattern: &LastElementMember) -
 }
 
 #[cfg(test)]
+// The script constants are quoted verbatim from generated call sites, which
+// spell them `r#"..."#`. Keeping them character-identical is what lets a script
+// be copied straight from a module into a test.
+#[allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::panic,
+    clippy::needless_raw_string_hashes
+)]
 mod tests {
     use super::*;
     use serde_json::json;

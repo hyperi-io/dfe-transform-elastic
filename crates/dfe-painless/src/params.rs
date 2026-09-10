@@ -6567,7 +6567,7 @@ fn lookup_binding(statement: &str) -> Option<(Option<String>, bool)> {
 
 /// The bare identifier `head` ends with, or `None` where it ends with anything
 /// else -- a dotted `ctx.` path, a subscript, a call.
-fn identifier_ending(head: &str) -> Option<String> {
+pub(crate) fn identifier_ending(head: &str) -> Option<String> {
     let head = head.trim_end();
     let start = head
         .char_indices()
@@ -6792,7 +6792,7 @@ fn try_first_contained_member(
 /// read and the caller takes the first the event actually carries.
 ///
 /// The declaration keyword is read from [`DECLARATIONS`] rather than assumed to
-/// be `String`: island_browser spells the same subject `def`, and a reader
+/// be `String`: `island_browser` spells the same subject `def`, and a reader
 /// keyed on one keyword finds no subject at all and declines the whole script.
 /// A `for (String x: ...)` loop header declares a loop variable, not a binding,
 /// and is rejected because its left side is no identifier.

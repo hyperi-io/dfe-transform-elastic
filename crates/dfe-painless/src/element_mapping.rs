@@ -417,6 +417,9 @@ impl<'a> Reader<'a> {
 
     /// One statement. `None` declines the script; `Some(None)` is a `def`,
     /// which binds a local and runs nothing per event.
+    // Three outcomes, and the `?` in the caller is what makes the declining one
+    // useful -- an enum here would need matching by hand at the one call site.
+    #[allow(clippy::option_option)]
     fn statement(&mut self) -> Option<Option<Stmt>> {
         if self.keyword("if") {
             return self.conditional().map(Some);
@@ -754,6 +757,14 @@ fn epoch_second(value: &Value) -> Option<String> {
 }
 
 #[cfg(test)]
-#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
+// The script constants are quoted verbatim from generated call sites, which
+// spell them `r#"..."#` and carry the vendor's own unseparated literals.
+#[allow(
+    clippy::unwrap_used,
+    clippy::expect_used,
+    clippy::panic,
+    clippy::needless_raw_string_hashes,
+    clippy::unreadable_literal
+)]
 #[path = "element_mapping_tests.rs"]
 mod tests;

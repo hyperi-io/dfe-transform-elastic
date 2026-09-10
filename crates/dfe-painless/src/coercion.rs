@@ -467,7 +467,8 @@ fn java_decode(text: &str) -> Option<i64> {
     clippy::unwrap_used,
     clippy::expect_used,
     clippy::panic,
-    clippy::needless_raw_string_hashes
+    clippy::needless_raw_string_hashes,
+    clippy::unreadable_literal
 )]
 mod tests {
     use super::*;

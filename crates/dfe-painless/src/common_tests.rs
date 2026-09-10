@@ -3492,6 +3492,58 @@ fn splits_a_delimited_string_onto_the_end_of_the_array() {
     );
 }
 
+/// Verbatim from `pipelines/island_browser/device/default.yml`, tagged
+/// `append_island_browser_device_mac_addresses_into_host_mac`.
+///
+/// Two things separate it from [`APPEND_TAGS`]: the cut is taken on a LOCAL
+/// bound to the field rather than on the `ctx.` path itself, and each part is
+/// appended only where the target does not already hold it.
+const APPEND_MACS: &str = r#"String macAddresses = ctx.island_browser.device.mac_addresses;\nif (macAddresses != null) {\n  String[] macArray = macAddresses.splitOnToken("|");\n  String[] trimmedMacArray = new String[macArray.length];\n  for (int i = 0; i < macArray.length; i++) {\n    trimmedMacArray[i] = macArray[i].trim();\n  }\n  for (String mac: trimmedMacArray) {\n    if (mac.length() > 0) {\n      if (ctx.host?.mac == null) {\n        ctx.host = ctx.host ?: [:];\n        ctx.host.mac = [mac];\n      } else if (!ctx.host.mac.contains(mac)) {\n        ctx.host.mac.add(mac);\n      }\n    }\n  }\n}\n"#;
+
+/// A cut taken on a local still finds the field the local was bound to.
+#[test]
+fn a_cut_on_a_local_still_reads_the_field_behind_it() {
+    let mut event = Event::new(json!({
+        "island_browser": { "device": { "mac_addresses": "AA:BB:CC | DD:EE:FF" } },
+    }));
+
+    assert!(try_known_painless(&mut event, APPEND_MACS));
+
+    assert_eq!(
+        event.get("host.mac"),
+        Some(&json!(["AA:BB:CC", "DD:EE:FF"]))
+    );
+}
+
+/// The script appends only what the target does not already hold, so a
+/// repeated address lands once.
+#[test]
+fn a_guarded_append_does_not_repeat_a_member() {
+    let mut event = Event::new(json!({
+        "island_browser": { "device": { "mac_addresses": "AA:BB:CC | DD:EE:FF | AA:BB:CC" } },
+    }));
+
+    assert!(try_known_painless(&mut event, APPEND_MACS));
+
+    assert_eq!(
+        event.get("host.mac"),
+        Some(&json!(["AA:BB:CC", "DD:EE:FF"]))
+    );
+}
+
+/// An empty part is dropped rather than appended, which a trailing separator
+/// makes easy to produce.
+#[test]
+fn an_empty_part_is_not_appended() {
+    let mut event = Event::new(json!({
+        "island_browser": { "device": { "mac_addresses": "AA:BB:CC |  | " } },
+    }));
+
+    assert!(try_known_painless(&mut event, APPEND_MACS));
+
+    assert_eq!(event.get("host.mac"), Some(&json!(["AA:BB:CC"])));
+}
+
 /// The same script's other branch: the field arrives as maps, not a string.
 #[test]
 fn joins_each_map_pair_onto_the_end_of_the_array() {

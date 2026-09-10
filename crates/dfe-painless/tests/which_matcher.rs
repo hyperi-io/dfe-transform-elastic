@@ -18,6 +18,10 @@
 //! a legitimate entry -- it records that NOTHING claims the script, which is a
 //! different defect from claiming it and writing the wrong thing.
 
+// Every script here is quoted verbatim from its call site, `r#"..."#` spelling
+// and unseparated vendor literals included.
+#![allow(clippy::needless_raw_string_hashes, clippy::unreadable_literal)]
+
 use dfe_core::Event;
 use dfe_painless::plan::{PainlessPlan, painless_exec_plan, painless_exec_plan_params};
 use serde_json::json;

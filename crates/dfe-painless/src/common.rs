@@ -14001,20 +14001,25 @@ pub struct AppendEach {
     /// The two object keys the map branch joins, when the script has them.
     map_keys: Vec<String>,
     separator: String,
+    /// Whether the script guards each append with a `contains` test.
+    deduped: bool,
 }
 
 /// Read the paths, keys and separator the append uses, or decline.
 fn parse_append_each(script: &str) -> Option<AppendEach> {
     use crate::params::ctx_path_before;
 
+    let target = ctx_path_before(script, ".add(")?;
+    let deduped = appends_are_deduped(script, &target);
     Some(AppendEach {
-        target: ctx_path_before(script, ".add(")?,
         source: append_source_path(script)?,
         map_keys: quoted_after(script, "tag["),
         separator: quoted_after(script, ".splitOnToken(")
             .into_iter()
             .next()
             .unwrap_or_else(|| ",".to_string()),
+        deduped,
+        target,
     })
 }
 
@@ -14026,6 +14031,7 @@ fn try_append_each(event: &mut Event, pattern: &AppendEach) -> bool {
         target,
         map_keys,
         separator,
+        deduped,
     } = pattern;
 
     // A missing source is not a failure -- the processor's `if` guards it.
@@ -14058,7 +14064,12 @@ fn try_append_each(event: &mut Event, pattern: &AppendEach) -> bool {
         Some(Value::Array(arr)) => arr.clone(),
         _ => Vec::new(),
     };
-    existing.extend(entries);
+    for entry in entries {
+        if *deduped && existing.contains(&entry) {
+            continue;
+        }
+        existing.push(entry);
+    }
     let _ = event.set(&path, Value::Array(existing));
     true
 }
@@ -14095,6 +14106,48 @@ fn append_source_path(script: &str) -> Option<String> {
         .or_else(|| ctx_path_before(script, " instanceof String"))
         .or_else(|| ctx_path_before(script, ".splitOnToken("))
         .map(|p| clean_path(&p))
+        .or_else(|| local_cut_source(script))
+}
+
+/// The field behind a cut taken on a LOCAL rather than on the path itself.
+///
+/// `island_browser` binds the field and then cuts the local -- `String m =
+/// ctx.<path>; ... m.splitOnToken("|")` -- so no `ctx.` path sits against the
+/// cut and every reader above finds nothing.
+fn local_cut_source(script: &str) -> Option<String> {
+    use crate::params::{clean_path, identifier_ending};
+
+    // ONE cut only. tenable_io's package parser cuts five times into four
+    // targets, and the local before its FIRST cut is the raw output blob --
+    // resolving it lets the append claim the script and flatten that blob into
+    // `package.path`.
+    if script.matches(".splitOnToken(").count() != 1 {
+        return None;
+    }
+    let local = identifier_ending(script.split_once(".splitOnToken(")?.0)?;
+    // The declaration keyword varies, so the binding is found by the name and
+    // its `=`, not by the type in front of it.
+    let binding = format!(" {local} =");
+    let at = script.find(&binding)?;
+    let value = script[at + binding.len()..].split(';').next()?.trim();
+    let path = clean_path(
+        value
+            .strip_prefix("ctx.")
+            .or_else(|| value.strip_prefix("ctx?."))?,
+    );
+    (!path.is_empty() && !path.contains(['(', ' ', '['])).then_some(path)
+}
+
+/// Whether the script appends only what the target does not already hold.
+///
+/// `else if (!ctx.<target>.contains(<x>)) { ctx.<target>.add(<x>); }`. Read off
+/// the script rather than applied to every append: the crowdstrike and o365
+/// scripts carry no such guard, and deduping their output would drop a repeat
+/// the vendor keeps.
+fn appends_are_deduped(script: &str, target: &str) -> bool {
+    let plain = format!("!ctx.{target}.contains(");
+    let elvis = format!("!ctx?.{target}.contains(");
+    script.contains(&plain) || script.contains(&elvis)
 }
 
 /// Every single- or double-quoted string that follows an occurrence of `after`.
@@ -22048,7 +22101,15 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
     }
 
     // Pattern: join two optional fields, each alone if the other is absent.
-    if normalised.matches("String ").count() == 2 && normalised.contains("} else if (") {
+    //
+    // The trigger counts rather than parses, so it claims by coincidence and
+    // then writes nothing. It yields only where `AppendEach` below can actually
+    // read the script -- a parse, not a keyword, because tenable_io joins two
+    // fields and cuts, so excluding the cut alone costs it two events.
+    if normalised.matches("String ").count() == 2
+        && normalised.contains("} else if (")
+        && parse_append_each(normalised).is_none()
+    {
         patterns.push(KnownPattern::JoinOptional);
         return patterns;
     }
