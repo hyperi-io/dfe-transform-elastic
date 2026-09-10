@@ -241,7 +241,7 @@ pub(crate) enum ParamsPattern {
     FiletimeFieldList,
     BitFlags,
     FirstContainedMember,
-    RenameKeys,
+    RenameKeys(Box<RenameKeys>),
     ValueMaps,
     RowColumns(Program),
     RowColumnAppends(Box<RowColumnAppends>),
@@ -641,9 +641,14 @@ fn params_pattern_tail(normalised: &str) -> Option<ParamsPattern> {
         return Some(ParamsPattern::FirstLabelInTable { list, target });
     }
 
-    // Pattern: rename an object's keys, recursively, through a name map.
+    // Pattern: rename an object's keys, recursively, through a name map. The
+    // trigger claims every script that spells the helper and the READER decides
+    // what each does with the result, so a spelling it cannot place still lands
+    // here rather than falling through to a matcher meant for something else.
     if normalised.contains("keyMap.containsKey(key)") {
-        return Some(ParamsPattern::RenameKeys);
+        return Some(ParamsPattern::RenameKeys(Box::new(RenameKeys::parse(
+            normalised,
+        ))));
     }
 
     // Pattern: several fields each normalised through their own value map.
@@ -2164,7 +2169,7 @@ pub(crate) fn run_params_pattern(
         ParamsPattern::FirstContainedMember => {
             try_first_contained_member(event, normalised, params)
         }
-        ParamsPattern::RenameKeys => try_rename_keys(event, normalised, params),
+        ParamsPattern::RenameKeys(pattern) => run_rename_keys(event, pattern, params),
         ParamsPattern::SelectRenameKeys(pattern) => run_select_rename_keys(event, pattern, params),
         ParamsPattern::FieldTables(pattern) => {
             crate::field_tables::field_tables(event, pattern, params)
@@ -6898,41 +6903,516 @@ fn put_target(script: &str) -> Option<String> {
 ///
 /// A key the map does not name keeps its own, and a value that is not an
 /// object or a list is carried across untouched.
-fn try_rename_keys(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
-    let Some((path, _)) = ctx_writes(script)
+///
+/// Every script shipping the helper spells the same recursion and differs only
+/// in what it does with the result, so the whole reading happens ONCE per call
+/// site and the runner reads this rather than the text.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct RenameKeys {
+    /// Where the name table comes from.
+    names: NameTable,
+    /// The retyping lists a five-argument call carries.
+    coerce: Option<Coercions>,
+    /// A key the helper renames on top of the table, in its SCALAR branch only.
+    rename_key: Option<(String, String)>,
+    write: RenameWrite,
+}
+
+/// The block a call reads its name table out of.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum NameTable {
+    /// The whole `params` block, which the two-argument call passes bare.
+    Params,
+    /// One named member of it.
+    Member(String),
+}
+
+/// The params members naming the fields the vendor's own converters retype.
+///
+/// claroty's asset feed is the only spelling. The lists are keyed by the
+/// RENAMED name, and a key the table does not name is never retyped -- the
+/// retyping arms sit inside the helper's `containsKey` branch.
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct Coercions {
+    longs: String,
+    strings: String,
+    bools: String,
+}
+
+/// Where the renamed value goes.
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum RenameWrite {
+    /// `ctx.<path> = renameKeys(ctx.<path>, params)` -- the map in place.
+    InPlace(String),
+    /// One renamed element per member of a ctx list. `google_scc` alone ships
+    /// sixteen of these.
+    FanOut(Box<FanOut>),
+    /// A spelling no reader here places. Writing nothing is correct; guessing
+    /// at a target is a corruption that leaves no error behind.
+    Unreadable,
+}
+
+/// The list fan-out: read a ctx list, rename each member, store the result.
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct FanOut {
+    /// The ctx list each element is read from.
+    source: String,
+    /// The ctx path the renamed list is written to.
+    target: String,
+    /// A `ctx.<path>.remove('<key>')` the script makes first. It may name a
+    /// field the write does not -- two of `google_scc`'s drop
+    /// `json.asset.orgPolicy` and write `google_scc.asset.organization_policy`.
+    drop: Option<String>,
+}
+
+impl RenameKeys {
+    /// Read the whole rename off the script text.
+    ///
+    /// Never declines, because the ladder arm above claims every script that
+    /// spells the helper: a text no reader places comes back as
+    /// [`RenameWrite::Unreadable`] rather than falling through to a later arm.
+    fn parse(script: &str) -> Self {
+        Self::read(script).unwrap_or(Self {
+            names: NameTable::Params,
+            coerce: None,
+            rename_key: None,
+            write: RenameWrite::Unreadable,
+        })
+    }
+
+    fn read(script: &str) -> Option<Self> {
+        let (write, arguments) = match rename_fan_out(script) {
+            Some((fan, arguments)) => (RenameWrite::FanOut(Box::new(fan)), arguments),
+            None => rename_in_place(script)?,
+        };
+        let (names, coerce) = rename_name_table(&arguments)?;
+        Some(Self {
+            names,
+            coerce,
+            rename_key: rename_key_guard(script),
+            write,
+        })
+    }
+}
+
+/// `ctx.<path> = renameKeys(ctx.<path>, params)`, and the call's arguments.
+fn rename_in_place(script: &str) -> Option<(RenameWrite, Vec<String>)> {
+    // The helper's own `dst[keyMap[key]] = renameKeys(value, keyMap)` is not a
+    // ctx write, so the only statement left is the one the script ends on.
+    let (path, rhs) = ctx_writes(script)
         .into_iter()
-        .find(|(_, rhs)| rhs.contains(", params)"))
-    else {
-        return false;
+        .find(|(_, rhs)| rhs.starts_with("renameKeys("))?;
+    let (inside, _) = balanced(&rhs["renameKeys".len()..], '(', ')')?;
+    Some((RenameWrite::InPlace(path), call_arguments(inside)))
+}
+
+/// The list fan-out: the loop, the call inside it, and where the built list
+/// goes.
+///
+/// The LOOP is read first and the call found by its element variable. The
+/// helper's body calls itself, so matching `renameKeys(` alone answers with the
+/// recursion rather than with the one call the loop makes.
+fn rename_fan_out(script: &str) -> Option<(FanOut, Vec<String>)> {
+    let (element, source) = rename_loop(script)?;
+    let (at, arguments) = rename_call(script, &element)?;
+    let target = rename_fan_out_target(script, at)?;
+    Some((
+        FanOut {
+            source,
+            target,
+            drop: rename_dropped_field(script),
+        },
+        arguments,
+    ))
+}
+
+/// A `for (<element> in ctx.<list>)` header, as its element name and list path.
+///
+/// Both spacings ship: `google_scc` writes `for(entity in ...` and claroty
+/// `for (child in ...`.
+fn rename_loop(script: &str) -> Option<(String, String)> {
+    let mut at = 0;
+    while let Some(found) = script[at..].find("for") {
+        at += found + "for".len();
+        let Some((inside, _)) = balanced(script[at..].trim_start(), '(', ')') else {
+            continue;
+        };
+        // The helper's own walks are `for (def entry: src.entrySet())`, so the
+        // `in` keyword is what separates the fan-out from the recursion.
+        let Some((element, list)) = inside.split_once(" in ") else {
+            continue;
+        };
+        if let Some(element) = identifier(element)
+            && let Some(list) = ctx_path_term(list)
+            && is_ctx_path(&list)
+        {
+            return Some((element.to_owned(), list));
+        }
+    }
+    None
+}
+
+/// The `renameKeys(<first>, ...)` call taking `first`, as its offset and its
+/// arguments.
+///
+/// A call whose first argument is anything else is the helper's own definition
+/// or one of its recursions, both of which take the helper's parameter names.
+fn rename_call(script: &str, first: &str) -> Option<(usize, Vec<String>)> {
+    let mut at = 0;
+    while let Some(found) = script[at..].find("renameKeys") {
+        let start = at + found;
+        at = start + "renameKeys".len();
+        let Some((inside, _)) = balanced(&script[at..], '(', ')') else {
+            continue;
+        };
+        let arguments = call_arguments(inside);
+        if arguments
+            .first()
+            .is_some_and(|argument| argument.as_str() == first)
+        {
+            return Some((start, arguments));
+        }
+    }
+    None
+}
+
+/// One call's arguments, trimmed. Each is a bare name or a `params.<member>`,
+/// so a comma split is the whole parse.
+fn call_arguments(inside: &str) -> Vec<String> {
+    inside
+        .split(',')
+        .map(|argument| argument.trim().to_owned())
+        .collect()
+}
+
+/// The ctx path the loop's own `.add(` builds into.
+///
+/// Two spellings: the renamed element is appended to a LOCAL the script then
+/// stores, or straight onto a ctx path the script pre-created.
+fn rename_fan_out_target(script: &str, call: usize) -> Option<String> {
+    let receiver = rename_add_receiver(script, call)?;
+    if let Some(path) = ctx_path_term(&receiver) {
+        return is_ctx_path(&path).then_some(path);
+    }
+    let local = identifier(&receiver)?;
+    // The list is stored either by assignment or by a `.put(` onto a container.
+    ctx_writes(script)
+        .into_iter()
+        .find(|(_, rhs)| rhs.as_str() == local)
+        .map(|(path, _)| path)
+        .or_else(|| rename_put_target(script, local))
+}
+
+/// What the loop appends the renamed element to.
+fn rename_add_receiver(script: &str, call: usize) -> Option<String> {
+    // `<receiver>.add(renameKeys(<element>, ...))` -- the receiver opens the
+    // same statement the call sits in.
+    let statement = script[..call].rsplit([';', '{', '\n']).next()?.trim();
+    if let Some(head) = statement.strip_suffix(".add(") {
+        return Some(head.trim().to_owned());
+    }
+    // `def <local> = renameKeys(...); <receiver>.add(<local>);`
+    let local = identifier_ending(statement.strip_suffix('=')?)?;
+    let add = format!(".add({local})");
+    let head = &script[..script.find(&add)?];
+    Some(head.rsplit([';', '{', '\n']).next()?.trim().to_owned())
+}
+
+/// The field a `ctx.<path>.put('<key>', <local>)` writes.
+fn rename_put_target(script: &str, local: &str) -> Option<String> {
+    let mut at = 0;
+    while let Some(found) = script[at..].find(".put(") {
+        let start = at + found;
+        at = start + ".put(".len();
+        let Some((inside, _)) = balanced(&script[start + ".put".len()..], '(', ')') else {
+            continue;
+        };
+        let arguments = call_arguments(inside);
+        let [key, value] = arguments.as_slice() else {
+            continue;
+        };
+        if value.as_str() != local {
+            continue;
+        }
+        let Some(key) = literal_at(key) else {
+            continue;
+        };
+        let Some(path) = ctx_path_at_end(&script[..start]) else {
+            continue;
+        };
+        let field = format!("{path}.{key}");
+        if is_ctx_path(&field) {
+            return Some(field);
+        }
+    }
+    None
+}
+
+/// A `ctx.<path>.remove('<key>')` the script makes, as the field it takes out.
+///
+/// Anchored on the ctx path, because the helper spells the same call on its own
+/// local map -- `updatedJson.remove('location')` names no ctx field at all.
+fn rename_dropped_field(script: &str) -> Option<String> {
+    let mut at = 0;
+    while let Some(found) = script[at..].find(".remove(") {
+        let start = at + found;
+        at = start + ".remove(".len();
+        let Some(key) = literal_at(&script[at..]) else {
+            continue;
+        };
+        let Some(path) = ctx_path_at_end(&script[..start]) else {
+            continue;
+        };
+        let field = format!("{path}.{key}");
+        if is_ctx_path(&field) {
+            return Some(field);
+        }
+    }
+    None
+}
+
+/// The params member holding the name table, and the retyping lists a
+/// five-argument call adds.
+///
+/// The two-argument call passes the whole `params` block as the table; the
+/// five-argument one names four members. Any other arity is a helper this
+/// cannot run.
+fn rename_name_table(arguments: &[String]) -> Option<(NameTable, Option<Coercions>)> {
+    match arguments {
+        [_, table] => Some((params_member(table)?, None)),
+        [_, table, longs, strings, bools] => Some((
+            params_member(table)?,
+            Some(Coercions {
+                longs: named_params_member(longs)?,
+                strings: named_params_member(strings)?,
+                bools: named_params_member(bools)?,
+            }),
+        )),
+        _ => None,
+    }
+}
+
+/// The block an argument names, whole or by member.
+fn params_member(argument: &str) -> Option<NameTable> {
+    if argument == "params" {
+        return Some(NameTable::Params);
+    }
+    named_params_member(argument).map(NameTable::Member)
+}
+
+/// The params member `params.<name>` names.
+fn named_params_member(argument: &str) -> Option<String> {
+    identifier(argument.strip_prefix("params.")?).map(str::to_owned)
+}
+
+/// The helper's own `if (key == '<from>') { <dst>['<to>'] = value; }`, which
+/// renames one key on top of the table.
+///
+/// `microsoft_defender_cloud` and `ti_threatconnect` both move a scalar
+/// `location` to `location_value` that way. The guard sits inside the
+/// recursion, so it applies at every depth, and inside the SCALAR branch, so a
+/// `location` object keeps its own name.
+fn rename_key_guard(script: &str) -> Option<(String, String)> {
+    let guard = key_equality_guard(script)?;
+    let (from, rest) = next_quoted(guard)?;
+    // The one write the guard opens, and the removal that takes the original
+    // key back out. entityanalytics guards the same way to rewrite a VALUE, and
+    // declines here on both counts.
+    let (to, rest) = next_quoted(rest.trim_start().strip_prefix(") {")?)?;
+    rest.trim_start().strip_prefix("] = value;")?;
+    script
+        .contains(&format!(".remove('{from}')"))
+        .then_some((from, to))
+}
+
+/// The text after an `if (key` that tests the key itself.
+///
+/// `if (keyMap.containsKey(key))` opens with the same characters and is the
+/// helper's table lookup, so the character after the word decides.
+fn key_equality_guard(script: &str) -> Option<&str> {
+    let mut at = 0;
+    while let Some(found) = script[at..].find("if (key") {
+        at += found + "if (key".len();
+        let rest = &script[at..];
+        if !rest.starts_with(|c: char| c.is_alphanumeric() || c == '_') {
+            return Some(rest);
+        }
+    }
+    None
+}
+
+/// The next quoted literal in `text`, and what follows its closing quote.
+fn next_quoted(text: &str) -> Option<(String, &str)> {
+    let start = text.find(['\'', '"'])?;
+    let quote = text[start..].chars().next()?;
+    let rest = &text[start + quote.len_utf8()..];
+    let end = rest.find(quote)?;
+    Some((rest[..end].to_owned(), &rest[end + quote.len_utf8()..]))
+}
+
+/// Rename an object's keys through the params table, in place or over a list.
+fn run_rename_keys(event: &mut Event, pattern: &RenameKeys, params: &Map<String, Value>) -> bool {
+    let names = match &pattern.names {
+        NameTable::Params => params,
+        // A table the block does not carry is a script that cannot run at all.
+        NameTable::Member(member) => match params.get(member).and_then(Value::as_object) {
+            Some(table) => table,
+            None => return false,
+        },
     };
-    let Some(subject) = event.get(&path).cloned() else {
-        // The processor's own `if` guards the object being absent.
-        return false;
+    // A retyping list the block does not carry names no field, so the arm it
+    // guards never fires and the value stands as it is.
+    let (longs, strings, bools) = match &pattern.coerce {
+        Some(coerce) => (
+            params_list(params, &coerce.longs),
+            params_list(params, &coerce.strings),
+            params_list(params, &coerce.bools),
+        ),
+        None => (&[][..], &[][..], &[][..]),
     };
-    let _ = event.set(&path, renamed_keys(&subject, params));
+    let renamer = Renamer {
+        names,
+        longs,
+        strings,
+        bools,
+        rename_key: pattern
+            .rename_key
+            .as_ref()
+            .map(|(from, to)| (from.as_str(), to.as_str())),
+    };
+
+    match &pattern.write {
+        RenameWrite::InPlace(path) => {
+            let Some(subject) = event.get(path).cloned() else {
+                // The processor's own `if` guards the object being absent.
+                return false;
+            };
+            let _ = event.set(path, renamer.apply(&subject));
+            true
+        }
+        RenameWrite::FanOut(fan) => run_rename_fan_out(event, fan, &renamer),
+        RenameWrite::Unreadable => false,
+    }
+}
+
+/// The named params member as a list, empty where the block does not carry it.
+fn params_list<'a>(params: &'a Map<String, Value>, member: &str) -> &'a [Value] {
+    params
+        .get(member)
+        .and_then(Value::as_array)
+        .map_or(&[], Vec::as_slice)
+}
+
+/// One renamed element per member of the source list, stored where the script
+/// puts it.
+///
+/// The removal is honoured before the write: `remove` then `put` on the SAME
+/// key re-appends it at the END, and `preserve_order` is what parity rests on.
+fn run_rename_fan_out(event: &mut Event, fan: &FanOut, renamer: &Renamer<'_>) -> bool {
+    // Built off a BORROW of the source rather than a clone of it: every member
+    // is rebuilt anyway, so copying the list first buys nothing.
+    let list = {
+        let Some(Value::Array(members)) = event.get(&fan.source) else {
+            // The processor's own `if` guards the list being absent.
+            return false;
+        };
+        let mut list = Vec::with_capacity(members.len());
+        list.extend(members.iter().map(|member| renamer.apply(member)));
+        list
+    };
+
+    if let Some(field) = &fan.drop {
+        event.remove(field);
+    }
+    let _ = event.set(&fan.target, Value::Array(list));
     true
 }
 
-/// `value` with every key the map names replaced, at any depth.
-fn renamed_keys(value: &Value, names: &Map<String, Value>) -> Value {
-    match value {
-        Value::Object(members) => Value::Object(
-            members
-                .iter()
-                .map(|(key, member)| {
-                    let key = names
-                        .get(key)
-                        .and_then(Value::as_str)
-                        .unwrap_or(key)
-                        .to_string();
-                    (key, renamed_keys(member, names))
-                })
-                .collect(),
-        ),
-        Value::Array(items) => {
-            Value::Array(items.iter().map(|item| renamed_keys(item, names)).collect())
+/// The rename as the vendor helper performs it: the name table, the retyping
+/// lists, and the one extra key rename two of the scripts add.
+struct Renamer<'a> {
+    names: &'a Map<String, Value>,
+    longs: &'a [Value],
+    strings: &'a [Value],
+    bools: &'a [Value],
+    rename_key: Option<(&'a str, &'a str)>,
+}
+
+impl Renamer<'_> {
+    /// `value` with every key the table names replaced, at any depth.
+    fn apply(&self, value: &Value) -> Value {
+        match value {
+            Value::Object(members) => {
+                let mut renamed = Map::with_capacity(members.len());
+                for (key, member) in members {
+                    let table = self.names.get(key).and_then(Value::as_str);
+                    let name = table.unwrap_or(key);
+                    if member.is_object() || member.is_array() {
+                        renamed.insert(name.to_owned(), self.apply(member));
+                        continue;
+                    }
+                    // Retyping is inside the helper's `containsKey` branch, so a
+                    // key the table does not name keeps its value as it stands.
+                    let scalar = match table {
+                        Some(_) => self.retyped(name, member),
+                        None => member.clone(),
+                    };
+                    renamed.insert(name.to_owned(), scalar);
+
+                    if let Some((from, to)) = self.rename_key
+                        && key == from
+                    {
+                        renamed.insert(to.to_owned(), member.clone());
+                        // `shift_remove`, never `remove`: under `preserve_order`
+                        // the plain one drops the LAST key into the freed slot.
+                        renamed.shift_remove(from);
+                    }
+                }
+                Value::Object(renamed)
+            }
+            Value::Array(members) => {
+                Value::Array(members.iter().map(|member| self.apply(member)).collect())
+            }
+            other => other.clone(),
         }
-        other => other.clone(),
+    }
+
+    /// The scalar retyped the way the vendor's own converters do, keyed by the
+    /// RENAMED name.
+    ///
+    /// A conversion Painless would throw on leaves the value as it stands: the
+    /// throw belongs to the processor's `on_failure`, which this cannot reach.
+    fn retyped(&self, name: &str, value: &Value) -> Value {
+        if names_field(self.longs, name) {
+            return crate::coercion::as_long(value).map_or_else(|| value.clone(), Value::from);
+        }
+        // The vendor guards the stringify on the value being present, so a null
+        // falls through to the boolean arm and then to the value itself.
+        if names_field(self.strings, name) && !value.is_null() {
+            return scalar_text(value).map_or_else(|| value.clone(), Value::String);
+        }
+        if names_field(self.bools, name) {
+            return as_boolean(value).unwrap_or_else(|| value.clone());
+        }
+        value.clone()
+    }
+}
+
+/// Whether a params list names this field.
+fn names_field(list: &[Value], name: &str) -> bool {
+    list.iter().any(|entry| entry.as_str() == Some(name))
+}
+
+/// The boolean a `Boolean.parseBoolean` yields, or `None` where Painless would
+/// have thrown.
+///
+/// `parseBoolean` is true for the word `true` in any case and false for
+/// everything else a String can hold, so it never fails on text.
+fn as_boolean(value: &Value) -> Option<Value> {
+    match value {
+        Value::String(text) => Some(Value::Bool(text.eq_ignore_ascii_case("true"))),
+        Value::Bool(_) => Some(value.clone()),
+        _ => None,
     }
 }
 

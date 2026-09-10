@@ -4608,3 +4608,302 @@ fn an_indexed_params_read_needs_a_quoted_name() {
     let table = table.as_object().expect("an object");
     assert_eq!(params_indexed(named, table), table.get("LogLevel"));
 }
+
+/// Verbatim from `crates/dfe-transforms/src/filebeat/google_scc_asset/default.rs`,
+/// tagged `script_to_map_fields_under_conditions_object`: the list is rebuilt,
+/// dropped off its container and put back under the SAME key.
+///
+/// Written in the ESCAPED form the tree stores, and normalised by the matcher:
+/// a stored script arrives as ONE line with its newlines escaped, so a test
+/// written with real newlines passes while production still fails.
+const GOOGLE_SCC_CONDITIONS: &str = r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef conditions = new ArrayList();\nfor(entity in ctx.json.asset.accessLevel.basic.conditions){\n  conditions.add(renameKeys(entity, params));\n}\nctx.json.asset.accessLevel.basic.remove('conditions');\nctx.json.asset.accessLevel.basic.put('conditions',conditions);\n"#;
+
+/// The same source, tagged `script_to_map_fields_under_org_policy_object`:
+/// the field it DROPS is not the field it writes.
+const GOOGLE_SCC_ORG_POLICY: &str = r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef organization_policy = new ArrayList();\nfor(entity in ctx.json.asset.orgPolicy){\n  organization_policy.add(renameKeys(entity, params));\n}\nctx.json.asset.remove('orgPolicy');\nctx.google_scc.asset.put('organization_policy',organization_policy);\n"#;
+
+/// Verbatim from `filebeat/microsoft_defender_cloud_event/default.rs`: the
+/// list is stored by assignment, and the helper renames a scalar `location` to
+/// `location_value` on top of the table.
+const DEFENDER_CLOUD_ENTITIES: &str = r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n      if (key=='location') {\n        updatedJson['location_value'] = value;\n        updatedJson.remove('location');\n      }\n    }\n  }\n  return updatedJson;\n}\ndef entities_obj = new ArrayList();\nfor(entity in ctx.json.entities){\n  entities_obj.add(renameKeys(entity, params));\n}\nctx.entities_obj=entities_obj;\n"#;
+
+/// Verbatim from `filebeat/claroty_ctd_asset/default.rs`: five arguments, the
+/// name table and three retyping lists, appending straight onto a ctx path the
+/// script pre-created.
+const CLAROTY_CHILDREN: &str = r#"def convertToLong(def value) {\n  if (value instanceof String) {\n    return Long.parseLong(value);\n  } else if (value instanceof Number) {\n    return ((long) value).longValue();\n  } else {\n    throw new Exception('Unsupported type');\n  }\n}\ndef convertToBoolean(def value) {\n  if (value instanceof String) {\n    return Boolean.parseBoolean(value);\n  } else if (value instanceof Boolean) {\n    return (Boolean) value;\n  } else {\n    throw new Exception('Unsupported type');\n  }\n}\ndef renameKeys(Map json, Map keyMap, List longFields, List stringFields, List boolFields) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap, longFields, stringFields, boolFields);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap, longFields, stringFields, boolFields);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap, longFields, stringFields, boolFields));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        if (longFields.contains(keyMap[key])) {\n          updatedJson[keyMap[key]] = convertToLong(value);\n        } else if (stringFields.contains(keyMap[key]) && value != null) {\n          updatedJson[keyMap[key]] = value.toString();\n        } else if (boolFields.contains(keyMap[key])) {\n          updatedJson[keyMap[key]] = convertToBoolean(value);\n        } else {\n          updatedJson[keyMap[key]] = value;\n        }\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\nctx.claroty_ctd.asset.put('children', new ArrayList());\nfor (child in ctx.json.children) {\n  def children = renameKeys(child, params.renamefield, params.longfield, params.stringfield, params.boolfield);\n  ctx.claroty_ctd.asset.children.add(children);\n}\n"#;
+
+/// The in-place spelling, verbatim from `filebeat/aws_bedrock_invocation`.
+const AWS_BEDROCK_RENAME: &str = r#"def renameKeys(Map src, Map keyMap) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        dst[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = updatedList;\n      } else {\n        dst[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = value;\n      } else {\n        dst[key] = value;\n      }\n    }\n  }\n  return dst;\n}\n\nctx.aws_bedrock = renameKeys(ctx.aws_bedrock, params)\n"#;
+
+/// The in-place spelling again, with an `if (key == ...)` guard that rewrites
+/// a VALUE rather than renaming a key -- the near neighbour of the one
+/// `microsoft_defender_cloud` ships, and not the same thing.
+const AD_ENTITY_RENAME: &str = r#"String hexByte(Byte b) {\n    String x = Integer.toHexString(Byte.toUnsignedInt(b));\n    if (x.length() < 2) {\n        x = \"0\" + x;\n    }\n    return x;\n}\nString guid(String text) {\n    def bytes = Base64.getDecoder().decode(text);\n    def uid = \"\";\n    for (int i = 3; i >= 0; i--) {\n        uid += hexByte(bytes[i]);\n    }\n    uid += \"-\";\n    for (int i = 5; i > 3; i--) {\n        uid += hexByte(bytes[i]);\n    }\n    uid += \"-\";\n    for (int i = 7; i > 5; i--) {\n        uid += hexByte(bytes[i]);\n    }\n    uid += \"-\";\n    for (int i = 8; i < bytes.length; i++) {\n        if (i == 10) {\n            uid += \"-\";\n        }\n        uid += hexByte(bytes[i]);\n    }\n    return uid;\n}\nString sid(String text) {\n    def bytes = Base64.getDecoder().decode(text);\n    def uid = \"S-\"+Byte.toString(bytes[0])+\"-\";\n    int auth = 0;\n    for (int i = 2; i < 8; i++) {\n        auth |= Byte.toUnsignedInt(bytes[i])<<(8*(5-(i-2)));\n    }\n    uid += Integer.toString(auth);\n    int subauths = Byte.toUnsignedInt(bytes[1]);\n    int off = 8;\n    for (int i = 0; i < subauths; i++) {\n        int subauth = 0;\n        for (int k = 0; k < 4; k++) {\n            subauth |= (Byte.toUnsignedInt(bytes[off+k])&0xff)<<(8*k);\n        }\n        uid += \"-\"+Integer.toUnsignedString(subauth);\n        off += 4;\n    }\n    return uid;\n}\ndef renameKeys(Map src, Map keyMap) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        dst[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = updatedList;\n      } else {\n        dst[key] = value;\n      }\n    } else {\n      if (value instanceof String) {\n        if (key == \"objectGUID\") {\n          value = guid(value);\n        } else if (key == \"objectSid\") {\n          value = sid(value);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = value;\n      } else {\n        dst[key] = value;\n      }\n    }\n  }\n  return dst;\n}\n\nctx.activedirectory = renameKeys(ctx.activedirectory, params)\n"#;
+
+/// The in-place spelling, verbatim from `filebeat/microsoft_dnsserver_analytical`.
+const DNS_ANALYTICAL_RENAME: &str = r#"def renameKeys(Map src, Map keyMap) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        dst[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = updatedList;\n      } else {\n        dst[key] = value;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = value;\n      } else {\n        dst[key] = value;\n      }\n    }\n  }\n  return dst;\n}\nctx.microsoft_dnsserver.analytical = renameKeys(ctx.microsoft_dnsserver.analytical, params)\n"#;
+
+/// The in-place spelling, verbatim from `filebeat/microsoft_dnsserver_audit`.
+const DNS_AUDIT_RENAME: &str = r#"def renameKeys(Map src, Map keyMap) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        dst[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = updatedList;\n      } else {\n        dst[key] = value;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = value;\n      } else {\n        dst[key] = value;\n      }\n    }\n  }\n  return dst;\n}\nctx.microsoft_dnsserver.audit = renameKeys(ctx.microsoft_dnsserver.audit, params)\n"#;
+
+/// okta's helper takes ONE argument and has no name table at all, so this arm
+/// must not claim it -- it binds a text matcher instead.
+const OKTA_UNDERSCORE: &str = r#"String underscore(String s) {\n  return /[ -]/.matcher(s).replaceAll('_');\n}\ndef renameKeys(Map src) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      dst[underscore(key)] = renameKeys(value);\n    } else if (value instanceof List) {\n      for (int i = 0; i < value.length; i++) {\n        if (value[i] instanceof Map) {\n          value[i] = renameKeys(value[i]);\n        }\n      }\n      dst[underscore(key)] = value;\n    } else {\n      dst[underscore(key)] = value;\n    }\n  }\n  return dst;\n}\nctx.okta.debug_context.debug_data = renameKeys(ctx.okta.debug_context.debug_data)\n"#;
+
+/// The rename matcher a script binds to, or a panic naming what took it.
+fn rename_keys_pattern(script: &str) -> RenameKeys {
+    match params_pattern(&crate::common::normalise(script)) {
+        Some(ParamsPattern::RenameKeys(pattern)) => *pattern,
+        other => panic!("the rename matcher did not claim the script: {other:?}"),
+    }
+}
+
+/// The fan-out names the list it walks, the field it writes, and the field it
+/// drops -- here all three are the same key on the same container.
+#[test]
+fn the_fan_out_reads_its_list_its_target_and_the_field_it_drops() {
+    let pattern = rename_keys_pattern(GOOGLE_SCC_CONDITIONS);
+    assert_eq!(pattern.names, NameTable::Params);
+    assert_eq!(pattern.coerce, None);
+    assert_eq!(pattern.rename_key, None);
+    assert_eq!(
+        pattern.write,
+        RenameWrite::FanOut(Box::new(FanOut {
+            source: "json.asset.accessLevel.basic.conditions".into(),
+            target: "json.asset.accessLevel.basic.conditions".into(),
+            drop: Some("json.asset.accessLevel.basic.conditions".into()),
+        }))
+    );
+}
+
+/// The drop is its OWN field: this one takes `orgPolicy` off the raw asset and
+/// writes the renamed list somewhere else entirely.
+#[test]
+fn the_dropped_field_need_not_be_the_one_written() {
+    let pattern = rename_keys_pattern(GOOGLE_SCC_ORG_POLICY);
+    assert_eq!(
+        pattern.write,
+        RenameWrite::FanOut(Box::new(FanOut {
+            source: "json.asset.orgPolicy".into(),
+            target: "google_scc.asset.organization_policy".into(),
+            drop: Some("json.asset.orgPolicy".into()),
+        }))
+    );
+}
+
+/// The `.put(` spelling writes the renamed list back, and an element that is
+/// not a map is carried across as it stands.
+#[test]
+fn the_put_form_writes_the_renamed_list_and_carries_a_non_map_through() {
+    let mut event = Event::new(json!({
+        "json": { "asset": { "accessLevel": { "basic": { "conditions": [
+            { "ipSubnetworks": ["1.2.3.0/24"], "negate": false },
+            "not a map",
+        ] } } } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        GOOGLE_SCC_CONDITIONS,
+        &json!({ "ipSubnetworks": "ip_subnetworks" })
+    ));
+
+    assert_eq!(
+        event.get("json.asset.accessLevel.basic.conditions"),
+        Some(&json!([
+            { "ip_subnetworks": ["1.2.3.0/24"], "negate": false },
+            "not a map",
+        ]))
+    );
+}
+
+/// The dropped field goes and the written one is a different field, so the
+/// event carries the renamed list and nothing of the raw one.
+#[test]
+fn the_drop_takes_the_source_out_and_the_write_lands_elsewhere() {
+    let mut event = Event::new(json!({
+        "google_scc": { "asset": {} },
+        "json": { "asset": { "orgPolicy": [
+            { "constraint": "constraints/x", "updateTime": "2024-07-16T10:16:42Z" },
+        ] } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        GOOGLE_SCC_ORG_POLICY,
+        &json!({ "updateTime": "update_time" })
+    ));
+
+    assert_eq!(
+        event.get("google_scc.asset.organization_policy"),
+        Some(&json!([
+            { "constraint": "constraints/x", "update_time": "2024-07-16T10:16:42Z" },
+        ]))
+    );
+    assert!(!event.has("json.asset.orgPolicy"));
+}
+
+/// The assignment spelling stores the list under a scratch field, and the
+/// helper's own key guard moves a SCALAR `location` to `location_value`.
+#[test]
+fn the_assign_form_writes_the_list_and_renames_the_key_the_guard_names() {
+    let pattern = rename_keys_pattern(DEFENDER_CLOUD_ENTITIES);
+    assert_eq!(
+        pattern.rename_key,
+        Some(("location".into(), "location_value".into()))
+    );
+
+    let mut event = Event::new(json!({
+        "json": { "entities": [
+            { "hostname": "web-1", "location": "australiaeast", "aadtenantid": "t-1" },
+            { "location": { "cloudprovider": "Azure" } },
+        ] },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        DEFENDER_CLOUD_ENTITIES,
+        &json!({
+            "hostname": "host_name",
+            "aadtenantid": "aad_tenant_id",
+            "cloudprovider": "cloud_provider",
+        })
+    ));
+
+    assert_eq!(
+        event.get("entities_obj"),
+        Some(&json!([
+            { "host_name": "web-1", "location_value": "australiaeast", "aad_tenant_id": "t-1" },
+            // The guard sits in the helper's SCALAR branch, so a `location`
+            // object keeps its own name and is renamed through instead.
+            { "location": { "cloud_provider": "Azure" } },
+        ]))
+    );
+}
+
+/// The five-argument call names its table and each of its three retyping
+/// lists, and appends straight onto the ctx path the script pre-created.
+#[test]
+fn the_five_argument_form_names_its_table_and_its_retyping_lists() {
+    let pattern = rename_keys_pattern(CLAROTY_CHILDREN);
+    assert_eq!(pattern.names, NameTable::Member("renamefield".into()));
+    assert_eq!(
+        pattern.coerce,
+        Some(Coercions {
+            longs: "longfield".into(),
+            strings: "stringfield".into(),
+            bools: "boolfield".into(),
+        })
+    );
+    assert_eq!(
+        pattern.write,
+        RenameWrite::FanOut(Box::new(FanOut {
+            source: "json.children".into(),
+            target: "claroty_ctd.asset.children".into(),
+            drop: None,
+        }))
+    );
+}
+
+/// Each retyping list is keyed by the RENAMED name, and a key the table does
+/// not name is never retyped however the lists spell it.
+#[test]
+fn the_five_argument_form_retypes_by_the_renamed_name() {
+    let mut event = Event::new(json!({
+        "claroty_ctd": { "asset": {} },
+        "json": { "children": [{
+            "asset_type": "2",
+            "criticality": 2.7,
+            "edge_id": 1,
+            "approved": "TRUE",
+            // In `boolfield` but NOT in the name table, so the retyping arm
+            // the table guards never runs and the string stands.
+            "ghost": "false",
+            "name": "10.1.30.1",
+            "network": { "edge_id": 7, "name": "Default" },
+        }] },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CLAROTY_CHILDREN,
+        &json!({
+            "renamefield": {
+                "asset_type": "asset_type",
+                "criticality": "criticality",
+                "edge_id": "edge_id",
+                "approved": "approved",
+            },
+            "longfield": ["asset_type", "criticality"],
+            "stringfield": ["edge_id"],
+            "boolfield": ["approved", "ghost"],
+        })
+    ));
+
+    assert_eq!(
+        event.get("claroty_ctd.asset.children"),
+        Some(&json!([{
+            "asset_type": 2,
+            "criticality": 2,
+            "edge_id": "1",
+            "approved": true,
+            "ghost": "false",
+            "name": "10.1.30.1",
+            "network": { "edge_id": "7", "name": "Default" },
+        }]))
+    );
+}
+
+/// Every in-place script still renames the map where it stands, and none of
+/// them picks up a table member or a retyping list it does not pass.
+#[test]
+fn the_in_place_scripts_still_rename_where_they_stand() {
+    for (script, path) in [
+        (AWS_BEDROCK_RENAME, "aws_bedrock"),
+        (AD_ENTITY_RENAME, "activedirectory"),
+        (DNS_ANALYTICAL_RENAME, "microsoft_dnsserver.analytical"),
+        (DNS_AUDIT_RENAME, "microsoft_dnsserver.audit"),
+    ] {
+        let pattern = rename_keys_pattern(script);
+        assert_eq!(pattern.names, NameTable::Params, "{path}");
+        assert_eq!(pattern.coerce, None, "{path}");
+        assert_eq!(pattern.write, RenameWrite::InPlace(path.into()), "{path}");
+    }
+}
+
+/// A guard that rewrites the VALUE is not a key rename. Reading it as one
+/// would move `objectGUID` to a key named after the next literal in the file.
+#[test]
+fn a_value_rewriting_key_guard_is_not_a_key_rename() {
+    assert_eq!(rename_keys_pattern(AD_ENTITY_RENAME).rename_key, None);
+}
+
+/// okta's one-argument helper spells no name table, so this arm leaves it to
+/// the text matcher that does read it.
+#[test]
+fn the_arm_does_not_claim_a_helper_with_no_name_table() {
+    assert!(params_pattern(&crate::common::normalise(OKTA_UNDERSCORE)).is_none());
+}
+
+/// A helper whose result goes somewhere no reader places writes NOTHING.
+/// Guessing at a target is a corruption that leaves no error behind.
+#[test]
+fn a_write_no_reader_places_leaves_the_event_alone() {
+    // A real helper with its tail cut off, so the case is the vendor's own text
+    // rather than one invented to fail.
+    let script = GOOGLE_SCC_CONDITIONS
+        .split_once("\\ndef conditions")
+        .expect("the helper ends where the fan-out begins")
+        .0;
+    let pattern = rename_keys_pattern(script);
+    assert_eq!(pattern.write, RenameWrite::Unreadable);
+
+    let before = json!({ "json": { "QNAME": "google.es." } });
+    let mut event = Event::new(before.clone());
+    assert!(!try_params_painless(
+        &mut event,
+        script,
+        &json!({ "QNAME": "question_name" })
+    ));
+    assert_eq!(event.as_value(), &before);
+}

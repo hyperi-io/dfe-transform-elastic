@@ -232,7 +232,11 @@ fn collect_strings(event: &mut Event, list: &str, target: &str) {
 ///
 /// `Long.parseLong` does not trim, so neither does this. A fractional number
 /// truncates towards zero, which is what the cast does.
-fn as_long(value: &Value) -> Option<i64> {
+///
+/// Shared with the params ladder's `renameKeys` retyping, which calls the same
+/// vendor helper by another name: one reading of `convertToLong`, so the two
+/// cannot drift.
+pub(crate) fn as_long(value: &Value) -> Option<i64> {
     match value {
         Value::String(text) => text.parse::<i64>().ok(),
         #[allow(clippy::cast_possible_truncation)]
