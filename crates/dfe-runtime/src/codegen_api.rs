@@ -3096,7 +3096,7 @@ mod tests {
     /// `{format=simple, content=...}`, which Jackson will not parse. Reading
     /// the field with `get_string` answered `None` here and took the absent
     /// branch, so the processor silently succeeded on data it never parsed and
-    /// `on_failure` never ran. atlassian_cloud's `message` is exactly this.
+    /// `on_failure` never ran. `atlassian_cloud`'s `message` is exactly this.
     #[test]
     fn parse_json_field_declines_a_container() {
         for value in [json!({ "format": "simple" }), json!(["a", "b"])] {

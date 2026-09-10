@@ -1245,7 +1245,7 @@ mod tests {
 
     /// The nanosecond printer keeps between three and nine fraction digits.
     ///
-    /// sysdig and google_workspace_meet name this one, and read as a Java
+    /// sysdig and `google_workspace_meet` name this one, and read as a Java
     /// pattern it resolved to `%-S_%-d%p_%9f%p_%-M_%9f%p%9f%-S`. The digit
     /// counts here are Elasticsearch's own output, captured in the corpus.
     #[test]
