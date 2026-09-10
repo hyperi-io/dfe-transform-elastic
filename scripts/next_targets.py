@@ -76,7 +76,9 @@ DETAIL = re.compile(r"^\s+wrong in\s+(\d+), unlocks\s+(\d+)\s+(\S+)$")
 # Per FIXTURE, because a source aggregate hides one bad stream among good ones:
 # jamf_protect reads 92% across the source and 45% on the stream that holds all
 # of its debt.
-FIXTURE = re.compile(r"^\[([a-z0-9_]+)/(\S+)\] events \d+/\d+ .*?fields (\d+)/(\d+)")
+FIXTURE = re.compile(
+    r"^\[([a-z0-9_]+)/(\S+)\] events (\d+)/(\d+) .*?fields (\d+)/(\d+) .*?(\d+) extra"
+)
 
 
 def read_corpus(path: pathlib.Path) -> dict[str, dict]:
@@ -89,9 +91,10 @@ def read_corpus(path: pathlib.Path) -> dict[str, dict]:
             current = name
             # Per-fixture lines precede this one, so carry what they found
             # rather than replacing the entry and losing it.
-            carried = sources.get(name, {}).get("worst_fixture")
+            carried = sources.get(name, {})
             sources[name] = {
-                "worst_fixture": carried,
+                "worst_fixture": carried.get("worst_fixture"),
+                "extras_only": carried.get("extras_only"),
                 "events_missed": int(total) - int(events),
                 "events_total": int(total),
                 "fields_wrong": int(fields) - int(ok),
@@ -106,11 +109,22 @@ def read_corpus(path: pathlib.Path) -> dict[str, dict]:
                 "detail": [],
             }
         elif found := FIXTURE.match(line):
-            source, fixture, ok, fields = found.groups()
-            worst = sources.setdefault(source, {}).get("worst_fixture")
+            source, fixture, matched, events, ok, fields, extra = found.groups()
+            entry = sources.setdefault(source, {})
             share = int(ok) / int(fields) if int(fields) else 1.0
+            worst = entry.get("worst_fixture")
             if worst is None or share < worst[0]:
-                sources[source]["worst_fixture"] = (share, fixture, int(ok), int(fields))
+                entry["worst_fixture"] = (share, fixture, int(ok), int(fields))
+            # A fixture whose FIELDS are perfect and whose events still fail is
+            # losing them to extras alone, and no field ratio shows that.
+            if int(extra) and int(matched) < int(events) and int(ok) == int(fields):
+                clean = entry.get("extras_only")
+                if clean is None or int(extra) > clean[0]:
+                    entry["extras_only"] = (
+                        int(extra),
+                        fixture,
+                        int(events) - int(matched),
+                    )
         elif current and (found := DETAIL.match(line)):
             wrong, unlocks, field = found.groups()
             sources[current]["detail"].append((int(wrong), int(unlocks), field))
@@ -220,6 +234,12 @@ def best_unlocks(sources: dict[str, dict], top: int) -> None:
                     f"{'':22}WORST FIXTURE {fixture} at {ok}/{fields} ({100 * share:.0f}%)"
                     f" -- the fields below are frequency, not weight"
                 )
+        if clean := score.get("extras_only"):
+            extra, fixture, lost = clean
+            print(
+                f"{'':22}EXTRAS ALONE {fixture}: {extra} extra cost {lost} event(s)"
+                f" on 100% fields -- a matcher fixes none of it"
+            )
         for wrong, _, field in prefix:
             print(f"{'':22}{field}  (wrong in {wrong})")
     print()
