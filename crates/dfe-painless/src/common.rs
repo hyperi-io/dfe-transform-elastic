@@ -20330,6 +20330,9 @@ pub(crate) enum KnownPattern {
     ClassifyLadder(Box<ClassifyLadder>),
     MoveKeys(Vec<(String, String)>),
     MergeMapUp(Box<MergeMapUp>),
+    /// One map merged RECURSIVELY into another, on the vendor's own empty-wins
+    /// policy.
+    DeepMerge(Box<crate::deep_merge::DeepMerge>),
     ParameterFanOut(Box<ParameterFanOut>),
     QuotedKvScan(Box<QuotedKvScan>),
     LocalMapLookup(Box<LocalMapLookup>),
@@ -20687,6 +20690,20 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_unreserved_key_payload(normalised)
     {
         patterns.push(KnownPattern::UnreservedKeyPayload(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: a map merged RECURSIVELY into another, the arriving value taken
+    // only where the held one is absent or empty.
+    //
+    // Above `MergeMapUp`, which reads the same `.keySet()` loop as a one-level
+    // lift: its parent comes from `ctx_path_before`, and a recursive merge
+    // names its maps by PARAMETER, so it would resolve the write to whatever
+    // `ctx.` path happened to sit earlier in the script.
+    if normalised.contains("new LinkedHashSet(")
+        && let Some(pattern) = crate::deep_merge::parse_deep_merge(normalised)
+    {
+        patterns.push(KnownPattern::DeepMerge(Box::new(pattern)));
         return patterns;
     }
 
@@ -23541,6 +23558,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::ClassifyLadder(pattern) => run_classify_ladder(event, pattern),
         KnownPattern::MoveKeys(moves) => run_move_keys(event, moves),
         KnownPattern::MergeMapUp(pattern) => run_merge_map_up(event, pattern),
+        KnownPattern::DeepMerge(pattern) => crate::deep_merge::run_deep_merge(event, pattern),
         KnownPattern::ParameterFanOut(pattern) => run_parameter_fan_out(event, pattern),
         KnownPattern::QuotedKvScan(pattern) => run_quoted_kv_scan(event, pattern),
         KnownPattern::LocalMapLookup(pattern) => run_local_map_lookup(event, pattern),

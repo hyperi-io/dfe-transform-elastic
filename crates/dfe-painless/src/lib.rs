@@ -29,6 +29,7 @@ pub mod coercion;
 pub mod collect_present;
 pub mod collect_rows;
 pub mod common;
+pub mod deep_merge;
 pub mod element_mapping;
 pub mod entity;
 pub mod expr;

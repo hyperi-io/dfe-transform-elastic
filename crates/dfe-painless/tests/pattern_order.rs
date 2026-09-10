@@ -33,7 +33,7 @@
 //! Update deliberately, never by reflex:
 //!
 //! ```text
-//! DFE_UPDATE_PATTERN_LOCK=1 cargo test -p dfe-runtime --test pattern_order
+//! DFE_UPDATE_PATTERN_LOCK=1 cargo test -p dfe-painless --test pattern_order
 //! ```
 
 use std::path::{Path, PathBuf};
