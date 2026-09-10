@@ -302,26 +302,27 @@
  59 LookupNormalise
  60 StringifiedLookup
  61 StringifiedLookupOrLiteral
- 62 IndexedLookup
- 63 Scale
- 64 Replace
- 65 AddUniqueRow
- 66 FrameworkPreference
- 67 NormalisedLookup
- 68 StringifiedLookup
- 69 LookupNormalise
- 70 GuardedLookup
- 71 MergeRowOrFallback
- 72 GuardedParamsRow
- 73 IssueLifecycle
- 74 ArmedTable
- 75 RowOrDefaults
- 76 HexFields
- 77 KeyedByLookup
- 78 ScalarExpression
- 79 SelectRenameKeys
- 80 FieldTables
+ 62 CollectParamsRows
+ 63 IndexedLookup
+ 64 Scale
+ 65 Replace
+ 66 AddUniqueRow
+ 67 FrameworkPreference
+ 68 NormalisedLookup
+ 69 StringifiedLookup
+ 70 LookupNormalise
+ 71 GuardedLookup
+ 72 MergeRowOrFallback
+ 73 GuardedParamsRow
+ 74 IssueLifecycle
+ 75 ArmedTable
+ 76 RowOrDefaults
+ 77 HexFields
+ 78 KeyedByLookup
+ 79 ScalarExpression
+ 80 SelectRenameKeys
  81 FieldTables
- 82 MemberMappings
- 83 ConfiguredDateFormat
+ 82 FieldTables
+ 83 MemberMappings
+ 84 ConfiguredDateFormat
 

@@ -1043,6 +1043,71 @@ fn bench_epoch_rungs(c: &mut Criterion) {
     });
 }
 
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/symantec_endpoint_security_event/default.rs`,
+/// the widest of the source's twelve collect spellings.
+const SES_ATTRIBUTES: &str = r"def var = new HashSet();\n  if (ctx.file != null && ctx.file.attributes != null) {\n      var = ctx.file.attributes;\n  } else {\n    if (ctx.file == null)\n    {\n      ctx.file = new HashMap();\n    }\n  }\nfor (def file : ctx.ses.cybox.files) {\n  if (file.attribute_ids == null) {\n    continue;\n  }\n  for (def id : file.attribute_ids) {\n    def type = params[id.toString()];\n    if (type != null) {\n      var.add(type);\n    }\n  }\n} ctx.file.put('attributes', var)";
+
+/// The same stream's id stringify, which runs over that same list first.
+const SES_STRINGIFY: &str = r"for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.attribute_ids == null || !file.containsKey('attribute_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.attribute_ids.length; j++) {\n    if (file.attribute_ids[j] != null) {\n      new_ids.add(file.attribute_ids[j].toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.attribute_ids = new_ids;\n  }\n}";
+
+/// Four cybox files, three of them carrying ids, at the width the capture has.
+///
+/// Both matchers walk the list and then each element's own id list, so the
+/// nesting IS the measurement: one file with one id would measure the dispatch.
+fn ses_cybox_event() -> serde_json::Value {
+    json!({ "ses": { "cybox": { "files": [
+        { "path": "/tmp/a", "attribute_ids": [1, 2, 5], "type_id": 1 },
+        { "path": "/tmp/b", "type_id": 1 },
+        { "path": "/tmp/c", "attribute_ids": [2, 8], "type_id": 2 },
+        { "path": "/tmp/d", "attribute_ids": [1, 11, 16], "type_id": 6 },
+    ] } } })
+}
+
+/// The params row collect, over the nested list the vendor sends.
+fn bench_collect_params_rows(c: &mut Criterion) {
+    let plan = PainlessPlan::new(SES_ATTRIBUTES);
+    assert!(
+        plan.binding()
+            .iter()
+            .any(|b| b.starts_with("CollectParamsRows")),
+        "the collect bench no longer measures CollectParamsRows: {:?}",
+        plan.binding(),
+    );
+    let params = json!({
+        "1": "archive", "2": "compressed", "3": "directory", "4": "encrypted",
+        "5": "hidden", "8": "readonly", "11": "system", "16": "execute",
+    });
+
+    c.bench_function("painless_exec/collect_params_rows_planned", |b| {
+        b.iter_batched_ref(
+            || Event::new(ses_cybox_event()),
+            |event| painless_exec_plan_params(event, black_box(&plan), black_box(&params)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
+/// The id stringify over the same list.
+fn bench_stringify_member_list(c: &mut Criterion) {
+    let plan = PainlessPlan::new(SES_STRINGIFY);
+    assert!(
+        plan.binding()
+            .iter()
+            .any(|b| b.contains("StringifyMemberList")),
+        "the stringify bench no longer measures StringifyMemberList: {:?}",
+        plan.binding(),
+    );
+
+    c.bench_function("painless_exec/stringify_member_list_planned", |b| {
+        b.iter_batched_ref(
+            || Event::new(ses_cybox_event()),
+            |event| painless_exec_plan(event, black_box(&plan)),
+            BatchSize::SmallInput,
+        );
+    });
+}
+
 criterion_group!(
     benches,
     bench_params_matcher,
@@ -1067,6 +1132,8 @@ criterion_group!(
     bench_collect_present,
     bench_stringified_lookup_or_literal,
     bench_named_table_lookups,
-    bench_epoch_rungs
+    bench_epoch_rungs,
+    bench_collect_params_rows,
+    bench_stringify_member_list
 );
 criterion_main!(benches);

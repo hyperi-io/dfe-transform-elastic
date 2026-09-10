@@ -484,20 +484,42 @@ fn a_local_key_lookup_writes_the_row_and_nothing_on_a_miss() {
 ///
 /// `symantec_endpoint_security` guards on a CALL rather than a local and adds
 /// to a set, on 70 call sites; `amazon_security_lake` binds a local from a LIST
-/// element and puts the set it collected. Claiming either would write the
-/// guard's own row in place of what the script builds, so both stay on
-/// `IndexedLookup`.
+/// element and puts the set it collected. Claiming either here would write the
+/// guard's own row in place of what the script builds, so both belong to
+/// `CollectParamsRows`, which reads the collection they assemble.
 #[test]
 fn a_local_key_lookup_declines_a_guard_over_another_write() {
     let symantec = r"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var);";
     let security_lake = r"if (ctx.dns == null) {\n  ctx.dns = new HashMap();\n} def list = new HashSet(); for (def answer : ctx.ocsf.answers) {\n  if (answer.flags != null)\n  {\n    for (int i = 0; i < answer.flags.length; i++) {\n      def flag = answer.flags[i];\n      if(params.containsKey(flag))\n      {\n        list.add(params.get(flag));\n      }\n    }\n  }\n} ctx.dns.put('header_flags', list);";
 
-    for script in [symantec, security_lake] {
+    for (script, expected) in [
+        (
+            symantec,
+            crate::collect_rows::CollectParamsRows::new(
+                crate::collect_rows::RowSource::Path("ses.file.type_id".into()),
+                "file.type",
+                true,
+                true,
+            ),
+        ),
+        (
+            security_lake,
+            crate::collect_rows::CollectParamsRows::new(
+                crate::collect_rows::RowSource::Member {
+                    list: "ocsf.answers".into(),
+                    member: "flags".into(),
+                },
+                "dns.header_flags",
+                true,
+                false,
+            ),
+        ),
+    ] {
         let normalised = crate::common::normalise(script);
         assert_eq!(parse_local_key_lookup(&normalised), None, "{script}");
         assert_eq!(
             params_pattern(&normalised),
-            Some(ParamsPattern::IndexedLookup),
+            Some(ParamsPattern::CollectParamsRows(Box::new(expected))),
             "{script}"
         );
     }

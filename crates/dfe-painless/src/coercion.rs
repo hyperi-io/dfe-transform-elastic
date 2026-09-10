@@ -31,6 +31,7 @@
 
 use serde_json::{Map, Value};
 
+use crate::params::scalar_text;
 use dfe_core::Event;
 
 /// One coercion, in the placement its script spells.
@@ -71,6 +72,32 @@ pub enum LongCoercion {
         /// The list of strings built from it.
         target: String,
     },
+    /// Every element of a list collected as a long, dropping what Painless
+    /// would have thrown on.
+    ///
+    /// `def l = []; for (int i = 0; i < ctx.<list>.length; i++) { def e = ctx.<list>[i];`
+    /// `if (e == null) { continue } if (e instanceof long || e instanceof int)`
+    /// `{ l.add((long)e); } else if (e instanceof String && e != "") { l.add(Long.parseLong(e)); } }`
+    /// `ctx.<target> = l;`
+    CollectLongs {
+        /// The list walked.
+        list: String,
+        /// The list of longs built from it, the same path where the vendor
+        /// coerces in place.
+        target: String,
+    },
+    /// A list-valued member of every element of a list, its own members
+    /// rendered as strings in place.
+    ///
+    /// `for (int i = 0; i < ctx.<list>.length; i++) { def e = ctx.<list>[i];`
+    /// `... def n = []; for (int j = 0; j < e.<member>.length; j++)`
+    /// `{ n.add(e.<member>[j].toString()); } if (n.length != 0) { e.<member> = n; } }`
+    StringifyMemberList {
+        /// The list of elements walked.
+        list: String,
+        /// The list-valued member of each element that is rendered.
+        member: String,
+    },
 }
 
 /// Apply the coercion this script spells.
@@ -92,8 +119,60 @@ pub fn long_coercion(event: &mut Event, pattern: &LongCoercion) -> bool {
             target,
         } => collect_members(event, list, member, key, target),
         LongCoercion::CollectStrings { list, target } => collect_strings(event, list, target),
+        LongCoercion::CollectLongs { list, target } => collect_longs(event, list, target),
+        LongCoercion::StringifyMemberList { list, member } => {
+            stringify_member_list(event, list, member);
+        }
     }
     true
+}
+
+/// Render each member of `member` as a string, element by element.
+///
+/// An element carrying no such member, or one whose members all drop out, is
+/// left exactly as it arrived -- the script's `if (n.length != 0)` guard is
+/// what makes an all-null list a no-op rather than an empty one.
+fn stringify_member_list(event: &mut Event, list: &str, member: &str) {
+    let Some(Value::Array(items)) = event.get(list).cloned() else {
+        return;
+    };
+    let rewritten: Vec<Value> = items
+        .into_iter()
+        .map(|item| {
+            let Value::Object(mut fields) = item else {
+                return item;
+            };
+            let strings: Vec<Value> = fields
+                .get(member)
+                .and_then(Value::as_array)
+                .map(|ids| {
+                    ids.iter()
+                        .filter_map(scalar_text)
+                        .map(Value::from)
+                        .collect()
+                })
+                .unwrap_or_default();
+            if !strings.is_empty() {
+                // `insert` keeps the key where it was, which is where Painless
+                // leaves it and what a later render over the map depends on.
+                fields.insert(member.to_owned(), Value::Array(strings));
+            }
+            Value::Object(fields)
+        })
+        .collect();
+    let _ = event.set(list, Value::Array(rewritten));
+}
+
+/// Collect every element as a long.
+///
+/// A null, an empty string and anything the cast would have thrown on are all
+/// dropped, which is what the script's own three arms do between them.
+fn collect_longs(event: &mut Event, list: &str, target: &str) {
+    let Some(items) = event.get(list).and_then(Value::as_array) else {
+        return;
+    };
+    let collected: Vec<Value> = items.iter().filter_map(as_long).map(Value::from).collect();
+    let _ = event.set(target, Value::Array(collected));
 }
 
 /// Lift `member` out of every item, coercing its `key`, and collect the lot.
@@ -170,6 +249,65 @@ pub fn parse_long_coercion(script: &str) -> Option<LongCoercion> {
     parse_scalar(script)
         .or_else(|| parse_collect_members(script))
         .or_else(|| parse_collect_strings(script))
+        .or_else(|| parse_collect_longs(script))
+        .or_else(|| parse_stringify_member_list(script))
+}
+
+/// `for (int i = 0; i < ctx.<list>.length; i++) { def e = ctx.<list>[i]; ...
+/// n.add(e.<member>[j].toString()); ... e.<member> = n; }`
+///
+/// Read from the WRITE-BACK outwards: the accumulator names the member, the
+/// member's own subject names the element local, and that local's binding
+/// names the list. Nothing here is keyed on the vendor's variable names.
+fn parse_stringify_member_list(script: &str) -> Option<LongCoercion> {
+    let (head, rest) = script.split_once(" = [];")?;
+    let accumulator = local_name(head)?;
+
+    // The one write-back that puts the accumulator anywhere.
+    let (before, _) = rest.split_once(&format!(" = {accumulator};"))?;
+    let write_back = clean(before.rsplit(['{', '\n', ';']).next()?);
+    let (item, member) = write_back.split_once('.')?;
+    if item.is_empty() || !is_path(item) || member.is_empty() || !is_path(member) {
+        return None;
+    }
+
+    // Every member read goes through `toString()`, or this is collecting
+    // something other than the rendered ids.
+    if !script.contains(&format!("{item}.{member}[")) || !script.contains(".toString());") {
+        return None;
+    }
+
+    let bound = script.split_once(&format!("def {item} = ctx."))?.1;
+    let list = clean(bound.split('[').next()?);
+    (!list.is_empty() && is_path(&list)).then_some(LongCoercion::StringifyMemberList {
+        list,
+        member: member.to_owned(),
+    })
+}
+
+/// `def l = []; for (int i = 0; i < ctx.<list>.length; i++) { def e = ctx.<list>[i]; ... }
+/// ctx.<target> = l;`
+///
+/// The accumulator is a local and the loop is INDEXED, which is what tells this
+/// apart from the string collect above.
+fn parse_collect_longs(script: &str) -> Option<LongCoercion> {
+    let (head, rest) = script.split_once(" = [];")?;
+    let accumulator = local_name(head)?;
+
+    let list = clean(rest.split_once(".length;")?.0.rsplit_once("< ctx.")?.1);
+    if list.is_empty() || !is_path(&list) {
+        return None;
+    }
+
+    // Both numeric arms, or the loop is collecting something other than longs.
+    if !rest.contains(&format!("{accumulator}.add((long)"))
+        || !rest.contains(&format!("{accumulator}.add(Long.parseLong("))
+    {
+        return None;
+    }
+
+    let (target, value) = sole_assignment(rest.rsplit_once('}')?.1)?;
+    (value == accumulator).then_some(LongCoercion::CollectLongs { list, target })
 }
 
 /// `if (ctx.<source> instanceof String) { ctx.<t> = Long.parseLong(ctx.<source>); }
@@ -491,8 +629,80 @@ mod tests {
 
     const COLLECT_STRINGS: &str = r#"ctx.vulnerability.id = new ArrayList(); for (cwe in ctx.json.detection.cwe.list) {\n  if (cwe instanceof String) {\n    ctx.vulnerability.id.add(cwe);\n  } else {\n    ctx.vulnerability.id.add(((long)cwe).toString());\n  } \n  \n}\n"#;
 
+    /// Verbatim from `symantec_endpoint_security_event/default.rs`, tagged
+    /// `script_convert_file_size_to_long`.
+    const COLLECT_LONGS: &str = r#"def new_sizes = []; for (int i = 0; i < ctx.file.size.length; i++) {\n  def sz = ctx.file.size[i];\n  if (sz == null) {\n    continue\n  }\n  if (sz instanceof long || sz instanceof int) {\n    new_sizes.add((long)sz);\n  } else if (sz instanceof String && sz != \"\") {\n    new_sizes.add(Long.parseLong(sz));\n  }\n} ctx.file.size = new_sizes;"#;
+
+    /// The same stream's id stringify, one list of ids per element of a list.
+    const STRINGIFY_IDS: &str = r#"for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.attribute_ids == null || !file.containsKey('attribute_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.attribute_ids.length; j++) {\n    if (file.attribute_ids[j] != null) {\n      new_ids.add(file.attribute_ids[j].toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.attribute_ids = new_ids;\n  }\n}"#;
+
     fn parse(script: &str) -> Option<LongCoercion> {
         parse_long_coercion(&normalise(script))
+    }
+
+    #[test]
+    fn the_long_collect_reads_the_list_it_rewrites_in_place() {
+        assert_eq!(
+            parse(COLLECT_LONGS),
+            Some(LongCoercion::CollectLongs {
+                list: "file.size".into(),
+                target: "file.size".into(),
+            })
+        );
+    }
+
+    #[test]
+    fn a_null_and_an_empty_string_are_dropped_from_the_longs() {
+        let mut event = Event::new(json!({ "file": { "size": [12, "34", null, "", "x"] } }));
+        assert!(long_coercion(&mut event, &parse(COLLECT_LONGS).unwrap()));
+        assert_eq!(event.get("file.size"), Some(&json!([12, 34])));
+    }
+
+    #[test]
+    fn the_stringify_names_its_list_and_member_without_reading_a_variable_name() {
+        assert_eq!(
+            parse(STRINGIFY_IDS),
+            Some(LongCoercion::StringifyMemberList {
+                list: "ses.cybox.files".into(),
+                member: "attribute_ids".into(),
+            })
+        );
+    }
+
+    #[test]
+    fn every_element_gets_its_own_ids_rendered() {
+        let mut event = Event::new(json!({
+            "ses": { "cybox": { "files": [
+                { "path": "/a", "attribute_ids": [1, 8] },
+                { "path": "/b" },
+                { "path": "/c", "attribute_ids": [16] },
+            ] } },
+        }));
+
+        assert!(long_coercion(&mut event, &parse(STRINGIFY_IDS).unwrap()));
+
+        assert_eq!(
+            event.get("ses.cybox.files"),
+            Some(&json!([
+                { "path": "/a", "attribute_ids": ["1", "8"] },
+                { "path": "/b" },
+                { "path": "/c", "attribute_ids": ["16"] },
+            ]))
+        );
+    }
+
+    #[test]
+    fn an_all_null_list_is_left_as_it_arrived() {
+        let mut event = Event::new(json!({
+            "ses": { "cybox": { "files": [{ "attribute_ids": [null, null] }] } },
+        }));
+
+        assert!(long_coercion(&mut event, &parse(STRINGIFY_IDS).unwrap()));
+
+        assert_eq!(
+            event.get("ses.cybox.files"),
+            Some(&json!([{ "attribute_ids": [null, null] }]))
+        );
     }
 
     #[test]

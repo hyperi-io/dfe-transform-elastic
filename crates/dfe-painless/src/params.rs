@@ -273,6 +273,8 @@ pub(crate) enum ParamsPattern {
     MemberLookup(MemberLookupScript),
     /// A params lookup that writes nothing when the table misses.
     GuardedLookup(GuardedLookupScript),
+    /// A params row per id, collected into the field the script writes back.
+    CollectParamsRows(Box<crate::collect_rows::CollectParamsRows>),
     IndexedLookup,
     Scale,
     Replace,
@@ -894,6 +896,18 @@ fn params_pattern_tail(normalised: &str) -> Option<ParamsPattern> {
         && let Some(pattern) = parse_stringified_lookup_or_literal(normalised)
     {
         return Some(pattern);
+    }
+
+    // Pattern: a params row per id, collected into the field the script puts
+    // it back into. Above `IndexedLookup`, which claims the same two keywords
+    // with no parse behind them and whose runner then declines a table that is
+    // a map rather than an array. Gated on the parse, so what it cannot read
+    // falls through.
+    if normalised.contains(".put(")
+        && normalised.contains("params")
+        && let Some(pattern) = crate::collect_rows::parse_collect_params_rows(normalised)
+    {
+        return Some(ParamsPattern::CollectParamsRows(Box::new(pattern)));
     }
 
     // Pattern: index a params array by a numeric field.
@@ -1886,14 +1900,36 @@ impl GuardedLookupScript {
     }
 }
 
+/// A params key expression stripped back to the term that names the value.
+///
+/// `obj.toString()` and `(ctx.ses.device_os_type_id).toString()` are the same
+/// term in two spellings, and a reader that knows only the first declines the
+/// second outright.
+pub(crate) fn key_term(key: &str) -> Option<String> {
+    let key = key.trim().trim_end_matches(".toString()").trim();
+    let key = key
+        .strip_prefix('(')
+        .and_then(|inner| inner.strip_suffix(')'))
+        .unwrap_or(key)
+        .trim();
+    (!key.is_empty() && !key.contains(['(', ' ', '\n'])).then(|| key.to_string())
+}
+
 /// `if (params.containsKey(k)) { ctx.<target> = params.get(k); }`
 fn parse_guarded_lookup(script: &str) -> Option<GuardedLookupScript> {
     // Balanced, because the key is `obj.toString()` and splitting on the first
     // `)` cuts inside that call rather than after the argument.
-    let expr = last_call_argument(script, "params.containsKey(")?;
-    let local = expr.trim().trim_end_matches(".toString()").trim();
-    let bound = script.split_once(&format!(" {local} = ctx."))?.1;
-    let key = clean_path(bound.split([';', '\n']).next()?.trim());
+    let term = key_term(&last_call_argument(script, "params.containsKey(")?)?;
+    // The key is written either inline as a path or bound to a local first.
+    let key = if let Some(path) = term
+        .strip_prefix("ctx.")
+        .or_else(|| term.strip_prefix("ctx?."))
+    {
+        clean_path(path)
+    } else {
+        let bound = script.split_once(&format!(" {term} = ctx."))?.1;
+        clean_path(bound.split([';', '\n']).next()?.trim())
+    };
     let target = ctx_writes(script).last().map(|(path, _)| path.clone())?;
     (!key.is_empty() && !target.is_empty()).then(|| GuardedLookupScript::new(key, target))
 }
@@ -2158,6 +2194,9 @@ pub(crate) fn run_params_pattern(
         }
         ParamsPattern::MemberLookup(pattern) => member_lookup(event, pattern, params),
         ParamsPattern::GuardedLookup(pattern) => guarded_lookup(event, pattern, params),
+        ParamsPattern::CollectParamsRows(pattern) => {
+            crate::collect_rows::collect_params_rows(event, pattern, params)
+        }
         ParamsPattern::IndexedLookup => try_indexed_lookup(event, normalised, params),
         ParamsPattern::Scale => try_scale(event, normalised, params),
         ParamsPattern::Replace => try_replace(event, normalised, params),
@@ -9824,7 +9863,7 @@ fn split_assignment(statement: &str) -> Option<(&str, &str)> {
 }
 
 /// A scalar's text, the way Painless would stringify it for a map key.
-fn scalar_text(value: &Value) -> Option<String> {
+pub(crate) fn scalar_text(value: &Value) -> Option<String> {
     match value {
         Value::String(s) => Some(s.clone()),
         Value::Number(n) => Some(n.to_string()),
@@ -10071,7 +10110,7 @@ fn literal_at(text: &str) -> Option<String> {
 /// both halves of one call -- the subject path and the key -- gets them off the
 /// SAME occurrence. Pairing `ctx_path_before(script, ".put(")` with a key read
 /// from a later `.put(` names a field neither statement writes.
-fn literal_call(script: &str, call: &str) -> Option<(usize, String)> {
+pub(crate) fn literal_call(script: &str, call: &str) -> Option<(usize, String)> {
     let mut at = 0;
     while let Some(found) = script[at..].find(call) {
         let start = at + found;
@@ -10187,7 +10226,7 @@ pub(crate) fn ctx_path_before(script: &str, marker: &str) -> Option<String> {
 /// call -- by offset, because the key it read had to come off that same call --
 /// can read the subject without searching for the marker a second time and
 /// landing on an EARLIER one.
-fn ctx_path_at_end(head: &str) -> Option<String> {
+pub(crate) fn ctx_path_at_end(head: &str) -> Option<String> {
     // `ctx?.` is the same root written null-safe, and juniper_srx writes every
     // one of its paths that way. Reading only the plain spelling left its
     // sentinel sweep bound to a runner that could not find the map.
@@ -10235,20 +10274,11 @@ fn last_bracket_subscript(script: &str, name: &str) -> Option<String> {
 ///
 /// The two spellings differ only in the delimiter pair, so they share the
 /// scan rather than the scan being written twice and drifting.
-fn last_delimited(script: &str, name: &str, open: char, close: char) -> Option<String> {
-    let start = script.rfind(name)? + name.len();
-    let mut depth = 1usize;
-    for (i, c) in script[start..].char_indices() {
-        if c == open {
-            depth += 1;
-        } else if c == close {
-            depth -= 1;
-            if depth == 0 {
-                return Some(script[start..start + i].to_string());
-            }
-        }
-    }
-    None
+pub(crate) fn last_delimited(script: &str, name: &str, open: char, close: char) -> Option<String> {
+    // The name ends AT its own open, so the region starts one char back and
+    // [`balanced`] sees the opener it expects to be handed.
+    let at = script.rfind(name)? + name.len() - open.len_utf8();
+    balanced(&script[at..], open, close).map(|(inside, _)| inside.to_string())
 }
 
 /// Strip Painless null-safe navigation from a field path.

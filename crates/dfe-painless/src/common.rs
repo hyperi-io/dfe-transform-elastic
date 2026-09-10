@@ -22534,7 +22534,13 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
     // `(long)` cast. LATE, because far richer scripts spell the same two arms:
     // cloudflare and sysdig read them into a LOCAL and rescale it, and claiming
     // either would write the raw epoch instead.
-    if normalised.contains(" instanceof String)")
+    // Three markers, because the collects carry no `instanceof String)` -- one
+    // guards on `instanceof String && x != ""` and the other renders through
+    // `toString()`. Widening the first marker instead would reach the 42 files
+    // that spell the paren-less guard for something else.
+    if (normalised.contains(" instanceof String)")
+        || normalised.contains(".add(Long.parseLong(")
+        || normalised.contains(".toString());"))
         && let Some(pattern) = crate::coercion::parse_long_coercion(normalised)
     {
         patterns.push(KnownPattern::LongCoercion(Box::new(pattern)));

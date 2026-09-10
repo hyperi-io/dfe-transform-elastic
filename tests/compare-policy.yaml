@@ -190,6 +190,14 @@ unordered:
   # o365 collects the forwarding addresses into a Java HashSet and lists it,
   # so Elastic's order is the hash-bucket walk and carries no meaning.
   - email.to.address
+  # symantec_endpoint_security collects both of these into a Java HashSet the
+  # same way. Its email direction ids 0 then 1 map to unknown then inbound and
+  # every capture holds ["inbound","unknown"]; six attribute ids go in in
+  # numeric order and come back [encrypted, hidden, readonly, archive,
+  # compressed, directory]. Reproducing the bucket walk would bake a
+  # meaningless order into shipped data to score a test.
+  - email.direction
+  - file.attributes
 
 # Per-fixture declarations Elastic already ships are honoured in addition to the
 # above, read from each `*-config.yml`:
