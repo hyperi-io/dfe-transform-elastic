@@ -7954,14 +7954,17 @@ pub fn keys_to_snake_case(value: &mut Value, rule: SnakeRule) {
 
 /// The `convertToSnakeCase` helper the integrations copy between packages.
 ///
-/// It is copied, not shared, so the copies have DIVERGED and the two
-/// differences both change the output. `sentinel_one`'s `unified_alert` and
+/// It is copied, not shared, so the copies have DIVERGED and each difference
+/// changes the output. `sentinel_one`'s `unified_alert` and
 /// `entityanalytics_entra_id` break the word wherever the previous character
 /// was not itself uppercase -- digits and dots included, so `cve2021Id` becomes
 /// `cve2021_id` -- and DROP a key holding an `@`, which is how Microsoft's
 /// `@odata.*` metadata stays out of the document. `jupiter_one`'s breaks only
 /// after a lowercase character and keeps every key, so its literal `tag.`-dotted
 /// keys stay `tag.account_name` where the other rule writes `tag._account_name`.
+/// `beyondtrust`'s reads the character AFTER the uppercase as well, so it
+/// separates only where a letter or digit precedes: `HTTPServer` is
+/// `http_server` and `IT_Administrators` keeps its single underscore.
 /// [`snake_case_apply`] reads which is which off the script.
 ///
 /// Returns a new value; the script assigns the result rather than mutating.
@@ -9519,7 +9522,7 @@ fn try_answers_from_resolved_ip(event: &mut Event) -> bool {
 }
 
 /// The `ctx.<target> = <fn>(ctx.<source>)` line the converter is applied by,
-/// plus the two ways the copies of the helper disagree.
+/// plus the three ways the copies of the helper disagree on a word break.
 ///
 /// The spellings differ in whether the target is the source: `entra_id`
 /// rewrites its own object in place, `sentinel_one` and `jupiter_one` write the
@@ -9527,10 +9530,6 @@ fn try_answers_from_resolved_ip(event: &mut Event) -> bool {
 /// covers them. `jupiter_one` then REMOVES the source, and reading that off the
 /// script is what keeps its whole `json` tree out of the document.
 fn snake_case_apply(script: &str) -> Option<KnownPattern> {
-    // Which word-break rule the copied helper implements. `lastCharWasUpperCase`
-    // is cleared by any non-uppercase character, a dot included; the other guard
-    // asks about the previous character directly and breaks only after a
-    // lowercase one. See [`camel_map_to_snake`].
     // The helper must actually detect CASE. One source converts kebab-case
     // with a bare `str.replace("-", "_")` and names it `convertToSnakeCase`
     // too, so keying on the call alone claims a script this runner cannot
@@ -9539,7 +9538,11 @@ fn snake_case_apply(script: &str) -> Option<KnownPattern> {
         return None;
     }
 
-    let rule = if script.contains("Character.isLowerCase(str.charAt(i - 1))") {
+    // Read FIRST: beyondtrust's copy spells `Character.isLowerCase(` against the
+    // variable `prev`, so the arm below cannot tell it from `entra_id`'s.
+    let rule = if script.contains("Character.isUpperCase(prev) && nextIsLower") {
+        SnakeRule::AcronymRunStrict
+    } else if script.contains("Character.isLowerCase(str.charAt(i - 1))") {
         SnakeRule::OnWordBreak
     } else {
         SnakeRule::AfterNonUpper

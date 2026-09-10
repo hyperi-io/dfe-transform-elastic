@@ -424,8 +424,10 @@ pub fn painless_keys_to_snake_case(v: &Value) -> Value {
 
 /// Where a snake-case conversion puts its underscores.
 ///
-/// The two Painless idioms this crate reproduces disagree, and the difference
-/// is visible in the Elastic fixtures, so both are kept.
+/// The integrations COPY this helper between packages rather than share it, so
+/// the copies have diverged. Seven of them disagree in ways the captured output
+/// shows, which is why each is kept and the rule is read off the script's own
+/// body -- never off the source name.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SnakeRule {
     /// Underscore only at a lowercase-to-uppercase transition, so
@@ -444,6 +446,16 @@ pub enum SnakeRule {
     /// packages that copied its helper walk the run with a counter and move
     /// the separator back once they see the run end.
     AcronymRun,
+    /// The separator goes in front of an uppercase only where a LETTER or DIGIT
+    /// precedes it, and an uppercase run keeps its acronym whole unless a
+    /// lowercase letter follows: `HTTPServer` is `http_server`,
+    /// `IT_Administrators` is `it_administrators`, `cve2021Id` is `cve2021_id`.
+    ///
+    /// beyondtrust's `epm` and `isi` ship it as a LOOKAHEAD rather than a run
+    /// counter, which is what keeps a run ended by `_`, `-`, `.`, a space or the
+    /// end of the string intact. [`Self::AcronymRun`] breaks all of those and
+    /// writes `i_t__administrators`.
+    AcronymRunStrict,
     /// Underscore before an uppercase RUN that follows a lowercase, and an
     /// underscore already sitting in front of that lowercase is DROPPED because
     /// the match consumes it: `tag_aB` is `taga_b`.
@@ -470,6 +482,7 @@ pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
     // loop below, so each returns from its own walk.
     match rule {
         SnakeRule::AcronymRun => return acronym_run_snake(s),
+        SnakeRule::AcronymRunStrict => return acronym_run_strict_snake(s),
         SnakeRule::CamelBreak => return camel_break(s, true).to_lowercase(),
         SnakeRule::CamelBreakKeepingUnderscore => return camel_break(s, false).to_lowercase(),
         SnakeRule::OnWordBreak | SnakeRule::BeforeEveryUpper | SnakeRule::AfterNonUpper => {}
@@ -487,6 +500,7 @@ pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
                 SnakeRule::BeforeEveryUpper => !first,
                 SnakeRule::AfterNonUpper => !first && !prev_was_uppercase,
                 SnakeRule::AcronymRun
+                | SnakeRule::AcronymRunStrict
                 | SnakeRule::CamelBreak
                 | SnakeRule::CamelBreakKeepingUnderscore => {
                     unreachable!("the run rules return above, before this loop")
@@ -516,10 +530,10 @@ pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
 ///
 /// This is cyberarkpas's rule and it is CORRECT as written -- the run's
 /// separator moves back whatever ends the run. Narrowing that to "ends at a
-/// lowercase letter", plus refusing to double a separator, reproduces
-/// beyondtrust_epm's capture exactly (211/211 against 199) and improves eight
-/// further fixtures, and it costs cyberarkpas an event and 5 fields. Those two
-/// conditions belong in a SEVENTH rule bound per script, never in this one.
+/// lowercase letter", plus refusing to double a separator, costs cyberarkpas an
+/// event and 5 fields, so it is NOT a fix to make here. beyondtrust spells that
+/// narrower rule as a helper of its own and [`SnakeRule::AcronymRunStrict`]
+/// carries it, bound off the script text rather than off the source.
 fn acronym_run_snake(s: &str) -> String {
     // The script's own fast path: nothing after the first character is
     // uppercase, so there is no word to break.
@@ -548,6 +562,55 @@ fn acronym_run_snake(s: &str) -> String {
         }
         result.extend(ch.to_lowercase());
     }
+    result
+}
+
+/// beyondtrust's `camelToSnake`, which LOOKS AHEAD instead of counting a run.
+///
+/// The vendor's own condition, verbatim from `epm`'s and `isi`'s pipelines:
+///
+/// ```text
+/// char prev = str.charAt(i - 1);
+/// boolean nextIsLower = (i + 1 < str.length()) && Character.isLowerCase(str.charAt(i + 1));
+/// boolean prevIsDigit = Character.isDigit(prev);
+/// if (Character.isLowerCase(prev) || prevIsDigit || (Character.isUpperCase(prev) && nextIsLower)) {
+///   result.append('_');
+/// }
+/// ```
+///
+/// Every predecessor outside those three arms -- `_`, `-`, `.`, a space, the
+/// start of the string -- writes nothing, which is what keeps a separator from
+/// doubling and leaves a run the string ends on whole.
+///
+/// Two divergences from Java: `char::to_lowercase` is the full mapping where
+/// `Character.toLowerCase(char)` is one codepoint, the convention
+/// [`to_snake_case`] already sets; and `char::is_numeric` admits Unicode
+/// `Nl`/`No` besides the `Nd` that `Character.isDigit` means.
+fn acronym_run_strict_snake(s: &str) -> String {
+    let mut result = String::with_capacity(s.len() + 4);
+    let mut chars = s.chars().peekable();
+    let mut prev: Option<char> = None;
+
+    while let Some(ch) = chars.next() {
+        if ch.is_uppercase() {
+            // `prev` is None only at i == 0, which is the vendor's `i > 0`.
+            if let Some(prev) = prev {
+                let next_is_lower = chars.peek().is_some_and(|next| next.is_lowercase());
+                if prev.is_lowercase()
+                    || prev.is_numeric()
+                    || (prev.is_uppercase() && next_is_lower)
+                {
+                    result.push('_');
+                }
+            }
+            result.extend(ch.to_lowercase());
+        } else {
+            // Appended UNCHANGED, so a separator already in the key survives.
+            result.push(ch);
+        }
+        prev = Some(ch);
+    }
+
     result
 }
 

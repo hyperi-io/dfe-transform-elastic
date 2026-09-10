@@ -100,16 +100,29 @@ def acronym_run(s):
 
 
 def acronym_run_strict(s):
-    """`acronym_run` with the two conditions the captures require.
+    """beyondtrust's `convertToSnakeCase`, transcribed from the vendor.
 
-    The run's separator moves back only when a lowercase LETTER follows, so a
-    run ended by `_`, `-` or end-of-string keeps its acronym whole; and no
-    separator is inserted where one already sits. Without the first,
-    `IT_Administrators` becomes `i_t_administrators` -- the same corruption that
-    turned tanium's `Computer IP` into `computer _i_p`. Without the second,
-    `Data_Protection_Policy` becomes `data__protection__policy`.
+    Three arms decide a separator before an uppercase character, and nothing
+    else does: the previous character is lowercase, or is a DIGIT, or is
+    uppercase with a lowercase one following. A `_`, `-`, `.` or space
+    satisfies none of them, which is why `IT_Administrators` stays
+    `it_administrators` rather than becoming `i_t_administrators` -- the
+    corruption that turned tanium's `Computer IP` into `computer _i_p`.
+
+    Matches `acronym_run_strict_snake` in `crates/dfe-painless/src/helpers.rs`.
+    An earlier version of this guarded only `_` and `-`, so it wrote
+    `tag._account_name` and `computer _ip` where the vendor writes
+    `tag.account_name` and `computer ip`.
     """
-    return _acronym_run(s, lowercase_ends_run_only=True, guard_double_separator=True)
+    out = []
+    for i, ch in enumerate(s):
+        if ch.isupper() and i > 0:
+            prev = s[i - 1]
+            next_is_lower = i + 1 < len(s) and s[i + 1].islower()
+            if prev.islower() or prev.isdigit() or (prev.isupper() and next_is_lower):
+                out.append("_")
+        out.append(ch.lower())
+    return "".join(out)
 
 
 def camel_break(s, eat_underscore):

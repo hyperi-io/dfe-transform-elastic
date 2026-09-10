@@ -49,7 +49,7 @@
     "bbot": { "events": 797, "events_total": 805, "fields_wrong": 10 },
     "beelzebub": { "events": 4, "events_total": 5, "fields_wrong": 1 },
     "beyondinsight_password_safe": { "events": 0, "events_total": 7, "fields_wrong": 197 },
-    "beyondtrust_epm": { "events": 0, "events_total": 4, "fields_wrong": 95 },
+    "beyondtrust_epm": { "events": 4, "events_total": 4, "fields_wrong": 0 },
     "beyondtrust_isi": { "events": 0, "events_total": 4, "fields_wrong": 5 },
     "beyondtrust_pra": { "events": 0, "events_total": 2, "fields_wrong": 2 },
     "bitdefender": { "events": 67, "events_total": 69, "fields_wrong": 2 },

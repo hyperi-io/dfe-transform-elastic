@@ -5442,6 +5442,42 @@ fn camel_to_snake_after_a_lowercase_only_and_removes_the_source() {
     assert!(!event.has("json"), "the script removes what it converted");
 }
 
+/// Verbatim from `beyondtrust_epm/audit`, in the ESCAPED form a stored script
+/// arrives in. Its helper reads the character after the uppercase as well as
+/// the one before, and the rule is bound off that clause -- `AfterNonUpper`,
+/// which this script would otherwise take, writes `it__administrators`.
+#[test]
+fn the_lookahead_helper_binds_the_strict_run_rule() {
+    let script = r#"String camelToSnake(String str) {\n  StringBuilder result = new StringBuilder();\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0) {\n        char prev = str.charAt(i - 1);\n        boolean nextIsLower = (i + 1 < str.length()) && Character.isLowerCase(str.charAt(i + 1));\n        boolean prevIsDigit = Character.isDigit(prev);\n        if (Character.isLowerCase(prev) || prevIsDigit || (Character.isUpperCase(prev) && nextIsLower)) {\n          result.append('_');\n        }\n      }\n      result.append(Character.toLowerCase(c));\n    } else {\n      result.append(c);\n    }\n  }\n  return result.toString();\n}\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      String newKey = camelToSnake(entry.getKey());\n      newObj[newKey] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\nctx.beyondtrust_epm = ctx.beyondtrust_epm ?: [:];\nif (ctx.beyondtrust_epm?.audit != null) {\n  ctx.beyondtrust_epm.audit = convertToSnakeCase(ctx.beyondtrust_epm.audit);\n}"#;
+
+    let mut event = Event::new(json!({
+        "beyondtrust_epm": {"audit": {
+            "IT_Administrators": 1,
+            "MessageID": 2,
+            "HTTPServer": 3,
+            "Data_Protection_Policy": 4,
+            "nested": {"cve2021Id": 5},
+        }},
+    }));
+
+    assert!(try_known_painless(&mut event, script));
+    let audit = event.get("beyondtrust_epm.audit").unwrap();
+    assert!(
+        audit.get("it_administrators").is_some(),
+        "a run the string does not end at a lowercase keeps its acronym: {audit}",
+    );
+    assert!(audit.get("message_id").is_some(), "{audit}");
+    assert!(audit.get("http_server").is_some(), "{audit}");
+    assert!(
+        audit.get("data_protection_policy").is_some(),
+        "an existing separator is never doubled: {audit}",
+    );
+    assert!(
+        audit.pointer("/nested/cve2021_id").is_some(),
+        "the vendor's digit arm, applied through the recursion: {audit}",
+    );
+}
+
 /// A value map written as an if/else-if chain with `.put()` as the write.
 /// Verbatim from `zscaler_zia/firewall`, whose device OS table is spelled
 /// this way rather than as params.
@@ -6382,6 +6418,70 @@ fn a_snake_case_run_breaks_before_the_last_upper() {
     );
     // The script's fast path: no uppercase after the first.
     assert_eq!(to_snake_case("Rfc5424", SnakeRule::AcronymRun), "rfc5424");
+}
+
+/// beyondtrust's lookahead helper agrees with the run counter on an acronym a
+/// lowercase follows, and parts company everywhere else.
+#[test]
+fn the_strict_run_breaks_only_where_a_letter_or_digit_precedes() {
+    // Where the two agree: a run a lowercase ends.
+    for key in ["MessageID", "HTTPServer", "IsoTimestamp", "Rfc5424"] {
+        assert_eq!(
+            to_snake_case(key, SnakeRule::AcronymRunStrict),
+            to_snake_case(key, SnakeRule::AcronymRun),
+            "{key}",
+        );
+    }
+
+    // A run the string ENDS on keeps its acronym; `AcronymRun` splits it.
+    assert_eq!(
+        to_snake_case("MessageID", SnakeRule::AcronymRunStrict),
+        "message_id"
+    );
+    assert_eq!(
+        to_snake_case("SourceIP", SnakeRule::AcronymRunStrict),
+        "source_ip"
+    );
+
+    // A separator already in the key is never doubled.
+    assert_eq!(
+        to_snake_case("IT_Administrators", SnakeRule::AcronymRunStrict),
+        "it_administrators"
+    );
+    assert_eq!(
+        to_snake_case("Data_Protection_Policy", SnakeRule::AcronymRunStrict),
+        "data_protection_policy"
+    );
+
+    // A dot and a space are separators too, so neither gains an underscore.
+    assert_eq!(
+        to_snake_case("tag.AccountName", SnakeRule::AcronymRunStrict),
+        "tag.account_name"
+    );
+    assert_eq!(
+        to_snake_case("Computer IP", SnakeRule::AcronymRunStrict),
+        "computer ip"
+    );
+
+    // The vendor's digit arm, which the run counter has no counterpart for.
+    assert_eq!(
+        to_snake_case("cve2021Id", SnakeRule::AcronymRunStrict),
+        "cve2021_id"
+    );
+}
+
+/// The two conditions read against [`SnakeRule::AcronymRun`], which is
+/// cyberarkpas's and must keep breaking a run whatever ends it.
+#[test]
+fn the_run_counter_still_splits_what_the_strict_rule_keeps() {
+    assert_eq!(
+        to_snake_case("IT_Administrators", SnakeRule::AcronymRun),
+        "i_t__administrators"
+    );
+    assert_eq!(
+        to_snake_case("Computer IP", SnakeRule::AcronymRun),
+        "computer _ip"
+    );
 }
 
 /// Verbatim from `pipelines/cyberarkpas/audit/audit.yml`: the string turned
