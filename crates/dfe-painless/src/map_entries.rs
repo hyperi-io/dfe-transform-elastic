@@ -297,7 +297,7 @@ mod tests {
     /// Verbatim from the generated call site in
     /// `crates/dfe-transforms/src/filebeat/servicenow_event/default.rs`, in the
     /// escaped one-line form the call site holds.
-    const SN_TIMESTAMP_FIELD: &str = r#"def obj = ctx.servicenow.event; if (obj.containsKey(ctx._conf.timestamp_field)) {\n    ctx.servicenow.event.timestamp_field = obj.get(ctx._conf.timestamp_field);\n}"#;
+    const SN_TIMESTAMP_FIELD: &str = r"def obj = ctx.servicenow.event; if (obj.containsKey(ctx._conf.timestamp_field)) {\n    ctx.servicenow.event.timestamp_field = obj.get(ctx._conf.timestamp_field);\n}";
 
     const SN_WRAP: &str = r#"for (def entry: ctx.servicenow.event.entrySet()) {\n  if (entry.getKey() == 'table_name') {\n    continue;\n  }\n  def v = entry.getValue();\n  if (v instanceof Map) {\n    continue;\n  }\n  Map n = [:];\n  if (ctx._conf.data_has_display_values == \"true\") {\n    n.display_value = v;\n  } else {\n    n.value = v;\n  }\n  entry.setValue(n);\n}\n"#;
 

@@ -10,7 +10,7 @@
 //!
 //! It also answers the question directly. `ran > 0` in the runtime catalogue
 //! says a matcher claimed a script and nothing about which one, and reading the
-//! ladder to work it out is slow and has been wrong: checkpoint_email's lookup
+//! ladder to work it out is slow and has been wrong: `checkpoint_email`'s lookup
 //! was attributed to `painless_field_tables` before this existed, and it is
 //! `IndexedLookup`.
 //!
@@ -28,7 +28,7 @@ const CHECKPOINT_EMAIL_SEVERITY: &str = "def severityValue = ctx.checkpoint_emai
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/first_epss_vulnerability/default.rs`,
 /// which is `pipelines/first_epss/vulnerability/default.yml:86`.
-const FIRST_EPSS_REFERENCE: &str = r#"ctx.vulnerability.reference = 'https://api.first.org/data/v1/epss?pretty=true&cve=' + ctx.vulnerability.id;"#;
+const FIRST_EPSS_REFERENCE: &str = r"ctx.vulnerability.reference = 'https://api.first.org/data/v1/epss?pretty=true&cve=' + ctx.vulnerability.id;";
 
 /// Verbatim from `pipelines/system/auth/message.yml:573-583`.
 const SYSTEM_SSH_CATEGORY: &str = "if (ctx.system.auth.ssh.event == \"Accepted\") {\n  ctx.event.type = [\"info\"];\n  ctx.event.category = [\"authentication\", \"session\"];\n  ctx.event.action = \"ssh_login\";\n  ctx.event.outcome = \"success\";\n} else if (ctx.system.auth.ssh.event == \"Invalid\" || ctx.system.auth.ssh.event == \"Failed\") {\n  ctx.event.type = [\"info\"];\n  ctx.event.category = [\"authentication\"];\n  ctx.event.action = \"ssh_login\";\n  ctx.event.outcome = \"failure\";\n}";
@@ -61,7 +61,7 @@ const ZEEK_DURATION: &str = "ctx.event.duration = Math.round(ctx.temp.duration *
 /// jamf's newline as two characters. `normalise` resolves both before any
 /// matcher reads them, and a test written in the resolved form would pass over
 /// a defect in that step.
-const JAMF_PROTECT_REASON: &str = r#"ctx.event.reason = 'A user authentication happened using ' + ctx.jamf_protect.telemetry.authentication_method;\n"#;
+const JAMF_PROTECT_REASON: &str = r"ctx.event.reason = 'A user authentication happened using ' + ctx.jamf_protect.telemetry.authentication_method;\n";
 
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/wiz_issue/default.rs`, which is
@@ -95,20 +95,20 @@ const INFOBLOX_MESSAGE_QUOTES: &str = r#"if (ctx.cef.extensions.containsKey('mes
 
 /// The four generated call sites in
 /// `crates/dfe-transforms/src/filebeat/falco_alerts/default.rs`, which are the
-/// whole of falco's parity debt. sysdig_alerts ships the technique script over
+/// whole of falco's parity debt. `sysdig_alerts` ships the technique script over
 /// its own tag list.
-const FALCO_MOUNTS: &str = r#"if (ctx.falco.output_fields?.container?.mounts != null) {\n    def mountsString = ctx.falco.output_fields.container.mounts;\n    def mountItems = mountsString.splitOnToken(' ');            \n    def mountsList = [];\n    for (int i = 0; i < mountItems.length; i++) {\n        def mountItem = mountItems[i];\n        def parts = mountItem.splitOnToken(':');\n        def mountRecord = [:];\n        mountRecord.source = parts.length > 0 ? parts[0] : null;\n        mountRecord.dest = parts.length > 1 ? parts[1] : null;\n        mountRecord.mode = parts.length > 2 ? parts[2] : null;\n        mountRecord.rdrw = parts.length > 3 ? parts[3] : null;\n        mountRecord.propagation = parts.length > 4 ? parts[4] : null;\n        mountsList.add(mountRecord);\n    }\n    ctx['falco.container.mounts'] = mountsList;\n} else {\n    ctx['falco.container.mounts'] = null;\n}\n"#;
+const FALCO_MOUNTS: &str = r"if (ctx.falco.output_fields?.container?.mounts != null) {\n    def mountsString = ctx.falco.output_fields.container.mounts;\n    def mountItems = mountsString.splitOnToken(' ');            \n    def mountsList = [];\n    for (int i = 0; i < mountItems.length; i++) {\n        def mountItem = mountItems[i];\n        def parts = mountItem.splitOnToken(':');\n        def mountRecord = [:];\n        mountRecord.source = parts.length > 0 ? parts[0] : null;\n        mountRecord.dest = parts.length > 1 ? parts[1] : null;\n        mountRecord.mode = parts.length > 2 ? parts[2] : null;\n        mountRecord.rdrw = parts.length > 3 ? parts[3] : null;\n        mountRecord.propagation = parts.length > 4 ? parts[4] : null;\n        mountsList.add(mountRecord);\n    }\n    ctx['falco.container.mounts'] = mountsList;\n} else {\n    ctx['falco.container.mounts'] = null;\n}\n";
 
-const FALCO_TECHNIQUE: &str = r#"def mitreRegex = /T\\d{4}/;\nfor (int i = 0; i < ctx?.falco?.tags.length; i++) {\n    def tag = ctx?.falco?.tags[i];\n    def matcher = mitreRegex.matcher(tag);\n    if (matcher.find()) {\n        ctx['threat.technique.id'] = [matcher.group()];\n        break;\n    }\n}\n"#;
+const FALCO_TECHNIQUE: &str = r"def mitreRegex = /T\\d{4}/;\nfor (int i = 0; i < ctx?.falco?.tags.length; i++) {\n    def tag = ctx?.falco?.tags[i];\n    def matcher = mitreRegex.matcher(tag);\n    if (matcher.find()) {\n        ctx['threat.technique.id'] = [matcher.group()];\n        break;\n    }\n}\n";
 
 const FALCO_ISO8601: &str = r#"if (ctx.falco?.output_fields?.evt?.time != null) {\n    def timeField = ctx.falco.output_fields.evt.time;\n    def inputFormat = new SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSSZ\");\n        if (timeField.iso8601 != null) {\n            if (timeField.iso8601 instanceof String) {\n                def formatted = inputFormat.parse(timeField.iso8601);\n                ctx['@timestamp'] = formatted;\n                ctx.falco.output_fields.evt.time.iso8601 = formatted;\n            } else if (timeField.iso8601 instanceof Long) {\n                long milliseconds = timeField.iso8601 / 1000000;\n                ctx['@timestamp'] = new Date(milliseconds);\n                ctx.falco.output_fields.evt.time.iso8601 = milliseconds;\n            }\n        } else if (timeField.rawtime != null) {\n            if (timeField.rawtime instanceof String) {\n                def formatted = inputFormat.parse(timeField.rawtime);\n                ctx['@timestamp'] = formatted;\n            } else if (timeField.rawtime instanceof Long) {\n                long milliseconds = timeField.rawtime / 1000000;\n                ctx['@timestamp'] = new Date(milliseconds);\n            }\n        } else {\n            if (timeField instanceof String) {\n                def formatted = inputFormat.parse(timeField);\n                ctx['@timestamp'] = formatted;\n            } else if (timeField instanceof Long) {\n                long milliseconds = timeField / 1000000;\n                ctx['@timestamp'] = new Date(milliseconds);\n            }\n        }\n} else {\n    def timeField = ctx.falco.output_fields.event.time;\n    def inputFormat = new SimpleDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSSZ\");\n    if (ctx.falco?.output_fields?.event?.time != null) {\n      if (timeField instanceof String) {\n          def formatted = inputFormat.parse(timeField);\n          ctx['@timestamp'] = formatted;\n      } else if (timeField instanceof Long) {\n          long milliseconds = timeField / 1000000;\n          ctx['@timestamp'] = new Date(milliseconds);\n      }\n    }\n}\n"#;
 
-const FALCO_ARGS: &str = r#"if (ctx.falco.output_fields?.proc?.exepath != null && ctx.falco.output_fields?.proc?.args != null) {\n    def path = ctx.falco.output_fields.proc.exepath;\n    def args = ctx.falco.output_fields.proc.args;\n    def argItems = args.splitOnToken(' ');\n    def finalList = [];\n    finalList.add(path);\n    for (int i = 0; i < argItems.length; i++) {\n        finalList.add(argItems[i]);\n    }\n    ctx['process']['args'] = finalList;\n}\n"#;
+const FALCO_ARGS: &str = r"if (ctx.falco.output_fields?.proc?.exepath != null && ctx.falco.output_fields?.proc?.args != null) {\n    def path = ctx.falco.output_fields.proc.exepath;\n    def args = ctx.falco.output_fields.proc.args;\n    def argItems = args.splitOnToken(' ');\n    def finalList = [];\n    finalList.add(path);\n    for (int i = 0; i < argItems.length; i++) {\n        finalList.add(argItems[i]);\n    }\n    ctx['process']['args'] = finalList;\n}\n";
 
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/jamf_pro_events/default.rs`, which is
 /// `pipelines/jamf_pro/events/default.yml`.
-const JAMF_PRO_CATEGORIES: &str = r#"def action = ctx.event?.action;\nif (action == null) {\n  return;\n}\ndef entry = params.actions.get(action);\nif (entry == null) {\n  return;\n}\ndef cats = new ArrayList();\ndef types = new ArrayList();\nif (entry.category != null) { cats.addAll(entry.category); }\nif (entry.type != null) { types.addAll(entry.type); }\nif (types.isEmpty()) { types.add('info'); }\nctx.event = ctx.event ?: [:];\nif (!cats.isEmpty()) { ctx.event.category = cats; }\nctx.event.type = types;"#;
+const JAMF_PRO_CATEGORIES: &str = r"def action = ctx.event?.action;\nif (action == null) {\n  return;\n}\ndef entry = params.actions.get(action);\nif (entry == null) {\n  return;\n}\ndef cats = new ArrayList();\ndef types = new ArrayList();\nif (entry.category != null) { cats.addAll(entry.category); }\nif (entry.type != null) { types.addAll(entry.type); }\nif (types.isEmpty()) { types.add('info'); }\nctx.event = ctx.event ?: [:];\nif (!cats.isEmpty()) { ctx.event.category = cats; }\nctx.event.type = types;";
 
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/cloudflare_logpush_firewall_event/default.rs`,
@@ -137,7 +137,7 @@ const SYSDIG_PARSE_DATE: &str = r"def parseDate(def rawtimestamp) {\n  long time
 /// the reader for sysdig's helper must decline.
 ///
 /// slack builds `@timestamp` from a microsecond field with no helper
-/// declaration at all; jamf_protect calls the same constructor inline, once per
+/// declaration at all; `jamf_protect` calls the same constructor inline, once per
 /// process, inside a hundred-line mapping that writes forty other fields. A
 /// reader triggered on the constructor rather than on the helper would claim
 /// both and write almost nothing.
@@ -459,7 +459,7 @@ fn a_subtraction_binds_only_where_the_target_is_written_once() {
     );
 }
 
-/// citrix_adc's five dates, reparsed with the pattern the document carries.
+/// `citrix_adc`'s five dates, reparsed with the pattern the document carries.
 ///
 /// The binding was EMPTY, so nothing wrote `citrix_adc.log.*` and the date
 /// processors behind it read `10/08/2024` with their own hard-coded
@@ -700,12 +700,12 @@ fn the_rapid7_scanner_name_binds_to_the_list_member_select() {
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/jamf_pro_inventory/default.rs`, which is
 /// `pipelines/jamf_pro/inventory/default.yml`.
-const JAMF_PRO_SNAKE_CASE: &str = r#"Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def snakeCaseMap = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    snakeCaseMap.put(k, v);\n  }\n  return snakeCaseMap;\n}\n\nif (ctx.jamf_pro.inventory != null) {\n  ctx.jamf_pro.inventory = keysToSnakeCase(ctx.jamf_pro.inventory);\n}\n"#;
+const JAMF_PRO_SNAKE_CASE: &str = r"Map keysToSnakeCase(Map m) {\n  def regex = /_?([a-z])([A-Z]+)/;\n  def snakeCaseMap = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    snakeCaseMap.put(k, v);\n  }\n  return snakeCaseMap;\n}\n\nif (ctx.jamf_pro.inventory != null) {\n  ctx.jamf_pro.inventory = keysToSnakeCase(ctx.jamf_pro.inventory);\n}\n";
 
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/azure_signinlogs/default.rs`, the same
 /// helper WITHOUT the regex's leading `_?`.
-const AZURE_SIGNINLOGS_SNAKE_CASE: &str = r#"Map keysToSnakeCase(Map m) {\n  def regex = /([a-z])([A-Z]+)/;\n  def out = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    out.put(k, v);\n  }\n\n  return out;\n}\n\nctx.azure['signinlogs'] = keysToSnakeCase(ctx.azure.signinlogs);\n"#;
+const AZURE_SIGNINLOGS_SNAKE_CASE: &str = r"Map keysToSnakeCase(Map m) {\n  def regex = /([a-z])([A-Z]+)/;\n  def out = [:];\n\n  for (entry in m.entrySet()) {\n    def k = entry.getKey();\n    def v = entry.getValue();\n\n    if (v instanceof Map) {\n      v = keysToSnakeCase(v);\n    } else if (v instanceof List) {\n      for (int i = 0; i < v.size(); i++) {\n        def item = v.get(i);\n        if (item instanceof Map) {\n          v.set(i, keysToSnakeCase(item));\n        }\n      }\n    }\n\n    k = regex.matcher(k).replaceAll('$1_$2').toLowerCase();\n    out.put(k, v);\n  }\n\n  return out;\n}\n\nctx.azure['signinlogs'] = keysToSnakeCase(ctx.azure.signinlogs);\n";
 
 #[test]
 fn the_snake_case_helper_binds_to_the_rule_its_own_body_spells() {
@@ -729,22 +729,22 @@ fn the_snake_case_helper_binds_to_the_rule_its_own_body_spells() {
 
 /// azure's spelling of the same loop, and the one `KeyValuePairs` was written
 /// for. It is the audit for the widening: the merge answer must not move.
-const AZURE_AUTH_DETAILS: &str = r#"def tmp = [:];\nfor (item in ctx.azure.signinlogs.properties.authentication_processing_details) {\n    tmp[item.key] = item.value;\n}\nctx.azure.signinlogs.properties.authentication_processing_details = tmp;\n"#;
+const AZURE_AUTH_DETAILS: &str = r"def tmp = [:];\nfor (item in ctx.azure.signinlogs.properties.authentication_processing_details) {\n    tmp[item.key] = item.value;\n}\nctx.azure.signinlogs.properties.authentication_processing_details = tmp;\n";
 
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/tenable_io_audit/default.rs`. The
 /// sharpest near-miss in the tree: one loop, the same `ctx.` path read and
 /// written, and the key LOWERCASED on the way in.
-const TENABLE_AUDIT_FIELDS: &str = r#"def fields = new HashMap();\nfor (f in ctx.tenable_io.audit.fields) {\n  fields.put(f.key.toLowerCase(), f.value);\n}\nctx.tenable_io.audit.fields = fields;"#;
+const TENABLE_AUDIT_FIELDS: &str = r"def fields = new HashMap();\nfor (f in ctx.tenable_io.audit.fields) {\n  fields.put(f.key.toLowerCase(), f.value);\n}\nctx.tenable_io.audit.fields = fields;";
 
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/ti_opencti_indicator/default.rs`. The
 /// fold is over a member of a LIST ITEM, so the path written is a local's.
-const OPENCTI_STARTUP_INFO: &str = r#"if (ctx.observables?.edges instanceof List) {\n  for (def edge : ctx.observables.edges) {\n    if (edge.node?.startup_info instanceof List) {\n      def result = [:];\n      for (def kv : edge.node.startup_info) {\n        result[kv.key] = kv.value;\n      }\n      edge.node.startup_info = result;\n    }\n  }\n}\n"#;
+const OPENCTI_STARTUP_INFO: &str = r"if (ctx.observables?.edges instanceof List) {\n  for (def edge : ctx.observables.edges) {\n    if (edge.node?.startup_info instanceof List) {\n      def result = [:];\n      for (def kv : edge.node.startup_info) {\n        result[kv.key] = kv.value;\n      }\n      edge.node.startup_info = result;\n    }\n  }\n}\n";
 
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/google_secops_alert_v2/default.rs`, and
-/// the whole of google_secops's parity debt. Three nested loops, a second
+/// the whole of `google_secops`'s parity debt. Three nested loops, a second
 /// member read when the value is empty, and the key dropped when it is.
 const GOOGLE_SECOPS_KV_FIELDS: &str = r#"String[] kvFields = new String[] {\"detection_fields\", \"outcomes\", \"rule_labels\"};\nfor (def detection : ctx.google_secops.alert_v2.detection) {\n  for (def fieldName : kvFields) {\n    if (!(detection[fieldName] instanceof List)) {\n      continue;\n    }\n    def flat = new HashMap();\n    for (def entry : detection[fieldName]) {\n      if (entry?.key == null || entry.key == '') {\n        continue;\n      }\n      if (entry.value != null && entry.value != '') {\n        flat[entry.key] = entry.value;\n      } else if (entry.source != null && entry.source != '') {\n        flat[entry.key] = entry.source;\n      }\n    }\n    if (flat.isEmpty()) {\n      detection.remove(fieldName);\n    } else {\n      detection[fieldName] = flat;\n    }\n  }\n}\n"#;
 
@@ -852,11 +852,11 @@ fn the_cloudflare_query_cut_binds_to_the_leading_cut_and_carries_its_count() {
 
 /// The three placements qualys writes its numeric coercion in, verbatim from
 /// the call sites in `qualys_was_vulnerability/default.rs`.
-const QUALYS_SCALAR: &str = r#"if (ctx.json.detection.detectionScore instanceof String) {\n  ctx.qualys_was.vulnerability.detection_score = Long.parseLong(ctx.json.detection.detectionScore);\n} else {\n  ctx.qualys_was.vulnerability.detection_score = (long)ctx.json.detection.detectionScore;\n}\n"#;
+const QUALYS_SCALAR: &str = r"if (ctx.json.detection.detectionScore instanceof String) {\n  ctx.qualys_was.vulnerability.detection_score = Long.parseLong(ctx.json.detection.detectionScore);\n} else {\n  ctx.qualys_was.vulnerability.detection_score = (long)ctx.json.detection.detectionScore;\n}\n";
 
-const QUALYS_COLLECT_MEMBERS: &str = r#"def wascList = new ArrayList(); for (wasc in ctx.json.detection.wasc.list) {\n  if (wasc.WASC?.code != null) {\n    if (wasc.WASC.code instanceof String) {\n      wasc.WASC.code = Long.parseLong(wasc.WASC.code);\n    } else {\n      wasc.WASC.code = (long)wasc.WASC.code;\n    }\n   }     \n   wascList.add(wasc.WASC);        \n} ctx.qualys_was.vulnerability.wasc_references = wascList;\n"#;
+const QUALYS_COLLECT_MEMBERS: &str = r"def wascList = new ArrayList(); for (wasc in ctx.json.detection.wasc.list) {\n  if (wasc.WASC?.code != null) {\n    if (wasc.WASC.code instanceof String) {\n      wasc.WASC.code = Long.parseLong(wasc.WASC.code);\n    } else {\n      wasc.WASC.code = (long)wasc.WASC.code;\n    }\n   }     \n   wascList.add(wasc.WASC);        \n} ctx.qualys_was.vulnerability.wasc_references = wascList;\n";
 
-const QUALYS_COLLECT_STRINGS: &str = r#"ctx.vulnerability.id = new ArrayList(); for (cwe in ctx.json.detection.cwe.list) {\n  if (cwe instanceof String) {\n    ctx.vulnerability.id.add(cwe);\n  } else {\n    ctx.vulnerability.id.add(((long)cwe).toString());\n  } \n  \n}\n"#;
+const QUALYS_COLLECT_STRINGS: &str = r"ctx.vulnerability.id = new ArrayList(); for (cwe in ctx.json.detection.cwe.list) {\n  if (cwe instanceof String) {\n    ctx.vulnerability.id.add(cwe);\n  } else {\n    ctx.vulnerability.id.add(((long)cwe).toString());\n  } \n  \n}\n";
 
 /// cloudflare reads the same two arms into a LOCAL and rescales it, so it must
 /// keep its own matcher after `LongCoercion` joined the ladder.
@@ -891,7 +891,7 @@ fn the_three_qualys_coercions_bind_and_cloudflare_keeps_its_rescale() {
 /// labels, and 7 across the two spans.
 const GITHUB_DEPENDABOT_IDENTIFIERS: &str = r#"def enumeration = \"GHSA\";\ndef id = \"\";\ndef sa_ids = ctx.github.dependabot.security_advisory.identifiers;\nfor (def sa_id: sa_ids) {\n    id = sa_id.value;\n    if (!sa_id.type.equals(\"GHSA\")) {\n        enumeration = sa_id.type;\n        break;\n    }\n}\nctx.vulnerability.enumeration = enumeration;\nctx.vulnerability.id = id;\n"#;
 
-const GITHUB_DEPENDABOT_REFERENCES: &str = r#"List references = new ArrayList();\ndef sa_references = ctx.github.dependabot.security_advisory.references;\nfor (def ref: sa_references) {\n    references.add(ref.url);\n}\nctx.vulnerability.reference = references;\n"#;
+const GITHUB_DEPENDABOT_REFERENCES: &str = r"List references = new ArrayList();\ndef sa_references = ctx.github.dependabot.security_advisory.references;\nfor (def ref: sa_references) {\n    references.add(ref.url);\n}\nctx.vulnerability.reference = references;\n";
 
 const GITHUB_ISSUES_LABELS: &str = r#"Map label;\nList labels = new ArrayList();\nList labels_raw = ctx._temp_.labels;\nString label_key, label_value;\nfor (Map label_raw: labels_raw) {\n    label = new HashMap();\n    label.put(\"name\", label_raw.name);\n    label.put(\"description\", label_raw.description);\n    labels.add(label);\n}\nctx.github.issues.labels = labels;\n"#;
 
@@ -1093,14 +1093,14 @@ fn both_cloudflare_epoch_spellings_bind_to_the_one_rescale() {
     );
 }
 
-/// google_workspace's three email splits that also append a half to a list,
+/// `google_workspace`'s three email splits that also append a half to a list,
 /// verbatim from the generated call sites in
 /// `crates/dfe-transforms/src/filebeat/google_workspace_{login,groups,drive}/default.rs`.
-const GOOGLE_WORKSPACE_LOGIN_AFFECTED: &str = r#"String[] splitmail = ctx.google_workspace.login.affected_email_address.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} if (ctx.user.target == null) {\n  ctx.user.target = new HashMap();\n} ctx.user.target.name = splitmail[0]; ctx.user.target.domain = splitmail[1]; ctx.related.user.add(splitmail[0]);\n"#;
+const GOOGLE_WORKSPACE_LOGIN_AFFECTED: &str = r"String[] splitmail = ctx.google_workspace.login.affected_email_address.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} if (ctx.user.target == null) {\n  ctx.user.target = new HashMap();\n} ctx.user.target.name = splitmail[0]; ctx.user.target.domain = splitmail[1]; ctx.related.user.add(splitmail[0]);\n";
 
-const GOOGLE_WORKSPACE_GROUPS_MEMBER: &str = r#"String[] splitmail = ctx.google_workspace.groups.member.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} if (ctx.user.target == null) {\n  ctx.user.target = new HashMap();\n} if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} ctx.related.user.add(splitmail[0]); ctx.user.target.name = splitmail[0]; ctx.user.target.domain = splitmail[1]; ctx.user.target.email = ctx.google_workspace.groups.member.email;\n"#;
+const GOOGLE_WORKSPACE_GROUPS_MEMBER: &str = r"String[] splitmail = ctx.google_workspace.groups.member.email.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.user == null) {\n  ctx.user = new HashMap();\n} if (ctx.user.target == null) {\n  ctx.user.target = new HashMap();\n} if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} ctx.related.user.add(splitmail[0]); ctx.user.target.name = splitmail[0]; ctx.user.target.domain = splitmail[1]; ctx.user.target.email = ctx.google_workspace.groups.member.email;\n";
 
-const GOOGLE_WORKSPACE_DRIVE_TARGET: &str = r#"String[] splitmail = ctx.google_workspace.drive.target.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} ctx.related.user.add(splitmail[0]);\n"#;
+const GOOGLE_WORKSPACE_DRIVE_TARGET: &str = r"String[] splitmail = ctx.google_workspace.drive.target.splitOnToken('@'); if (splitmail.length != 2) {\n  return;\n} if (ctx.related == null) {\n  ctx.related = new HashMap();\n} if (ctx.related.user == null) {\n  ctx.related.user = new ArrayList();\n} ctx.related.user.add(splitmail[0]);\n";
 
 /// The two appends that must STAY with `AppendEach`, which is the audit for the
 /// narrowing: crowdstrike is the script it was written for, and o365 appends a
@@ -1193,7 +1193,7 @@ fn the_google_workspace_splits_write_both_halves_where_the_script_puts_them() {
 
 /// servicenow's first two processors, verbatim from the generated call sites in
 /// `crates/dfe-transforms/src/filebeat/servicenow_event/default.rs`.
-const SERVICENOW_TIMESTAMP_FIELD: &str = r#"def obj = ctx.servicenow.event; if (obj.containsKey(ctx._conf.timestamp_field)) {\n    ctx.servicenow.event.timestamp_field = obj.get(ctx._conf.timestamp_field);\n}"#;
+const SERVICENOW_TIMESTAMP_FIELD: &str = r"def obj = ctx.servicenow.event; if (obj.containsKey(ctx._conf.timestamp_field)) {\n    ctx.servicenow.event.timestamp_field = obj.get(ctx._conf.timestamp_field);\n}";
 
 const SERVICENOW_WRAP: &str = r#"for (def entry: ctx.servicenow.event.entrySet()) {\n  if (entry.getKey() == 'table_name') {\n    continue;\n  }\n  def v = entry.getValue();\n  if (v instanceof Map) {\n    continue;\n  }\n  Map n = [:];\n  if (ctx._conf.data_has_display_values == \"true\") {\n    n.display_value = v;\n  } else {\n    n.value = v;\n  }\n  entry.setValue(n);\n}\n"#;
 
@@ -1253,7 +1253,7 @@ fn the_servicenow_chain_binds_both_of_the_steps_the_source_is_written_against() 
 }
 
 /// The third step of the same chain, verbatim from the same call site.
-const SERVICENOW_DROP: &str = r#"boolean drop(Object object) {\n  if ((object instanceof String && ((String) object).equalsIgnoreCase('unknown')) || (object instanceof String && ((String) object).equalsIgnoreCase('none')) || (object instanceof String && ((String) object).equalsIgnoreCase('null')) || (object instanceof String && ((String) object).equalsIgnoreCase('n/a')) || (object instanceof String && ((String) object).equalsIgnoreCase('na'))) {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#;
+const SERVICENOW_DROP: &str = r"boolean drop(Object object) {\n  if ((object instanceof String && ((String) object).equalsIgnoreCase('unknown')) || (object instanceof String && ((String) object).equalsIgnoreCase('none')) || (object instanceof String && ((String) object).equalsIgnoreCase('null')) || (object instanceof String && ((String) object).equalsIgnoreCase('n/a')) || (object instanceof String && ((String) object).equalsIgnoreCase('na'))) {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);";
 
 #[test]
 fn the_servicenow_prune_binds_the_words_as_well_as_the_containers() {
@@ -1308,7 +1308,7 @@ fn the_servicenow_prune_binds_the_words_as_well_as_the_containers() {
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/cisco_ise_log/pipeline_alarm.rs:54`,
 /// which is `pipelines/cisco_ise/log/pipeline_alarm.yml:18-25`.
-const CISCO_ISE_ALARM_FOLD: &str = r#"def c = [:];\nctx.cisco_ise.log.log_details_raw.forEach((k, v) -> c[k.replace(' ', '_').toLowerCase()] = v);\nctx.cisco_ise.log.log_details_raw = c;"#;
+const CISCO_ISE_ALARM_FOLD: &str = r"def c = [:];\nctx.cisco_ise.log.log_details_raw.forEach((k, v) -> c[k.replace(' ', '_').toLowerCase()] = v);\nctx.cisco_ise.log.log_details_raw = c;";
 
 #[test]
 fn the_cisco_ise_alarm_fold_binds_to_the_key_rewriter() {
@@ -1352,9 +1352,9 @@ fn the_cisco_ise_alarm_fold_binds_to_the_key_rewriter() {
 /// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_telemetry/default.rs`,
 /// which are `pipelines/trend_micro_vision_one/telemetry/default.yml:755-768`
 /// and `:882-893`.
-const TMV1_FILE_SIZE: &str = r#"if (ctx.file == null) ctx.file = [:];\nctx.file.size = [\n  ctx.trend_micro_vision_one?.telemetry?.object_current_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.object_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.src_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.process_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.parent_file_size\n];\nctx.file.size.removeIf(v -> v == null);\nif (ctx.file.size.size() == 1) ctx.file.size = ctx.file.size[0];\n"#;
+const TMV1_FILE_SIZE: &str = r"if (ctx.file == null) ctx.file = [:];\nctx.file.size = [\n  ctx.trend_micro_vision_one?.telemetry?.object_current_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.object_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.src_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.process_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.parent_file_size\n];\nctx.file.size.removeIf(v -> v == null);\nif (ctx.file.size.size() == 1) ctx.file.size = ctx.file.size[0];\n";
 
-const TMV1_PROCESS_NAME: &str = r#"if (ctx.process == null) ctx.process = [:];\nctx.process.name = [\n  ctx.trend_micro_vision_one?.telemetry?.process_name,\n  ctx.trend_micro_vision_one?.telemetry?.object_name\n];\nctx.process.name.removeIf(v -> v == null);\nif (ctx.process.name.size() == 1) ctx.process.name = ctx.process.name[0];\n"#;
+const TMV1_PROCESS_NAME: &str = r"if (ctx.process == null) ctx.process = [:];\nctx.process.name = [\n  ctx.trend_micro_vision_one?.telemetry?.process_name,\n  ctx.trend_micro_vision_one?.telemetry?.object_name\n];\nctx.process.name.removeIf(v -> v == null);\nif (ctx.process.name.size() == 1) ctx.process.name = ctx.process.name[0];\n";
 
 /// Verbatim from the same module, `:118-128` in the pipeline.
 const TMV1_EVENT_TYPE: &str = r#"def key = (ctx.trend_micro_vision_one?.telemetry?.event_id ?: \"\").toString();\nif (params.containsKey(key)) {\n  ctx.trend_micro_vision_one.telemetry.event_type = params[key];\n} else {\n  ctx.trend_micro_vision_one.telemetry.event_type = 'Other';\n}\n"#;
@@ -1441,17 +1441,17 @@ fn the_trend_micro_event_type_binds_to_the_lookup_that_carries_its_default() {
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_endpoint_activity/default.rs`,
 /// which is `pipelines/trend_micro_vision_one/endpoint_activity/default.yml:1018-1041`.
-const TMV1_ENDPOINT_TABLES: &str = r#"def eventId = ctx.trend_micro_vision_one.endpoint_activity.event?.id;\nif (eventId != null && params.eventId.containsKey(eventId.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.event.id_value = params.eventId[eventId.toString()];\n}\ndef objectTrueType = ctx.trend_micro_vision_one.endpoint_activity.object?.true_type;\nif (objectTrueType != null && params.objectTrueType.containsKey(objectTrueType.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.object.true_type_value = params.objectTrueType[objectTrueType.toString()];\n}\ndef winEventId = ctx.trend_micro_vision_one.endpoint_activity.win_event_id;\nif (winEventId != null && params.winEventId.containsKey(winEventId.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.win_event_id_value = params.winEventId[winEventId.toString()];\n}"#;
+const TMV1_ENDPOINT_TABLES: &str = r"def eventId = ctx.trend_micro_vision_one.endpoint_activity.event?.id;\nif (eventId != null && params.eventId.containsKey(eventId.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.event.id_value = params.eventId[eventId.toString()];\n}\ndef objectTrueType = ctx.trend_micro_vision_one.endpoint_activity.object?.true_type;\nif (objectTrueType != null && params.objectTrueType.containsKey(objectTrueType.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.object.true_type_value = params.objectTrueType[objectTrueType.toString()];\n}\ndef winEventId = ctx.trend_micro_vision_one.endpoint_activity.win_event_id;\nif (winEventId != null && params.winEventId.containsKey(winEventId.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.win_event_id_value = params.winEventId[winEventId.toString()];\n}";
 
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_network_activity/default.rs`,
 /// which is `pipelines/trend_micro_vision_one/network_activity/default.yml:369-372`.
-const TMV1_ACT_TABLE: &str = r#"def act = ctx.trend_micro_vision_one.network_activity.act;\nif (params.act.containsKey(act.toString())) {\n  ctx.trend_micro_vision_one.network_activity.act_value = params.act[act.toString()];\n}"#;
+const TMV1_ACT_TABLE: &str = r"def act = ctx.trend_micro_vision_one.network_activity.act;\nif (params.act.containsKey(act.toString())) {\n  ctx.trend_micro_vision_one.network_activity.act_value = params.act[act.toString()];\n}";
 
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_detection/default.rs`,
 /// which is `pipelines/trend_micro_vision_one/detection/default.yml:966-969`.
-const TMV1_RISK_TABLE: &str = r#"def cccaRiskLevel = ctx.trend_micro_vision_one.detection.risk_level;\nif (params.cccaRiskLevel.containsKey(cccaRiskLevel.toString())) {\n  ctx.trend_micro_vision_one.detection.risk_level_value = params.cccaRiskLevel[cccaRiskLevel.toString()];\n}"#;
+const TMV1_RISK_TABLE: &str = r"def cccaRiskLevel = ctx.trend_micro_vision_one.detection.risk_level;\nif (params.cccaRiskLevel.containsKey(cccaRiskLevel.toString())) {\n  ctx.trend_micro_vision_one.detection.risk_level_value = params.cccaRiskLevel[cccaRiskLevel.toString()];\n}";
 
 /// The dotted `params.<table>` spelling, keyed through a local, over three
 /// streams. `FieldTables` reads the quoted-subscript spelling as well, and the
@@ -1519,7 +1519,7 @@ const ISE_AVPAIR_TIMES: &str = r#"def avpair = ctx.cisco_ise.log.avpair;\nfor (d
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_network_activity/default.rs`,
 /// which is `pipelines/trend_micro_vision_one/network_activity/default.yml:316-319`.
-const TMV1_NETWORK_EVENT_TIME: &str = r#"def eventTime = Long.parseLong(ctx.trend_micro_vision_one.network_activity.event.time.toString()); if (eventTime < 10000000000L) {\n  ctx.trend_micro_vision_one.network_activity.event.time = eventTime * 1000L;\n}"#;
+const TMV1_NETWORK_EVENT_TIME: &str = r"def eventTime = Long.parseLong(ctx.trend_micro_vision_one.network_activity.event.time.toString()); if (eventTime < 10000000000L) {\n  ctx.trend_micro_vision_one.network_activity.event.time = eventTime * 1000L;\n}";
 
 /// Two sources, one defect CLASS, two SCRIPTS: each sits in front of a `date`
 /// processor whose only format is `UNIX_MS`, and each spells its own ladder --
@@ -1581,13 +1581,13 @@ fn both_epoch_rescales_bind_and_carry_the_ladder_their_own_script_spells() {
     );
 }
 
-/// infoblox_nios's three scripts, verbatim from the generated call sites in
+/// `infoblox_nios`'s three scripts, verbatim from the generated call sites in
 /// `crates/dfe-transforms/src/filebeat/infoblox_nios_log/default.rs`.
 const INFOBLOX_DNS_ANSWERS: &str = r#"def splitUnquoted(String input, String sep) {\n  def tokens = [];\n  def startPosition = 0;\n  def isInQuotes = false;\n  char quote = (char)\"\\\"\";\n  for (def currentPosition = 0; currentPosition < input.length(); currentPosition++) {\n      if (input.charAt(currentPosition) == quote) {\n          isInQuotes = !isInQuotes;\n      }\n      else if (input.charAt(currentPosition) == (char)sep && !isInQuotes) {\n          def token = input.substring(startPosition, currentPosition).trim();\n          if (!token.equals(\"\")) {\n            tokens.add(token);\n          }\n          startPosition = currentPosition + 1;\n      }\n  }\n\n  def lastToken = input.substring(startPosition);\n  if (!lastToken.equals(sep) && !lastToken.equals(\"\")) {\n      tokens.add(lastToken.trim());\n  }\n  return tokens;\n}\n\ndef arr = splitUnquoted(ctx.repeat_message, \";\");\nctx.repeat_message = arr;\nMap map = new HashMap();\nmap.put('name', new ArrayList());\nmap.put('ttl', new ArrayList());\nmap.put('class', new ArrayList());\nmap.put('type', new ArrayList());\nmap.put('data', new ArrayList());\n\nfor (def i = 0; i < arr.length; i++) {\n  def response = splitUnquoted(arr[i], \" \");\n  if (response.size() >= 4) {\n    map['name'].add(response[0]);\n    map['ttl'].add(response[1]);\n    map['class'].add(response[2]);\n    map['type'].add(response[3]);\n    map['data'].addAll(response.subList(4, response.length));\n  }\n}\nctx.dns.answers = map;\n"#;
 
-const INFOBLOX_TRIM_ANSWER_DATA: &str = r#"def hash = new ArrayList();\nfor(data in ctx.dns.answers.data){\n  def n = data.length();\n  if(data.charAt(n-1).toString() == '.'){\n    def data_substring = data.substring(0,n-1) + data.substring(n);\n    hash.add(data_substring);\n  }\n  else{\n    hash.add(data);\n  }\n}\nctx.dns.answers.data = hash;\n"#;
+const INFOBLOX_TRIM_ANSWER_DATA: &str = r"def hash = new ArrayList();\nfor(data in ctx.dns.answers.data){\n  def n = data.length();\n  if(data.charAt(n-1).toString() == '.'){\n    def data_substring = data.substring(0,n-1) + data.substring(n);\n    hash.add(data_substring);\n  }\n  else{\n    hash.add(data);\n  }\n}\nctx.dns.answers.data = hash;\n";
 
-const INFOBLOX_AUDIT_LIFT: &str = r#"if (ctx.infoblox_nios == null) {\n  ctx['infoblox_nios'] = new HashMap();\n}\nif (ctx.infoblox_nios.log == null) {\n  ctx.infoblox_nios['log'] = new HashMap();\n}\nif (ctx.infoblox_nios.log.audit == null) {\n  ctx.infoblox_nios.log['audit'] = new HashMap();\n}\nfor (Map.Entry m : ctx.audit.entrySet()) {\n  def value = m.getValue();\n  if (value instanceof String) {\n    value = value.replace('\\\\040', ' ')\n  }\n  ctx.infoblox_nios.log.audit[m.getKey()] = value;\n}\n"#;
+const INFOBLOX_AUDIT_LIFT: &str = r"if (ctx.infoblox_nios == null) {\n  ctx['infoblox_nios'] = new HashMap();\n}\nif (ctx.infoblox_nios.log == null) {\n  ctx.infoblox_nios['log'] = new HashMap();\n}\nif (ctx.infoblox_nios.log.audit == null) {\n  ctx.infoblox_nios.log['audit'] = new HashMap();\n}\nfor (Map.Entry m : ctx.audit.entrySet()) {\n  def value = m.getValue();\n  if (value instanceof String) {\n    value = value.replace('\\\\040', ' ')\n  }\n  ctx.infoblox_nios.log.audit[m.getKey()] = value;\n}\n";
 
 #[test]
 fn the_infoblox_answers_fold_binds_to_the_columns_and_not_the_pairs() {

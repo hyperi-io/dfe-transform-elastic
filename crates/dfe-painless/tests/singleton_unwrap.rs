@@ -3,7 +3,7 @@
 
 //! `FirstElement` must carry EVERY take its script writes, not just the first.
 //!
-//! checkpoint_harmony_endpoint unwraps two paths in one script, and reading
+//! `checkpoint_harmony_endpoint` unwraps two paths in one script, and reading
 //! only the first `[0];` left `host.os.version` a one-element list on all 19
 //! of the source's events.
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]

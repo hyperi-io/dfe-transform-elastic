@@ -479,7 +479,7 @@ fn a_fold_written_as_a_loop_is_read_too() {
     assert!(!event.has("sophos.xg.RESPONSETIME"));
 }
 
-/// cisco_ise writes the same fold as a `forEach` storing by SUBSCRIPT, and its
+/// `cisco_ise` writes the same fold as a `forEach` storing by SUBSCRIPT, and its
 /// whole alarm pipeline is read off the result.
 ///
 /// Verbatim from `pipelines/cisco_ise/log/pipeline_alarm.yml:18-25`, in the
@@ -8391,7 +8391,7 @@ fn a_leading_cut_past_the_end_writes_nothing() {
     assert_eq!(event.get_str("a.b"), Some("xy"));
 }
 
-/// The three infoblox_nios scripts, verbatim from the generated call sites in
+/// The three `infoblox_nios` scripts, verbatim from the generated call sites in
 /// `crates/dfe-transforms/src/filebeat/infoblox_nios_log/default.rs`.
 mod infoblox_nios {
     use super::{KnownPattern, Value, binds_variant, json, run_script};

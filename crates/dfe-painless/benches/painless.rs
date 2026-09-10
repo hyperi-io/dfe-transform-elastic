@@ -87,7 +87,7 @@ const HOIST_MEMBER: &str = "def answers = ctx.dns.answers; def iplist = new Arra
                             answers[i].remove(\"tmpip\");\\n  }\\n} \
                             ctx.dns.resolved_ip = iplist;";
 
-/// panw_cortex_xdr's MITRE list, cut on one separator and fanned out to two
+/// `panw_cortex_xdr`'s MITRE list, cut on one separator and fanned out to two
 /// deduped lists. `KnownPattern::SplitFanOut` claims it. The cost scales with
 /// the list and with the dedup scan, so the event below carries the four
 /// techniques and the repeated tactic its own stream sends.
@@ -108,7 +108,7 @@ const SPLIT_FAN_OUT: &str = "void addTechnique(def ctx, def x, def y) {\\n  \
                              addTechnique(ctx, mitre_technique.splitOnToken(' - ')[0], \
                              mitre_technique.splitOnToken(' - ')[1]);\\n}";
 
-/// ti_threatq's sources, giving up two members in one walk with an allow-list
+/// `ti_threatq`'s sources, giving up two members in one walk with an allow-list
 /// on the second. `KnownPattern::GatherMembers` claims it. The cost scales with
 /// the record count and is paid once per column, so the event carries several.
 const GATHER_MEMBERS: &str = "def ecsTlps = ['WHITE', 'GREEN', 'AMBER', 'RED', 'CLEAR', 'AMBER+STRICT'];\\n\
@@ -125,7 +125,7 @@ const GATHER_MEMBERS: &str = "def ecsTlps = ['WHITE', 'GREEN', 'AMBER', 'RED', '
      ctx.threat.indicator.provider = new HashMap();\\n  }\\n  \
      ctx.threat.indicator.provider = providers;\\n}";
 
-/// claude_code's classification: two literal arms, then a params table.
+/// `claude_code`'s classification: two literal arms, then a params table.
 /// `ParamsPattern::ArmedTable` claims it. Benched on a name the TABLE answers,
 /// which is the branch the arms fall through to and the one that carries the
 /// lookup.
@@ -477,11 +477,11 @@ fn bench_issue_lifecycle(c: &mut Criterion) {
 ///
 /// The copy runs first and creates the entry the wrap then wraps, which is what
 /// makes `servicenow.event.timestamp_field.value` resolve downstream.
-const SN_TIMESTAMP_FIELD: &str = r#"def obj = ctx.servicenow.event; if (obj.containsKey(ctx._conf.timestamp_field)) {\n    ctx.servicenow.event.timestamp_field = obj.get(ctx._conf.timestamp_field);\n}"#;
+const SN_TIMESTAMP_FIELD: &str = r"def obj = ctx.servicenow.event; if (obj.containsKey(ctx._conf.timestamp_field)) {\n    ctx.servicenow.event.timestamp_field = obj.get(ctx._conf.timestamp_field);\n}";
 
 const SN_WRAP: &str = r#"for (def entry: ctx.servicenow.event.entrySet()) {\n  if (entry.getKey() == 'table_name') {\n    continue;\n  }\n  def v = entry.getValue();\n  if (v instanceof Map) {\n    continue;\n  }\n  Map n = [:];\n  if (ctx._conf.data_has_display_values == \"true\") {\n    n.display_value = v;\n  } else {\n    n.value = v;\n  }\n  entry.setValue(n);\n}\n"#;
 
-const SN_DROP: &str = r#"boolean drop(Object object) {\n  if ((object instanceof String && ((String) object).equalsIgnoreCase('unknown')) || (object instanceof String && ((String) object).equalsIgnoreCase('none')) || (object instanceof String && ((String) object).equalsIgnoreCase('null')) || (object instanceof String && ((String) object).equalsIgnoreCase('n/a')) || (object instanceof String && ((String) object).equalsIgnoreCase('na'))) {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);"#;
+const SN_DROP: &str = r"boolean drop(Object object) {\n  if ((object instanceof String && ((String) object).equalsIgnoreCase('unknown')) || (object instanceof String && ((String) object).equalsIgnoreCase('none')) || (object instanceof String && ((String) object).equalsIgnoreCase('null')) || (object instanceof String && ((String) object).equalsIgnoreCase('n/a')) || (object instanceof String && ((String) object).equalsIgnoreCase('na'))) {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(v -> drop(v));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(v -> drop(v));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndrop(ctx);";
 
 /// The 40 columns of a servicenow asset record, from `test-event-aws.log`.
 ///
@@ -811,7 +811,7 @@ fn bench_empty_arm_prune(c: &mut Criterion) {
 
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/cisco_ise_log/pipeline_alarm.rs:54`.
-const CISCO_ISE_ALARM_FOLD: &str = r#"def c = [:];\nctx.cisco_ise.log.log_details_raw.forEach((k, v) -> c[k.replace(' ', '_').toLowerCase()] = v);\nctx.cisco_ise.log.log_details_raw = c;"#;
+const CISCO_ISE_ALARM_FOLD: &str = r"def c = [:];\nctx.cisco_ise.log.log_details_raw.forEach((k, v) -> c[k.replace(' ', '_').toLowerCase()] = v);\nctx.cisco_ise.log.log_details_raw = c;";
 
 /// The keys of one alarm's `kv` output, at the width the vendor sends.
 ///
@@ -860,7 +860,7 @@ fn bench_foreach_rewrite_keys(c: &mut Criterion) {
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_telemetry/default.rs`,
 /// the widest of the source's eight candidate lists.
-const TMV1_FILE_SIZE: &str = r#"if (ctx.file == null) ctx.file = [:];\nctx.file.size = [\n  ctx.trend_micro_vision_one?.telemetry?.object_current_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.object_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.src_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.process_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.parent_file_size\n];\nctx.file.size.removeIf(v -> v == null);\nif (ctx.file.size.size() == 1) ctx.file.size = ctx.file.size[0];\n"#;
+const TMV1_FILE_SIZE: &str = r"if (ctx.file == null) ctx.file = [:];\nctx.file.size = [\n  ctx.trend_micro_vision_one?.telemetry?.object_current_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.object_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.src_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.process_file_size,\n  ctx.trend_micro_vision_one?.telemetry?.parent_file_size\n];\nctx.file.size.removeIf(v -> v == null);\nif (ctx.file.size.size() == 1) ctx.file.size = ctx.file.size[0];\n";
 
 /// Verbatim from the same module: the event-type table keyed through an elvis.
 const TMV1_EVENT_TYPE: &str = r#"def key = (ctx.trend_micro_vision_one?.telemetry?.event_id ?: \"\").toString();\nif (params.containsKey(key)) {\n  ctx.trend_micro_vision_one.telemetry.event_type = params[key];\n} else {\n  ctx.trend_micro_vision_one.telemetry.event_type = 'Other';\n}\n"#;
@@ -948,7 +948,7 @@ fn bench_stringified_lookup_or_literal(c: &mut Criterion) {
 
 /// Verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_endpoint_activity/default.rs`.
-const TMV1_ENDPOINT_TABLES: &str = r#"def eventId = ctx.trend_micro_vision_one.endpoint_activity.event?.id;\nif (eventId != null && params.eventId.containsKey(eventId.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.event.id_value = params.eventId[eventId.toString()];\n}\ndef eventSubId = ctx.trend_micro_vision_one.endpoint_activity.event?.sub_id;\nif (eventSubId != null && params.eventSubId.containsKey(eventSubId.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.event.sub_id_value = params.eventSubId[eventSubId.toString()];\n}\ndef winEventId = ctx.trend_micro_vision_one.endpoint_activity.win_event_id;\nif (winEventId != null && params.winEventId.containsKey(winEventId.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.win_event_id_value = params.winEventId[winEventId.toString()];\n}"#;
+const TMV1_ENDPOINT_TABLES: &str = r"def eventId = ctx.trend_micro_vision_one.endpoint_activity.event?.id;\nif (eventId != null && params.eventId.containsKey(eventId.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.event.id_value = params.eventId[eventId.toString()];\n}\ndef eventSubId = ctx.trend_micro_vision_one.endpoint_activity.event?.sub_id;\nif (eventSubId != null && params.eventSubId.containsKey(eventSubId.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.event.sub_id_value = params.eventSubId[eventSubId.toString()];\n}\ndef winEventId = ctx.trend_micro_vision_one.endpoint_activity.win_event_id;\nif (winEventId != null && params.winEventId.containsKey(winEventId.toString())) {\n  ctx.trend_micro_vision_one.endpoint_activity.win_event_id_value = params.winEventId[winEventId.toString()];\n}";
 
 /// Six lookups in one script, each through its own named table.
 ///

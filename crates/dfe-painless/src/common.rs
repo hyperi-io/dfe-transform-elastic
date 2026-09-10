@@ -13079,7 +13079,7 @@ struct SplitColumn {
 /// ctx.dns.answers = map;
 /// ```
 ///
-/// infoblox_nios's DNS answers arrive as one string of `;`-separated resource
+/// `infoblox_nios`'s DNS answers arrive as one string of `;`-separated resource
 /// records, each `name ttl class type rdata...`, and this is what turns them
 /// into `dns.answers.{name,ttl,class,type,data}`.
 ///
@@ -13214,7 +13214,8 @@ fn parse_split_into_columns(script: &str) -> Option<SplitIntoColumns> {
                 .strip_prefix(&format!("{fields_local}["))?
                 .strip_suffix(']')?;
             (index.trim().parse().ok()?, false)
-        } else if let Some(slice) = call.strip_prefix(".addAll(") {
+        } else {
+            let slice = call.strip_prefix(".addAll(")?;
             let slice = slice
                 .strip_suffix(')')?
                 .trim()
@@ -13227,8 +13228,6 @@ fn parse_split_into_columns(script: &str) -> Option<SplitIntoColumns> {
                 return None;
             }
             (from.trim().parse().ok()?, true)
-        } else {
-            return None;
         };
         if fills[at].replace(fill).is_some() {
             return None;
@@ -13324,7 +13323,7 @@ fn run_split_into_columns(event: &mut Event, pattern: &SplitIntoColumns) -> bool
 /// ctx.dns.answers.data = hash;
 /// ```
 ///
-/// infoblox_nios runs it twice over the DNS answers the fold above builds,
+/// `infoblox_nios` runs it twice over the DNS answers the fold above builds,
 /// because a resource record names its owner with the root label on --
 /// `www.elastic.co.` where ECS writes `www.elastic.co`.
 ///
@@ -13456,7 +13455,7 @@ pub(crate) fn one_space(script: &str) -> String {
 /// ctx.infoblox_nios.log.audit.ip = sb.toString();
 /// ```
 ///
-/// infoblox_nios writes an IPv6 admin address into its audit line with every
+/// `infoblox_nios` writes an IPv6 admin address into its audit line with every
 /// colon escaped -- `2a02\072cf40\072\072` -- and this is what puts them back
 /// before the `convert` processor tries to read an IP out of it.
 ///
@@ -17923,7 +17922,7 @@ fn run_merge_map_up(event: &mut Event, pattern: &MergeMapUp) -> bool {
 /// }
 /// ```
 ///
-/// infoblox_nios's audit lines carry `to=Serial\040Console`, so the kv
+/// `infoblox_nios`'s audit lines carry `to=Serial\040Console`, so the kv
 /// processor's map holds the octal escape and this is what turns it back into a
 /// space on the way to `infoblox_nios.log.audit`.
 ///

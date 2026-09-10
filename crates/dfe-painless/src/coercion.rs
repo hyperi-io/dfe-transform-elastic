@@ -635,7 +635,7 @@ mod tests {
         assert_eq!(event.get("vulnerability.id"), Some(&json!(["79", "89"])));
     }
 
-    /// tenable_io coerces the same field with a `Double.parseDouble` fallback
+    /// `tenable_io` coerces the same field with a `Double.parseDouble` fallback
     /// in a `catch`, and its `else` is a second `instanceof` ladder rather than
     /// an arm. Read as this pattern it would drop both. Verbatim from
     /// `tenable_io_asset/default.rs`.

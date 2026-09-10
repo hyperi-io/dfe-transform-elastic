@@ -4342,7 +4342,7 @@ fn the_put_spelling_is_left_to_the_matcher_above() {
     ));
 }
 
-/// infoblox_nios's DNS header flags, verbatim from the generated call site in
+/// `infoblox_nios`'s DNS header flags, verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/infoblox_nios_log/default.rs`.
 const INFOBLOX_HEADER_FLAGS: &str = r#"ArrayList hf = new ArrayList();\nfor (entry in params.entrySet()) {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains(entry.getKey())) {\n    hf.add(entry.getValue());\n  }\n}\nif (ctx.dns?.response_code != null && ctx.dns.response_code != '') {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains('+')) {\n    hf.add('RA')\n  }\n} else {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains('+')) {\n    hf.add('RD')\n  }\n}\nif (hf.length == 0) {\n  return;\n}\nif (ctx.dns == null) {\n  HashMap hm = new HashMap();\n  ctx.put('dns', hm);\n}\nctx.dns.put('header_flags', hf);\n"#;
 
@@ -4468,7 +4468,7 @@ fn a_literal_read_stops_at_its_own_call() {
     assert_eq!(literal_call("map.put(key, value);", ".put("), None);
 }
 
-/// akamai_siem opens with `map.put(key, value)`, so the first `.put(` in the
+/// `akamai_siem` opens with `map.put(key, value)`, so the first `.put(` in the
 /// script carries no key at all.
 #[test]
 fn a_put_target_skips_a_call_with_no_literal_key() {
@@ -4482,7 +4482,7 @@ fn a_put_target_skips_a_call_with_no_literal_key() {
     assert_eq!(put_target(script), None);
 }
 
-/// Windows builds an event_data key by concatenation, which is no literal.
+/// Windows builds an `event_data` key by concatenation, which is no literal.
 #[test]
 fn a_concatenated_put_key_is_not_read_as_its_tail() {
     let statement = "  if (sdOwnerMatcher.find()) {\n    \

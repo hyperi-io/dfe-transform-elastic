@@ -6813,7 +6813,7 @@ fn subjects_of_bindings(script: &str) -> Vec<(String, bool)> {
 
 /// The field a `ctx.<path>.put('<key>', ...)` writes.
 ///
-/// Both halves come off the SAME call, which akamai_siem needs: it opens with a
+/// Both halves come off the SAME call, which `akamai_siem` needs: it opens with a
 /// `.put(<local>, ...)` whose key is no literal at all.
 fn put_target(script: &str) -> Option<String> {
     let (at, key) = literal_call(script, ".put(")?;
@@ -9332,7 +9332,7 @@ pub(crate) struct ContainsFlagsBranch {
 /// ctx.dns.put('header_flags', hf);
 /// ```
 ///
-/// infoblox_nios's named(8) log packs the DNS header flags into one token --
+/// `infoblox_nios`'s named(8) log packs the DNS header flags into one token --
 /// `+AED` -- and the table turns each character into its ECS name. The `+` is
 /// the odd one out: it means recursion DESIRED on a query and recursion
 /// AVAILABLE on a response, so which name it takes is decided by whether the
@@ -10077,7 +10077,7 @@ fn literal_call(script: &str, call: &str) -> Option<(usize, String)> {
 /// The quote is searched for as part of the anchor, which is the difference
 /// from [`quoted_after`]: that finds `after` and then the next quote anywhere
 /// past it, over the end of the call and the end of the statement alike. On
-/// infoblox_nios's flag arms it answered with the empty string of a `!= ''`
+/// `infoblox_nios`'s flag arms it answered with the empty string of a `!= ''`
 /// test two statements away. Making the quote part of the anchor also steps
 /// over a call whose argument is not a literal, so `hf.add(` reads past the
 /// `hf.add(entry.getValue())` of the walk above.
@@ -10136,7 +10136,7 @@ fn lookup_key_path(script: &str, expr: &str) -> Option<(String, Fold)> {
 ///
 /// Anchored on the bracket's own opening quote, because `params[<ctx path>]` is
 /// a different form entirely -- the whole block is the table there, and no name
-/// is being spelled. ti_crowdstrike_ioc's `params[ctx.ti_crowdstrike.ioc.type]`
+/// is being spelled. `ti_crowdstrike_ioc`'s `params[ctx.ti_crowdstrike.ioc.type]`
 /// is followed by a `'domain'` its block really holds, so an unanchored read
 /// indexes a table the script never named.
 fn params_indexed<'a>(script: &str, params: &'a Map<String, Value>) -> Option<&'a Value> {
