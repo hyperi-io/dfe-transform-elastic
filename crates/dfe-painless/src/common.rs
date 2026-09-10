@@ -13043,6 +13043,556 @@ fn split_unquoted(input: &str, separator: char) -> Vec<&str> {
     out
 }
 
+/// One column of a columnar fold: the key it is written under, and the field of
+/// each record it takes.
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct SplitColumn {
+    key: String,
+    /// The record field this column starts at.
+    at: usize,
+    /// `addAll(<fields>.subList(at, <fields>.length))` -- EVERY field from `at`
+    /// onwards, flattened into this one column, rather than the single field
+    /// `add` takes.
+    to_end: bool,
+}
+
+/// A payload cut into records, and the records' fields folded into PARALLEL
+/// COLUMNS the script names.
+///
+/// ```painless
+/// def arr = splitUnquoted(ctx.repeat_message, ";");
+/// ctx.repeat_message = arr;
+/// Map map = new HashMap();
+/// map.put('name', new ArrayList());
+/// ...
+/// for (def i = 0; i < arr.length; i++) {
+///   def response = splitUnquoted(arr[i], " ");
+///   if (response.size() >= 4) {
+///     map['name'].add(response[0]);
+///     ...
+///     map['data'].addAll(response.subList(4, response.length));
+///   }
+/// }
+/// ctx.dns.answers = map;
+/// ```
+///
+/// infoblox_nios's DNS answers arrive as one string of `;`-separated resource
+/// records, each `name ttl class type rdata...`, and this is what turns them
+/// into `dns.answers.{name,ttl,class,type,data}`.
+///
+/// It shares fortinet's `splitUnquoted` helper with [`SplitKv`] and means the
+/// OPPOSITE thing: fortinet's keys come off the payload, and these are spelled
+/// by the script. A trigger on the helper name alone cannot tell them apart,
+/// and read as the key/value fold this one wrote `dns.answers` as
+/// `{"a1.foo.com": "28800 IN A 0.0.0.0"}` -- the last record, under the first
+/// field of it. The DECLARED-KEY anchor is what separates them: a `put` of a
+/// named key is a column, and a subscript by a payload token is not.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SplitIntoColumns {
+    source: String,
+    target: String,
+    /// Between one record and the next.
+    record_sep: char,
+    /// Between one field of a record and the next.
+    field_sep: char,
+    /// The script's own `<fields>.size() >= n` guard: a record with fewer
+    /// fields contributes to no column at all.
+    min_fields: usize,
+    /// Whether the script writes the record list back over its own source, as
+    /// infoblox's `ctx.repeat_message = arr;` does.
+    records_back: bool,
+    columns: Vec<SplitColumn>,
+}
+
+/// A script cut into statements, ignoring a `;` inside a quoted literal.
+///
+/// Painless quotes with either mark and escapes with a backslash, and the
+/// separator these split helpers are handed is itself a quoted `";"` -- a split
+/// on the bare character cuts that literal in half and the binding above it
+/// reads back as two statements that are each half a call.
+fn painless_statements(script: &str) -> Vec<&str> {
+    let mut out = Vec::new();
+    let mut start = 0;
+    let mut quote: Option<char> = None;
+    let mut escaped = false;
+    for (at, c) in script.char_indices() {
+        if escaped {
+            escaped = false;
+            continue;
+        }
+        match (quote, c) {
+            (Some(_), '\\') => escaped = true,
+            (Some(open), c) if c == open => quote = None,
+            (None, '\'' | '"') => quote = Some(c),
+            (None, ';' | '\n') => {
+                out.push(script[start..at].trim());
+                start = at + c.len_utf8();
+            }
+            _ => {}
+        }
+    }
+    out.push(script[start..].trim());
+    out
+}
+
+/// Read one `def <local> = splitUnquoted(<argument>, "<separator>");` binding.
+fn split_unquoted_binding(statement: &str) -> Option<(&str, &str, char)> {
+    let (head, call) = statement.split_once(" = splitUnquoted(")?;
+    let local = head.trim().strip_prefix("def ")?.trim();
+    let (argument, rest) = split_call_arguments(call)?;
+    let separator = quoted_first(rest)?;
+    let mut chars = separator.chars();
+    let separator = chars.next()?;
+    // The helper compares ONE character, so a longer literal is a different cut.
+    (chars.next().is_none() && !local.is_empty())
+        .then_some((local, argument.trim(), separator))
+}
+
+/// Read both cuts, the columns each declared key takes, and the target.
+fn parse_split_into_columns(script: &str) -> Option<SplitIntoColumns> {
+    let statements = painless_statements(script);
+
+    // The two cuts. Which is the OUTER one is decided by what it READS -- the
+    // document for the outer, the outer's own local for the inner -- and not by
+    // which comes first.
+    let cuts: Vec<(&str, &str, char)> = statements
+        .iter()
+        .filter_map(|statement| split_unquoted_binding(statement))
+        .collect();
+    if cuts.len() != 2 {
+        return None;
+    }
+    let outer_at = (0..2).find(|at| cuts[*at].1.starts_with("ctx."))?;
+    let (records_local, source, record_sep) = cuts[outer_at];
+    let (fields_local, cut, field_sep) = cuts[1 - outer_at];
+    // The inner cut has to take an ITEM of the outer one. Two cuts over
+    // unrelated values would build columns from records that never met.
+    if !cut.starts_with(&format!("{records_local}[")) {
+        return None;
+    }
+    let source = clean_path(source.strip_prefix("ctx.")?);
+
+    // The accumulator and the columns it DECLARES.
+    let map_local = statements
+        .iter()
+        .find_map(|statement| statement.strip_suffix(" = new HashMap()")?.rsplit(' ').next())
+        .filter(|local| !local.is_empty())?;
+    let declare = format!("{map_local}.put(");
+    let mut keys: Vec<String> = Vec::new();
+    for statement in &statements {
+        let Some(rest) = statement.strip_prefix(declare.as_str()) else {
+            continue;
+        };
+        let (key, list) = split_call_arguments(rest.strip_suffix(')')?)?;
+        // Anything but an empty list is an accumulator this cannot fill.
+        if list.trim() != "new ArrayList()" {
+            return None;
+        }
+        keys.push(quoted_first(key)?);
+    }
+    if keys.is_empty() {
+        return None;
+    }
+
+    // What each declared column TAKES. Every one has to be filled, exactly
+    // once, by one of the two forms -- half a fold is worse than none of it.
+    let mut fills: Vec<Option<(usize, bool)>> = vec![None; keys.len()];
+    let subscript = format!("{map_local}['");
+    for statement in &statements {
+        let Some(rest) = statement.strip_prefix(subscript.as_str()) else {
+            continue;
+        };
+        let (key, call) = rest.split_once("']")?;
+        let at = keys.iter().position(|declared| declared == key)?;
+        let fill = if let Some(single) = call.strip_prefix(".add(") {
+            let index = single
+                .strip_suffix(')')?
+                .trim()
+                .strip_prefix(&format!("{fields_local}["))?
+                .strip_suffix(']')?;
+            (index.trim().parse().ok()?, false)
+        } else if let Some(slice) = call.strip_prefix(".addAll(") {
+            let slice = slice
+                .strip_suffix(')')?
+                .trim()
+                .strip_prefix(&format!("{fields_local}.subList("))?
+                .strip_suffix(')')?;
+            let (from, end) = split_call_arguments(slice)?;
+            // To the END of the record. A window would drop the fields past it
+            // and leave no trace of having done so.
+            if end.trim() != format!("{fields_local}.length") {
+                return None;
+            }
+            (from.trim().parse().ok()?, true)
+        } else {
+            return None;
+        };
+        if fills[at].replace(fill).is_some() {
+            return None;
+        }
+    }
+    let columns: Vec<SplitColumn> = keys
+        .into_iter()
+        .zip(fills)
+        .map(|(key, fill)| {
+            let (at, to_end) = fill?;
+            Some(SplitColumn { key, at, to_end })
+        })
+        .collect::<Option<_>>()?;
+
+    // The width guard is REQUIRED rather than defaulted: a script that gates
+    // its records some other way would silently gain the ones it skips.
+    let guard = format!("{fields_local}.size() >= ");
+    let min_fields: usize = statements
+        .iter()
+        .find_map(|statement| {
+            let rest = statement.split_once(guard.as_str())?.1.trim_start();
+            let digits: String = rest.chars().take_while(char::is_ascii_digit).collect();
+            digits.parse().ok()
+        })?;
+
+    let target = crate::params::ctx_path_before(script, &format!(" = {map_local};"))?;
+    let records_back =
+        crate::params::ctx_path_before(script, &format!(" = {records_local};")).as_deref()
+            == Some(source.as_str());
+
+    (!target.is_empty()).then_some(SplitIntoColumns {
+        source,
+        target,
+        record_sep,
+        field_sep,
+        min_fields,
+        records_back,
+        columns,
+    })
+}
+
+/// Cut the payload twice and write one list per declared column.
+fn run_split_into_columns(event: &mut Event, pattern: &SplitIntoColumns) -> bool {
+    // A missing source is not a failure -- the processor's own `if` guards it.
+    let Some(payload) = event.get_str(&pattern.source).map(str::to_string) else {
+        return true;
+    };
+
+    let records = split_unquoted(&payload, pattern.record_sep);
+    let mut columns: Vec<Vec<Value>> = vec![Vec::new(); pattern.columns.len()];
+    for record in &records {
+        let fields = split_unquoted(record, pattern.field_sep);
+        if fields.len() < pattern.min_fields {
+            continue;
+        }
+        for (column, values) in pattern.columns.iter().zip(columns.iter_mut()) {
+            if column.to_end {
+                values.extend(fields.iter().skip(column.at).map(|field| json!(*field)));
+            } else if let Some(field) = fields.get(column.at) {
+                values.push(json!(*field));
+            }
+        }
+    }
+
+    if pattern.records_back {
+        let list: Vec<Value> = records.iter().map(|record| json!(*record)).collect();
+        let _ = event.set(&pattern.source, Value::Array(list));
+    }
+    let folded: Map<String, Value> = pattern
+        .columns
+        .iter()
+        .zip(columns)
+        .map(|(column, values)| (column.key.clone(), Value::Array(values)))
+        .collect();
+    let _ = event.set(&pattern.target, Value::Object(folded));
+    true
+}
+
+/// One trailing character dropped from every member of a list.
+///
+/// ```painless
+/// def hash = new ArrayList();
+/// for(data in ctx.dns.answers.data){
+///   def n = data.length();
+///   if(data.charAt(n-1).toString() == '.'){
+///     def data_substring = data.substring(0,n-1) + data.substring(n);
+///     hash.add(data_substring);
+///   }
+///   else{
+///     hash.add(data);
+///   }
+/// }
+/// ctx.dns.answers.data = hash;
+/// ```
+///
+/// infoblox_nios runs it twice over the DNS answers the fold above builds,
+/// because a resource record names its owner with the root label on --
+/// `www.elastic.co.` where ECS writes `www.elastic.co`.
+///
+/// `substring(0, n-1) + substring(n)` is a cut whose second half is always
+/// empty, so it is exactly a drop of the last character. The parse insists on
+/// BOTH halves: reading the first alone would claim a script that keeps a tail
+/// this throws away.
+///
+/// A member that is empty, or is not a string, throws in Painless where this
+/// leaves it as it found it. There is no such member in the corpus, and
+/// aborting a pipeline over one is not the better answer.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct TrimListSuffix {
+    source: String,
+    target: String,
+    /// The character the script compares the last one against. A member ending
+    /// in anything else is kept whole, which is what the `else` arm does.
+    suffix: char,
+}
+
+fn parse_trim_list_suffix(script: &str) -> Option<TrimListSuffix> {
+    // `for (<member> in ctx.<source>)`, in either spelling of the bracket.
+    let (head, tail) = script.split_once(" in ctx.")?;
+    let member = head.rsplit(['(', ' ']).next()?;
+    if member.is_empty() || !head[..head.len() - member.len()].replace(' ', "").ends_with("for(") {
+        return None;
+    }
+    let source = clean_path(tail.split(')').next()?);
+
+    // Everything below is read off a whitespace-free copy, so the vendor's
+    // `charAt(n-1)` and a reformatted `charAt(n - 1)` are one script.
+    let packed: String = script.chars().filter(|c| !c.is_whitespace()).collect();
+
+    // The length local, and the bucket the loop fills.
+    let measure = format!("={member}.length();");
+    let length = packed[..packed.find(measure.as_str())?].rsplit("def").next()?;
+    let bucket = packed
+        .split("=newArrayList();")
+        .next()
+        .and_then(|head| head.rsplit("def").next())?;
+    if length.is_empty() || bucket.is_empty() {
+        return None;
+    }
+
+    // The character tested, and the cut that drops it.
+    let test = format!("{member}.charAt({length}-1).toString()==");
+    let suffix = quoted_first(&packed[packed.find(test.as_str())? + test.len()..])?;
+    let mut chars = suffix.chars();
+    let suffix = chars.next()?;
+    if chars.next().is_some() {
+        return None;
+    }
+
+    let cut = format!("={member}.substring(0,{length}-1)+{member}.substring({length});");
+    let cut_local = packed[..packed.find(cut.as_str())?].rsplit("def").next()?;
+    if cut_local.is_empty()
+        // The trimmed member is what the true arm collects, and the untouched
+        // one is what the `else` arm collects. Without both, this is a filter.
+        || !packed.contains(&format!("{bucket}.add({cut_local});"))
+        || !packed.contains(&format!("{bucket}.add({member});"))
+    {
+        return None;
+    }
+
+    let target = crate::params::ctx_path_before(script, &format!(" = {bucket};"))?;
+    (!source.is_empty() && !target.is_empty()).then_some(TrimListSuffix {
+        source,
+        target,
+        suffix,
+    })
+}
+
+fn run_trim_list_suffix(event: &mut Event, pattern: &TrimListSuffix) -> bool {
+    // The processor's own `instanceof List` guard, so anything else is a no-op.
+    let Some(Value::Array(members)) = event.get(&pattern.source) else {
+        return true;
+    };
+    let trimmed: Vec<Value> = members
+        .iter()
+        .map(
+            |member| match member.as_str().and_then(|s| s.strip_suffix(pattern.suffix)) {
+                Some(cut) => Value::String(cut.to_owned()),
+                None => member.clone(),
+            },
+        )
+        .collect();
+    let _ = event.set(&pattern.target, Value::Array(trimmed));
+    true
+}
+
+/// A script with every run of whitespace collapsed to one space.
+///
+/// Enough to read a walk written over a dozen indented lines as one sequence of
+/// tokens, and not so much that two identifiers run together the way stripping
+/// whitespace outright makes `int i` into `inti`.
+pub(crate) fn one_space(script: &str) -> String {
+    let mut out = String::with_capacity(script.len());
+    let mut spaced = true;
+    for c in script.chars() {
+        if c.is_whitespace() {
+            if !spaced {
+                out.push(' ');
+                spaced = true;
+            }
+        } else {
+            out.push(c);
+            spaced = false;
+        }
+    }
+    out.trim_end().to_owned()
+}
+
+/// A field's numeric escapes decoded back to the characters they name.
+///
+/// ```painless
+/// String s = ctx.infoblox_nios.log.audit.ip;
+/// StringBuilder sb = new StringBuilder();
+/// for (int i = 0; i < s.length();) {
+///     if (s.charAt(i) == (char)'\\') {
+///         sb.append(':');
+///         int b = Integer.parseInt(s.substring(i+1,i+4), 8);
+///         if (b != (char)':') { sb.append((char)b); }
+///         i+=4;
+///         continue;
+///     }
+///     sb.append(s.charAt(i));
+///     i++;
+/// }
+/// ctx.infoblox_nios.log.audit.ip = sb.toString();
+/// ```
+///
+/// infoblox_nios writes an IPv6 admin address into its audit line with every
+/// colon escaped -- `2a02\072cf40\072\072` -- and this is what puts them back
+/// before the `convert` processor tries to read an IP out of it.
+///
+/// The colon is written for the escape ITSELF and the decoded byte is added
+/// only where it differs, so `\143` yields `:c` and `\072` yields one colon
+/// rather than two. Every part of that is read off the script: the opening
+/// character, the character standing in for it, the digit count, and the base.
+///
+/// An escape running off the end of the field, or naming no character, throws
+/// in Painless where this leaves the field as it found it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct EscapeDecode {
+    source: String,
+    target: String,
+    /// The character an escape opens with.
+    escape: char,
+    /// Written in place of that character, ahead of the byte it names.
+    prefix: char,
+    /// How many digits the escape carries, and the base they are read in.
+    digits: usize,
+    base: u32,
+}
+
+fn parse_escape_decode(script: &str) -> Option<EscapeDecode> {
+    let flat = one_space(script);
+
+    // `String <text> = ctx.<source>;` and the builder the walk fills.
+    let (head, tail) = flat.split_once(" = ctx.")?;
+    let text = head.rsplit(' ').next()?;
+    let source = clean_path(tail.split(';').next()?);
+    let builder = flat.split_once(" = new StringBuilder()")?.0.rsplit(' ').next()?;
+    let index = flat.split_once("for (int ")?.1.split_once(" = 0;")?.0;
+    if text.is_empty() || builder.is_empty() || index.is_empty() || source.is_empty() {
+        return None;
+    }
+
+    // The character an escape opens with, and the one written in its place.
+    let opens = format!("if ({text}.charAt({index}) == (char)");
+    let escape = one_char(&quoted_first(flat.split_once(opens.as_str())?.1)?)?;
+    let appends = format!("{builder}.append(");
+    let prefix = one_char(&quoted_first(flat.split_once(appends.as_str())?.1)?)?;
+
+    // The digits the escape carries, read from the cut, and their base. The
+    // cut's own comma rules out reading the call's arguments by splitting on
+    // one: `substring(i+1,i+4)` is a single argument holding a comma.
+    let cut = format!("{text}.substring({index}+1,{index}+");
+    let width: usize = digits_at(flat.split_once(cut.as_str())?.1)?;
+    let call = format!("Integer.parseInt({cut}{width}), ");
+    let base: u32 = digits_at(flat.split_once(call.as_str())?.1)?;
+    let code = identifier_ending(flat.split_once(" = Integer.parseInt(")?.0)?;
+
+    // The byte is appended only where it DIFFERS from the character already
+    // written for the escape, and the walk steps over the whole escape.
+    if one_char(&quoted_first(
+        flat.split_once(&format!("if ({code} != (char)"))?.1,
+    )?)? != prefix
+        || !flat.contains(&format!("{builder}.append((char){code});"))
+        || !flat.contains(&format!("{index}+={width};"))
+        || !flat.contains(&format!(
+            "{builder}.append({text}.charAt({index})); {index}++;"
+        ))
+    {
+        return None;
+    }
+
+    let target = crate::params::ctx_path_before(script, &format!(" = {builder}.toString();"))?;
+    (width > 1 && !target.is_empty()).then_some(EscapeDecode {
+        source,
+        target,
+        escape,
+        prefix,
+        digits: width - 1,
+        base,
+    })
+}
+
+/// The one character `literal` holds, with Painless's own escape resolved.
+fn one_char(literal: &str) -> Option<char> {
+    let resolved = literal.replace("\\\\", "\\");
+    let mut chars = resolved.chars();
+    let only = chars.next()?;
+    chars.next().is_none().then_some(only)
+}
+
+/// The run of digits `text` opens with, as a number.
+fn digits_at<T: std::str::FromStr>(text: &str) -> Option<T> {
+    let digits: String = text
+        .trim_start()
+        .chars()
+        .take_while(char::is_ascii_digit)
+        .collect();
+    digits.parse().ok()
+}
+
+/// The identifier `text` ends with.
+fn identifier_ending(text: &str) -> Option<String> {
+    let name: String = text
+        .chars()
+        .rev()
+        .take_while(|c| c.is_alphanumeric() || *c == '_')
+        .collect();
+    (!name.is_empty()).then(|| name.chars().rev().collect())
+}
+
+fn run_escape_decode(event: &mut Event, pattern: &EscapeDecode) -> bool {
+    // The processor's own `!= null` guards this.
+    let Some(text) = event.get_string(&pattern.source) else {
+        return true;
+    };
+    let chars: Vec<char> = text.chars().collect();
+    let mut out = String::with_capacity(text.len());
+    let mut at = 0;
+    while at < chars.len() {
+        if chars[at] != pattern.escape {
+            out.push(chars[at]);
+            at += 1;
+            continue;
+        }
+        let end = at + 1 + pattern.digits;
+        if end > chars.len() {
+            return true;
+        }
+        let digits: String = chars[at + 1..end].iter().collect();
+        let Some(byte) = u32::from_str_radix(&digits, pattern.base)
+            .ok()
+            .and_then(char::from_u32)
+        else {
+            return true;
+        };
+        out.push(pattern.prefix);
+        if byte != pattern.prefix {
+            out.push(byte);
+        }
+        at = end;
+    }
+    let _ = event.set(&pattern.target, Value::String(out));
+    true
+}
+
 /// The first single- or double-quoted string in `text`.
 fn quoted_first(text: &str) -> Option<String> {
     let start = text.find(['\'', '"'])?;
@@ -17354,6 +17904,133 @@ fn run_merge_map_up(event: &mut Event, pattern: &MergeMapUp) -> bool {
     true
 }
 
+/// Every entry of one map copied into another SUBTREE, with the vendor's own
+/// escape undone on the way.
+///
+/// ```painless
+/// if (ctx.infoblox_nios == null) { ctx['infoblox_nios'] = new HashMap(); }
+/// if (ctx.infoblox_nios.log == null) { ctx.infoblox_nios['log'] = new HashMap(); }
+/// if (ctx.infoblox_nios.log.audit == null) { ctx.infoblox_nios.log['audit'] = new HashMap(); }
+/// for (Map.Entry m : ctx.audit.entrySet()) {
+///   def value = m.getValue();
+///   if (value instanceof String) {
+///     value = value.replace('\040', ' ')
+///   }
+///   ctx.infoblox_nios.log.audit[m.getKey()] = value;
+/// }
+/// ```
+///
+/// infoblox_nios's audit lines carry `to=Serial\040Console`, so the kv
+/// processor's map holds the octal escape and this is what turns it back into a
+/// space on the way to `infoblox_nios.log.audit`.
+///
+/// The sibling of [`MergeMapUp`], and told from it by where the entries LAND:
+/// that one empties a map into its own parent, and this one carries it to an
+/// unrelated subtree. The null-guarded `new HashMap()` blocks ahead of the loop
+/// are the vendor creating that subtree, which `Event::set` does by itself.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct MapEntriesInto {
+    source: String,
+    target: String,
+    /// The literal each STRING value has replaced on the way across. Guarded by
+    /// the script's own `instanceof String`, so a number keeps its rendering.
+    replace: Option<(String, String)>,
+}
+
+fn parse_map_entries_into(script: &str) -> Option<MapEntriesInto> {
+    // The loop header names the map walked and the entry local.
+    let (preamble, body) = script.split_once(".entrySet()")?;
+    let at = preamble.rfind("ctx.")?;
+    let source = clean_path(&preamble[at + "ctx.".len()..]);
+    let head = preamble[..at].trim_end();
+    let entry = match head.strip_suffix(':') {
+        Some(before) => before.trim().rsplit(' ').next()?,
+        None => head.strip_suffix(" in")?.trim().rsplit(' ').next()?,
+    }
+    .trim_start_matches('(');
+
+    // The write, which is the only thing in the body allowed to touch the
+    // document: `ctx.<target>[<entry>.getKey()] = <local>`.
+    let key_write = format!("[{entry}.getKey()] = ");
+    let at = body.find(key_write.as_str())?;
+    let target = clean_path(body[..at].rsplit_once("ctx.")?.1);
+    let value = body[at + key_write.len()..]
+        .split([';', '\n'])
+        .next()?
+        .trim();
+    if source.is_empty() || target.is_empty() || value.is_empty() {
+        return None;
+    }
+    if !body.contains(&format!("def {value} = {entry}.getValue()")) {
+        return None;
+    }
+
+    // The replace, only under the guard the vendor wrote it under.
+    let replace = body
+        .split_once(&format!("{value} = {value}.replace("))
+        .filter(|(ahead, _)| ahead.contains(&format!("{value} instanceof String")))
+        .and_then(|(_, call)| {
+            let (from, to) = split_call_arguments(call)?;
+            // Painless's OWN escapes, which `normalise` does not touch: it
+            // resolves the JSON layer only, so `'\\040'` reaches here as two
+            // characters where the vendor means one.
+            Some((
+                quoted_first(from)?.replace("\\\\", "\\"),
+                quoted_first(to)?.replace("\\\\", "\\"),
+            ))
+        });
+
+    // Nothing else in the loop may read an entry or write the document, and the
+    // value local is bound once plus once more for the replace. A body doing
+    // anything past that is a script this reproduces only half of, which is the
+    // half-run the ladder refuses.
+    let assignments = body.matches(&format!("{value} = ")).count();
+    if body.matches("ctx").count() != 1
+        || body.matches(".getKey()").count() != 1
+        || body.matches(".getValue()").count() != 1
+        || assignments != 1 + usize::from(replace.is_some())
+    {
+        return None;
+    }
+
+    Some(MapEntriesInto {
+        source,
+        target,
+        replace,
+    })
+}
+
+fn run_map_entries_into(event: &mut Event, pattern: &MapEntriesInto) -> bool {
+    // The processor's own `if (ctx.<source> != null)` guards this.
+    let Some(Value::Object(entries)) = event.get(&pattern.source).cloned() else {
+        return true;
+    };
+
+    // The vendor's null-guarded `new HashMap()` blocks only CREATE: a target
+    // already holding something that is not a map is what they leave alone and
+    // the subscript after them throws on, so nothing is written over it here.
+    if !matches!(event.get(&pattern.target), Some(Value::Object(_))) {
+        if event.has_value(&pattern.target) {
+            return true;
+        }
+        let _ = event.set(&pattern.target, Value::Object(Map::new()));
+    }
+
+    let Some(Value::Object(into)) = crate::params::pointer_mut(event, &pattern.target) else {
+        return true;
+    };
+    for (key, value) in entries {
+        let value = match (&pattern.replace, value) {
+            (Some((from, to)), Value::String(text)) => {
+                Value::String(text.replace(from.as_str(), to))
+            }
+            (_, other) => other,
+        };
+        into.insert(key, value);
+    }
+    true
+}
+
 /// A whole map moved beneath a NEW parent, and the source removed.
 ///
 /// ```painless
@@ -19640,6 +20317,15 @@ pub(crate) enum KnownPattern {
     /// A value that may arrive as text or as a number, written back as a
     /// number -- in place, per list item, or per list element.
     LongCoercion(Box<crate::coercion::LongCoercion>),
+    /// A payload cut into records and folded into the parallel columns the
+    /// script declares.
+    SplitIntoColumns(Box<SplitIntoColumns>),
+    /// One trailing character dropped from every member of a list.
+    TrimListSuffix(Box<TrimListSuffix>),
+    /// A field's numeric escapes decoded back to the characters they name.
+    EscapeDecode(Box<EscapeDecode>),
+    /// Every entry of one map copied into an unrelated subtree.
+    MapEntriesInto(Box<MapEntriesInto>),
 }
 
 /// Copies that apply only where `guard` holds `literal`.
@@ -21146,6 +21832,16 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: the same quote-aware cut folded into the columns the script
+    // DECLARES, which the key/value arm below reads as one pair per record and
+    // writes the last of them.
+    if normalised.contains("splitUnquoted(")
+        && let Some(pattern) = parse_split_into_columns(normalised)
+    {
+        patterns.push(KnownPattern::SplitIntoColumns(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: quote-aware KV split of a whole vendor payload.
     if normalised.contains("splitUnquoted(")
         && let Some(pattern) = parse_split_unquoted_kv(normalised)
@@ -21545,6 +22241,19 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
     // after it, because the local spelling is the more constrained of the two.
     if let Some(pattern) = parse_chained_string_ops(normalised) {
         patterns.push(KnownPattern::StringOps(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: a map emptied into an unrelated subtree, one entry at a time.
+    // Below `MergeMapUp` and the other `entrySet()` walkers, so it takes only a
+    // script none of them claimed, and ABOVE the `.replace(` stop below: that
+    // arm ends the ladder either way, and the unescape this loop applies to each
+    // value is a `.replace(` call, so from there the script bound to nothing.
+    if normalised.contains(".entrySet()")
+        && normalised.contains(".getKey()] = ")
+        && let Some(pattern) = parse_map_entries_into(normalised)
+    {
+        patterns.push(KnownPattern::MapEntriesInto(Box::new(pattern)));
         return patterns;
     }
 
@@ -22046,6 +22755,27 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_epoch_rungs(normalised)
     {
         patterns.push(KnownPattern::EpochRungs(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: one trailing character cut off every member of a list. Last, so
+    // it takes only a script nothing above took; both spellings in the tree read
+    // `binding: []` before this arm.
+    if normalised.contains(".charAt(")
+        && let Some(pattern) = parse_trim_list_suffix(normalised)
+    {
+        patterns.push(KnownPattern::TrimListSuffix(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: a character walk decoding a field's numeric escapes. Gated on
+    // the builder as well as the parse, because a script that reads characters
+    // and does not accumulate them is doing something else with them.
+    if normalised.contains("new StringBuilder()")
+        && normalised.contains("Integer.parseInt(")
+        && let Some(pattern) = parse_escape_decode(normalised)
+    {
+        patterns.push(KnownPattern::EscapeDecode(Box::new(pattern)));
         return patterns;
     }
 
@@ -22668,6 +23398,10 @@ pub(crate) fn run_known_pattern(
         KnownPattern::FlattenMapInto(pattern) => run_flatten_map_into(event, pattern),
         KnownPattern::StringifyLongs(fields) => run_stringify_longs(event, fields),
         KnownPattern::LongCoercion(pattern) => crate::coercion::long_coercion(event, pattern),
+        KnownPattern::SplitIntoColumns(pattern) => run_split_into_columns(event, pattern),
+        KnownPattern::TrimListSuffix(pattern) => run_trim_list_suffix(event, pattern),
+        KnownPattern::EscapeDecode(pattern) => run_escape_decode(event, pattern),
+        KnownPattern::MapEntriesInto(pattern) => run_map_entries_into(event, pattern),
         KnownPattern::CopyByLabel(pattern) => run_copy_by_label(event, pattern),
         KnownPattern::BandLadder(pattern) => run_band_ladder(event, pattern),
         KnownPattern::StripSurroundingPair(pattern) => run_strip_surrounding_pair(event, pattern),

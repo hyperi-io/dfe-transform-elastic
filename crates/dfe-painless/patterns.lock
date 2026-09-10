@@ -151,88 +151,92 @@
 150 VersionSplit
 151 SyslogPriority
 152 AppendUnique
-153 SplitUnquotedKv
-154 ArrayToIndexedObject
-155 KeyValuePairs
-156 DecayWindow
-157 IocExpiry
-158 DropLastChar
-159 TagsAndMarking
-160 CsvMapToArray
-161 CsvColonPairs
-162 DedupeUnwrap
-163 KvIntoFields
-164 KvIntoNamespace
-165 CtxTableLookup
-166 FirehoseDataset
-167 NestedKeyNames
-168 DatePlusDays
-169 JoinOptional
-170 ListRenameTable
-171 SplitIntoRecords
-172 PrependSplit
-173 AppendEach
-174 FlattenMapInto
-175 StringifyLongs
-176 CopyByLabel
-177 LiteralValueMap
-178 EqualsLiteralFlag
-179 KeysToSnakeCase
-180 CommandLine
-181 ProcessStartTime
-182 EmailSplit
-183 RiskBehaviors
-184 AzureCategoryEventType
-185 AzureEventCategory
-186 ReplaceDotsInKeys
-187 OktaTargetRename
-188 KeysBySuffix
-189 CollectMapValues
-190 StringOps
+153 SplitIntoColumns
+154 SplitUnquotedKv
+155 ArrayToIndexedObject
+156 KeyValuePairs
+157 DecayWindow
+158 IocExpiry
+159 DropLastChar
+160 TagsAndMarking
+161 CsvMapToArray
+162 CsvColonPairs
+163 DedupeUnwrap
+164 KvIntoFields
+165 KvIntoNamespace
+166 CtxTableLookup
+167 FirehoseDataset
+168 NestedKeyNames
+169 DatePlusDays
+170 JoinOptional
+171 ListRenameTable
+172 SplitIntoRecords
+173 PrependSplit
+174 AppendEach
+175 FlattenMapInto
+176 StringifyLongs
+177 CopyByLabel
+178 LiteralValueMap
+179 EqualsLiteralFlag
+180 KeysToSnakeCase
+181 CommandLine
+182 ProcessStartTime
+183 EmailSplit
+184 RiskBehaviors
+185 AzureCategoryEventType
+186 AzureEventCategory
+187 ReplaceDotsInKeys
+188 OktaTargetRename
+189 KeysBySuffix
+190 CollectMapValues
 191 StringOps
-192 GuardedReplace
-193 RoundedScale
-194 FieldsIntoMap
-195 CrowdstrikeTimelineEntityIdentity
-196 CrowdstrikeTimelineEntityAccounts
-197 CollectPresent
-198 FirstElement
-199 IndexedFieldCopies
-200 MoveKeys
-201 ClassifyLadder
-202 PrivateCidrDirection
-203 WktGeometry
-204 GeoPointFromCoordinates
-205 BranchCopies
-206 StripSurroundingPair
-207 HashByWidthOrPrefix
-208 LongCoercion
-209 GuardedDivide
-210 ScaleField
-211 RecordRenames
-212 DecodedFields
-213 PairTable
-214 RecordFromFields
-215 SecondsBetween
-216 HoistMember
-217 ListRebuild
-218 ScanTaggedList
-219 GuardedCopy
-220 ConcatAssignment
-221 PlainAssignments
-222 SumTotals
-223 ScalarExpression
-224 TrimThenSplit
-225 ItemWrites
-226 NthSeparatorPrefix
-227 FirstMatchInList
-228 SubstringRejoin
-229 ListFold
-230 LongDivide
-231 DropLeadingChars
-232 EpochToMillis
-233 EpochNanosToDateTime
-234 EpochRungs
+192 StringOps
+193 MapEntriesInto
+194 GuardedReplace
+195 RoundedScale
+196 FieldsIntoMap
+197 CrowdstrikeTimelineEntityIdentity
+198 CrowdstrikeTimelineEntityAccounts
+199 CollectPresent
+200 FirstElement
+201 IndexedFieldCopies
+202 MoveKeys
+203 ClassifyLadder
+204 PrivateCidrDirection
+205 WktGeometry
+206 GeoPointFromCoordinates
+207 BranchCopies
+208 StripSurroundingPair
+209 HashByWidthOrPrefix
+210 LongCoercion
+211 GuardedDivide
+212 ScaleField
+213 RecordRenames
+214 DecodedFields
+215 PairTable
+216 RecordFromFields
+217 SecondsBetween
+218 HoistMember
+219 ListRebuild
+220 ScanTaggedList
+221 GuardedCopy
+222 ConcatAssignment
+223 PlainAssignments
+224 SumTotals
+225 ScalarExpression
+226 TrimThenSplit
+227 ItemWrites
+228 NthSeparatorPrefix
+229 FirstMatchInList
+230 SubstringRejoin
+231 ListFold
+232 LongDivide
+233 DropLeadingChars
+234 EpochToMillis
+235 EpochNanosToDateTime
+236 EpochRungs
+237 TrimListSuffix
+238 EscapeDecode
 
 [params_pattern]
   1 RowMembers
@@ -286,35 +290,36 @@
  49 RecordActionTable
  50 EventBlockTable
  51 ProtocolPrefix
- 52 ReversibleLookup
- 53 LookupMerge
- 54 KeyedActionRow
- 55 KeyedRowAppends
- 56 LookupColumns
- 57 MemberLookup
- 58 LookupNormalise
- 59 StringifiedLookup
- 60 StringifiedLookupOrLiteral
- 61 IndexedLookup
- 62 Scale
- 63 Replace
- 64 AddUniqueRow
- 65 FrameworkPreference
- 66 NormalisedLookup
- 67 StringifiedLookup
- 68 LookupNormalise
- 69 GuardedLookup
- 70 MergeRowOrFallback
- 71 GuardedParamsRow
- 72 IssueLifecycle
- 73 ArmedTable
- 74 RowOrDefaults
- 75 HexFields
- 76 KeyedByLookup
- 77 ScalarExpression
- 78 SelectRenameKeys
- 79 FieldTables
+ 52 ContainsFlags
+ 53 ReversibleLookup
+ 54 LookupMerge
+ 55 KeyedActionRow
+ 56 KeyedRowAppends
+ 57 LookupColumns
+ 58 MemberLookup
+ 59 LookupNormalise
+ 60 StringifiedLookup
+ 61 StringifiedLookupOrLiteral
+ 62 IndexedLookup
+ 63 Scale
+ 64 Replace
+ 65 AddUniqueRow
+ 66 FrameworkPreference
+ 67 NormalisedLookup
+ 68 StringifiedLookup
+ 69 LookupNormalise
+ 70 GuardedLookup
+ 71 MergeRowOrFallback
+ 72 GuardedParamsRow
+ 73 IssueLifecycle
+ 74 ArmedTable
+ 75 RowOrDefaults
+ 76 HexFields
+ 77 KeyedByLookup
+ 78 ScalarExpression
+ 79 SelectRenameKeys
  80 FieldTables
- 81 MemberMappings
- 82 ConfiguredDateFormat
+ 81 FieldTables
+ 82 MemberMappings
+ 83 ConfiguredDateFormat
 

@@ -259,6 +259,9 @@ pub(crate) enum ParamsPattern {
     KeyedRowAppends(Box<KeyedRowAppends>),
     KeyedMessageTable,
     ReversibleLookup,
+    /// The flag names a field's own characters spell, read off the params keys
+    /// as a substring test rather than a lookup.
+    ContainsFlags(Box<ContainsFlags>),
     /// The literal writes the script makes on its own account travel with the
     /// pattern, so the four-hundred-line bodies are read once rather than per
     /// event.
@@ -784,6 +787,17 @@ fn params_pattern_tail(normalised: &str) -> Option<ParamsPattern> {
         && let Some(pattern) = parse_protocol_prefix(normalised)
     {
         return Some(pattern);
+    }
+
+    // Pattern: the flag names a field's own characters spell, read off the
+    // params keys. Ahead of the reversible lookup below, whose bare
+    // `params.entrySet()` trigger this also spells and which needs a
+    // `params[ctx.` the substring test never writes -- claimed there, the
+    // script reached nothing at all.
+    if normalised.contains(".contains(entry.getKey())")
+        && let Some(pattern) = parse_contains_flags(normalised)
+    {
+        return Some(ParamsPattern::ContainsFlags(Box::new(pattern)));
     }
 
     // Pattern: map a field through a params table in whichever direction it
@@ -2120,6 +2134,7 @@ pub(crate) fn run_params_pattern(
         ParamsPattern::KeyedRowAppends(pattern) => run_keyed_row_appends(event, pattern, params),
         ParamsPattern::KeyedMessageTable => try_keyed_message_table(event, normalised, params),
         ParamsPattern::ReversibleLookup => try_reversible_lookup(event, normalised, params),
+        ParamsPattern::ContainsFlags(pattern) => run_contains_flags(event, pattern, params),
         ParamsPattern::LookupMerge(literals) => {
             try_lookup_merge(event, normalised, params, literals)
         }
@@ -9280,6 +9295,163 @@ fn local_indexed_by(script: &str, marker: &str) -> Option<String> {
         .then(|| name.to_string())
 }
 
+/// The flag whose name depends on another field carrying a value.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ContainsFlagsBranch {
+    /// The literal the source is tested for.
+    marker: String,
+    /// The field whose non-empty value chooses between the two names.
+    witness: String,
+    /// The name added where `witness` holds a value, and where it does not.
+    present: String,
+    absent: String,
+}
+
+/// Flags named by which of a params table's KEYS a field CONTAINS.
+///
+/// ```painless
+/// ArrayList hf = new ArrayList();
+/// for (entry in params.entrySet()) {
+///   if (ctx.infoblox_nios.log.dns.header_flags.contains(entry.getKey())) {
+///     hf.add(entry.getValue());
+///   }
+/// }
+/// if (ctx.dns?.response_code != null && ctx.dns.response_code != '') {
+///   if (ctx.infoblox_nios.log.dns.header_flags.contains('+')) { hf.add('RA') }
+/// } else {
+///   if (ctx.infoblox_nios.log.dns.header_flags.contains('+')) { hf.add('RD') }
+/// }
+/// if (hf.length == 0) { return; }
+/// if (ctx.dns == null) { HashMap hm = new HashMap(); ctx.put('dns', hm); }
+/// ctx.dns.put('header_flags', hf);
+/// ```
+///
+/// infoblox_nios's named(8) log packs the DNS header flags into one token --
+/// `+AED` -- and the table turns each character into its ECS name. The `+` is
+/// the odd one out: it means recursion DESIRED on a query and recursion
+/// AVAILABLE on a response, so which name it takes is decided by whether the
+/// event carries a response code.
+///
+/// The table is read as a SUBSTRING test rather than a lookup, which is what
+/// separates it from the lookups below: they index `params` by the field's
+/// whole value, and this one asks which of the params keys the value holds.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ContainsFlags {
+    /// The string tested against every params key.
+    source: String,
+    /// Where the list of names lands.
+    target: String,
+    branch: ContainsFlagsBranch,
+}
+
+fn parse_contains_flags(script: &str) -> Option<ContainsFlags> {
+    let flat = crate::common::one_space(script);
+
+    // The accumulator, and the field every membership test reads.
+    let bucket = flat
+        .split_once(" = new ArrayList()")?
+        .0
+        .rsplit(' ')
+        .next()
+        .filter(|local| !local.is_empty())?;
+    let at = flat.find(".contains(entry.getKey())")?;
+    let source = clean_path(flat[..at].rsplit_once("ctx.")?.1);
+    if source.is_empty() || !flat.contains(&format!("{bucket}.add(entry.getValue());")) {
+        return None;
+    }
+
+    // The two arms, and the field that chooses between them.
+    let witness = clean_path(flat.split_once(" != null && ")?.0.rsplit_once("ctx.")?.1);
+    let (present_arm, absent_arm) = flat.split_once("} else {")?;
+    // Every read here is anchored on the literal's own opening quote. The walk
+    // above the branch spells both `{source}.contains(` and `{bucket}.add(`
+    // with a non-literal argument, so an unanchored read finds those first and
+    // then runs on to whatever quote comes next.
+    let add = format!("{bucket}.add(");
+    let (quote, marker) = opening_literal(present_arm, &format!("{source}.contains("))?;
+    let branch = ContainsFlagsBranch {
+        present: opening_literal(present_arm, &add)?.1,
+        absent: opening_literal(absent_arm, &add)?.1,
+        witness,
+        marker,
+    };
+    // Both arms test the same literal against the same field, or they are two
+    // different rules and only one of them would be run. An empty marker would
+    // be held by every value there is, so it is no test at all.
+    let test = format!("{source}.contains({quote}{}{quote})", branch.marker);
+    if branch.witness.is_empty()
+        || branch.marker.is_empty()
+        || !present_arm.contains(test.as_str())
+        || !absent_arm.contains(test.as_str())
+    {
+        return None;
+    }
+
+    // An empty list is not written at all, and the only other statement that
+    // may write the document is the vendor creating the target's parent.
+    let empty = [
+        format!("if ({bucket}.length == 0) {{ return; }}"),
+        format!("if ({bucket}.size() == 0) {{ return; }}"),
+    ];
+    let put = flat.rfind(".put(")?;
+    let parent = clean_path(flat[..put].rsplit_once("ctx.")?.1);
+    let key = quoted_after(&flat[put..], ".put(")?;
+    if !empty.iter().any(|form| flat.contains(form.as_str()))
+        || flat.matches(&format!("{bucket}.add(")).count() != 3
+        || !flat[put..].contains(&format!(", {bucket})"))
+        || flat.matches(".put(").count() > 2
+        || (flat.matches(".put(").count() == 2
+            && !flat.contains(&format!("ctx.put('{parent}',")))
+        || parent.is_empty()
+        || key.is_empty()
+    {
+        return None;
+    }
+
+    Some(ContainsFlags {
+        source,
+        target: format!("{parent}.{key}"),
+        branch,
+    })
+}
+
+fn run_contains_flags(
+    event: &mut Event,
+    pattern: &ContainsFlags,
+    params: &Map<String, Value>,
+) -> bool {
+    // The processor's own `if` guards the field, so nothing to read here means
+    // the path came out wrong.
+    let Some(text) = event.get_string(&pattern.source) else {
+        return false;
+    };
+
+    // The params block is insertion-ordered, and the order it is written in is
+    // the order Elasticsearch appends the names in.
+    let mut flags: Vec<Value> = params
+        .iter()
+        .filter(|(key, _)| text.contains(key.as_str()))
+        .map(|(_, value)| value.clone())
+        .collect();
+
+    if text.contains(pattern.branch.marker.as_str()) {
+        let carried = event.has_value(&pattern.branch.witness)
+            && event.get_str(&pattern.branch.witness) != Some("");
+        flags.push(Value::String(if carried {
+            pattern.branch.present.clone()
+        } else {
+            pattern.branch.absent.clone()
+        }));
+    }
+
+    // The script's own early return: an empty list leaves the target alone.
+    if flags.is_empty() {
+        return true;
+    }
+    let _ = event.set(&pattern.target, Value::Array(flags));
+    true
+}
+
 /// A table read in either direction, depending on which side the field holds.
 ///
 /// Cisco's ASA and FTD pipelines map `network.transport` to its IANA protocol
@@ -9844,6 +10016,25 @@ fn quoted_after(script: &str, after: &str) -> Option<String> {
     let quote = tail.as_bytes()[start] as char;
     let end = tail[start + 1..].find(quote)?;
     Some(tail[start + 1..=start + end].to_string())
+}
+
+/// The literal a call opens with, where `anchor` ends at its `(`, and the
+/// quote character it was written in.
+///
+/// The quote is searched for as part of the anchor, which is the difference
+/// from [`quoted_after`]: that finds `after` and then the next quote anywhere
+/// past it, over the end of the call and the end of the statement alike. On
+/// infoblox_nios's flag arms it answered with the empty string of a `!= ''`
+/// test two statements away. Making the quote part of the anchor also steps
+/// over a call whose argument is not a literal, so `hf.add(` reads past the
+/// `hf.add(entry.getValue())` of the walk above.
+fn opening_literal(script: &str, anchor: &str) -> Option<(char, String)> {
+    ['\'', '"'].into_iter().find_map(|quote| {
+        let open = format!("{anchor}{quote}");
+        let at = script.find(&open)?;
+        let tail = &script[at + open.len()..];
+        tail.find(quote).map(|end| (quote, tail[..end].to_string()))
+    })
 }
 
 /// Resolve the expression inside `params.get(...)` to a table key.

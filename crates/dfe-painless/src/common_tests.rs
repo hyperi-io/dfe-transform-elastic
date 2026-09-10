@@ -8291,6 +8291,326 @@ fn a_leading_cut_past_the_end_writes_nothing() {
     assert_eq!(event.get_str("a.b"), Some("xy"));
 }
 
+/// The three infoblox_nios scripts, verbatim from the generated call sites in
+/// `crates/dfe-transforms/src/filebeat/infoblox_nios_log/default.rs`.
+mod infoblox_nios {
+    use super::{KnownPattern, Value, binds_variant, json, run_script};
+
+    /// `pipelines/infoblox_nios/log/pipeline_dns.yml`, the DNS answers fold.
+    const DNS_ANSWERS: &str = r#"def splitUnquoted(String input, String sep) {\n  def tokens = [];\n  def startPosition = 0;\n  def isInQuotes = false;\n  char quote = (char)\"\\\"\";\n  for (def currentPosition = 0; currentPosition < input.length(); currentPosition++) {\n      if (input.charAt(currentPosition) == quote) {\n          isInQuotes = !isInQuotes;\n      }\n      else if (input.charAt(currentPosition) == (char)sep && !isInQuotes) {\n          def token = input.substring(startPosition, currentPosition).trim();\n          if (!token.equals(\"\")) {\n            tokens.add(token);\n          }\n          startPosition = currentPosition + 1;\n      }\n  }\n\n  def lastToken = input.substring(startPosition);\n  if (!lastToken.equals(sep) && !lastToken.equals(\"\")) {\n      tokens.add(lastToken.trim());\n  }\n  return tokens;\n}\n\ndef arr = splitUnquoted(ctx.repeat_message, \";\");\nctx.repeat_message = arr;\nMap map = new HashMap();\nmap.put('name', new ArrayList());\nmap.put('ttl', new ArrayList());\nmap.put('class', new ArrayList());\nmap.put('type', new ArrayList());\nmap.put('data', new ArrayList());\n\nfor (def i = 0; i < arr.length; i++) {\n  def response = splitUnquoted(arr[i], \" \");\n  if (response.size() >= 4) {\n    map['name'].add(response[0]);\n    map['ttl'].add(response[1]);\n    map['class'].add(response[2]);\n    map['type'].add(response[3]);\n    map['data'].addAll(response.subList(4, response.length));\n  }\n}\nctx.dns.answers = map;\n"#;
+
+    /// The same file's trim of the root label off every answer name.
+    const TRIM_ANSWER_NAME: &str = r#"def hash = new ArrayList();\nfor(name in ctx.dns.answers.name){\n  def n = name.length();\n  if(name.charAt(n-1).toString() == '.'){\n    def name_substring = name.substring(0,n-1) + name.substring(n);\n    hash.add(name_substring);\n  }\n  else{\n    hash.add(name);\n  }\n}\nctx.dns.answers.name = hash;\n"#;
+
+    /// `pipelines/infoblox_nios/log/pipeline_audit.yml`, the kv map lifted into
+    /// the package namespace.
+    const AUDIT_LIFT: &str = r#"if (ctx.infoblox_nios == null) {\n  ctx['infoblox_nios'] = new HashMap();\n}\nif (ctx.infoblox_nios.log == null) {\n  ctx.infoblox_nios['log'] = new HashMap();\n}\nif (ctx.infoblox_nios.log.audit == null) {\n  ctx.infoblox_nios.log['audit'] = new HashMap();\n}\nfor (Map.Entry m : ctx.audit.entrySet()) {\n  def value = m.getValue();\n  if (value instanceof String) {\n    value = value.replace('\\\\040', ' ')\n  }\n  ctx.infoblox_nios.log.audit[m.getKey()] = value;\n}\n"#;
+
+    /// fortinet's spelling of the same helper, which folds the payload's OWN
+    /// keys into a map and must keep its arm.
+    const FORTINET_KV: &str = "def splitUnquoted(String input, String sep) {\n  def tokens = \
+                               [];\n}\ndef arr = splitUnquoted(ctx.syslog5424_sd, \" \");\n\
+                               Map map = new HashMap();\nfor (def i = 0; i < arr?.length; i++) \
+                               {\n  def kv = splitUnquoted(arr[i], \"=\");\n}\n\
+                               ctx.fortinet.firewall = map;\n";
+
+    #[test]
+    fn the_answers_fold_writes_one_list_per_declared_column() {
+        let (claimed, event) = run_script(
+            DNS_ANSWERS,
+            json!({
+                "repeat_message":
+                    "a1.foo.com 28800 IN A foo.com; a1.foo.com 28800 IN A 0.0.0.0",
+            }),
+        );
+        assert!(claimed);
+        for (column, want) in [
+            ("name", json!(["a1.foo.com", "a1.foo.com"])),
+            ("ttl", json!(["28800", "28800"])),
+            ("class", json!(["IN", "IN"])),
+            ("type", json!(["A", "A"])),
+            ("data", json!(["foo.com", "0.0.0.0"])),
+        ] {
+            assert_eq!(event.get(&format!("dns.answers.{column}")), Some(&want));
+        }
+        // `ctx.repeat_message = arr` -- the payload becomes its own record list.
+        assert_eq!(
+            event.get("repeat_message"),
+            Some(&json!([
+                "a1.foo.com 28800 IN A foo.com",
+                "a1.foo.com 28800 IN A 0.0.0.0"
+            ]))
+        );
+    }
+
+    /// The cut is quote-aware on both axes, and the last column takes every
+    /// field past the fourth rather than only the fifth.
+    #[test]
+    fn a_quoted_record_keeps_its_separator_and_its_quotes() {
+        let (claimed, event) = run_script(
+            DNS_ANSWERS,
+            json!({
+                "repeat_message":
+                    "settings-win.data.microsoft.com. 3600 IN TXT \"k=rsa; p=abc\" \"def\"",
+            }),
+        );
+        assert!(claimed);
+        assert_eq!(
+            event.get("dns.answers.data"),
+            Some(&json!(["\"k=rsa; p=abc\"", "\"def\""]))
+        );
+        assert_eq!(
+            event.get("dns.answers.name"),
+            Some(&json!(["settings-win.data.microsoft.com."]))
+        );
+    }
+
+    /// The script's own `size() >= 4`: a record short of it fills no column at
+    /// all, rather than filling the ones it does reach.
+    #[test]
+    fn a_record_short_of_the_width_guard_contributes_nothing() {
+        let (claimed, event) = run_script(
+            DNS_ANSWERS,
+            json!({ "repeat_message": "a.com 1 IN A 1.2.3.4; too short" }),
+        );
+        assert!(claimed);
+        assert_eq!(event.get("dns.answers.name"), Some(&json!(["a.com"])));
+        assert_eq!(event.get("dns.answers.data"), Some(&json!(["1.2.3.4"])));
+    }
+
+    /// One helper, two folds, and only the accumulator's declared keys separate
+    /// them.
+    #[test]
+    fn the_columnar_fold_and_the_key_value_fold_keep_their_own_arms() {
+        assert!(binds_variant(DNS_ANSWERS, |pattern| matches!(
+            pattern,
+            KnownPattern::SplitIntoColumns(_)
+        )));
+        assert!(!binds_variant(DNS_ANSWERS, |pattern| matches!(
+            pattern,
+            KnownPattern::SplitUnquotedKv(_)
+        )));
+        assert!(binds_variant(FORTINET_KV, |pattern| matches!(
+            pattern,
+            KnownPattern::SplitUnquotedKv(_)
+        )));
+        assert!(!binds_variant(FORTINET_KV, |pattern| matches!(
+            pattern,
+            KnownPattern::SplitIntoColumns(_)
+        )));
+    }
+
+    /// Every near-miss of the fold, each for its own reason.
+    #[test]
+    fn the_columnar_fold_declines_what_it_cannot_reproduce() {
+        for (why, script) in [
+            (
+                // A window, so the fields past it are dropped with no trace.
+                "a subList that stops short of the record",
+                DNS_ANSWERS.replace("response.subList(4, response.length)", "response.subList(4, 6)"),
+            ),
+            (
+                // An exact width takes a different set of records.
+                "a width guard that is not a minimum",
+                DNS_ANSWERS.replace("response.size() >= 4", "response.size() == 4"),
+            ),
+            (
+                // A key the accumulator never declared, and `data` then unfilled.
+                "a column the map does not declare",
+                DNS_ANSWERS.replace("map['data'].addAll", "map['extra'].addAll"),
+            ),
+        ] {
+            assert!(
+                !binds_variant(&script, |pattern| matches!(
+                    pattern,
+                    KnownPattern::SplitIntoColumns(_)
+                )),
+                "claimed {why}"
+            );
+        }
+    }
+
+    #[test]
+    fn a_trailing_root_label_is_cut_from_every_member() {
+        let (claimed, event) = run_script(
+            TRIM_ANSWER_NAME,
+            json!({ "dns": { "answers": { "name": ["www.elastic.co.", "a1.foo.com"] } } }),
+        );
+        assert!(claimed);
+        assert_eq!(
+            event.get("dns.answers.name"),
+            Some(&json!(["www.elastic.co", "a1.foo.com"]))
+        );
+    }
+
+    /// A list the guard would not have reached is left alone.
+    #[test]
+    fn the_trim_leaves_a_source_that_is_not_a_list() {
+        let (claimed, event) = run_script(
+            TRIM_ANSWER_NAME,
+            json!({ "dns": { "answers": { "name": "www.elastic.co." } } }),
+        );
+        assert!(claimed);
+        assert_eq!(event.get_str("dns.answers.name"), Some("www.elastic.co."));
+    }
+
+    #[test]
+    fn the_trim_declines_a_loop_that_rewrites_its_other_arm() {
+        // Both arms have to collect the member as it stands or as the cut left
+        // it. An `else` arm doing anything else is a different rewrite.
+        let script = TRIM_ANSWER_NAME.replace("hash.add(name);", "hash.add(name.trim());");
+        assert!(!binds_variant(&script, |pattern| matches!(
+            pattern,
+            KnownPattern::TrimListSuffix(_)
+        )));
+
+        // A cut of two characters is not this one.
+        let script = TRIM_ANSWER_NAME.replace("name.substring(0,n-1)", "name.substring(0,n-2)");
+        assert!(!binds_variant(&script, |pattern| matches!(
+            pattern,
+            KnownPattern::TrimListSuffix(_)
+        )));
+    }
+
+    #[test]
+    fn the_audit_map_lands_in_the_namespace_with_the_escape_undone() {
+        let (claimed, event) = run_script(
+            AUDIT_LIFT,
+            json!({ "audit": { "to": "Serial\\040Console", "ip": "10.0.0.2", "cid": 7 } }),
+        );
+        assert!(claimed);
+        assert_eq!(
+            event.get_str("infoblox_nios.log.audit.to"),
+            Some("Serial Console")
+        );
+        assert_eq!(event.get_str("infoblox_nios.log.audit.ip"), Some("10.0.0.2"));
+        // The replace is under `instanceof String`, so a number is untouched.
+        assert_eq!(event.get("infoblox_nios.log.audit.cid"), Some(&json!(7)));
+        // The pipeline's own `remove` takes the source, not this script.
+        assert!(event.has("audit"));
+    }
+
+    /// The loop MERGES: a key the grok processors already wrote survives.
+    #[test]
+    fn the_audit_lift_keeps_what_the_target_already_held() {
+        let (claimed, event) = run_script(
+            AUDIT_LIFT,
+            json!({
+                "audit": { "to": "AdminConnector" },
+                "infoblox_nios": { "log": { "audit": { "message": "kept" } } },
+            }),
+        );
+        assert!(claimed);
+        assert_eq!(
+            event.get_str("infoblox_nios.log.audit.message"),
+            Some("kept")
+        );
+        assert_eq!(
+            event.get_str("infoblox_nios.log.audit.to"),
+            Some("AdminConnector")
+        );
+    }
+
+    #[test]
+    fn the_audit_lift_declines_a_loop_that_does_anything_else() {
+        for (why, script) in [
+            (
+                "a second write in the body",
+                AUDIT_LIFT.replace(
+                    r"ctx.infoblox_nios.log.audit[m.getKey()] = value;",
+                    r"ctx.infoblox_nios.log.audit[m.getKey()] = value;\n  ctx.related.user = value;",
+                ),
+            ),
+            (
+                "a key rewritten on the way across",
+                AUDIT_LIFT.replace("[m.getKey()] = value", "[m.getKey().toLowerCase()] = value"),
+            ),
+        ] {
+            assert!(
+                !binds_variant(&script, |pattern| matches!(
+                    pattern,
+                    KnownPattern::MapEntriesInto(_)
+                )),
+                "claimed {why}"
+            );
+        }
+    }
+
+    /// A target already holding something that is not a map is what the
+    /// vendor's null guards leave alone, so nothing is written over it.
+    #[test]
+    fn the_audit_lift_writes_nothing_over_a_target_that_is_not_a_map() {
+        let (claimed, event) = run_script(
+            AUDIT_LIFT,
+            json!({
+                "audit": { "to": "AdminConnector" },
+                "infoblox_nios": { "log": { "audit": "already text" } },
+            }),
+        );
+        assert!(claimed);
+        assert_eq!(
+            event.get("infoblox_nios.log.audit"),
+            Some(&Value::String("already text".to_owned()))
+        );
+    }
+
+    /// A source the processor's own `if` would have guarded.
+    #[test]
+    fn the_audit_lift_writes_nothing_when_the_source_is_absent() {
+        let (claimed, event) = run_script(AUDIT_LIFT, json!({ "message": "x" }));
+        assert!(claimed);
+        assert!(!event.has("infoblox_nios"));
+    }
+
+    /// The same file's octal decode of the escaped admin address.
+    const AUDIT_IP_ESCAPES: &str = r#"String s = ctx.infoblox_nios.log.audit.ip; StringBuilder sb = new StringBuilder(); for (int i = 0; i < s.length();) {\n    if (s.charAt(i) == (char)'\\\\') {\n        sb.append(':');\n        int b = Integer.parseInt(s.substring(i+1,i+4), 8);\n        if (b != (char)':') {\n            sb.append((char)b);\n        }\n        i+=4;\n        continue;\n    }\n    sb.append(s.charAt(i));\n    i++;\n} ctx.infoblox_nios.log.audit.ip = sb.toString();\n"#;
+
+    /// Both spellings the corpus carries, and they decode to the same address:
+    /// `\072` is the colon itself, so it yields one, and `\143` yields the
+    /// colon plus the `c` it names.
+    #[test]
+    fn the_escaped_admin_address_decodes_to_the_same_ipv6_either_way() {
+        for escaped in [r"2a02\072cf40\072\072", r"2a02\143f40\072\072"] {
+            let (claimed, event) = run_script(
+                AUDIT_IP_ESCAPES,
+                json!({ "infoblox_nios": { "log": { "audit": { "ip": escaped } } } }),
+            );
+            assert!(claimed, "declined: {escaped}");
+            assert_eq!(
+                event.get_str("infoblox_nios.log.audit.ip"),
+                Some("2a02:cf40::"),
+                "{escaped}"
+            );
+        }
+    }
+
+    /// An address with no escape in it comes back untouched.
+    #[test]
+    fn an_unescaped_address_is_left_as_it_stands() {
+        let (claimed, event) = run_script(
+            AUDIT_IP_ESCAPES,
+            json!({ "infoblox_nios": { "log": { "audit": { "ip": "81.2.69.192" } } } }),
+        );
+        assert!(claimed);
+        assert_eq!(
+            event.get_str("infoblox_nios.log.audit.ip"),
+            Some("81.2.69.192")
+        );
+    }
+
+    /// An escape with fewer digits than the cut takes throws in Painless, and
+    /// the field keeps what it held rather than losing its tail.
+    #[test]
+    fn a_truncated_escape_leaves_the_field_alone() {
+        let (claimed, event) = run_script(
+            AUDIT_IP_ESCAPES,
+            json!({ "infoblox_nios": { "log": { "audit": { "ip": r"2a02\07" } } } }),
+        );
+        assert!(claimed);
+        assert_eq!(event.get_str("infoblox_nios.log.audit.ip"), Some(r"2a02\07"));
+    }
+}
+
 /// Every form this reader declines, each for its own reason.
 #[test]
 fn a_leading_cut_declines_what_it_cannot_reproduce() {

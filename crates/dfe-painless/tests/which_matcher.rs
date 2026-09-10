@@ -1580,3 +1580,62 @@ fn both_epoch_rescales_bind_and_carry_the_ladder_their_own_script_spells() {
         Some(&json!(1_699_877_654_000_i64))
     );
 }
+
+/// infoblox_nios's three scripts, verbatim from the generated call sites in
+/// `crates/dfe-transforms/src/filebeat/infoblox_nios_log/default.rs`.
+const INFOBLOX_DNS_ANSWERS: &str = r#"def splitUnquoted(String input, String sep) {\n  def tokens = [];\n  def startPosition = 0;\n  def isInQuotes = false;\n  char quote = (char)\"\\\"\";\n  for (def currentPosition = 0; currentPosition < input.length(); currentPosition++) {\n      if (input.charAt(currentPosition) == quote) {\n          isInQuotes = !isInQuotes;\n      }\n      else if (input.charAt(currentPosition) == (char)sep && !isInQuotes) {\n          def token = input.substring(startPosition, currentPosition).trim();\n          if (!token.equals(\"\")) {\n            tokens.add(token);\n          }\n          startPosition = currentPosition + 1;\n      }\n  }\n\n  def lastToken = input.substring(startPosition);\n  if (!lastToken.equals(sep) && !lastToken.equals(\"\")) {\n      tokens.add(lastToken.trim());\n  }\n  return tokens;\n}\n\ndef arr = splitUnquoted(ctx.repeat_message, \";\");\nctx.repeat_message = arr;\nMap map = new HashMap();\nmap.put('name', new ArrayList());\nmap.put('ttl', new ArrayList());\nmap.put('class', new ArrayList());\nmap.put('type', new ArrayList());\nmap.put('data', new ArrayList());\n\nfor (def i = 0; i < arr.length; i++) {\n  def response = splitUnquoted(arr[i], \" \");\n  if (response.size() >= 4) {\n    map['name'].add(response[0]);\n    map['ttl'].add(response[1]);\n    map['class'].add(response[2]);\n    map['type'].add(response[3]);\n    map['data'].addAll(response.subList(4, response.length));\n  }\n}\nctx.dns.answers = map;\n"#;
+
+const INFOBLOX_TRIM_ANSWER_DATA: &str = r#"def hash = new ArrayList();\nfor(data in ctx.dns.answers.data){\n  def n = data.length();\n  if(data.charAt(n-1).toString() == '.'){\n    def data_substring = data.substring(0,n-1) + data.substring(n);\n    hash.add(data_substring);\n  }\n  else{\n    hash.add(data);\n  }\n}\nctx.dns.answers.data = hash;\n"#;
+
+const INFOBLOX_AUDIT_LIFT: &str = r#"if (ctx.infoblox_nios == null) {\n  ctx['infoblox_nios'] = new HashMap();\n}\nif (ctx.infoblox_nios.log == null) {\n  ctx.infoblox_nios['log'] = new HashMap();\n}\nif (ctx.infoblox_nios.log.audit == null) {\n  ctx.infoblox_nios.log['audit'] = new HashMap();\n}\nfor (Map.Entry m : ctx.audit.entrySet()) {\n  def value = m.getValue();\n  if (value instanceof String) {\n    value = value.replace('\\\\040', ' ')\n  }\n  ctx.infoblox_nios.log.audit[m.getKey()] = value;\n}\n"#;
+
+#[test]
+fn the_infoblox_answers_fold_binds_to_the_columns_and_not_the_pairs() {
+    // The claim was never the defect: `SplitUnquotedKv` triggers on the helper
+    // NAME, so it took this script and wrote `dns.answers` as one key/value
+    // pair -- the last record, under the first field of it -- where
+    // Elasticsearch writes five parallel lists. Both the indices and the tail
+    // column show here, because nothing above the corpus would catch a fold
+    // that read the right fields into the wrong ones.
+    let held = binding(INFOBLOX_DNS_ANSWERS).join(" ");
+    assert!(held.contains("SplitIntoColumns"), "{held}");
+    assert!(!held.contains("SplitUnquotedKv"), "{held}");
+    assert!(held.contains(r#"source: "repeat_message""#), "{held}");
+    assert!(held.contains(r#"target: "dns.answers""#), "{held}");
+    assert!(
+        held.contains("record_sep: ';', field_sep: ' ', min_fields: 4"),
+        "{held}"
+    );
+    assert!(
+        held.contains(r#"SplitColumn { key: "data", at: 4, to_end: true }"#),
+        "{held}"
+    );
+}
+
+#[test]
+fn the_infoblox_trims_and_audit_lift_bind_to_their_own_matchers() {
+    // Both read `binding: []` before these arms. The trim is reached only once
+    // the fold above writes a list, so the two move together.
+    let held = binding(INFOBLOX_TRIM_ANSWER_DATA).join(" ");
+    assert!(held.starts_with("TrimListSuffix"), "{held}");
+    assert!(held.contains(r#"source: "dns.answers.data""#), "{held}");
+    assert!(held.contains("suffix: '.'"), "{held}");
+
+    // The lift sits ABOVE the `.replace(` hard stop: from below it, the
+    // unescape this loop applies to each value ended the ladder with nothing.
+    let held = binding(INFOBLOX_AUDIT_LIFT).join(" ");
+    assert!(held.starts_with("MapEntriesInto"), "{held}");
+    assert!(held.contains(r#"source: "audit""#), "{held}");
+    assert!(
+        held.contains(r#"target: "infoblox_nios.log.audit""#),
+        "{held}"
+    );
+
+    // The WRITTEN document: the octal escape the kv processor left in place.
+    let mut event = Event::new(json!({ "audit": { "to": "Serial\\040Console" } }));
+    assert!(painless_exec_plan(&mut event, &PainlessPlan::new(INFOBLOX_AUDIT_LIFT)).is_ok());
+    assert_eq!(
+        event.get_str("infoblox_nios.log.audit.to"),
+        Some("Serial Console")
+    );
+}

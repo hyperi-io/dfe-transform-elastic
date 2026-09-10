@@ -4341,3 +4341,111 @@ fn the_put_spelling_is_left_to_the_matcher_above() {
         Some(ParamsPattern::StringifiedLookup { .. })
     ));
 }
+
+/// infoblox_nios's DNS header flags, verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/infoblox_nios_log/default.rs`.
+const INFOBLOX_HEADER_FLAGS: &str = r#"ArrayList hf = new ArrayList();\nfor (entry in params.entrySet()) {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains(entry.getKey())) {\n    hf.add(entry.getValue());\n  }\n}\nif (ctx.dns?.response_code != null && ctx.dns.response_code != '') {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains('+')) {\n    hf.add('RA')\n  }\n} else {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains('+')) {\n    hf.add('RD')\n  }\n}\nif (hf.length == 0) {\n  return;\n}\nif (ctx.dns == null) {\n  HashMap hm = new HashMap();\n  ctx.put('dns', hm);\n}\nctx.dns.put('header_flags', hf);\n"#;
+
+/// The vendor's own table, in the order the processor writes it.
+fn header_flag_table() -> Value {
+    json!({ "A": "AA", "t": "TC", "C": "CD", "D": "DO" })
+}
+
+fn run_header_flags(token: &str, response_code: Option<&str>) -> Event {
+    let mut document = json!({ "infoblox_nios": { "log": { "dns": {
+        "header_flags": token
+    } } } });
+    if let Some(code) = response_code {
+        document["dns"] = json!({ "response_code": code });
+    }
+    let mut event = Event::new(document);
+    let script = crate::common::normalise(INFOBLOX_HEADER_FLAGS).into_owned();
+    assert!(
+        try_params_painless(&mut event, &script, &header_flag_table()),
+        "declined: {token}"
+    );
+    event
+}
+
+/// The `+` is recursion DESIRED on a query and recursion AVAILABLE on a
+/// response, so the response code is what names it.
+#[test]
+fn the_header_flag_token_names_one_flag_per_character_it_holds() {
+    assert_eq!(
+        run_header_flags("+ED", Some("NOERROR")).get("dns.header_flags"),
+        Some(&json!(["DO", "RA"]))
+    );
+    assert_eq!(
+        run_header_flags("+AED", Some("NOERROR")).get("dns.header_flags"),
+        Some(&json!(["AA", "DO", "RA"]))
+    );
+    assert_eq!(
+        run_header_flags("+", None).get("dns.header_flags"),
+        Some(&json!(["RD"]))
+    );
+    // An empty response code is the same as none, which is what `!= ''` says.
+    assert_eq!(
+        run_header_flags("+", Some("")).get("dns.header_flags"),
+        Some(&json!(["RD"]))
+    );
+}
+
+/// `if (hf.length == 0) { return; }` -- a token naming nothing writes nothing.
+#[test]
+fn a_token_that_names_no_flag_leaves_the_target_alone() {
+    assert!(!run_header_flags("-", Some("REFUSED")).has("dns.header_flags"));
+}
+
+/// The two scripts that share the bare `params.entrySet()` trigger and mean
+/// something else: cisco's protocol table read in either direction, and panw's
+/// per-field remap. Claiming either would write a flag list over a lookup.
+#[test]
+fn the_flag_reader_declines_the_other_params_entryset_walks() {
+    const CISCO_REVERSIBLE: &str = r#"def net = ctx.network; def iana = params[net.transport]; if (iana != null) {\n  net['iana_number'] = iana;\n  return;\n} def reverse = new HashMap(); def[] arr = new def[] { null }; for (entry in params.entrySet()) {\n  arr[0] = entry.getValue();\n  reverse.put(String.format(\"%d\", arr), entry.getKey());\n} def trans = reverse[net.transport]; if (trans != null) {\n  net['iana_number'] = net.transport;\n  net['transport'] = trans;\n}\n"#;
+    const PANW_REMAP: &str = r#"def getField(Map src, String[] path) {\n for (int i=0; i<path.length-1; i++) {\n  src = src.getOrDefault(path[i], null);\n  if (src == null || !(src instanceof Map)) {\n    return null;\n  }\n }\n return src[path[path.length-1]];\n}\ndef setField(Map dest, String[] path, def value) {\n for (int i=0; i<path.length-1; i++) {\n   dest = dest.computeIfAbsent(path[i], _ -> new HashMap());\n }\n dest[path[path.length-1]] = value;\n}\nfor (entry in params.entrySet()) {\n  def srcField = entry.getKey();\n  def param = entry.getValue();\n  String oldVal = getField(ctx, srcField.splitOnToken('.'));\n  if (oldVal == null) continue;\n  def newVal = param.map?.getOrDefault(oldVal.toLowerCase(), null);\n  if (newVal != null) {\n    def dstField = param.getOrDefault('target', srcField);\n    setField(ctx, dstField.splitOnToken('.'), newVal);\n  }\n}\n"#;
+
+    for script in [CISCO_REVERSIBLE, PANW_REMAP] {
+        assert!(
+            parse_contains_flags(&crate::common::normalise(script)).is_none(),
+            "claimed: {script}"
+        );
+    }
+    assert!(matches!(
+        params_pattern(&crate::common::normalise(INFOBLOX_HEADER_FLAGS)),
+        Some(ParamsPattern::ContainsFlags(_))
+    ));
+}
+
+/// Every near-miss of the flag reader, each for its own reason.
+#[test]
+fn the_flag_reader_declines_what_it_cannot_reproduce() {
+    for (why, script) in [
+        (
+            // Two arms testing different characters are two rules.
+            "arms that do not share their marker",
+            INFOBLOX_HEADER_FLAGS.replace(
+                r"} else {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains('+'))",
+                r"} else {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains('-'))",
+            ),
+        ),
+        (
+            // Without the early return an empty list is written over the target.
+            "no guard on an empty list",
+            INFOBLOX_HEADER_FLAGS.replace(r"if (hf.length == 0) {\n  return;\n}", ""),
+        ),
+        (
+            // A second write is a script this reproduces only half of.
+            "a write past the flag list",
+            INFOBLOX_HEADER_FLAGS.replace(
+                r"ctx.dns.put('header_flags', hf);",
+                r"ctx.dns.put('header_flags', hf);\nctx.event.put('kind', 'event');",
+            ),
+        ),
+    ] {
+        assert_ne!(script, INFOBLOX_HEADER_FLAGS, "{why}: the replacement bit");
+        assert!(
+            parse_contains_flags(&crate::common::normalise(&script)).is_none(),
+            "claimed {why}"
+        );
+    }
+}
