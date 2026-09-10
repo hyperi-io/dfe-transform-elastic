@@ -1654,3 +1654,61 @@ fn the_infoblox_trims_and_audit_lift_bind_to_their_own_matchers() {
         Some("Serial Console")
     );
 }
+
+/// `jamf_protect`'s related-file capture, verbatim from the generated call
+/// site in `crates/dfe-transforms/src/filebeat/jamf_protect_alerts/default.rs`.
+const JAMF_FILE_CAPTURE: &str = r#"if (ctx.jamf_protect.alerts.input.related.files.size() > 0) {\n    def file = ctx.jamf_protect.alerts.input.related.files[0];\n\n    ctx.file = ctx.file ?: new HashMap();\n    \n    ctx.file.path = file.path;\n    ctx.file.size = file.size;\n    ctx.file.inode = String.valueOf(file.inode);\n    ctx.file.gid = String.valueOf(file.gid);\n    ctx.file.mode = String.valueOf(file.mode);\n    ctx.file.uid = String.valueOf(file.uid);\n    \n    ctx.file.hash = ctx.file.hash ?: new HashMap();\n    ctx.file.hash.sha1 = file.sha1hex;\n    ctx.file.hash.sha256 = file.sha256hex;\n    \n    ctx.file.code_signature = ctx.file.code_signature ?: new HashMap();\n    ctx.file.code_signature.signing_id = file.signingInfo?.appid; // Use safe navigation for nested objects\n    ctx.file.code_signature.status = file.signingInfo?.statusMessage;\n    ctx.file.code_signature.team_id = file.signingInfo?.teamid;\n}\n"#;
+
+/// The related-process capture from the same module -- the widest of the
+/// three, and the one that takes `[0]`, `[1]` and `size() - 1`.
+const JAMF_PROCESS_CAPTURE: &str = r#"if (ctx.jamf_protect?.alerts?.input?.related?.processes != null && ctx.jamf_protect.alerts.input.related.processes.size() > 0) {\n    def process = ctx.jamf_protect.alerts.input.related.processes[0];\n    def binary = ctx.jamf_protect.alerts.input.related.binaries[0];\n    \n    ctx.process = ctx.process ?: new HashMap();                          \n    ctx.process.name = process.name;\n    ctx.process.executable = process.path;\n    ctx.process.pid = process.pid;\n    if (process.containsKey('startTimestamp')) {\n        ctx.process.start = Instant.ofEpochSecond(process.startTimestamp).toString();\n    }\n    if (process?.exitCode != null) {\n        ctx.process.exit_code = process.exitCode;\n    }\n    ctx.process.args = process.args ?: new ArrayList();\n    ctx.process.entity_id = process.uuid;\n\n    ctx.process.parent = new HashMap();    \n    ctx.process.parent.pid = process.responsiblePID;\n\n    ctx.process.user = new HashMap();\n    ctx.process.user.id = process.uid.toString();\n\n    ctx.process.group_leader = new HashMap();\n    if (process?.pgid != null) {\n        ctx.process.group_leader.pid = process.pgid;\n    }\n    ctx.process.group_leader.group = new HashMap();\n    if (process?.gid != null) {\n        ctx.process.group_leader.group.id = process.gid.toString();\n    }\n\n    ctx.process.real_user = new HashMap();\n    if (process?.ruid != null) {\n        ctx.process.real_user.id = process.ruid.toString();\n    }               \n\n    ctx.process.real_group = new HashMap();\n    if (process?.rgid != null) {\n        ctx.process.real_group.id = process.rgid.toString();\n    }      \n\n    ctx.process.hash = ctx.process.hash ?: new HashMap();\n    if (binary?.sha1hex != null) {\n        ctx.process.hash.sha1 = binary.sha1hex;\n    }\n    if (binary?.sha256hex != null) {\n        ctx.process.hash.sha256 = binary.sha256hex;\n    }\n    \n    ctx.process.code_signature = ctx.process.code_signature ?: new HashMap();\n    if (process.signingInfo?.appid != null) {\n        ctx.process.code_signature.signing_id = process.signingInfo.appid;\n    }\n    if (process.signingInfo?.statusMessage != null) {\n        ctx.process.code_signature.status = process.signingInfo.statusMessage;\n    }\n    if (process?.signingInfo?.teamid != null) {\n        ctx.process.code_signature.team_id = process.signingInfo.teamid;\n    }\n\n    // Mapping out the parent process\n    if (ctx.jamf_protect.alerts.input.related.processes.size() > 1) {\n    def parentProcess = ctx.jamf_protect.alerts.input.related.processes[1];\n\n    ctx.process.parent = new HashMap();\n    ctx.process.parent.name = parentProcess.name;\n    ctx.process.parent.pid = parentProcess.pid;\n    ctx.process.parent.executable = parentProcess.path;\n    ctx.process.parent.entity_id = parentProcess.uuid;\n\n    if (parentProcess.containsKey('startTimestamp')) {\n        ctx.process.parent.start = Instant.ofEpochSecond(parentProcess.startTimestamp).toString();\n    }\n\n    ctx.process.parent.user = new HashMap();\n    if (parentProcess?.uid != null) {\n        ctx.process.parent.user.id = parentProcess.uid.toString();\n    }      \n\n    ctx.process.parent.real_user = new HashMap();\n    if (parentProcess?.ruid != null) {\n        ctx.process.parent.real_user.id = parentProcess.ruid.toString();\n    }               \n\n    ctx.process.parent.real_group = new HashMap();\n    if (parentProcess?.rgid != null) {\n        ctx.process.parent.real_group.id = parentProcess.rgid.toString();\n    }\n\n    ctx.process.parent.code_signature = ctx.process.parent.code_signature ?: new HashMap();\n    if (parentProcess.signingInfo?.appid != null) {\n        ctx.process.parent.code_signature.signing_id = parentProcess.signingInfo.appid;\n    }\n    if (parentProcess.signingInfo?.statusMessage != null) {\n        ctx.process.parent.code_signature.status = parentProcess.signingInfo.statusMessage;\n    }\n    if (parentProcess?.signingInfo?.teamid != null) {\n        ctx.process.parent.code_signature.team_id = parentProcess.signingInfo.teamid;\n    }\n\n    }\n\n    // Mapping out the process group leader, which can be the same as parent\n    def processGroupLeader = ctx.jamf_protect.alerts.input.related.processes[ctx.jamf_protect.alerts.input.related.processes.size() - 1];\n    ctx.process.group_leader = new HashMap();\n    ctx.process.group_leader.name = processGroupLeader.name;\n    ctx.process.group_leader.pid = processGroupLeader.pid;\n    ctx.process.group_leader.executable = processGroupLeader.path;\n\n    if (processGroupLeader.containsKey('startTimestamp')) {\n        ctx.process.group_leader.start = Instant.ofEpochSecond(processGroupLeader.startTimestamp).toString();\n    }\n\n    ctx.process.group_leader.user = new HashMap();\n    if (processGroupLeader?.uid != null) {\n        ctx.process.group_leader.user.id = processGroupLeader.uid.toString();\n    }      \n\n    ctx.process.group_leader.real_user = new HashMap();\n    if (processGroupLeader?.ruid != null) {\n        ctx.process.group_leader.real_user.id = processGroupLeader.ruid.toString();\n    }               \n\n    ctx.process.group_leader.real_group = new HashMap();\n    if (processGroupLeader?.rgid != null) {\n        ctx.process.group_leader.real_group.id = processGroupLeader.rgid.toString();\n    }\n}\n"#;
+
+/// The related-group capture from the same module.
+const JAMF_GROUP_CAPTURE: &str = r#"if (ctx.jamf_protect?.alerts?.input?.related?.groups != null && ctx.jamf_protect.alerts.input.related.groups.size() > 0) {\n    def group = ctx.jamf_protect.alerts.input.related.groups[0];\n    \n        ctx.group = ctx.group ?: new HashMap();\n        \n        ctx.group.name = group.name;\n        ctx.group.id = group.gid.toString();\n}\n"#;
+
+#[test]
+fn the_three_jamf_related_captures_bind_to_the_element_mapping() {
+    // Neither of the two claims they held wrote anything. The file capture went
+    // to `ArrayToIndexedObject`, whose runner finds no `!= null` to read a
+    // source from and declines; the other two went to `FirstElement`, which
+    // takes the `[0];` of a `def` and reads its target from the last `ctx.`
+    // before it -- the outer guard -- so it set a path carrying a `)`, and
+    // answered handled while `Event::set` refused the type.
+    let held: Vec<String> = [JAMF_FILE_CAPTURE, JAMF_PROCESS_CAPTURE, JAMF_GROUP_CAPTURE]
+        .iter()
+        .map(|script| heads(script).join(" "))
+        .collect();
+    assert_eq!(held, ["ElementMapping"; 3]);
+}
+
+#[test]
+fn the_jamf_group_capture_writes_the_id_the_indexed_copies_cannot() {
+    // `group.gid.toString()` is the member `IndexedFieldCopies` filters out,
+    // and `group.id` is 5 of the stream's wrong fields on its own.
+    let mut event = Event::new(json!({
+        "jamf_protect": { "alerts": { "input": { "related": {
+            "groups": [ { "gid": 20, "name": "staff" } ]
+        } } } }
+    }));
+    assert!(painless_exec_plan(&mut event, &PainlessPlan::new(JAMF_GROUP_CAPTURE)).is_ok());
+    assert_eq!(event.get_str("group.name"), Some("staff"));
+    assert_eq!(event.get_str("group.id"), Some("20"));
+}
+
+/// Verbatim from `crates/dfe-transforms/src/filebeat/azure_auditlogs/default.rs`,
+/// the one script `ArrayToIndexedObject` exists for.
+const AZURE_TARGET_RESOURCES: &str = r#"if (ctx.azure.auditlogs.properties?.targetResources != null) {\n  ctx.azure.auditlogs.properties.target_resources = new HashMap();\n  for (def i = 0; i < ctx.azure.auditlogs.properties.targetResources.length; i++) {\n    String index = String.valueOf(i);\n    ctx.azure.auditlogs.properties.target_resources[index] = new HashMap();\n    if(ctx.azure.auditlogs.properties.targetResources[i].displayName != null) {\n      ctx.azure.auditlogs.properties.target_resources[index].display_name = ctx.azure.auditlogs.properties.targetResources[i].displayName;\n    }\n    ctx.azure.auditlogs.properties.target_resources[index].id = ctx.azure.auditlogs.properties.targetResources[i].id;\n    ctx.azure.auditlogs.properties.target_resources[index].type = ctx.azure.auditlogs.properties.targetResources[i].type;\n    if (ctx.azure.auditlogs.properties.targetResources[i].ipAddress != null) {\n      ctx.azure.auditlogs.properties.target_resources[index].ip_address = ctx.azure.auditlogs.properties.targetResources[i].ipAddress;\n    }\n    if (ctx.azure.auditlogs.properties.targetResources[i].userPrincipalName != null) {\n      ctx.azure.auditlogs.properties.target_resources[index].user_principal_name = ctx.azure.auditlogs.properties.targetResources[i].userPrincipalName;\n    }\n    ctx.azure.auditlogs.properties.target_resources[index].modified_properties = new HashMap();\n    for (def j = 0; j < ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties.length; j++) {\n      String n = String.valueOf(j);\n      ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n] = new HashMap();\n\n      ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n].display_name = ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].displayName;\n      \n      if (ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].newValue != null) {\n        ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n].new_value = ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].newValue;\n      }\n      if (ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].oldValue != null) {\n        ctx.azure.auditlogs.properties.target_resources[index].modified_properties[n].old_value = ctx.azure.auditlogs.properties.targetResources[i].modifiedProperties[j].oldValue;\n      }\n    }\n  }\n  ctx.azure.auditlogs.properties.remove('targetResources');\n}"#;
+
+#[test]
+fn azures_target_resources_keeps_its_own_matcher_under_the_element_mapping() {
+    // `ElementMapping` was placed above `ArrayToIndexedObject` because that
+    // arm's trigger is two bare substrings, and jamf's file capture spells
+    // both. The script the arm exists for has to survive the move.
+    let held = heads(AZURE_TARGET_RESOURCES).join(" ");
+    assert_eq!(
+        held,
+        "ArrayToIndexedObject",
+        "{:?}",
+        binding(AZURE_TARGET_RESOURCES)
+    );
+}

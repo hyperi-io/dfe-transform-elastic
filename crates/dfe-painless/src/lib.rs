@@ -28,6 +28,7 @@
 pub mod coercion;
 pub mod collect_present;
 pub mod common;
+pub mod element_mapping;
 pub mod entity;
 pub mod expr;
 pub mod field_tables;

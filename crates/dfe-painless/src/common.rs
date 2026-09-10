@@ -20121,6 +20121,9 @@ pub(crate) enum KnownPattern {
     CrowdstrikeTimelineEntityIdentity,
     CrowdstrikeTimelineEntityAccounts,
     FirstElement(Box<FirstElement>),
+    /// An ECS block written off one element of a vendor list, with the parent
+    /// maps the script creates for itself.
+    ElementMapping(Box<crate::element_mapping::ElementMapping>),
     LastElementMember(Box<crate::last_element::LastElementMember>),
     /// Several candidate fields collected into one list, the absent ones
     /// dropped, and a lone survivor unwrapped.
@@ -21865,6 +21868,23 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: an ECS block written off ONE element of a vendor list, with the
+    // parent maps the script creates for itself.
+    //
+    // Above `ArrayToIndexedObject`, whose trigger is `new HashMap()` and
+    // `String.valueOf(` as bare substrings: jamf's file capture spells both,
+    // and that runner then finds no `!= null` to read a source from and
+    // declines, leaving the script claimed and unrun. Above `IndexedFieldCopies`
+    // too, which reads the same skeleton but only the bare `<local>.<member>`
+    // copies in it -- 4 members of 11 here, and the group name without its id.
+    if normalised.contains("new HashMap()")
+        && normalised.contains("def ")
+        && let Some(pattern) = crate::element_mapping::parse_element_mapping(normalised)
+    {
+        patterns.push(KnownPattern::ElementMapping(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: re-key an array of maps into an object indexed by position.
     if normalised.contains("new HashMap()") && normalised.contains("String.valueOf(") {
         patterns.push(KnownPattern::ArrayToIndexedObject);
@@ -23226,6 +23246,9 @@ pub(crate) fn run_known_pattern(
             try_crowdstrike_timeline_entity_accounts(event)
         }
         KnownPattern::FirstElement(pattern) => run_first_element(event, pattern),
+        KnownPattern::ElementMapping(pattern) => {
+            crate::element_mapping::element_mapping(event, pattern)
+        }
         KnownPattern::LastElementMember(pattern) => {
             crate::last_element::run_last_element_member(event, pattern)
         }

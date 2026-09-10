@@ -52,6 +52,7 @@ pub use crate::painless_common::{
     split_at_delimiter, string_ops, sum_directions, sum_directions_into_existing,
     sum_member_over_list, syslog_priority, unwrap_suffixed_keys,
 };
+pub use crate::painless_element_mapping::{ElementMapping, element_mapping};
 pub use crate::painless_expr::{Expr, FloatLit, Op, ScalarExpression, scalar_expression};
 pub use crate::painless_gather_members::{GatherMembers, gather_members};
 pub use crate::painless_hoist::{HoistMember, hoist_member};
