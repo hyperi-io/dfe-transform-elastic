@@ -32,7 +32,10 @@ fn generated_root() -> PathBuf {
 /// carries a leading underscore the registry name does not: `_1password_audit`
 /// is registered as `1password_audit`.
 fn registry_name(directory: &str) -> String {
-    format!("filebeat.{}.default", directory.strip_prefix('_').unwrap_or(directory))
+    format!(
+        "filebeat.{}.default",
+        directory.strip_prefix('_').unwrap_or(directory)
+    )
 }
 
 fn data_stream_directories() -> BTreeSet<String> {
@@ -116,7 +119,11 @@ fn every_vendored_pipeline_has_a_generated_module() {
         let Some(package_name) = package.file_name().to_str().map(str::to_owned) else {
             continue;
         };
-        for stream in std::fs::read_dir(package.path()).into_iter().flatten().flatten() {
+        for stream in std::fs::read_dir(package.path())
+            .into_iter()
+            .flatten()
+            .flatten()
+        {
             if !stream.path().is_dir() {
                 continue;
             }
@@ -132,7 +139,11 @@ fn every_vendored_pipeline_has_a_generated_module() {
         }
     }
 
-    assert!(seen > 0, "read no data streams under {}", pipelines.display());
+    assert!(
+        seen > 0,
+        "read no data streams under {}",
+        pipelines.display()
+    );
     missing.sort();
 
     let recorded: BTreeSet<&str> = NOT_YET_ONBOARDED.iter().copied().collect();

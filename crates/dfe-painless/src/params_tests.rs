@@ -1366,6 +1366,68 @@ fn a_subject_nothing_matches_writes_nothing() {
     assert_eq!(event.get("host.os.type"), None);
 }
 
+/// Verbatim from `pipelines/island_browser/device/default.yml`, tagged
+/// `script_map_host_os_type`, in the ESCAPED form a stored script arrives in.
+///
+/// Two things separate it from [`CONTAINED`]: it declares its subject with
+/// `def` rather than `String`, and it creates both parents first. Only the
+/// declaration keyword decided whether the subject was read at all.
+const CONTAINED_DEF: &str = r#"ctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\ndef os_platform = ctx.island_browser.device.os_platform.toLowerCase();\nfor (String os: params.os_type) {\n  if (os_platform.contains(os)) {\n    ctx.host.os.put('type', os);\n    return;\n  }\n}\n"#;
+
+fn contained_def_params() -> Value {
+    json!({ "os_type": ["linux", "macos", "unix", "windows", "ios", "android"] })
+}
+
+/// A `def`-declared subject is read the same as a `String`-declared one.
+#[test]
+fn a_def_declared_subject_is_read() {
+    let mut event = Event::new(json!({
+        "island_browser": { "device": { "os_platform": "Windows 11" } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CONTAINED_DEF,
+        &contained_def_params()
+    ));
+
+    assert_eq!(event.get("host.os.type"), Some(&json!("windows")));
+}
+
+/// The list is walked IN ORDER, so the first member the subject contains wins
+/// even where a later one would also match.
+#[test]
+fn the_params_list_order_decides() {
+    let mut event = Event::new(json!({
+        "island_browser": { "device": { "os_platform": "macOS Sonoma" } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CONTAINED_DEF,
+        &contained_def_params()
+    ));
+
+    assert_eq!(event.get("host.os.type"), Some(&json!("macos")));
+}
+
+/// This script carries no literal tail, so a subject no member matches leaves
+/// the field absent rather than guessing.
+#[test]
+fn a_def_subject_nothing_matches_writes_nothing() {
+    let mut event = Event::new(json!({
+        "island_browser": { "device": { "os_platform": "Plan9" } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CONTAINED_DEF,
+        &contained_def_params()
+    ));
+
+    assert_eq!(event.get("host.os.type"), None);
+}
+
 /// Verbatim from `pipelines/microsoft_dnsserver/analytical/default.yml`,
 /// cut to the branches that decide a key's fate.
 const RENAME_KEYS: &str = "def renameKeys(Map src, Map keyMap) {\n  \

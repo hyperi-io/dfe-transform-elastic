@@ -6785,19 +6785,32 @@ fn try_first_contained_member(
     true
 }
 
-/// The `ctx.` path a `String x = ctx.<path>[.toLowerCase()];` binds, and
-/// whether it was folded DOWN rather than up.
-/// Every `String <local> = ctx.<path>[.toLowerCase()];` binding, in order.
+/// Every `<declaration> <local> = ctx.<path>[.toLowerCase()];` binding, in
+/// script order, with whether each was folded DOWN rather than up.
 ///
 /// The script offers its sources as an `if / else if` chain, so all of them are
-/// read and the caller takes the first the event actually carries. A
-/// `for (String x: ...)` loop header binds nothing and is skipped.
+/// read and the caller takes the first the event actually carries.
+///
+/// The declaration keyword is read from [`DECLARATIONS`] rather than assumed to
+/// be `String`: island_browser spells the same subject `def`, and a reader
+/// keyed on one keyword finds no subject at all and declines the whole script.
+/// A `for (String x: ...)` loop header declares a loop variable, not a binding,
+/// and is rejected because its left side is no identifier.
 fn subjects_of_bindings(script: &str) -> Vec<(String, bool)> {
     let mut subjects = Vec::new();
-    for chunk in script.split("String ").skip(1) {
-        let Some((_, bound)) = chunk.split(';').next().and_then(|s| s.split_once('=')) else {
+    let mut at = 0;
+    while let Some(declaration) = next_declaration(script, at) {
+        at = declaration;
+        let Some((name, bound)) = script[declaration..]
+            .split(';')
+            .next()
+            .and_then(|statement| statement.split_once('='))
+        else {
             continue;
         };
+        if identifier(name).is_none() {
+            continue;
+        }
         let bound = bound.trim();
         let folded = bound.contains(".toLowerCase()");
         let path = bound

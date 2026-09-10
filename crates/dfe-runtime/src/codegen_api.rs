@@ -304,7 +304,9 @@ fn json_processor_value(event: &Event, field: &str) -> std::result::Result<Optio
     match event.get(field) {
         None => Ok(None),
         Some(Value::String(text)) => parse_json_str(text).map(Some),
-        Some(scalar @ (Value::Number(_) | Value::Bool(_) | Value::Null)) => Ok(Some(scalar.clone())),
+        Some(scalar @ (Value::Number(_) | Value::Bool(_) | Value::Null)) => {
+            Ok(Some(scalar.clone()))
+        }
         Some(Value::Object(_)) => {
             Err("failed to parse JSON: the field holds an object, not JSON text".to_string())
         }
