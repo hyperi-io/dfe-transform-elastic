@@ -98,6 +98,23 @@ def corpus_run() -> str:
     return done.stdout + done.stderr
 
 
+def resize_explains_the_fall(old: dict, new: dict) -> bool:
+    """Whether a resized source's lost events are accounted for by the resize.
+
+    A changed `events_total` makes the two event counts incomparable, which is
+    why this path carries no ratchet. It does NOT make an arbitrary fall
+    acceptable: symantec_endpoint_security went 52/58 to 3/60 and was written
+    down in silence because the denominator had moved at all.
+
+    Losing at most as many events as the denominator shrank is the resize
+    itself. Anything beyond that is a fall wearing a resize, and wants a
+    `_lowered` reason like any other.
+    """
+    shrank = old["events_total"] - new["events_total"]
+    lost = old["events"] - new["events"]
+    return lost <= max(0, shrank)
+
+
 def main() -> int:
     flags = {"--resize", "--new", "--run"}
     argv = [a for a in sys.argv[1:] if a not in flags]
@@ -137,10 +154,25 @@ def main() -> int:
             f"{scores['fields_wrong']} fields wrong"
         )
 
-    # No ratchet check: the old entry counted a different set of events, so
-    # there is nothing here to compare against.
+    # The old entry counted a different set of events, so the counts are not
+    # comparable -- but a fall BEYOND what the resize itself can explain is.
+    # symantec_endpoint_security went 52/58 to 3/60 and this path accepted it
+    # in silence, because the denominator had moved at all.
     for source, scores in sorted(resized.items()):
         old = baseline["sources"].get(source)
+        if old:
+            shrunk = old["events_total"] - scores["events_total"]
+            lost = old["events"] - scores["events"]
+            if not resize_explains_the_fall(old, scores):
+                refused.append(
+                    f"{source}: RESIZED {old['events']}/{old['events_total']} -> "
+                    f"{scores['events']}/{scores['events_total']}, so {lost} event(s) "
+                    f"fell where the resize explains at most {max(0, shrunk)}. "
+                    f"Fields wrong {old['fields_wrong']} -> {scores['fields_wrong']}. "
+                    f"Record it in _lowered with its reason, the way a constant-"
+                    f"denominator fall is recorded."
+                )
+                continue
         baseline["sources"][source] = scores
         raised.append(
             f"{source}: RESIZED from {old['events_total'] if old else 0} events to "

@@ -68,5 +68,34 @@ class Entries(unittest.TestCase):
         )
 
 
+class ResizeFall(unittest.TestCase):
+    """A resize may not carry a fall it does not explain."""
+
+    def test_a_collapse_behind_a_grown_denominator_is_refused(self) -> None:
+        """symantec_endpoint_security, verbatim: 52/58 to 3/60.
+
+        The denominator moved by two and 49 events fell, and the old path
+        wrote it down without a word.
+        """
+        old = {"events": 52, "events_total": 58, "fields_wrong": 0}
+        new = {"events": 3, "events_total": 60, "fields_wrong": 316}
+        self.assertFalse(raise_baseline.resize_explains_the_fall(old, new))
+
+    def test_events_lost_with_the_events_removed_is_accepted(self) -> None:
+        old = {"events": 10, "events_total": 12, "fields_wrong": 0}
+        new = {"events": 8, "events_total": 10, "fields_wrong": 0}
+        self.assertTrue(raise_baseline.resize_explains_the_fall(old, new))
+
+    def test_a_grown_denominator_losing_nothing_is_accepted(self) -> None:
+        old = {"events": 10, "events_total": 10, "fields_wrong": 0}
+        new = {"events": 10, "events_total": 13, "fields_wrong": 0}
+        self.assertTrue(raise_baseline.resize_explains_the_fall(old, new))
+
+    def test_losing_one_more_than_the_denominator_shrank_is_refused(self) -> None:
+        old = {"events": 10, "events_total": 12, "fields_wrong": 0}
+        new = {"events": 7, "events_total": 10, "fields_wrong": 0}
+        self.assertFalse(raise_baseline.resize_explains_the_fall(old, new))
+
+
 if __name__ == "__main__":
     unittest.main()
