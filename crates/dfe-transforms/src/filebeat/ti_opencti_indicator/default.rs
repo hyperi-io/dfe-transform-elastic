@@ -1071,11 +1071,12 @@ impl Transform for Default {
                             })();
                             event.remove("_tmp_url.user_info");
                             if event.has_value("_tmp_url.domain") {
-                                if let Some(domain_str) = event.get_string("_tmp_url.domain") {
-                                    let domain = domain_str.to_string();
-                                    event.set("_tmp_url.domain", json!(domain.clone()))?;
-                                    // Public suffix list lookup for registered domain extraction
+                                if let Some(domain) = event.get_string("_tmp_url.domain") {
+                                    // Public suffix list lookup for registered domain extraction.
+                                    // A failed lookup writes NO target field, which is what
+                                    // Elasticsearch does.
                                     if let Some(rd) = registered_domain_lookup(&domain) {
+                                        event.set("_tmp_url.domain", json!(domain))?;
                                         if let Some(registered) = rd.registered_domain {
                                             event.set(
                                                 "_tmp_url.registered_domain",
@@ -1201,11 +1202,12 @@ impl Transform for Default {
                             // Begin nested pipeline: "ecs_from_domain_name_or_hostname"
                             event.rename("_ingest._value", "_tmp_url.domain")?;
                             if event.has_value("_tmp_url.domain") {
-                                if let Some(domain_str) = event.get_string("_tmp_url.domain") {
-                                    let domain = domain_str.to_string();
-                                    event.set("_tmp_url.domain", json!(domain.clone()))?;
-                                    // Public suffix list lookup for registered domain extraction
+                                if let Some(domain) = event.get_string("_tmp_url.domain") {
+                                    // Public suffix list lookup for registered domain extraction.
+                                    // A failed lookup writes NO target field, which is what
+                                    // Elasticsearch does.
                                     if let Some(rd) = registered_domain_lookup(&domain) {
+                                        event.set("_tmp_url.domain", json!(domain))?;
                                         if let Some(registered) = rd.registered_domain {
                                             event.set(
                                                 "_tmp_url.registered_domain",
@@ -2045,16 +2047,14 @@ impl Transform for Default {
                                 Ok(())
                             })();
                             if event.has_value("threat.indicator.url.domain") {
-                                if let Some(domain_str) =
+                                if let Some(domain) =
                                     event.get_string("threat.indicator.url.domain")
                                 {
-                                    let domain = domain_str.to_string();
-                                    event.set(
-                                        "threat.indicator.url.domain",
-                                        json!(domain.clone()),
-                                    )?;
-                                    // Public suffix list lookup for registered domain extraction
+                                    // Public suffix list lookup for registered domain extraction.
+                                    // A failed lookup writes NO target field, which is what
+                                    // Elasticsearch does.
                                     if let Some(rd) = registered_domain_lookup(&domain) {
+                                        event.set("threat.indicator.url.domain", json!(domain))?;
                                         if let Some(registered) = rd.registered_domain {
                                             event.set(
                                                 "threat.indicator.url.registered_domain",

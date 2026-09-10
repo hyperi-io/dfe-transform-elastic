@@ -242,11 +242,12 @@ impl Transform for Default {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("destination.domain") {
-                    if let Some(domain_str) = event.get_string("destination.domain") {
-                        let domain = domain_str.to_string();
-                        event.set("destination.domain", json!(domain.clone()))?;
-                        // Public suffix list lookup for registered domain extraction
+                    if let Some(domain) = event.get_string("destination.domain") {
+                        // Public suffix list lookup for registered domain extraction.
+                        // A failed lookup writes NO target field, which is what
+                        // Elasticsearch does.
                         if let Some(rd) = registered_domain_lookup(&domain) {
+                            event.set("destination.domain", json!(domain))?;
                             if let Some(registered) = rd.registered_domain {
                                 event.set("destination.registered_domain", json!(registered))?;
                             }
@@ -945,11 +946,12 @@ impl Transform for Default {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("source.address") {
-                    if let Some(domain_str) = event.get_string("source.address") {
-                        let domain = domain_str.to_string();
-                        event.set("source.domain", json!(domain.clone()))?;
-                        // Public suffix list lookup for registered domain extraction
+                    if let Some(domain) = event.get_string("source.address") {
+                        // Public suffix list lookup for registered domain extraction.
+                        // A failed lookup writes NO target field, which is what
+                        // Elasticsearch does.
                         if let Some(rd) = registered_domain_lookup(&domain) {
+                            event.set("source.domain", json!(domain))?;
                             if let Some(registered) = rd.registered_domain {
                                 event.set("source.registered_domain", json!(registered))?;
                             }
@@ -1031,11 +1033,12 @@ impl Transform for Default {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("source.domain") {
-                    if let Some(domain_str) = event.get_string("source.domain") {
-                        let domain = domain_str.to_string();
-                        event.set("source.domain", json!(domain.clone()))?;
-                        // Public suffix list lookup for registered domain extraction
+                    if let Some(domain) = event.get_string("source.domain") {
+                        // Public suffix list lookup for registered domain extraction.
+                        // A failed lookup writes NO target field, which is what
+                        // Elasticsearch does.
                         if let Some(rd) = registered_domain_lookup(&domain) {
+                            event.set("source.domain", json!(domain))?;
                             if let Some(registered) = rd.registered_domain {
                                 event.set("source.registered_domain", json!(registered))?;
                             }
@@ -1476,16 +1479,17 @@ impl Transform for Default {
             // on_failure: 1 handler(s)
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("trellix_epo_cloud.event.attributes.analyzer.hostname") {
-                    if let Some(domain_str) =
+                    if let Some(domain) =
                         event.get_string("trellix_epo_cloud.event.attributes.analyzer.hostname")
                     {
-                        let domain = domain_str.to_string();
-                        event.set(
-                            "trellix_epo_cloud.event.attributes.analyzer.domain",
-                            json!(domain.clone()),
-                        )?;
-                        // Public suffix list lookup for registered domain extraction
+                        // Public suffix list lookup for registered domain extraction.
+                        // A failed lookup writes NO target field, which is what
+                        // Elasticsearch does.
                         if let Some(rd) = registered_domain_lookup(&domain) {
+                            event.set(
+                                "trellix_epo_cloud.event.attributes.analyzer.domain",
+                                json!(domain),
+                            )?;
                             if let Some(registered) = rd.registered_domain {
                                 event.set(
                                     "trellix_epo_cloud.event.attributes.analyzer.registered_domain",

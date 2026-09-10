@@ -12540,15 +12540,19 @@ impl Transform for Default {
                 }
                 let _cond = { event.has_value("cisco_ise.log.log_details_raw") };
                 if _cond {
-                    // Painless script
+                    // Painless script, resolved to its runners at generation time
                     // Source: def c = [:];\nctx.cisco_ise.log.log_details_raw.forEach((k, v) -> c[k.replace(' ', '_').toLowerCase()] = v);\nctx.cisco_ise.log.log_details_raw = c;
-                    // TODO: Transpile Painless to Rust (2.2.3)
-                    painless_exec_plan(
+                    rewrite_keys(
                         event,
-                        cached_painless!(
-                            r#"def c = [:];\nctx.cisco_ise.log.log_details_raw.forEach((k, v) -> c[k.replace(' ', '_').toLowerCase()] = v);\nctx.cisco_ise.log.log_details_raw = c;"#
+                        &RewriteKeys::new(
+                            "cisco_ise.log.log_details_raw".into(),
+                            "cisco_ise.log.log_details_raw".into(),
+                            vec![
+                                KeyRewriteStep::ReplaceChars(" ".into(), Some('_')),
+                                KeyRewriteStep::Lowercase,
+                            ],
                         ),
-                    )?;
+                    );
                 }
                 let _cond = {
                     event.has_value("cisco_ise.log.log_details_raw.message")

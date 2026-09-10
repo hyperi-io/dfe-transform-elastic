@@ -48,10 +48,9 @@ impl Transform for PipelineAlarm {
 
             let _cond = { event.has_value("cisco_ise.log.log_details_raw") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: def c = [:];\nctx.cisco_ise.log.log_details_raw.forEach((k, v) -> c[k.replace(' ', '_').toLowerCase()] = v);\nctx.cisco_ise.log.log_details_raw = c;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(event, cached_painless!(r#"def c = [:];\nctx.cisco_ise.log.log_details_raw.forEach((k, v) -> c[k.replace(' ', '_').toLowerCase()] = v);\nctx.cisco_ise.log.log_details_raw = c;"#))?;
+                rewrite_keys(event, &RewriteKeys::new("cisco_ise.log.log_details_raw".into(), "cisco_ise.log.log_details_raw".into(), vec![KeyRewriteStep::ReplaceChars(" ".into(), Some('_')), KeyRewriteStep::Lowercase]));
             }
 
             let _cond = { event.has_value("cisco_ise.log.log_details_raw.message") && event.get_str("event.action") == Some("Queue Link Error") };
