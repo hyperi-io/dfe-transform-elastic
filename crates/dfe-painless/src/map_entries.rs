@@ -417,9 +417,8 @@ mod tests {
         assert!(crate::common::try_known_painless(&mut event, SN_WRAP));
         let keys: Vec<&String> = event
             .get_object("servicenow.event")
-            .expect("the subtree survives")
-            .keys()
-            .collect();
+            .map(|subtree| subtree.keys().collect())
+            .unwrap_or_default();
         assert_eq!(keys, ["zeta", "table_name", "alpha", "middle", "omega"]);
     }
 

@@ -772,8 +772,10 @@ fn bench_aliased_renames(c: &mut Criterion) {
         b.iter_batched_ref(
             || {
                 let mut event = Event::new(tetragon_event());
-                painless_exec_plan(&mut event, &plan)
-                    .expect("the lift must apply, or this benches renames over an unlifted event");
+                assert!(
+                    painless_exec_plan(&mut event, &plan).is_ok(),
+                    "the lift must apply, or this benches renames over an unlifted event"
+                );
                 event
             },
             |event| {
