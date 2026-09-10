@@ -332,29 +332,41 @@ impl Event {
     /// The removal itself, with no alias mirroring. The half [`Self::remove`]
     /// calls for the aliased path, so one mirror cannot trigger another.
     fn remove_at(&mut self, path: &str) -> Option<Value> {
-        let path = path.trim_end_matches('.');
-        let (parents, last) = path
-            .rsplit_once('.')
-            .map_or((None, path), |(head, last)| (Some(head), last));
-
+        // The same walk as [`resolve_path_mut`], flat keys included: a field
+        // `has_value` answers for must be removable, or a generated
+        // `if has_value(x) { rename(x, y) }` raises `field not found` on the
+        // rename it just guarded. ece's payload carries `trace.id` as one key
+        // and lost all 36 of its events that way.
         let mut current = &mut self.inner;
-        if let Some(parents) = parents {
-            for segment in parents.split('.') {
-                let Value::Object(map) = current else {
-                    return None;
-                };
-                current = map.get_mut(segment)?;
-            }
-        }
-
-        match current {
-            // `shift_remove`, never `remove`: under `preserve_order` the plain
-            // one is `swap_remove`, which moves the LAST key into the freed
-            // slot. Insertion order is what parity rests on -- Elasticsearch's
-            // maps are insertion-ordered and Painless renders them in that
-            // order -- so a swap here reorders the document.
-            Value::Object(map) => map.shift_remove(last),
-            _ => None,
+        let mut rest = path.trim_end_matches('.');
+        let mut descended = false;
+        loop {
+            let Value::Object(map) = current else {
+                return None;
+            };
+            let Some((segment, tail)) = rest.split_once('.') else {
+                // `shift_remove`, never `remove`: under `preserve_order` the
+                // plain one is `swap_remove`, which moves the LAST key into
+                // the freed slot. Insertion order is what parity rests on --
+                // Elasticsearch's maps are insertion-ordered and Painless
+                // renders them in that order -- so a swap here reorders the
+                // document.
+                return map.shift_remove(rest);
+            };
+            // Decided before anything is taken, because the borrow checker will
+            // not let the miss branch look in `map` again after `get_mut`.
+            let key: String = if map.contains_key(segment) {
+                rest = tail;
+                segment.to_string()
+            } else if descended && map.contains_key(rest) {
+                return map.shift_remove(rest);
+            } else {
+                let key = flat_key(map, rest)?.to_string();
+                rest = &rest[key.len() + 1..];
+                key
+            };
+            descended = true;
+            current = map.get_mut(&key)?;
         }
     }
 
@@ -730,6 +742,33 @@ mod tests {
             event.get_str("azure.activitylogs.identity.claims.ver"),
             Some("1.0")
         );
+    }
+
+    /// A field `has_value` answers for is removable, so a guarded rename does
+    /// not raise on the path it just tested.
+    #[test]
+    fn a_flat_key_is_removable_wherever_it_is_readable() {
+        let mut event = Event::new(json!({
+            "tmp": { "ece": { "log": { "trace.id": "abc", "level": "INFO" } } },
+        }));
+
+        assert!(event.has_value("tmp.ece.log.trace.id"));
+        assert!(event.rename("tmp.ece.log.trace.id", "trace.id").is_ok());
+
+        assert_eq!(event.get_str("trace.id"), Some("abc"));
+        assert_eq!(event.get("tmp.ece.log.trace.id"), None);
+        assert_eq!(event.get_str("tmp.ece.log.level"), Some("INFO"));
+    }
+
+    /// The whole-key reading still needs a real segment walked first, so a
+    /// dotted key at the ROOT stays out of reach -- `vectra_detect`'s own
+    /// `log.syslog.hostname` is one, and Elastic never reaches it either.
+    #[test]
+    fn a_root_level_dotted_key_is_still_not_removed() {
+        let mut event = Event::new(json!({ "log.syslog.hostname": "host-1" }));
+
+        assert_eq!(event.remove("log.syslog.hostname"), None);
+        assert!(event.as_value().get("log.syslog.hostname").is_some());
     }
 
     /// Nested wins where a document spells the same path both ways, which is

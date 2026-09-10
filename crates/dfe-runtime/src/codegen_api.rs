@@ -2495,25 +2495,16 @@ pub fn uri_parts(
         parts.insert("original".into(), Value::String(original.clone()));
     }
 
-    // Elastic replaces the target wholesale with the parsed object, so a
-    // scalar sitting there is gone before the parts land. Writing leaf by leaf
-    // into a string instead fails on the FIRST leaf and loses every part with
-    // it -- which is what happened to `url` on cisco_meraki's security events,
-    // where the processor reads and writes the same field.
-    if event.get(target).is_some_and(|v| !v.is_object()) {
-        event.remove(target);
-    }
-
-    // Set leaf by leaf rather than replacing the target: the fortinet pipeline
-    // writes `url.domain` from another field before and after this runs, and a
-    // wholesale replace would discard it.
-    for (key, value) in parts {
-        event.set(&format!("{target}.{key}"), value)?;
-    }
-
     if remove_if_successful && field != target {
         event.remove(field);
     }
+
+    // Elasticsearch's processor ends in `setFieldValue(targetField, uriParts)`,
+    // which REPLACES the target rather than merging into it. Anything written
+    // under `url` beforehand is gone: ece renames `query_parameters` to
+    // `url.query` and reads `url.origin`, and Elastic's own capture carries
+    // neither.
+    event.set(target, Value::Object(parts))?;
     Ok(true)
 }
 
@@ -3463,16 +3454,36 @@ mod tests {
         assert!(!event.has("url"));
     }
 
-    /// The fortinet pipeline writes `url.domain` from the hostname field and
-    /// then parses a path-only `url` over the top, so the parse must add to the
-    /// subtree rather than replace it.
+    /// Elasticsearch's processor ends in `setFieldValue(targetField, uriParts)`,
+    /// so whatever sat under the target is gone -- ece renames
+    /// `query_parameters` to `url.query` first and Elastic's capture has no
+    /// `url.query` at all. fortinet writes `url.domain` AFTER its own
+    /// `uri_parts`, not before, so nothing needs the subtree kept.
     #[test]
-    fn uri_parts_adds_to_the_target_rather_than_replacing_it() {
-        let mut event = Event::new(json!({ "src": "/config/", "url": { "domain": "elastic.co" } }));
+    fn uri_parts_replaces_the_target_rather_than_adding_to_it() {
+        let mut event = Event::new(json!({
+            "src": "https://elastic.co/config/",
+            "url": { "query": "validate_only=false" },
+        }));
         assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
 
+        assert_eq!(event.get("url.query"), None);
         assert_eq!(event.get_str("url.domain"), Some("elastic.co"));
         assert_eq!(event.get_str("url.path"), Some("/config/"));
+    }
+
+    /// The field the parse READ goes with the rest where it sits under the
+    /// target, which is how ece's `url.origin` leaves the document.
+    #[test]
+    fn a_source_under_the_target_goes_with_the_replace() {
+        let mut event = Event::new(json!({
+            "url": { "origin": "https://89.160.20.112:12443/api/v1/deployments" },
+        }));
+        assert!(uri_parts(&mut event, "url.origin", "url", true, false).unwrap());
+
+        assert_eq!(event.get("url.origin"), None);
+        assert_eq!(event.get_i64("url.port"), Some(12443));
+        assert_eq!(event.get_str("url.path"), Some("/api/v1/deployments"));
     }
 
     /// `cisco_meraki`'s security events parse `url` INTO `url`. A string sitting
