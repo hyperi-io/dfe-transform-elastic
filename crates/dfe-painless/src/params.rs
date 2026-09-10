@@ -6812,9 +6812,12 @@ fn subjects_of_bindings(script: &str) -> Vec<(String, bool)> {
 }
 
 /// The field a `ctx.<path>.put('<key>', ...)` writes.
+///
+/// Both halves come off the SAME call, which akamai_siem needs: it opens with a
+/// `.put(<local>, ...)` whose key is no literal at all.
 fn put_target(script: &str) -> Option<String> {
-    let path = ctx_path_before(script, ".put(")?;
-    let key = quoted_after(script, ".put(")?;
+    let (at, key) = literal_call(script, ".put(")?;
+    let path = ctx_path_at_end(&script[..at])?;
     Some(format!("{path}.{key}"))
 }
 
@@ -8439,7 +8442,10 @@ fn parse_literal_statement(statement: &str) -> Option<Literal> {
     // fall out here: the subject is bare `ctx` and the value is a local.
     if let Some((subject, arguments)) = statement.split_once(".put(") {
         let parent = clean_path(subject.trim().strip_prefix("ctx.")?);
-        let key = quoted_after(arguments, "")?;
+        // The key has to OPEN the arguments. Windows builds one by
+        // concatenation -- `ctx.winlog.event_data.put(Sd + "Owner", ...)` -- and
+        // taking the first literal in the argument list called that key `Owner`.
+        let key = literal_at(arguments)?;
         let (_, rest) = arguments.split_once(',')?;
         return Some(Literal::Set {
             path: format!("{parent}.{key}"),
@@ -9820,10 +9826,13 @@ fn scalar_text(value: &Value) -> Option<String> {
 /// The bounds check the vendor writes around it is the array's own length, so
 /// an index outside it simply leaves the field unset.
 fn try_indexed_lookup(event: &mut Event, script: &str, params: &Map<String, Value>) -> bool {
-    let Some(container) = ctx_path_before(script, ".put(") else {
+    // Container and key off the SAME `.put(`, and only one whose key is a
+    // literal. cisco_asa, cisco_ftd, fireeye_nx and akamai_siem each open with a
+    // `.put(` taking a local, so an unanchored key lands in another statement.
+    let Some((at, key)) = literal_call(script, ".put(") else {
         return false;
     };
-    let Some(key) = quoted_after(script, ".put(") else {
+    let Some(container) = ctx_path_at_end(&script[..at]) else {
         return false;
     };
     let Some(Value::Array(table)) = params_indexed(script, params) else {
@@ -9999,7 +10008,13 @@ fn try_replace(event: &mut Event, script: &str, params: &Map<String, Value>) -> 
     else {
         return false;
     };
-    let replacement = quoted_after(script, ",").unwrap_or_default();
+    // Anchored on the call the replacement belongs to: a bare `,` is the first
+    // comma in the SCRIPT, and is this call's only where nothing else has one.
+    let replacement = script
+        .split_once(".replace(params.")
+        .and_then(|(_, tail)| tail.split_once(','))
+        .and_then(|(_, after)| literal_at(after))
+        .unwrap_or_default();
     let Some(current) = event.get_str(&path) else {
         return true;
     };
@@ -10010,12 +10025,50 @@ fn try_replace(event: &mut Event, script: &str, params: &Map<String, Value>) -> 
 }
 
 /// The first single- or double-quoted string following `after`.
+///
+/// UNANCHORED, and that is the whole hazard: the quote it answers with may sit
+/// past the end of the call, the statement or the function. Safe only where the
+/// slice handed in is already cut to the call -- `&flat[put..]` starts AT the
+/// call, so the anchor is the first thing in it. Where the slice is a whole
+/// script, reach for [`literal_at`], [`literal_call`] or [`opening_literal`],
+/// which make the opening quote part of what is searched for.
 fn quoted_after(script: &str, after: &str) -> Option<String> {
     let tail = &script[script.find(after)? + after.len()..];
     let start = tail.find(['\'', '"'])?;
     let quote = tail.as_bytes()[start] as char;
     let end = tail[start + 1..].find(quote)?;
     Some(tail[start + 1..=start + end].to_string())
+}
+
+/// The quoted literal `text` OPENS with, over any leading space.
+///
+/// Nothing is searched for, which is the point: an argument that is not a
+/// literal answers None here rather than running on to the next quote in the
+/// file. `ctx.winlog.event_data.put(Sd + "Owner", ...)` is the case in hand --
+/// the key is a concatenation, and the unanchored read called it `Owner`.
+fn literal_at(text: &str) -> Option<String> {
+    let text = text.trim_start();
+    let quote = text.chars().next().filter(|c| *c == '\'' || *c == '"')?;
+    let rest = &text[quote.len_utf8()..];
+    rest.find(quote).map(|end| rest[..end].to_string())
+}
+
+/// The first `call` whose argument is a LITERAL, as its offset and that literal.
+///
+/// The offset is what separates this from [`opening_literal`]: a caller reading
+/// both halves of one call -- the subject path and the key -- gets them off the
+/// SAME occurrence. Pairing `ctx_path_before(script, ".put(")` with a key read
+/// from a later `.put(` names a field neither statement writes.
+fn literal_call(script: &str, call: &str) -> Option<(usize, String)> {
+    let mut at = 0;
+    while let Some(found) = script[at..].find(call) {
+        let start = at + found;
+        at = start + call.len();
+        if let Some(text) = literal_at(&script[at..]) {
+            return Some((start, text));
+        }
+    }
+    None
 }
 
 /// The literal a call opens with, where `anchor` ends at its `(`, and the
@@ -10080,8 +10133,14 @@ fn lookup_key_path(script: &str, expr: &str) -> Option<(String, Fold)> {
 
 /// The params entry an indexed reference names, in either form Painless allows:
 /// `params['LogLevel'][i]` or `params.LogLevel[i]`.
+///
+/// Anchored on the bracket's own opening quote, because `params[<ctx path>]` is
+/// a different form entirely -- the whole block is the table there, and no name
+/// is being spelled. ti_crowdstrike_ioc's `params[ctx.ti_crowdstrike.ioc.type]`
+/// is followed by a `'domain'` its block really holds, so an unanchored read
+/// indexes a table the script never named.
 fn params_indexed<'a>(script: &str, params: &'a Map<String, Value>) -> Option<&'a Value> {
-    if let Some(name) = quoted_after(script, "params[") {
+    if let Some((_, name)) = opening_literal(script, "params[") {
         return params.get(&name);
     }
     params_ref(script, params, "params.")
@@ -10107,8 +10166,16 @@ fn params_ref<'a>(script: &str, params: &'a Map<String, Value>, prefix: &str) ->
 /// a field name no event can hold: it declines instead of binding a pattern that
 /// then writes nothing.
 pub(crate) fn ctx_path_before(script: &str, marker: &str) -> Option<String> {
-    let end = script.find(marker)?;
-    let head = &script[..end];
+    ctx_path_at_end(&script[..script.find(marker)?])
+}
+
+/// The dotted `ctx.` path that ENDS at `head`.
+///
+/// Split out of [`ctx_path_before`] so a caller that has already located its
+/// call -- by offset, because the key it read had to come off that same call --
+/// can read the subject without searching for the marker a second time and
+/// landing on an EARLIER one.
+fn ctx_path_at_end(head: &str) -> Option<String> {
     // `ctx?.` is the same root written null-safe, and juniper_srx writes every
     // one of its paths that way. Reading only the plain spelling left its
     // sentinel sweep bound to a runner that could not find the map.

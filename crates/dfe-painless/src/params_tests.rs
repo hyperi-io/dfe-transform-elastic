@@ -4449,3 +4449,78 @@ fn the_flag_reader_declines_what_it_cannot_reproduce() {
         );
     }
 }
+
+/// A call whose argument is not a literal answers nothing, rather than the next
+/// quote in the file.
+#[test]
+fn a_literal_read_stops_at_its_own_call() {
+    assert_eq!(literal_at("'RA') }"), Some("RA".to_owned()));
+    assert_eq!(literal_at(" \"Owner\", x)"), Some("Owner".to_owned()));
+    assert_eq!(literal_at("entry.getKey()) { hf.add('RA') }"), None);
+    assert_eq!(literal_at("Sd + \"Owner\", translate(x))"), None);
+
+    // The offset and the literal come off the same occurrence, so a caller
+    // reading the subject as well cannot pair two different calls.
+    let script = "map.put(key, value); ctx.a.put('kind', 'event');";
+    let (at, key) = literal_call(script, ".put(").expect("the literal call is found");
+    assert_eq!(key, "kind");
+    assert_eq!(ctx_path_at_end(&script[..at]).as_deref(), Some("a"));
+    assert_eq!(literal_call("map.put(key, value);", ".put("), None);
+}
+
+/// akamai_siem opens with `map.put(key, value)`, so the first `.put(` in the
+/// script carries no key at all.
+#[test]
+fn a_put_target_skips_a_call_with_no_literal_key() {
+    let script = "for (String key : params.items) {\n  \
+        String value = data.decodeBase64();\n  map.put(key, value);\n  \
+        if (key == \"ruleTags\") {\n    rule_tags.add(value);\n  }\n}\n\
+        ctx.akamai.siem.rule_tags = rule_tags;";
+    // `ruleTags` is the run-on answer, and it is a params item rather than a
+    // field the script writes.
+    assert_eq!(quoted_after(script, ".put("), Some("ruleTags".to_owned()));
+    assert_eq!(put_target(script), None);
+}
+
+/// Windows builds an event_data key by concatenation, which is no literal.
+#[test]
+fn a_concatenated_put_key_is_not_read_as_its_tail() {
+    let statement = "  if (sdOwnerMatcher.find()) {\n    \
+        ctx.winlog.event_data.put(Sd + \"Owner\", translateSID(m.group(0), params))";
+    // The unanchored read called the key `Owner`, and the field Windows writes
+    // is whatever `Sd` holds followed by it.
+    assert_eq!(
+        quoted_after(statement.split_once(".put(").expect("a put").1, ""),
+        Some("Owner".to_owned())
+    );
+    assert!(parse_literal_statement(statement).is_none());
+
+    // The plain spelling beside it still reads.
+    let plain = "ctx.winlog.event_data.put(\"Owner\", 'S-1-5-18')";
+    assert!(matches!(
+        parse_literal_statement(plain),
+        Some(Literal::Set { ref path, .. }) if path == "winlog.event_data.Owner"
+    ));
+}
+
+/// `params[<ctx path>]` names no table, and the literal after it belongs to a
+/// different statement.
+#[test]
+fn an_indexed_params_read_needs_a_quoted_name() {
+    // ti_crowdstrike_ioc, whose block really does hold a `domain` row -- so the
+    // run-on answer is a lookup that succeeds against the wrong table.
+    let script = "String mapping = params[ctx.ti_crowdstrike.ioc.type];\n\
+        if (mapping != null) {\n  ctx.threat.indicator.type = mapping;\n  \
+        if (ctx.ti_crowdstrike.ioc.type == 'domain') {\n    \
+        ctx.threat.indicator.url.domain = ctx.ti_crowdstrike.ioc.value;\n  }\n}";
+    let params = json!({"domain": "domain", "md5": "file"});
+    let params = params.as_object().expect("an object");
+    assert_eq!(quoted_after(script, "params["), Some("domain".to_owned()));
+    assert_eq!(params_indexed(script, params), None);
+
+    // The form it is for still resolves.
+    let named = "ctx.a.put('level', params['LogLevel'][ctx.n]);";
+    let table = json!({"LogLevel": ["debug", "info"]});
+    let table = table.as_object().expect("an object");
+    assert_eq!(params_indexed(named, table), table.get("LogLevel"));
+}
