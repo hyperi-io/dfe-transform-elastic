@@ -13147,8 +13147,7 @@ fn split_unquoted_binding(statement: &str) -> Option<(&str, &str, char)> {
     let mut chars = separator.chars();
     let separator = chars.next()?;
     // The helper compares ONE character, so a longer literal is a different cut.
-    (chars.next().is_none() && !local.is_empty())
-        .then_some((local, argument.trim(), separator))
+    (chars.next().is_none() && !local.is_empty()).then_some((local, argument.trim(), separator))
 }
 
 /// Read both cuts, the columns each declared key takes, and the target.
@@ -13178,7 +13177,12 @@ fn parse_split_into_columns(script: &str) -> Option<SplitIntoColumns> {
     // The accumulator and the columns it DECLARES.
     let map_local = statements
         .iter()
-        .find_map(|statement| statement.strip_suffix(" = new HashMap()")?.rsplit(' ').next())
+        .find_map(|statement| {
+            statement
+                .strip_suffix(" = new HashMap()")?
+                .rsplit(' ')
+                .next()
+        })
         .filter(|local| !local.is_empty())?;
     let declare = format!("{map_local}.put(");
     let mut keys: Vec<String> = Vec::new();
@@ -13245,18 +13249,16 @@ fn parse_split_into_columns(script: &str) -> Option<SplitIntoColumns> {
     // The width guard is REQUIRED rather than defaulted: a script that gates
     // its records some other way would silently gain the ones it skips.
     let guard = format!("{fields_local}.size() >= ");
-    let min_fields: usize = statements
-        .iter()
-        .find_map(|statement| {
-            let rest = statement.split_once(guard.as_str())?.1.trim_start();
-            let digits: String = rest.chars().take_while(char::is_ascii_digit).collect();
-            digits.parse().ok()
-        })?;
+    let min_fields: usize = statements.iter().find_map(|statement| {
+        let rest = statement.split_once(guard.as_str())?.1.trim_start();
+        let digits: String = rest.chars().take_while(char::is_ascii_digit).collect();
+        digits.parse().ok()
+    })?;
 
     let target = crate::params::ctx_path_before(script, &format!(" = {map_local};"))?;
-    let records_back =
-        crate::params::ctx_path_before(script, &format!(" = {records_local};")).as_deref()
-            == Some(source.as_str());
+    let records_back = crate::params::ctx_path_before(script, &format!(" = {records_local};"))
+        .as_deref()
+        == Some(source.as_str());
 
     (!target.is_empty()).then_some(SplitIntoColumns {
         source,
@@ -13348,7 +13350,11 @@ fn parse_trim_list_suffix(script: &str) -> Option<TrimListSuffix> {
     // `for (<member> in ctx.<source>)`, in either spelling of the bracket.
     let (head, tail) = script.split_once(" in ctx.")?;
     let member = head.rsplit(['(', ' ']).next()?;
-    if member.is_empty() || !head[..head.len() - member.len()].replace(' ', "").ends_with("for(") {
+    if member.is_empty()
+        || !head[..head.len() - member.len()]
+            .replace(' ', "")
+            .ends_with("for(")
+    {
         return None;
     }
     let source = clean_path(tail.split(')').next()?);
@@ -13359,7 +13365,9 @@ fn parse_trim_list_suffix(script: &str) -> Option<TrimListSuffix> {
 
     // The length local, and the bucket the loop fills.
     let measure = format!("={member}.length();");
-    let length = packed[..packed.find(measure.as_str())?].rsplit("def").next()?;
+    let length = packed[..packed.find(measure.as_str())?]
+        .rsplit("def")
+        .next()?;
     let bucket = packed
         .split("=newArrayList();")
         .next()
@@ -13486,7 +13494,11 @@ fn parse_escape_decode(script: &str) -> Option<EscapeDecode> {
     let (head, tail) = flat.split_once(" = ctx.")?;
     let text = head.rsplit(' ').next()?;
     let source = clean_path(tail.split(';').next()?);
-    let builder = flat.split_once(" = new StringBuilder()")?.0.rsplit(' ').next()?;
+    let builder = flat
+        .split_once(" = new StringBuilder()")?
+        .0
+        .rsplit(' ')
+        .next()?;
     let index = flat.split_once("for (int ")?.1.split_once(" = 0;")?.0;
     if text.is_empty() || builder.is_empty() || index.is_empty() || source.is_empty() {
         return None;
@@ -20109,6 +20121,7 @@ pub(crate) enum KnownPattern {
     CrowdstrikeTimelineEntityIdentity,
     CrowdstrikeTimelineEntityAccounts,
     FirstElement(Box<FirstElement>),
+    LastElementMember(Box<crate::last_element::LastElementMember>),
     /// Several candidate fields collected into one list, the absent ones
     /// dropped, and a lone survivor unwrapped.
     CollectPresent(Box<crate::collect_present::CollectPresent>),
@@ -22318,6 +22331,16 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: a member taken from a list's LAST element, into a map the
+    // script builds. Its own trigger, not a flag on `FirstElement` -- the
+    // target is a quoted subscript and the parent has to be created.
+    if normalised.contains("[-1];")
+        && let Some(pattern) = crate::last_element::parse_last_element_member(normalised)
+    {
+        patterns.push(KnownPattern::LastElementMember(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: the first element of a list, bare or guarded on the target
     // being unset.
     if normalised.contains("[0];")
@@ -23203,6 +23226,9 @@ pub(crate) fn run_known_pattern(
             try_crowdstrike_timeline_entity_accounts(event)
         }
         KnownPattern::FirstElement(pattern) => run_first_element(event, pattern),
+        KnownPattern::LastElementMember(pattern) => {
+            crate::last_element::run_last_element_member(event, pattern)
+        }
         KnownPattern::CollectPresent(pattern) => {
             crate::collect_present::collect_present(event, pattern)
         }

@@ -30,6 +30,12 @@ nondeterministic:
     why: Agent read time, not event time.
   - path: "@timestamp"
     why: Pipelines that fall back to now() when the payload carries no time.
+  - path: ticura.indicator.feed_ingest_timestamp
+    why: >
+      `set` with `value: "{{{_ingest.timestamp}}}"`, so it is the capture's own
+      write time and no transform can reproduce it. It is ti_ticura's most
+      frequent wrong field, wrong on 12 of 13 events, and chasing it with a
+      matcher would be chasing the clock.
   - path: abusech.ja3_fingerprints.deleted_at
     why: >
       event.ingested plus labels.interval, so it inherits write time. The

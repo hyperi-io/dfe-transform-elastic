@@ -37,6 +37,7 @@ pub mod hex;
 pub mod hoist;
 pub mod issue_lifecycle;
 pub mod item_writes;
+pub mod last_element;
 pub mod list_records;
 pub mod lists;
 pub mod map_entries;

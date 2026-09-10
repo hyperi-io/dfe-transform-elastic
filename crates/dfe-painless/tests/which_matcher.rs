@@ -158,6 +158,12 @@ const GITLAB_API_PARAMS: &str = r"def keyValuePairs = [];\nfor (item in ctx.gitl
 
 const GITLAB_PRODUCTION_PARAMS: &str = r#"Map map = [:];\nfor (item in ctx.gitlab.production.params) {\n  def key = item.key;\n  def value = item.value;\n  if (key == \"variables\" && value instanceof Map) {\n    map[key] = Json.dump(value);\n  } else {\n    map[key] = value;\n  }\n}\nctx.gitlab.production.params = map;\n"#;
 
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/lyve_cloud_audit/audit_lc.rs`, which is
+/// `pipelines/lyve_cloud/audit/audit_lc.yml:151-157`.
+const LYVE_CLOUD_CLIENT_IP: &str =
+    r#"ctx.client = new HashMap(); ctx.client[\"ip\"] = ctx.related.ip[-1];"#;
+
 /// The matcher names a script binds to, most specific first.
 fn binding(script: &str) -> Vec<String> {
     PainlessPlan::new(script).binding()
@@ -175,6 +181,15 @@ fn heads(script: &str) -> Vec<String> {
                 .to_string()
         })
         .collect()
+}
+
+/// `FirstElement` sits directly below this in the ladder and triggers on a
+/// closing bracket, so a move would silently hand it a take it cannot write.
+#[test]
+fn the_lyve_cloud_client_ip_is_a_last_element_take_not_a_first() {
+    let held = heads(LYVE_CLOUD_CLIENT_IP).join(" ");
+    assert!(held.starts_with("LastElementMember"), "{held}");
+    assert!(!held.contains("FirstElement"), "{held}");
 }
 
 #[test]
