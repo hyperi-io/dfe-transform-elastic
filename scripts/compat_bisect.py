@@ -125,7 +125,7 @@ def capture(source: compat.Source, ref: str) -> tuple[str, dict[str, list[Any]]]
             failure = pipelines
             continue
 
-        config = compat.load_test_config(compat.config_for(log_path))
+        config = compat.load_test_config(compat.configs_for(log_path))
         events = compat.split_events(
             log_path.read_text(encoding="utf-8"), config.multiline_pattern
         )

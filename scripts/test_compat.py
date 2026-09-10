@@ -19,6 +19,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import yaml
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import compat
@@ -45,16 +47,47 @@ class SplitEvents(unittest.TestCase):
 
 
 class BuildDocs(unittest.TestCase):
-    """build_docs must not wrap an event that already carries `message`."""
+    """What counts as already a document, and what still gets wrapped.
+
+    `elastic-package` wraps every entry of a `.log` fixture into `message`
+    without looking at it, so the only lines a wrap must not be applied to are
+    the two forms `tests/fixtures/` holds that upstream never had: a published
+    Beats document, marked by libbeat's `@metadata` envelope, and a line the
+    vendoring already wrapped, whose only key is `message`.
+    """
 
     def test_a_raw_line_is_wrapped(self) -> None:
         docs = compat.build_docs(["Feb  8 04:00:48 host thing"], _config())
         self.assertEqual(docs[0]["_source"]["message"], "Feb  8 04:00:48 host thing")
 
-    def test_an_enveloped_event_is_not_wrapped_again(self) -> None:
-        line = json.dumps({"message": "Feb  8 04:00:48 host thing"})
+    def test_a_published_beats_document_is_not_wrapped_again(self) -> None:
+        line = json.dumps(
+            {
+                "@metadata": {"beat": "filebeat", "type": "_doc", "version": "8.13.2"},
+                "message": "Oct 10 2018 12:34:56 localhost CiscoASA[999]: built",
+                "fileset": {"name": "asa"},
+            }
+        )
         docs = compat.build_docs([line], _config())
-        self.assertEqual(docs[0]["_source"]["message"], "Feb  8 04:00:48 host thing")
+        self.assertEqual(
+            docs[0]["_source"]["message"],
+            "Oct 10 2018 12:34:56 localhost CiscoASA[999]: built",
+        )
+
+    def test_a_line_the_vendoring_already_wrapped_is_not_wrapped_again(self) -> None:
+        """cisco_ios, as `tests/fixtures/` holds it.
+
+        Upstream's `test-cisco-ios.log` is raw syslog text; our copy is that
+        text with the wrap applied at vendoring time. 36 fixtures across
+        cisco_ios, cisco_meraki, cisco_nexus, cisco_umbrella, crowdstrike and
+        fortinet are like this, and wrapping one again nests a wrap in a wrap.
+        """
+        raw = (
+            "Feb  8 04:00:48 192.168.100.2 585917: %SEC-6-IPACCESSLOGRP: "
+            "list 177 denied igmp 192.168.100.197 -> 224.0.0.22, 1 packet"
+        )
+        docs = compat.build_docs([json.dumps({"message": raw})], _config())
+        self.assertEqual(docs[0]["_source"], {"message": raw})
 
     def test_bare_json_without_message_is_wrapped(self) -> None:
         line = json.dumps({"actor": {"id": "abc"}, "eventType": "user.session.start"})
@@ -73,10 +106,202 @@ class BuildDocs(unittest.TestCase):
         `message` for every already-enveloped fixture, and the comparison side
         then feeds JSON text to a parser expecting a vendor line.
         """
-        line = json.dumps({"message": "csv,fields,here", "agent": {"type": "filebeat"}})
+        line = json.dumps(
+            {
+                "@metadata": {"beat": "filebeat"},
+                "message": "csv,fields,here",
+                "agent": {"type": "filebeat"},
+            }
+        )
         recorded = [doc["_source"] for doc in compat.build_docs([line], _config())]
         self.assertEqual(recorded[0]["message"], "csv,fields,here")
         self.assertEqual(recorded[0]["agent"], {"type": "filebeat"})
+
+
+class VendorPayloadWithAMessageMember(unittest.TestCase):
+    """A vendor payload carrying `message` is still the thing inside the wrap.
+
+    Reading `message` as the envelope marker cost five onboarded sources their
+    whole capture: the payload was passed through unwrapped, `event.original`
+    was built from the prose line inside it, and the pipeline's `json`
+    processor threw a Jackson `Unrecognized token` on every event. One case per
+    source, each the first line of the real fixture.
+    """
+
+    def test_ece_keeps_the_whole_json_document_in_message(self) -> None:
+        """ece's pipeline json-parses `event.original` into `tmp.ece.log`.
+
+        `Unrecognized token 'Created'` -- the second word of the prose line.
+        """
+        line = json.dumps(
+            {
+                "@timestamp": "2025-05-09T07:43:09.031238Z",
+                "message": "201 Created - philipp - POST /api/v1/deployments (1711 ms)",
+                "log": {"logger": "no.found.adminconsole.http.requests"},
+                "request_method": "POST",
+            }
+        )
+        self._assert_wrapped(line)
+
+    def test_nextron_thor_keeps_the_whole_json_document_in_message(self) -> None:
+        """`Unrecognized token 'At'`."""
+        line = json.dumps(
+            {
+                "message": "At jobs are configured on this system",
+                "MODULE": "AtJobs",
+                "SCANID": "S-9GyHzKfVRog",
+            }
+        )
+        self._assert_wrapped(line)
+
+    def test_backstage_keeps_the_whole_json_document_in_message(self) -> None:
+        """`Unrecognized token 'catalog'`."""
+        line = json.dumps(
+            {
+                "level": "info",
+                "message": "catalog processing completed",
+                "service": "backstage",
+            }
+        )
+        self._assert_wrapped(line)
+
+    def test_elastic_security_keeps_the_whole_json_document_in_message(self) -> None:
+        """`Unrecognized token 'Malicious'`. Note the `agent` member, which is
+        vendor data here and not an envelope marker -- beyondtrust_epm has one
+        on 2 of its 9 events for the same reason."""
+        line = json.dumps(
+            {
+                "message": "Malicious Behavior Prevention Alert: Suspicious PowerShell",
+                "kibana.alert.rule.name": "Endpoint Security",
+                "agent": {"id": "abc", "type": "endpoint"},
+            }
+        )
+        self._assert_wrapped(line)
+
+    def test_github_keeps_the_whole_json_document_in_message(self) -> None:
+        """The fixture the skip message named, and not one of the five."""
+        line = json.dumps(
+            {
+                "action": "business.add_organization",
+                "message": "Organization added to enterprise",
+                "@timestamp": 1723570362707,
+            }
+        )
+        self._assert_wrapped(line)
+
+    def _assert_wrapped(self, line: str) -> None:
+        """The whole line is the value of `message`, and nothing is hoisted."""
+        source = compat.build_docs([line], _config())[0]["_source"]
+        self.assertEqual(source, {"message": line})
+        self.assertEqual(json.loads(source["message"]), json.loads(line))
+
+
+class TestConfigLayering(unittest.TestCase):
+    """The shared config and the fixture's own BOTH apply, shared first.
+
+    `elastic-package` unpacks `test-common-config.yml` and then the fixture's
+    own `-config.yml` into the same struct. Discarding the shared one whenever
+    an own one exists cost microsoft_dhcp its whole capture.
+    """
+
+    def test_the_shared_config_survives_an_own_config(self) -> None:
+        """microsoft_dhcp, exactly as upstream ships it.
+
+        Its own config names only `log.file.path`. Dropping the shared file
+        took `_conf.tz_offset` with it, the date processor resolved an empty
+        zone, and all 32 events came back
+        `Invalid ID for ZoneOffset, invalid format: ""`.
+        """
+        config = self._layer(
+            {"fields": {"tags": ["preserve_original_event"],
+                        "_conf": {"tz_offset": "America/New_York"}}},
+            {"fields": {"log": {"file": {"path": "DhcpSrvLog-Thu.txt"}}}},
+        )
+        self.assertEqual(config.fields["_conf"], {"tz_offset": "America/New_York"})
+        self.assertEqual(config.fields["tags"], ["preserve_original_event"])
+        self.assertEqual(config.fields["log"], {"file": {"path": "DhcpSrvLog-Thu.txt"}})
+
+    def test_the_own_config_wins_a_shared_key(self) -> None:
+        config = self._layer(
+            {"fields": {"_conf": {"ioc_expiration_duration": "5d"}}},
+            {"fields": {"_conf": {"ioc_expiration_duration": ""}}},
+        )
+        self.assertEqual(config.fields["_conf"], {"ioc_expiration_duration": ""})
+
+    def test_a_nested_map_layers_key_by_key(self) -> None:
+        """symantec_endpoint's own `_conf` adds a key without losing the
+        shared one."""
+        config = self._layer(
+            {"fields": {"_conf": {"tz_offset": "UTC"}}},
+            {"fields": {"_conf": {"remove_mapped_fields": True}}},
+        )
+        self.assertEqual(
+            config.fields["_conf"], {"tz_offset": "UTC", "remove_mapped_fields": True}
+        )
+
+    def test_a_shorter_list_keeps_the_shared_tail(self) -> None:
+        """go-ucfg merges a list by POSITION, and two fixtures depend on it.
+
+        symantec_endpoint declares `tags: [forwarded]` over a shared
+        `[forwarded, preserve_original_event]`, and upstream's expectation
+        carries BOTH -- with `event.kind: event`, so nothing appended it on
+        failure.
+        """
+        config = self._layer(
+            {"fields": {"tags": ["forwarded", "preserve_original_event"]}},
+            {"fields": {"tags": ["forwarded"]}},
+        )
+        self.assertEqual(config.fields["tags"], ["forwarded", "preserve_original_event"])
+
+    def test_a_longer_list_takes_every_member(self) -> None:
+        """suricata, the same rule the other way about."""
+        config = self._layer(
+            {"fields": {"tags": ["preserve_original_event"]}},
+            {"fields": {"tags": ["forwarded", "preserve_original_event"]}},
+        )
+        self.assertEqual(config.fields["tags"], ["forwarded", "preserve_original_event"])
+
+    def test_declarations_outside_fields_layer_too(self) -> None:
+        """citrix_adc and haproxy declare `dynamic_fields` only in the shared
+        file, and it reaches the corpus through `meta.json`."""
+        config = self._layer(
+            {"dynamic_fields": {"url.extension": "^.*$"},
+             "numeric_keyword_fields": ["zoom.meeting.id"]},
+            {"fields": {"tags": ["preserve_original_event"]}},
+        )
+        self.assertEqual(config.dynamic_fields, {"url.extension": "^.*$"})
+        self.assertEqual(config.numeric_keyword_fields, ["zoom.meeting.id"])
+
+    def test_a_multiline_pattern_survives_an_own_config(self) -> None:
+        config = self._layer(
+            {"multiline": {"first_line_pattern": "^Dec 13 "}},
+            {"fields": {"tags": ["forwarded"]}},
+        )
+        self.assertEqual(config.multiline_pattern, "^Dec 13 ")
+
+    def test_absent_configs_default(self) -> None:
+        config = compat.load_test_config(None)
+        self.assertEqual(config.fields, {})
+        self.assertIsNone(config.multiline_pattern)
+
+    def _layer(self, shared: dict, own: dict) -> compat.TestConfig:
+        """Write both configs beside a fixture and read them back through
+        `configs_for`, so the ORDER under test is the one production uses."""
+        with tempfile.TemporaryDirectory(prefix="compat-") as tmp:
+            fixture = Path(tmp) / "test-x.log"
+            fixture.write_text("a line\n", encoding="utf-8")
+            fixture.with_name("test-common-config.yml").write_text(
+                yaml.safe_dump(shared), encoding="utf-8"
+            )
+            fixture.with_name("test-x.log-config.yml").write_text(
+                yaml.safe_dump(own), encoding="utf-8"
+            )
+            paths = compat.configs_for(fixture)
+            self.assertEqual(
+                [p.name for p in paths],
+                ["test-common-config.yml", "test-x.log-config.yml"],
+            )
+            return compat.load_test_config(paths, fixture)
 
 
 class ReadExpectation(unittest.TestCase):

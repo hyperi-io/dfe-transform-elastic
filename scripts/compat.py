@@ -680,20 +680,68 @@ class TestConfig:
     documents_are_events: bool = False
 
 
-def load_test_config(path: Path | None, fixture: Path | None = None) -> TestConfig:
-    """Read a ``*-config.yml``, tolerating its absence.
+def merge_config(base: Any, override: Any) -> Any:
+    """Layer one parsed test config over another, the way go-ucfg does.
+
+    `elastic-package` unpacks `test-common-config.yml` into a config struct and
+    then unpacks the fixture's own `-config.yml` into the SAME struct, so the
+    two LAYER rather than one replacing the other
+    (`internal/testrunner/runners/pipeline/testconfig.go`). go-ucfg's `reifyMap`
+    merges a map key by key and recurses, and `reifySliceMerge` merges a list by
+    POSITION -- the result is as long as the longer of the two, the override
+    overwrites index by index, and any tail the base still has survives.
+
+    That last rule is the one nobody would guess, and two fixtures depend on it:
+    symantec_endpoint's own config declares `tags: [forwarded]` over a common
+    `[forwarded, preserve_original_event]` and upstream's expectation carries
+    BOTH, as does suricata's the other way about.
 
     Args:
-        path: Config path, or None when the fixture has no config.
+        base: The value from the earlier file.
+        override: The value from the later file.
+
+    Returns:
+        The layered value. Anything but two maps or two lists takes the
+        override.
+    """
+    if isinstance(base, dict) and isinstance(override, dict):
+        merged = dict(base)
+        for key, value in override.items():
+            merged[key] = merge_config(base[key], value) if key in base else value
+        return merged
+    if isinstance(base, list) and isinstance(override, list):
+        merged = list(base) + override[len(base):]
+        for index, value in enumerate(override[: len(base)]):
+            merged[index] = merge_config(base[index], value)
+        return merged
+    return override
+
+
+def load_test_config(
+    paths: Path | Iterable[Path] | None, fixture: Path | None = None
+) -> TestConfig:
+    """Read a fixture's ``*-config.yml`` files, tolerating their absence.
+
+    Args:
+        paths: Config paths in declaration order -- the shared
+            ``test-common-config.yml`` first, the fixture's own second -- or a
+            single path, or None when the fixture has no config.
         fixture: The fixture the config belongs to, which decides whether its
             events are whole documents or lines of text.
 
     Returns:
-        The parsed config, defaulted where keys are absent.
+        The layered config, defaulted where keys are absent.
     """
+    if paths is None:
+        paths = ()
+    elif isinstance(paths, Path):
+        paths = (paths,)
+
     raw: dict[str, Any] = {}
-    if path is not None and path.is_file():
-        raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    for path in paths:
+        if path.is_file():
+            layer = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+            raw = merge_config(raw, layer)
     multiline = raw.get("multiline") or {}
     return TestConfig(
         fields=raw.get("fields") or {},
@@ -750,14 +798,42 @@ def build_docs(events: list[str], config: TestConfig) -> list[dict[str, Any]]:
 
     The vendor payload arrives as a string in ``message``, which is the shape
     these pipelines are written against, with the test config's ``fields``
-    merged over the top. Some fixtures are already stored in that envelope, so
-    a line that is itself an object carrying ``message`` is taken as the
-    document rather than wrapped a second time. A source whose payload is bare
-    JSON, such as okta, has no ``message`` key and is still wrapped.
+    merged over the top. `elastic-package` wraps EVERY entry of a `.log`
+    fixture that way and never inspects it
+    (`readTestCaseEntriesForRawInput`), so a payload that happens to carry a
+    ``message`` member of its own -- which log formats naturally do -- is still
+    the thing that goes INSIDE the wrap.
 
     A `.json` fixture's members ARE the documents -- a winlog event has no text
     form to put in ``message``, and wrapping one would hand the pipeline a
     document with none of the fields it reads.
+
+    Two forms of `.log` line are already documents, and both are OUR doing
+    rather than upstream's, because `tests/fixtures/` is not a verbatim copy of
+    `_dev/test/pipeline/`:
+
+    - **A published Beats document**, one per line, captured at the point
+      libbeat hands it to Elasticsearch. ``@metadata`` marks these -- it is
+      libbeat's routing envelope (``beat``, ``type``, ``version``,
+      ``pipeline``), added on the way out and stripped before Elasticsearch, so
+      no vendor writes one and no ingest pipeline reads one. It marks 66 of the
+      1,589 `.log` fixtures here -- azure, cisco_asa, cisco_ftd, o365, panw --
+      and nothing else.
+    - **A line the vendoring already wrapped**, whose only key is ``message``.
+      36 fixtures across cisco_ios, cisco_meraki, cisco_nexus, cisco_umbrella,
+      crowdstrike and fortinet are upstream's raw text with the wrap applied at
+      vendoring time, so applying it again would nest one wrap in another.
+      aws_vpcflow's `test-with-message-field.log` is the 37th and the one that
+      IS upstream verbatim, so upstream wraps it -- and it reaches the same
+      document either way, because its pipeline dissects
+      `{"message":"%{event.original}"}` straight back off.
+
+    Anything else with a ``message`` member is a vendor payload and is wrapped.
+    Treating ``message`` ALONE as the marker was the defect this replaces: it
+    read 60 upstream-verbatim payloads across 29 sources as already-built
+    documents and passed them through, so ece, backstage, nextron_thor and
+    elastic_security built ``event.original`` out of the prose line inside and
+    Elasticsearch threw a Jackson `Unrecognized token` on all 91 events.
 
     Args:
         events: Raw event texts.
@@ -772,7 +848,12 @@ def build_docs(events: list[str], config: TestConfig) -> list[dict[str, Any]]:
             parsed = json.loads(event)
         except (json.JSONDecodeError, ValueError):
             parsed = None
-        if isinstance(parsed, dict) and ("message" in parsed or config.documents_are_events):
+        already_a_document = isinstance(parsed, dict) and (
+            config.documents_are_events
+            or "@metadata" in parsed
+            or set(parsed) == {"message"}
+        )
+        if already_a_document:
             docs.append({"_source": {**parsed, **config.fields}})
         else:
             docs.append({"_source": {"message": event, **config.fields}})
@@ -1023,20 +1104,28 @@ def list_fixtures(source: Source) -> list[Path]:
     return paired(p for p in directory.iterdir() if p.suffix in {".log", ".json"})
 
 
-def config_for(log_path: Path) -> Path | None:
-    """Return a fixture's config path, preferring its own over the shared one.
+def configs_for(log_path: Path) -> tuple[Path, ...]:
+    """Return a fixture's config paths, shared first and its own second.
+
+    Both apply. `elastic-package` reads the shared file, then reads the
+    fixture's own over the top, so a key the own file does not mention keeps
+    the shared value. Preferring one and discarding the other cost
+    microsoft_dhcp its whole capture: its own config names only
+    `log.file.path`, and dropping the shared file took `_conf.tz_offset` with
+    it, so the date processor resolved an empty zone and threw
+    `Invalid ID for ZoneOffset` on all 32 events.
 
     Args:
         log_path: The fixture log.
 
     Returns:
-        The config path, or None when neither exists.
+        The config paths that exist, in the order they are layered.
     """
-    own = log_path.with_name(log_path.name + "-config.yml")
-    if own.is_file():
-        return own
-    shared = log_path.with_name("test-common-config.yml")
-    return shared if shared.is_file() else None
+    candidates = (
+        log_path.with_name("test-common-config.yml"),
+        log_path.with_name(log_path.name + "-config.yml"),
+    )
+    return tuple(path for path in candidates if path.is_file())
 
 
 # --------------------------------------------------------------------------
@@ -1350,7 +1439,7 @@ def cmd_audit(args: argparse.Namespace) -> int:
                 failure = pipelines
                 continue
 
-            config = load_test_config(config_for(log_path), log_path)
+            config = load_test_config(configs_for(log_path), log_path)
             events = split_events(
                 log_path.read_text(encoding="utf-8"), config.multiline_pattern
             )
@@ -1436,7 +1525,7 @@ def cmd_generate(args: argparse.Namespace) -> int:
         return 0
 
     for log_path in fixtures:
-        config = load_test_config(config_for(log_path), log_path)
+        config = load_test_config(configs_for(log_path), log_path)
         events = split_events(
             log_path.read_text(encoding="utf-8"), config.multiline_pattern
         )
