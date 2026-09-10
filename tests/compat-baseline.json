@@ -108,7 +108,7 @@
     "digital_guardian": { "events": 0, "events_total": 4, "fields_wrong": 5 },
     "doppel": { "events": 0, "events_total": 1, "fields_wrong": 2 },
     "doppler": { "events": 0, "events_total": 14, "fields_wrong": 40 },
-    "ece": { "events": 7, "events_total": 39, "fields_wrong": 38 },
+    "ece": { "events": 33, "events_total": 39, "fields_wrong": 6 },
     "elastic_agent": { "events": 4, "events_total": 11, "fields_wrong": 7 },
     "elastic_package_registry": { "events": 2, "events_total": 3, "fields_wrong": 1 },
     "elastic_security": { "events": 1, "events_total": 1, "fields_wrong": 0 },

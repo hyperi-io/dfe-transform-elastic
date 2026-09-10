@@ -53,7 +53,12 @@ use dfe_runtime::painless_plan::PainlessPlan;
 /// 60 to 61 with the `IssueLifecycle` arm, kolide's issues stream. It shadows
 /// `GuardedCopy` for the same reason: every guard there is over a boolean local
 /// and resolves to `Never`, so `event.type` was never written at all.
-const MULTI_BINDING: usize = 61;
+///
+/// 61 to 59 when `FirstElement` stopped reading a path out of script text. Its
+/// take slices between the last `ctx.` and a `[0];` with neither anchored to a
+/// statement, so ece's action script and sentinel_one's asset select both fell
+/// out of the search space they should never have been in.
+const MULTI_BINDING: usize = 59;
 
 /// The `cached_painless!` literals a generated file holds, in full.
 ///

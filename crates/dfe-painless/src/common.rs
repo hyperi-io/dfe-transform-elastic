@@ -11277,6 +11277,11 @@ fn parse_first_element(script: &str) -> Option<FirstElement> {
             continue;
         };
         let target = clean_path(lhs[target_at + "ctx.".len()..].trim());
+        // Neither marker is anchored to a statement, so a `[0];` far below the
+        // last `ctx.` slices the script's own body in between.
+        if !crate::params::is_ctx_path(&array) || !crate::params::is_ctx_path(&target) {
+            continue;
+        }
 
         let only_if_unset =
             script.contains(&format!("if (ctx.{target} == null || ctx.{target} == '')"));

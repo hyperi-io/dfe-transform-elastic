@@ -297,32 +297,33 @@
  54 LookupMerge
  55 KeyedActionRow
  56 KeyedRowAppends
- 57 LookupColumns
- 58 MemberLookup
- 59 LookupNormalise
- 60 StringifiedLookup
- 61 StringifiedLookupOrLiteral
- 62 CollectParamsRows
- 63 IndexedLookup
- 64 Scale
- 65 Replace
- 66 AddUniqueRow
- 67 FrameworkPreference
- 68 NormalisedLookup
- 69 StringifiedLookup
- 70 LookupNormalise
- 71 GuardedLookup
- 72 MergeRowOrFallback
- 73 GuardedParamsRow
- 74 IssueLifecycle
- 75 ArmedTable
- 76 RowOrDefaults
- 77 HexFields
- 78 KeyedByLookup
- 79 ScalarExpression
- 80 SelectRenameKeys
- 81 FieldTables
+ 57 UrlTailAction
+ 58 LookupColumns
+ 59 MemberLookup
+ 60 LookupNormalise
+ 61 StringifiedLookup
+ 62 StringifiedLookupOrLiteral
+ 63 CollectParamsRows
+ 64 IndexedLookup
+ 65 Scale
+ 66 Replace
+ 67 AddUniqueRow
+ 68 FrameworkPreference
+ 69 NormalisedLookup
+ 70 StringifiedLookup
+ 71 LookupNormalise
+ 72 GuardedLookup
+ 73 MergeRowOrFallback
+ 74 GuardedParamsRow
+ 75 IssueLifecycle
+ 76 ArmedTable
+ 77 RowOrDefaults
+ 78 HexFields
+ 79 KeyedByLookup
+ 80 ScalarExpression
+ 81 SelectRenameKeys
  82 FieldTables
- 83 MemberMappings
- 84 ConfiguredDateFormat
+ 83 FieldTables
+ 84 MemberMappings
+ 85 ConfiguredDateFormat
 

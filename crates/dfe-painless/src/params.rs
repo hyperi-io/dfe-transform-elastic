@@ -267,6 +267,8 @@ pub(crate) enum ParamsPattern {
     /// event.
     LookupMerge(Program),
     LookupColumns,
+    /// An action named from the tail of a request URL.
+    UrlTailAction(Box<crate::url_action::UrlTailAction>),
     LookupNormalise(LookupNormaliseScript, Program),
     /// A params lookup written to a NAMED MEMBER of a container the script
     /// first guarantees exists.
@@ -845,6 +847,17 @@ fn params_pattern_tail(normalised: &str) -> Option<ParamsPattern> {
         && let Some(pattern) = parse_keyed_row_appends(normalised)
     {
         return Some(ParamsPattern::KeyedRowAppends(Box::new(pattern)));
+    }
+
+    // Pattern: an action named from the tail of a request URL, through a
+    // two-level table with a computed fallback. Above `LookupColumns`, which
+    // counts three `.get(` with no parse behind them and whose runner then
+    // declines.
+    if normalised.contains(".splitOnToken(")
+        && normalised.contains("params.get(")
+        && let Some(pattern) = crate::url_action::parse_url_tail_action(normalised)
+    {
+        return Some(ParamsPattern::UrlTailAction(Box::new(pattern)));
     }
 
     // Pattern: look a row up in a nested table and fan its columns out,
@@ -2175,6 +2188,9 @@ pub(crate) fn run_params_pattern(
             try_lookup_merge(event, normalised, params, literals)
         }
         ParamsPattern::LookupColumns => try_lookup_columns(event, normalised, params),
+        ParamsPattern::UrlTailAction(pattern) => {
+            crate::url_action::url_tail_action(event, pattern, params)
+        }
         ParamsPattern::NormalisedLookup {
             source,
             target,
@@ -10294,6 +10310,20 @@ pub(crate) fn clean_path(path: &str) -> String {
     } else {
         path.to_string()
     }
+}
+
+/// Whether a string could be a field path at all.
+///
+/// A reader that slices between two markers has no guarantee they sit in one
+/// statement, and what comes back is then SOURCE rather than a path -- ece's
+/// `event.action` script put two hundred characters of its own body into a
+/// `FirstElement` take, `Event::set` failed on it, and the error was swallowed.
+/// A slash and a colon are legal: azure's SAML claims are keyed by URI.
+pub(crate) fn is_ctx_path(path: &str) -> bool {
+    !path.is_empty()
+        && !path.contains([
+            ' ', '\t', '\n', '\r', ';', '(', ')', '\'', '"', '{', '}', '=', '!', ',', '+',
+        ])
 }
 
 /// The `ctx` path each `def <name> = ctx?...;` line reads, keyed by the local.

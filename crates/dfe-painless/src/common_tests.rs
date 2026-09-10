@@ -6292,6 +6292,34 @@ fn first_element_guarded_probe() {
     assert_eq!(already_set.get("source.domain"), Some(&json!("keep-me")));
 }
 
+/// Verbatim from `ece_adminconsole/default.rs`, tagged
+/// `set_event_action_from_the_url`.
+///
+/// It carries `splitOnToken('?')[0];` two hundred characters below its last
+/// `ctx.`, so the take slices the script's own body as a path. Nothing may
+/// claim it on the strength of that.
+const ECE_ACTION: &str = r#"def temp = params.get(ctx.http.request.method.toLowerCase());\n// elastic.co/api/v1/deployments\n// and we only want the part after the /api/v1/\nString url_parts = ctx.url.original.splitOnToken(\"/api/v1/\")[1];\nif (url_parts.contains('elasticsearch/elasticsearch/proxy/')){\n  url_parts = url_parts.splitOnToken('elasticsearch/elasticsearch/proxy/')[1];\n  url_parts = url_parts.splitOnToken('?')[0];\n  url_parts = url_parts.splitOnToken('/')[0];\n  ctx.putIfAbsent(\"event\", [:]);\n  ctx.event.action = \"elasticsearch_api_through_ece\" + \"-\" + url_parts.toLowerCase();\n}\nelse if (temp != null){\n    if (temp.get(url_parts) != null){\n        ctx.putIfAbsent(\"event\", [:]);\n        ctx.event.action = temp.get(url_parts);\n    }\n}\nif (ctx.event?.action == null){\n    ctx.putIfAbsent(\"event\", [:]);\n    ctx.event.action = ctx.http.request.method.toLowerCase() + \"_\" + url_parts.splitOnToken(\"/\")[0];\n}\n"#;
+
+/// A take whose path is script text is skipped rather than written.
+#[test]
+fn a_take_sliced_across_statements_is_not_a_path() {
+    let normalised = crate::common::normalise(ECE_ACTION);
+    let plan = crate::plan::PainlessPlan::new(ECE_ACTION);
+
+    assert!(
+        !plan.binding().iter().any(|b| b.starts_with("FirstElement")),
+        "the take reads script text as a path: {:?}",
+        plan.binding(),
+    );
+
+    let mut event = Event::new(json!({
+        "url": { "original": "https://host:12443/api/v1/deployments" },
+        "http": { "request": { "method": "POST" } },
+    }));
+    let _ = try_known_painless(&mut event, &normalised);
+    assert_eq!(event.get("url.original.splitOnToken"), None);
+}
+
 /// Verbatim from `pipelines/amazon_security_lake/event/default.yml`, tagged
 /// `convert_timestamps_to_milliseconds`. `aws_securityhub/finding` ships
 /// the same script over `ctx.aws_securityhub.finding`.

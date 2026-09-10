@@ -55,4 +55,5 @@ pub mod seconds_between;
 pub mod split_fanout;
 pub mod stats;
 pub mod totals;
+pub mod url_action;
 pub mod windows;
