@@ -158,6 +158,14 @@ corrected:
       same json processor and report it in their own words: Jackson's
       "Unrecognized token" with a source excerpt, against serde_json's. The
       failure agrees; only the wording is the runtime's own.
+  - prefix: error.message
+    sources: [atlassian_cloud]
+    why: >-
+      10 events carry an OBJECT `event.original`, so both engines fail the same
+      json processor and report it in their own words: Jackson's parse error on
+      Java's `Map.toString` rendering, against ours declining a container. The
+      wording can never agree -- Elastic's quotes the map in HashMap iteration
+      order, which is not reproducible -- but the failure does.
 
 # ECS fields whose values are sets. Same members in a different sequence is
 # equality, not a difference.

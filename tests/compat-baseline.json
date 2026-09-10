@@ -20,7 +20,7 @@
     "arista_ngfw": { "events": 137, "events_total": 141, "fields_wrong": 5 },
     "armis": { "events": 6, "events_total": 6, "fields_wrong": 0 },
     "atlassian_bitbucket": { "events": 281, "events_total": 281, "fields_wrong": 0 },
-    "atlassian_cloud": { "events": 0, "events_total": 10, "fields_wrong": 10 },
+    "atlassian_cloud": { "events": 10, "events_total": 10, "fields_wrong": 0 },
     "atlassian_confluence": { "events": 286, "events_total": 286, "fields_wrong": 0 },
     "atlassian_jira": { "events": 270, "events_total": 271, "fields_wrong": 2 },
     "auditd": { "events": 77, "events_total": 83, "fields_wrong": 7 },

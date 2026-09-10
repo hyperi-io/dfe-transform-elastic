@@ -271,26 +271,71 @@ where
     Ok(())
 }
 
+/// What a `json` processor gets when it reads `field`, resolved the way
+/// Elasticsearch resolves it.
+///
+/// Elasticsearch reads the field as an `Object` and coerces it with
+/// `toString()` before handing the text to Jackson, so what is STORED there
+/// decides the outcome, and only a string is the ordinary case:
+///
+/// - a string is the text itself, parsed;
+/// - a number, a boolean and null each render as exactly their own JSON
+///   spelling, so the parse hands the same value straight back. Returned here
+///   without the round trip, which is the identical value and no allocation;
+/// - an OBJECT or an ARRAY renders through Java's `Map.toString` /
+///   `List.toString` -- `{k=v, k2=v2}`, unquoted -- which is not JSON, so
+///   Jackson throws and the processor FAILS. We decline it rather than
+///   reproduce that text: the failure is the part parity rests on, and the
+///   wording is the runtime's own.
+///
+/// Declining is the whole point of this function. Reading the field with
+/// `get_string` answered `None` for a container and took the absent branch, so
+/// every generated `json` call site returned `Ok(())` on an object with no
+/// parse, no error, no counter and no `on_failure` -- silent data loss with
+/// nothing left behind to find it by. `atlassian_cloud` is the worked case: its
+/// `message` is an object, the pipeline renames it onto `event.original`, and
+/// Elasticsearch fails the `json` processor and emits `error.message` where we
+/// ran clean through.
+///
+/// `Ok(None)` is an ABSENT field. Elasticsearch throws there too, and we
+/// deliberately do not -- treating "nothing to read" as a failure would fire
+/// `on_failure` under every call site in the tree at once.
+fn json_processor_value(event: &Event, field: &str) -> std::result::Result<Option<Value>, String> {
+    match event.get(field) {
+        None => Ok(None),
+        Some(Value::String(text)) => parse_json_str(text).map(Some),
+        Some(scalar @ (Value::Number(_) | Value::Bool(_) | Value::Null)) => Ok(Some(scalar.clone())),
+        Some(Value::Object(_)) => {
+            Err("failed to parse JSON: the field holds an object, not JSON text".to_string())
+        }
+        Some(Value::Array(_)) => {
+            Err("failed to parse JSON: the field holds an array, not JSON text".to_string())
+        }
+    }
+}
+
 /// Parse one field's JSON string into `target`, the way Elastic's `json`
 /// processor does.
 ///
 /// An absent field is a no-op, exactly as the old inline `if let` was; a
 /// present one that will not parse is the processor's failure, worded the
 /// same way the inline `serde_json` block worded it so `on_failure` output
-/// does not shift.
+/// does not shift. [`json_processor_value`] carries what "will not parse"
+/// covers, containers included.
 ///
 /// # Errors
 ///
 /// Returns [`crate::TransformError::ParseError`] naming the FIELD when the
-/// text is not JSON, or whatever `set` returns for an unwritable target.
+/// text is not JSON or the field holds a container, or whatever `set` returns
+/// for an unwritable target.
 pub fn parse_json_field(event: &mut Event, field: &str, target: &str) -> Result<()> {
-    let Some(text) = event.get_string(field) else {
-        return Ok(());
-    };
-    let parsed = parse_json_str(&text).map_err(|message| crate::TransformError::ParseError {
+    let fail = |message: String| crate::TransformError::ParseError {
         path: field.into(),
         message,
-    })?;
+    };
+    let Some(parsed) = json_processor_value(event, field).map_err(fail)? else {
+        return Ok(());
+    };
     event.set(target, parsed)?;
     Ok(())
 }
@@ -366,17 +411,17 @@ fn render_path(event: &Event, template: &str) -> String {
     out
 }
 
-/// Returns a `ParseError` naming the field when the text is not JSON or when it
-/// is not an object.
+/// Returns a `ParseError` naming the field when the text is not JSON, when the
+/// field holds a container rather than text (see [`json_processor_value`]), or
+/// when what parses is not an object.
 pub fn parse_json_field_to_root(event: &mut Event, field: &str, merge: bool) -> Result<()> {
-    let Some(text) = event.get_string(field) else {
-        return Ok(());
-    };
     let fail = |message: String| crate::TransformError::ParseError {
         path: field.into(),
         message,
     };
-    let parsed = parse_json_str(&text).map_err(fail)?;
+    let Some(parsed) = json_processor_value(event, field).map_err(fail)? else {
+        return Ok(());
+    };
     let Value::Object(members) = parsed else {
         return Err(fail(
             "cannot add non-object root to the document".to_string(),
@@ -3043,6 +3088,67 @@ mod tests {
         let mut event = Event::new(json!({ "message": r#"{"a": [1, 2]}"# }));
         parse_json_field(&mut event, "message", "json").unwrap();
         assert_eq!(event.get("json"), Some(&json!({ "a": [1, 2] })));
+    }
+
+    /// A container is the processor's FAILURE, not an absent field.
+    ///
+    /// Elasticsearch coerces with `Object::toString` and Java spells a map
+    /// `{format=simple, content=...}`, which Jackson will not parse. Reading
+    /// the field with `get_string` answered `None` here and took the absent
+    /// branch, so the processor silently succeeded on data it never parsed and
+    /// `on_failure` never ran. atlassian_cloud's `message` is exactly this.
+    #[test]
+    fn parse_json_field_declines_a_container() {
+        for value in [json!({ "format": "simple" }), json!(["a", "b"])] {
+            let mut event = Event::new(json!({ "message": value.clone() }));
+            let err = parse_json_field(&mut event, "message", "json").unwrap_err();
+            let text = err.to_string();
+            assert!(text.contains("message"), "{value}: {text}");
+            assert!(text.contains("not JSON text"), "{value}: {text}");
+            // Nothing was written, and the field it could not read is intact.
+            assert_eq!(event.get("json"), None, "{value}");
+            assert_eq!(event.get("message"), Some(&value));
+        }
+    }
+
+    /// A number, a boolean and null render as their own JSON spelling, so
+    /// Elasticsearch's stringify-then-parse hands the same value back. We pass
+    /// it through, which is that round trip without the allocation.
+    #[test]
+    fn parse_json_field_passes_a_scalar_through() {
+        for value in [json!(42), json!(-1.5), json!(true), json!(null)] {
+            let mut event = Event::new(json!({ "message": value.clone() }));
+            parse_json_field(&mut event, "message", "json").unwrap();
+            assert_eq!(event.get("json"), Some(&value));
+        }
+    }
+
+    /// `add_to_root` reads the field the same way, so a container declines
+    /// there too rather than merging an object it never parsed.
+    #[test]
+    fn parse_json_field_to_root_declines_a_container() {
+        let mut event = Event::new(json!({ "message": { "a": 1 } }));
+        let err = parse_json_field_to_root(&mut event, "message", false).unwrap_err();
+        assert!(err.to_string().contains("not JSON text"), "{err}");
+        assert_eq!(event.get("a"), None);
+    }
+
+    /// A scalar parses to something that is not an object, which is the
+    /// `add_to_root` failure Elasticsearch already raises.
+    #[test]
+    fn parse_json_field_to_root_declines_a_scalar() {
+        let mut event = Event::new(json!({ "message": 42 }));
+        let err = parse_json_field_to_root(&mut event, "message", false).unwrap_err();
+        assert!(err.to_string().contains("non-object root"), "{err}");
+    }
+
+    /// An absent field stays a no-op on the root path as well -- the branch a
+    /// container used to share with it.
+    #[test]
+    fn parse_json_field_to_root_skips_an_absent_field() {
+        let mut event = Event::new(json!({ "other": 1 }));
+        parse_json_field_to_root(&mut event, "message", false).unwrap();
+        assert_eq!(event.as_value(), &json!({ "other": 1 }));
     }
 
     /// Verbatim from `proofpoint_on_demand/message`, which converts a LIST of
