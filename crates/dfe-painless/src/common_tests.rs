@@ -4283,6 +4283,37 @@ fn an_equality_ladder_with_no_matching_arm_writes_nothing() {
     assert!(!event.has("network.transport"));
 }
 
+/// Verbatim from `pipelines/system/auth/message.yml`, tag
+/// `script-categorize-ssh-event`.
+const SSH_CATEGORISE: &str = "if (ctx.system.auth.ssh.event == \"Accepted\") {\n  \
+                              ctx.event.type = [\"info\"];\n  ctx.event.category = \
+                              [\"authentication\", \"session\"];\n  ctx.event.action = \
+                              \"ssh_login\";\n  ctx.event.outcome = \"success\";\n} else if \
+                              (ctx.system.auth.ssh.event == \"Invalid\" || \
+                              ctx.system.auth.ssh.event == \"Failed\") {\n  ctx.event.type = \
+                              [\"info\"];\n  ctx.event.category = [\"authentication\"];\n  \
+                              ctx.event.action = \"ssh_login\";\n  ctx.event.outcome = \
+                              \"failure\";\n}";
+
+/// A ladder arm assigning a LIST writes the list, not its first member.
+///
+/// The one-member `["authentication"]` is the same defect as the two-member
+/// one: a bare `authentication` is a different value, not a shorter one.
+#[test]
+fn an_equality_ladder_writes_a_list_arm_as_a_list() {
+    for (ssh, category, outcome) in [
+        ("Accepted", json!(["authentication", "session"]), "success"),
+        ("Failed", json!(["authentication"]), "failure"),
+        ("Invalid", json!(["authentication"]), "failure"),
+    ] {
+        let mut event = Event::new(json!({ "system": { "auth": { "ssh": { "event": ssh } } } }));
+        assert!(try_known_painless(&mut event, SSH_CATEGORISE));
+        assert_eq!(event.get("event.type"), Some(&json!(["info"])));
+        assert_eq!(event.get("event.category"), Some(&category));
+        assert_eq!(event.get_str("event.outcome"), Some(outcome));
+    }
+}
+
 /// panw's own "crude `uri_parts`", as the generator emits it.
 const SCHEMELESS_URL: &str = r#"Map url = new HashMap();
 String url_original = ctx.url.original;

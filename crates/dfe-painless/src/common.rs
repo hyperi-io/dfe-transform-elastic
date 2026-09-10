@@ -11345,7 +11345,9 @@ pub(crate) struct LadderArm {
     /// `painless_literal` reads -- a quoted string in most vendored ladders,
     /// but a severity NUMBER arrives bare (`ctx.event.severity = 21;`), which
     /// a `String` field cannot hold without quoting it into the wrong JSON
-    /// type.
+    /// type. A LIST is as common again: system/auth categorises an SSH event
+    /// with `ctx.event.category = ["authentication", "session"]`, and reading
+    /// that as a scalar dropped the second member on every SSH event.
     writes: Vec<(String, Value)>,
     /// Fields the arm REMOVES once it has written.
     ///
@@ -12386,7 +12388,17 @@ fn try_case_insensitive_ladder(event: &mut Event, script: &str) -> bool {
 /// A Painless literal as the JSON value it stands for.
 ///
 /// A trailing `L` is Painless's long suffix and is not part of the number.
+///
+/// A BRACKETED list is a literal too, and every reader below it scans for the
+/// first quoted run anywhere -- so `["authentication", "session"]` came back as
+/// the bare string `authentication`, which is a one-element answer of the wrong
+/// JSON type to a two-element list. [`crate::params::literal_value`] reads the
+/// whole bracketed text or nothing, so a member it cannot read declines the
+/// literal rather than writing a shorter list than the vendor's.
 pub(crate) fn painless_literal(text: &str) -> Option<Value> {
+    if text.trim_start().starts_with('[') {
+        return crate::params::literal_value(text);
+    }
     if let Some(quoted) = quoted_first(text) {
         return Some(Value::String(quoted));
     }

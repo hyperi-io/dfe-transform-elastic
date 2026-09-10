@@ -580,18 +580,19 @@ fn first_epss_reference_keeps_both_halves_of_its_url() {
 }
 
 #[test]
-fn the_system_ssh_ladder_flattens_its_list_literals() {
-    // `EqualityLadder` unwraps a list literal to its first element as a scalar,
-    // so the arm's two scalar writes are right and its two list writes are not.
+fn the_system_ssh_ladder_keeps_its_list_literals() {
+    // `EqualityLadder` used to unwrap a list literal to its first element as a
+    // scalar, which was a one-element answer of the wrong JSON type to a
+    // two-element list -- `session` was dropped on every accepted SSH login.
     let held = binding(SYSTEM_SSH_CATEGORY).join(" ");
     assert!(held.starts_with("EqualityLadder"), "{held}");
     assert!(
-        held.contains(r#"("event.category", String("authentication"))"#),
+        held.contains(r#"("event.category", Array [String("authentication"), String("session")])"#),
         "{held}"
     );
     assert!(
-        !held.contains("session"),
-        "the ladder now carries the second list element -- re-measure system: {held}"
+        held.contains(r#"("event.type", Array [String("info")])"#),
+        "{held}"
     );
 }
 
