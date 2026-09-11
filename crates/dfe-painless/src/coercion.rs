@@ -578,7 +578,10 @@ pub fn decoded_fields(event: &mut Event, pattern: &DecodedFields) -> bool {
 }
 
 /// Java's `Long.decode`, which is not `parse` with a base.
-fn java_decode(text: &str) -> Option<i64> {
+///
+/// Shared with [`crate::params`], whose `Rhs::Decoded` reads the same call as
+/// one statement's right-hand side rather than as a whole script.
+pub(crate) fn java_decode(text: &str) -> Option<i64> {
     let text = text.trim();
     let (negative, digits) = match text.strip_prefix('-') {
         Some(rest) => (true, rest),

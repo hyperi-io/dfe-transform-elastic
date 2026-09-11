@@ -7888,6 +7888,11 @@ enum Rhs {
     /// The `.toString()` is the point of the pattern: the field arrives as a
     /// string on some events and a number on others.
     LongOf(String),
+    /// `Long.decode(ctx.<path>)` -- Java's radix-sensitive read of a numeric
+    /// string, which is why the vendor spells it this way rather than
+    /// `parseLong`: Windows writes a pid as `0x1f4` and a port as `3389`, and
+    /// only `decode` reads both.
+    Decoded(String),
     /// `'<literal>' + ctx.<path> + ...` -- a string spliced together from
     /// literal text and the event's own fields, in the order the script writes
     /// them. `first_epss` builds a CVE lookup URL this way, wiz an issue URL,
@@ -7910,6 +7915,18 @@ enum Rhs {
         path: String,
         separator: String,
         index: usize,
+        fold: Fold,
+    },
+    /// `ctx.<path>.splitOnToken("<sep>")[-1]` -- the LAST part, which is how a
+    /// script takes the leaf of a path. Windows reads `process.name` and
+    /// `process.parent.name` off an executable path this way.
+    ///
+    /// Apart from [`Rhs::SplitPart`] because that index is a `usize` and
+    /// Painless counts `-1` back from the end. `-1` is the only negative
+    /// subscript the vendor tree spells, so it is the only one read.
+    SplitLast {
+        path: String,
+        separator: String,
         fold: Fold,
     },
     Literal(Value),
@@ -8307,6 +8324,159 @@ fn inline_local_lists(body: &str) -> Cow<'_, str> {
     Cow::Owned(text)
 }
 
+/// Substitute a local bound to a `splitOnToken` call, where every use of it is
+/// a subscript.
+///
+/// ```painless
+/// def parts = ctx.process.executable.splitOnToken("\\");
+/// ctx.process.put("name", parts[-1]);
+/// ```
+///
+/// Windows takes the leaf of a path this way, for `process.name` and
+/// `process.parent.name`, across its security streams. Until the local is
+/// followed, `parts[-1]` names something no event carries and the write is
+/// dropped -- while the `remove` after it is read, so the field the script was
+/// pruning went and the field it was setting never arrived.
+///
+/// **Every use has to be a subscript, and that is a correctness condition
+/// rather than caution.** A split local's other common use is `parts.length` in
+/// a guard. Inlining there moves an expression no reader resolves INTO a guard,
+/// where the branch is then decided by an unreadable comparison's default
+/// polarity instead of by the event -- `aws_bedrock_agentcore` writes both its
+/// names under `if (parts.length == 2)`, and running those writes unguarded is
+/// a wrong value where today there is a missing one. Leaving that local alone
+/// keeps such a script exactly as unreadable as it already is.
+///
+/// The split is a pure function of the event, so evaluating it once per use
+/// rather than once per script is the same answer.
+fn inline_split_locals(body: &str) -> Cow<'_, str> {
+    if !body.contains(".splitOnToken(") {
+        return Cow::Borrowed(body);
+    }
+
+    let mut out = body.to_string();
+    let mut changed = false;
+    let mut at = 0;
+
+    while let Some(declaration) = next_declaration(&out, at) {
+        at = declaration;
+        let Some(equals) = out[declaration..].find('=') else {
+            break;
+        };
+        let name = out[declaration..declaration + equals].trim().to_string();
+        if name.is_empty() || !name.chars().all(|c| c.is_alphanumeric() || c == '_') {
+            continue;
+        }
+        let value_start = declaration + equals + 1;
+        let Some(terminator) = out[value_start..].find(';') else {
+            continue;
+        };
+        let value = out[value_start..value_start + terminator]
+            .trim()
+            .to_string();
+        if !is_split_call(&value)
+            || !assigned_once(&out, &name)
+            || !every_use_subscripts(&out, &name)
+        {
+            continue;
+        }
+
+        // Forward of the declaration only. Rewriting the binding too would
+        // leave `def <expression> = <expression>;` behind, which
+        // `drop_inlined_declaration` can no longer find by name.
+        let after = value_start + terminator + 1;
+        let rewritten = replace_word(&out[after..], &name, &value);
+        if rewritten != out[after..] {
+            changed = true;
+        }
+        out = out[..after].to_string() + &rewritten;
+        at = after;
+
+        // The binding is dead text once every use of it carries the call.
+        if let Some(without) = drop_inlined_declaration(&out, &name) {
+            at = at.min(without.len());
+            out = without;
+            changed = true;
+        }
+    }
+
+    if changed {
+        Cow::Owned(out)
+    } else {
+        Cow::Borrowed(body)
+    }
+}
+
+/// Whether `value` is exactly `ctx.<path>.splitOnToken("<sep>")`.
+///
+/// The whole value, not a call somewhere inside one: a local bound to
+/// `parts.splitOnToken(",")[0].trim()` is a different expression, and
+/// substituting it where a subscript follows would build a second subscript
+/// this reader never wrote.
+fn is_split_call(value: &str) -> bool {
+    let Some((subject, rest)) = value.split_once(".splitOnToken(") else {
+        return false;
+    };
+    let subject = subject.trim_end_matches(['.', '?']);
+    let readable = subject
+        .strip_prefix("ctx.")
+        .or_else(|| subject.strip_prefix("ctx?."))
+        .is_some_and(|path| {
+            !path.is_empty()
+                && path
+                    .chars()
+                    .all(|c| c.is_alphanumeric() || "._?['\"]".contains(c))
+        });
+    readable
+        && quoted_literal(rest)
+            .is_some_and(|(separator, after)| !separator.is_empty() && after.trim() == ")")
+}
+
+/// Whether every whole-word use of `name` is immediately subscripted by a
+/// whole number -- `name[0]`, `name[-1]`.
+///
+/// The declaration subscripts nothing and is skipped, on a single `=`. A `==`
+/// is a COMPARISON and is a use like any other, so `if (parts == null)` declines
+/// the whole local rather than being read as its binding -- inlining around it
+/// would leave the guard naming a local the substitution had just deleted.
+fn every_use_subscripts(body: &str, name: &str) -> bool {
+    fn word(c: u8) -> bool {
+        c.is_ascii_alphanumeric() || c == b'_'
+    }
+
+    let bytes = body.as_bytes();
+    let mut uses = 0usize;
+    let mut at = 0;
+    while let Some(found) = body[at..].find(name) {
+        let start = at + found;
+        let end = start + name.len();
+        at = end;
+        let before = start.checked_sub(1).map(|index| bytes[index]);
+        if before.is_some_and(|c| c == b'.' || word(c)) || bytes.get(end).copied().is_some_and(word)
+        {
+            continue;
+        }
+        // The declaration is the one use that is an assignment rather than a
+        // read, and it is the text being inlined.
+        let tail = body[end..].trim_start();
+        if tail.starts_with('=') && !tail.starts_with("==") {
+            continue;
+        }
+        let Some(subscript) = body[end..]
+            .strip_prefix('[')
+            .and_then(|rest| rest.split_once(']'))
+            .map(|(inside, _)| inside)
+        else {
+            return false;
+        };
+        if subscript.trim().parse::<i64>().is_err() {
+            return false;
+        }
+        uses += 1;
+    }
+    uses > 0
+}
+
 impl Program {
     /// Read a body into the tree the per-event walk runs.
     pub(crate) fn parse(body: &str) -> Self {
@@ -8315,6 +8485,9 @@ impl Program {
         // it.
         let body = inline_ctx_aliases(body);
         let body = inline_local_lists(&body);
+        // Last, so a split whose subject is itself a local reads the path the
+        // alias pass resolved rather than the local's name.
+        let body = inline_split_locals(&body);
         let mut whole = true;
         let statements = parse_statements(&body, &mut whole);
         Self { statements, whole }
@@ -9084,6 +9257,22 @@ fn parse_rhs(text: &str) -> Option<Rhs> {
     {
         return Some(Rhs::LongOf(clean_path(&inner)));
     }
+    // `Long.decode(ctx.<path>)`, before the bare-path read below takes the call
+    // for part of a field name. Every trailing parenthesis goes: the argument is
+    // a bare path, so the only ones there are this call's own close and whatever
+    // enclosing call the statement sits in -- `ctx.a.put("k", Long.decode(ctx.b))`
+    // hands this reader both.
+    if let Some(rest) = text.strip_prefix("Long.decode(")
+        && rest.ends_with(')')
+    {
+        let argument = subject_path(rest.trim_end_matches(')').trim());
+        if let Some(path) = argument.strip_prefix("ctx.")
+            && !path.is_empty()
+            && !path.contains(['(', ')', ',', ' '])
+        {
+            return Some(Rhs::Decoded(clean_path(path)));
+        }
+    }
     // `[ctx.a.b]` before the bare form, or the brackets read as path syntax.
     if let Some(inner) = text
         .strip_prefix('[')
@@ -9437,22 +9626,34 @@ fn parse_split_part(text: &str) -> Option<Rhs> {
     if separator.is_empty() {
         return None;
     }
-    let index = after
+    let (index, tail) = after
         .trim_start()
         .strip_prefix(')')?
         .trim_start()
         .strip_prefix('[')?
-        .split_once(']')
-        .filter(|(_, tail)| tail.trim().is_empty())?
-        .0
-        .trim()
-        .parse()
-        .ok()?;
+        .split_once(']')?;
+    // Only the enclosing call's own closing parenthesis may follow the
+    // subscript: `ctx.a.put("k", ctx.b.splitOnToken("/")[0])` hands this reader
+    // the `put`'s close along with the expression. Anything else -- a `+ ".0"`,
+    // a second subscript -- is a different expression and is declined.
+    if !tail.trim().trim_end_matches(')').trim().is_empty() {
+        return None;
+    }
+
+    // Painless counts `-1` back from the end, which a `usize` index cannot
+    // hold. No other negative subscript is spelled in the tree, so none is read.
+    if index.trim() == "-1" {
+        return Some(Rhs::SplitLast {
+            path,
+            separator,
+            fold,
+        });
+    }
 
     Some(Rhs::SplitPart {
         path,
         separator,
-        index,
+        index: index.trim().parse().ok()?,
         fold,
     })
 }
@@ -9566,6 +9767,14 @@ fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
                 _ => None,
             })
             .map(|number| Value::from(number.trunc() as i64)),
+        // Painless hands `Long.decode` a String and THROWS on anything else, so
+        // a field that is not text writes nothing rather than being coerced --
+        // and text it cannot read throws too, which the vendor's own
+        // `on_failure` handler is there for.
+        Rhs::Decoded(path) => event
+            .get_str(path)
+            .and_then(crate::coercion::java_decode)
+            .map(Value::from),
         // A field the event does not carry writes NOTHING, where Painless
         // would splice in the text `null`. Every site is guarded by its
         // processor's own `if` on that field, so an absent one means this is
@@ -9608,6 +9817,17 @@ fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
         } => event
             .get_str(path)
             .and_then(|text| text.split(separator.as_str()).nth(*index))
+            .map(|part| Value::String(fold.apply(part))),
+        // A string holding no separator splits into ONE part, and that part is
+        // its own last -- which is what makes a bare `cmd.exe` come out as the
+        // process name rather than nothing.
+        Rhs::SplitLast {
+            path,
+            separator,
+            fold,
+        } => event
+            .get_str(path)
+            .and_then(|text| text.rsplit(separator.as_str()).next())
             .map(|part| Value::String(fold.apply(part))),
         Rhs::Literal(value) => Some(value.clone()),
     }

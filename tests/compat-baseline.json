@@ -278,7 +278,7 @@
     "sysdig": { "events": 24, "events_total": 38, "fields_wrong": 32 },
     "syslog_router": { "events": 2, "events_total": 2, "fields_wrong": 0 },
     "sysmon_linux": { "events": 2, "events_total": 2, "fields_wrong": 0 },
-    "system": { "events": 815, "events_total": 821, "fields_wrong": 17 },
+    "system": { "events": 818, "events_total": 821, "fields_wrong": 5 },
     "system_audit": { "events": 2, "events_total": 2, "fields_wrong": 0 },
     "tanium": { "events": 49, "events_total": 54, "fields_wrong": 157 },
     "teleport": { "events": 256, "events_total": 274, "fields_wrong": 68 },

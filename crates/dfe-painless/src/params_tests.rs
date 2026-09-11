@@ -4254,6 +4254,125 @@ fn a_split_part_reads_its_index_and_declines_what_it_cannot() {
     assert!(parse_split_part(r#"ctx.a.splitOnToken(":")[0].length()"#).is_none());
 }
 
+/// Windows' Filtering Platform events carry their ports as text, and the
+/// vendor decodes them.
+///
+/// Verbatim from `filebeat/system_security/standard.rs`, the `Add Connection
+/// Events` script. `Long.decode` was unreadable, so the port write was dropped
+/// from the tree while the `remove` after it was kept -- the field the script
+/// prunes went and the field it sets never arrived.
+#[test]
+fn a_decoded_port_is_written_before_its_source_is_pruned() {
+    let script = r#"if (ctx.winlog?.event_data?.DestPort != null && ctx.winlog.event_data.DestPort != \"-\") {\n  if (ctx.destination == null) {\n    HashMap hm = new HashMap();\n    ctx.put(\"destination\", hm);\n  }\n  ctx.destination.put(\"port\", Long.decode(ctx.winlog.event_data.DestPort));\n  ctx.winlog.event_data.remove(\"DestPort\");\n}\n"#;
+    let mut event = Event::new(json!({
+        "winlog": { "event_data": { "DestPort": "3389", "Protocol": "6" } },
+    }));
+
+    assert!(Program::parse(&crate::common::normalise(script)).run(&mut event));
+    assert_eq!(event.get("destination.port"), Some(&json!(3389)));
+    assert_eq!(event.get("winlog.event_data.DestPort"), None);
+    // The prune takes only its own key.
+    assert_eq!(event.get_str("winlog.event_data.Protocol"), Some("6"));
+}
+
+/// `Long.decode` is Java's radix-sensitive read, which is the reason the vendor
+/// spells it rather than `parseLong`: Windows writes a pid in hex and a port in
+/// decimal, and one call has to read both.
+#[test]
+fn a_decode_reads_the_base_the_vendor_wrote() {
+    fn decoded(raw: &str) -> Value {
+        let script = r#"ctx.process.put(\"pid\", Long.decode(ctx.winlog.event_data.ProcessId));"#;
+        let mut event = Event::new(json!({
+            "winlog": { "event_data": { "ProcessId": raw } },
+        }));
+        Program::parse(&crate::common::normalise(script)).run(&mut event);
+        event.get("process.pid").cloned().unwrap_or(Value::Null)
+    }
+
+    assert_eq!(decoded("0x1f4"), json!(500));
+    assert_eq!(decoded("3389"), json!(3389));
+    // Text `Long.decode` cannot read THROWS, and the vendor's own on_failure
+    // handler decides -- a substitute would be a number Elasticsearch never
+    // emitted.
+    assert_eq!(decoded("not-a-number"), Value::Null);
+}
+
+/// Windows takes the leaf of an executable path through a local, and until the
+/// local is followed the write names something no event carries.
+///
+/// Verbatim from `filebeat/system_security/standard.rs`. The same two lines
+/// serve `process.name` and `process.parent.name`.
+#[test]
+fn the_last_part_of_a_split_bound_to_a_local_is_the_leaf() {
+    let script = r#"if (ctx.process?.name == null && ctx.process?.executable != null) {\n  def parts = ctx.process.executable.splitOnToken(\"\\\\\");\n  ctx.process.put(\"name\", parts[-1]);\n}\n"#;
+    let mut event = Event::new(json!({
+        "process": { "executable": r"C:\Windows\System32\svchost.exe" },
+    }));
+
+    assert!(Program::parse(&crate::common::normalise(script)).run(&mut event));
+    assert_eq!(event.get_str("process.name"), Some("svchost.exe"));
+}
+
+/// The binding goes with the substitution, and the substitution runs FORWARD
+/// of it.
+///
+/// Rewriting the declaration's own name too leaves `def <call> = <call>;`
+/// behind, which `drop_inlined_declaration` can no longer find by name -- the
+/// uses read correctly and a statement no walk can run stays in the text.
+#[test]
+fn an_inlined_split_local_leaves_no_binding_behind() {
+    let script = "def parts = ctx.process.executable.splitOnToken('/');\n\
+        ctx.process.name = parts[-1];\n";
+    let inlined = inline_split_locals(script);
+
+    assert!(!inlined.contains("def "), "{inlined}");
+    assert!(!inlined.contains("parts"), "{inlined}");
+    assert_eq!(
+        inlined.trim(),
+        "ctx.process.name = ctx.process.executable.splitOnToken('/')[-1];"
+    );
+}
+
+/// A path with no separator in it is its own last part.
+#[test]
+fn a_bare_executable_is_its_own_leaf() {
+    assert!(matches!(
+        parse_split_part(r#"ctx.process.executable.splitOnToken("\\")[-1]"#),
+        Some(Rhs::SplitLast { .. })
+    ));
+
+    let script = r#"ctx.process.put(\"name\", ctx.process.executable.splitOnToken(\"\\\\\")[-1]);"#;
+    let mut event = Event::new(json!({ "process": { "executable": "cmd.exe" } }));
+    assert!(Program::parse(&crate::common::normalise(script)).run(&mut event));
+    assert_eq!(event.get_str("process.name"), Some("cmd.exe"));
+}
+
+/// A local the script also asks the LENGTH of is left alone.
+///
+/// `aws_bedrock_agentcore` writes both its names under `if (parts.length == 2)`.
+/// Inlining there moves an expression no reader resolves into a guard, where an
+/// unreadable comparison's default polarity decides the branch instead of the
+/// event -- and running those writes unguarded is a wrong value where today
+/// there is a missing one.
+#[test]
+fn a_split_local_used_as_a_length_guard_is_not_inlined() {
+    let script = "def parts = ctx.aws.dimensions.Name.splitOnToken('::');\n\
+        if (parts.length == 2) {\n  ctx.aws.bedrock_agentcore.agent_name = parts[0];\n}\n";
+    assert_eq!(inline_split_locals(script), Cow::Borrowed(script));
+
+    let mut event = Event::new(json!({
+        "aws": { "dimensions": { "Name": "solo" }, "bedrock_agentcore": {} },
+    }));
+    assert!(!Program::parse(script).run(&mut event));
+    assert_eq!(event.get("aws.bedrock_agentcore.agent_name"), None);
+
+    // A `==` is a comparison, not the binding, so a local the script also tests
+    // for null declines rather than being inlined around its own guard.
+    let compared = "def parts = ctx.a.b.splitOnToken('/');\n\
+        if (parts == null) {\n  return;\n}\nctx.a.c = parts[0];\n";
+    assert_eq!(inline_split_locals(compared), Cow::Borrowed(compared));
+}
+
 /// A source shorter than the index writes nothing, rather than an empty string.
 ///
 /// The whole script reports UNHANDLED, which is the contract every `Rhs` here
