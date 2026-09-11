@@ -11049,8 +11049,18 @@ pub(crate) fn ctx_path_at_end(head: &str) -> Option<String> {
         (None, Some(safe)) => safe + "ctx?.".len(),
         (None, None) => return None,
     };
-    let path = clean_path(&head[start..]);
-    (!path.contains([' ', '\t', '\n', ';'])).then_some(path)
+    // A path read backwards out of a CALL carries that call's CLOSING paren and
+    // whatever trails it: `Integer.parseInt(ctx.a.b)-1` yields `a.b)-1`. No
+    // field name holds one, so the path ends where it begins -- reading it whole
+    // cost bitwarden and symantec_endpoint_security every indexed lookup they
+    // spell.
+    let read = &head[start..];
+    let read = read.find(')').map_or(read, |at| &read[..at]);
+    let path = clean_path(read);
+    // An OPENING paren left over is the other case: the subject is a method
+    // call, `ctx.a.b.entrySet()` rather than a field, and the path names nothing
+    // the document holds.
+    (!path.contains([' ', '\t', '\n', ';', '('])).then_some(path)
 }
 
 /// The dotted `ctx.` path written between two markers.
