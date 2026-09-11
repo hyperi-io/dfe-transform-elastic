@@ -126,12 +126,71 @@ pub fn painless_to_string(v: &Value) -> String {
         Value::String(s) => s.clone(),
         Value::Null => "null".to_string(),
         Value::Bool(b) => b.to_string(),
-        Value::Number(n) => n.to_string(),
+        Value::Number(n) => java_number_to_string(n),
         // Painless is Java, so a map renders `{k=v, k=v}` and a list
         // `[a, b]` -- not their JSON. aws's cloudtrail keeps a rendered copy
         // of `requestParameters` in exactly that pattern.
         Value::Array(_) | Value::Object(_) => java_to_string(v),
     }
+}
+
+/// One JSON number as Java renders it.
+///
+/// `String.valueOf(double)` leaves decimal notation for the magnitudes in
+/// `[10^-3, 10^7)` and writes everything outside it in computerized scientific
+/// notation, so bbot's epoch `1709170907.779394` is stored by Elasticsearch as
+/// `1.709170907779394E9`. An INTEGER is a Java Long and has no scientific form,
+/// so only a number serde could not hold as an integer takes this route.
+fn java_number_to_string(n: &serde_json::Number) -> String {
+    if n.is_i64() || n.is_u64() {
+        return n.to_string();
+    }
+    let Some(value) = n.as_f64() else {
+        return n.to_string();
+    };
+    java_double_to_string(value)
+}
+
+/// A finite `f64` as Java's `Double.toString` writes it.
+fn java_double_to_string(value: f64) -> String {
+    if !value.is_finite() {
+        return if value.is_nan() {
+            "NaN".to_string()
+        } else if value > 0.0 {
+            "Infinity".to_string()
+        } else {
+            "-Infinity".to_string()
+        };
+    }
+
+    let magnitude = value.abs();
+    if magnitude == 0.0 {
+        return if value.is_sign_negative() {
+            "-0.0".to_string()
+        } else {
+            "0.0".to_string()
+        };
+    }
+    if (1e-3..1e7).contains(&magnitude) {
+        // Java always writes at least one digit either side of the point.
+        let decimal = format!("{value}");
+        return if decimal.contains(['.', 'e', 'E']) {
+            decimal
+        } else {
+            format!("{decimal}.0")
+        };
+    }
+
+    // Rust's `{:e}` gives `1.709170907779394e9`; Java spells the exponent `E`
+    // and keeps the mandatory `.0` on a whole mantissa.
+    let scientific = format!("{value:e}");
+    let (mantissa, exponent) = scientific.split_once('e').unwrap_or((&scientific, "0"));
+    let mantissa = if mantissa.contains('.') {
+        mantissa.to_string()
+    } else {
+        format!("{mantissa}.0")
+    };
+    format!("{mantissa}E{exponent}")
 }
 
 /// Render one value the way Elasticsearch's ingest MUSTACHE does.
@@ -662,6 +721,36 @@ fn camel_to_snake(s: &str) -> String {
 mod tests {
     use super::*;
     use serde_json::json;
+
+    /// Verbatim from the bbot corpus, whose `timestamp` is converted to a
+    /// string: Elasticsearch stored the epoch `1709170907.779394` as
+    /// `1.709170907779394E9`, because Java leaves decimal notation at 10^7.
+    #[test]
+    fn a_double_renders_the_way_java_renders_it() {
+        assert_eq!(
+            painless_to_string(&json!(1_709_170_907.779_394)),
+            "1.709170907779394E9"
+        );
+        assert_eq!(
+            painless_to_string(&json!(1.703_170_919_403_808e9)),
+            "1.703170919403808E9"
+        );
+
+        // Inside [10^-3, 10^7) Java stays decimal, and always writes a digit
+        // either side of the point.
+        assert_eq!(painless_to_string(&json!(1234.5)), "1234.5");
+        assert_eq!(painless_to_string(&json!(0.001)), "0.001");
+        assert_eq!(painless_to_string(&json!(1.0)), "1.0");
+
+        // Below the lower bound it goes scientific again.
+        assert_eq!(painless_to_string(&json!(0.000_123)), "1.23E-4");
+
+        // An INTEGER is a Java Long and never takes the scientific form, which
+        // is what keeps every whole number in the tree rendering as itself.
+        assert_eq!(painless_to_string(&json!(1_709_170_907_i64)), "1709170907");
+        assert_eq!(painless_to_string(&json!(0)), "0");
+        assert_eq!(painless_to_string(&json!(-42)), "-42");
+    }
 
     /// Verbatim from the inspector corpus: mustache sees a list through a
     /// handler that keys it by index, so a template over one renders
