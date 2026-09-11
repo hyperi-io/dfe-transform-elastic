@@ -25,11 +25,12 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
 use dfe_runtime::event::Event;
-use dfe_runtime::testutil::diff::{DiffKind, JsonDiff, MatchMode};
+use dfe_runtime::testutil::diff::{DiffKind, FieldDiff, JsonDiff, MatchMode};
 use dfe_runtime::testutil::{flatten_value, policy};
 use dfe_runtime::transform::{Transform, TransformResult};
 use dfe_transforms::filebeat;
 use rayon::prelude::*;
+use regex::Regex;
 use serde_json::Value;
 
 /// Where `compat.py` writes by default. `DFE_COMPAT_CORPUS` overrides it, the
@@ -1392,6 +1393,14 @@ struct Captured {
     /// The pipeline `compat.py` installed. Anything not prefixed `compat-`
     /// was written by an earlier tool and the capture is stale.
     entry_pipeline: String,
+    /// Paths whose VALUE the capture declares nondeterministic, each with the
+    /// pattern the observed value has to match instead.
+    ///
+    /// Elastic's own harness writes these, and it declares exactly the fields
+    /// whose value cannot repeat: `sentinel_one_cloud_funnel.event.timestamp`
+    /// carries the ingesting node's year, so comparing it to a stored instant
+    /// would fail every source that reads it the moment the year turns.
+    dynamic_fields: BTreeMap<String, String>,
     input: Vec<Value>,
     expected: Vec<Value>,
 }
@@ -1471,6 +1480,18 @@ fn captured() -> Vec<Captured> {
                         .and_then(Value::as_str)
                         .unwrap_or_default()
                         .to_string(),
+                    dynamic_fields: meta
+                        .get("dynamic_fields")
+                        .and_then(Value::as_object)
+                        .map(|declared| {
+                            declared
+                                .iter()
+                                .filter_map(|(path, pattern)| {
+                                    Some((path.clone(), pattern.as_str()?.to_string()))
+                                })
+                                .collect()
+                        })
+                        .unwrap_or_default(),
                     input,
                     expected,
                 });
@@ -1870,12 +1891,16 @@ fn score_capture(
                 Ok(_) => {}
             }
 
-            let diff = JsonDiff::compare_for(
+            let mut diff = JsonDiff::compare_for(
                 Some(&capture.source),
                 expected,
                 event.as_value(),
                 MatchMode::Semantic,
             );
+            if !capture.dynamic_fields.is_empty() {
+                diff.diffs
+                    .retain(|field| !excused_as_dynamic(&capture.dynamic_fields, field));
+            }
             if diff.is_match() {
                 score.events_matched += 1;
                 continue;
@@ -1920,6 +1945,46 @@ fn score_capture(
     out
 }
 
+/// A declared pattern that matches any text at all, so excuses every value.
+///
+/// 671 of the corpus's 1,066 declarations are one of these, and honouring them
+/// would BLIND the field rather than absorb its nondeterminism:
+/// `network.community_id` carries `.*` on 18 sophos captures, and a computed
+/// hash being right is exactly what a parity corpus exists to catch.
+const MATCHES_ANYTHING: [&str; 4] = [".*", "^.*$", "^.*", ".*$"];
+
+/// Whether a capture's `dynamic_fields` excuses one difference.
+///
+/// Only a VALUE difference: a field we never wrote is a defect whatever the
+/// capture says about its value. `elastic-package` matches the pattern against
+/// the OBSERVED value alone and leaves it unanchored, which is Go's
+/// `regexp.MatchString` -- `scripts/compat.py` used `re.fullmatch` over both
+/// sides instead, so its three most-cited declarations never once fired.
+fn excused_as_dynamic(patterns: &BTreeMap<String, String>, field: &FieldDiff) -> bool {
+    let DiffKind::Mismatch { actual, .. } = &field.kind else {
+        return false;
+    };
+    let Some(pattern) = patterns.get(&field.path) else {
+        return false;
+    };
+    if MATCHES_ANYTHING.contains(&pattern.as_str()) {
+        return false;
+    }
+    let observed = actual
+        .as_str()
+        .map_or_else(|| actual.to_string(), ToString::to_string);
+    Regex::new(pattern).is_ok_and(|re| re.is_match(&observed))
+}
+
+/// How many blocking paths a source prints.
+///
+/// A source printing FEWER than this is showing its COMPLETE set of distinct
+/// wrong paths, because `events_unlocked` stops once every failing event is
+/// empty; one printing exactly this many is truncated and its list is a floor.
+/// At six, half the sources with debt were truncated and reading a capped list
+/// as complete wrote off three over-emitting sources that had more to say.
+const BLOCKERS: usize = 12;
+
 /// The ranking, the totals, the optional reach dump, and the ratchet.
 fn print_and_check(
     fixtures: &[Captured],
@@ -1933,7 +1998,7 @@ fn print_and_check(
     println!("\n=== per source ===");
     for (source, score) in by_source {
         println!("{source:<20} {}", score.line());
-        for blocker in events_unlocked(failures.get(source).map_or(&[], Vec::as_slice), 6) {
+        for blocker in events_unlocked(failures.get(source).map_or(&[], Vec::as_slice), BLOCKERS) {
             println!(
                 "      wrong in {:>5}, unlocks {:>5}   {}",
                 blocker.appears, blocker.unlocks, blocker.path
