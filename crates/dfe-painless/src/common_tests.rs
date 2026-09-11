@@ -9596,3 +9596,365 @@ fn a_classifying_script_with_a_rung_this_cannot_read_binds_nothing() {
         );
     }
 }
+
+/// mattermost writes the team it names into the subtree its ACTION names, and
+/// renames a user only where the name actually changed. Verbatim from
+/// `filebeat/mattermost_audit/default.rs`, escapes and all -- a stored script
+/// arrives on one line, so a test written with real newlines would pass while
+/// the call site still failed.
+const MATTERMOST_TARGETS: &str = r#"if (ctx.event.action == null) {\n    return;\n} if (ctx.group == null) {\n  Map map = new HashMap();\n  ctx.put(\"group\", map);\n} if (ctx.user == null) {\n  Map map = new HashMap();\n  ctx.put(\"user\", map);\n} if (ctx.user.target == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"target\", map);\n} if (ctx.user.changes == null) {\n  Map map = new HashMap();\n  ctx.user.put(\"changes\", map);\n} if (ctx.user.target.group == null) {\n  Map map = new HashMap();\n  ctx.user.target.put(\"group\", map);\n} if (['patchUser'].contains(ctx.event.action)) {\n  if(ctx.user.target.name != ctx.mattermost?.audit?.patch?.name) {\n    ctx.user.changes.put(\"name\", ctx.mattermost?.audit?.patch?.name);\n  }\n} else if (['createTeam','patchTeam','deleteTeam'].contains(ctx.event.action)) {\n  ctx.group.put(\"name\", ctx.mattermost?.audit?.team?.name);\n  ctx.group.put(\"id\", ctx.mattermost?.audit?.team?.id);\n} else if (['addTeamMembers','removeTeamMember'].contains(ctx.event.action)) {\n  ctx.user.target.group.put(\"name\", ctx.mattermost?.audit?.team?.name);\n  ctx.user.target.group.put(\"id\", ctx.mattermost?.audit?.team?.id);\n}"#;
+
+/// One audit event, with whatever the arm under test reads.
+fn mattermost_event(action: &str, audit: &Value, user: &Value) -> Value {
+    json!({
+        "event": { "action": action, "category": ["iam"] },
+        "mattermost": { "audit": audit },
+        "user": user,
+    })
+}
+
+/// A team as the vendor sends it: the `type` is along for the ride and nothing
+/// copies it.
+fn mattermost_team(id: &str, name: &str) -> Value {
+    json!({ "id": id, "name": name, "type": "O" })
+}
+
+/// The vocabularies, the destinations and the inequality are all read off the
+/// script, so the same form with other actions binds and this one cannot drift
+/// from its own text.
+#[test]
+fn a_vocabulary_chain_reads_its_destinations_off_its_own_literals() {
+    let pattern = parse_vocabulary_branch_copies(&normalise(MATTERMOST_TARGETS))
+        .expect("mattermost routes its team by action");
+
+    assert_eq!(pattern.require.as_deref(), Some("event.action"));
+    assert_eq!(pattern.branches.len(), 3);
+
+    let rename = &pattern.branches[0];
+    assert_eq!(rename.subject, "event.action");
+    assert_eq!(rename.literals, ["patchUser"]);
+    assert_eq!(
+        rename.unless_equal,
+        Some((
+            "user.target.name".to_string(),
+            "mattermost.audit.patch.name".to_string()
+        ))
+    );
+    assert_eq!(
+        rename.copies,
+        [(
+            "user.changes.name".to_string(),
+            "mattermost.audit.patch.name".to_string()
+        )]
+    );
+
+    assert_eq!(
+        pattern.branches[1].literals,
+        ["createTeam", "patchTeam", "deleteTeam"]
+    );
+    assert_eq!(pattern.branches[1].unless_equal, None);
+    assert_eq!(
+        pattern.branches[1].copies,
+        [
+            (
+                "group.name".to_string(),
+                "mattermost.audit.team.name".to_string()
+            ),
+            (
+                "group.id".to_string(),
+                "mattermost.audit.team.id".to_string()
+            ),
+        ]
+    );
+
+    assert_eq!(
+        pattern.branches[2].literals,
+        ["addTeamMembers", "removeTeamMember"]
+    );
+    assert_eq!(
+        pattern.branches[2].copies,
+        [
+            (
+                "user.target.group.name".to_string(),
+                "mattermost.audit.team.name".to_string()
+            ),
+            (
+                "user.target.group.id".to_string(),
+                "mattermost.audit.team.id".to_string()
+            ),
+        ]
+    );
+}
+
+/// Every event of `testdata/compat/mattermost/audit/test-audit` that
+/// Elasticsearch writes anything for, through the ladder the call site runs,
+/// asserted on the document that comes back.
+///
+/// Nine of the fixture's thirty-two. The row numbers are its own, so a
+/// disagreement can be read straight against the capture.
+#[test]
+fn an_action_picks_the_subtree_its_team_is_written_into() {
+    let test = || mattermost_team("knrndtys13rzzk48ugm7mssnke", "test");
+    let another = || mattermost_team("dqpybz1o3pbuzf7876u834nura", "another-team");
+
+    for (row, document, expected) in [
+        (
+            21,
+            mattermost_event("patchTeam", &json!({ "team": test() }), &Value::Null),
+            vec![
+                ("group.id", json!("knrndtys13rzzk48ugm7mssnke")),
+                ("group.name", json!("test")),
+            ],
+        ),
+        (
+            22,
+            mattermost_event("patchTeam", &json!({ "team": test() }), &Value::Null),
+            vec![
+                ("group.id", json!("knrndtys13rzzk48ugm7mssnke")),
+                ("group.name", json!("test")),
+            ],
+        ),
+        (
+            23,
+            mattermost_event("createTeam", &json!({ "team": another() }), &Value::Null),
+            vec![
+                ("group.id", json!("dqpybz1o3pbuzf7876u834nura")),
+                ("group.name", json!("another-team")),
+            ],
+        ),
+        (
+            30,
+            mattermost_event("deleteTeam", &json!({ "team": test() }), &Value::Null),
+            vec![
+                ("group.id", json!("knrndtys13rzzk48ugm7mssnke")),
+                ("group.name", json!("test")),
+            ],
+        ),
+        (
+            24,
+            mattermost_event(
+                "removeTeamMember",
+                &json!({ "team": another() }),
+                &json!({ "target": { "name": "admin" } }),
+            ),
+            vec![
+                ("user.target.group.id", json!("dqpybz1o3pbuzf7876u834nura")),
+                ("user.target.group.name", json!("another-team")),
+            ],
+        ),
+        (
+            27,
+            mattermost_event("addTeamMembers", &json!({ "team": test() }), &Value::Null),
+            vec![
+                ("user.target.group.id", json!("knrndtys13rzzk48ugm7mssnke")),
+                ("user.target.group.name", json!("test")),
+            ],
+        ),
+        (
+            28,
+            mattermost_event("addTeamMembers", &json!({ "team": test() }), &Value::Null),
+            vec![
+                ("user.target.group.id", json!("knrndtys13rzzk48ugm7mssnke")),
+                ("user.target.group.name", json!("test")),
+            ],
+        ),
+        (
+            29,
+            mattermost_event("addTeamMembers", &json!({ "team": test() }), &Value::Null),
+            vec![
+                ("user.target.group.id", json!("knrndtys13rzzk48ugm7mssnke")),
+                ("user.target.group.name", json!("test")),
+            ],
+        ),
+        (
+            26,
+            mattermost_event(
+                "patchUser",
+                &json!({ "patch": { "name": "other1" } }),
+                &json!({ "target": { "name": "other" } }),
+            ),
+            vec![("user.changes.name", json!("other1"))],
+        ),
+    ] {
+        let (claimed, event) = run_script(MATTERMOST_TARGETS, document);
+        assert!(claimed, "row {row}: declined");
+        for (path, value) in expected {
+            assert_eq!(event.get(path), Some(&value), "row {row}: {path}");
+        }
+    }
+}
+
+/// The containers the script creates for itself are NOT emitted, and the
+/// corpus is what says they must not be: `group` is an object on the four team
+/// events and null on the other twenty-eight, so an empty map written on every
+/// event is twenty-eight fields Elasticsearch does not carry.
+#[test]
+fn the_containers_the_script_declares_are_not_written() {
+    let (_, event) = run_script(
+        MATTERMOST_TARGETS,
+        mattermost_event(
+            "patchTeam",
+            &json!({ "team": mattermost_team("knrndtys13rzzk48ugm7mssnke", "test") }),
+            &Value::Null,
+        ),
+    );
+    assert!(event.has("group.id"), "the arm's own write is missing");
+    for absent in ["user.changes", "user.target", "user.target.group"] {
+        assert!(!event.has(absent), "an empty {absent} was emitted");
+    }
+}
+
+/// Nothing is written where the arm's own guard says nothing changed, where no
+/// vocabulary names the action, or where the script's `== null` guard returns.
+///
+/// Rows 4 and 5 of the fixture are the first of those: `patchUser` with the
+/// patch naming the name the target already has, and Elasticsearch emits no
+/// `user.changes` for either.
+#[test]
+fn an_action_no_vocabulary_names_writes_nothing() {
+    for (case, document) in [
+        (
+            "a patch that renames nothing",
+            mattermost_event(
+                "patchUser",
+                &json!({ "patch": { "name": "admin" } }),
+                &json!({ "target": { "name": "admin" } }),
+            ),
+        ),
+        (
+            "an action no arm lists",
+            mattermost_event(
+                "updateConfig",
+                &json!({ "team": mattermost_team("knrndtys13rzzk48ugm7mssnke", "test") }),
+                &Value::Null,
+            ),
+        ),
+        (
+            "no action at all",
+            json!({
+                "event": { "category": ["iam"] },
+                "mattermost": { "audit": { "team": mattermost_team("k", "test") } },
+            }),
+        ),
+    ] {
+        let (claimed, event) = run_script(MATTERMOST_TARGETS, document);
+        assert!(claimed, "{case}: declined");
+        for written in [
+            "group",
+            "user.changes",
+            "user.target.group",
+            "user.changes.name",
+        ] {
+            assert!(!event.has(written), "{case}: wrote {written}");
+        }
+    }
+}
+
+/// A patch naming a user with no target name at all IS a change, because
+/// Painless reads the absent field as null and `null != 'other1'` holds.
+#[test]
+fn a_rename_onto_an_absent_target_name_is_a_change() {
+    let (_, event) = run_script(
+        MATTERMOST_TARGETS,
+        mattermost_event(
+            "patchUser",
+            &json!({ "patch": { "name": "other1" } }),
+            &Value::Null,
+        ),
+    );
+    assert_eq!(event.get_str("user.changes.name"), Some("other1"));
+}
+
+/// A source the event does not carry writes nothing rather than a null: the
+/// module's own prune drops a null on the way out, so the two agree, and
+/// writing nothing cannot leave a key behind where a source has no prune.
+#[test]
+fn an_absent_source_writes_no_key() {
+    let (_, event) = run_script(
+        MATTERMOST_TARGETS,
+        mattermost_event(
+            "createTeam",
+            &json!({ "team": { "name": "another-team" } }),
+            &Value::Null,
+        ),
+    );
+    assert_eq!(event.get_str("group.name"), Some("another-team"));
+    assert!(!event.has("group.id"), "an absent id wrote a key");
+}
+
+/// The arms are chained with `else`, so an action two vocabularies name takes
+/// the EARLIER one -- reading them as independent tests would write both
+/// destinations.
+#[test]
+fn an_action_two_vocabularies_name_takes_the_first_arm() {
+    let overlapping = MATTERMOST_TARGETS.replace(
+        r"['createTeam','patchTeam','deleteTeam']",
+        r"['createTeam','patchUser','deleteTeam']",
+    );
+    let (claimed, event) = run_script(
+        &overlapping,
+        mattermost_event(
+            "patchUser",
+            &json!({ "patch": { "name": "other1" }, "team": mattermost_team("k", "test") }),
+            &json!({ "target": { "name": "other" } }),
+        ),
+    );
+    assert!(claimed);
+    assert_eq!(event.get_str("user.changes.name"), Some("other1"));
+    assert!(!event.has("group"), "the second arm ran as well");
+}
+
+/// A script this reader only half-understands binds NOTHING.
+///
+/// Every case below would otherwise land SOME of the writes, and a destination
+/// half filled in reads as a source needing polish rather than one the matcher
+/// declined. An `else if` makes that worse again: an arm dropped out of the
+/// chain leaves the arms below it answering for its actions, and writing their
+/// own destination's fields into them.
+#[test]
+fn a_vocabulary_chain_with_an_arm_this_cannot_read_binds_nothing() {
+    for (case, altered) in [
+        (
+            "a vocabulary member that is not a quoted literal",
+            MATTERMOST_TARGETS.replace(r"'deleteTeam'", r"removalAction"),
+        ),
+        (
+            "a copy of a literal rather than of a field",
+            MATTERMOST_TARGETS.replace(r"ctx.mattermost?.audit?.team?.id", r"'fixed'"),
+        ),
+        (
+            "a write this reader does not know, beside ones it does",
+            MATTERMOST_TARGETS.replace(
+                r#"ctx.group.put(\"id\", ctx.mattermost?.audit?.team?.id);"#,
+                r"ctx.group.id = ctx.mattermost?.audit?.team?.id;",
+            ),
+        ),
+        (
+            "an initialiser creating a path other than the one it guards",
+            MATTERMOST_TARGETS.replace(
+                r#"ctx.user.target.put(\"group\", map);"#,
+                r#"ctx.user.put(\"group\", map);"#,
+            ),
+        ),
+        (
+            "a statement beside an arm's guarded block",
+            MATTERMOST_TARGETS.replace(
+                r"  }\n} else if (['createTeam'",
+                r#"  }\n  ctx.user.changes.put(\"id\", ctx.mattermost?.audit?.patch?.id);\n} else if (['createTeam'"#,
+            ),
+        ),
+        (
+            "a statement after the chain",
+            format!(r"{MATTERMOST_TARGETS}\nctx.event.kind = 'event';"),
+        ),
+    ] {
+        assert_ne!(altered, MATTERMOST_TARGETS, "{case}: the edit did not apply");
+        assert!(
+            !binds_variant(&altered, |pattern| matches!(
+                pattern,
+                KnownPattern::VocabularyBranchCopies(_)
+            )),
+            "{case}: claimed"
+        );
+    }
+}

@@ -15768,6 +15768,307 @@ fn run_branch_copies(event: &mut Event, branches: &[BranchCopy]) -> bool {
     true
 }
 
+/// One arm of a vocabulary chain: the literals that select it, the inequality
+/// that gates its body, and the copies it then makes.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct VocabularyBranch {
+    /// The field this arm tests. Held per arm rather than once for the chain,
+    /// because `else if` takes the first arm that holds and nothing in the
+    /// script says the arms have to read the same field.
+    subject: String,
+    /// The members of the `['a','b']` literal the arm tests against.
+    literals: Vec<String>,
+    /// `if (<left> != <right>)` wrapped around the arm's body, as the two
+    /// paths it compares.
+    unless_equal: Option<(String, String)>,
+    /// `(where the value lands, where it is read from)`, in script order.
+    copies: Vec<(String, String)>,
+}
+
+/// Fields copied into whichever destination an action names.
+///
+/// mattermost's audit stream writes the same team `name` and `id` into two
+/// different subtrees and picks between them on `event.action`, with a third
+/// arm for a user rename that only writes where the name actually changed:
+///
+/// ```painless
+/// if (ctx.event.action == null) { return; }
+/// if (ctx.group == null) { Map map = new HashMap(); ctx.put("group", map); }
+/// // ... four more of the same
+/// if (['patchUser'].contains(ctx.event.action)) {
+///   if (ctx.user.target.name != ctx.mattermost?.audit?.patch?.name) {
+///     ctx.user.changes.put("name", ctx.mattermost?.audit?.patch?.name);
+///   }
+/// } else if (['createTeam','patchTeam','deleteTeam'].contains(ctx.event.action)) {
+///   ctx.group.put("name", ctx.mattermost?.audit?.team?.name);
+///   ctx.group.put("id", ctx.mattermost?.audit?.team?.id);
+/// } else if (['addTeamMembers','removeTeamMember'].contains(ctx.event.action)) {
+///   ctx.user.target.group.put("name", ctx.mattermost?.audit?.team?.name);
+///   ctx.user.target.group.put("id", ctx.mattermost?.audit?.team?.id);
+/// }
+/// ```
+///
+/// [`BranchCopy`] is the nearest sibling and does not fit: it guards on ONE
+/// double-quoted literal rather than a vocabulary, reads assignments rather
+/// than `put` calls, and wants each copy to carry its own `!= null`. Writing
+/// through `put` is also why this read as a source with no writer at all -- a
+/// grep for `group.id` over the generated module finds nothing, because the
+/// key and the map it lands in are never spelled together.
+///
+/// The five `new HashMap()` initialisers are read and then DISCARDED. A
+/// container that receives a write is created by that write, and one that does
+/// not is absent from Elasticsearch's output too -- `group` is an object on the
+/// four team events of the corpus and null on the other 28 -- so emitting them
+/// would put an empty map on every event instead.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct VocabularyBranchCopies {
+    /// The field the script's own `== null` guard returns on.
+    require: Option<String>,
+    branches: Vec<VocabularyBranch>,
+}
+
+/// The `ctx.` path an `<expression> == null` condition tests.
+fn null_test_path(condition: &str) -> Option<String> {
+    crate::params::ctx_path_plain(
+        condition
+            .trim()
+            .strip_suffix("null")?
+            .trim_end()
+            .strip_suffix("==")?,
+    )
+}
+
+/// `<receiver>.put('<key>', <value>)` as its three parts, where the call is
+/// the WHOLE of the expression.
+fn put_call(expression: &str) -> Option<(&str, String, &str)> {
+    let (receiver, arguments) = expression.trim().strip_suffix(')')?.split_once(".put(")?;
+    let (key, value) = arguments.split_once(',')?;
+    Some((receiver.trim(), sole_literal(key.trim())?, value.trim()))
+}
+
+/// The dotted path a `put` call's receiver names, with `ctx` itself the EMPTY
+/// path -- mattermost creates its top-level maps with `ctx.put("group", map)`.
+fn put_receiver(expression: &str) -> Option<String> {
+    let expression = expression.trim();
+    if expression == "ctx" {
+        return Some(String::new());
+    }
+    crate::params::ctx_path_plain(expression)
+}
+
+/// A `put`'s receiver and key, as the one path the write lands on.
+fn put_target(receiver: &str, key: &str) -> Option<String> {
+    let prefix = put_receiver(receiver)?;
+    Some(if prefix.is_empty() {
+        key.to_string()
+    } else {
+        format!("{prefix}.{key}")
+    })
+}
+
+/// The path a `Map <local> = new HashMap(); <receiver>.put('<key>', <local>);`
+/// block creates, where that is the WHOLE of the block.
+fn map_initialiser(block: &str) -> Option<String> {
+    let (declaration, rest) = block.trim().split_once(';')?;
+    let (declared, built) = declaration.split_once(" = ")?;
+    if built.trim() != "new HashMap()" {
+        return None;
+    }
+    let local = local_declared(declared, "Map")?;
+    let (receiver, key, value) = put_call(rest.trim().strip_suffix(';')?)?;
+    if value != local {
+        return None;
+    }
+    put_target(receiver, &key)
+}
+
+/// One `if (ctx.<path> == null) { Map map = new HashMap(); ... }` statement,
+/// as the text after it.
+///
+/// The block has to create the very path the guard tested. Where the two
+/// disagree the statement is doing something else, and skipping it would drop
+/// that something silently.
+fn skip_map_initialiser(text: &str) -> Option<&str> {
+    let (condition, block, after) = split_if(crate::params::skip_trivia(text))?;
+    let guarded = null_test_path(condition)?;
+    (map_initialiser(block)? == guarded).then_some(after)
+}
+
+/// The field a `['<a>','<b>'].contains(ctx.<path>)` condition tests, and the
+/// literals it tests it against.
+///
+/// A member that is not a plain quoted literal voids the whole test: an arm
+/// built from the members that DID read would claim the actions the ones that
+/// did not are for, and write the wrong destination's fields into them.
+fn membership_test(condition: &str) -> Option<(String, Vec<String>)> {
+    let (list, subject) = condition
+        .trim()
+        .strip_suffix(')')?
+        .split_once("].contains(")?;
+    let subject = crate::params::ctx_path_plain(subject)?;
+    let literals: Vec<String> = list
+        .trim()
+        .strip_prefix('[')?
+        .split(',')
+        .map(|member| sole_literal(member.trim()))
+        .collect::<Option<_>>()?;
+    (!literals.is_empty()).then_some((subject, literals))
+}
+
+/// The two `ctx.` paths a `<left> != <right>` condition compares.
+fn inequality_paths(condition: &str) -> Option<(String, String)> {
+    let (left, right) = condition.split_once("!=")?;
+    Some((
+        crate::params::ctx_path_plain(left)?,
+        crate::params::ctx_path_plain(right)?,
+    ))
+}
+
+/// Every `<receiver>.put('<key>', ctx.<source>);` in a block, as
+/// `(target, source)` -- where those are ALL the block holds.
+///
+/// A `put` of a literal is a different write and is declined rather than
+/// guessed at: it lands whatever the source says, where a copy of an absent
+/// field lands nothing.
+fn put_copies(block: &str) -> Option<Vec<(String, String)>> {
+    let mut copies = Vec::new();
+    for statement in block.split(';') {
+        let statement = crate::params::skip_trivia(statement);
+        if statement.is_empty() {
+            continue;
+        }
+        let (receiver, key, value) = put_call(statement)?;
+        copies.push((
+            put_target(receiver, &key)?,
+            crate::params::ctx_path_plain(value)?,
+        ));
+    }
+    (!copies.is_empty()).then_some(copies)
+}
+
+/// One arm of the chain: the vocabulary that selects it, and the body it runs.
+///
+/// A body is either a run of `put` writes or exactly one `if (<a> != <b>)`
+/// around such a run.
+fn vocabulary_branch(condition: &str, block: &str) -> Option<VocabularyBranch> {
+    let (subject, literals) = membership_test(condition)?;
+    let block = crate::params::skip_trivia(block);
+
+    let Some((guard, inner, after)) = split_if(block) else {
+        return Some(VocabularyBranch {
+            subject,
+            literals,
+            unless_equal: None,
+            copies: put_copies(block)?,
+        });
+    };
+    // Read WHOLE: a statement beside the guarded block is one this reader does
+    // not know, and running the guarded half alone would drop it in silence.
+    if !crate::params::skip_trivia(after).is_empty() {
+        return None;
+    }
+    Some(VocabularyBranch {
+        subject,
+        literals,
+        unless_equal: Some(inequality_paths(guard)?),
+        copies: put_copies(inner)?,
+    })
+}
+
+/// The `if (...) { } else if (...) { }` chain, as its arms and the text left
+/// after it.
+///
+/// An arm this reader cannot read declines the CHAIN rather than dropping out
+/// of it: `else if` means the arms below one that went missing would answer for
+/// its actions, and write their own destination's fields into them.
+fn parse_vocabulary_branches(text: &str) -> Option<(Vec<VocabularyBranch>, &str)> {
+    let mut branches = Vec::new();
+    let mut rest = crate::params::skip_trivia(text);
+    loop {
+        let (condition, block, after) = split_if(rest)?;
+        branches.push(vocabulary_branch(condition, block)?);
+
+        let after = crate::params::skip_trivia(after);
+        let Some(chained) = after.strip_prefix("else") else {
+            rest = after;
+            break;
+        };
+        rest = crate::params::skip_trivia(chained);
+    }
+    (!branches.is_empty()).then_some((branches, rest))
+}
+
+/// Read a whole vocabulary chain, or none of it.
+///
+/// The text has to run out exactly at the end of the chain. A script carrying
+/// anything this reader has not accounted for is declined entire, because half
+/// the branches applied is a destination filled in from the wrong action.
+fn parse_vocabulary_branch_copies(script: &str) -> Option<VocabularyBranchCopies> {
+    let mut rest = crate::params::skip_trivia(script);
+
+    // `if (ctx.<path> == null) { return; }` -- the script's own early exit.
+    let mut require = None;
+    if let Some((condition, block, after)) = split_if(rest)
+        && let Some(path) = null_test_path(condition)
+        && crate::params::skip_trivia(block).trim_end() == "return;"
+    {
+        require = Some(path);
+        rest = crate::params::skip_trivia(after);
+    }
+
+    while let Some(after) = skip_map_initialiser(rest) {
+        rest = crate::params::skip_trivia(after);
+    }
+
+    let (branches, rest) = parse_vocabulary_branches(rest)?;
+    crate::params::skip_trivia(rest)
+        .is_empty()
+        .then_some(VocabularyBranchCopies { require, branches })
+}
+
+/// Whether two paths hold the same value, an absent field and an explicit null
+/// being one value -- which is what Painless's `==` answers on them.
+fn same_value(event: &Event, left: &str, right: &str) -> bool {
+    let read = |path: &str| event.get(path).filter(|value| !value.is_null());
+    read(left) == read(right)
+}
+
+/// Copy the fields the arm the subject selects names, into the destination that
+/// arm names.
+fn run_vocabulary_branch_copies(event: &mut Event, pattern: &VocabularyBranchCopies) -> bool {
+    if let Some(path) = &pattern.require
+        && !event.has_value(path)
+    {
+        return true;
+    }
+    // The FIRST arm that holds and no other: the script chains them with
+    // `else`, so an action two vocabularies name takes the earlier one.
+    let Some(branch) = pattern.branches.iter().find(|branch| {
+        event.get_str(&branch.subject).is_some_and(|value| {
+            branch
+                .literals
+                .iter()
+                .any(|literal| literal.as_str() == value)
+        })
+    }) else {
+        return true;
+    };
+    if let Some((left, right)) = &branch.unless_equal
+        && same_value(event, left, right)
+    {
+        return true;
+    }
+    // In script order, one at a time: Painless reads the document it has
+    // already written into, so a copy whose source sits under an earlier
+    // copy's target sees that earlier write.
+    for (target, source) in &branch.copies {
+        if let Some(value) = event.get(source).filter(|value| !value.is_null()).cloned() {
+            let _ = event.set(target, value);
+        }
+    }
+    true
+}
+
 fn try_guarded_copy(event: &mut Event, script: &str, literals: &Program) -> bool {
     // Every guarded copy in the script, not just the first. Windows'
     // `security_standard` is four hundred lines of them -- one per winlog
@@ -21118,6 +21419,8 @@ pub(crate) enum KnownPattern {
     EscapeDecode(Box<EscapeDecode>),
     /// Every entry of one map copied into an unrelated subtree.
     MapEntriesInto(Box<MapEntriesInto>),
+    /// Fields copied into whichever destination the subject's vocabulary names.
+    VocabularyBranchCopies(Box<VocabularyBranchCopies>),
 }
 
 /// Copies that apply only where `guard` holds `literal`.
@@ -23668,6 +23971,21 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: fields copied into whichever destination the action names, the
+    // arm picked by membership in a literal vocabulary. LAST in the ladder,
+    // which is where the script this was written for already ended up:
+    // instrumenting all 233 `return patterns;` sites showed none of them fires
+    // for it, so this arm claims only what nothing above it claimed. Both
+    // triggers are properties the parse requires anyway, so neither widens what
+    // it takes.
+    if normalised.contains("].contains(")
+        && normalised.contains(".put(")
+        && let Some(pattern) = parse_vocabulary_branch_copies(normalised)
+    {
+        patterns.push(KnownPattern::VocabularyBranchCopies(Box::new(pattern)));
+        return patterns;
+    }
+
     patterns
 }
 
@@ -24299,6 +24617,9 @@ pub(crate) fn run_known_pattern(
         KnownPattern::TrimListSuffix(pattern) => run_trim_list_suffix(event, pattern),
         KnownPattern::EscapeDecode(pattern) => run_escape_decode(event, pattern),
         KnownPattern::MapEntriesInto(pattern) => run_map_entries_into(event, pattern),
+        KnownPattern::VocabularyBranchCopies(pattern) => {
+            run_vocabulary_branch_copies(event, pattern)
+        }
         KnownPattern::CopyByLabel(pattern) => run_copy_by_label(event, pattern),
         KnownPattern::BandLadder(pattern) => run_band_ladder(event, pattern),
         KnownPattern::StripSurroundingPair(pattern) => run_strip_surrounding_pair(event, pattern),
