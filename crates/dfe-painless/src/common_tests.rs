@@ -6771,6 +6771,247 @@ fn a_removal_under_another_parent_leaves_the_source() {
     assert_eq!(event.get("ocsf.resource"), Some(&json!({ "type": "t" })));
 }
 
+/// Verbatim from `cloudflare_logpush/network_analytics`, tagged
+/// `script_raise_non_string_tcp_sack_blocks_to_array`.
+///
+/// The wrap is spelled ONCE PER CAPITALISATION the vendor sends, and each is
+/// guarded three ways. A split processor ahead of it has already turned a
+/// comma-separated string into a list, so the `instanceof` test is what stops
+/// the list being nested one deeper.
+const SACK_BLOCKS_TO_ARRAY: &str = r#"if (ctx.json?.TCPSACKBlocks != null && ctx.json.TCPSACKBlocks != '' && !(ctx.json.TCPSACKBlocks instanceof List)) {\n  ctx.json.TCPSACKBlocks = [ctx.json.TCPSACKBlocks];\n}\nif (ctx.json?.TCPSackBlocks != null && ctx.json.TCPSackBlocks != '' && !(ctx.json.TCPSackBlocks instanceof List)) {\n  ctx.json.TCPSackBlocks = [ctx.json.TCPSackBlocks];\n}"#;
+
+/// The corpus sends the blocks on the second spelling alone. Reading only the
+/// first statement left the value a bare number, the `foreach` behind it gates
+/// on an array, and the destination field was never written.
+#[test]
+fn the_second_spelling_of_the_wrap_is_applied_too() {
+    let mut event = Event::new(json!({ "json": { "TCPSackBlocks": 1 } }));
+
+    assert!(try_known_painless(&mut event, SACK_BLOCKS_TO_ARRAY));
+    assert_eq!(event.get("json.TCPSackBlocks"), Some(&json!([1])));
+    assert_eq!(event.get("json.TCPSACKBlocks"), None);
+}
+
+/// `!(... instanceof List)`: the split ahead of this script already built the
+/// list, and wrapping it again produced `[[1000, 2000]]`.
+#[test]
+fn a_value_already_a_list_is_not_wrapped_again() {
+    let mut event = Event::new(json!({ "json": { "TCPSACKBlocks": ["1000", "2000"] } }));
+
+    assert!(try_known_painless(&mut event, SACK_BLOCKS_TO_ARRAY));
+    assert_eq!(
+        event.get("json.TCPSACKBlocks"),
+        Some(&json!(["1000", "2000"]))
+    );
+}
+
+/// `!= ''`: the empty string stays a string, so the convert behind it is
+/// skipped and the prune at the end of the pipeline drops it. Wrapping it
+/// wrote `[""]`, which the convert then failed on and stamped the document
+/// `pipeline_error`.
+#[test]
+fn an_empty_string_is_left_alone() {
+    let mut event = Event::new(json!({ "json": { "TCPSACKBlocks": "" } }));
+
+    assert!(try_known_painless(&mut event, SACK_BLOCKS_TO_ARRAY));
+    assert_eq!(event.get("json.TCPSACKBlocks"), Some(&json!("")));
+}
+
+/// `!= null`: Painless reads a present-but-null field as null, so an explicit
+/// null fails the guard where wrapping it would write `[null]`.
+#[test]
+fn an_explicit_null_is_not_wrapped() {
+    let mut event = Event::new(json!({ "json": { "TCPSACKBlocks": null } }));
+
+    assert!(try_known_painless(&mut event, SACK_BLOCKS_TO_ARRAY));
+    assert_eq!(event.get("json.TCPSACKBlocks"), Some(&Value::Null));
+}
+
+/// Verbatim from `ti_ticura/indicator`, which spells the `instanceof` test and
+/// NOTHING else. So an empty string IS wrapped here -- the guards are the set
+/// the script writes, not one flag standing for all three.
+#[test]
+fn a_guard_the_script_does_not_spell_is_not_applied() {
+    let script = r#"if (!(ctx.threat.indicator.id instanceof List)) {\n  ctx.threat.indicator.id = [ctx.threat.indicator.id];\n}\n"#;
+    let mut event = Event::new(json!({ "threat": { "indicator": { "id": "" } } }));
+
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(event.get("threat.indicator.id"), Some(&json!([""])));
+}
+
+/// Verbatim from `ti_opencti/indicator`: five guarded wraps in one script, and
+/// every one of them applies.
+#[test]
+fn every_wrap_in_a_five_statement_script_applies() {
+    let script = r#"if (ctx.threat?.indicator?.file?.name != null && !(ctx.threat.indicator.file.name instanceof List)) {\n  ctx.threat.indicator.file.name = [ctx.threat.indicator.file.name];\n}\nif (ctx.threat?.indicator?.file?.extension != null && !(ctx.threat.indicator.file.extension instanceof List)) {\n  ctx.threat.indicator.file.extension = [ctx.threat.indicator.file.extension];\n}\nif (ctx.threat?.indicator?.email?.address != null && !(ctx.threat.indicator.email.address instanceof List)) {\n  ctx.threat.indicator.email.address = [ctx.threat.indicator.email.address];\n}\nif (ctx.threat?.indicator?.ip != null && !(ctx.threat.indicator.ip instanceof List)) {\n  ctx.threat.indicator.ip = [ctx.threat.indicator.ip];\n}\nif (ctx.threat?.indicator?.url != null && !(ctx.threat.indicator.url instanceof List)) {\n  ctx.threat.indicator.url = [ctx.threat.indicator.url];\n}\n"#;
+    let mut event = Event::new(json!({ "threat": { "indicator": {
+        "file": { "name": "a.exe", "extension": ["exe"] },
+        "email": { "address": "a@b.c" },
+        "ip": "10.0.0.1",
+        "url": null,
+    } } }));
+
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(
+        event.get("threat.indicator.file.name"),
+        Some(&json!(["a.exe"]))
+    );
+    assert_eq!(
+        event.get("threat.indicator.file.extension"),
+        Some(&json!(["exe"])),
+        "an extension already a list is left alone"
+    );
+    assert_eq!(
+        event.get("threat.indicator.email.address"),
+        Some(&json!(["a@b.c"]))
+    );
+    assert_eq!(event.get("threat.indicator.ip"), Some(&json!(["10.0.0.1"])));
+    assert_eq!(
+        event.get("threat.indicator.url"),
+        Some(&Value::Null),
+        "a null fails its own guard"
+    );
+}
+
+/// Verbatim from `cylance_protect`, the unguarded spelling. Nothing tests the
+/// value, so everything present is wrapped -- including a list, which is what
+/// Elasticsearch does here.
+#[test]
+fn an_unguarded_wrap_still_wraps_whatever_is_there() {
+    let script = r#"ctx.host.mac = [ctx.host.mac];\n"#;
+    let mut event = Event::new(json!({ "host": { "mac": ["AA-BB"] } }));
+
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(event.get("host.mac"), Some(&json!([["AA-BB"]])));
+}
+
+/// A condition carrying a test this cannot read declines the WHOLE script.
+/// Claiming it would run the wrap on every event, where the vendor runs it on
+/// the ones its own test admits.
+#[test]
+fn a_condition_that_cannot_be_read_declines_the_wrap() {
+    assert!(
+        parse_wrap_value_in_list(
+            "if (ctx.a.kind == 'mac' && !(ctx.a.list instanceof List)) {\n  \
+             ctx.a.list = [ctx.a.list];\n}"
+        )
+        .is_none()
+    );
+}
+
+/// One unreadable wrap declines every wrap in the script, because a script
+/// half-read claims the call site and then writes half the document.
+#[test]
+fn an_unreadable_second_wrap_declines_the_first_as_well() {
+    assert!(
+        parse_wrap_value_in_list("ctx.a.list = [ctx.a.one];\nctx.b.list = [ctx.b.one, ctx.b.two];")
+            .is_none()
+    );
+}
+
+/// Verbatim from `ti_opencti/indicator`, tagged `merge_maps`: the other half
+/// of the wrap. The vendor runs the pattern pipeline once per entry and lets
+/// the results accumulate into lists, then collapses each list back into ONE
+/// map -- which is why a wrapped `threat.indicator.url` comes out of
+/// Elasticsearch as an object rather than a list holding one.
+const MERGE_LISTS_OF_MAPS: &str = r#"def mergeMaps(Map map1, Map map2) {\n  for (def key : map2.keySet()) {\n    if (map1.containsKey(key) && map1[key] != map2[key]) {\n      if (map1[key] instanceof Map && map2[key] instanceof Map) {\n        map1[key] = mergeMaps(map1[key], map2[key]);\n      } else {\n        if (!(map1[key] instanceof List)) {\n          map1[key] = [map1[key]];\n        }\n        def combined = new HashSet(map1[key]);\n        if (map2[key] instanceof List) {\n          combined.addAll(map2[key]);\n        } else {\n          combined.add(map2[key]);\n        }\n        map1[key] = new ArrayList(combined);\n      }\n    } else {\n      map1[key] = map2[key];\n    }\n  }\n  return map1;\n}\ndef mergeListOfMaps(List list) {\n  def merged = new HashMap();\n  for (def map : list) {\n    merged = mergeMaps(merged, map);\n  }\n  return merged;\n}\nif (ctx.opencti?.containsKey('observable') == true) {\n  for (def key : ctx.opencti.observable.keySet()) {\n    if (ctx.opencti.observable[key] instanceof List) {\n      ctx.opencti.observable[key] = mergeListOfMaps(ctx.opencti.observable[key]);\n    }\n  }\n}\nif (ctx.opencti?.indicator?.containsKey('external_reference') == true && ctx.opencti.indicator.external_reference instanceof List) {\n  ctx.opencti.indicator.external_reference = mergeListOfMaps(ctx.opencti.indicator.external_reference);\n}\nif (ctx.threat.indicator.containsKey('file') && ctx.threat.indicator.file instanceof List) {\n  ctx.threat.indicator.file = mergeListOfMaps(ctx.threat.indicator.file);\n}\nif (ctx.threat.indicator.containsKey('as') && ctx.threat.indicator.as instanceof List) {\n  ctx.threat.indicator.as = mergeListOfMaps(ctx.threat.indicator.as);\n}\nif (ctx.threat.indicator.containsKey('url') && ctx.threat.indicator.url instanceof List) {\n  ctx.threat.indicator.url = mergeListOfMaps(ctx.threat.indicator.url);\n}\nif (ctx.threat.indicator.containsKey('registry') && ctx.threat.indicator.registry instanceof List) {\n  ctx.threat.indicator.registry = mergeListOfMaps(ctx.threat.indicator.registry);\n}\nif (ctx.threat.indicator.containsKey('x509') && ctx.threat.indicator.x509 instanceof List) {\n  ctx.threat.indicator.x509 = mergeListOfMaps(ctx.threat.indicator.x509);\n}\n"#;
+
+/// A list holding one map collapses to that map, which is the whole of what
+/// the corpus asks for.
+#[test]
+fn a_one_map_list_collapses_back_to_the_map() {
+    let mut event = Event::new(json!({
+        "opencti": { "indicator": {} },
+        "threat": { "indicator": { "url": [{
+            "domain": "news.googmail.org",
+            "registered_domain": "googmail.org",
+            "subdomain": "news",
+            "top_level_domain": "org",
+        }] } },
+    }));
+
+    assert!(try_known_painless(&mut event, MERGE_LISTS_OF_MAPS));
+    assert_eq!(
+        event.get("threat.indicator.url"),
+        Some(&json!({
+            "domain": "news.googmail.org",
+            "registered_domain": "googmail.org",
+            "subdomain": "news",
+            "top_level_domain": "org",
+        }))
+    );
+}
+
+/// Every VALUE of a named container collapses, key by key -- the vendor walks
+/// `ctx.opencti.observable.keySet()` rather than naming its entries.
+#[test]
+fn every_entry_of_a_named_container_collapses() {
+    let mut event = Event::new(json!({
+        "opencti": { "observable": {
+            "domain_name": [{ "value": "mydomain1607.com" }],
+            "entity_type": "Domain-Name",
+        } },
+        "threat": { "indicator": {} },
+    }));
+
+    assert!(try_known_painless(&mut event, MERGE_LISTS_OF_MAPS));
+    assert_eq!(
+        event.get("opencti.observable.domain_name"),
+        Some(&json!({ "value": "mydomain1607.com" }))
+    );
+    assert_eq!(
+        event.get("opencti.observable.entity_type"),
+        Some(&json!("Domain-Name")),
+        "an entry holding no list is left exactly as it was"
+    );
+}
+
+/// Two maps disagreeing on a key take the vendor's SET UNION, whose order is
+/// Java's hash iteration order rather than the insertion order an array keeps.
+/// The whole script declines rather than write an order that cannot be
+/// justified, and the document is left as the vendor found it.
+#[test]
+fn a_union_whose_order_cannot_be_reproduced_declines() {
+    let held = json!({
+        "opencti": { "indicator": {} },
+        "threat": { "indicator": { "url": [
+            { "domain": "a.example" },
+            { "domain": "b.example" },
+        ] } },
+    });
+    let mut event = Event::new(held.clone());
+
+    assert!(!try_known_painless(&mut event, MERGE_LISTS_OF_MAPS));
+    assert_eq!(event.as_value(), &held);
+}
+
+/// A `mergeMaps` spelling a DIFFERENT policy is declined: the tree holds more
+/// than one helper by that name, and running one under the other's rules is
+/// the difference between a union and an overwrite.
+#[test]
+fn another_merge_policy_under_the_same_helper_name_declines() {
+    let script = MERGE_LISTS_OF_MAPS.replace(
+        "def combined = new HashSet(map1[key]);",
+        "def combined = map1[key];",
+    );
+    assert!(parse_list_of_maps_merge(&normalise(&script)).is_none());
+}
+
+/// A block that closed before the wrap is not a guard on it. kolide allocates
+/// `ctx.host` in one and then wraps outside it, verbatim from
+/// `kolide/osquery_status`.
+#[test]
+fn a_closed_block_is_not_read_as_a_guard() {
+    let script = r#"if (ctx.host == null) { ctx.host = new HashMap(); }\nctx.host.ip = [ ctx.json.kolide_decorations.remote_ip ];"#;
+    let mut event = Event::new(json!({
+        "json": { "kolide_decorations": { "remote_ip": "10.1.1.1" } },
+        "host": {},
+    }));
+
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(event.get("host.ip"), Some(&json!(["10.1.1.1"])));
+}
+
 /// Verbatim from `pipelines/carbon_black_cloud/endpoint_event/default.yml`:
 /// allocate the containers, copy the local address, then pick source and
 /// destination by the inbound flag. Every statement is one the walk can

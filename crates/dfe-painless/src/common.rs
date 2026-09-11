@@ -4530,68 +4530,457 @@ fn run_suffixes_by_prefix(event: &mut Event, pattern: &SuffixesByPrefix) -> bool
     true
 }
 
-/// Read `def <l> = []; <l>.add(ctx.<s>); ctx.<t> = <l>;` or its one-line
-/// spelling `ctx.<t> = [ctx.<s>];` as a [`KnownPattern::WrapValueInList`].
+/// The tests an `if` puts in front of a wrap.
+///
+/// A SET rather than one `guarded` flag, because the vendor spells each test
+/// on its own and all eight combinations are legal: `cloudflare_logpush`'s
+/// network analytics writes all three, `ti_opencti` the first two,
+/// `ti_ticura` only the `instanceof`. Applying a test the script does not
+/// spell writes nothing where Elasticsearch writes a value, which is the same
+/// guessing-wide corruption as running a transform against a target that
+/// could not be determined.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub(crate) struct WrapGuards {
+    /// `!(ctx.<s> instanceof List)` -- a value already a list is left alone,
+    /// where wrapping it again nests it one deeper.
+    not_list: bool,
+    /// `ctx.<s> != null` -- an explicit null is left alone, where wrapping it
+    /// writes a one-element list holding null.
+    not_null: bool,
+    /// `ctx.<s> != ''` -- the empty string is left alone.
+    not_empty: bool,
+}
+
+impl WrapGuards {
+    /// Whether the guards let this value be wrapped.
+    fn admits(self, value: &Value) -> bool {
+        if self.not_list && value.is_array() {
+            return false;
+        }
+        if self.not_null && value.is_null() {
+            return false;
+        }
+        if self.not_empty && value.as_str() == Some("") {
+            return false;
+        }
+        true
+    }
+}
+
+/// One `ctx.<target> = [ctx.<source>];`, with the guard written around it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ValueWrap {
+    source: String,
+    target: String,
+    /// The script drops the source's own key once it is wrapped, which is
+    /// what MOVES a value into its plural sibling rather than copying it.
+    remove_source: bool,
+    guards: WrapGuards,
+}
+
+/// Where a statement sits relative to the blocks around it.
+enum Enclosing<'a> {
+    /// Not inside a block at all.
+    TopLevel,
+    /// Directly inside `if (<condition>) { ... }`.
+    Guard(&'a str),
+    /// Inside a block this reader cannot name an `if` condition for.
+    Unreadable,
+}
+
+/// The next `= [ctx.` or `= [ ctx.` at or after `from`.
 ///
 /// The literal is written with and without a space inside the bracket:
 /// `amazon_security_lake` closes it up and kolide's `osquery_status` does not.
-fn parse_wrap_value_in_list(script: &str) -> Option<KnownPattern> {
-    use crate::params::clean_path;
-
-    let literal = ["= [ctx.", "= [ ctx."]
+fn next_list_literal(script: &str, from: usize) -> Option<(usize, usize)> {
+    ["= [ctx.", "= [ ctx."]
         .iter()
-        .find_map(|open| script.find(open).map(|at| (at, open.len())));
+        .filter_map(|open| script[from..].find(open).map(|at| (from + at, open.len())))
+        .min_by_key(|(at, _)| *at)
+}
 
-    let (source, target) = if let Some((at, opened)) = literal {
-        // The list literal holds the source outright, so there is no local.
-        let source = script[at + opened..].split(']').next()?;
-        let head = &script[..at];
-        (
-            clean_path(source),
-            clean_path(&head[head.rfind("ctx.")? + 4..]),
-        )
-    } else {
-        let add_at = script.find(".add(ctx.")?;
-        let after = &script[add_at + ".add(ctx.".len()..];
-        let (source, _) = after.split_once(')')?;
-
-        let local = script[..add_at]
-            .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
-            .next()?;
-        let store = format!(" = {local};");
-        let store_at = script.rfind(&store)?;
-        let before = &script[..store_at];
-        (
-            clean_path(source),
-            clean_path(&before[before.rfind("ctx.")? + 4..]),
-        )
-    };
-
-    // A multi-element literal reads as one unusable path, and the runner would
-    // then claim the script and write nothing.
-    if !source
-        .chars()
-        .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_'))
-    {
+/// The condition of the `if (...)` that a `{` at the end of `head` closes over.
+fn condition_before(head: &str) -> Option<&str> {
+    let head = head.trim_end();
+    let bytes = head.as_bytes();
+    if bytes.last() != Some(&b')') {
         return None;
     }
 
-    // The removal has to name the source's OWN parent, or an unrelated field
-    // with the same leaf name would take the source's place.
-    let (parent, leaf) = source.rsplit_once('.').unwrap_or(("", source.as_str()));
+    let mut depth = 0_usize;
+    let mut open = None;
+    for (index, byte) in bytes.iter().enumerate().rev() {
+        match byte {
+            b')' => depth += 1,
+            b'(' => {
+                depth = depth.checked_sub(1)?;
+                if depth == 0 {
+                    open = Some(index);
+                    break;
+                }
+            }
+            _ => {}
+        }
+    }
+
+    let open = open?;
+    // `if` has to be the whole word, not the tail of an identifier.
+    let rest = head[..open].trim_end().strip_suffix("if")?;
+    if rest
+        .chars()
+        .next_back()
+        .is_some_and(|c| c.is_alphanumeric() || c == '_')
+    {
+        return None;
+    }
+    Some(&head[open + 1..head.len() - 1])
+}
+
+/// The block the byte at `at` sits directly inside.
+///
+/// Brace depth is counted from the start of the script, so a block that has
+/// already CLOSED is not read as a guard on what follows it -- kolide
+/// allocates `ctx.host` inside one and then wraps outside it.
+fn enclosing_block(script: &str, at: usize) -> Enclosing<'_> {
+    let mut open: Vec<Option<&str>> = Vec::new();
+    for (index, byte) in script.as_bytes()[..at].iter().enumerate() {
+        match byte {
+            b'{' => open.push(condition_before(&script[..index])),
+            b'}' => {
+                open.pop();
+            }
+            _ => {}
+        }
+    }
+    match open.last() {
+        None => Enclosing::TopLevel,
+        Some(Some(condition)) => Enclosing::Guard(condition),
+        Some(None) => Enclosing::Unreadable,
+    }
+}
+
+/// Read an `if` condition as the set of tests it puts on `source`.
+///
+/// Every conjunct has to be one of the three recognised tests ON THAT PATH, or
+/// the read declines: a condition half-understood would run a wrap the vendor
+/// gates on something else entirely.
+fn wrap_guards(condition: &str, source: &str) -> Option<WrapGuards> {
+    // A disjunction is a different question from a set of tests, and reading
+    // one as the other wraps values the vendor leaves alone.
+    if condition.contains("||") {
+        return None;
+    }
+
+    let path = format!("ctx.{source}");
+    let mut guards = WrapGuards::default();
+    for term in condition.split("&&") {
+        let resolved = term.replace("?.", ".");
+        let term = resolved.trim();
+        if let Some(inner) = term.strip_prefix("!(").and_then(|t| t.strip_suffix(')')) {
+            let (subject, kind) = inner.split_once(" instanceof ")?;
+            if subject.trim() != path || kind.trim() != "List" {
+                return None;
+            }
+            guards.not_list = true;
+        } else {
+            let (subject, literal) = term.split_once("!=")?;
+            if subject.trim() != path {
+                return None;
+            }
+            match literal.trim() {
+                "null" => guards.not_null = true,
+                "''" | "\"\"" => guards.not_empty = true,
+                _ => return None,
+            }
+        }
+    }
+    Some(guards)
+}
+
+/// The guards on a wrap whose statement starts at `at`.
+fn guards_at(script: &str, at: usize, source: &str) -> Option<WrapGuards> {
+    match enclosing_block(script, at) {
+        Enclosing::TopLevel => Some(WrapGuards::default()),
+        Enclosing::Guard(condition) => wrap_guards(condition, source),
+        Enclosing::Unreadable => None,
+    }
+}
+
+/// Whether the script drops the source's OWN key.
+///
+/// The removal has to name the source's own parent, or an unrelated field with
+/// the same leaf name would take the source's place.
+fn removes_source(script: &str, source: &str) -> bool {
+    let (parent, leaf) = source.rsplit_once('.').unwrap_or(("", source));
     let owner = if parent.is_empty() {
-        "ctx".to_string()
+        "ctx".to_owned()
     } else {
         format!("ctx.{parent}")
     };
-    let remove_source = script.contains(&format!("{owner}.remove('{leaf}')"))
-        || script.contains(&format!("{owner}.remove(\"{leaf}\")"));
+    script.contains(&format!("{owner}.remove('{leaf}')"))
+        || script.contains(&format!("{owner}.remove(\"{leaf}\")"))
+}
 
-    Some(KnownPattern::WrapValueInList {
+/// A path a wrap can resolve, rather than a multi-element literal read as one.
+fn is_wrappable_path(source: &str) -> bool {
+    !source.is_empty()
+        && source
+            .chars()
+            .all(|c| c.is_alphanumeric() || matches!(c, '.' | '_'))
+}
+
+/// One wrap at the `= [ctx.` literal starting at `at`.
+fn read_wrap(script: &str, at: usize, opened: usize) -> Option<ValueWrap> {
+    use crate::params::clean_path;
+
+    // The list literal holds the source outright, so there is no local.
+    let source = clean_path(script[at + opened..].split(']').next()?);
+    let head = &script[..at];
+    let target = clean_path(&head[head.rfind("ctx.")? + 4..]);
+
+    // A multi-element literal reads as one unusable path, and the runner would
+    // then claim the script and write nothing.
+    if !is_wrappable_path(&source) {
+        return None;
+    }
+
+    let guards = guards_at(script, at, &source)?;
+    let remove_source = removes_source(script, &source);
+    Some(ValueWrap {
         source,
         target,
         remove_source,
+        guards,
     })
+}
+
+/// The `def <l> = []; <l>.add(ctx.<s>); ctx.<t> = <l>;` spelling, which builds
+/// the list through a local and so carries no literal to find.
+fn read_local_list_wrap(script: &str) -> Option<ValueWrap> {
+    use crate::params::clean_path;
+
+    let add_at = script.find(".add(ctx.")?;
+    let after = &script[add_at + ".add(ctx.".len()..];
+    let source = clean_path(after.split_once(')')?.0);
+
+    let local = script[..add_at]
+        .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
+        .next()?;
+    let store = format!(" = {local};");
+    let store_at = script.rfind(&store)?;
+    let before = &script[..store_at];
+    let target = clean_path(&before[before.rfind("ctx.")? + 4..]);
+
+    if !is_wrappable_path(&source) {
+        return None;
+    }
+
+    let guards = guards_at(script, add_at, &source)?;
+    let remove_source = removes_source(script, &source);
+    Some(ValueWrap {
+        source,
+        target,
+        remove_source,
+        guards,
+    })
+}
+
+/// Read every `ctx.<t> = [ctx.<s>];` in a script, and the local-list spelling
+/// `def <l> = []; <l>.add(ctx.<s>); ctx.<t> = <l>;`, as a
+/// [`KnownPattern::WrapValueInList`].
+///
+/// A script spells the wrap MORE THAN ONCE: `cloudflare_logpush`'s network
+/// analytics wraps `TCPSACKBlocks` and `TCPSackBlocks`, `ti_opencti` five
+/// indicator fields. Reading only the first left the rest of the document as
+/// the vendor sent it, and one wrap per pattern could never have fixed that --
+/// dispatch runs a plan's patterns as ALTERNATIVES and stops at the first that
+/// claims, so the second wrap would have been shadowed by the first.
+///
+/// A wrap this cannot read declines the WHOLE script rather than the one
+/// statement, because a half-read script claims the call site and then writes
+/// part of what the vendor writes.
+fn parse_wrap_value_in_list(script: &str) -> Option<KnownPattern> {
+    let mut wraps = Vec::new();
+    let mut from = 0;
+    while let Some((at, opened)) = next_list_literal(script, from) {
+        wraps.push(read_wrap(script, at, opened)?);
+        from = at + opened;
+    }
+    if wraps.is_empty() {
+        wraps.push(read_local_list_wrap(script)?);
+    }
+    Some(KnownPattern::WrapValueInList(wraps))
+}
+
+/// `mergeListOfMaps` over the paths a script names -- the other half of
+/// [`KnownPattern::WrapValueInList`].
+///
+/// The vendor runs a nested pipeline once per entry and lets each entry's
+/// result accumulate into a list, wrapping even a lone value so the shapes
+/// agree. This collapses each of those lists back into ONE map, which is why
+/// `ti_opencti`'s `threat.indicator.url` comes out of Elasticsearch as an
+/// object despite the wrap two processors earlier putting it in a list.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ListOfMapsMerge {
+    /// Every VALUE of these containers, key by key.
+    containers: Vec<String>,
+    /// These paths directly.
+    fields: Vec<String>,
+}
+
+/// Read the merge, or decline it.
+///
+/// Both helpers have to be declared HERE, and `mergeMaps` has to spell the
+/// policy the runner implements: the tree holds another `mergeMaps` with a
+/// different body, and running one under the other's rules is the difference
+/// between a union and an overwrite.
+fn parse_list_of_maps_merge(script: &str) -> Option<ListOfMapsMerge> {
+    use crate::params::clean_path;
+
+    // The clauses of the vendor's `mergeMaps`, each in its own spelling. A body
+    // that spells a different policy declines rather than being run under this
+    // one.
+    for clause in [
+        "def mergeMaps(Map map1, Map map2)",
+        "if (map1.containsKey(key) && map1[key] != map2[key])",
+        "if (map1[key] instanceof Map && map2[key] instanceof Map)",
+        "map1[key] = mergeMaps(map1[key], map2[key]);",
+        "def combined = new HashSet(map1[key]);",
+        "map1[key] = new ArrayList(combined);",
+        "def merged = new HashMap();",
+    ] {
+        if !script.contains(clause) {
+            return None;
+        }
+    }
+
+    // The left-hand side of every `<lhs> = mergeListOfMaps(` assignment.
+    let mut containers = Vec::new();
+    let mut fields = Vec::new();
+    let mut rest = script;
+    while let Some(at) = rest.find(" = mergeListOfMaps(") {
+        let head = &rest[..at];
+        rest = &rest[at + " = mergeListOfMaps(".len()..];
+
+        let Some(ctx_at) = head.rfind("ctx.") else {
+            // The helper's own `merged = mergeMaps(...)` line, not an
+            // assignment into the document.
+            continue;
+        };
+        let target = head[ctx_at + 4..].trim();
+        if let Some(container) = target.strip_suffix("[key]") {
+            containers.push(clean_path(container));
+        } else {
+            fields.push(clean_path(target));
+        }
+    }
+
+    if containers.is_empty() && fields.is_empty() {
+        return None;
+    }
+    if containers
+        .iter()
+        .chain(fields.iter())
+        .any(|path| path.is_empty() || path.contains(char::is_whitespace))
+    {
+        return None;
+    }
+    Some(ListOfMapsMerge { containers, fields })
+}
+
+/// `mergeMaps(map1, map2)`, returning false where the vendor would take the
+/// branch this declines.
+///
+/// The declined branch is the SET UNION: `new HashSet` then `new ArrayList`
+/// gives Java's hash iteration order, which is not the insertion order a
+/// `serde_json` array would keep, so writing one would ship an order we cannot
+/// justify. No document in the corpus reaches it -- every list this merges
+/// holds a single map, where every key takes the plain assignment.
+fn merge_map_into(into: &mut Map<String, Value>, from: &Map<String, Value>) -> bool {
+    for (key, arriving) in from {
+        match into.get_mut(key) {
+            // `map1.containsKey(key) && map1[key] != map2[key]` is false, so
+            // the vendor's else branch assigns.
+            None => {
+                into.insert(key.clone(), arriving.clone());
+            }
+            Some(held) if held == arriving => {}
+            Some(Value::Object(held)) if arriving.is_object() => {
+                let Some(arriving) = arriving.as_object() else {
+                    return false;
+                };
+                if !merge_map_into(held, arriving) {
+                    return false;
+                }
+            }
+            Some(_) => return false,
+        }
+    }
+    true
+}
+
+/// What collapsing the list at one path comes to.
+enum Collapsed {
+    /// The path holds no list, so there is nothing to write.
+    NothingToDo,
+    /// The one map the list collapses to.
+    Map(Value),
+    /// A merge this cannot reproduce, which declines the whole script.
+    Declined,
+}
+
+/// Collapse the list at `path`, or say it cannot be done.
+fn merged_list_at(event: &Event, path: &str) -> Collapsed {
+    let Some(Value::Array(items)) = event.get(path) else {
+        return Collapsed::NothingToDo;
+    };
+    let mut merged = Map::new();
+    for item in items {
+        // A list of anything but maps is what Painless throws on, so the
+        // vendor never reaches this with one.
+        let Some(object) = item.as_object() else {
+            return Collapsed::Declined;
+        };
+        if !merge_map_into(&mut merged, object) {
+            return Collapsed::Declined;
+        }
+    }
+    Collapsed::Map(Value::Object(merged))
+}
+
+/// Collapse every list of maps the script names.
+///
+/// Every write is decided BEFORE any of them lands: a path this cannot merge
+/// declines the whole script, and a document half-collapsed would be neither
+/// what the vendor wrote nor what it started as.
+pub(crate) fn run_list_of_maps_merge(event: &mut Event, pattern: &ListOfMapsMerge) -> bool {
+    let mut paths: Vec<String> = pattern.fields.clone();
+    for container in &pattern.containers {
+        let Some(map) = event.get_object(container) else {
+            continue;
+        };
+        for key in map.keys() {
+            // `Event::get` resolves dots, so a key holding one names a path
+            // that is not this entry.
+            if key.contains('.') {
+                return false;
+            }
+            paths.push(format!("{container}.{key}"));
+        }
+    }
+
+    let mut writes = Vec::new();
+    for path in paths {
+        match merged_list_at(event, &path) {
+            Collapsed::NothingToDo => {}
+            Collapsed::Map(merged) => writes.push((path, merged)),
+            Collapsed::Declined => return false,
+        }
+    }
+    for (path, merged) in writes {
+        let _ = event.set(&path, merged);
+    }
+    true
 }
 
 /// Read `ctx.<t> = ctx.<a>[ctx.<a>.length-1];` as a
@@ -21308,13 +21697,11 @@ pub(crate) enum KnownPattern {
         separator: String,
         target: String,
     },
-    WrapValueInList {
-        source: String,
-        target: String,
-        /// The script drops the source's own key once it is wrapped, which is
-        /// what MOVES a value into its plural sibling rather than copying it.
-        remove_source: bool,
-    },
+    /// Every wrap the script spells, in the order it writes them. A script
+    /// carrying two is ordinary -- `cloudflare_logpush` spells the SACK blocks
+    /// twice, once per capitalisation the vendor sends.
+    WrapValueInList(Vec<ValueWrap>),
+    ListOfMapsMerge(Box<ListOfMapsMerge>),
     LastElement {
         array: String,
         target: String,
@@ -23299,6 +23686,22 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: each list of maps collapsed back into ONE map -- the other half
+    // of `WrapValueInList`, which is what put them in a list.
+    //
+    // ABOVE the append arm below, whose `return patterns;` is a hard stop: the
+    // merge spells `combined.add(` with an `instanceof Map` ahead of it, so
+    // that arm claims it, `parse_append_each` declines, and the script binds to
+    // NOTHING. That is what the one call site read in the static census before
+    // this arm existed. The helper's own declaration is the trigger, which no
+    // other script in the tree spells, and the parse of its body decides.
+    if normalised.contains("def mergeListOfMaps(")
+        && let Some(pattern) = parse_list_of_maps_merge(normalised)
+    {
+        patterns.push(KnownPattern::ListOfMapsMerge(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: flatten a field into an array, either by splitting a delimited
     // string or by joining each map's two keys. The source has to come BEFORE
     // the append -- you split, THEN add -- or the pair is two unrelated
@@ -24526,19 +24929,23 @@ pub(crate) fn run_known_pattern(
             separator,
             target,
         } => run_token_count(event, source, separator, target),
-        KnownPattern::WrapValueInList {
-            source,
-            target,
-            remove_source,
-        } => {
-            if let Some(value) = event.get(source).cloned() {
-                let _ = event.set(target, Value::Array(vec![value]));
-                if *remove_source {
-                    event.remove(source);
+        KnownPattern::WrapValueInList(wraps) => {
+            for wrap in wraps {
+                let Some(value) = event.get(&wrap.source) else {
+                    continue;
+                };
+                if !wrap.guards.admits(value) {
+                    continue;
+                }
+                let wrapped = Value::Array(vec![value.clone()]);
+                let _ = event.set(&wrap.target, wrapped);
+                if wrap.remove_source {
+                    event.remove(&wrap.source);
                 }
             }
             true
         }
+        KnownPattern::ListOfMapsMerge(pattern) => run_list_of_maps_merge(event, pattern),
         KnownPattern::LastElement { array, target } => {
             if let Some(Value::Array(items)) = event.get(array)
                 && let Some(last) = items.last().cloned()
