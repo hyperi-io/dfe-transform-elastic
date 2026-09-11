@@ -9399,3 +9399,200 @@ fn a_hash_reader_declines_a_script_that_writes_somewhere_else() {
         );
     }
 }
+
+/// doppler classifies every activity event from `event.action` alone, verbatim
+/// from `filebeat/doppler_activity/default.rs`.
+const DOPPLER_CATEGORISE: &str = r#"def t = ctx.event.action;\ndef parts = t.splitOnToken('.');\ndef last = parts[parts.length - 1];\nArrayList cat = new ArrayList();\nArrayList typ = new ArrayList();\nboolean iam = t == 'security.secret_read' ? false :\n  (t.contains('.access.') || t.startsWith('team.group') || t.startsWith('team.seat')\n    || t.startsWith('team.service_account') || t.startsWith('custom_roles')\n    || t.contains('.service_token'));\nif (iam) { cat.add('iam'); } else { cat.add('configuration'); }\nif (t == 'security.secret_read') {\n  typ.add('access');\n} else if (last == 'create') {\n  typ.add('creation');\n} else if (last == 'delete' || last == 'revoke' || last == 'remove') {\n  typ.add('deletion');\n} else if (last == 'join' || last == 'add') {\n  typ.add('creation');\n} else {\n  typ.add('change');\n}\nif (iam) {\n  if (t.contains('group')) {\n    typ.add('group');\n  } else if (t.contains('seat') || t.contains('.access.') || t.contains('service_account')) {\n    typ.add('user');\n  }\n}\nctx.event.category = cat;\nctx.event.type = typ;"#;
+
+/// The parts are read out of the script rather than built into the arm, so the
+/// same form with other literals binds and this one cannot drift from its text.
+#[test]
+fn a_classifying_script_reads_its_tests_off_its_own_literals() {
+    let pattern = parse_category_from_action(&normalise(DOPPLER_CATEGORISE))
+        .expect("doppler classifies its actions");
+
+    assert_eq!(pattern.source, "event.action");
+    assert_eq!(pattern.separator, ".");
+    assert_eq!(pattern.exempt.as_deref(), Some("security.secret_read"));
+    assert_eq!(pattern.predicate.len(), 6);
+    assert_eq!(pattern.category, "event.category");
+    assert_eq!(pattern.category_when, "iam");
+    assert_eq!(pattern.category_otherwise, "configuration");
+    assert_eq!(pattern.types, "event.type");
+    assert_eq!(pattern.arms.len(), 4);
+    assert_eq!(pattern.fallback.as_deref(), Some("change"));
+    assert_eq!(pattern.extra.len(), 2);
+    assert_eq!(pattern.extra_fallback, None);
+}
+
+/// Every action doppler's own corpus carries, through the ladder the call site
+/// runs, asserted on the document that comes back.
+///
+/// The two the table would otherwise make look alike: `custom_roles.create` and
+/// `...config.service_token.create` are both `iam` with NO second type --
+/// `service_token` is not `service_account`, and neither carries `group`,
+/// `seat` or `.access.`.
+#[test]
+fn a_dotted_action_classifies_its_category_and_types() {
+    for (action, category, types) in [
+        (
+            "enclave.project.config.secrets.update",
+            "configuration",
+            vec!["change"],
+        ),
+        (
+            "enclave.project.access.create",
+            "iam",
+            vec!["creation", "user"],
+        ),
+        (
+            "enclave.project.access.role.update",
+            "iam",
+            vec!["change", "user"],
+        ),
+        (
+            "enclave.project.access.group.create",
+            "iam",
+            vec!["creation", "group"],
+        ),
+        ("team.group.members.add", "iam", vec!["creation", "group"]),
+        (
+            "team.service_account.token.create",
+            "iam",
+            vec!["creation", "user"],
+        ),
+        ("custom_roles.create", "iam", vec!["creation"]),
+        (
+            "enclave.project.config.service_token.create",
+            "iam",
+            vec!["creation"],
+        ),
+        ("team.seat.update", "iam", vec!["change", "user"]),
+        ("billing.standing.update", "configuration", vec!["change"]),
+        (
+            "enclave.project.environment.rename",
+            "configuration",
+            vec!["change"],
+        ),
+        // The security stream, and `configuration` all the same: the ternary
+        // exempts it, and none of the six predicate tests answers to it either.
+        ("security.secret_read", "configuration", vec!["access"]),
+    ] {
+        let (claimed, event) =
+            run_script(DOPPLER_CATEGORISE, json!({ "event": { "action": action } }));
+        assert!(claimed, "declined: {action}");
+        assert_eq!(
+            event.get("event.category"),
+            Some(&json!([category])),
+            "category: {action}"
+        );
+        assert_eq!(
+            event.get("event.type"),
+            Some(&json!(types)),
+            "type: {action}"
+        );
+    }
+}
+
+/// An action matching none of the predicate's tests and no rung of the ladder
+/// falls to the two the script spells last.
+#[test]
+fn an_unclassified_action_takes_the_ladder_defaults() {
+    let (claimed, event) = run_script(
+        DOPPLER_CATEGORISE,
+        json!({ "event": { "action": "workplace.settings.modify" } }),
+    );
+    assert!(claimed);
+    assert_eq!(event.get("event.category"), Some(&json!(["configuration"])));
+    assert_eq!(event.get("event.type"), Some(&json!(["change"])));
+}
+
+/// The ternary changes nothing for the action it names, because none of the six
+/// predicate tests answers to `security.secret_read` either -- the exemption is
+/// defensive, not what makes that action `configuration`.
+///
+/// It drives the no-ternary form of the declaration at the same time, which the
+/// parse accepts and doppler does not spell.
+#[test]
+fn the_exemption_changes_nothing_for_the_action_it_names() {
+    let bare = DOPPLER_CATEGORISE.replace(
+        r"boolean iam = t == 'security.secret_read' ? false :\n  (",
+        r"boolean iam = (",
+    );
+    assert!(!bare.contains('?'), "the ternary is still there");
+
+    let (claimed, event) = run_script(
+        &bare,
+        json!({ "event": { "action": "security.secret_read" } }),
+    );
+    assert!(claimed);
+    assert_eq!(event.get("event.category"), Some(&json!(["configuration"])));
+    assert_eq!(event.get("event.type"), Some(&json!(["access"])));
+}
+
+/// The last token decides the deletion rungs, so a verb the ladder lists reads
+/// the same wherever the action puts it.
+#[test]
+fn a_deleting_action_reads_its_verb_off_the_last_token() {
+    for (action, category, types) in [
+        (
+            "enclave.project.config.secrets.delete",
+            "configuration",
+            vec!["deletion"],
+        ),
+        ("team.seat.revoke", "iam", vec!["deletion", "user"]),
+        (
+            "enclave.project.access.remove",
+            "iam",
+            vec!["deletion", "user"],
+        ),
+        ("team.group.members.join", "iam", vec!["creation", "group"]),
+    ] {
+        let (claimed, event) =
+            run_script(DOPPLER_CATEGORISE, json!({ "event": { "action": action } }));
+        assert!(claimed, "declined: {action}");
+        assert_eq!(
+            event.get("event.category"),
+            Some(&json!([category])),
+            "category: {action}"
+        );
+        assert_eq!(
+            event.get("event.type"),
+            Some(&json!(types)),
+            "type: {action}"
+        );
+    }
+}
+
+/// A script this reader only half-understands binds NOTHING.
+///
+/// A rung dropped out of the ladder writes the next rung's value for the
+/// actions that rung was for, and a category written without its type lands
+/// where no later processor reads it -- both read as a source needing polish
+/// rather than one the matcher declined.
+#[test]
+fn a_classifying_script_with_a_rung_this_cannot_read_binds_nothing() {
+    for altered in [
+        // An arm adding two members, where every other arm adds one.
+        DOPPLER_CATEGORISE.replace(
+            r"typ.add('deletion');",
+            r"typ.add('deletion'); typ.add('extra');",
+        ),
+        // An arm testing something other than the action or its last token.
+        DOPPLER_CATEGORISE.replace(r"last == 'create'", r"ctx.event.outcome == 'success'"),
+        // A term the reader does not know, inside a condition it otherwise does.
+        DOPPLER_CATEGORISE.replace(r"t.startsWith('custom_roles')", r"t.endsWith('_roles')"),
+        // The second write missing, so `event.type` would never be set.
+        DOPPLER_CATEGORISE.replace(r"\nctx.event.type = typ;", ""),
+        // A statement after the writes that this reader does not run.
+        format!(r"{DOPPLER_CATEGORISE}\nctx.event.kind = 'event';"),
+    ] {
+        assert!(
+            !binds_variant(&altered, |pattern| matches!(
+                pattern,
+                KnownPattern::CategoryFromAction(_)
+            )),
+            "claimed: {altered}"
+        );
+    }
+}

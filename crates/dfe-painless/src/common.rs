@@ -3428,6 +3428,460 @@ fn run_category_type_ladder(event: &mut Event, arms: &[CategoryArm]) -> bool {
     true
 }
 
+/// One test a classifying script makes about an action string.
+///
+/// The membership predicate, the type ladder and the ladder nested inside it
+/// all test the same two subjects -- the whole action, or its last dotted token
+/// -- so they share one vocabulary and one evaluator.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) enum ActionTest {
+    /// `<action>.contains('<needle>')`
+    Contains(String),
+    /// `<action>.startsWith('<prefix>')`
+    StartsWith(String),
+    /// `<action> == '<literal>'`
+    Whole(String),
+    /// `<last> == '<literal>'`
+    Last(String),
+}
+
+/// One arm of a type ladder: the tests that select it, and the member it adds.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct ActionTypeArm {
+    tests: Vec<ActionTest>,
+    value: String,
+}
+
+/// `event.category` and `event.type` derived from a dotted `event.action`.
+///
+/// doppler's activity stream classifies every action from the action string
+/// alone: a predicate over the whole string picks one of two categories, a
+/// ladder over the LAST dotted token picks the first type, and a second ladder
+/// adds a refinement only for the actions the predicate claimed.
+///
+/// ```painless
+/// def t = ctx.event.action;
+/// def parts = t.splitOnToken('.');
+/// def last = parts[parts.length - 1];
+/// ArrayList cat = new ArrayList();
+/// ArrayList typ = new ArrayList();
+/// boolean iam = t == 'security.secret_read' ? false :
+///   (t.contains('.access.') || t.startsWith('team.group'));
+/// if (iam) { cat.add('iam'); } else { cat.add('configuration'); }
+/// if (t == 'security.secret_read') { typ.add('access'); }
+/// else if (last == 'create') { typ.add('creation'); }
+/// else { typ.add('change'); }
+/// if (iam) { if (t.contains('group')) { typ.add('group'); } }
+/// ctx.event.category = cat;
+/// ctx.event.type = typ;
+/// ```
+///
+/// The action's domain is OPEN -- whatever string the vendor sends -- and the
+/// tests over it are prefix, substring and equality ones, so there is nothing to
+/// fold to ladder arms at parse time the way a closed vocabulary folds. What IS
+/// constant is the set of tests, and those are read once here; per event only
+/// the string comparisons run.
+///
+/// The ternary exempts ONE named action from the predicate. It changes nothing
+/// for the action doppler names there today -- none of its six tests answers to
+/// `security.secret_read` anyway -- but the script spells it, so the parse
+/// carries it: an action the vendor adds later that DOES answer to a test would
+/// otherwise change category.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct CategoryFromAction {
+    source: String,
+    separator: String,
+    /// The one action the ternary exempts from the predicate outright.
+    exempt: Option<String>,
+    predicate: Vec<ActionTest>,
+    category: String,
+    category_when: String,
+    category_otherwise: String,
+    types: String,
+    arms: Vec<ActionTypeArm>,
+    fallback: Option<String>,
+    /// A second type member, reached only where the predicate held.
+    extra: Vec<ActionTypeArm>,
+    extra_fallback: Option<String>,
+}
+
+/// The local a `<keyword> <name>` declaration binds, where that is the WHOLE of
+/// the declaration.
+///
+/// A read buried in a larger statement is a different script, and the word count
+/// is what says so.
+fn local_declared<'a>(declaration: &'a str, keyword: &str) -> Option<&'a str> {
+    let words: Vec<&'a str> = declaration.split_whitespace().collect();
+    let [declared, name] = words.as_slice() else {
+        return None;
+    };
+    (*declared == keyword
+        && !name.is_empty()
+        && name.chars().all(|c| c.is_alphanumeric() || c == '_'))
+    .then_some(*name)
+}
+
+/// The local an `ArrayList <name> = new ArrayList()` declaration binds.
+fn array_list_declared(statement: &str) -> Option<&str> {
+    let (declaration, built) = statement.split_once(" = ")?;
+    if built.trim() != "new ArrayList()" {
+        return None;
+    }
+    local_declared(declaration, "ArrayList")
+}
+
+/// `text` with any parentheses wrapping the WHOLE of it taken off.
+fn strip_outer_parens(text: &str) -> &str {
+    let mut text = text.trim();
+    while let Some(inner) = text.strip_prefix('(')
+        && let Some((inside, after)) = split_at_close_paren(inner)
+        && after.trim().is_empty()
+    {
+        text = inside.trim();
+    }
+    text
+}
+
+/// The one `<local>.add('<value>');` an arm's body must be, as the list it adds
+/// to and the literal it adds.
+fn sole_add(body: &str) -> Option<(&str, String)> {
+    let statement = body.trim().strip_suffix(';')?.trim_end();
+    let (local, argument) = statement.split_once(".add(")?;
+    let local = local.trim();
+    if local.is_empty() || !local.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+    Some((local, sole_literal(argument.strip_suffix(')')?.trim())?))
+}
+
+/// One term of a condition, as the test it makes.
+fn parse_action_test(term: &str, action: &str, last: &str) -> Option<ActionTest> {
+    let term = strip_outer_parens(term);
+    if let Some(call) = term.strip_prefix(action) {
+        let call = call.trim_start();
+        if let Some(argument) = call
+            .strip_prefix(".contains(")
+            .and_then(|argument| argument.strip_suffix(')'))
+        {
+            return Some(ActionTest::Contains(sole_literal(argument.trim())?));
+        }
+        if let Some(argument) = call
+            .strip_prefix(".startsWith(")
+            .and_then(|argument| argument.strip_suffix(')'))
+        {
+            return Some(ActionTest::StartsWith(sole_literal(argument.trim())?));
+        }
+    }
+    if let Some(literal) = equality_literal(term, action) {
+        return Some(ActionTest::Whole(literal));
+    }
+    equality_literal(term, last).map(ActionTest::Last)
+}
+
+/// The `||` chain a condition is, as the tests it makes.
+///
+/// One `&&` term, one call this reader does not know, one subject that is
+/// neither the action nor its last token, and the whole condition is declined:
+/// a condition built from the terms that DID parse claims actions the script
+/// does not.
+fn parse_action_tests(condition: &str, action: &str, last: &str) -> Option<Vec<ActionTest>> {
+    let condition = strip_outer_parens(condition);
+    if condition.is_empty() {
+        return None;
+    }
+    condition
+        .split("||")
+        .map(|term| parse_action_test(term, action, last))
+        .collect()
+}
+
+/// A chain of `if (...) { <list>.add('<value>'); } else if ... else { ... }`, as
+/// its arms, the value a final `else` adds, and the text left after it.
+///
+/// Every arm adds to the SAME list and adds exactly one literal. An arm this
+/// reader cannot read declines the ladder rather than being dropped from it: a
+/// ladder missing one rung writes the NEXT rung's value for the actions that
+/// rung was for.
+fn parse_add_ladder<'a>(
+    text: &'a str,
+    list_local: &str,
+    action: &str,
+    last: &str,
+) -> Option<(Vec<ActionTypeArm>, Option<String>, &'a str)> {
+    let mut arms = Vec::new();
+    let mut fallback = None;
+    let mut rest = text.trim_start();
+    loop {
+        let (condition, after) = split_at_close_paren(rest.strip_prefix("if (")?)?;
+        let tests = parse_action_tests(condition, action, last)?;
+        let body = after.trim_start();
+        let close = matching_brace(body)?;
+        let (local, value) = sole_add(&body[1..close])?;
+        if local != list_local {
+            return None;
+        }
+        arms.push(ActionTypeArm { tests, value });
+
+        let after = body[close + 1..].trim_start();
+        let Some(chained) = after.strip_prefix("else") else {
+            rest = after;
+            break;
+        };
+        let chained = chained.trim_start();
+        if chained.starts_with("if (") {
+            rest = chained;
+            continue;
+        }
+        let close = matching_brace(chained)?;
+        let (local, value) = sole_add(&chained[1..close])?;
+        if local != list_local {
+            return None;
+        }
+        fallback = Some(value);
+        rest = &chained[close + 1..];
+        break;
+    }
+    Some((arms, fallback, rest))
+}
+
+/// Read a whole classifying script, or none of it.
+///
+/// Every statement has to be one this reader knows, and the text has to run out
+/// exactly at the second assignment: a script carrying anything else is
+/// declined rather than claimed for the part of it this understands. Half a
+/// classification is worse than none, because `event.category` written without
+/// `event.type` reads as a source needing polish rather than one nothing ran on.
+fn parse_category_from_action(script: &str) -> Option<CategoryFromAction> {
+    use crate::params::ctx_path_plain;
+
+    // def <action> = ctx.<source>;
+    let (statement, mut rest) = script.trim().split_once(';')?;
+    let (declaration, read) = statement.split_once(" = ")?;
+    let action = local_declared(declaration, "def")?;
+    let source = ctx_path_plain(read)?;
+
+    // def <parts> = <action>.splitOnToken('<separator>');
+    let (statement, tail) = rest.split_once(';')?;
+    let (declaration, call) = statement.split_once(" = ")?;
+    let parts = local_declared(declaration, "def")?;
+    let separator = sole_literal(
+        call.trim()
+            .strip_prefix(&format!("{action}.splitOnToken("))?
+            .strip_suffix(')')?
+            .trim(),
+    )?;
+    if separator.is_empty() {
+        return None;
+    }
+    rest = tail;
+
+    // def <last> = <parts>[<parts>.length - 1];
+    let (statement, tail) = rest.split_once(';')?;
+    let (declaration, index) = statement.split_once(" = ")?;
+    let last = local_declared(declaration, "def")?;
+    let spelled: String = index.chars().filter(|c| !c.is_whitespace()).collect();
+    if spelled != format!("{parts}[{parts}.length-1]") {
+        return None;
+    }
+    rest = tail;
+
+    // Two empty lists. Which of them holds the category is settled by the block
+    // that adds to one of them, not by the order they are declared in.
+    let (statement, tail) = rest.split_once(';')?;
+    let first_list = array_list_declared(statement)?;
+    rest = tail;
+    let (statement, tail) = rest.split_once(';')?;
+    let second_list = array_list_declared(statement)?;
+    rest = tail;
+
+    // boolean <membership> = <action> == '<exempt>' ? false : (<predicate>);
+    let (statement, tail) = rest.split_once(';')?;
+    let (declaration, value) = statement.split_once(" = ")?;
+    let membership = local_declared(declaration, "boolean")?;
+    // Distinct names throughout, or a test written against one local reads the
+    // other: with `action` and `last` sharing a name, every last-token test
+    // would be answered by the whole string.
+    if [action, parts, last, first_list, second_list, membership]
+        .iter()
+        .collect::<std::collections::BTreeSet<_>>()
+        .len()
+        != 6
+    {
+        return None;
+    }
+    let (exempt, predicate) = match value.split_once('?') {
+        Some((guard, branches)) => {
+            let literal = equality_literal(guard, action)?;
+            let (short, long) = branches.split_once(':')?;
+            if short.trim() != "false" {
+                return None;
+            }
+            (Some(literal), long)
+        }
+        None => (None, value),
+    };
+    let predicate = parse_action_tests(predicate, action, last)?;
+    rest = tail;
+
+    // if (<membership>) { <cat>.add('<a>'); } else { <cat>.add('<b>'); }
+    let (condition, after) = split_at_close_paren(rest.trim_start().strip_prefix("if (")?)?;
+    if condition.trim() != membership {
+        return None;
+    }
+    let body = after.trim_start();
+    let close = matching_brace(body)?;
+    let (chosen, category_when) = sole_add(&body[1..close])?;
+    let after = body[close + 1..]
+        .trim_start()
+        .strip_prefix("else")?
+        .trim_start();
+    let close = matching_brace(after)?;
+    let (otherwise, category_otherwise) = sole_add(&after[1..close])?;
+    if chosen != otherwise || (chosen != first_list && chosen != second_list) {
+        return None;
+    }
+    let type_local = if chosen == first_list {
+        second_list
+    } else {
+        first_list
+    };
+    rest = &after[close + 1..];
+
+    let (arms, fallback, tail) = parse_add_ladder(rest, type_local, action, last)?;
+    rest = tail.trim_start();
+
+    // if (<membership>) { <the refining ladder> }
+    let mut extra = Vec::new();
+    let mut extra_fallback = None;
+    if let Some(opened) = rest.strip_prefix("if (") {
+        let (condition, after) = split_at_close_paren(opened)?;
+        if condition.trim() != membership {
+            return None;
+        }
+        let body = after.trim_start();
+        let close = matching_brace(body)?;
+        let (refining, refining_fallback, tail) =
+            parse_add_ladder(&body[1..close], type_local, action, last)?;
+        if !tail.trim().is_empty() {
+            return None;
+        }
+        extra = refining;
+        extra_fallback = refining_fallback;
+        rest = body[close + 1..].trim_start();
+    }
+
+    // ctx.<category> = <cat>; ctx.<types> = <typ>; -- keyed on the LOCAL each
+    // one writes rather than on the order, which the script is free to choose.
+    let mut writes: Vec<(String, &str)> = Vec::with_capacity(2);
+    for _ in 0..2 {
+        let (statement, tail) = rest.split_once(';')?;
+        let (target, written) = statement.split_once('=')?;
+        writes.push((ctx_path_plain(target)?, written.trim()));
+        rest = tail;
+    }
+    if !rest.trim().is_empty() {
+        return None;
+    }
+    let written_to = |local: &str| {
+        writes
+            .iter()
+            .find(|(_, written)| *written == local)
+            .map(|(target, _)| target.clone())
+    };
+    let category = written_to(chosen)?;
+    let types = written_to(type_local)?;
+
+    Some(CategoryFromAction {
+        source,
+        separator,
+        exempt,
+        predicate,
+        category,
+        category_when,
+        category_otherwise,
+        types,
+        arms,
+        fallback,
+        extra,
+        extra_fallback,
+    })
+}
+
+/// Whether one test holds of the action and of its last token.
+fn action_test_holds(test: &ActionTest, action: &str, last: &str) -> bool {
+    match test {
+        ActionTest::Contains(needle) => action.contains(needle.as_str()),
+        ActionTest::StartsWith(prefix) => action.starts_with(prefix.as_str()),
+        ActionTest::Whole(literal) => action == literal.as_str(),
+        ActionTest::Last(literal) => last == literal.as_str(),
+    }
+}
+
+/// The value the first matching arm adds, or the one a final `else` adds.
+fn first_action_arm<'a>(
+    arms: &'a [ActionTypeArm],
+    fallback: Option<&'a str>,
+    action: &str,
+    last: &str,
+) -> Option<&'a str> {
+    arms.iter()
+        .find(|arm| {
+            arm.tests
+                .iter()
+                .any(|test| action_test_holds(test, action, last))
+        })
+        .map_or(fallback, |arm| Some(arm.value.as_str()))
+}
+
+/// Classify one action: the category its predicate picks, the type its ladder
+/// picks, and the refinement reached only where the predicate held.
+fn run_category_from_action(event: &mut Event, pattern: &CategoryFromAction) -> bool {
+    // The script reads one field and writes what that field says. With the
+    // field absent there is nothing to classify, so nothing is written.
+    let Some(action) = event.get_string(&pattern.source) else {
+        return true;
+    };
+    let last = action
+        .rsplit(pattern.separator.as_str())
+        .next()
+        .unwrap_or(action.as_str());
+
+    let exempt = pattern
+        .exempt
+        .as_deref()
+        .is_some_and(|value| action == value);
+    let held = !exempt
+        && pattern
+            .predicate
+            .iter()
+            .any(|test| action_test_holds(test, &action, last));
+
+    let category = if held {
+        &pattern.category_when
+    } else {
+        &pattern.category_otherwise
+    };
+    let _ = event.set(&pattern.category, json!([category]));
+
+    let mut types = Vec::with_capacity(2);
+    if let Some(value) = first_action_arm(&pattern.arms, pattern.fallback.as_deref(), &action, last)
+    {
+        types.push(json!(value));
+    }
+    if held
+        && let Some(value) = first_action_arm(
+            &pattern.extra,
+            pattern.extra_fallback.as_deref(),
+            &action,
+            last,
+        )
+    {
+        types.push(json!(value));
+    }
+    let _ = event.set(&pattern.types, Value::Array(types));
+    true
+}
+
 /// Read the source and target of a snake-cased map copy.
 ///
 /// `for (def item : ctx.<source>.entrySet())` names the map being walked, and
@@ -20397,6 +20851,8 @@ pub(crate) enum KnownPattern {
         value: String,
     },
     CategoryTypeLadder(Vec<CategoryArm>),
+    /// `event.category` and `event.type` read off a dotted `event.action`.
+    CategoryFromAction(Box<CategoryFromAction>),
     KeysStripWhitespace(String),
     /// One map's keys rebuilt by the replacements the script spells out.
     RewriteKeys(Box<RewriteKeys>),
@@ -22445,6 +22901,21 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: `event.category` and `event.type` classified from a dotted
+    // `event.action` and nothing else. Ahead of `AppendEach`, whose arm is a
+    // HARD STOP: doppler's classifier splits the action and then appends to two
+    // lists, so it reaches that arm, `parse_append_each` declines it, and the
+    // `return` discards the whole script -- which is why it read `binding: []`
+    // rather than falling through to anything. Both triggers here are
+    // properties the parse requires anyway, so neither widens what it claims.
+    if normalised.contains(".splitOnToken(")
+        && normalised.contains("new ArrayList()")
+        && let Some(pattern) = parse_category_from_action(normalised)
+    {
+        patterns.push(KnownPattern::CategoryFromAction(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: flatten a field into an array, either by splitting a delimited
     // string or by joining each map's two keys. The source has to come BEFORE
     // the append -- you split, THEN add -- or the pair is two unrelated
@@ -23538,6 +24009,7 @@ pub(crate) fn run_known_pattern(
             }
         }
         KnownPattern::CategoryTypeLadder(arms) => run_category_type_ladder(event, arms),
+        KnownPattern::CategoryFromAction(pattern) => run_category_from_action(event, pattern),
         KnownPattern::KeysStripWhitespace(source) => {
             if let Some(Value::Object(entries)) = event.get(source).cloned() {
                 let mut rebuilt = Map::new();
