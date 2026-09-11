@@ -4376,6 +4376,116 @@ fn an_equality_ladder_writes_a_list_arm_as_a_list() {
     }
 }
 
+/// `ti_crowdstrike`'s confidence map, verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/ti_crowdstrike_intel/default.rs`.
+///
+/// Quoted in the ESCAPED one-line form the site holds, because that is what
+/// the ladder is handed: a copy written with real newlines passes tests the
+/// shipped literal would still fail.
+const CROWDSTRIKE_CONFIDENCE: &str = r#"String temp = ctx.ti_crowdstrike.intel.malicious_confidence;\nif (['high', 'low', 'medium'].contains(temp)) {\n    ctx.threat.indicator.confidence = temp.substring(0, 1).toUpperCase() + temp.substring(1);\n}\nif (temp == 'unverified') {\n    ctx.threat.indicator.confidence = 'Not Specified';\n}"#;
+
+/// The three words in the vocabulary come back capitalised, and the WHOLE
+/// document is asserted -- the fold is folded at parse time, so a wrong
+/// spelling or a stray extra write would both land here.
+///
+/// The spellings are the ones `testdata/compat/ti_crowdstrike/intel/
+/// test-intel/expected.ndjson` carries, not ones derived from the script a
+/// second time.
+#[test]
+fn a_confidence_vocabulary_writes_the_spelling_elasticsearch_emits() {
+    for (sent, published) in [("high", "High"), ("low", "Low"), ("medium", "Medium")] {
+        let (claimed, event) = run_script(
+            CROWDSTRIKE_CONFIDENCE,
+            json!({ "ti_crowdstrike": { "intel": { "malicious_confidence": sent } } }),
+        );
+        assert!(claimed, "the ladder must claim the script for {sent}");
+        assert_eq!(
+            event.as_value(),
+            &json!({
+                "ti_crowdstrike": { "intel": { "malicious_confidence": sent } },
+                "threat": { "indicator": { "confidence": published } },
+            }),
+        );
+    }
+}
+
+/// The fourth word has no ECS band of its own, so the vendor pipeline aliases
+/// it to a phrase rather than capitalising it.
+#[test]
+fn a_confidence_vocabulary_aliases_the_word_with_no_band() {
+    let (claimed, event) = run_script(
+        CROWDSTRIKE_CONFIDENCE,
+        json!({ "ti_crowdstrike": { "intel": { "malicious_confidence": "unverified" } } }),
+    );
+    assert!(claimed);
+    assert_eq!(
+        event.get_str("threat.indicator.confidence"),
+        Some("Not Specified")
+    );
+}
+
+/// A value outside the four writes NOTHING -- not a capitalised copy of
+/// whatever arrived, and not a placeholder. Painless reaches neither `if`, and
+/// a matcher that wrote something here would put a word ECS has no band for
+/// into a field with a closed vocabulary.
+#[test]
+fn a_confidence_vocabulary_writes_nothing_for_a_word_it_does_not_name() {
+    for sent in ["critical", "HIGH", ""] {
+        let (claimed, event) = run_script(
+            CROWDSTRIKE_CONFIDENCE,
+            json!({ "ti_crowdstrike": { "intel": { "malicious_confidence": sent } } }),
+        );
+        assert!(claimed, "the ladder still claims the script for {sent:?}");
+        assert!(
+            !event.has("threat.indicator.confidence"),
+            "{sent:?} is not one of the four and must write nothing"
+        );
+    }
+}
+
+/// An absent source is the vendor's own guard doing its job, not a failure.
+#[test]
+fn a_confidence_vocabulary_writes_nothing_when_the_source_is_absent() {
+    let (claimed, event) = run_script(CROWDSTRIKE_CONFIDENCE, json!({ "message": "x" }));
+    assert!(claimed);
+    assert!(!event.has("threat.indicator.confidence"));
+}
+
+/// `box_events` capitalises the SAME target field with the same Painless
+/// spelling, guarded on `!= null` instead of a vocabulary -- so its value
+/// domain is open and the fold cannot be settled at parse time. Verbatim from
+/// `crates/dfe-transforms/src/filebeat/box_events_events/default.rs`.
+const BOX_CONFIDENCE: &str = r#"if (ctx.box?.additional_details?.shield_alert?.priority != null) {\n  ctx.threat.indicator.confidence =\n    ctx.box.additional_details.shield_alert.priority.substring(0, 1).toUpperCase() +\n    ctx.box.additional_details.shield_alert.priority.substring(1);\n}\n"#;
+
+/// tychon's copy gated on ECS's closed vocabulary for `host.os.type`, which
+/// `AllowedValueCopy` owns. Verbatim from
+/// `crates/dfe-transforms/src/filebeat/tychon_host/common_host.rs`.
+const TYCHON_OS_TYPE: &str = r"def value = ctx.tychon.host?.os?.family?.toLowerCase();\nif (['linux', 'macos', 'unix', 'windows', 'ios', 'android'].contains(value)) {\n  if (ctx.host == null) {\n    ctx.host = [:];\n  }\n  if (ctx.host.os == null) {\n    ctx.host.os = [:];\n  }\n  ctx.host.os.type = value;\n}\n";
+
+/// The two neighbours the arm sits between are declined by the PARSE, not by
+/// the trigger it is cheap-checked with.
+///
+/// tychon reaches the same `].contains(` trigger and must still land on
+/// `AllowedValueCopy`; `box_events` carries the same fold and must stay unbound
+/// rather than be claimed by a reader that cannot settle its spelling.
+#[test]
+fn a_confidence_vocabulary_declines_both_of_its_neighbours() {
+    assert!(parse_capitalised_vocabulary(&normalise(TYCHON_OS_TYPE)).is_none());
+    assert!(parse_capitalised_vocabulary(&normalise(BOX_CONFIDENCE)).is_none());
+    assert!(binds_variant(TYCHON_OS_TYPE, |pattern| matches!(
+        pattern,
+        KnownPattern::AllowedValueCopy(_)
+    )));
+}
+
+/// A statement the reader has not read declines the WHOLE script, rather than
+/// claiming it for the arms it did understand and dropping that statement.
+#[test]
+fn a_confidence_vocabulary_declines_a_script_with_a_statement_it_cannot_read() {
+    let with_a_tail = format!("{CROWDSTRIKE_CONFIDENCE}\\nctx.event.kind = 'enrichment';");
+    assert!(parse_capitalised_vocabulary(&normalise(&with_a_tail)).is_none());
+}
+
 /// panw's own "crude `uri_parts`", as the generator emits it.
 const SCHEMELESS_URL: &str = r#"Map url = new HashMap();
 String url_original = ctx.url.original;

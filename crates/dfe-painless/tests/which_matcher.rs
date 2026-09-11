@@ -1747,3 +1747,51 @@ fn azures_target_resources_keeps_its_own_matcher_under_the_element_mapping() {
         binding(AZURE_TARGET_RESOURCES)
     );
 }
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/ti_crowdstrike_intel/default.rs`, which
+/// is `pipelines/ti_crowdstrike/intel/default.yml`.
+const TI_CROWDSTRIKE_CONFIDENCE: &str = r#"String temp = ctx.ti_crowdstrike.intel.malicious_confidence;\nif (['high', 'low', 'medium'].contains(temp)) {\n    ctx.threat.indicator.confidence = temp.substring(0, 1).toUpperCase() + temp.substring(1);\n}\nif (temp == 'unverified') {\n    ctx.threat.indicator.confidence = 'Not Specified';\n}"#;
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/box_events_events/default.rs`.
+const BOX_SHIELD_CONFIDENCE: &str = r#"if (ctx.box?.additional_details?.shield_alert?.priority != null) {\n  ctx.threat.indicator.confidence =\n    ctx.box.additional_details.shield_alert.priority.substring(0, 1).toUpperCase() +\n    ctx.box.additional_details.shield_alert.priority.substring(1);\n}\n"#;
+
+/// The two scripts that capitalise onto `threat.indicator.confidence` bind
+/// differently, and have to keep doing so.
+///
+/// `ti_crowdstrike` gates on a four-word vocabulary, which closes the value
+/// domain -- the spelling each word takes is settled by the literals, so the
+/// fold happens once at parse time and the script binds a ladder with one arm
+/// per word. `AllowedValueCopy` sits directly below that arm and reaches the
+/// same `].contains(` trigger; it would write the vendor's own lower-case
+/// spelling.
+///
+/// `box_events` gates on `!= null` alone, so its value domain is OPEN and no
+/// reader can settle the spelling without upper-casing per event. Nothing
+/// claims it, and that empty binding is recorded here as the debt it is.
+#[test]
+fn the_two_confidence_capitalisers_do_not_share_a_matcher() {
+    let held = binding(TI_CROWDSTRIKE_CONFIDENCE).join(" ");
+    assert_eq!(
+        heads(TI_CROWDSTRIKE_CONFIDENCE),
+        ["EqualityLadder"],
+        "{held}"
+    );
+    assert!(!held.contains("AllowedValueCopy"), "{held}");
+    for (word, published) in [
+        ("high", "High"),
+        ("low", "Low"),
+        ("medium", "Medium"),
+        ("unverified", "Not Specified"),
+    ] {
+        assert!(held.contains(&format!("{word:?}")), "{held}");
+        assert!(held.contains(&format!("{published:?}")), "{held}");
+    }
+
+    assert!(
+        binding(BOX_SHIELD_CONFIDENCE).is_empty(),
+        "{:?}",
+        binding(BOX_SHIELD_CONFIDENCE)
+    );
+}

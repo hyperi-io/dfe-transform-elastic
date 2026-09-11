@@ -7787,6 +7787,190 @@ pub fn allowed_value_copy(event: &mut Event, pattern: &AllowedValueCopy) -> bool
     true
 }
 
+/// A closed vocabulary written back in the spelling ECS publishes.
+///
+/// `ti_crowdstrike` grades an indicator's `malicious_confidence` into
+/// `threat.indicator.confidence`: three words come back with their first
+/// letter upper-cased, a fourth is aliased to a phrase, and any other value is
+/// written NOWHERE.
+///
+/// ```painless
+/// String temp = ctx.ti_crowdstrike.intel.malicious_confidence;
+/// if (['high', 'low', 'medium'].contains(temp)) {
+///     ctx.threat.indicator.confidence = temp.substring(0, 1).toUpperCase() + temp.substring(1);
+/// }
+/// if (temp == 'unverified') {
+///     ctx.threat.indicator.confidence = 'Not Specified';
+/// }
+/// ```
+///
+/// The membership test closes the value domain, so which spelling each word
+/// takes is settled by the literals rather than by the data. It is folded
+/// here, one arm per word, and what runs per event is the [`Ladder`] lookup
+/// the arms already are -- no upper-casing on the hot path, and nothing that
+/// could reach a value the script never allows.
+///
+/// [`parse_ladder`] cannot read this and must not be widened to try: the first
+/// arm tests MEMBERSHIP, so that parser finds literals only in the second and
+/// would claim the script while writing three of its four values nowhere.
+fn parse_capitalised_vocabulary(script: &str) -> Option<Ladder> {
+    use crate::params::{clean_path, is_ctx_path};
+
+    let (binding, mut rest) = script.split_once(';')?;
+    let (declaration, source) = binding.split_once(" = ctx.")?;
+    // `String temp` or a bare `temp`, and nothing before it: a read buried in a
+    // larger statement is a different script, and the words are what say so.
+    let words: Vec<&str> = declaration.split_whitespace().collect();
+    if !(1..=2).contains(&words.len())
+        || !words
+            .iter()
+            .all(|word| word.chars().all(|c| c.is_alphanumeric() || c == '_'))
+    {
+        return None;
+    }
+    let local = identifier_before(declaration)?;
+    let source = clean_path(source);
+    if !is_ctx_path(&source) {
+        return None;
+    }
+
+    // The fold, with layout removed so `(0,1)` and `(0, 1)` compare equal.
+    let fold = format!("{local}.substring(0,1).toUpperCase()+{local}.substring(1)");
+    let mut arms: Vec<LadderArm> = Vec::new();
+    let mut folded = false;
+    loop {
+        let statement = rest.trim_start();
+        if statement.is_empty() {
+            break;
+        }
+        // Every remaining statement has to be one of the two arm forms. A
+        // script carrying anything else is declined whole rather than claimed
+        // for the part of it this reader understands.
+        let (condition, after) = split_at_close_paren(statement.strip_prefix("if (")?)?;
+        let block = after.trim_start();
+        let close = matching_brace(block)?;
+        let (target, written) = sole_ctx_assignment(&block[1..close])?;
+        rest = &block[close + 1..];
+
+        if let Some(vocabulary) = vocabulary_tested(condition, local) {
+            let spelled: String = written.chars().filter(|c| !c.is_whitespace()).collect();
+            // One membership arm means one fold. A second would be a script
+            // with two vocabularies, which is not the pattern read here.
+            if folded || spelled != fold {
+                return None;
+            }
+            folded = true;
+            for word in vocabulary {
+                let spelling = capitalised(&word)?;
+                arms.push(LadderArm {
+                    literals: vec![word],
+                    writes: vec![(target.clone(), Value::String(spelling))],
+                    removes: Vec::new(),
+                });
+            }
+        } else {
+            arms.push(LadderArm {
+                literals: vec![equality_literal(condition, local)?],
+                writes: vec![(target, Value::String(sole_literal(written)?))],
+                removes: Vec::new(),
+            });
+        }
+    }
+
+    // A script of equality arms alone is the plain ladder, which its own arm
+    // reads; this one exists for the membership test and declines without it.
+    if !folded {
+        return None;
+    }
+    // Painless runs every `if` and the LAST write wins; the ladder takes the
+    // FIRST arm that matches. The two agree only while no word appears twice,
+    // so a script whose arms overlap is declined rather than reordered.
+    let mut seen = std::collections::BTreeSet::new();
+    if !arms
+        .iter()
+        .flat_map(|arm| &arm.literals)
+        .all(|word| seen.insert(word.as_str()))
+    {
+        return None;
+    }
+    Some(Ladder {
+        subject: source,
+        fold_case: false,
+        arms,
+    })
+}
+
+/// The literals a `['a', 'b'].contains(<local>)` condition tests, or `None`
+/// where the condition tests something else.
+///
+/// Every member must be a quoted literal. A bare identifier among them reads
+/// as absent, and an arm built from what was left would claim the script while
+/// silently dropping that member.
+fn vocabulary_tested(condition: &str, local: &str) -> Option<Vec<String>> {
+    let (list, subject) = condition.split_once("].contains(")?;
+    if subject.trim().strip_suffix(')')?.trim() != local {
+        return None;
+    }
+    let vocabulary: Option<Vec<String>> = list
+        .trim()
+        .strip_prefix('[')?
+        .split(',')
+        .map(|member| {
+            let quoted = member.trim().strip_prefix('\'')?.strip_suffix('\'')?;
+            (!quoted.contains('\'')).then(|| quoted.to_string())
+        })
+        .collect();
+    vocabulary.filter(|words| !words.is_empty())
+}
+
+/// The one `ctx.<path> = <expression>;` an arm's body must be, as the target
+/// and the expression written there.
+///
+/// A longer body is one this reader has not read, and running the assignment
+/// out of it would drop the rest.
+fn sole_ctx_assignment(body: &str) -> Option<(String, &str)> {
+    use crate::params::{clean_path, is_ctx_path};
+
+    let statement = body.trim().strip_suffix(';')?;
+    if statement.contains(';') {
+        return None;
+    }
+    let (target, written) = statement.split_once('=')?;
+    let target = clean_path(target.trim().strip_prefix("ctx.")?);
+    let written = written.trim();
+    // A `==` would make that split a comparison rather than a write.
+    if written.starts_with('=') || !is_ctx_path(&target) {
+        return None;
+    }
+    Some((target, written))
+}
+
+/// The quoted string an expression is, where that literal is the WHOLE of it.
+///
+/// A concatenation or a call is an expression this reader cannot fold, so it
+/// declines rather than take the first literal out of one.
+fn sole_literal(written: &str) -> Option<String> {
+    let quote = written.chars().next().filter(|c| *c == '\'' || *c == '"')?;
+    let inner = written[quote.len_utf8()..].strip_suffix(quote)?;
+    (!inner.contains(quote)).then(|| inner.to_string())
+}
+
+/// `word` with its first character upper-cased, the way Painless's
+/// `substring(0, 1).toUpperCase()` renders it.
+///
+/// ASCII only. Java upper-cases per the default locale over UTF-16 code units,
+/// so a non-ASCII first character can take a different spelling there than
+/// `char::to_ascii_uppercase` gives here -- and a surrogate pair is cut in half
+/// by `substring(0, 1)` before it is folded at all.
+fn capitalised(word: &str) -> Option<String> {
+    if !word.is_ascii() {
+        return None;
+    }
+    let mut characters = word.chars();
+    let first = characters.next()?;
+    Some(first.to_ascii_uppercase().to_string() + characters.as_str())
+}
+
 /// Prune the whole document, or one subtree where the script names a root.
 pub fn drop_empty(event: &mut Event, policy: &DropPolicy, root: Option<&str>) -> bool {
     match (root, policy.shallow) {
@@ -21065,6 +21249,20 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_permission_octal(normalised)
     {
         patterns.push(KnownPattern::PermissionOctal(pattern));
+        return patterns;
+    }
+
+    // Pattern: a closed vocabulary written back in the spelling ECS publishes,
+    // folded to one ladder arm per word. Ahead of `AllowedValueCopy`, which is
+    // the same membership test without the fold on the way out: that arm
+    // declines this script today, because its write has to be the local
+    // verbatim, and putting the narrower arm first keeps the two apart as a
+    // property of the ladder rather than of one parser's strictness.
+    if normalised.contains("].contains(")
+        && normalised.contains(".toUpperCase()")
+        && let Some(ladder) = parse_capitalised_vocabulary(normalised)
+    {
+        patterns.push(KnownPattern::EqualityLadder(ladder));
         return patterns;
     }
 
