@@ -11,7 +11,8 @@
 use std::borrow::Cow;
 
 use chrono::{
-    DateTime, Datelike, FixedOffset, NaiveDate, NaiveDateTime, Offset, TimeDelta, TimeZone, Utc,
+    DateTime, Datelike, FixedOffset, NaiveDate, NaiveDateTime, NaiveTime, Offset, TimeDelta,
+    TimeZone, Utc,
 };
 use chrono_tz::Tz;
 
@@ -289,8 +290,26 @@ fn parse_java_exact(
     java: &str,
     timezone: Option<&str>,
 ) -> Option<DateTime<FixedOffset>> {
-    let mut chrono = java_to_chrono(java);
+    // `h` with no `a` names no half of the day, so Java resolves no hour and
+    // drops the whole time group, keeping the date and the offset. The hour is
+    // read as 24-hour so the text is still consumed, and the time discarded.
+    let chrono = java_to_chrono(java);
+    if chrono.contains("%I") && !chrono.contains("%p") {
+        let readable = Cow::Owned(chrono.replace("%I", "%H"));
+        return parse_java_exact_chrono(input, readable, timezone)?
+            .with_time(NaiveTime::MIN)
+            .single();
+    }
+    parse_java_exact_chrono(input, chrono, timezone)
+}
 
+/// [`parse_java_exact`] once its pattern is settled, so the clock-hour case can
+/// rewrite the pattern and still reach the whole parse ladder.
+fn parse_java_exact_chrono(
+    input: &str,
+    mut chrono: Cow<'_, str>,
+    timezone: Option<&str>,
+) -> Option<DateTime<FixedOffset>> {
     // The date processor resolves the date from its numeric fields and
     // IGNORES a day name that disagrees -- zscaler's fixtures carry a "Tue"
     // on a Wednesday and Elasticsearch parses them. chrono cross-checks and
@@ -841,6 +860,37 @@ mod tests {
     #[test]
     fn a_java_formatter_constant_is_not_an_elasticsearch_format() {
         assert!(parse_date_out("2024-04-03T21:02:19.168Z", &["ISO_INSTANT"], None, None).is_none());
+    }
+
+    /// Verbatim from `box_events`, whose three file dates all spell `hh` with
+    /// no `a`. Java resolves no hour-of-day from a clock-hour that names no half
+    /// of the day, so it keeps the date and the offset and drops the time:
+    /// Elasticsearch stored `2022-05-30T04:12:12-07:00` as
+    /// `2022-05-30T07:00:00.000Z`, which is midnight at -07:00.
+    #[test]
+    fn a_clock_hour_with_no_meridiem_loses_its_time() {
+        const FORMAT: [&str; 1] = ["yyyy-MM-dd'T'hh:mm:ssXXX"];
+
+        assert_eq!(
+            parse_date_out("2022-05-30T04:12:12-07:00", &FORMAT, None, None).as_deref(),
+            Some("2022-05-30T07:00:00.000Z")
+        );
+        assert_eq!(
+            parse_date_out("2022-07-19T07:18:04-07:00", &FORMAT, None, None).as_deref(),
+            Some("2022-07-19T07:00:00.000Z")
+        );
+
+        // An `a` in the pattern resolves the half of the day, so the time stays.
+        assert_eq!(
+            parse_date_out(
+                "2022-05-30T04:12:12 PM-07:00",
+                &["yyyy-MM-dd'T'hh:mm:ss aXXX"],
+                None,
+                None
+            )
+            .as_deref(),
+            Some("2022-05-30T23:12:12.000Z")
+        );
     }
 
     /// A BSD syslog date carries a month and day but no year, which is filled
