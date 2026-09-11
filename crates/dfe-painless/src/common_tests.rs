@@ -10334,3 +10334,146 @@ fn a_vocabulary_chain_with_an_arm_this_cannot_read_binds_nothing() {
         );
     }
 }
+
+/// The `ti_opencti` script, verbatim from `ti_opencti/indicator/default.yml`
+/// with its newlines ESCAPED -- which is how a stored script reaches a call
+/// site, and what a matcher scanning it has to cope with.
+const OPENCTI_INVALID_FROM: &str = r#"if (ctx.opencti.indicator.revoked == true &&\n    ctx.threat.indicator.modified_at.compareTo(ctx.opencti.indicator.valid_until) < 0) {\n    ctx.opencti.indicator.invalid_or_revoked_from = ctx.threat.indicator.modified_at;\n} else {\n    // valid_until always has a value, will be epoch + 10^14 ms if no other value\n    ctx.opencti.indicator.invalid_or_revoked_from = ctx.opencti.indicator.valid_until;\n}\n"#;
+
+/// An indicator as the pipeline's earlier renames leave it.
+fn opencti_indicator(revoked: bool, modified: &str, valid_until: &str) -> Value {
+    json!({
+        "opencti": { "indicator": { "revoked": revoked, "valid_until": valid_until } },
+        "threat": { "indicator": { "modified_at": modified } }
+    })
+}
+
+/// The arm sits last in the ladder, so the claim is also the proof that the end
+/// is reachable for this script -- nothing above it hard-stops on the way.
+#[test]
+fn a_compare_to_choice_claims_the_opencti_script() {
+    let found = known_patterns(&normalise(OPENCTI_INVALID_FROM));
+    assert!(
+        matches!(found.as_slice(), [KnownPattern::CompareToChoice(_)]),
+        "the compare arm has to claim the script: {found:?}"
+    );
+
+    let pattern =
+        parse_compare_to_choice(&normalise(OPENCTI_INVALID_FROM)).expect("opencti dates a decay");
+    assert_eq!(pattern.flag, "opencti.indicator.revoked");
+    assert_eq!(pattern.lesser, "threat.indicator.modified_at");
+    assert_eq!(pattern.fallback, "opencti.indicator.valid_until");
+    assert_eq!(pattern.target, "opencti.indicator.invalid_or_revoked_from");
+}
+
+/// Every capture in the corpus takes this branch: the indicator is revoked, but
+/// it was modified AFTER it expired, so the expiry is when it stopped counting.
+#[test]
+fn a_revoked_indicator_modified_after_expiry_takes_its_expiry() {
+    let (claimed, event) = run_script(
+        OPENCTI_INVALID_FROM,
+        opencti_indicator(true, "2023-01-17T07:07:01.972Z", "2018-03-31T10:42:38.000Z"),
+    );
+    assert!(claimed);
+    assert_eq!(
+        event.get_str("opencti.indicator.invalid_or_revoked_from"),
+        Some("2018-03-31T10:42:38.000Z")
+    );
+}
+
+/// The other branch, which no capture reaches: a revoked indicator modified
+/// BEFORE it expired stopped counting when it was modified.
+#[test]
+fn a_revoked_indicator_modified_before_expiry_takes_its_modification() {
+    let (claimed, event) = run_script(
+        OPENCTI_INVALID_FROM,
+        opencti_indicator(true, "2018-01-01T00:00:00.000Z", "2024-01-01T00:00:00.000Z"),
+    );
+    assert!(claimed);
+    assert_eq!(
+        event.get_str("opencti.indicator.invalid_or_revoked_from"),
+        Some("2018-01-01T00:00:00.000Z")
+    );
+}
+
+/// The flag gates the comparison: an indicator that is not revoked takes its
+/// expiry however the two instants sort.
+#[test]
+fn an_unrevoked_indicator_takes_its_expiry_whatever_the_order() {
+    for revoked in [json!(false), json!(null), json!("true")] {
+        let mut document =
+            opencti_indicator(true, "2018-01-01T00:00:00.000Z", "2024-01-01T00:00:00.000Z");
+        document["opencti"]["indicator"]["revoked"] = revoked.clone();
+        let (claimed, event) = run_script(OPENCTI_INVALID_FROM, document);
+        assert!(claimed);
+        assert_eq!(
+            event.get_str("opencti.indicator.invalid_or_revoked_from"),
+            Some("2024-01-01T00:00:00.000Z"),
+            "revoked = {revoked}"
+        );
+    }
+}
+
+/// `compareTo` on an absent receiver throws, and a throw writes nothing.
+#[test]
+fn a_revoked_indicator_with_no_modification_writes_nothing() {
+    let (claimed, event) = run_script(
+        OPENCTI_INVALID_FROM,
+        json!({
+            "opencti": {
+                "indicator": { "revoked": true, "valid_until": "2024-01-01T00:00:00.000Z" }
+            }
+        }),
+    );
+    assert!(claimed);
+    assert!(!event.has("opencti.indicator.invalid_or_revoked_from"));
+}
+
+/// A script that compares one pair and writes another is doing something this
+/// cannot reproduce, and the comparator spellings elsewhere in the tree are not
+/// this pattern at all.
+#[test]
+fn a_compare_to_choice_declines_what_it_cannot_reproduce() {
+    for (case, altered) in [
+        (
+            "an arm writing a field the guard never compared",
+            OPENCTI_INVALID_FROM.replace(
+                r"= ctx.threat.indicator.modified_at;",
+                r"= ctx.opencti.indicator.valid_from;",
+            ),
+        ),
+        (
+            "the two arms writing different targets",
+            OPENCTI_INVALID_FROM.replace(
+                r"    ctx.opencti.indicator.invalid_or_revoked_from = ctx.opencti.indicator.valid_until;",
+                r"    ctx.opencti.indicator.revoked_from = ctx.opencti.indicator.valid_until;",
+            ),
+        ),
+        (
+            "a second statement beside an arm's copy",
+            OPENCTI_INVALID_FROM.replace(
+                r"= ctx.threat.indicator.modified_at;\n}",
+                r"= ctx.threat.indicator.modified_at;\n    ctx.event.kind = 'enrichment';\n}",
+            ),
+        ),
+        (
+            "a flag tested against something other than true",
+            OPENCTI_INVALID_FROM.replace(r"revoked == true", r"revoked == false"),
+        ),
+        (
+            "the opposite order, which picks the other field",
+            OPENCTI_INVALID_FROM.replace(r") < 0)", r") > 0)"),
+        ),
+        (
+            "a sort comparator, which compares two locals and writes nothing",
+            r"def ports = []; ports.sort((a, b) -> a.compareTo(b)); ctx.stormshield.ports = ports;"
+                .to_string(),
+        ),
+    ] {
+        assert_ne!(altered, OPENCTI_INVALID_FROM, "{case}: the edit did not apply");
+        assert!(
+            parse_compare_to_choice(&normalise(&altered)).is_none(),
+            "{case}: claimed"
+        );
+    }
+}

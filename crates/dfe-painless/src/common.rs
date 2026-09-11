@@ -21430,6 +21430,134 @@ fn run_prepend_split(event: &mut Event, pattern: &PrependSplit) -> bool {
     true
 }
 
+/// One of two compared fields written to a third, a flag deciding which.
+///
+/// `ti_opencti` dates an indicator's revocation this way: a revoked indicator
+/// that was modified BEFORE it expired stopped being valid when it was
+/// modified, and anything else stopped being valid when it expired.
+///
+/// ```painless
+/// if (ctx.opencti.indicator.revoked == true &&
+///     ctx.threat.indicator.modified_at.compareTo(ctx.opencti.indicator.valid_until) < 0) {
+///     ctx.opencti.indicator.invalid_or_revoked_from = ctx.threat.indicator.modified_at;
+/// } else {
+///     ctx.opencti.indicator.invalid_or_revoked_from = ctx.opencti.indicator.valid_until;
+/// }
+/// ```
+///
+/// `compareTo` is Java's `String.compareTo`, so the order is LEXICOGRAPHIC and
+/// stays that way here -- reading it as a date instead would be a different
+/// script, and on the ISO-8601 UTC instants this vendor sends the two orders
+/// agree anyway. All 31 captures take the else branch.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct CompareToChoice {
+    /// The boolean field the guard requires to hold `true`.
+    flag: String,
+    /// `compareTo`'s receiver, written when it sorts first and the flag holds.
+    lesser: String,
+    /// `compareTo`'s argument, written in every other case.
+    fallback: String,
+    /// Where the chosen value lands.
+    target: String,
+}
+
+/// The one `ctx.<target> = ctx.<source>;` an arm holds.
+///
+/// `None` for an arm carrying anything else, a second statement included: what
+/// this pattern reproduces is a choice between two fields and nothing besides.
+/// A whole-line `//` comment is the vendor's own note and is dropped; one
+/// trailing a statement leaves that statement unreadable, which declines.
+fn sole_copy(arm: &str) -> Option<(String, String)> {
+    let code = arm
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty() && !line.starts_with("//"))
+        .collect::<Vec<_>>()
+        .join(" ");
+
+    let mut statements = code.split(';').map(str::trim).filter(|s| !s.is_empty());
+    let only = statements.next()?;
+    if statements.next().is_some() {
+        return None;
+    }
+
+    let (target, value) = only.split_once('=')?;
+    Some((ctx_field_path(target)?, ctx_field_path(value)?))
+}
+
+/// Read the flag, the two compared fields and the target, or decline.
+///
+/// The guard is checked AGAINST the arms: the receiver has to be what the `if`
+/// arm writes and the argument what the `else` arm writes, both to the same
+/// target. A script that compares one pair and writes another is doing
+/// something this cannot reproduce.
+fn parse_compare_to_choice(script: &str) -> Option<CompareToChoice> {
+    let (guard, arms) = script.trim().strip_prefix("if (")?.split_once(") {")?;
+
+    let (flag, comparison) = guard.split_once("&&")?;
+    let (flag, wanted) = flag.split_once("==")?;
+    if wanted.trim() != "true" {
+        return None;
+    }
+    let flag = ctx_field_path(flag)?;
+
+    let comparison = comparison.trim().strip_suffix("< 0")?;
+    let (lesser, fallback) = comparison.trim_end().split_once(".compareTo(")?;
+    let lesser = ctx_field_path(lesser)?;
+    let fallback = ctx_field_path(fallback.trim_end().strip_suffix(')')?)?;
+
+    let (taken, otherwise) = arms.split_once("} else {")?;
+    let (taken_target, taken_value) = sole_copy(taken)?;
+    let (else_target, else_value) = sole_copy(otherwise.trim_end().strip_suffix('}')?)?;
+
+    (taken_target == else_target && taken_value == lesser && else_value == fallback).then_some(
+        CompareToChoice {
+            flag,
+            lesser,
+            fallback,
+            target: taken_target,
+        },
+    )
+}
+
+/// Write whichever of the two compared fields the flag and the order choose.
+fn run_compare_to_choice(event: &mut Event, pattern: &CompareToChoice) -> bool {
+    // Painless throws writing through an absent parent, so a missing container
+    // means the script never got to write at all.
+    let parent = pattern.target.rsplit_once('.').map_or("", |(head, _)| head);
+    if !parent.is_empty() && !event.has(parent) {
+        return true;
+    }
+
+    // An absent flag reads as null, and `null == true` is false.
+    let chosen = if event.get_bool(&pattern.flag) == Some(true) {
+        // `compareTo` throws on an absent or non-string receiver, and a throw
+        // writes nothing at all.
+        let (Some(lesser), Some(fallback)) = (
+            event.get_str(&pattern.lesser),
+            event.get_str(&pattern.fallback),
+        ) else {
+            return true;
+        };
+        // Java orders by UTF-16 unit and Rust by code point; the two part
+        // company only above the BMP, which no timestamp reaches.
+        if lesser < fallback {
+            &pattern.lesser
+        } else {
+            &pattern.fallback
+        }
+    } else {
+        &pattern.fallback
+    };
+
+    // The vendor's own note says the argument always has a value; where it does
+    // not, writing nothing beats writing the null Painless would have assigned.
+    if let Some(value) = event.get(chosen).cloned() {
+        let _ = event.set(&pattern.target, value);
+    }
+    true
+}
+
 /// Check if a Painless script source matches a known pattern.
 ///
 /// Returns true if the script was handled, false if it should fall through
@@ -21886,6 +22014,8 @@ pub(crate) enum KnownPattern {
     MapEntriesInto(Box<MapEntriesInto>),
     /// Fields copied into whichever destination the subject's vocabulary names.
     VocabularyBranchCopies(Box<VocabularyBranchCopies>),
+    /// One of two compared fields written to a third, a flag deciding which.
+    CompareToChoice(Box<CompareToChoice>),
 }
 
 /// Copies that apply only where `guard` holds `literal`.
@@ -24469,6 +24599,19 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: the earlier of an indicator's modification and its expiry, when
+    // it is revoked. LAST, and that position is measured rather than assumed:
+    // the script reaches the end of the ladder today, because the only two arms
+    // that can return an EMPTY list once their trigger holds are gated on
+    // `.add(` and `.replace(`, and it spells neither. The trigger is the call
+    // that decides the branch, and the parse is what claims the script.
+    if normalised.contains(".compareTo(")
+        && let Some(pattern) = parse_compare_to_choice(normalised)
+    {
+        patterns.push(KnownPattern::CompareToChoice(Box::new(pattern)));
+        return patterns;
+    }
+
     patterns
 }
 
@@ -25107,6 +25250,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::VocabularyBranchCopies(pattern) => {
             run_vocabulary_branch_copies(event, pattern)
         }
+        KnownPattern::CompareToChoice(pattern) => run_compare_to_choice(event, pattern),
         KnownPattern::CopyByLabel(pattern) => run_copy_by_label(event, pattern),
         KnownPattern::BandLadder(pattern) => run_band_ladder(event, pattern),
         KnownPattern::StripSurroundingPair(pattern) => run_strip_surrounding_pair(event, pattern),

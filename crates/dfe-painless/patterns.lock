@@ -245,6 +245,7 @@
 244 TrimListSuffix
 245 EscapeDecode
 246 VocabularyBranchCopies
+247 CompareToChoice
 
 [params_pattern]
   1 RowMembers
