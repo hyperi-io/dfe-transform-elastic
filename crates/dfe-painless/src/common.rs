@@ -20408,6 +20408,9 @@ pub(crate) enum KnownPattern {
     /// A value that may arrive as text or as a number, written back as a
     /// number -- in place, per list item, or per list element.
     LongCoercion(Box<crate::coercion::LongCoercion>),
+    /// One value coerced to a long by an `instanceof` ladder, the text arm
+    /// falling back to a double parse.
+    LongLadder(Box<crate::coercion::LongLadder>),
     /// A payload cut into records and folded into the parallel columns the
     /// script declares.
     SplitIntoColumns(Box<SplitIntoColumns>),
@@ -22563,6 +22566,19 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: one value coerced to a long by an `instanceof` LADDER, its text
+    // arm falling back to `Double.parseDouble` in a `catch`. ABOVE the scalar
+    // coercion below, whose two-armed `if`/`else` grammar declines this and
+    // would go on declining it -- `"3.0"` is exactly the value the `catch`
+    // exists for, and the scalar reader has nowhere to put it.
+    if normalised.contains("Double.parseDouble(")
+        && normalised.contains(" instanceof String)")
+        && let Some(pattern) = crate::coercion::parse_long_ladder(normalised)
+    {
+        patterns.push(KnownPattern::LongLadder(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: a value that may arrive as text or as a number, coerced to a
     // number -- `instanceof String` picking `Long.parseLong`, everything else a
     // `(long)` cast. LATE, because far richer scripts spell the same two arms:
@@ -23550,6 +23566,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::FlattenMapInto(pattern) => run_flatten_map_into(event, pattern),
         KnownPattern::StringifyLongs(fields) => run_stringify_longs(event, fields),
         KnownPattern::LongCoercion(pattern) => crate::coercion::long_coercion(event, pattern),
+        KnownPattern::LongLadder(pattern) => crate::coercion::long_ladder(event, pattern),
         KnownPattern::SplitIntoColumns(pattern) => run_split_into_columns(event, pattern),
         KnownPattern::TrimListSuffix(pattern) => run_trim_list_suffix(event, pattern),
         KnownPattern::EscapeDecode(pattern) => run_escape_decode(event, pattern),

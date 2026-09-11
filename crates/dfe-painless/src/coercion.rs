@@ -501,6 +501,270 @@ fn clean(term: &str) -> String {
     term.trim().replace("?.", ".").trim().to_owned()
 }
 
+/// One value coerced to a long by an `instanceof` LADDER, the text arm falling
+/// back to a double parse.
+///
+/// `tenable_io` writes both of its asset scores this way, and the `catch` is
+/// what makes it a pattern of its own rather than [`LongCoercion::Scalar`]:
+///
+/// ```painless
+/// if (ctx.json.acr_score instanceof String) {
+///   try {
+///     long acr_score = Long.parseLong(ctx.json.acr_score);
+///     ctx.tenable_io.asset.acr_score = acr_score;
+///   } catch (NumberFormatException e) {
+///     double acr_score = Double.parseDouble(ctx.json.acr_score);
+///     ctx.tenable_io.asset.acr_score = (long) acr_score;
+///   }
+///   return;
+/// } if (ctx.json.acr_score instanceof int || ctx.json.acr_score instanceof long) {
+///   ctx.tenable_io.asset.acr_score = (long) ctx.json.acr_score;
+///   return;
+/// } if (ctx.json.acr_score instanceof double) {
+///   ctx.tenable_io.asset.acr_score = (long) ctx.json.acr_score;
+///   return;
+/// }
+/// ```
+///
+/// `"3.0"` is the value the scalar reader cannot serve: `Long.parseLong` throws
+/// on it and the `catch` is where the number comes from. The vendor sends each
+/// score as text or as a number indifferently, so its own capture carries all
+/// four spellings -- unclaimed the pair costs `tenable_io` eight of its ten
+/// asset events.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LongLadder {
+    /// The path every arm reads.
+    source: String,
+    /// The path every arm writes.
+    target: String,
+    /// Whether an arm guards on a floating type. A JSON float reaching a ladder
+    /// without one is a value the vendor's own arms leave alone.
+    floating: bool,
+}
+
+/// Coerce the source the way the ladder's arms do.
+///
+/// Always reports the script HANDLED: every arm's guard is the vendor's own,
+/// and a value no arm covers leaves the document exactly as Elasticsearch
+/// leaves it.
+#[must_use]
+pub fn long_ladder(event: &mut Event, pattern: &LongLadder) -> bool {
+    let number = match event.get(&pattern.source) {
+        // `Long.parseLong` first and the `catch` arm's `Double.parseDouble`
+        // only where it throws. Text neither reads throws again, uncaught, so
+        // the call site's `on_failure` handler is what the document keeps.
+        Some(Value::String(text)) => text.parse::<i64>().ok().or_else(|| truncated(text)),
+        Some(Value::Number(number)) if number.is_f64() => pattern
+            .floating
+            .then(|| number.as_f64().map(narrow))
+            .flatten(),
+        Some(Value::Number(number)) => number.as_i64(),
+        _ => None,
+    };
+    if let Some(number) = number {
+        let _ = event.set(&pattern.target, Value::from(number));
+    }
+    true
+}
+
+/// `Double.parseDouble` followed by the `(long)` cast that renders it.
+fn truncated(text: &str) -> Option<i64> {
+    text.parse::<f64>().ok().map(narrow)
+}
+
+/// Java's narrowing double-to-long conversion, which truncates towards zero,
+/// clamps what will not fit and yields zero for a NaN -- all three of which
+/// Rust's `as` does too.
+#[allow(clippy::cast_possible_truncation)]
+fn narrow(float: f64) -> i64 {
+    float as i64
+}
+
+/// Read the ladder, or decline it.
+#[must_use]
+pub fn parse_long_ladder(script: &str) -> Option<LongLadder> {
+    let mut rest = script.trim();
+    let mut source: Option<String> = None;
+    let mut target: Option<String> = None;
+    let mut text_arm = false;
+    let (mut covers_int, mut covers_long, mut covers_float) = (false, false, false);
+
+    while !rest.is_empty() {
+        let head = rest.strip_prefix("if")?.trim_start();
+        let (guard, after) = balanced(head, '(', ')')?;
+        let (body, tail) = balanced(after.trim_start(), '{', '}')?;
+
+        let types = guard_types(guard, &mut source)?;
+        let read = source.as_deref()?;
+        let wrote = if types.as_slice() == ["String"] {
+            // One text arm: a second would overwrite what the first wrote.
+            if text_arm {
+                return None;
+            }
+            text_arm = true;
+            parse_text_arm(body, read)?
+        } else {
+            for name in &types {
+                match *name {
+                    "int" => covers_int = true,
+                    "long" => covers_long = true,
+                    "double" | "float" => covers_float = true,
+                    _ => return None,
+                }
+            }
+            parse_cast_arm(body, read)?
+        };
+        match &target {
+            None => target = Some(wrote),
+            Some(existing) if *existing == wrote => {}
+            Some(_) => return None,
+        }
+
+        rest = tail.trim_start();
+    }
+
+    // The `catch` lives in the text arm, and it is the whole reason this
+    // pattern exists apart from the scalar coercion above.
+    if !text_arm {
+        return None;
+    }
+    // An arm naming one integral type and not the other covers only part of
+    // the whole numbers, and this runner has no way to tell which part.
+    if !(covers_int && covers_long) {
+        return None;
+    }
+    Some(LongLadder {
+        source: source?,
+        target: target?,
+        floating: covers_float,
+    })
+}
+
+/// The text between `open` and the `close` that matches it, and what follows.
+///
+/// Depth-counted rather than cut at the first `close`, because the text arm's
+/// own `try` and `catch` blocks nest inside the arm's braces.
+fn balanced(text: &str, open: char, close: char) -> Option<(&str, &str)> {
+    let inner = text.strip_prefix(open)?;
+    let mut depth = 1usize;
+    for (at, character) in inner.char_indices() {
+        if character == open {
+            depth += 1;
+        } else if character == close {
+            depth -= 1;
+            if depth == 0 {
+                return Some((&inner[..at], &inner[at + character.len_utf8()..]));
+            }
+        }
+    }
+    None
+}
+
+/// Every type one arm guards on, anchored on the path they all read.
+///
+/// An arm reading a DIFFERENT path from the one the ladder opened with is a
+/// second coercion sharing the script, and running both would write one
+/// field's value into the other's target.
+fn guard_types<'a>(guard: &'a str, source: &mut Option<String>) -> Option<Vec<&'a str>> {
+    let mut types = Vec::new();
+    for term in guard.split("||") {
+        let (read, name) = term.trim().split_once(" instanceof ")?;
+        let path = ctx_path(read)?;
+        match source {
+            None => *source = Some(path),
+            Some(existing) if *existing == path => {}
+            Some(_) => return None,
+        }
+        let name = name.trim();
+        if name.is_empty() || !name.chars().all(char::is_alphanumeric) {
+            return None;
+        }
+        types.push(name);
+    }
+    (!types.is_empty()).then_some(types)
+}
+
+/// `try { <parse> } catch (...) { <fallback> }`, and nothing after it but the
+/// vendor's own `return`.
+fn parse_text_arm(body: &str, source: &str) -> Option<String> {
+    let after = body.trim_start().strip_prefix("try")?.trim_start();
+    let (tried, after) = balanced(after, '{', '}')?;
+    let after = after.trim_start().strip_prefix("catch")?.trim_start();
+    let (_caught, after) = balanced(after, '(', ')')?;
+    let (fallback, tail) = balanced(after.trim_start(), '{', '}')?;
+    if !matches!(statements(tail).as_slice(), [] | ["return"]) {
+        return None;
+    }
+
+    // The `catch` arm's local is a double, so its write MUST cast: without one
+    // the field takes the fraction Elasticsearch's own cast drops.
+    let parsed = parse_bound_write(tried, "long", "Long.parseLong", source, false)?;
+    let caught = parse_bound_write(fallback, "double", "Double.parseDouble", source, true)?;
+    (parsed == caught).then_some(parsed)
+}
+
+/// `<declared> <local> = <call>(ctx.<source>); ctx.<target> = [(long) ]<local>;`
+///
+/// The write has to name the local the parse just bound, or the arm is putting
+/// something else in the field and this runner would drop it.
+fn parse_bound_write(
+    body: &str,
+    declared: &str,
+    call: &str,
+    source: &str,
+    cast: bool,
+) -> Option<String> {
+    let parts = statements(body);
+    let [bind, write] = parts.as_slice() else {
+        return None;
+    };
+
+    let (head, expression) = bind.split_once('=')?;
+    let local = head.trim().strip_prefix(declared)?.trim();
+    if local.is_empty() || !is_path(local) {
+        return None;
+    }
+    let argument = expression
+        .trim()
+        .strip_prefix(call)?
+        .strip_prefix('(')?
+        .strip_suffix(')')?;
+    if ctx_path(argument)? != source {
+        return None;
+    }
+
+    let (lhs, rhs) = write.split_once('=')?;
+    let target = ctx_path(lhs)?;
+    let value = rhs.trim();
+    let value = if cast {
+        value.strip_prefix("(long)")?.trim()
+    } else {
+        value
+    };
+    (value == local).then_some(target)
+}
+
+/// `ctx.<target> = (long) ctx.<source>;`, with the vendor's `return` after it.
+fn parse_cast_arm(body: &str, source: &str) -> Option<String> {
+    let parts = statements(body);
+    let (write, rest) = parts.split_first()?;
+    if !matches!(rest, [] | ["return"]) {
+        return None;
+    }
+    let (lhs, rhs) = write.split_once('=')?;
+    let target = ctx_path(lhs)?;
+    let read = ctx_path(rhs.trim().strip_prefix("(long)")?)?;
+    (read == source).then_some(target)
+}
+
+/// One arm's statements, with their line breaks and semicolons gone.
+fn statements(body: &str) -> Vec<&str> {
+    body.split(';')
+        .map(str::trim)
+        .filter(|statement| !statement.is_empty())
+        .collect()
+}
+
 /// A run of fields decoded in place through `Long.decode`.
 ///
 /// snort's grok captures five packet-header fields with `%{BASE16NUM}`, so each
@@ -643,8 +907,21 @@ mod tests {
     /// The same stream's id stringify, one list of ids per element of a list.
     const STRINGIFY_IDS: &str = r#"for (int i = 0; i < ctx.ses.cybox.files.length; i++) {\n  def file = ctx.ses.cybox.files[i];\n  if (file.attribute_ids == null || !file.containsKey('attribute_ids')) {\n    continue;\n  }\n  def new_ids = [];\n  for (int j = 0; j < file.attribute_ids.length; j++) {\n    if (file.attribute_ids[j] != null) {\n      new_ids.add(file.attribute_ids[j].toString());\n    }\n  }\n  if (new_ids.length != 0) {\n    file.attribute_ids = new_ids;\n  }\n}"#;
 
+    /// Verbatim from `tenable_io_asset/default.rs`, tagged `acr_score_is_long`.
+    const ACR_LADDER: &str = r#"if (ctx.json.acr_score instanceof String) {\n  try {\n    long acr_score = Long.parseLong(ctx.json.acr_score);\n    ctx.tenable_io.asset.acr_score = acr_score;\n  } catch (NumberFormatException e) {\n    double acr_score = Double.parseDouble(ctx.json.acr_score);\n    ctx.tenable_io.asset.acr_score = (long) acr_score; \n  }\n  return;\n} if (ctx.json.acr_score instanceof int || ctx.json.acr_score instanceof long) {\n  ctx.tenable_io.asset.acr_score = (long) ctx.json.acr_score;\n  return;\n} if (ctx.json.acr_score instanceof double) {\n  ctx.tenable_io.asset.acr_score = (long) ctx.json.acr_score;\n  return;\n} \n"#;
+
+    /// Its twin one processor down, tagged `exposure_score_is_long`. The same
+    /// ladder over different identifiers, a bare `Exception` in the `catch` and
+    /// two spaces before the last arm -- so the reader is taking the pattern off
+    /// the grammar rather than off tenable's spelling of it.
+    const EXPOSURE_LADDER: &str = r#"if (ctx.json.exposure_score instanceof String) {\n  try {\n    long exposure_score = Long.parseLong(ctx.json.exposure_score);\n    ctx.tenable_io.asset.exposure_score = exposure_score;\n  } catch (Exception e) {\n    double exposure_score = Double.parseDouble(ctx.json.exposure_score);\n    ctx.tenable_io.asset.exposure_score = (long) exposure_score;\n  }\n  return;\n} if (ctx.json.exposure_score instanceof int || ctx.json.exposure_score instanceof long) {\n  ctx.tenable_io.asset.exposure_score = (long) ctx.json.exposure_score;\n  return;\n}  if (ctx.json.exposure_score instanceof double) {\n  ctx.tenable_io.asset.exposure_score = (long) ctx.json.exposure_score;\n  return;\n}\n"#;
+
     fn parse(script: &str) -> Option<LongCoercion> {
         parse_long_coercion(&normalise(script))
+    }
+
+    fn ladder(script: &str) -> Option<LongLadder> {
+        parse_long_ladder(&normalise(script))
     }
 
     #[test]
@@ -854,13 +1131,124 @@ mod tests {
     }
 
     /// `tenable_io` coerces the same field with a `Double.parseDouble` fallback
-    /// in a `catch`, and its `else` is a second `instanceof` ladder rather than
-    /// an arm. Read as this pattern it would drop both. Verbatim from
-    /// `tenable_io_asset/default.rs`.
+    /// in a `catch`, and what follows is a second `instanceof` arm rather than
+    /// an `else`. Read as this pattern it would drop both, so the scalar reader
+    /// still declines it; [`LongLadder`] is what claims it.
     #[test]
     fn the_tenable_score_with_its_double_fallback_is_declined() {
-        let script = r#"if (ctx.json.acr_score instanceof String) {\n  try {\n    long acr_score = Long.parseLong(ctx.json.acr_score);\n    ctx.tenable_io.asset.acr_score = acr_score;\n  } catch (NumberFormatException e) {\n    double acr_score = Double.parseDouble(ctx.json.acr_score);\n    ctx.tenable_io.asset.acr_score = (long) acr_score; \n  }\n  return;\n} if (ctx.json.acr_score instanceof int || ctx.json.acr_score instanceof long) {\n  ctx.tenable_io.asset.acr_score = ctx.json.acr_score;\n}"#;
-        assert_eq!(parse(script), None);
+        assert_eq!(parse(ACR_LADDER), None);
+    }
+
+    #[test]
+    fn the_ladder_reads_its_source_target_and_float_arm() {
+        assert_eq!(
+            ladder(ACR_LADDER),
+            Some(LongLadder {
+                source: "json.acr_score".into(),
+                target: "tenable_io.asset.acr_score".into(),
+                floating: true,
+            })
+        );
+        assert_eq!(
+            ladder(EXPOSURE_LADDER),
+            Some(LongLadder {
+                source: "json.exposure_score".into(),
+                target: "tenable_io.asset.exposure_score".into(),
+                floating: true,
+            })
+        );
+    }
+
+    /// The vendor sends the score as text or as a number indifferently, and
+    /// tenable's own capture carries all four spellings of the same 3.
+    #[test]
+    fn every_spelling_of_the_same_score_lands_as_one_number() {
+        let pattern = ladder(ACR_LADDER).unwrap();
+        for sent in [json!("3"), json!("3.0"), json!(3), json!(3.0)] {
+            let mut event = Event::new(json!({ "json": { "acr_score": sent } }));
+            assert!(long_ladder(&mut event, &pattern));
+            assert_eq!(event.get("tenable_io.asset.acr_score"), Some(&json!(3)));
+        }
+    }
+
+    /// Neither parse reads it, so Painless throws out of the `catch` and the
+    /// call site's `on_failure` handler is what the document keeps.
+    #[test]
+    fn text_neither_parse_reads_writes_nothing() {
+        let pattern = ladder(ACR_LADDER).unwrap();
+        let mut event = Event::new(json!({ "json": { "acr_score": "n/a" } }));
+        assert!(long_ladder(&mut event, &pattern));
+        assert!(event.get("tenable_io.asset.acr_score").is_none());
+    }
+
+    /// A ladder guarding only the whole-number types leaves a JSON float alone,
+    /// because the vendor's own arms do.
+    #[test]
+    fn a_float_reaching_a_ladder_without_a_float_arm_is_left_alone() {
+        let script = r#"if (ctx.a.s instanceof String) {\n  try {\n    long v = Long.parseLong(ctx.a.s);\n    ctx.a.t = v;\n  } catch (Exception e) {\n    double v = Double.parseDouble(ctx.a.s);\n    ctx.a.t = (long) v;\n  }\n  return;\n} if (ctx.a.s instanceof int || ctx.a.s instanceof long) {\n  ctx.a.t = (long) ctx.a.s;\n}"#;
+        let pattern = ladder(script).unwrap();
+        assert!(!pattern.floating);
+
+        let mut event = Event::new(json!({ "a": { "s": 3.5 } }));
+        assert!(long_ladder(&mut event, &pattern));
+        assert!(event.get("a.t").is_none());
+
+        let mut event = Event::new(json!({ "a": { "s": 3 } }));
+        assert!(long_ladder(&mut event, &pattern));
+        assert_eq!(event.get("a.t"), Some(&json!(3)));
+    }
+
+    /// Without the `(long)` the field takes the fraction Elasticsearch's own
+    /// cast drops, so an uncast fallback is a different script.
+    #[test]
+    fn a_fallback_that_does_not_cast_is_declined() {
+        let script = r#"if (ctx.a.s instanceof String) {\n  try {\n    long v = Long.parseLong(ctx.a.s);\n    ctx.a.t = v;\n  } catch (Exception e) {\n    double v = Double.parseDouble(ctx.a.s);\n    ctx.a.t = v;\n  }\n  return;\n} if (ctx.a.s instanceof int || ctx.a.s instanceof long) {\n  ctx.a.t = (long) ctx.a.s;\n}"#;
+        assert_eq!(ladder(script), None);
+    }
+
+    /// Arms writing DIFFERENT fields are two coercions sharing a script, and
+    /// claiming it would drop whichever target the reader did not take.
+    #[test]
+    fn ladder_arms_that_disagree_on_the_target_are_declined() {
+        let script = r#"if (ctx.a.s instanceof String) {\n  try {\n    long v = Long.parseLong(ctx.a.s);\n    ctx.a.t = v;\n  } catch (Exception e) {\n    double v = Double.parseDouble(ctx.a.s);\n    ctx.a.t = (long) v;\n  }\n  return;\n} if (ctx.a.s instanceof int || ctx.a.s instanceof long) {\n  ctx.a.u = (long) ctx.a.s;\n}"#;
+        assert_eq!(ladder(script), None);
+    }
+
+    /// An arm reading a different path is a second coercion, and running both
+    /// as one would write one field's value into the other's target.
+    #[test]
+    fn an_arm_reading_another_source_is_declined() {
+        let script = r#"if (ctx.a.s instanceof String) {\n  try {\n    long v = Long.parseLong(ctx.a.s);\n    ctx.a.t = v;\n  } catch (Exception e) {\n    double v = Double.parseDouble(ctx.a.s);\n    ctx.a.t = (long) v;\n  }\n  return;\n} if (ctx.a.other instanceof int || ctx.a.other instanceof long) {\n  ctx.a.t = (long) ctx.a.other;\n}"#;
+        assert_eq!(ladder(script), None);
+    }
+
+    /// A statement after the ladder is work this runner cannot do.
+    #[test]
+    fn a_statement_after_the_ladder_is_declined() {
+        let script = r#"if (ctx.a.s instanceof String) {\n  try {\n    long v = Long.parseLong(ctx.a.s);\n    ctx.a.t = v;\n  } catch (Exception e) {\n    double v = Double.parseDouble(ctx.a.s);\n    ctx.a.t = (long) v;\n  }\n  return;\n} if (ctx.a.s instanceof int || ctx.a.s instanceof long) {\n  ctx.a.t = (long) ctx.a.s;\n}\nctx.a.seen = true;\n"#;
+        assert_eq!(ladder(script), None);
+    }
+
+    /// A ladder with no text arm is the scalar coercion, whose own reader has
+    /// it -- claiming it here would put this runner's guards on it.
+    #[test]
+    fn a_ladder_with_no_text_arm_is_declined() {
+        let script = r#"if (ctx.a.s instanceof int || ctx.a.s instanceof long) {\n  ctx.a.t = (long) ctx.a.s;\n  return;\n} if (ctx.a.s instanceof double) {\n  ctx.a.t = (long) ctx.a.s;\n}"#;
+        assert_eq!(ladder(script), None);
+    }
+
+    /// The ladder dispatches through the pattern ladder, not only its reader.
+    #[test]
+    fn the_ladder_reaches_the_event_through_dispatch() {
+        let mut event = Event::new(json!({ "json": { "exposure_score": "721.0" } }));
+        assert!(crate::common::try_known_painless(
+            &mut event,
+            EXPOSURE_LADDER
+        ));
+        assert_eq!(
+            event.get("tenable_io.asset.exposure_score"),
+            Some(&json!(721))
+        );
     }
 
     /// axonius coerces through a NAMED HELPER over a params list of fields.
