@@ -8775,7 +8775,14 @@ enum Term {
         argument: Argument,
     },
     /// `ctx.related.user.contains(<argument>)`, the append-once guard.
-    FieldContains { path: String, argument: Argument },
+    FieldContains {
+        path: String,
+        argument: Argument,
+        /// `ctx.<p>.toLowerCase().contains('x')` searches the FOLDED value, the
+        /// same way [`Term::Compare`] below compares one. The script's own
+        /// literal is already lower case, so only the event's side folds.
+        lowered: bool,
+    },
     /// `ctx.<path> == <wanted>`, with the `!=` spelling as `negated`.
     Compare {
         path: String,
@@ -8978,12 +8985,19 @@ impl Term {
                     None => return Self::Never,
                 }
             };
-            let Some(path) = subject.trim().strip_prefix("ctx.") else {
+            // The SUBJECT folds too, which the argument side above has always
+            // read and this side had not. Leaving the fold on the path named a
+            // field no event carries, so both arms of prisma_cloud's audit
+            // ladder were false and its trailing else wrote `unknown` over
+            // five failures.
+            let (subject, lowered) = strip_case_fold(subject.trim());
+            let Some(path) = subject.strip_prefix("ctx.") else {
                 return Self::Never;
             };
             return Self::FieldContains {
                 path: clean_path(path),
                 argument,
+                lowered,
             };
         }
         // Before the `==` pair, because `>=` and `<=` carry an `=` that the
@@ -9061,7 +9075,11 @@ impl Term {
                 };
                 members.iter().any(|member| member == wanted.as_ref())
             }
-            Self::FieldContains { path, argument } => {
+            Self::FieldContains {
+                path,
+                argument,
+                lowered,
+            } => {
                 let Some(wanted) = argument.resolve(event) else {
                     return false;
                 };
@@ -9069,6 +9087,13 @@ impl Term {
                     Some(Value::Array(items)) => items
                         .iter()
                         .any(|item| item.as_str() == Some(wanted.as_ref())),
+                    // `toLowerCase()` is a String method, so the list arm above
+                    // never carries the fold. The allocation is what the
+                    // script's own call costs, and it is only paid where the
+                    // text spells one.
+                    Some(Value::String(text)) if *lowered => {
+                        text.to_lowercase().contains(wanted.as_ref())
+                    }
                     Some(Value::String(text)) => text.contains(wanted.as_ref()),
                     _ => false,
                 }

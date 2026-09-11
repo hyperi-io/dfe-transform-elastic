@@ -236,7 +236,7 @@
     "postgresql": { "events": 282, "events_total": 284, "fields_wrong": 2 },
     "pps": { "events": 18, "events_total": 18, "fields_wrong": 0 },
     "prisma_access": { "events": 21, "events_total": 23, "fields_wrong": 2 },
-    "prisma_cloud": { "events": 9, "events_total": 19, "fields_wrong": 14 },
+    "prisma_cloud": { "events": 18, "events_total": 19, "fields_wrong": 5 },
     "proofpoint_365totalprotection": { "events": 0, "events_total": 3, "fields_wrong": 43 },
     "proofpoint_essentials": { "events": 8, "events_total": 14, "fields_wrong": 18 },
     "proofpoint_itm": { "events": 1, "events_total": 1, "fields_wrong": 0 },

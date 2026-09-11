@@ -19377,14 +19377,17 @@ struct CollectedColumn {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct LocalMapLookup {
     source: String,
+    /// `ctx.<source>.toLowerCase()` keys the table with the FOLDED value.
+    lowered: bool,
     target: String,
-    table: std::collections::BTreeMap<String, String>,
+    /// The value as the JSON it stands for, not as its text: the
+    /// `prisma_cloud` severity table is integers, and a quoted `47` is not the
+    /// 47 Elasticsearch writes into `event.severity`.
+    table: std::collections::BTreeMap<String, Value>,
 }
 
 fn parse_local_map_lookup(script: &str) -> Option<LocalMapLookup> {
-    use crate::params::{clean_path, subject_path};
-
-    // `def <name> = [ '<k>': '<v>', ... ];`
+    // `def <name> = [ '<k>': <v>, ... ];`
     let (head, rest) = script.split_once(" = [")?;
     let name = head.rsplit([' ', '\n']).next()?.trim();
     // A map literal holds no nested brackets, so the first `]` closes it.
@@ -19393,8 +19396,8 @@ fn parse_local_map_lookup(script: &str) -> Option<LocalMapLookup> {
     for pair in inside.split(',') {
         let (key, value) = pair.split_once(':')?;
         let key = key.trim().trim_matches(['\'', '"']).to_string();
-        let value = value.trim().trim_matches(['\'', '"']).to_string();
-        if key.is_empty() || value.is_empty() {
+        let value = painless_literal(value.trim())?;
+        if key.is_empty() || value.as_str().is_some_and(str::is_empty) {
             return None;
         }
         table.insert(key, value);
@@ -19403,39 +19406,114 @@ fn parse_local_map_lookup(script: &str) -> Option<LocalMapLookup> {
         return None;
     }
 
-    // The key local, and the field it reads.
-    let (bound, after) = rest.split_once(&format!("{name}.containsKey("))?;
-    let key = after.split(')').next()?.trim();
-    let source = clean_path(
-        subject_path(
-            bound
-                .rsplit(&format!("{key} = "))
-                .next()?
-                .split(';')
-                .next()?
-                .trim(),
-        )
-        .strip_prefix("ctx.")?,
-    );
-
-    // `ctx.<target> = <name>[<key>]`
-    let (assignment, _) = script.split_once(&format!("= {name}[{key}]"))?;
-    let target = clean_path(assignment.rsplit_once("ctx.")?.1.trim());
+    // Two spellings of the same lookup, and which end carries the guard is the
+    // only difference between them.
+    let (source, lowered, target) =
+        table_guarded_lookup(script, rest, name).or_else(|| result_guarded_lookup(script, name))?;
 
     let named = |path: &str| !path.is_empty() && !path.contains(['(', ')', '[', ']', ' ']);
     (named(&source) && named(&target)).then_some(LocalMapLookup {
         source,
+        lowered,
         target,
         table,
     })
 }
 
+/// The spelling that guards the TABLE, and reads it once the key is known.
+///
+/// ```painless
+/// if (code != null && typeMap.containsKey(code)) { ctx.<target> = typeMap[code]; }
+/// ```
+///
+/// The read is either a subscript or a `.get()` -- gdacs writes the first and
+/// salesforce the second, and reading only the subscript left salesforce's two
+/// session tables claimed by nothing.
+fn table_guarded_lookup(script: &str, rest: &str, name: &str) -> Option<(String, bool, String)> {
+    let (bound, after) = rest.split_once(&format!("{name}.containsKey("))?;
+    let key = after.split(')').next()?.trim();
+    let (source, lowered) = local_ctx_path(bound.rsplit(&format!("{key} = ")).next()?)?;
+
+    let (assignment, _) = script
+        .split_once(&format!("= {name}[{key}]"))
+        .or_else(|| script.split_once(&format!("= {name}.get({key})")))?;
+    Some((
+        source,
+        lowered,
+        crate::params::clean_path(assignment.rsplit_once("ctx.")?.1.trim()),
+    ))
+}
+
+/// The spelling that guards the RESULT, keyed straight off a `ctx.` path.
+///
+/// ```painless
+/// Integer score = severityScores[ctx.<path>.toLowerCase()];
+/// if (score != null) { ctx.<target> = score; }
+/// ```
+///
+/// Asked of the other end, the null guard is the same question `containsKey`
+/// asks: a key the table has no row for writes nothing. It is REQUIRED here,
+/// because an unguarded subscript writes the null and this runner would not.
+fn result_guarded_lookup(script: &str, name: &str) -> Option<(String, bool, String)> {
+    // `= [` separates the declaration from this, so the first `<name>[` is the
+    // subscript rather than the table the script is reading.
+    let (head, after) = script.split_once(&format!("{name}["))?;
+    let local = head
+        .trim_end()
+        .strip_suffix('=')?
+        .trim_end()
+        .rsplit([' ', '\n'])
+        .next()?;
+    if local.is_empty() || local.contains(['.', '(', ')', '[', ']']) {
+        return None;
+    }
+
+    let (key, rest) = after.split_once(']')?;
+    let (source, lowered) = local_ctx_path(key)?;
+
+    let (_, written) = rest.split_once(&format!("{local} != null"))?;
+    let (assignment, _) = written.split_once(&format!("= {local};"))?;
+    Some((
+        source,
+        lowered,
+        crate::params::clean_path(assignment.rsplit_once("ctx.")?.1.trim()),
+    ))
+}
+
+/// The `ctx.` path an expression names, and whether it is read case-folded.
+///
+/// One statement's worth of text: everything up to the first `;`, so a binding
+/// carries only its own right-hand side.
+///
+/// `.toLowerCase()` alone, unlike [`strip_case_fold`]: an upper fold would have
+/// to be matched against upper-case keys, and lowering the value there would
+/// stop every one of them matching. It stays unread, and the parenthesis it
+/// leaves in the path is what declines the whole pattern.
+fn local_ctx_path(expression: &str) -> Option<(String, bool)> {
+    let value = expression.split(';').next()?.trim();
+    let (value, lowered) = value
+        .strip_suffix(".toLowerCase()")
+        .map_or((value, false), |bare| (bare, true));
+    let path = crate::params::subject_path(value);
+    Some((
+        crate::params::clean_path(path.strip_prefix("ctx.")?),
+        lowered,
+    ))
+}
+
 fn run_local_map_lookup(event: &mut Event, pattern: &LocalMapLookup) -> bool {
-    // The script's own `containsKey` guard: an unlisted code writes nothing.
-    if let Some(code) = event.get_as_string(&pattern.source)
-        && let Some(name) = pattern.table.get(&code)
-    {
-        let _ = event.set(&pattern.target, json!(name));
+    // The script's own guard, whichever end it sits on: an unlisted code
+    // writes nothing.
+    let Some(code) = event.get_as_string(&pattern.source) else {
+        return true;
+    };
+    let code = if pattern.lowered {
+        code.to_lowercase()
+    } else {
+        code
+    };
+    if let Some(value) = pattern.table.get(&code) {
+        let _ = event.set(&pattern.target, value.clone());
     }
     true
 }
@@ -21753,8 +21831,10 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
     // Pattern: a lookup table written inline rather than shipped in `params`.
-    if normalised.contains(".containsKey(")
-        && normalised.contains("': '")
+    // The quoted key opens the map literal either spelling writes; the guard
+    // sits on the TABLE or on the RESULT, and the parse decides which.
+    if (normalised.contains("': ") || normalised.contains("\": "))
+        && (normalised.contains(".containsKey(") || normalised.contains("!= null"))
         && let Some(pattern) = parse_local_map_lookup(normalised)
     {
         patterns.push(KnownPattern::LocalMapLookup(Box::new(pattern)));

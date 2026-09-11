@@ -1220,9 +1220,10 @@ fn a_local_map_literal_is_a_lookup_table() {
     let pattern = parse_local_map_lookup(&normalise(script)).expect("the table parses");
     assert_eq!(pattern.source, "gdacs.event_type");
     assert_eq!(pattern.target, "gdacs.event_type_name");
+    assert!(!pattern.lowered, "the key is read as the vendor spells it");
     assert_eq!(
-        pattern.table.get("TC").map(String::as_str),
-        Some("Tropical Cyclone")
+        pattern.table.get("TC"),
+        Some(&Value::from("Tropical Cyclone"))
     );
 
     let named = |code: &str| {
@@ -1238,6 +1239,140 @@ fn a_local_map_literal_is_a_lookup_table() {
     assert_eq!(named("TC").as_deref(), Some("Tropical Cyclone"));
     // Unlisted: the script's own containsKey guard writes nothing.
     assert_eq!(named("ZZ"), None);
+}
+
+/// The `prisma_cloud` severity table: the guard sits on the RESULT of the
+/// subscript rather than on the table, the key is folded inline, and the
+/// values are numbers.
+///
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/prisma_cloud_misconfiguration/default.rs`,
+/// escaped the way the site holds it.
+#[test]
+fn a_null_checked_subscript_scores_a_folded_severity() {
+    const SCRIPT: &str = r#"ctx.event = ctx.event ?: [:];\ndef severityScores = [\n  'informational': 21,\n  'low': 21,\n  'medium': 47,\n  'high': 73,\n  'critical': 99\n];\nInteger score = severityScores[ctx.prisma_cloud.misconfiguration.scanned_policy.severity.toLowerCase()];\nif (score != null) {\n  ctx.event.severity = score;\n}"#;
+
+    let pattern = parse_local_map_lookup(&normalise(SCRIPT)).expect("the score table parses");
+    assert_eq!(
+        pattern.source,
+        "prisma_cloud.misconfiguration.scanned_policy.severity"
+    );
+    assert_eq!(pattern.target, "event.severity");
+    assert!(pattern.lowered, "the key is the folded severity");
+    // A number, not the string `47` -- Elasticsearch writes an integer here.
+    assert_eq!(pattern.table.get("medium"), Some(&Value::from(47)));
+    // Named, so a ladder edit that moved the script elsewhere fails here
+    // rather than surfacing as a per-field corpus regression.
+    assert!(binds_variant(SCRIPT, |pattern| matches!(
+        pattern,
+        KnownPattern::LocalMapLookup(_)
+    )));
+
+    let scored = |severity: &str| {
+        let (claimed, event) = run_script(
+            SCRIPT,
+            json!({
+                "prisma_cloud": {
+                    "misconfiguration": { "scanned_policy": { "severity": severity } }
+                }
+            }),
+        );
+        assert!(claimed);
+        event.get("event.severity").cloned()
+    };
+    // The four the corpus exercises, in fixture order.
+    assert_eq!(scored("medium"), Some(json!(47)));
+    assert_eq!(scored("high"), Some(json!(73)));
+    assert_eq!(scored("low"), Some(json!(21)));
+    // `low` and `informational` are both 21 -- the vendor's own table.
+    assert_eq!(scored("informational"), Some(json!(21)));
+    // Unexercised by the corpus, and shipped anyway.
+    assert_eq!(scored("critical"), Some(json!(99)));
+    // The fold is what makes a vendor's mixed case land on a row.
+    assert_eq!(scored("HIGH"), Some(json!(73)));
+    // Off the table: the script's own null check writes nothing.
+    assert_eq!(scored("catastrophic"), None);
+}
+
+/// The `prisma_cloud` audit outcome ladder, where the fold sits on the SUBJECT
+/// of a `.contains(` rather than on its argument.
+///
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/prisma_cloud_audit/default.rs`, escaped
+/// the way the site holds it.
+#[test]
+fn a_folded_contains_searches_the_field_and_not_the_call() {
+    const SCRIPT: &str = r#"if (ctx.prisma_cloud?.audit?.result != null && ctx.prisma_cloud.audit.result.toLowerCase().contains(\"success\")){\n    ctx.event.outcome = \"success\";\n} else if (ctx.prisma_cloud?.audit?.result != null && ctx.prisma_cloud.audit.result.toLowerCase().contains(\"fail\")){\n    ctx.event.outcome = \"failure\";\n} else {\n    ctx.event.outcome = \"unknown\";\n}"#;
+
+    let outcome = |result: &str| {
+        let (claimed, event) = run_script(
+            SCRIPT,
+            json!({ "prisma_cloud": { "audit": { "result": result } } }),
+        );
+        assert!(claimed);
+        event.get_str("event.outcome").map(str::to_string)
+    };
+    // What all five corpus events carry, and what every one of them read
+    // `unknown` for while the fold sat in the path.
+    assert_eq!(outcome("fail").as_deref(), Some("failure"));
+    assert_eq!(outcome("success").as_deref(), Some("success"));
+    // The fold is the point: a vendor's own casing still lands on an arm.
+    assert_eq!(outcome("FAILED").as_deref(), Some("failure"));
+    assert_eq!(outcome("Success").as_deref(), Some("success"));
+    // Neither word: the script's own trailing else.
+    assert_eq!(outcome("pending").as_deref(), Some("unknown"));
+}
+
+/// An unguarded subscript writes the null an absent key produces, which this
+/// runner does not, so the pattern declines it whole rather than half-running
+/// it.
+#[test]
+fn a_subscript_with_no_null_guard_is_declined() {
+    let script = "def levels = ['a': 1, 'b': 2];\n\
+        Integer n = levels[ctx.vendor.level];\nctx.event.severity = n;\n";
+    assert!(parse_local_map_lookup(&normalise(script)).is_none());
+}
+
+/// salesforce writes the same lookup with `.get()` where gdacs writes a
+/// subscript, and reading only the subscript left both its session tables
+/// claimed by nothing.
+#[test]
+fn a_table_read_through_get_is_the_same_lookup() {
+    let script = "def levels = [\"1\": \"Standard Session\", \"2\": \"High-Assurance Session\"];\n\
+        def level = ctx.salesforce?.logout?.session?.level;\n\
+        if (level != null && levels.containsKey(level)) {\n  \
+        ctx.salesforce.logout.session.level = levels.get(level);\n}\n";
+    let pattern = parse_local_map_lookup(&normalise(script)).expect("the session table parses");
+    assert_eq!(pattern.source, "salesforce.logout.session.level");
+    assert_eq!(pattern.target, "salesforce.logout.session.level");
+
+    let (claimed, event) = run_script(
+        script,
+        json!({ "salesforce": { "logout": { "session": { "level": "2" } } } }),
+    );
+    assert!(claimed);
+    assert_eq!(
+        event.get_str("salesforce.logout.session.level"),
+        Some("High-Assurance Session")
+    );
+}
+
+/// eset's vulnerability script carries the same table and the same
+/// `containsKey` guard, and is sixty statements of other work around them.
+///
+/// It declines on the key: `sev` is bound off a local map through a ternary,
+/// not off a `ctx.` path, so nothing here can name the field it reads.
+/// Claiming it would write one field and stop the ladder on the rest.
+#[test]
+fn a_lookup_keyed_off_a_local_map_is_declined() {
+    let script = "def ecsSeverity = [\n  'SEVERITY_LEVEL_HIGH': 'high',\n  \
+        'SEVERITY_LEVEL_LOW': 'low'\n];\n\
+        def vd = (Map) ctx.eset_protect.device_vulnerability;\n\
+        String sev = vd.containsKey('severity') ? (String) vd.severity : null;\n\
+        ctx.vulnerability = ctx.vulnerability ?: [:];\n\
+        if (sev != null && ecsSeverity.containsKey(sev)) {\n  \
+        ctx.vulnerability.severity = ecsSeverity.get(sev);\n}\n";
+    assert!(parse_local_map_lookup(&normalise(script)).is_none());
 }
 
 /// watchguard's own KV scanner, on the patterns its logs actually carry.
