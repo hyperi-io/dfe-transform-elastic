@@ -8502,6 +8502,78 @@ fn a_leading_cut_past_the_end_writes_nothing() {
     assert_eq!(event.get_str("a.b"), Some("xy"));
 }
 
+/// teleport's fold of a certificate's three name lists into `related.user`,
+/// verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/teleport_audit/event_enrich.rs`.
+///
+/// Written escaped, because a stored script arrives with its newlines escaped
+/// and is one line by the time a matcher reads it.
+const TELEPORT_RELATED_USER: &str = r"if (ctx.teleport?.audit?.certificate?.identity?.logins != null) {\n  ctx.related.user.addAll(ctx.teleport.audit.certificate.identity.logins);\n}\nif (ctx.teleport?.audit?.certificate?.identity?.participants != null) {\n  ctx.related.user.addAll(ctx.teleport.audit.certificate.identity.participants);\n}\nif (ctx.teleport?.audit?.certificate?.identity?.database_users != null) {\n  ctx.related.user.addAll(ctx.teleport.audit.certificate.identity.database_users);\n}\n";
+
+/// Every member of each guarded list joins the one the `append` processors
+/// above the script already started, in the script's own order.
+#[test]
+fn an_add_all_folds_each_guarded_list_onto_the_target() {
+    let (claimed, event) = run_script(
+        TELEPORT_RELATED_USER,
+        json!({
+            "related": { "user": ["teleport-admin"] },
+            "teleport": { "audit": { "certificate": { "identity": {
+                "logins": ["root", "ubuntu"],
+                "database_users": ["dba"],
+            } } } },
+        }),
+    );
+    assert!(claimed, "the fold has to be claimed");
+    assert_eq!(
+        event.get("related.user"),
+        Some(&json!(["teleport-admin", "root", "ubuntu", "dba"])),
+    );
+}
+
+/// Painless `addAll` does not deduplicate -- that is the `append` PROCESSOR's
+/// `allow_duplicates: false`, and this is a bare list operation.
+#[test]
+fn an_add_all_keeps_a_name_the_target_already_holds() {
+    let (_, event) = run_script(
+        TELEPORT_RELATED_USER,
+        json!({
+            "related": { "user": ["root"] },
+            "teleport": { "audit": { "certificate": { "identity": {
+                "logins": ["root"],
+            } } } },
+        }),
+    );
+    assert_eq!(event.get("related.user"), Some(&json!(["root", "root"])));
+}
+
+/// A source that is not a list is nothing `addAll` could take, so the target
+/// keeps what it had rather than gaining the scalar as a member.
+#[test]
+fn an_add_all_writes_nothing_when_the_source_is_not_a_list() {
+    let (_, event) = run_script(
+        TELEPORT_RELATED_USER,
+        json!({
+            "related": { "user": ["teleport-admin"] },
+            "teleport": { "audit": { "certificate": { "identity": {
+                "logins": "root",
+            } } } },
+        }),
+    );
+    assert_eq!(event.get("related.user"), Some(&json!(["teleport-admin"])));
+}
+
+/// The argument has to be a `ctx.` path. A local holds a value the walk cannot
+/// resolve, so the statement is declined and the script is left to the readers
+/// below rather than claimed and half run.
+#[test]
+fn an_add_all_from_a_local_is_declined() {
+    assert!(!binds_variant(
+        r"def names = [];\nif (ctx.a.b != null) {\n  ctx.related.user.addAll(names);\n}\n",
+        |pattern| matches!(pattern, KnownPattern::GuardedCopy(_)),
+    ));
+}
+
 /// The three `infoblox_nios` scripts, verbatim from the generated call sites in
 /// `crates/dfe-transforms/src/filebeat/infoblox_nios_log/default.rs`.
 mod infoblox_nios {

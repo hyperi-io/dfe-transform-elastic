@@ -7851,6 +7851,15 @@ enum Literal {
         path: String,
         value: Rhs,
     },
+    /// `ctx.<path>.addAll(ctx.<source>)` -- EVERY member of one list appended
+    /// to another, which is a different write from [`Literal::Append`]: that
+    /// one adds the source as a single member, and nesting a list inside the
+    /// target is not what the vendor wrote. teleport folds a certificate's
+    /// logins, participants and database users into `related.user` this way.
+    AppendAll {
+        path: String,
+        source: String,
+    },
     Set {
         path: String,
         value: Rhs,
@@ -9152,6 +9161,26 @@ fn parse_literal_statement(statement: &str) -> Option<Literal> {
     if let Some(path) = removed_path(statement) {
         return Some(Literal::Remove { path });
     }
+    // Ahead of `.add(` below, which never sees this text -- `.addAll(` has no
+    // `.add(` in it -- but reads as the neighbouring write and belongs beside
+    // it. The argument has to be a `ctx.` path: a local holds a value this
+    // cannot resolve, so the whole statement is declined rather than half read.
+    if let Some((subject, argument)) = statement.split_once(".addAll(") {
+        let source = argument
+            .trim()
+            .trim_end_matches(';')
+            .trim()
+            .trim_end_matches(')')
+            .trim()
+            .strip_prefix("ctx.")?;
+        if !is_ctx_path(source) {
+            return None;
+        }
+        return Some(Literal::AppendAll {
+            path: clean_path(subject.trim().strip_prefix("ctx.")?),
+            source: clean_path(source),
+        });
+    }
     if let Some((subject, argument)) = statement.split_once(".add(") {
         return Some(Literal::Append {
             path: clean_path(subject.trim().strip_prefix("ctx.")?),
@@ -9699,6 +9728,40 @@ fn run_literal(event: &mut Event, literal: &Literal) -> bool {
                 return false;
             };
             add_to_list(event, path, value);
+            true
+        }
+        // Painless appends every member without deduplicating, which is the
+        // difference from the `append` PROCESSOR beside these scripts and its
+        // `allow_duplicates: false`. A source that is not a list is nothing
+        // `addAll` could take, so nothing is written.
+        //
+        // Grown and written ONCE rather than through [`add_to_list`] per
+        // member, which clones the target on every call and is quadratic in
+        // the list -- o365 folds its whole parsed action list back this way.
+        Literal::AppendAll { path, source } => {
+            let Some(Value::Array(items)) = event.get(source) else {
+                return false;
+            };
+            if items.is_empty() {
+                return false;
+            }
+            let mut grown = match event.get(path) {
+                Some(Value::Array(held)) => {
+                    let mut grown = Vec::with_capacity(held.len() + items.len());
+                    grown.extend(held.iter().cloned());
+                    grown
+                }
+                // A scalar already there becomes the list's first member, the
+                // way Painless's own `add` on it would.
+                Some(held) => {
+                    let mut grown = Vec::with_capacity(items.len() + 1);
+                    grown.push(held.clone());
+                    grown
+                }
+                None => Vec::with_capacity(items.len()),
+            };
+            grown.extend(items.iter().cloned());
+            let _ = event.set(path, Value::Array(grown));
             true
         }
         Literal::Set { path, value } => {

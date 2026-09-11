@@ -2387,6 +2387,92 @@ fn is_space_char(c: char) -> bool {
         )
 }
 
+/// Whether `java.net.URI` would read this authority as SERVER-BASED, which is
+/// the only way `getHost` and `getPort` answer anything.
+///
+/// Java tries `[userinfo@]host[:port]` first, with `host` a hostname, an IPv4
+/// address or a bracketed IPv6 literal and `port` nothing but digits. Where
+/// that fails the authority is REGISTRY-BASED, and then `getHost` is null and
+/// `getPort` is -1 however much of it reads like a host -- so the processor
+/// writes neither part. A mongodb replica-set URI is the case in the corpus:
+/// `mongodb://mongo-1:27017,mongo-2:27018/` has an authority full of commas and
+/// colons, and Elasticsearch emits its scheme, path and query and no
+/// `url.domain` or `url.port` at all.
+///
+/// Both halves have to hold together. A legal host with an illegal port fails
+/// the server parse as a whole, so the host goes with it.
+fn java_server_authority(uri: &UriRef<'_>) -> bool {
+    let Some(host) = uri.host else {
+        return false;
+    };
+    if !uri
+        .port
+        .is_none_or(|port| port.bytes().all(|b| b.is_ascii_digit()))
+    {
+        return false;
+    }
+    if let Some(inner) = host.strip_prefix('[') {
+        // The address itself passed `java_uri_legal` already; what decides the
+        // form here is that the bracket closes the authority.
+        return inner.ends_with(']');
+    }
+    java_ipv4_address(host) || java_hostname(host)
+}
+
+/// Java's `parseIPv4Address`: four dotted groups of one to three digits, none
+/// above 255. Leading zeros are allowed, which is why this is not
+/// [`std::net::Ipv4Addr`]'s parse -- that rejects `010.1.1.1` and Java takes it.
+fn java_ipv4_address(host: &str) -> bool {
+    let mut groups = 0usize;
+    for group in host.split('.') {
+        groups += 1;
+        if group.is_empty() || group.len() > 3 || !group.bytes().all(|b| b.is_ascii_digit()) {
+            return false;
+        }
+        if group.parse::<u16>().is_ok_and(|octet| octet > 255) {
+            return false;
+        }
+    }
+    groups == 4
+}
+
+/// Java's `parseHostname`: dot-separated labels of alphanumerics that may carry
+/// an internal dash, with a trailing dot allowed, and -- where there is more
+/// than one label -- a last label starting with a letter.
+///
+/// That last rule is why `172.16.200.55` needs [`java_ipv4_address`]: as a
+/// hostname its final label is a number and Java refuses it.
+fn java_hostname(host: &str) -> bool {
+    // `foo.example.com.` is a legal fully qualified name, so one trailing dot
+    // comes off before the labels are walked. A lone `.` keeps it and fails on
+    // the empty label below.
+    let trimmed = host
+        .strip_suffix('.')
+        .filter(|head| !head.is_empty())
+        .unwrap_or(host);
+
+    let mut labels = 0usize;
+    let mut last = "";
+    for label in trimmed.split('.') {
+        let bytes = label.as_bytes();
+        if bytes.is_empty()
+            || !bytes
+                .iter()
+                .all(|b| b.is_ascii_alphanumeric() || *b == b'-')
+        {
+            return false;
+        }
+        if !bytes[0].is_ascii_alphanumeric() || !bytes[bytes.len() - 1].is_ascii_alphanumeric() {
+            return false;
+        }
+        labels += 1;
+        last = label;
+    }
+    // A single label needs no letter -- Java asks only of a QUALIFIED name's
+    // rightmost one, which is what keeps `1a.example` and refuses `a.1`.
+    labels == 1 || last.as_bytes()[0].is_ascii_alphabetic()
+}
+
 /// Whether `java.net.URL` -- what Elasticsearch falls back to when
 /// `java.net.URI` refuses the text -- would parse it.
 ///
@@ -2455,13 +2541,18 @@ pub fn uri_parts(
             }
         }
     }
-    if let Some(host) = uri.host.filter(|h| !h.is_empty()) {
-        parts.insert("domain".into(), Value::String(host.to_owned()));
-    }
-    // A port that is not a number is left out rather than stored as text: the
-    // ECS field is numeric and Elastic's processor drops it the same way.
-    if let Some(port) = uri.port.and_then(|p| p.parse::<u32>().ok()) {
-        parts.insert("port".into(), Value::Number(port.into()));
+    // Only a server-based authority has a host and a port to report. The URL
+    // fallback splits an authority by its own laxer rules, so this gates the
+    // `java.net.URI` path alone.
+    if !uri_legal || java_server_authority(&uri) {
+        if let Some(host) = uri.host.filter(|h| !h.is_empty()) {
+            parts.insert("domain".into(), Value::String(host.to_owned()));
+        }
+        // A port that is not a number is left out rather than stored as text:
+        // the ECS field is numeric and Elastic's processor drops it the same way.
+        if let Some(port) = uri.port.and_then(|p| p.parse::<u32>().ok()) {
+            parts.insert("port".into(), Value::Number(port.into()));
+        }
     }
     if uri.path.is_empty() {
         // Elasticsearch's processor goes through java.net.URI, whose getPath
@@ -3441,6 +3532,75 @@ mod tests {
         assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
         assert_eq!(event.get_str("url.domain"), Some("[2001:db8::1]"));
         assert_eq!(event.get("url.port"), None);
+    }
+
+    /// A registry-based authority has no host and no port, however much of it
+    /// reads like one.
+    ///
+    /// teleport ships a mongodb replica set as `db_uri`, and Elasticsearch
+    /// wrote its scheme, path and query and neither `url.domain` nor
+    /// `url.port`. Splitting at the last colon called `mongo-1:27017,mongo-2`
+    /// a host, which then joined `related.hosts` as well.
+    #[test]
+    fn uri_parts_reports_no_host_for_a_registry_authority() {
+        let mut event = Event::new(json!({
+            "src": "mongodb://mongo-1:27017,mongo-2:27018/?replicaSet=rs0",
+        }));
+        assert!(uri_parts(&mut event, "src", "url", true, false).unwrap());
+
+        assert_eq!(event.get("url.domain"), None);
+        assert_eq!(event.get("url.port"), None);
+        assert_eq!(event.get_str("url.scheme"), Some("mongodb"));
+        assert_eq!(event.get_str("url.path"), Some("/"));
+        assert_eq!(event.get_str("url.query"), Some("replicaSet=rs0"));
+    }
+
+    /// A port that is not a number fails Java's server parse as a WHOLE, so the
+    /// host it sits beside is gone too.
+    #[test]
+    fn uri_parts_drops_the_host_beside_an_unreadable_port() {
+        let mut event = Event::new(json!({ "src": "http://example.com:80-/a" }));
+        assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
+
+        assert_eq!(event.get("url.domain"), None);
+        assert_eq!(event.get("url.port"), None);
+        assert_eq!(event.get_str("url.path"), Some("/a"));
+    }
+
+    /// A hostname Java refuses -- an underscore is in no label -- reports no
+    /// host either.
+    #[test]
+    fn uri_parts_refuses_a_hostname_java_refuses() {
+        let mut event = Event::new(json!({ "src": "http://my_host.example.com/a" }));
+        assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
+        assert_eq!(event.get("url.domain"), None);
+
+        let mut event = Event::new(json!({ "src": "http://host-.example.com/a" }));
+        assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
+        assert_eq!(event.get("url.domain"), None);
+
+        // A qualified name's rightmost label has to start with a letter, and
+        // two groups are not an IPv4 address either.
+        let mut event = Event::new(json!({ "src": "http://a.1/x" }));
+        assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
+        assert_eq!(event.get("url.domain"), None);
+    }
+
+    /// The forms Java DOES take as a server host, so the gate above cannot be
+    /// read as "drop anything unusual".
+    #[test]
+    fn uri_parts_keeps_every_host_form_java_accepts() {
+        for (input, domain) in [
+            ("http://localhost:8080/a", "localhost"),
+            ("http://example.com./a", "example.com."),
+            ("http://a-b.c-d.example/a", "a-b.c-d.example"),
+            ("http://010.1.1.1/a", "010.1.1.1"),
+            ("http://1a.example/a", "1a.example"),
+        ] {
+            let mut event = Event::new(json!({ "src": input }));
+            assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
+            assert_eq!(event.get_str("url.domain"), Some(domain), "input: {input}");
+        }
     }
 
     /// The caller runs its `on_failure` on a false return, so a value that is
