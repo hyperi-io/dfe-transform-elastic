@@ -262,6 +262,7 @@ impl Transform for Default {
                         let ua_str = ua_str.to_string();
                         // User agent parsing
                         if let Ok(ua) = parse_user_agent(&ua_str) {
+                            event.remove("user_agent");
                             event.set("user_agent.original", json!(ua_str))?;
                             if let Some(name) = ua.name {
                                 event.set("user_agent.name", json!(name))?;

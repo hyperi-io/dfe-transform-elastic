@@ -338,6 +338,7 @@ impl Transform for Eventlogfile {
                     let ua_str = ua_str.to_string();
                     // User agent parsing
                     if let Ok(ua) = parse_user_agent(&ua_str) {
+                        event.remove("user_agent");
                         if let Some(name) = ua.name { event.set("user_agent.name", json!(name))?; }
                         if let Some(os_name) = ua.os_name {
                             event.set("user_agent.os.name", json!(os_name))?;

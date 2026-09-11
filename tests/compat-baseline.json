@@ -281,7 +281,7 @@
     "system": { "events": 818, "events_total": 821, "fields_wrong": 5 },
     "system_audit": { "events": 2, "events_total": 2, "fields_wrong": 0 },
     "tanium": { "events": 49, "events_total": 54, "fields_wrong": 157 },
-    "teleport": { "events": 266, "events_total": 274, "fields_wrong": 62 },
+    "teleport": { "events": 272, "events_total": 274, "fields_wrong": 0 },
     "tenable_io": { "events": 17, "events_total": 27, "fields_wrong": 34 },
     "tenable_ot_security": { "events": 1, "events_total": 3, "fields_wrong": 14 },
     "tenable_sc": { "events": 3, "events_total": 16, "fields_wrong": 86 },
