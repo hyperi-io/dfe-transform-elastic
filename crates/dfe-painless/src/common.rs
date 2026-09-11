@@ -13750,6 +13750,10 @@ pub struct KeyValueFold {
     /// back over the list they read; two different paths is another pattern.
     path: String,
     into: FoldInto,
+    /// What the script does to each key on the way in, empty where the record's
+    /// own spelling is kept. `tenable_io`'s audit lowercases, and every processor
+    /// after it names the folded key in lower case.
+    key_steps: Vec<KeyRewriteStep>,
     /// The key whose MAP value the script serialises rather than stores.
     dump_key: Option<String>,
 }
@@ -13837,8 +13841,11 @@ fn parse_key_value_fold(script: &str) -> Option<KeyValueFold> {
         .iter()
         .find_map(|keyword| declaration.strip_prefix(keyword))
         .unwrap_or(declaration);
+    // `[:]` and `new HashMap()` are one empty map, spelt Painless's way and
+    // Java's. No shipped fold declares its LIST the Java way, so
+    // `new ArrayList()` is not read here.
     let into = match declaration.strip_prefix(accumulator)?.trim() {
-        "= [:];" => FoldInto::OneMap,
+        "= [:];" | "= new HashMap();" => FoldInto::OneMap,
         "= [];" => FoldInto::MapPerRecord,
         _ => return None,
     };
@@ -13858,45 +13865,21 @@ fn parse_key_value_fold(script: &str) -> Option<KeyValueFold> {
     let key = read("key");
     let value = read("value");
 
-    let mut dump_key = None;
-    match into {
-        FoldInto::OneMap => {
-            let write = format!("{accumulator}[{key}] = {value}");
-            if !body.contains(&write) {
-                return None;
-            }
-            if body.contains("Json.dump(") {
-                // Both writes, or the guard drops every key it does not name.
-                let dumped = format!("{accumulator}[{key}] = Json.dump({value})");
-                let open = format!("if ({key} == ");
-                let close = format!(" && {value} instanceof Map)");
-                let after = body.split_once(&open)?.1;
-                let (name, quoted) = leading_quoted(after)?;
-                if !body.contains(&dumped) || !after[quoted.len()..].starts_with(&close) {
-                    return None;
-                }
-                fragments.push(format!("{open}{quoted}{close}"));
-                fragments.push(dumped);
-                dump_key = Some(name);
-            }
-            fragments.push(write);
-        }
-        FoldInto::MapPerRecord => {
-            let literal = format!("[{key}: {value}]");
-            let added = if body.contains(&format!("{accumulator}.add({literal})")) {
-                literal
-            } else {
-                let (name, statement) = local_bound_in(body, &literal)?;
-                fragments.push(statement);
-                name
-            };
-            let add = format!("{accumulator}.add({added})");
-            if !body.contains(&add) {
-                return None;
-            }
-            fragments.push(add);
-        }
-    }
+    // A fold either stores the key the record carries or lowercases it on the
+    // way in, and only the write it spells says which.
+    let (key_steps, writes, dump_key) = [
+        (Vec::new(), key.clone()),
+        (
+            vec![KeyRewriteStep::Lowercase],
+            format!("{key}.toLowerCase()"),
+        ),
+    ]
+    .into_iter()
+    .find_map(|(steps, expression)| {
+        fold_writes(body, into, accumulator, &key, &expression, &value)
+            .map(|(writes, dump_key)| (steps, writes, dump_key))
+    })?;
+    fragments.extend(writes);
 
     // Longest first, so the plain write is not read out of the dumped one.
     fragments.sort_by_key(|fragment| std::cmp::Reverse(fragment.len()));
@@ -13916,8 +13899,81 @@ fn parse_key_value_fold(script: &str) -> Option<KeyValueFold> {
     Some(KeyValueFold {
         path,
         into,
+        key_steps,
         dump_key,
     })
+}
+
+/// The statements one candidate key expression accounts for, and the key whose
+/// value the script serialises rather than stores.
+///
+/// Read per candidate because the key is either the record's own or a rewrite
+/// of it, and the write is the only place the script says which. `key` stays
+/// the bound name throughout: gitlab's dump guard compares the key BEFORE any
+/// rewrite, which is the value the record carries.
+fn fold_writes(
+    body: &str,
+    into: FoldInto,
+    accumulator: &str,
+    key: &str,
+    expression: &str,
+    value: &str,
+) -> Option<(Vec<String>, Option<String>)> {
+    let mut fragments = Vec::new();
+    let mut dump_key = None;
+
+    match into {
+        FoldInto::OneMap => {
+            // Two spellings of one store: a subscript and `Map.put`.
+            let subscript = format!("{accumulator}[{expression}] = ");
+            let (write, dumped) = if body.contains(&format!("{subscript}{value}")) {
+                (
+                    format!("{subscript}{value}"),
+                    format!("{subscript}Json.dump({value})"),
+                )
+            } else {
+                let put = format!("{accumulator}.put({expression}, ");
+                (
+                    format!("{put}{value})"),
+                    format!("{put}Json.dump({value}))"),
+                )
+            };
+            if !body.contains(&write) {
+                return None;
+            }
+            if body.contains("Json.dump(") {
+                // Both writes, or the guard drops every key it does not name.
+                let open = format!("if ({key} == ");
+                let close = format!(" && {value} instanceof Map)");
+                let after = body.split_once(&open)?.1;
+                let (name, quoted) = leading_quoted(after)?;
+                if !body.contains(&dumped) || !after[quoted.len()..].starts_with(&close) {
+                    return None;
+                }
+                fragments.push(format!("{open}{quoted}{close}"));
+                fragments.push(dumped);
+                dump_key = Some(name);
+            }
+            fragments.push(write);
+        }
+        FoldInto::MapPerRecord => {
+            let literal = format!("[{expression}: {value}]");
+            let added = if body.contains(&format!("{accumulator}.add({literal})")) {
+                literal
+            } else {
+                let (name, statement) = local_bound_in(body, &literal)?;
+                fragments.push(statement);
+                name
+            };
+            let add = format!("{accumulator}.add({added})");
+            if !body.contains(&add) {
+                return None;
+            }
+            fragments.push(add);
+        }
+    }
+
+    Some((fragments, dump_key))
 }
 
 /// Fold each `{key, value}` record onto the path the loop read.
@@ -13943,7 +13999,9 @@ fn run_key_value_fold(event: &mut Event, pattern: &KeyValueFold) -> bool {
         {
             value = Value::String(dumped);
         }
-        Some((key.to_string(), value))
+        // The guard above reads the key the record carries; what is STORED is
+        // that key through the script's own steps.
+        Some((rewrite_key(key, &pattern.key_steps), value))
     };
 
     let folded = match pattern.into {

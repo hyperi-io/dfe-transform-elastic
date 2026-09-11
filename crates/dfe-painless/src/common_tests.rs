@@ -777,6 +777,68 @@ fn a_fold_it_cannot_finish_is_declined_rather_than_half_applied() {
     assert!(parse_stream_rewrite_keys(&normalise(trims_the_value)).is_none());
 }
 
+/// `tenable_io`'s audit folds its `{key, value}` records with the key LOWERCASED
+/// on the way in, and every processor behind the fold names the lower-case key:
+/// the `split` and `convert` on `fields.x-forwarded-for`, the `source.ip` take,
+/// the geoip, and the append into `related.ip`.
+///
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/tenable_io_audit/default.rs`, in the
+/// ESCAPED one-line form the call site holds. It is also the tree's one fold
+/// spelling its accumulator `new HashMap()` and its store `Map.put`.
+#[test]
+fn a_key_value_fold_rewrites_the_key_the_way_its_own_write_spells() {
+    let script = r"def fields = new HashMap();\nfor (f in ctx.tenable_io.audit.fields) {\n  fields.put(f.key.toLowerCase(), f.value);\n}\nctx.tenable_io.audit.fields = fields;";
+    let pattern = parse_key_value_fold(&normalise(script)).expect("the tenable fold is recognised");
+    assert_eq!(pattern.path, "tenable_io.audit.fields");
+    assert_eq!(pattern.into, FoldInto::OneMap);
+    assert_eq!(pattern.key_steps, [KeyRewriteStep::Lowercase]);
+
+    // The vendor's own record list, from the audit capture.
+    let mut event = Event::new(serde_json::json!({ "tenable_io": { "audit": { "fields": [
+        { "key": "message", "value": "Invalid credentials." },
+        { "key": "sessionToken", "value": "-" },
+        { "key": "X-Forwarded-For", "value": "89.160.20.156, 192.0.2.57" },
+        { "key": "X-Request-Uuid", "value": "71a6630e83148694260ad838ddff5dce" },
+    ] } } }));
+    assert!(run_key_value_fold(&mut event, &pattern));
+    assert_eq!(
+        event.get_str("tenable_io.audit.fields.sessiontoken"),
+        Some("-")
+    );
+    assert_eq!(
+        event.get_str("tenable_io.audit.fields.x-forwarded-for"),
+        Some("89.160.20.156, 192.0.2.57")
+    );
+    // The record order is the key order, which is what the `remove` of the
+    // dashed key and the appended `x_forwarded_for` are measured against.
+    let keys: Vec<&String> = event
+        .get_object("tenable_io.audit.fields")
+        .map(|folded| folded.keys().collect())
+        .unwrap_or_default();
+    assert_eq!(
+        keys,
+        [
+            "message",
+            "sessiontoken",
+            "x-forwarded-for",
+            "x-request-uuid"
+        ]
+    );
+
+    // And the ladder hands it to that reader rather than to a neighbour.
+    assert!(
+        known_patterns(&normalise(script))
+            .iter()
+            .any(|pattern| matches!(pattern, KnownPattern::KeyValuePairs(_)))
+    );
+
+    // A call on the key this cannot reproduce declines the whole fold: a key
+    // half-rewritten lands under a name no later processor reads.
+    let trims = script.replace(".toLowerCase()", ".trim()");
+    assert!(parse_key_value_fold(&normalise(&trims)).is_none());
+}
+
 /// A `keysToSnakeCase` script converts the container it NAMES, nothing else.
 ///
 /// Three vendors, three spellings, all verbatim: tanium names a nested path,

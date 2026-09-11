@@ -752,9 +752,8 @@ fn the_snake_case_helper_binds_to_the_rule_its_own_body_spells() {
 const AZURE_AUTH_DETAILS: &str = r"def tmp = [:];\nfor (item in ctx.azure.signinlogs.properties.authentication_processing_details) {\n    tmp[item.key] = item.value;\n}\nctx.azure.signinlogs.properties.authentication_processing_details = tmp;\n";
 
 /// Verbatim from the generated call site in
-/// `crates/dfe-transforms/src/filebeat/tenable_io_audit/default.rs`. The
-/// sharpest near-miss in the tree: one loop, the same `ctx.` path read and
-/// written, and the key LOWERCASED on the way in.
+/// `crates/dfe-transforms/src/filebeat/tenable_io_audit/default.rs`. One loop,
+/// the same `ctx.` path read and written, and the key lowercased on the way in.
 const TENABLE_AUDIT_FIELDS: &str = r"def fields = new HashMap();\nfor (f in ctx.tenable_io.audit.fields) {\n  fields.put(f.key.toLowerCase(), f.value);\n}\nctx.tenable_io.audit.fields = fields;";
 
 /// Verbatim from the generated call site in
@@ -784,38 +783,69 @@ fn the_gitlab_key_value_folds_bind_to_the_accumulator_they_declare() {
         binding(GITLAB_API_PARAMS),
         [concat!(
             r#"KeyValuePairs(KeyValueFold { path: "gitlab.api.params", "#,
-            r#"into: MapPerRecord, dump_key: None })"#
+            r#"into: MapPerRecord, key_steps: [], dump_key: None })"#
         )]
     );
     assert_eq!(
         binding(GITLAB_PRODUCTION_PARAMS),
         [concat!(
             r#"KeyValuePairs(KeyValueFold { path: "gitlab.production.params", "#,
-            r#"into: OneMap, dump_key: Some("variables") })"#
+            r#"into: OneMap, key_steps: [], dump_key: Some("variables") })"#
         )]
     );
     assert_eq!(
         binding(AZURE_AUTH_DETAILS),
         [concat!(
             r#"KeyValuePairs(KeyValueFold { path: "azure.signinlogs.properties"#,
-            r#".authentication_processing_details", into: OneMap, dump_key: None })"#
+            r#".authentication_processing_details", into: OneMap, key_steps: [], "#,
+            r#"dump_key: None })"#
         )]
     );
 }
 
+/// `tenable_io`'s audit is the one fold that declares `new HashMap()`, stores
+/// through `Map.put`, and lowercases the key on the way in.
+///
+/// The binding was EMPTY, and the 5 events it cost were MISPLACED rather than
+/// lost: every processor behind the fold names the lower-case key, so the split
+/// on `fields.x-forwarded-for`, the `source.ip` take, the geoip and the append
+/// into `related.ip` all read nothing.
 #[test]
-fn the_key_value_fold_declines_the_three_loops_that_read_the_same_pair() {
-    // Every one of these reads `<item>.key` and `<item>.value`, so the trigger
-    // takes all three and only the parse turns them away. Claiming any would
-    // write the fold and drop the rest of what the script does, with no error.
+fn the_tenable_audit_fold_binds_with_the_lowercase_its_write_spells() {
+    assert_eq!(
+        binding(TENABLE_AUDIT_FIELDS),
+        [concat!(
+            r#"KeyValuePairs(KeyValueFold { path: "tenable_io.audit.fields", "#,
+            r#"into: OneMap, key_steps: [Lowercase], dump_key: None })"#
+        )]
+    );
+
+    // The WRITTEN document, over the capture's own record list.
+    let mut event = Event::new(json!({ "tenable_io": { "audit": { "fields": [
+        { "key": "sessionToken", "value": "-" },
+        { "key": "X-Forwarded-For", "value": "89.160.20.156, 192.0.2.57" },
+    ] } } }));
+    assert!(painless_exec_plan(&mut event, &PainlessPlan::new(TENABLE_AUDIT_FIELDS)).is_ok());
+    assert_eq!(
+        event.get("tenable_io.audit.fields"),
+        Some(&json!({
+            "sessiontoken": "-",
+            "x-forwarded-for": "89.160.20.156, 192.0.2.57",
+        }))
+    );
+}
+
+#[test]
+fn the_key_value_fold_declines_the_two_loops_it_cannot_finish() {
+    // Both read `<item>.key` and `<item>.value`, so the trigger takes them and
+    // only the parse turns them away. Claiming either would write the fold and
+    // drop the rest of what the script does, with no error.
     //
-    // tenable lowercases the key, so a claim would keep the vendor's own
-    // casing where Elasticsearch writes lowercase; opencti folds a member of a
-    // list ITEM, so the path written is a local's rather than the loop's; and
-    // google_secops falls back to a second member and drops the key when both
-    // are empty -- and it is that source's whole parity debt, sitting at 0/5.
+    // opencti folds a member of a list ITEM, so the path written is a local's
+    // rather than the loop's; google_secops falls back to a second member and
+    // drops the key when both are empty -- and it is that source's whole parity
+    // debt, sitting at 0/5.
     for (name, script) in [
-        ("tenable_io", TENABLE_AUDIT_FIELDS),
         ("ti_opencti", OPENCTI_STARTUP_INFO),
         ("google_secops", GOOGLE_SECOPS_KV_FIELDS),
     ] {
