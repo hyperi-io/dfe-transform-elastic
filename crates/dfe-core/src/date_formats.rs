@@ -311,13 +311,25 @@ fn parse_java_exact(
         Cow::Borrowed(input)
     };
 
-    // A BSD syslog date carries no year. Java fills in the ingesting node's
-    // current one, so the text is prefixed rather than the parse failing.
-    let input = if chrono.contains("%Y") || chrono.contains("%y") {
-        input
-    } else {
-        chrono = Cow::Owned(format!("%Y {chrono}"));
-        Cow::Owned(format!("{} {input}", Utc::now().year()))
+    // Java resolves a partial date against `Instant.EPOCH` with the ingesting
+    // node's year written over it, so a missing year is the current one and a
+    // missing month and day are January 1 rather than today's date. The text is
+    // prefixed rather than the parse failing.
+    let (has_year, has_month_or_day) = date_parts(&chrono);
+    let input = match (has_year, has_month_or_day) {
+        // Complete, or a year with no month and day -- which no vendor pattern
+        // spells, so it is left to parse as it stands.
+        (true, _) => input,
+        // A BSD syslog date: the month and day are in the text, the year is not.
+        (false, true) => {
+            chrono = Cow::Owned(format!("%Y {chrono}"));
+            Cow::Owned(format!("{} {input}", Utc::now().year()))
+        }
+        // No date at all, which is sentinel_one's `HH:mm:ss.SSS`.
+        (false, false) => {
+            chrono = Cow::Owned(format!("%Y-%m-%d {chrono}"));
+            Cow::Owned(format!("{}-01-01 {input}", Utc::now().year()))
+        }
     };
 
     if let Ok(dt) = DateTime::parse_from_str(&input, &chrono) {
@@ -369,6 +381,17 @@ fn parse_zulu_offset(input: &str, chrono: &str) -> Option<DateTime<FixedOffset>>
         .find_map(|(offset, zero)| {
             DateTime::parse_from_str(&format!("{head}{zero}"), &format!("{stem}{offset}")).ok()
         })
+}
+
+/// Whether a chrono pattern names a year, and whether it names a month or day.
+///
+/// `%j` is the day of the year, which resolves both at once.
+fn date_parts(chrono: &str) -> (bool, bool) {
+    const MONTH_OR_DAY: [&str; 7] = ["%m", "%-m", "%b", "%B", "%d", "%-d", "%j"];
+
+    let year = chrono.contains("%Y") || chrono.contains("%y");
+    let month_or_day = MONTH_OR_DAY.iter().any(|part| chrono.contains(part));
+    (year, month_or_day)
 }
 
 /// The same text read with the pattern's trailing `%Z` taken as an offset.
@@ -773,6 +796,62 @@ mod tests {
             Some("2024-12-15T09:30:00.000Z")
         );
         assert!(parse_date_out("not a date", &["yyyy-MM-dd"], None, None).is_none());
+    }
+
+    /// Verbatim from `sentinel_one_cloud_funnel`, whose events carry a
+    /// time-only `timestamp`. Java resolves the missing date against
+    /// `Instant.EPOCH` with the current year written over it, so a capture
+    /// taken in August 2026 is stored as `2026-01-01T18:32:29.495Z`; this
+    /// returned None instead and the date processor's `on_failure` appended an
+    /// `error.message` Elasticsearch does not have.
+    #[test]
+    fn a_time_with_no_date_parses_at_january_first() {
+        // The year is the ingesting node's, so the expectation is derived
+        // rather than written down -- a literal would pass only this year.
+        let expected = format!("{}-01-01T18:32:29.495Z", Utc::now().year());
+        assert_eq!(
+            parse_date_out("18:32:29.495", &["HH:mm:ss.SSS"], None, None).as_deref(),
+            Some(expected.as_str())
+        );
+
+        // splunk_alert and splunk_search spell the same form without the
+        // fraction.
+        let expected = format!("{}-01-01T09:30:00.000Z", Utc::now().year());
+        assert_eq!(
+            parse_date_out("09:30:00", &["HH:mm:ss"], None, None).as_deref(),
+            Some(expected.as_str())
+        );
+
+        // The zone still applies, and a value that does not match the pattern
+        // still declines.
+        let expected = format!("{}-01-01T09:30:00.000+11:00", Utc::now().year());
+        assert_eq!(
+            parse_date_out("09:30:00", &["HH:mm:ss"], Some("Australia/Sydney"), None).as_deref(),
+            Some(expected.as_str())
+        );
+        assert!(parse_date_out("not a time", &["HH:mm:ss"], None, None).is_none());
+    }
+
+    /// `zoom_webhook` names Java's `ISO_INSTANT` constant as a date format, and
+    /// DECLINING it is correct. Elasticsearch has no such named format, so it
+    /// reads the word as a Java pattern, rejects `I` as an unknown pattern
+    /// letter and leaves the field unset under the processor's
+    /// `ignore_failure`. Parsing it wrote an `@timestamp` Elasticsearch does
+    /// not have and cost zoom an event, 97/100 to 96/100.
+    #[test]
+    fn a_java_formatter_constant_is_not_an_elasticsearch_format() {
+        assert!(parse_date_out("2024-04-03T21:02:19.168Z", &["ISO_INSTANT"], None, None).is_none());
+    }
+
+    /// A BSD syslog date carries a month and day but no year, which is filled
+    /// from the clock while the month and day stay the text's own.
+    #[test]
+    fn a_date_with_no_year_keeps_its_month_and_day() {
+        let expected = format!("{}-06-11T09:30:00.000Z", Utc::now().year());
+        assert_eq!(
+            parse_date_out("Jun 11 09:30:00", &["MMM d HH:mm:ss"], None, None).as_deref(),
+            Some(expected.as_str())
+        );
     }
 
     #[test]
