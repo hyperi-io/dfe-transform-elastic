@@ -117,20 +117,46 @@ fn literal_lists(script: &str) -> Vec<(String, Vec<String>)> {
 }
 
 /// The locals a script opens as empty accumulators.
+///
+/// `def names = new ArrayList()` and `ArrayList names = new ArrayList()` open
+/// the same accumulator, and reading only the `def` spelling cost
+/// `jamf_protect` its `related.user`: the walk below found no accumulator, this
+/// reader declined, and `CollectFromList` claimed the script and named the
+/// member off the guard. The name is the declaration's last word either way.
+/// `ctx.a = new ArrayList()` is not a local and is refused on the dot.
+///
+/// The split is on the ALLOCATION rather than the statement's first `=`: a
+/// declaration can open inside the guard that precedes it, and jamf's
+/// `if (... != null) { ArrayList names = new ArrayList()` is one statement whose
+/// first `=` belongs to the guard's own `!=`.
 fn accumulators(script: &str) -> Vec<String> {
     script
         .split(';')
         .filter_map(|statement| {
-            let (name, value) = statement.trim().strip_prefix("def ")?.split_once('=')?;
-            (value.trim() == "new ArrayList()").then(|| name.trim().to_owned())
+            let (declaration, after) = statement.split_once("= new ArrayList()")?;
+            if !after.trim().is_empty() {
+                return None;
+            }
+            let name = declaration
+                .trim_end()
+                .rsplit([' ', '\t', '\n', '\r'])
+                .next()?;
+            (!name.is_empty() && name.chars().all(|c| c.is_alphanumeric() || c == '_'))
+                .then(|| name.to_owned())
         })
         .collect()
 }
 
 /// The loop variable and the `ctx.` list it walks.
+///
+/// Painless spells the same for-each two ways -- `for (v in ctx.x)` and
+/// `for (def v : ctx.x)` -- and both are read, because which one a vendor wrote
+/// says nothing about what the loop does.
 fn walked_list(script: &str) -> Option<(String, String, &str)> {
     let (_, rest) = script.split_once("for (")?;
-    let (var, rest) = rest.split_once(" in ctx")?;
+    let (var, rest) = rest
+        .split_once(" in ctx")
+        .or_else(|| rest.split_once(" : ctx"))?;
     let var = var.trim().trim_start_matches("def ").trim();
     if var.is_empty() || !var.chars().all(|c| c.is_alphanumeric() || c == '_') {
         return None;
@@ -347,6 +373,65 @@ mod tests {
             THREATQ_SOURCES
         ));
         assert_eq!(event.get("threat.indicator.provider"), None);
+    }
+
+    /// Verbatim from the generated call site in
+    /// `crates/dfe-transforms/src/filebeat/jamf_protect_alerts/default.rs`.
+    ///
+    /// The SAME walk as threatq's, spelled `for (def v : ctx.x)` rather than
+    /// `for (v in ctx.x)` and declaring its accumulator `ArrayList names =`
+    /// rather than `def names =`.
+    const JAMF_RELATED_USERS: &str = r#"if (ctx.jamf_protect?.alerts?.input?.related?.users != null && ctx.jamf_protect.alerts.input.related.users.size() > 0) {\n    ArrayList userNames = new ArrayList();\n\n    for (def user : ctx.jamf_protect.alerts.input.related.users) {\n        if (user.containsKey('name') && user['name'] != null) {\n            userNames.add(user['name']);\n        }\n    }\n    if (userNames.size() > 0) {\n        ctx.related = ctx.related ?: new HashMap();\n        ctx.related.user = userNames;\n    }\n}  \n"#;
+
+    /// Neither spelling says anything about what the loop DOES, so both read
+    /// here. `CollectFromList` claimed this one and named the member off the
+    /// guard -- `related.user` came back as an empty list, which the module's
+    /// own closing `drop_empty` then removed, so four events lost the field
+    /// with nothing extra and no error to show for it.
+    #[test]
+    fn the_colon_spelling_and_a_typed_accumulator_read_the_same_walk() {
+        assert_eq!(
+            parse_gather_members(&crate::common::normalise(JAMF_RELATED_USERS)),
+            Some(GatherMembers::new(
+                "jamf_protect.alerts.input.related.users",
+                false,
+                vec![("name".to_owned(), "related.user".to_owned(), Vec::new())],
+            ))
+        );
+
+        // The WRITTEN value: every user's name, in the list's own order.
+        let mut event = Event::new(
+            json!({ "jamf_protect": { "alerts": { "input": { "related": {
+                "users": [
+                    { "uid": 0, "name": "root" },
+                    { "uid": 501, "name": "local-admin" },
+                ]
+            }}}}}),
+        );
+        assert!(crate::common::try_known_painless(
+            &mut event,
+            JAMF_RELATED_USERS
+        ));
+        assert_eq!(
+            event.get("related.user"),
+            Some(&json!(["root", "local-admin"]))
+        );
+    }
+
+    /// The script's own `size() > 0` guard: a walk that gathers nothing leaves
+    /// no empty list behind for a later prune to have to clean up.
+    #[test]
+    fn a_users_list_with_no_names_writes_no_field_at_all() {
+        let mut event = Event::new(
+            json!({ "jamf_protect": { "alerts": { "input": { "related": {
+                "users": [{ "uid": 0 }]
+            }}}}}),
+        );
+        assert!(crate::common::try_known_painless(
+            &mut event,
+            JAMF_RELATED_USERS
+        ));
+        assert_eq!(event.get("related.user"), None);
     }
 
     #[test]

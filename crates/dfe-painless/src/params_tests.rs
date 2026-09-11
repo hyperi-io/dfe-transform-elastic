@@ -5026,3 +5026,97 @@ fn a_write_no_reader_places_leaves_the_event_alone() {
     ));
     assert_eq!(event.as_value(), &before);
 }
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/jamf_protect_alerts/default.rs`, in the
+/// escaped one-line form the call site holds.
+const JAMF_EVENT_ACTION: &str =
+    r#"ctx.event.action = ctx.jamf_protect.alerts.input.match.facts[0].name;\n"#;
+
+/// Its guarded twin, which allocates the container before writing into it.
+const JAMF_RULE_NAME: &str = r#"if (ctx.rule == null) {\n  ctx.rule = new HashMap();\n}\nctx.rule.name = ctx.jamf_protect.alerts.input.match.facts[0].name\n"#;
+
+/// A numeric list subscript names the segment the document spells with a dot.
+///
+/// The bare-path reader always ADMITTED the bracket, so these scripts were
+/// claimed and then read a path `Event::get` cannot walk -- eleven events lost
+/// four fields each and nothing errored.
+#[test]
+fn a_numeric_subscript_reads_the_element_the_document_holds() {
+    let facts = json!({ "jamf_protect": { "alerts": { "input": { "match": {
+        "facts": [{
+            "name": "CustomURLHandlerCreation",
+            "human": "Application that uses custom url handler created",
+        }]
+    }}}}});
+
+    let mut event = Event::new(facts.clone());
+    assert!(crate::common::try_known_painless(
+        &mut event,
+        JAMF_EVENT_ACTION
+    ));
+    assert_eq!(
+        event.get_str("event.action"),
+        Some("CustomURLHandlerCreation")
+    );
+
+    let mut event = Event::new(facts);
+    assert!(crate::common::try_known_painless(
+        &mut event,
+        JAMF_RULE_NAME
+    ));
+    assert_eq!(event.get_str("rule.name"), Some("CustomURLHandlerCreation"));
+}
+
+/// An element the list does not hold writes nothing, rather than a null.
+#[test]
+fn a_subscript_past_the_end_of_the_list_writes_nothing() {
+    let mut event = Event::new(json!({ "jamf_protect": { "alerts": { "input": { "match": {
+        "facts": []
+    }}}}}));
+    crate::common::try_known_painless(&mut event, JAMF_EVENT_ACTION);
+    assert_eq!(event.get("event.action"), None);
+}
+
+/// A QUOTED subscript is a key that may hold dots of its own, which is a
+/// different question -- it is carried through untouched rather than guessed at.
+#[test]
+fn a_quoted_subscript_is_left_exactly_as_it_arrived() {
+    assert_eq!(dotted_subscripts("a['b.c'].d"), "a['b.c'].d");
+    assert_eq!(
+        dotted_subscripts("match.facts[0].name"),
+        "match.facts.0.name"
+    );
+    assert_eq!(dotted_subscripts("rows[0][1]"), "rows.0.1");
+    assert_eq!(dotted_subscripts("plain.path"), "plain.path");
+}
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/jamf_protect_telemetry/default.rs`.
+const JAMF_OUTCOME: &str = r#"ctx.event = ctx.event != null ? ctx.event : new HashMap(); if (ctx.jamf_protect?.telemetry?.event?.su?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.su.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n} if (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n"#;
+
+/// JSON settles a boolean exactly, so `instanceof boolean` is answerable.
+///
+/// While it was not, the term parsed to `Term::Never`, the whole
+/// success/failure branch was dead, and the script's own trailing default wrote
+/// `unknown` over every one of the six telemetry events that carry the field.
+#[test]
+fn an_instanceof_boolean_takes_the_branch_the_value_chooses() {
+    for (success, outcome) in [(true, "success"), (false, "failure")] {
+        let mut event = Event::new(json!({
+            "jamf_protect": { "telemetry": { "event": { "su": { "success": success } } } }
+        }));
+        assert!(crate::common::try_known_painless(&mut event, JAMF_OUTCOME));
+        assert_eq!(event.get_str("event.outcome"), Some(outcome));
+    }
+}
+
+/// A field that is not a boolean leaves the vendor's own default standing.
+#[test]
+fn a_non_boolean_still_falls_to_the_scripts_own_default() {
+    let mut event = Event::new(json!({
+        "jamf_protect": { "telemetry": { "event": { "su": { "success": "yes" } } } }
+    }));
+    assert!(crate::common::try_known_painless(&mut event, JAMF_OUTCOME));
+    assert_eq!(event.get_str("event.outcome"), Some("unknown"));
+}

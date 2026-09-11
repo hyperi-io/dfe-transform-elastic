@@ -8805,9 +8805,9 @@ enum Term {
     },
     /// `ctx.<path> instanceof List` -- a type test the document answers.
     ///
-    /// Only the three container kinds, because JSON settles those exactly.
-    /// `instanceof long` is NOT read: a JSON number carries no width, so a
-    /// `long` test cannot be told from a `double` one here.
+    /// The three container kinds and `boolean`, because JSON settles each of
+    /// those exactly. `instanceof long` is NOT read: a JSON number carries no
+    /// width, so a `long` test cannot be told from a `double` one here.
     InstanceOf { path: String, kind: JsonKind },
     /// Nothing the text resolves, so no event can make it hold.
     Never,
@@ -8819,6 +8819,13 @@ enum JsonKind {
     List,
     Map,
     Text,
+    /// JSON has one boolean and Painless has two spellings of it, so the test
+    /// is exact -- unlike `long`, where the width the name asks about is not in
+    /// the document. `jamf_protect`'s telemetry gates six `event.outcome` writes
+    /// on `<field> instanceof boolean`, and while that was unread the term
+    /// parsed to [`Term::Never`], the success branch was dead, and the script's
+    /// own trailing default wrote `unknown` over all six.
+    Bool,
 }
 
 impl JsonKind {
@@ -8828,6 +8835,7 @@ impl JsonKind {
             "List" | "Collection" | "ArrayList" => Some(Self::List),
             "Map" | "HashMap" => Some(Self::Map),
             "String" => Some(Self::Text),
+            "boolean" | "Boolean" => Some(Self::Bool),
             _ => None,
         }
     }
@@ -8837,6 +8845,7 @@ impl JsonKind {
             Self::List => value.is_array(),
             Self::Map => value.is_object(),
             Self::Text => value.is_string(),
+            Self::Bool => value.is_boolean(),
         }
     }
 }
@@ -9319,7 +9328,7 @@ fn parse_rhs(text: &str) -> Option<Rhs> {
         return path
             .chars()
             .all(|c| c.is_alphanumeric() || "._?@['\"]".contains(c))
-            .then(|| Rhs::Field(clean_path(path)));
+            .then(|| Rhs::Field(dotted_subscripts(&clean_path(path))));
     }
     literal_value(text).map(Rhs::Literal)
 }
@@ -11073,6 +11082,44 @@ pub(crate) fn clean_path(path: &str) -> String {
     } else {
         path.to_string()
     }
+}
+
+/// A path with Painless's NUMERIC list subscripts respelled as segments.
+///
+/// `facts[0].name` names the value the document spells `facts.0.name`:
+/// `Event::get` walks dotted segments and reads a numeric one on an array as an
+/// index, and has no reading at all for a bracket. The bare-path reader in
+/// [`parse_rhs`] admits `[` and `]`, so a script carrying one was CLAIMED and
+/// then handed a path nothing could resolve -- the write answered `None` and was
+/// skipped in silence. `jamf_protect`'s alerts lost `event.action`, `rule.name`,
+/// `event.reason` and `rule.description` on all eleven events that way, with
+/// the bracket sitting in plain view in the binding dump.
+///
+/// The NUMERIC subscript only. A quoted one -- `a['b.c']` -- is a key that may
+/// hold dots of its own, which is [`crate::common::painless_path`]'s question
+/// and a different answer; one is left exactly as it arrived, so a path this
+/// cannot respell reads no worse than it did.
+fn dotted_subscripts(path: &str) -> String {
+    if !path.contains('[') {
+        return path.to_owned();
+    }
+    let mut out = String::with_capacity(path.len());
+    let mut rest = path;
+    while let Some(open) = rest.find('[') {
+        let Some(close) = rest[open + 1..].find(']').map(|at| open + 1 + at) else {
+            break;
+        };
+        let index = &rest[open + 1..close];
+        if index.is_empty() || !index.bytes().all(|byte| byte.is_ascii_digit()) {
+            break;
+        }
+        out.push_str(&rest[..open]);
+        out.push('.');
+        out.push_str(index);
+        rest = &rest[close + 1..];
+    }
+    out.push_str(rest);
+    out
 }
 
 /// Whether a string could be a field path at all.
