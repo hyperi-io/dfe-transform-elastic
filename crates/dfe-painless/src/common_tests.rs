@@ -3027,6 +3027,34 @@ fn the_url_is_concatenated_from_the_parts_that_are_there() {
     assert!(empty.get("_tmp.url_full").is_none());
 }
 
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/akamai_siem/default.rs`: the same
+/// assembly with the accumulator declared `String full = '';`, where cloudfront
+/// writes `def full = "";`.
+///
+/// Written in the ESCAPED one-line form the call site holds.
+#[test]
+fn the_url_is_concatenated_whatever_the_accumulator_is_declared_as() {
+    let script = r#"String full = '';\nif (ctx.url?.scheme != null && ctx.url.scheme != \"\") {\n  full += ctx.url.scheme+\"://\";\n}\nif (ctx.url?.domain != null && ctx.url.domain != \"\") {\n  full += ctx.url.domain;\n}\nif (ctx.json.httpMessage?.path != null && ctx.json.httpMessage.path != \"\") {\n  full += ctx.json.httpMessage.path;\n}\nif (ctx.json.httpMessage?.query != null && ctx.json.httpMessage.query != \"\") {\n  full += \"?\"+ctx.json.httpMessage.query;\n}\nif (full != \"\") {\n  if (ctx.url == null) {\n    ctx.url = [:];\n  }\n  ctx.url.full = full\n}\n"#;
+
+    // The capture's first event carries no scheme, so the URL starts at the
+    // host and the first clause contributes nothing.
+    let mut event = Event::new(json!({
+        "url": { "domain": "vinrcl.safercar.gov" },
+        "json": { "httpMessage": { "path": "/vin/", "query": "vin=1G1FD3DSXP0118247" } },
+    }));
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(
+        event.get("url.full"),
+        Some(&json!("vinrcl.safercar.gov/vin/?vin=1G1FD3DSXP0118247"))
+    );
+
+    // Nothing to build from writes nothing.
+    let mut empty = Event::new(json!({}));
+    assert!(try_known_painless(&mut empty, script));
+    assert!(empty.get("url.full").is_none());
+}
+
 /// Verbatim from `pipelines/aws/elb_logs/default.yml`: the network load
 /// balancer writes `tlsv12`, which is TLS 1.2.
 #[test]

@@ -431,6 +431,33 @@ fn a_guarded_lookup_writes_only_on_a_hit() {
     assert!(!miss.has("ses.file.type_value"));
 }
 
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/cloudflare_logpush_dns/default.rs`: the
+/// same lookup with the key bound through `String.valueOf`, where the gateway
+/// sibling binds on the bare `def code = ctx.a.b;`.
+///
+/// Written in the ESCAPED one-line form the call site holds: a stored script
+/// arrives with its newlines escaped, and a test spelling them for real passes
+/// over a defect in `normalise`.
+#[test]
+fn a_key_bound_through_a_stringifying_wrapper_reads_the_same_path() {
+    let script = r#"def code = String.valueOf(ctx.cloudflare_logpush.dns.response.code);\nctx.dns = ctx.dns ?: [:];\nif (params.containsKey(code)) {\n  ctx.dns.response_code = params[code];\n}\n"#;
+    let params = json!({ "0": "NoError", "3": "NXDomain" });
+
+    let mut hit = Event::new(json!({
+        "cloudflare_logpush": { "dns": { "response": { "code": 3 } } }
+    }));
+    assert!(try_params_painless(&mut hit, script, &params));
+    assert_eq!(hit.get_str("dns.response_code"), Some("NXDomain"));
+
+    // A code the table has no row for leaves the target absent.
+    let mut miss = Event::new(json!({
+        "cloudflare_logpush": { "dns": { "response": { "code": 9 } } }
+    }));
+    assert!(try_params_painless(&mut miss, script, &params));
+    assert!(!miss.has("dns.response_code"));
+}
+
 /// Verbatim from the generated call sites in
 /// `crates/dfe-transforms/src/filebeat/cyberark_epm_raw_event/default.rs`: the
 /// same flat table, with the key bound to a LOCAL and the guard positive.

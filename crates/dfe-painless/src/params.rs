@@ -2109,11 +2109,18 @@ impl GuardedLookupScript {
 
 /// A params key expression stripped back to the term that names the value.
 ///
-/// `obj.toString()` and `(ctx.ses.device_os_type_id).toString()` are the same
-/// term in two spellings, and a reader that knows only the first declines the
-/// second outright.
+/// `obj.toString()`, `(ctx.ses.device_os_type_id).toString()` and
+/// `String.valueOf(ctx.a.b)` are one term in three spellings -- the last is
+/// Java's prefix form of the second -- and a reader that knows only one
+/// declines the rest outright.
 pub(crate) fn key_term(key: &str) -> Option<String> {
-    let key = key.trim().trim_end_matches(".toString()").trim();
+    let key = key.trim();
+    let key = key
+        .strip_prefix("String.valueOf(")
+        .and_then(|inner| inner.strip_suffix(')'))
+        .unwrap_or(key)
+        .trim();
+    let key = key.trim_end_matches(".toString()").trim();
     let key = key
         .strip_prefix('(')
         .and_then(|inner| inner.strip_suffix(')'))
@@ -2133,9 +2140,17 @@ fn parse_guarded_lookup(script: &str) -> Option<GuardedLookupScript> {
         .or_else(|| term.strip_prefix("ctx?."))
     {
         clean_path(path)
-    } else {
-        let bound = script.split_once(&format!(" {term} = ctx."))?.1;
+    } else if let Some((_, bound)) = script.split_once(&format!(" {term} = ctx.")) {
         clean_path(bound.split([';', '\n']).next()?.trim())
+    } else {
+        // The local is bound THROUGH a stringifying wrapper, which the runner
+        // undoes anyway by reading the key with `Event::get_as_string`.
+        let (_, bound) = script.split_once(&format!(" {term} = "))?;
+        let path = key_term(bound.split([';', '\n']).next()?)?;
+        clean_path(
+            path.strip_prefix("ctx.")
+                .or_else(|| path.strip_prefix("ctx?."))?,
+        )
     };
     let target = ctx_writes(script).last().map(|(path, _)| path.clone())?;
     (!key.is_empty() && !target.is_empty()).then(|| GuardedLookupScript::new(key, target))

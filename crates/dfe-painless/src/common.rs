@@ -5181,22 +5181,20 @@ enum ConcatTerm {
 
 /// Read cloudfront's `url.full` assembly as a [`KnownPattern::ConcatParts`].
 ///
-/// `def full = ""` then a run of guarded `full += ...`, and the result assigned
-/// to a ctx field when it came to something.
+/// A local declared empty, then a run of guarded `full += ...`, and the result
+/// assigned to a ctx field when it came to something.
 fn parse_concat_parts(script: &str) -> Option<KnownPattern> {
     use crate::params::clean_path;
 
-    let at = script.find("def ")?;
-    let after = &script[at + 4..];
-    let (var, _) = after.split_once('=')?;
-    let var = var.trim();
-    if var.is_empty() || var.contains(char::is_whitespace) {
-        return None;
-    }
+    // The accumulator is named by its first `+=`, not by its declarator: the
+    // type word is the vendor's -- cloudfront writes `def full = "";` and
+    // akamai `String full = '';` for the same string.
+    let at = script.find(" += ")?;
+    let var = identifier_before(script[..at].trim_end())?;
 
     let append = format!("{var} +=");
     let mut clauses = Vec::new();
-    let mut rest = after;
+    let mut rest = script;
     while let Some(start) = rest.find(&append) {
         let expression = &rest[start + append.len()..];
         let (expression, tail) = expression.split_once(';')?;
@@ -24595,8 +24593,7 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
 
     // Pattern: a string built up piece by piece under per-field guards --
     // cloudfront's `url.full` out of the protocol, domain, path and query.
-    if normalised.contains("def ")
-        && normalised.contains(" += ")
+    if normalised.contains(" += ")
         && normalised.contains("!= \"\"")
         && let Some(pattern) = parse_concat_parts(normalised)
     {
