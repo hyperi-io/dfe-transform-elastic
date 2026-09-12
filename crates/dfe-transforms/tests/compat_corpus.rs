@@ -1662,6 +1662,15 @@ fn score_the_corpus() {
         "a lookup has already loaded the databases -- disable must come first"
     );
 
+    // An event with no `_ingest.timestamp` of its own mints one from the clock,
+    // which is what Elasticsearch does and what production keeps. Comparing
+    // against a STORED capture with it unpinned would drift with the calendar,
+    // so the harness fixes the instant instead.
+    assert!(
+        dfe_runtime::event::pin_ingest_instant(PINNED_INGEST_INSTANT),
+        "an event has already minted a stamp -- the pin must come first"
+    );
+
     // Whole-diff output for the named sources, comma-separated. Printing every
     // difference for every source buries the summary the ranking exists to give.
     let detail: BTreeSet<String> = std::env::var("DFE_COMPAT_DETAIL")
@@ -1975,6 +1984,17 @@ fn excused_as_dynamic(patterns: &BTreeMap<String, String>, field: &FieldDiff) ->
         .map_or_else(|| actual.to_string(), ToString::to_string);
     Regex::new(pattern).is_ok_and(|re| re.is_match(&observed))
 }
+
+/// The instant this harness answers `_ingest.timestamp` with.
+///
+/// Any instant after the corpus's newest attribute date gives the same scores,
+/// so the value is a stable choice rather than a tuned one: ti_misp is the only
+/// source whose OUTPUT depends on it, and there it decides
+/// `decayed_at.isBefore(event_ingested)` against dates running 2014 to 2024 --
+/// a margin of about two years. What would break it is a REGENERATION whose
+/// captures carry attributes dated after this, which flips that comparison and
+/// shows up as ti_misp falling rather than as anything subtle.
+const PINNED_INGEST_INSTANT: &str = "2026-09-01T00:00:00.000000000Z";
 
 /// How many blocking paths a source prints.
 ///

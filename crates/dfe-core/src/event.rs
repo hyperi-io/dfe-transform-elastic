@@ -7,9 +7,21 @@
 //! using dotted paths (e.g., `source.geo.city_name`). The `set()` method
 //! auto-creates intermediate objects when they don't exist.
 
+use std::sync::OnceLock;
+
+use chrono::{SecondsFormat, Utc};
 use serde_json::{Map, Value};
 
 use crate::error::{Result, TransformError};
+
+/// Elasticsearch's name for the instant a document entered a pipeline.
+///
+/// Read by 84 generated modules and written by none of them, which is what
+/// makes it safe to answer from outside the document.
+const INGEST_TIMESTAMP: &str = "_ingest.timestamp";
+
+/// The instant every minted stamp takes, where a harness has pinned one.
+static PINNED_INGEST: OnceLock<String> = OnceLock::new();
 
 /// A JSON event with dotted-path field access.
 ///
@@ -21,6 +33,9 @@ pub struct Event {
     inner: Value,
     capacities: Vec<(String, usize)>,
     aliases: Vec<(String, String)>,
+    /// The ingest instant this event answers `_ingest.timestamp` with, minted
+    /// on the first read and never on an event that does not ask.
+    ingested: OnceLock<Value>,
 }
 
 impl Event {
@@ -30,6 +45,7 @@ impl Event {
             inner: value,
             capacities: Vec::new(),
             aliases: Vec::new(),
+            ingested: OnceLock::new(),
         }
     }
 
@@ -142,8 +158,35 @@ impl Event {
     // -- Getters --------------------------------------------------------
 
     /// Get a reference to the value at a dotted path.
+    ///
+    /// `_ingest.timestamp` answers even where the document carries no such
+    /// field. Elasticsearch stamps it before the first processor runs, and 84
+    /// generated modules read it -- 53 to fill `event.ingested`, 13 as the
+    /// `@timestamp` fallback, and `ti_misp` to date-parse into the window its
+    /// `misp.attribute.decayed` flag is measured against. Nothing upstream of a
+    /// transform can supply it, so an event with none of its own mints one on
+    /// first read and keeps it: several fields derive from it and they have to
+    /// agree. A document that DOES carry the field wins, which is what a
+    /// replayed Elasticsearch document needs.
     pub fn get(&self, path: &str) -> Option<&Value> {
-        resolve_path(&self.inner, path)
+        match resolve_path(&self.inner, path) {
+            found @ Some(_) => found,
+            None if path == INGEST_TIMESTAMP => Some(self.minted_ingest_timestamp()),
+            None => None,
+        }
+    }
+
+    /// The minted stamp, held out of line.
+    ///
+    /// `get` is the hottest function here and a MISS is its commonest outcome
+    /// -- a generated transform guards nearly every processor with one. Inlined
+    /// into the body, the `OnceLock` and its initialiser grew `get` past what
+    /// the optimiser would inline and cost 6 ns on a root-level miss, 39 to 46,
+    /// for a path `_ingest.timestamp` is not.
+    #[cold]
+    #[inline(never)]
+    fn minted_ingest_timestamp(&self) -> &Value {
+        self.ingested.get_or_init(ingest_instant)
     }
 
     /// Get a string value at a dotted path (borrowed).
@@ -491,7 +534,35 @@ impl From<Event> for Value {
     }
 }
 
+/// Pin the instant every minted `_ingest.timestamp` takes, for a harness whose
+/// output is compared against a stored capture.
+///
+/// The stamp is the ingesting node's clock, so a harness that leaves it
+/// unpinned compares against the calendar and drifts. Returns whether the pin
+/// took: it is honoured once per process, and the caller is better told than
+/// left believing a second, different instant applied.
+///
+/// The SERVICE never calls this, and its absence is what leaves production on
+/// the clock, which is what Elasticsearch does.
+pub fn pin_ingest_instant(instant: impl Into<String>) -> bool {
+    PINNED_INGEST.set(instant.into()).is_ok()
+}
+
 // -- Internal helpers ----------------------------------------------------
+
+/// Now, in the nanosecond ISO 8601 Elasticsearch renders `_ingest.timestamp` as.
+///
+/// The precision is part of the shape rather than a flourish: a pipeline that
+/// copies the field straight onto `event.ingested` without a `date` processor
+/// leaves it exactly as rendered, and the corpus captures carry all nine digits.
+/// Called once per event that asks, and 2,779 of the 2,863 generated modules
+/// never do.
+fn ingest_instant() -> Value {
+    PINNED_INGEST.get().map_or_else(
+        || Value::String(Utc::now().to_rfc3339_opts(SecondsFormat::Nanos, true)),
+        |pinned| Value::String(pinned.clone()),
+    )
+}
 
 /// The first `depth` segments of a dotted path, for an error message.
 ///
@@ -686,6 +757,54 @@ mod tests {
         assert_eq!(event.get_str("_temp.user_parts.1"), Some("vagrant"));
         assert_eq!(event.get("_temp.user_parts.2"), None);
         assert_eq!(event.get_str("rows.1.name"), Some("second"));
+    }
+
+    /// Elasticsearch stamps `_ingest.timestamp` before the first processor
+    /// runs and nothing upstream of a transform can, so the event answers with
+    /// one of its own -- and with the SAME one every time, because `ti_misp`
+    /// dates it into `_tmp.event_ingested` and then measures a decay flag
+    /// against it.
+    #[test]
+    fn an_ingest_timestamp_is_minted_once_and_answers_every_read() {
+        let event = Event::new(json!({"message": "hello"}));
+
+        let first = event.get_str("_ingest.timestamp").unwrap().to_string();
+        assert_eq!(event.get_str("_ingest.timestamp"), Some(first.as_str()));
+        assert!(event.has_value("_ingest.timestamp"));
+
+        // The shape Elasticsearch renders: nanoseconds, ending in `Z`.
+        assert!(first.ends_with('Z'), "not a UTC instant: {first}");
+        assert_eq!(
+            crate::date_formats::parse_date(&first, &["ISO8601"], None)
+                .as_deref()
+                .map(|out| out.ends_with('Z')),
+            Some(true),
+            "a date processor cannot read it: {first}"
+        );
+    }
+
+    /// The stamp is answered from OUTSIDE the document, so nothing lands in
+    /// the output -- `_ingest` is Elasticsearch's scratch and DFE emits none
+    /// of it.
+    #[test]
+    fn a_minted_ingest_timestamp_never_reaches_the_document() {
+        let event = Event::new(json!({"message": "hello"}));
+        assert!(event.get("_ingest.timestamp").is_some());
+        assert_eq!(event.as_value().get("_ingest"), None);
+        assert_eq!(event.get("_ingest"), None);
+    }
+
+    /// A document carrying its own wins, which is what a replayed
+    /// Elasticsearch document needs.
+    #[test]
+    fn a_carried_ingest_timestamp_beats_the_minted_one() {
+        let event = Event::new(json!({
+            "_ingest": {"timestamp": "2020-01-01T00:00:00.000Z"},
+        }));
+        assert_eq!(
+            event.get_str("_ingest.timestamp"),
+            Some("2020-01-01T00:00:00.000Z")
+        );
     }
 
     /// Reading through an index is not writing through one: `set` builds the
