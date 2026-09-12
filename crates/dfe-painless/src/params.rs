@@ -202,6 +202,7 @@ pub(crate) enum ParamsPattern {
         table: String,
         target: String,
         default: TableDefault,
+        gate: Option<TableGate>,
     },
     UppercaseLookupDefault {
         source: String,
@@ -337,6 +338,19 @@ pub(crate) enum ParamsPattern {
     SplitNamedByPosition(Box<SplitNamedByPosition>),
     /// An action's ECS block chosen by a four-tier lookup over `params`.
     ActionMapping(Box<crate::action_mapping::ActionMapping>),
+}
+
+/// The membership test a table lookup may sit inside.
+///
+/// `qualys_vmdr` maps `SEVERITY_LEVEL` to a word only for the vulnerability types
+/// its table covers, and running the lookup regardless would rewrite every other
+/// type's severity with a row that was never meant for it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct TableGate {
+    /// The field whose value has to be in the list.
+    pub(crate) field: String,
+    /// The params list it is tested against.
+    pub(crate) list: String,
 }
 
 /// What a table lookup falls back to when the key has no row.
@@ -2273,7 +2287,14 @@ pub(crate) fn run_params_pattern(
             table,
             target,
             default,
+            gate,
         } => {
+            // A record outside the gated list keeps the value it arrived with.
+            if let Some(TableGate { field, list }) = gate
+                && !gated_in(event, field, params.get(list))
+            {
+                return true;
+            }
             // The script's own guard: an absent source writes nothing at all,
             // not the default.
             if let Some(key) = event.get_as_string(source) {
@@ -2738,6 +2759,18 @@ fn try_first_asset(event: &mut Event, params: &Map<String, Value>) -> bool {
     true
 }
 
+/// Whether the document's `field` is one the params `list` names.
+///
+/// A missing field or a list the params block does not carry is OUT, the same
+/// way `List.contains` answers false for a null it was never given.
+fn gated_in(event: &Event, field: &str, list: Option<&Value>) -> bool {
+    let Some(value) = event.get(field) else {
+        return false;
+    };
+    list.and_then(Value::as_array)
+        .is_some_and(|names| names.contains(value))
+}
+
 /// One NAMED params table read with a default, in either spelling.
 ///
 /// Two readers, one pattern: [`parse_ternary_table_lookup`] takes the
@@ -2750,15 +2783,17 @@ fn parse_table_lookup_or_literal(script: &str) -> Option<ParamsPattern> {
         table: lookup.table,
         target: lookup.target,
         default: lookup.default,
+        gate: lookup.gate,
     })
 }
 
-/// The four parts either spelling of the lookup resolves to.
+/// The parts either spelling of the lookup resolves to.
 struct TableLookup {
     source: String,
     table: String,
     target: String,
     default: TableDefault,
+    gate: Option<TableGate>,
 }
 
 /// `params.<table>.containsKey(k) ? params.<table>[k] : '<default>'`, written
@@ -2813,6 +2848,7 @@ fn parse_ternary_table_lookup(script: &str) -> Option<TableLookup> {
         table,
         target,
         default,
+        gate: None,
     })
 }
 
@@ -2830,16 +2866,21 @@ fn parse_ternary_table_lookup(script: &str) -> Option<TableLookup> {
 /// The fallback has to name the SAME table and subscript it with a literal.
 /// Every other `getOrDefault` in the tree defaults to `null`, to the key, or to
 /// the field's own current value, and each of those is a different pattern.
+///
+/// `qualys_vmdr`'s `asset_host_detection` stream writes the same lookup inside
+/// `if (params.vuln_types.contains(vuln_type)) { ... }`, which
+/// [`parse_membership_gate`] reads and the runner then honours.
 fn parse_table_lookup_or_row(script: &str) -> Option<TableLookup> {
     let (head, rest) = script.split_once(".getOrDefault(")?;
 
-    // The assignment sits at the script's TOP LEVEL. qualys_vmdr writes the
-    // same lookup only inside `if (params.vuln_types.contains(vuln_type))`, and
-    // running it regardless would rewrite every other vulnerability type's
-    // severity.
-    if head.matches('{').count() != head.matches('}').count() {
-        return None;
-    }
+    // The assignment usually sits at the script's TOP LEVEL. Where it does not,
+    // a params-list membership test is the only enclosing guard this reader
+    // takes; anything else left open is a different script and declines.
+    let gate = if head.matches('{').count() == head.matches('}').count() {
+        None
+    } else {
+        Some(parse_membership_gate(script, head)?)
+    };
 
     let table = head.rsplit("params.").next()?.trim().to_string();
     if table.is_empty() || table.contains(['.', ' ', '(', '[', '?']) {
@@ -2887,6 +2928,48 @@ fn parse_table_lookup_or_row(script: &str) -> Option<TableLookup> {
         table,
         target,
         default: TableDefault::Row(row),
+        gate,
+    })
+}
+
+/// `if (params.<list>.contains(<local>)) {` as the field to read and the list to
+/// test it against.
+///
+/// `head` is the script up to the lookup, so the guard this reads is the last
+/// one opened before it. Nothing else may be left open: two nested guards mean
+/// a condition this does not model, and claiming the script would run the
+/// lookup where the vendor does not.
+fn parse_membership_gate(script: &str, head: &str) -> Option<TableGate> {
+    let (before, after) = head.rsplit_once("if (params.")?;
+    if before.matches('{').count() != before.matches('}').count() {
+        return None;
+    }
+
+    let (list, rest) = after.split_once(".contains(")?;
+    if list.is_empty() || list.contains(['.', ' ', '(', '[']) {
+        return None;
+    }
+
+    // The tested value is either a ctx path or a local bound to one.
+    let tested = rest.split_once(')')?.0.trim();
+    let field = match tested.strip_prefix("ctx.") {
+        Some(path) => clean_path(path),
+        None => clean_path(
+            script
+                .split_once(&format!(" {tested} = ctx."))?
+                .1
+                .split([';', '\n'])
+                .next()?
+                .trim(),
+        ),
+    };
+    if field.is_empty() || field.contains(char::is_whitespace) {
+        return None;
+    }
+
+    Some(TableGate {
+        field,
+        list: list.to_owned(),
     })
 }
 
@@ -10478,7 +10561,7 @@ fn is_painless_empty(value: &Value) -> bool {
 /// helper and stores the first value BARE. Sharing one of them left
 /// `related.ip` and `related.user` a string wherever a logon event contributed
 /// exactly one of each.
-fn add_to_list(event: &mut Event, path: &str, value: Value) {
+pub(crate) fn add_to_list(event: &mut Event, path: &str, value: Value) {
     let grown = match event.get(path) {
         Some(Value::Array(existing)) => {
             let mut items = existing.clone();

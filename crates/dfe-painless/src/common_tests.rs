@@ -141,6 +141,92 @@ fn a_flag_folds_to_a_boolean_by_its_spelling() {
     assert_eq!(event.get("gdacs.is_temporary"), Some(&Value::Bool(false)));
 }
 
+/// `workday` names its flags in a list and tests each entry against one
+/// spelling, which is the same fold the inline form writes per field.
+///
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/workday_sign_on/default.rs`. The list is
+/// shortened to three entries; the shipped script names eleven.
+#[test]
+fn a_list_of_a_maps_own_entries_folds_to_booleans() {
+    let script = r"def flags = [\n  'Active_Session',\n  'Device_is_Trusted',\n  'Is_Device_Managed'\n];\ndef signon = ctx.workday.sign_on;\nfor (def flag : flags) {\n  if (signon.containsKey(flag) && signon.get(flag) instanceof String) {\n    signon.put(flag, signon.get(flag) == '1');\n  }\n}";
+    let pattern = parse_flag_list_boolean(&normalise(script)).expect("workday folds its flags");
+    assert_eq!(pattern.truthy, ["1"]);
+    assert_eq!(
+        pattern.fields,
+        [
+            (
+                "workday.sign_on.Active_Session".to_owned(),
+                "workday.sign_on.Active_Session".to_owned()
+            ),
+            (
+                "workday.sign_on.Device_is_Trusted".to_owned(),
+                "workday.sign_on.Device_is_Trusted".to_owned()
+            ),
+            (
+                "workday.sign_on.Is_Device_Managed".to_owned(),
+                "workday.sign_on.Is_Device_Managed".to_owned()
+            ),
+        ]
+    );
+
+    let mut event = Event::new(serde_json::json!({ "workday": { "sign_on": {
+        "Active_Session": "1",
+        "Device_is_Trusted": "0",
+        "Request_Originator": "UI"
+    } } }));
+    assert!(coerce_boolean(&mut event, &pattern));
+    assert_eq!(
+        event.get("workday.sign_on.Active_Session"),
+        Some(&Value::Bool(true))
+    );
+    assert_eq!(
+        event.get("workday.sign_on.Device_is_Trusted"),
+        Some(&Value::Bool(false))
+    );
+    // A listed flag the vendor did not send stays absent, the way the script's
+    // own `containsKey` leaves it.
+    assert!(!event.has("workday.sign_on.Is_Device_Managed"));
+    assert_eq!(
+        event.get_str("workday.sign_on.Request_Originator"),
+        Some("UI")
+    );
+}
+
+/// The script's `instanceof String` guard, carried as `text_only`: a flag
+/// already stored as `true` is left alone rather than folded to `false`.
+#[test]
+fn a_flag_that_is_not_text_survives_a_text_only_fold() {
+    let fields = vec![("a.flag".to_owned(), "a.flag".to_owned())];
+    let inline = CoerceBoolean::new(fields.clone(), vec!["1".to_owned()]);
+    let guarded = CoerceBoolean::new(fields, vec!["1".to_owned()]).text_only();
+
+    let held = serde_json::json!({ "a": { "flag": true } });
+    let mut folded = Event::new(held.clone());
+    assert!(coerce_boolean(&mut folded, &inline));
+    assert_eq!(folded.get("a.flag"), Some(&Value::Bool(false)));
+
+    let mut kept = Event::new(held);
+    assert!(coerce_boolean(&mut kept, &guarded));
+    assert_eq!(kept.get("a.flag"), Some(&Value::Bool(true)));
+}
+
+/// A list entry the script computes cannot be read off it, so the whole script
+/// declines rather than folding the entries either side of it.
+#[test]
+fn a_computed_flag_name_declines_the_whole_list() {
+    let script = r"def flags = ['Active_Session', prefix + '_Session'];\ndef m = ctx.a.b;\nfor (def flag : flags) {\n  if (m.containsKey(flag) && m.get(flag) instanceof String) {\n    m.put(flag, m.get(flag) == '1');\n  }\n}";
+    assert_eq!(parse_flag_list_boolean(&normalise(script)), None);
+}
+
+/// Without `containsKey` the script writes over entries the vendor never sent,
+/// and a field Elasticsearch does not emit is an extra rather than a fix.
+#[test]
+fn an_unguarded_flag_write_declines() {
+    let script = r"def flags = ['Active_Session'];\ndef m = ctx.a.b;\nfor (def flag : flags) {\n  if (m.get(flag) instanceof String) {\n    m.put(flag, m.get(flag) == '1');\n  }\n}";
+    assert_eq!(parse_flag_list_boolean(&normalise(script)), None);
+}
+
 /// gitlab names every measurement `<thing>.values` and lists the reading.
 ///
 /// Verbatim from `pipelines/gitlab/application/default.yml:84`. Leaving it
@@ -290,6 +376,55 @@ fn every_key_of_a_map_takes_one_character_replacement() {
     // A key with nothing to replace is carried through untouched.
     assert_eq!(event.get_str("juniper.srx.already_fine"), Some("x"));
     assert!(!event.has("juniper.srx.source-address"));
+}
+
+/// `workday` writes the same swap as an imperative loop over its own keys.
+///
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/workday_sign_on/default.rs`, in the
+/// escaped one-line form a stored script arrives in. Reading only the stream
+/// spelling left it at the `.replace(` stop, so `Sign-on_Time` never became
+/// `Sign_on_Time` and the date processor guarded on it never ran.
+#[test]
+fn the_same_replacement_written_as_a_loop_binds_the_same_pattern() {
+    let script = r"def signon = ctx.workday.sign_on;\nfor (def key : new ArrayList(signon.keySet())) {\n  if (key.contains('-')) {\n    signon.put(key.replace('-', '_'), signon.remove(key));\n  }\n}";
+    let pattern = parse_rename_keys_in_place(&normalise(script)).expect("workday folds hyphens");
+    assert_eq!(pattern.container, "workday.sign_on");
+    assert_eq!(pattern.from, '-');
+    assert_eq!(pattern.to, '_');
+
+    let mut event = Event::new(serde_json::json!({ "workday": { "sign_on": {
+        "Sign-on_Time": "2026-06-22T01:08:10-07:00",
+        "Prompt_-_Positive_Integer": "linda.andersson / Linda Andersson",
+        "Session_ID": "4562a3"
+    } } }));
+    assert!(rename_map_keys(&mut event, &pattern));
+    assert_eq!(
+        event.get_str("workday.sign_on.Sign_on_Time"),
+        Some("2026-06-22T01:08:10-07:00")
+    );
+    assert_eq!(
+        event.get_str("workday.sign_on.Prompt___Positive_Integer"),
+        Some("linda.andersson / Linda Andersson")
+    );
+    assert_eq!(event.get_str("workday.sign_on.Session_ID"), Some("4562a3"));
+}
+
+/// The reader demands the `put` and the `remove` name the SAME map: a rewritten
+/// key written into another one is a copy, and the vendor's own spelling
+/// survives it. That is `ReplaceDotsInKeys`'s script, which keeps its own arm.
+#[test]
+fn a_key_rewrite_copied_into_another_map_is_not_an_in_place_rename() {
+    let script = r"if (ctx.azure.activitylogs.identity.claims != null) {\n  ctx.temp_claims = new HashMap();\n  for (String key : ctx.azure.activitylogs.identity.claims.keySet()) {\n    ctx.temp_claims[key.replace('.', '_')] = ctx.azure.activitylogs.identity.claims.get(key);\n  }\n  ctx.azure.activitylogs.identity.claims = ctx.temp_claims;\n}";
+    assert_eq!(parse_rename_keys_in_place(&normalise(script)), None);
+}
+
+/// A `contains` guard naming a different character than the replace rewrites
+/// dots in hyphenated keys only, which this pattern cannot carry.
+#[test]
+fn a_key_guard_that_disagrees_with_the_replacement_declines() {
+    let script = r"def m = ctx.a.b;\nfor (def key : new ArrayList(m.keySet())) {\n  if (key.contains('-')) {\n    m.put(key.replace('.', '_'), m.remove(key));\n  }\n}";
+    assert_eq!(parse_rename_keys_in_place(&normalise(script)), None);
 }
 
 /// oracle folds every key to lower case in the same one-liner form, and the
@@ -2126,6 +2261,36 @@ fn a_numeric_band_ladder_writes_the_number_the_vendor_wrote() {
             event.get("event.severity"),
             expected.as_ref(),
             "severity {severity}"
+        );
+    }
+}
+
+/// Verbatim from `qualys_vmdr_asset_host_detection/default.rs`, in the escaped
+/// one-line form the call site holds.
+const QUALYS_CVSS_SEVERITY: &str = r#"// CVSS score between 9.0 and 10.0)\nif (9.0 <= ctx.vulnerability.score.base) {\n  ctx.vulnerability.severity = \"Critical\";\n}\n// CVSS score between 7.0 and 8.9\nelse if (7.0 <= ctx.vulnerability.score.base) {\n  ctx.vulnerability.severity = \"High\";\n}\n// CVSS score between 4.0 and 6.9\nelse if (4.0 <= ctx.vulnerability.score.base) {\n  ctx.vulnerability.severity = \"Medium\";\n}\n// CVSS score between 0.1 and 3.9\nelse if (0.1 <= ctx.vulnerability.score.base) {\n  ctx.vulnerability.severity = \"Low\";\n}\nelse if (ctx.vulnerability.score.base == 0) {\n  ctx.vulnerability.severity = \"None\";\n}"#;
+
+/// Every guard is one literal-first bound with no joiner, and the lowest band
+/// opens at a FRACTION -- rounding `0.1` to `0` would give a zero score the
+/// "Low" band that the vendor gives "None".
+#[test]
+fn a_cvss_ladder_bands_a_fractional_edge_without_a_joiner() {
+    for (base, expected) in [
+        (json!(9.8), Some("Critical")),
+        (json!(9.0), Some("Critical")),
+        (json!(7.8), Some("High")),
+        (json!(4.0), Some("Medium")),
+        (json!(3.9), Some("Low")),
+        (json!(0.1), Some("Low")),
+        (json!(0), Some("None")),
+        // Between the "None" arm and the "Low" band the vendor writes nothing.
+        (json!(0.05), None),
+    ] {
+        let mut event = Event::new(json!({ "vulnerability": { "score": { "base": base } } }));
+        assert!(try_known_painless(&mut event, QUALYS_CVSS_SEVERITY));
+        assert_eq!(
+            event.get_str("vulnerability.severity"),
+            expected,
+            "base {base}"
         );
     }
 }

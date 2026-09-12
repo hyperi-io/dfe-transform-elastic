@@ -6245,6 +6245,142 @@ impl RenameMapKeys {
     }
 }
 
+/// The same rewrite written as an IMPERATIVE loop, removing and re-putting each
+/// key in place.
+///
+/// ONE intent, two spellings. `juniper_srx` writes the stream fold
+/// [`parse_rename_map_keys`] reads; `workday` writes:
+///
+/// ```painless
+/// def signon = ctx.workday.sign_on;
+/// for (def key : new ArrayList(signon.keySet())) {
+///   if (key.contains('-')) {
+///     signon.put(key.replace('-', '_'), signon.remove(key));
+///   }
+/// }
+/// ```
+///
+/// The `put` and the `remove` must name the SAME map: a rewritten key written
+/// into a different one is a copy, and the vendor's own spelling survives it.
+fn parse_rename_keys_in_place(script: &str) -> Option<RenameMapKeys> {
+    // ONE `put`. Two are two writes, and reading one would claim a script that
+    // also does something this cannot reproduce.
+    let mut writes = script.match_indices(".put(");
+    let (at, _) = writes.next()?;
+    if writes.next().is_some() {
+        return None;
+    }
+
+    let receiver = receiver_before(&script[..at])?;
+    let args = &script[at + ".put(".len()..];
+
+    // `<key>.replace(<from>, <to>)` -- the new key is the old one rewritten,
+    // which is what makes this a rename rather than an insert.
+    let (key_var, after) = args.split_once(".replace(")?;
+    let key_var = key_var.trim();
+    let (from, after) = after.split_once(',')?;
+    let (to, after) = after.split_once(')')?;
+    let from = single_quoted_char(from)?;
+    let to = single_quoted_char(to)?;
+    if key_var.is_empty() {
+        return None;
+    }
+
+    // `, <receiver>.remove(<key>)` -- dropping the old entry is what leaves ONE
+    // key rather than two.
+    let removal = after
+        .trim_start()
+        .strip_prefix(',')?
+        .trim_start()
+        .strip_prefix(&format!("{receiver}.remove("))?;
+    if removal.split(')').next()?.trim() != key_var {
+        return None;
+    }
+
+    // The loop walks the same map's keys, with `key` as what it walks by. A
+    // `put` under a loop over some other map renames by a key this map has no
+    // entry for.
+    if !script.contains(&format!("{receiver}.keySet()")) || !walks_with(script, key_var) {
+        return None;
+    }
+
+    // A `contains` guard decides WHICH keys are rewritten, so one naming a
+    // different character than the replace is a script this cannot reproduce.
+    if let Some(guard) = script
+        .split_once(&format!("{key_var}.contains("))
+        .and_then(|(_, rest)| single_quoted_char(rest.split(')').next()?))
+        && guard != from
+    {
+        return None;
+    }
+
+    let container = receiver_ctx_path(script, receiver)?;
+    Some(RenameMapKeys::new(container, from, to))
+}
+
+/// The receiver a call hangs off, inline `ctx` path or local alike.
+fn receiver_before(head: &str) -> Option<&str> {
+    let name = head
+        .trim_end()
+        .rsplit(['\n', '\r', '\t', ' ', '{', '}', ';', '(', ')'])
+        .next()?;
+    (!name.is_empty()
+        && name
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '_' || c == '.'))
+    .then_some(name)
+}
+
+/// The `ctx` path a receiver names, whether spelled inline or bound to a local
+/// first.
+fn receiver_ctx_path(script: &str, receiver: &str) -> Option<String> {
+    let path = match receiver.strip_prefix("ctx.") {
+        Some(path) => clean_path(path),
+        None => crate::params::ctx_locals(script)
+            .into_iter()
+            .find(|(name, _)| name == receiver)
+            .map(|(_, path)| path)?,
+    };
+    crate::params::is_ctx_path(&path).then_some(path)
+}
+
+/// Whether a `for` header binds this name as what it walks by.
+fn walks_with(script: &str, key_var: &str) -> bool {
+    script.split("for (").skip(1).any(|header| {
+        header
+            .split(')')
+            .next()
+            .and_then(|head| head.split_once(':'))
+            .is_some_and(|(bound, _)| bound.split_whitespace().next_back() == Some(key_var))
+    })
+}
+
+/// The contents of a term that IS a quoted literal, and nothing else.
+///
+/// Stricter than [`quoted_first`], which takes the first literal it finds
+/// anywhere in the text: `prefix + '_Session'` is a name computed at run time,
+/// and reading `_Session` off it claims an entry the script never names.
+fn whole_quoted(text: &str) -> Option<String> {
+    let text = text.trim();
+    let quote = text.chars().next()?;
+    if quote != '\'' && quote != '"' {
+        return None;
+    }
+    let inner = text.strip_prefix(quote)?.strip_suffix(quote)?;
+    (!inner.contains(quote)).then(|| inner.to_owned())
+}
+
+/// A quoted literal holding exactly one character.
+///
+/// [`RenameMapKeys`] swaps one character for another, so a longer literal is a
+/// substring rewrite it cannot carry.
+fn single_quoted_char(text: &str) -> Option<char> {
+    let inner = whole_quoted(text)?;
+    let mut chars = inner.chars();
+    let one = chars.next()?;
+    chars.next().is_none().then_some(one)
+}
+
 /// `ctx.a = ctx.a.entrySet().stream().collect(toMap(e -> e.getKey().replace('-', '_'), ..))`
 fn parse_rename_map_keys(script: &str) -> Option<RenameMapKeys> {
     let (head, rest) = script.split_once(".getKey().replace(")?;
@@ -7847,13 +7983,31 @@ pub struct CoerceBoolean {
     fields: Vec<(String, String)>,
     /// The lower-cased spellings that mean true. Anything else is false.
     truthy: Vec<String>,
+    /// Whether a value that is not text is left exactly as it is.
+    ///
+    /// The inline fold reaches its value through `toString()`, so it assigns
+    /// whatever the field held. A script guarded on `instanceof String` does
+    /// not, and folding a flag already stored as `true` would write `false`
+    /// over it.
+    text_only: bool,
 }
 
 impl CoerceBoolean {
     /// Build one from resolved parts, for a caller that already knows them.
     #[must_use]
     pub fn new(fields: Vec<(String, String)>, truthy: Vec<String>) -> Self {
-        Self { fields, truthy }
+        Self {
+            fields,
+            truthy,
+            text_only: false,
+        }
+    }
+
+    /// The same fold, applied only where the value is still text.
+    #[must_use]
+    pub fn text_only(mut self) -> Self {
+        self.text_only = true;
+        self
     }
 
     /// The generated call site that rebuilds this pattern.
@@ -7876,9 +8030,10 @@ impl CoerceBoolean {
             .map(|spelling| format!("{}.to_owned()", rust_str(spelling)))
             .collect();
         format!(
-            "coerce_boolean(event, &CoerceBoolean::new(vec![{}], vec![{}]));",
+            "coerce_boolean(event, &CoerceBoolean::new(vec![{}], vec![{}]){});",
             fields.join(", "),
             truthy.join(", "),
+            if self.text_only { ".text_only()" } else { "" },
         )
     }
 }
@@ -7934,6 +8089,9 @@ fn parse_coerce_boolean(script: &str) -> Option<CoerceBoolean> {
 /// Fold each present field to a boolean; an absent one is left absent.
 pub fn coerce_boolean(event: &mut Event, pattern: &CoerceBoolean) -> bool {
     for (source, target) in &pattern.fields {
+        if pattern.text_only && !event.get(source).is_some_and(Value::is_string) {
+            continue;
+        }
         let Some(value) = event.get_as_string(source) else {
             continue;
         };
@@ -7941,6 +8099,94 @@ pub fn coerce_boolean(event: &mut Event, pattern: &CoerceBoolean) -> bool {
         let _ = event.set(target, json!(pattern.truthy.contains(&folded)));
     }
     true
+}
+
+/// The same fold written as a LIST of a map's own entries, each compared to one
+/// spelling.
+///
+/// ONE intent, two spellings. The inline fold above reaches each field through
+/// `toString().toLowerCase()`; `workday` names its flags in a list and tests the
+/// entries against a single literal:
+///
+/// ```painless
+/// def flags = ['Account_Locked__Disabled_or_Expired', 'Active_Session', ...];
+/// def signon = ctx.workday.sign_on;
+/// for (def flag : flags) {
+///   if (signon.containsKey(flag) && signon.get(flag) instanceof String) {
+///     signon.put(flag, signon.get(flag) == '1');
+///   }
+/// }
+/// ```
+///
+/// `containsKey` is demanded: without it the script writes `false` over every
+/// listed key the vendor did not send, and a field Elasticsearch does not emit
+/// is an extra rather than a fix.
+fn parse_flag_list_boolean(script: &str) -> Option<CoerceBoolean> {
+    let mut writes = script.match_indices(".put(");
+    let (at, _) = writes.next()?;
+    if writes.next().is_some() {
+        return None;
+    }
+
+    let receiver = receiver_before(&script[..at])?;
+    let args = &script[at + ".put(".len()..];
+    let (key_var, rest) = args.split_once(',')?;
+    let key_var = key_var.trim();
+    if key_var.is_empty() {
+        return None;
+    }
+
+    // `<receiver>.get(<key>) == '<truthy>'` -- the same map's own entry, read
+    // back and compared.
+    let compared = rest
+        .trim_start()
+        .strip_prefix(&format!("{receiver}.get({key_var})"))?
+        .trim_start()
+        .strip_prefix("==")?;
+    let truthy = whole_quoted(compared.split(')').next()?)?;
+    // `coerce_boolean` compares the value lower-cased, and Painless's `==` does
+    // not, so a literal carrying case is a test the runner cannot reproduce.
+    if truthy.is_empty() || truthy != truthy.to_lowercase() {
+        return None;
+    }
+
+    if !script.contains(&format!("{receiver}.containsKey({key_var})"))
+        || !script.contains(&format!("{key_var}) instanceof String"))
+    {
+        return None;
+    }
+
+    let container = receiver_ctx_path(script, receiver)?;
+    let fields: Vec<(String, String)> = listed_flags(script, key_var)?
+        .into_iter()
+        .map(|key| {
+            let path = format!("{container}.{key}");
+            (path.clone(), path)
+        })
+        .collect();
+    Some(CoerceBoolean::new(fields, vec![truthy]).text_only())
+}
+
+/// The literal list a `for` header walks with this name.
+///
+/// Every entry has to be a quoted literal with no dot in it: one computed at run
+/// time cannot be read off the script, and one holding a dot names a nested path
+/// rather than the entry it is.
+fn listed_flags(script: &str, key_var: &str) -> Option<Vec<String>> {
+    let list = script.split("for (").skip(1).find_map(|header| {
+        let (bound, list) = header.split(')').next()?.split_once(':')?;
+        (bound.split_whitespace().next_back()? == key_var).then(|| list.trim().to_owned())
+    })?;
+    let body = script
+        .split(&format!("{list} = ["))
+        .nth(1)?
+        .split(']')
+        .next()?;
+    let keys: Vec<String> = body
+        .split(',')
+        .map(|entry| whole_quoted(entry).filter(|key| !key.contains('.')))
+        .collect::<Option<_>>()?;
+    (!keys.is_empty()).then_some(keys)
 }
 
 /// An ECS `geo_point` built from a `GeoJSON` coordinate array.
@@ -8837,7 +9083,7 @@ fn parse_capitalised_vocabulary(script: &str) -> Option<Ladder> {
 /// Every member must be a quoted literal. A bare identifier among them reads
 /// as absent, and an arm built from what was left would claim the script while
 /// silently dropping that member.
-fn vocabulary_tested(condition: &str, local: &str) -> Option<Vec<String>> {
+pub(crate) fn vocabulary_tested(condition: &str, local: &str) -> Option<Vec<String>> {
     let (list, subject) = condition.split_once("].contains(")?;
     if subject.trim().strip_suffix(')')?.trim() != local {
         return None;
@@ -9440,12 +9686,16 @@ struct Band {
     all: bool,
 }
 
+/// Thresholds are held in THOUSANDTHS, so the pattern still derives `Eq` and a
+/// fractional band edge is kept exactly rather than rounded. qualys bands CVSS
+/// at `0.1`, and moving that edge would move the band.
+const THRESHOLD_SCALE: i64 = 1_000;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct Bound {
     op: Cmp,
-    /// Whole numbers only, so the pattern derives `Eq` and never rounds a
-    /// boundary the vendor wrote. Every threshold in the catalogue is one.
-    value: i64,
+    /// The threshold in [`THRESHOLD_SCALE`] units.
+    scaled: i64,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -9462,10 +9712,10 @@ enum Cmp {
 impl Band {
     fn holds(&self, value: f64) -> bool {
         let hit = |bound: &Bound| {
-            // Thresholds are vendor-written band edges -- 0, 30, 70, 100 --
-            // so the i64 is always exact in an f64.
+            // Vendor-written band edges -- 0, 30, 70, 100, 9.0, 0.1 -- so the
+            // scaled i64 and the division are both exact in an f64.
             #[allow(clippy::cast_precision_loss)]
-            let limit = bound.value as f64;
+            let limit = bound.scaled as f64 / THRESHOLD_SCALE as f64;
             match bound.op {
                 Cmp::Lt => value < limit,
                 Cmp::Le => value <= limit,
@@ -9556,15 +9806,19 @@ fn parse_band_ladder(script: &str) -> Option<BandLadder> {
 
     // A NUMERIC ladder has to be the whole script, bar the map it creates
     // first. `ScoreSeverityBands` writes `event.risk_score` beside the same
-    // bands, and claiming that script here would drop the field. Label ladders
-    // are not audited, so their reading is unchanged.
+    // bands, and claiming that script here would drop the field.
     let numeric = arms
         .iter()
         .map(|(_, label)| label)
         .chain(default.iter())
         .chain(absent.iter())
         .any(|label| matches!(label, BandLabel::Number(_)));
-    if numeric && !ladder_is_the_whole_script(script, &target) {
+    // So does a ladder whose guards carry no joiner, because the `else if`
+    // chain alone admitted it and that spelling is far commoner than `&&` --
+    // unaudited, a label ladder sitting beside other work would be claimed and
+    // the other work dropped.
+    let single_bound = !script.contains("&&") && !script.contains("||");
+    if (numeric || single_bound) && !ladder_is_the_whole_script(script, &target) {
         return None;
     }
 
@@ -9733,7 +9987,7 @@ fn parse_bound(clause: &str, local: &str) -> Option<Bound> {
         })?;
         return Some(Bound {
             op: tail.mirrored(),
-            value: whole_number(head)?,
+            scaled: threshold(head)?,
         });
     };
     let rest = rest.trim_start();
@@ -9742,8 +9996,38 @@ fn parse_bound(clause: &str, local: &str) -> Option<Bound> {
         .find_map(|(token, op)| Some((op, rest.strip_prefix(token)?)))?;
     Some(Bound {
         op,
-        value: whole_number(number)?,
+        scaled: threshold(number)?,
     })
+}
+
+/// A band edge written `70`, `70.0`, `70L` or `0.1`, in [`THRESHOLD_SCALE`]
+/// units.
+///
+/// An edge finer than a thousandth declines the whole pattern rather than
+/// rounding a boundary the vendor wrote.
+fn threshold(text: &str) -> Option<i64> {
+    let text = text.trim().trim_end_matches(['L', 'l', 'f', 'F', 'd', 'D']);
+    let (sign, digits) = match text.strip_prefix('-') {
+        Some(rest) => (-1, rest),
+        None => (1, text),
+    };
+    let Some((whole, fraction)) = digits.split_once('.') else {
+        return digits
+            .parse::<i64>()
+            .ok()
+            .map(|n| sign * n * THRESHOLD_SCALE);
+    };
+    if fraction.len() > 3 || !fraction.bytes().all(|b| b.is_ascii_digit()) {
+        return None;
+    }
+    let units: i64 = if whole.is_empty() {
+        0
+    } else {
+        whole.parse().ok()?
+    };
+    let places = u32::try_from(fraction.len()).ok()?;
+    let scaled = fraction.parse::<i64>().ok()? * 10_i64.pow(3 - places);
+    Some(sign * (units * THRESHOLD_SCALE + scaled))
 }
 
 /// A threshold written `70`, `70.0` or `70L`. A genuinely fractional one
@@ -22808,6 +23092,8 @@ pub(crate) enum KnownPattern {
     ActorKind(Box<crate::actor_kind::ActorKind>),
     /// A flag written from whether one recorded instant precedes another.
     TimeOrderFlag(Box<crate::time_order_flag::TimeOrderFlag>),
+    LevelLabels(Box<crate::level_labels::LevelLabels>),
+    DelimitedTable(Box<crate::delimited_table::DelimitedTable>),
     /// One member of every record in a list, rendered to text the Java way.
     StringifyMember(Box<crate::stringify_member::StringifyMember>),
     /// ECS lists appended to when a record's own label carries a word.
@@ -23209,6 +23495,18 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: a numbered level renamed to the word its own record type uses,
+    // with a second band table for the type that stops short of the first.
+    // Ahead of the two ladders below, whose `<=` and `else if` triggers this
+    // also spells; its own parse demands the `parseLong` neither of them reads.
+    if normalised.contains("Long.parseLong(ctx.")
+        && normalised.contains("].contains(")
+        && let Some(pattern) = crate::level_labels::parse_level_labels(normalised)
+    {
+        patterns.push(KnownPattern::LevelLabels(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: a score named by the band it falls in.
     if normalised.contains("<=")
         && normalised.contains("&&")
@@ -23226,7 +23524,9 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
     // vendor confidence this way.
     // Either joiner: a band may be `a && b`, an out-of-range `a || b`, or a
     // single open-ended bound in a ladder that has one of the other two.
-    if (normalised.contains("&&") || normalised.contains("||"))
+    // An `else if` chain with no joiner at all is qualys's CVSS ladder, and
+    // `parse_band_ladder` audits that spelling against the whole script.
+    if (normalised.contains("&&") || normalised.contains("||") || normalised.contains("else if ("))
         && let Some(pattern) = parse_band_ladder(normalised)
     {
         patterns.push(KnownPattern::BandLadder(Box::new(pattern)));
@@ -24617,6 +24917,19 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: a delimited TABLE cut twice, into parallel arrays and a list of
+    // records at once. Ahead of the records reader below, whose `[:]` and
+    // `.splitOnToken(` triggers this also spells and which has no arm for the
+    // parallel arrays -- claiming it there would drop them.
+    if normalised.contains(".startsWith(")
+        && normalised.contains(".splitOnToken(")
+        && normalised.contains(".add(")
+        && let Some(pattern) = crate::delimited_table::parse_delimited_table(normalised)
+    {
+        patterns.push(KnownPattern::DelimitedTable(Box::new(pattern)));
+        return patterns;
+    }
+
     // The two below sit AHEAD of `AppendEach`, whose arm returns whether or not
     // its own parse succeeded -- a deliberate stop, so every split-then-append
     // script ends there. Both of these build a LOCAL list and store it, where
@@ -24898,6 +25211,29 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = crate::group_records::parse_group_records(normalised)
     {
         patterns.push(KnownPattern::GroupRecords(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: the same key rewrite written as an imperative loop. AHEAD of the
+    // `.replace(` stop below for the same reason `GroupRecords` is: the rewrite
+    // IS a `replace` call, so from there `workday`'s sign-on keys bound to
+    // nothing and every processor naming the underscored spelling was
+    // unreachable.
+    if normalised.contains(".keySet()")
+        && let Some(pattern) = parse_rename_keys_in_place(normalised)
+    {
+        patterns.push(KnownPattern::RenameMapKeys(pattern));
+        return patterns;
+    }
+
+    // Pattern: the same boolean fold written over a LIST of a map's own entries.
+    // Below `MapEntryToBoolean`, which reads the same intent as `if`/`else if`
+    // arms over ONE named entry, so a script spelling that keeps the reader it
+    // already had.
+    if normalised.contains(".containsKey(")
+        && let Some(pattern) = parse_flag_list_boolean(normalised)
+    {
+        patterns.push(KnownPattern::CoerceBoolean(pattern));
         return patterns;
     }
 
@@ -26270,6 +26606,10 @@ pub(crate) fn run_known_pattern(
         KnownPattern::DecodedFields(pattern) => crate::coercion::decoded_fields(event, pattern),
         KnownPattern::RecordRenames(pattern) => crate::records::record_renames(event, pattern),
         KnownPattern::LongDivide(pattern) => run_long_divide(event, pattern),
+        KnownPattern::LevelLabels(pattern) => crate::level_labels::level_labels(event, pattern),
+        KnownPattern::DelimitedTable(pattern) => {
+            crate::delimited_table::delimited_table(event, pattern)
+        }
     }
 }
 

@@ -4073,10 +4073,6 @@ fn the_other_get_or_default_spellings_are_declined() {
         r#"def sev = ctx.digital_guardian.arc.inc_sev;\nctx.event.severity = params.getOrDefault(sev, params['Unknown']);"#,
         r#"def severity = String.valueOf(ctx.event.severity);\nctx.event.severity_label = params.descriptions.getOrDefault(\n  severity,\n  \"unknown\"\n);\n"#,
         r#"def getField(Map src, String[] path) {\n for (int i=0; i<path.length-1; i++) {\n  src = src.getOrDefault(path[i], null);\n }\n return src;\n}"#,
-        // qualys_vmdr's twin, which writes the SAME table's row only where a
-        // second params list holds the finding's vuln_type. Verbatim from
-        // `qualys_vmdr_asset_host_detection/default.rs`.
-        r#"if (!(ctx.qualys_vmdr?.asset_host_detection?.knowledge_base?.SEVERITY_LEVEL instanceof String)) {\n  return;\n} def vuln_type = ctx.qualys_vmdr?.asset_host_detection?.knowledge_base?.vuln_type; if (!(vuln_type instanceof String)) {\n  return;\n} String level = ctx.qualys_vmdr.asset_host_detection.knowledge_base.SEVERITY_LEVEL; if (params.vuln_types.contains(vuln_type)) {\n  ctx.qualys_vmdr.asset_host_detection.knowledge_base.SEVERITY_LEVEL = params.vuln_level.getOrDefault(level, params.vuln_level[\"0\"]);\n}"#,
     ] {
         let normalised = crate::common::normalise(script);
         assert!(
@@ -4087,6 +4083,97 @@ fn the_other_get_or_default_spellings_are_declined() {
             "the row reader claimed a script it must decline: {script}"
         );
     }
+}
+
+/// `qualys_vmdr`'s twin of [`SEVERITY_ROW_DEFAULT`], which writes the SAME
+/// table's row only where a second params list holds the finding's `vuln_type`.
+/// Verbatim from `qualys_vmdr_asset_host_detection/default.rs`, in the escaped
+/// one-line form the call site holds.
+const SEVERITY_ROW_GATED: &str = r#"if (!(ctx.qualys_vmdr?.asset_host_detection?.knowledge_base?.SEVERITY_LEVEL instanceof String)) {\n  return;\n} def vuln_type = ctx.qualys_vmdr?.asset_host_detection?.knowledge_base?.vuln_type; if (!(vuln_type instanceof String)) {\n  return;\n} String level = ctx.qualys_vmdr.asset_host_detection.knowledge_base.SEVERITY_LEVEL; if (params.vuln_types.contains(vuln_type)) {\n  ctx.qualys_vmdr.asset_host_detection.knowledge_base.SEVERITY_LEVEL = params.vuln_level.getOrDefault(level, params.vuln_level[\"0\"]);\n}"#;
+
+fn gated_vuln_level() -> Value {
+    json!({
+        "vuln_level": {
+            "0": "None", "1": "Minimal", "2": "Medium",
+            "3": "Serious", "4": "Critical", "5": "Urgent"
+        },
+        "vuln_types": [
+            "Potential Vulnerability",
+            "Vulnerability",
+            "Vulnerability or Potential Vulnerability",
+            "Information Gathered"
+        ]
+    })
+}
+
+fn gated_severity(vuln_type: &str, level: &str) -> Event {
+    Event::new(
+        json!({ "qualys_vmdr": { "asset_host_detection": { "knowledge_base": {
+            "SEVERITY_LEVEL": level,
+            "vuln_type": vuln_type,
+        }}}}),
+    )
+}
+
+const GATED_LEVEL: &str = "qualys_vmdr.asset_host_detection.knowledge_base.SEVERITY_LEVEL";
+
+/// A listed `vuln_type` takes the table's word, written back over the level.
+#[test]
+fn a_gated_lookup_maps_the_level_for_a_type_the_list_names() {
+    let mut event = gated_severity("Vulnerability", "4");
+    assert!(try_params_painless(
+        &mut event,
+        SEVERITY_ROW_GATED,
+        &gated_vuln_level()
+    ));
+    assert_eq!(event.get_str(GATED_LEVEL), Some("Critical"));
+}
+
+/// A type the list does not name keeps the digit it arrived with. Writing the
+/// word anyway is the defect the gate exists to stop.
+#[test]
+fn a_gated_lookup_leaves_a_type_the_list_omits_alone() {
+    let mut event = gated_severity("Practice", "4");
+    assert!(try_params_painless(
+        &mut event,
+        SEVERITY_ROW_GATED,
+        &gated_vuln_level()
+    ));
+    assert_eq!(event.get_str(GATED_LEVEL), Some("4"));
+}
+
+/// The script's own type guard: no `vuln_type` at all means the membership test
+/// is never reached, so the level stands.
+#[test]
+fn a_gated_lookup_with_no_type_leaves_the_level_alone() {
+    let mut event = Event::new(json!({ "qualys_vmdr": { "asset_host_detection": {
+        "knowledge_base": { "SEVERITY_LEVEL": "4" }
+    }}}));
+    assert!(try_params_painless(
+        &mut event,
+        SEVERITY_ROW_GATED,
+        &gated_vuln_level()
+    ));
+    assert_eq!(event.get_str(GATED_LEVEL), Some("4"));
+}
+
+/// The gate is read off the script, not assumed: the reader has to name the
+/// list and the field the vendor wrote.
+#[test]
+fn a_gated_lookup_names_the_list_and_the_field_it_tests() {
+    let normalised = crate::common::normalise(SEVERITY_ROW_GATED);
+    let Some(ParamsPattern::TableLookupOrLiteral { gate, target, .. }) =
+        params_pattern(&normalised)
+    else {
+        panic!("the gated lookup was not claimed");
+    };
+    assert_eq!(target, GATED_LEVEL);
+    let gate = gate.expect("the enclosing membership test");
+    assert_eq!(gate.list, "vuln_types");
+    assert_eq!(
+        gate.field,
+        "qualys_vmdr.asset_host_detection.knowledge_base.vuln_type"
+    );
 }
 
 /// Verbatim from `digital_guardian_arc/default.rs`, in the escaped one-line

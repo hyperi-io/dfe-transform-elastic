@@ -57,6 +57,7 @@ pub use crate::painless_common::{
     sum_member_over_list, syslog_priority, unwrap_suffixed_keys,
 };
 pub use crate::painless_deep_merge::{DeepMerge, run_deep_merge};
+pub use crate::painless_delimited_table::{DelimitedTable, delimited_table};
 pub use crate::painless_element_mapping::{ElementMapping, element_mapping};
 pub use crate::painless_expr::{Expr, FloatLit, Op, ScalarExpression, scalar_expression};
 pub use crate::painless_gather_members::{GatherMembers, gather_members};
@@ -64,6 +65,7 @@ pub use crate::painless_group_records::{GroupRecords, group_records};
 pub use crate::painless_hoist::{HoistMember, hoist_member};
 pub use crate::painless_item_writes::{ItemWrites, item_writes};
 pub use crate::painless_last_element::{LastElementMember, run_last_element_member};
+pub use crate::painless_level_labels::{LevelLabels, level_labels};
 pub use crate::painless_list_records::{
     EntryValue, ListRebuild, ScanTaggedList, list_rebuild, scan_tagged_list,
 };
