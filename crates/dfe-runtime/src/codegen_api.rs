@@ -651,7 +651,12 @@ pub fn convert_value(value: &Value, kind: &str) -> std::result::Result<Value, St
                 n.as_i64()
                     .unwrap_or_else(|| n.as_f64().unwrap_or(0.0) as i64),
             )),
-            Value::Bool(b) => Ok(Value::from(i64::from(*b))),
+            // A BOOLEAN is not a number to this processor. Elastic parses the
+            // value's `toString()`, so `false` reaches `Long.parseLong` as the
+            // word and throws -- which runs the pipeline's `on_failure`, and
+            // ti_abusech's removes the field. Reading it as 0 kept a field
+            // Elasticsearch had deleted, on every event of a fixture that was
+            // otherwise perfect.
             _ => Err(cannot("integer")),
         },
         // `float` is 32-bit in the convert processor and `double` is the
@@ -678,7 +683,8 @@ pub fn convert_value(value: &Value, kind: &str) -> std::result::Result<Value, St
                     .map(|f| Value::from(widened(f)))
                     .ok_or_else(|| cannot("float")),
                 Value::Number(n) => Ok(Value::from(widened(n.as_f64().unwrap_or(0.0)))),
-                Value::Bool(b) => Ok(Value::from(if *b { 1.0 } else { 0.0 })),
+                // `Float.parseFloat("false")` throws for the same reason the
+                // integer arm's does.
                 _ => Err(cannot("float")),
             }
         }
