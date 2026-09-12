@@ -22343,6 +22343,8 @@ pub(crate) enum KnownPattern {
     DurationFromUnitTokens(Box<DurationFromUnitTokens>),
     /// One element of a split, optionally trimmed, onto a field.
     SplitElement(Box<SplitElement>),
+    /// One actor record routed to a person or to an application.
+    ActorKind(Box<crate::actor_kind::ActorKind>),
 }
 
 /// Copies that apply only where `guard` holds `literal`.
@@ -22351,6 +22353,55 @@ pub(crate) struct BranchCopy {
     guard: String,
     literal: String,
     copies: Vec<(String, String)>,
+}
+
+/// The ctx path whose DIRECT values a `keySet()` walk prunes, or `None`.
+///
+/// ONE intent, two spellings. tychon names the map inline --
+/// `new ArrayList(ctx.tychon.keySet())` -- and `atlassian_cloud` binds it to a
+/// local first, `def loc = ctx.json.attributes.location;` and then
+/// `new ArrayList(loc.keySet())`. Reading only the inline spelling left
+/// `atlassian_cloud`'s prune unbound, with the vendor's empty strings surviving
+/// into `json.attributes.location`.
+///
+/// The REMOVAL is demanded as well as the walk, and on the same receiver: a
+/// `keySet()` loop that builds lists rather than removing from the map is a
+/// different script, and claiming it would report a prune that never ran.
+fn shallow_prune_root(normalised: &str) -> Option<String> {
+    const WALK: &str = "new ArrayList(";
+    let at = normalised.find(WALK)? + WALK.len();
+    let receiver = normalised[at..].split(".keySet()").next()?.trim();
+    if receiver.is_empty() || !normalised.contains(&format!("{receiver}.remove(")) {
+        return None;
+    }
+    let root = match receiver.strip_prefix("ctx.") {
+        Some(path) => crate::params::clean_path(path),
+        None => crate::params::ctx_locals(normalised)
+            .into_iter()
+            .find(|(name, _)| name == receiver)
+            .map(|(_, path)| path)?,
+    };
+    (!root.is_empty()
+        && root
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '.' || c == '_'))
+    .then_some(root)
+}
+
+/// The prune a `keySet()` walk applies, or `None` where it drops nothing.
+///
+/// workday's walk over the same `keySet()` RENAMES its keys rather than pruning
+/// them, so the policy read off it is empty on every axis. Claiming that script
+/// would report a prune that never ran and take it off every arm below.
+fn shallow_prune_policy(normalised: &str) -> Option<DropPolicy> {
+    let mut policy = DropPolicy::read(normalised);
+    policy.shallow = true;
+    let drops = policy.nulls
+        || policy.empty_strings
+        || policy.empty_collections
+        || !policy.sentinels.is_empty()
+        || !policy.sentinels_ci.is_empty();
+    drops.then_some(policy)
 }
 
 /// The matcher branches this script's text triggers, in dispatch order.
@@ -22960,23 +23011,15 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
 
     // Pattern: the same prune written as a walk over `keySet()`, which removes
     // the root's DIRECT values only -- descending would drop nested nulls the
-    // script keeps. tychon ships it on every stream.
+    // script keeps. tychon ships it on every stream and atlassian_cloud writes
+    // it through a local; `shallow_prune_root` reads both.
     if normalised.contains(".keySet())")
-        && normalised.contains("for (key in keys)")
-        && let Some(at) = normalised.find("ArrayList(ctx.")
-        && let Some(root) = normalised[at + "ArrayList(ctx.".len()..]
-            .split(".keySet()")
-            .next()
-        && !root.is_empty()
-        && root
-            .chars()
-            .all(|c| c.is_alphanumeric() || c == '.' || c == '_')
+        && let Some(root) = shallow_prune_root(normalised)
+        && let Some(policy) = shallow_prune_policy(normalised)
     {
-        let mut policy = DropPolicy::read(normalised);
-        policy.shallow = true;
         patterns.push(KnownPattern::DropEmpty {
             policy,
-            root: Some(root.to_string()),
+            root: Some(root),
         });
         return patterns;
     }
@@ -24963,6 +25006,21 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: one actor record routed to a person or to an application, the
+    // SAME members going to different destinations. LAST, and that position is
+    // measured rather than assumed: atlassian_cloud's script reaches the end of
+    // the ladder today, because the only two arms that can return an EMPTY list
+    // once their trigger holds are gated on `.add(` and `.replace(`, and it
+    // spells neither. The trigger is the address test that decides the branch,
+    // and the parse -- which demands both destinations build the map they write
+    // into -- is what claims the script.
+    if normalised.contains(".indexOf('@') >= 0")
+        && let Some(pattern) = crate::actor_kind::parse_actor_kind(normalised)
+    {
+        patterns.push(KnownPattern::ActorKind(Box::new(pattern)));
+        return patterns;
+    }
+
     patterns
 }
 
@@ -25606,6 +25664,7 @@ pub(crate) fn run_known_pattern(
             run_duration_from_unit_tokens(event, pattern)
         }
         KnownPattern::SplitElement(pattern) => run_split_element(event, pattern),
+        KnownPattern::ActorKind(pattern) => crate::actor_kind::run_actor_kind(event, pattern),
         KnownPattern::CopyByLabel(pattern) => run_copy_by_label(event, pattern),
         KnownPattern::BandLadder(pattern) => run_band_ladder(event, pattern),
         KnownPattern::StripSurroundingPair(pattern) => run_strip_surrounding_pair(event, pattern),

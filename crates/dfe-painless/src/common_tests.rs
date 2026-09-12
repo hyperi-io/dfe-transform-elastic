@@ -10673,3 +10673,84 @@ fn a_split_element_inside_a_longer_script_declines() {
         );
     }
 }
+
+/// The shallow `keySet()` prune in the two spellings the tree ships. Verbatim
+/// from `filebeat/tychon_arp/default.rs`, which names the map inline, and
+/// `filebeat/atlassian_cloud_audit/default.rs`, which binds it to a local.
+const TYCHON_PRUNE: &str = r#"def keys = new ArrayList(ctx.tychon.keySet());\nfor (key in keys) {\n  if (ctx.tychon[key] == \"\" || ctx.tychon[key] == null) {\n    ctx.tychon.remove(key);\n  }\n}\n"#;
+const ATLASSIAN_PRUNE: &str = r#"def loc = ctx.json.attributes.location;\nfor (def key : new ArrayList(loc.keySet())) {\n  def val = loc.get(key);\n  if (val instanceof String && val.isEmpty()) {\n    loc.remove(key);\n  }\n}"#;
+
+/// The inline spelling keeps the root it always read.
+#[test]
+fn the_inline_keyset_walk_still_prunes_its_own_root() {
+    let normalised = normalise(TYCHON_PRUNE);
+    assert_eq!(shallow_prune_root(&normalised).as_deref(), Some("tychon"));
+    let mut event = Event::new(serde_json::json!({
+        "tychon": {
+            "mac": "00:11:22:33:44:55",
+            "blank": "",
+            "absent": null,
+            "nested": { "x": "" },
+        },
+    }));
+    assert!(try_known_painless(&mut event, TYCHON_PRUNE));
+    assert_eq!(event.get_str("tychon.mac"), Some("00:11:22:33:44:55"));
+    assert!(!event.has("tychon.blank"));
+    assert!(!event.has("tychon.absent"));
+    // Shallow: the nested empty string is the script's to keep.
+    assert_eq!(event.get_str("tychon.nested.x"), Some(""));
+}
+
+/// The local-bound spelling reaches the same runner, through the `def` that
+/// named the map.
+#[test]
+fn a_keyset_walk_through_a_local_prunes_the_map_the_local_names() {
+    let normalised = normalise(ATLASSIAN_PRUNE);
+    assert_eq!(
+        shallow_prune_root(&normalised).as_deref(),
+        Some("json.attributes.location")
+    );
+    let mut event = Event::new(serde_json::json!({
+        "json": { "attributes": { "location": {
+            "ip": "81.2.69.144",
+            "city": "",
+            "countryName": "",
+            "atlassianRegion": null,
+        } } },
+    }));
+    assert!(try_known_painless(&mut event, ATLASSIAN_PRUNE));
+    assert_eq!(
+        event.get_str("json.attributes.location.ip"),
+        Some("81.2.69.144")
+    );
+    assert!(!event.has("json.attributes.location.city"));
+    assert!(!event.has("json.attributes.location.countryName"));
+    // `instanceof String && isEmpty()` is the whole predicate, so a null stays.
+    assert!(event.has("json.attributes.location.atlassianRegion"));
+}
+
+/// workday walks the same `keySet()` to RENAME its keys, and a policy read off
+/// it drops nothing. Verbatim from `filebeat/workday_sign_on/default.rs`.
+#[test]
+fn a_keyset_walk_that_renames_rather_than_prunes_is_declined() {
+    let script = r#"def signon = ctx.workday.sign_on;\nfor (def key : new ArrayList(signon.keySet())) {\n  if (key.contains('-')) {\n    signon.put(key.replace('-', '_'), signon.remove(key));\n  }\n}"#;
+    let normalised = normalise(script);
+    assert_eq!(
+        shallow_prune_root(&normalised).as_deref(),
+        Some("workday.sign_on")
+    );
+    assert!(shallow_prune_policy(&normalised).is_none());
+    assert!(
+        !known_patterns(&normalised)
+            .iter()
+            .any(|pattern| matches!(pattern, KnownPattern::DropEmpty { .. }))
+    );
+}
+
+/// A walk that removes nothing from the map it walked is not this pattern.
+#[test]
+fn a_keyset_walk_with_no_removal_is_declined() {
+    let script =
+        r#"def keys = new ArrayList(ctx.a.b.keySet());\nfor (key in keys) {\n  ctx.c.d = key;\n}"#;
+    assert!(shallow_prune_root(&normalise(script)).is_none());
+}

@@ -25,6 +25,8 @@
 //!
 //! The modules drop the `painless_` prefix the crate name already carries.
 
+pub mod action_mapping;
+pub mod actor_kind;
 pub mod coercion;
 pub mod collect_present;
 pub mod collect_rows;

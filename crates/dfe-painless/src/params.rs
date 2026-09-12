@@ -331,6 +331,8 @@ pub(crate) enum ParamsPattern {
     ConfiguredDateFormat(Box<ConfiguredDateFormat>),
     /// A delimited string's tokens named by POSITION out of the params table.
     SplitNamedByPosition(Box<SplitNamedByPosition>),
+    /// An action's ECS block chosen by a four-tier lookup over `params`.
+    ActionMapping(Box<crate::action_mapping::ActionMapping>),
 }
 
 /// What a table lookup falls back to when the key has no row.
@@ -1133,6 +1135,18 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
         && let Some(pattern) = parse_split_named_by_position(normalised)
     {
         return Some(ParamsPattern::SplitNamedByPosition(Box::new(pattern)));
+    }
+
+    // Pattern: an action's ECS block chosen by an exact table, then an ordered
+    // prefix list, then one suffix rule, then a fallback. LAST, because nothing
+    // above claims atlassian_cloud's classifier and it needs to precede
+    // nothing; the two calls are the cheap reject and the parse -- which
+    // demands all four tiers -- is the gate.
+    if normalised.contains(".startsWith(")
+        && normalised.contains(".endsWith(params.")
+        && let Some(pattern) = crate::action_mapping::parse_action_mapping(normalised)
+    {
+        return Some(ParamsPattern::ActionMapping(Box::new(pattern)));
     }
 
     None
@@ -2331,6 +2345,9 @@ pub(crate) fn run_params_pattern(
             try_lookup_merge(event, normalised, params, literals)
         }
         ParamsPattern::LookupColumns => try_lookup_columns(event, normalised, params),
+        ParamsPattern::ActionMapping(pattern) => {
+            crate::action_mapping::run_action_mapping(event, pattern, params)
+        }
         ParamsPattern::UrlTailAction(pattern) => {
             crate::url_action::url_tail_action(event, pattern, params)
         }

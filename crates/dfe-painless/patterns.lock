@@ -248,6 +248,7 @@
 247 CompareToChoice
 248 DurationFromUnitTokens
 249 SplitElement
+250 ActorKind
 
 [params_pattern]
   1 RowMembers
@@ -336,4 +337,5 @@
  84 MemberMappings
  85 ConfiguredDateFormat
  86 SplitNamedByPosition
+ 87 ActionMapping
 

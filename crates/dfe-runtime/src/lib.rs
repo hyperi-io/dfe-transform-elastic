@@ -33,6 +33,7 @@ pub mod transform;
 // stays invisible to both.
 pub use dfe_core::{date_formats, error, event, syslog_pri};
 pub use dfe_painless::{
+    action_mapping as painless_action_mapping, actor_kind as painless_actor_kind,
     coercion as painless_coercion, collect_present as painless_collect_present,
     common as painless_common, deep_merge as painless_deep_merge,
     element_mapping as painless_element_mapping, entity as painless_entity, expr as painless_expr,
