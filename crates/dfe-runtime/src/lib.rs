@@ -42,11 +42,14 @@ pub use dfe_painless::{
     issue_lifecycle as painless_issue_lifecycle, item_writes as painless_item_writes,
     last_element as painless_last_element, list_records as painless_list_records,
     lists as painless_lists, map_entries as painless_map_entries,
-    named_arms as painless_named_arms, nth_separator as painless_nth_separator,
-    pair_table as painless_pair_table, params as painless_params, plan as painless_plan,
-    records as painless_records, scheduled_task as painless_scheduled_task, sddl as painless_sddl,
+    member_tags as painless_member_tags, named_arms as painless_named_arms,
+    nth_separator as painless_nth_separator, pair_table as painless_pair_table,
+    params as painless_params, plan as painless_plan, records as painless_records,
+    scheduled_task as painless_scheduled_task, sddl as painless_sddl,
     seconds_between as painless_seconds_between, split_fanout as painless_split_fanout,
-    stats as painless_stats, totals as painless_totals, windows as painless_windows,
+    stats as painless_stats, stringify_member as painless_stringify_member,
+    time_order_flag as painless_time_order_flag, totals as painless_totals,
+    windows as painless_windows,
 };
 
 pub use dfe_core::{Event, Result, TransformError};

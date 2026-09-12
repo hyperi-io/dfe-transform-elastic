@@ -15459,6 +15459,67 @@ fn split_at_close_paren(text: &str) -> Option<(&str, &str)> {
     None
 }
 
+/// `for (<item> in ctx.<list>) { <body> }`, where the loop is the WHOLE script.
+///
+/// [`for_loop_parts`] reads the `for (def <item> : <list>)` spelling; this is the
+/// other one the vendors write. The body comes back so a matcher can refuse a
+/// loop that does more than it reproduces, and text after the loop declines for
+/// the same reason.
+pub(crate) fn for_each_in(script: &str) -> Option<(String, String, String)> {
+    let rest = script.trim().strip_prefix("for (")?;
+    let (header, rest) = split_at_close_paren(rest)?;
+    let (item, walked) = header.split_once(" in ")?;
+    let item = item.trim();
+    if item.is_empty() || !item.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+    let list = crate::params::clean_path(walked.trim().strip_prefix("ctx.")?.trim());
+    if list.is_empty() {
+        return None;
+    }
+
+    let rest = rest.trim_start();
+    let close = matching_brace(rest)?;
+    if !rest[close + 1..].trim().is_empty() {
+        return None;
+    }
+    Some((item.to_owned(), list, rest[1..close].to_owned()))
+}
+
+/// The condition, the block, and what follows, for an `if (` opening `text`.
+pub(crate) fn if_block(text: &str) -> Option<(&str, &str, &str)> {
+    let rest = text.trim_start().strip_prefix("if")?.trim_start();
+    let (condition, rest) = split_at_close_paren(rest.strip_prefix('(')?)?;
+    let rest = rest.trim_start();
+    let close = matching_brace(rest)?;
+    Some((condition, &rest[1..close], &rest[close + 1..]))
+}
+
+/// The statements of a block, an `if (...) { ... }` counting as ONE.
+///
+/// Splitting on `;` alone cuts a guarded statement into pieces that read as
+/// separate writes, which is how a matcher claims a conditional write and then
+/// makes it unconditionally.
+pub(crate) fn block_statements(block: &str) -> Option<Vec<&str>> {
+    let mut statements = Vec::new();
+    let mut rest = block.trim();
+    while !rest.is_empty() {
+        if let Some((_, _, after)) = if_block(rest) {
+            let taken = rest.len() - after.len();
+            statements.push(rest[..taken].trim());
+            rest = after.trim_start().strip_prefix(';').unwrap_or(after).trim();
+            continue;
+        }
+        let end = rest.find(';')?;
+        let statement = rest[..end].trim();
+        if !statement.is_empty() {
+            statements.push(statement);
+        }
+        rest = rest[end + 1..].trim();
+    }
+    Some(statements)
+}
+
 /// `<item>.<key> == '<v1>' || <item>.<key> == '<v2>' ...`, one key throughout.
 fn parse_member_equality(cond: &str, item: &str) -> Option<(String, Vec<String>)> {
     let mut key: Option<String> = None;
@@ -16635,6 +16696,9 @@ impl Eq for Factor {}
 /// preamble, so the target read as `event` and nothing was written: 25 zscaler
 /// events with no `event.duration` at all.
 fn parse_scale_field(script: &str) -> Option<ScaleField> {
+    let through_local = assignment_through_local(script);
+    let script = through_local.as_deref().unwrap_or(script);
+
     let (mut head, factor) = script.rsplit_once('*')?;
     let mut factor = literal_factor(factor)?;
 
@@ -16661,6 +16725,39 @@ fn parse_scale_field(script: &str) -> Option<ScaleField> {
         target,
         factor,
     })
+}
+
+/// A computation written into a LOCAL and then assigned to a field, rewritten as
+/// the single assignment it means.
+///
+/// `def n = ctx.a * 100.0; ctx.b = n;` IS `ctx.b = ctx.a * 100.0;`, and both
+/// rescale readers parse ONE statement -- so `darktrace`'s risk-score multiply
+/// and `rapid7_insightvm`'s divide bound to nothing, while the same arithmetic
+/// written inline binds. Two statements exactly, because a third is a script
+/// this cannot claim to have read whole.
+pub(crate) fn assignment_through_local(script: &str) -> Option<String> {
+    let statements: Vec<&str> = script
+        .split(';')
+        .map(str::trim)
+        .filter(|statement| !statement.is_empty())
+        .collect();
+    let [bound, written] = statements.as_slice() else {
+        return None;
+    };
+
+    let (name, value) = bound.strip_prefix("def ")?.split_once('=')?;
+    let name = name.trim();
+    if name.is_empty() || !name.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+    let (target, read) = written.split_once('=')?;
+    if read.trim() != name {
+        return None;
+    }
+    // The target has to be a field. A second local would make this a rename
+    // whose end neither reader can see.
+    painless_path(target)?;
+    Some(format!("{} = {};", target.trim(), value.trim()))
 }
 
 /// One multiply's right-hand operand, when it is a numeric literal.
@@ -18496,6 +18593,14 @@ fn parse_wrap_map_in_list(script: &str) -> Option<String> {
 /// statement is split apart rather than pattern-matched whole.
 fn parse_guarded_divide(script: &str) -> Option<KnownPattern> {
     use crate::params::clean_path;
+
+    // The same divide written THROUGH A LOCAL, which is `rapid7_insightvm`'s
+    // spelling of the rescale `darktrace` writes as a multiply. The statement
+    // walk below wants one starting `ctx.`, and a `def` in front of it left
+    // `event.risk_score_norm` missing on both of rapid7's scored events. A
+    // script the rewrite declines is handed on unchanged.
+    let through_local = assignment_through_local(script);
+    let script = through_local.as_deref().unwrap_or(script);
 
     // Statements, not lines: a folded YAML scalar puts the whole script on one.
     let statement = script
@@ -22345,6 +22450,12 @@ pub(crate) enum KnownPattern {
     SplitElement(Box<SplitElement>),
     /// One actor record routed to a person or to an application.
     ActorKind(Box<crate::actor_kind::ActorKind>),
+    /// A flag written from whether one recorded instant precedes another.
+    TimeOrderFlag(Box<crate::time_order_flag::TimeOrderFlag>),
+    /// One member of every record in a list, rendered to text the Java way.
+    StringifyMember(Box<crate::stringify_member::StringifyMember>),
+    /// ECS lists appended to when a record's own label carries a word.
+    MemberTags(Box<crate::member_tags::MemberTags>),
 }
 
 /// Copies that apply only where `guard` holds `literal`.
@@ -25021,6 +25132,45 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // The three below sit LAST for the same measured reason: each of their
+    // scripts reaches the end of the ladder today -- `binding: []` in the static
+    // census -- and the only two arms that can return an EMPTY list once their
+    // trigger holds are gated on `.add(` and `.replace(`. `MemberTags` does
+    // spell `.add(`, and that arm asks for a `.splitOnToken(` or an
+    // `instanceof Map` BEFORE it, which none of these scripts carries. Each
+    // parse demands the WHOLE script, so no text can satisfy two of them and
+    // the order among the three decides nothing.
+
+    // Pattern: a flag written from whether one recorded instant precedes
+    // another, with the null and type guards that decide false, true, or
+    // nothing at all.
+    if normalised.contains(".isBefore(")
+        && let Some(pattern) = crate::time_order_flag::parse_time_order_flag(normalised)
+    {
+        patterns.push(KnownPattern::TimeOrderFlag(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: one member of every record in a list, replaced by the text Java
+    // renders it as. The trailing `;` is what tells the call from
+    // `LongCoercion`'s `.toString());` above, which reads a coercion rather than
+    // a rendering.
+    if normalised.contains(".toString();")
+        && let Some(pattern) = crate::stringify_member::parse_stringify_member(normalised)
+    {
+        patterns.push(KnownPattern::StringifyMember(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: ECS lists appended to when a record's own label carries a word.
+    if normalised.contains(".toLowerCase()")
+        && normalised.contains(".add(")
+        && let Some(pattern) = crate::member_tags::parse_member_tags(normalised)
+    {
+        patterns.push(KnownPattern::MemberTags(Box::new(pattern)));
+        return patterns;
+    }
+
     patterns
 }
 
@@ -25665,6 +25815,13 @@ pub(crate) fn run_known_pattern(
         }
         KnownPattern::SplitElement(pattern) => run_split_element(event, pattern),
         KnownPattern::ActorKind(pattern) => crate::actor_kind::run_actor_kind(event, pattern),
+        KnownPattern::TimeOrderFlag(pattern) => {
+            crate::time_order_flag::time_order_flag(event, pattern)
+        }
+        KnownPattern::StringifyMember(pattern) => {
+            crate::stringify_member::stringify_member(event, pattern)
+        }
+        KnownPattern::MemberTags(pattern) => crate::member_tags::member_tags(event, pattern),
         KnownPattern::CopyByLabel(pattern) => run_copy_by_label(event, pattern),
         KnownPattern::BandLadder(pattern) => run_band_ladder(event, pattern),
         KnownPattern::StripSurroundingPair(pattern) => run_strip_surrounding_pair(event, pattern),

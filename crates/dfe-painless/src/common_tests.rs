@@ -5470,6 +5470,67 @@ fn a_scale_reads_a_fractional_source() {
     assert_eq!(whole.get("event.duration"), Some(&json!(2e9)));
 }
 
+/// The same scale written THROUGH A LOCAL, which is the other spelling in the
+/// tree and bound to nothing at all.
+///
+/// `darktrace` and `rapid7_insightvm` both normalise a risk score this way, and
+/// every reader below parses one statement -- so the trailing assignment made
+/// the factor unreadable and the script unclaimed. `event.risk_score_norm` was
+/// missing on all 11 of darktrace's model-breach events.
+///
+/// The product is the plain one Elasticsearch published: `0.476 * 100.0` is
+/// `47.599999999999994`, and rounding it would be a different number.
+#[test]
+fn a_scale_written_through_a_local_reads_the_same_two_paths() {
+    let script = "def normalizedRiskScore = ctx.event.risk_score * 100.0; \
+         ctx.event.risk_score_norm = normalizedRiskScore;";
+
+    let mut event = Event::new(json!({ "event": { "risk_score": 0.476 } }));
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(
+        event.get("event.risk_score_norm"),
+        Some(&json!(47.599_999_999_999_994))
+    );
+
+    let mut whole = Event::new(json!({ "event": { "risk_score": 1.0 } }));
+    assert!(try_known_painless(&mut whole, script));
+    assert_eq!(whole.get("event.risk_score_norm"), Some(&json!(100.0)));
+}
+
+/// The DIVIDE twin, which is the same intent in rapid7's spelling.
+///
+/// One blocker stood between `rapid7_insightvm` and a clean score, and it was
+/// this script: `event.risk_score_norm` wrong on both its scored vulnerability
+/// events. The quotient is the plain one -- `582.82 / 10.0` is
+/// `58.282000000000004`.
+#[test]
+fn a_divide_written_through_a_local_reads_the_same_two_paths() {
+    let script = "def normalizedRiskScore = ctx.event.risk_score / 10.0; \
+         ctx.event.risk_score_norm = normalizedRiskScore;";
+
+    let mut event = Event::new(json!({ "event": { "risk_score": 582.82 } }));
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(
+        event.get("event.risk_score_norm"),
+        Some(&json!(58.282_000_000_000_004))
+    );
+}
+
+/// A third statement means the script does something this does not reproduce,
+/// so the rewrite declines rather than claiming it.
+#[test]
+fn an_assignment_through_a_local_needs_exactly_two_statements() {
+    assert!(assignment_through_local("def n = ctx.a * 100.0; ctx.b = n; ctx.c = 1;").is_none());
+    // The written value has to BE the local, not something derived from it.
+    assert!(assignment_through_local("def n = ctx.a * 100.0; ctx.b = n + 1;").is_none());
+    // And the local has to be one the script declares.
+    assert!(assignment_through_local("ctx.a = ctx.b * 2; ctx.c = ctx.a;").is_none());
+    assert_eq!(
+        assignment_through_local("def n = ctx.a * 100.0; ctx.b = n;").as_deref(),
+        Some("ctx.b = ctx.a * 100.0;")
+    );
+}
+
 /// `jamf_protect` names the telemetry event by WHICH key is populated.
 ///
 /// Verbatim from `pipelines/jamf_protect/telemetry/default.yml:71`. The ECS
