@@ -1429,6 +1429,10 @@ fn a_parameter_list_fans_out_by_name() {
     assert_eq!(pattern.list, "json.events.parameters");
     assert_eq!(pattern.target, "google_workspace.drive");
     assert_eq!(pattern.values, ["value", "multiValue", "boolValue"]);
+    assert!(
+        pattern.strip.is_none(),
+        "drive spells no prefix strip, and inventing one renames every key it writes"
+    );
 
     let mut event = Event::new(serde_json::json!({
         "json": { "events": { "parameters": [
@@ -1458,6 +1462,206 @@ fn a_parameter_list_fans_out_by_name() {
         event.get("google_workspace.drive.nothing"),
         None,
         "an explicit null is what the script's own guard skips"
+    );
+}
+
+/// login and saml cut a prefix off every name before using it as a key, and
+/// the two disagree on both halves of it.
+///
+/// Elasticsearch emits only the CUT name, so keeping the prefix writes
+/// `login_challenge_method` where the document holds `challenge_method` --
+/// one missing field and one extra for every parameter, and the `convert` on
+/// `google_workspace.login.timestamp` never reaches a field at all.
+#[test]
+fn a_stream_prefix_comes_off_the_name_the_script_spells_it_by() {
+    let login = r#"if (ctx.google_workspace.login == null) {\n  ctx.google_workspace.login = new HashMap();\n} for (int i = 0; i < ctx.json.events.parameters.length; ++i) {\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"] != null && ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"].startsWith(\"login_\")) {\n    ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"].substring(6);\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"value\"] != null) {\n    ctx.google_workspace.login[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"value\"];\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"intValue\"] != null) {\n    ctx.google_workspace.login[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"intValue\"];\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"multiValue\"] != null) {\n    ctx.google_workspace.login[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"multiValue\"];\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"boolValue\"] != null) {\n    ctx.google_workspace.login[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"boolValue\"];\n  }    \n}\n"#;
+    let pattern = parse_parameter_fan_out(&normalise(login)).expect("the login fan-out parses");
+    assert_eq!(
+        pattern.strip,
+        Some(NameStrip {
+            prefix: "login_".to_owned(),
+            cut: 6,
+        }),
+    );
+
+    let mut event = Event::new(serde_json::json!({
+        "json": { "events": { "parameters": [
+            { "name": "login_challenge_method", "value": "password" },
+            { "name": "login_challenge_status", "value": "Challenge Passed." },
+            { "name": "login_type", "value": "google_password" },
+            { "name": "login_timestamp", "intValue": 1_593_695_305_123_456i64 },
+            { "name": "is_suspicious", "boolValue": true },
+        ] } },
+    }));
+    assert!(run_parameter_fan_out(&mut event, &pattern));
+    let at = |key: &str| event.get(&format!("google_workspace.login.{key}")).cloned();
+    assert_eq!(at("challenge_method"), Some(Value::from("password")));
+    assert_eq!(
+        at("challenge_status"),
+        Some(Value::from("Challenge Passed."))
+    );
+    assert_eq!(at("type"), Some(Value::from("google_password")));
+    assert_eq!(at("timestamp"), Some(Value::from(1_593_695_305_123_456i64)));
+    assert_eq!(
+        at("login_type"),
+        None,
+        "the prefixed key is what Elasticsearch does not have"
+    );
+    assert_eq!(
+        at("is_suspicious"),
+        Some(Value::from(true)),
+        "a name without the prefix keeps every character of it"
+    );
+
+    // saml cuts a different prefix at a different index, which is why both
+    // halves are read off the script rather than derived from either.
+    let saml = r#"if (ctx.google_workspace.saml == null) {\n  ctx.google_workspace.saml = new HashMap();\n} for (int i = 0; i < ctx.json.events.parameters.length; ++i) {\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"] != null && ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"].startsWith(\"saml_\")) {\n    ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"].substring(5);\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"value\"] != null) {\n    ctx.google_workspace.saml[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"value\"];\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"intValue\"] != null) {\n    ctx.google_workspace.saml[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"intValue\"];\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"multiValue\"] != null) {\n    ctx.google_workspace.saml[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"multiValue\"];\n  }\n}\n"#;
+    let pattern = parse_parameter_fan_out(&normalise(saml)).expect("the saml fan-out parses");
+    assert_eq!(
+        pattern.strip,
+        Some(NameStrip {
+            prefix: "saml_".to_owned(),
+            cut: 5,
+        }),
+    );
+
+    let mut event = Event::new(serde_json::json!({
+        "json": { "events": { "parameters": [
+            { "name": "application_name", "value": "app" },
+            { "name": "saml_second_level_status_code", "value": "SUCCESS_URI" },
+            { "name": "saml_status_code", "value": "SUCCESS_URI" },
+        ] } },
+    }));
+    assert!(run_parameter_fan_out(&mut event, &pattern));
+    let at = |key: &str| event.get(&format!("google_workspace.saml.{key}")).cloned();
+    assert_eq!(
+        at("second_level_status_code"),
+        Some(Value::from("SUCCESS_URI"))
+    );
+    assert_eq!(at("status_code"), Some(Value::from("SUCCESS_URI")));
+    assert_eq!(at("application_name"), Some(Value::from("app")));
+}
+
+/// The two fan-out sites that spell no strip stay exactly where they were.
+///
+/// Both are verbatim call sites, so the assertion is over what ships rather
+/// than over a script written to pass it.
+#[test]
+fn a_fan_out_without_a_prefix_keeps_every_name_whole() {
+    let groups = r#"if (ctx.google_workspace.groups == null) {\n  ctx.google_workspace.groups = new HashMap();\n} for (int i = 0; i < ctx.json.events.parameters.length; ++i) {\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"value\"] != null) {\n    ctx.google_workspace.groups[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"value\"];\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"intValue\"] != null) {\n    ctx.google_workspace.groups[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"intValue\"];\n  }\n  if (ctx[\"json\"][\"events\"][\"parameters\"][i][\"multiValue\"] != null) {\n    ctx.google_workspace.groups[ctx[\"json\"][\"events\"][\"parameters\"][i][\"name\"]] = ctx[\"json\"][\"events\"][\"parameters\"][i][\"multiValue\"];\n  }\n}\n"#;
+    let pattern = parse_parameter_fan_out(&normalise(groups)).expect("the groups fan-out parses");
+    assert_eq!(pattern.target, "google_workspace.groups");
+    assert!(pattern.strip.is_none());
+
+    let mut event = Event::new(serde_json::json!({
+        "json": { "events": { "parameters": [
+            { "name": "group_email", "value": "team@example.com" },
+        ] } },
+    }));
+    assert!(run_parameter_fan_out(&mut event, &pattern));
+    assert_eq!(
+        event.get("google_workspace.groups.group_email"),
+        Some(&Value::from("team@example.com"))
+    );
+}
+
+/// The fan-out written through LOCALS, with the nested `{name, value}` lists
+/// folded into their own parent first.
+///
+/// Verbatim from `google_workspace_token`, which five sibling streams also
+/// carry. None of the six bound to anything before this, so every one of them
+/// lost its whole vendor namespace and scored zero events.
+#[test]
+fn a_nested_parameter_list_folds_into_its_parent_before_the_fan_out() {
+    let script = r#"def token = ctx.google_workspace.token; if (token == null) {\n  token = new HashMap();\n}\ndef fields = new String[] {\n  \"value\",\n  \"multiValue\",\n  \"messageValue\",\n  \"multiMessageValue\",\n  \"intValue\",\n  \"multiIntValue\",\n  \"boolValue\",\n  \"multiBoolValue\"\n};\ndef parameters = ctx.json.events.parameters; for (int i = 0; i < parameters.length; ++i) {\n  if (parameters[i][\"messageValue\"] != null) {\n    for (int j = 0;j < parameters[i][\"messageValue\"][\"parameter\"].length; ++j ){\n      for (def f: fields) {\n        if (parameters[i][\"messageValue\"][\"parameter\"][j][f] != null) {\n          parameters[i].messageValue[parameters[i][\"messageValue\"][\"parameter\"][j][\"name\"]] = parameters[i][\"messageValue\"][\"parameter\"][j][f];\n        }\n      }\n    }\n  }\n} for (int i = 0; i < parameters.length; ++i) {\n  if (parameters[i][\"messageValue\"] != null) {\n    parameters[i][\"messageValue\"].remove('parameter');\n  }\n} for (int i = 0; i < parameters.length; ++i) {\n  if (parameters[i][\"multiMessageValue\"] != null) {\n    for (int j = 0;j < parameters[i][\"multiMessageValue\"].length; ++j ){\n      if (parameters[i][\"multiMessageValue\"][j][\"parameter\"] != null) {\n        for (int k = 0;k < parameters[i][\"multiMessageValue\"][j][\"parameter\"].length; ++k ){\n          for (def f: fields) {\n            if (parameters[i][\"multiMessageValue\"][j][\"parameter\"][k][f] != null) {\n              parameters[i].multiMessageValue[j][parameters[i][\"multiMessageValue\"][j][\"parameter\"][k][\"name\"]] = parameters[i][\"multiMessageValue\"][j][\"parameter\"][k][f];\n            }\n          }\n        }\n      }\n    }\n  }\n} for (int i = 0; i < parameters.length; ++i) {\n  if (parameters[i][\"multiMessageValue\"] != null) {\n    for (int j = 0;j < parameters[i][\"multiMessageValue\"].length; ++j ){\n      if (parameters[i][\"multiMessageValue\"][j][\"parameter\"] != null) {\n        parameters[i][\"multiMessageValue\"][j].remove('parameter');\n      }\n    }\n  }\n} for (int i = 0; i < parameters.length; ++i) {\n  for (def f: fields) {\n    if (parameters[i][f] != null) {\n      token[parameters[i][\"name\"]] = parameters[i][f];\n    }\n  }\n  ctx.google_workspace.token = token;\n  ctx.json.events.parameters = parameters;\n}\n"#;
+
+    let normalised = normalise(script);
+    let found = known_patterns(&normalised);
+    assert!(
+        !found.is_empty(),
+        "the ladder must claim the script -- all six streams bound to nothing before this"
+    );
+
+    let pattern = parse_nested_parameter_fan_out(&normalised).expect("the fan-out parses");
+    assert_eq!(pattern.list, "json.events.parameters");
+    assert_eq!(pattern.target, "google_workspace.token");
+    assert_eq!(
+        pattern.values,
+        [
+            "value",
+            "multiValue",
+            "messageValue",
+            "multiMessageValue",
+            "intValue",
+            "multiIntValue",
+            "boolValue",
+            "multiBoolValue",
+        ]
+    );
+    assert!(pattern.strip.is_none());
+    assert_eq!(
+        pattern.folds,
+        [
+            NestedFold {
+                member: "messageValue".to_owned(),
+                each: false,
+                key: "parameter".to_owned(),
+            },
+            NestedFold {
+                member: "multiMessageValue".to_owned(),
+                each: true,
+                key: "parameter".to_owned(),
+            },
+        ]
+    );
+
+    let mut event = Event::new(serde_json::json!({
+        "json": { "events": { "parameters": [
+            { "name": "client_id", "value": "923474483785.apps.googleusercontent.com" },
+            { "name": "num_response_bytes", "value": 1223 },
+            { "multiMessageValue": [
+                { "parameter": [
+                    { "name": "scope_name", "value": "https://www.googleapis.com/auth/gmail.addons.execute" },
+                    { "multiValue": ["GMAIL"], "name": "product_bucket" },
+                ] },
+                { "parameter": [
+                    { "name": "scope_name", "value": "https://www.googleapis.com/auth/userinfo.email" },
+                    { "multiValue": ["IDENTITY", "OTHER"], "name": "product_bucket" },
+                ] },
+            ], "name": "scope_data" },
+            { "messageValue": { "parameter": [
+                { "name": "app_name", "value": "Gmail Add-on" },
+            ] }, "name": "app" },
+        ] } },
+    }));
+    assert!(run_parameter_fan_out(&mut event, &pattern));
+
+    assert_eq!(
+        event.get("google_workspace.token.client_id"),
+        Some(&Value::from("923474483785.apps.googleusercontent.com"))
+    );
+    assert_eq!(
+        event.get("google_workspace.token.num_response_bytes"),
+        Some(&Value::from(1223))
+    );
+    assert_eq!(
+        event.get("google_workspace.token.scope_data"),
+        Some(&serde_json::json!([
+            {
+                "scope_name": "https://www.googleapis.com/auth/gmail.addons.execute",
+                "product_bucket": ["GMAIL"],
+            },
+            {
+                "scope_name": "https://www.googleapis.com/auth/userinfo.email",
+                "product_bucket": ["IDENTITY", "OTHER"],
+            },
+        ])),
+        "each element keeps its own scope and loses the parameter list it came in"
+    );
+    assert_eq!(
+        event.get("google_workspace.token.app"),
+        Some(&serde_json::json!({ "app_name": "Gmail Add-on" })),
+        "a messageValue is ONE parent, not a list of them"
     );
 }
 

@@ -19239,6 +19239,146 @@ pub(crate) struct ParameterFanOut {
     /// The value keys tried, in the order the script writes them, so a later
     /// one overwrites an earlier the same way.
     values: Vec<String>,
+    /// The prefix the script cuts off each name first, where it spells one.
+    strip: Option<NameStrip>,
+    /// Nested `{name, value}` lists folded into their own parent before the
+    /// fan-out reads it.
+    folds: Vec<NestedFold>,
+}
+
+/// A per-stream prefix the script cuts off a parameter name before using it as
+/// a key.
+///
+/// login strips `login_` at `substring(6)`, saml strips `saml_` at
+/// `substring(5)`, and drive, groups and rules spell no strip at all.
+/// Elasticsearch emits only the CUT name -- `login_challenge_method` reaches
+/// the document as `challenge_method` -- so a fan-out that keeps the prefix
+/// writes every one of those fields to the wrong key and loses the processors
+/// downstream that read the right one.
+///
+/// Prefix and cut are read separately because nothing in the script makes them
+/// agree, and a cut that is not the prefix's length is still what Painless
+/// would do.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct NameStrip {
+    prefix: String,
+    cut: usize,
+}
+
+impl NameStrip {
+    /// The key to write under: the name unchanged wherever the prefix is
+    /// absent, and the tail past the cut where it is.
+    fn apply<'a>(&self, name: &'a str) -> &'a str {
+        if !name.starts_with(&self.prefix) {
+            return name;
+        }
+        name.get(self.cut..).unwrap_or(name)
+    }
+}
+
+/// A nested `{name, value}` list folded onto the member holding it, then
+/// dropped.
+///
+/// An activity parameter's `messageValue` is one such parent and its
+/// `multiMessageValue` a LIST of them, so
+/// `multiMessageValue[j].parameter[k]` lands as `multiMessageValue[j][<name>]`.
+/// Reading it is what makes token's `scope_data` a list of scopes rather than
+/// a list of `parameter` arrays.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct NestedFold {
+    /// The member of each list item holding the parent, e.g. `messageValue`.
+    member: String,
+    /// Whether the member IS a list of parents rather than one parent.
+    each: bool,
+    /// The key under the parent holding the nested list, dropped once read.
+    key: String,
+}
+
+impl NestedFold {
+    /// Fold one item's nested parents in place.
+    fn apply(&self, item: &mut Map<String, Value>, values: &[String]) {
+        let Some(member) = item.get_mut(&self.member) else {
+            return;
+        };
+        if self.each {
+            let Some(parents) = member.as_array_mut() else {
+                return;
+            };
+            for parent in parents {
+                if let Some(parent) = parent.as_object_mut() {
+                    fold_named_entries(parent, &self.key, values);
+                }
+            }
+        } else if let Some(parent) = member.as_object_mut() {
+            fold_named_entries(parent, &self.key, values);
+        }
+    }
+}
+
+/// Lift a parent's `{name, value}` list onto the parent itself and drop it.
+///
+/// `shift_remove`, never `remove`: under `preserve_order` the swapping form
+/// drops the LAST key into the freed slot, and these maps are rendered whole.
+/// The list is taken out up front rather than cloned, and the second removal
+/// puts back the script's own order of effect -- it folds first and removes
+/// after, so an entry named for the key itself does not survive.
+fn fold_named_entries(parent: &mut Map<String, Value>, key: &str, values: &[String]) {
+    // Asked before it is taken, so a `parameter` that is not a list is left
+    // exactly where it was rather than dropped on the way to declining.
+    if !parent.get(key).is_some_and(Value::is_array) {
+        return;
+    }
+    let Some(Value::Array(nested)) = parent.shift_remove(key) else {
+        return;
+    };
+    for entry in nested {
+        let Value::Object(mut entry) = entry else {
+            continue;
+        };
+        let Some(Value::String(name)) = entry.shift_remove("name") else {
+            continue;
+        };
+        for value_key in values {
+            match entry.shift_remove(value_key) {
+                Some(Value::Null) | None => {}
+                Some(value) => {
+                    parent.insert(name.clone(), value);
+                }
+            }
+        }
+    }
+    parent.shift_remove(key);
+}
+
+/// The prefix and the cut the script spells for the name, or nothing where it
+/// spells neither.
+///
+/// Both halves come off the SCRIPT. Hard-coding either is the defect this
+/// reads around: the two streams that strip disagree on both, and a third
+/// would disagree again.
+fn parse_name_strip(script: &str, counter: &str) -> Option<NameStrip> {
+    let name = format!("[{counter}][\"name\"]");
+
+    let prefix = script
+        .split_once(&format!("{name}.startsWith("))?
+        .1
+        .trim_start();
+    let quote = if prefix.starts_with('\'') { '\'' } else { '"' };
+    let prefix = prefix.strip_prefix(quote)?.split(quote).next()?;
+
+    let cut: usize = script
+        .split_once(&format!("{name}.substring("))?
+        .1
+        .split_once(')')?
+        .0
+        .trim()
+        .parse()
+        .ok()?;
+
+    (!prefix.is_empty()).then(|| NameStrip {
+        prefix: prefix.to_owned(),
+        cut,
+    })
 }
 
 fn parse_parameter_fan_out(script: &str) -> Option<ParameterFanOut> {
@@ -19284,6 +19424,119 @@ fn parse_parameter_fan_out(script: &str) -> Option<ParameterFanOut> {
         list,
         target,
         values,
+        strip: parse_name_strip(script, counter),
+        folds: Vec::new(),
+    })
+}
+
+/// The same fan-out written through LOCALS, with the typed keys in a named
+/// array and two levels of nested `{name, value}` list folded in first.
+///
+/// Six `google_workspace` streams carry this spelling -- `gcp`, `token`,
+/// `device`, `context_aware_access`, `group_enterprise` and
+/// `access_transparency` -- and
+/// [`parse_parameter_fan_out`] reads none of it: the target is a `def` stored
+/// back at the end rather than a `ctx.` subject, and the eight typed keys are
+/// walked by `for (def f: fields)` rather than spelled one `if` each. All six
+/// bound to nothing at all, which is why every one of their fixtures scored
+/// zero events while most of their fields were right.
+///
+/// One divergence, stated rather than machined around: the script's own
+/// `messageValue` loop reads `.parameter.length` with no null check, so a
+/// `messageValue` carrying no `parameter` throws there and costs
+/// Elasticsearch the whole document. This writes nothing for it instead.
+fn parse_nested_parameter_fan_out(script: &str) -> Option<ParameterFanOut> {
+    // The typed keys, in the order the array lists them, so the last present
+    // one wins exactly as it does in the sibling spelling.
+    let values = quoted_members(script.split_once("new String[] {")?.1.split_once('}')?.0);
+
+    // The write IS the pattern: `<target>[<list>[i]["name"]] = <list>[i][f];`.
+    // The LAST one: the nested folds ahead of it write a name-keyed slot too,
+    // and reading the first takes `messageValue`'s inner loop for the fan-out.
+    let (before, after) = script.rsplit_once("[\"name\"]] = ")?;
+    let (before, counter) = before.rsplit_once('[')?;
+    let counter = counter.trim().strip_suffix(']')?;
+    let (before, list_local) = before.rsplit_once('[')?;
+    let target_local = before
+        .rsplit(|c: char| !(c.is_alphanumeric() || c == '_'))
+        .next()?;
+
+    // The right-hand side reads the SAME item, and the loop counts over the
+    // same list. A script writing the name-keyed slot from anything else is
+    // not this pattern.
+    if target_local.is_empty()
+        || !after
+            .trim_start()
+            .starts_with(&format!("{list_local}[{counter}]["))
+        || !script.contains(&format!("{counter} < {list_local}.length"))
+    {
+        return None;
+    }
+
+    // Both locals are bound once, each to a `ctx.` path.
+    let ctx_path = |local: &str| {
+        let path = script
+            .split_once(&format!("def {local} = ctx."))?
+            .1
+            .split([';', '\n'])
+            .next()?;
+        let path = clean_path(path.trim());
+        (!path.is_empty() && !path.contains(['(', ')', '[', ']', ' ', '"'])).then_some(path)
+    };
+    let list = ctx_path(list_local)?;
+    let target = ctx_path(target_local)?;
+
+    // Every nested list the script folds into its own parent, read off the
+    // REMOVAL -- the one statement naming the member, the key, and whether the
+    // member holds a list of parents or one. A removal this cannot read is a
+    // key we would leave behind, so it declines the whole script rather than
+    // claim it.
+    let mut folds = Vec::new();
+    for (at, _) in script.match_indices(".remove(") {
+        let argument = script[at + ".remove(".len()..].trim_start();
+        let quote = if argument.starts_with('"') { '"' } else { '\'' };
+        let key = argument.strip_prefix(quote)?.split(quote).next()?;
+        folds.push(parse_nested_fold(&script[..at], list_local, counter, key)?);
+    }
+
+    (!values.is_empty() && list != target).then_some(ParameterFanOut {
+        list,
+        target,
+        values,
+        strip: parse_name_strip(script, counter),
+        folds,
+    })
+}
+
+/// One `<list>[i]["<member>"].remove('<key>')`, or the `[j]` form that says the
+/// member is a LIST of such parents.
+fn parse_nested_fold(head: &str, list_local: &str, counter: &str, key: &str) -> Option<NestedFold> {
+    let (subject, inner) = head.trim_end().strip_suffix(']')?.rsplit_once('[')?;
+    // A quoted subscript names the member itself. A bare one is a SECOND
+    // counter, and the member is the bracket before it -- which is what says
+    // the member holds a list of parents rather than one.
+    let (subject, member, each) = if inner.starts_with(['"', '\'']) {
+        (subject, inner, false)
+    } else {
+        let (subject, member) = subject.strip_suffix(']')?.rsplit_once('[')?;
+        if !member.starts_with(['"', '\'']) {
+            return None;
+        }
+        (subject, member, true)
+    };
+
+    // The subject must be the item the fan-out itself walks.
+    let member = member.trim_matches(['"', '\'']);
+    if member.is_empty()
+        || key.is_empty()
+        || !subject.ends_with(&format!("{list_local}[{counter}]"))
+    {
+        return None;
+    }
+    Some(NestedFold {
+        member: member.to_owned(),
+        each,
+        key: key.to_owned(),
     })
 }
 
@@ -19291,7 +19544,16 @@ fn run_parameter_fan_out(event: &mut Event, pattern: &ParameterFanOut) -> bool {
     let Some(Value::Array(items)) = event.get(&pattern.list) else {
         return true;
     };
-    let items = items.clone();
+    let mut items = items.clone();
+    if !pattern.folds.is_empty() {
+        for item in &mut items {
+            if let Some(entry) = item.as_object_mut() {
+                for fold in &pattern.folds {
+                    fold.apply(entry, &pattern.values);
+                }
+            }
+        }
+    }
     for item in items {
         let Some(entry) = item.as_object() else {
             continue;
@@ -19299,6 +19561,10 @@ fn run_parameter_fan_out(event: &mut Event, pattern: &ParameterFanOut) -> bool {
         let Some(name) = entry.get("name").and_then(Value::as_str) else {
             continue;
         };
+        let name = pattern
+            .strip
+            .as_ref()
+            .map_or(name, |strip| strip.apply(name));
         for key in &pattern.values {
             match entry.get(key) {
                 Some(Value::Null) | None => {}
@@ -22823,9 +23089,13 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         patterns.push(KnownPattern::MergeMapUp(Box::new(pattern)));
         return patterns;
     }
+    // Two spellings of one fan-out, so one arm and one runner: the `ctx.`
+    // subject five streams write, and the local-and-named-array form the other
+    // six write with their nested lists folded in first.
     if normalised.contains("for (int ")
         && normalised.contains("[\"name\"]]")
         && let Some(pattern) = parse_parameter_fan_out(normalised)
+            .or_else(|| parse_nested_parameter_fan_out(normalised))
     {
         patterns.push(KnownPattern::ParameterFanOut(Box::new(pattern)));
         return patterns;
