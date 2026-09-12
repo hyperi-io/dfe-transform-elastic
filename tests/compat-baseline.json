@@ -103,7 +103,7 @@
     "cybereason": { "events": 1, "events_total": 6, "fields_wrong": 16 },
     "cyera": { "events": 17, "events_total": 22, "fields_wrong": 12 },
     "cylance": { "events": 101, "events_total": 101, "fields_wrong": 0 },
-    "darktrace": { "events": 4, "events_total": 15, "fields_wrong": 11 },
+    "darktrace": { "events": 13, "events_total": 15, "fields_wrong": 2 },
     "dataminr_pulse": { "events": 5, "events_total": 17, "fields_wrong": 88 },
     "digital_guardian": { "events": 0, "events_total": 4, "fields_wrong": 5 },
     "doppel": { "events": 0, "events_total": 1, "fields_wrong": 2 },

@@ -270,6 +270,8 @@ pub(crate) enum ParamsPattern {
     /// An action named from the tail of a request URL.
     UrlTailAction(Box<crate::url_action::UrlTailAction>),
     LookupNormalise(LookupNormaliseScript, Program),
+    /// A member moved to a sibling the params table NAMES.
+    RenameMemberByLookup(Box<RenameMemberByLookup>),
     /// A params lookup written to a NAMED MEMBER of a container the script
     /// first guarantees exists.
     MemberLookup(MemberLookupScript),
@@ -884,6 +886,16 @@ fn params_pattern_tail(normalised: &str) -> Option<ParamsPattern> {
         && let Some(pattern) = parse_member_lookup(normalised)
     {
         return Some(ParamsPattern::MemberLookup(pattern));
+    }
+
+    // Pattern: a member MOVED to a sibling the table NAMES, rather than a row
+    // written as a value. Ahead of `LookupNormalise`, which reads the naming
+    // subscript as the destination and so stored the table's row under a key
+    // called `type]` -- darktrace kept its raw `data` beside it on every event.
+    if normalised.contains("[params.get(")
+        && let Some(pattern) = parse_rename_member_by_lookup(normalised)
+    {
+        return Some(ParamsPattern::RenameMemberByLookup(Box::new(pattern)));
     }
 
     // Pattern: normalise a field through a params table, keeping the input
@@ -2367,6 +2379,9 @@ pub(crate) fn run_params_pattern(
         } => run_stringified_lookup_or_literal(event, source, absent_key, target, default, params),
         ParamsPattern::LookupNormalise(pattern, literals) => {
             lookup_normalise(event, pattern, literals, params)
+        }
+        ParamsPattern::RenameMemberByLookup(pattern) => {
+            run_rename_member_by_lookup(event, pattern, params)
         }
         ParamsPattern::MemberLookup(pattern) => member_lookup(event, pattern, params),
         ParamsPattern::GuardedLookup(pattern) => guarded_lookup(event, pattern, params),
@@ -6654,6 +6669,199 @@ fn parse_lookup_normalise(script: &str) -> Option<LookupNormaliseScript> {
     Some(LookupNormaliseScript { key, fold, target })
 }
 
+/// A member MOVED to a sibling the params table NAMES.
+///
+/// ```painless
+/// def data = ctx.json.model.logic.data;
+/// if (ctx.json.model.logic?.type != null) {
+///   if (['componentList', 'weightedComponentList'].contains(ctx.json.model.logic?.type)) {
+///     ctx["json"]["model"]["logic"][params.get(ctx.json.model.logic?.type)] = data;
+///   } else {
+///     ctx["json"]["model"]["logic"]["data_" + ctx.json.model.logic?.type] = data;
+///   }
+/// }
+/// ctx.json.model.logic.remove("data");
+/// ```
+///
+/// No lookup matcher in this ladder can express it, because the row is not the
+/// VALUE written -- it is the NAME written under. Every one of them takes a path
+/// the script spells and stores the row there, and here the path is what the
+/// table decides. darktrace's model logic carries its payload under `data` and
+/// names the column beside it, so one event holds a list of component ids and
+/// the next a list of weighted components.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct RenameMemberByLookup {
+    /// The container holding both the member read and the member written.
+    container: String,
+    /// The member the value comes from, which the script then prunes, as the
+    /// whole path -- the script fixes it, so it is joined here rather than per
+    /// event.
+    source: String,
+    /// The `ctx.` path naming the row, as the whole document spells it.
+    key: String,
+    /// The keys the script routes through the table. Anything else takes the
+    /// prefix below, which is the script's own `else` arm rather than a
+    /// fallback this invented.
+    listed: Vec<String>,
+    /// What an unlisted key is prefixed with to name its member.
+    prefix: String,
+}
+
+/// Read the container, the member, the key and both naming arms, or decline.
+///
+/// Every part is read off the script and cross-checked: the lookup has to BE
+/// the subscript, the two arms have to write the same container from the same
+/// key, and the prune has to name that container's member. A script that says
+/// anything else declines here rather than binding to a runner that would
+/// invent a column name.
+fn parse_rename_member_by_lookup(script: &str) -> Option<RenameMemberByLookup> {
+    // ONE lookup, and it has to be the SUBSCRIPT. Either other spelling means
+    // the row is written as a value somewhere, which is a different pattern.
+    if script.matches("params.get(").count() != 1 || script.contains("params[") {
+        return None;
+    }
+
+    // The prune names the container and the member, in the dotted spelling.
+    let member = quoted_after(script, ".remove(")?;
+    let container = ctx_path_before(script, ".remove(")?;
+
+    // The local both arms write, read off the binding that takes the very
+    // member the prune removes. Tying the two together is what says the script
+    // MOVES that member rather than writing something else beside it.
+    let bound = format!(" = ctx.{container}.{member};");
+    let local = identifier_ending(script.split_once(&bound)?.0)?;
+
+    // The key, off the lookup's own argument.
+    let key = clean_path(
+        last_call_argument(script, "params.get(")?
+            .trim()
+            .strip_prefix("ctx.")?,
+    );
+    if !is_ctx_path(&key) {
+        return None;
+    }
+
+    // Arm one: `ctx[...][params.get(ctx.<key>)] = <local>`.
+    let (head, after) = script.split_once("[params.get(")?;
+    let written = after.split_once(")]")?.1.trim().strip_prefix('=')?;
+    if subscripted_subject(head)? != container || assigned_local(written) != local {
+        return None;
+    }
+
+    // Arm two names the member itself, and has to write the SAME container
+    // from the SAME key -- a script keying on one field and naming another
+    // says more than this pattern can.
+    let (head, after) = script.split_once(" else {")?.1.split_once("] =")?;
+    let (subject, key_expr) = head.rsplit_once('[')?;
+    if subscripted_subject(subject)? != container || assigned_local(after) != local {
+        return None;
+    }
+    let (prefix, concatenated) = key_expr.split_once('+')?;
+    let prefix = literal_at(prefix)?;
+    if clean_path(concatenated.trim().strip_prefix("ctx.")?) != key {
+        return None;
+    }
+
+    // The allow-list guard the two arms hang off, over that same key.
+    let (listed, argument) = script.split_once("].contains(")?;
+    let Some(Value::Array(listed)) = literal_value(&format!("[{}]", listed.rsplit_once('[')?.1))
+    else {
+        return None;
+    };
+    if clean_path(argument.split(')').next()?.trim().strip_prefix("ctx.")?) != key {
+        return None;
+    }
+
+    Some(RenameMemberByLookup {
+        source: format!("{container}.{member}"),
+        container,
+        key,
+        listed: listed
+            .iter()
+            .filter_map(|member| member.as_str().map(str::to_owned))
+            .collect(),
+        prefix,
+    })
+}
+
+/// The bare name a write's value names, or empty text for anything else.
+fn assigned_local(value: &str) -> &str {
+    value.split(';').next().map_or("", str::trim)
+}
+
+/// The `ctx` path a trailing subscript is applied TO, read BACKWARDS from it.
+///
+/// `head` ends where the subscript's own `[` begins, so the answer is whatever
+/// quoted subscripts and dotted segments precede it, back to the `ctx` root.
+/// Reading FORWARDS from the last `ctx.` cannot answer this: in
+/// `ctx["a"]["b"][params.get(ctx.c.d)]` that `ctx.` is the KEY expression, and
+/// the forward read comes back with `c.d` where the destination is `a.b`.
+///
+/// A segment the text does not spell as a quoted literal is a key the EVENT
+/// decides, so there is no path to return and this declines.
+fn subscripted_subject(head: &str) -> Option<String> {
+    let mut segments = Vec::new();
+    let mut rest = head.trim_end();
+    while let Some(inside) = rest.strip_suffix(']') {
+        let (before, segment) = inside.rsplit_once('[')?;
+        segments.push(whole_literal(segment)?);
+        rest = before.trim_end();
+    }
+    // Whatever is left is the root, `ctx` itself or `ctx.<path>`.
+    let root = rest
+        .rsplit(|c: char| c.is_whitespace() || "({;".contains(c))
+        .next()?
+        .strip_prefix("ctx")?;
+    if !root.is_empty() {
+        segments.push(clean_path(
+            root.strip_prefix('.').or_else(|| root.strip_prefix("?."))?,
+        ));
+    }
+    segments.reverse();
+    let path = segments.join(".");
+    is_ctx_path(&path).then_some(path)
+}
+
+/// `text` as the ONE quoted literal it is, or `None` for anything else.
+///
+/// Distinct from [`literal_at`], which reads the literal a fragment OPENS with
+/// and ignores what trails it: `"data_" + ctx.a.b` opens with a literal and is
+/// not one, and reading it as `data_` would name a member the vendor computes.
+fn whole_literal(text: &str) -> Option<String> {
+    let text = text.trim();
+    let quote = text.chars().next().filter(|c| *c == '\'' || *c == '"')?;
+    let inner = text.strip_prefix(quote)?.strip_suffix(quote)?;
+    (!inner.contains(quote)).then(|| inner.to_owned())
+}
+
+/// Move the member under the name the table gives its key, then prune it.
+///
+/// A key the table misses takes the script's own `else` arm, and a key the
+/// script's list DOES carry but the table does not writes nothing at all:
+/// Painless would key the map by the lookup's null, which names no field the
+/// document can hold. The prune runs either way, which is what the script does.
+fn run_rename_member_by_lookup(
+    event: &mut Event,
+    pattern: &RenameMemberByLookup,
+    params: &Map<String, Value>,
+) -> bool {
+    let value = event.get(&pattern.source).cloned();
+    if let Some(value) = value
+        && let Some(key) = event.get_as_string(&pattern.key)
+    {
+        let named = if pattern.listed.contains(&key) {
+            params.get(&key).and_then(Value::as_str).map(str::to_owned)
+        } else {
+            Some(format!("{}{key}", pattern.prefix))
+        };
+        if let Some(named) = named {
+            let _ = event.set(&format!("{}.{named}", pattern.container), value);
+        }
+    }
+    event.remove(&pattern.source);
+    true
+}
+
 /// Where a lookup written to a container's NAMED MEMBER reads and writes.
 ///
 /// Distinct from [`LookupNormaliseScript`] on the two points that decide the
@@ -10767,6 +10975,16 @@ fn local_bound_to(script: &str, marker: &str) -> Option<String> {
 ///
 /// The path is normalised out of Painless's map syntax, so `ctx.network
 /// ['iana_number']` and `ctx.network.iana_number` come back the same.
+///
+/// A write SUBSCRIPTED by an expression is not one of these and is skipped: the
+/// destination there is the path the subscript is applied to plus a key the
+/// event decides, and no `(path, expression)` pair can say that. Reading the
+/// last `ctx.` on such a line lands INSIDE the subscript's own argument --
+/// `ctx["json"]["model"]["logic"][params.get(ctx.json.model.logic?.type)]` came
+/// back as `json.model.logic.type]`, and `LookupNormalise` then stored the
+/// table's row under a key called `type]` on every darktrace event. Writing
+/// nothing is the answer; guessing the container instead would put a bare
+/// string where the container belongs.
 pub(crate) fn ctx_writes(script: &str) -> Vec<(String, String)> {
     let mut writes = Vec::new();
     for statement in script.split(';') {
@@ -10776,6 +10994,9 @@ pub(crate) fn ctx_writes(script: &str) -> Vec<(String, String)> {
         let Some(start) = lhs.rfind("ctx.") else {
             continue;
         };
+        if open_subscripts(&lhs[..start]) > 0 {
+            continue;
+        }
         let path = lhs[start + "ctx.".len()..]
             .replace("['", ".")
             .replace("[\"", ".")
@@ -10784,6 +11005,15 @@ pub(crate) fn ctx_writes(script: &str) -> Vec<(String, String)> {
         writes.push((clean_path(&path), rhs.trim().to_string()));
     }
     writes
+}
+
+/// How many subscripts `head` leaves open.
+fn open_subscripts(head: &str) -> usize {
+    head.bytes().fold(0usize, |depth, byte| match byte {
+        b'[' => depth + 1,
+        b']' => depth.saturating_sub(1),
+        _ => depth,
+    })
 }
 
 /// [`ctx_writes`], plus writes whose ROOT is a bracket -- `ctx["a"] = v`.

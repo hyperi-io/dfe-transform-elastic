@@ -313,32 +313,33 @@
  57 UrlTailAction
  58 LookupColumns
  59 MemberLookup
- 60 LookupNormalise
- 61 StringifiedLookup
- 62 StringifiedLookupOrLiteral
- 63 CollectParamsRows
- 64 IndexedLookup
- 65 Scale
- 66 Replace
- 67 AddUniqueRow
- 68 FrameworkPreference
- 69 NormalisedLookup
- 70 StringifiedLookup
- 71 LookupNormalise
- 72 GuardedLookup
- 73 MergeRowOrFallback
- 74 GuardedParamsRow
- 75 IssueLifecycle
- 76 ArmedTable
- 77 RowOrDefaults
- 78 HexFields
- 79 KeyedByLookup
- 80 ScalarExpression
- 81 SelectRenameKeys
- 82 FieldTables
+ 60 RenameMemberByLookup
+ 61 LookupNormalise
+ 62 StringifiedLookup
+ 63 StringifiedLookupOrLiteral
+ 64 CollectParamsRows
+ 65 IndexedLookup
+ 66 Scale
+ 67 Replace
+ 68 AddUniqueRow
+ 69 FrameworkPreference
+ 70 NormalisedLookup
+ 71 StringifiedLookup
+ 72 LookupNormalise
+ 73 GuardedLookup
+ 74 MergeRowOrFallback
+ 75 GuardedParamsRow
+ 76 IssueLifecycle
+ 77 ArmedTable
+ 78 RowOrDefaults
+ 79 HexFields
+ 80 KeyedByLookup
+ 81 ScalarExpression
+ 82 SelectRenameKeys
  83 FieldTables
- 84 MemberMappings
- 85 ConfiguredDateFormat
- 86 SplitNamedByPosition
- 87 ActionMapping
+ 84 FieldTables
+ 85 MemberMappings
+ 86 ConfiguredDateFormat
+ 87 SplitNamedByPosition
+ 88 ActionMapping
 

@@ -5246,3 +5246,157 @@ fn a_positional_loop_that_writes_something_else_declines() {
         ctx.a.b[params[(i+n).toString()]] = headers[i];\n}\n";
     assert!(parse_split_named_by_position(computed).is_none());
 }
+
+/// darktrace's model logic, verbatim from
+/// `crates/dfe-transforms/src/filebeat/darktrace_model_breach_alert/default.rs`.
+///
+/// Escaped exactly as the generated call site spells it: the subscripts read
+/// `[\"json\"]` in the literal, so a test written with bare quotes would be
+/// reading text production never sees.
+const DARKTRACE_MODEL_LOGIC: &str = r#"def data = ctx.json.model.logic.data; if (ctx.json.model.logic?.type != null) { if (['componentList', 'weightedComponentList'].contains(ctx.json.model.logic?.type)) { ctx[\"json\"][\"model\"][\"logic\"][params.get(ctx.json.model.logic?.type)] = data; } else { ctx[\"json\"][\"model\"][\"logic\"][\"data_\" + ctx.json.model.logic?.type] = data; } } ctx.json.model.logic.remove(\"data\");"#;
+
+/// The table darktrace ships with it: the row is the column NAME, not a value.
+fn darktrace_logic_names() -> Value {
+    json!({
+        "componentList": "data_component_list",
+        "weightedComponentList": "data_weighted_component_list",
+    })
+}
+
+/// The table NAMES the member, so the value moves and the source is pruned.
+#[test]
+fn a_member_is_renamed_to_the_name_the_table_gives_its_key() {
+    let mut event = Event::new(json!({
+        "json": { "model": { "logic": {
+            "data": [1594],
+            "type": "componentList",
+            "version": 1,
+        } } }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        DARKTRACE_MODEL_LOGIC,
+        &darktrace_logic_names()
+    ));
+    assert_eq!(
+        event.get("json.model.logic.data_component_list"),
+        Some(&json!([1594]))
+    );
+    assert!(!event.has("json.model.logic.data"));
+    // The key itself stays: the script reads it and never removes it.
+    assert_eq!(
+        event.get_str("json.model.logic.type"),
+        Some("componentList")
+    );
+}
+
+/// A key the script's own list does not carry takes its `else` arm, which
+/// names the member by concatenation rather than through the table.
+#[test]
+fn an_unlisted_key_takes_the_scripts_own_prefix() {
+    let mut event = Event::new(json!({
+        "json": { "model": { "logic": { "data": 7, "type": "threshold" } } }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        DARKTRACE_MODEL_LOGIC,
+        &darktrace_logic_names()
+    ));
+    assert_eq!(
+        event.get("json.model.logic.data_threshold"),
+        Some(&json!(7))
+    );
+    assert!(!event.has("json.model.logic.data"));
+}
+
+/// No key means no write, and the prune runs anyway -- the script's `remove`
+/// sits outside the null guard.
+#[test]
+fn an_absent_key_still_prunes_the_member() {
+    let mut event = Event::new(json!({
+        "json": { "model": { "logic": { "data": [1], "version": 1 } } }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        DARKTRACE_MODEL_LOGIC,
+        &darktrace_logic_names()
+    ));
+    assert!(!event.has("json.model.logic.data"));
+    assert_eq!(event.get("json.model.logic.version"), Some(&json!(1)));
+    assert_eq!(
+        event
+            .get_object("json.model.logic")
+            .map(serde_json::Map::len),
+        Some(1),
+        "nothing was written under a name the table never gave"
+    );
+}
+
+/// The parse reads every part off the script and cross-checks them, so a
+/// script saying something else declines rather than moving the wrong member.
+#[test]
+fn a_rename_whose_arms_disagree_declines() {
+    let normalised = crate::common::normalise(DARKTRACE_MODEL_LOGIC).into_owned();
+    assert!(parse_rename_member_by_lookup(&normalised).is_some());
+
+    // The `else` arm names a DIFFERENT container from the lookup arm.
+    let split = normalised.replace(
+        "{ ctx[\"json\"][\"model\"][\"logic\"][\"data_\"",
+        "{ ctx[\"json\"][\"other\"][\"logic\"][\"data_\"",
+    );
+    assert!(parse_rename_member_by_lookup(&split).is_none());
+
+    // The prune takes a member the local was never bound to, so the script is
+    // not moving the value this would move.
+    let elsewhere = normalised.replace(".remove(\"data\")", ".remove(\"version\")");
+    assert!(parse_rename_member_by_lookup(&elsewhere).is_none());
+
+    // The lookup is keyed on a different field from the guard.
+    let crossed = normalised.replace(
+        "[params.get(ctx.json.model.logic?.type)]",
+        "[params.get(ctx.json.model.logic?.version)]",
+    );
+    assert!(parse_rename_member_by_lookup(&crossed).is_none());
+}
+
+/// A write SUBSCRIPTED by an expression names a destination no `(path, value)`
+/// pair can spell, so it is not reported as a write at all.
+///
+/// Reading the last `ctx.` on such a line lands inside the subscript's own
+/// argument: darktrace came back as `json.model.logic.type]`, and
+/// `LookupNormalise` stored the table's row under that key on every event.
+#[test]
+fn a_subscripted_write_is_not_read_as_a_path() {
+    let normalised = crate::common::normalise(DARKTRACE_MODEL_LOGIC);
+    assert!(
+        ctx_writes(&normalised).is_empty(),
+        "both arms are subscripted by an expression: {:?}",
+        ctx_writes(&normalised)
+    );
+
+    // A subscript the script spells as a LITERAL is still a path, and still
+    // read -- the skip is for the ones the event decides.
+    assert_eq!(
+        ctx_writes("ctx.network['iana_number'] = 6"),
+        vec![("network.iana_number".to_string(), "6".to_string())]
+    );
+}
+
+/// The destination is the path the subscript is applied TO, whichever way the
+/// root is spelled.
+#[test]
+fn a_subscripts_subject_reads_backwards_to_the_root() {
+    assert_eq!(
+        subscripted_subject("  if (x) { ctx[\"json\"][\"model\"][\"logic\"]"),
+        Some("json.model.logic".to_string())
+    );
+    assert_eq!(
+        subscripted_subject("ctx.aws.waf['request']"),
+        Some("aws.waf.request".to_string())
+    );
+    assert_eq!(subscripted_subject("ctx.a.b"), Some("a.b".to_string()));
+    // A segment the EVENT decides names no path this can return.
+    assert!(subscripted_subject("ctx.a[ctx.b.c]").is_none());
+    // A local is not the document.
+    assert!(subscripted_subject("m[\"a\"]").is_none());
+}
