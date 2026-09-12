@@ -5580,8 +5580,12 @@ impl DropPolicy {
         let (is_empty_strings, is_empty_collections) = is_empty_axes(script);
         Self {
             nulls: script.contains("== null"),
+            // A listed `''` is the same axis as a chained `== ''`, and
+            // `listed_sentinels` drops it from the word list rather than
+            // carrying an empty literal nothing can match.
             empty_strings: script.contains("== ''")
                 || script.contains("== \"\"")
+                || lists_empty_string(script)
                 || is_empty_strings,
             // `.isEmpty()` is the third spelling of the collection test and
             // aws/waf's only one, so every empty list and map it ships
@@ -5674,14 +5678,72 @@ fn conjunction_around(script: &str, at: usize) -> &str {
     &script[start..at + end]
 }
 
+/// Does the listed predicate name the empty string among its words?
+fn lists_empty_string(script: &str) -> bool {
+    for (at, _) in script.match_indices("].contains(") {
+        let Some(open) = script[..at].rfind('[') else {
+            continue;
+        };
+        if script[open + 1..at]
+            .split(',')
+            .any(|item| matches!(item.trim(), "''" | "\"\""))
+        {
+            return true;
+        }
+    }
+    false
+}
+
+/// The literals a drop predicate lists rather than chains.
+///
+/// Only a list tested WITH `.contains(` counts, and only inside the predicate
+/// of a drop helper -- an arbitrary `['a','b'].contains(ctx.x)` elsewhere in a
+/// script names values to keep, not values to drop.
+fn listed_sentinels(script: &str) -> Vec<String> {
+    let mut found: Vec<String> = Vec::new();
+    for (at, _) in script.match_indices("].contains(") {
+        let Some(open) = script[..at].rfind('[') else {
+            continue;
+        };
+        // The list is the predicate's own only where the drop helper tests the
+        // value it was handed; `contains(ctx.<path>)` is a different question.
+        if !script[at..].starts_with("].contains(object)")
+            && !script[at..].starts_with("].contains(o)")
+            && !script[at..].starts_with("].contains(value)")
+            && !script[at..].starts_with("].contains(v)")
+        {
+            continue;
+        }
+        for item in script[open + 1..at].split(',') {
+            let item = item.trim();
+            let Some(quote) = item.chars().next().filter(|c| matches!(c, '\'' | '"')) else {
+                continue;
+            };
+            let inner = &item[quote.len_utf8()..];
+            let Some(end) = inner.find(quote) else {
+                continue;
+            };
+            let literal = &inner[..end];
+            if !literal.is_empty() && !found.iter().any(|f| f == literal) {
+                found.push(literal.to_string());
+            }
+        }
+    }
+    found
+}
+
 /// The non-empty literals a drop predicate compares its value against.
 ///
 /// Two spellings carry the predicate: the first `if (` of the recursive
 /// helper, and zscaler's `boolean dropScalar(v) { return v == null || ... }`
 /// form, whose chains sit after `return`. Both are read; a literal from an
 /// unrelated statement cannot join because only `== '<quoted>'` terms count.
+///
+/// A third spelling lists the words instead of chaining them --
+/// `['', 'NA', '-'].contains(object)` -- and carries no `==` for either walk
+/// above to find. `digital_guardian` writes its six that way.
 fn predicate_sentinels(script: &str) -> Vec<String> {
-    let mut found = Vec::new();
+    let mut found = listed_sentinels(script);
     let mut collect = |chain: &str| {
         for term in chain.split("||") {
             let Some((_, rest)) = term.split_once("== ") else {
@@ -6210,9 +6272,9 @@ pub fn parameters_into_map(event: &mut Event, pattern: &ParametersIntoMap) -> bo
 ///
 /// `juniper_srx`'s keys arrive kebab-cased -- `source-address` -- and a script
 /// swaps the hyphen for an underscore across the whole map. This is NOT the
-/// camel-case converter: [`snake_case_apply`] declines a helper with no
-/// `Character.isUpperCase` in it precisely so a bare `replace` does not claim
-/// a runner that cannot apply it, which left this one bound to nothing.
+/// recursive converter: [`snake_case_apply`] reads a helper applied by a
+/// `instanceof Map` descent, where this is one `Collectors.toMap` over a single
+/// level and keeps the vendor's own nesting untouched.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RenameMapKeys {
     container: String,
@@ -9071,6 +9133,7 @@ fn parse_capitalised_vocabulary(script: &str) -> Option<Ladder> {
     Some(Ladder {
         subject: source,
         fold_case: false,
+        test: LadderTest::Equals,
         arms,
     })
 }
@@ -10927,22 +10990,26 @@ fn try_answers_from_resolved_ip(event: &mut Event) -> bool {
 /// covers them. `jupiter_one` then REMOVES the source, and reading that off the
 /// script is what keeps its whole `json` tree out of the document.
 fn snake_case_apply(script: &str) -> Option<KnownPattern> {
-    // The helper must actually detect CASE. One source converts kebab-case
-    // with a bare `str.replace("-", "_")` and names it `convertToSnakeCase`
-    // too, so keying on the call alone claims a script this runner cannot
-    // apply -- bound, never run, and invisible everywhere but the reach count.
-    if !script.contains("Character.isUpperCase(") {
-        return None;
-    }
-
-    // Read FIRST: beyondtrust's copy spells `Character.isLowerCase(` against the
-    // variable `prev`, so the arm below cannot tell it from `entra_id`'s.
-    let rule = if script.contains("Character.isUpperCase(prev) && nextIsLower") {
-        SnakeRule::AcronymRunStrict
-    } else if script.contains("Character.isLowerCase(str.charAt(i - 1))") {
-        SnakeRule::OnWordBreak
+    // The key rule comes off the helper's BODY, never its name: netskope calls a
+    // bare `str.replace("-", "_")` `convertToSnakeCase` exactly as the
+    // case-folding copies do, and lending it a case rule writes keys the vendor
+    // never sends.
+    let rule = if script.contains("Character.isUpperCase(") {
+        // Read FIRST: beyondtrust's copy spells `Character.isLowerCase(` against
+        // the variable `prev`, so the arm below cannot tell it from `entra_id`'s.
+        if script.contains("Character.isUpperCase(prev) && nextIsLower") {
+            SnakeRule::AcronymRunStrict
+        } else if script.contains("Character.isLowerCase(str.charAt(i - 1))") {
+            SnakeRule::OnWordBreak
+        } else {
+            SnakeRule::AfterNonUpper
+        }
+    } else if hyphen_swap_helper(script) {
+        SnakeRule::HyphenToUnderscore
     } else {
-        SnakeRule::AfterNonUpper
+        // A helper that reads neither case nor hyphens is doing something this
+        // runner cannot reproduce.
+        return None;
     };
     let drop_at_keys = script.contains(".contains(\"@\")") || script.contains(".contains('@')");
 
@@ -10988,6 +11055,20 @@ fn snake_case_apply(script: &str) -> Option<KnownPattern> {
         });
     }
     None
+}
+
+/// Does the key helper swap hyphens for underscores and nothing else?
+///
+/// Both quotings are accepted because Painless takes either, and the swap must
+/// be the helper's WHOLE body -- a script that replaces a hyphen somewhere in
+/// passing is not a key rule.
+fn hyphen_swap_helper(script: &str) -> bool {
+    [
+        "return str.replace(\"-\", \"_\")",
+        "return str.replace('-', '_')",
+    ]
+    .iter()
+    .any(|body| script.contains(body))
 }
 
 /// Every top-level `ctx.remove('<field>')` the script makes, in order.
@@ -12798,7 +12879,54 @@ pub(crate) struct Ladder {
     /// The local the subject was bound through carried `.toLowerCase()`, so
     /// every comparison folds case -- inspector maps `HIGH` and `high` alike.
     fold_case: bool,
+    /// How an arm's literals are tested against the subject.
+    test: LadderTest,
     arms: Vec<LadderArm>,
+}
+
+/// What an arm's literal has to do with the subject for the arm to fire.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum LadderTest {
+    /// `if (x == 'a')` -- the subject IS the literal.
+    Equals,
+    /// `if (x.contains('a'))` -- the literal is anywhere inside the subject.
+    /// spycloud grades `Windows 10` to `windows` this way, so an equality
+    /// reader finds no arm at all.
+    Contains,
+}
+
+/// One arm's writes and removes, for the literals that select it.
+///
+/// `None` where the body assigns nothing a literal reader can take, which is
+/// how a guard that merely reads the subject is kept out of the arm list.
+fn ladder_arm(literals: Vec<String>, body: &str) -> Option<LadderArm> {
+    use crate::params::clean_path;
+
+    // Every assignment in the arm, not just the first -- a graded severity
+    // writes a score alongside it.
+    let mut writes = Vec::new();
+    for statement in body.split(';') {
+        let Some((lhs, rhs)) = statement.split_once('=') else {
+            continue;
+        };
+        let Some(target) = lhs
+            .trim()
+            .trim_start_matches('{')
+            .trim()
+            .strip_prefix("ctx.")
+        else {
+            continue;
+        };
+        let Some(value) = painless_literal(rhs.trim()) else {
+            continue;
+        };
+        writes.push((clean_path(target.trim()), value));
+    }
+    (!writes.is_empty()).then(|| LadderArm {
+        literals,
+        writes,
+        removes: arm_removes(body),
+    })
 }
 
 /// Parse an equality ladder, or `None` if the script is a different pattern.
@@ -12868,35 +12996,10 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
                 )],
                 removes: arm_removes(body),
             }
+        } else if let Some(arm) = ladder_arm(literals, body) {
+            arm
         } else {
-            // Every assignment in the arm, not just the first -- a graded
-            // severity writes a score alongside it.
-            let mut writes = Vec::new();
-            for statement in body.split(';') {
-                let Some((lhs, rhs)) = statement.split_once('=') else {
-                    continue;
-                };
-                let Some(target) = lhs
-                    .trim()
-                    .trim_start_matches('{')
-                    .trim()
-                    .strip_prefix("ctx.")
-                else {
-                    continue;
-                };
-                let Some(value) = painless_literal(rhs.trim()) else {
-                    continue;
-                };
-                writes.push((clean_path(target.trim()), value));
-            }
-            if writes.is_empty() {
-                continue;
-            }
-            LadderArm {
-                literals,
-                writes,
-                removes: arm_removes(body),
-            }
+            continue;
         };
         arms.push(arm);
     }
@@ -12917,6 +13020,68 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
     Some(Ladder {
         subject,
         fold_case,
+        test: LadderTest::Equals,
+        arms,
+    })
+}
+
+/// The same ladder, testing each literal as a SUBSTRING of the subject.
+///
+/// ```painless
+/// if (ctx.spycloud.compass.user.os.toLowerCase().contains('windows')) {
+///     ctx.host.os.type = 'windows';
+/// } else if (ctx.spycloud.compass.user.os.toLowerCase().contains('linux')) {
+///     ctx.host.os.type = 'linux';
+/// }
+/// ```
+///
+/// A second reader rather than a second pattern: the subject is compared inline
+/// and carries its own parentheses, which [`parse_ladder`]'s condition split
+/// cannot cut. What it builds is the same [`Ladder`], run by the same arm walk.
+///
+/// Distinct from [`parse_contains_ladder`], which routes ONE value to whichever
+/// field the needle names; here each arm writes its own literal to one field.
+fn parse_contains_literal_ladder(script: &str) -> Option<Ladder> {
+    use crate::params::clean_path;
+
+    let mut arms = Vec::new();
+    let mut subject: Option<(String, bool)> = None;
+
+    for (at, marker) in script.match_indices(".contains(") {
+        // The condition's whole left-hand side, so the walk starts at the
+        // `if (` this call sits inside.
+        let head = &script[..at];
+        let open = head.rfind("if (")? + "if (".len();
+        let (expression, fold) = strip_case_fold(head[open..].trim());
+        let path = clean_path(expression.strip_prefix("ctx.")?);
+        match &subject {
+            // Two subjects is a different pattern, and running it as this one
+            // would grade the second field by the first field's value.
+            Some((known, _)) if *known != path => return None,
+            Some(_) => {}
+            None => subject = Some((path, fold)),
+        }
+
+        let after = &script[at + marker.len()..];
+        let quote = after.chars().next().filter(|c| *c == '\'' || *c == '"')?;
+        let (needle, rest) = after[quote.len_utf8()..].split_once(quote)?;
+        // From the arm's opening brace, so the condition's own `))` stays out
+        // of the first statement.
+        let (_, block) = rest.split_once('{')?;
+        let body = block.split("} else").next().unwrap_or(block);
+        arms.push(ladder_arm(vec![needle.to_string()], body)?);
+    }
+
+    let (subject, fold_case) = subject?;
+    // The ladder is the WHOLE script: every `if` in it is an arm, so nothing
+    // else in the text goes unrun when this claims it.
+    if arms.len() < 2 || arms.len() != script.matches("if (").count() {
+        return None;
+    }
+    Some(Ladder {
+        subject,
+        fold_case,
+        test: LadderTest::Contains,
         arms,
     })
 }
@@ -13823,13 +13988,17 @@ fn try_ladder(event: &mut Event, ladder: &Ladder) -> bool {
     let Some(subject) = subject else {
         return true;
     };
+    // A folded subject is compared once rather than per literal, because a
+    // substring test has no case-insensitive form to borrow.
+    let folded = ladder.fold_case.then(|| subject.to_lowercase());
     let matches = |arm: &&LadderArm| {
-        arm.literals.iter().any(|literal| {
-            if ladder.fold_case {
-                literal.eq_ignore_ascii_case(&subject)
-            } else {
-                literal == &subject
-            }
+        arm.literals.iter().any(|literal| match ladder.test {
+            LadderTest::Equals if ladder.fold_case => literal.eq_ignore_ascii_case(&subject),
+            LadderTest::Equals => literal == &subject,
+            LadderTest::Contains => folded
+                .as_ref()
+                .unwrap_or(&subject)
+                .contains(literal.as_str()),
         })
     };
     if let Some(arm) = ladder.arms.iter().find(matches) {
@@ -20733,6 +20902,31 @@ fn assigned_to_ctx(script: &str, local: &str) -> Option<String> {
     None
 }
 
+/// Is what the arm appends a MEMBER of the loop variable, rather than something
+/// the arm built?
+///
+/// Either spelled inline -- `add(addr.ip)` -- or through a local the arm binds
+/// to one, which is how cisco folds a MAC before appending it. A map the arm
+/// assembles answers neither, and that is the whole point: reading the guard
+/// alone claimed scripts that append a RECORD, so proofpoint collected
+/// `disposition` where the vendor appends a file and box appended the session
+/// type in place of its enrichment.
+fn appends_a_member(arm: &str, added: &str, var: &str) -> bool {
+    let member_of_var = format!("{var}.");
+    let added = added.trim_start();
+    if added.starts_with(&member_of_var) {
+        return true;
+    }
+    let local: String = added
+        .chars()
+        .take_while(|c| c.is_alphanumeric() || *c == '_')
+        .collect();
+    if local.is_empty() {
+        return false;
+    }
+    declared_expression(arm, &local).is_some_and(|bound| bound.trim().starts_with(&member_of_var))
+}
+
 /// `for (v in ctx.<list>) { if (v.<member> != null && !v.<member>.isEmpty())
 /// { ... ctx.<target>.add(...) } }`
 fn parse_collect_from_list(script: &str) -> Option<CollectFromList> {
@@ -20751,7 +20945,10 @@ fn parse_collect_from_list(script: &str) -> Option<CollectFromList> {
             .split(|c: char| !c.is_alphanumeric() && c != '_')
             .next()
             .filter(|member| !member.is_empty())?;
-        let (head, _) = arm.split_once(".add(")?;
+        let (head, added) = arm.split_once(".add(")?;
+        if !appends_a_member(arm, added, var) {
+            return None;
+        }
         let added_to = head.rsplit(['\n', ';', '{', '}']).next()?.trim();
         // Either named on the document, or a LOCAL handed to one after the
         // loop: gdacs builds three accumulators and assigns them at the end.
@@ -22915,6 +23112,9 @@ pub(crate) enum KnownPattern {
         merge: bool,
         removes: Vec<String>,
     },
+    ByteSizeFields(Box<crate::byte_size::ByteSizeFields>),
+    GuardedRecords(Box<crate::guarded_records::GuardedRecords>),
+    ThreatArtifacts(Box<crate::threat_artifacts::ThreatArtifacts>),
     SplitTrimCollect,
     SumDirections {
         units: Vec<&'static str>,
@@ -23278,6 +23478,17 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: a human-readable size string parsed onto a byte count. Ahead of
+    // every `.splitOnToken(` arm below, which read the split as a field cut and
+    // would claim the helper's own `str.splitOnToken(' ')`.
+    if normalised.contains("factors = [")
+        && normalised.contains("Double.parseDouble(")
+        && let Some(pattern) = crate::byte_size::parse_byte_size_fields(normalised)
+    {
+        patterns.push(KnownPattern::ByteSizeFields(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: one list's members collected into deduped arrays. Ahead of the
     // copy patterns, whose `.add(` this also spells and which cannot walk a list,
     // so cisco_secure_endpoint's `host.ip`, `host.mac` and both `related`
@@ -23320,6 +23531,29 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = crate::gather_members::parse_gather_members(normalised)
     {
         patterns.push(KnownPattern::GatherMembers(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: a list of threat artifacts sorted into the ECS indicator lists
+    // by what each one looks like. Ahead of every list walk below: it spells
+    // `.add(` six times over four different targets, and each of those arms
+    // reads one of them and stops.
+    if normalised.contains(".length() == 64")
+        && normalised.contains(".add(")
+        && let Some(pattern) = crate::threat_artifacts::parse_threat_artifacts(normalised)
+    {
+        patterns.push(KnownPattern::ThreatArtifacts(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: one record BUILT per list item that passes a guard, appended to
+    // an ECS list. Ahead of the collect below, which walks the same loop and
+    // reads a member name off the guard.
+    if normalised.contains(" in ctx")
+        && normalised.contains(".add(")
+        && let Some(pattern) = crate::guarded_records::parse_guarded_records(normalised)
+    {
+        patterns.push(KnownPattern::GuardedRecords(Box::new(pattern)));
         return patterns;
     }
 
@@ -23378,6 +23612,16 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_contains_ladder(normalised)
     {
         patterns.push(KnownPattern::ContainsLadder(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: the same substring test, but each arm writing its OWN literal to
+    // one field. Beside the matcher above because they read the same call and
+    // only the write tells them apart.
+    if normalised.contains(".contains('")
+        && let Some(ladder) = parse_contains_literal_ladder(normalised)
+    {
+        patterns.push(KnownPattern::EqualityLadder(ladder));
         return patterns;
     }
 
@@ -24477,12 +24721,12 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
-    // Pattern: the integrations' own recursive camelCase-to-snake_case pair,
-    // applied to one object. Checked EARLY: the recursive arm spells `.add(`
-    // and `instanceof Map`, which the append-each matcher below claims and
-    // then does nothing with.
-    if normalised.contains("Character.isUpperCase(")
-        && normalised.contains("instanceof Map")
+    // Pattern: the integrations' own recursive key-rewrite pair, applied to one
+    // object. Checked EARLY: the recursive arm spells `.add(` and
+    // `instanceof Map`, which the append-each matcher below claims and then does
+    // nothing with. The trigger is the recursive descent rather than one key
+    // rule, so `snake_case_apply` is what decides which rule the helper writes.
+    if normalised.contains("instanceof Map")
         && let Some(pattern) = snake_case_apply(normalised)
     {
         patterns.push(pattern);
@@ -26411,6 +26655,15 @@ pub(crate) fn run_known_pattern(
                 event.remove(path);
             }
             true
+        }
+        KnownPattern::ByteSizeFields(pattern) => {
+            crate::byte_size::run_byte_size_fields(event, pattern)
+        }
+        KnownPattern::GuardedRecords(pattern) => {
+            crate::guarded_records::run_guarded_records(event, pattern)
+        }
+        KnownPattern::ThreatArtifacts(pattern) => {
+            crate::threat_artifacts::run_threat_artifacts(event, pattern)
         }
         KnownPattern::SplitTrimCollect => try_split_trim_collect(event, normalised),
         KnownPattern::SumDirections {

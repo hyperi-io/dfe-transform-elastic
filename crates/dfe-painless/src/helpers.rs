@@ -528,6 +528,15 @@ pub enum SnakeRule {
     /// in front of the break is KEPT: `tag_aB` is `tag_a_b`. azure's
     /// `signinlogs` and cloudflare's `workers_trace` spell it this way.
     CamelBreakKeepingUnderscore,
+    /// A literal `str.replace("-", "_")`, which reads no case at all:
+    /// `cs-uri-port` is `cs_uri_port` and `HTTPServer` comes back untouched.
+    ///
+    /// netskope's `transaction` stream ships the recursive descent every rule
+    /// above is applied by, and names its helper `convertToSnakeCase` the same
+    /// way, but its key rule is a hyphen swap. Every other variant here folds
+    /// case on the way through, so lending netskope one of them would lowercase
+    /// keys the vendor already ships lowercase and change nothing else.
+    HyphenToUnderscore,
 }
 
 /// Convert a string to `snake_case` under `rule`.
@@ -544,6 +553,9 @@ pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
         SnakeRule::AcronymRunStrict => return acronym_run_strict_snake(s),
         SnakeRule::CamelBreak => return camel_break(s, true).to_lowercase(),
         SnakeRule::CamelBreakKeepingUnderscore => return camel_break(s, false).to_lowercase(),
+        // The one rule that reads no case, so it cannot share the loop below --
+        // that loop lowercases every uppercase character it passes.
+        SnakeRule::HyphenToUnderscore => return s.replace('-', "_"),
         SnakeRule::OnWordBreak | SnakeRule::BeforeEveryUpper | SnakeRule::AfterNonUpper => {}
     }
 
@@ -561,7 +573,8 @@ pub fn to_snake_case(s: &str, rule: SnakeRule) -> String {
                 SnakeRule::AcronymRun
                 | SnakeRule::AcronymRunStrict
                 | SnakeRule::CamelBreak
-                | SnakeRule::CamelBreakKeepingUnderscore => {
+                | SnakeRule::CamelBreakKeepingUnderscore
+                | SnakeRule::HyphenToUnderscore => {
                     unreachable!("the run rules return above, before this loop")
                 }
             };

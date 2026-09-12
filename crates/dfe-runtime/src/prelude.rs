@@ -36,6 +36,7 @@ pub use crate::painless_plan::{PainlessPlan, painless_exec_plan, painless_exec_p
 // `crates/dfe-transforms/tests/prelude_exports.rs`.
 pub use crate::painless_actor_kind::{ActorKind, run_actor_kind};
 pub use crate::painless_append_records::{AppendRecords, append_records};
+pub use crate::painless_byte_size::{ByteSizeFields, run_byte_size_fields};
 pub use crate::painless_coercion::{
     DecodedFields, LongCoercion, LongLadder, decoded_fields, long_coercion, long_ladder,
 };
@@ -62,6 +63,7 @@ pub use crate::painless_element_mapping::{ElementMapping, element_mapping};
 pub use crate::painless_expr::{Expr, FloatLit, Op, ScalarExpression, scalar_expression};
 pub use crate::painless_gather_members::{GatherMembers, gather_members};
 pub use crate::painless_group_records::{GroupRecords, group_records};
+pub use crate::painless_guarded_records::{GuardedRecords, run_guarded_records};
 pub use crate::painless_hoist::{HoistMember, hoist_member};
 pub use crate::painless_item_writes::{ItemWrites, item_writes};
 pub use crate::painless_last_element::{LastElementMember, run_last_element_member};
@@ -84,6 +86,7 @@ pub use crate::painless_records::{
 pub use crate::painless_seconds_between::{SecondsBetween, seconds_between};
 pub use crate::painless_split_fanout::{SplitFanOut, split_fan_out};
 pub use crate::painless_stringify_member::{StringifyMember, stringify_member};
+pub use crate::painless_threat_artifacts::{ThreatArtifacts, run_threat_artifacts};
 pub use crate::painless_time_order_flag::{TimeOrderFlag, time_order_flag};
 pub use crate::painless_totals::{SumTotals, Total, sum_totals};
 // `lookup_normalise` is NOT here: it now takes the call site's parsed literal

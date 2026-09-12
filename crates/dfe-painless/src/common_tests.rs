@@ -344,12 +344,139 @@ fn a_parameter_list_fans_out_into_a_map_under_each_name() {
     );
 }
 
+/// netskope's recursive converter swaps hyphens and touches no case.
+///
+/// Verbatim from `crates/dfe-transforms/src/filebeat/netskope_transaction/`,
+/// in the escaped one-line form a stored script arrives in. Its helper is named
+/// `convertToSnakeCase` like every case-folding copy, so the rule has to come
+/// off the body: the captured keys are already lowercase, and folding case as
+/// well would be a change Elasticsearch does not make.
+#[test]
+fn a_recursive_converter_that_reads_no_case_swaps_hyphens_only() {
+    let script = r#"// Helper function to convert kebab-case to snake_case\nString kebabToSnake(String str) {\n  return str.replace(\"-\", \"_\");\n}\n\n// Recursive function to handle nested fields\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    // Convert each key in the map\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      String newKey = kebabToSnake(entry.getKey());\n      newObj[newKey] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else if (obj instanceof List) {\n    // If it's a list, process each item recursively\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n\n// Apply the conversion\nif (ctx.netskope?.transaction != null) {\n  ctx.netskope.transaction = convertToSnakeCase(ctx.netskope.transaction);\n}\n"#;
+    let normalised = normalise(script);
+    assert_eq!(
+        known_patterns(&normalised),
+        vec![KnownPattern::CamelToSnake {
+            target: "netskope.transaction".to_string(),
+            source: "netskope.transaction".to_string(),
+            rule: SnakeRule::HyphenToUnderscore,
+            drop_at_keys: false,
+            merge: false,
+            removes: Vec::new(),
+        }]
+    );
+
+    let mut event = Event::new(serde_json::json!({ "netskope": { "transaction": {
+        "c-ip": "216.160.83.56",
+        "cs-uri-port": "443",
+        "x-cs-userip": "10.0.0.1",
+        "bytes": "5021",
+        "nested": { "cs-host": "www.bing.com" },
+        "listed": [ { "cs-method": "GET" } ]
+    } } }));
+    let found = known_patterns(&normalised);
+    assert!(
+        found
+            .iter()
+            .any(|pattern| run_known_pattern(&mut event, &normalised, pattern))
+    );
+    assert_eq!(
+        event.get_str("netskope.transaction.c_ip"),
+        Some("216.160.83.56")
+    );
+    assert_eq!(
+        event.get_str("netskope.transaction.cs_uri_port"),
+        Some("443")
+    );
+    // A key already carrying an underscore-free word is untouched.
+    assert_eq!(event.get_str("netskope.transaction.bytes"), Some("5021"));
+    // The descent reaches nested maps and maps inside lists.
+    assert_eq!(
+        event.get_str("netskope.transaction.nested.cs_host"),
+        Some("www.bing.com")
+    );
+    assert_eq!(
+        event.get("netskope.transaction.listed"),
+        Some(&serde_json::json!([{ "cs_method": "GET" }]))
+    );
+    assert!(!event.has("netskope.transaction.c-ip"));
+}
+
+/// spycloud grades an OS name onto `host.os.type` by substring, not equality.
+///
+/// Verbatim from `crates/dfe-transforms/src/filebeat/spycloud_compass/`, in the
+/// escaped one-line form a stored script arrives in. `spycloud_breach_record`
+/// ships the identical ladder over its own path, so one reader answers both.
+#[test]
+fn a_ladder_can_test_its_literals_as_substrings() {
+    let script = r#"if (ctx.spycloud.compass.user.os.toLowerCase().contains('windows')) {\n    ctx.host.os.type = 'windows';\n} else if (ctx.spycloud.compass.user.os.toLowerCase().contains('linux')) {\n    ctx.host.os.type = 'linux';\n} else if (ctx.spycloud.compass.user.os.toLowerCase().contains('mac')) {\n    ctx.host.os.type = 'macos';\n} else if (ctx.spycloud.compass.user.os.toLowerCase().contains('unix')) {\n    ctx.host.os.type = 'unix';\n} else if (ctx.spycloud.compass.user.os.toLowerCase().contains('ios')) {\n    ctx.host.os.type = 'ios';\n} else if (ctx.spycloud.compass.user.os.toLowerCase().contains('android')) {\n    ctx.host.os.type = 'android';\n}\n"#;
+    let normalised = normalise(script);
+    let found = known_patterns(&normalised);
+
+    // `Windows 10` is never EQUAL to `windows`, which is why the equality
+    // reader finds no arm and the source lost the field entirely.
+    let mut event = Event::new(serde_json::json!({
+        "spycloud": { "compass": { "user": { "os": "Windows 10" } } }
+    }));
+    assert!(
+        found
+            .iter()
+            .any(|pattern| run_known_pattern(&mut event, &normalised, pattern))
+    );
+    assert_eq!(event.get_str("host.os.type"), Some("windows"));
+
+    // The subject folds case before the test, so a shouted name still grades.
+    let mut event = Event::new(serde_json::json!({
+        "spycloud": { "compass": { "user": { "os": "Ubuntu LINUX 22.04" } } }
+    }));
+    for pattern in &found {
+        run_known_pattern(&mut event, &normalised, pattern);
+    }
+    assert_eq!(event.get_str("host.os.type"), Some("linux"));
+
+    // First arm wins, exactly as the `else if` chain orders them: `macos`
+    // contains `mac` and would otherwise be reachable by two arms.
+    let mut event = Event::new(serde_json::json!({
+        "spycloud": { "compass": { "user": { "os": "Mac OS X" } } }
+    }));
+    for pattern in &found {
+        run_known_pattern(&mut event, &normalised, pattern);
+    }
+    assert_eq!(event.get_str("host.os.type"), Some("macos"));
+
+    // An OS no arm names leaves the field alone rather than guessing.
+    let mut event = Event::new(serde_json::json!({
+        "spycloud": { "compass": { "user": { "os": "PlayStation 5" } } }
+    }));
+    for pattern in &found {
+        run_known_pattern(&mut event, &normalised, pattern);
+    }
+    assert!(!event.has("host.os.type"));
+}
+
+/// Case is READ, not folded: a rule that lowercased would corrupt these keys.
+#[test]
+fn the_hyphen_rule_leaves_every_other_character_alone() {
+    assert_eq!(
+        to_snake_case("cs-uri-port", SnakeRule::HyphenToUnderscore),
+        "cs_uri_port"
+    );
+    assert_eq!(
+        to_snake_case("HTTPServer", SnakeRule::HyphenToUnderscore),
+        "HTTPServer"
+    );
+    assert_eq!(
+        to_snake_case("X-Forwarded-For", SnakeRule::HyphenToUnderscore),
+        "X_Forwarded_For"
+    );
+}
+
 /// `juniper_srx` swaps a hyphen for an underscore across every key it has.
 ///
-/// Verbatim from `pipelines/juniper_srx/log`. This is NOT the camel-case
-/// converter: `snake_case_apply` declines a helper with no
-/// `Character.isUpperCase` in it, which is right, and left this bound to
-/// nothing until it had an arm of its own.
+/// Verbatim from `pipelines/juniper_srx/log`. This is NOT the recursive
+/// converter: `snake_case_apply` wants a helper applied by an `instanceof Map`
+/// descent, and this is one `Collectors.toMap` over a single level.
 #[test]
 fn every_key_of_a_map_takes_one_character_replacement() {
     let script = "ctx.juniper.srx = ctx?.juniper?.srx.entrySet().stream()\
