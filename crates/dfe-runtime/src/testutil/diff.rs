@@ -213,7 +213,15 @@ fn values_equal(path: &str, a: &Value, b: &Value, mode: MatchMode) -> bool {
         (Value::Number(na), Value::Number(nb)) => {
             // Handle integer vs float comparison (1 == 1.0)
             if let (Some(fa), Some(fb)) = (na.as_f64(), nb.as_f64()) {
-                (fa - fb).abs() < f64::EPSILON
+                // Scaled by magnitude, because `f64::EPSILON` is the step at
+                // 1.0 and nothing else. One step at 58 is 7.1e-15, thirty-two
+                // times that, so a capture whose DECIMAL TEXT round-trips one
+                // step low read as a defect: rapid7's `58.282000000000004`
+                // parses below the value `582.82 / 10.0` computes, and ours is
+                // the correctly-rounded one. The tolerance stays inside a
+                // single rounding step, which no arithmetic defect fits within.
+                let scale = fa.abs().max(fb.abs()).max(1.0);
+                (fa - fb).abs() <= f64::EPSILON * scale
             } else {
                 na == nb
             }
