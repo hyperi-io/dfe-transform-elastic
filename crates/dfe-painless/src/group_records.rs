@@ -165,7 +165,10 @@ fn seeds_empty_list(script: &str, target: &str, key_var: &str) -> bool {
 ///
 /// Both spellings, because the same pipeline writes both: `['node']` on the
 /// element and `.node` on a local are one access to Painless.
-fn member_suffix(rest: &str) -> Option<String> {
+///
+/// Shared with [`crate::append_records`], which walks the same `edges[i]['node']`
+/// list the same way and differs only in where the record lands.
+pub(crate) fn member_suffix(rest: &str) -> Option<String> {
     let rest = rest.trim();
     if rest.is_empty() {
         return Some(String::new());
@@ -227,7 +230,10 @@ fn quoted(text: &str) -> Option<String> {
 /// script declares its list `ArrayList observables = ctx.observables.edges;`.
 /// A declarator is demanded either way: a bare `<name> = ...` is a
 /// reassignment and says nothing about where the list came from.
-fn local_ctx_path(script: &str, local: &str) -> Option<String> {
+///
+/// Shared with [`crate::append_records`] and [`crate::trim_delimited`], whose
+/// locals are declared the same way.
+pub(crate) fn local_ctx_path(script: &str, local: &str) -> Option<String> {
     script.split(';').find_map(|statement| {
         let (lhs, rhs) = statement.trim().split_once('=')?;
         let mut words = lhs.split_whitespace();

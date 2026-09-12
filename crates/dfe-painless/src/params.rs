@@ -279,6 +279,8 @@ pub(crate) enum ParamsPattern {
     GuardedLookup(GuardedLookupScript),
     /// A params row per id, collected into the field the script writes back.
     CollectParamsRows(Box<crate::collect_rows::CollectParamsRows>),
+    /// Several fields unwrapped from a delimiter the params table carries.
+    TrimDelimited(Box<crate::trim_delimited::TrimDelimited>),
     IndexedLookup,
     Scale,
     Replace,
@@ -942,6 +944,18 @@ fn params_pattern_tail(normalised: &str) -> Option<ParamsPattern> {
         && let Some(pattern) = crate::collect_rows::parse_collect_params_rows(normalised)
     {
         return Some(ParamsPattern::CollectParamsRows(Box::new(pattern)));
+    }
+
+    // Pattern: several fields unwrapped from a delimiter the table carries,
+    // through a helper the script declares. Above `IndexedLookup`, which claims
+    // the same two keywords with no parse behind them and whose runner then
+    // declines a table that is a map rather than an array -- sentinel_one's
+    // command lines kept their quotes on eight of eighteen events that way.
+    if normalised.contains(".put(")
+        && normalised.contains("params")
+        && let Some(pattern) = crate::trim_delimited::parse_trim_delimited(normalised)
+    {
+        return Some(ParamsPattern::TrimDelimited(Box::new(pattern)));
     }
 
     // Pattern: index a params array by a numeric field.
@@ -2387,6 +2401,9 @@ pub(crate) fn run_params_pattern(
         ParamsPattern::GuardedLookup(pattern) => guarded_lookup(event, pattern, params),
         ParamsPattern::CollectParamsRows(pattern) => {
             crate::collect_rows::collect_params_rows(event, pattern, params)
+        }
+        ParamsPattern::TrimDelimited(pattern) => {
+            crate::trim_delimited::trim_delimited(event, pattern, params)
         }
         ParamsPattern::IndexedLookup => try_indexed_lookup(event, normalised, params),
         ParamsPattern::Scale => try_scale(event, normalised, params),

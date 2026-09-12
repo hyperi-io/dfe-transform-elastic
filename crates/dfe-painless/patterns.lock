@@ -193,66 +193,67 @@
 192 ReplaceDotsInKeys
 193 OktaTargetRename
 194 KeysBySuffix
-195 CollectMapValues
-196 StringOps
+195 AppendRecords
+196 CollectMapValues
 197 StringOps
-198 MapEntriesInto
-199 GroupRecords
-200 GuardedReplace
-201 RoundedScale
-202 FieldsIntoMap
-203 CrowdstrikeTimelineEntityIdentity
-204 CrowdstrikeTimelineEntityAccounts
-205 CollectPresent
-206 LastElementMember
-207 FirstElement
-208 IndexedFieldCopies
-209 MoveKeys
-210 ClassifyLadder
-211 PrivateCidrDirection
-212 WktGeometry
-213 GeoPointFromCoordinates
-214 BranchCopies
-215 StripSurroundingPair
-216 HashByWidthOrPrefix
-217 LongLadder
-218 LongCoercion
-219 GuardedDivide
-220 ScaleField
-221 RecordRenames
-222 DecodedFields
-223 PairTable
-224 RecordFromFields
-225 SecondsBetween
-226 HoistMember
-227 ListRebuild
-228 ScanTaggedList
-229 GuardedCopy
-230 ConcatAssignment
-231 PlainAssignments
-232 SumTotals
-233 ScalarExpression
-234 TrimThenSplit
-235 ItemWrites
-236 NthSeparatorPrefix
-237 FirstMatchInList
-238 SubstringRejoin
-239 ListFold
-240 LongDivide
-241 DropLeadingChars
-242 EpochToMillis
-243 EpochNanosToDateTime
-244 EpochRungs
-245 TrimListSuffix
-246 EscapeDecode
-247 VocabularyBranchCopies
-248 CompareToChoice
-249 DurationFromUnitTokens
-250 SplitElement
-251 ActorKind
-252 TimeOrderFlag
-253 StringifyMember
-254 MemberTags
+198 StringOps
+199 MapEntriesInto
+200 GroupRecords
+201 GuardedReplace
+202 RoundedScale
+203 FieldsIntoMap
+204 CrowdstrikeTimelineEntityIdentity
+205 CrowdstrikeTimelineEntityAccounts
+206 CollectPresent
+207 LastElementMember
+208 FirstElement
+209 IndexedFieldCopies
+210 MoveKeys
+211 ClassifyLadder
+212 PrivateCidrDirection
+213 WktGeometry
+214 GeoPointFromCoordinates
+215 BranchCopies
+216 StripSurroundingPair
+217 HashByWidthOrPrefix
+218 LongLadder
+219 LongCoercion
+220 GuardedDivide
+221 ScaleField
+222 RecordRenames
+223 DecodedFields
+224 PairTable
+225 RecordFromFields
+226 SecondsBetween
+227 HoistMember
+228 ListRebuild
+229 ScanTaggedList
+230 GuardedCopy
+231 ConcatAssignment
+232 PlainAssignments
+233 SumTotals
+234 ScalarExpression
+235 TrimThenSplit
+236 ItemWrites
+237 NthSeparatorPrefix
+238 FirstMatchInList
+239 SubstringRejoin
+240 ListFold
+241 LongDivide
+242 DropLeadingChars
+243 EpochToMillis
+244 EpochNanosToDateTime
+245 EpochRungs
+246 TrimListSuffix
+247 EscapeDecode
+248 VocabularyBranchCopies
+249 CompareToChoice
+250 DurationFromUnitTokens
+251 SplitElement
+252 ActorKind
+253 TimeOrderFlag
+254 StringifyMember
+255 MemberTags
 
 [params_pattern]
   1 RowMembers
@@ -319,28 +320,29 @@
  62 StringifiedLookup
  63 StringifiedLookupOrLiteral
  64 CollectParamsRows
- 65 IndexedLookup
- 66 Scale
- 67 Replace
- 68 AddUniqueRow
- 69 FrameworkPreference
- 70 NormalisedLookup
- 71 StringifiedLookup
- 72 LookupNormalise
- 73 GuardedLookup
- 74 MergeRowOrFallback
- 75 GuardedParamsRow
- 76 IssueLifecycle
- 77 ArmedTable
- 78 RowOrDefaults
- 79 HexFields
- 80 KeyedByLookup
- 81 ScalarExpression
- 82 SelectRenameKeys
- 83 FieldTables
+ 65 TrimDelimited
+ 66 IndexedLookup
+ 67 Scale
+ 68 Replace
+ 69 AddUniqueRow
+ 70 FrameworkPreference
+ 71 NormalisedLookup
+ 72 StringifiedLookup
+ 73 LookupNormalise
+ 74 GuardedLookup
+ 75 MergeRowOrFallback
+ 76 GuardedParamsRow
+ 77 IssueLifecycle
+ 78 ArmedTable
+ 79 RowOrDefaults
+ 80 HexFields
+ 81 KeyedByLookup
+ 82 ScalarExpression
+ 83 SelectRenameKeys
  84 FieldTables
- 85 MemberMappings
- 86 ConfiguredDateFormat
- 87 SplitNamedByPosition
- 88 ActionMapping
+ 85 FieldTables
+ 86 MemberMappings
+ 87 ConfiguredDateFormat
+ 88 SplitNamedByPosition
+ 89 ActionMapping
 

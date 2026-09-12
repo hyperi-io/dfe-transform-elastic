@@ -7231,17 +7231,69 @@ fn every_entry_of_a_named_container_collapses() {
     );
 }
 
-/// Two maps disagreeing on a key take the vendor's SET UNION, whose order is
-/// Java's hash iteration order rather than the insertion order an array keeps.
-/// The whole script declines rather than write an order that cannot be
-/// justified, and the document is left as the vendor found it.
+/// Two maps disagreeing on a key take the vendor's SET UNION, and the order is
+/// the `HashSet`'s TABLE rather than the order the two arrived in: `b.example`
+/// lands in bucket 3 and `a.example` in bucket 4, so the later one comes first.
 #[test]
-fn a_union_whose_order_cannot_be_reproduced_declines() {
-    let held = json!({
+fn a_union_comes_out_in_the_hash_sets_own_order() {
+    let mut event = Event::new(json!({
         "opencti": { "indicator": {} },
         "threat": { "indicator": { "url": [
             { "domain": "a.example" },
             { "domain": "b.example" },
+        ] } },
+    }));
+
+    assert!(try_known_painless(&mut event, MERGE_LISTS_OF_MAPS));
+    assert_eq!(
+        event.get("threat.indicator.url"),
+        Some(&json!({ "domain": ["b.example", "a.example"] }))
+    );
+}
+
+/// `ti_opencti`'s two external references, verbatim from the capture: the keys
+/// they share and disagree on become lists, and the one they agree on stays a
+/// scalar.
+#[test]
+fn the_opencti_external_references_merge_the_way_elasticsearch_captured_them() {
+    let mut event = Event::new(json!({
+        "opencti": { "indicator": { "external_reference": [
+            {
+                "description": "Stopforumspam feed URL",
+                "source_name": "stopforumspam",
+                "url": "https://www.stopforumspam.com/downloads/toxic_domains_whole_filtered_50000.txt",
+            },
+            {
+                "source_name": "MISC",
+                "url": "https://example.com/CVE-0079-1234",
+            },
+        ] } },
+        "threat": { "indicator": {} },
+    }));
+
+    assert!(try_known_painless(&mut event, MERGE_LISTS_OF_MAPS));
+    assert_eq!(
+        event.get("opencti.indicator.external_reference"),
+        Some(&json!({
+            "description": "Stopforumspam feed URL",
+            "source_name": ["stopforumspam", "MISC"],
+            "url": [
+                "https://www.stopforumspam.com/downloads/toxic_domains_whole_filtered_50000.txt",
+                "https://example.com/CVE-0079-1234",
+            ],
+        }))
+    );
+}
+
+/// An element the set cannot be ordered by declines the whole script, and the
+/// document is left as the vendor found it.
+#[test]
+fn a_union_over_values_that_are_not_text_declines() {
+    let held = json!({
+        "opencti": { "indicator": {} },
+        "threat": { "indicator": { "url": [
+            { "port": 80 },
+            { "port": 443 },
         ] } },
     });
     let mut event = Event::new(held.clone());

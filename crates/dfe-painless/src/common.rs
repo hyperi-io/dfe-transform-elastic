@@ -4888,14 +4888,8 @@ fn parse_list_of_maps_merge(script: &str) -> Option<ListOfMapsMerge> {
     Some(ListOfMapsMerge { containers, fields })
 }
 
-/// `mergeMaps(map1, map2)`, returning false where the vendor would take the
-/// branch this declines.
-///
-/// The declined branch is the SET UNION: `new HashSet` then `new ArrayList`
-/// gives Java's hash iteration order, which is not the insertion order a
-/// `serde_json` array would keep, so writing one would ship an order we cannot
-/// justify. No document in the corpus reaches it -- every list this merges
-/// holds a single map, where every key takes the plain assignment.
+/// `mergeMaps(map1, map2)`, returning false where the vendor would take a
+/// branch this cannot reproduce.
 fn merge_map_into(into: &mut Map<String, Value>, from: &Map<String, Value>) -> bool {
     for (key, arriving) in from {
         match into.get_mut(key) {
@@ -4913,10 +4907,104 @@ fn merge_map_into(into: &mut Map<String, Value>, from: &Map<String, Value>) -> b
                     return false;
                 }
             }
-            Some(_) => return false,
+            Some(held) => {
+                let Some(union) = java_set_union(held, arriving) else {
+                    return false;
+                };
+                *held = union;
+            }
         }
     }
     true
+}
+
+/// Two disagreeing values unioned the way the vendor's `else` branch does.
+///
+/// ```painless
+/// if (!(map1[key] instanceof List)) { map1[key] = [map1[key]]; }
+/// def combined = new HashSet(map1[key]);
+/// if (map2[key] instanceof List) { combined.addAll(map2[key]); } else { combined.add(map2[key]); }
+/// map1[key] = new ArrayList(combined);
+/// ```
+///
+/// Strings only. The order is the SET's, so it is decided by `hashCode`, and
+/// this reproduces `String`'s alone -- any other element type declines and
+/// leaves the document as it was.
+fn java_set_union(held: &Value, arriving: &Value) -> Option<Value> {
+    let seed: Vec<&Value> = match held {
+        Value::Array(items) => items.iter().collect(),
+        one => vec![one],
+    };
+    let seed_len = seed.len();
+    let added: Vec<&Value> = match arriving {
+        Value::Array(items) => items.iter().collect(),
+        one => vec![one],
+    };
+
+    let mut texts = Vec::with_capacity(seed_len + added.len());
+    for value in seed.into_iter().chain(added) {
+        texts.push(value.as_str()?);
+    }
+    Some(Value::Array(
+        java_hash_set_order(seed_len, &texts)
+            .into_iter()
+            .map(|text| Value::String(text.to_owned()))
+            .collect(),
+    ))
+}
+
+/// The order `new ArrayList(new HashSet(seed))` plus later adds comes out in.
+///
+/// A `HashSet` iterates its TABLE, so the answer is neither insertion order nor
+/// sorted -- it is bucket `(capacity - 1) & (h ^ (h >>> 16))` walked low to
+/// high, each bucket's chain in insertion order. Deterministic, and the only
+/// thing that agrees with what Elasticsearch captured.
+///
+/// Chains only. A bucket holding eight entries in a table of 64 becomes a
+/// red-black tree in Java and reorders within itself; no list the vendor merges
+/// is near that, and one that was would need the tree order too.
+fn java_hash_set_order<'a>(seed_len: usize, texts: &[&'a str]) -> Vec<&'a str> {
+    // `new HashSet(c)` asks for `max((int)(c.size() / .75f) + 1, 16)`, and
+    // `HashMap` rounds that up to a power of two. The division is `4n / 3` in
+    // integers, which truncates where the float does.
+    let mut capacity = ((seed_len * 4 / 3 + 1).max(16)).next_power_of_two();
+    let mut threshold = capacity * 3 / 4;
+
+    let mut distinct: Vec<&str> = Vec::with_capacity(texts.len());
+    for text in texts {
+        if distinct.contains(text) {
+            continue;
+        }
+        distinct.push(text);
+        if distinct.len() > threshold {
+            capacity *= 2;
+            threshold = capacity * 3 / 4;
+        }
+    }
+
+    let mut placed: Vec<(usize, usize)> = distinct
+        .iter()
+        .enumerate()
+        .map(|(index, text)| ((java_string_spread(text) as usize) & (capacity - 1), index))
+        .collect();
+    placed.sort_unstable();
+    placed
+        .into_iter()
+        .map(|(_, index)| distinct[index])
+        .collect()
+}
+
+/// `String.hashCode()` spread the way `HashMap` spreads it before masking.
+///
+/// The hash is over UTF-16 code units, which is what a Java `String` holds, so
+/// a character outside the basic plane counts as its two surrogates.
+fn java_string_spread(text: &str) -> u32 {
+    let mut hash: i32 = 0;
+    for unit in text.encode_utf16() {
+        hash = hash.wrapping_mul(31).wrapping_add(i32::from(unit));
+    }
+    let hash = hash as u32;
+    hash ^ (hash >> 16)
 }
 
 /// What collapsing the list at one path comes to.
@@ -22724,6 +22812,8 @@ pub(crate) enum KnownPattern {
     StringifyMember(Box<crate::stringify_member::StringifyMember>),
     /// ECS lists appended to when a record's own label carries a word.
     MemberTags(Box<crate::member_tags::MemberTags>),
+    /// Every record of a list appended to one list, its null members dropped.
+    AppendRecords(Box<crate::append_records::AppendRecords>),
 }
 
 /// Copies that apply only where `guard` holds `literal`.
@@ -24752,6 +24842,19 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: every record of a list appended to one list, rebuilt without its
+    // null members. AHEAD of `CollectMapValues` below, which claims the same two
+    // keywords with no parse behind them: its argument reader wants
+    // `<binding>.<leaf>` and this one appends a bare local, so ti_opencti's
+    // external references bound cleanly and wrote nothing on every event.
+    if normalised.contains(".keySet()")
+        && normalised.contains(".add(")
+        && let Some(pattern) = crate::append_records::parse_append_records(normalised)
+    {
+        patterns.push(KnownPattern::AppendRecords(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: collect one nested key out of every entry of a map.
     if normalised.contains(".keySet()") && normalised.contains(".add(") {
         patterns.push(KnownPattern::CollectMapValues);
@@ -26106,6 +26209,9 @@ pub(crate) fn run_known_pattern(
             crate::stringify_member::stringify_member(event, pattern)
         }
         KnownPattern::MemberTags(pattern) => crate::member_tags::member_tags(event, pattern),
+        KnownPattern::AppendRecords(pattern) => {
+            crate::append_records::append_records(event, pattern)
+        }
         KnownPattern::CopyByLabel(pattern) => run_copy_by_label(event, pattern),
         KnownPattern::BandLadder(pattern) => run_band_ladder(event, pattern),
         KnownPattern::StripSurroundingPair(pattern) => run_strip_surrounding_pair(event, pattern),

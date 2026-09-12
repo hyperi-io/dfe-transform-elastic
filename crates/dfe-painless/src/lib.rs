@@ -27,6 +27,7 @@
 
 pub mod action_mapping;
 pub mod actor_kind;
+pub mod append_records;
 pub mod coercion;
 pub mod collect_present;
 pub mod collect_rows;
@@ -62,5 +63,6 @@ pub mod stats;
 pub mod stringify_member;
 pub mod time_order_flag;
 pub mod totals;
+pub mod trim_delimited;
 pub mod url_action;
 pub mod windows;

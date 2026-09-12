@@ -35,6 +35,7 @@ pub use crate::painless_plan::{PainlessPlan, painless_exec_plan, painless_exec_p
 // `every_matcher_runner_reaches_the_prelude` in
 // `crates/dfe-transforms/tests/prelude_exports.rs`.
 pub use crate::painless_actor_kind::{ActorKind, run_actor_kind};
+pub use crate::painless_append_records::{AppendRecords, append_records};
 pub use crate::painless_coercion::{
     DecodedFields, LongCoercion, LongLadder, decoded_fields, long_coercion, long_ladder,
 };
