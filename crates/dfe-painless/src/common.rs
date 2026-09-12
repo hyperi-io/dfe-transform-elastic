@@ -22689,6 +22689,8 @@ pub(crate) enum KnownPattern {
     /// Named members gathered out of a list's records, written where the walk
     /// came to something.
     GatherMembers(Box<crate::gather_members::GatherMembers>),
+    /// A list's records filed into buckets named by one of their own members.
+    GroupRecords(Box<crate::group_records::GroupRecords>),
     /// An integer divided by a literal and written back, through a local.
     LongDivide(Box<LongDivide>),
     /// A value that may arrive as text or as a number, written back as a
@@ -24784,6 +24786,18 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: a list's records filed into buckets named by one of their own
+    // members. AHEAD of the `.replace(` stop below, which ends the ladder for
+    // any script spelling one: `ti_opencti` normalises its bucket name with two
+    // `replace` calls, so from there its observables bound to nothing and every
+    // processor guarded on `opencti.observable.<entity>` was unreachable.
+    if normalised.contains(".add(")
+        && let Some(pattern) = crate::group_records::parse_group_records(normalised)
+    {
+        patterns.push(KnownPattern::GroupRecords(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: rewrite one substring of a field in place. The parse decides what
     // BINDS; the arm stops the ladder either way, because letting an unreadable
     // script fall through cost juniper_srx 845 fields to worse matches below.
@@ -26146,6 +26160,7 @@ pub(crate) fn run_known_pattern(
         KnownPattern::GatherMembers(pattern) => {
             crate::gather_members::gather_members(event, pattern)
         }
+        KnownPattern::GroupRecords(pattern) => crate::group_records::group_records(event, pattern),
         KnownPattern::DecodedFields(pattern) => crate::coercion::decoded_fields(event, pattern),
         KnownPattern::RecordRenames(pattern) => crate::records::record_renames(event, pattern),
         KnownPattern::LongDivide(pattern) => run_long_divide(event, pattern),

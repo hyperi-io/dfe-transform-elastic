@@ -37,6 +37,7 @@ pub mod entity;
 pub mod expr;
 pub mod field_tables;
 pub mod gather_members;
+pub mod group_records;
 pub mod helpers;
 pub mod hex;
 pub mod hoist;
