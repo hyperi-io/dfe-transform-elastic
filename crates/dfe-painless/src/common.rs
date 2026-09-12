@@ -21558,6 +21558,329 @@ fn run_compare_to_choice(event: &mut Event, pattern: &CompareToChoice) -> bool {
     true
 }
 
+/// A human duration folded to seconds by walking number/unit token pairs.
+///
+/// ```painless
+/// String s = ctx.thor.duration.toString().trim();
+/// if (s.length() == 0) return;
+/// long hours = 0L; long mins = 0L; long secs = 0L;
+/// String[] parts = s.splitOnToken(" ");
+/// for (int i = 0; i < parts.length - 1; i++) {
+///   String v = parts[i];
+///   String u = parts[i + 1].toLowerCase(Locale.ROOT);
+///   long n;
+///   try { n = Long.parseLong(v); } catch (Exception e) { continue; }
+///   if (u.startsWith("hour")) { hours = n; }
+///   else if (u.startsWith("min")) { mins = n; }
+///   else if (u.startsWith("sec")) { secs = n; }
+/// }
+/// ctx.thor.duration = hours * 3600L + mins * 60L + secs;
+/// ```
+///
+/// `nextron_thor` sends `0 hours 44 mins 8 secs` and expects `2648`. Six of its
+/// events turn on this field alone.
+///
+/// The units and their weights are READ, never assumed: the prefixes come off
+/// the `startsWith` ladder and each weight off the coefficient the final sum
+/// gives that arm's own local. A vendor spelling days, or weighting an hour
+/// differently, is still right; one this cannot read declines whole.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct DurationFromUnitTokens {
+    /// The `ctx.` path the text is read from.
+    source: String,
+    /// The `ctx.` path the total is written to, which is usually the same one.
+    target: String,
+    /// The token the split cuts on.
+    separator: String,
+    /// Each unit PREFIX the ladder tests for, in ladder order, and how many
+    /// seconds one of that unit is worth.
+    units: Vec<(String, i64)>,
+}
+
+/// The script with every space that does not separate two identifier characters
+/// removed, so `parts[i + 1]` and `parts[i+1]` read the same.
+///
+/// Structure only. A quoted literal comes back with its own spaces gone, so
+/// every literal this pattern reads -- the separator, the unit prefixes -- is
+/// read from the RAW script instead.
+fn tighten(script: &str) -> String {
+    let mut out = String::with_capacity(script.len());
+    for c in script.chars() {
+        if c.is_whitespace() {
+            if out
+                .chars()
+                .next_back()
+                .is_some_and(|last| last.is_alphanumeric() || last == '_')
+            {
+                out.push(' ');
+            }
+        } else {
+            if !(c.is_alphanumeric() || c == '_') && out.ends_with(' ') {
+                out.pop();
+            }
+            out.push(c);
+        }
+    }
+    out
+}
+
+/// Read the source, the target, the separator and the weighted units, or decline.
+fn parse_duration_from_unit_tokens(script: &str) -> Option<DurationFromUnitTokens> {
+    use crate::params::{clean_path, ctx_path_between};
+
+    let source = ctx_path_between(script, "= ctx.", ".toString()")?;
+
+    // `String[] <list> = <text>.splitOnToken('<sep>');`
+    let (bound, rest) = script.split_once(".splitOnToken(")?;
+    let separator = quoted_first(rest)?;
+    let list = bound.rsplit_once(" = ")?.0.rsplit(' ').next()?.trim();
+    if source.is_empty() || separator.is_empty() || list.is_empty() {
+        return None;
+    }
+
+    // The pairing IS the pattern: the loop has to stop one token short, or a
+    // trailing bare number would take the unit of the token after the end.
+    let flat = tighten(script);
+    if !flat.contains(&format!("{list}.length-1")) {
+        return None;
+    }
+    let var = flat
+        .split_once(&format!("{list}.length-1"))?
+        .0
+        .rsplit_once("for(int ")?
+        .1
+        .split_once('=')?
+        .0
+        .trim()
+        .to_owned();
+    if var.is_empty() {
+        return None;
+    }
+
+    // `ctx.<target> = <local> * <n>L + <local> * <n>L + <local>;`
+    let (target, sum) = script.rsplit_once("ctx.")?.1.split_once('=')?;
+    let target = clean_path(target.trim());
+    let mut weights: Vec<(String, i64)> = Vec::new();
+    for term in sum.trim().trim_end_matches([';', '\n', ' ']).split('+') {
+        let (local, weight) = match term.split_once('*') {
+            Some((local, factor)) => (
+                local,
+                factor.trim().trim_end_matches(['L', 'l']).parse().ok()?,
+            ),
+            None => (term, 1),
+        };
+        let local = local.trim();
+        if local.is_empty() || !local.chars().all(|c| c.is_alphanumeric() || c == '_') {
+            return None;
+        }
+        weights.push((local.to_owned(), weight));
+    }
+    if target.is_empty() || weights.is_empty() {
+        return None;
+    }
+
+    // The value token is what gets parsed as a number and the unit token is
+    // what the ladder tests, and each has to be bound to its own side of the
+    // pair -- reading them the other way round inverts the whole script.
+    let (before_parse, after_parse) = flat.split_once("=Long.parseLong(")?;
+    let number = identifier_before(before_parse)?;
+    let value = after_parse.split_once(')')?.0.trim();
+    let unit = identifier_before(flat.split_once(".startsWith(")?.0)?;
+    if !flat.contains(&format!("{value}={list}[{var}];"))
+        || !flat.contains(&format!("{unit}={list}[{var}+1]"))
+    {
+        return None;
+    }
+
+    // One arm per unit, each writing the parsed number into a local the sum
+    // weights. An arm writing anything else declines the whole script.
+    let mut units = Vec::new();
+    let mut rest = script;
+    while let Some((_, tail)) = rest.split_once(".startsWith(") {
+        let prefix = quoted_first(tail)?;
+        let body = tighten(tail.split_once('{')?.1.split_once('}')?.0);
+        let (assigned, held) = body.split_once('=')?;
+        if held.trim().trim_end_matches(';').trim() != number {
+            return None;
+        }
+        let weight = weights
+            .iter()
+            .find(|(local, _)| local == assigned.trim())
+            .map(|(_, weight)| *weight)?;
+        units.push((prefix, weight));
+        rest = tail;
+    }
+    (units.len() == weights.len()).then_some(DurationFromUnitTokens {
+        source,
+        target,
+        separator,
+        units,
+    })
+}
+
+/// Total the number/unit pairs the text spells, in seconds.
+fn run_duration_from_unit_tokens(event: &mut Event, pattern: &DurationFromUnitTokens) -> bool {
+    // `.toString()` on an absent field throws, and a throw writes nothing.
+    let Some(text) = event.get_as_string(&pattern.source) else {
+        return true;
+    };
+    let text = text.trim();
+    // The script's own early return: an empty string leaves the field alone.
+    if text.is_empty() {
+        return true;
+    }
+
+    // Each unit holds ONE value, so a repeated unit OVERWRITES rather than
+    // accumulating -- that is what assigning to the script's own local does.
+    let mut held: Vec<Option<i64>> = vec![None; pattern.units.len()];
+    let parts: Vec<&str> = text.split(pattern.separator.as_str()).collect();
+    // Pairs, so the last token has no number in front of it and is not read --
+    // the script's `length - 1` bound.
+    for pair in parts.windows(2) {
+        let Ok(number) = pair[0].parse::<i64>() else {
+            // The script's `catch` around `Long.parseLong`: a non-numeric token
+            // is skipped rather than failing the whole script.
+            continue;
+        };
+        let unit = pair[1].to_lowercase();
+        if let Some(at) = pattern
+            .units
+            .iter()
+            .position(|(prefix, _)| unit.starts_with(prefix.as_str()))
+        {
+            held[at] = Some(number);
+        }
+    }
+
+    // Every local starts at zero, so an absent unit contributes nothing and the
+    // total is written whatever the text held.
+    let total = pattern
+        .units
+        .iter()
+        .zip(&held)
+        .fold(0i64, |total, ((_, weight), value)| {
+            total.saturating_add(weight.saturating_mul(value.unwrap_or(0)))
+        });
+    let _ = event.set(&pattern.target, Value::from(total));
+    true
+}
+
+/// One element of a split, optionally trimmed, onto a field.
+///
+/// ```painless
+/// ctx.thor.start = ctx.thor.start.splitOnToken(',')[0].trim();
+/// ```
+///
+/// `nextron_thor` normalises a multi-value `thor.start` down to its first entry
+/// this way, and the date processor behind it then reads what this leaves.
+/// [`SplitFirstLabel`] reads the same call and is a different pattern: it writes
+/// the first element AND the rest of them, to two fields.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct SplitElement {
+    /// The `ctx.` path the text is read from.
+    source: String,
+    /// The token the split cuts on.
+    separator: String,
+    /// Which element of the split lands, as the script subscripts it.
+    index: usize,
+    /// Whether the script trims the element it took.
+    trim: bool,
+    /// The `ctx.` path the element is written to.
+    target: String,
+}
+
+/// Whether `text` holds `wanted` OUTSIDE a quoted literal.
+///
+/// The separator can be the very character that ends a statement -- `;` is a
+/// common delimiter -- so testing the raw text for one reads the vendor's own
+/// argument as structure and declines a script it can read perfectly well.
+fn outside_quotes(text: &str, wanted: char) -> bool {
+    let mut quote: Option<char> = None;
+    for c in text.chars() {
+        match quote {
+            Some(open) => {
+                if c == open {
+                    quote = None;
+                }
+            }
+            None if c == '\'' || c == '"' => quote = Some(c),
+            None if c == wanted => return true,
+            None => {}
+        }
+    }
+    false
+}
+
+/// Read the one statement, or decline.
+///
+/// The whole script has to BE the statement. A second statement means the
+/// element is a step in something larger, and reproducing the step alone would
+/// claim the script and drop the rest of it in silence.
+fn parse_split_element(script: &str) -> Option<SplitElement> {
+    use crate::params::clean_path;
+
+    let statement = script.trim().trim_end_matches(';').trim();
+    if outside_quotes(statement, ';') || statement.contains('\n') {
+        return None;
+    }
+
+    let (target, expression) = statement.split_once('=')?;
+    let target = clean_path(target.trim().strip_prefix("ctx.")?);
+    let (source, rest) = expression
+        .trim()
+        .strip_prefix("ctx.")?
+        .split_once(".splitOnToken(")?;
+    let source = clean_path(source.trim());
+
+    // The argument has to be the whole literal: anything computed is a
+    // separator this cannot know at generation time.
+    let (argument, rest) = rest.split_once(')')?;
+    let argument = argument.trim();
+    let quote = argument
+        .chars()
+        .next()
+        .filter(|c| *c == '\'' || *c == '"')?;
+    let separator = argument.strip_prefix(quote)?.strip_suffix(quote)?;
+    if separator.is_empty() || separator.contains(quote) {
+        return None;
+    }
+
+    let (index, rest) = rest.trim_start().strip_prefix('[')?.split_once(']')?;
+    let index: usize = index.trim().parse().ok()?;
+    let trim = match rest.trim() {
+        "" => false,
+        ".trim()" => true,
+        _ => return None,
+    };
+
+    (!source.is_empty() && !target.is_empty() && !source.contains('(')).then_some(SplitElement {
+        source,
+        separator: separator.to_owned(),
+        index,
+        trim,
+        target,
+    })
+}
+
+/// Write the element the script subscripts, trimmed where it trims.
+fn run_split_element(event: &mut Event, pattern: &SplitElement) -> bool {
+    // `splitOnToken` on an absent or non-string field throws, and a throw writes
+    // nothing at all. So does a subscript past the end of the split.
+    let Some(text) = event.get_str(&pattern.source).map(str::to_owned) else {
+        return true;
+    };
+    let Some(element) = text.split(pattern.separator.as_str()).nth(pattern.index) else {
+        return true;
+    };
+    let element = if pattern.trim {
+        element.trim()
+    } else {
+        element
+    };
+    let _ = event.set(&pattern.target, Value::from(element));
+    true
+}
+
 /// Check if a Painless script source matches a known pattern.
 ///
 /// Returns true if the script was handled, false if it should fall through
@@ -22016,6 +22339,10 @@ pub(crate) enum KnownPattern {
     VocabularyBranchCopies(Box<VocabularyBranchCopies>),
     /// One of two compared fields written to a third, a flag deciding which.
     CompareToChoice(Box<CompareToChoice>),
+    /// A human duration folded to seconds by walking number/unit token pairs.
+    DurationFromUnitTokens(Box<DurationFromUnitTokens>),
+    /// One element of a split, optionally trimmed, onto a field.
+    SplitElement(Box<SplitElement>),
 }
 
 /// Copies that apply only where `guard` holds `literal`.
@@ -24612,6 +24939,30 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: a human duration folded to seconds by walking number/unit token
+    // pairs. LAST, so it takes only what nothing above took -- nextron_thor's
+    // script reaches the end of the ladder today, and the two arms that could
+    // stop it short once their trigger held are gated on `.add(` and
+    // `.replace(`, neither of which it spells.
+    if normalised.contains(".startsWith(")
+        && normalised.contains("Long.parseLong(")
+        && let Some(pattern) = parse_duration_from_unit_tokens(normalised)
+    {
+        patterns.push(KnownPattern::DurationFromUnitTokens(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: one element of a split, optionally trimmed, onto a field. LAST
+    // for the same reason and it reads a closed one-statement grammar, so the
+    // arm has to sit where it cannot shadow a narrower matcher -- `SplitFirstLabel`
+    // above reads the same call and writes the head AND the tail.
+    if normalised.contains(".splitOnToken(")
+        && let Some(pattern) = parse_split_element(normalised)
+    {
+        patterns.push(KnownPattern::SplitElement(Box::new(pattern)));
+        return patterns;
+    }
+
     patterns
 }
 
@@ -25251,6 +25602,10 @@ pub(crate) fn run_known_pattern(
             run_vocabulary_branch_copies(event, pattern)
         }
         KnownPattern::CompareToChoice(pattern) => run_compare_to_choice(event, pattern),
+        KnownPattern::DurationFromUnitTokens(pattern) => {
+            run_duration_from_unit_tokens(event, pattern)
+        }
+        KnownPattern::SplitElement(pattern) => run_split_element(event, pattern),
         KnownPattern::CopyByLabel(pattern) => run_copy_by_label(event, pattern),
         KnownPattern::BandLadder(pattern) => run_band_ladder(event, pattern),
         KnownPattern::StripSurroundingPair(pattern) => run_strip_surrounding_pair(event, pattern),

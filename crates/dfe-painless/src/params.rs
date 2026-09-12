@@ -329,6 +329,8 @@ pub(crate) enum ParamsPattern {
     /// Several scratch fields reparsed with a date pattern the DOCUMENT
     /// carries, into a sibling container.
     ConfiguredDateFormat(Box<ConfiguredDateFormat>),
+    /// A delimited string's tokens named by POSITION out of the params table.
+    SplitNamedByPosition(Box<SplitNamedByPosition>),
 }
 
 /// What a table lookup falls back to when the key has no row.
@@ -1122,7 +1124,140 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
         return Some(ParamsPattern::ConfiguredDateFormat(Box::new(pattern)));
     }
 
+    // Pattern: a delimited string's tokens named by POSITION out of the params
+    // table. LAST, because nothing above claims barracuda_waf's custom headers
+    // and it needs to precede nothing; the parse is the gate, and the two
+    // substrings are the cheap reject.
+    if normalised.contains(".splitOnToken(")
+        && normalised.contains("params[")
+        && let Some(pattern) = parse_split_named_by_position(normalised)
+    {
+        return Some(ParamsPattern::SplitNamedByPosition(Box::new(pattern)));
+    }
+
     None
+}
+
+/// A delimited string's tokens named by POSITION out of the params table.
+///
+/// ```painless
+/// def headers = ctx._temp.raw_custom_headers.splitOnToken(' ');
+/// if (ctx.barracuda.waf.custom_header == null) {
+///     ctx.barracuda.waf.custom_header = new HashMap();
+/// }
+/// for (int i = 0; i < headers.length; i++) {
+///   ctx.barracuda.waf.custom_header[params[(i+1).toString()]] = headers[i];
+/// }
+/// ```
+///
+/// The table names each POSITION rather than each value, so the script says
+/// only that a header list arrives in a fixed order -- `barracuda_waf` ships
+/// `{"1":"accept_encoding","2":"host","3":"connection", ...}` and its access
+/// stream carries up to four of them per event. This is the whole of what the
+/// source is missing: eight of its events turn on nothing else.
+///
+/// The vendor pads an absent header with `"-"`, so most positions arrive
+/// written and the `drop_empty` at the end of the pipeline takes them back out
+/// -- which is why the runner writes every named position rather than trying
+/// to decide which ones mean anything.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct SplitNamedByPosition {
+    /// The `ctx.` path holding the delimited text.
+    source: String,
+    /// The token the split cuts on.
+    separator: String,
+    /// The `ctx.` container each named token is written into.
+    target: String,
+    /// What the loop index is offset by before it keys the table, which is 1
+    /// where the table's first row is `"1"`.
+    offset: usize,
+}
+
+/// Read the source, the separator, the container and the key offset, or decline.
+///
+/// Every part is read off the script: the loop variable is taken from the `for`
+/// header the split's own local bounds, the key expression has to be that
+/// variable offset by a literal, and the value has to be that same list at that
+/// same variable. A loop writing anything else is a different script and
+/// declines here rather than binding to a runner that would invent positions.
+fn parse_split_named_by_position(script: &str) -> Option<SplitNamedByPosition> {
+    // `def <list> = ctx.<source>.splitOnToken('<sep>');`
+    let (bound, rest) = script.split_once(".splitOnToken(")?;
+    let separator = literal_at(rest)?;
+    let source = clean_path(bound.rsplit_once("ctx.")?.1.trim());
+    let list = bound.rsplit_once(" = ")?.0.rsplit(' ').next()?.trim();
+    if source.is_empty() || separator.is_empty() || list.is_empty() {
+        return None;
+    }
+
+    // `for (int <var> = 0; <var> < <list>.length; <var>++)`, read off the bound
+    // the loop walks so a second loop over some other list cannot supply it.
+    let header = script.split_once(&format!("{list}.length"))?.0;
+    let var = header.rsplit_once("for (int ")?.1.split_once('=')?.0.trim();
+    if var.is_empty() {
+        return None;
+    }
+
+    // `ctx.<target>[params[<key>]] = <list>[<var>];`
+    let target = ctx_path_before(script, "[params[")?;
+    let (key, after) = script.split_once("[params[")?.1.split_once("]]")?;
+    let value = after.split_once(';')?.0.trim().strip_prefix('=')?.trim();
+    if target.is_empty() || value != format!("{list}[{var}]") {
+        return None;
+    }
+
+    // `(<var>+<n>).toString()`, or the bare `<var>.toString()` where the table
+    // is keyed from zero. Anything else is a key this cannot resolve.
+    let key = key.trim();
+    let offset = if let Some(sum) = key
+        .strip_prefix('(')
+        .and_then(|key| key.strip_suffix(").toString()"))
+    {
+        let (left, right) = sum.split_once('+')?;
+        if left.trim() != var {
+            return None;
+        }
+        right.trim().parse().ok()?
+    } else if key.strip_suffix(".toString()")? == var {
+        0
+    } else {
+        return None;
+    };
+
+    Some(SplitNamedByPosition {
+        source,
+        separator,
+        target,
+        offset,
+    })
+}
+
+/// Write each token of the split under the name its POSITION has in the table.
+///
+/// A position the table does not name writes nothing. Painless keys the map by
+/// the null the lookup returned, which names no field the document can hold, so
+/// writing anything there would be inventing a field rather than reproducing
+/// one.
+fn run_split_named_by_position(
+    event: &mut Event,
+    pattern: &SplitNamedByPosition,
+    params: &Map<String, Value>,
+) -> bool {
+    // `splitOnToken` on an absent or non-string field throws, and a throw
+    // writes nothing at all.
+    let Some(text) = event.get_str(&pattern.source).map(str::to_owned) else {
+        return true;
+    };
+    for (at, token) in text.split(pattern.separator.as_str()).enumerate() {
+        let Some(name) = params
+            .get(&(at + pattern.offset).to_string())
+            .and_then(Value::as_str)
+        else {
+            continue;
+        };
+        let _ = event.set(&format!("{}.{name}", pattern.target), Value::from(token));
+    }
+    true
 }
 
 /// Several scratch fields reparsed with a date pattern the document supplies.
@@ -1980,6 +2115,9 @@ pub(crate) fn run_params_pattern(
             crate::expr::scalar_expression_params(event, pattern, params)
         }
         ParamsPattern::KeyedByLookup(pattern) => run_keyed_by_lookup(event, pattern, params),
+        ParamsPattern::SplitNamedByPosition(pattern) => {
+            run_split_named_by_position(event, pattern, params)
+        }
         ParamsPattern::HexFields(pattern) => crate::hex::hex_fields(event, pattern, params),
         ParamsPattern::AwsEntity(script) => crate::entity::run_entity_script(event, script, params),
         ParamsPattern::DropEmptyMembers { parent, list } => {

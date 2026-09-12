@@ -5120,3 +5120,129 @@ fn a_non_boolean_still_falls_to_the_scripts_own_default() {
     assert!(crate::common::try_known_painless(&mut event, JAMF_OUTCOME));
     assert_eq!(event.get_str("event.outcome"), Some("unknown"));
 }
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/barracuda_waf/access.rs`.
+const BARRACUDA_HEADERS: &str = r#"def headers = ctx._temp.raw_custom_headers.splitOnToken(' ');\nif (ctx.barracuda.waf.custom_header == null) {\n    ctx.barracuda.waf.custom_header = new HashMap();\n}\nfor (int i = 0; i < headers.length; i++) {\n  ctx.barracuda.waf.custom_header[params[(i+1).toString()]] = headers[i];\n}\n"#;
+
+/// The params block the same call site carries.
+fn barracuda_positions() -> Value {
+    json!({
+        "1": "accept_encoding",
+        "2": "host",
+        "3": "connection",
+        "4": "cache_control",
+        "5": "user_agent",
+        "6": "content_type"
+    })
+}
+
+/// The table names each POSITION, so token `i` lands under `params[i + 1]`.
+///
+/// Read from `testdata/compat/barracuda/waf/test-access`, whose sixth event
+/// sends `gzip,deflate 2001::128 keep-alive` and whose capture holds all three.
+#[test]
+fn a_split_is_named_by_the_position_the_table_gives_it() {
+    let mut event = Event::new(json!({
+        "_temp": { "raw_custom_headers": "gzip,deflate 2001::128 keep-alive" }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        BARRACUDA_HEADERS,
+        &barracuda_positions()
+    ));
+    assert_eq!(
+        event.get_str("barracuda.waf.custom_header.accept_encoding"),
+        Some("gzip,deflate")
+    );
+    assert_eq!(
+        event.get_str("barracuda.waf.custom_header.host"),
+        Some("2001::128")
+    );
+    assert_eq!(
+        event.get_str("barracuda.waf.custom_header.connection"),
+        Some("keep-alive")
+    );
+}
+
+/// The vendor pads an absent header with `"-"`, and the position still decides
+/// the name -- the pipeline's own `drop_empty` is what takes the padding out.
+///
+/// The ninth event of the same capture sends `"-" "-" 1.128.0.1` and its
+/// capture holds `connection` alone.
+#[test]
+fn a_padded_position_still_names_the_token_it_holds() {
+    let mut event = Event::new(json!({
+        "_temp": { "raw_custom_headers": "\"-\" \"-\" 1.128.0.1" }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        BARRACUDA_HEADERS,
+        &barracuda_positions()
+    ));
+    assert_eq!(
+        event.get_str("barracuda.waf.custom_header.connection"),
+        Some("1.128.0.1")
+    );
+    assert_eq!(
+        event.get_str("barracuda.waf.custom_header.accept_encoding"),
+        Some("\"-\"")
+    );
+}
+
+/// A position the table does not name writes NOTHING.
+///
+/// Painless keys the map by the null the lookup returned, which names no field
+/// the document can hold; inventing a name for it would be a corruption that
+/// leaves no error behind.
+#[test]
+fn a_position_the_table_does_not_name_writes_nothing() {
+    let mut event = Event::new(json!({
+        "_temp": { "raw_custom_headers": "a b c d e f g h" }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        BARRACUDA_HEADERS,
+        &barracuda_positions()
+    ));
+    let written = event
+        .get_object("barracuda.waf.custom_header")
+        .expect("the named positions are written");
+    assert_eq!(written.len(), 6, "six named positions, and no seventh");
+    assert_eq!(
+        written.get("content_type").and_then(Value::as_str),
+        Some("f")
+    );
+}
+
+/// An absent source writes nothing: `splitOnToken` on a null throws, and a
+/// throw writes nothing at all.
+#[test]
+fn an_absent_split_source_writes_nothing() {
+    let mut event = Event::new(json!({ "barracuda": { "waf": {} } }));
+    assert!(try_params_painless(
+        &mut event,
+        BARRACUDA_HEADERS,
+        &barracuda_positions()
+    ));
+    assert!(!event.has("barracuda.waf.custom_header"));
+}
+
+/// The parse reads every part off the script, so a loop writing something else
+/// declines rather than binding to a runner that would invent positions.
+#[test]
+fn a_positional_loop_that_writes_something_else_declines() {
+    // The value is a DIFFERENT list from the one the loop bounds, so the pairing
+    // the pattern reproduces is not the one the script wrote.
+    let mismatched = "def headers = ctx._temp.raw.splitOnToken(' ');\n\
+        for (int i = 0; i < headers.length; i++) {\n  \
+        ctx.a.b[params[(i+1).toString()]] = other[i];\n}\n";
+    assert!(parse_split_named_by_position(mismatched).is_none());
+
+    // The key is offset by a LOCAL rather than a literal, which nothing can
+    // resolve at generation time.
+    let computed = "def headers = ctx._temp.raw.splitOnToken(' ');\n\
+        for (int i = 0; i < headers.length; i++) {\n  \
+        ctx.a.b[params[(i+n).toString()]] = headers[i];\n}\n";
+    assert!(parse_split_named_by_position(computed).is_none());
+}

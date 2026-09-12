@@ -246,6 +246,8 @@
 245 EscapeDecode
 246 VocabularyBranchCopies
 247 CompareToChoice
+248 DurationFromUnitTokens
+249 SplitElement
 
 [params_pattern]
   1 RowMembers
@@ -333,4 +335,5 @@
  83 FieldTables
  84 MemberMappings
  85 ConfiguredDateFormat
+ 86 SplitNamedByPosition
 

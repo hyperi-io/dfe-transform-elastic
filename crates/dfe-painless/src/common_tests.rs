@@ -10477,3 +10477,199 @@ fn a_compare_to_choice_declines_what_it_cannot_reproduce() {
         );
     }
 }
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/nextron_thor_thor_forwarding/default.rs`.
+///
+/// A stored script arrives with its newlines ESCAPED, so it is ONE line. The
+/// test is written in that form, because one written with real newlines passes
+/// while the call site still fails.
+const THOR_DURATION: &str = r#"String s = ctx.thor.duration.toString().trim();\nif (s.length() == 0) return;\n\nlong hours = 0L;\nlong mins  = 0L;\nlong secs  = 0L;\n\nString[] parts = s.splitOnToken(\" \");\nfor (int i = 0; i < parts.length - 1; i++) {\n  String v = parts[i];\n  String u = parts[i + 1].toLowerCase(Locale.ROOT);\n\n  long n;\n  try {\n    n = Long.parseLong(v);\n  } catch (Exception e) {\n    continue;  // skip non-numeric tokens safely\n  }\n\n  if (u.startsWith(\"hour\")) {\n    hours = n;\n  } else if (u.startsWith(\"min\")) {\n    mins = n;\n  } else if (u.startsWith(\"sec\")) {\n    secs = n;\n  }\n}\n\nctx.thor.duration = hours * 3600L + mins * 60L + secs;"#;
+
+/// Run the duration script over one text and hand back what it wrote.
+fn thor_duration(text: &str) -> Option<Value> {
+    let mut event = Event::new(serde_json::json!({ "thor": { "duration": text } }));
+    assert!(
+        try_known_painless(&mut event, THOR_DURATION),
+        "the ladder must claim the script it was written for"
+    );
+    event.get("thor.duration").cloned()
+}
+
+/// Every duration the capture carries, folded to the seconds it expects.
+///
+/// The five values are read straight off
+/// `testdata/compat/nextron_thor/thor_forwarding/test-thorscanlogs`.
+#[test]
+fn a_human_duration_folds_to_seconds() {
+    for (text, seconds) in [
+        ("0 hours 44 mins 8 secs", 2648),
+        ("0 hours 0 mins 38 secs", 38),
+        ("0 hours 0 mins 53 secs", 53),
+        ("0 hours 0 mins 0 secs", 0),
+        ("0 hours 4 mins 56 secs", 296),
+    ] {
+        assert_eq!(
+            thor_duration(text),
+            Some(Value::from(seconds)),
+            "{text} is {seconds} seconds"
+        );
+    }
+}
+
+/// The loop stops one token short, so a trailing bare number has no unit after
+/// it and contributes nothing.
+#[test]
+fn a_trailing_bare_number_contributes_nothing() {
+    assert_eq!(thor_duration("1 mins 30"), Some(Value::from(60)));
+}
+
+/// A non-numeric token is SKIPPED rather than failing the script -- the
+/// vendor's own `catch` around `Long.parseLong`.
+///
+/// It is the unit words themselves that reach it: `hours` sits in the value
+/// position of the next pair and parses as nothing.
+#[test]
+fn a_non_numeric_token_is_skipped_rather_than_failing() {
+    assert_eq!(
+        thor_duration("x hours 2 mins 3 secs"),
+        Some(Value::from(123))
+    );
+}
+
+/// The unit test is `startsWith` on a LOWERCASED token, so the vendor's case
+/// does not decide whether the unit is recognised.
+#[test]
+fn the_unit_test_is_case_insensitive() {
+    assert_eq!(
+        thor_duration("2 Hours 0 MINS 0 Secs"),
+        Some(Value::from(7200))
+    );
+}
+
+/// A repeated unit OVERWRITES rather than accumulating, because the script
+/// assigns to one local per unit.
+#[test]
+fn a_repeated_unit_overwrites_rather_than_accumulating() {
+    assert_eq!(thor_duration("1 mins 2 mins"), Some(Value::from(120)));
+}
+
+/// An empty string returns before any of it, leaving the field alone.
+#[test]
+fn an_empty_duration_leaves_the_field_alone() {
+    assert_eq!(thor_duration("   "), Some(Value::from("   ")));
+}
+
+/// A unit the ladder does not name contributes nothing, and the units it does
+/// name still total.
+#[test]
+fn an_unnamed_unit_contributes_nothing() {
+    assert_eq!(thor_duration("5 days 1 mins 0 secs"), Some(Value::from(60)));
+}
+
+/// The weights are READ off the sum, so a script weighting a unit differently
+/// is reproduced as written rather than as assumed.
+#[test]
+fn the_unit_weights_come_off_the_scripts_own_sum() {
+    let days = THOR_DURATION
+        .replace(r#"startsWith(\"hour\")"#, r#"startsWith(\"day\")"#)
+        .replace("hours * 3600L", "hours * 86400L");
+    assert_ne!(days, THOR_DURATION, "the edit did not apply");
+    let mut event =
+        Event::new(serde_json::json!({ "thor": { "duration": "2 days 0 mins 0 secs" } }));
+    assert!(try_known_painless(&mut event, &days));
+    assert_eq!(event.get("thor.duration"), Some(&Value::from(172_800)));
+}
+
+/// A script whose pairing this cannot read declines WHOLE, rather than binding
+/// to a runner that would total the wrong tokens.
+#[test]
+fn a_duration_script_it_cannot_read_declines() {
+    for (case, altered) in [
+        (
+            "the unit token taken from the value's own position",
+            THOR_DURATION.replace(r"parts[i + 1]", r"parts[i]"),
+        ),
+        (
+            "a loop that runs to the end, so the last token has no pair",
+            THOR_DURATION.replace(r"parts.length - 1", r"parts.length"),
+        ),
+        (
+            "an arm writing a literal rather than the number it parsed",
+            THOR_DURATION.replace(r"hours = n;", r"hours = 1L;"),
+        ),
+    ] {
+        assert_ne!(altered, THOR_DURATION, "{case}: the edit did not apply");
+        assert!(
+            parse_duration_from_unit_tokens(&normalise(&altered)).is_none(),
+            "{case}: claimed"
+        );
+    }
+}
+
+/// Verbatim from the generated call site in the same module.
+const THOR_START: &str = r#"ctx.thor.start = ctx.thor.start.splitOnToken(',')[0].trim();"#;
+
+/// A multi-value `thor.start` comes down to its first entry, trimmed.
+///
+/// `testdata/compat/nextron_thor/thor_forwarding/test-atjobs-multivalue-start`
+/// is the event, and the date processor behind this reads what it leaves.
+#[test]
+fn a_multi_value_start_comes_down_to_its_first_entry() {
+    let mut event = Event::new(serde_json::json!({
+        "thor": { "start": "2014-01-01 00:00:00, 2015-02-03 04:05:06" }
+    }));
+    assert!(try_known_painless(&mut event, THOR_START));
+    assert_eq!(event.get_str("thor.start"), Some("2014-01-01 00:00:00"));
+}
+
+/// A value with no separator in it is its own first element, so the field is
+/// rewritten with itself rather than left alone.
+#[test]
+fn a_single_value_start_is_its_own_first_entry() {
+    let mut event = Event::new(serde_json::json!({
+        "thor": { "start": " 2014-01-01 00:00:00 " }
+    }));
+    assert!(try_known_painless(&mut event, THOR_START));
+    assert_eq!(event.get_str("thor.start"), Some("2014-01-01 00:00:00"));
+}
+
+/// An absent source writes nothing: `splitOnToken` on a null throws, and a
+/// throw writes nothing at all.
+#[test]
+fn an_absent_start_writes_nothing() {
+    let mut event = Event::new(serde_json::json!({ "thor": {} }));
+    assert!(!try_known_painless(&mut event, THOR_START) || !event.has("thor.start"));
+    assert!(!event.has("thor.start"));
+}
+
+/// The element the script subscripts is the one that lands, and the trim is
+/// the script's own rather than this pattern's.
+///
+/// The separator here is the very character that ends a statement. Reading the
+/// raw text for a `;` called this two statements and declined it, which would
+/// have silently refused every vendor that splits on a semicolon.
+#[test]
+fn the_subscript_and_the_trim_are_both_read_off_the_script() {
+    let second = parse_split_element(&normalise(r#"ctx.a.b = ctx.c.d.splitOnToken(';')[2];"#))
+        .expect("a bare subscript with no trim");
+    let mut event = Event::new(serde_json::json!({ "c": { "d": "p; q ; r " } }));
+    assert!(run_split_element(&mut event, &second));
+    assert_eq!(event.get_str("a.b"), Some(" r "));
+}
+
+/// More than one statement declines: reproducing the element alone would claim
+/// the script and drop the rest of it in silence.
+#[test]
+fn a_split_element_inside_a_longer_script_declines() {
+    for case in [
+        r#"ctx.a.b = ctx.c.d.splitOnToken(',')[0].trim(); ctx.e.f = 1;"#,
+        r#"ctx.a.b = ctx.c.d.splitOnToken(',')[0].toUpperCase();"#,
+        r#"ctx.a.b = ctx.c.d.splitOnToken(',')[x];"#,
+    ] {
+        assert!(
+            parse_split_element(&normalise(case)).is_none(),
+            "claimed: {case}"
+        );
+    }
+}
