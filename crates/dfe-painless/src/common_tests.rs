@@ -8734,6 +8734,62 @@ fn a_guard_with_no_write_declines() {
     assert!(parse_single_copy(script).is_none());
 }
 
+/// A COMPUTATION on the right-hand side is not a copy, and reading it as one
+/// wrote the wrong number in silence.
+///
+/// Verbatim from `jamf_compliance_reporter`, two call sites. The epoch scale is
+/// the first statement and the guarded add the second, and the fallback read
+/// the LAST `ctx.` path out of the add -- so it bound as a copy of
+/// `time_milliseconds_offset`, wrote 281 where 1,570,154,219,281 belonged, and
+/// never ran the multiply at all. Both fields are on all 36 captured events.
+#[test]
+fn a_rescale_is_not_read_as_a_copy() {
+    let script = "ctx.json.time_milliseconds = (long)ctx.json.header.time_seconds_epoch * 1000;\n\
+        if (ctx.json?.header?.time_milliseconds_offset != null && \
+        ctx.json.header.time_milliseconds_offset != 0) {\n  \
+        ctx.json.time_milliseconds = ctx.json.time_milliseconds + \
+        (long)ctx.json.header.time_milliseconds_offset;\n}\n";
+
+    assert!(parse_single_copy(script).is_none());
+}
+
+/// The same defect in its shortest spelling: a field scaled onto ITSELF.
+///
+/// Verbatim from azure, nine call sites. `ParamsPattern::Scale` claims this
+/// first and does the multiply, so the copy never ran -- but it bound, and a
+/// binding that writes a field over itself is one narrowing of the arm above it
+/// away from being live.
+#[test]
+fn a_scale_in_place_is_not_read_as_a_copy() {
+    let script = "if (ctx.event.duration!= null) {ctx.event.duration = ctx.event.duration * params.param_nano;}";
+
+    assert!(parse_single_copy(script).is_none());
+}
+
+/// A key that is a URL still copies: the subscript is one path SEGMENT.
+///
+/// Verbatim from `azure_activitylogs`, which spells three of these. They reach
+/// the fallback rather than the `Program` grammar because its bare-path reader
+/// admits no `:` or `/`, so the gate above has to step over the quoted key
+/// whole or the source loses all three claims.
+#[test]
+fn a_copy_through_a_url_key_still_binds() {
+    let script = "if (ctx.azure.activitylogs.identity.claims\
+        ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'] != null) {\n  \
+        ctx.azure.activitylogs.identity.claims_initiated_by_user.surname = \
+        ctx.azure.activitylogs.identity.claims\
+        ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'];\n}";
+
+    let mut event = Event::new(json!({ "azure": { "activitylogs": { "identity": {
+        "claims": { "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname": "Trotter" }
+    } } } }));
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(
+        event.get_str("azure.activitylogs.identity.claims_initiated_by_user.surname"),
+        Some("Trotter")
+    );
+}
+
 /// A loop over a ctx-held table still binds and still reads its row.
 #[test]
 fn a_row_lookup_reads_the_column_its_subject_selects() {

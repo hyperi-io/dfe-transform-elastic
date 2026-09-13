@@ -63,7 +63,17 @@ use dfe_runtime::painless_plan::PainlessPlan;
 /// shadows `GuardedCopy` deliberately and shadows nothing: every guard in that
 /// script is over a local the evaluator resolves to `Never`, so the `Program`
 /// ran none of its three writes and the source scored 0 of 4 events.
-const MULTI_BINDING: usize = 60;
+///
+/// 60 to 58 when `GuardedCopy`'s single-copy fallback was gated on a BARE-PATH
+/// value. Both losses are a second binding that could only ever have written a
+/// wrong value: azure's `ctx.event.duration = ctx.event.duration * params.<n>`
+/// read the last `ctx.` path out of the multiply and bound as a copy of the
+/// field onto itself, and ti_anomali's itype lookup bound as a copy of
+/// `json.itype` over the whole `ctx.threat` map. `Scale` and `LookupNormalise`
+/// shadowed both and always return true, so neither ever ran -- this is the
+/// search space losing two entries that were never reachable, not a matcher
+/// going away.
+const MULTI_BINDING: usize = 58;
 
 /// The `cached_painless!` literals a generated file holds, in full.
 ///

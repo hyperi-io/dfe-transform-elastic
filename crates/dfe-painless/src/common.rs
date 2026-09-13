@@ -17384,8 +17384,65 @@ fn parse_single_copy(script: &str) -> Option<SingleCopy> {
     // was copied onto it -- 42 where the agent had already written 0.421.
     let body = condition_body(cond, rest);
     let (target_expr, value_expr) = body.split_once('=')?;
+    // The VALUE has to be the path and NOTHING ELSE. `painless_path` answers
+    // the last path in whatever it is handed, which is the reading a guard
+    // wants and the opposite of the one a value wants: it took jamf's
+    // `(long)ctx.<epoch> * 1000` for a read of the epoch, so the scale bound as
+    // a plain copy and wrote the millisecond offset where the scaled epoch
+    // belonged, and it took azure's `ctx.<f> * params.<n>` for a copy of the
+    // field onto itself.
+    if !is_bare_ctx_path(value_expr) {
+        return None;
+    }
     let (target, value) = (painless_path(target_expr)?, painless_path(value_expr)?);
     (value == source).then_some(SingleCopy { source, target })
+}
+
+/// Whether an expression is ONE `ctx.` path and nothing else.
+///
+/// A quoted subscript is stepped over whole, because the key is a path SEGMENT
+/// and may hold anything at all -- azure names its identity claims by URL, and
+/// those copies are the reason this fallback is reached rather than the
+/// `Program` grammar above it, whose bare-path reader admits no `:` or `/`.
+fn is_bare_ctx_path(expression: &str) -> bool {
+    // One STATEMENT: the value ends at the semicolon, and what follows is the
+    // closing brace of the guard the caller already read.
+    let statement = expression
+        .split_once(';')
+        .map_or(expression, |(head, _)| head)
+        .trim();
+    let Some(mut rest) = statement.strip_prefix("ctx") else {
+        return false;
+    };
+    if !rest.starts_with(['.', '[']) {
+        return false;
+    }
+    while !rest.is_empty() {
+        if let Some(after) = rest.strip_prefix('[') {
+            let Some(quote) = after.chars().next().filter(|q| matches!(q, '\'' | '"')) else {
+                return false;
+            };
+            let key = &after[quote.len_utf8()..];
+            let Some(end) = key.find(quote) else {
+                return false;
+            };
+            let Some(after) = key[end + quote.len_utf8()..].strip_prefix(']') else {
+                return false;
+            };
+            rest = after;
+            continue;
+        }
+        let stop = rest
+            .find(|c: char| !(c.is_alphanumeric() || matches!(c, '_' | '.' | '-' | '@' | '?')))
+            .unwrap_or(rest.len());
+        // Anything the path alphabet does not admit -- an operator, a cast, a
+        // call -- means the expression computes rather than reads.
+        if stop == 0 {
+            return false;
+        }
+        rest = &rest[stop..];
+    }
+    true
 }
 
 /// What follows a guard's closing parenthesis.
