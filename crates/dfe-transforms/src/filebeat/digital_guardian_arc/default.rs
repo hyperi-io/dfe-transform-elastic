@@ -84,8 +84,16 @@ impl Transform for Default {
                 event,
                 &DropPolicy {
                     nulls: true,
+                    empty_strings: true,
                     empty_collections: true,
                     prune_lists: true,
+                    sentinels: vec![
+                        "{}".into(),
+                        "NA".into(),
+                        "None".into(),
+                        "null".into(),
+                        "-".into(),
+                    ],
                     ..DropPolicy::none()
                 },
                 None,

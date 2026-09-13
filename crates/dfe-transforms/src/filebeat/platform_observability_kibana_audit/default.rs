@@ -16,9 +16,19 @@ impl Transform for Default {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
-            // SKIPPED: condition not transpiled: def message = ctx.message; return message != null && message.startsWith('{') && message.endsWith('}') && message.contains('"@timestamp"')
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("message")
+                    && event.get_str("message").is_some_and(|s| s.starts_with("{"))
+                    && event.get_str("message").is_some_and(|s| s.ends_with("}"))
+                    && event.get("message").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => {
+                            a.iter().any(|x| x.as_str() == Some("\"@timestamp\""))
+                        }
+                        serde_json::Value::String(s) => s.contains("\"@timestamp\""),
+                        _ => false,
+                    })
+            };
+            if _cond {
                 // Begin nested pipeline: "ecs-logs-pipeline"
                 if event.has_value("message") {
                     event.rename("message", "_ecs_json_message")?;

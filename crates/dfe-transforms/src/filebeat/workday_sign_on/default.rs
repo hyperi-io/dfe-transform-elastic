@@ -67,28 +67,71 @@ impl Transform for Default {
 
             let _cond = { event.get("workday.sign_on").is_some_and(|v| v.is_object()) };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: def signon = ctx.workday.sign_on;\nfor (def key : new ArrayList(signon.keySet())) {\n  if (key.contains('-')) {\n    signon.put(key.replace('-', '_'), signon.remove(key));\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                rename_map_keys(
                     event,
-                    cached_painless!(
-                        r#"def signon = ctx.workday.sign_on;\nfor (def key : new ArrayList(signon.keySet())) {\n  if (key.contains('-')) {\n    signon.put(key.replace('-', '_'), signon.remove(key));\n  }\n}"#
-                    ),
-                )?;
+                    &RenameMapKeys::new("workday.sign_on".into(), '-', '_'),
+                );
             }
 
             let _cond = { event.has_value("workday.sign_on") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: def flags = [\n  'Account_Locked__Disabled_or_Expired',\n  'Active_Session',\n  'Device_is_Trusted',\n  'Failed_Signon',\n  'Forgotten_Password_Reset_Request',\n  'Invalid_Credentials',\n  'Invalid_Password',\n  'Is_Device_Managed',\n  'Password_Changed',\n  'Signon',\n  'Successful'\n];\ndef signon = ctx.workday.sign_on;\nfor (def flag : flags) {\n  if (signon.containsKey(flag) && signon.get(flag) instanceof String) {\n    signon.put(flag, signon.get(flag) == '1');\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                coerce_boolean(
                     event,
-                    cached_painless!(
-                        r#"def flags = [\n  'Account_Locked__Disabled_or_Expired',\n  'Active_Session',\n  'Device_is_Trusted',\n  'Failed_Signon',\n  'Forgotten_Password_Reset_Request',\n  'Invalid_Credentials',\n  'Invalid_Password',\n  'Is_Device_Managed',\n  'Password_Changed',\n  'Signon',\n  'Successful'\n];\ndef signon = ctx.workday.sign_on;\nfor (def flag : flags) {\n  if (signon.containsKey(flag) && signon.get(flag) instanceof String) {\n    signon.put(flag, signon.get(flag) == '1');\n  }\n}"#
-                    ),
-                )?;
+                    &CoerceBoolean::new(
+                        vec![
+                            (
+                                "workday.sign_on.Account_Locked__Disabled_or_Expired".to_owned(),
+                                "workday.sign_on.Account_Locked__Disabled_or_Expired".to_owned(),
+                            ),
+                            (
+                                "workday.sign_on.Active_Session".to_owned(),
+                                "workday.sign_on.Active_Session".to_owned(),
+                            ),
+                            (
+                                "workday.sign_on.Device_is_Trusted".to_owned(),
+                                "workday.sign_on.Device_is_Trusted".to_owned(),
+                            ),
+                            (
+                                "workday.sign_on.Failed_Signon".to_owned(),
+                                "workday.sign_on.Failed_Signon".to_owned(),
+                            ),
+                            (
+                                "workday.sign_on.Forgotten_Password_Reset_Request".to_owned(),
+                                "workday.sign_on.Forgotten_Password_Reset_Request".to_owned(),
+                            ),
+                            (
+                                "workday.sign_on.Invalid_Credentials".to_owned(),
+                                "workday.sign_on.Invalid_Credentials".to_owned(),
+                            ),
+                            (
+                                "workday.sign_on.Invalid_Password".to_owned(),
+                                "workday.sign_on.Invalid_Password".to_owned(),
+                            ),
+                            (
+                                "workday.sign_on.Is_Device_Managed".to_owned(),
+                                "workday.sign_on.Is_Device_Managed".to_owned(),
+                            ),
+                            (
+                                "workday.sign_on.Password_Changed".to_owned(),
+                                "workday.sign_on.Password_Changed".to_owned(),
+                            ),
+                            (
+                                "workday.sign_on.Signon".to_owned(),
+                                "workday.sign_on.Signon".to_owned(),
+                            ),
+                            (
+                                "workday.sign_on.Successful".to_owned(),
+                                "workday.sign_on.Successful".to_owned(),
+                            ),
+                        ],
+                        vec!["1".to_owned()],
+                    )
+                    .text_only(),
+                );
             }
 
             let _cond = { !event.has_value("workday.sign_on.Authentication_Type") };

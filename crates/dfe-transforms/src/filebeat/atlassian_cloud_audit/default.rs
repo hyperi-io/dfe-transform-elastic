@@ -89,15 +89,17 @@ impl Transform for Default {
 
             let _cond = { event.has_value("json.attributes.location") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: def loc = ctx.json.attributes.location;\nfor (def key : new ArrayList(loc.keySet())) {\n  def val = loc.get(key);\n  if (val instanceof String && val.isEmpty()) {\n    loc.remove(key);\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                drop_empty(
                     event,
-                    cached_painless!(
-                        r#"def loc = ctx.json.attributes.location;\nfor (def key : new ArrayList(loc.keySet())) {\n  def val = loc.get(key);\n  if (val instanceof String && val.isEmpty()) {\n    loc.remove(key);\n  }\n}"#
-                    ),
-                )?;
+                    &DropPolicy {
+                        empty_strings: true,
+                        shallow: true,
+                        ..DropPolicy::none()
+                    },
+                    Some("json.attributes.location"),
+                );
             }
 
             if event.has_value("json.id") {

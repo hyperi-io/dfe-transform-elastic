@@ -3934,15 +3934,16 @@ impl Transform for Default {
 
             let _cond = { event.has_value("event.risk_score") };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: def normalizedRiskScore = ctx.event.risk_score * 100.0; ctx.event.risk_score_norm = normalizedRiskScore;
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                scale_field(
                     event,
-                    cached_painless!(
-                        r#"def normalizedRiskScore = ctx.event.risk_score * 100.0; ctx.event.risk_score_norm = normalizedRiskScore;"#
+                    &ScaleField::new(
+                        "event.risk_score",
+                        "event.risk_score_norm",
+                        Factor::Double(100.0),
                     ),
-                )?;
+                );
             }
 
             let _cond = { event.has_value("json.time") };

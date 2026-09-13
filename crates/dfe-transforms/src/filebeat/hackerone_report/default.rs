@@ -606,15 +606,16 @@ impl Transform for Default {
 
             let _cond = { event.get("hackerone.report").is_some_and(|v| v.is_object()) };
             if _cond {
-                // Painless script
+                // Painless script, resolved to its runners at generation time
                 // Source: ArrayList stack = new ArrayList();\nstack.add(ctx.hackerone.report);\nwhile (stack.isEmpty() == false) {\n  Object node = stack.remove(stack.size() - 1);\n  if (node instanceof Map) {\n    Map current = (Map) node;\n    ArrayList keys = new ArrayList(current.keySet());\n    for (Object k : keys) {\n      Object v = current.get(k);\n      if (v == null) {\n        current.remove(k);\n      } else if (v instanceof Map || v instanceof List) {\n        stack.add(v);\n      }\n    }\n  } else if (node instanceof List) {\n    for (Object item : (List) node) {\n      if (item instanceof Map || item instanceof List) {\n        stack.add(item);\n      }\n    }\n  }\n}
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                drop_empty(
                     event,
-                    cached_painless!(
-                        r#"ArrayList stack = new ArrayList();\nstack.add(ctx.hackerone.report);\nwhile (stack.isEmpty() == false) {\n  Object node = stack.remove(stack.size() - 1);\n  if (node instanceof Map) {\n    Map current = (Map) node;\n    ArrayList keys = new ArrayList(current.keySet());\n    for (Object k : keys) {\n      Object v = current.get(k);\n      if (v == null) {\n        current.remove(k);\n      } else if (v instanceof Map || v instanceof List) {\n        stack.add(v);\n      }\n    }\n  } else if (node instanceof List) {\n    for (Object item : (List) node) {\n      if (item instanceof Map || item instanceof List) {\n        stack.add(item);\n      }\n    }\n  }\n}"#
-                    ),
-                )?;
+                    &DropPolicy {
+                        nulls: true,
+                        ..DropPolicy::none()
+                    },
+                    Some("hackerone.report"),
+                );
             }
 
             let _cond = { event.has_value("hackerone.report.attributes.state") };
