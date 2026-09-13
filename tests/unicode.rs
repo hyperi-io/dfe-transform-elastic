@@ -192,6 +192,10 @@ fn long_multibyte_lines_split_on_newlines_only() {
 /// partition.
 #[test]
 fn no_transform_panics_on_non_ascii_input() {
+    dfe_runtime::testutil::on_a_deep_stack(non_ascii_input_sweep);
+}
+
+fn non_ascii_input_sweep() {
     for source in registry::sources() {
         let transform = registry::lookup(source).expect("registered source resolves");
 
@@ -234,10 +238,53 @@ fn no_transform_panics_on_non_ascii_input() {
     }
 }
 
+/// The same sweep over degenerate DOCUMENTS rather than degenerate values.
+///
+/// The two sweeps above always hand a transform a fully-populated structure
+/// and vary only the strings inside it, so a field being ABSENT, the document
+/// being empty, or a field being explicitly null is never exercised -- and an
+/// explicit null is a shape several pipelines write themselves, which is why
+/// `Event::has_value` exists.
+#[test]
+fn no_transform_panics_on_a_degenerate_document() {
+    dfe_runtime::testutil::on_a_deep_stack(degenerate_document_sweep);
+}
+
+fn degenerate_document_sweep() {
+    let documents = [
+        ("empty", serde_json::json!({})),
+        ("minimal message", serde_json::json!({ "message": "{}" })),
+        (
+            "null fields",
+            serde_json::json!({ "message": null, "event": null }),
+        ),
+    ];
+
+    for source in registry::sources() {
+        let transform = registry::lookup(source).expect("registered source resolves");
+
+        for (label, document) in &documents {
+            let payload = format!("{document}\n");
+            let (events, _) = parse_batch(payload.as_bytes());
+            let (out, outcome) = transform_batch(transform, events);
+            assert_eq!(outcome.total(), 1, "{source} / {label}: event vanished");
+            let (_, serialised) = serialise_batch(&out);
+            assert_eq!(
+                serialised.failed, 0,
+                "{source} / {label}: output does not serialise"
+            );
+        }
+    }
+}
+
 /// The same sweep with the fields EMPTY and with lone surrogual escapes and
 /// control characters, which is what a truncated upstream buffer produces.
 #[test]
 fn no_transform_panics_on_degenerate_input() {
+    dfe_runtime::testutil::on_a_deep_stack(degenerate_input_sweep);
+}
+
+fn degenerate_input_sweep() {
     let degenerate = [
         ("empty", ""),
         ("single space", " "),

@@ -1,0 +1,24 @@
+{
+  "provenance": {
+    "file": "dfe-receiver src/server/splunk_hec/convert.rs",
+    "line": "hec_event_to_json and raw_to_json, and the assertions in test_raw_to_json_with_metadata",
+    "producer": "dfe-receiver, Splunk HEC transport",
+    "note": "HEC writes no _source. The converter merges the submitted event with the HEC metadata -- _time, host, source, sourcetype, index -- and nothing else, so `sourcetype` is the only key here that no Elastic or fetcher shape also uses, and it is what detection keys on. It is present only when the sender sent it: see splunk_hec_no_metadata.json for the half we are blind to."
+  },
+  "shape": {
+    "family": "receiver",
+    "variant": "splunk_hec"
+  },
+  "detect": {
+    "family": "receiver",
+    "variant": "splunk_hec"
+  },
+  "event": {
+    "message": "hello world",
+    "_time": 1771459200,
+    "host": "web01",
+    "source": "/var/log/syslog",
+    "sourcetype": "syslog",
+    "index": "main"
+  }
+}

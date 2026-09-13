@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! First coverage for the six sources with no parity test.
+//! Floors over RAW-shaped fixtures, without the config wrapping.
 //!
-//! fortinet, panw, o365, cisco_ios, cisco_meraki and cisco_nexus have
-//! committed `.log` inputs but no `-expected.json` the harness can read, so
-//! nothing has ever run them. This does not check ECS parity -- it checks the
-//! things that are true regardless of what the expected output is:
+//! `tests/integration/` runs the same sources through the full harness
+//! (config fields merged, envelope detected); these cases feed the bare
+//! `.log` lines instead, which is the other intake shape, and panw's per-type
+//! transforms have no coverage anywhere else. No ECS parity here -- that is
+//! `tests/compat_corpus.rs` -- only the things true regardless of expected
+//! output:
 //!
 //! 1. The transform does not panic. A panic takes the pod and stalls a
 //!    partition, and these are the sources with the most grok in them.
@@ -16,8 +18,6 @@
 //!    having done nothing is indistinguishable from a working one without
 //!    this.
 //!
-//! Parity comes when the fixture licence question is settled and real
-//! expectations can land.
 
 use dfe_runtime::{Event, Transform, TransformResult};
 
@@ -85,10 +85,20 @@ fn run(transform: &dyn Transform, relative: &str) -> Outcome {
     outcome
 }
 
-/// Top-level keys, which is enough to tell "something happened" from "nothing
-/// happened" without asserting on any particular field.
+/// Every scalar in the document, however deep.
+///
+/// The same measure `common/mod.rs::run_floor` uses, and for its reason: a
+/// transform that consumes `message` and grows one nested vendor object is a
+/// wash at the top level however much it extracted.
 fn field_count(event: &Event) -> usize {
-    event.as_value().as_object().map_or(0, serde_json::Map::len)
+    fn leaves(value: &serde_json::Value) -> usize {
+        match value {
+            serde_json::Value::Object(map) => map.values().map(leaves).sum(),
+            serde_json::Value::Array(items) => items.iter().map(leaves).sum(),
+            _ => 1,
+        }
+    }
+    leaves(event.as_value())
 }
 
 /// `(source, fixture, max_errors, min_enriched)`.
@@ -134,16 +144,18 @@ macro_rules! source_case {
     };
 }
 
+// Each floor is every event in the fixture, because every event enriches: a
+// lower one would pass a transform collapsed to a single working event.
 source_case!(
-    fortinet_default,
+    raw_fortinet_default,
     dfe_transforms::filebeat::fortinet::default::Default,
     "fortinet/fortigate/test-fortinet.log",
     0,
-    1
+    54
 );
 
 source_case!(
-    cisco_meraki_default,
+    raw_cisco_meraki_default,
     dfe_transforms::filebeat::cisco_meraki::default::Default,
     "cisco/meraki/logs/test-events.log",
     0,
@@ -151,26 +163,26 @@ source_case!(
 );
 
 source_case!(
-    cisco_nexus_default,
+    raw_cisco_nexus_default,
     dfe_transforms::filebeat::cisco_nexus::default::Default,
     "cisco/nexus/test-nexus.log",
     0,
-    1
+    72
 );
 
 // panw has no `default`; its pipeline splits by log type.
 source_case!(
-    panw_traffic,
+    raw_panw_traffic,
     dfe_transforms::filebeat::panw::traffic::Traffic,
     "panw/panos/traffic.log",
     0,
-    1
+    100
 );
 
 // Raw Office 365 Management Activity records, as the API returns them and the
 // filebeat o365 input nests them. Splunk Boss of the SOC v3, CC0-1.0.
 source_case!(
-    o365_default,
+    raw_o365_default,
     dfe_transforms::filebeat::o365::default::Default,
     "o365/audit/o365-management-activity-botsv3.log",
     0,
@@ -178,7 +190,7 @@ source_case!(
 );
 
 source_case!(
-    cisco_ios_default,
+    raw_cisco_ios_default,
     dfe_transforms::filebeat::cisco_ios::default::Default,
     "cisco/ios/test-cisco-ios.log",
     0,

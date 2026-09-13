@@ -1,0 +1,30 @@
+{
+  "provenance": {
+    "file": "dfe-receiver src/server/otlp/convert.rs",
+    "line": "log_to_hyperdx_json, and the assertions at test line 1017",
+    "producer": "dfe-receiver, OTLP transport, HyperDx mode",
+    "note": "The ClickHouse otel column names, and no marker key. Detection cannot see it, but this shape is not a blind spot the way a bare HEC event is: the capitalised keys are unmistakable to a human, and the mode is a receiver CONFIG choice, so an operator running HyperDx mode knows it and can say so with the envelope override."
+  },
+  "shape": {
+    "family": "receiver",
+    "variant": "otlp"
+  },
+  "detect": {
+    "family": "beats",
+    "variant": "bare"
+  },
+  "event": {
+    "Timestamp": "2026-02-19T00:00:00.000000000",
+    "ObservedTimestamp": "1970-01-01T00:00:00.000000000",
+    "TraceId": "",
+    "SpanId": "",
+    "SeverityText": "INFO",
+    "SeverityNumber": 9,
+    "Body": "Test log message",
+    "ServiceName": "test-service",
+    "LogAttributes": {},
+    "ResourceAttributes": {},
+    "ScopeName": "my-lib",
+    "ScopeVersion": ""
+  }
+}

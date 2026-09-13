@@ -1,0 +1,24 @@
+{
+  "provenance": {
+    "file": "dfe-receiver src/server/prometheus_rw/convert.rs",
+    "line": "native_labels and native_sample_obj, and the assertions at test line 435",
+    "producer": "dfe-receiver, Prometheus remote-write transport, Native mode",
+    "note": "The series labels become top-level fields, so `__name__` and `job` are the sender's, not ours. _source is inserted with `entry(..).or_insert`, which means a series carrying its own _source LABEL keeps it -- the converter's own test asserts a custom value survives. Detection therefore cannot read the value of _source as authoritative for this transport."
+  },
+  "shape": {
+    "family": "receiver",
+    "variant": "prometheus"
+  },
+  "detect": {
+    "family": "receiver",
+    "variant": "prometheus"
+  },
+  "event": {
+    "__name__": "http_requests_total",
+    "job": "api",
+    "instance": "10.0.0.5:9090",
+    "value": 1234.0,
+    "timestamp": 1771459200000,
+    "_source": "prometheus"
+  }
+}

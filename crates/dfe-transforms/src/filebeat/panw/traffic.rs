@@ -17,6 +17,7 @@ impl Transform for Traffic {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             if let Some(csv_str) = event.get_string("message") {
+                let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                 let mut rdr = csv::ReaderBuilder::new()
                     .delimiter(b',')
                     .quote(b'\"')
@@ -584,249 +585,384 @@ impl Transform for Traffic {
                 event.set("event.outcome", json!("success"))?;
             }
 
-            let _cond = {
-                !event.has_value("event.outcome")
-                    || event.get_str("event.outcome").is_none_or(|s| s.is_empty())
-            };
+            let _cond =
+                { !event.has_value("event.outcome") || event.get_str("event.outcome") == Some("") };
             if _cond {
                 event.set("event.outcome", json!("failure"))?;
             }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.bytes_received").cloned() {
-                    event.set("destination.bytes", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.bytes_received")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.bytes", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("_temp_.dstloc").cloned() {
-                    event.set("panw.panos.destination.location", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("_temp_.dstloc")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("panw.panos.destination.location", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.destination.ip").cloned() {
-                    event.set("destination.ip", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.destination.ip")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.ip", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.destination.nat.ip").cloned() {
-                    event.set("destination.nat.ip", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.destination.nat.ip")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.nat.ip", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.destination.nat.port").cloned() {
-                    event.set("destination.nat.port", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.destination.nat.port")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.nat.port", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.packets_received").cloned() {
-                    event.set("destination.packets", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.packets_received")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.packets", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.destination.port").cloned() {
-                    event.set("destination.port", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.destination.port")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("destination.port", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.elapsed_time").cloned() {
-                    event.set("event.duration", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.elapsed_time")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("event.duration", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.start_time").cloned() {
-                    event.set("event.start", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.start_time")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("event.start", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.network.application").cloned() {
-                    event.set("network.application", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.network.application")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("network.application", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.network.bytes").cloned() {
-                    event.set("network.bytes", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.network.bytes")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("network.bytes", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.network.packets").cloned() {
-                    event.set("network.packets", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.network.packets")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("network.packets", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.protocol").cloned() {
-                    event.set("network.transport", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.protocol")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("network.transport", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.outbound_interface").cloned() {
-                    event.set("observer.egress.interface.name", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.outbound_interface")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.egress.interface.name", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.destination.zone").cloned() {
-                    event.set("observer.egress.zone", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.destination.zone")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.egress.zone", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.device_name").cloned() {
-                    event.set("observer.hostname", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.device_name")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.hostname", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.inbound_interface").cloned() {
-                    event.set("observer.ingress.interface.name", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.inbound_interface")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.ingress.interface.name", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.source.zone").cloned() {
-                    event.set("observer.ingress.zone", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.source.zone")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("observer.ingress.zone", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.rule_uuid").cloned() {
-                    event.set("rule.uuid", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.rule_uuid")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("rule.uuid", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.bytes_sent").cloned() {
-                    event.set("source.bytes", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.bytes_sent")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.bytes", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("_temp_.srcloc").cloned() {
-                    event.set("panw.panos.source.location", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("_temp_.srcloc")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("panw.panos.source.location", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.source.ip").cloned() {
-                    event.set("source.ip", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.source.ip")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.ip", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.source.nat.ip").cloned() {
-                    event.set("source.nat.ip", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.source.nat.ip")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.nat.ip", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.packets_sent").cloned() {
-                    event.set("source.packets", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.packets_sent")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.packets", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.source.port").cloned() {
-                    event.set("source.port", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.source.port")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.port", v)?;
+            }
 
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("panw.panos.source.nat.port").cloned() {
-                    event.set("source.nat.port", v)?;
-                }
-                Ok(())
-            })();
+            if let Some(v) = event
+                .get("panw.panos.source.nat.port")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("source.nat.port", v)?;
+            }
 
-            // SKIPPED: condition not transpiled: ctx._temp_?.external_zones != null && ctx._temp_.internal_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.external_zones.contains(ctx.observer.i ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            if let Some(v) = event
+                .get("_conf.external_zones")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("_temp_.external_zones", v)?;
+            }
+
+            if let Some(v) = event
+                .get("_conf.internal_zones")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("_temp_.internal_zones", v)?;
+            }
+
+            let _cond = {
+                event.has_value("_temp_.external_zones")
+                    && event.has_value("_temp_.internal_zones")
+                    && event.has_value("observer.ingress.zone")
+                    && event.has_value("observer.egress.zone")
+                    && event.get("_temp_.external_zones").is_some_and(|v| {
+                        match (v, event.get("observer.ingress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+                    && event.get("_temp_.internal_zones").is_some_and(|v| {
+                        match (v, event.get("observer.egress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+            };
+            if _cond {
                 event.set("network.direction", json!("inbound"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx._temp_?.external_zones != null && ctx._temp_.internal_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.external_zones.contains(ctx.observer.e ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("_temp_.external_zones")
+                    && event.has_value("_temp_.internal_zones")
+                    && event.has_value("observer.ingress.zone")
+                    && event.has_value("observer.egress.zone")
+                    && event.get("_temp_.external_zones").is_some_and(|v| {
+                        match (v, event.get("observer.egress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+                    && event.get("_temp_.internal_zones").is_some_and(|v| {
+                        match (v, event.get("observer.ingress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+            };
+            if _cond {
                 event.set("network.direction", json!("outbound"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx._temp_?.internal_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.internal_zones.contains(ctx.observer.egress.zone) && ctx._temp_.internal_zo ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("_temp_.internal_zones")
+                    && event.has_value("observer.ingress.zone")
+                    && event.has_value("observer.egress.zone")
+                    && event.get("_temp_.internal_zones").is_some_and(|v| {
+                        match (v, event.get("observer.egress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+                    && event.get("_temp_.internal_zones").is_some_and(|v| {
+                        match (v, event.get("observer.ingress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+            };
+            if _cond {
                 event.set("network.direction", json!("internal"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx._temp_?.external_zones != null && ctx.observer?.ingress?.zone != null && ctx.observer.egress?.zone != null && ctx._temp_.external_zones.contains(ctx.observer.egress.zone) && ctx._temp_.external_zo ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("_temp_.external_zones")
+                    && event.has_value("observer.ingress.zone")
+                    && event.has_value("observer.egress.zone")
+                    && event.get("_temp_.external_zones").is_some_and(|v| {
+                        match (v, event.get("observer.egress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+                    && event.get("_temp_.external_zones").is_some_and(|v| {
+                        match (v, event.get("observer.ingress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })
+            };
+            if _cond {
                 event.set("network.direction", json!("external"))?;
             }
 
-            // SKIPPED: condition not transpiled: ctx._temp_?.external_zones != null && ctx._temp_.internal_zones != null && ( ( !ctx._temp_.external_zones.contains(ctx.observer.egress.zone) && !ctx._temp_.internal_zones.contains(ctx.observer.egress. ...
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = {
+                event.has_value("_temp_.external_zones")
+                    && event.has_value("_temp_.internal_zones")
+                    && ((!(event.get("_temp_.external_zones").is_some_and(|v| {
+                        match (v, event.get("observer.egress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })) && !(event.get("_temp_.internal_zones").is_some_and(|v| {
+                        match (v, event.get("observer.egress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    }))) || (!(event.get("_temp_.external_zones").is_some_and(|v| {
+                        match (v, event.get("observer.ingress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        }
+                    })) && !(event.get("_temp_.internal_zones").is_some_and(
+                        |v| match (v, event.get("observer.ingress.zone")) {
+                            (serde_json::Value::Array(a), Some(n)) => a.iter().any(|x| x == n),
+                            (serde_json::Value::String(s), Some(serde_json::Value::String(n))) => {
+                                s.contains(n.as_str())
+                            }
+                            _ => false,
+                        },
+                    ))))
+            };
+            if _cond {
                 event.set("network.direction", json!("unknown"))?;
             }
 
@@ -840,23 +976,35 @@ impl Transform for Traffic {
                     if let Some(date_str) =
                         event.get_as_string("panw.panos.parent_session.start_time")
                     {
-                        // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"strict_date_optional_time_nanos\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
+                        match parse_date_out(
+                            &date_str,
+                            &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
+                            None,
+                            None,
+                        ) {
+                            Some(parsed) => {
+                                event.set("panw.panos.parent_session.start_time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.parent_session.start_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
+                        }
                     }
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_parent_session_start_time_to_panw_panos_parent_session_start_time_809881d3")?;
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -877,23 +1025,35 @@ impl Transform for Traffic {
                     if let Some(date_str) =
                         event.get_as_string("panw.panos.parent_session.start_time")
                     {
-                        // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"strict_date_optional_time_nanos\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
+                        match parse_date_out(
+                            &date_str,
+                            &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
+                            event.get_str("event.timezone"),
+                            None,
+                        ) {
+                            Some(parsed) => {
+                                event.set("panw.panos.parent_session.start_time", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.parent_session.start_time".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
+                        }
                     }
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_parent_session_start_time_to_panw_panos_parent_session_start_time_65e492d1")?;
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -916,46 +1076,39 @@ impl Transform for Traffic {
                 event.append(
                     "error.message",
                     json!(format!(
-                        "error in Traffic pipeline: error in [{}] processor{} with tag [{}]{} {}",
+                        "Processor '{}' {}in pipeline '{}' failed with message '{}'",
                         event
                             .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("#_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
-                        event
+                            .map_or_else(String::new, template_to_string),
+                        if event
                             .get("_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .is_some_and(|v| !v.is_null()
+                                && v.as_str() != Some("")
+                                && !matches!(v, Value::Bool(false))
+                                && !v.as_array().is_some_and(Vec::is_empty))
+                        {
+                            format!(
+                                "with tag '{}' ",
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string)
+                            )
+                        } else {
+                            String::new()
+                        },
                         event
-                            .get("/_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .get("_ingest.pipeline")
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

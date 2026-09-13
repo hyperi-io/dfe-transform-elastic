@@ -3,7 +3,7 @@
   "app": "dfe-transform-elastic",
   "version": "0.1.0",
   "commit": "unknown",
-  "registered_at": "2026-08-18T07:57:35Z",
+  "registered_at": "2026-08-20T04:36:24Z",
   "metrics": [
     {
       "name": "dfe-transform-elastic_transport_sent_total",
@@ -442,6 +442,22 @@
       "name": "dfe-transform-elastic_commit_failures_total",
       "type": "counter",
       "description": "Offset commits that failed after a successful send",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "dfe-transform-elastic_envelope_contradicted_total",
+      "type": "counter",
+      "description": "Batches whose events did not look like the pinned envelope",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "dfe-transform-elastic_envelope_unaccepted_total",
+      "type": "counter",
+      "description": "Batches detected as an envelope this source cannot arrive in",
       "unit": "",
       "labels": [],
       "group": "custom"

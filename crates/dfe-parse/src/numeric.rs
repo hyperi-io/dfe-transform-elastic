@@ -205,6 +205,7 @@ pub fn take_int(input: &str) -> ParseResult<'_, &str> {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
 

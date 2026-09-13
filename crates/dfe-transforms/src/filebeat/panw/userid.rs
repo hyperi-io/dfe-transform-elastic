@@ -17,6 +17,7 @@ impl Transform for Userid {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
             if let Some(csv_str) = event.get_string("message") {
+                let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                 let mut rdr = csv::ReaderBuilder::new()
                     .delimiter(b',')
                     .quote(b'\"')
@@ -184,14 +185,6 @@ impl Transform for Userid {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(v) = event.get("event.created").cloned() {
-                    event.set("panw.panos.received_time", v)?;
-                }
-                Ok(())
-            })();
-
-            // ignore_failure: true
-            let _ = (|| -> Result<()> {
                 if let Some(v) = event.get("panw.panos.device_name").cloned() {
                     event.set("observer.hostname", v)?;
                 }
@@ -230,20 +223,28 @@ impl Transform for Userid {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.factorcompletiontime") {
-                        // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
+                        match parse_date_out(&date_str, &["yyyy/MM/dd HH:mm:ss"], None, None) {
+                            Some(parsed) => event.set("panw.panos.factorcompletiontime", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.factorcompletiontime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
+                        }
                     }
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_factorcompletiontime_to_panw_panos_factorcompletiontime_527c776e")?;
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -262,20 +263,33 @@ impl Transform for Userid {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.factorcompletiontime") {
-                        // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
+                        match parse_date_out(
+                            &date_str,
+                            &["yyyy/MM/dd HH:mm:ss"],
+                            event.get_str("event.timezone"),
+                            None,
+                        ) {
+                            Some(parsed) => event.set("panw.panos.factorcompletiontime", parsed)?,
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.factorcompletiontime".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
+                        }
                     }
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_factorcompletiontime_to_panw_panos_factorcompletiontime_02fdb26c")?;
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -298,46 +312,39 @@ impl Transform for Userid {
                 event.append(
                     "error.message",
                     json!(format!(
-                        "error in User ID pipeline: error in [{}] processor{} with tag [{}]{} {}",
+                        "Processor '{}' {}in pipeline '{}' failed with message '{}'",
                         event
                             .get("_ingest.on_failure_processor_type")
-                            .map_or_else(String::new, painless_to_string),
-                        event
-                            .get("#_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
-                        event
+                            .map_or_else(String::new, template_to_string),
+                        if event
                             .get("_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .is_some_and(|v| !v.is_null()
+                                && v.as_str() != Some("")
+                                && !matches!(v, Value::Bool(false))
+                                && !v.as_array().is_some_and(Vec::is_empty))
+                        {
+                            format!(
+                                "with tag '{}' ",
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string)
+                            )
+                        } else {
+                            String::new()
+                        },
                         event
-                            .get("/_ingest.on_failure_processor_tag")
-                            .map_or_else(String::new, painless_to_string),
+                            .get("_ingest.pipeline")
+                            .map_or_else(String::new, template_to_string),
                         event
                             .get("_ingest.on_failure_message")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

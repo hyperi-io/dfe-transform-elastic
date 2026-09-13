@@ -37,17 +37,13 @@ impl Transform for MobileDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "event.created",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.created", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ContextTimeStamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -61,59 +57,55 @@ impl Transform for MobileDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "event.created",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.created", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ContextTimeStamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
             }
 
-            if event.has("crowdstrike.event.MobileDetectionId") {
+            if event.has_value("crowdstrike.event.MobileDetectionId") {
                 event.rename("crowdstrike.event.MobileDetectionId", "event.id")?;
             }
 
-            if event.has("event.id") {
+            if event.has_value("event.id") {
                 if let Some(val) = event.get("event.id") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "event.id".into(),
+                            message,
+                        }
+                    })?;
                     event.set("event.id", converted)?;
                 }
             }
 
-            if event.has("crowdstrike.event.DetectId") {
+            if event.has_value("crowdstrike.event.DetectId") {
                 event.rename("crowdstrike.event.DetectId", "rule.id")?;
             }
 
-            if event.has("crowdstrike.event.DetectName") {
+            if event.has_value("crowdstrike.event.DetectName") {
                 event.rename("crowdstrike.event.DetectName", "rule.name")?;
             }
 
-            if event.has("crowdstrike.event.DetectDescription") {
+            if event.has_value("crowdstrike.event.DetectDescription") {
                 event.rename("crowdstrike.event.DetectDescription", "rule.description")?;
             }
-
-            event.set("threat.framework", json!("MITRE ATT&CK"))?;
 
             let _cond = { event.has_value("crowdstrike.event.Technique") };
             if _cond {
                 event.append(
                     "threat.technique.name",
-                    event
-                        .get("crowdstrike.event.Technique")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.Technique")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -121,10 +113,11 @@ impl Transform for MobileDetectionSummary {
             if _cond {
                 event.append(
                     "threat.technique.id",
-                    event
-                        .get("crowdstrike.event.TechniqueId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TechniqueId")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -132,10 +125,11 @@ impl Transform for MobileDetectionSummary {
             if _cond {
                 event.append(
                     "threat.tactic.name",
-                    event
-                        .get("crowdstrike.event.Tactic")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.Tactic")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -143,34 +137,31 @@ impl Transform for MobileDetectionSummary {
             if _cond {
                 event.append(
                     "threat.tactic.id",
-                    event
-                        .get("crowdstrike.event.TacticId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TacticId")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
-            if event.has("crowdstrike.event.ComputerName") {
+            if event.has_value("crowdstrike.event.ComputerName") {
                 event.rename("crowdstrike.event.ComputerName", "host.name")?;
             }
 
-            if event.has("crowdstrike.event.UserName") {
+            if event.has_value("crowdstrike.event.UserName") {
                 event.rename("crowdstrike.event.UserName", "user.name")?;
             }
 
-            if event.has("crowdstrike.event.FalconHostLink") {
+            if event.has_value("crowdstrike.event.FalconHostLink") {
                 event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
 
-            if event.has("crowdstrike.event.Severity") {
-                event.rename("crowdstrike.event.Severity", "event.severity")?;
-            }
-
-            if event.has("crowdstrike.event.SensorId") {
+            if event.has_value("crowdstrike.event.SensorId") {
                 event.rename("crowdstrike.event.SensorId", "device.id")?;
             }
 
-            if event.has("crowdstrike.event.ProcessId") {
+            if event.has_value("crowdstrike.event.ProcessId") {
                 event.rename("crowdstrike.event.ProcessId", "process.pid")?;
             }
 
@@ -182,30 +173,13 @@ impl Transform for MobileDetectionSummary {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

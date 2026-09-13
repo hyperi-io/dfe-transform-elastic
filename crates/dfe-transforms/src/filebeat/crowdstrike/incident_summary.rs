@@ -24,8 +24,38 @@ impl Transform for IncidentSummary {
 
             event.append("event.action", json!("incident"))?;
 
-            if event.has("crowdstrike.event.UserId") {
-                event.rename("crowdstrike.event.UserId", "user.name")?;
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                if event.has_value("crowdstrike.event.UserId") {
+                    if let Some(input) = event.get_string("crowdstrike.event.UserId") {
+                        // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
+                        // Grok pattern: %{GREEDYDATA:user.name}
+                        if !extract_first_match(
+                            &[
+                                cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}"),
+                                cached_grok!("%{GREEDYDATA:user.name}"),
+                            ],
+                            &input,
+                            event,
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
+                    }
+                }
+                Ok(())
+            })();
+
+            let _cond = {
+                event.has_value("crowdstrike.event.UserId")
+                    && event
+                        .get_str("crowdstrike.event.UserId")
+                        .map(|s| s.find("@").map(|b| s[..b].chars().count()))
+                        .is_some_and(|i| i.is_some_and(|i| i > 0))
+            };
+            if _cond {
+                if let Some(v) = event.get("crowdstrike.event.UserId").cloned() {
+                    event.set("user.email", v)?;
+                }
             }
 
             let _cond = {
@@ -36,15 +66,13 @@ impl Transform for IncidentSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentStartTime") {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "event.start",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.start", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.IncidentStartTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -58,17 +86,13 @@ impl Transform for IncidentSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentStartTime") {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "event.start",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.start", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.IncidentStartTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -82,15 +106,13 @@ impl Transform for IncidentSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentEndTime") {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "event.end",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.end", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.IncidentEndTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -104,31 +126,27 @@ impl Transform for IncidentSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.IncidentEndTime") {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "event.end",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.end", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.IncidentEndTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
             }
 
-            if event.has("crowdstrike.event.FalconHostLink") {
+            if event.has_value("crowdstrike.event.FalconHostLink") {
                 event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
 
-            if event.has("crowdstrike.event.HostID") {
+            if event.has_value("crowdstrike.event.HostID") {
                 event.rename("crowdstrike.event.HostID", "host.id")?;
             }
 
-            if event.has("crowdstrike.event.IncidentID") {
+            if event.has_value("crowdstrike.event.IncidentID") {
                 event.rename("crowdstrike.event.IncidentID", "event.id")?;
             }
 
@@ -140,7 +158,7 @@ impl Transform for IncidentSummary {
                         "Incident score {}",
                         event
                             .get("crowdstrike.event.FineScore")
-                            .map_or_else(String::new, painless_to_string)
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
             }
@@ -153,30 +171,13 @@ impl Transform for IncidentSummary {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

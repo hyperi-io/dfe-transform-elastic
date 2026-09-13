@@ -1,0 +1,27 @@
+{
+  "provenance": {
+    "file": "dfe-receiver src/server/grpc/convert.rs",
+    "line": "metric_to_json",
+    "producer": "dfe-receiver, Vector gRPC transport, Metric event",
+    "note": "_vector_type is written for metrics and traces only. It is a routing tag, not a transport tag -- the receiver uses it to send metrics to a metrics topic -- which is why the value is the event kind rather than the transport name."
+  },
+  "shape": {
+    "family": "receiver",
+    "variant": "grpc"
+  },
+  "detect": {
+    "family": "receiver",
+    "variant": "grpc"
+  },
+  "event": {
+    "_vector_type": "metric",
+    "name": "http_requests_total",
+    "namespace": "vector",
+    "timestamp": "2026-02-19T00:00:00Z",
+    "tags": {
+      "method": "GET",
+      "status": "200"
+    },
+    "kind": "incremental"
+  }
+}

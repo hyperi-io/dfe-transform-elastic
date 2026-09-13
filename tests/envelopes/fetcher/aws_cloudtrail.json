@@ -1,0 +1,31 @@
+{
+  "provenance": {
+    "file": "dfe-fetcher src/pipeline/mod.rs",
+    "line": "enrich_record, and the assertions in the test at line 550 which uses this exact source name",
+    "producer": "dfe-fetcher, aws.cloudtrail source",
+    "note": "The variant is the dotted <provider>.<stream> string the fetcher was configured with, so the variant space is open rather than enumerable -- detection reads the value, it does not match it against a list. This is the case the user named: cloudwatch -> beats -> es -> receiver collapses to dfe-fetcher -> transform, because the Agent input for CloudTrail is pure transport and the parsing all lives in the ingest pipeline."
+  },
+  "shape": {
+    "family": "fetcher",
+    "variant": "aws.cloudtrail"
+  },
+  "detect": {
+    "family": "fetcher",
+    "variant": "aws.cloudtrail"
+  },
+  "event": {
+    "eventVersion": "1.08",
+    "eventTime": "2026-02-19T00:00:00Z",
+    "eventSource": "s3.amazonaws.com",
+    "eventName": "GetObject",
+    "awsRegion": "ap-southeast-2",
+    "sourceIPAddress": "203.0.113.7",
+    "userIdentity": {
+      "type": "IAMUser",
+      "arn": "arn:aws:iam::123456789012:user/derek"
+    },
+    "_timestamp_fetcher": 1771459200000,
+    "_timestamp_received": 1771459200000,
+    "_source_fetcher": "aws.cloudtrail"
+  }
+}

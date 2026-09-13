@@ -1,0 +1,36 @@
+{
+  "provenance": {
+    "file": "dfe-receiver src/server/flow/envelope.rs",
+    "line": "the assertions in canonical_capture_adds_raw_alongside_the_parsed_flows",
+    "producer": "dfe-receiver, sFlow v5 transport, Canonical output mode",
+    "note": "The same envelope head as netflow, with the protocol name substituted -- both go through write_envelope_head. Detection keys on _source alone and so does not need to tell the two apart, but the variant does, because their record shapes differ."
+  },
+  "shape": {
+    "family": "receiver",
+    "variant": "sflow"
+  },
+  "detect": {
+    "family": "receiver",
+    "variant": "sflow"
+  },
+  "event": {
+    "_source": "sflow",
+    "protocol": "sflow",
+    "version": "sflow_v5",
+    "exporter_ip": "10.0.0.1",
+    "observation_domain": 0,
+    "packet_seq": 42,
+    "t_collected": "2026-05-20T00:00:00Z",
+    "record_count": 2,
+    "flows": [
+      {
+        "kind": "counter",
+        "n": 1
+      },
+      {
+        "kind": "counter",
+        "n": 2
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "provenance": {
+    "file": "dfe-receiver src/server/flow/envelope.rs write_envelope_head, asserted in src/server/netflow/tests/decode_v5.rs",
+    "line": "v5_envelope_capture_adds_raw_to_the_canonical_event",
+    "producer": "dfe-receiver, NetFlow v5 transport, Canonical output mode",
+    "note": "The flow envelope is written as bytes rather than through serde, so the key order is fixed by write_envelope_head: _source, protocol, version, exporter_ip, observation_domain, packet_seq, t_collected, then the records. One packet becomes one event carrying an array of flows -- the exploded mode instead emits one event per flow."
+  },
+  "shape": {
+    "family": "receiver",
+    "variant": "netflow"
+  },
+  "detect": {
+    "family": "receiver",
+    "variant": "netflow"
+  },
+  "event": {
+    "_source": "netflow",
+    "protocol": "netflow",
+    "version": "netflow_v5",
+    "exporter_ip": "127.0.0.1",
+    "observation_domain": 0,
+    "packet_seq": 0,
+    "t_collected": "2026-05-20T00:00:00Z",
+    "record_count": 1,
+    "flows": [
+      {
+        "src_ip": "10.0.0.1",
+        "dst_ip": "10.0.0.2",
+        "bytes": 1500
+      }
+    ]
+  }
+}

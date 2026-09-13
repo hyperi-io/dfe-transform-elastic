@@ -17,16 +17,25 @@ repository.workspace = true
 rust-version.workspace = true
 publish.workspace = true
 
+[lints]
+workspace = true
+
 [features]
-testutil = []
+testutil = ["dep:serde_yaml_ng"]
+# The generator resolves a script to its runner call at generation time by
+# asking dfe-painless, so the two paths cannot diverge. The service never
+# enables it and never compiles the emitters.
+codegen = ["dfe-painless/codegen"]
 
 [dependencies]
+dfe-core = { workspace = true }
+dfe-painless = { workspace = true }
 dfe-parse = { workspace = true }
 scalo = { workspace = true }
-simd-json = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 chrono = { workspace = true }
+chrono-tz = { workspace = true }
 maxminddb = { workspace = true }
 thiserror = { workspace = true }
 anyhow = { workspace = true }
@@ -34,13 +43,32 @@ tracing = { workspace = true }
 rustc-hash = { workspace = true }
 uuid = { workspace = true }
 sha1 = { workspace = true }
+sha2 = { workspace = true }
 base64 = { workspace = true }
 regex = { workspace = true }
+fancy-regex = { workspace = true }
+psl = { workspace = true }
+serde_yaml_ng = { workspace = true, optional = true }
 
 [dev-dependencies]
 tempfile = { workspace = true }
 criterion = { workspace = true }
+# `benches/json_parse.rs` only, which is what demoted it from a runtime
+# dependency: both hot-path uses measured slower than serde_json.
+simd-json = { workspace = true }
 
+# The grok call site, native path against the compiled regex. Here rather than
+# in dfe-transforms because it needs only grok_cache and dfe-parse, and
+# benching it there meant an opt-level=3, codegen-units=1 build of a crate
+# holding one module per data stream.
 [[bench]]
-name = "painless"
+name = "grok"
+harness = false
+
+# Reading the vendor payload, which every JSON-carrying source does first.
+# Tests the "simd-json is 2-3x faster" premise against this workload. Here
+# rather than in dfe-core because it benches `codegen_api::parse_json_str`
+# alongside `Event::from_bytes`.
+[[bench]]
+name = "json_parse"
 harness = false

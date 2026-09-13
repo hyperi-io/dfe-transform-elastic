@@ -16,92 +16,156 @@ impl Transform for Idsalerts {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                if let Some(input) = event.get_string("event.original") {
+                    let mut remaining: &str = &input;
+                    let mut captured: Vec<(&str, &str)> = Vec::new();
+                    let matched = 'dissect: {
+                        let Some(pos) = remaining.find(" ids-alerts ") else {
+                            break 'dissect false;
+                        };
+                        remaining = &remaining[pos..];
+                        let Some(rest) = remaining.strip_prefix(" ids-alerts ") else {
+                            break 'dissect false;
+                        };
+                        remaining = rest;
+                        captured.push(("message", remaining));
+                        true
+                    };
+                    if matched {
+                        for (path, value) in captured {
+                            event.set(path, value)?;
+                        }
+                    }
+                }
+                Ok(())
+            })();
+
             if let Some(input) = event.get_string("event.original") {
                 let mut remaining: &str = &input;
-                if let Some(pos) = remaining.find(" ids-alerts ") {
+                let mut captured: Vec<(&str, &str)> = Vec::new();
+                let matched = 'dissect: {
+                    let Some(pos) = remaining.find(" ids-alerts ") else {
+                        break 'dissect false;
+                    };
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ids-alerts ") {
+                    let Some(rest) = remaining.strip_prefix(" ids-alerts ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("sig", &remaining[..pos])?;
+                    let Some(pos) = remaining.find("=") else {
+                        break 'dissect false;
+                    };
+                    let dissect_key_sig = &remaining[..pos];
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
+                    let Some(rest) = remaining.strip_prefix("=") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("sig", &remaining[..pos])?;
+                    let Some(pos) = remaining.find(" ") else {
+                        break 'dissect false;
+                    };
+                    captured.push((dissect_key_sig, &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
+                    let Some(rest) = remaining.strip_prefix(" ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("pri", &remaining[..pos])?;
+                    let Some(pos) = remaining.find("=") else {
+                        break 'dissect false;
+                    };
+                    let dissect_key_pri = &remaining[..pos];
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
+                    let Some(rest) = remaining.strip_prefix("=") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("pri", &remaining[..pos])?;
+                    let Some(pos) = remaining.find(" ") else {
+                        break 'dissect false;
+                    };
+                    captured.push((dissect_key_pri, &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
+                    let Some(rest) = remaining.strip_prefix(" ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("ts", &remaining[..pos])?;
+                    let Some(pos) = remaining.find("=") else {
+                        break 'dissect false;
+                    };
+                    let dissect_key_ts = &remaining[..pos];
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
+                    let Some(rest) = remaining.strip_prefix("=") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("ts", &remaining[..pos])?;
+                    let Some(pos) = remaining.find(" ") else {
+                        break 'dissect false;
+                    };
+                    captured.push((dissect_key_ts, &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
+                    let Some(rest) = remaining.strip_prefix(" ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("dir", &remaining[..pos])?;
+                    let Some(pos) = remaining.find("=") else {
+                        break 'dissect false;
+                    };
+                    let dissect_key_dir = &remaining[..pos];
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
+                    let Some(rest) = remaining.strip_prefix("=") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("dir", &remaining[..pos])?;
+                    let Some(pos) = remaining.find(" ") else {
+                        break 'dissect false;
+                    };
+                    captured.push((dissect_key_dir, &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
+                    let Some(rest) = remaining.strip_prefix(" ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("prot", &remaining[..pos])?;
+                    let Some(pos) = remaining.find("=") else {
+                        break 'dissect false;
+                    };
+                    let dissect_key_prot = &remaining[..pos];
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
+                    let Some(rest) = remaining.strip_prefix("=") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("prot", &remaining[..pos])?;
+                    let Some(pos) = remaining.find(" ") else {
+                        break 'dissect false;
+                    };
+                    captured.push((dissect_key_prot, &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
+                    let Some(rest) = remaining.strip_prefix(" ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("src", &remaining[..pos])?;
+                    let Some(pos) = remaining.find("=") else {
+                        break 'dissect false;
+                    };
+                    let dissect_key_src = &remaining[..pos];
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
+                    let Some(rest) = remaining.strip_prefix("=") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
+                    captured.push((dissect_key_src, remaining));
+                    true
+                };
+                if matched {
+                    for (path, value) in captured {
+                        event.set(path, value)?;
+                    }
+                } else {
+                    return Err(TransformError::ParseError {
+                        path: "event.original".into(),
+                        message: "dissect pattern did not match".into(),
+                    });
                 }
-                event.set("src", remaining)?;
             }
 
             event.set("cisco_meraki.event_subtype", json!("ids_alerted"))?;
@@ -112,45 +176,44 @@ impl Transform for Idsalerts {
 
             event.rename("direction", "network.direction")?;
 
-            if let Some(s) = event.get_string("protocol") {
-                let lowered = s.to_lowercase();
-                event.set("network.protocol", lowered)?;
-            }
+            map_strings(event, "protocol", "network.protocol", str::to_lowercase)?;
 
             let _cond = { event.has_value("src") };
             if _cond {
                 if let Some(input) = event.get_string("src") {
                     // Grok pattern: ^%{IPV4:_temp.src_ip}:(?P<sport>(?:[0-9]+))$
-                    if !cached_grok!("^%{IPV4:_temp.src_ip}:(?P<sport>(?:[0-9]+))$")
-                        .extract_into(&input, event)?
-                    {
-                        // Grok pattern: ^\\[%{IPV6:_temp.src_ip}\\]:(?P<sport>(?:[0-9]+))$
-                        if !cached_grok!("^\\[%{IPV6:_temp.src_ip}\\]:(?P<sport>(?:[0-9]+))$")
-                            .extract_into(&input, event)?
-                        {
-                            // Grok pattern: ^(?P<_temp_src_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<sport>(?:[0-9]+))$
-                            if !cached_grok_mapped!("^(?P<_temp_src_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<sport>(?:[0-9]+))$", [("_temp_src_ip", "_temp.src_ip")]).extract_into(&input, event)? {
-                                // Grok pattern: ^%{IPV6:_temp.src_ip}(?:(?: port |[p#.]))(?P<sport>(?:[0-9]+))$
-                                if !cached_grok!("^%{IPV6:_temp.src_ip}(?:(?: port |[p#.]))(?P<sport>(?:[0-9]+))$").extract_into(&input, event)? {
-                                }
-                            }
-                        }
+                    // Grok pattern: ^\\[%{IPV6:_temp.src_ip}\\]:(?P<sport>(?:[0-9]+))$
+                    // Grok pattern: ^(?P<_temp_src_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<sport>(?:[0-9]+))$
+                    // Grok pattern: ^%{IPV6:_temp.src_ip}(?:(?: port |[p#.]))(?P<sport>(?:[0-9]+))$
+                    if !extract_first_match(
+                        &[
+                            cached_grok!("^%{IPV4:_temp.src_ip}:(?P<sport>(?:[0-9]+))$"),
+                            cached_grok!("^\\[%{IPV6:_temp.src_ip}\\]:(?P<sport>(?:[0-9]+))$"),
+                            cached_grok_mapped!(
+                                "^(?P<_temp_src_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<sport>(?:[0-9]+))$",
+                                [("_temp_src_ip", "_temp.src_ip")]
+                            ),
+                            cached_grok!(
+                                "^%{IPV6:_temp.src_ip}(?:(?: port |[p#.]))(?P<sport>(?:[0-9]+))$"
+                            ),
+                        ],
+                        &input,
+                        event,
+                    )? {
+                        return Err(TransformError::GrokNoMatch { value: input });
                     }
                 }
             }
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_string("_temp.src_ip") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError {
+                if let Some(val) = event.get("_temp.src_ip") {
+                    let converted =
+                        convert_value(val, "ip").map_err(|message| TransformError::ParseError {
                             path: "_temp.src_ip".into(),
-                            message: format!("cannot convert '{}' to IP", s),
-                        });
-                    }
-                    event.set("source.ip", s)?;
+                            message,
+                        })?;
+                    event.set("source.ip", converted)?;
                 }
                 Ok(())
             })();
@@ -158,34 +221,12 @@ impl Transform for Idsalerts {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(val) = event.get("sport") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path: "sport".into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                    path: "sport".into(),
-                                    message: format!("cannot convert '{}' to integer", s)
-                                })?)
-                            }
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "sport".into(),
+                            message,
                         }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "sport".into(),
-                                message: "cannot convert to integer".into(),
-                            });
-                        }
-                    };
+                    })?;
                     event.set("source.port", converted)?;
                 }
                 Ok(())
@@ -202,33 +243,16 @@ impl Transform for Idsalerts {
                 event.set("event.kind", json!("pipeline_error"))?;
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

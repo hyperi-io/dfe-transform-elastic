@@ -22,7 +22,7 @@ mod common;
 use std::time::Duration;
 
 use dfe_transform_elastic::config::{Config, SinkConfig, SourceConfig};
-use dfe_transform_elastic::envelope::Envelope;
+use dfe_transform_elastic::envelope::EnvelopeSetting;
 use dfe_transform_elastic::metrics::TransformMetrics;
 use dfe_transform_elastic::service;
 use scalo::metrics::MetricsManager;
@@ -50,7 +50,7 @@ fn config_sized(
         pipeline_name: "broker-test".into(),
         source: SourceConfig {
             name: "filebeat.okta.default".into(),
-            envelope: Envelope::Beats,
+            envelope: EnvelopeSetting::Auto,
             topics: vec![source_topic.to_string()],
             batch_size,
             group_id: group.to_string(),
@@ -61,6 +61,9 @@ fn config_sized(
             brokers: Some(brokers),
             max_message_bytes: dfe_transform_elastic::config::default_max_message_bytes(),
         },
+        // Unread here: the round trip drives `run_loop`, and provisioning sits
+        // on `run`, so no test reaches a provider.
+        geoip: scalo::geoip_download::GeoIpConfig::default(),
     }
 }
 
@@ -322,7 +325,7 @@ async fn offsets_commit_after_the_batch_is_sent() {
 #[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
 async fn a_batch_larger_than_one_kafka_record_arrives() {
     /// 2,000 okta events is roughly 4 MB in and more out -- several records at
-    /// the 900 KB budget, without the wall-clock of a full 20,000.
+    /// the 900 KB budget, without the elapsed time of a full 20,000.
     const EVENTS: usize = 2_000;
 
     let broker = broker_or_skip!("oversize-batch");

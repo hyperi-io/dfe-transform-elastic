@@ -16,27 +16,73 @@ impl Transform for Airmarshal {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                if let Some(input) = event.get_string("event.original") {
+                    let mut remaining: &str = &input;
+                    let mut captured: Vec<(&str, &str)> = Vec::new();
+                    let matched = 'dissect: {
+                        let Some(pos) = remaining.find(" airmarshal_events ") else {
+                            break 'dissect false;
+                        };
+                        remaining = &remaining[pos..];
+                        let Some(rest) = remaining.strip_prefix(" airmarshal_events ") else {
+                            break 'dissect false;
+                        };
+                        remaining = rest;
+                        captured.push(("message", remaining));
+                        true
+                    };
+                    if matched {
+                        for (path, value) in captured {
+                            event.set(path, value)?;
+                        }
+                    }
+                }
+                Ok(())
+            })();
+
             if let Some(input) = event.get_string("event.original") {
                 let mut remaining: &str = &input;
-                if let Some(pos) = remaining.find(" airmarshal_events ") {
+                let mut captured: Vec<(&str, &str)> = Vec::new();
+                let matched = 'dissect: {
+                    let Some(pos) = remaining.find(" airmarshal_events ") else {
+                        break 'dissect false;
+                    };
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" airmarshal_events ") {
+                    let Some(rest) = remaining.strip_prefix(" airmarshal_events ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("type", &remaining[..pos])?;
+                    let Some(pos) = remaining.find("=") else {
+                        break 'dissect false;
+                    };
+                    let dissect_key_type = &remaining[..pos];
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
+                    let Some(rest) = remaining.strip_prefix("=") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("type", &remaining[..pos])?;
+                    let Some(pos) = remaining.find(" ") else {
+                        break 'dissect false;
+                    };
+                    captured.push((dissect_key_type, &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
+                    let Some(rest) = remaining.strip_prefix(" ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
+                    true
+                };
+                if matched {
+                    for (path, value) in captured {
+                        event.set(path, value)?;
+                    }
+                } else {
+                    return Err(TransformError::ParseError {
+                        path: "event.original".into(),
+                        message: "dissect pattern did not match".into(),
+                    });
                 }
             }
 
@@ -48,20 +94,39 @@ impl Transform for Airmarshal {
                     "%{GREEDYDATA} ssid=%{QS:_temp.ssid}%{SPACE}%{GREEDYDATA:_temp.kvline}"
                 )
                 .extract_into(&input, event)?
-                {}
+                {
+                    return Err(TransformError::GrokNoMatch { value: input });
+                }
             }
 
             if let Some(input) = event.get_string("_temp.ssid") {
                 let mut remaining: &str = &input;
-                if let Some(rest) = remaining.strip_prefix("'") {
+                let mut captured: Vec<(&str, &str)> = Vec::new();
+                let matched = 'dissect: {
+                    let Some(rest) = remaining.strip_prefix("'") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find("'") {
-                    event.set("_temp.kv.ssid", &remaining[..pos])?;
+                    let Some(pos) = remaining.find("'") else {
+                        break 'dissect false;
+                    };
+                    captured.push(("_temp.kv.ssid", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("'") {
+                    let Some(rest) = remaining.strip_prefix("'") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
+                    true
+                };
+                if matched {
+                    for (path, value) in captured {
+                        event.set(path, value)?;
+                    }
+                } else {
+                    return Err(TransformError::ParseError {
+                        path: "_temp.ssid".into(),
+                        message: "dissect pattern did not match".into(),
+                    });
                 }
             }
 
@@ -90,7 +155,7 @@ impl Transform for Airmarshal {
                             _ => value,
                         };
                         if !key.is_empty() {
-                            event.set(&format!("_temp.kv.{}", key), value)?;
+                            kv_put(event, &format!("_temp.kv.{}", key), value)?;
                         }
                     }
                 }
@@ -109,36 +174,43 @@ impl Transform for Airmarshal {
                 event.rename("_temp.kv.vap", "cisco_meraki.vap")?;
             }
 
-            if let Some(s) = event.get_string("_temp.kv.src") {
-                let re = cached_regex!("[-:.]");
-                let replaced = re.replace_all(&s, "-").into_owned();
-                event.set("source.mac", replaced)?;
-            }
+            gsub_field(
+                event,
+                "_temp.kv.src",
+                "source.mac",
+                cached_regex!("[-:.]"),
+                "-",
+            )?;
 
-            if let Some(s) = event.get_string("_temp.kv.dst") {
-                let re = cached_regex!("[-:.]");
-                let replaced = re.replace_all(&s, "-").into_owned();
-                event.set("destination.mac", replaced)?;
-            }
+            gsub_field(
+                event,
+                "_temp.kv.dst",
+                "destination.mac",
+                cached_regex!("[-:.]"),
+                "-",
+            )?;
 
             let _cond =
                 { event.get_str("cisco_meraki.event_subtype") == Some("rogue_ssid_detected") };
             if _cond {
-                if let Some(s) = event.get_string("_temp.kv.wired_mac") {
-                    let re = cached_regex!("[-:.]");
-                    let replaced = re.replace_all(&s, "-").into_owned();
-                    event.set("_temp.observer.mac", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "_temp.kv.wired_mac",
+                    "_temp.observer.mac",
+                    cached_regex!("[-:.]"),
+                    "-",
+                )?;
             }
 
             let _cond = { event.has_value("_temp.observer.mac") };
             if _cond {
                 event.append(
                     "observer.mac",
-                    event
-                        .get("_temp.observer.mac")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_temp.observer.mac")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -165,33 +237,16 @@ impl Transform for Airmarshal {
                 event.set("event.kind", json!("pipeline_error"))?;
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

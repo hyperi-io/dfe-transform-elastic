@@ -182,6 +182,7 @@ impl CompositeParserBuilder {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
     use crate::ip::{parse_ip_or_host, parse_ipv4};

@@ -9,4 +9,5 @@ pub mod events;
 pub mod flows;
 pub mod idsalerts;
 pub mod ipflows;
+pub mod security;
 pub mod urls;

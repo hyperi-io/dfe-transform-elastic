@@ -4,8 +4,9 @@
 //! Service configuration.
 //!
 //! Loaded through scalo's config cascade under the `DFE_TRANSFORM_ELASTIC`
-//! environment prefix. Which keys hot-reload and which need a restart is
-//! recorded in CLAUDE.md.
+//! environment prefix. `retry`, `scaling` and `source.batch_size` take effect
+//! on the next batch. Transports, enrichment and the HTTP bind are read once at
+//! startup and need a restart.
 
 use scalo::config::{self, ConfigOptions};
 use schemars::JsonSchema;
@@ -26,6 +27,14 @@ pub struct Config {
 
     /// Outbound side.
     pub sink: SinkConfig,
+
+    /// Which MMDB databases the geoip processors read, and how to obtain them.
+    ///
+    /// scalo's type verbatim: provisioning is shared across the fleet, and the
+    /// lookup engine and its cache stay in `dfe-runtime`. Read once at startup,
+    /// so a change needs a restart.
+    #[serde(default)]
+    pub geoip: scalo::geoip_download::GeoIpConfig,
 }
 
 /// Inbound configuration.
@@ -34,10 +43,14 @@ pub struct SourceConfig {
     /// Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.
     pub name: String,
 
-    /// How the payload is wrapped on the way in. The transform is the same
-    /// either way; only the unwrapping differs.
+    /// Which producer wrapped the payload. The transform is the same for all
+    /// of them; only the unwrapping differs.
+    ///
+    /// Defaults to `auto`, which reads it off each batch's first event. Naming
+    /// a family instead pins it, and validation then rejects one the source
+    /// cannot actually arrive in.
     #[serde(default)]
-    pub envelope: crate::envelope::Envelope,
+    pub envelope: crate::envelope::EnvelopeSetting,
 
     /// Topics to consume.
     pub topics: Vec<String>,
@@ -155,18 +168,27 @@ impl Config {
                 self.sink.max_message_bytes
             )));
         }
-        let origin = crate::registry::origin(&self.source.name)
+        let intake = crate::registry::intake(&self.source.name)
             .ok_or_else(|| crate::Error::UnknownSource(self.source.name.clone()))?;
 
-        // An API-only source over the syslog envelope would unwrap a header
-        // that is never there, and quietly emit nothing useful. Refuse it at
-        // startup rather than at the first batch.
-        if self.source.envelope == crate::envelope::Envelope::Syslog && !origin.is_syslog() {
+        // An envelope this source never arrives in would unwrap a shape that
+        // is not there and quietly emit nothing useful. Refuse it at startup
+        // rather than at the first batch. Only a PINNED envelope can be checked
+        // here: under `auto` there is no event yet to detect from, so the same
+        // mismatch is counted per batch instead.
+        if let Some(pinned) = self.source.envelope.pinned()
+            && !intake.accepts(pinned)
+        {
+            let name = |e: &crate::envelope::Envelope| format!("{e:?}").to_lowercase();
+            let accepts: Vec<String> = intake.envelopes.iter().map(name).collect();
             return Err(crate::Error::Config(format!(
-                "source '{}' is pulled from an API and cannot arrive over syslog; \
-                 the syslog envelope applies to: {}",
+                "source '{}' cannot arrive over {}; it accepts {}, and the {} \
+                 envelope applies to: {}",
                 self.source.name,
-                crate::registry::syslog_sources()
+                name(&pinned),
+                accepts.join(" and "),
+                name(&pinned),
+                crate::registry::sources_accepting(pinned)
                     .collect::<Vec<_>>()
                     .join(", ")
             )));
@@ -186,7 +208,7 @@ mod tests {
             pipeline_name: "test".into(),
             source: SourceConfig {
                 name: "filebeat.okta.default".into(),
-                envelope: crate::envelope::Envelope::Beats,
+                envelope: crate::envelope::EnvelopeSetting::Beats,
                 topics: vec!["in".into()],
                 batch_size: 100,
                 group_id: "g".into(),
@@ -197,6 +219,7 @@ mod tests {
                 brokers: None,
                 max_message_bytes: default_max_message_bytes(),
             },
+            geoip: scalo::geoip_download::GeoIpConfig::default(),
         }
     }
 
@@ -247,6 +270,28 @@ mod tests {
         assert!(parsed.sink.max_message_bytes < 1_000_000);
     }
 
+    /// A config written before the geoip section existed still loads, and
+    /// loads with provisioning ON -- the point of the section is that an
+    /// operator gets databases without configuring anything.
+    #[test]
+    fn geoip_provisions_unless_it_is_turned_off() {
+        let base = "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
+                    group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n";
+
+        let parsed: Config =
+            serde_yaml_ng::from_str(base).expect("config parses without a geoip section");
+        assert!(parsed.geoip.enabled);
+        assert!(parsed.geoip.auto_download.enabled);
+        assert_eq!(
+            parsed.geoip.provider,
+            scalo::geoip_download::GeoIpProvider::DbIpLite
+        );
+
+        let off: Config = serde_yaml_ng::from_str(&format!("{base}geoip:\n  enabled: false\n"))
+            .expect("config parses with geoip disabled");
+        assert!(!off.geoip.enabled);
+    }
+
     #[test]
     fn rejects_an_unregistered_source() {
         let mut c = valid();
@@ -254,36 +299,101 @@ mod tests {
         assert!(c.validate().is_err());
     }
 
+    /// Detection, not a guess: an unset envelope means read it off the batch,
+    /// so a deployment that changes producer needs no config change.
     #[test]
-    fn defaults_to_the_beats_envelope() {
+    fn defaults_to_detecting_the_envelope() {
         let parsed: Config = serde_yaml_ng::from_str(
             "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
              group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
         )
         .expect("config parses without an envelope key");
-        assert_eq!(parsed.source.envelope, crate::envelope::Envelope::Beats);
+        assert_eq!(
+            parsed.source.envelope,
+            crate::envelope::EnvelopeSetting::Auto
+        );
+        assert_eq!(parsed.source.envelope.pinned(), None);
+    }
+
+    /// `auto` cannot be checked against the intake at startup, so a source that
+    /// refuses a pinned envelope must still validate when nothing is pinned.
+    #[test]
+    fn auto_validates_on_a_source_that_refuses_a_pinned_envelope() {
+        let mut c = valid();
+        c.source.envelope = crate::envelope::EnvelopeSetting::Receiver;
+        assert!(c.validate().is_err(), "okta pinned to receiver is refused");
+
+        c.source.envelope = crate::envelope::EnvelopeSetting::Auto;
+        assert!(c.validate().is_ok());
+    }
+
+    /// A config written before detection existed still loads and still pins.
+    #[test]
+    fn the_old_envelope_names_still_load() {
+        for (written, expected) in [
+            ("beats", crate::envelope::EnvelopeSetting::Beats),
+            ("elastic", crate::envelope::EnvelopeSetting::Beats),
+            ("syslog", crate::envelope::EnvelopeSetting::Receiver),
+            ("receiver", crate::envelope::EnvelopeSetting::Receiver),
+            ("fetcher", crate::envelope::EnvelopeSetting::Fetcher),
+            ("auto", crate::envelope::EnvelopeSetting::Auto),
+        ] {
+            let parsed: Config = serde_yaml_ng::from_str(&format!(
+                "source:\n  name: filebeat.fortinet.default\n  envelope: {written}\n  \
+                 topics: [in]\n  group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n"
+            ))
+            .expect("config parses");
+            assert_eq!(parsed.source.envelope, expected, "envelope: {written}");
+        }
     }
 
     #[test]
-    fn accepts_the_syslog_envelope_on_a_device_source() {
+    fn accepts_the_receiver_envelope_on_a_pushed_source() {
         let mut c = valid();
         c.source.name = "filebeat.cisco_ios.default".into();
-        c.source.envelope = crate::envelope::Envelope::Syslog;
+        c.source.envelope = crate::envelope::EnvelopeSetting::Receiver;
         assert!(c.validate().is_ok());
     }
 
     /// okta is pulled from an API. Asking for it over syslog is a config
     /// error, not a silent no-op at the first batch.
     #[test]
-    fn rejects_the_syslog_envelope_on_an_api_source() {
+    fn rejects_the_receiver_envelope_on_a_fetched_source() {
         let mut c = valid();
-        c.source.envelope = crate::envelope::Envelope::Syslog;
+        c.source.envelope = crate::envelope::EnvelopeSetting::Receiver;
 
         let err = c.validate().expect_err("okta over syslog must be rejected");
         let message = err.to_string();
-        assert!(message.contains("cannot arrive over syslog"), "{message}");
-        // The error must name what WOULD work.
+        assert!(message.contains("cannot arrive over receiver"), "{message}");
+        // The error must name both what this source DOES take and what would.
+        assert!(message.contains("beats and fetcher"), "{message}");
         assert!(message.contains("filebeat.cisco_ios.default"), "{message}");
+    }
+
+    /// The other direction: a device pushes `cisco_ios`, so there is nothing for
+    /// dfe-fetcher to pull and the fetcher envelope is refused.
+    #[test]
+    fn rejects_the_fetcher_envelope_on_a_pushed_source() {
+        let mut c = valid();
+        c.source.name = "filebeat.cisco_ios.default".into();
+        c.source.envelope = crate::envelope::EnvelopeSetting::Fetcher;
+
+        let message = c
+            .validate()
+            .expect_err("cisco_ios over fetcher must be rejected")
+            .to_string();
+        assert!(message.contains("cannot arrive over fetcher"), "{message}");
+        assert!(message.contains("beats and receiver"), "{message}");
+        assert!(message.contains("filebeat.okta.default"), "{message}");
+    }
+
+    /// dfe-fetcher can obtain what Elastic's `httpjson` input obtains, so okta
+    /// accepts it and the config is valid.
+    #[test]
+    fn accepts_the_fetcher_envelope_on_a_pulled_source() {
+        let mut c = valid();
+        c.source.envelope = crate::envelope::EnvelopeSetting::Fetcher;
+        assert!(c.validate().is_ok());
     }
 
     #[test]
@@ -293,7 +403,10 @@ mod tests {
              topics: [in]\n  group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
         )
         .expect("config parses");
-        assert_eq!(parsed.source.envelope, crate::envelope::Envelope::Syslog);
+        assert_eq!(
+            parsed.source.envelope,
+            crate::envelope::EnvelopeSetting::Receiver
+        );
         assert!(parsed.validate().is_ok());
     }
 }

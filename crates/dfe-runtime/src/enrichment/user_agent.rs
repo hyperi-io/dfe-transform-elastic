@@ -46,6 +46,25 @@ pub struct UserAgentResult {
     pub device: Option<String>,
 }
 
+impl UserAgentResult {
+    /// The device TYPE, as Elastic's `extract_device_type` spells it.
+    ///
+    /// The same classification the device name comes from, under the names
+    /// ua-parser's device-type table uses. It is written only where the
+    /// processor asks for it, because the option is experimental upstream and
+    /// most pipelines leave the field out entirely.
+    #[must_use]
+    pub fn device_type(&self) -> Option<&'static str> {
+        match self.device.as_deref()? {
+            "phone" => Some("Phone"),
+            "tablet" => Some("Tablet"),
+            "pc" => Some("Desktop"),
+            "bot" => Some("Robot"),
+            _ => Some("Other"),
+        }
+    }
+}
+
 /// Parse a User-Agent string into structured components.
 pub fn parse(ua: &str) -> UserAgentResult {
     let mut result = UserAgentResult::default();
@@ -187,6 +206,7 @@ pub fn enrich(
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
 

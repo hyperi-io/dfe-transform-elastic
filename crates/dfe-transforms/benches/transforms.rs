@@ -15,6 +15,14 @@ use dfe_runtime::{Event, Transform};
 
 /// Beats-shaped events from a committed fixture: the raw vendor payload as a
 /// STRING in `message`, which is what the transforms are written for.
+///
+/// The fixtures come in two shapes and only one of them needs wrapping. A
+/// syslog fixture is ALREADY `{"message": "<134>1 ..."}` per line, and
+/// wrapping that again gave the transform a `message` holding the TEXT of a
+/// JSON object -- no grok matched, nothing was set, and the benchmark timed a
+/// no-op. `cisco_meraki` and `fortinet` both read that way, which is why they
+/// looked cheaper than `okta`. A line that already carries `message` is used
+/// as it stands; anything else is the raw vendor payload and gets wrapped.
 fn fixture_events(relative: &str) -> Vec<Event> {
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../tests/fixtures")
@@ -24,11 +32,16 @@ fn fixture_events(relative: &str) -> Vec<Event> {
 
     raw.lines()
         .filter(|l| !l.trim().is_empty())
-        .map(|line| {
-            let beat = serde_json::json!({ "message": line });
-            Event::new(beat)
-        })
+        .map(|line| Event::new(beat_shaped(line)))
         .collect()
+}
+
+/// One fixture line as the document a transform is handed.
+fn beat_shaped(line: &str) -> serde_json::Value {
+    match serde_json::from_str::<serde_json::Value>(line) {
+        Ok(value) if value.get("message").is_some() => value,
+        _ => serde_json::json!({ "message": line }),
+    }
 }
 
 /// One pass of `transform` over every event.
@@ -54,6 +67,17 @@ fn run_pass(transform: &dyn Transform, mut events: Vec<Event>) -> usize {
 fn bench_source(c: &mut Criterion, name: &str, fixture: &str, transform: &dyn Transform) {
     let events = fixture_events(fixture);
     assert!(!events.is_empty(), "{name}: fixture produced no events");
+
+    // A transform that changed nothing is not fast, it is absent. Two of these
+    // benches spent their whole life measuring one, because the fixture was
+    // double-wrapped and no grok ever matched.
+    let mut probe = events[0].clone();
+    let _ = transform.transform(&mut probe);
+    assert_ne!(
+        serde_json::to_string(events[0].as_value()).unwrap_or_default(),
+        serde_json::to_string(probe.as_value()).unwrap_or_default(),
+        "{name}: the transform left the event untouched, so this measures nothing"
+    );
 
     let mut group = c.benchmark_group(name);
     group.throughput(criterion::Throughput::Elements(events.len() as u64));
@@ -164,46 +188,6 @@ fn event_paths(c: &mut Criterion) {
     group.finish();
 }
 
-/// Does `dfe-parse` actually beat a COMPILED regex?
-///
-/// The design rests on "grok/regex is the #1 hot-path bottleneck, replace it
-/// with native parsers". That was written when every regex was rebuilt per
-/// event. Now that they are compiled once, the premise deserves a measurement
-/// rather than an assumption -- so this runs the same two jobs both ways.
-fn native_vs_regex(c: &mut Criterion) {
-    const ADDRESS: &str = "192.168.1.100";
-    const PAIR: &str = "10.0.0.7:443";
-
-    let mut group = c.benchmark_group("native_vs_regex");
-
-    group.bench_function("ipv4/regex", |b| {
-        let compiled = dfe_runtime::grok_cache::grok("^%{IPV4:source.ip}$");
-        b.iter(|| black_box(compiled.regex.captures(black_box(ADDRESS))));
-    });
-
-    group.bench_function("ipv4/native", |b| {
-        b.iter(|| black_box(dfe_parse::ip::parse_ipv4(black_box(ADDRESS))));
-    });
-
-    group.bench_function("ip_port/regex", |b| {
-        let compiled = dfe_runtime::grok_cache::grok("^%{IPV4:_temp.src_ip}:%{PORT:sport}$");
-        b.iter(|| black_box(compiled.regex.captures(black_box(PAIR))));
-    });
-
-    group.bench_function("ip_port/native", |b| {
-        b.iter(|| {
-            // The composite the grok expresses: address, literal colon, port.
-            let parsed = dfe_parse::ip::parse_ipv4(black_box(PAIR)).and_then(|(rest, ip)| {
-                let rest = rest.strip_prefix(':').unwrap_or(rest);
-                dfe_parse::numeric::parse_port(rest).map(|(tail, port)| (tail, ip, port))
-            });
-            black_box(parsed)
-        });
-    });
-
-    group.finish();
-}
-
 /// Looking a pattern UP, with every worker doing it at once.
 ///
 /// The service runs one transform thread per partition, and each of them hits
@@ -289,7 +273,6 @@ criterion_group!(
     benches,
     grok_compilation,
     grok_lookup_contended,
-    native_vs_regex,
     event_paths,
     okta,
     cisco_meraki,

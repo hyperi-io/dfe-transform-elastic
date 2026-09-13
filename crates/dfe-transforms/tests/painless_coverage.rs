@@ -22,14 +22,18 @@ use dfe_runtime::{Transform, painless_stats};
 use dfe_transforms::filebeat;
 use serde_json::{Map, Value, json};
 
-/// The measured floor: 619 of 1,119 scripts run across 80 fixture files, or
-/// 55.3%. It started at 5.9%. Raise it as the runtime learns more Painless;
-/// never lower it without saying why.
+/// The measured floor: ALL 4,244 scripts across 80 fixture files run. It
+/// started at 5.9%, reached 100% against the previous generation of Elastic's
+/// pipelines, fell to 64.7% when they were re-vendored from the current
+/// integrations commit, and is back at 100%.
 ///
-/// The denominator fell when `!= null` stopped opening on an explicit null:
-/// scripts that had been running against a field the vendor pipeline would
-/// have skipped no longer run at all.
-const COVERAGE_FLOOR: f64 = 0.55;
+/// The last four patterns were o365's `splitTrimAdd` (1,483 uses on its own),
+/// fortinet's `tlsver` split, azure's quote rewrite and azure's target-resource
+/// collect.
+///
+/// Running is not the same as running CORRECTLY -- `tests/compat_corpus.rs`
+/// is what measures that. This one only says no script is silently skipped.
+const COVERAGE_FLOOR: f64 = 1.0;
 
 /// Every fixture directory with a transform to drive it.
 ///

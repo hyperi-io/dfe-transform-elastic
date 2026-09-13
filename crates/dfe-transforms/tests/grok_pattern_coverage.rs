@@ -20,38 +20,15 @@ use std::path::{Path, PathBuf};
 ///
 /// Was 391 before `SPACE`, `PORT`, `TIME`, `QS` and the syslog names were
 /// defined; `%{SPACE}` alone accounted for 152 of them.
-const CEILING: usize = 146;
+const CEILING: usize = 0;
 
 /// Names that may still fall through, because their definitions live in the
 /// upstream pipelines' `pattern_definitions` and have not been carried across.
 /// A name NOT on this list falling through is a regression.
-const ALLOWED: &[&str] = &[
-    "BLOCKEDARP",
-    "CISCOTIMESTAMP",
-    "CISCO_HOSTNAME",
-    "CISCO_PRIORITY_MSGCOUNT",
-    "CISCO_TIMESTAMP",
-    "CISCO_TZ",
-    "CISCO_UPTIME",
-    "HOSTNAMEANDIP",
-    "HOSTNAMEANDPORT",
-    "HOSTNAMEANDPORTBRACKETS",
-    "IPANDPORT",
-    "IPANDPORTBRACKETS",
-    "IPV6NOCOMPRESS",
-    "IPV6PORTSEP",
-    "NEXUS_BODY",
-    "NEXUS_TIMESTAMP",
-    "NEXUS_TIMESTAMP_TIMEZONE",
-    "NOTCLOSINGPARENS",
-    "PIM_SOURCE",
-    "PORTACTION",
-    "PROVIDER",
-    "SYSLOGHDR",
-    "SYSLOGVER",
-    "TYPE",
-    "WORDORHOST",
-];
+///
+/// Empty: the generator inlines every `pattern_definitions` entry, so a
+/// vendor name never reaches the emitted Rust.
+const ALLOWED: &[&str] = &[];
 
 fn rust_files(dir: &Path, out: &mut Vec<PathBuf>) {
     let Ok(entries) = std::fs::read_dir(dir) else {
@@ -67,11 +44,25 @@ fn rust_files(dir: &Path, out: &mut Vec<PathBuf>) {
     }
 }
 
+/// The scan has to actually find the pattern references.
+///
+/// Not a property of the code under test -- a property of these tests. Both
+/// of them filter this map and assert the result is empty or zero, so an
+/// empty map passes both, and `rust_files` returns nothing whenever
+/// `read_dir` fails. A ceiling of zero is indistinguishable from finding
+/// nothing, which is precisely how `skipped_processors.rs` read zero for a
+/// fortnight.
+///
+/// The floor lives in the PRODUCER so a third caller inherits it rather than
+/// having to remember.
+const MIN_USES: usize = 20_000;
+
 /// Every `%{NAME}` and `%{NAME:field}` used, counted.
 fn used_pattern_names() -> BTreeMap<String, usize> {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("src");
     let mut files = Vec::new();
     rust_files(&root, &mut files);
+    let scanned = files.len();
 
     let mut counts: BTreeMap<String, usize> = BTreeMap::new();
     for path in files {
@@ -88,6 +79,14 @@ fn used_pattern_names() -> BTreeMap<String, usize> {
             rest = &rest[end + 1..];
         }
     }
+
+    let uses: usize = counts.values().sum();
+    assert!(
+        uses >= MIN_USES,
+        "the scan found {uses} grok pattern references over {scanned} files, \
+         under the {MIN_USES} floor -- it is not reading the generated tree, so \
+         every check built on this passes on nothing"
+    );
     counts
 }
 
@@ -109,11 +108,11 @@ fn unknown_grok_patterns_do_not_increase() {
         unknown.len()
     );
 
-    assert!(
-        total <= CEILING,
-        "uses of undefined grok patterns rose from {CEILING} to {total} -- \
+    assert_eq!(
+        total, CEILING,
+        "uses of undefined grok patterns moved off {CEILING} to {total} -- \
          a pattern name was used that `grok_pattern_regex` does not define, so \
-         it silently captures arbitrary text"
+         it silently captures arbitrary text. Lower the ceiling if it FELL."
     );
 }
 

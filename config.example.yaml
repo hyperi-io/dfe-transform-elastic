@@ -9,9 +9,18 @@
 # `source.topics`, `source.brokers` and `sink.topic` are the ones that
 # always change.
 #
-# `source.envelope` selects how the payload is wrapped on the way in:
-# `beats` (default) or `syslog` for dfe-receiver's output. The syslog
-# envelope applies only to sources a device can emit; see the README.
+# `source.envelope` selects which transport delivered the payload:
+# `beats` (default), `syslog` for dfe-receiver's output, or `fetcher` for
+# dfe-fetcher's. The transform is the same for all three; only the unwrapping
+# differs. Which envelopes a source accepts is listed per source in the
+# capability catalogue, and an envelope it cannot arrive in is refused at
+# startup rather than at the first batch.
+#
+# `geoip` provisions the MMDB databases at startup and refreshes them when the
+# local copy passes `max_age_days`. Mount `data_dir` on a volume that survives
+# a restart, or each new pod downloads again. To supply the files yourself, set
+# `geoip.city_db_path` and `geoip.asn_db_path`; to run without enrichment, set
+# `geoip.enabled: false`.
 
 pipeline_name: dfe-transform-elastic
 source:
@@ -28,6 +37,13 @@ sink:
   brokers:
   - kafka:9092
   max_message_bytes: 900000
+geoip:
+  enabled: true
+  provider: db_ip_lite
+  auto_download:
+    enabled: true
+    data_dir: /var/lib/dfe/geoip
+    max_age_days: 30
 scaling:
   enabled: true
   memory_gate_threshold: 0.8

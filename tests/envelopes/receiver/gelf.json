@@ -1,0 +1,26 @@
+{
+  "provenance": {
+    "file": "dfe-receiver src/server/gelf/convert.rs",
+    "line": "gelf_to_json, and the assertions in test_valid_gelf_message",
+    "producer": "dfe-receiver, GELF transport",
+    "note": "GELF is already JSON, so the converter keeps the sender's object and adds three things: message copied from short_message, severity mapped off the numeric level, and _source. Underscore-prefixed keys such as _user_id are GELF's own additional-field convention and pass through untouched."
+  },
+  "shape": {
+    "family": "receiver",
+    "variant": "gelf"
+  },
+  "detect": {
+    "family": "receiver",
+    "variant": "gelf"
+  },
+  "event": {
+    "version": "1.1",
+    "host": "web01",
+    "short_message": "Test message",
+    "message": "Test message",
+    "level": 6,
+    "severity": "informational",
+    "_user_id": "123",
+    "_source": "gelf"
+  }
+}
