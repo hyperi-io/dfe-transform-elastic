@@ -1949,3 +1949,37 @@ fn the_digital_guardian_sentinels_are_read_and_the_shipped_call_site_is_stale() 
         "{held}"
     );
 }
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/ti_threatconnect_indicator/default.rs`.
+const THREATCONNECT_LABELS: &str = r#"def ecsTlps = ['WHITE','CLEAR','GREEN','AMBER','AMBER+STRICT','RED']; def tlps = new ArrayList(); for (def obj : ctx.json.securityLabels.data) {\n  if (obj.containsKey('name')) {\n    if (obj.get('name').contains(':')){\n       def name = obj.get('name').splitOnToken(':')[1];\n       if (ecsTlps.contains(name)) {\n          tlps.add(name)\n       }\n    }\n  }\n} if (tlps.size() > 0){\n  if (ctx.threat.indicator.marking == null) {\n    ctx.threat.indicator.marking = new HashMap();\n  }\n  ctx.threat.indicator.marking.tlp = tlps;\n}"#;
+
+/// `CollectFromList` triggers on the same loop-and-append and reads the member
+/// name off the GUARD, so a move there gathers one called `containsKey`.
+#[test]
+fn the_threatconnect_labels_bind_to_the_gather_with_the_cut_they_test() {
+    let held = binding(THREATCONNECT_LABELS).join(" ");
+    assert!(held.starts_with("GatherMembers"), "{held}");
+    assert!(
+        held.contains(r#"list: "json.securityLabels.data""#),
+        "{held}"
+    );
+    assert!(held.contains(r#"member: "name""#), "{held}");
+    assert!(
+        held.contains(r#"targets: ["threat.indicator.marking.tlp"]"#),
+        "{held}"
+    );
+    assert!(held.contains(r#"separator: ":""#), "{held}");
+    assert!(held.contains("index: 1"), "{held}");
+    assert!(held.contains(r#""AMBER+STRICT""#), "{held}");
+
+    // The WRITTEN value, which is the half after the colon.
+    let mut event = Event::new(json!({ "json": { "securityLabels": { "data": [
+        { "name": "TLP:AMBER" },
+    ]}}}));
+    assert!(painless_exec_plan(&mut event, &PainlessPlan::new(THREATCONNECT_LABELS)).is_ok());
+    assert_eq!(
+        event.get("threat.indicator.marking.tlp"),
+        Some(&json!(["AMBER"]))
+    );
+}

@@ -31,10 +31,16 @@
 //! here off the `add` instead, which is the statement that says what is
 //! gathered.
 //!
-//! The reader is held to the SUBSCRIPT spelling. gdacs walks its countries the
-//! same way over `c.countryname` and writes its three lists unguarded, and that
-//! script is `CollectFromList`'s -- taking it here would drop the empty list it
-//! is meant to leave behind.
+//! The member is read off a SUBSCRIPT or a `.get()`, never a dotted field.
+//! gdacs walks its countries the same way over `c.countryname` and writes its
+//! three lists unguarded, and that script is `CollectFromList`'s -- taking it
+//! here would drop the empty list it is meant to leave behind.
+//!
+//! An add of a LOCAL is read where the local's declaration cuts the walked
+//! record's own member: `ti_threatconnect` labels its security labels
+//! `TLP:AMBER` and gathers the half after the colon, testing that piece against
+//! the same allow-list `ti_threatq` spells. One transform between the read and
+//! the test is a property of the script, not a second pattern.
 //!
 //! # What one walk can produce besides a plain list
 //!
@@ -95,6 +101,16 @@ pub struct GatheredFlag {
     when_clear: String,
 }
 
+/// The cut a script takes out of a member before it gathers the piece.
+///
+/// `ti_threatconnect` labels its security labels `TLP:AMBER` and gathers the
+/// half after the colon, which is the spelling its allow-list holds.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Split {
+    separator: String,
+    index: usize,
+}
+
 /// One member gathered, and where it lands.
 ///
 /// The three booleans are independent modifiers of the same gather rather than
@@ -121,6 +137,8 @@ pub struct GatheredColumn {
     selector: Option<Selector>,
     /// Literals written beside the list under the same `size() > 0` guard.
     literals: Vec<(String, String)>,
+    /// The cut taken out of the member before it is tested and gathered.
+    split: Option<Split>,
 }
 
 impl GatheredColumn {
@@ -136,6 +154,7 @@ impl GatheredColumn {
             dedupe: false,
             selector: None,
             literals: Vec::new(),
+            split: None,
         }
     }
 
@@ -143,6 +162,16 @@ impl GatheredColumn {
     #[must_use]
     pub fn allowing(mut self, allowed: &[&str]) -> Self {
         self.allowed = allowed.iter().map(|held| (*held).to_owned()).collect();
+        self
+    }
+
+    /// Gather the piece at `index` after cutting the member on `separator`.
+    #[must_use]
+    pub fn cut_on(mut self, separator: impl Into<String>, index: usize) -> Self {
+        self.split = Some(Split {
+            separator: separator.into(),
+            index,
+        });
         self
     }
 
@@ -457,6 +486,21 @@ enum Column {
     Unreadable,
 }
 
+/// One append found in the loop body: what it gathers, and how.
+struct Append<'a> {
+    /// Everything ahead of the append, which carries its guard.
+    guard: &'a str,
+    /// The record key the gathered value is read from.
+    member: String,
+    /// `addAll` -- the member is a list flattened in, not a value appended.
+    flatten: bool,
+    /// `.toLowerCase()` on the way in, which is also the spelling the
+    /// allow-list is tested in.
+    lowercase: bool,
+    /// The cut taken out of the member before it is tested and gathered.
+    split: Option<Split>,
+}
+
 /// Where the walk appends to this accumulator, and how.
 ///
 /// `<acc>.add(<var>["<member>"])` -- the add says what is gathered, and an add
@@ -473,22 +517,142 @@ enum Column {
 /// `addAll` is the same statement for a member that is itself a list. The two
 /// spellings cannot collide -- `add` is only `addAll` with a `(` where the `A`
 /// is.
-fn appended<'a>(
-    body: &'a str,
-    var: &str,
-    accumulator: &str,
-) -> Option<(&'a str, &'a str, char, bool)> {
+///
+/// The append of a LOCAL is read after these, because a local resolves only
+/// where its declaration cuts the walked record's own member -- see
+/// [`appended_local`].
+fn appended<'a>(body: &'a str, var: &str, accumulator: &str) -> Option<Append<'a>> {
+    direct_needles(var, accumulator)
+        .iter()
+        .find_map(|(needle, closing, flatten)| {
+            let (guard, rest) = body.split_once(needle.as_str())?;
+            let (member, after) = rest.split_once(*closing)?;
+            let member = member.trim().trim_matches(['\'', '"']).to_owned();
+            if member.is_empty() || !rest.starts_with(['"', '\'']) {
+                return None;
+            }
+            Some(Append {
+                guard,
+                member,
+                flatten: *flatten,
+                // `.toLowerCase()` on the way into the list, which cybereason
+                // applies to the value AND to the allow-list test that admits it.
+                lowercase: after.trim_start().starts_with(".toLowerCase()"),
+                split: None,
+            })
+        })
+        .or_else(|| appended_local(body, var, accumulator))
+}
+
+/// The four spellings of an append taken straight off the walked record.
+fn direct_needles(var: &str, accumulator: &str) -> [(String, char, bool); 4] {
     [
         (format!("{accumulator}.add({var}["), ']', false),
         (format!("{accumulator}.add({var}.get("), ')', false),
         (format!("{accumulator}.addAll({var}["), ']', true),
         (format!("{accumulator}.addAll({var}.get("), ')', true),
     ]
-    .iter()
-    .find_map(|(needle, closing, flatten)| {
-        let (guard, rest) = body.split_once(needle.as_str())?;
-        Some((guard, rest, *closing, *flatten))
-    })
+}
+
+/// Whether the walk appends off the record at all, however the member reads.
+///
+/// A needle that matches and a member that will not parse is an append this
+/// reader cannot resolve, which declines the WHOLE script -- writing some of a
+/// walk and not the rest is the thing [`Column::Unreadable`] exists to stop.
+fn appends_off_record(body: &str, var: &str, accumulator: &str) -> bool {
+    direct_needles(var, accumulator)
+        .iter()
+        .any(|(needle, _, _)| body.contains(needle.as_str()))
+}
+
+/// `<acc>.add(<local>)`, where the local holds a CUT of the record's member.
+///
+/// `ti_threatconnect` names its security labels `TLP:AMBER` and gathers the
+/// half after the colon:
+///
+/// ```painless
+/// def name = obj.get('name').splitOnToken(':')[1];
+/// if (ecsTlps.contains(name)) { tlps.add(name) }
+/// ```
+///
+/// Same walk, same accumulator, same literal allow-list as `ti_threatq` --
+/// one transform between the read and the test. So it is read here rather than
+/// given a pattern of its own, which also keeps the call site `direct`.
+///
+/// The local must be declared from the WALKED record. A local built from
+/// anything else is a value this reader cannot resolve, and declining is what
+/// stops it gathering the wrong thing.
+fn appended_local<'a>(body: &'a str, var: &str, accumulator: &str) -> Option<Append<'a>> {
+    for (needle, flatten) in [
+        (format!("{accumulator}.add("), false),
+        (format!("{accumulator}.addAll("), true),
+    ] {
+        let Some((guard, rest)) = body.split_once(needle.as_str()) else {
+            continue;
+        };
+        let Some((local, _)) = rest.split_once(')') else {
+            continue;
+        };
+        let local = local.trim();
+        if local.is_empty() || !local.chars().all(|c| c.is_alphanumeric() || c == '_') {
+            continue;
+        }
+        let Some((member, split, lowercase)) = declared_cut(guard, var, local) else {
+            continue;
+        };
+        return Some(Append {
+            guard,
+            member,
+            flatten,
+            lowercase,
+            split: Some(split),
+        });
+    }
+    None
+}
+
+/// The quoted literal a call opens with, and the text after the closing `)`.
+fn quoted_argument(text: &str) -> Option<(String, &str)> {
+    let quote @ ('"' | '\'') = text.chars().next()? else {
+        return None;
+    };
+    let (value, after) = text[quote.len_utf8()..].split_once(quote)?;
+    Some((value.to_owned(), after.strip_prefix(')')?))
+}
+
+/// The record member a local holds, and the cut taken out of it.
+///
+/// Held to a declaration off the WALKED record --
+/// `<local> = <var>.get("<member>").splitOnToken("<sep>")[<index>]`, and the
+/// subscript spelling of the same read. The nearest preceding declaration is
+/// the one that binds, which is why it is read back from the append.
+fn declared_cut(guard: &str, var: &str, local: &str) -> Option<(String, Split, bool)> {
+    let (_, rest) = guard.rsplit_once(&format!(" {local} = "))?;
+    let rest = rest.trim_start();
+    let (member, rest) = [(format!("{var}.get("), ')'), (format!("{var}["), ']')]
+        .iter()
+        .find_map(|(opening, closing)| {
+            let tail = rest.strip_prefix(opening.as_str())?;
+            if !tail.starts_with(['"', '\'']) {
+                return None;
+            }
+            let (member, after) = tail.split_once(*closing)?;
+            let member = member.trim().trim_matches(['"', '\'']).to_owned();
+            (!member.is_empty()).then_some((member, after))
+        })?;
+
+    let (separator, rest) = quoted_argument(rest.strip_prefix(".splitOnToken(")?)?;
+    if separator.is_empty() {
+        return None;
+    }
+    let (index, rest) = rest.strip_prefix('[')?.split_once(']')?;
+    let index: usize = index.trim().parse().ok()?;
+
+    Some((
+        member,
+        Split { separator, index },
+        rest.trim_start().starts_with(".toLowerCase()"),
+    ))
 }
 
 /// Read one accumulator's column.
@@ -499,44 +663,28 @@ fn column(
     accumulator: &str,
     lists: &[(String, Vec<String>)],
 ) -> Column {
-    let Some((guard, rest, closing, flatten)) = appended(body, var, accumulator) else {
-        return Column::NotGathered;
+    let Some(append) = appended(body, var, accumulator) else {
+        return if appends_off_record(body, var, accumulator) {
+            Column::Unreadable
+        } else {
+            Column::NotGathered
+        };
     };
-    match read_column(
-        script,
-        guard,
-        rest,
-        closing,
-        flatten,
-        var,
-        accumulator,
-        lists,
-    ) {
+    match read_column(script, &append, var, accumulator, lists) {
         Some((at, read)) => Column::Read(at, Box::new(read)),
         None => Column::Unreadable,
     }
 }
 
 /// The gather itself, once the append has been found.
-#[allow(clippy::too_many_arguments)] // The parts of one append, passed on rather than re-found.
 fn read_column(
     script: &str,
-    guard: &str,
-    rest: &str,
-    closing: char,
-    flatten: bool,
+    append: &Append<'_>,
     var: &str,
     accumulator: &str,
     lists: &[(String, Vec<String>)],
 ) -> Option<(usize, GatheredColumn)> {
-    let (member, after) = rest.split_once(closing)?;
-    let member = member.trim().trim_matches(['\'', '"']).to_owned();
-    if member.is_empty() || !rest.starts_with(['"', '\'']) {
-        return None;
-    }
-    // `.toLowerCase()` on the way into the list, which cybereason applies to
-    // the value AND to the allow-list test that admits it.
-    let lowercase = after.trim_start().starts_with(".toLowerCase()");
+    let guard = append.guard;
 
     // `ctx.<target> = <acc>;`, guarded on the walk having come to something.
     // Without the guard the script writes an empty list, which is a different
@@ -567,14 +715,15 @@ fn read_column(
     Some((
         at,
         GatheredColumn {
-            member,
+            member: append.member.clone(),
             targets: targets.into_iter().map(|(_, path)| path).collect(),
             allowed,
-            lowercase,
-            flatten,
+            lowercase: append.lowercase,
+            flatten: append.flatten,
             dedupe: arm.contains(&format!("!{accumulator}.contains(")),
             selector: selector(arm, var),
             literals,
+            split: append.split.clone(),
         },
     ))
 }
@@ -683,11 +832,26 @@ pub fn gather_members(event: &mut Event, pattern: &GatherMembers) -> bool {
                 (false, value) => std::slice::from_ref(value),
             };
             for value in flattened {
+                // The cut happens BEFORE the test, because the script tests the
+                // piece against its allow-list and gathers that piece.
+                // A value the separator is absent from reaches no index, which
+                // is the record the vendor's own guard skips.
+                let value = match (&column.split, value.as_str()) {
+                    (Some(split), Some(text)) => {
+                        let Some(piece) = text.split(split.separator.as_str()).nth(split.index)
+                        else {
+                            continue;
+                        };
+                        Value::String(piece.to_owned())
+                    }
+                    (Some(_), None) => continue,
+                    (None, _) => value.clone(),
+                };
                 // The fold happens BEFORE the test, because the script tests the
                 // folded spelling and gathers the folded value.
                 let value = match (column.lowercase, value.as_str()) {
                     (true, Some(text)) => Value::String(text.to_lowercase()),
-                    _ => value.clone(),
+                    _ => value,
                 };
                 if !column.allowed.is_empty()
                     && !value
@@ -751,8 +915,11 @@ mod tests {
     /// anything.
     const GDACS_COUNTRIES: &str = r#"def countries = ctx.gdacs?.affected_countries;\nif (countries == null || countries.size() == 0) { return; }\n\ndef names = new ArrayList();\ndef iso2_codes = new ArrayList();\ndef iso3_codes = new ArrayList();\n\nfor (def c : countries) {\n  if (c.countryname != null) { names.add(c.countryname); }\n  if (c.iso2 != null) { iso2_codes.add(c.iso2); }\n  if (c.iso3 != null) { iso3_codes.add(c.iso3); }\n}\n\nctx.gdacs.affected_country_names = names;\nctx.gdacs.affected_country_iso2 = iso2_codes;\nctx.gdacs.affected_country_iso3 = iso3_codes;\n"#;
 
-    /// `ti_threatconnect`'s neighbour, which cuts a label before filtering it
-    /// against the same allow-list and binds its add to a LOCAL.
+    /// Verbatim from the generated call site in
+    /// `crates/dfe-transforms/src/filebeat/ti_threatconnect_indicator/default.rs`.
+    ///
+    /// The same walk and allow-list as threatq, with the label cut on a colon
+    /// and the add bound to the LOCAL holding the piece.
     const THREATCONNECT_LABELS: &str = r#"def ecsTlps = ['WHITE','CLEAR','GREEN','AMBER','AMBER+STRICT','RED']; def tlps = new ArrayList(); for (def obj : ctx.json.securityLabels.data) {\n  if (obj.containsKey('name')) {\n    if (obj.get('name').contains(':')){\n       def name = obj.get('name').splitOnToken(':')[1];\n       if (ecsTlps.contains(name)) {\n          tlps.add(name)\n       }\n    }\n  }\n} if (tlps.size() > 0){\n  if (ctx.threat.indicator.marking == null) {\n    ctx.threat.indicator.marking = new HashMap();\n  }\n  ctx.threat.indicator.marking.tlp = tlps;\n}"#;
 
     #[test]
@@ -974,19 +1141,59 @@ mod tests {
     }
 
     #[test]
-    fn the_neighbouring_walks_over_the_same_grammar_are_declined() {
-        // gdacs reads dotted members and writes unguarded; threatconnect adds
-        // a local it cut out of the label. Claiming either would write the
-        // wrong list, and gdacs would lose the empty one it leaves behind.
-        for (name, script) in [
-            ("gdacs", GDACS_COUNTRIES),
-            ("ti_threatconnect", THREATCONNECT_LABELS),
-        ] {
-            assert!(
-                parse_gather_members(&crate::common::normalise(script)).is_none(),
-                "{name} was claimed"
-            );
-        }
+    fn the_neighbouring_walk_over_the_same_grammar_is_declined() {
+        // gdacs reads dotted members and writes its three lists unguarded, so
+        // claiming it would lose the empty list it leaves behind.
+        assert!(
+            parse_gather_members(&crate::common::normalise(GDACS_COUNTRIES)).is_none(),
+            "gdacs was claimed"
+        );
+    }
+
+    #[test]
+    fn a_label_is_cut_before_the_allow_list_admits_the_piece() {
+        assert_eq!(
+            parse_gather_members(&crate::common::normalise(THREATCONNECT_LABELS)),
+            Some(GatherMembers::new(
+                "json.securityLabels.data",
+                false,
+                vec![
+                    GatheredColumn::new("name", "threat.indicator.marking.tlp")
+                        .allowing(&["WHITE", "CLEAR", "GREEN", "AMBER", "AMBER+STRICT", "RED"])
+                        .cut_on(":", 1),
+                ],
+            ))
+        );
+
+        // The WRITTEN value: the half after the colon, a label the allow-list
+        // does not hold left out, and one carrying no colon skipped.
+        let mut event = Event::new(json!({ "json": { "securityLabels": { "data": [
+            { "name": "TLP:AMBER" },
+            { "name": "TLP:PURPLE" },
+            { "name": "Internal" },
+        ]}}}));
+        assert!(crate::common::try_known_painless(
+            &mut event,
+            THREATCONNECT_LABELS
+        ));
+        assert_eq!(
+            event.get("threat.indicator.marking.tlp"),
+            Some(&json!(["AMBER"]))
+        );
+    }
+
+    /// A walk whose cut admits nothing writes no field, the same as one that
+    /// gathers nothing.
+    #[test]
+    fn a_cut_that_admits_nothing_writes_no_field() {
+        let mut event = Event::new(json!({ "json": { "securityLabels": { "data": [
+            { "name": "Internal" },
+        ]}}}));
+        assert!(crate::common::try_known_painless(
+            &mut event,
+            THREATCONNECT_LABELS
+        ));
+        assert_eq!(event.get("threat.indicator.marking.tlp"), None);
     }
 
     /// Verbatim from the generated call site in
