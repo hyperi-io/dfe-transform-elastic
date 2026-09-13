@@ -72,6 +72,7 @@ pub use crate::painless_indicator_expiry::{
     FlaggedExpiry, IndicatorExpiry, flagged_expiry, indicator_expiry,
 };
 pub use crate::painless_item_writes::{ItemWrites, item_writes};
+pub use crate::painless_labelled_keys::{LabelledKeyRename, labelled_key_rename};
 pub use crate::painless_last_element::{LastElementMember, run_last_element_member};
 pub use crate::painless_level_labels::{LevelLabels, level_labels};
 pub use crate::painless_list_records::{

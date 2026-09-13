@@ -23499,6 +23499,8 @@ pub(crate) enum KnownPattern {
     RenameMapKeys(RenameMapKeys),
     ParametersIntoMap(ParametersIntoMap),
     UnwrapSuffixedKeys(UnwrapSuffixedKeys),
+    /// A map's label keys folded into the slots they name.
+    LabelledKeyRename(Box<crate::labelled_keys::LabelledKeyRename>),
     /// An ECS `geo_point` built from a `GeoJSON` coordinate array.
     GeoPointFromCoordinates(GeoPointFromCoordinates),
     /// A `GeoJSON` geometry rendered as WKT, with the point and the copies the
@@ -24493,6 +24495,18 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_join_present_fields(normalised)
     {
         patterns.push(KnownPattern::JoinPresentFields(pattern));
+        return patterns;
+    }
+
+    // Pattern: a map's label keys folded into the slots they name. Beside the
+    // matcher below because they walk the same key set cutting the same
+    // suffix, and only the write tells them apart -- that one rewrites a key
+    // in place, this one re-keys a PAIR by what its label says.
+    if normalised.contains(".endsWith(")
+        && normalised.contains(".keySet()")
+        && let Some(pattern) = crate::labelled_keys::parse_labelled_key_rename(normalised)
+    {
+        patterns.push(KnownPattern::LabelledKeyRename(Box::new(pattern)));
         return patterns;
     }
 
@@ -27329,6 +27343,9 @@ pub(crate) fn run_known_pattern(
         KnownPattern::RenameMapKeys(pattern) => rename_map_keys(event, pattern),
         KnownPattern::ParametersIntoMap(pattern) => parameters_into_map(event, pattern),
         KnownPattern::UnwrapSuffixedKeys(pattern) => unwrap_suffixed_keys(event, pattern),
+        KnownPattern::LabelledKeyRename(pattern) => {
+            crate::labelled_keys::labelled_key_rename(event, pattern)
+        }
         KnownPattern::GeoPointFromCoordinates(pattern) => {
             geo_point_from_coordinates(event, pattern)
         }

@@ -51,6 +51,7 @@ pub mod hoist;
 pub mod indicator_expiry;
 pub mod issue_lifecycle;
 pub mod item_writes;
+pub mod labelled_keys;
 pub mod labelled_score;
 pub mod last_element;
 pub mod level_labels;
