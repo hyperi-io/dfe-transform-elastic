@@ -40,6 +40,7 @@ pub use crate::painless_byte_size::{ByteSizeFields, run_byte_size_fields};
 pub use crate::painless_coercion::{
     DecodedFields, LongCoercion, LongLadder, decoded_fields, long_coercion, long_ladder,
 };
+pub use crate::painless_collect_by_literal::{CollectByLiteral, collect_by_literal};
 pub use crate::painless_collect_present::{CollectPresent, collect_present};
 pub use crate::painless_common::{
     AllowedValueCopy, BasenameCuts, CoerceBoolean, CombineFields, DedupeMapValues, DropPolicy,
@@ -80,6 +81,7 @@ pub use crate::painless_map_entries::{
 pub use crate::painless_member_tags::{MemberTags, member_tags};
 pub use crate::painless_nth_separator::{NthSeparatorPrefix, nth_separator_prefix};
 pub use crate::painless_pair_table::{PairTable, pair_table};
+pub use crate::painless_record_fold::{RecordFold, record_fold};
 pub use crate::painless_records::{
     RecordFromFields, RecordRenames, record_from_fields, record_renames,
 };

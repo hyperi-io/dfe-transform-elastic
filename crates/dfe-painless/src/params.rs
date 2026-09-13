@@ -338,6 +338,9 @@ pub(crate) enum ParamsPattern {
     SplitNamedByPosition(Box<SplitNamedByPosition>),
     /// An action's ECS block chosen by a four-tier lookup over `params`.
     ActionMapping(Box<crate::action_mapping::ActionMapping>),
+    /// One params row naming both an ECS type literal and the path a second
+    /// field's value belongs at.
+    RowNamedTarget(Box<crate::row_named_target::RowNamedTarget>),
 }
 
 /// The membership test a table lookup may sit inside.
@@ -1187,6 +1190,18 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
         && let Some(pattern) = crate::action_mapping::parse_action_mapping(normalised)
     {
         return Some(ParamsPattern::ActionMapping(Box::new(pattern)));
+    }
+
+    // Pattern: one params row naming both an ECS type literal and the path the
+    // indicator's value belongs at. LAST, because nothing above claims the
+    // three threat-intelligence sources that ship it and it needs to precede
+    // nothing; the row-named destination is the gate and the two substrings are
+    // the cheap reject.
+    if normalised.contains("= params[ctx.")
+        && normalised.contains("set(ctx, ")
+        && let Some(pattern) = crate::row_named_target::parse_row_named_target(normalised)
+    {
+        return Some(ParamsPattern::RowNamedTarget(Box::new(pattern)));
     }
 
     None
@@ -2409,6 +2424,9 @@ pub(crate) fn run_params_pattern(
         ParamsPattern::LookupColumns => try_lookup_columns(event, normalised, params),
         ParamsPattern::ActionMapping(pattern) => {
             crate::action_mapping::run_action_mapping(event, pattern, params)
+        }
+        ParamsPattern::RowNamedTarget(pattern) => {
+            crate::row_named_target::run_row_named_target(event, pattern, params)
         }
         ParamsPattern::UrlTailAction(pattern) => {
             crate::url_action::url_tail_action(event, pattern, params)

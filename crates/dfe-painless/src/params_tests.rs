@@ -47,6 +47,56 @@ fn a_map_literal_takes_its_key_from_the_lookup() {
     assert!(!unknown.has("_hashes"));
 }
 
+/// `carbonblack_edr`'s indicator lookup, verbatim from its generated call site.
+///
+/// The row decides both the ECS type literal and the path the value lands at,
+/// so one table serves four destinations. A key with no row writes NOTHING and
+/// leaves the flag unset, which is how the vendor's `query` indicators survive
+/// under `json.ioc_*` for the rename that follows.
+#[test]
+fn a_params_row_names_the_path_its_value_is_written_to() {
+    let script = r#"void _set(Map base, def path, def value) {\n  if (path.length == 0) return;\n  for (int i=0; i<path.length-1; i++) {\n    String c = path[i];\n    if (base[c] == null) base[c] = new HashMap();\n    base = base[c];\n  }\n  base[path[path.length-1]] = value;\n} void set(Map base, String path, def value) {\n  _set(base, path.splitOnToken(\".\"), value);\n} def mapping = params[ctx.json.ioc_type.toLowerCase()]; if (mapping == null) return; set(ctx, \"threat.indicator.type\", mapping.type); def value = ctx.json.ioc_value; if (value == null) return; set(ctx, mapping.target, value); ctx[\"_tmp_ioc_done\"] = true;\n"#;
+    let table = json!({
+        "dns": {"type": "domain-name", "target": "threat.indicator.url.domain"},
+        "ipv4": {"type": "ipv4-addr", "target": "threat.indicator.ip"},
+        "ipv6": {"type": "ipv6-addr", "target": "threat.indicator.ip"},
+        "md5": {"type": "file", "target": "threat.indicator.file.hash.md5"},
+    });
+
+    let mut address = Event::new(json!({
+        "json": { "ioc_type": "ipv4", "ioc_value": "81.2.69.144" }
+    }));
+    assert!(try_params_painless(&mut address, script, &table));
+    assert_eq!(address.get_str("threat.indicator.type"), Some("ipv4-addr"));
+    assert_eq!(address.get_str("threat.indicator.ip"), Some("81.2.69.144"));
+    assert_eq!(address.get_bool("_tmp_ioc_done"), Some(true));
+
+    let mut hash = Event::new(json!({
+        "json": { "ioc_type": "md5", "ioc_value": "506708142bc63daba64f2d3ad1dcd5bf" }
+    }));
+    assert!(try_params_painless(&mut hash, script, &table));
+    assert_eq!(hash.get_str("threat.indicator.type"), Some("file"));
+    assert_eq!(
+        hash.get_str("threat.indicator.file.hash.md5"),
+        Some("506708142bc63daba64f2d3ad1dcd5bf")
+    );
+
+    let mut unlisted = Event::new(json!({
+        "json": { "ioc_type": "query", "ioc_value": "cb.urlver=1" }
+    }));
+    assert!(try_params_painless(&mut unlisted, script, &table));
+    assert!(!unlisted.has("threat"));
+    assert!(!unlisted.has("_tmp_ioc_done"));
+
+    // The type is written before the value is read, so an absent value keeps it
+    // and still leaves the flag -- and the removals it gates -- unset.
+    let mut typeless = Event::new(json!({ "json": { "ioc_type": "ipv4" } }));
+    assert!(try_params_painless(&mut typeless, script, &table));
+    assert_eq!(typeless.get_str("threat.indicator.type"), Some("ipv4-addr"));
+    assert!(!typeless.has("threat.indicator.ip"));
+    assert!(!typeless.has("_tmp_ioc_done"));
+}
+
 /// Hold the `ctx.` path readers to one answer, or to a stated reason.
 ///
 /// Eighteen helpers read a dotted path out of Painless text and differ on

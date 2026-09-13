@@ -9374,14 +9374,31 @@ pub fn keys_to_snake_case(value: &mut Value, rule: SnakeRule) {
     }
 }
 
+/// What a copy of `convertToSnakeCase` does with a key holding an `@`.
+///
+/// The copies disagree, and they disagree in OPPOSITE directions, so the branch
+/// is the only thing that answers it. Ten packages write the test negated with
+/// no else, which is how Microsoft's `@odata.*` metadata stays out of the
+/// document; `beyondtrust_epm` writes it the other way round and re-inserts the
+/// key verbatim. [`at_key_branch`] reads which.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum AtKeys {
+    /// No `@` test at all, so every key goes through the case rule.
+    Convert,
+    /// The entry never reaches the new map.
+    Drop,
+    /// The key is inserted exactly as it arrived; only the case rule is
+    /// skipped, and the VALUE is still converted.
+    Keep,
+}
+
 /// The `convertToSnakeCase` helper the integrations copy between packages.
 ///
 /// It is copied, not shared, so the copies have DIVERGED and each difference
 /// changes the output. `sentinel_one`'s `unified_alert` and
 /// `entityanalytics_entra_id` break the word wherever the previous character
 /// was not itself uppercase -- digits and dots included, so `cve2021Id` becomes
-/// `cve2021_id` -- and DROP a key holding an `@`, which is how Microsoft's
-/// `@odata.*` metadata stays out of the document. `jupiter_one`'s breaks only
+/// `cve2021_id` -- and DROP a key holding an `@`. `jupiter_one`'s breaks only
 /// after a lowercase character and keeps every key, so its literal `tag.`-dotted
 /// keys stay `tag.account_name` where the other rule writes `tag._account_name`.
 /// `beyondtrust`'s reads the character AFTER the uppercase as well, so it
@@ -9391,28 +9408,72 @@ pub fn keys_to_snake_case(value: &mut Value, rule: SnakeRule) {
 ///
 /// Returns a new value; the script assigns the result rather than mutating.
 #[must_use]
-pub fn camel_map_to_snake(value: &Value, rule: SnakeRule, drop_at_keys: bool) -> Value {
+pub fn camel_map_to_snake(value: &Value, rule: SnakeRule, at_keys: AtKeys) -> Value {
     match value {
         Value::Object(map) => {
             let mut out = serde_json::Map::with_capacity(map.len());
+            let mut collided = false;
             for (key, inner) in map {
-                if drop_at_keys && key.contains('@') {
-                    continue;
+                if let Some(landing) = landing_key(key, rule, at_keys) {
+                    collided |= out
+                        .insert(landing, camel_map_to_snake(inner, rule, at_keys))
+                        .is_some();
                 }
-                out.insert(
-                    to_snake_case(key, rule),
-                    camel_map_to_snake(inner, rule, drop_at_keys),
-                );
+            }
+            if collided {
+                settle_fold_collisions(&mut out, map, rule, at_keys);
             }
             Value::Object(out)
         }
         Value::Array(items) => Value::Array(
             items
                 .iter()
-                .map(|item| camel_map_to_snake(item, rule, drop_at_keys))
+                .map(|item| camel_map_to_snake(item, rule, at_keys))
                 .collect(),
         ),
         other => other.clone(),
+    }
+}
+
+/// The name an entry lands under, or `None` where the `@` rule drops it.
+///
+/// Read BEFORE the value is converted, so a dropped entry costs no recursion.
+fn landing_key(key: &str, rule: SnakeRule, at_keys: AtKeys) -> Option<String> {
+    match (at_keys, key.contains('@')) {
+        (AtKeys::Drop, true) => None,
+        (AtKeys::Keep, true) => Some(key.to_string()),
+        (AtKeys::Convert | AtKeys::Drop | AtKeys::Keep, _) => Some(to_snake_case(key, rule)),
+    }
+}
+
+/// Give each landing name the value Painless would have left there.
+///
+/// Two source keys can fold to ONE name, and which of them survives is decided
+/// by the order `entrySet()` walks the source -- Java `HashMap` BUCKET order,
+/// not insertion order. `beyondtrust_epm`'s vendor ships `Owner` and `owner` in
+/// one file object, and insertion order writes the object where Elasticsearch
+/// writes the string.
+///
+/// Only reached where a landing name was written twice, so a map with no
+/// collision pays one comparison and nothing else.
+fn settle_fold_collisions(
+    out: &mut serde_json::Map<String, Value>,
+    map: &serde_json::Map<String, Value>,
+    rule: SnakeRule,
+    at_keys: AtKeys,
+) {
+    use crate::helpers::{java_bucket, java_table_size};
+
+    let table = java_table_size(map.len());
+    let mut entries: Vec<(&String, &Value)> = map.iter().collect();
+    // Stable, so entries sharing a bucket keep the insertion order Java's own
+    // chain appends them in.
+    entries.sort_by_cached_key(|(key, _)| java_bucket(key, table));
+
+    for (key, inner) in entries {
+        if let Some(landing) = landing_key(key, rule, at_keys) {
+            out.insert(landing, camel_map_to_snake(inner, rule, at_keys));
+        }
     }
 }
 
@@ -11011,7 +11072,10 @@ fn snake_case_apply(script: &str) -> Option<KnownPattern> {
         // runner cannot reproduce.
         return None;
     };
-    let drop_at_keys = script.contains(".contains(\"@\")") || script.contains(".contains('@')");
+    // Read off the BRANCH, never off the presence of the test: the two copies
+    // spell it opposite ways round and mean opposite things, so a substring
+    // scan read beyondtrust_epm's `@timestamp` as a key to drop.
+    let at_keys = at_key_branch(script)?;
 
     for line in script.lines().rev() {
         let line = line.trim().trim_end_matches(';');
@@ -11049,12 +11113,46 @@ fn snake_case_apply(script: &str) -> Option<KnownPattern> {
             target: target[4..].to_string(),
             source: argument[4..].to_string(),
             rule,
-            drop_at_keys,
+            at_keys,
             merge,
             removes: ctx_removes(script),
         });
     }
     None
+}
+
+/// Which branch a copy's `@` test selects, or `None` where it spells a third
+/// arrangement.
+///
+/// Anchored to the KEY expression, because `.contains("@")` is also how a
+/// pipeline recognises an EMAIL ADDRESS in a value -- `gcp_audit` writes
+/// `actor.contains("@") && !actor.contains(".gserviceaccount.com")` and means
+/// nothing by it here.
+///
+/// Declining is the answer for a shape this cannot read: the script stays
+/// unbound and visible in the census, where a guess writes keys the vendor
+/// never sends.
+fn at_key_branch(script: &str) -> Option<AtKeys> {
+    for key in ["entry.getKey()", "entry.key"] {
+        for quote in ['"', '\''] {
+            let test = format!("{key}.contains({quote}@{quote})");
+            let Some(at) = script.find(&test) else {
+                continue;
+            };
+            let negated = script[..at].trim_end().ends_with('!');
+            let (body, tail) = script[at + test.len()..].split_once('}')?;
+            return match (negated, tail.trim_start().starts_with("else")) {
+                // `if (!<key>.contains("@")) { <case rule> }` and nothing after
+                // it, so an `@` key has no branch of its own.
+                (true, false) => Some(AtKeys::Drop),
+                // `{ newObj[<key>] = ... }` re-inserts under the key it arrived
+                // with, so only the case rule is skipped.
+                (false, _) if body.contains(&format!("[{key}]")) => Some(AtKeys::Keep),
+                (true, true) | (false, _) => None,
+            };
+        }
+    }
+    Some(AtKeys::Convert)
 }
 
 /// Does the key helper swap hyphens for underscores and nothing else?
@@ -16400,14 +16498,18 @@ fn apply_tail_default(event: &mut Event, script: &str, target: &str) {
 fn try_sentinel_removal_literal(event: &mut Event, script: &str) -> bool {
     use crate::params::{clean_path, ctx_path_before};
 
-    // The map is either named inline or bound to a local read from ctx.
-    let Some(path) = ctx_path_before(script, ".entrySet().removeIf(")
+    // The map is named inline, bound to a local read from ctx, or handed to a
+    // HELPER the script then applies to one path per call.
+    let paths = ctx_path_before(script, ".entrySet().removeIf(")
         .filter(|p| !p.contains(' '))
         .or_else(|| bound_ctx_path(script))
-        .map(|p| clean_path(&p))
-    else {
+        .map_or_else(
+            || helper_applied_paths(script),
+            |path| vec![clean_path(&path)],
+        );
+    if paths.is_empty() {
         return false;
-    };
+    }
 
     // Two spellings: `entry.getValue() == '<s>'` chains, and the security
     // pipeline's `[null, "", "-", ...].contains(entry.getValue())` list.
@@ -16432,15 +16534,75 @@ fn try_sentinel_removal_literal(event: &mut Event, script: &str) -> bool {
         return false;
     }
 
-    if let Some(Value::Object(map)) = crate::params::pointer_mut(event, &path) {
-        map.retain(|k, v| {
-            let sentinel = (drops_null && v.is_null())
-                || v.as_str().is_some_and(|s| sentinels.iter().any(|x| x == s));
-            let odd_key = drops_odd_keys && k.chars().any(|c| !c.is_alphanumeric() && c != '_');
-            !sentinel && !odd_key && !empty.drops(v)
-        });
+    // ONE LEVEL per path, never a descent: Elasticsearch keeps the empty
+    // strings under `carbonblack.edr.digsig.*` because the prune the vendor
+    // wrote never reaches them.
+    for path in &paths {
+        if let Some(Value::Object(map)) = crate::params::pointer_mut(event, path) {
+            map.retain(|k, v| {
+                let sentinel = (drops_null && v.is_null())
+                    || v.as_str().is_some_and(|s| sentinels.iter().any(|x| x == s));
+                let odd_key = drops_odd_keys && k.chars().any(|c| !c.is_alphanumeric() && c != '_');
+                !sentinel && !odd_key && !empty.drops(v)
+            });
+        }
     }
     true
+}
+
+/// Does the `removeIf` predicate name empties and nothing else?
+///
+/// [`EmptyArms`] reads `== ""`, `== null` and `.isEmpty()` without naming the
+/// entry accessor, so a predicate written off a short lambda parameter is
+/// readable -- but only where every arm is one of those. A quoted sentinel
+/// beside them needs the accessor, and claiming the script without reading that
+/// arm prunes less than the vendor does.
+fn removes_empties_only(script: &str) -> bool {
+    let predicate = remove_if_predicate(script);
+    EmptyArms::read(predicate).any() && quoted_members(predicate).iter().all(String::is_empty)
+}
+
+/// The ctx paths a HELPER applies the prune to, where its subject is that
+/// helper's own parameter rather than a document path.
+///
+/// `void removeEmptyStr(Map m) { if (m != null) m.entrySet().removeIf(...); }`
+/// names no path at the call, so the paths come off the CALLS instead --
+/// `carbonblack_edr` writes `removeEmptyStr(ctx.json)` and
+/// `removeEmptyStr(ctx.json.doc)`, and the prune applies to each, which is why
+/// this answers a list.
+fn helper_applied_paths(script: &str) -> Vec<String> {
+    let Some(at) = script.find(".entrySet().removeIf(") else {
+        return Vec::new();
+    };
+    let Some(subject) = identifier_before(&script[..at]) else {
+        return Vec::new();
+    };
+    // The declaration binding the subject as a parameter, and the helper's own
+    // name in front of the list that declaration opens.
+    let Some(bound) = script.find(&format!(" {subject})")) else {
+        return Vec::new();
+    };
+    let Some(open) = script[..bound].rfind('(') else {
+        return Vec::new();
+    };
+    let Some(helper) = identifier_before(&script[..open]) else {
+        return Vec::new();
+    };
+
+    let call = format!("{helper}(ctx");
+    let mut paths = Vec::new();
+    for (site, marker) in script.match_indices(&call) {
+        let argument = &script[site + marker.len() - "ctx".len()..];
+        let Some(end) = argument.find(')') else {
+            continue;
+        };
+        if let Some(path) = crate::params::ctx_path_at_end(&argument[..end])
+            && !paths.contains(&path)
+        {
+            paths.push(path);
+        }
+    }
+    paths
 }
 
 /// The arms of a `removeIf` predicate that call a value EMPTY rather than
@@ -23106,7 +23268,7 @@ pub(crate) enum KnownPattern {
         target: String,
         source: String,
         rule: SnakeRule,
-        drop_at_keys: bool,
+        at_keys: AtKeys,
         /// The script wrote `putAll`, so the converted keys join whatever the
         /// target already holds rather than replacing it.
         merge: bool,
@@ -23207,6 +23369,11 @@ pub(crate) enum KnownPattern {
     MapEntryToBoolean(Box<MapEntryToBoolean>),
     NestUnder(Box<NestUnder>),
     CollectFromList(Box<CollectFromList>),
+    /// One member of a list's records collected into whichever of several named
+    /// lists a LITERAL test on another member chooses.
+    CollectByLiteral(Box<crate::collect_by_literal::CollectByLiteral>),
+    /// A list of records folded into a map whose keys are one member's VALUE.
+    RecordFold(Box<crate::record_fold::RecordFold>),
     RecordLookup(Box<RecordLookup>),
     EqualsLiteralFlag(Box<EqualsLiteralFlag>),
     PositionInList(Box<PositionInList>),
@@ -23562,6 +23729,21 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_collect_from_list(normalised)
     {
         patterns.push(KnownPattern::CollectFromList(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: the same loop and append, but the guard is a LITERAL test on one
+    // member and a DIFFERENT member is collected -- vsphere's alarm names
+    // sorted into two lists by the alarm's colour.
+    //
+    // BELOW the collect above, which reads the member off the GUARD: on a
+    // script both could read, that one writes `red` where the names belong, so
+    // it keeps first refusal and this arm takes only what it declined.
+    if (normalised.contains(" in ctx") || normalised.contains(" : "))
+        && normalised.contains(".add(")
+        && let Some(pattern) = crate::collect_by_literal::parse_collect_by_literal(normalised)
+    {
+        patterns.push(KnownPattern::CollectByLiteral(Box::new(pattern)));
         return patterns;
     }
 
@@ -24858,6 +25040,20 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         patterns.push(KnownPattern::SwapSubtrees);
     }
 
+    // Pattern: a list of records folded into a map keyed by one member's VALUE.
+    //
+    // AHEAD of the collecting ladder below, which pushes WITHOUT returning:
+    // ti_recordedfuture's fold spells its `.add(`, `.size()` and `else if (`,
+    // binds there, and runs nothing -- that runner opens on `if (ctx.` and
+    // every `if` in the fold tests a local. Behind it the binding would be two
+    // entries and `multi_binding` fires.
+    if normalised.contains("] = ")
+        && let Some(pattern) = crate::record_fold::parse_record_fold(normalised)
+    {
+        patterns.push(KnownPattern::RecordFold(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: a ladder collecting into a list, written as scalar or array.
     if normalised.contains(".add(")
         && normalised.contains(".size()")
@@ -24883,7 +25079,14 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
     }
 
     // Pattern: strip sentinel values and junk keys out of a parsed map.
-    if normalised.contains(".entrySet().removeIf(") && normalised.contains("entry.getValue()") {
+    //
+    // Every sentinel reader below names the `entry.getValue()` spelling. A
+    // lambda binding a shorter parameter is admitted only where the predicate
+    // names EMPTIES and nothing else, which [`EmptyArms`] reads without naming
+    // an accessor at all.
+    if normalised.contains(".entrySet().removeIf(")
+        && (normalised.contains("entry.getValue()") || removes_empties_only(normalised))
+    {
         patterns.push(KnownPattern::SentinelRemovalLiteral);
         return patterns;
     }
@@ -26631,12 +26834,12 @@ pub(crate) fn run_known_pattern(
             target,
             source,
             rule,
-            drop_at_keys,
+            at_keys,
             merge,
             removes,
         } => {
             if let Some(value) = event.get(source) {
-                let converted = camel_map_to_snake(value, *rule, *drop_at_keys);
+                let converted = camel_map_to_snake(value, *rule, *at_keys);
                 // `putAll` keeps what the target already holds; an arriving key
                 // wins, which is what Java's Map::putAll does.
                 match (merge, converted) {
@@ -26823,6 +27026,10 @@ pub(crate) fn run_known_pattern(
         KnownPattern::MapEntryToBoolean(pattern) => run_map_entry_to_boolean(event, pattern),
         KnownPattern::NestUnder(pattern) => run_nest_under(event, pattern),
         KnownPattern::CollectFromList(pattern) => run_collect_from_list(event, pattern),
+        KnownPattern::CollectByLiteral(pattern) => {
+            crate::collect_by_literal::collect_by_literal(event, pattern)
+        }
+        KnownPattern::RecordFold(pattern) => crate::record_fold::record_fold(event, pattern),
         KnownPattern::RecordLookup(pattern) => run_record_lookup(event, pattern),
         KnownPattern::EqualsLiteralFlag(pattern) => run_equals_literal_flag(event, pattern),
         KnownPattern::PositionInList(pattern) => run_position_in_list(event, pattern),

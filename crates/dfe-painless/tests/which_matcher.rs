@@ -1795,3 +1795,72 @@ fn the_two_confidence_capitalisers_do_not_share_a_matcher() {
         binding(BOX_SHIELD_CONFIDENCE)
     );
 }
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/carbonblack_edr_log/default.rs`.
+const CARBONBLACK_PRUNE: &str = r#"void removeEmptyStr(Map m) {\n  if (m != null) m.entrySet().removeIf( e -> e.value == \"\");\n}\nremoveEmptyStr(ctx.json);\nremoveEmptyStr(ctx.json.doc);"#;
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/carbonblack_edr_log/default.rs`.
+const CARBONBLACK_IOC: &str = r#"void _set(Map base, def path, def value) {\n  if (path.length == 0) return;\n  for (int i=0; i<path.length-1; i++) {\n    String c = path[i];\n    if (base[c] == null) base[c] = new HashMap();\n    base = base[c];\n  }\n  base[path[path.length-1]] = value;\n} void set(Map base, String path, def value) {\n  _set(base, path.splitOnToken(\".\"), value);\n} def mapping = params[ctx.json.ioc_type.toLowerCase()]; if (mapping == null) return; set(ctx, \"threat.indicator.type\", mapping.type); def value = ctx.json.ioc_value; if (value == null) return; set(ctx, mapping.target, value); ctx[\"_tmp_ioc_done\"] = true;\n"#;
+
+/// Both of `carbonblack_edr`'s unclaimed scripts, and the two matchers each has
+/// to keep.
+///
+/// The prune's subject is a HELPER parameter, so it binds on the paths read off
+/// the calls rather than on a path at the `removeIf`. The indicator lookup is a
+/// params row naming its own destination, and every arm reaching the same
+/// `params[ctx.` trigger declines it, which is why the arm that reads it sits
+/// last in the ladder.
+/// Verbatim from the generated call sites in
+/// `crates/dfe-transforms/src/filebeat/beyondtrust_epm_event/default.rs` and
+/// `.../pipeline_host_infrastructure.rs`.
+const BT_DIGESTS: &str = r#"if (ctx.related == null) {\n  ctx.related = new HashMap();\n}\nif (ctx.related.hash == null) {\n  ctx.related.hash = new ArrayList();\n}\nfor (def entry : ctx.beyondtrust_epm.event.container.image.hash.all) {\n  if (entry == null) {\n    continue;\n  }\n  def digest = entry.toString().replace('[', '').replace(']', '');\n  int sep = digest.indexOf(':');\n  if (sep >= 0) {\n    digest = digest.substring(sep + 1);\n  }\n  if (digest.length() > 0 && !ctx.related.hash.contains(digest)) {\n    ctx.related.hash.add(digest);\n  }\n}"#;
+
+/// Nothing claims the container-digest loop, and that empty binding is the
+/// whole of what `beyondtrust_epm` still loses.
+///
+/// It cuts each `sha256:<digest>` at its FIRST colon and appends the tail into
+/// `related.hash` unless it is already there. `SuffixAfterSeparator` reads the
+/// LAST separator off a scalar and `AppendUnique` names one hard-coded pair, so
+/// neither is a widening away -- a list walked with a per-element cut is a
+/// matcher this ladder does not have.
+#[test]
+fn the_beyondtrust_container_digests_bind_to_nothing() {
+    assert!(binding(BT_DIGESTS).is_empty(), "{:?}", binding(BT_DIGESTS));
+}
+
+/// Verbatim from the generated call sites in
+/// `crates/dfe-transforms/src/filebeat/anthropic_metrics_cost/default.rs` and
+/// `.../anthropic_metrics_usage/default.rs`.
+const ANTHROPIC_PRUNE: &str = r#"if (ctx.json.containsKey('workspace_id') && ctx.json.workspace_id == null) {\n  ctx.json.workspace_id = 'Default';\n} ctx.json.entrySet().removeIf(e -> e.getValue() == null);"#;
+
+/// The prune claims this script, and the DEFAULT FILL in front of it is debt
+/// the claim hides.
+///
+/// The script is two statements: a `null` replaced by `'Default'`, then a null
+/// prune. `SentinelRemovalLiteral` runs the second and the first goes
+/// unwritten, so `anthropic.cost.workspace_id` and `anthropic.usage.workspace_id`
+/// stay missing -- recorded here because a claimed script leaves no error
+/// behind. It was unbound before the prune's trigger read the short lambda
+/// parameter, so the fill was never written either way.
+#[test]
+fn the_anthropic_prune_is_claimed_and_its_default_fill_is_not() {
+    assert_eq!(heads(ANTHROPIC_PRUNE), ["SentinelRemovalLiteral"]);
+}
+
+#[test]
+fn the_two_carbonblack_scripts_bind_to_their_own_matchers() {
+    assert_eq!(heads(CARBONBLACK_PRUNE), ["SentinelRemovalLiteral"]);
+
+    let held = binding(CARBONBLACK_IOC).join(" ");
+    assert_eq!(heads(CARBONBLACK_IOC), ["RowNamedTarget"], "{held}");
+    assert!(held.contains(r#"key: "json.ioc_type""#), "{held}");
+    assert!(
+        held.contains(r#"literal_target: "threat.indicator.type""#),
+        "{held}"
+    );
+    assert!(held.contains(r#"value_source: "json.ioc_value""#), "{held}");
+    assert!(held.contains(r#"target_member: "target""#), "{held}");
+    assert!(held.contains(r#"flag: Some("_tmp_ioc_done")"#), "{held}");
+}

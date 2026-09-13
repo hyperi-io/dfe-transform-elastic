@@ -361,7 +361,7 @@ fn a_recursive_converter_that_reads_no_case_swaps_hyphens_only() {
             target: "netskope.transaction".to_string(),
             source: "netskope.transaction".to_string(),
             rule: SnakeRule::HyphenToUnderscore,
-            drop_at_keys: false,
+            at_keys: AtKeys::Convert,
             merge: false,
             removes: Vec::new(),
         }]
@@ -6352,10 +6352,181 @@ fn camel_to_snake_breaks_after_a_digit() {
     let converted = camel_map_to_snake(
         &json!({"cve2021Id": 1, "HTTPServer": 2}),
         SnakeRule::AfterNonUpper,
-        true,
+        AtKeys::Drop,
     );
     assert!(converted.get("cve2021_id").is_some(), "{converted}");
     assert!(converted.get("httpserver").is_some(), "{converted}");
+}
+
+/// Two keys folding to one name are settled by Java's walk order, not ours.
+///
+/// `beyondtrust_epm`'s vendor sends `Owner` -- an object -- and `owner` -- the
+/// string `sample-owner` -- in one file map, and `camelToSnake` folds both to
+/// `owner`. Painless walks a `HashMap` in bucket order, where `owner` lands
+/// after `Owner` and wins; insertion order hands the win to the object, which
+/// is the five extra fields Elasticsearch does not have.
+#[test]
+fn two_keys_folding_to_one_name_take_javas_winner() {
+    let mut file = serde_json::Map::new();
+    for key in [
+        "name",
+        "attributes",
+        "directory",
+        "drive_letter",
+        "path",
+        "target_path",
+        "extension",
+        "type",
+        "device",
+        "inode",
+        "uid",
+        "owner",
+        "gid",
+        "group",
+        "mode",
+        "size",
+        "mtime",
+        "ctime",
+        "created",
+        "accessed",
+        "mime_type",
+        "fork_name",
+        "DriveType",
+        "SourceUrl",
+        "ZoneTag",
+        "ProductVersion",
+        "Description",
+        "Version",
+        "hash",
+        "pe",
+        "x509",
+        "Bundle",
+        "Owner",
+        "code_signature",
+        "elf",
+    ] {
+        let value = if key == "owner" {
+            json!("sample-owner")
+        } else if key == "Owner" {
+            json!({ "Name": "alice", "DomainName": "corp.example.com" })
+        } else {
+            json!(key)
+        };
+        file.insert(key.to_string(), value);
+    }
+
+    let converted = camel_map_to_snake(
+        &Value::Object(file),
+        SnakeRule::AcronymRunStrict,
+        AtKeys::Convert,
+    );
+    assert_eq!(converted.get("owner"), Some(&json!("sample-owner")));
+    assert_eq!(converted.get("drive_type"), Some(&json!("DriveType")));
+}
+
+/// A map with no fold collision keeps its insertion order, so the settling pass
+/// is invisible to every other source.
+#[test]
+fn a_map_without_a_collision_keeps_its_own_order() {
+    let converted = camel_map_to_snake(
+        &json!({ "zebraCase": 1, "alphaCase": 2, "midCase": 3 }),
+        SnakeRule::AfterNonUpper,
+        AtKeys::Convert,
+    );
+    let keys: Vec<&String> = converted
+        .as_object()
+        .expect("an object")
+        .keys()
+        .collect::<Vec<_>>();
+    assert_eq!(keys, ["zebra_case", "alpha_case", "mid_case"]);
+}
+
+/// The `@` branch is read, not assumed: the two copies spell the test opposite
+/// ways round and mean opposite things.
+///
+/// `beyondtrust_epm` re-inserts the key verbatim, so `@timestamp` survives
+/// uncased; `entityanalytics_entra_id` negates the test with no else, so
+/// `@odata.type` never reaches the new map. Both verbatim from the generated
+/// tree, in the escaped one-line form a stored script arrives in.
+#[test]
+fn the_at_key_branch_decides_keep_or_drop() {
+    let recurse = r#"\n    return newObj;\n  } else if (obj instanceof List) {\n    def newList = [];\n    for (item in obj) {\n      newList.add(convertToSnakeCase(item));\n    }\n    return newList;\n  } else {\n    return obj;\n  }\n}\n"#;
+    let helper = r#"String camelToSnake(String str) {\n  def result = \"\";\n  def lastCharWasUpperCase = false;\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      if (i > 0 && !lastCharWasUpperCase) {\n        result += \"_\";\n      }\n      result += Character.toLowerCase(c);\n      lastCharWasUpperCase = true;\n    } else {\n      result += c;\n      lastCharWasUpperCase = false;\n    }\n  }\n  return result;\n}\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n"#;
+
+    let keep = format!(
+        r#"{helper}      if (entry.getKey().contains(\"@\")) {{\n        newObj[entry.getKey()] = convertToSnakeCase(entry.getValue());\n      }} else {{\n        String newKey = camelToSnake(entry.getKey());\n        newObj[newKey] = convertToSnakeCase(entry.getValue());\n      }}\n    }}{recurse}if (ctx.beyondtrust_epm.event != null) {{\n  ctx.beyondtrust_epm.event = convertToSnakeCase(ctx.beyondtrust_epm.event);\n}}\n"#
+    );
+    let normalised = normalise(&keep);
+    assert_eq!(
+        known_patterns(&normalised),
+        vec![KnownPattern::CamelToSnake {
+            target: "beyondtrust_epm.event".to_string(),
+            source: "beyondtrust_epm.event".to_string(),
+            rule: SnakeRule::AfterNonUpper,
+            at_keys: AtKeys::Keep,
+            merge: false,
+            removes: Vec::new(),
+        }]
+    );
+
+    let mut event = Event::new(json!({ "beyondtrust_epm": { "event": {
+        "@timestamp": "2026-01-01T00:00:00Z",
+        "eventType": "launch",
+    } } }));
+    let found = known_patterns(&normalised);
+    assert!(
+        found
+            .iter()
+            .any(|pattern| run_known_pattern(&mut event, &normalised, pattern))
+    );
+    assert_eq!(
+        event.get_str("beyondtrust_epm.event.@timestamp"),
+        Some("2026-01-01T00:00:00Z")
+    );
+    assert_eq!(
+        event.get_str("beyondtrust_epm.event.event_type"),
+        Some("launch")
+    );
+
+    let drop = format!(
+        r#"{helper}      if (!entry.getKey().contains(\"@\")) {{\n        String newKey = camelToSnake(entry.getKey());\n        newObj[newKey] = convertToSnakeCase(entry.getValue());\n      }}\n    }}{recurse}if (ctx.entityanalytics_entra_id.user != null) {{\n  ctx.entityanalytics_entra_id.user = convertToSnakeCase(ctx.entityanalytics_entra_id.user);\n}}\n"#
+    );
+    let normalised = normalise(&drop);
+    let mut event = Event::new(json!({ "entityanalytics_entra_id": { "user": {
+        "@odata.type": "#microsoft.graph.user",
+        "accountEnabled": true,
+    } } }));
+    let found = known_patterns(&normalised);
+    assert!(
+        found
+            .iter()
+            .any(|pattern| run_known_pattern(&mut event, &normalised, pattern))
+    );
+    assert!(
+        event
+            .get("entityanalytics_entra_id.user")
+            .and_then(Value::as_object)
+            .is_some_and(|map| map.len() == 1 && map.contains_key("account_enabled")),
+        "{:?}",
+        event.get("entityanalytics_entra_id.user")
+    );
+}
+
+/// A third arrangement of the `@` branch DECLINES rather than guessing.
+///
+/// The script stays unbound and visible in the census, where either answer
+/// would write keys the vendor never sends.
+#[test]
+fn an_unreadable_at_key_branch_binds_nothing() {
+    let script = r#"String camelToSnake(String str) {\n  def result = \"\";\n  for (int i = 0; i < str.length(); i++) {\n    char c = str.charAt(i);\n    if (Character.isUpperCase(c)) {\n      result += \"_\";\n      result += Character.toLowerCase(c);\n    } else {\n      result += c;\n    }\n  }\n  return result;\n}\ndef convertToSnakeCase(def obj) {\n  if (obj instanceof Map) {\n    def newObj = [:];\n    for (entry in obj.entrySet()) {\n      if (entry.getKey().contains(\"@\")) {\n        continue;\n      }\n      newObj[camelToSnake(entry.getKey())] = convertToSnakeCase(entry.getValue());\n    }\n    return newObj;\n  } else {\n    return obj;\n  }\n}\nctx.vendor.event = convertToSnakeCase(ctx.vendor.event);\n"#;
+    let normalised = normalise(script);
+    assert!(
+        !known_patterns(&normalised)
+            .iter()
+            .any(|pattern| matches!(pattern, KnownPattern::CamelToSnake { .. })),
+        "{:?}",
+        known_patterns(&normalised)
+    );
 }
 
 /// `jupiter_one`'s copy of the helper diverged: it breaks only after a
@@ -7952,6 +8123,52 @@ fn a_map_prune_reads_a_predicate_that_names_emptiness_rather_than_a_literal() {
             "tags": ["a"],
             "severity": 3,
         }))
+    );
+}
+
+/// `carbonblack_edr`'s prune, verbatim from its generated call site.
+///
+/// The subject is the HELPER's parameter, so the paths come off the two calls.
+/// It runs on the scratch `json` BEFORE the rename into the output namespace,
+/// and it is ONE LEVEL: Elasticsearch keeps the empty strings under
+/// `digsig` because the vendor's own prune never reaches them.
+#[test]
+fn a_map_prune_applied_through_a_helper_reads_its_paths_off_the_calls() {
+    let script = r#"void removeEmptyStr(Map m) {\n  if (m != null) m.entrySet().removeIf( e -> e.value == \"\");\n}\nremoveEmptyStr(ctx.json);\nremoveEmptyStr(ctx.json.doc);"#;
+    let mut event = Event::new(json!({ "json": {
+        "domain": "",
+        "sha256": "",
+        "md5": "1234",
+        "digsig": { "publisher": "", "result": "Signed" },
+        "doc": { "utf8_comments": "", "kept": "yes" },
+    }}));
+
+    assert!(try_known_painless(&mut event, script));
+    assert_eq!(
+        event.get("json"),
+        Some(&json!({
+            "md5": "1234",
+            "digsig": { "publisher": "", "result": "Signed" },
+            "doc": { "kept": "yes" },
+        }))
+    );
+}
+
+/// A predicate off a short lambda parameter that ALSO names a literal sentinel
+/// is left unbound.
+///
+/// The empty arm reads without an accessor and the literal does not, so
+/// claiming it would prune less than the vendor and leave no error behind.
+#[test]
+fn a_short_parameter_prune_naming_a_literal_binds_nothing() {
+    let script = r#"ctx.vendor.entrySet().removeIf( e -> e.value == \"\" || e.value == \"-\");"#;
+    let normalised = normalise(script);
+    assert!(
+        !known_patterns(&normalised)
+            .iter()
+            .any(|pattern| matches!(pattern, KnownPattern::SentinelRemovalLiteral)),
+        "{:?}",
+        known_patterns(&normalised)
     );
 }
 
