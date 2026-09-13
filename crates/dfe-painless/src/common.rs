@@ -12409,7 +12409,21 @@ pub(crate) struct RangeArm {
     high: i64,
     /// The last band closes with `<=` where the rest use `<`.
     high_inclusive: bool,
+    /// Whether the vendor quoted the literal. crowdstrike bands a score into
+    /// `"low"`/`"high"`, `ibm_qradar` bands one into the bare number `21`, and
+    /// writing the second as text costs the field.
+    quoted: bool,
     value: String,
+}
+
+impl RangeArm {
+    /// The value this band writes, in the JSON type the vendor spelled.
+    fn literal(&self) -> Value {
+        if self.quoted {
+            return Value::String(self.value.clone());
+        }
+        painless_literal(&self.value).unwrap_or_else(|| Value::String(self.value.clone()))
+    }
 }
 
 /// An `if (0 <= n && n < 20) { ctx.t = "info" } else if ...` ladder.
@@ -12471,7 +12485,11 @@ fn parse_range_ladder(script: &str) -> Option<RangeLadder> {
         if target.get_or_insert_with(|| path.clone()) != &path {
             return None;
         }
-        let value = rhs.trim().trim_matches('"').to_string();
+        let literal = rhs.trim();
+        let quoted = literal.len() >= 2
+            && ((literal.starts_with('"') && literal.ends_with('"'))
+                || (literal.starts_with('\'') && literal.ends_with('\'')));
+        let value = literal.trim_matches(['"', '\'']).to_string();
         if value.is_empty() {
             return None;
         }
@@ -12480,6 +12498,7 @@ fn parse_range_ladder(script: &str) -> Option<RangeLadder> {
             low,
             high,
             high_inclusive,
+            quoted,
             value,
         });
     }
@@ -12507,7 +12526,7 @@ fn run_range_ladder(event: &mut Event, pattern: &RangeLadder) -> bool {
             value < arm.high
         };
         if value >= arm.low && within_upper {
-            let _ = event.set(&pattern.target, json!(arm.value));
+            let _ = event.set(&pattern.target, arm.literal());
             return true;
         }
     }
@@ -14002,20 +14021,22 @@ fn kept_keys(script: &str, local: &str) -> Vec<String> {
 ///
 /// Only the FIRST matching arm fires, which is what an `else if` chain does.
 fn try_case_insensitive_ladder(event: &mut Event, script: &str) -> bool {
-    let Some(first) = script.find("if (") else {
+    let Some(var) = ladder_local(script) else {
         return false;
     };
-    let Some((var, _)) = script[first + "if (".len()..].split_once('.') else {
+    let Some(subject) = ctx_path_bound_to(script, var) else {
         return false;
     };
-    let Some(subject) = ctx_path_bound_to(script, var.trim()) else {
-        return false;
-    };
+    let passthrough = ladder_passthrough(script, var);
     // Absent is not a miss: every one of these scripts is gated on the field
     // being a String, so it never runs without one.
-    let Some(value) = event.get_str(&subject).map(str::to_lowercase) else {
+    let Some(held) = event.get_str(&subject) else {
         return true;
     };
+    let value = held.to_lowercase();
+    // Only where the script has somewhere to pass it, so the common ladder
+    // keeps its one allocation.
+    let raw = passthrough.is_some().then(|| held.to_string());
 
     for segment in script.split("if (").skip(1) {
         let Some((cond, body)) = segment.split_once(") {") else {
@@ -14042,7 +14063,49 @@ fn try_case_insensitive_ladder(event: &mut Event, script: &str) -> bool {
         let _ = event.set(&crate::params::clean_path(target), assigned);
         return true;
     }
+    // No arm matched, and the script's own `else` still writes.
+    if let (Some(target), Some(raw)) = (passthrough, raw) {
+        let _ = event.set(&target, Value::String(raw));
+    }
     true
+}
+
+/// The local a ladder tests, read off the receiver of its FIRST
+/// `equalsIgnoreCase` rather than off the first `if (` in the script.
+///
+/// bitsight opens with a null guard on the ctx path, so the first `if (` named
+/// `ctx`, nothing was bound to it, and the whole ladder declined -- its
+/// `vulnerability.severity` rode on that one read. A receiver that is not a bare
+/// local still declines: `google_secops` tests `list["severity"]` inside a loop
+/// and `microsoft_exchange_online_message_trace` tests `ctx.destination.domain`
+/// against a config list, and neither is this pattern.
+fn ladder_local(script: &str) -> Option<&str> {
+    let at = script.find(".equalsIgnoreCase(")?;
+    let local = script[..at]
+        .rsplit(|c: char| c.is_whitespace() || matches!(c, '(' | ')' | '!' | '&' | '|'))
+        .next()?;
+    (!local.is_empty() && !local.contains(['.', '[', ']'])).then_some(local)
+}
+
+/// `else { ctx.<path> = <local>; }` closing the ladder -- the input written
+/// through unchanged where no arm named it.
+///
+/// bitsight is the only source that ships it. Every other ladder ends on its
+/// last `else if` and leaves an unlisted value alone, which is what this reads
+/// as `None`.
+fn ladder_passthrough(script: &str, local: &str) -> Option<String> {
+    let (_, tail) = script.rsplit_once("else {")?;
+    let (lhs, rhs) = tail.split(';').next()?.split_once('=')?;
+    if rhs.trim() != local {
+        return None;
+    }
+    let target = lhs
+        .trim()
+        .rsplit(['\n', '{', '}'])
+        .next()?
+        .trim()
+        .strip_prefix("ctx.")?;
+    Some(crate::params::clean_path(target))
 }
 
 /// A Painless literal as the JSON value it stands for.
@@ -23310,6 +23373,8 @@ pub(crate) enum KnownPattern {
     SwapSubtrees,
     CollectingLadder,
     CaseInsensitiveLadder,
+    /// A threat indicator's expiry, dated forward from when it was last seen.
+    IndicatorExpiry(Box<crate::indicator_expiry::IndicatorExpiry>),
     EqualityLadder(Ladder),
     SentinelRemovalLiteral,
     ListMemberSelect(Box<ListMemberSelect>),
@@ -25083,6 +25148,21 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = crate::record_fold::parse_record_fold(normalised)
     {
         patterns.push(KnownPattern::RecordFold(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: a threat indicator's expiry, dated forward from when it was last
+    // seen. AHEAD of the equality ladder below, which reads the per-type
+    // DURATION LABELS and nothing else -- `ti_cif3` bound there, wrote
+    // `cif3.expiration_duration` correctly, and never wrote the date the whole
+    // script exists to compute. The two substrings are the cheap reject and the
+    // parse, which demands both timestamps and the configured fallback, is the
+    // gate.
+    if normalised.contains("ZonedDateTime.parse(ctx.")
+        && normalised.contains(".plus")
+        && let Some(pattern) = crate::indicator_expiry::parse_indicator_expiry(normalised)
+    {
+        patterns.push(KnownPattern::IndicatorExpiry(Box::new(pattern)));
         return patterns;
     }
 
@@ -26941,6 +27021,9 @@ pub(crate) fn run_known_pattern(
         KnownPattern::SwapSubtrees => try_swap_subtrees(event, normalised),
         KnownPattern::CollectingLadder => try_collecting_ladder(event, normalised),
         KnownPattern::CaseInsensitiveLadder => try_case_insensitive_ladder(event, normalised),
+        KnownPattern::IndicatorExpiry(pattern) => {
+            crate::indicator_expiry::indicator_expiry(event, pattern)
+        }
         KnownPattern::EqualityLadder(ladder) => try_ladder(event, ladder),
         KnownPattern::SentinelRemovalLiteral => try_sentinel_removal_literal(event, normalised),
         KnownPattern::ListMemberSelect(pattern) => run_list_member_select(event, pattern),

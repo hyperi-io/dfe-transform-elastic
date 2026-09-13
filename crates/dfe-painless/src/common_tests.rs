@@ -11608,3 +11608,95 @@ fn a_keyset_walk_with_no_removal_is_declined() {
         r#"def keys = new ArrayList(ctx.a.b.keySet());\nfor (key in keys) {\n  ctx.c.d = key;\n}"#;
     assert!(shallow_prune_root(&normalise(script)).is_none());
 }
+
+/// Two range ladders, one banding a score into WORDS and one into NUMBERS.
+///
+/// Both verbatim from their generated call sites. The reader stripped the quotes
+/// and kept the result as text either way, so `ibm_qradar` wrote `event.severity`
+/// as `"21"` where Elasticsearch has `21` -- and converting everything the other
+/// way would have cost `crowdstrike_alert` its words.
+#[test]
+fn a_range_ladder_writes_each_band_in_the_type_the_vendor_spelled() {
+    let quoted = r#"long severity = ctx.crowdstrike.alert.severity;\nif (0 <= severity && severity < 20) {\n  ctx.crowdstrike.alert.severity_name = \"info\";\n} else if (20 <= severity && severity < 40) {\n  ctx.crowdstrike.alert.severity_name = \"low\";\n} else if (40 <= severity && severity < 60) {\n  ctx.crowdstrike.alert.severity_name = \"medium\";\n} else if (60 <= severity && severity < 80) {\n  ctx.crowdstrike.alert.severity_name = \"high\";\n} else if (80 <= severity && severity <= 100) {\n  ctx.crowdstrike.alert.severity_name = \"critical\";\n}"#;
+    let bare = r#"def offenseSeverity = ctx.ibm_qradar.offense.severity;\nif (0 <= offenseSeverity && offenseSeverity <= 2) {\n  ctx.event.severity = 21;\n} else if (3 <= offenseSeverity && offenseSeverity <= 5) {\n  ctx.event.severity = 47;\n} else if (6 <= offenseSeverity && offenseSeverity <= 8) {\n  ctx.event.severity = 73;\n} else if (9 <= offenseSeverity && offenseSeverity <= 10) {\n  ctx.event.severity = 99;\n}"#;
+
+    let mut event = Event::new(serde_json::json!({
+        "crowdstrike": { "alert": { "severity": 70 } }
+    }));
+    assert!(try_known_painless(&mut event, &normalise(quoted)));
+    assert_eq!(
+        event.get("crowdstrike.alert.severity_name"),
+        Some(&Value::from("high"))
+    );
+
+    let mut event = Event::new(serde_json::json!({
+        "ibm_qradar": { "offense": { "severity": 4 } }
+    }));
+    assert!(try_known_painless(&mut event, &normalise(bare)));
+    assert_eq!(event.get("event.severity"), Some(&Value::from(47)));
+}
+
+/// A value outside every band still writes nothing, which is what the ladder's
+/// own fall-through does.
+#[test]
+fn a_range_ladder_leaves_a_value_no_band_covers_alone() {
+    let bare = r#"def offenseSeverity = ctx.ibm_qradar.offense.severity;\nif (0 <= offenseSeverity && offenseSeverity <= 2) {\n  ctx.event.severity = 21;\n} else if (3 <= offenseSeverity && offenseSeverity <= 5) {\n  ctx.event.severity = 47;\n}"#;
+    let mut event = Event::new(serde_json::json!({
+        "ibm_qradar": { "offense": { "severity": 9 } }
+    }));
+    assert!(try_known_painless(&mut event, &normalise(bare)));
+    assert!(!event.has("event.severity"));
+}
+
+/// bitsight's severity ladder, verbatim from
+/// `filebeat/bitsight_vulnerability/default.rs`.
+///
+/// Two things nothing else in the catalogue does: it opens with a null guard on
+/// the ctx path rather than on the local, which is what made the reader look up
+/// `ctx` and decline outright; and its `else` passes an unlisted level THROUGH
+/// rather than leaving the target alone.
+const BITSIGHT_SEVERITY: &str = r#"if (ctx.bitsight?.threat?.severity?.level != null) {\n  String lvl = ctx.bitsight.threat.severity.level;\n  if (lvl.equalsIgnoreCase('minor')) {\n    ctx.vulnerability.severity = 'Low';\n  } else if (lvl.equalsIgnoreCase('moderate')) {\n    ctx.vulnerability.severity = 'Medium';\n  } else if (lvl.equalsIgnoreCase('material')) {\n    ctx.vulnerability.severity = 'High';\n  } else if (lvl.equalsIgnoreCase('severe')) {\n    ctx.vulnerability.severity = 'Critical';\n  } else {\n    ctx.vulnerability.severity = lvl;\n  }\n}\n"#;
+
+#[test]
+fn a_ladder_behind_a_null_guard_still_finds_the_local_it_tests() {
+    let mut event = Event::new(serde_json::json!({
+        "bitsight": { "threat": { "severity": { "level": "moderate" } } }
+    }));
+    assert!(try_known_painless(
+        &mut event,
+        &normalise(BITSIGHT_SEVERITY)
+    ));
+    assert_eq!(
+        event.get("vulnerability.severity"),
+        Some(&Value::from("Medium"))
+    );
+}
+
+/// A level no arm names keeps its own text, because the script's `else` writes
+/// the input rather than nothing.
+#[test]
+fn a_ladder_with_a_fall_through_writes_the_input_it_cannot_name() {
+    let mut event = Event::new(serde_json::json!({
+        "bitsight": { "threat": { "severity": { "level": "Catastrophic" } } }
+    }));
+    assert!(try_known_painless(
+        &mut event,
+        &normalise(BITSIGHT_SEVERITY)
+    ));
+    assert_eq!(
+        event.get("vulnerability.severity"),
+        Some(&Value::from("Catastrophic"))
+    );
+}
+
+/// Every other ladder ends on its last `else if` and leaves an unlisted value
+/// alone. Verbatim from `filebeat/armis_alert/default.rs`.
+#[test]
+fn a_ladder_with_no_fall_through_leaves_an_unlisted_value_alone() {
+    let script = r#"String severity = ctx.armis.alert.severity;\nif (severity.equalsIgnoreCase("low")) {\n  ctx.event.severity = 21;\n} else if (severity.equalsIgnoreCase("medium")) {\n  ctx.event.severity = 47;\n} else if (severity.equalsIgnoreCase("high")) {\n  ctx.event.severity = 73;\n}"#;
+    let mut event = Event::new(serde_json::json!({
+        "armis": { "alert": { "severity": "unclassified" } }
+    }));
+    assert!(try_known_painless(&mut event, &normalise(script)));
+    assert!(!event.has("event.severity"));
+}

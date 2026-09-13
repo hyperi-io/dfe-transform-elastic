@@ -5564,3 +5564,83 @@ fn a_subscripts_subject_reads_backwards_to_the_root() {
     // A local is not the document.
     assert!(subscripted_subject("m[\"a\"]").is_none());
 }
+
+/// `beyondtrust_pra`'s action table, verbatim from
+/// `filebeat/beyondtrust_pra_access_session/default.rs`.
+///
+/// Two things the plain merge cannot do. One key is COLLECTED into a list the
+/// script seeds with `session` before the row's own members go in, so a row with
+/// no `category` still leaves `event.category` holding the seed -- which is what
+/// every `session-start` event in the corpus needed. And an action the table has
+/// no row for is not silence: the script writes a category and a type of its own
+/// and returns.
+const PRA_ACTIONS: &str = r#"if (params.get(ctx.event.action) == null) {\n  ctx.event.category = [\"session\"]; // As each event belongs to a session\n  ctx.event.type = [\"info\"]; // Remaining are of type info\n  return;\n}\n // As each event belongs to a session\ndef event_category = new ArrayList([\"session\"]); params.get(ctx.event.action).forEach((k, v) -> {\n    if (k.equals(\"category\")) {\n      event_category.addAll(v);\n    }else{\n        ctx.event[k] = v;\n    }  \n}); ctx.event.category = event_category"#;
+
+fn pra_actions() -> Value {
+    json!({
+        "file-download": { "category": ["file"], "type": ["access"] },
+        "session-start": { "type": ["start"] },
+    })
+}
+
+#[test]
+fn a_collected_key_keeps_the_seed_the_script_starts_it_with() {
+    // A row carrying `category`: the seed comes first, then the row's members.
+    let mut listed = Event::new(json!({ "event": { "action": "file-download" } }));
+    assert!(try_params_painless(
+        &mut listed,
+        PRA_ACTIONS,
+        &pra_actions()
+    ));
+    assert_eq!(
+        listed.get("event.category"),
+        Some(&json!(["session", "file"]))
+    );
+    assert_eq!(listed.get("event.type"), Some(&json!(["access"])));
+
+    // A row with no `category` at all still gets the seed.
+    let mut seeded = Event::new(json!({ "event": { "action": "session-start" } }));
+    assert!(try_params_painless(
+        &mut seeded,
+        PRA_ACTIONS,
+        &pra_actions()
+    ));
+    assert_eq!(seeded.get("event.category"), Some(&json!(["session"])));
+    assert_eq!(seeded.get("event.type"), Some(&json!(["start"])));
+}
+
+/// An action the table has no row for takes the script's own default, which the
+/// `Program` the pattern carries holds under a guard it can never read -- a
+/// `Program` never sees `params`.
+#[test]
+fn an_action_with_no_row_takes_the_scripts_own_default() {
+    let mut unlisted = Event::new(json!({ "event": { "action": "chat-message" } }));
+    assert!(try_params_painless(
+        &mut unlisted,
+        PRA_ACTIONS,
+        &pra_actions()
+    ));
+    assert_eq!(unlisted.get("event.category"), Some(&json!(["session"])));
+    assert_eq!(unlisted.get("event.type"), Some(&json!(["info"])));
+}
+
+/// The merges that carry no collected key are unchanged: `cisco_asa` still
+/// fans its row straight onto `ctx.event` and writes no list of its own.
+#[test]
+fn a_merge_with_no_collected_key_is_untouched() {
+    let script = "params.get(ctx.event.code)?.forEach((k, v) -> ctx.event[k] = v);";
+    let params = json!({ "302013": { "kind": "event", "type": ["connection", "start"] } });
+    let mut event = Event::new(json!({ "event": { "code": "302013" } }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get_str("event.kind"), Some("event"));
+    assert_eq!(
+        event.get("event.type"),
+        Some(&json!(["connection", "start"]))
+    );
+    assert!(!event.has("event.category"));
+
+    // A code with no row writes nothing, because this script has no default.
+    let mut unlisted = Event::new(json!({ "event": { "code": "999999" } }));
+    assert!(try_params_painless(&mut unlisted, script, &params));
+    assert!(!unlisted.has("event.kind"));
+}

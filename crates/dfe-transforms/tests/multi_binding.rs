@@ -58,7 +58,12 @@ use dfe_runtime::painless_plan::PainlessPlan;
 /// take slices between the last `ctx.` and a `[0];` with neither anchored to a
 /// statement, so ece's action script and sentinel_one's asset select both fell
 /// out of the search space they should never have been in.
-const MULTI_BINDING: usize = 59;
+///
+/// 59 to 60 with the `LabelledScore` arm, `beyondtrust_isi`'s severity. It
+/// shadows `GuardedCopy` deliberately and shadows nothing: every guard in that
+/// script is over a local the evaluator resolves to `Never`, so the `Program`
+/// ran none of its three writes and the source scored 0 of 4 events.
+const MULTI_BINDING: usize = 60;
 
 /// The `cached_painless!` literals a generated file holds, in full.
 ///

@@ -341,6 +341,9 @@ pub(crate) enum ParamsPattern {
     /// One params row naming both an ECS type literal and the path a second
     /// field's value belongs at.
     RowNamedTarget(Box<crate::row_named_target::RowNamedTarget>),
+    /// A severity resolved to a label through one table, then scored through a
+    /// second.
+    LabelledScore(Box<crate::labelled_score::LabelledScore>),
 }
 
 /// The membership test a table lookup may sit inside.
@@ -1202,6 +1205,19 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
         && let Some(pattern) = crate::row_named_target::parse_row_named_target(normalised)
     {
         return Some(ParamsPattern::RowNamedTarget(Box::new(pattern)));
+    }
+
+    // Pattern: a severity arriving as either a number or a word, resolved to
+    // the word through one table and then scored through a second. LAST,
+    // because `beyondtrust_isi` alone ships it and it needs to precede nothing;
+    // the `instanceof Long` is the cheap reject -- four pipelines in the tree
+    // spell it -- and the parse, which demands both tables and all three
+    // writes, is the gate.
+    if normalised.contains("instanceof Long")
+        && normalised.contains("String.valueOf(")
+        && let Some(pattern) = crate::labelled_score::parse_labelled_score(normalised)
+    {
+        return Some(ParamsPattern::LabelledScore(Box::new(pattern)));
     }
 
     None
@@ -2427,6 +2443,9 @@ pub(crate) fn run_params_pattern(
         }
         ParamsPattern::RowNamedTarget(pattern) => {
             crate::row_named_target::run_row_named_target(event, pattern, params)
+        }
+        ParamsPattern::LabelledScore(pattern) => {
+            crate::labelled_score::run_labelled_score(event, pattern, params)
         }
         ParamsPattern::UrlTailAction(pattern) => {
             crate::url_action::url_tail_action(event, pattern, params)
@@ -6444,17 +6463,85 @@ fn try_lookup_merge(
     }
 
     let Some(Value::Object(row)) = node else {
+        for (path, value) in absent_row_writes(script) {
+            let _ = event.set(&path, value);
+        }
         return true;
     };
     for (k, v) in row.clone() {
         let path = match routes.iter().find(|(key, _)| *key == k) {
             Some((_, MergeRoute::At(path))) => path.clone(),
             Some((_, MergeRoute::Under(path))) => format!("{path}.{k}"),
+            // Written once, after the loop, because the seed goes in front of
+            // it and has to land whether or not the row carries the key.
+            Some((_, MergeRoute::Collect(_))) => continue,
             None => format!("{target}.{k}"),
         };
         let _ = event.set(&path, v);
     }
+    if let Some((key, local)) = routes.iter().find_map(|(key, route)| match route {
+        MergeRoute::Collect(local) => Some((key.as_str(), local.as_str())),
+        MergeRoute::At(_) | MergeRoute::Under(_) => None,
+    }) && let Some((mut list, path)) = collected_list(script, local)
+    {
+        if let Some(Value::Array(members)) = row.get(key) {
+            list.extend(members.iter().cloned());
+        }
+        let _ = event.set(&path, Value::Array(list));
+    }
     true
+}
+
+/// The writes a leading `if (params.get(<key>) == null) { ... return; }` makes.
+///
+/// That branch is the script's answer for a key the table has no row for, and
+/// the [`Program`] the pattern carries holds it under a guard the evaluator
+/// reads as `Never` -- a `Program` never sees `params`, so it cannot tell
+/// whether the row is there. Most of these scripts return and write nothing, and
+/// for those this reads nothing; `beyondtrust_pra` writes a session category and
+/// an info type first.
+fn absent_row_writes(script: &str) -> Vec<(String, Value)> {
+    let head = script
+        .split_once("forEach")
+        .map_or(script, |(head, _)| head);
+    let Some(at) = head.find("if (params.get(") else {
+        return Vec::new();
+    };
+    let Some((test, block, _)) = guard_and_block(&head[at + "if".len()..]) else {
+        return Vec::new();
+    };
+    // The branch has to be the row-missing one and has to RETURN, or what
+    // follows it is the merge rather than an alternative to it.
+    if !test.contains("== null") || !block.contains("return") {
+        return Vec::new();
+    }
+    literal_writes(block)
+}
+
+/// The seed a collected key starts from, and the path the finished list lands
+/// at: `def <local> = new ArrayList([...]);` ... `ctx.<path> = <local>`.
+fn collected_list(script: &str, local: &str) -> Option<(Vec<Value>, String)> {
+    let seeded = format!(" {local} = new ArrayList(");
+    let at = script.find(&seeded)? + seeded.len();
+    let (argument, _) = balanced(&script[at - 1..], '(', ')')?;
+    let Some(Value::Array(seed)) = literal_value(argument.trim()) else {
+        return None;
+    };
+
+    // The LAST `... = <local>` that ends a statement, so the `addAll` inside the
+    // lambda and the declaration itself are both passed over.
+    let assigned = format!("= {local}");
+    let end = script
+        .match_indices(assigned.as_str())
+        .filter(|(found, _)| {
+            let after = script[found + assigned.len()..].trim_start();
+            after.is_empty() || after.starts_with(';')
+        })
+        .last()?
+        .0;
+    let head = script[..end].trim_end();
+    let start = head.rfind("ctx.")? + "ctx.".len();
+    Some((seed, clean_path(&head[start..])))
 }
 
 /// The target of the LAST `ctx.<path>[k] = ` in a merge lambda.
@@ -6505,6 +6592,9 @@ enum MergeRoute {
     Under(String),
     /// `ctx.<path> = v` -- a fixed path the arm names outright.
     At(String),
+    /// `<local>.addAll(v)` -- appended to a seeded local the script writes out
+    /// after the merge. The `String` is that local's name.
+    Collect(String),
 }
 
 /// The key-routed arms of a merge lambda, each with the path it writes.
@@ -6514,9 +6604,10 @@ enum MergeRoute {
 /// to `network.protocol`. Both spellings of the guard appear across the
 /// integrations, and so do both spellings of the write.
 ///
-/// An arm that writes somewhere else entirely -- `beyondtrust_pra` collects
-/// `category` into a local list -- names no path and is left to the default,
-/// which is what the merge did with that key before routing existed.
+/// An arm that COLLECTS rather than writes names no path at all --
+/// `beyondtrust_pra` adds `category` to a local the script seeded before the
+/// merge and writes out after it. Left to the default, the seed was dropped and
+/// a row without the key wrote nothing, so it is its own route.
 fn merge_routes(body: &str) -> Vec<(String, MergeRoute)> {
     let mut routes = Vec::new();
     let mut rest = body;
@@ -6566,6 +6657,17 @@ fn next_routed_key(body: &str) -> Option<(String, &str)> {
 
 /// The path an arm writes the routed value to.
 fn route_target(arm: &str) -> Option<MergeRoute> {
+    // Checked first: an arm that collects writes no path at all, and the two
+    // readers below would fall through it to whatever the enclosing lambda
+    // assigns.
+    if let Some((head, _)) = arm.split_once(".addAll(v)") {
+        let local = head
+            .rsplit(|c: char| c.is_whitespace() || matches!(c, '{' | '}' | ';' | '(' | ')'))
+            .next()?;
+        if !local.is_empty() && !local.contains(['.', '[']) {
+            return Some(MergeRoute::Collect(local.to_string()));
+        }
+    }
     if let Some(end) = arm.rfind("[k] = ") {
         let head = &arm[..end];
         let start = head.rfind("ctx.")? + "ctx.".len();
