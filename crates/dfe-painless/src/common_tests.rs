@@ -5035,6 +5035,40 @@ fn an_equality_ladder_writes_a_list_arm_as_a_list() {
     }
 }
 
+/// A ladder whose every arm is annotated between the `{` and its first
+/// statement, which is where the vendors put their notes.
+///
+/// Before `strip_line_comments` the note sat where the reader expects `ctx.`,
+/// so every arm read as assigning nothing and the whole ladder declined.
+const COMMENTED_LADDER: &str = r#"def level = ctx.a.level;\nif (level == \"1\" || level == \"2\") { // informational and low\n  ctx.event.severity = 21;\n} else if (level == \"3\") { // medium\n  ctx.event.severity = 47;\n} else if (level == \"4\") { // high\n  ctx.event.severity = 73;\n}"#;
+
+/// Every arm is reached despite the note, and the bare number stays a number.
+#[test]
+fn a_commented_ladder_bands_every_arm_it_names() {
+    for (level, severity) in [("1", 21), ("2", 21), ("3", 47), ("4", 73)] {
+        let (claimed, event) = run_script(COMMENTED_LADDER, json!({ "a": { "level": level } }));
+        assert!(claimed, "the ladder must claim the script for {level}");
+        assert_eq!(event.get_i64("event.severity"), Some(severity));
+    }
+}
+
+/// A value outside the arms writes nothing, the same as Painless reaching none.
+#[test]
+fn a_commented_ladder_leaves_an_unnamed_value_alone() {
+    let (claimed, event) = run_script(COMMENTED_LADDER, json!({ "a": { "level": "0" } }));
+    assert!(claimed);
+    assert!(!event.has("event.severity"));
+}
+
+/// A `//` inside a quoted run is a URL, so the cut leaves the assignment whole.
+#[test]
+fn a_ladder_arm_keeps_a_url_its_note_cutter_would_otherwise_split() {
+    let script = r#"def kind = ctx.a.kind;\nif (kind == 'doc') { // the vendor's note\n  ctx.a.url = 'https://example.test/x';\n} else if (kind == 'ref') {\n  ctx.a.url = 'https://example.test/y';\n}"#;
+    let (claimed, event) = run_script(script, json!({ "a": { "kind": "doc" } }));
+    assert!(claimed);
+    assert_eq!(event.get_str("a.url"), Some("https://example.test/x"));
+}
+
 /// `ti_crowdstrike`'s confidence map, verbatim from the generated call site in
 /// `crates/dfe-transforms/src/filebeat/ti_crowdstrike_intel/default.rs`.
 ///

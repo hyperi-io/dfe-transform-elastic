@@ -69,6 +69,7 @@ pub mod row_named_target;
 pub mod scheduled_task;
 pub mod sddl;
 pub mod seconds_between;
+pub mod securityhub_ocsf;
 pub mod split_fanout;
 pub mod stats;
 pub mod stringify_member;

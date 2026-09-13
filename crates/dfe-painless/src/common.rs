@@ -13012,12 +13012,70 @@ pub(crate) enum LadderTest {
     Contains,
 }
 
+/// One line's code, with any `//` comment cut off it.
+///
+/// Scans rather than searching, because a `//` inside a quoted run is part of a
+/// URL the script assigns, not the start of a note.
+fn cut_line_comment(line: &str) -> &str {
+    let bytes = line.as_bytes();
+    let mut quote: Option<u8> = None;
+    let mut at = 0;
+    while at < bytes.len() {
+        let byte = bytes[at];
+        match quote {
+            Some(open) => {
+                if byte == b'\\' {
+                    at += 2;
+                    continue;
+                }
+                if byte == open {
+                    quote = None;
+                }
+            }
+            None => {
+                if byte == b'\'' || byte == b'"' {
+                    quote = Some(byte);
+                } else if byte == b'/' && bytes.get(at + 1) == Some(&b'/') {
+                    return &line[..at];
+                }
+            }
+        }
+        at += 1;
+    }
+    line
+}
+
+/// A script fragment with its `//` notes cut, line by line.
+///
+/// The newlines stay, so nothing that was on two lines reads as one statement.
+fn strip_line_comments(text: &str) -> Cow<'_, str> {
+    if !text.contains("//") {
+        return Cow::Borrowed(text);
+    }
+    let mut out = String::with_capacity(text.len());
+    for line in text.split_inclusive('\n') {
+        match line.strip_suffix('\n') {
+            Some(code) => {
+                out.push_str(cut_line_comment(code));
+                out.push('\n');
+            }
+            None => out.push_str(cut_line_comment(line)),
+        }
+    }
+    Cow::Owned(out)
+}
+
 /// One arm's writes and removes, for the literals that select it.
 ///
 /// `None` where the body assigns nothing a literal reader can take, which is
 /// how a guard that merely reads the subject is kept out of the arm list.
 fn ladder_arm(literals: Vec<String>, body: &str) -> Option<LadderArm> {
     use crate::params::clean_path;
+
+    // A note between the `{` and the statement it explains sits where the
+    // reader expects `ctx.`, so the arm reads as assigning nothing --
+    // aws_securityhub's severity bands annotate every arm that way.
+    let body = strip_line_comments(body);
 
     // Every assignment in the arm, not just the first -- a graded severity
     // writes a score alongside it.
@@ -13042,7 +13100,7 @@ fn ladder_arm(literals: Vec<String>, body: &str) -> Option<LadderArm> {
     (!writes.is_empty()).then(|| LadderArm {
         literals,
         writes,
-        removes: arm_removes(body),
+        removes: arm_removes(&body),
     })
 }
 
@@ -23192,6 +23250,10 @@ pub(crate) enum KnownPattern {
     ResourcesRenameDedup(String),
     SecurityhubResource(String),
     SecurityhubResources(String),
+    SecurityhubOcsfResource(crate::securityhub_ocsf::OcsfResource),
+    SecurityhubOcsfRemediation(crate::securityhub_ocsf::OcsfRemediation),
+    SecurityhubOcsfVulnerability(crate::securityhub_ocsf::OcsfVulnerability),
+    SecurityhubOcsfSeverity(crate::securityhub_ocsf::OcsfSeverity),
     InspectorResources {
         multi: bool,
     },
@@ -24536,6 +24598,35 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
             patterns.push(KnownPattern::SecurityhubResources(source));
             return patterns;
         }
+    }
+
+    // Pattern: the same extraction over the OCSF form the `finding` stream
+    // carries, where every member the ASFF pair reads has been renamed. Ahead of
+    // the append readers below, whose `.add(` trigger this script's `host.ip`
+    // walk also spells and whose empty return would shadow this.
+    if let Some(pattern) = crate::securityhub_ocsf::parse_ocsf_resource(normalised) {
+        patterns.push(KnownPattern::SecurityhubOcsfResource(pattern));
+        return patterns;
+    }
+
+    // Pattern: the remediation of the same finding, joined onto its references.
+    if let Some(pattern) = crate::securityhub_ocsf::parse_ocsf_remediation(normalised) {
+        patterns.push(KnownPattern::SecurityhubOcsfRemediation(pattern));
+        return patterns;
+    }
+
+    // Pattern: the same finding's first vulnerability and its packages.
+    if let Some(pattern) = crate::securityhub_ocsf::parse_ocsf_vulnerability(normalised) {
+        patterns.push(KnownPattern::SecurityhubOcsfVulnerability(pattern));
+        return patterns;
+    }
+
+    // Pattern: the same finding's severity bands. Ahead of the equality ladder,
+    // which reads the `event.severity` half and cannot reach the band word the
+    // script carries through a local into `vulnerability.severity`.
+    if let Some(pattern) = crate::securityhub_ocsf::parse_ocsf_severity(normalised) {
+        patterns.push(KnownPattern::SecurityhubOcsfSeverity(pattern));
+        return patterns;
     }
 
     // Pattern: m365's process and file fields off the alert evidence list,
@@ -26805,6 +26896,18 @@ pub(crate) fn run_known_pattern(
         } => try_prepend_to_array(event, scalar, array, target),
         KnownPattern::ResourcesRenameDedup(source) => run_resources_rename_dedup(event, source),
         KnownPattern::SecurityhubResource(source) => run_securityhub_resource(event, source),
+        KnownPattern::SecurityhubOcsfResource(pattern) => {
+            crate::securityhub_ocsf::run_ocsf_resource(event, pattern)
+        }
+        KnownPattern::SecurityhubOcsfRemediation(pattern) => {
+            crate::securityhub_ocsf::run_ocsf_remediation(event, pattern)
+        }
+        KnownPattern::SecurityhubOcsfVulnerability(pattern) => {
+            crate::securityhub_ocsf::run_ocsf_vulnerability(event, pattern)
+        }
+        KnownPattern::SecurityhubOcsfSeverity(pattern) => {
+            crate::securityhub_ocsf::run_ocsf_severity(event, pattern)
+        }
         KnownPattern::CheckpointPackets => run_checkpoint_packets(event),
         KnownPattern::ConsoleLoginEventData => run_console_login_event_data(event),
         KnownPattern::BitFlagNames(decode) => run_bit_flag_names(event, decode),

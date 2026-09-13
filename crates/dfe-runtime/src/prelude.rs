@@ -91,6 +91,10 @@ pub use crate::painless_records::{
     RecordFromFields, RecordRenames, record_from_fields, record_renames,
 };
 pub use crate::painless_seconds_between::{SecondsBetween, seconds_between};
+pub use crate::painless_securityhub_ocsf::{
+    OcsfRemediation, OcsfResource, OcsfSeverity, OcsfVulnerability, run_ocsf_remediation,
+    run_ocsf_resource, run_ocsf_severity, run_ocsf_vulnerability,
+};
 pub use crate::painless_split_fanout::{SplitFanOut, split_fan_out};
 pub use crate::painless_stringify_member::{StringifyMember, stringify_member};
 pub use crate::painless_threat_artifacts::{ThreatArtifacts, run_threat_artifacts};

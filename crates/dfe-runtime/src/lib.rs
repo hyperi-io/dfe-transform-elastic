@@ -51,11 +51,11 @@ pub use dfe_painless::{
     nth_separator as painless_nth_separator, pair_table as painless_pair_table,
     params as painless_params, plan as painless_plan, record_fold as painless_record_fold,
     records as painless_records, scheduled_task as painless_scheduled_task, sddl as painless_sddl,
-    seconds_between as painless_seconds_between, split_fanout as painless_split_fanout,
-    stats as painless_stats, stringify_member as painless_stringify_member,
-    threat_artifacts as painless_threat_artifacts, time_order_flag as painless_time_order_flag,
-    totals as painless_totals, typed_member_rename as painless_typed_member_rename,
-    windows as painless_windows,
+    seconds_between as painless_seconds_between, securityhub_ocsf as painless_securityhub_ocsf,
+    split_fanout as painless_split_fanout, stats as painless_stats,
+    stringify_member as painless_stringify_member, threat_artifacts as painless_threat_artifacts,
+    time_order_flag as painless_time_order_flag, totals as painless_totals,
+    typed_member_rename as painless_typed_member_rename, windows as painless_windows,
 };
 
 pub use dfe_core::{Event, Result, TransformError};
