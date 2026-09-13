@@ -21152,6 +21152,52 @@ fn appends_a_member(arm: &str, added: &str, var: &str) -> bool {
     declared_expression(arm, &local).is_some_and(|bound| bound.trim().starts_with(&member_of_var))
 }
 
+/// The guarded arms of a loop body, and whether safe navigation opened them.
+///
+/// Painless writes the same guard two ways, `if (v.member` and the
+/// safe-navigated `if (v?.member`, and only the first was ever split out. A
+/// script spelling the second produced NO arms at all, so the parse declined on
+/// the empty-columns check without reading a guard -- ironscales walks its
+/// reports that way and went unbound whole.
+///
+/// The safe-navigated reader runs only where the plain one finds nothing.
+/// `entityanalytics_ad_entity` spells both, and its `?.` guard is a `continue`
+/// rather than a collect, so cutting the body there parts that guard from the
+/// append below it and costs the source the one column it does collect.
+fn guarded_arms<'a>(body: &'a str, var: &str) -> (bool, Vec<&'a str>) {
+    let plain: Vec<&str> = body.split(&format!("if ({var}.")).skip(1).collect();
+    if !plain.is_empty() {
+        return (false, plain);
+    }
+    (true, body.split(&format!("if ({var}?.")).skip(1).collect())
+}
+
+/// The dotted member path an append reads off the loop variable.
+///
+/// Only a BARE path answers -- `add(report.mail_server.host)`. An append that
+/// transforms the value or assembles something declines, because the runner
+/// would otherwise collect under a name the script never reads.
+fn appended_path(added: &str, var: &str) -> Option<String> {
+    let rest = added.trim_start().strip_prefix(&format!("{var}."))?;
+    let path: String = rest
+        .chars()
+        .take_while(|c| c.is_alphanumeric() || *c == '_' || *c == '.')
+        .collect();
+    if path.is_empty() || path.ends_with('.') || !rest[path.len()..].starts_with(')') {
+        return None;
+    }
+    Some(path)
+}
+
+/// The member path a safe-navigated guard reads, with the navigation dropped:
+/// `mail_server?.host != null` answers `mail_server.host`.
+fn guard_path(arm: &str) -> String {
+    arm.chars()
+        .take_while(|c| c.is_alphanumeric() || *c == '_' || *c == '.' || *c == '?')
+        .filter(|c| *c != '?')
+        .collect()
+}
+
 /// `for (v in ctx.<list>) { if (v.<member> != null && !v.<member>.isEmpty())
 /// { ... ctx.<target>.add(...) } }`
 fn parse_collect_from_list(script: &str) -> Option<CollectFromList> {
@@ -21164,26 +21210,41 @@ fn parse_collect_from_list(script: &str) -> Option<CollectFromList> {
     }
     let (body, _) = balanced(after.trim_start(), '{', '}')?;
 
+    let (safe_nav, arms) = guarded_arms(body, var);
     let mut columns = Vec::new();
-    for arm in body.split(&format!("if ({var}.")).skip(1) {
-        let member = arm
-            .split(|c: char| !c.is_alphanumeric() && c != '_')
-            .next()
-            .filter(|member| !member.is_empty())?;
-        // The name is taken off the GUARD, so whatever follows it there says
-        // whether the guard is reading a member at all. A `(` means it named a
-        // METHOD -- `obj.get('techniqueId')` collected a member called `get`,
-        // and every record answered `None` -- and a `.` means the guard walks
-        // one segment further than the runner can, which put an empty list in
-        // `host.geo.location` where google_secops wants coordinates. Neither
-        // fails, and neither leaves an error behind.
-        if arm[member.len()..].starts_with(['(', '.']) {
-            return None;
-        }
+    for arm in arms {
         let (head, added) = arm.split_once(".add(")?;
         if !appends_a_member(arm, added, var) {
             return None;
         }
+        let member = if safe_nav {
+            // The safe-navigated spelling reaches members the guard reader
+            // cannot: `report?.mail_server?.host` walks two segments. Take the
+            // path off the APPEND, which is the statement that says what is
+            // gathered, and hold the guard to the same path so a script that
+            // guards one member and appends another declines.
+            let path = appended_path(added, var)?;
+            if guard_path(arm) != path {
+                return None;
+            }
+            path
+        } else {
+            let member = arm
+                .split(|c: char| !c.is_alphanumeric() && c != '_')
+                .next()
+                .filter(|member| !member.is_empty())?;
+            // The name is taken off the GUARD, so whatever follows it there says
+            // whether the guard is reading a member at all. A `(` means it named a
+            // METHOD -- `obj.get('techniqueId')` collected a member called `get`,
+            // and every record answered `None` -- and a `.` means the guard walks
+            // one segment further than the runner can, which put an empty list in
+            // `host.geo.location` where google_secops wants coordinates. Neither
+            // fails, and neither leaves an error behind.
+            if arm[member.len()..].starts_with(['(', '.']) {
+                return None;
+            }
+            member.to_string()
+        };
         let added_to = head.rsplit(['\n', ';', '{', '}']).next()?.trim();
         // Either named on the document, or a LOCAL handed to one after the
         // loop: gdacs builds three accumulators and assigns them at the end.
@@ -21202,7 +21263,7 @@ fn parse_collect_from_list(script: &str) -> Option<CollectFromList> {
             ))
         });
         columns.push(CollectedColumn {
-            member: member.to_string(),
+            member,
             target,
             replace,
             upper: arm.contains(".toUpperCase()"),
@@ -21242,6 +21303,19 @@ fn parse_collect_from_list(script: &str) -> Option<CollectFromList> {
     })
 }
 
+/// The value a dotted member path names inside one record.
+///
+/// A single segment is the flat lookup every plain-dot column does; the
+/// safe-navigated spelling reaches nested ones, and ironscales takes
+/// `mail_server.host` out of each report.
+fn walk_member<'a>(entry: &'a Value, member: &str) -> Option<&'a Value> {
+    let mut current = entry;
+    for segment in member.split('.') {
+        current = current.get(segment)?;
+    }
+    Some(current)
+}
+
 fn run_collect_from_list(event: &mut Event, pattern: &CollectFromList) -> bool {
     let Some(Value::Array(entries)) = event.get(&pattern.source).cloned() else {
         // Every one of these scripts is gated on the list being present.
@@ -21254,7 +21328,7 @@ fn run_collect_from_list(event: &mut Event, pattern: &CollectFromList) -> bool {
             _ => Vec::new(),
         };
         for entry in &entries {
-            let Some(raw) = entry.get(&column.member).and_then(Value::as_str) else {
+            let Some(raw) = walk_member(entry, &column.member).and_then(Value::as_str) else {
                 continue;
             };
             if raw.is_empty() {

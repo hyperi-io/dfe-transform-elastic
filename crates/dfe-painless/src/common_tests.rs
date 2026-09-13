@@ -8070,6 +8070,118 @@ fn a_list_walk_writes_a_deep_target() {
     );
 }
 
+/// ironscales' reports walk, verbatim from its generated call site.
+///
+/// Safe navigation on the loop variable and a nested member: the arms were
+/// split on `if (report.` alone, so this script produced no columns and went
+/// unbound whole. The values are event 0 of the compat capture.
+#[test]
+fn a_safe_navigated_list_walk_collects_a_nested_member() {
+    let script = r#"// Initialize ECS related fields structure\nctx.related = ctx.related ?: [:];\nctx.related.user = ctx.related.user ?: [];\nctx.related.hosts = ctx.related.hosts ?: [];\nctx.related.ip = ctx.related.ip ?: [];\n\n// Single iteration to extract name, email, sender_email, mail_server.host, and mail_server.ip from reports array\nfor (report in ctx.ironscales.incident.reports) {\n  if (report?.name != null && !ctx.related.user.contains(report.name)) {\n    ctx.related.user.add(report.name);\n  }\n  if (report?.email != null && !ctx.related.user.contains(report.email)) {\n    ctx.related.user.add(report.email);\n  }\n  if (report?.sender_email != null && !ctx.related.user.contains(report.sender_email)) {\n    ctx.related.user.add(report.sender_email);\n  }\n  if (report?.mail_server?.host != null && !ctx.related.hosts.contains(report.mail_server.host)) {\n    ctx.related.hosts.add(report.mail_server.host);\n  }\n  if (report?.mail_server?.ip != null && !ctx.related.ip.contains(report.mail_server.ip)) {\n    ctx.related.ip.add(report.mail_server.ip);\n  }\n}"#;
+    let pattern =
+        parse_collect_from_list(&normalise(script)).expect("ironscales walks its reports");
+    assert_eq!(pattern.source, "ironscales.incident.reports");
+    assert_eq!(
+        pattern
+            .columns
+            .iter()
+            .map(|column| (column.member.as_str(), column.target.as_str()))
+            .collect::<Vec<_>>(),
+        [
+            ("name", "related.user"),
+            ("email", "related.user"),
+            ("sender_email", "related.user"),
+            ("mail_server.host", "related.hosts"),
+            ("mail_server.ip", "related.ip"),
+        ]
+    );
+
+    let mut event = Event::new(json!({
+        "related": {
+            "user": ["john@example.com", "John Doe", "alias@example.com", "Alias"],
+            "hosts": ["mail.google.com"],
+            "ip": ["216.160.83.56"],
+        },
+        "ironscales": { "incident": { "reports": [{
+            "name": "alias john",
+            "email": "alias@example.com",
+            "sender_email": "alias.doe@example.com",
+            "mail_server": { "host": "mail-lj1-f179.google.com", "ip": "89.160.20.112" },
+        }]}},
+    }));
+
+    assert!(try_known_painless(&mut event, script));
+    // The append processors' entries keep their place, and the report's email
+    // is already among them.
+    assert_eq!(
+        event.get("related.user"),
+        Some(&json!([
+            "john@example.com",
+            "John Doe",
+            "alias@example.com",
+            "Alias",
+            "alias john",
+            "alias.doe@example.com"
+        ]))
+    );
+    assert_eq!(
+        event.get("related.hosts"),
+        Some(&json!(["mail.google.com", "mail-lj1-f179.google.com"]))
+    );
+    assert_eq!(
+        event.get("related.ip"),
+        Some(&json!(["216.160.83.56", "89.160.20.112"]))
+    );
+}
+
+/// A safe-navigated guard reading one member while the append takes another
+/// is a walk this cannot reproduce, so it declines rather than collecting
+/// under the name the guard happens to spell.
+#[test]
+fn a_safe_navigated_walk_declines_when_guard_and_append_disagree() {
+    let script = "for (report in ctx.a.b) {\n  \
+        if (report?.name != null) {\n    ctx.related.user.add(report.email);\n  }\n}";
+    assert!(parse_collect_from_list(&normalise(script)).is_none());
+}
+
+/// `entityanalytics_ad_entity` spells both guards in one walk, and its `?.` one
+/// is a `continue` sitting above the append it must not be parted from.
+///
+/// Reading the safe-navigated spelling only where the plain one finds nothing
+/// is what keeps the column this source already collects.
+#[test]
+fn a_walk_mixing_both_guard_spellings_keeps_the_plain_reading() {
+    let script = "ctx.user = ctx.user ?: [:];\nctx.user.group = ctx.user.group ?: [:];\n\n\
+        for (def group : ctx.activedirectory.groups) {\n  \
+        if (group.name != null) {\n    \
+        ctx.user.group.name = ctx.user.group.name ?: new HashSet();\n    \
+        ctx.user.group.name.add(group.name);\n  }\n\n  \
+        if (group?.object_sid == null) {\n    continue;\n  }\n\n  \
+        group.id = group.object_sid;\n  \
+        ctx.user.group.id = ctx.user.group.id ?: new HashSet();\n  \
+        ctx.user.group.id.add(group.id);\n}";
+    let pattern = parse_collect_from_list(&normalise(script)).expect("the plain guard is read");
+    assert_eq!(pattern.source, "activedirectory.groups");
+    assert_eq!(
+        pattern
+            .columns
+            .iter()
+            .map(|column| (column.member.as_str(), column.target.as_str()))
+            .collect::<Vec<_>>(),
+        [("name", "user.group.name")]
+    );
+}
+
+/// The append has to be a bare member path: a transformed value names no
+/// member the runner can read out of a record.
+#[test]
+fn a_safe_navigated_walk_declines_a_built_value() {
+    let script = "for (report in ctx.a.b) {\n  \
+        if (report?.name != null) {\n    \
+        ctx.related.user.add(report.name + '|' + report.email);\n  }\n}";
+    assert!(parse_collect_from_list(&normalise(script)).is_none());
+}
+
 /// squid's sentinel prune, verbatim from its generated call site.
 ///
 /// The source writes `-` rather than omitting a field, so this one line
