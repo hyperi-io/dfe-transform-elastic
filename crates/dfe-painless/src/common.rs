@@ -23281,6 +23281,9 @@ pub(crate) enum KnownPattern {
     /// ECS fields written from the members of a list's items, under nested
     /// guards.
     ItemWrites(Box<crate::item_writes::ItemWrites>),
+    /// One list walked, each named member it carries written to a field of its
+    /// own, the last record carrying a member winning.
+    MemberFanOut(Box<crate::member_fan_out::MemberFanOut>),
     /// A duration, and the window it puts around a timestamp.
     DurationWindow(Box<DurationWindow>),
     /// Totals summed from two sides, an absent side counting as zero.
@@ -23800,6 +23803,44 @@ fn shallow_prune_policy(normalised: &str) -> Option<DropPolicy> {
         || !policy.sentinels.is_empty()
         || !policy.sentinels_ci.is_empty();
     drops.then_some(policy)
+}
+
+/// The subtree an ITERATIVE stack walk prunes nulls from, or `None`.
+///
+/// hackerone spells the recursive prune as a `while` over an explicit stack and
+/// removes the key it finds null, so it carries no `removeIf` and the arm keyed
+/// on one never sees it. `CollectingLadder` claimed it instead and wrote
+/// nothing: 35 null fields Elasticsearch had removed stayed in the document,
+/// and the four `relationships` maps it should have emptied never became `{}`.
+///
+/// Only a walk whose sole write is that removal is a prune. `ti_socradar_taxii`
+/// walks an identical stack to unescape every string in the document, and
+/// reading that as a prune would rewrite the event.
+fn stack_prune_root(normalised: &str) -> Option<String> {
+    if normalised.contains("setValue(") {
+        return None;
+    }
+    // The null branch has to be the removal, and the removal has to be all it
+    // does.
+    let (_, guarded) = normalised.split_once("== null")?;
+    let at = guarded.find('{')?;
+    let removes = crate::params::balanced(&guarded[at..], '{', '}')
+        .is_some_and(|(body, _)| body.contains(".remove(") && !body.contains('='));
+    if !removes {
+        return None;
+    }
+
+    let (_, seeded) = normalised.split_once("stack.add(ctx")?;
+    let root = seeded.split(')').next()?;
+    if root.is_empty() {
+        return Some(String::new());
+    }
+    let root = crate::params::clean_path(root.trim_start_matches(['?', '.']));
+    (!root.is_empty()
+        && root
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '.' || c == '_'))
+    .then_some(root)
 }
 
 /// The matcher branches this script's text triggers, in dispatch order.
@@ -24544,6 +24585,27 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
             });
             return patterns;
         }
+    }
+
+    // Pattern: the same prune written as a `while` over an explicit stack,
+    // which removes the null key itself rather than calling `removeIf`.
+    //
+    // The policy is spelled out rather than read off the script: the only test
+    // this grammar makes is `== null`, and `DropPolicy::read` would take the
+    // loop's own `stack.isEmpty()` for a collection test and drop the empty
+    // maps the script leaves behind.
+    if normalised.contains("stack.isEmpty()")
+        && normalised.contains("instanceof Map")
+        && let Some(root) = stack_prune_root(normalised)
+    {
+        patterns.push(KnownPattern::DropEmpty {
+            policy: DropPolicy {
+                nulls: true,
+                ..DropPolicy::none()
+            },
+            root: (!root.is_empty()).then_some(root),
+        });
+        return patterns;
     }
 
     // Pattern: Windows argument splitting, the Go implementation the sysmon,
@@ -26472,6 +26534,22 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: one list walked, each named member it carries written to a field
+    // of its own -- ti_cybersixgill's STIX `external_references`.
+    //
+    // LATE for the same reason as the arm above: it reads a closed grammar
+    // rather than one vendor's spelling, so it cannot sit where it would shadow
+    // a narrower matcher. It is reachable here because the script spells
+    // neither `.add(` nor `.replace(`, whose arms return an empty vec and stop
+    // the ladder.
+    if normalised.contains("?.")
+        && normalised.contains(" : ")
+        && let Some(pattern) = crate::member_fan_out::parse_member_fan_out(normalised)
+    {
+        patterns.push(KnownPattern::MemberFanOut(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: a value cut at the Nth separator counted from its END, the
     // prefix kept -- gigamon's DNS subdomain. LAST, because nothing above
     // claims it today (`binding: []` in the static census, `ran 0` in the
@@ -26933,6 +27011,9 @@ pub(crate) fn run_known_pattern(
         }
         KnownPattern::WrapEntries(pattern) => crate::map_entries::wrap_entries(event, pattern),
         KnownPattern::ItemWrites(pattern) => crate::item_writes::item_writes(event, pattern),
+        KnownPattern::MemberFanOut(pattern) => {
+            crate::member_fan_out::member_fan_out(event, pattern)
+        }
         KnownPattern::DurationWindow(pattern) => duration_window(event, pattern),
         KnownPattern::SumTotals(pattern) => crate::totals::sum_totals(event, pattern),
         KnownPattern::DropEmpty { policy, root } => drop_empty(event, policy, root.as_deref()),

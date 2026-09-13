@@ -11811,6 +11811,59 @@ fn a_keyset_walk_with_no_removal_is_declined() {
     assert!(shallow_prune_root(&normalise(script)).is_none());
 }
 
+/// The recursive prune written as a `while` over an explicit stack. Verbatim
+/// from `filebeat/hackerone_report/default.rs`.
+const HACKERONE_PRUNE: &str = r#"ArrayList stack = new ArrayList();\nstack.add(ctx.hackerone.report);\nwhile (stack.isEmpty() == false) {\n  Object node = stack.remove(stack.size() - 1);\n  if (node instanceof Map) {\n    Map current = (Map) node;\n    ArrayList keys = new ArrayList(current.keySet());\n    for (Object k : keys) {\n      Object v = current.get(k);\n      if (v == null) {\n        current.remove(k);\n      } else if (v instanceof Map || v instanceof List) {\n        stack.add(v);\n      }\n    }\n  } else if (node instanceof List) {\n    for (Object item : (List) node) {\n      if (item instanceof Map || item instanceof List) {\n        stack.add(item);\n      }\n    }\n  }\n}"#;
+
+/// Nulls go at every depth of the named subtree, and the map a removal empties
+/// stays as `{}` -- which is what Elasticsearch's own document holds.
+#[test]
+fn a_stack_walk_prunes_nulls_from_the_subtree_it_was_seeded_with() {
+    let normalised = normalise(HACKERONE_PRUNE);
+    assert_eq!(
+        stack_prune_root(&normalised).as_deref(),
+        Some("hackerone.report")
+    );
+
+    let mut event = Event::new(serde_json::json!({
+        "hackerone": { "report": {
+            "attributes": { "state": "new", "closed_at": null, "title": "" },
+            "relationships": { "assignee": { "data": null } },
+        } },
+        "outside": { "kept": null },
+    }));
+    assert!(try_known_painless(&mut event, HACKERONE_PRUNE));
+    assert_eq!(
+        event.get_str("hackerone.report.attributes.state"),
+        Some("new")
+    );
+    assert!(!event.has("hackerone.report.attributes.closed_at"));
+    // Only nulls: the empty string is the script's to keep.
+    assert_eq!(event.get_str("hackerone.report.attributes.title"), Some(""));
+    // The removal empties the map and the script leaves it behind.
+    assert_eq!(
+        event.get("hackerone.report.relationships.assignee"),
+        Some(&serde_json::json!({}))
+    );
+    // Seeded with one subtree, so the rest of the document is untouched.
+    assert!(event.has("outside.kept"));
+}
+
+/// `ti_socradar_taxii` walks an identical stack to unescape every string it
+/// finds. Verbatim from `filebeat/ti_socradar_taxii_indicator/default.rs`,
+/// cut to the walk. Claiming it as a prune would rewrite the event.
+#[test]
+fn a_stack_walk_that_rewrites_strings_is_not_a_prune() {
+    let script = r#"ArrayList stack = new ArrayList(); stack.add(ctx); while (!stack.isEmpty()) {\n  Object obj = stack.remove(stack.size() - 1);\n  if (obj instanceof Map) {\n    for (entry in ((Map)obj).entrySet()) {\n      Object value = entry.getValue();\n      if (value instanceof String) {\n        entry.setValue(((String)value).replace('a', 'b'));\n      } else if (value instanceof Map || value instanceof List) {\n        stack.add(value);\n      }\n    }\n  }\n}"#;
+    let normalised = normalise(script);
+    assert!(stack_prune_root(&normalised).is_none());
+    assert!(
+        !known_patterns(&normalised)
+            .iter()
+            .any(|pattern| matches!(pattern, KnownPattern::DropEmpty { .. }))
+    );
+}
+
 /// Two range ladders, one banding a score into WORDS and one into NUMBERS.
 ///
 /// Both verbatim from their generated call sites. The reader stripped the quotes

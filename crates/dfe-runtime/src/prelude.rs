@@ -83,6 +83,7 @@ pub use crate::painless_lists::{
 pub use crate::painless_map_entries::{
     KeyNamedByField, WrapEntries, key_named_by_field, wrap_entries,
 };
+pub use crate::painless_member_fan_out::{MemberFanOut, member_fan_out};
 pub use crate::painless_member_tags::{MemberTags, member_tags};
 pub use crate::painless_nth_separator::{NthSeparatorPrefix, nth_separator_prefix};
 pub use crate::painless_pair_table::{PairTable, pair_table};

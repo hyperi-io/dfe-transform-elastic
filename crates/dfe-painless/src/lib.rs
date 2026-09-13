@@ -57,6 +57,7 @@ pub mod level_labels;
 pub mod list_records;
 pub mod lists;
 pub mod map_entries;
+pub mod member_fan_out;
 pub mod member_tags;
 pub mod named_arms;
 pub mod nth_separator;

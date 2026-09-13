@@ -73,7 +73,12 @@ use dfe_runtime::painless_plan::PainlessPlan;
 /// shadowed both and always return true, so neither ever ran -- this is the
 /// search space losing two entries that were never reachable, not a matcher
 /// going away.
-const MULTI_BINDING: usize = 58;
+///
+/// 58 to 57 when the `DropEmpty` arm learnt the iterative stack spelling of the
+/// recursive prune. hackerone's was claimed by `CollectingLadder` AND
+/// `CollectMapValues`, neither of which prunes anything, and it now binds the
+/// one matcher that does.
+const MULTI_BINDING: usize = 57;
 
 /// The `cached_painless!` literals a generated file holds, in full.
 ///
