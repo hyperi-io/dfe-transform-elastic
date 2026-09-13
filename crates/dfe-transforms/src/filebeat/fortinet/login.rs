@@ -28,10 +28,11 @@ impl Transform for Login {
             if _cond {
                 event.set(
                     "user.name",
-                    event
-                        .get("source.user.name")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("source.user.name")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -39,10 +40,11 @@ impl Transform for Login {
             if _cond {
                 event.append(
                     "user.roles",
-                    event
-                        .get("fortinet.firewall.adminprof")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.adminprof")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -50,10 +52,11 @@ impl Transform for Login {
             if _cond {
                 event.append(
                     "source.user.roles",
-                    event
-                        .get("fortinet.firewall.adminprof")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.adminprof")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -68,15 +71,32 @@ impl Transform for Login {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("fortinet.firewall.userfrom") {
                         let mut remaining: &str = &input;
-                        if let Some(rest) = remaining.strip_prefix("JSON(") {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(rest) = remaining.strip_prefix("JSON(") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(")") {
-                            event.set("source.ip", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(")") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("source.ip", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(")") {
+                            let Some(rest) = remaining.strip_prefix(")") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
+                        } else {
+                            return Err(TransformError::ParseError {
+                                path: "fortinet.firewall.userfrom".into(),
+                                message: "dissect pattern did not match".into(),
+                            });
                         }
                     }
                     Ok(())
@@ -90,16 +110,16 @@ impl Transform for Login {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -122,10 +142,25 @@ impl Transform for Login {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("fortinet.firewall.desc") {
                         let mut remaining: &str = &input;
-                        if let Some(rest) = remaining.strip_prefix("User login/logout ") {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(rest) = remaining.strip_prefix("User login/logout ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            captured.push(("event.outcome", remaining));
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
+                        } else {
+                            return Err(TransformError::ParseError {
+                                path: "fortinet.firewall.desc".into(),
+                                message: "dissect pattern did not match".into(),
+                            });
                         }
-                        event.set("event.outcome", remaining)?;
                     }
                     Ok(())
                 })() {
@@ -138,16 +173,16 @@ impl Transform for Login {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -170,31 +205,52 @@ impl Transform for Login {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("message") {
                         let mut remaining: &str = &input;
-                        if let Some(rest) = remaining.strip_prefix("Login from ssh: ") {
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(rest) = remaining.strip_prefix("Login from ssh: ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" for ") {
-                            event.set("event.outcome", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" for ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("event.outcome", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" for ") {
+                            let Some(rest) = remaining.strip_prefix(" for ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" from ") {
-                            event.set("user.name", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" from ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("user.name", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" from ") {
+                            let Some(rest) = remaining.strip_prefix(" from ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" port ") {
-                            event.set("source.ip", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" port ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("source.ip", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" port ") {
+                            let Some(rest) = remaining.strip_prefix(" port ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            captured.push(("source.port", remaining));
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
+                        } else {
+                            return Err(TransformError::ParseError {
+                                path: "message".into(),
+                                message: "dissect pattern did not match".into(),
+                            });
                         }
-                        event.set("source.port", remaining)?;
                     }
                     Ok(())
                 })() {
@@ -207,16 +263,16 @@ impl Transform for Login {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -233,45 +289,72 @@ impl Transform for Login {
                     && event
                         .get_str("message")
                         .is_some_and(|s| s.starts_with("Administrator"))
+                    && !(event
+                        .get_str("message")
+                        .is_some_and(|s| s.to_lowercase().contains("logged in")))
             };
             if _cond {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(input) = event.get_string("message") {
                         let mut remaining: &str = &input;
-                        if let Some(pos) = remaining.find(" ") {
-                            event.set("_tmp.user.roles", &remaining[..pos])?;
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(pos) = remaining.find(" ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("_tmp.user.roles", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" ") {
+                            let Some(rest) = remaining.strip_prefix(" ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" login ") {
-                            event.set("user.name", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" login ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("user.name", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" login ") {
+                            let Some(rest) = remaining.strip_prefix(" login ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(" from ") {
-                            event.set("event.outcome", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(" from ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("event.outcome", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" from ") {
+                            let Some(rest) = remaining.strip_prefix(" from ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find("(") {
+                            let Some(pos) = remaining.find("(") else {
+                                break 'dissect false;
+                            };
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix("(") {
+                            let Some(rest) = remaining.strip_prefix("(") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
-                        }
-                        if let Some(pos) = remaining.find(") ") {
-                            event.set("source.ip", &remaining[..pos])?;
+                            let Some(pos) = remaining.find(") ") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("source.ip", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(") ") {
+                            let Some(rest) = remaining.strip_prefix(") ") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
+                        } else {
+                            return Err(TransformError::ParseError {
+                                path: "message".into(),
+                                message: "dissect pattern did not match".into(),
+                            });
                         }
                     }
                     Ok(())
@@ -285,16 +368,66 @@ impl Transform for Login {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
+            }
+
+            let _cond = {
+                event.has_value("message")
+                    && event
+                        .get_str("message")
+                        .is_some_and(|s| s.starts_with("Administrator"))
+                    && event
+                        .get_str("message")
+                        .is_some_and(|s| s.to_lowercase().contains("logged in"))
+            };
+            if _cond {
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if let Some(input) = event.get_string("message") {
+                        // Grok pattern: %{WORD:_tmp.user.roles} %{NOTSPACE:user.name} logged in %{WORD:event.outcome} from (?:jsconsole|%{WORD}(?:\\(%{IP:source.ip}\\))?)
+                        if !cached_grok!("%{WORD:_tmp.user.roles} %{NOTSPACE:user.name} logged in %{WORD:event.outcome} from (?:jsconsole|%{WORD}(?:\\(%{IP:source.ip}\\))?)").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "grok")?;
+                    event.set("_ingest.on_failure_processor_tag", "ssh login 3")?;
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Processor {} with tag {} in pipeline {} failed with message: {}",
+                            event
+                                .get("_ingest.on_failure_processor_type")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_processor_tag")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.pipeline")
+                                .map_or_else(String::new, template_to_string),
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -326,31 +459,39 @@ impl Transform for Login {
                 event.set("event.outcome", json!("success"))?;
             }
 
-            if event.has("fortinet.firewall.log_id") {
+            if event.has_value("fortinet.firewall.log_id") {
                 event.rename("fortinet.firewall.log_id", "event.id")?;
             }
 
-            if event.has("fortinet.firewall.pri") {
+            if event.has_value("fortinet.firewall.pri") {
                 event.rename("fortinet.firewall.pri", "log.level")?;
             }
 
-            if event.has("fortinet.firewall.device_id") {
+            if event.has_value("fortinet.firewall.device_id") {
                 event.rename("fortinet.firewall.device_id", "observer.serial_number")?;
             }
 
             let _cond = { event.has_value("_tmp.user.roles") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "user.roles",
-                    event.get("_tmp.user.roles").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_tmp.user.roles")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
             let _cond = { event.has_value("_tmp.user.roles") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "source.user.roles",
-                    event.get("_tmp.user.roles").cloned().unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_tmp.user.roles")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -359,36 +500,12 @@ impl Transform for Login {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(val) = event.get("source.port") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "source.port".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "source.port".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "source.port".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "source.port".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("source.port", converted)?;
                     }
                     Ok(())
@@ -402,16 +519,16 @@ impl Transform for Login {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -428,36 +545,12 @@ impl Transform for Login {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(val) = event.get("fortinet.firewall.valid") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.valid".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.valid".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "fortinet.firewall.valid".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "fortinet.firewall.valid".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("fortinet.firewall.valid", converted)?;
                     }
                     Ok(())
@@ -474,16 +567,16 @@ impl Transform for Login {
                             "Processor {} with tag {} in pipeline {} failed with message: {}",
                             event
                                 .get("_ingest.on_failure_processor_type")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_processor_tag")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.pipeline")
-                                .map_or_else(String::new, painless_to_string),
+                                .map_or_else(String::new, template_to_string),
                             event
                                 .get("_ingest.on_failure_message")
-                                .map_or_else(String::new, painless_to_string)
+                                .map_or_else(String::new, template_to_string)
                         )),
                     )?;
                     event.remove("_ingest.on_failure_message");
@@ -518,33 +611,40 @@ impl Transform for Login {
                 event.set("event.kind", json!("pipeline_error"))?;
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(format!(
+                        "Processor '{}' {}in pipeline '{}' failed with message '{}'",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, template_to_string),
+                        if event
+                            .get("_ingest.on_failure_processor_tag")
+                            .is_some_and(|v| !v.is_null()
+                                && v.as_str() != Some("")
+                                && !matches!(v, Value::Bool(false))
+                                && !v.as_array().is_some_and(Vec::is_empty))
+                        {
+                            format!(
+                                "with tag '{}' ",
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string)
+                            )
+                        } else {
+                            String::new()
+                        },
+                        event
+                            .get("_ingest.pipeline")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    )),
                 )?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

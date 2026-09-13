@@ -13,6 +13,26 @@ properties:
   sink:
     description: Outbound side.
     $ref: '#/$defs/SinkConfig'
+  geoip:
+    description: |-
+      Which MMDB databases the geoip processors read, and how to obtain them.
+
+      scalo's type verbatim: provisioning is shared across the fleet, and the
+      lookup engine and its cache stay in `dfe-runtime`. Read once at startup,
+      so a change needs a restart.
+    $ref: '#/$defs/GeoIpConfig'
+    default:
+      enabled: true
+      provider: db_ip_lite
+      city_db_path: null
+      asn_db_path: null
+      auto_download:
+        enabled: true
+        data_dir: /var/lib/geoip
+        maxmind_account_id: null
+        maxmind_license_key: null
+        ipinfo_token: null
+        max_age_days: 30
 required:
 - source
 - sink
@@ -26,10 +46,14 @@ $defs:
         type: string
       envelope:
         description: |-
-          How the payload is wrapped on the way in. The transform is the same
-          either way; only the unwrapping differs.
-        $ref: '#/$defs/Envelope'
-        default: beats
+          Which producer wrapped the payload. The transform is the same for all
+          of them; only the unwrapping differs.
+
+          Defaults to `auto`, which reads it off each batch's first event. Naming
+          a family instead pins it, and validation then rejects one the source
+          cannot actually arrive in.
+        $ref: '#/$defs/EnvelopeSetting'
+        default: auto
       topics:
         description: Topics to consume.
         type: array
@@ -54,17 +78,26 @@ $defs:
     - topics
     - group_id
     - brokers
-  Envelope:
-    description: How the payload is wrapped on the way in.
+  EnvelopeSetting:
+    description: |-
+      What the operator said about the envelope.
+
+      `auto` is the default: the family is read off the first event of each batch,
+      so a deployment that changes producer needs no config change. Naming one
+      pins it, which is the way through for a shape that carries no marker.
     oneOf:
-    - description: 'Beats or Elastic Agent: the raw vendor payload is a string in `message`.'
+    - description: Detect the family from each batch's first event.
+      type: string
+      const: auto
+    - description: Beats, Elastic Agent, or anything passed through unaltered.
       type: string
       const: beats
-    - description: |-
-        dfe-receiver syslog JSON: header parsed into siblings, body in
-        `message`.
+    - description: dfe-receiver, on any of its transports.
       type: string
-      const: syslog
+      const: receiver
+    - description: dfe-fetcher.
+      type: string
+      const: fetcher
   SinkConfig:
     description: Outbound configuration.
     type: object
@@ -93,3 +126,134 @@ $defs:
         default: 900000
     required:
     - topic
+  GeoIpConfig:
+    description: |-
+      GeoIP database provisioning configuration.
+
+      `PartialEq` is part of the contract: a consumer nests this inside its own
+      config and compares old against new to decide whether a reload needs a
+      restart. Comparing serialised forms instead would read every credential
+      change as no change, because [`SensitiveString`] redacts in `Serialize`.
+    type: object
+    properties:
+      enabled:
+        description: |-
+          Provision databases at all. Defaults to true: calling
+          [`ensure_databases`](super::ensure_databases) is the opt-in, so this is
+          the config-side opt-out for an app that wires the call unconditionally.
+        type: boolean
+        default: true
+      provider:
+        description: Where the databases come from.
+        $ref: '#/$defs/GeoIpProvider'
+        default: db_ip_lite
+      city_db_path:
+        description: |-
+          Explicit city MMDB path. Set on either path field and the provider is
+          bypassed entirely -- nothing is downloaded and nothing is checked.
+        type:
+        - string
+        - 'null'
+        default: null
+      asn_db_path:
+        description: Explicit ASN MMDB path. See [`city_db_path`](Self::city_db_path).
+        type:
+        - string
+        - 'null'
+        default: null
+      auto_download:
+        description: Auto-download settings.
+        $ref: '#/$defs/AutoDownloadConfig'
+        default:
+          enabled: true
+          data_dir: /var/lib/geoip
+          maxmind_account_id: null
+          maxmind_license_key: null
+          ipinfo_token: null
+          max_age_days: 30
+  GeoIpProvider:
+    description: |-
+      Source of the MMDB databases.
+
+      | Variant | Auth | City | ASN |
+      |---|---|---|---|
+      | [`DbIpLite`](Self::DbIpLite) | none | yes | yes |
+      | [`MaxMindGeoLite2`](Self::MaxMindGeoLite2) | HTTP basic | yes | yes |
+      | [`IpLocate`](Self::IpLocate) | none | no | yes |
+      | [`IpInfoLite`](Self::IpInfoLite) | token | yes | no |
+      | [`Sapics`](Self::Sapics) | none | no | yes |
+      | [`Custom`](Self::Custom) | n/a | explicit path | explicit path |
+    oneOf:
+    - description: DB-IP Lite -- free, anonymous download, city-level, CC BY 4.0.
+      type: string
+      const: db_ip_lite
+    - description: MaxMind GeoLite2 -- free account required (account id + licence key).
+      type: string
+      const: max_mind_geo_lite2
+    - description: IPLocate.io -- free, anonymous, country + ASN only.
+      type: string
+      const: ip_locate
+    - description: IPinfo Lite -- free token required, country + ASN only.
+      type: string
+      const: ip_info_lite
+    - description: sapics/ip-location-db -- free CC0, country + ASN only.
+      type: string
+      const: sapics
+    - description: Caller supplies the MMDB paths directly; nothing is downloaded.
+      type: string
+      const: custom
+  AutoDownloadConfig:
+    description: |-
+      Auto-download settings.
+
+      The three credential fields are [`SensitiveString`], so they are redacted
+      in `Debug` output and in any serialised form (config dumps, JSON schema
+      examples, error reports). Only the download call itself exposes them.
+    type: object
+    properties:
+      enabled:
+        description: |-
+          Download a database when the local copy is missing or stale.
+
+          When false, [`ensure_databases`](super::ensure_databases) returns only
+          the files that already exist on disk.
+        type: boolean
+        default: true
+      data_dir:
+        description: Directory the downloaded MMDB files are written to.
+        type: string
+        default: /var/lib/geoip
+      maxmind_account_id:
+        description: |-
+          MaxMind account id, required by
+          [`GeoIpProvider::MaxMindGeoLite2`].
+        type:
+        - string
+        - 'null'
+        x-dfe-secret: true
+        writeOnly: true
+        default: null
+      maxmind_license_key:
+        description: |-
+          MaxMind licence key, required by
+          [`GeoIpProvider::MaxMindGeoLite2`].
+        type:
+        - string
+        - 'null'
+        x-dfe-secret: true
+        writeOnly: true
+        default: null
+      ipinfo_token:
+        description: IPinfo API token, required by [`GeoIpProvider::IpInfoLite`].
+        type:
+        - string
+        - 'null'
+        x-dfe-secret: true
+        writeOnly: true
+        default: null
+      max_age_days:
+        description: Age, in days, past which a local database is treated as stale.
+        type: integer
+        format: uint32
+        minimum: 0
+        default: 30

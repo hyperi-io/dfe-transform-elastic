@@ -1,0 +1,50 @@
+# Project:   dfe-transform-elastic
+# File:      crates/dfe-painless/Cargo.toml
+# Purpose:   Painless script matching and the runners it dispatches to
+# Language:  TOML
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
+[package]
+name = "dfe-painless"
+description = "Painless script pattern matching for dfe-transform-elastic"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[features]
+# The generator resolves a script to its runner call at generation time by
+# asking this crate, so the two paths cannot diverge. The service never
+# enables it and never compiles the emitters.
+codegen = []
+
+[dependencies]
+dfe-core = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+chrono-tz = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+uuid = { workspace = true }
+sha1 = { workspace = true }
+sha2 = { workspace = true }
+base64 = { workspace = true }
+regex = { workspace = true }
+fancy-regex = { workspace = true }
+
+[dev-dependencies]
+criterion = { workspace = true }
+
+# What `painless_exec` costs per EVENT, through the plan the runtime holds.
+[[bench]]
+name = "painless"
+harness = false

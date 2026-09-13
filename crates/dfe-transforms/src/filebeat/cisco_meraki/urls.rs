@@ -16,79 +16,146 @@ impl Transform for Urls {
     fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
         // A `drop` returns through here, so the closure carries the outcome.
         let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                if let Some(input) = event.get_string("event.original") {
+                    let mut remaining: &str = &input;
+                    let mut captured: Vec<(&str, &str)> = Vec::new();
+                    let matched = 'dissect: {
+                        let Some(pos) = remaining.find(" urls ") else {
+                            break 'dissect false;
+                        };
+                        remaining = &remaining[pos..];
+                        let Some(rest) = remaining.strip_prefix(" urls ") else {
+                            break 'dissect false;
+                        };
+                        remaining = rest;
+                        captured.push(("message", remaining));
+                        true
+                    };
+                    if matched {
+                        for (path, value) in captured {
+                            event.set(path, value)?;
+                        }
+                    }
+                }
+                Ok(())
+            })();
+
             if let Some(input) = event.get_string("event.original") {
                 let mut remaining: &str = &input;
-                if let Some(pos) = remaining.find(" urls ") {
+                let mut captured: Vec<(&str, &str)> = Vec::new();
+                let matched = 'dissect: {
+                    let Some(pos) = remaining.find(" urls ") else {
+                        break 'dissect false;
+                    };
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" urls ") {
+                    let Some(rest) = remaining.strip_prefix(" urls ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("src", &remaining[..pos])?;
+                    let Some(pos) = remaining.find("=") else {
+                        break 'dissect false;
+                    };
+                    let dissect_key_src = &remaining[..pos];
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
+                    let Some(rest) = remaining.strip_prefix("=") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("src", &remaining[..pos])?;
+                    let Some(pos) = remaining.find(" ") else {
+                        break 'dissect false;
+                    };
+                    captured.push((dissect_key_src, &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
+                    let Some(rest) = remaining.strip_prefix(" ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("dst", &remaining[..pos])?;
+                    let Some(pos) = remaining.find("=") else {
+                        break 'dissect false;
+                    };
+                    let dissect_key_dst = &remaining[..pos];
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
+                    let Some(rest) = remaining.strip_prefix("=") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("dst", &remaining[..pos])?;
+                    let Some(pos) = remaining.find(" ") else {
+                        break 'dissect false;
+                    };
+                    captured.push((dissect_key_dst, &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
+                    let Some(rest) = remaining.strip_prefix(" ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find("=") {
-                    event.set("mac", &remaining[..pos])?;
+                    let Some(pos) = remaining.find("=") else {
+                        break 'dissect false;
+                    };
+                    let dissect_key_mac = &remaining[..pos];
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix("=") {
+                    let Some(rest) = remaining.strip_prefix("=") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" request: ") {
-                    event.set("mac", &remaining[..pos])?;
+                    let Some(pos) = remaining.find(" request: ") else {
+                        break 'dissect false;
+                    };
+                    captured.push((dissect_key_mac, &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" request: ") {
+                    let Some(rest) = remaining.strip_prefix(" request: ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
-                }
-                if let Some(pos) = remaining.find(" ") {
-                    event.set("http.request.method", &remaining[..pos])?;
+                    let Some(pos) = remaining.find(" ") else {
+                        break 'dissect false;
+                    };
+                    captured.push(("http.request.method", &remaining[..pos]));
                     remaining = &remaining[pos..];
-                }
-                if let Some(rest) = remaining.strip_prefix(" ") {
+                    let Some(rest) = remaining.strip_prefix(" ") else {
+                        break 'dissect false;
+                    };
                     remaining = rest;
+                    captured.push(("url.original", remaining));
+                    true
+                };
+                if matched {
+                    for (path, value) in captured {
+                        event.set(path, value)?;
+                    }
+                } else {
+                    return Err(TransformError::ParseError {
+                        path: "event.original".into(),
+                        message: "dissect pattern did not match".into(),
+                    });
                 }
-                event.set("url.original", remaining)?;
             }
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("mac") {
+                if event.has_value("mac") {
                     if let Some(input) = event.get_string("mac") {
                         let mut remaining: &str = &input;
-                        if let Some(pos) = remaining.find(" agent=") {
-                            event.set("mac", &remaining[..pos])?;
+                        let mut captured: Vec<(&str, &str)> = Vec::new();
+                        let matched = 'dissect: {
+                            let Some(pos) = remaining.find(" agent=") else {
+                                break 'dissect false;
+                            };
+                            captured.push(("mac", &remaining[..pos]));
                             remaining = &remaining[pos..];
-                        }
-                        if let Some(rest) = remaining.strip_prefix(" agent=") {
+                            let Some(rest) = remaining.strip_prefix(" agent=") else {
+                                break 'dissect false;
+                            };
                             remaining = rest;
+                            captured.push(("user_agent.original", remaining));
+                            true
+                        };
+                        if matched {
+                            for (path, value) in captured {
+                                event.set(path, value)?;
+                            }
                         }
-                        event.set("user_agent.original", remaining)?;
                     }
                 }
                 Ok(())
@@ -96,66 +163,46 @@ impl Transform for Urls {
 
             if let Some(input) = event.get_string("src") {
                 // Grok pattern: ^%{IPV4:_temp.src_ip}:(?P<sport>(?:[0-9]+))$
-                if !cached_grok!("^%{IPV4:_temp.src_ip}:(?P<sport>(?:[0-9]+))$")
-                    .extract_into(&input, event)?
-                {
-                    // Grok pattern: ^\\[%{IPV6:_temp.src_ip}\\]:(?P<sport>(?:[0-9]+))$
-                    if !cached_grok!("^\\[%{IPV6:_temp.src_ip}\\]:(?P<sport>(?:[0-9]+))$")
-                        .extract_into(&input, event)?
-                    {
-                        // Grok pattern: ^(?P<_temp_src_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<sport>(?:[0-9]+))$
-                        if !cached_grok_mapped!("^(?P<_temp_src_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<sport>(?:[0-9]+))$", [("_temp_src_ip", "_temp.src_ip")]).extract_into(&input, event)? {
-                                // Grok pattern: ^%{IPV6:_temp.src_ip}(?:(?: port |[p#.]))(?P<sport>(?:[0-9]+))$
-                                if !cached_grok!("^%{IPV6:_temp.src_ip}(?:(?: port |[p#.]))(?P<sport>(?:[0-9]+))$").extract_into(&input, event)? {
-                                }
-                            }
-                    }
+                // Grok pattern: ^\\[%{IPV6:_temp.src_ip}\\]:(?P<sport>(?:[0-9]+))$
+                // Grok pattern: ^(?P<_temp_src_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<sport>(?:[0-9]+))$
+                // Grok pattern: ^%{IPV6:_temp.src_ip}(?:(?: port |[p#.]))(?P<sport>(?:[0-9]+))$
+                if !extract_first_match(
+                    &[
+                        cached_grok!("^%{IPV4:_temp.src_ip}:(?P<sport>(?:[0-9]+))$"),
+                        cached_grok!("^\\[%{IPV6:_temp.src_ip}\\]:(?P<sport>(?:[0-9]+))$"),
+                        cached_grok_mapped!(
+                            "^(?P<_temp_src_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<sport>(?:[0-9]+))$",
+                            [("_temp_src_ip", "_temp.src_ip")]
+                        ),
+                        cached_grok!(
+                            "^%{IPV6:_temp.src_ip}(?:(?: port |[p#.]))(?P<sport>(?:[0-9]+))$"
+                        ),
+                    ],
+                    &input,
+                    event,
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
                 }
             }
 
-            if let Some(s) = event.get_string("_temp.src_ip") {
-                // Validate IP format
-                let s = s.trim();
-                if s.parse::<std::net::IpAddr>().is_err() {
-                    return Err(TransformError::ParseError {
+            if let Some(val) = event.get("_temp.src_ip") {
+                let converted =
+                    convert_value(val, "ip").map_err(|message| TransformError::ParseError {
                         path: "_temp.src_ip".into(),
-                        message: format!("cannot convert '{}' to IP", s),
-                    });
-                }
-                event.set("source.ip", s)?;
+                        message,
+                    })?;
+                event.set("source.ip", converted)?;
             }
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(val) = event.get("sport") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path: "sport".into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                    path: "sport".into(),
-                                    message: format!("cannot convert '{}' to integer", s)
-                                })?)
-                            }
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "sport".into(),
+                            message,
                         }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "sport".into(),
-                                message: "cannot convert to integer".into(),
-                            });
-                        }
-                    };
+                    })?;
                     event.set("source.port", converted)?;
                 }
                 Ok(())
@@ -163,35 +210,37 @@ impl Transform for Urls {
 
             if let Some(input) = event.get_string("dst") {
                 // Grok pattern: ^%{IPV4:_temp.dst_ip}:(?P<dport>(?:[0-9]+))$
-                if !cached_grok!("^%{IPV4:_temp.dst_ip}:(?P<dport>(?:[0-9]+))$")
-                    .extract_into(&input, event)?
-                {
-                    // Grok pattern: ^\\[%{IPV6:_temp.dst_ip}\\]:(?P<dport>(?:[0-9]+))$
-                    if !cached_grok!("^\\[%{IPV6:_temp.dst_ip}\\]:(?P<dport>(?:[0-9]+))$")
-                        .extract_into(&input, event)?
-                    {
-                        // Grok pattern: ^(?P<_temp_dst_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<dport>(?:[0-9]+))$
-                        if !cached_grok_mapped!("^(?P<_temp_dst_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<dport>(?:[0-9]+))$", [("_temp_dst_ip", "_temp.dst_ip")]).extract_into(&input, event)? {
-                                // Grok pattern: ^%{IPV6:_temp.dst_ip}(?:(?: port |[p#.]))(?P<dport>(?:[0-9]+))$
-                                if !cached_grok!("^%{IPV6:_temp.dst_ip}(?:(?: port |[p#.]))(?P<dport>(?:[0-9]+))$").extract_into(&input, event)? {
-                                }
-                            }
-                    }
+                // Grok pattern: ^\\[%{IPV6:_temp.dst_ip}\\]:(?P<dport>(?:[0-9]+))$
+                // Grok pattern: ^(?P<_temp_dst_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<dport>(?:[0-9]+))$
+                // Grok pattern: ^%{IPV6:_temp.dst_ip}(?:(?: port |[p#.]))(?P<dport>(?:[0-9]+))$
+                if !extract_first_match(
+                    &[
+                        cached_grok!("^%{IPV4:_temp.dst_ip}:(?P<dport>(?:[0-9]+))$"),
+                        cached_grok!("^\\[%{IPV6:_temp.dst_ip}\\]:(?P<dport>(?:[0-9]+))$"),
+                        cached_grok_mapped!(
+                            "^(?P<_temp_dst_ip>(?:([0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4})):(?P<dport>(?:[0-9]+))$",
+                            [("_temp_dst_ip", "_temp.dst_ip")]
+                        ),
+                        cached_grok!(
+                            "^%{IPV6:_temp.dst_ip}(?:(?: port |[p#.]))(?P<dport>(?:[0-9]+))$"
+                        ),
+                    ],
+                    &input,
+                    event,
+                )? {
+                    return Err(TransformError::GrokNoMatch { value: input });
                 }
             }
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if let Some(s) = event.get_string("_temp.dst_ip") {
-                    // Validate IP format
-                    let s = s.trim();
-                    if s.parse::<std::net::IpAddr>().is_err() {
-                        return Err(TransformError::ParseError {
+                if let Some(val) = event.get("_temp.dst_ip") {
+                    let converted =
+                        convert_value(val, "ip").map_err(|message| TransformError::ParseError {
                             path: "_temp.dst_ip".into(),
-                            message: format!("cannot convert '{}' to IP", s),
-                        });
-                    }
-                    event.set("destination.ip", s)?;
+                            message,
+                        })?;
+                    event.set("destination.ip", converted)?;
                 }
                 Ok(())
             })();
@@ -205,47 +254,25 @@ impl Transform for Urls {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if let Some(val) = event.get("dport") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "dport".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "dport".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "dport".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "dport".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("destination.port", converted)?;
                     }
                     Ok(())
                 })();
             }
 
-            if let Some(s) = event.get_string("mac") {
-                let re = cached_regex!("[-:.]");
-                let replaced = re.replace_all(&s, "-").into_owned();
-                event.set("cisco_meraki.urls.mac", replaced)?;
-            }
+            gsub_field(
+                event,
+                "mac",
+                "cisco_meraki.urls.mac",
+                cached_regex!("[-:.]"),
+                "-",
+            )?;
 
             let _cond = {
                 !(event
@@ -265,11 +292,12 @@ impl Transform for Urls {
                 event.set("cisco_meraki.event_subtype", json!("http_access_error"))?;
             }
 
-            if event.has("user_agent.original") {
+            if event.has_value("user_agent.original") {
                 if let Some(ua_str) = event.get_string("user_agent.original") {
                     let ua_str = ua_str.to_string();
                     // User agent parsing
                     if let Ok(ua) = parse_user_agent(&ua_str) {
+                        event.remove("user_agent");
                         event.set("user_agent.original", json!(ua_str))?;
                         if let Some(name) = ua.name {
                             event.set("user_agent.name", json!(name))?;
@@ -294,44 +322,22 @@ impl Transform for Urls {
                 }
             }
 
-            let _cond = {
-                event.has_value("url.original")
-                    && event.get_str("url.original").is_some_and(|s| !s.is_empty())
-            };
+            let _cond =
+                { event.has_value("url.original") && event.get_str("url.original") != Some("") };
             if _cond {
-                if let Some(uri_str) = event.get_string("url.original") {
-                    if let Ok(url) = url::Url::parse(&uri_str) {
-                        event.set("url.scheme", url.scheme())?;
-                        if let Some(host) = url.host_str() {
-                            event.set("url.domain", host)?;
-                        }
-                        if let Some(port) = url.port() {
-                            event.set("url.port", json!(port))?;
-                        }
-                        event.set("url.path", url.path())?;
-                        if let Some(query) = url.query() {
-                            event.set("url.query", query)?;
-                        }
-                        if let Some(fragment) = url.fragment() {
-                            event.set("url.fragment", fragment)?;
-                        }
-                        if let Some(userinfo) = url.password() {
-                            event
-                                .set("url.user_info", format!("{}:{}", url.username(), userinfo))?;
-                        } else if !url.username().is_empty() {
-                            event.set("url.user_info", url.username())?;
-                        }
-                    }
-                }
+                uri_parts(event, "url.original", "url", true, false)?;
             }
 
-            if event.has("url.domain") {
-                if let Some(domain_str) = event.get_string("url.domain") {
-                    let domain = domain_str.to_string();
-                    event.set("url.domain", json!(domain.clone()))?;
-                    // Public suffix list lookup for registered domain extraction
+            if event.has_value("url.domain") {
+                if let Some(domain) = event.get_string("url.domain") {
+                    // Public suffix list lookup for registered domain extraction.
+                    // A failed lookup writes NO target field, which is what
+                    // Elasticsearch does.
                     if let Some(rd) = registered_domain_lookup(&domain) {
-                        event.set("url.registered_domain", json!(rd.registered_domain))?;
+                        event.set("url.domain", json!(domain))?;
+                        if let Some(registered) = rd.registered_domain {
+                            event.set("url.registered_domain", json!(registered))?;
+                        }
                         event.set("url.top_level_domain", json!(rd.top_level_domain))?;
                         if let Some(sub) = rd.subdomain {
                             event.set("url.subdomain", json!(sub))?;
@@ -351,33 +357,16 @@ impl Transform for Urls {
                 event.set("event.kind", json!("pipeline_error"))?;
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

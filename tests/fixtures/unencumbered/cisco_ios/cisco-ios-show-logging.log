@@ -1,0 +1,49 @@
+Jun  5 05:09:30.838 EST: %IP-4-DUPADDR: Duplicate address 172.16.1.216 on GigabitEthernet1, sourced by 5e00.80ff.0606
+Jun  5 05:10:36.839 EST: %IP-4-DUPADDR: Duplicate address 172.16.1.216 on GigabitEthernet1, sourced by 5e00.80ff.0606
+Jun  5 05:10:59.519 EST: %SYS-5-CONFIG_I: Configured from console by cisco on console
+Jun  5 05:11:04.626 EST: %SYS-5-CONFIG_R: Config Replace is Done
+Jun  5 05:11:14.115 EST: %SYS-5-CONFIG_R: Config Replace is Done
+*Oct 15 09:12:40.734: %SYS-6-LOGOUT: User admin has exited tty session 866(192.168.1.31)
+*Oct 15 09:13:24.005: %SELINUX-3-MISMATCH: R0/0: audispd: type=AVC msg=audit(1602753204.003:5355): avc:  denied  { mounton } for  pid=11284 comm="DNS" path="/sys" dev="overlay" ino=27798 scontext=system_u:system_r:polaris_vdaemon_t:s0 tcontext=system_u:object_r:tmp_t:s0 tclass=dir permissive=1
+*Aug 19 15:23:24.798: %SYS-5-CONFIG_I: Configured from console by cisco on vty1 (10.10.20.50)
+*Aug 23 14:04:05.376: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet1, changed state to up
+*Aug 23 14:04:05.377: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet2, changed state to up
+Aug 14 13:04:09.111: %SYS-5-CONFIG_I: Configured from console by giri on console
+Aug 14 13:04:16.789: %APMGR_TRACE_MESSAGE-2-WLC_APMGR_CRIT_MSG: Chassis 2 R0/0: wncd: CRITICAL, 0c75.bdb4.87e0 Configured policy-tag PT1 not defined, picking default-policy-tag.
+Aug 14 13:04:17.735: %CAPWAPAC_SMGR_TRACE_MESSAGE-5-AP_JOIN_DISJOIN: Chassis 2 R0/0: wncd: AP Event: AP Name: L11_2005_AP4 Mac: 0c75.bdb4.87e0 Session-IP: 9.2.91.63[5248] 9.2.89.30[5246] Ethernet MAC: 0c75.bdb6.09ec Joined
+Aug 14 13:04:18.074: %APMGR_TRACE_MESSAGE-3-WLC_GEN_ERR: Chassis 2 R0/0: wncd: Error in AP: 687d.b460.02a0: country code (IN) and regulatory domain (-B) mismatch for slot 1
+Aug 14 13:04:27.057: %APMGR_TRACE_MESSAGE-3-WLC_GEN_ERR: Chassis 2 R0/0: wncd: Error in AP: 00e5.6400.0200: country code (IN) and regulatory domain (-B) mismatch for slot 1
+Aug 14 13:04:27.591: %CAPWAPAC_SMGR_TRACE_MESSAGE-5-AP_JOIN_DISJOIN: Chassis 2 R0/0: wncd: AP Event: AP Name: WSIMAP-0002 Mac: 00e5.6400.0200 Session-IP: 9.2.91.145[5272] 9.2.89.30[5246] Ethernet MAC: 00e5.64f0.0002 Joined
+Aug 14 13:04:45.331: %CAPWAPAC_SMGR_TRACE_MESSAGE-5-AP_JOIN_DISJOIN: Chassis 2 R0/0: wncd: AP Event: AP Name: L11_2004_AP3 Mac: 687d.b477.5d00 Session-IP: 9.2.91.60[5275] 9.2.89.30[5246] Ethernet MAC: 687d.b402.eb70 Joined
+Aug 14 13:05:10.138: %APMGR_TRACE_MESSAGE-3-WLC_GEN_ERR: Chassis 2 R0/0: wncd: Error in AP: 00e5.6400.0100: country code (IN) and regulatory domain (-B) mismatch for slot 1
+Aug 14 13:05:10.422: %CAPWAPAC_SMGR_TRACE_MESSAGE-5-AP_JOIN_DISJOIN: Chassis 2 R0/0: wncd: AP Event: AP Name: WSIMAP-0001 Mac: 00e5.6400.0100 Session-IP: 9.2.91.144[5272] 9.2.89.30[5246] Ethernet MAC: 00e5.64f0.0001 Joined
+Aug 14 13:06:35.328: %AAA-6-METHOD_LIST_STATE: authen mlist  pvt_authen_0 of DOT1X service is marked for notifyingstate and its current state is : DEAD
+Aug 14 13:06:35.425: %AAA-6-METHOD_LIST_STATE: authen mlist  pvt_authen_0 of DOT1X service is marked for notifyingstate and its current state is : DEAD
+Aug 14 13:06:35.529: %AAA-6-METHOD_LIST_STATE: authen mlist  pvt_authen_0 of DOT1X service is marked for notifyingstate and its current state is : DEAD
+Aug 14 13:06:35.703: %AAA-6-METHOD_LIST_STATE: authen mlist  pvt_authen_0 of DOT1X service is marked for notifyingstate and its current state is : DEAD
+Aug 14 13:06:35.351: %AAA_AUDIT_MESSAGE-6-METHOD_LIST_STATE: Chassis 2 R0/0: wncd: mlist default of 8021X service is marked for notifying  state and its current state is : ALIVE
+Aug 14 13:06:35.351: %AAA_AUDIT_MESSAGE-6-METHOD_LIST_STATE: Chassis 2 R0/0: sessmgrd: mlist default of 8021X service is marked for notifying  state and its current state is : ALIVE
+Aug 14 13:06:35.807: %AAA-6-METHOD_LIST_STATE: authen mlist  pvt_authen_0 of DOT1X service is marked for notifyingstate and its current state is : DEAD
+Aug 14 13:06:36.623: %AAA-6-METHOD_LIST_STATE: authen mlist  pvt_authen_0 of DOT1X service is marked for notifyingstate and its current state is : DEAD
+Aug 14 13:06:36.732: %AAA-6-METHOD_LIST_STATE: authen mlist  pvt_authen_0 of DOT1X service is marked for notifyingstate and its current state is : DEAD
+Aug 14 13:06:38.852: %AAA-6-METHOD_LIST_STATE: authen mlist  pvt_authen_0 of DOT1X service is marked for notifyingstate and its current state is : DEAD
+Aug 14 13:06:39.105: %AAA-6-METHOD_LIST_STATE: authen mlist  pvt_authen_0 of DOT1X service is marked for notifyingstate and its current state is : DEAD
+Aug 14 13:06:39.106: %AAA-6-METHOD_LIST_STATE: authen mlist  pvt_authen_0 of DOT1X service is marked for notifyingstate and its current state is : DEAD
+Aug 14 13:06:40.399: %SYS-5-CONFIG_I: Configured from console by giri on console
+7:04: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet2/0/3, changed state to up
+022701: Jun 19 03:02:31: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet2/0/3, changed state to down
+022702: Jun 19 03:02:32: %LINK-3-UPDOWN: Interface GigabitEthernet2/0/3, changed state to down
+022703: Jun 19 03:02:37: %LINK-3-UPDOWN: Interface GigabitEthernet2/0/3, changed state to up
+Jan 30 14:11:11.354: %ILPOWER-7-DETECT: Interface Gi4/3: Power Device detected: IEEE PD
+Jan 30 14:11:55.762: %SYS-5-CONFIG_I: Configured from console by cisco on vty0 (172.16.5.22)
+Jan 30 14:11:32.142: %ILPOWER-7-DETECT: Interface Ten1/1: Power Device detected: IEEE PD
+Jan  2 12:00:05.047: %IOS_LICENSE_IMAGE_APPLICATION-6-LICENSE_LEVEL: Module name = c2900 Next reboot level = ipbasek9 and License = ipbasek9
+000049: Dec  2 12:09:23.643: %LINEPROTO-5-UPDOWN: Line protocol on Interface Embedded-Service-Engine0/0, changed state to down
+000050: Dec  2 12:09:25.715: %SYS-5-RESTART: System restarted --
+000051: Dec  2 12:09:25.719: %SNMP-5-COLDSTART: SNMP agent on host EDGE-2901-Router is undergoing a cold start
+065478: Dec  4 11:01:38.694 EST: %MAB-5-SUCCESS: Authentication successful for client (aaaa.bbbb.dddd) on Interface Gi8/39
+065480: Dec  4 11:01:38.702 EST: %AUTHMGR-5-FAIL: Authorization failed for client (aaaa.bbbb.dddd) on Interface Gi8/39
+065483: Dec  4 11:01:52.755 EST: %AUTHMGR-5-START: Starting 'dot1x' for client (aaaa.bbbb.dddd) on Interface Gi8/39
+*Sep 14 05:59:54.113: %LINEPROTO-5-UPDOWN: Line protocol on Interface Virtual-PPP2, changed state to up
+*Sep 14 06:00:45.693: %CRYPTO-4-PKT_REPLAY_ERR: decrypt: replay check failed
+*Sep 14 06:07:26.245: %LINEPROTO-5-UPDOWN: Line protocol on Interface Virtual-PPP2, changed state to down

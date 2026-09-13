@@ -1,0 +1,93 @@
+// SPDX-License-Identifier: BUSL-1.1
+// Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
+
+use dfe_runtime::prelude::*;
+
+/// Transform for the `pipeline_json` pipeline.
+pub struct PipelineJson;
+
+impl Transform for PipelineJson {
+    fn name(&self) -> &str {
+        "pipeline_json"
+    }
+
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
+        // A `drop` returns through here, so the closure carries the outcome.
+        let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
+                parse_json_field(event, "message", "logstash.slowlog")?;
+
+                if let Some(val) = event.get("logstash.slowlog.timeMillis") {
+                    let converted = convert_value(val, "string")
+                        .map_err(|message| TransformError::ParseError {
+                            path: "logstash.slowlog.timeMillis".into(),
+                            message,
+                        })?;
+                    event.set("logstash.slowlog.timeMillis", converted)?;
+                }
+
+                if let Some(date_str) = event.get_as_string("logstash.slowlog.timeMillis") {
+                    match parse_date_out(&date_str, &["UNIX_MS"], None, None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "logstash.slowlog.timeMillis".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
+                        }
+                    }
+                }
+
+                event.rename("logstash.slowlog.loggerName", "logstash.slowlog.module")?;
+
+                event.rename("logstash.slowlog.logEvent.took_in_millis", "logstash.slowlog.took_in_millis")?;
+
+                event.rename("logstash.slowlog.logEvent.took_in_nanos", "event.duration")?;
+
+                event.rename("logstash.slowlog.logEvent.event", "logstash.slowlog.event")?;
+
+                event.rename("logstash.slowlog.logEvent.plugin_params", "logstash.slowlog.plugin_params_object")?;
+
+                if let Some(input) = event.get_string("logstash.slowlog.module") {
+                    // Grok pattern: slowlog.logstash.%{WORD:logstash.slowlog.plugin_type}.%{WORD:logstash.slowlog.plugin_name}
+                    if !cached_grok!("slowlog.logstash.%{WORD:logstash.slowlog.plugin_type}.%{WORD:logstash.slowlog.plugin_name}").extract_into(&input, event)? {
+                        return Err(TransformError::GrokNoMatch { value: input });
+                    }
+                }
+
+                if event.remove("message").is_none() {
+                    return Err(TransformError::FieldNotFound { path: "message".into() });
+                }
+                if event.remove("logstash.slowlog.timeMillis").is_none() {
+                    return Err(TransformError::FieldNotFound { path: "logstash.slowlog.timeMillis".into() });
+                }
+                if event.remove("logstash.slowlog.logEvent").is_none() {
+                    return Err(TransformError::FieldNotFound { path: "logstash.slowlog.logEvent".into() });
+                }
+
+                event.rename("logstash.slowlog.level", "log.level")?;
+
+            event.set("event.kind", json!("event"))?;
+
+                // Painless script
+                // Source: def errorLevels = [\"ERROR\", \"FATAL\"]; if (ctx?.log?.level != null) {\n  if (errorLevels.contains(ctx.log.level)) {\n    ctx.event.type = [\"error\"];\n  } else {\n    ctx.event.type = [\"info\"];\n  }\n}
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec_plan(event, cached_painless!(r#"def errorLevels = [\"ERROR\", \"FATAL\"]; if (ctx?.log?.level != null) {\n  if (errorLevels.contains(ctx.log.level)) {\n    ctx.event.type = [\"error\"];\n  } else {\n    ctx.event.type = [\"info\"];\n  }\n}"#))?;
+
+            Ok(TransformResult::Continue)
+        })(event);
+
+        match outcome {
+            Ok(TransformResult::Drop) => return Ok(TransformResult::Drop),
+            Ok(_) => {}
+            Err(err) => {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.set("error.message", json!(event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string)))?;
+                event.remove("_ingest.on_failure_message");
+            }
+        }
+
+        Ok(TransformResult::Continue)
+    }
+}

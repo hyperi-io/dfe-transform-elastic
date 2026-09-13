@@ -33,13 +33,13 @@ enrich, and route the data.
 | Elastic Component | dfe-transform-elastic Equivalent | Status |
 |-------------------|----------------------------------|--------|
 | **Ingest processors** (27 used) | Rust processor implementations, one per Elastic processor type | Done |
-| **Painless scripts** | Pattern-matched against known script shapes in `painless_common.rs`; unrecognised scripts are skipped | 42.9% of scripts run (see Painless Coverage) |
+| **Painless scripts** | Pattern-matched against known script patterns in `crates/dfe-painless/src/common.rs`; unrecognised scripts are skipped | see Painless Coverage -- the figure is a corpus-run output, not a constant, so re-derive it rather than quoting one from here |
 | **Foreach processor** | Per-event loop inside the transform function | Okta, O365 |
 | **Pipeline chaining** | One transform module calls into another's logic directly | Partial (CrowdStrike done) |
 | **GeoIP enrichment** | Global MMDB enricher, auto-detected at startup, LRU-cached | Done (DB-IP Lite) |
 | **User Agent parsing** | Regex-based parser | Done (minor diffs from Elastic UA parser) |
 | **Community ID** | Hash-based network flow ID | Done |
-| **Conditional evaluation** | Native Rust `if`/`match` expressions per condition shape | Done (all patterns covered) |
+| **Conditional evaluation** | Native Rust `if`/`match` expressions per condition pattern | Done (all patterns covered) |
 | **On-failure handlers** | Not yet implemented | Planned |
 
 ### What We Do NOT Replicate
@@ -113,34 +113,47 @@ flowchart LR
 
 ## Crate Dependency Graph
 
-The workspace is three library crates plus the root service package.
+The workspace is five library crates plus the root service package.
 
 ```mermaid
 flowchart TD
     service[dfe-transform-elastic<br/><i>Service binary: cli, config,<br/>envelope, pipeline, registry</i>]
     transforms[dfe-transforms<br/><i>Transform modules,<br/>one per Elastic pipeline</i>]
-    runtime[dfe-runtime<br/><i>Event type, Transform trait,<br/>enrichment modules</i>]
+    runtime[dfe-runtime<br/><i>Grok cache, enrichment,<br/>codegen_api, Transform trait</i>]
+    painless[dfe-painless<br/><i>Painless matchers,<br/>plan, params, patterns.lock</i>]
+    core[dfe-core<br/><i>Event, errors, date formats,<br/>syslog priority, regex cache</i>]
     parse[dfe-parse<br/><i>High-performance parsers<br/>replacing grok/regex</i>]
 
     service --> transforms
     service --> runtime
     transforms --> runtime
     transforms --> parse
+    runtime --> painless
+    runtime --> core
     runtime --> parse
+    painless --> core
 ```
 
 | Crate | Type | Purpose |
 |-------|------|---------|
 | `dfe-transform-elastic` | Binary + Library | Service binary: CLI, config cascade, envelope unwrapping, registry lookup, batch pipeline, deployment artefact generation |
 | `dfe-transforms` | Library | Transform modules per data source (`filebeat::<source>::<pipeline>`) |
-| `dfe-runtime` | Library | Event type, Transform trait, enrichment modules, Painless pattern matching |
+| `dfe-runtime` | Library | Grok caching, enrichment, `codegen_api`, the Transform trait, and the prelude |
+| `dfe-painless` | Library | Painless pattern matching: the `known_patterns` ladder, `plan`, `params`, `patterns.lock` |
+| `dfe-core` | Library | `Event`, error types, date formats, syslog priority, the regex cache |
 | `dfe-parse` | Library | Zero-copy parsers replacing grok/regex patterns |
 
-`dfe-parse` is a dependency of both `dfe-transforms` and `dfe-runtime` but is not yet called
-from either. The transform modules still build their field extraction on `grok_to_regex`
-(`crates/dfe-runtime/src/codegen_api.rs`) plus `regex::Regex::new`, compiled inside the
-transform function on every call rather than once at startup. Wiring `dfe-parse` in is
-tracked as future work, not implemented behaviour.
+`dfe-transforms` has no direct edge to `dfe-painless`. It reaches the matchers through
+`dfe-runtime`, which re-exports every moved module at its old `painless_*` path -- which
+is why the thousand generated modules did not change when the split landed.
+
+`dfe-parse` is reached, but only for two whole-pattern forms: `grok_cache` dispatches
+`^%{IPV4:f}$` and `^%{IPV4:a}:%{PORT:p}$` to it and falls back to the compiled regex for
+everything else. The regex is no longer built per call either -- the `cached_grok!` and
+`cached_regex!` macros hold a site-local `OnceLock`, deliberately rather than a shared
+map, because a shared reader-count atomic bounces between cores once one transform thread
+runs per partition. Widening what `dfe-parse` covers is future work; wiring it in at all
+is not.
 
 ---
 
@@ -445,6 +458,38 @@ Zero-regex native Rust parsers for the 15 most common grok patterns:
 | `%{URI}` | `parse_uri()` | scheme://authority/path?query#fragment |
 | `%{UUID}` | `parse_uuid()` | Fixed 8-4-4-4-12 hex pattern |
 
+**What is WIRED is a much smaller set than what exists.** The table above is
+`dfe-parse`'s capability, not the dispatch. `grok_cache::native_form` recognises
+whole-pattern forms only, and by design refuses a near-miss rather than guessing
+at one — a pattern with literal text around its captures stays on the regex,
+because the regex engine is good at exactly that. Three forms are dispatched
+today:
+
+| Pattern | Path | Measured |
+|---|---|---|
+| `^%{IPV4:f}$` | `dfe_parse::ip::parse_ipv4` | 29 ns against 214 ns |
+| `^%{IPV4:a}:%{PORT:p}$` | the two chained | 47 ns against 208 ns |
+| `%{GREEDYDATA:f}`, anchored or not | `split_once('\n')` | 11 ns against 1,098 ns |
+
+The third reaches no parser at all: `line_anchored` makes it `(?m)^.*$` because
+joni anchors to lines, so it captures the FIRST LINE and the native form is a
+newline scan. It covers 202 call sites over 37 distinct patterns, 4.7% of the
+4,299 grok sites in the generated tree (3,496 `cached_grok!` plus 803
+`cached_grok_mapped!`).
+
+Those are DERIVED, not typed: `.hyperi-ai/tmp/count_grok_sites.py` re-counts
+them. The previous pair -- 194 sites, 10.2% of 1,906 -- was measured before the
+tree was regenerated whole, and the share fell because the denominator more
+than doubled, not because the native form lost ground.
+
+`^%{DATA:f}$` is deliberately excluded despite reading the same: `%{DATA}` is
+the lazy `.*?`, and on a `\r\n` line ending greedy keeps the `\r` in the capture
+where lazy stops before it.
+
+Every dispatched form carries an equivalence test running both paths over the
+same inputs, because the native path is an optimisation over the regex and never
+a replacement for it.
+
 **Parser convention:** All parsers take `&str`, return `ParseResult<'_, T>` where
 `T` is the parsed value (often `&str` for zero-copy):
 
@@ -512,7 +557,13 @@ sources exercise it.
 | `convert` | Done | All | Type coercion: `str→i64`, `str→f64`, `i64→str` |
 | `drop` | Done | All | `return Ok(TransformResult::Drop)` |
 | `split` | Done | O365 | `event.set(path, s.split(sep).collect())?` |
+| `join` | Done | SentinelOne | `join_values(value, sep)`, `None` on a non-array |
 | `uri_parts` | Done | Panw | Scheme, host, port, path, query components |
+| `dot_expander` | Done | GCP | `dot_expand(event, path, field)` |
+| `fail` | Done | CrowdStrike | Returns a `TransformError` carrying the message |
+| `terminate` | Done | Defender | Stops the pipeline and KEEPS the document |
+| `urldecode` | Done | Zscaler | `url_decode`, form-encoded so `+` is a space |
+| `sort` | Done | M365 Defender | `sort_values`, errors on anything with no natural ordering |
 
 ### Medium (~8) — read a field value and reshape it
 
@@ -523,7 +574,7 @@ sources exercise it.
 | `json` | Done | All | `simd_json::from_str` / `serde_json::from_str` |
 | `kv` | Done | Okta | Key-value split, configurable delimiters |
 | `csv` | Done | Fortinet | Separator/quote config |
-| `foreach` | Broken (`_ingest._value` unsupported) | Okta, O365 | `for item in event.get_array(path)` |
+| `foreach` | Done | Okta, O365, sysmon | Each element bound to `_ingest._value`, the inner processor run, the list rebuilt |
 | `date` | Done | All | `chrono` against the formats a source emits |
 | `gsub` | Done | O365 | `regex::Regex::replace_all` |
 
@@ -531,28 +582,45 @@ sources exercise it.
 
 | Processor | Status | Used By | Code Pattern |
 |---|---|---|---|
-| `script` (Painless) | Pattern-match, see below | All | Rust matching a recognised script shape, or a no-op |
+| `script` (Painless) | Pattern-match, see below | All | Rust matching a recognised script pattern, or a no-op |
 | `geoip` | Done (DB-IP) | All with IPs | `enrichment::geoip::enrich(event, field, prefix)?` |
 | `user_agent` | Done | O365, Okta | `enrichment::user_agent::enrich(event, field, prefix)?` |
 | `community_id` | Done | Panw, Fortinet | `enrichment::community_id::enrich(event)?` |
 | `registered_domain` | Done | Panw | Split heuristic (full public suffix list deferred) |
 | `network_direction` | Done | Fortinet, Panw | CIDR-based internal/external classification |
-| `fingerprint` | Done | O365 | SHA-256/SHA-1/MD5/MurmurHash3 |
+| `fingerprint` | Done | O365, M365 | `fingerprint_default`: SHA-1, base64, NUL before each value. `salt` and `method` are refused, so the default is the only path. |
 | `pipeline` (nested) | Partial | CrowdStrike, Fortinet | Direct call into the target module |
 
-Not implemented (not used by current integrations): bytes, cef, date_index_name,
-dot_expander, enrich, fail, geo_grid, html_strip, inference, join, redact, reroute,
-set_security_user, sort, terminate, urldecode.
+Not implemented (not used by any vendored pipeline): bytes, cef, date_index_name,
+enrich, geo_grid, html_strip, inference, redact, reroute, set_security_user.
+The generator ERRORS on one rather than skipping it, so a package that starts
+using one fails to onboard and says which -- that is how `join`, `sort`,
+`urldecode`, `dot_expander`, `fail` and `terminate` got written.
 
 ### Painless Coverage
 
-`crates/dfe-transforms/tests/painless_coverage.rs` measures how much of the Painless in the
-fixture corpus the runtime actually executes, rather than silently skipping. `painless_exec`
-(`crates/dfe-runtime/src/codegen_api.rs`) tries each script against the known shapes in
-`painless_common.rs` (drop-empty, keys-to-snake-case, email-split, and similar patterns) and
-counts every script as handled or unhandled via `painless_stats.rs`. The floor is 42.9%: 1,370
-of 3,190 scripts run across 79 fixture files. The test fails if a change drops the ratio below
-the floor; it does not fail for staying at it.
+A script the runtime cannot execute is skipped rather than failing the event, so the skips have
+to be counted or they are indistinguishable from a script that did nothing. `painless_exec`
+(`crates/dfe-runtime/src/codegen_api.rs`) tries each script against the known patterns in
+`crates/dfe-painless/src/common.rs` and records the outcome through
+`crates/dfe-painless/src/stats.rs`.
+
+**Two measurements, and only the second is honest about reach.**
+
+`crates/dfe-transforms/tests/painless_coverage.rs` drives the committed fixtures and holds a
+floor of 100%: 4,243 scripts across 80 fixture files, none skipped. That floor is real but its
+driver is narrow - 80 files against the compat corpus's 939 data streams - so it says the
+fixtures are fully covered, not that the runtime is.
+
+Running the same counters over the compat corpus is what says that:
+**59,308 handled and 11,230 skipped**, across 1,257 distinct scripts, **522 of which never
+applied on any event**. `DFE_PAINLESS_UNHANDLED=<path>` on the corpus test writes the detail.
+
+The gap between the two is the point. A pattern can MATCH a script statically and then decline at
+run time, which reads as covered from everywhere except that dump - so
+`scripts/pattern_reach.py` joins it against the static census
+(`DFE_BINDING_DUMP=<path>` on `painless_binding`) to name the patterns that claim a script and
+never apply it.
 
 ---
 
@@ -596,7 +664,7 @@ pub trait Enrichment: Send + Sync {
 ### GeoIP Design
 
 - **Storage:** mmap'd MMDB via `maxminddb` crate (zero-copy read)
-- **Cache:** an LRU cache in front of the MMDB reader (`crates/dfe-runtime/src/enrichment/geoip_cache.rs`), 100,000 entries by default, a quarter evicted at a time when full. 14 of the 60 source pipelines carry a geoip processor, several of them four or more times, so a single 20k-event batch can hit the cache several times per event.
+- **Cache:** an LRU cache in front of the MMDB reader (`crates/dfe-runtime/src/enrichment/geoip_cache.rs`), 100,000 entries by default, a quarter evicted at a time when full. 325 of the 1,069 generated data-stream modules carry a geoip call, 2,953 call sites between them, so a single 20k-event batch can hit the cache several times per event. Re-derive both counts by scanning `crates/dfe-transforms/src/filebeat/` rather than trusting these -- the previous pair, "14 of the 60 source pipelines", predated most of the tree.
 - **Output fields:** `country_name`, `country_iso_code`, `city_name`, `location.lat`, `location.lon`, `continent_name`, `timezone`
 - **Failure:** `ignore_missing` support, errors tagged not fatal
 

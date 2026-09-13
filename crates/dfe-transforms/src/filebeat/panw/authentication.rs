@@ -19,6 +19,7 @@ impl Transform for Authentication {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(csv_str) = event.get_string("message") {
+                    let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                     let mut rdr = csv::ReaderBuilder::new()
                         .delimiter(b',')
                         .quote(b'\"')
@@ -225,16 +226,18 @@ impl Transform for Authentication {
                 Ok(())
             })();
 
-            let _cond = {
-                event.has_value("_temp_.user")
-                    && event.get_str("_temp_.user").is_some_and(|s| !s.is_empty())
-            };
+            let _cond =
+                { event.has_value("_temp_.user") && event.get_str("_temp_.user") != Some("") };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    event.append(
+                    event.append_unique(
                         "source.user.name",
-                        event.get("_temp_.user").cloned().unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_temp_.user")
+                                .map_or_else(String::new, template_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -242,19 +245,18 @@ impl Transform for Authentication {
 
             let _cond = {
                 event.has_value("panw.panos.normalize_user")
-                    && event
-                        .get_str("panw.panos.normalize_user")
-                        .is_some_and(|s| !s.is_empty())
+                    && event.get_str("panw.panos.normalize_user") != Some("")
             };
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    event.append(
+                    event.append_unique(
                         "source.user.name",
-                        event
-                            .get("panw.panos.normalize_user")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("panw.panos.normalize_user")
+                                .map_or_else(String::new, template_to_string)
+                        ),
                     )?;
                     Ok(())
                 })();
@@ -315,29 +317,42 @@ impl Transform for Authentication {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append("error.message", json!(format!("error in Authentication pipeline: error in [{}] processor{} with tag [{}]{} {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append(
+                    "error.message",
+                    json!(format!(
+                        "Processor '{}' {}in pipeline '{}' failed with message '{}'",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, template_to_string),
+                        if event
+                            .get("_ingest.on_failure_processor_tag")
+                            .is_some_and(|v| !v.is_null()
+                                && v.as_str() != Some("")
+                                && !matches!(v, Value::Bool(false))
+                                && !v.as_array().is_some_and(Vec::is_empty))
+                        {
+                            format!(
+                                "with tag '{}' ",
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string)
+                            )
+                        } else {
+                            String::new()
+                        },
+                        event
+                            .get("_ingest.pipeline")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    )),
+                )?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

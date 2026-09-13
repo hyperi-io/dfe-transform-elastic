@@ -73,6 +73,7 @@ pub fn unflatten_value(flat: &Map<String, Value>) -> Value {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
     use serde_json::json;

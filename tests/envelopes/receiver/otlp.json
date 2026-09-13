@@ -1,0 +1,30 @@
+{
+  "provenance": {
+    "file": "dfe-receiver src/server/otlp/convert.rs",
+    "line": "log_to_generic_json, and the assertions in test_convert_logs_generic_mode",
+    "producer": "dfe-receiver, OTLP transport, Generic mode",
+    "note": "OTLP tags _signal, not _source, and only in GENERIC mode. The HyperDx and OTel modes emit the ClickHouse otel column names -- Timestamp, Body, ServiceName, SeverityText, LogAttributes -- with no marker key at all, so the transport has two detectable shapes and one undetectable one."
+  },
+  "shape": {
+    "family": "receiver",
+    "variant": "otlp"
+  },
+  "detect": {
+    "family": "receiver",
+    "variant": "otlp"
+  },
+  "event": {
+    "_signal": "log",
+    "_timestamp": "2026-02-19T00:00:00Z",
+    "_observed_timestamp": "1970-01-01T00:00:00Z",
+    "trace_id": "",
+    "span_id": "",
+    "severity_text": "ERROR",
+    "severity_number": 17,
+    "body": "error occurred",
+    "attributes": {},
+    "resource": {},
+    "scope_name": "",
+    "scope_version": ""
+  }
+}

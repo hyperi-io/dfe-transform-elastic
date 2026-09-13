@@ -50,6 +50,12 @@ const SEND_BACKOFF_BASE: Duration = Duration::from_millis(100);
 /// and trigger a rebalance while the loop is still retrying.
 const SEND_BACKOFF_MAX: Duration = Duration::from_secs(5);
 
+/// First wait after a failed receive, doubling to [`SEND_BACKOFF_MAX`].
+///
+/// An unreachable broker fails every `recv` immediately, so without a wait the
+/// loop spins as fast as the call returns and logs an error on every turn.
+const RECV_BACKOFF_BASE: Duration = Duration::from_millis(100);
+
 /// The per-pod signals `/scaling/pressure` serves to KEDA.
 ///
 /// `None` when the scaling engine is disabled, in which case nothing is fed
@@ -71,6 +77,8 @@ pub struct ScalingSignals {
 /// cannot be created.
 pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
     check_credentials(&transport_defaults())?;
+
+    provision_geoip(&config.geoip).await;
 
     let consumer = KafkaTransport::new(&consumer_config(&config))
         .await
@@ -102,6 +110,41 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
     .await
 }
 
+/// Get the MMDB databases onto disk before the first batch reaches a geoip
+/// processor.
+///
+/// Provisioning is scalo's (`geoip_download`): it resolves the provider's file
+/// names, keeps a local copy inside `max_age_days`, downloads a replacement
+/// when it is stale, and falls back to the stale copy when the download fails.
+/// Only the lookup engine and its cache are ours.
+///
+/// Deliberately not on [`run_loop`], which the broker round-trip test drives
+/// directly -- a test must not reach db-ip.com. It is also why this never
+/// returns an error: a provider outage degrades enrichment, and turning that
+/// into a failed startup would take the transform offline over geo fields.
+async fn provision_geoip(config: &scalo::geoip_download::GeoIpConfig) {
+    let paths = match scalo::geoip_download::ensure_databases(config).await {
+        Ok(paths) => paths,
+        Err(e) => {
+            tracing::warn!(error = %e, "GeoIP provisioning failed; enrichment will be empty");
+            return;
+        }
+    };
+
+    tracing::info!(
+        city = ?paths.city,
+        asn = ?paths.asn,
+        provider = ?config.provider,
+        "GeoIP databases provisioned"
+    );
+
+    // False means a lookup already forced the readers open, which cannot
+    // happen here: nothing has consumed a batch yet.
+    if !dfe_runtime::enrichment::geoip_global::set_databases(paths.city, paths.asn) {
+        tracing::warn!("GeoIP databases were already resolved; the provisioned paths are unused");
+    }
+}
+
 /// The batch loop, over transports the caller already built.
 ///
 /// Separate from [`run`] so a broker round-trip can drive it without a
@@ -125,8 +168,10 @@ pub async fn run_loop(
 ) -> crate::Result<()> {
     let transform = crate::registry::lookup(&config.source.name)
         .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
-    let framing =
-        crate::registry::origin(&config.source.name).and_then(crate::registry::Origin::framing);
+    let intake = crate::registry::intake(&config.source.name)
+        .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
+    let dataset = crate::registry::dataset(&config.source.name)
+        .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
 
     metrics.dfe.pipeline_ready(true);
 
@@ -141,10 +186,14 @@ pub async fn run_loop(
 
     push_scaling_signals(scaling, consumer, 0.0);
     let mut last_signal = Instant::now();
+    let mut recv_backoff = RECV_BACKOFF_BASE;
     // `painless_stats` counts cumulatively for the process; the metrics want
     // per-batch deltas.
     let mut painless_seen = (0_u64, 0_u64);
     let mut geoip_seen = (0_u64, 0_u64);
+    // The shape last reported, so a steady stream logs once rather than per
+    // batch and a producer change is still visible the batch it happens.
+    let mut last_envelope: Option<crate::envelope::Detected> = None;
 
     // 14 of the source pipelines carry a geoip processor, so a deployment
     // that mounted no database gets empty geo fields rather than an error.
@@ -152,8 +201,9 @@ pub async fn run_loop(
         tracing::info!("GeoIP enrichment active");
     } else {
         tracing::warn!(
-            "no GeoIP database found -- geo fields will be empty. Mount one at \
-             /var/lib/dfe/geoip or set GEOIP_CITY_DB and GEOIP_ASN_DB"
+            "no GeoIP database found -- geo fields will be empty. Check \
+             `geoip.enabled` and `geoip.auto_download`, or mount the files \
+             yourself and name them in `geoip.city_db_path` / `geoip.asn_db_path`"
         );
     }
 
@@ -163,15 +213,25 @@ pub async fn run_loop(
             last_signal = Instant::now();
         }
 
-        let batch = tokio::select! {
+        let received = tokio::select! {
             () = shutdown.cancelled() => break,
-            result = consumer.recv(config.source.batch_size) => match result {
-                Ok(batch) => batch,
-                Err(e) => {
-                    tracing::error!(error = %e, "receive failed");
-                    continue;
+            result = consumer.recv(config.source.batch_size) => result,
+        };
+
+        let batch = match received {
+            Ok(batch) => {
+                recv_backoff = RECV_BACKOFF_BASE;
+                batch
+            }
+            Err(e) => {
+                tracing::error!(error = %e, "receive failed");
+                tokio::select! {
+                    () = shutdown.cancelled() => break,
+                    () = tokio::time::sleep(recv_backoff) => {}
                 }
-            },
+                recv_backoff = recv_backoff.saturating_mul(2).min(SEND_BACKOFF_MAX);
+                continue;
+            }
         };
 
         if batch.records.is_empty() {
@@ -211,43 +271,16 @@ pub async fn run_loop(
             .transport_received_events(TransportKind::Kafka, received);
         metrics.app.records_received.increment(received);
 
-        let (transformed, outcome) =
-            transform_batch_with(transform, config.source.envelope, framing, events);
+        let resolution =
+            crate::envelope::resolve(config.source.envelope, events.first(), intake, dataset);
+        report_envelope(&resolution, &mut last_envelope, metrics);
+
+        let (transformed, outcome) = transform_batch_with(transform, &resolution.delivery, events);
         metrics
             .batch_duration
             .record(started.elapsed().as_secs_f64());
 
-        metrics.events_transformed.increment(outcome.emitted as u64);
-        metrics.events_dropped.increment(outcome.dropped as u64);
-        metrics.events_errored.increment(outcome.errored as u64);
-        metrics.dfe.records_filtered(outcome.dropped as u64);
-        metrics
-            .app
-            .records_processed
-            .increment(outcome.emitted as u64);
-        metrics.app.records_error.increment(outcome.errored as u64);
-
-        let painless_now = (
-            dfe_runtime::painless_stats::handled(),
-            dfe_runtime::painless_stats::unhandled(),
-        );
-        metrics
-            .painless_handled
-            .increment(painless_now.0.saturating_sub(painless_seen.0));
-        metrics
-            .painless_unhandled
-            .increment(painless_now.1.saturating_sub(painless_seen.1));
-        painless_seen = painless_now;
-
-        let geoip = dfe_runtime::enrichment::geoip_global::cache_stats();
-        metrics
-            .geoip_cache_hits
-            .increment(geoip.hits.saturating_sub(geoip_seen.0));
-        metrics
-            .geoip_cache_misses
-            .increment(geoip.misses.saturating_sub(geoip_seen.1));
-        metrics.geoip_cache_size.set(geoip.size as f64);
-        geoip_seen = (geoip.hits, geoip.misses);
+        record_batch(metrics, outcome, &mut painless_seen, &mut geoip_seen);
 
         tracing::debug!(
             emitted = outcome.emitted,
@@ -497,6 +530,99 @@ fn producer_config(config: &Config) -> KafkaConfig {
     }
 }
 
+/// Record what a transformed batch produced.
+///
+/// `painless_stats` and the `GeoIP` cache count cumulatively for the process,
+/// so the two `seen` pairs carry the previous reading and the metrics take the
+/// delta.
+// Batch counts are bounded far below 2^53, so the f64 cast is exact.
+#[allow(clippy::cast_precision_loss)]
+fn record_batch(
+    metrics: &TransformMetrics,
+    outcome: crate::pipeline::BatchOutcome,
+    painless_seen: &mut (u64, u64),
+    geoip_seen: &mut (u64, u64),
+) {
+    metrics.events_transformed.increment(outcome.emitted as u64);
+    metrics.events_dropped.increment(outcome.dropped as u64);
+    metrics.events_errored.increment(outcome.errored as u64);
+    metrics.dfe.records_filtered(outcome.dropped as u64);
+    metrics
+        .app
+        .records_processed
+        .increment(outcome.emitted as u64);
+    metrics.app.records_error.increment(outcome.errored as u64);
+
+    let painless_now = (
+        dfe_runtime::painless_stats::handled(),
+        dfe_runtime::painless_stats::unhandled(),
+    );
+    metrics
+        .painless_handled
+        .increment(painless_now.0.saturating_sub(painless_seen.0));
+    metrics
+        .painless_unhandled
+        .increment(painless_now.1.saturating_sub(painless_seen.1));
+    *painless_seen = painless_now;
+
+    let geoip = dfe_runtime::enrichment::geoip_global::cache_stats();
+    metrics
+        .geoip_cache_hits
+        .increment(geoip.hits.saturating_sub(geoip_seen.0));
+    metrics
+        .geoip_cache_misses
+        .increment(geoip.misses.saturating_sub(geoip_seen.1));
+    metrics.geoip_cache_size.set(geoip.size as f64);
+    *geoip_seen = (geoip.hits, geoip.misses);
+}
+
+/// Log the batch's envelope when it changes, and count what was wrong with it.
+///
+/// The counters fire every batch; the log line only on a change, because the
+/// steady state is thousands of identical batches.
+fn report_envelope(
+    resolution: &crate::envelope::Resolution,
+    last: &mut Option<crate::envelope::Detected>,
+    metrics: &TransformMetrics,
+) {
+    if resolution.contradicted {
+        metrics.envelope_contradicted.increment(1);
+    }
+    if resolution.unaccepted {
+        metrics.envelope_unaccepted.increment(1);
+    }
+
+    let Some(detected) = resolution.detected.as_ref() else {
+        return;
+    };
+    if last.as_ref() == Some(detected) {
+        return;
+    }
+    *last = Some(detected.clone());
+
+    if resolution.contradicted {
+        tracing::warn!(
+            configured = ?resolution.delivery.envelope,
+            detected = ?detected.family,
+            variant = %detected.variant,
+            "events do not look like the configured envelope; unwrapping as configured"
+        );
+    } else if resolution.unaccepted {
+        tracing::warn!(
+            detected = ?detected.family,
+            variant = %detected.variant,
+            "this source cannot arrive over the detected envelope; unwrapping as beats"
+        );
+    } else {
+        tracing::info!(
+            envelope = ?resolution.delivery.envelope,
+            variant = %detected.variant,
+            dataset = resolution.delivery.dataset,
+            "envelope in use"
+        );
+    }
+}
+
 #[cfg(test)]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
@@ -508,7 +634,7 @@ mod tests {
             pipeline_name: "test".into(),
             source: SourceConfig {
                 name: "filebeat.okta.default".into(),
-                envelope: crate::envelope::Envelope::Beats,
+                envelope: crate::envelope::EnvelopeSetting::Auto,
                 topics: vec!["in".into()],
                 batch_size: 100,
                 group_id: "g".into(),
@@ -519,6 +645,7 @@ mod tests {
                 brokers: Some(vec!["other:9092".into()]),
                 max_message_bytes: crate::config::default_max_message_bytes(),
             },
+            geoip: scalo::geoip_download::GeoIpConfig::default(),
         }
     }
 

@@ -1,0 +1,11 @@
+<189>521: router1: *Nov 14 08:30:56.699: %LINK-5-CHANGED: Interface GigabitEthernet2, changed state to administratively down
+<189>1179: NetAuto_CSRv-03: May 31 15:25:53.743 MEST: %LINK-5-CHANGED: Interface GigabitEthernet2, changed state to administratively down from 10.83.75.201
+<189>1432: test-switch1: Jun  1 12:50:26.172: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/2, changed state to down
+<189>117: NetAuto_CSRv-03: May  9 12:49:27.098: %LINK-5-CHANGED: Interface GigabitEthernet2, changed state to administratively down
+<189>1440: test-switch1: Jun  1 13:35:45.562: %LINEPROTO-5-UPDOWN: Line protocol on Interface FastEthernet0/2, changed state to up
+<189>521: router1: *Mar 15 10:05:53.044: %OSPF-5-ADJCHG: Process 1, Nbr 172.16.46.4 on GigabitEthernet2.45 from INIT to DOWN, Neighbor Down: Dead timer expired
+<190>521: router1: *Mar 15 10:05:53.044: %OSPF-5-ADJCHG: Process 1, Nbr 172.16.46.4 on GigabitEthernet2.45 from LOADING to FULL, Loading Done
+<189>24: test-ztp: May 23 15:49:32.302: %SYS-5-CONFIG_I: Configured from tftp://10.83.21.224//cisco-bootstrap by console
+<189>30: test-ztp: May 23 13:56:15.055: %SYS-5-CONFIG_I: Configured from console by admin on vty0 (10.31.0.24)
+<189>27: test-ztp: May 31 15:54:54.567 MEST: %SYS-5-CONFIG_I: Configured from console by admin on console
+<191>Jan 24 11:28:30.407: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/0, changed state to down

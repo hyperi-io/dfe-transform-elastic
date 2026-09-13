@@ -25,8 +25,38 @@ impl Transform for RemoteResponseSessionStart {
 
             event.append("event.type", json!("start"))?;
 
-            if event.has("crowdstrike.event.UserName") {
-                event.rename("crowdstrike.event.UserName", "user.name")?;
+            // ignore_failure: true
+            let _ = (|| -> Result<()> {
+                if event.has_value("crowdstrike.event.UserName") {
+                    if let Some(input) = event.get_string("crowdstrike.event.UserName") {
+                        // Grok pattern: %{USERNAME:user.name}@%{HOSTNAME:user.domain}
+                        // Grok pattern: %{GREEDYDATA:user.name}
+                        if !extract_first_match(
+                            &[
+                                cached_grok!("%{USERNAME:user.name}@%{HOSTNAME:user.domain}"),
+                                cached_grok!("%{GREEDYDATA:user.name}"),
+                            ],
+                            &input,
+                            event,
+                        )? {
+                            return Err(TransformError::GrokNoMatch { value: input });
+                        }
+                    }
+                }
+                Ok(())
+            })();
+
+            let _cond = {
+                event.has_value("crowdstrike.event.UserName")
+                    && event
+                        .get_str("crowdstrike.event.UserName")
+                        .map(|s| s.find("@").map(|b| s[..b].chars().count()))
+                        .is_some_and(|i| i.is_some_and(|i| i > 0))
+            };
+            if _cond {
+                if let Some(v) = event.get("crowdstrike.event.UserName").cloned() {
+                    event.set("user.email", v)?;
+                }
             }
 
             let _cond = {
@@ -37,15 +67,13 @@ impl Transform for RemoteResponseSessionStart {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTimestamp") {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "event.start",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.start", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.StartTimestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -59,17 +87,13 @@ impl Transform for RemoteResponseSessionStart {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTimestamp") {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "event.start",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.start", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.StartTimestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -77,7 +101,7 @@ impl Transform for RemoteResponseSessionStart {
 
             event.set("message", json!("Remote response session started."))?;
 
-            if event.has("crowdstrike.event.HostnameField") {
+            if event.has_value("crowdstrike.event.HostnameField") {
                 event.rename("crowdstrike.event.HostnameField", "host.name")?;
             }
 
@@ -89,30 +113,13 @@ impl Transform for RemoteResponseSessionStart {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

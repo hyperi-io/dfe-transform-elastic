@@ -21,16 +21,16 @@ impl Transform for SpringcloudlogsInnerPipeline {
                 // Painless script
                 // Source: ctx['_index'] = ctx['_index'].replace('platformlogs', 'springcloudlogs')
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"ctx['_index'] = ctx['_index'].replace('platformlogs', 'springcloudlogs')"#
                     ),
                 )?;
                 Ok(())
             })();
 
-            if event.has("azure.platformlogs") {
+            if event.has_value("azure.platformlogs") {
                 event.rename("azure.platformlogs", "azure.springcloudlogs")?;
             }
 
@@ -49,115 +49,117 @@ impl Transform for SpringcloudlogsInnerPipeline {
             let _cond = {
                 event.get_str("azure.springcloudlogs.category") != Some("SystemLogs")
                     && event.get_str("azure.springcloudlogs.category") != Some("ApplicationConsole")
+                    && event.get_str("azure.springcloudlogs.category") != Some("IngressLogs")
+                    && event.get_str("azure.springcloudlogs.category") != Some("BuildLogs")
+                    && event.get_str("azure.springcloudlogs.category") != Some("ContainerEventLogs")
             };
             if _cond {
                 return Ok(TransformResult::Drop);
             }
 
-            if event.has("azure.springcloudlogs.LogFormat") {
+            if event.has_value("azure.springcloudlogs.LogFormat") {
                 event.rename(
                     "azure.springcloudlogs.LogFormat",
                     "azure.springcloudlogs.log_format",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.InstanceName") {
+            if event.has_value("azure.springcloudlogs.properties.InstanceName") {
                 event.rename(
                     "azure.springcloudlogs.properties.InstanceName",
                     "azure.springcloudlogs.properties.instance_name",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.Log") {
+            if event.has_value("azure.springcloudlogs.properties.Log") {
                 event.rename(
                     "azure.springcloudlogs.properties.Log",
                     "azure.springcloudlogs.properties.log",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.ServiceName") {
+            if event.has_value("azure.springcloudlogs.properties.ServiceName") {
                 event.rename(
                     "azure.springcloudlogs.properties.ServiceName",
                     "azure.springcloudlogs.properties.service_name",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.Stream") {
+            if event.has_value("azure.springcloudlogs.properties.Stream") {
                 event.rename(
                     "azure.springcloudlogs.properties.Stream",
                     "azure.springcloudlogs.properties.stream",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.AppName") {
+            if event.has_value("azure.springcloudlogs.properties.AppName") {
                 event.rename(
                     "azure.springcloudlogs.properties.AppName",
                     "azure.springcloudlogs.properties.app_name",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.ServiceId") {
+            if event.has_value("azure.springcloudlogs.properties.ServiceId") {
                 event.rename(
                     "azure.springcloudlogs.properties.ServiceId",
                     "azure.springcloudlogs.properties.service_id",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.Type") {
+            if event.has_value("azure.springcloudlogs.properties.Type") {
                 event.rename(
                     "azure.springcloudlogs.properties.Type",
                     "azure.springcloudlogs.properties.type",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.Level") {
+            if event.has_value("azure.springcloudlogs.properties.Level") {
                 event.rename(
                     "azure.springcloudlogs.properties.Level",
                     "azure.springcloudlogs.level",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.Logger") {
+            if event.has_value("azure.springcloudlogs.properties.Logger") {
                 event.rename(
                     "azure.springcloudlogs.properties.Logger",
                     "azure.springcloudlogs.properties.logger",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.Stack") {
+            if event.has_value("azure.springcloudlogs.properties.Stack") {
                 event.rename(
                     "azure.springcloudlogs.properties.Stack",
                     "azure.springcloudlogs.properties.stack",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.properties.Thread") {
+            if event.has_value("azure.springcloudlogs.properties.Thread") {
                 event.rename(
                     "azure.springcloudlogs.properties.Thread",
                     "azure.springcloudlogs.properties.thread",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.level") {
+            if event.has_value("azure.springcloudlogs.level") {
                 event.rename("azure.springcloudlogs.level", "log.level")?;
             }
 
-            if event.has("azure.springcloudlogs.operationName") {
+            if event.has_value("azure.springcloudlogs.operationName") {
                 event.rename(
                     "azure.springcloudlogs.operationName",
                     "azure.springcloudlogs.operation_name",
                 )?;
             }
 
-            if event.has("azure.springcloudlogs.operation_name") {
+            if event.has_value("azure.springcloudlogs.operation_name") {
                 if let Some(val) = event.get("azure.springcloudlogs.operation_name") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "azure.springcloudlogs.operation_name".into(),
+                            message,
+                        }
+                    })?;
                     event.set("event.action", converted)?;
                 }
             }
@@ -170,35 +172,40 @@ impl Transform for SpringcloudlogsInnerPipeline {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.set(
+                event.set("event.kind", json!("pipeline_error"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
+                event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(format!(
+                        "Processor '{}' {}failed with message '{}'",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, template_to_string),
+                        if event
+                            .get("_ingest.on_failure_processor_tag")
+                            .is_some_and(|v| !v.is_null()
+                                && v.as_str() != Some("")
+                                && !matches!(v, Value::Bool(false))
+                                && !v.as_array().is_some_and(Vec::is_empty))
+                        {
+                            format!(
+                                "with tag '{}' ",
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string)
+                            )
+                        } else {
+                            String::new()
+                        },
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    )),
                 )?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

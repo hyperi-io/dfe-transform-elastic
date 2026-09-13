@@ -142,6 +142,17 @@ impl ServiceApp for App {
         config: Config,
         runtime: scalo::cli::ServiceRuntime,
     ) -> Result<(), CliError> {
+        // Fire-and-forget, and OFF unless `version_check.enabled` says
+        // otherwise, so an operator who never configures it pays nothing and
+        // reaches nothing. It must not sit on the batch loop's path.
+        scalo::version_check::VersionCheck::new(
+            scalo::version_check::VersionCheckConfig::from_cascade(
+                self.name(),
+                env!("CARGO_PKG_VERSION"),
+            ),
+        )
+        .check_on_startup();
+
         crate::service::run(config, runtime)
             .await
             .map_err(|e| CliError::Service(e.to_string()))

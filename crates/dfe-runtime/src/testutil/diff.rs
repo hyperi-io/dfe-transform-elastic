@@ -8,7 +8,6 @@
 //! - **Subset:** expected fields must be present in actual (extra fields allowed)
 //! - **Semantic:** like exact, but ignores non-deterministic fields
 
-use std::collections::BTreeSet;
 use std::fmt;
 
 use serde_json::{Map, Value};
@@ -51,40 +50,25 @@ pub struct JsonDiff {
     pub mode: MatchMode,
 }
 
-/// Fields that are non-deterministic or infrastructure-only in Semantic mode.
-const SEMANTIC_SKIP_FIELDS: &[&str] = &[
-    "@timestamp",
-    "event.created",
-    "event.ingested",
-    "@metadata",
-    "_id",            // Elastic document ID — not a user field
-    "event.original", // Depends on preserve_original_event tag handling
-    // GeoIP fields — DB-IP Lite vs MaxMind GeoLite2 give different results
-    "source.geo",
-    "destination.geo",
-    "client.geo",
-    "server.geo",
-    "source.as",
-    "destination.as",
-    // Azure uses geo.* (not source.geo.*) for activity log locations
-    "geo",
-    // UA parser differences — our regex parser vs Elastic's ua-parser library
-    // These produce slightly different results for edge cases (Mobile Safari, WKWebView,
-    // trailing dots on versions, "Other" vs None, iOS version extraction).
-    // Content is correct enough for DFE purposes — exact parity would need ua-parser crate.
-    "user_agent",
-    // Array ordering — Java LinkedHashMap preserves insertion order, Rust BTreeMap sorts
-    "okta.debug_context.debug_data.risk_behaviors",
-    // Raw string representation of parsed objects — not semantically meaningful
-    "okta.debug_context.debug_data.flattened.risk_object",
-];
-
 impl JsonDiff {
     /// Compare expected and actual JSON values using the given match mode.
+    ///
+    /// Knows no source, so every policy rule applies whatever it is scoped to.
+    /// [`Self::compare_for`] is the scoped form.
     pub fn compare(expected: &Value, actual: &Value, mode: MatchMode) -> Self {
+        Self::compare_for(None, expected, actual, mode)
+    }
+
+    /// Compare, naming the source so the policy's scoped rules can apply.
+    pub fn compare_for(
+        source: Option<&str>,
+        expected: &Value,
+        actual: &Value,
+        mode: MatchMode,
+    ) -> Self {
         let expected_flat = flatten_value(expected);
         let actual_flat = flatten_value(actual);
-        let diffs = compare_flat(&expected_flat, &actual_flat, mode);
+        let diffs = compare_flat(source, &expected_flat, &actual_flat, mode);
         Self { diffs, mode }
     }
 
@@ -96,7 +80,7 @@ impl JsonDiff {
         mode: MatchMode,
     ) -> Self {
         let actual_flat = flatten_value(actual);
-        let diffs = compare_flat(expected_flat, &actual_flat, mode);
+        let diffs = compare_flat(None, expected_flat, &actual_flat, mode);
         Self { diffs, mode }
     }
 
@@ -147,20 +131,18 @@ impl fmt::Display for JsonDiff {
 }
 
 fn compare_flat(
+    source: Option<&str>,
     expected: &Map<String, Value>,
     actual: &Map<String, Value>,
     mode: MatchMode,
 ) -> Vec<FieldDiff> {
     let mut diffs = Vec::new();
 
-    let skip_fields: BTreeSet<&str> = if mode == MatchMode::Semantic {
-        SEMANTIC_SKIP_FIELDS.iter().copied().collect()
-    } else {
-        BTreeSet::new()
-    };
+    let policy = super::policy::policy();
+    let skipped = |key: &str| mode == MatchMode::Semantic && policy.skips(source, key);
 
     for (key, expected_val) in expected {
-        if mode == MatchMode::Semantic && should_skip(key, &skip_fields) {
+        if skipped(key) {
             continue;
         }
 
@@ -174,7 +156,7 @@ fn compare_flat(
                 });
             }
             Some(actual_val) => {
-                if !values_equal(expected_val, actual_val) {
+                if !values_equal(key, expected_val, actual_val, mode) {
                     diffs.push(FieldDiff {
                         path: key.clone(),
                         kind: DiffKind::Mismatch {
@@ -189,7 +171,7 @@ fn compare_flat(
 
     if mode == MatchMode::Exact || mode == MatchMode::Semantic {
         for (key, actual_val) in actual {
-            if mode == MatchMode::Semantic && should_skip(key, &skip_fields) {
+            if skipped(key) {
                 continue;
             }
             if !expected.contains_key(key) {
@@ -207,18 +189,39 @@ fn compare_flat(
     diffs
 }
 
-fn should_skip(key: &str, skip_fields: &BTreeSet<&str>) -> bool {
-    skip_fields
-        .iter()
-        .any(|prefix| key == *prefix || key.starts_with(&format!("{prefix}.")))
-}
-
-fn values_equal(a: &Value, b: &Value) -> bool {
+/// Compare two values at `path`.
+///
+/// The path decides whether an array is a set: `tests/compare-policy.yaml`
+/// names the ECS fields whose members carry no ordering, and an array it does
+/// not name is compared in order, deliberately.
+fn values_equal(path: &str, a: &Value, b: &Value, mode: MatchMode) -> bool {
     match (a, b) {
+        (Value::Array(xs), Value::Array(ys))
+            if xs.len() == ys.len()
+                && mode == MatchMode::Semantic
+                && super::policy::policy().is_unordered(path) =>
+        {
+            let mut remaining: Vec<&Value> = ys.iter().collect();
+            xs.iter().all(|x| {
+                remaining
+                    .iter()
+                    .position(|y| values_equal(path, x, y, mode))
+                    .map(|at| remaining.swap_remove(at))
+                    .is_some()
+            })
+        }
         (Value::Number(na), Value::Number(nb)) => {
             // Handle integer vs float comparison (1 == 1.0)
             if let (Some(fa), Some(fb)) = (na.as_f64(), nb.as_f64()) {
-                (fa - fb).abs() < f64::EPSILON
+                // Scaled by magnitude, because `f64::EPSILON` is the step at
+                // 1.0 and nothing else. One step at 58 is 7.1e-15, thirty-two
+                // times that, so a capture whose DECIMAL TEXT round-trips one
+                // step low read as a defect: rapid7's `58.282000000000004`
+                // parses below the value `582.82 / 10.0` computes, and ours is
+                // the correctly-rounded one. The tolerance stays inside a
+                // single rounding step, which no arithmetic defect fits within.
+                let scale = fa.abs().max(fb.abs()).max(1.0);
+                (fa - fb).abs() <= f64::EPSILON * scale
             } else {
                 na == nb
             }
@@ -257,6 +260,7 @@ fn format_value(v: &Value) -> String {
 }
 
 #[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::*;
     use serde_json::json;

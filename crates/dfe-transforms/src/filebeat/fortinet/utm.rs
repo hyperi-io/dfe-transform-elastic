@@ -46,51 +46,27 @@ impl Transform for Utm {
 
             event.append("event.category", json!("network"))?;
 
-            if event.has("fortinet.firewall.dstip") {
+            if event.has_value("fortinet.firewall.dstip") {
                 event.rename("fortinet.firewall.dstip", "destination.ip")?;
             }
 
             let _cond = { !event.has_value("destination.ip") };
             if _cond {
-                if event.has("fortinet.firewall.remip") {
+                if event.has_value("fortinet.firewall.remip") {
                     event.rename("fortinet.firewall.remip", "destination.ip")?;
                 }
             }
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.dst_port") {
+                if event.has_value("fortinet.firewall.dst_port") {
                     if let Some(val) = event.get("fortinet.firewall.dst_port") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.dst_port".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.dst_port".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "fortinet.firewall.dst_port".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "fortinet.firewall.dst_port".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("destination.port", converted)?;
                     }
                 }
@@ -101,44 +77,14 @@ impl Transform for Utm {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("fortinet.firewall.remport") {
+                    if event.has_value("fortinet.firewall.remport") {
                         if let Some(val) = event.get("fortinet.firewall.remport") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "fortinet.firewall.remport".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "fortinet.firewall.remport".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "fortinet.firewall.remport".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "fortinet.firewall.remport".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("destination.port", converted)?;
                         }
                     }
@@ -150,44 +96,14 @@ impl Transform for Utm {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("fortinet.firewall.dstport") {
+                    if event.has_value("fortinet.firewall.dstport") {
                         if let Some(val) = event.get("fortinet.firewall.dstport") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "fortinet.firewall.dstport".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "fortinet.firewall.dstport".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "fortinet.firewall.dstport".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "fortinet.firewall.dstport".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("destination.port", converted)?;
                         }
                     }
@@ -197,45 +113,21 @@ impl Transform for Utm {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.rcvdbyte") {
+                if event.has_value("fortinet.firewall.rcvdbyte") {
                     if let Some(val) = event.get("fortinet.firewall.rcvdbyte") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.rcvdbyte".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.rcvdbyte".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "fortinet.firewall.rcvdbyte".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "fortinet.firewall.rcvdbyte".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("destination.bytes", converted)?;
                     }
                 }
                 Ok(())
             })();
 
-            if event.has("fortinet.firewall.recipient") {
+            if event.has_value("fortinet.firewall.recipient") {
                 event.rename("fortinet.firewall.recipient", "email.to.address")?;
             }
 
@@ -243,55 +135,32 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "email.to.address",
-                    event
-                        .get("fortinet.firewall.recipient")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.recipient")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
-            if event.has("fortinet.firewall.group") {
+            if event.has_value("fortinet.firewall.group") {
                 event.rename("fortinet.firewall.group", "source.user.group.name")?;
             }
 
-            if event.has("fortinet.firewall.locip") {
+            if event.has_value("fortinet.firewall.locip") {
                 event.rename("fortinet.firewall.locip", "source.ip")?;
             }
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.locport") {
+                if event.has_value("fortinet.firewall.locport") {
                     if let Some(val) = event.get("fortinet.firewall.locport") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.locport".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.locport".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "fortinet.firewall.locport".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "fortinet.firewall.locport".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("source.port", converted)?;
                     }
                 }
@@ -302,44 +171,14 @@ impl Transform for Utm {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("fortinet.firewall.src_port") {
+                    if event.has_value("fortinet.firewall.src_port") {
                         if let Some(val) = event.get("fortinet.firewall.src_port") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "fortinet.firewall.src_port".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "fortinet.firewall.src_port".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "fortinet.firewall.src_port".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "fortinet.firewall.src_port".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("source.port", converted)?;
                         }
                     }
@@ -351,44 +190,14 @@ impl Transform for Utm {
             if _cond {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
-                    if event.has("fortinet.firewall.srcport") {
+                    if event.has_value("fortinet.firewall.srcport") {
                         if let Some(val) = event.get("fortinet.firewall.srcport") {
-                            let converted = match val {
-                                Value::String(s) => {
-                                    let s = s.trim();
-                                    if let Some(hex) = s.strip_prefix("0x") {
-                                        json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "fortinet.firewall.srcport".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    } else {
-                                        json!(s.parse::<i64>().map_err(|_| {
-                                            TransformError::ParseError {
-                                                path: "fortinet.firewall.srcport".into(),
-                                                message: format!(
-                                                    "cannot convert '{}' to integer",
-                                                    s
-                                                ),
-                                            }
-                                        })?)
-                                    }
+                            let converted = convert_value(val, "long").map_err(|message| {
+                                TransformError::ParseError {
+                                    path: "fortinet.firewall.srcport".into(),
+                                    message,
                                 }
-                                Value::Number(n) => {
-                                    json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                                }
-                                Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                                _ => {
-                                    return Err(TransformError::ParseError {
-                                        path: "fortinet.firewall.srcport".into(),
-                                        message: "cannot convert to integer".into(),
-                                    });
-                                }
-                            };
+                            })?;
                             event.set("source.port", converted)?;
                         }
                     }
@@ -398,74 +207,50 @@ impl Transform for Utm {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.sentbyte") {
+                if event.has_value("fortinet.firewall.sentbyte") {
                     if let Some(val) = event.get("fortinet.firewall.sentbyte") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.sentbyte".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.sentbyte".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "fortinet.firewall.sentbyte".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "fortinet.firewall.sentbyte".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("source.bytes", converted)?;
                     }
                 }
                 Ok(())
             })();
 
-            if event.has("fortinet.firewall.srcdomain") {
+            if event.has_value("fortinet.firewall.srcdomain") {
                 event.rename("fortinet.firewall.srcdomain", "source.domain")?;
             }
 
             let _cond = { !event.has_value("source.ip") };
             if _cond {
-                if event.has("fortinet.firewall.srcip") {
+                if event.has_value("fortinet.firewall.srcip") {
                     event.rename("fortinet.firewall.srcip", "source.ip")?;
                 }
             }
 
-            if event.has("fortinet.firewall.httpmethod") {
+            if event.has_value("fortinet.firewall.httpmethod") {
                 event.rename("fortinet.firewall.httpmethod", "http.request.method")?;
             }
 
-            if event.has("fortinet.firewall.referralurl") {
+            if event.has_value("fortinet.firewall.referralurl") {
                 event.rename("fortinet.firewall.referralurl", "http.request.referrer")?;
             }
 
-            if event.has("fortinet.firewall.srcmac") {
+            if event.has_value("fortinet.firewall.srcmac") {
                 event.rename("fortinet.firewall.srcmac", "source.mac")?;
             }
 
-            if event.has("fortinet.firewall.unauthuser") {
+            if event.has_value("fortinet.firewall.unauthuser") {
                 event.rename("fortinet.firewall.unauthuser", "source.user.name")?;
             }
 
             let _cond = { !event.has_value("source.user.name") };
             if _cond {
-                if event.has("fortinet.firewall.user") {
+                if event.has_value("fortinet.firewall.user") {
                     event.rename("fortinet.firewall.user", "source.user.name")?;
                 }
             }
@@ -474,10 +259,11 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "email.sender.address",
-                    event
-                        .get("fortinet.firewall.sender")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.sender")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -485,232 +271,340 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "email.from.address",
-                    event
-                        .get("fortinet.firewall.from")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.from")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
-            if event.has("fortinet.firewall.agent") {
+            if event.has_value("fortinet.firewall.agent") {
                 event.rename("fortinet.firewall.agent", "user_agent.original")?;
             }
 
-            if event.has("fortinet.firewall.app") {
+            if event.has_value("fortinet.firewall.app") {
                 event.rename("fortinet.firewall.app", "network.application")?;
             }
 
-            if event.has("fortinet.firewall.appcat") {
+            if event.has_value("fortinet.firewall.appcat") {
                 event.rename("fortinet.firewall.appcat", "rule.category")?;
             }
 
-            if event.has("fortinet.firewall.applist") {
+            if event.has_value("fortinet.firewall.applist") {
                 event.rename("fortinet.firewall.applist", "rule.ruleset")?;
             }
 
             let _cond = { !event.has_value("rule.category") };
             if _cond {
-                if event.has("fortinet.firewall.catdesc") {
+                if event.has_value("fortinet.firewall.catdesc") {
                     event.rename("fortinet.firewall.catdesc", "rule.category")?;
                 }
             }
 
             let _cond = { event.has_value("rule.category") };
             if _cond {
-                if event.has("rule.category") {
-                    if let Some(s) = event.get_string("rule.category") {
-                        let re = cached_regex!("\\.");
-                        let replaced = re.replace_all(&s, "-").into_owned();
-                        event.set("rule.category", replaced)?;
-                    }
+                if event.has_value("rule.category") {
+                    gsub_field(
+                        event,
+                        "rule.category",
+                        "rule.category",
+                        cached_regex!("\\."),
+                        "-",
+                    )?;
                 }
             }
 
-            if event.has("fortinet.firewall.error") {
+            if event.has_value("fortinet.firewall.error") {
                 event.rename("fortinet.firewall.error", "event.message")?;
             }
 
-            if event.has("fortinet.firewall.errorcode") {
+            if event.has_value("fortinet.firewall.errorcode") {
                 event.rename("fortinet.firewall.errorcode", "event.code")?;
             }
 
-            if event.has("fortinet.firewall.event_id") {
+            if event.has_value("fortinet.firewall.event_id") {
                 event.rename("fortinet.firewall.event_id", "event.id")?;
             }
 
             let _cond = { !event.has_value("event.id") };
             if _cond {
-                if event.has("fortinet.firewall.eventid") {
+                if event.has_value("fortinet.firewall.eventid") {
                     event.rename("fortinet.firewall.eventid", "event.id")?;
                 }
             }
 
-            if event.has("fortinet.firewall.filename") {
+            if event.has_value("fortinet.firewall.filename") {
                 event.rename("fortinet.firewall.filename", "file.name")?;
             }
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("fortinet.firewall.filesize") {
+                if event.has_value("fortinet.firewall.filesize") {
                     if let Some(val) = event.get("fortinet.firewall.filesize") {
-                        let converted = match val {
-                            Value::String(s) => {
-                                let s = s.trim();
-                                if let Some(hex) = s.strip_prefix("0x") {
-                                    json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.filesize".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                } else {
-                                    json!(s.parse::<i64>().map_err(|_| {
-                                        TransformError::ParseError {
-                                            path: "fortinet.firewall.filesize".into(),
-                                            message: format!("cannot convert '{}' to integer", s),
-                                        }
-                                    })?)
-                                }
+                        let converted = convert_value(val, "long").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "fortinet.firewall.filesize".into(),
+                                message,
                             }
-                            Value::Number(n) => {
-                                json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                            }
-                            Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                            _ => {
-                                return Err(TransformError::ParseError {
-                                    path: "fortinet.firewall.filesize".into(),
-                                    message: "cannot convert to integer".into(),
-                                });
-                            }
-                        };
+                        })?;
                         event.set("file.size", converted)?;
                     }
                 }
                 Ok(())
             })();
 
-            if event.has("fortinet.firewall.filetype") {
+            if event.has_value("fortinet.firewall.filetype") {
                 event.rename("fortinet.firewall.filetype", "file.extension")?;
             }
 
             let _cond = { !event.has_value("file.name") };
             if _cond {
-                if event.has("fortinet.firewall.infectedfilename") {
+                if event.has_value("fortinet.firewall.infectedfilename") {
                     event.rename("fortinet.firewall.infectedfilename", "file.name")?;
                 }
             }
 
             let _cond = { !event.has_value("file.size") };
             if _cond {
-                if event.has("fortinet.firewall.infectedfilesize") {
+                if event.has_value("fortinet.firewall.infectedfilesize") {
                     event.rename("fortinet.firewall.infectedfilesize", "file.size")?;
                 }
             }
 
             let _cond = { !event.has_value("file.extension") };
             if _cond {
-                if event.has("fortinet.firewall.infectedfiletype") {
+                if event.has_value("fortinet.firewall.infectedfiletype") {
                     event.rename("fortinet.firewall.infectedfiletype", "file.extension")?;
                 }
             }
 
             let _cond = { !event.has_value("file.name") };
             if _cond {
-                if event.has("fortinet.firewall.matchedfilename") {
+                if event.has_value("fortinet.firewall.matchedfilename") {
                     event.rename("fortinet.firewall.matchedfilename", "file.name")?;
                 }
             }
 
             let _cond = { !event.has_value("file.extension") };
             if _cond {
-                if event.has("fortinet.firewall.matchedfiletype") {
+                if event.has_value("fortinet.firewall.matchedfiletype") {
                     event.rename("fortinet.firewall.matchedfiletype", "file.extension")?;
                 }
             }
 
-            if event.has("fortinet.firewall.hostname") {
-                event.rename("fortinet.firewall.hostname", "url.domain")?;
-            }
-
-            if event.has("fortinet.firewall.ipaddr") {
+            if event.has_value("fortinet.firewall.ipaddr") {
                 event.rename("fortinet.firewall.ipaddr", "dns.resolved_ip")?;
             }
 
-            if event.has("dns.resolved_ip") {
+            if event.has_value("dns.resolved_ip") {
                 if let Some(s) = event.get_string("dns.resolved_ip") {
-                    let parts: Vec<Value> = s.split(", ").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(", ").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("dns.resolved_ip", Value::Array(parts))?;
                 }
             }
 
-            if event.has("fortinet.firewall.level") {
+            if event.has_value("fortinet.firewall.level") {
                 event.rename("fortinet.firewall.level", "log.level")?;
             }
 
             let _cond = { !event.has_value("event.code") };
             if _cond {
-                if event.has("fortinet.firewall.logid") {
+                if event.has_value("fortinet.firewall.logid") {
                     event.rename("fortinet.firewall.logid", "event.code")?;
                 }
             }
 
-            if event.has("fortinet.firewall.msg") {
+            if event.has_value("fortinet.firewall.msg") {
                 event.rename("fortinet.firewall.msg", "message")?;
             }
 
             let _cond = { !event.has_value("rule.id") };
             if _cond {
-                if event.has("fortinet.firewall.policy_id") {
+                if event.has_value("fortinet.firewall.policy_id") {
                     event.rename("fortinet.firewall.policy_id", "rule.id")?;
                 }
             }
 
             let _cond = { !event.has_value("rule.id") };
             if _cond {
-                if event.has("fortinet.firewall.policyid") {
+                if event.has_value("fortinet.firewall.policyid") {
                     event.rename("fortinet.firewall.policyid", "rule.id")?;
                 }
             }
 
             let _cond = { !event.has_value("rule.ruleset") };
             if _cond {
-                if event.has("fortinet.firewall.profile") {
+                if event.has_value("fortinet.firewall.profile") {
                     event.rename("fortinet.firewall.profile", "rule.ruleset")?;
                 }
             }
 
-            if event.has("fortinet.firewall.proto") {
+            if event.has_value("fortinet.firewall.proto") {
                 event.rename("fortinet.firewall.proto", "network.iana_number")?;
             }
 
-            if event.has("fortinet.firewall.qclass") {
+            if event.has_value("fortinet.firewall.qclass") {
                 event.rename("fortinet.firewall.qclass", "dns.question.class")?;
             }
 
-            if event.has("fortinet.firewall.qname") {
+            if event.has_value("fortinet.firewall.qname") {
                 event.rename("fortinet.firewall.qname", "dns.question.name")?;
             }
 
-            if event.has("fortinet.firewall.qtype") {
+            if event.has_value("fortinet.firewall.qtype") {
                 event.rename("fortinet.firewall.qtype", "dns.question.type")?;
             }
 
-            if event.has("fortinet.firewall.service") {
+            if event.has_value("fortinet.firewall.service") {
                 event.rename("fortinet.firewall.service", "network.protocol")?;
             }
 
-            if event.has("network.protocol") {
-                if let Some(s) = event.get_string("network.protocol") {
-                    let lowered = s.to_lowercase();
-                    event.set("network.protocol", lowered)?;
+            if event.has_value("network.protocol") {
+                map_strings(
+                    event,
+                    "network.protocol",
+                    "network.protocol",
+                    str::to_lowercase,
+                )?;
+            }
+
+            let _cond = { event.has_value("fortinet.firewall.url") };
+            if _cond {
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    if !uri_parts(event, "fortinet.firewall.url", "url", false, false)?
+                        && event
+                            .get_str("fortinet.firewall.url")
+                            .is_some_and(|value| !value.is_empty())
+                    {
+                        return Err(TransformError::ParseError {
+                            path: "fortinet.firewall.url".into(),
+                            message: "uri_parts: not a parseable URI".into(),
+                        });
+                    }
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "uri_parts")?;
+                    if let Some(v) = event.get("fortinet.firewall.url").cloned() {
+                        event.set("url.original", v)?;
+                    }
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
                 }
             }
 
-            if event.has("fortinet.firewall.url") {
-                event.rename("fortinet.firewall.url", "url.path")?;
+            if let Some(v) = event
+                .get("fortinet.firewall.hostname")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("url.domain", v)?;
             }
 
-            if event.has("fortinet.firewall.xid") {
+            let _cond = {
+                !event.has_value("url.scheme")
+                    && ["http", "https"].contains(&event.get_str("network.protocol").unwrap_or(""))
+                    && (event.has_value("url.domain") || event.has_value("fortinet.firewall.url"))
+            };
+            if _cond {
+                if let Some(v) = event
+                    .get("network.protocol")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("url.scheme", v)?;
+                }
+            }
+
+            let _cond = {
+                !event.has_value("url.full")
+                    && event
+                        .get("fortinet.firewall.url")
+                        .is_some_and(|v| v.is_string())
+                    && (event
+                        .get_str("fortinet.firewall.url")
+                        .is_some_and(|s| s.starts_with("http://"))
+                        || event
+                            .get_str("fortinet.firewall.url")
+                            .is_some_and(|s| s.starts_with("https://")))
+            };
+            if _cond {
+                if let Some(v) = event
+                    .get("fortinet.firewall.url")
+                    .filter(|v| !painless_is_empty_value(v))
+                    .cloned()
+                {
+                    event.set("url.full", v)?;
+                }
+            }
+
+            let _cond = {
+                event.has_value("url.scheme")
+                    && event.has_value("url.domain")
+                    && event.has_value("url.path")
+                    && !event.has_value("url.full")
+                    && event.has_value("url.query")
+            };
+            if _cond {
+                event.set(
+                    "url.full",
+                    json!(format!(
+                        "{}://{}{}?{}",
+                        event
+                            .get("url.scheme")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("url.domain")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("url.path")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("url.query")
+                            .map_or_else(String::new, template_to_string)
+                    )),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("url.scheme")
+                    && event.has_value("url.domain")
+                    && event.has_value("url.path")
+                    && !event.has_value("url.full")
+                    && !event.has_value("url.query")
+            };
+            if _cond {
+                event.set(
+                    "url.full",
+                    json!(format!(
+                        "{}://{}{}",
+                        event
+                            .get("url.scheme")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("url.domain")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("url.path")
+                            .map_or_else(String::new, template_to_string)
+                    )),
+                )?;
+            }
+
+            event.remove("fortinet.firewall.hostname");
+
+            event.remove("fortinet.firewall.url");
+
+            if event.has_value("fortinet.firewall.xid") {
                 event.rename("fortinet.firewall.xid", "dns.id")?;
             }
 
@@ -718,14 +612,15 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "tls.server.x509.subject.common_name",
-                    event
-                        .get("fortinet.firewall.scertcname")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.scertcname")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
-            if event.has("fortinet.firewall.scertissuer") {
+            if event.has_value("fortinet.firewall.scertissuer") {
                 event.rename("fortinet.firewall.scertissuer", "tls.server.issuer")?;
             }
 
@@ -733,14 +628,15 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "tls.server.x509.issuer.common_name",
-                    event
-                        .get("tls.server.issuer")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("tls.server.issuer")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
-            if event.has("fortinet.firewall.ccertissuer") {
+            if event.has_value("fortinet.firewall.ccertissuer") {
                 event.rename("fortinet.firewall.ccertissuer", "tls.client.issuer")?;
             }
 
@@ -748,25 +644,26 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "tls.client.x509.issuer.common_name",
-                    event
-                        .get("tls.client.issuer")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("tls.client.issuer")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
-            if event.has("fortinet.firewall.sender") {
+            if event.has_value("fortinet.firewall.sender") {
                 event.rename("fortinet.firewall.sender", "tls.server.issuer")?;
             }
 
             let _cond = { !event.has_value("tls.server.issuer") };
             if _cond {
-                if event.has("fortinet.firewall.issuer") {
+                if event.has_value("fortinet.firewall.issuer") {
                     event.rename("fortinet.firewall.issuer", "tls.server.issuer")?;
                 }
             }
 
-            if event.has("fortinet.firewall.authalgo") {
+            if event.has_value("fortinet.firewall.authalgo") {
                 event.rename(
                     "fortinet.firewall.authalgo",
                     "tls.server.x509.public_key_algorithm",
@@ -775,7 +672,7 @@ impl Transform for Utm {
 
             let _cond = { !event.has_value("tls.server.x509.public_key_algorithm") };
             if _cond {
-                if event.has("fortinet.firewall.keyalgo") {
+                if event.has_value("fortinet.firewall.keyalgo") {
                     event.rename(
                         "fortinet.firewall.keyalgo",
                         "tls.server.x509.public_key_algorithm",
@@ -785,21 +682,21 @@ impl Transform for Utm {
 
             let _cond = { !event.has_value("tls.server.not_before") };
             if _cond {
-                if event.has("fortinet.firewall.notbefore") {
+                if event.has_value("fortinet.firewall.notbefore") {
                     event.rename("fortinet.firewall.notbefore", "tls.server.not_before")?;
                 }
             }
 
             let _cond = { !event.has_value("tls.server.not_after") };
             if _cond {
-                if event.has("fortinet.firewall.notafter") {
+                if event.has_value("fortinet.firewall.notafter") {
                     event.rename("fortinet.firewall.notafter", "tls.server.not_after")?;
                 }
             }
 
             let _cond = { !event.has_value("tls.server.x509.public_key_size") };
             if _cond {
-                if event.has("fortinet.firewall.keysize") {
+                if event.has_value("fortinet.firewall.keysize") {
                     event.rename(
                         "fortinet.firewall.keysize",
                         "tls.server.x509.public_key_size",
@@ -807,62 +704,41 @@ impl Transform for Utm {
                 }
             }
 
-            if event.has("tls.server.x509.public_key_size") {
+            if event.has_value("tls.server.x509.public_key_size") {
                 if let Some(val) = event.get("tls.server.x509.public_key_size") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path: "tls.server.x509.public_key_size".into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                    path: "tls.server.x509.public_key_size".into(),
-                                    message: format!("cannot convert '{}' to integer", s)
-                                })?)
-                            }
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "tls.server.x509.public_key_size".into(),
+                            message,
                         }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "tls.server.x509.public_key_size".into(),
-                                message: "cannot convert to integer".into(),
-                            });
-                        }
-                    };
+                    })?;
                     event.set("tls.server.x509.public_key_size", converted)?;
                 }
             }
 
             let _cond = { !event.has_value("tls.server.x509.serial_number") };
             if _cond {
-                if event.has("fortinet.firewall.sn") {
+                if event.has_value("fortinet.firewall.sn") {
                     event.rename("fortinet.firewall.sn", "tls.server.x509.serial_number")?;
                 }
             }
 
             let _cond = { !event.has_value("tls.server.hash.sha1") };
             if _cond {
-                if event.has("fortinet.firewall.certhash") {
+                if event.has_value("fortinet.firewall.certhash") {
                     event.rename("fortinet.firewall.certhash", "tls.server.hash.sha1")?;
                 }
             }
 
             let _cond = { event.has_value("tls.server.hash.sha1") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hash",
-                    event
-                        .get("tls.server.hash.sha1")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("tls.server.hash.sha1")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -882,21 +758,25 @@ impl Transform for Utm {
                 event.set("tls.server.x509.not_before", v)?;
             }
 
-            if event.has("fortinet.firewall.san") {
+            if event.has_value("fortinet.firewall.san") {
                 if let Some(s) = event.get_string("fortinet.firewall.san") {
-                    let parts: Vec<Value> = s.split(";").map(|p| json!(p)).collect();
+                    let mut parts: Vec<Value> = s.split(";").map(|p| json!(p)).collect();
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                     event.set("tls.server.x509.alternative_names", Value::Array(parts))?;
                 }
             }
 
             let _cond = { event.has_value("fortinet.firewall.cn") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "tls.server.x509.alternative_names",
-                    event
-                        .get("fortinet.firewall.cn")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.cn")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -908,15 +788,15 @@ impl Transform for Utm {
                 event.set("tls.client.x509.public_key_algorithm", v)?;
             }
 
-            if event.has("fortinet.firewall.kxcurve") {
+            if event.has_value("fortinet.firewall.kxcurve") {
                 event.rename("fortinet.firewall.kxcurve", "tls.curve")?;
             }
 
-            if event.has("fortinet.firewall.cipher") {
+            if event.has_value("fortinet.firewall.cipher") {
                 event.rename("fortinet.firewall.cipher", "tls.cipher")?;
             }
 
-            if event.has("fortinet.firewall.sni") {
+            if event.has_value("fortinet.firewall.sni") {
                 event.rename("fortinet.firewall.sni", "tls.client.server_name")?;
             }
 
@@ -943,12 +823,12 @@ impl Transform for Utm {
             };
             if _cond {
                 // Painless script
-                // Source: def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n  ctx.tls.version += \".0\";\n}
+                // Source: def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} if (ctx.tls == null) {\n    ctx.tls = new HashMap();\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n    ctx.tls.version += \".0\";\n}
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
-                        r#"def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n  ctx.tls.version += \".0\";\n}"#
+                    cached_painless!(
+                        r#"def pat = /\\d+/; def tlsver = ctx.fortinet.firewall.tlsver.toLowerCase(); def matcher = pat.matcher(tlsver); if (!matcher.find()) {\n    return;\n} if (ctx.tls == null) {\n    ctx.tls = new HashMap();\n} ctx.tls.version_protocol = tlsver.substring(0, matcher.start()); ctx.tls.version = tlsver.substring(matcher.start(), tlsver.length()); if (!ctx.tls.version.contains(\".\")) {\n    ctx.tls.version += \".0\";\n}"#
                     ),
                 )?;
             }
@@ -959,20 +839,21 @@ impl Transform for Utm {
                     .is_some_and(|v| v.is_string())
             };
             if _cond {
-                event.append(
+                event.append_unique(
                     "vulnerability.category",
-                    event
-                        .get("fortinet.firewall.dtype")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.firewall.dtype")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
-            if event.has("fortinet.firewall.ref") {
+            if event.has_value("fortinet.firewall.ref") {
                 event.rename("fortinet.firewall.ref", "event.reference")?;
             }
 
-            if event.has("fortinet.firewall.filehash") {
+            if event.has_value("fortinet.firewall.filehash") {
                 event.rename("fortinet.firewall.filehash", "fortinet.file.hash.crc32")?;
             }
 
@@ -980,25 +861,26 @@ impl Transform for Utm {
             if _cond {
                 event.append(
                     "related.hash",
-                    event
-                        .get("fortinet.file.hash.crc32")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("fortinet.file.hash.crc32")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                if event.has("dns.question.name") {
-                    if let Some(domain_str) = event.get_string("dns.question.name") {
-                        let domain = domain_str.to_string();
-                        event.set("dns.question.domain", json!(domain.clone()))?;
-                        // Public suffix list lookup for registered domain extraction
+                if event.has_value("dns.question.name") {
+                    if let Some(domain) = event.get_string("dns.question.name") {
+                        // Public suffix list lookup for registered domain extraction.
+                        // A failed lookup writes NO target field, which is what
+                        // Elasticsearch does.
                         if let Some(rd) = registered_domain_lookup(&domain) {
-                            event.set(
-                                "dns.question.registered_domain",
-                                json!(rd.registered_domain),
-                            )?;
+                            event.set("dns.question.domain", json!(domain))?;
+                            if let Some(registered) = rd.registered_domain {
+                                event.set("dns.question.registered_domain", json!(registered))?;
+                            }
                             event
                                 .set("dns.question.top_level_domain", json!(rd.top_level_domain))?;
                             if let Some(sub) = rd.subdomain {
@@ -1038,33 +920,40 @@ impl Transform for Utm {
                 event.set("event.kind", json!("pipeline_error"))?;
                 event.append(
                     "error.message",
-                    event
-                        .get("_ingest.on_failure_message")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(format!(
+                        "Processor '{}' {}in pipeline '{}' failed with message '{}'",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, template_to_string),
+                        if event
+                            .get("_ingest.on_failure_processor_tag")
+                            .is_some_and(|v| !v.is_null()
+                                && v.as_str() != Some("")
+                                && !matches!(v, Value::Bool(false))
+                                && !v.as_array().is_some_and(Vec::is_empty))
+                        {
+                            format!(
+                                "with tag '{}' ",
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string)
+                            )
+                        } else {
+                            String::new()
+                        },
+                        event
+                            .get("_ingest.pipeline")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    )),
                 )?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

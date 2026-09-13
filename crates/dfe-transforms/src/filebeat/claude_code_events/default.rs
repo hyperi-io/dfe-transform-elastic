@@ -1,0 +1,808 @@
+// SPDX-License-Identifier: BUSL-1.1
+// Copyright (c) 2026 HYPERI PTY LIMITED
+//
+// Generated file. Do not edit by hand.
+
+use dfe_runtime::prelude::*;
+
+/// Transform for the `default` pipeline.
+pub struct Default;
+
+impl Transform for Default {
+    fn name(&self) -> &str {
+        "default"
+    }
+
+    fn transform(&self, event: &mut dfe_runtime::Event) -> Result<TransformResult> {
+        // A `drop` returns through here, so the closure carries the outcome.
+        let outcome = (|event: &mut dfe_runtime::Event| -> Result<TransformResult> {
+            let _cond = {
+                (event.get("tags").is_some_and(|v| v.is_array())
+                    && event.get("tags").is_some_and(|v| match v {
+                        serde_json::Value::Array(a) => a
+                            .iter()
+                            .any(|x| x.as_str() == Some("preserve_original_event")),
+                        serde_json::Value::String(s) => s.contains("preserve_original_event"),
+                        _ => false,
+                    }))
+                    || (event.get("attributes").is_some_and(|v| v.is_object())
+                        && event.has("attributes.elastic.preserve_original_event")
+                        && event
+                            .get("attributes")
+                            .and_then(|v| v.get("elastic.preserve_original_event"))
+                            .and_then(|v| v.as_str())
+                            == Some("true"))
+            };
+            if _cond {
+                // Painless script
+                // Source: ctx.event = ctx.event ?: [:]; ctx.event.original = Json.dump(ctx); ctx.tags = ctx.tags ?: []; if (!ctx.tags.contains('preserve_original_event')) {\n  ctx.tags.add('preserve_original_event');\n}\n
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec_plan(
+                    event,
+                    cached_painless!(
+                        r#"ctx.event = ctx.event ?: [:]; ctx.event.original = Json.dump(ctx); ctx.tags = ctx.tags ?: []; if (!ctx.tags.contains('preserve_original_event')) {\n  ctx.tags.add('preserve_original_event');\n}\n"#
+                    ),
+                )?;
+            }
+
+            event.remove("attributes.elastic.preserve_original_event");
+
+            event.set("ecs.version", json!("9.3.0"))?;
+
+            let _cond = {
+                event.has_value("attributes.tool_parameters")
+                    && event.get_str("attributes.tool_parameters") != Some("")
+            };
+            if _cond {
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    parse_json_field(
+                        event,
+                        "attributes.tool_parameters",
+                        "attributes.tool_parameters_flattened",
+                    )?;
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "json")?;
+                    event.set("_ingest.on_failure_processor_tag", "parse_tool_parameters")?;
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Failed to parse tool_parameters: {}",
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
+            }
+
+            let _cond = {
+                event.has_value("attributes.tool_input")
+                    && event.get_str("attributes.tool_input") != Some("")
+            };
+            if _cond {
+                // on_failure: 1 handler(s)
+                if let Err(err) = (|| -> Result<()> {
+                    parse_json_field(
+                        event,
+                        "attributes.tool_input",
+                        "attributes.tool_input_flattened",
+                    )?;
+                    Ok(())
+                })() {
+                    event.set("_ingest.on_failure_message", err.to_string())?;
+                    event.set("_ingest.on_failure_processor_type", "json")?;
+                    event.set("_ingest.on_failure_processor_tag", "parse_tool_input")?;
+                    event.append(
+                        "error.message",
+                        json!(format!(
+                            "Failed to parse tool_input: {}",
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        )),
+                    )?;
+                    event.remove("_ingest.on_failure_message");
+                    event.remove("_ingest.on_failure_processor_type");
+                    event.remove("_ingest.on_failure_processor_tag");
+                    if event.get_object("_ingest").is_some_and(|m| m.is_empty()) {
+                        event.remove("_ingest");
+                    }
+                }
+            }
+
+            let _cond = { event.has_value("attributes.tool_parameters_flattened.mcp_server_name") };
+            if _cond {
+                if let Some(v) = event
+                    .get("attributes.tool_parameters_flattened.mcp_server_name")
+                    .cloned()
+                {
+                    event.set("attributes.mcp_server_name", v)?;
+                }
+            }
+
+            let _cond = { event.has_value("attributes.tool_parameters_flattened.mcp_tool_name") };
+            if _cond {
+                if let Some(v) = event
+                    .get("attributes.tool_parameters_flattened.mcp_tool_name")
+                    .cloned()
+                {
+                    event.set("attributes.mcp_tool_name", v)?;
+                }
+            }
+
+            let _cond = { event.has_value("attributes.tool_parameters_flattened.full_command") };
+            if _cond {
+                if let Some(v) = event
+                    .get("attributes.tool_parameters_flattened.full_command")
+                    .cloned()
+                {
+                    event.set("process.command_line", v)?;
+                }
+            }
+
+            let _cond = { event.has_value("attributes.tool_parameters_flattened.file_path") };
+            if _cond {
+                if let Some(v) = event
+                    .get("attributes.tool_parameters_flattened.file_path")
+                    .cloned()
+                {
+                    event.set("file.path", v)?;
+                }
+            }
+
+            let _cond = {
+                !event.has_value("file.path")
+                    && event.has_value("attributes.tool_parameters_flattened.path")
+            };
+            if _cond {
+                if let Some(v) = event
+                    .get("attributes.tool_parameters_flattened.path")
+                    .cloned()
+                {
+                    event.set("file.path", v)?;
+                }
+            }
+
+            let _cond = { event.has_value("attributes.tool_parameters_flattened.url") };
+            if _cond {
+                if let Some(v) = event
+                    .get("attributes.tool_parameters_flattened.url")
+                    .cloned()
+                {
+                    event.set("url.full", v)?;
+                }
+            }
+
+            let _cond = { event.has_value("event_name") };
+            if _cond {
+                // Painless script
+                // Source: def name = ctx.event_name; ctx.event = ctx.event ?: new HashMap(); ctx.event.kind = 'event'; if (name == 'user_prompt' || name == 'skill_activated') {\n  return;\n} if (name == 'tool_decision') {\n  ctx.event.category = ['iam'];\n  ctx.event.type = ['info'];\n  return;\n} def entry = params.categories.getOrDefault(name, null); if (entry != null) {\n  ctx.event.category = entry.category;\n  ctx.event.type = entry.type;\n} else {\n  ctx.event.category = ['host'];\n  ctx.event.type = ['info'];\n}\n
+                // TODO: Transpile Painless to Rust (2.2.3)
+                painless_exec_plan_params(
+                    event,
+                    cached_painless!(
+                        r#"def name = ctx.event_name; ctx.event = ctx.event ?: new HashMap(); ctx.event.kind = 'event'; if (name == 'user_prompt' || name == 'skill_activated') {\n  return;\n} if (name == 'tool_decision') {\n  ctx.event.category = ['iam'];\n  ctx.event.type = ['info'];\n  return;\n} def entry = params.categories.getOrDefault(name, null); if (entry != null) {\n  ctx.event.category = entry.category;\n  ctx.event.type = entry.type;\n} else {\n  ctx.event.category = ['host'];\n  ctx.event.type = ['info'];\n}\n"#
+                    ),
+                    cached_params!(
+                        "{\"categories\":{\"tool_result\":{\"category\":[\"process\"],\"type\":[\"info\"]},\"api_request\":{\"category\":[\"api\"],\"type\":[\"info\"]},\"api_error\":{\"category\":[\"api\"],\"type\":[\"info\"]},\"api_retries_exhausted\":{\"category\":[\"api\"],\"type\":[\"info\"]},\"api_refusal\":{\"category\":[\"api\"],\"type\":[\"denied\"]},\"auth\":{\"category\":[\"authentication\"],\"type\":[\"info\"]},\"permission_mode_changed\":{\"category\":[\"configuration\"],\"type\":[\"change\"]},\"mcp_server_connection\":{\"category\":[\"network\"],\"type\":[\"connection\"]},\"hook_registered\":{\"category\":[\"configuration\"],\"type\":[\"info\"]},\"hook_execution_start\":{\"category\":[\"process\"],\"type\":[\"start\"]},\"hook_execution_complete\":{\"category\":[\"process\"],\"type\":[\"end\"]},\"plugin_loaded\":{\"category\":[\"library\"],\"type\":[\"start\"]},\"plugin_installed\":{\"category\":[\"package\"],\"type\":[\"info\"]}}}"
+                    ),
+                )?;
+            }
+
+            let _cond = {
+                event.has_value("attributes.tool_parameters_flattened")
+                    && event
+                        .get("attributes.tool_parameters_flattened")
+                        .is_some_and(|v| v.is_object())
+                    && event
+                        .get("attributes.tool_parameters_flattened")
+                        .is_some_and(|v| match v {
+                            serde_json::Value::String(s) => s.is_empty(),
+                            serde_json::Value::Array(a) => a.is_empty(),
+                            serde_json::Value::Object(o) => o.is_empty(),
+                            serde_json::Value::Null => true,
+                            _ => false,
+                        })
+            };
+            if _cond {
+                event.remove("attributes.tool_parameters_flattened");
+            }
+
+            let _cond = {
+                event.has_value("attributes.tool_input_flattened")
+                    && event
+                        .get("attributes.tool_input_flattened")
+                        .is_some_and(|v| v.is_object())
+                    && event
+                        .get("attributes.tool_input_flattened")
+                        .is_some_and(|v| match v {
+                            serde_json::Value::String(s) => s.is_empty(),
+                            serde_json::Value::Array(a) => a.is_empty(),
+                            serde_json::Value::Object(o) => o.is_empty(),
+                            serde_json::Value::Null => true,
+                            _ => false,
+                        })
+            };
+            if _cond {
+                event.remove("attributes.tool_input_flattened");
+            }
+
+            if event.has_value("attributes.prompt") {
+                event.rename("attributes.prompt", "attributes.prompt_text")?;
+            }
+
+            let _cond = { event.has_value("attributes") };
+            if _cond {
+                dot_expand(event, "attributes", "*")?;
+            }
+
+            if event.has_value("attributes") {
+                event.rename("attributes", "claude_code.events")?;
+            }
+
+            event.remove("body");
+            event.remove("event_name");
+
+            if event.has_value("claude_code.events.duration_ms") {
+                if let Some(val) = event.get("claude_code.events.duration_ms") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.duration_ms".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.duration_ms", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.event.sequence") {
+                if let Some(val) = event.get("claude_code.events.event.sequence") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.event.sequence".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.event.sequence", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.tool_input_size_bytes") {
+                if let Some(val) = event.get("claude_code.events.tool_input_size_bytes") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.tool_input_size_bytes".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.tool_input_size_bytes", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.tool_result_size_bytes") {
+                if let Some(val) = event.get("claude_code.events.tool_result_size_bytes") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.tool_result_size_bytes".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.tool_result_size_bytes", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.input_tokens") {
+                if let Some(val) = event.get("claude_code.events.input_tokens") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.input_tokens".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.input_tokens", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.output_tokens") {
+                if let Some(val) = event.get("claude_code.events.output_tokens") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.output_tokens".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.output_tokens", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.cache_read_tokens") {
+                if let Some(val) = event.get("claude_code.events.cache_read_tokens") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.cache_read_tokens".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.cache_read_tokens", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.cache_creation_tokens") {
+                if let Some(val) = event.get("claude_code.events.cache_creation_tokens") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.cache_creation_tokens".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.cache_creation_tokens", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.cost_usd") {
+                if let Some(val) = event.get("claude_code.events.cost_usd") {
+                    let converted = convert_value(val, "double").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.cost_usd".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.cost_usd", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.cost_usd_micros") {
+                if let Some(val) = event.get("claude_code.events.cost_usd_micros") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.cost_usd_micros".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.cost_usd_micros", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.prompt_length") {
+                if let Some(val) = event.get("claude_code.events.prompt_length") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.prompt_length".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.prompt_length", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.num_hooks") {
+                if let Some(val) = event.get("claude_code.events.num_hooks") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.num_hooks".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.num_hooks", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.num_success") {
+                if let Some(val) = event.get("claude_code.events.num_success") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.num_success".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.num_success", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.num_blocking") {
+                if let Some(val) = event.get("claude_code.events.num_blocking") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.num_blocking".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.num_blocking", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.num_non_blocking_error") {
+                if let Some(val) = event.get("claude_code.events.num_non_blocking_error") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.num_non_blocking_error".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.num_non_blocking_error", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.num_cancelled") {
+                if let Some(val) = event.get("claude_code.events.num_cancelled") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.num_cancelled".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.num_cancelled", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.total_duration_ms") {
+                if let Some(val) = event.get("claude_code.events.total_duration_ms") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.total_duration_ms".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.total_duration_ms", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.agent_path_count") {
+                if let Some(val) = event.get("claude_code.events.agent_path_count") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.agent_path_count".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.agent_path_count", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.command_path_count") {
+                if let Some(val) = event.get("claude_code.events.command_path_count") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.command_path_count".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.command_path_count", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.skill_path_count") {
+                if let Some(val) = event.get("claude_code.events.skill_path_count") {
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.skill_path_count".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.skill_path_count", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.is_plugin") {
+                if let Some(val) = event.get("claude_code.events.is_plugin") {
+                    let converted = convert_value(val, "boolean").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.is_plugin".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.is_plugin", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.has_hooks") {
+                if let Some(val) = event.get("claude_code.events.has_hooks") {
+                    let converted = convert_value(val, "boolean").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.has_hooks".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.has_hooks", converted)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.has_mcp") {
+                if let Some(val) = event.get("claude_code.events.has_mcp") {
+                    let converted = convert_value(val, "boolean").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "claude_code.events.has_mcp".into(),
+                            message,
+                        }
+                    })?;
+                    event.set("claude_code.events.has_mcp", converted)?;
+                }
+            }
+
+            let _cond = { event.has_value("claude_code.events.event.name") };
+            if _cond {
+                event.set("gen_ai.provider.name", json!("anthropic"))?;
+            }
+
+            let _cond = { event.has_value("claude_code.events.model") };
+            if _cond {
+                if event.has_value("claude_code.events.model") {
+                    event.rename("claude_code.events.model", "gen_ai.response.model")?;
+                }
+            }
+
+            let _cond = { event.has_value("gen_ai.response.model") };
+            if _cond {
+                if let Some(v) = event.get("gen_ai.response.model").cloned() {
+                    event.set("gen_ai.request.model", v)?;
+                }
+            }
+
+            if event.has_value("claude_code.events.request_id") {
+                event.rename("claude_code.events.request_id", "gen_ai.response.id")?;
+            }
+
+            if event.has_value("claude_code.events.input_tokens") {
+                event.rename(
+                    "claude_code.events.input_tokens",
+                    "gen_ai.usage.input_tokens",
+                )?;
+            }
+
+            if event.has_value("claude_code.events.output_tokens") {
+                event.rename(
+                    "claude_code.events.output_tokens",
+                    "gen_ai.usage.output_tokens",
+                )?;
+            }
+
+            if event.has_value("claude_code.events.cache_read_tokens") {
+                event.rename(
+                    "claude_code.events.cache_read_tokens",
+                    "gen_ai.usage.cache_read.input_tokens",
+                )?;
+            }
+
+            if event.has_value("claude_code.events.cache_creation_tokens") {
+                event.rename(
+                    "claude_code.events.cache_creation_tokens",
+                    "gen_ai.usage.cache_creation.input_tokens",
+                )?;
+            }
+
+            if event.has_value("claude_code.events.query_source") {
+                event.rename("claude_code.events.query_source", "gen_ai.operation.name")?;
+            }
+
+            let _cond = { event.has_value("claude_code.events.mcp_tool_name") };
+            if _cond {
+                if event.has_value("claude_code.events.mcp_tool_name") {
+                    event.rename("claude_code.events.mcp_tool_name", "gen_ai.tool.name")?;
+                }
+            }
+
+            let _cond = {
+                !event.has_value("gen_ai.tool.name")
+                    && event.has_value("claude_code.events.tool_name")
+            };
+            if _cond {
+                if event.has_value("claude_code.events.tool_name") {
+                    event.rename("claude_code.events.tool_name", "gen_ai.tool.name")?;
+                }
+            }
+
+            let _cond = {
+                event.has_value("gen_ai.tool.name")
+                    && event.has_value("claude_code.events.tool_name")
+            };
+            if _cond {
+                event.remove("claude_code.events.tool_name");
+            }
+
+            if event.has_value("claude_code.events.tool_use_id") {
+                event.rename("claude_code.events.tool_use_id", "gen_ai.tool.call.id")?;
+            }
+
+            let _cond = { event.has_value("claude_code.events.tool_input_flattened") };
+            if _cond {
+                if event.has_value("claude_code.events.tool_input_flattened") {
+                    event.rename(
+                        "claude_code.events.tool_input_flattened",
+                        "gen_ai.tool.call.arguments",
+                    )?;
+                }
+            }
+
+            let _cond = {
+                !event.has_value("gen_ai.tool.call.arguments")
+                    && event.has_value("claude_code.events.tool_parameters_flattened")
+            };
+            if _cond {
+                if event.has_value("claude_code.events.tool_parameters_flattened") {
+                    event.rename(
+                        "claude_code.events.tool_parameters_flattened",
+                        "gen_ai.tool.call.arguments",
+                    )?;
+                }
+            }
+
+            if event.has_value("claude_code.events.error_code") {
+                event.rename("claude_code.events.error_code", "error.code")?;
+            }
+
+            if event.has_value("claude_code.events.error_type") {
+                event.rename("claude_code.events.error_type", "error.type")?;
+            }
+
+            if event.has_value("claude_code.events.organization.id") {
+                event.rename("claude_code.events.organization.id", "organization.id")?;
+            }
+
+            if event.has_value("claude_code.events.user.email") {
+                event.rename("claude_code.events.user.email", "user.email")?;
+            }
+
+            if event.has_value("claude_code.events.user.id") {
+                event.rename("claude_code.events.user.id", "user.id")?;
+            }
+
+            let _cond = { event.has_value("claude_code.events.event.name") };
+            if _cond {
+                if let Some(v) = event.get("claude_code.events.event.name").cloned() {
+                    event.set("event.action", v)?;
+                }
+            }
+
+            let _cond = { event.has_value("claude_code.events.duration_ms") };
+            if _cond {
+                // Painless script, resolved to its runners at generation time
+                // Source: ctx.event.duration = ((long)ctx.claude_code.events.duration_ms) * 1000000L;\n
+                scale_field(
+                    event,
+                    &ScaleField::new(
+                        "claude_code.events.duration_ms",
+                        "event.duration",
+                        Factor::Long(1000000),
+                    ),
+                );
+            }
+
+            event.remove("claude_code.events.duration_ms");
+
+            let _cond = { event.get_str("claude_code.events.success") == Some("true") };
+            if _cond {
+                event.set("event.outcome", json!("success"))?;
+            }
+
+            let _cond = {
+                event.get_str("claude_code.events.success") == Some("false")
+                    || event.get_str("claude_code.events.event.name") == Some("api_error")
+                    || event.get_str("claude_code.events.event.name")
+                        == Some("api_retries_exhausted")
+            };
+            if _cond {
+                event.set("event.outcome", json!("failure"))?;
+            }
+
+            let _cond = {
+                !event.has_value("event.outcome")
+                    && event.get_str("claude_code.events.decision") == Some("accept")
+            };
+            if _cond {
+                event.set("event.outcome", json!("success"))?;
+            }
+
+            let _cond = {
+                !event.has_value("event.outcome")
+                    && event.get_str("claude_code.events.decision") == Some("reject")
+            };
+            if _cond {
+                event.set("event.outcome", json!("failure"))?;
+            }
+
+            let _cond = { !event.has_value("event.outcome") };
+            if _cond {
+                event.set("event.outcome", json!("unknown"))?;
+            }
+
+            event.set("event.provider", json!("claude-code"))?;
+
+            let _cond = { event.has_value("claude_code.events.error") };
+            if _cond {
+                if let Some(v) = event.get("claude_code.events.error").cloned() {
+                    event.set("event.reason", v)?;
+                }
+            }
+
+            let _cond = { event.has_value("user.email") };
+            if _cond {
+                event.append_unique(
+                    "related.user",
+                    json!(
+                        event
+                            .get("user.email")
+                            .map_or_else(String::new, template_to_string)
+                    ),
+                )?;
+            }
+
+            let _cond = { event.has_value("user.id") };
+            if _cond {
+                event.append_unique(
+                    "related.user",
+                    json!(
+                        event
+                            .get("user.id")
+                            .map_or_else(String::new, template_to_string)
+                    ),
+                )?;
+            }
+
+            // Painless script, resolved to its runners at generation time
+            // Source: void handleMap(Map map) {\n    map.values().removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n    });\n}\nvoid handleList(List list) {\n    list.removeIf(v -> {\n    if (v instanceof Map) {\n        handleMap(v);\n    } else if (v instanceof List) {\n        handleList(v);\n    }\n    return v == null || v == '' || (v instanceof Map && v.size() == 0) || (v instanceof List && v.size() == 0)\n    });\n}\nhandleMap(ctx);
+            drop_empty(
+                event,
+                &DropPolicy {
+                    nulls: true,
+                    empty_strings: true,
+                    empty_collections: true,
+                    prune_lists: true,
+                    ..DropPolicy::none()
+                },
+                None,
+            );
+
+            let _cond = { event.has_value("error.message") };
+            if _cond {
+                event.set("event.kind", json!("pipeline_error"))?;
+            }
+
+            let _cond = { event.has_value("error.message") };
+            if _cond {
+                event.append_unique("tags", json!("preserve_original_event"))?;
+            }
+
+            Ok(TransformResult::Continue)
+        })(event);
+
+        match outcome {
+            Ok(TransformResult::Drop) => return Ok(TransformResult::Drop),
+            Ok(_) => {}
+            Err(err) => {
+                event.set("_ingest.on_failure_message", err.to_string())?;
+                event.append(
+                    "error.message",
+                    json!(format!(
+                        "Processor {} with tag {} in pipeline {} failed with message: {}",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("_ingest.on_failure_processor_tag")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("_ingest.pipeline")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    )),
+                )?;
+                event.set("event.kind", json!("pipeline_error"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
+                event.remove("_ingest.on_failure_message");
+            }
+        }
+
+        Ok(TransformResult::Continue)
+    }
+}

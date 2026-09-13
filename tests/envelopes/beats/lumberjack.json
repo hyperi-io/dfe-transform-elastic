@@ -1,0 +1,43 @@
+{
+  "provenance": {
+    "file": "dfe-receiver src/server/lumberjack/mod.rs and src/server/lumberjack/codec.rs",
+    "line": "the JsonData arm calls pipeline.process(payload) with no converter in between",
+    "producer": "filebeat shipping over lumberjack to dfe-receiver",
+    "note": "Filed under beats, not receiver, and that is the point. Lumberjack is the Beats wire protocol, so the frame payload is a Beats document and the receiver adds nothing to it -- there is no convert.rs in that directory. This is the case that fixes the rule: family is decided by what the payload LOOKS like, never by who delivered it. The event below is the module fixture's, since that is what a filebeat sends."
+  },
+  "shape": {
+    "family": "beats",
+    "variant": "module"
+  },
+  "detect": {
+    "family": "beats",
+    "variant": "module"
+  },
+  "event": {
+    "@metadata": {
+      "beat": "filebeat",
+      "type": "_doc",
+      "version": "8.13.2"
+    },
+    "@timestamp": "2024-05-29T08:55:51.213Z",
+    "agent": {
+      "id": "4c30a8c9-d0f1-4e5c-90a9-c44ba3d4a97c",
+      "name": "f33a8f51d413",
+      "type": "filebeat",
+      "version": "8.13.2"
+    },
+    "ecs": {
+      "version": "1.12.0"
+    },
+    "fileset": {
+      "name": "panos"
+    },
+    "input": {
+      "type": "log"
+    },
+    "message": "Nov 30 16:09:08 PA-220 1,2018/11/30 16:09:07,012801096514,TRAFFIC,end,2049",
+    "service": {
+      "type": "panw"
+    }
+  }
+}

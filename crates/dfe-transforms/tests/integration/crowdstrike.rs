@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Baselines are the measured match count per fixture, and only ever go up.
+//! Floors over committed fixtures -- no panic, errors pinned, fields emitted.
+//! Parity lives in `tests/compat_corpus.rs`; see `integration/remaining.rs`.
 
 use dfe_transforms::filebeat::crowdstrike;
 
@@ -12,60 +13,60 @@ const FIXTURE_DIR: &str = concat!(
 
 #[test]
 fn crowdstrike_default_sample() {
-    super::common::run_fixture(
+    super::common::run_floor(
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-sample",
-        7,
+        0,
     );
 }
 
 #[test]
 fn crowdstrike_default_events() {
-    super::common::run_fixture(
+    super::common::run_floor(
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-events",
-        3,
+        0,
     );
 }
 
 #[test]
 fn crowdstrike_default_event_stream() {
-    super::common::run_fixture(
+    super::common::run_floor(
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-event-stream",
-        9,
+        0,
     );
 }
 
 #[test]
 fn crowdstrike_default_audit_events() {
-    super::common::run_fixture(
+    super::common::run_floor(
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-audit-events",
-        13,
+        0,
     );
 }
 
 #[test]
 fn crowdstrike_default_tags() {
-    super::common::run_fixture(
+    super::common::run_floor(
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-tags",
-        1,
+        0,
     );
 }
 
 #[test]
 fn crowdstrike_default_tags_list() {
-    super::common::run_fixture(
+    super::common::run_floor(
         &crowdstrike::default::Default,
         FIXTURE_DIR,
         "test-falcon-tags-list",
-        1,
+        0,
     );
 }

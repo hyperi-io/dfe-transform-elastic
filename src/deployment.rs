@@ -62,8 +62,9 @@ pub fn contract() -> DeploymentContract {
             "pipeline_name": "dfe-transform-elastic",
             "source": {
                 "name": "filebeat.okta.default",
-                // `syslog` reads dfe-receiver's output instead, for the
-                // sources a device can emit over syslog.
+                // `syslog` reads dfe-receiver's output and `fetcher`
+                // dfe-fetcher's. Which a source accepts is in the capability
+                // catalogue, and a wrong one is refused at startup.
                 "envelope": "beats",
                 "topics": ["raw_events"],
                 // Batch-first default: amortises commit, allocation and SIMD setup.
@@ -78,6 +79,19 @@ pub fn contract() -> DeploymentContract {
                 // librdkafka's producer ceiling is 1,000,000; the rest is
                 // headroom for the key, headers and framing.
                 "max_message_bytes": 900_000
+            },
+            // scalo provisions the MMDB databases, re-downloading a file older
+            // than `max_age_days` and keeping the stale copy when a provider is
+            // down. `/var/lib/dfe/geoip` is dfe-loader's directory too, so one
+            // volume serves both stages.
+            "geoip": {
+                "enabled": true,
+                "provider": "db_ip_lite",
+                "auto_download": {
+                    "enabled": true,
+                    "data_dir": "/var/lib/dfe/geoip",
+                    "max_age_days": 30
+                }
             },
             // No `health` or `metrics` address here: scalo's `--metrics-addr`
             // (env `METRICS_ADDR`) is the single source of truth, and a key
@@ -141,9 +155,18 @@ pub fn default_config_yaml() -> String {
 # `source.topics`, `source.brokers` and `sink.topic` are the ones that
 # always change.
 #
-# `source.envelope` selects how the payload is wrapped on the way in:
-# `beats` (default) or `syslog` for dfe-receiver's output. The syslog
-# envelope applies only to sources a device can emit; see the README.
+# `source.envelope` selects which transport delivered the payload:
+# `beats` (default), `syslog` for dfe-receiver's output, or `fetcher` for
+# dfe-fetcher's. The transform is the same for all three; only the unwrapping
+# differs. Which envelopes a source accepts is listed per source in the
+# capability catalogue, and an envelope it cannot arrive in is refused at
+# startup rather than at the first batch.
+#
+# `geoip` provisions the MMDB databases at startup and refreshes them when the
+# local copy passes `max_age_days`. Mount `data_dir` on a volume that survives
+# a restart, or each new pod downloads again. To supply the files yourself, set
+# `geoip.city_db_path` and `geoip.asn_db_path`; to run without enrichment, set
+# `geoip.enabled: false`.
 ";
 
     let body = contract()
@@ -209,14 +232,20 @@ pub fn retarget_keda_trigger(chart_dir: &str) -> crate::Result<()> {
 /// adds it here.
 fn capabilities() -> Vec<Capability> {
     let sources = crate::registry::sources().map(|name| {
-        let description =
-            if crate::registry::origin(name).is_some_and(crate::registry::Origin::is_syslog) {
-                "Compiled transform. The device can emit over syslog, so either envelope applies."
-            } else {
-                "Compiled transform. Pulled from a vendor API; the beats envelope only."
-            };
+        // The intakes are the operator-facing fact: which transports can carry
+        // this source to us, not just the one Elastic ships.
+        let envelopes = crate::registry::intake(name).map_or_else(String::new, |intake| {
+            intake
+                .envelopes
+                .iter()
+                .map(|e| format!("{e:?}").to_lowercase())
+                .collect::<Vec<_>>()
+                .join(", ")
+        });
         Capability::service(name)
-            .description(description)
+            .description(format!(
+                "Compiled transform. Accepts the envelopes: {envelopes}."
+            ))
             .maturity("beta")
     });
 
@@ -251,6 +280,60 @@ fn capabilities() -> Vec<Capability> {
                 FieldSpec::string("sink.topic")
                     .required()
                     .description("Topic the normalised events are produced to."),
+            ),
+        Capability::new("enrichment", "geoip")
+            .description(
+                "City and ASN lookups for the geoip processors 14 of the source pipelines \
+                 carry. scalo downloads and refreshes the MMDB files; the lookup runs \
+                 in-process behind a bounded cache. A database that cannot be obtained \
+                 leaves the geo fields empty and never stops the service.",
+            )
+            .maturity("beta")
+            .field(
+                FieldSpec::bool("geoip.enabled")
+                    .default_value(true)
+                    .description("Provision databases at all."),
+            )
+            .field(
+                FieldSpec::enumeration(
+                    "geoip.provider",
+                    [
+                        "db_ip_lite",
+                        "max_mind_geo_lite2",
+                        "ip_locate",
+                        "ip_info_lite",
+                        "sapics",
+                        "custom",
+                    ],
+                )
+                .default_value("db_ip_lite")
+                .description(
+                    "Where the databases come from. Only db_ip_lite and max_mind_geo_lite2 \
+                     publish both city and ASN.",
+                ),
+            )
+            .field(FieldSpec::string("geoip.city_db_path").description(
+                "Mounted city MMDB. Setting either path bypasses the provider and \
+                     downloads nothing.",
+            ))
+            .field(
+                FieldSpec::string("geoip.asn_db_path")
+                    .description("Mounted ASN MMDB. See geoip.city_db_path."),
+            )
+            .field(
+                FieldSpec::string("geoip.auto_download.data_dir")
+                    .default_value("/var/lib/dfe/geoip")
+                    .description("Directory the downloaded databases are written to."),
+            )
+            .field(
+                FieldSpec::int("geoip.auto_download.max_age_days")
+                    .default_value(30)
+                    .description("Age past which a local database is re-downloaded."),
+            )
+            .field(
+                FieldSpec::secret("geoip.auto_download.maxmind_license_key").description(
+                    "Required by the max_mind_geo_lite2 provider, with the account id.",
+                ),
             ),
     ]
 }

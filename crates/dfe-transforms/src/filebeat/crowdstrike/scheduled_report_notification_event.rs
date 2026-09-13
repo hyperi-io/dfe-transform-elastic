@@ -28,15 +28,13 @@ impl Transform for ScheduledReportNotificationEvent {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.ExecutionMetadata.ExecutionStart")
                 {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ExecutionMetadata.ExecutionStart".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -52,15 +50,14 @@ impl Transform for ScheduledReportNotificationEvent {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowStart")
                 {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ExecutionMetadata.SearchWindowStart"
+                                    .into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -76,59 +73,28 @@ impl Transform for ScheduledReportNotificationEvent {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.ExecutionMetadata.SearchWindowEnd")
                 {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ExecutionMetadata.SearchWindowEnd".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
             }
 
-            if event.has("crowdstrike.event.ExecutionMetadata.ExecutionDuration") {
+            if event.has_value("crowdstrike.event.ExecutionMetadata.ExecutionDuration") {
                 if let Some(val) =
                     event.get("crowdstrike.event.ExecutionMetadata.ExecutionDuration")
                 {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path:
-                                            "crowdstrike.event.ExecutionMetadata.ExecutionDuration"
-                                                .into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| {
-                                    TransformError::ParseError {
-                                        path:
-                                            "crowdstrike.event.ExecutionMetadata.ExecutionDuration"
-                                                .into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            }
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration".into(),
+                            message,
                         }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "crowdstrike.event.ExecutionMetadata.ExecutionDuration"
-                                    .into(),
-                                message: "cannot convert to integer".into(),
-                            });
-                        }
-                    };
+                    })?;
                     event.set(
                         "crowdstrike.event.ExecutionMetadata.ExecutionDuration",
                         converted,
@@ -136,42 +102,19 @@ impl Transform for ScheduledReportNotificationEvent {
                 }
             }
 
-            if event.has("crowdstrike.event.ExecutionMetadata.ResultCount") {
+            if event.has_value("crowdstrike.event.ExecutionMetadata.ResultCount") {
                 if let Some(val) = event.get("crowdstrike.event.ExecutionMetadata.ResultCount") {
-                    let converted = match val {
-                        Value::String(s) => {
-                            let s = s.trim();
-                            if let Some(hex) = s.strip_prefix("0x") {
-                                json!(i64::from_str_radix(hex, 16).map_err(|_| {
-                                    TransformError::ParseError {
-                                        path: "crowdstrike.event.ExecutionMetadata.ResultCount"
-                                            .into(),
-                                        message: format!("cannot convert '{}' to integer", s),
-                                    }
-                                })?)
-                            } else {
-                                json!(s.parse::<i64>().map_err(|_| TransformError::ParseError {
-                                    path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(),
-                                    message: format!("cannot convert '{}' to integer", s)
-                                })?)
-                            }
+                    let converted = convert_value(val, "long").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(),
+                            message,
                         }
-                        Value::Number(n) => {
-                            json!(n.as_i64().unwrap_or(n.as_f64().unwrap_or(0.0) as i64))
-                        }
-                        Value::Bool(b) => json!(if *b { 1 } else { 0 }),
-                        _ => {
-                            return Err(TransformError::ParseError {
-                                path: "crowdstrike.event.ExecutionMetadata.ResultCount".into(),
-                                message: "cannot convert to integer".into(),
-                            });
-                        }
-                    };
+                    })?;
                     event.set("crowdstrike.event.ExecutionMetadata.ResultCount", converted)?;
                 }
             }
 
-            if event.has("crowdstrike.event.UserID") {
+            if event.has_value("crowdstrike.event.UserID") {
                 event.rename("crowdstrike.event.UserID", "user.id")?;
             }
 
@@ -186,26 +129,54 @@ impl Transform for ScheduledReportNotificationEvent {
             if _cond {
                 if let Some(input) = event.get_string("user.id") {
                     let mut remaining: &str = &input;
-                    if let Some(pos) = remaining.find("@") {
-                        event.set("user.name", &remaining[..pos])?;
+                    let mut captured: Vec<(&str, &str)> = Vec::new();
+                    let matched = 'dissect: {
+                        let Some(pos) = remaining.find("@") else {
+                            break 'dissect false;
+                        };
+                        captured.push(("user.name", &remaining[..pos]));
                         remaining = &remaining[pos..];
-                    }
-                    if let Some(rest) = remaining.strip_prefix("@") {
+                        let Some(rest) = remaining.strip_prefix("@") else {
+                            break 'dissect false;
+                        };
                         remaining = rest;
+                        captured.push(("user.domain", remaining));
+                        true
+                    };
+                    if matched {
+                        for (path, value) in captured {
+                            event.set(path, value)?;
+                        }
+                    } else {
+                        return Err(TransformError::ParseError {
+                            path: "user.id".into(),
+                            message: "dissect pattern did not match".into(),
+                        });
                     }
-                    event.set("user.domain", remaining)?;
                 }
             }
 
-            if event.has("crowdstrike.event.Status") {
+            let _cond = {
+                event.has_value("user.id")
+                    && event
+                        .get_str("user.id")
+                        .map(|s| s.find("@").map(|b| s[..b].chars().count()))
+                        .is_some_and(|i| i.is_some_and(|i| i > 0))
+            };
+            if _cond {
+                if let Some(v) = event.get("user.id").cloned() {
+                    event.set("user.email", v)?;
+                }
+            }
+
+            if event.has_value("crowdstrike.event.Status") {
                 if let Some(val) = event.get("crowdstrike.event.Status") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "crowdstrike.event.Status".into(),
+                            message,
+                        }
+                    })?;
                     event.set("crowdstrike.event.Status", converted)?;
                 }
             }
@@ -218,30 +189,13 @@ impl Transform for ScheduledReportNotificationEvent {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

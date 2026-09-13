@@ -19,6 +19,7 @@ impl Transform for Decryption {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(csv_str) = event.get_string("message") {
+                    let csv_str = csv_close_quote_gap(&csv_str, ',', '\"');
                     let mut rdr = csv::ReaderBuilder::new()
                         .delimiter(b',')
                         .quote(b'\"')
@@ -530,27 +531,41 @@ impl Transform for Decryption {
                 Ok(())
             })();
 
-            if event.has("_temp_.config_version") {
+            if event.has_value("_temp_.config_version") {
                 event.rename("_temp_.config_version", "panw.panos.config_version")?;
             }
 
-            let _cond = { !event.has_value("event.timezone") };
+            let _cond = {
+                !event.has_value("event.timezone")
+                    && event.has_value("panw.panos.certificate.not_after")
+            };
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.certificate.not_after")
                     {
-                        // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"strict_date_optional_time_nanos\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
+                        match parse_date_out(
+                            &date_str,
+                            &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
+                            None,
+                            None,
+                        ) {
+                            Some(parsed) => {
+                                event.set("panw.panos.certificate.not_after", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.certificate.not_after".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
+                        }
                     }
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_certificate_not_after_to_panw_panos_certificate_not_after_02479cef")?;
                     if event.remove("panw.panos.certificate.not_after").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "panw.panos.certificate.not_after".into(),
@@ -558,10 +573,11 @@ impl Transform for Decryption {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -572,23 +588,37 @@ impl Transform for Decryption {
                 }
             }
 
-            let _cond = { event.has_value("event.timezone") };
+            let _cond = {
+                event.has_value("event.timezone")
+                    && event.has_value("panw.panos.certificate.not_after")
+            };
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.certificate.not_after")
                     {
-                        // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"strict_date_optional_time_nanos\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
+                        match parse_date_out(
+                            &date_str,
+                            &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
+                            event.get_str("event.timezone"),
+                            None,
+                        ) {
+                            Some(parsed) => {
+                                event.set("panw.panos.certificate.not_after", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.certificate.not_after".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
+                        }
                     }
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_certificate_not_after_to_panw_panos_certificate_not_after_cfa3d515")?;
                     if event.remove("panw.panos.certificate.not_after").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "panw.panos.certificate.not_after".into(),
@@ -596,10 +626,11 @@ impl Transform for Decryption {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -610,23 +641,37 @@ impl Transform for Decryption {
                 }
             }
 
-            let _cond = { !event.has_value("event.timezone") };
+            let _cond = {
+                !event.has_value("event.timezone")
+                    && event.has_value("panw.panos.certificate.not_before")
+            };
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.certificate.not_before")
                     {
-                        // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"strict_date_optional_time_nanos\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
+                        match parse_date_out(
+                            &date_str,
+                            &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
+                            None,
+                            None,
+                        ) {
+                            Some(parsed) => {
+                                event.set("panw.panos.certificate.not_before", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.certificate.not_before".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
+                        }
                     }
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_certificate_not_before_to_panw_panos_certificate_not_before_fe9abb71")?;
                     if event.remove("panw.panos.certificate.not_before").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "panw.panos.certificate.not_before".into(),
@@ -634,10 +679,11 @@ impl Transform for Decryption {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -648,23 +694,37 @@ impl Transform for Decryption {
                 }
             }
 
-            let _cond = { event.has_value("event.timezone") };
+            let _cond = {
+                event.has_value("event.timezone")
+                    && event.has_value("panw.panos.certificate.not_before")
+            };
             if _cond {
                 // on_failure: 2 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(date_str) = event.get_as_string("panw.panos.certificate.not_before")
                     {
-                        // Try Java datetime format: CustomTime(\"yyyy/MM/dd HH:mm:ss\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"yyyy/MM/dd HH:mm:ss\")")
-                        // Try Java datetime format: CustomTime(\"strict_date_optional_time_nanos\")
-                        // TODO: Convert Java format to chrono strftime (date processor 2.2.3)
-                        // chrono::NaiveDateTime::parse_from_str(&date_str, "CustomTime(\"strict_date_optional_time_nanos\")")
+                        match parse_date_out(
+                            &date_str,
+                            &["yyyy/MM/dd HH:mm:ss", "strict_date_optional_time_nanos"],
+                            event.get_str("event.timezone"),
+                            None,
+                        ) {
+                            Some(parsed) => {
+                                event.set("panw.panos.certificate.not_before", parsed)?
+                            }
+                            None => {
+                                return Err(TransformError::ParseError {
+                                    path: "panw.panos.certificate.not_before".into(),
+                                    message: format!("unable to parse date [{date_str}]"),
+                                });
+                            }
+                        }
                     }
                     Ok(())
                 })() {
                     event.set("_ingest.on_failure_message", err.to_string())?;
                     event.set("_ingest.on_failure_processor_type", "date")?;
+                    event.set("_ingest.on_failure_processor_tag", "date_panw_panos_certificate_not_before_to_panw_panos_certificate_not_before_a788166b")?;
                     if event.remove("panw.panos.certificate.not_before").is_none() {
                         return Err(TransformError::FieldNotFound {
                             path: "panw.panos.certificate.not_before".into(),
@@ -672,10 +732,11 @@ impl Transform for Decryption {
                     }
                     event.append(
                         "error.message",
-                        event
-                            .get("_ingest.on_failure_message")
-                            .cloned()
-                            .unwrap_or(Value::Null),
+                        json!(
+                            event
+                                .get("_ingest.on_failure_message")
+                                .map_or_else(String::new, template_to_string)
+                        ),
                     )?;
                     event.remove("_ingest.on_failure_message");
                     event.remove("_ingest.on_failure_processor_type");
@@ -692,19 +753,13 @@ impl Transform for Decryption {
 
             let _cond = {
                 !event.has_value("panw.panos.error_message")
-                    || event
-                        .get_str("panw.panos.error_message")
-                        .is_none_or(|s| s.is_empty())
+                    || event.get_str("panw.panos.error_message") == Some("")
             };
             if _cond {
                 event.set("event.outcome", json!("success"))?;
             }
 
-            let _cond = {
-                event
-                    .get_str("panw.panos.error_message")
-                    .is_some_and(|s| !s.is_empty())
-            };
+            let _cond = { event.get_str("panw.panos.error_message") != Some("") };
             if _cond {
                 event.set("event.outcome", json!("failure"))?;
             }
@@ -829,7 +884,11 @@ impl Transform for Decryption {
             if _cond {
                 event.set(
                     "tls.client.x509.subject.common_name",
-                    json!(["{{{tls.client.x509.subject.common_name}}}"]),
+                    Value::Array(vec![json!(
+                        event
+                            .get("tls.client.x509.subject.common_name")
+                            .map_or_else(String::new, template_to_string)
+                    )]),
                 )?;
             }
 
@@ -849,7 +908,11 @@ impl Transform for Decryption {
             if _cond {
                 event.set(
                     "tls.client.x509.issuer.common_name",
-                    json!(["{{{tls.client.x509.issuer.common_name}}}"]),
+                    Value::Array(vec![json!(
+                        event
+                            .get("tls.client.x509.issuer.common_name")
+                            .map_or_else(String::new, template_to_string)
+                    )]),
                 )?;
             }
 
@@ -965,9 +1028,9 @@ impl Transform for Decryption {
                 // Painless script
                 // Source: ctx.tls.client.hash = new HashMap();\nif (ctx._temp_.hash.length() == 32) {ctx.tls.client.hash.md5 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 40) {ctx.tls.client.hash.sha1 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 64) {ctx.tls.client.hash.sha256 = ctx._temp_.hash}\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"ctx.tls.client.hash = new HashMap();\nif (ctx._temp_.hash.length() == 32) {ctx.tls.client.hash.md5 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 40) {ctx.tls.client.hash.sha1 = ctx._temp_.hash}\nelse if (ctx._temp_.hash.length() == 64) {ctx.tls.client.hash.sha256 = ctx._temp_.hash}\n"#
                     ),
                 )?;
@@ -978,9 +1041,9 @@ impl Transform for Decryption {
                 // Painless script
                 // Source: ctx.tls.version = new HashMap();\nctx.tls.version_protocol = ctx._temp_?.tls.substring(0,3).toLowerCase();\nctx.tls.version = ctx._temp_?.tls.substring(3,6);\n
                 // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec(
+                painless_exec_plan(
                     event,
-                    cached_script!(
+                    cached_painless!(
                         r#"ctx.tls.version = new HashMap();\nctx.tls.version_protocol = ctx._temp_?.tls.substring(0,3).toLowerCase();\nctx.tls.version = ctx._temp_?.tls.substring(3,6);\n"#
                     ),
                 )?;
@@ -995,29 +1058,42 @@ impl Transform for Decryption {
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
                 event.set("event.kind", json!("pipeline_error"))?;
-                event.append("error.message", json!(format!("error in Decryption pipeline: error in [{}] processor{} with tag [{}]{} {}", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("#_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("/_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append(
+                    "error.message",
+                    json!(format!(
+                        "Processor '{}' {}in pipeline '{}' failed with message '{}'",
+                        event
+                            .get("_ingest.on_failure_processor_type")
+                            .map_or_else(String::new, template_to_string),
+                        if event
+                            .get("_ingest.on_failure_processor_tag")
+                            .is_some_and(|v| !v.is_null()
+                                && v.as_str() != Some("")
+                                && !matches!(v, Value::Bool(false))
+                                && !v.as_array().is_some_and(Vec::is_empty))
+                        {
+                            format!(
+                                "with tag '{}' ",
+                                event
+                                    .get("_ingest.on_failure_processor_tag")
+                                    .map_or_else(String::new, template_to_string)
+                            )
+                        } else {
+                            String::new()
+                        },
+                        event
+                            .get("_ingest.pipeline")
+                            .map_or_else(String::new, template_to_string),
+                        event
+                            .get("_ingest.on_failure_message")
+                            .map_or_else(String::new, template_to_string)
+                    )),
+                )?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

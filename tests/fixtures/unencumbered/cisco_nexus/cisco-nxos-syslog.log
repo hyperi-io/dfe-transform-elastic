@@ -1,0 +1,7 @@
+<190>2018 Apr 20 13:15:07 nexus-switch %ETHPORT-5-IF_DOWN_LINK_FAILURE: Interface Ethernet1/33 is down (Link failure)
+<190>2018 Oct 31 08:12:52 sw01.test %ETHPORT-5-IF_DOWN_ERROR_DISABLED: Interface Ethernet1/3 is down (Error disabled. Reason:Received REINIT_NO_FLAP request)
+<190>2018 Apr 20 13:15:07 nexus-switch %ETH_PORT_CHANNEL-5-PORT_INDIVIDUAL_DOWN: individual port Ethernet1/33 is down
+<190>2018 Apr 20 13:15:15 nexus-switch %ETHPORT-5-IF_DUPLEX: Interface Ethernet1/33, operational duplex mode changed to Full
+<190>2018 Apr 20 13:15:38 nexus-switch %ETHPORT-5-IF_UP: Interface Ethernet1/33 is up in mode trunk
+<189>2019 Jan 16 04:40:19 switch01 %STP-2-BLOCK_BPDUGUARD: Received BPDU on port Ethernet1/43 with BPDU Guard enabled. Disabling port.
+<190>sw01.pdx01: 2017 Jul 28 14:42:46 UTC: %AUTHPRIV-6-SYSTEM_MSG: pam_unix(dcos_sshd:session): session opened for user luke by (uid=0) - dcos_sshd[12977]

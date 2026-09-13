@@ -35,7 +35,6 @@ tokio-util = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 serde_yaml_ng = { workspace = true }
-simd-json = { workspace = true }
 thiserror = { workspace = true }
 tracing = { workspace = true }
 clap = { workspace = true }
@@ -46,9 +45,19 @@ chrono = { workspace = true }
 tikv-jemallocator = { workspace = true, optional = true }
 
 [dev-dependencies]
+# `tests/unicode.rs` runs its sweeps through `dfe_runtime::testutil`, which is
+# feature-gated. The dependency above asks for no features, so the module is
+# configured out whenever this package is built ALONE -- a whole-workspace
+# build only worked because dfe-transforms happens to ask for it.
+dfe-runtime = { workspace = true, features = ["testutil"] }
 tempfile = { workspace = true }
 testcontainers = { workspace = true }
 testcontainers-modules = { workspace = true }
+criterion = { workspace = true }
+
+[[bench]]
+name = "envelope"
+harness = false
 
 [features]
 default = ["kafka"]
@@ -75,11 +84,30 @@ missing_errors_doc = "allow"
 
 [workspace]
 members = [
+    "crates/dfe-core",
+    "crates/dfe-painless",
     "crates/dfe-parse",
     "crates/dfe-runtime",
     "crates/dfe-transforms",
 ]
 resolver = "2"
+
+# The member crates ARE the hot path, so they carry the same panic guards the
+# root package does. `missing_docs` is deliberately absent: it is a library
+# lint, and these crates are internal to a black-box service.
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+dbg_macro = "deny"
+module_name_repetitions = "allow"
+must_use_candidate = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
 
 [workspace.package]
 version = "0.1.0"
@@ -94,17 +122,20 @@ rust-version = "1.95"
 
 [workspace.dependencies]
 # Workspace crates
+dfe-core = { path = "crates/dfe-core" }
+dfe-painless = { path = "crates/dfe-painless" }
 dfe-parse = { path = "crates/dfe-parse" }
 dfe-runtime = { path = "crates/dfe-runtime" }
 dfe-transforms = { path = "crates/dfe-transforms" }
 
 # Batteries-included runtime (crates.io) — NEVER a path dependency.
 # Features are added when their API is actually referenced, not speculatively.
-scalo = { version = ">=2.10.9, <3", features = [
+scalo = { version = ">=2.11.1, <3", features = [
     "cli-service",
     "config",
     "config-schema",
     "deployment",
+    "geoip-download",
     "governor",
     "http-server",
     "logger",
@@ -112,6 +143,7 @@ scalo = { version = ">=2.10.9, <3", features = [
     "metrics",
     "scaling",
     "service-metrics",
+    "version-check",
 ] }
 
 # The metric handle types (Counter/Gauge/Histogram) that MetricsManager hands
@@ -142,7 +174,11 @@ clap = { version = ">=4.5", features = ["derive"] }
 # JSON parsing (SIMD-accelerated)
 simd-json = { version = ">=0.14, <0.15", features = ["known-key"] }
 serde = { version = ">=1.0", features = ["derive"] }
-serde_json = ">=1.0"
+# preserve_order keeps object keys in DOCUMENT order, which is what
+# Elasticsearch's LinkedHashMap-backed ingest documents hold: a Painless
+# `toString` of a map renders in that order, and sorted keys diverged on
+# every rendered copy aws's cloudtrail writes.
+serde_json = { version = ">=1.0", features = ["preserve_order"] }
 serde_yaml_ng = ">=0.10"
 
 # SIMD byte search
@@ -152,11 +188,27 @@ memchr = ">=2.7"
 regex-automata = ">=0.4"
 regex = ">=1.10"
 
-# Timestamp handling
+# Backtracking fallback for the vendor patterns `regex` rejects by design --
+# lookaround. Only reached when `regex` fails to compile, so the hot path is
+# unchanged; without it those patterns silently match nothing.
+fancy-regex = ">=0.13"
+
+# Mozilla's Public Suffix List, compiled in. Elasticsearch's registered_domain
+# processor is a PSL lookup, and the last-two-labels heuristic it replaced was
+# wrong in both directions: `a.co.uk` came out registered to `co.uk`, and
+# `host.tld` got a registered domain Elasticsearch writes nothing for.
+psl = ">=2.1"
+
+# Timestamp handling. chrono-tz carries the IANA database, which chrono
+# deliberately does not ship: a pipeline configured with `America/Denver`
+# needs the offset AT THE EVENT, and that moves with daylight saving.
 chrono = { version = ">=0.4", features = ["serde"] }
+chrono-tz = { version = ">=0.10, <0.11" }
 
 # GeoIP enrichment (mmap for long-running apps, simdutf8 for SIMD UTF-8 validation)
-maxminddb = { version = ">=0.24", features = ["mmap", "simdutf8"] }
+# Upper bound because 0.x minors break: 0.30 turned `Reader::metadata` from a
+# field into a method, which `enrichment/geoip.rs` reads as a field.
+maxminddb = { version = ">=0.27, <0.28", features = ["mmap", "simdutf8"] }
 
 # Error handling
 thiserror = ">=2.0"
@@ -185,6 +237,11 @@ dotenvy = ">=0.15"
 criterion = { version = ">=0.5, <0.6", features = ["html_reports"] }
 tempfile = ">=3.10, <3.20"
 
+# Scores the compat corpus across cores. A test-only dependency: the service
+# gets its parallelism from one transform thread per Kafka partition, and
+# nothing in the shipped path uses a work-stealing pool.
+rayon = ">=1.10, <2"
+
 # Ephemeral broker for the round-trip test. Same range as the rest of the
 # fleet so one version is shared across dfe-receiver, dfe-loader and the
 # transform services.
@@ -201,6 +258,11 @@ opt-level = 3
 [profile.bench]
 inherits = "release"
 debug = true
+# `release` strips, which contradicts the `debug` above: the debuginfo is
+# emitted and then the symbol table it needs is thrown away, so every frame of
+# a backtrace resolves to `<unknown>` and the allocation-site profiler in
+# `dfe-transforms/benches/allocations.rs` has nothing to attribute to.
+strip = false
 
 [profile.profiling]
 inherits = "release"

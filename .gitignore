@@ -52,6 +52,10 @@ cobertura.xml
 # Elastic upstream test corpus -- large, fetched not committed
 testdata/
 
+# Python bytecode from the scripts/ tooling
+__pycache__/
+*.pyc
+
 # Project temp directory
 .tmp/
 

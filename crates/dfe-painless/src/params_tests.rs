@@ -1,0 +1,5996 @@
+// SPDX-License-Identifier: BUSL-1.1
+// Copyright (c) 2026 HYPERI PTY LIMITED
+//! Tests for [`super`], lifted out so the module reads at a human size.
+//!
+//! Attached with `#[path]` rather than a directory module: the parent is one
+//! compilation unit either way, and a flat layout keeps `use super::*`
+//! meaning exactly what it did before the split.
+
+// The script constants are quoted verbatim from generated call sites, which
+// spell them `r#"..."#`. Keeping them character-identical is what lets a script
+// be copied straight from a module into a test.
+#![allow(clippy::needless_raw_string_hashes)]
+
+use super::*;
+use serde_json::json;
+
+/// Painless's `[local: value]` map literal evaluates the KEY as an expression,
+/// so the map's key is the params row's value rather than the word "key".
+///
+/// Verbatim from `pipelines/ti_recordedfuture/threat/default.yml`, and the
+/// captured output confirms the reading -- `{"sha256": "38e9..."}` after the
+/// `rename` that follows.
+#[test]
+fn a_map_literal_takes_its_key_from_the_lookup() {
+    let script = "def key = params[ctx.json.Algorithm];\n\
+        if (key == null) {\n  throw new Exception(\"Unsupported hash algorithm '\" \
+        + ctx.json.Algorithm + \"'\");\n}\n\
+        def hashes = [key:ctx.json.Name];\nctx[\"_hashes\"] = hashes;";
+    let pattern =
+        parse_keyed_by_lookup(&crate::common::normalise(script)).expect("the lookup is recognised");
+
+    let table = json!({ "MD5": "md5", "SHA-256": "sha256" });
+    let table = table.as_object().expect("a params table");
+
+    let mut event = Event::new(json!({
+        "json": { "Algorithm": "SHA-256", "Name": "38e992eb852ab0c4" }
+    }));
+    assert!(run_keyed_by_lookup(&mut event, &pattern, table));
+    assert_eq!(event.get_str("_hashes.sha256"), Some("38e992eb852ab0c4"));
+
+    // An algorithm with no row THROWS in Painless, and the processor's
+    // on_failure appends to error.message rather than storing a fallback key.
+    let mut unknown = Event::new(json!({
+        "json": { "Algorithm": "SHA-3", "Name": "abc" }
+    }));
+    assert!(run_keyed_by_lookup(&mut unknown, &pattern, table));
+    assert!(!unknown.has("_hashes"));
+}
+
+/// `carbonblack_edr`'s indicator lookup, verbatim from its generated call site.
+///
+/// The row decides both the ECS type literal and the path the value lands at,
+/// so one table serves four destinations. A key with no row writes NOTHING and
+/// leaves the flag unset, which is how the vendor's `query` indicators survive
+/// under `json.ioc_*` for the rename that follows.
+#[test]
+fn a_params_row_names_the_path_its_value_is_written_to() {
+    let script = r#"void _set(Map base, def path, def value) {\n  if (path.length == 0) return;\n  for (int i=0; i<path.length-1; i++) {\n    String c = path[i];\n    if (base[c] == null) base[c] = new HashMap();\n    base = base[c];\n  }\n  base[path[path.length-1]] = value;\n} void set(Map base, String path, def value) {\n  _set(base, path.splitOnToken(\".\"), value);\n} def mapping = params[ctx.json.ioc_type.toLowerCase()]; if (mapping == null) return; set(ctx, \"threat.indicator.type\", mapping.type); def value = ctx.json.ioc_value; if (value == null) return; set(ctx, mapping.target, value); ctx[\"_tmp_ioc_done\"] = true;\n"#;
+    let table = json!({
+        "dns": {"type": "domain-name", "target": "threat.indicator.url.domain"},
+        "ipv4": {"type": "ipv4-addr", "target": "threat.indicator.ip"},
+        "ipv6": {"type": "ipv6-addr", "target": "threat.indicator.ip"},
+        "md5": {"type": "file", "target": "threat.indicator.file.hash.md5"},
+    });
+
+    let mut address = Event::new(json!({
+        "json": { "ioc_type": "ipv4", "ioc_value": "81.2.69.144" }
+    }));
+    assert!(try_params_painless(&mut address, script, &table));
+    assert_eq!(address.get_str("threat.indicator.type"), Some("ipv4-addr"));
+    assert_eq!(address.get_str("threat.indicator.ip"), Some("81.2.69.144"));
+    assert_eq!(address.get_bool("_tmp_ioc_done"), Some(true));
+
+    let mut hash = Event::new(json!({
+        "json": { "ioc_type": "md5", "ioc_value": "506708142bc63daba64f2d3ad1dcd5bf" }
+    }));
+    assert!(try_params_painless(&mut hash, script, &table));
+    assert_eq!(hash.get_str("threat.indicator.type"), Some("file"));
+    assert_eq!(
+        hash.get_str("threat.indicator.file.hash.md5"),
+        Some("506708142bc63daba64f2d3ad1dcd5bf")
+    );
+
+    let mut unlisted = Event::new(json!({
+        "json": { "ioc_type": "query", "ioc_value": "cb.urlver=1" }
+    }));
+    assert!(try_params_painless(&mut unlisted, script, &table));
+    assert!(!unlisted.has("threat"));
+    assert!(!unlisted.has("_tmp_ioc_done"));
+
+    // The type is written before the value is read, so an absent value keeps it
+    // and still leaves the flag -- and the removals it gates -- unset.
+    let mut typeless = Event::new(json!({ "json": { "ioc_type": "ipv4" } }));
+    assert!(try_params_painless(&mut typeless, script, &table));
+    assert_eq!(typeless.get_str("threat.indicator.type"), Some("ipv4-addr"));
+    assert!(!typeless.has("threat.indicator.ip"));
+    assert!(!typeless.has("_tmp_ioc_done"));
+}
+
+/// Hold the `ctx.` path readers to one answer, or to a stated reason.
+///
+/// Eighteen helpers read a dotted path out of Painless text and differ on
+/// four axes: bracket segments, `?` handling, whether they validate, and
+/// which end they search from. Nothing compared them, so a reader that
+/// drifted was invisible until it produced a wrong field path.
+///
+/// Same move as `patterns.lock`: turn a property nobody can see into a diff
+/// somebody has to approve.
+#[test]
+fn the_two_bracket_readers_agree() {
+    use crate::common::painless_path;
+
+    // Spelling, then what both readers must make of it.
+    let cases = [
+        ("ctx.host.name", "host.name"),
+        ("ctx.host?.name", "host.name"),
+        ("ctx['host.name']", "host.name"),
+        ("ctx[\"host\"].name", "host.name"),
+        // A leading `@` is a real ECS field, not punctuation.
+        ("ctx['@timestamp']", "@timestamp"),
+    ];
+
+    for (fragment, expected) in cases {
+        assert_eq!(
+            painless_path(fragment).as_deref(),
+            Some(expected),
+            "painless_path({fragment:?})"
+        );
+        assert_eq!(
+            subject_path(fragment).strip_prefix("ctx.").map(clean_path),
+            Some(expected.to_string()),
+            "subject_path({fragment:?}) then a ctx. strip"
+        );
+    }
+}
+
+/// `clean_path` does not read map syntax, so a bracketed path reaching it
+/// keeps its brackets. Pinned rather than fixed: `ctx_path_before` searches
+/// for the literal `ctx.`, so a bracketed ROOT is not found at all.
+#[test]
+fn clean_path_leaves_map_syntax_alone() {
+    assert_eq!(clean_path("host['name']"), "host['name']");
+    assert_eq!(clean_path("host?.name"), "host.name");
+}
+
+/// Both null-safe spellings bind, and a local is read only when the prefix is
+/// the WHOLE of `ctx.` or `ctx?.`.
+#[test]
+fn ctx_locals_reads_both_spellings_and_declines_a_longer_word() {
+    assert_eq!(
+        ctx_locals("def a = ctx.host.name; def b = ctx?.user?.id;"),
+        vec![
+            ("a".to_owned(), "host.name".to_owned()),
+            ("b".to_owned(), "user.id".to_owned()),
+        ]
+    );
+}
+
+/// `ctxfoo` is not `ctx`. Stripping a bare `ctx` and then trimming the
+/// punctuation bound the local to `foo.bar`, a field the script never named.
+#[test]
+fn ctx_locals_declines_a_local_bound_to_something_that_merely_starts_with_ctx() {
+    assert!(ctx_locals("def a = ctxfoo.bar;").is_empty());
+}
+
+/// A call or a subscript is not a path this can resolve to a field.
+#[test]
+fn ctx_locals_declines_a_call_and_a_subscript() {
+    assert!(ctx_locals("def a = ctx.list.entrySet();").is_empty());
+    assert!(ctx_locals("def a = ctx.list[0];").is_empty());
+}
+
+/// The two shared term readers are NOT interchangeable, and this is the pin
+/// that stops a later tidy-up collapsing them: the loose one carries
+/// `@timestamp`, the plain one refuses it. Four modules shared two identical
+/// copies of these before they were named.
+#[test]
+fn the_two_term_readers_disagree_on_the_at_sign_by_design() {
+    assert_eq!(
+        ctx_path_term("ctx.@timestamp"),
+        Some("@timestamp".to_owned())
+    );
+    assert_eq!(ctx_path_plain("ctx.@timestamp"), None);
+
+    // Everything else they agree on, which is why the split is only the one
+    // character class and not two different jobs.
+    for term in ["ctx.host.name", "ctx?.user.id"] {
+        assert_eq!(ctx_path_term(term), ctx_path_plain(term), "{term}");
+    }
+}
+
+/// Both decline what says the term is not a bare path.
+#[test]
+fn the_term_readers_decline_a_call_and_a_subscript() {
+    for term in ["ctx.a.entrySet()", "ctx.a[0]", "ctx.a b"] {
+        assert_eq!(ctx_path_term(term), None, "{term}");
+        assert_eq!(ctx_path_plain(term), None, "{term}");
+    }
+}
+
+/// The readers do NOT agree on which characters a path may hold, and the
+/// difference is pinned rather than resolved.
+///
+/// `path_before` and `base_between` accept `alnum . _ ?` and so refuse
+/// `@timestamp`; the `ctx_path_*` pair refuses only whitespace and a
+/// terminator. Widening the strict pair would open matchers that have never
+/// been exposed to a bad path, which is a parity change and not a tidy-up.
+/// Narrowing the loose pair would refuse ECS fields that are real.
+#[test]
+fn the_readers_differ_on_the_at_sign_and_that_is_deliberate() {
+    let script = "def t = ctx.@timestamp;";
+
+    assert_eq!(
+        ctx_path_before(script, ";"),
+        Some("@timestamp".to_string()),
+        "the loose pair takes a real ECS field"
+    );
+    assert_eq!(
+        super::path_before(script, ";"),
+        None,
+        "the strict pair refuses it -- widen only with a corpus run"
+    );
+}
+
+/// A backward search that spans two bindings declines rather than handing
+/// back a field name no event can hold.
+///
+/// `falco_alerts` ships this pattern and the reader used to return
+/// `proc.args;\n def items = args`, which bound a pattern that then wrote
+/// nothing.
+#[test]
+fn a_backward_search_spanning_two_bindings_declines() {
+    let script = "def path = ctx.proc.exepath; def args = ctx.proc.args; \
+        def items = args.splitOnToken(' ');";
+
+    assert_eq!(ctx_path_before(script, ".splitOnToken("), None);
+
+    // A marker whose path IS the one before it still reads.
+    assert_eq!(
+        ctx_path_before(
+            "def items = ctx.proc.args.splitOnToken(' ')",
+            ".splitOnToken("
+        ),
+        Some("proc.args".to_string())
+    );
+}
+
+/// `+=` accumulates onto its left side rather than assigning to it, so
+/// splitting there yields a write target with the operator still attached.
+/// `fortinet`'s tls version ships `ctx.tls.version += ".0"`.
+#[test]
+fn a_compound_assignment_is_not_a_write_target() {
+    assert_eq!(split_assignment("ctx.tls.version += \".0\""), None);
+    assert_eq!(split_assignment("ctx.a -= 1"), None);
+    assert_eq!(split_assignment("ctx.a *= 2"), None);
+}
+
+/// The ordinary forms still split, and a comparison still does not.
+#[test]
+fn a_plain_assignment_still_splits() {
+    assert_eq!(
+        split_assignment("ctx.a = ctx.b"),
+        Some(("ctx.a ", " ctx.b"))
+    );
+    assert_eq!(split_assignment("ctx.a == ctx.b"), None);
+    assert_eq!(split_assignment("ctx.a != ctx.b"), None);
+    assert_eq!(split_assignment("ctx.a >= 3"), None);
+}
+
+/// A field-to-field comparison used to read as unresolvable and answer
+/// false forever, so the branch behind it was dead on every event.
+#[test]
+fn one_field_compares_against_another() {
+    let same = Event::new(json!({ "a": "x", "b": "x", "c": "y" }));
+    assert!(guard_holds(&same, "ctx.a == ctx.b"));
+    assert!(!guard_holds(&same, "ctx.a == ctx.c"));
+    assert!(guard_holds(&same, "ctx.a != ctx.c"));
+    assert!(!guard_holds(&same, "ctx.a != ctx.b"));
+}
+
+/// Absent and explicitly null are ONE value to an ingest `if`.
+#[test]
+fn an_absent_field_equals_an_explicitly_null_one() {
+    let event = Event::new(json!({ "a": null }));
+    assert!(guard_holds(&event, "ctx.a == ctx.missing"));
+}
+
+/// An ingest conditional reads a view whose nested containers are fresh
+/// wrappers with no `equals`, so two of them never compare equal however
+/// identical their contents. `condition_eq` answers the same way.
+#[test]
+fn two_containers_never_compare_equal() {
+    let event = Event::new(json!({
+        "a": { "k": 1 }, "b": { "k": 1 },
+        "list": [1, 2], "same": [1, 2]
+    }));
+    assert!(!guard_holds(&event, "ctx.a == ctx.b"));
+    assert!(!guard_holds(&event, "ctx.list == ctx.same"));
+    assert!(guard_holds(&event, "ctx.a != ctx.b"));
+}
+
+/// Verbatim from `pipelines/symantec_endpoint/log/default.yml`: the CSV
+/// layout is identified by WHICH columns carried a `Key:` label, and the
+/// matching row then names the holes by index.
+#[test]
+fn a_fingerprint_row_names_the_unlabelled_columns() {
+    let script = "// Assume first column is always the host.hostname.\n\
+        def hostname = ctx._csv_array.get(0);\n\
+        if (/[\\.a-zA-Z0-9_-]+/.matcher(hostname).matches()) {\n  \
+        if (ctx?.host == null) {\n    ctx['host'] = [:];\n  }\n  \
+        ctx['host']['hostname'] = hostname;\n}\n\ndef provider = null;\n\
+        for (def p: params.providers) {\n  \
+        if (p.fingerprint == ctx._fingerprint || (p.fingerprint instanceof Collection \
+        && p.fingerprint.contains(ctx._fingerprint))) {\n    provider = p;\n    \
+        break;\n  }\n}\nif (provider == null) { return; }\n\n\
+        ctx['event']['provider'] = provider.name;\n\
+        if (provider?.event_category != null) {\n  \
+        ctx['event']['category'] = new ArrayList(provider.event_category);\n}\n\
+        if (provider?.event_type!= null) {\n  \
+        ctx['event']['type'] = new ArrayList(provider.event_type);\n}\n\
+        for (def c : provider.columns) {\n  \
+        def v = ctx._csv_array.get(c.index).trim();\n  if (!v.isEmpty()) {\n    \
+        ctx._csv_map[c.name] = v;\n  }\n}\n";
+
+    let params = json!({
+        "providers": [
+            {
+                "name": "System Log",
+                "fingerprint": "site|server|NONE",
+                "columns": [{ "index": 2, "name": "event_description" }]
+            },
+            {
+                "name": "Agent Packet Log",
+                // Two layouts under one name, so the row lists both.
+                "fingerprint": ["NONE|application", "NONE|action"],
+                "event_category": ["network"],
+                "columns": [{ "index": 0, "name": "traffic_direction" }]
+            }
+        ]
+    });
+
+    let mut event = Event::new(json!({
+        "_csv_array": ["srv01", "Server: srv01", "  Scan finished  "],
+        "_csv_map": { "site": "SEPM" },
+        "_fingerprint": "site|server|NONE"
+    }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get_str("host.hostname"), Some("srv01"));
+    assert_eq!(event.get_str("event.provider"), Some("System Log"));
+    assert_eq!(
+        event.get_str("_csv_map.event_description"),
+        Some("Scan finished")
+    );
+    // The row names no categories, so the script writes none.
+    assert!(!event.has("event.category"));
+
+    // A row whose fingerprint is a LIST matches on membership.
+    let mut listed = Event::new(json!({
+        "_csv_array": ["inbound", "tcp"],
+        "_csv_map": { "action": "allow" },
+        "_fingerprint": "NONE|action"
+    }));
+    assert!(try_params_painless(&mut listed, script, &params));
+    assert_eq!(listed.get_str("event.provider"), Some("Agent Packet Log"));
+    assert_eq!(listed.get("event.category"), Some(&json!(["network"])));
+    assert_eq!(
+        listed.get_str("_csv_map.traffic_direction"),
+        Some("inbound")
+    );
+}
+
+/// Verbatim from `pipelines/checkpoint_email/event/default.yml`: a params
+/// array subscripted 1-BASED, which the runner read as 0-based.
+///
+/// The off-by-one returned the NEXT row rather than missing, so severity 2
+/// wrote `Medium` where the vendor writes `Low` -- a plausible value, in all
+/// 18 events, with the matcher counted as handled throughout.
+#[test]
+fn a_one_based_subscript_counts_from_the_script_not_from_zero() {
+    let script = "def severityValue = ctx.checkpoint_email.event.severity;\n\
+        if (severityValue > 0 && severityValue <= params.severity.length) {\n  \
+        ctx.checkpoint_email.event.put('severity_enum', \
+        params['severity'][(int)severityValue-1]);\n}";
+    let params = json!({ "severity": ["Lowest", "Low", "Medium", "High", "Critical"] });
+
+    for (severity, expected) in [(2, "Low"), (3, "Medium"), (4, "High"), (5, "Critical")] {
+        let mut event = Event::new(json!({
+            "checkpoint_email": { "event": { "severity": severity } }
+        }));
+        assert!(try_params_painless(&mut event, script, &params));
+        assert_eq!(
+            event.get_str("checkpoint_email.event.severity_enum"),
+            Some(expected),
+            "severity {severity}"
+        );
+    }
+}
+
+/// The same subscript with no offset stays 0-based -- several pipelines spell
+/// it that way, and a blanket subtraction would have moved every one of them.
+#[test]
+fn a_subscript_with_no_offset_still_counts_from_zero() {
+    let script = "def n = ctx.a.n;\nctx.a.put('row', params['t'][n]);";
+    let params = json!({ "t": ["zero", "one", "two"] });
+
+    let mut event = Event::new(json!({ "a": { "n": 0 } }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get_str("a.row"), Some("zero"));
+}
+
+/// Both conventions, verbatim, from ONE pipeline --
+/// `pipelines/cyberark_epm/aggregated_event/default.yml:222-259`.
+///
+/// `DeceptionType` is 1-based and guarded `value >= 1`; `DefenceAction` is
+/// 0-based and guarded `value >= 0`. The second is correct in the corpus today
+/// and a blanket subtraction would have broken it.
+#[test]
+fn two_conventions_in_one_pipeline_each_count_their_own_way() {
+    let one_based = "def value = (int) ctx.cyberark_epm.aggregated_event.deception_type;\n\
+        if (value >= 1 && value <= params.DeceptionType.length) {\n  \
+        ctx.cyberark_epm.aggregated_event.put('deception_type_value', \
+        params['DeceptionType'][value - 1]);\n}";
+    let params =
+        json!({ "DeceptionType": ["\"Local User LSASS\" honeypot", "\"Browsers\" honeypot"] });
+    let mut event = Event::new(json!({
+        "cyberark_epm": { "aggregated_event": { "deception_type": 1 } }
+    }));
+    assert!(try_params_painless(&mut event, one_based, &params));
+    assert_eq!(
+        event.get_str("cyberark_epm.aggregated_event.deception_type_value"),
+        Some("\"Local User LSASS\" honeypot")
+    );
+
+    let zero_based = "def value = (int) ctx.cyberark_epm.aggregated_event.defence_action_id;\n\
+        if (value >= 0 && value < params.DefenceAction.length) {\n  \
+        ctx.cyberark_epm.aggregated_event.put('defence_action_value', \
+        params['DefenceAction'][value]);\n}";
+    let params = json!({ "DefenceAction": ["No action", "Detect", "Block"] });
+    let mut event = Event::new(json!({
+        "cyberark_epm": { "aggregated_event": { "defence_action_id": 0 } }
+    }));
+    assert!(try_params_painless(&mut event, zero_based, &params));
+    assert_eq!(
+        event.get_str("cyberark_epm.aggregated_event.defence_action_value"),
+        Some("No action")
+    );
+}
+
+/// An index below the offset writes nothing rather than wrapping.
+///
+/// `usize` subtraction would panic and a saturating one would return row 0,
+/// which is a value the vendor never writes. The script's own guard keeps this
+/// unreachable in the corpus; the runner does not get to rely on that.
+#[test]
+fn an_index_below_the_offset_writes_nothing() {
+    let script = "def n = ctx.a.n;\nctx.a.put('row', params['t'][n - 1]);";
+    let params = json!({ "t": ["one", "two"] });
+
+    let mut event = Event::new(json!({ "a": { "n": 0 } }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert!(!event.has("a.row"));
+}
+
+/// Verbatim from `pipelines/symantec_endpoint_security/event/default.yml`:
+/// a table lookup that writes NOTHING when the key misses, where
+/// `LookupNormalise` would write the key back.
+#[test]
+fn a_guarded_lookup_writes_only_on_a_hit() {
+    let script = "def obj = ctx.ses.file.type_id;\nif (params.containsKey(obj.toString())) {\n  \
+        def type = params.get(obj.toString());\n  ctx.ses.file.type_value = type\n}";
+    let params = json!({ "1": "File", "2": "Folder" });
+
+    let mut hit = Event::new(json!({ "ses": { "file": { "type_id": 1 } } }));
+    assert!(try_params_painless(&mut hit, script, &params));
+    assert_eq!(hit.get_str("ses.file.type_value"), Some("File"));
+
+    // A key the table misses leaves the target absent -- writing the key
+    // back is the other pattern's behaviour, not this one's.
+    let mut miss = Event::new(json!({ "ses": { "file": { "type_id": 99 } } }));
+    assert!(try_params_painless(&mut miss, script, &params));
+    assert!(!miss.has("ses.file.type_value"));
+}
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/cloudflare_logpush_dns/default.rs`: the
+/// same lookup with the key bound through `String.valueOf`, where the gateway
+/// sibling binds on the bare `def code = ctx.a.b;`.
+///
+/// Written in the ESCAPED one-line form the call site holds: a stored script
+/// arrives with its newlines escaped, and a test spelling them for real passes
+/// over a defect in `normalise`.
+#[test]
+fn a_key_bound_through_a_stringifying_wrapper_reads_the_same_path() {
+    let script = r#"def code = String.valueOf(ctx.cloudflare_logpush.dns.response.code);\nctx.dns = ctx.dns ?: [:];\nif (params.containsKey(code)) {\n  ctx.dns.response_code = params[code];\n}\n"#;
+    let params = json!({ "0": "NoError", "3": "NXDomain" });
+
+    let mut hit = Event::new(json!({
+        "cloudflare_logpush": { "dns": { "response": { "code": 3 } } }
+    }));
+    assert!(try_params_painless(&mut hit, script, &params));
+    assert_eq!(hit.get_str("dns.response_code"), Some("NXDomain"));
+
+    // A code the table has no row for leaves the target absent.
+    let mut miss = Event::new(json!({
+        "cloudflare_logpush": { "dns": { "response": { "code": 9 } } }
+    }));
+    assert!(try_params_painless(&mut miss, script, &params));
+    assert!(!miss.has("dns.response_code"));
+}
+
+/// Verbatim from the generated call sites in
+/// `crates/dfe-transforms/src/filebeat/cyberark_epm_raw_event/default.rs`: the
+/// same flat table, with the key bound to a LOCAL and the guard positive.
+///
+/// Both bound to `IndexedLookup`, whose runner wants a params ARRAY and so
+/// declined on a map -- 19 fields over 10 events reached no runner at all.
+///
+/// Written in the ESCAPED one-line form the call site holds: a stored script
+/// arrives with its newlines escaped, and a test spelling them for real passes
+/// over a defect in `normalise`.
+#[test]
+fn a_local_key_lookup_writes_the_row_and_nothing_on_a_miss() {
+    let status = r"def value = Long.toString(ctx.cyberark_epm.raw_event.logon_status_id);\nif (params.containsKey(value)) {\n  ctx.cyberark_epm.raw_event.put('logon_status_value', params[value]);\n}";
+    let params = json!({
+        "3221225583": "User logon outside authorized hours",
+        "0": "Status OK."
+    });
+
+    let mut hit = Event::new(json!({
+        "cyberark_epm": { "raw_event": { "logon_status_id": 3_221_225_583i64 } }
+    }));
+    assert!(try_params_painless(&mut hit, status, &params));
+    assert_eq!(
+        hit.get_str("cyberark_epm.raw_event.logon_status_value"),
+        Some("User logon outside authorized hours")
+    );
+
+    // The key is the number's decimal text, so a status the table has no row
+    // for writes nothing.
+    let mut miss = Event::new(json!({
+        "cyberark_epm": { "raw_event": { "logon_status_id": 12 } }
+    }));
+    assert!(try_params_painless(&mut miss, status, &params));
+    assert!(!miss.has("cyberark_epm.raw_event.logon_status_value"));
+
+    // The second table on the same stream, keyed by a small integer.
+    let attempt = r"def value = Long.toString(ctx.cyberark_epm.raw_event.logon_attempt_type_id);\nif (params.containsKey(value)) {\n  ctx.cyberark_epm.raw_event.put('logon_attempt_value', params[value]);\n}";
+    let types = json!({ "10": "RemoteInteractive (Terminal Services, Remote Desktop or Remote Assistance)" });
+
+    let mut event = Event::new(json!({
+        "cyberark_epm": { "raw_event": { "logon_attempt_type_id": 10 } }
+    }));
+    assert!(try_params_painless(&mut event, attempt, &types));
+    assert_eq!(
+        event.get_str("cyberark_epm.raw_event.logon_attempt_value"),
+        Some("RemoteInteractive (Terminal Services, Remote Desktop or Remote Assistance)")
+    );
+}
+
+/// The two vendor scripts closest to that one, which the arm must decline.
+///
+/// `symantec_endpoint_security` guards on a CALL rather than a local and adds
+/// to a set, on 70 call sites; `amazon_security_lake` binds a local from a LIST
+/// element and puts the set it collected. Claiming either here would write the
+/// guard's own row in place of what the script builds, so both belong to
+/// `CollectParamsRows`, which reads the collection they assemble.
+#[test]
+fn a_local_key_lookup_declines_a_guard_over_another_write() {
+    let symantec = r"def var = new HashSet(); if (ctx.file != null && ctx.file.type != null) {\n    var = ctx.file.type;\n} else {\n  if (ctx.file == null)\n  {\n    ctx.file = new HashMap();\n  }\n} def type_id = ctx.ses.file.type_id; if (params.containsKey(type_id.toString())) {\n    def type = params.get(type_id.toString());\n    var.add(type);\n} ctx.file.put('type', var);";
+    let security_lake = r"if (ctx.dns == null) {\n  ctx.dns = new HashMap();\n} def list = new HashSet(); for (def answer : ctx.ocsf.answers) {\n  if (answer.flags != null)\n  {\n    for (int i = 0; i < answer.flags.length; i++) {\n      def flag = answer.flags[i];\n      if(params.containsKey(flag))\n      {\n        list.add(params.get(flag));\n      }\n    }\n  }\n} ctx.dns.put('header_flags', list);";
+
+    for (script, expected) in [
+        (
+            symantec,
+            crate::collect_rows::CollectParamsRows::new(
+                crate::collect_rows::RowSource::Path("ses.file.type_id".into()),
+                "file.type",
+                true,
+                true,
+            ),
+        ),
+        (
+            security_lake,
+            crate::collect_rows::CollectParamsRows::new(
+                crate::collect_rows::RowSource::Member {
+                    list: "ocsf.answers".into(),
+                    member: "flags".into(),
+                },
+                "dns.header_flags",
+                true,
+                false,
+            ),
+        ),
+    ] {
+        let normalised = crate::common::normalise(script);
+        assert_eq!(parse_local_key_lookup(&normalised), None, "{script}");
+        assert_eq!(
+            params_pattern(&normalised),
+            Some(ParamsPattern::CollectParamsRows(Box::new(expected))),
+            "{script}"
+        );
+    }
+}
+
+/// Verbatim from `pipelines/google_workspace/{chrome,meet}/default.yml`: the
+/// row lands on a NAMED MEMBER of a container the script first guarantees, in
+/// the two spellings the family ships, wrapped in the one-element list ECS's
+/// `event.type` is.
+///
+/// The guarantee is not a write. Reading it as one made `event` itself the
+/// target, so chrome stored the bare string `installation` there and every
+/// later `event.<sub>` write failed on a string -- six events scored zero with
+/// all 300 of their fields right.
+#[test]
+fn a_member_lookup_wraps_the_row_and_writes_past_the_container_guarantee() {
+    let params = json!({ "browser_extension_install": "installation" });
+    for script in [
+        // `put`, keyed on the folded name.
+        "if (ctx.event == null) {\\n  ctx.event = new HashMap();\\n}\\n\
+         def type = params.get(ctx.google_workspace.chrome.name.toLowerCase());\\n\
+         if (type == null) {\\n  ctx.event.remove('type');\\n} else {\\n  \
+         ctx.event.put('type', [type]);\\n}",
+        // The same thing assigned, which is how meet, keep, calendar, chat and
+        // vault spell it.
+        "ctx.event = ctx.event ?: [:];\\n\
+         def type = params.get(ctx.google_workspace.chrome.name.toLowerCase());\\n\
+         if (type == null) {\\n  ctx.event.remove('type');\\n} else {\\n  \
+         ctx.event.type = [type];\\n}",
+    ] {
+        let mut hit = Event::new(json!({
+            "event": { "kind": "event" },
+            "google_workspace": { "chrome": { "name": "BROWSER_EXTENSION_INSTALL" } }
+        }));
+        assert!(try_params_painless(&mut hit, script, &params));
+        assert_eq!(hit.get("event.type"), Some(&json!(["installation"])));
+        assert_eq!(hit.get_str("event.kind"), Some("event"));
+
+        // The miss branch REMOVES, where writing the key back would leave the
+        // vendor's own name sitting in an ECS-vocabulary field.
+        let mut miss = Event::new(json!({
+            "event": { "kind": "event", "type": ["stale"] },
+            "google_workspace": { "chrome": { "name": "UNLISTED" } }
+        }));
+        assert!(try_params_painless(&mut miss, script, &params));
+        assert!(!miss.has("event.type"));
+        assert_eq!(miss.get_str("event.kind"), Some("event"));
+    }
+}
+
+/// Verbatim from `pipelines/macos/*/common-pipeline.yml`, 14 call sites: the
+/// lookup is the `put` value itself, with no local in between.
+///
+/// A `put` carries no `=`, so the only assignment the script makes is the
+/// container guarantee -- which is how the whole row landed at `log` and cost
+/// macos all 23 of its events.
+#[test]
+fn a_member_lookup_reads_the_put_target_where_nothing_is_assigned() {
+    let script = "ctx.log = ctx.log ?: [:];\\n\
+         ctx.log.put(\"level\", params.get(ctx.json.messageType.toLowerCase()));";
+    let params = json!({ "fault": "warning", "error": "error" });
+
+    let mut event = Event::new(json!({ "json": { "messageType": "Fault" } }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get_str("log.level"), Some("warning"));
+}
+
+/// Verbatim from `pipelines/google_workspace/data_studio/default.yml`: the
+/// wrap is spelled at the BINDING rather than at the write, so an unlisted key
+/// stores the list holding the lookup's own null.
+#[test]
+fn a_member_lookup_carries_a_wrap_spelled_at_the_binding() {
+    let script = "ctx.event = ctx.event ?: [:];\\ndef type = new ArrayList();\\n\
+         type.add(params.get(ctx.google_workspace.data_studio.name));\\n\
+         ctx.event.put('type', type);";
+    let params = json!({ "VIEW": "access" });
+
+    let mut hit = Event::new(json!({ "google_workspace": { "data_studio": { "name": "VIEW" } } }));
+    assert!(try_params_painless(&mut hit, script, &params));
+    assert_eq!(hit.get("event.type"), Some(&json!(["access"])));
+
+    let mut miss = Event::new(json!({ "google_workspace": { "data_studio": { "name": "X" } } }));
+    assert!(try_params_painless(&mut miss, script, &params));
+    assert_eq!(miss.get("event.type"), Some(&json!([null])));
+}
+
+/// The miss behaviour is read off the guard the script puts round its write,
+/// never assumed -- a `!= null` guard leaves the member as it was.
+#[test]
+fn a_member_lookup_reads_its_miss_behaviour_off_the_guard() {
+    let script = "def t = params.get(ctx.winlog.task);\\nif (t != null) {\\n  \
+         ctx.winlog.task = t;\\n}";
+    let params = json!({ "13": "Registry value set" });
+
+    let mut miss = Event::new(json!({ "winlog": { "task": "99" } }));
+    assert!(try_params_painless(&mut miss, script, &params));
+    assert_eq!(miss.get_str("winlog.task"), Some("99"));
+}
+
+/// What the pattern must NOT claim, because it cannot say the whole script.
+///
+/// Order is behaviour here: this matcher sits ahead of `LookupNormalise`, so
+/// anything it takes wrongly is a source that silently changes output.
+#[test]
+fn a_member_lookup_declines_what_it_cannot_wholly_say() {
+    for script in [
+        // fortinet: the miss branch writes the folded KEY back, which is
+        // `LookupNormalise`'s whole reason to exist.
+        "def k = ctx.network.direction.toLowerCase(); def normalized = params.get(k); \
+         if (normalized != null) {\\n    ctx.network.direction = normalized;\\n    return;\\n} \
+         ctx.network.direction = k;",
+        // A direct assignment names its own target correctly, so there is
+        // nothing here to fix and taking it would change the miss behaviour of
+        // every source that spells a lookup this way.
+        "ctx.event = ctx.event ?: [:];\\n\
+         ctx.event.severity = params.get(ctx.sysdig.cspm.control.severity.toLowerCase());",
+        // bitwarden reads the table twice and fans the row over four fields.
+        "if (ctx.bitwarden?.event?.type?.value == null || \
+         params.get(ctx.bitwarden.event.type.value) == null) {\\n  return;\\n}\\n\
+         def hm = new HashMap(params.get(ctx.bitwarden.event.type.value));\\n\
+         ctx.event.category = hm.category;\\nctx.event.type = hm.type;",
+    ] {
+        assert!(
+            parse_member_lookup(&crate::common::normalise(script)).is_none(),
+            "claimed a script it cannot wholly say: {script}"
+        );
+    }
+}
+
+/// Verbatim from the `qualys_gav_asset` call site: one branch puts a LITERAL
+/// on `host.os.type` and the other the table's row, and the container the two
+/// share is guaranteed first.
+const QUALYS_OS_TYPE: &str = "def os_type = ctx.qualys_gav.asset.operating_system.category1.toLowerCase();\\n\\n\
+     ctx.host = ctx.host ?: [:];\\nctx.host.os = ctx.host.os ?: [:];\\n\\n\
+     if (os_type.contains('centos') || os_type.contains('ubuntu')) {\\n  \
+     ctx.host.os.put('type', 'linux');\\n} else {\\n  \
+     ctx.host.os.put('type', params.get(os_type));\\n}\\n";
+
+fn os_type_params() -> Value {
+    json!({
+        "macos": "macos",
+        "linux": "linux",
+        "unix": "unix",
+        "windows": "windows",
+        "ios": "ios",
+        "android": "android"
+    })
+}
+
+/// Both arms of a branch writing the SAME member are one script, so the lookup
+/// lands on `host.os.type` and the literal arm replaces it where its own guard
+/// holds.
+///
+/// `LookupNormalise` sits below this and reads the container guarantee as the
+/// write, so declining here stored the string AT `host.os` -- and every later
+/// `host.os.<sub>` then failed on it, taking all five of the source's events
+/// down the error path with 217 extra fields.
+#[test]
+fn a_branch_writing_one_member_from_both_arms_is_read_whole() {
+    let mut ubuntu = Event::new(json!({ "qualys_gav": { "asset": {
+        "operating_system": { "category1": "Ubuntu" }
+    } } }));
+    assert!(try_params_painless(
+        &mut ubuntu,
+        QUALYS_OS_TYPE,
+        &os_type_params()
+    ));
+    assert_eq!(ubuntu.get("host.os"), Some(&json!({ "type": "linux" })));
+
+    let mut linux = Event::new(json!({ "qualys_gav": { "asset": {
+        "operating_system": { "category1": "Linux" }
+    } } }));
+    assert!(try_params_painless(
+        &mut linux,
+        QUALYS_OS_TYPE,
+        &os_type_params()
+    ));
+    assert_eq!(linux.get("host.os"), Some(&json!({ "type": "linux" })));
+}
+
+/// A key the table misses stores the lookup's own null, which is what
+/// Painless's `put` does with it -- the pipeline's drop-empty pass then takes
+/// it away, and Elasticsearch's own output carries no `host.os.type` for a Mac.
+#[test]
+fn a_missed_row_stores_the_null_the_put_would_have() {
+    let mut event = Event::new(json!({ "qualys_gav": { "asset": {
+        "operating_system": { "category1": "Mac" }
+    } } }));
+    assert!(try_params_painless(
+        &mut event,
+        QUALYS_OS_TYPE,
+        &os_type_params()
+    ));
+    assert_eq!(event.get("host.os"), Some(&json!({ "type": null })));
+}
+
+/// Verbatim from `pipelines/stan/log/default.yml`: the abbreviation and
+/// its expansion are BOTH params members, so the table is editable without
+/// touching the script.
+#[test]
+fn a_ladder_rewrites_one_field_through_pairs_of_params_members() {
+    let script = "if (ctx.log.level == params.inf) {\n          \
+        ctx.log.level = params.info;\n        } else if (ctx.log.level == params.dbg) {\n          \
+        ctx.log.level = params.debug;\n        } else if (ctx.log.level == params.wrn) {\n          \
+        ctx.log.level = params.warning;\n        }";
+    let params = json!({
+        "inf": "INF", "info": "info",
+        "dbg": "DBG", "debug": "debug",
+        "wrn": "WRN", "warning": "warning",
+    });
+
+    let mut matched = Event::new(json!({ "log": { "level": "DBG" } }));
+    assert!(try_params_painless(&mut matched, script, &params));
+    assert_eq!(matched.get_str("log.level"), Some("debug"));
+
+    // No arm matches, so the ladder falls through and the field stands.
+    let mut unmatched = Event::new(json!({ "log": { "level": "TRC" } }));
+    assert!(try_params_painless(&mut unmatched, script, &params));
+    assert_eq!(unmatched.get_str("log.level"), Some("TRC"));
+
+    // Absent is the script's own `== null` on every arm.
+    let mut absent = Event::new(json!({}));
+    assert!(try_params_painless(&mut absent, script, &params));
+    assert_eq!(absent.get("log.level"), None);
+}
+
+/// Verbatim from `pipelines/carbonblack_edr/log/default.yml`: the ECS
+/// categorisation table, keyed by `event.action`, merged onto a LOCAL
+/// bound to `ctx.event`, with an `unknown` row for an action the table
+/// does not list.
+#[test]
+fn a_categorisation_row_merges_onto_a_bound_local() {
+    let script = "def clone(def ref) {\n  if (ref == null) return ref;\n  \
+        if (ref instanceof Map) {\n    ref = ref.entrySet().stream().collect(\n      \
+        Collectors.toMap(\n        e -> e.getKey(),\n        e -> clone(e.getValue())\n      \
+        )\n    );\n  } else if (ref instanceof List) {\n    \
+        ref = ref.stream().map(e -> clone(e)).collect(\n      Collectors.toList()\n    );\n  \
+        }\n  return ref;\n}\ndef event = ctx.event;\nif (event == null) {\n  \
+        event = new HashMap();\n  ctx[\"event\"] = event;\n}\n\
+        def type = ctx.event.action;\n\
+        def fields = params[type] != null? params[type] : params[\"unknown\"];\n\
+        fields.forEach( (k, v) -> {\n  event[k] = clone(v);\n});\n";
+    let params = json!({
+        "binaryinfo.group.observed": { "kind": "event", "category": ["file"], "type": ["info"] },
+        "unknown": { "kind": "event" },
+    });
+
+    let mut listed = Event::new(json!({
+        "event": { "action": "binaryinfo.group.observed" },
+    }));
+    assert!(try_params_painless(&mut listed, script, &params));
+    assert_eq!(listed.get_str("event.kind"), Some("event"));
+    assert_eq!(listed.get("event.category"), Some(&json!(["file"])));
+    assert_eq!(listed.get("event.type"), Some(&json!(["info"])));
+    // The key itself is left where it was -- the merge adds, it does not
+    // replace what it was keyed by.
+    assert_eq!(
+        listed.get_str("event.action"),
+        Some("binaryinfo.group.observed")
+    );
+
+    // An action the table does not list takes the `unknown` row, which
+    // carries a kind and nothing else.
+    let mut unlisted = Event::new(json!({ "event": { "action": "unknown" } }));
+    assert!(try_params_painless(&mut unlisted, script, &params));
+    assert_eq!(unlisted.get_str("event.kind"), Some("event"));
+    assert_eq!(unlisted.get("event.category"), None);
+}
+
+/// Verbatim from `pipelines/cyberarkpas/audit/audit.yml`: the members
+/// params names stay put, everything else moves down one level. The
+/// vendor's reason is a mapping explosion, so a field the device invented
+/// MUST end up under the flattened key and not beside the named ones.
+#[test]
+fn unlisted_members_move_under_the_scripts_own_rest_key() {
+    let script = "Map audit = ctx.cyberarkpas.audit; \
+        params.entrySet().stream().filter(e -> audit.containsKey(e.getKey())).forEach(lst -> {\n  \
+        Map base = audit[lst.getKey()],\n      selected = new HashMap();\n  \
+        lst.getValue().stream().filter(fld -> base.containsKey(fld)).forEach(fld -> {\n    \
+        selected[fld] = base.remove(fld);\n  });\n  selected['other'] = base;\n  \
+        audit[lst.getKey()] = selected;\n});\n";
+    let params = json!({
+        "ca_properties": ["address", "port"],
+        "extra_details": ["command", "username"],
+    });
+
+    let mut event = Event::new(json!({ "cyberarkpas": { "audit": {
+        "action": "Logon",
+        "ca_properties": { "device_type": "database", "port": "1521", "address": "db1" },
+        "extra_details": { "address": "10.0.0.1", "command": "ls", "psmid": "PSM01" },
+    }}}));
+    assert!(try_params_painless(&mut event, script, &params));
+
+    // Listed: kept where it was, and in the PARAMS order rather than the
+    // sub-map's -- Painless streams the list, not the map.
+    assert_eq!(
+        event.get("cyberarkpas.audit.ca_properties"),
+        Some(&json!({
+            "address": "db1",
+            "port": "1521",
+            "other": { "device_type": "database" },
+        }))
+    );
+
+    // `address` is listed for ca_properties and NOT for extra_details, so
+    // the same name lands on opposite sides of the split.
+    assert_eq!(
+        event.get("cyberarkpas.audit.extra_details"),
+        Some(&json!({
+            "command": "ls",
+            "other": { "address": "10.0.0.1", "psmid": "PSM01" },
+        }))
+    );
+
+    // A sibling params does not name is left exactly as it was.
+    assert_eq!(event.get_str("cyberarkpas.audit.action"), Some("Logon"));
+}
+
+/// Verbatim from `pipelines/kolide/auth/categorize.yml`: an unconditional
+/// write, then the row's columns or the fallback literals.
+#[test]
+fn a_table_row_fans_out_and_an_unlisted_key_takes_the_defaults() {
+    let script = "def action = ctx.event.action;\nctx.event.kind = 'event';\n\n\
+        def m = params.exact.get(action);\nif (m != null) {\n  \
+        ctx.event.category = new ArrayList(m.category);\n  \
+        ctx.event.type = new ArrayList(m.type);\n  \
+        if (m.containsKey('outcome') && ctx.event.outcome == null) {\n    \
+        ctx.event.outcome = m.outcome;\n  }\n} else {\n  \
+        ctx.event.category = ['authentication'];\n  ctx.event.type = ['info'];\n}";
+    let params = json!({ "exact": {
+        "sign_in_attempt": { "category": ["authentication", "session"], "type": ["start"] },
+        "sign_in_denied": {
+            "category": ["authentication"], "type": ["info"], "outcome": "failure",
+        },
+    }});
+
+    let mut listed = Event::new(json!({ "event": { "action": "sign_in_attempt" } }));
+    assert!(try_params_painless(&mut listed, script, &params));
+    assert_eq!(listed.get_str("event.kind"), Some("event"));
+    assert_eq!(
+        listed.get("event.category"),
+        Some(&json!(["authentication", "session"]))
+    );
+    assert_eq!(listed.get("event.type"), Some(&json!(["start"])));
+    assert_eq!(listed.get("event.outcome"), None);
+
+    let mut unlisted = Event::new(json!({ "event": { "action": "auth_log" } }));
+    assert!(try_params_painless(&mut unlisted, script, &params));
+    assert_eq!(unlisted.get_str("event.kind"), Some("event"));
+    assert_eq!(
+        unlisted.get("event.category"),
+        Some(&json!(["authentication"]))
+    );
+    assert_eq!(unlisted.get("event.type"), Some(&json!(["info"])));
+
+    // The guarded column is the script's own `== null`, so an outcome the
+    // pipeline already resolved stands.
+    let mut resolved = Event::new(json!({
+        "event": { "action": "sign_in_denied", "outcome": "success" },
+    }));
+    assert!(try_params_painless(&mut resolved, script, &params));
+    assert_eq!(resolved.get_str("event.outcome"), Some("success"));
+
+    let mut denied = Event::new(json!({ "event": { "action": "sign_in_denied" } }));
+    assert!(try_params_painless(&mut denied, script, &params));
+    assert_eq!(denied.get_str("event.outcome"), Some("failure"));
+}
+
+/// Verbatim from `pipelines/kolide/audit/categorize.yml`: the same table
+/// read with `containsKey` and a subscript, and a fallback whose own
+/// `event.type` comes from a local rather than a literal.
+#[test]
+fn a_contains_key_lookup_reads_the_same_row() {
+    let script = "def action = ctx.event.action;\nctx.event.kind = 'event';\n\n\
+        if (params.exact.containsKey(action)) {\n  def m = params.exact[action];\n  \
+        ctx.event.category = new ArrayList(m.category);\n  \
+        ctx.event.type = new ArrayList(m.type);\n  \
+        if (m.containsKey('outcome')) {\n    ctx.event.outcome = m.outcome;\n  }\n\
+        } else {\n  String type = 'change';\n  \
+        if (action.endsWith('_created')) {\n    type = 'creation';\n  }\n  \
+        ctx.event.category = ['configuration'];\n  ctx.event.type = [type];\n}";
+    let params = json!({ "exact": {
+        "api_key_secret_viewed": {
+            "category": ["iam", "configuration"], "type": ["access"], "outcome": "success",
+        },
+    }});
+
+    let mut listed = Event::new(json!({
+        "event": { "action": "api_key_secret_viewed" },
+    }));
+    assert!(try_params_painless(&mut listed, script, &params));
+    assert_eq!(listed.get_str("event.kind"), Some("event"));
+    assert_eq!(
+        listed.get("event.category"),
+        Some(&json!(["iam", "configuration"]))
+    );
+    assert_eq!(listed.get("event.type"), Some(&json!(["access"])));
+    assert_eq!(listed.get_str("event.outcome"), Some("success"));
+
+    // The fallback's derived type is not a literal, so only the category
+    // it writes plainly is reproduced.
+    let mut unlisted = Event::new(json!({ "event": { "action": "audit_log" } }));
+    assert!(try_params_painless(&mut unlisted, script, &params));
+    assert_eq!(
+        unlisted.get("event.category"),
+        Some(&json!(["configuration"]))
+    );
+    assert_eq!(unlisted.get("event.type"), None);
+}
+
+/// Verbatim from `pipelines/kolide/issues/categorize.yml`: statements
+/// after the branch mean the pattern does not describe the whole script, so
+/// it declines rather than dropping them.
+#[test]
+fn a_lookup_with_work_after_it_is_not_claimed() {
+    let script = "def action = ctx.event.action;\ndef m = params.exact.get(action);\n\
+        if (m != null) {\n  ctx.event.kind = m.kind;\n  \
+        ctx.event.category = new ArrayList(m.category);\n} else {\n  \
+        ctx.event.kind = 'event';\n  ctx.event.category = ['configuration'];\n}\n\n\
+        if (ctx.rule?.id != null) {\n  \
+        def domain = params.check_category.get(ctx.rule.id);\n}";
+    assert!(parse_row_or_defaults(script).is_none());
+}
+
+/// Verbatim from `pipelines/cisco_meraki/events/default.yml`: a row whose
+/// named columns are LISTS appended to array fields, alongside one copy
+/// that runs whether or not the key has a row.
+#[test]
+fn a_rows_list_columns_append_and_the_copy_runs_regardless() {
+    let script = "def alertTypeId = ctx.json.alertTypeId;\n\
+        def eventMap = params.get('eventmap');\ndef eventData = eventMap.get(alertTypeId);\n\
+        ctx.event.action = ctx.json.alertType;\nif (eventData == null) {\n  return;\n}\n\
+        def eventCategory = eventData.get('category');\nif (eventCategory != null) {\n  \
+        for (def c : eventCategory) {\n    ctx.event.category.add(c);\n  }\n}\n\
+        def eventType = eventData.get('type');\nif (eventType != null) {\n  \
+        for (def t : eventType) {\n    ctx.event.type.add(t);\n  }\n}";
+    let params = json!({ "eventmap": {
+        "cellular_up": { "type": ["start"] },
+        "vrrp": { "category": ["configuration"], "type": ["change"] },
+    }});
+
+    let mut listed = Event::new(json!({
+        "json": { "alertTypeId": "vrrp", "alertType": "Failover event detected" },
+        "event": { "category": ["network"], "type": ["info"] }
+    }));
+    assert!(try_params_painless(&mut listed, script, &params));
+    assert_eq!(
+        listed.get_str("event.action"),
+        Some("Failover event detected")
+    );
+    assert_eq!(
+        listed.get("event.category"),
+        Some(&json!(["network", "configuration"]))
+    );
+    assert_eq!(listed.get("event.type"), Some(&json!(["info", "change"])));
+
+    // An unlisted key still gets the copy, which sits above the return.
+    let mut unlisted = Event::new(json!({
+        "json": { "alertTypeId": "mi_alert", "alertType": "Insight Alert" },
+        "event": { "category": ["network"], "type": ["info"] }
+    }));
+    assert!(try_params_painless(&mut unlisted, script, &params));
+    assert_eq!(unlisted.get_str("event.action"), Some("Insight Alert"));
+    assert_eq!(unlisted.get("event.category"), Some(&json!(["network"])));
+    assert_eq!(unlisted.get("event.type"), Some(&json!(["info"])));
+}
+
+/// Verbatim from `pipelines/jamf_pro/events/default.yml`: the same row
+/// lookup with its columns routed through a list accumulator, which gives
+/// each one its own answer to an EMPTY column.
+#[test]
+fn an_accumulated_column_writes_a_list_and_takes_its_own_empty_rule() {
+    let script = "def action = ctx.event?.action;\nif (action == null) {\n  return;\n}\n\
+        def entry = params.actions.get(action);\nif (entry == null) {\n  return;\n}\n\
+        def cats = new ArrayList();\ndef types = new ArrayList();\n\
+        if (entry.category != null) { cats.addAll(entry.category); }\n\
+        if (entry.type != null) { types.addAll(entry.type); }\n\
+        if (types.isEmpty()) { types.add('info'); }\nctx.event = ctx.event ?: [:];\n\
+        if (!cats.isEmpty()) { ctx.event.category = cats; }\nctx.event.type = types;";
+    let params = json!({ "actions": {
+        "ComputerAdded": { "category": ["host"], "type": ["change"] },
+        "ComputerCheckIn": { "category": ["host"], "type": [] },
+        "SCEPChallenge": { "category": ["host", "authentication"], "type": ["start"] },
+        "RestAPIOperation": { "category": ["api"], "type": ["change", "admin"] },
+        "Uncategorised": { "category": [], "type": ["info"] },
+    }});
+
+    let mut added = Event::new(json!({ "event": { "action": "ComputerAdded" } }));
+    assert!(try_params_painless(&mut added, script, &params));
+    assert_eq!(added.get("event.category"), Some(&json!(["host"])));
+    assert_eq!(added.get("event.type"), Some(&json!(["change"])));
+
+    // An empty `type` column is the `isEmpty` fallback, not an empty list.
+    let mut checked_in = Event::new(json!({ "event": { "action": "ComputerCheckIn" } }));
+    assert!(try_params_painless(&mut checked_in, script, &params));
+    assert_eq!(checked_in.get("event.category"), Some(&json!(["host"])));
+    assert_eq!(checked_in.get("event.type"), Some(&json!(["info"])));
+
+    // An empty `category` column writes NOTHING, where `type` always writes.
+    let mut uncategorised = Event::new(json!({ "event": { "action": "Uncategorised" } }));
+    assert!(try_params_painless(&mut uncategorised, script, &params));
+    assert_eq!(uncategorised.get("event.category"), None);
+    assert_eq!(uncategorised.get("event.type"), Some(&json!(["info"])));
+
+    // A row holding several values keeps all of them, in the table's order.
+    let mut challenge = Event::new(json!({ "event": { "action": "SCEPChallenge" } }));
+    assert!(try_params_painless(&mut challenge, script, &params));
+    assert_eq!(
+        challenge.get("event.category"),
+        Some(&json!(["host", "authentication"]))
+    );
+    assert_eq!(challenge.get("event.type"), Some(&json!(["start"])));
+
+    let mut rest_api = Event::new(json!({ "event": { "action": "RestAPIOperation" } }));
+    assert!(try_params_painless(&mut rest_api, script, &params));
+    assert_eq!(
+        rest_api.get("event.type"),
+        Some(&json!(["change", "admin"]))
+    );
+
+    // The script returns before the branch when the action has no row, so an
+    // unlisted key keeps whatever an earlier processor wrote.
+    let mut unlisted = Event::new(json!({
+        "event": { "action": "SomethingElse", "category": ["network"] },
+    }));
+    assert!(try_params_painless(&mut unlisted, script, &params));
+    assert_eq!(unlisted.get("event.category"), Some(&json!(["network"])));
+    assert_eq!(unlisted.get("event.type"), None);
+}
+
+/// The accumulator reader declines every block it cannot account for whole,
+/// because a claim that reproduces some columns and drops the rest leaves no
+/// error behind.
+#[test]
+fn an_accumulator_the_reader_cannot_account_for_declines() {
+    // A local fed from the row and then never written.
+    let unwritten = "def action = ctx.event.action;\ndef entry = params.actions.get(action);\n\
+        if (entry == null) {\n  return;\n}\ndef cats = new ArrayList();\n\
+        if (entry.category != null) { cats.addAll(entry.category); }";
+    assert!(parse_row_or_defaults(unwritten).is_none());
+
+    // A local the block also reads somewhere this does not model.
+    let read_elsewhere = "def action = ctx.event.action;\ndef entry = params.actions.get(action);\n\
+        if (entry == null) {\n  return;\n}\ndef cats = new ArrayList();\n\
+        if (entry.category != null) { cats.addAll(entry.category); }\n\
+        ctx.event.category = cats;\nctx.event.count = cats.size();";
+    assert!(parse_row_or_defaults(read_elsewhere).is_none());
+
+    // A local written before anything fed it from the row does not depend on
+    // the row, so there is no member to reproduce.
+    let unfed = "def action = ctx.event.action;\ndef entry = params.actions.get(action);\n\
+        if (entry == null) {\n  return;\n}\ndef cats = new ArrayList();\n\
+        ctx.event.category = cats;";
+    assert!(parse_row_or_defaults(unfed).is_none());
+}
+
+/// `new ArrayList(m.category)` copies a member and `new ArrayList()` opens an
+/// accumulator, so the kolide form must not be read as the jamf one.
+#[test]
+fn a_copy_constructor_is_not_an_accumulator() {
+    assert_eq!(
+        super::opened_accumulator("def cats = new ArrayList()"),
+        Some("cats".to_string())
+    );
+    assert_eq!(
+        super::opened_accumulator("def cats = new ArrayList(m.category)"),
+        None
+    );
+    assert_eq!(
+        super::opened_accumulator("ctx.event.category = new ArrayList()"),
+        None
+    );
+}
+
+/// Verbatim from `pipelines/m365_defender/alert/default.yml`: the
+/// categories come off the evidence list through the params table, and the
+/// TYPE is picked from what the category set holds so far rather than from
+/// the entry being read.
+#[test]
+fn evidence_categories_pick_their_type_from_the_set_so_far() {
+    let script = "def eventCategory = new HashSet();\ndef eventType = new HashSet();\n\
+         for (evidence in ctx.json.evidence) {\n  \
+         String mapping = params[evidence[\"@odata.type\"]];\n}\n";
+    let params = json!({
+        "#microsoft.graph.security.deviceEvidence": "host",
+        "#microsoft.graph.security.userEvidence": "iam",
+        "#microsoft.graph.security.registryKeyEvidence": "registry",
+        "apt": "threat",
+    });
+
+    let mut event = Event::new(json!({"json": {"evidence": [
+        {"@odata.type": "#microsoft.graph.security.deviceEvidence"},
+        {"@odata.type": "#microsoft.graph.security.userEvidence"},
+        {"@odata.type": "#microsoft.graph.security.somethingUnmapped"},
+    ]}}));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get("event.category"), Some(&json!(["host", "iam"])));
+    assert_eq!(event.get("event.type"), Some(&json!(["info"])));
+
+    // Once `registry` is in the set, everything AFTER it is `access` --
+    // and the entry that put it there is too.
+    let mut registry = Event::new(json!({"json": {"evidence": [
+        {"@odata.type": "#microsoft.graph.security.registryKeyEvidence"},
+        {"@odata.type": "#microsoft.graph.security.userEvidence"},
+    ]}}));
+    assert!(try_params_painless(&mut registry, script, &params));
+    assert_eq!(registry.get("event.type"), Some(&json!(["access"])));
+
+    // `determination` folds in afterwards, with no registry arm.
+    let mut determined = Event::new(json!({
+        "json": {"evidence": [], "determination": "APT"},
+    }));
+    assert!(try_params_painless(&mut determined, script, &params));
+    assert_eq!(determined.get("event.category"), Some(&json!(["threat"])));
+    assert_eq!(determined.get("event.type"), Some(&json!(["indicator"])));
+}
+
+/// Verbatim from `crowdstrike/data_stream/alert`, which offers two sources
+/// for the platform name and takes whichever the event carries.
+///
+/// Only the first binding was read, so an event carrying the fallback got
+/// no `host.os.type` at all.
+#[test]
+fn the_platform_name_falls_back_to_the_operating_system() {
+    let script = "if (ctx.crowdstrike?.alert?.device?.platform_name != null) {\n  \
+         String platform_name = ctx.crowdstrike.alert.device.platform_name.toLowerCase();\n  \
+         for (String os: params.os_type) {\n    \
+         if (platform_name.contains(os)) {\n      ctx.host.os.put('type', os);\n      \
+         return;\n    }\n  }\n} else if (ctx.crowdstrike?.alert?.operating_system != null) {\n  \
+         String operating_system = ctx.crowdstrike.alert.operating_system.toLowerCase();\n  \
+         for (String os: params.os_type) {\n    \
+         if (operating_system.contains(os)) {\n      ctx.host.os.put('type', os);\n      \
+         return;\n    }\n  }\n}\n";
+    let params = json!({
+        "os_type": ["linux", "macos", "unix", "windows", "ios", "android"],
+    });
+
+    let mut primary = Event::new(json!({"crowdstrike": {"alert": {
+        "device": {"platform_name": "Windows"}
+    }}}));
+    assert!(try_params_painless(&mut primary, script, &params));
+    assert_eq!(primary.get_str("host.os.type"), Some("windows"));
+
+    // The `else if` arm: no device block, so the alert's own field is read.
+    let mut fallback = Event::new(json!({"crowdstrike": {"alert": {
+        "operating_system": "Windows Server 2019"
+    }}}));
+    assert!(try_params_painless(&mut fallback, script, &params));
+    assert_eq!(fallback.get_str("host.os.type"), Some("windows"));
+
+    // Neither source present is not this script's business.
+    let mut absent = Event::new(json!({"crowdstrike": {"alert": {}}}));
+    try_params_painless(&mut absent, script, &params);
+    assert!(!absent.has("host.os.type"));
+}
+
+/// Verbatim from `crowdstrike/data_stream/identity_protection_timeline`:
+/// the family name is uppercased into the params table and the result put
+/// on a field the script creates the parents for.
+#[test]
+fn an_uppercased_family_maps_through_params_onto_its_field() {
+    let script = "def os = params[ctx.crowdstrike.idp.timeline.operating_system_info.family\
+         .toUpperCase()];\nif (os != null) {\n  ctx.host = ctx.host ?: [:];\n  \
+         ctx.host.os = ctx.host.os ?: [:];\n  ctx.host.os.type = os;\n}\n";
+    let params = json!({
+        "WINDOWS": "windows", "OSX": "macos", "UNIX": "unix",
+        "LINUX": "linux", "IOS": "ios", "ANDROID": "android",
+    });
+
+    let mut event = Event::new(json!({"crowdstrike": {"idp": {"timeline": {
+        "operating_system_info": {"family": "Windows"}
+    }}}}));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get_str("host.os.type"), Some("windows"));
+
+    // An unlisted family fails the script's own null check, so nothing lands.
+    let mut unlisted = Event::new(json!({"crowdstrike": {"idp": {"timeline": {
+        "operating_system_info": {"family": "Plan9"}
+    }}}}));
+    assert!(try_params_painless(&mut unlisted, script, &params));
+    assert!(!unlisted.has("host.os.type"));
+}
+
+/// proofpoint's message parts: renamed through the key map, then fanned
+/// out into the four ECS lists. The typed keys convert on the way through
+/// -- `detected_size_bytes` from text to a number, `is_archive` from text
+/// to a boolean -- because the vendor ships both as strings.
+#[test]
+fn message_parts_rename_and_fan_out() {
+    let script = "def convertToLong(def value) { }\n\
+         for (part in ctx.json.msgParts) {\n  \
+         def msg_part = renameKeys(part, params);\n}\n";
+    let params = json!({
+        "detectedName": "detected_name",
+        "detectedExt": "detected_ext",
+        "detectedMime": "detected_mime",
+        "detectedSizeBytes": "detected_size_bytes",
+        "isArchive": "is_archive",
+        "md5": "md5",
+        "sha256": "sha256",
+        "urls": "urls",
+        "url": "url",
+    });
+    let mut event = Event::new(json!({"json": {"msgParts": [{
+        "detectedName": "note.txt",
+        "detectedExt": "txt",
+        "detectedMime": "text/plain",
+        "detectedSizeBytes": "1024",
+        "isArchive": "false",
+        "md5": "5d41402abc4b2a76b9719d911017c592",
+        "sha256": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+        "urls": [{"url": "https://example.com/a"}, {"url": "https://example.com/b"}],
+        "somethingUnmapped": "carried as it stands",
+    }]}}));
+
+    assert!(try_params_painless(&mut event, script, &params));
+
+    let base = "proofpoint_on_demand.message.msg_parts.0";
+    assert_eq!(
+        event.get_str(&format!("{base}.detected_name")),
+        Some("note.txt")
+    );
+    assert_eq!(
+        event.get(&format!("{base}.detected_size_bytes")),
+        Some(&json!(1024))
+    );
+    assert_eq!(
+        event.get(&format!("{base}.is_archive")),
+        Some(&json!(false))
+    );
+    assert_eq!(
+        event.get_str(&format!("{base}.somethingUnmapped")),
+        Some("carried as it stands"),
+        "an unmapped key is carried, not dropped"
+    );
+
+    assert_eq!(
+        event.get("related.hash"),
+        Some(&json!([
+            "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+            "5d41402abc4b2a76b9719d911017c592",
+        ])),
+        "sha256 before md5, the script's own order"
+    );
+    assert_eq!(
+        event.get("url.full"),
+        Some(&json!(["https://example.com/a", "https://example.com/b"]))
+    );
+    assert_eq!(
+        event.get("email.attachments"),
+        Some(&json!([{"file": {
+            "name": "note.txt",
+            "extension": "txt",
+            "mime_type": "text/plain",
+            "size": 1024,
+            "hash": {
+                "md5": "5d41402abc4b2a76b9719d911017c592",
+                "sha256": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+            },
+        }}]))
+    );
+}
+
+/// Verbatim from `pipelines/windows/forwarded/security-default.yml`: the
+/// audit subcategory GUID keys a two-member row, braces stripped and the
+/// key upper-cased first.
+#[test]
+fn a_keyed_row_puts_its_members_back() {
+    let script = "if (ctx.winlog?.event_data?.SubcategoryGuid == null) {\n  return;\n}\n\
+        def subCatGuid = ctx.winlog.event_data.SubcategoryGuid.replace(\"{\",\"\")\
+        .replace(\"}\",\"\").toUpperCase();\n\
+        if (!params.containsKey(subCatGuid)) {\n  return;\n}\n\
+        ctx.winlog.event_data.put(\"Category\", params[subCatGuid][1]);\n\
+        ctx.winlog.event_data.put(\"SubCategory\", params[subCatGuid][0]);";
+
+    let params = json!({ "0CCE9243-69AE-11D9-BED3-505054503030":
+        ["Network Policy Server", "Logon/Logoff"] });
+    let mut event = dfe_core::Event::new(json!({ "winlog": { "event_data": {
+        "SubcategoryGuid": "{0cce9243-69ae-11d9-bed3-505054503030}"
+    }}}));
+    crate::plan::painless_exec_params(&mut event, script, &params).expect("runs");
+
+    assert_eq!(
+        event.get_str("winlog.event_data.Category"),
+        Some("Logon/Logoff")
+    );
+    assert_eq!(
+        event.get_str("winlog.event_data.SubCategory"),
+        Some("Network Policy Server")
+    );
+    // The guard above the assignment is not a field of its own.
+    assert!(
+        event
+            .get("winlog.event_data.SubcategoryGuid == null) {")
+            .is_none()
+    );
+}
+
+/// Verbatim from `pipelines/crowdstrike/default.yml`, so a change upstream
+/// shows up here as a miss.
+const SENTINEL: &str = "ctx.crowdstrike.event.entrySet().removeIf(entry -> \
+                        params.values.contains(entry.getValue()));";
+
+/// Verbatim from `pipelines/aws/cloudtrail/default.yml`. The table read is
+/// the LAST thing it does; three writes come first, and a matcher that
+/// took only the merge dropped all three.
+const CLOUDTRAIL_CATEGORY: &str = "ctx.event.kind = 'event';\n\
+    ctx.event.type = ['info'];\n\
+    if (ctx.aws?.cloudtrail?.error_code != null) {\n  \
+    ctx.event.outcome = 'failure'\n} else {\n  \
+    ctx.event.outcome = 'success'\n}\n\
+    if (params.get(ctx.event.action) == null) {\n  return;\n}\n\
+    def hm = new HashMap(params.get(ctx.event.action));\n\
+    hm.forEach((k, v) -> ctx.event[k] = v);";
+
+#[test]
+fn a_lookup_merge_runs_what_comes_before_the_table_read() {
+    let params = json!({"CreateUser": {"category": ["iam"], "type": ["creation"]}});
+    let mut event = Event::new(json!({"event": {"action": "CreateUser"}}));
+
+    assert!(try_params_painless(
+        &mut event,
+        CLOUDTRAIL_CATEGORY,
+        &params
+    ));
+    assert_eq!(event.get_str("event.kind"), Some("event"));
+    assert_eq!(event.get("event.type"), Some(&json!(["creation"])));
+    assert_eq!(event.get_str("event.outcome"), Some("success"));
+    assert_eq!(event.get("event.category"), Some(&json!(["iam"])));
+}
+
+/// The `else` arm is taken when the guard does not hold, and a list
+/// literal reaches the field as a list.
+#[test]
+fn an_else_arm_and_a_list_literal_both_land() {
+    let params = json!({});
+    let mut event = Event::new(json!({
+        "event": {"action": "Unlisted"},
+        "aws": {"cloudtrail": {"error_code": "AccessDenied"}},
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CLOUDTRAIL_CATEGORY,
+        &params
+    ));
+    assert_eq!(event.get_str("event.outcome"), Some("failure"));
+    assert_eq!(
+        event.get("event.type"),
+        Some(&json!(["info"])),
+        "the table has no row, so the preamble's own list stands"
+    );
+}
+
+/// Verbatim from `pipelines/okta/ecs_category_type.yml`. Elastic's `gen`
+/// emits this same script for every package that maps a vendor event name
+/// onto ECS categorisation.
+const ADD_UNIQUE: &str = "def addUnique(List dst, List src) {\n  src = src ?: [];\n  \
+                          if (src.length == 0) {\n    return dst ?: [];\n  }\n  \
+                          HashSet s = new HashSet(dst ?: []);\n  s.addAll(src);\n  \
+                          return new ArrayList(s);\n}\n\
+                          def p = params[ctx.okta.event_type];\n\
+                          ctx.event.type = addUnique(ctx.event.type, p.type);\n\
+                          ctx.event.category = addUnique(ctx.event.category, p.category);\n\
+                          ctx.tags = addUnique(ctx.tags, p.tags);";
+
+/// Verbatim from `pipelines/microsoft_defender_endpoint/vulnerability`,
+/// tagged `script_map_host_os_type`.
+const CONTAINED: &str = "String os_platform = \
+    ctx.microsoft_defender_endpoint.vulnerability.os_platform.toLowerCase();\n\
+    for (String os: params.os_type) {\n  if (os_platform.contains(os)) {\n    \
+    ctx.host.os.put('type', os);\n    return;\n  }\n}\n\
+    if (os_platform.contains('centos') || os_platform.contains('ubuntu')) {\n  \
+    ctx.host.os.put('type', 'linux');\n}\n";
+
+fn contained_params() -> Value {
+    json!({ "os_type": ["linux", "macos", "windows"] })
+}
+
+/// The first member the subject contains wins, case-folded as the script
+/// folds it.
+#[test]
+fn the_first_contained_member_is_the_answer() {
+    let mut event = Event::new(json!({
+        "microsoft_defender_endpoint": { "vulnerability": { "os_platform": "Windows10" } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CONTAINED,
+        &contained_params()
+    ));
+
+    assert_eq!(event.get("host.os.type"), Some(&json!("windows")));
+}
+
+/// A subject no member matches falls to the script's own literal tail.
+#[test]
+fn a_subject_no_member_matches_falls_to_the_tail() {
+    let mut event = Event::new(json!({
+        "microsoft_defender_endpoint": { "vulnerability": { "os_platform": "CentOS7" } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CONTAINED,
+        &contained_params()
+    ));
+
+    assert_eq!(event.get("host.os.type"), Some(&json!("linux")));
+}
+
+/// And one neither reaches leaves the field alone.
+#[test]
+fn a_subject_nothing_matches_writes_nothing() {
+    let mut event = Event::new(json!({
+        "microsoft_defender_endpoint": { "vulnerability": { "os_platform": "Plan9" } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CONTAINED,
+        &contained_params()
+    ));
+
+    assert_eq!(event.get("host.os.type"), None);
+}
+
+/// Verbatim from `pipelines/island_browser/device/default.yml`, tagged
+/// `script_map_host_os_type`, in the ESCAPED form a stored script arrives in.
+///
+/// Two things separate it from [`CONTAINED`]: it declares its subject with
+/// `def` rather than `String`, and it creates both parents first. Only the
+/// declaration keyword decided whether the subject was read at all.
+const CONTAINED_DEF: &str = r#"ctx.host = ctx.host ?: [:];\nctx.host.os = ctx.host.os ?: [:];\ndef os_platform = ctx.island_browser.device.os_platform.toLowerCase();\nfor (String os: params.os_type) {\n  if (os_platform.contains(os)) {\n    ctx.host.os.put('type', os);\n    return;\n  }\n}\n"#;
+
+fn contained_def_params() -> Value {
+    json!({ "os_type": ["linux", "macos", "unix", "windows", "ios", "android"] })
+}
+
+/// A `def`-declared subject is read the same as a `String`-declared one.
+#[test]
+fn a_def_declared_subject_is_read() {
+    let mut event = Event::new(json!({
+        "island_browser": { "device": { "os_platform": "Windows 11" } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CONTAINED_DEF,
+        &contained_def_params()
+    ));
+
+    assert_eq!(event.get("host.os.type"), Some(&json!("windows")));
+}
+
+/// The list is walked IN ORDER, so the first member the subject contains wins
+/// even where a later one would also match.
+#[test]
+fn the_params_list_order_decides() {
+    let mut event = Event::new(json!({
+        "island_browser": { "device": { "os_platform": "macOS Sonoma" } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CONTAINED_DEF,
+        &contained_def_params()
+    ));
+
+    assert_eq!(event.get("host.os.type"), Some(&json!("macos")));
+}
+
+/// This script carries no literal tail, so a subject no member matches leaves
+/// the field absent rather than guessing.
+#[test]
+fn a_def_subject_nothing_matches_writes_nothing() {
+    let mut event = Event::new(json!({
+        "island_browser": { "device": { "os_platform": "Plan9" } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CONTAINED_DEF,
+        &contained_def_params()
+    ));
+
+    assert_eq!(event.get("host.os.type"), None);
+}
+
+/// Verbatim from `pipelines/microsoft_dnsserver/analytical/default.yml`,
+/// cut to the branches that decide a key's fate.
+const RENAME_KEYS: &str = "def renameKeys(Map src, Map keyMap) {\n  \
+    def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    \
+    def key = entry.getKey();\n    def value = entry.getValue();\n    \
+    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        \
+    dst[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        \
+    dst[key] = renameKeys(value, keyMap);\n      }\n    } else {\n      \
+    if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = value;\n      } \
+    else {\n        dst[key] = value;\n      }\n    }\n  }\n  return dst;\n}\n\
+    ctx.microsoft_dnsserver.analytical = \
+    renameKeys(ctx.microsoft_dnsserver.analytical, params)";
+
+fn rename_params() -> Value {
+    json!({ "QNAME": "question_name", "XID": "xid", "SID": "sid" })
+}
+
+/// A named key is renamed at any depth; one the map does not name keeps
+/// its own, and the values are carried across untouched.
+#[test]
+fn named_keys_are_renamed_at_every_depth() {
+    let mut event = Event::new(json!({
+        "microsoft_dnsserver": { "analytical": {
+            "QNAME": "google.es.",
+            "XID": "7",
+            "Untouched": "kept",
+            "extended_data": { "SID": "S-1-5-21" },
+            "listed": [{ "XID": "9" }, "plain"],
+        } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        RENAME_KEYS,
+        &rename_params()
+    ));
+
+    let analytical = event.get("microsoft_dnsserver.analytical").unwrap();
+    assert_eq!(analytical.get("question_name"), Some(&json!("google.es.")));
+    assert_eq!(analytical.get("xid"), Some(&json!("7")));
+    assert_eq!(analytical.get("Untouched"), Some(&json!("kept")));
+    assert_eq!(analytical.get("QNAME"), None);
+    assert_eq!(
+        event.get("microsoft_dnsserver.analytical.extended_data.sid"),
+        Some(&json!("S-1-5-21"))
+    );
+    assert_eq!(
+        analytical.get("listed"),
+        Some(&json!([{ "xid": "9" }, "plain"]))
+    );
+}
+
+/// Verbatim from `pipelines/cisco_asa/default.yml`, tagged
+/// `script_ecs_outcome_categorization`: a message id, then its outcome.
+const TWO_LEVEL: &str =
+    "params.get(ctx.event.code)?.get(ctx._temp_.outcome)?.forEach((k, v) -> ctx.event[k] = v);";
+
+fn two_level_params() -> Value {
+    json!({
+        "106100": {
+            "denied": { "type": ["connection", "denied"], "outcome": "failure", "action": "firewall-rule" },
+            "permitted": { "type": ["connection", "allowed"], "outcome": "success", "action": "firewall-rule" },
+        },
+    })
+}
+
+/// Only the row the outcome selects is merged. Following one level fanned
+/// the second level's keys out as fields of their own.
+#[test]
+fn a_two_level_table_merges_the_row_the_outcome_selects() {
+    let mut event = Event::new(json!({
+        "event": { "code": "106100" },
+        "_temp_": { "outcome": "permitted" },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        TWO_LEVEL,
+        &two_level_params()
+    ));
+
+    assert_eq!(event.get("event.outcome"), Some(&json!("success")));
+    assert_eq!(event.get("event.action"), Some(&json!("firewall-rule")));
+    assert_eq!(
+        event.get("event.type"),
+        Some(&json!(["connection", "allowed"]))
+    );
+    assert_eq!(event.get("event.denied"), None);
+}
+
+/// An outcome the table has no row for leaves the event alone.
+#[test]
+fn a_two_level_table_with_no_row_for_the_outcome_writes_nothing() {
+    let mut event = Event::new(json!({
+        "event": { "code": "106100" },
+        "_temp_": { "outcome": "est-allowed" },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        TWO_LEVEL,
+        &two_level_params()
+    ));
+
+    assert_eq!(event.get("event.action"), None);
+}
+
+/// Verbatim from `pipelines/cisco_ftd/default.yml`, tagged
+/// `script_a14307b2`, cut to its loop.
+const VALUE_MAPS: &str = "def getField(Map src, String[] path) {\n return null;\n}\n\
+    def setField(Map dest, String[] path, def value) {\n return null;\n}\n\
+    for (entry in params.entrySet()) {\n  def srcField = entry.getKey();\n  \
+    def param = entry.getValue();\n  \
+    def rawVal = getField(ctx, srcField.splitOnToken('.'));\n  \
+    if (rawVal == null) continue;\n  String oldVal;\n  \
+    if (rawVal instanceof AbstractList) {\n    if (rawVal.size() == 0) continue;\n    \
+    oldVal = rawVal[0].toString();\n  } else {\n    oldVal = rawVal.toString();\n  }\n  \
+    def newVal = param.map?.getOrDefault(oldVal.toLowerCase(), null);\n  \
+    if (newVal != null) {\n    def dstField = param.getOrDefault('target', srcField);\n    \
+    setField(ctx, dstField.splitOnToken('.'), newVal);\n  }\n}\n";
+
+fn value_map_params() -> Value {
+    json!({
+        "dns.question.type": { "map": { "a host address": "A", "ip6 address": "AAAA" } },
+        "dns.response_code": { "map": { "no error": "NOERROR" } },
+        "ctx._temp_.cisco.message_id": {
+            "target": "event.action",
+            "map": { "430002": "connection-started" },
+        },
+    })
+}
+
+/// The device spells the record type out; ECS wants the mnemonic. The key
+/// is folded to lower case, because the script folds it.
+#[test]
+fn each_field_is_normalised_through_its_own_map() {
+    let mut event = Event::new(json!({
+        "dns": { "question": { "type": "a host address" }, "response_code": "No error" },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        VALUE_MAPS,
+        &value_map_params()
+    ));
+
+    assert_eq!(event.get("dns.question.type"), Some(&json!("A")));
+    assert_eq!(event.get("dns.response_code"), Some(&json!("NOERROR")));
+}
+
+/// A params key written with a `ctx.` prefix names no field, so it matches
+/// nothing -- which is what it does upstream too, and it is the reason
+/// FTD's `message_id` never reaches `event.action` through this script.
+#[test]
+fn a_source_path_that_names_no_field_writes_nothing() {
+    let mut event = Event::new(json!({ "_temp_": { "cisco": { "message_id": "430002" } } }));
+
+    assert!(try_params_painless(
+        &mut event,
+        VALUE_MAPS,
+        &value_map_params()
+    ));
+
+    assert_eq!(event.get("event.action"), None);
+}
+
+/// A value the map has no row for is left exactly as it was.
+#[test]
+fn a_value_absent_from_the_map_is_left_alone() {
+    let mut event = Event::new(json!({ "dns": { "question": { "type": "mail exchange" } } }));
+
+    assert!(try_params_painless(
+        &mut event,
+        VALUE_MAPS,
+        &value_map_params()
+    ));
+
+    assert_eq!(
+        event.get("dns.question.type"),
+        Some(&json!("mail exchange"))
+    );
+}
+
+/// Verbatim from `pipelines/cisco_ftd/default.yml`, tagged
+/// `script_categorize_event`, cut to two of its outcome branches.
+const CATEGORISE: &str = "if (ctx.event?.action == null || \
+    !params.containsKey(ctx.event.action)) {\n  return;\n}\n\
+    ctx.event.kind = params.get(ctx.event.action).get('kind');\n\
+    ctx.event.category = params.get(ctx.event.action).get('category').clone();\n\
+    ctx.event.type = params.get(ctx.event.action).get('type').clone();\n\
+    if (ctx.event?.outcome == null) {\n  return;\n}\n\
+    if (ctx.event.category.contains('network') || \
+    ctx.event.category.contains('intrusion_detection')) {\n  \
+    if (ctx.event.outcome == 'success') {\n    ctx.event.type.add('allowed');\n  }\n  \
+    if (ctx.event.outcome == 'block') {\n    ctx.event.outcome = 'success';\n    \
+    ctx.event.type.add('denied');\n  }\n}\n";
+
+fn categorise_params() -> Value {
+    json!({
+        "flow-expiration": {
+            "kind": "event",
+            "category": ["network"],
+            "type": ["connection", "end"],
+        },
+        "intrusion-detected": {
+            "kind": "alert",
+            "category": ["intrusion_detection"],
+            "type": ["info"],
+        },
+    })
+}
+
+/// The row's three columns land as they are when there is no outcome to
+/// refine them by.
+#[test]
+fn an_action_row_sets_the_ecs_categorisation() {
+    let mut event = Event::new(json!({ "event": { "action": "flow-expiration" } }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CATEGORISE,
+        &categorise_params()
+    ));
+
+    assert_eq!(event.get("event.kind"), Some(&json!("event")));
+    assert_eq!(event.get("event.category"), Some(&json!(["network"])));
+    assert_eq!(event.get("event.type"), Some(&json!(["connection", "end"])));
+}
+
+/// A vendor outcome is rewritten to the ECS one AND adds its own type.
+#[test]
+fn a_vendor_outcome_is_translated_and_adds_its_type() {
+    let mut event = Event::new(json!({
+        "event": { "action": "flow-expiration", "outcome": "block" },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CATEGORISE,
+        &categorise_params()
+    ));
+
+    assert_eq!(event.get("event.outcome"), Some(&json!("success")));
+    assert_eq!(
+        event.get("event.type"),
+        Some(&json!(["connection", "end", "denied"]))
+    );
+}
+
+/// An action with no row leaves the event exactly as it was.
+#[test]
+fn an_action_with_no_row_writes_nothing() {
+    let mut event = Event::new(json!({ "event": { "action": "not-in-the-table" } }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CATEGORISE,
+        &categorise_params()
+    ));
+
+    assert_eq!(event.get("event.kind"), None);
+    assert_eq!(event.get("event.category"), None);
+}
+
+/// Verbatim from `pipelines/auth0/logs/default.yml`, tagged "Sets event
+/// type, category and action based on type".
+const AUTH0_ACTION: &str = "def eventType = ctx.auth0.logs.data.type;\n\
+    def actions = params.get('actions');\n\
+    def actionData = actions.get(eventType);\n\
+    if (actionData == null) {\n    \
+    ctx.event.action = 'unknown-' + eventType;\n    \
+    ctx.event.type = ['info'];\n    \
+    return;\n}\n\
+    def eventTypeVal = actionData.get('value');\n\
+    if (eventTypeVal != null) {\n    \
+    ctx.auth0.logs.data.type = eventTypeVal;\n}\n\
+    def actionType = actionData.get('type');\n\
+    if (actionType != null) {\n  \
+    ctx.event.type = new ArrayList(actionType);\n}\n\
+    def actionCategory = actionData.get('category');\n\
+    if (actionCategory != null) {\n  \
+    for (def c : actionCategory) {\n    \
+    ctx.event.category.add(c);\n  }\n}\n\
+    def action = actionData.get('action');\n\
+    if (action != null) {\n  \
+    ctx.event.action = action;\n}\n\
+    def classification = actionData.get('classification');\n\
+    if (classification != null) {\n  \
+    ctx.auth0.logs.data.classification = classification;\n}\n\
+    if (classification.toLowerCase().contains(\"success\")) {\n  \
+    ctx.event.outcome = \"success\";\n} else if \
+    (classification.toLowerCase().contains(\"failure\")) {\n  \
+    ctx.event.outcome = \"failure\";\n} else {\n  \
+    ctx.event.outcome = \"unknown\";\n}";
+
+/// Two real rows from the `actions` table, trimmed from the vendor's 105.
+fn auth0_action_params() -> Value {
+    json!({
+        "actions": {
+            "fu": {
+                "classification": "Login - Failure",
+                "value": "Invalid email or username",
+                "type": ["info", "denied"],
+                "category": ["intrusion_detection"],
+                "action": "invalid-username-or-email",
+            },
+            "s": {
+                "classification": "Login - Success",
+                "value": "Successful login",
+                "type": ["info", "start"],
+                "category": ["session"],
+                "action": "successful-login",
+            },
+        }
+    })
+}
+
+/// A hit overwrites the field it was keyed by, fans four more columns
+/// onto ctx -- appending `category` rather than replacing it -- and
+/// derives `event.outcome` from the row's classification text. All six
+/// writes, verbatim from `test-login-failure`'s "fu" event.
+#[test]
+fn auth0_hit_overwrites_its_key_and_fans_five_columns() {
+    let mut event = Event::new(json!({
+        "auth0": { "logs": { "data": { "type": "fu" } } },
+        "event": { "category": ["authentication"] },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        AUTH0_ACTION,
+        &auth0_action_params()
+    ));
+
+    assert_eq!(
+        event.get("auth0.logs.data.type"),
+        Some(&json!("Invalid email or username"))
+    );
+    assert_eq!(event.get("event.type"), Some(&json!(["info", "denied"])));
+    assert_eq!(
+        event.get("event.category"),
+        Some(&json!(["authentication", "intrusion_detection"]))
+    );
+    assert_eq!(
+        event.get("event.action"),
+        Some(&json!("invalid-username-or-email"))
+    );
+    assert_eq!(
+        event.get("auth0.logs.data.classification"),
+        Some(&json!("Login - Failure"))
+    );
+    assert_eq!(event.get("event.outcome"), Some(&json!("failure")));
+}
+
+/// A key the table has no row for still writes `event.action` (prefixed
+/// `unknown-`) and `event.type`, and touches nothing else -- the
+/// script's own early return.
+#[test]
+fn auth0_miss_writes_the_unknown_prefix_and_stops() {
+    let mut event = Event::new(json!({
+        "auth0": { "logs": { "data": { "type": "zz" } } },
+        "event": { "category": ["authentication"] },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        AUTH0_ACTION,
+        &auth0_action_params()
+    ));
+
+    assert_eq!(event.get("event.action"), Some(&json!("unknown-zz")));
+    assert_eq!(event.get("event.type"), Some(&json!(["info"])));
+    assert_eq!(event.get("auth0.logs.data.type"), Some(&json!("zz")));
+    assert_eq!(event.get("auth0.logs.data.classification"), None);
+    assert_eq!(event.get("event.outcome"), None);
+    assert_eq!(
+        event.get("event.category"),
+        Some(&json!(["authentication"]))
+    );
+}
+
+/// Verbatim from `pipelines/cisco_ftd/default.yml`, trimmed to the two
+/// helper definitions and the loop -- the 79-name list is replaced by two
+/// of its members, since the matcher reads the list rather than knowing it.
+const KEYED: &str = "boolean isEmpty(def value) {\n  return (value instanceof \
+    AbstractList ? value.size() : value.length()) == 0;\n}\n\
+    def appendOrCreate(Map dest, String[] path, def value) {\n return null;\n}\n\
+    def msg = ctx._temp_.orig_security;\ndef counters = new HashMap();\n\
+    def dest = new HashMap();\ndef dest_event = new HashMap();\n\
+    def security_event_list = new ArrayList(['dst_ip', 'src_ip']);\n\
+    ctx._temp_.cisco['security'] = dest;\n\
+    ctx._temp_.cisco['security_event'] = dest_event;\n\
+    for (entry in msg.entrySet()) {\n def param = params.get(entry.getKey());\n \
+    if (param == null) {\n   continue;\n }\n \
+    param.getOrDefault('id', []).forEach( id -> counters[id] = 1 + \
+    counters.getOrDefault(id, 0) );\n if (!isEmpty(entry.getValue())) {\n  \
+    param.getOrDefault('ecs', []).forEach( field -> appendOrCreate(ctx, \
+    field.splitOnToken('.'), entry.getValue()) );\n  \
+    if (security_event_list.contains(param.target)){\n    \
+    dest_event[param.target] = entry.getValue();\n  }\n  else{\n    \
+    dest[param.target] = entry.getValue();\n  }\n }\n}\n\
+    if (ctx._temp_.cisco.message_id != \"\") return;\ndef best;\n\
+    for (entry in counters.entrySet()) {\n if (best == null || \
+    best.getValue() < entry.getValue()) best = entry;\n}\n\
+    if (best != null) ctx._temp_.cisco.message_id = best.getKey();\n";
+
+fn keyed_params() -> Value {
+    json!({
+        "DstIP": { "target": "dst_ip", "id": ["430002"], "ecs": ["destination.address"] },
+        "SrcIP": { "target": "src_ip", "id": ["430002"], "ecs": ["source.address"] },
+        "AC_RuleName": { "target": "access_control_rule_name", "id": ["430002"] },
+        "Protocol": { "target": "protocol", "ecs": ["network.transport"] },
+    })
+}
+
+/// falco's category ladder: a literal list, a local bound to the field,
+/// and a second local holding its lower-cased form.
+const FALCO_CATEGORY: &str = "def allowedValues = ['file', 'network', 'process'];\n\
+    if (ctx?.falco?.output_fields?.evt != null && \
+    ctx?.falco?.output_fields?.evt?.category != null) {\n\
+    def inputCategory = ctx?.falco?.output_fields?.evt?.category;\n\
+    def lowercaseCategory = inputCategory.toLowerCase();\n\
+    if (allowedValues.contains(lowercaseCategory)) {\n\
+    ctx.event.category = [inputCategory];\n\
+    } else if (inputCategory == 'user') {\n\
+    ctx.event.category = ['session'];\n\
+    } else {\n\
+    ctx.event.category = ['process'];\n\
+    }\n} else {\n ctx.event.category = ['process'];\n}";
+
+fn falco_category(category: &str) -> Value {
+    let mut event = Event::new(json!({
+        "falco": { "output_fields": { "evt": { "category": category } } },
+        "event": {},
+    }));
+    Program::parse(FALCO_CATEGORY).run(&mut event);
+    event.get("event.category").cloned().unwrap_or(Value::Null)
+}
+
+/// A local is a name for a field, and a guard asking about it is asking
+/// about the field.
+///
+/// `allowedValues.contains(lowercaseCategory)` needs two hops --
+/// `lowercaseCategory` to `inputCategory.toLowerCase()`, and that to the
+/// `ctx.` path -- before the membership test can be read at all. Without
+/// them the guard is `Never`, the first arm never runs, and every category
+/// the else-ifs do not name falls to the final `['process']`. falco's
+/// `file` and `network` events were categorised as `process`.
+#[test]
+fn a_local_naming_a_field_is_resolved_through_its_fold() {
+    assert_eq!(falco_category("file"), json!(["file"]));
+    assert_eq!(falco_category("network"), json!(["network"]));
+    // The fold is what makes the membership test match.
+    assert_eq!(falco_category("FILE"), json!(["FILE"]));
+    // Not in the list, named by an else-if.
+    assert_eq!(falco_category("user"), json!(["session"]));
+    // Not in the list and not named: the vendor's own fallback.
+    assert_eq!(falco_category("wat"), json!(["process"]));
+}
+
+/// cloudflare normalises an epoch to milliseconds by its MAGNITUDE, in
+/// two data streams and 14 call sites.
+///
+/// Three things had to become readable together, which is why this is one
+/// pattern rather than three patches: a numeric local behind a `(long)`
+/// cast, a `>` comparison against a scientific literal, and a division.
+#[test]
+fn an_epoch_is_normalised_by_its_magnitude() {
+    const SCRIPT: &str = "long t = (long)(ctx.json.Timestamp);\n\
+        if (t > (long)(1e18)) {\n  ctx.json.Timestamp = t/(long)(1e6)\n\
+        } else if (t < (long)(1e10))  {\n  ctx.json.Timestamp = t*(long)(1e3)\n}\n";
+
+    fn normalised(stamp: i64) -> Value {
+        let mut event = Event::new(json!({ "json": { "Timestamp": stamp } }));
+        Program::parse(SCRIPT).run(&mut event);
+        event.get("json.Timestamp").cloned().unwrap_or(Value::Null)
+    }
+
+    // Nanoseconds down to milliseconds.
+    assert_eq!(
+        normalised(1_771_459_200_000_000_000),
+        json!(1_771_459_200_000_i64)
+    );
+    // Seconds up to milliseconds.
+    assert_eq!(normalised(1_771_459_200), json!(1_771_459_200_000_i64));
+    // Already milliseconds: neither arm holds.
+    assert_eq!(normalised(1_771_459_200_000), json!(1_771_459_200_000_i64));
+}
+
+/// The gate has to accept every statement the handler parses.
+///
+/// `couchbase_cache` appends a Prometheus label to `tags` behind a
+/// null-guard. `parse_literal_statement` read the `.add(` all along and
+/// `statement_is_runnable` refused it, so the script was never whole and
+/// nothing claimed it -- the F53 pair disagreeing, live.
+#[test]
+fn an_append_is_a_statement_the_gate_accepts() {
+    let script = "if (ctx.tags == null) {\n    ctx.tags = new ArrayList();\n} \
+        ctx.tags.add(ctx.prometheus.labels.job)";
+    let program = Program::parse(script);
+    assert!(program.is_whole(), "{program:?}");
+
+    let mut event = Event::new(json!({ "prometheus": { "labels": { "job": "cache" } } }));
+    assert!(program.run(&mut event));
+    assert_eq!(event.get("tags"), Some(&json!(["cache"])));
+}
+
+/// A prune is the other half of many an `if`/`else` that sets on one arm,
+/// and `tychon_browser` is the pattern: a sentinel timestamp when the vendor
+/// said "installed", the key gone otherwise.
+#[test]
+fn a_remove_is_a_statement_the_walk_can_run() {
+    const SCRIPT: &str = "if (['installed', 'true'].contains(ctx.tychon.package.installed)) {\n  \
+        ctx.tychon.package.installed = '1970-01-01T00:00:01Z';\n} else {\n  \
+        ctx.tychon.package.remove('installed');\n}\n";
+
+    fn installed(value: &str) -> Value {
+        let mut event = Event::new(json!({
+            "tychon": { "package": { "installed": value, "name": "firefox" } },
+        }));
+        Program::parse(SCRIPT).run(&mut event);
+        event.as_value().clone()
+    }
+
+    assert_eq!(
+        installed("installed"),
+        json!({ "tychon": { "package": {
+            "installed": "1970-01-01T00:00:01Z", "name": "firefox" } } })
+    );
+    // The else arm prunes the key and leaves everything beside it.
+    assert_eq!(
+        installed("2026-01-01"),
+        json!({ "tychon": { "package": { "name": "firefox" } } })
+    );
+}
+
+/// tychon coerces a duration to a whole number in every one of its
+/// streams, 38 call sites of one script.
+///
+/// Painless truncates toward zero on a `(long)` cast rather than rounding,
+/// and the `.toString()` in the middle is why the vendor wrote it this
+/// way: the field arrives as a string on some events and a number on
+/// others.
+#[test]
+fn a_double_cast_to_long_truncates() {
+    const SCRIPT: &str = "if (ctx.tychon?.script?.current_duration != null)\n{\n  \
+        ctx.tychon.script.current_duration =\n    \
+        (long) Double.parseDouble(ctx.tychon.script.current_duration.toString());\n}\n";
+
+    fn coerced(value: Value) -> Value {
+        let mut event = Event::new(json!({ "tychon": { "script": {} } }));
+        event
+            .set("tychon.script.current_duration", value)
+            .expect("sets");
+        Program::parse(SCRIPT).run(&mut event);
+        event
+            .get("tychon.script.current_duration")
+            .cloned()
+            .unwrap_or(Value::Null)
+    }
+
+    assert_eq!(coerced(json!("12.7")), json!(12));
+    assert_eq!(coerced(json!(12.7)), json!(12));
+    assert_eq!(coerced(json!("-3.9")), json!(-3));
+    assert_eq!(coerced(json!(5)), json!(5));
+    // Nothing to parse leaves the field as it was.
+    assert_eq!(coerced(json!("nope")), json!("nope"));
+}
+
+/// A list's member count, written to the `_count` field beside it.
+///
+/// 37 sites over 31 files, and the `instanceof` guard around it has been
+/// readable since this session -- only the WRITE was missing.
+#[test]
+fn a_list_writes_its_own_member_count() {
+    const SCRIPT: &str = "if (ctx.process.args instanceof List) {\n  \
+        ctx.process.args_count = ctx.process.args.size();\n}";
+
+    fn counted(args: &Value) -> Value {
+        let mut event = Event::new(json!({ "process": { "args": args } }));
+        Program::parse(SCRIPT).run(&mut event);
+        event
+            .get("process.args_count")
+            .cloned()
+            .unwrap_or(Value::Null)
+    }
+
+    assert_eq!(counted(&json!(["-l", "-a", "/tmp"])), json!(3));
+    assert_eq!(counted(&json!([])), json!(0));
+    // Not a list: the script's own guard declines, so nothing is written.
+    assert_eq!(counted(&json!("-l -a /tmp")), Value::Null);
+}
+
+/// `jamf_protect`'s telemetry lookup, verbatim, one of forty such sites.
+///
+/// A NAMED table read through a ternary with a LITERAL default -- the
+/// sibling of `UppercaseLookupDefault`, which folds case, reads the whole
+/// `params` map, spells it `getOrDefault` and defaults to the key.
+#[test]
+fn a_named_table_lookup_falls_back_to_its_literal() {
+    fn address_type(script: &str, params: &Value, held: Value) -> Value {
+        let mut event = Event::new(json!({
+            "jamf_protect": { "telemetry": { "event": { "screensharing_attach": {} } } },
+        }));
+        if !held.is_null() {
+            event
+                .set(
+                    "jamf_protect.telemetry.event.screensharing_attach.source_address_type",
+                    held,
+                )
+                .expect("sets");
+        }
+        try_params_painless(&mut event, script, params);
+        event
+            .get("jamf_protect.telemetry.source_address_type")
+            .cloned()
+            .unwrap_or(Value::Null)
+    }
+
+    const SCRIPT: &str = "if (ctx.jamf_protect?.telemetry?.event?.screensharing_attach\
+        ?.source_address_type != null) {\n    String itemType = ctx.jamf_protect.telemetry\
+        .event.screensharing_attach.source_address_type.toString();\n    \
+        def itemTypeString = params.itemTypeMap.containsKey(itemType) ? \
+        params.itemTypeMap[itemType] : 'Unknown';\n    \
+        ctx.jamf_protect = ctx.jamf_protect != null ? ctx.jamf_protect : new HashMap();\n    \
+        ctx.jamf_protect.telemetry.source_address_type = itemTypeString;\n}\n";
+
+    let params = json!({ "itemTypeMap": { "4": "IPv4", "6": "IPv6" } });
+
+    assert_eq!(address_type(SCRIPT, &params, json!("4")), json!("IPv4"));
+    // A number keys the table the same way: the script calls toString().
+    assert_eq!(address_type(SCRIPT, &params, json!(6)), json!("IPv6"));
+    // Not in the table: the script's own literal, not the key.
+    assert_eq!(address_type(SCRIPT, &params, json!("9")), json!("Unknown"));
+    // Absent: the `!= null` guard writes nothing, not the default.
+    assert_eq!(address_type(SCRIPT, &params, Value::Null), Value::Null);
+}
+
+/// A local can be named after a field, and `carbonblack_edr` binds one
+/// called `event`.
+///
+/// Substituting a segment that follows a dot rewrites the document's own
+/// paths: `ctx.event.action` would become `ctx.<binding>.action`. The
+/// corpus caught this as one field on `carbonblack_edr`, which is what the
+/// per-source ratchet is for.
+#[test]
+fn a_local_named_after_a_field_leaves_paths_alone() {
+    let script = "def event = ctx.winlog.event_data; ctx.event.action = 'x'; \
+        ctx.kept = event;";
+    let rewritten = inline_ctx_aliases(script);
+
+    assert!(
+        rewritten.contains("ctx.event.action = 'x'"),
+        "a path segment was rewritten: {rewritten}"
+    );
+    assert!(
+        rewritten.contains("ctx.kept = ctx.winlog.event_data"),
+        "the bare variable was not resolved: {rewritten}"
+    );
+    assert!(
+        !rewritten.contains("def event"),
+        "the binding is dead text once every use carries the path: {rewritten}"
+    );
+}
+
+/// `microsoft_dhcp_log`'s event-code lookup, the pattern behind six of the
+/// dead-branch sites and the same one `system_security` writes.
+const DHCP_LOOKUP: &str = "if (ctx.event?.code == null || \
+    params.get(ctx.event.code) == null) {\n  return;\n}\n\
+    def hm = new HashMap(params[ctx.event.code]);\n\
+    hm.forEach((k, v) -> ctx.event[k] = v);";
+
+fn dhcp_params() -> Value {
+    json!({
+        "10": { "action": "dhcp-new", "category": ["network"], "type": ["allowed"] },
+    })
+}
+
+fn dhcp_event(code: Option<&str>) -> Event {
+    let mut event = Event::new(json!({ "event": { "kind": "event" } }));
+    if let Some(code) = code {
+        event.set("event.code", json!(code)).expect("sets");
+    }
+    event
+}
+
+/// A guard the evaluator cannot read is only a defect when something
+/// depends on the branch behind it.
+///
+/// `params.get(ctx.event.code) == null` reads as `Never`, so the `||` never
+/// holds on that arm and the early `return` is dead. It changes nothing:
+/// the arm's whole body is that `return`, and `try_lookup_merge`
+/// independently writes nothing when the table has no row. Both roads end
+/// at the same document.
+///
+/// Established before touching it, because the count is a SUSPECT count --
+/// `jamf_protect_telemetry` looked the same and was writing full
+/// executable paths as `process.name` on 99 sites.
+#[test]
+fn a_dead_early_return_over_a_missing_row_changes_nothing() {
+    let params = dhcp_params();
+
+    let mut listed = dhcp_event(Some("10"));
+    assert!(try_params_painless(&mut listed, DHCP_LOOKUP, &params));
+    assert_eq!(listed.get_str("event.action"), Some("dhcp-new"));
+
+    // The code the vendor's dead `return` was meant to catch.
+    let mut unlisted = dhcp_event(Some("99"));
+    try_params_painless(&mut unlisted, DHCP_LOOKUP, &params);
+    assert_eq!(
+        unlisted.as_value(),
+        &json!({ "event": { "kind": "event", "code": "99" } }),
+        "an unlisted code must leave the document as it arrived"
+    );
+
+    let mut absent = dhcp_event(None);
+    try_params_painless(&mut absent, DHCP_LOOKUP, &params);
+    assert_eq!(
+        absent.as_value(),
+        &json!({ "event": { "kind": "event" } }),
+        "an absent code must leave the document as it arrived"
+    );
+}
+
+/// kafka's and elasticsearch's level ladders, whose list of error levels is
+/// bound to a local before it is asked.
+const ERROR_LEVELS: &str = "def errorLevels = [\"ERROR\", \"FATAL\"]; \
+    if (ctx?.log?.level != null) {\n  if (errorLevels.contains(ctx.log.level)) {\n \
+    ctx.event.type = [\"error\"];\n  } else {\n    ctx.event.type = [\"info\"];\n  }\n}";
+
+fn level_type(level: &str) -> Value {
+    let mut event = Event::new(json!({ "log": { "level": level } }));
+    Program::parse(ERROR_LEVELS).run(&mut event);
+    event.get("event.type").cloned().unwrap_or(Value::Null)
+}
+
+/// A list bound to a local is still a literal, and the guard asking it has
+/// to be readable.
+///
+/// `["ERROR"].contains(ctx.log.level)` was read all along; the same list
+/// behind a `def` was not, so the guard could never hold and EVERY event
+/// took the else arm. `kafka_log` and `elasticsearch_server` stamped
+/// `event.type: ["info"]` on their FATAL logs across 11 call sites.
+#[test]
+fn a_list_bound_to_a_local_is_still_read() {
+    assert_eq!(level_type("FATAL"), json!(["error"]));
+    assert_eq!(level_type("ERROR"), json!(["error"]));
+    assert_eq!(level_type("INFO"), json!(["info"]));
+}
+
+/// The inlining is what makes the guard readable, so it has to reach the
+/// gate as well as the runner -- one rewrite ahead of both, rather than two
+/// walks that can drift (F53).
+#[test]
+fn inlining_a_local_list_reaches_the_gate_too() {
+    let inlined = inline_local_lists(ERROR_LEVELS);
+    assert!(
+        inlined.contains("[\"ERROR\", \"FATAL\"].contains(ctx.log.level)"),
+        "the local's use carries the literal: {inlined}"
+    );
+    assert!(
+        !readable_term("errorLevels.contains(ctx.log.level)"),
+        "the raw spelling is what the gate could never read"
+    );
+    assert!(
+        readable_term("[\"ERROR\", \"FATAL\"].contains(ctx.log.level)"),
+        "the inlined spelling is the one the gate is handed"
+    );
+}
+
+/// A script with no local list is handed back untouched, so the common case
+/// pays no allocation.
+#[test]
+fn a_script_with_no_local_list_is_not_rewritten() {
+    let script = "ctx.event.kind = \"event\";";
+    assert!(matches!(inline_local_lists(script), Cow::Borrowed(_)));
+}
+
+/// A local assigned twice is not a constant, so it is left alone rather
+/// than inlined at the wrong value.
+#[test]
+fn a_local_list_reassigned_later_is_left_alone() {
+    let script = "def levels = [\"A\"]; levels = [\"B\"]; \
+        if (levels.contains(ctx.log.level)) { ctx.event.type = [\"x\"]; }";
+    assert!(matches!(inline_local_lists(script), Cow::Borrowed(_)));
+}
+
+/// A script's `.add()` targets a List it created a line earlier, so one
+/// member is a one-element ARRAY. cisco's own `appendOrCreate` helper is
+/// the other rule and stores the first value bare, which is why the two
+/// cannot share a writer.
+#[test]
+fn one_added_member_is_still_a_list() {
+    let script = "if (ctx.related == null) {\n  ctx.put(\"related\", new HashMap());\n}\n\
+        if (ctx.related.ip == null) {\n  ctx.related.put(\"ip\", new ArrayList());\n}\n\
+        ctx.related.ip.add(ctx.source.ip);";
+    let mut event = Event::new(json!({ "source": { "ip": "10.100.150.9" } }));
+
+    assert!(Program::parse(script).run(&mut event));
+    assert_eq!(event.get("related.ip"), Some(&json!(["10.100.150.9"])));
+}
+
+/// Each key lands in the map its target's membership decides, and feeds
+/// every ECS field its row names.
+#[test]
+fn a_keyed_message_fans_out_through_its_table() {
+    let mut event = Event::new(json!({
+        "_temp_": {
+            "cisco": { "message_id": "430002" },
+            "orig_security": {
+                "DstIP": "10.0.1.20",
+                "SrcIP": "10.0.100.30",
+                "AC_RuleName": "Rule-1",
+                "Protocol": "icmp",
+            },
+        },
+    }));
+
+    assert!(try_params_painless(&mut event, KEYED, &keyed_params()));
+
+    assert_eq!(event.get("destination.address"), Some(&json!("10.0.1.20")));
+    assert_eq!(event.get("source.address"), Some(&json!("10.0.100.30")));
+    assert_eq!(event.get("network.transport"), Some(&json!("icmp")));
+    assert_eq!(
+        event.get("_temp_.cisco.security_event.dst_ip"),
+        Some(&json!("10.0.1.20"))
+    );
+    // `access_control_rule_name` is not in this cut-down list, so it goes
+    // to the other map -- which is the whole point of reading the list.
+    assert_eq!(
+        event.get("_temp_.cisco.security.access_control_rule_name"),
+        Some(&json!("Rule-1"))
+    );
+}
+
+/// With no id in the header, the id the most keys vote for becomes it.
+#[test]
+fn an_absent_message_id_is_decided_by_the_keys_present() {
+    let mut event = Event::new(json!({
+        "_temp_": {
+            "cisco": { "message_id": "" },
+            "orig_security": { "DstIP": "10.0.1.20", "Protocol": "icmp" },
+        },
+    }));
+
+    assert!(try_params_painless(&mut event, KEYED, &keyed_params()));
+
+    assert_eq!(event.get("_temp_.cisco.message_id"), Some(&json!("430002")));
+}
+
+/// An id the header already carried is never overwritten by the vote.
+#[test]
+fn a_message_id_already_set_survives_the_vote() {
+    let mut event = Event::new(json!({
+        "_temp_": {
+            "cisco": { "message_id": "430003" },
+            "orig_security": { "DstIP": "10.0.1.20" },
+        },
+    }));
+
+    assert!(try_params_painless(&mut event, KEYED, &keyed_params()));
+
+    assert_eq!(event.get("_temp_.cisco.message_id"), Some(&json!("430003")));
+}
+
+/// Verbatim from `pipelines/cisco_asa/default.yml`, where it is tagged
+/// `script_process_iana_number`. `cisco_ftd` ships the same script.
+const IANA: &str = "def net = ctx.network; def iana = params[net.transport]; \
+                    if (iana != null) {\n  net['iana_number'] = iana;\n  return;\n} \
+                    def reverse = new HashMap(); def[] arr = new def[] { null }; \
+                    for (entry in params.entrySet()) {\n  arr[0] = entry.getValue();\n  \
+                    reverse.put(String.format(\"%d\", arr), entry.getKey());\n} \
+                    def trans = reverse[net.transport]; if (trans != null) {\n  \
+                    net['iana_number'] = net.transport;\n  net['transport'] = trans;\n}\n";
+
+fn iana_params() -> Value {
+    json!({ "icmp": 1, "tcp": 6, "udp": 17, "gre": 47 })
+}
+
+/// The ordinary direction: a transport NAME gets its protocol number.
+#[test]
+fn a_transport_name_gets_its_iana_number() {
+    let mut event = Event::new(json!({ "network": { "transport": "tcp" } }));
+
+    assert!(try_params_painless(&mut event, IANA, &iana_params()));
+
+    assert_eq!(event.get("network.iana_number"), Some(&json!(6)));
+    assert_eq!(event.get("network.transport"), Some(&json!("tcp")));
+}
+
+/// The device wrote the NUMBER into `transport`. Elastic moves it across
+/// and puts the name back, rather than leaving a number in a name field.
+#[test]
+fn a_transport_number_is_moved_and_the_name_restored() {
+    let mut event = Event::new(json!({ "network": { "transport": "17" } }));
+
+    assert!(try_params_painless(&mut event, IANA, &iana_params()));
+
+    assert_eq!(event.get("network.iana_number"), Some(&json!("17")));
+    assert_eq!(event.get("network.transport"), Some(&json!("udp")));
+}
+
+/// A transport the table does not carry is left exactly as it was --
+/// guessing a number for it would be worse than having none.
+#[test]
+fn an_unknown_transport_is_left_alone() {
+    let mut event = Event::new(json!({ "network": { "transport": "sctp" } }));
+
+    assert!(try_params_painless(&mut event, IANA, &iana_params()));
+
+    assert_eq!(event.get("network.iana_number"), None);
+    assert_eq!(event.get("network.transport"), Some(&json!("sctp")));
+}
+
+fn add_unique_params() -> Value {
+    json!({
+        "user.session.start": {
+            "category": ["authentication"],
+            "type": ["start"],
+            "tags": ["identity"],
+        },
+    })
+}
+
+/// The row's columns must be UNIONED into what the pipeline already put
+/// there -- the append processors ahead of this one have usually written
+/// `event.type` already, and replacing it drops their work.
+#[test]
+fn add_unique_unions_the_row_into_the_existing_arrays() {
+    let mut event = Event::new(json!({
+        "okta": { "event_type": "user.session.start" },
+        "event": { "type": ["info"], "category": ["session"] },
+        "tags": ["forwarded"],
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        ADD_UNIQUE,
+        &add_unique_params()
+    ));
+
+    assert_eq!(event.get("event.type"), Some(&json!(["info", "start"])));
+    assert_eq!(
+        event.get("event.category"),
+        Some(&json!(["session", "authentication"]))
+    );
+    assert_eq!(event.get("tags"), Some(&json!(["forwarded", "identity"])));
+}
+
+/// A member the row repeats must not appear twice -- the script is a set
+/// union, not an append.
+#[test]
+fn add_unique_does_not_duplicate_what_is_already_there() {
+    let mut event = Event::new(json!({
+        "okta": { "event_type": "user.session.start" },
+        "event": { "type": ["start"] },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        ADD_UNIQUE,
+        &add_unique_params()
+    ));
+    assert_eq!(event.get("event.type"), Some(&json!(["start"])));
+}
+
+/// An arrays-absent event still gets the row, since `addUnique` treats a
+/// null destination as empty.
+#[test]
+fn add_unique_creates_the_arrays_it_finds_missing() {
+    let mut event = Event::new(json!({ "okta": { "event_type": "user.session.start" } }));
+
+    assert!(try_params_painless(
+        &mut event,
+        ADD_UNIQUE,
+        &add_unique_params()
+    ));
+    assert_eq!(
+        event.get("event.category"),
+        Some(&json!(["authentication"]))
+    );
+}
+
+/// Verbatim from `pipelines/crowdstrike/default.yml`, trimmed to the loops
+/// that decide the answer.
+const FRAMEWORK: &str = "def tid = ctx.threat.tactic?.id;\n\
+    def nid = ctx.threat.technique?.id;\n\
+    def tname = ctx.threat.tactic?.name;\n\
+    Set frameworks = new HashSet();\n\
+    if (tid != null && !tid.isEmpty()) {\n  for (String t: tid) {\n    \
+    if (t.startsWith(\"CS\")) {\n      frameworks.add(params.framework_cs);\n    }\n    \
+    else if (t.startsWith(\"TA\")) {\n      frameworks.add(params.framework_ma);\n    }\n  }\n}\n\
+    if (nid != null && !nid.isEmpty()) {\n  for (String t: nid) {\n    \
+    if (t.startsWith(\"CS\")) {\n      frameworks.add(params.framework_cs);\n    }\n  }\n}\n\
+    if (tname != null && !tname.isEmpty()) {\n  for (String t: tname) {\n    \
+    if (params.falcon_tactic_names.contains(t.toLowerCase())) {\n      \
+    frameworks.add(params.framework_cs);\n    }\n  }\n}\n\
+    for (def preferred : params.framework_preference) {\n  \
+    if (frameworks.contains(preferred)) {\n    ctx.threat.framework = preferred;\n    \
+    return;\n  }\n}";
+
+fn framework_params() -> Value {
+    json!({
+        "framework_preference": ["MITRE ATT&CK", "CrowdStrike Falcon Detections Framework"],
+        "framework_cs": "CrowdStrike Falcon Detections Framework",
+        "framework_ma": "MITRE ATT&CK",
+        "falcon_tactic_names": ["malware", "exploit", "falcon overwatch"],
+    })
+}
+
+#[test]
+fn framework_reads_mitre_off_a_ta_prefixed_tactic() {
+    let mut event = Event::new(json!({
+        "threat": { "tactic": { "id": ["TA0002"] } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        FRAMEWORK,
+        &framework_params()
+    ));
+    assert_eq!(event.get_str("threat.framework"), Some("MITRE ATT&CK"));
+}
+
+/// A tactic NAME in the params list is Falcon's own framework, and the
+/// comparison is case-insensitive because the script lower-cases first.
+#[test]
+fn framework_reads_falcon_off_a_named_tactic() {
+    let mut event = Event::new(json!({
+        "threat": { "tactic": { "name": ["Falcon OverWatch"] } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        FRAMEWORK,
+        &framework_params()
+    ));
+    assert_eq!(
+        event.get_str("threat.framework"),
+        Some("CrowdStrike Falcon Detections Framework")
+    );
+}
+
+/// Both frameworks present is what the preference list exists for, and
+/// MITRE is first in it.
+#[test]
+fn framework_follows_the_declared_preference_when_both_match() {
+    let mut event = Event::new(json!({
+        "threat": {
+            "tactic": { "id": ["CS0001", "TA0002"] },
+        },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        FRAMEWORK,
+        &framework_params()
+    ));
+    assert_eq!(event.get_str("threat.framework"), Some("MITRE ATT&CK"));
+}
+
+/// Nothing matching writes nothing -- the script returns early rather than
+/// picking the first preference.
+#[test]
+fn framework_writes_nothing_when_no_rule_matches() {
+    let mut event = Event::new(json!({
+        "threat": { "tactic": { "id": ["XX0001"] } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        FRAMEWORK,
+        &framework_params()
+    ));
+    assert!(!event.has("threat.framework"));
+}
+
+/// An event type the table does not carry throws in Painless and the
+/// sub-pipeline's `on_failure` catches it. Nothing here models the throw,
+/// so the event must at least come through untouched rather than mangled.
+#[test]
+fn add_unique_leaves_an_unknown_event_type_alone() {
+    let mut event = Event::new(json!({
+        "okta": { "event_type": "user.session.nosuchthing" },
+        "event": { "type": ["info"] },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        ADD_UNIQUE,
+        &add_unique_params()
+    ));
+    assert_eq!(event.get("event.type"), Some(&json!(["info"])));
+}
+
+fn sentinel_params() -> Value {
+    json!({ "values": [null, "", "-", "N/A", "NA", 0] })
+}
+
+#[test]
+fn strips_every_sentinel_the_params_name() {
+    let mut event = Event::new(json!({
+        "crowdstrike": { "event": {
+            "keep": "value", "empty": "", "dash": "-", "na": "NA", "zero": 0, "nul": null,
+        }},
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        SENTINEL,
+        &sentinel_params()
+    ));
+
+    let obj = event.get_object("crowdstrike.event").unwrap();
+    assert_eq!(obj.len(), 1, "only `keep` survives: {obj:?}");
+    assert_eq!(obj.get("keep"), Some(&json!("value")));
+}
+
+/// The metadata variant omits `0`, and a numeric zero must then survive.
+#[test]
+fn a_sentinel_absent_from_params_is_kept() {
+    let script = SENTINEL.replace("crowdstrike.event", "crowdstrike.metadata");
+    let mut event = Event::new(json!({
+        "crowdstrike": { "metadata": { "zero": 0, "dash": "-" } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        &script,
+        &json!({ "values": [null, "", "-", "N/A", "NA"] }),
+    ));
+
+    let obj = event.get_object("crowdstrike.metadata").unwrap();
+    assert_eq!(obj.get("zero"), Some(&json!(0)));
+    assert!(!obj.contains_key("dash"));
+}
+
+/// Verbatim from `pipelines/windows/forwarded/security_standard.yml`.
+const UAC_FLAGS: &str = "if (ctx.winlog?.event_data == null) {\n  return;\n}\n\
+     Long newUacValue;\ntry {\n\
+     newUacValue = Long.decode(ctx.winlog.event_data.NewUacValue.trim());\n\
+     } catch (Exception e) {\n  return;\n}\nArrayList uacResult = new ArrayList();\n\
+     for (entry in params.entrySet()) {\n  Long flag = Long.decode(entry.getKey());\n\
+     if ((newUacValue.longValue() & flag.longValue()) == flag.longValue()) {\n\
+     uacResult.add(entry.getValue());\n  }\n}\nif (uacResult.length == 0) {\n  return;\n}\n\
+     ctx.winlog.event_data.put(\"NewUACList\", uacResult);\n";
+
+/// The list comes out in the PARAMS' order, and the vendor's two tables
+/// disagree about direction -- so neither sorting nor reversing is right.
+#[test]
+fn a_flag_list_keeps_the_params_order() {
+    let mut event = Event::new(json!({
+        "winlog": { "event_data": { "NewUacValue": " 0x210 " } },
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        UAC_FLAGS,
+        &json!({ "0x00000010": "USER_NORMAL_ACCOUNT", "0x00000200": "USER_DONT_EXPIRE_PASSWORD" }),
+    ));
+    assert_eq!(
+        event.get("winlog.event_data.NewUACList"),
+        Some(&json!(["USER_NORMAL_ACCOUNT", "USER_DONT_EXPIRE_PASSWORD"])),
+        "the UAC table runs lowest bit first"
+    );
+
+    // The kerberos table runs the other way, and its list follows.
+    let mut ticket = Event::new(json!({
+        "winlog": { "event_data": { "NewUacValue": "0x40000001" } },
+    }));
+    assert!(try_params_painless(
+        &mut ticket,
+        UAC_FLAGS,
+        &json!({ "0x40000000": "Forwardable", "0x00000001": "Validate" }),
+    ));
+    assert_eq!(
+        ticket.get("winlog.event_data.NewUACList"),
+        Some(&json!(["Forwardable", "Validate"]))
+    );
+}
+
+/// Verbatim from `pipelines/microsoft_defender_endpoint/log/default.yml`,
+/// which wraps the removal in a recursive drop and runs `drop(ctx)` after.
+const SENTINEL_WRAPPED: &str = "boolean drop(Object o) {\n  if (o == null || o == \"\") {\n\
+     return true;\n  } else if (o instanceof Map) {\n\
+     ((Map) o).values().removeIf(v -> drop(v));\n    return (((Map) o).size() == 0);\n\
+     } else if (o instanceof List) {\n    ((List) o).removeIf(v -> drop(v));\n\
+     return (((List) o).length == 0);\n  }\n  return false;\n}\n\
+     if (!ctx.json.evidence.empty) {\n\
+     ctx.json.evidence.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));\n\
+     }\ndrop(ctx);\n";
+
+#[test]
+fn a_wrapped_sentinel_removal_still_sweeps_what_it_emptied() {
+    let mut event = Event::new(json!({ "json": {
+        "evidence": { "sha1": "abc", "url": null, "domain": "" }, "keep": "v"
+    }}));
+
+    assert!(try_params_painless(
+        &mut event,
+        SENTINEL_WRAPPED,
+        &json!({ "values": [null, ""] }),
+    ));
+    assert_eq!(event.get_str("json.evidence.sha1"), Some("abc"));
+    assert!(!event.has("json.evidence.url"));
+
+    // An evidence list the vendor ships EMPTY goes with the sweep, and
+    // leaving it behind put a stray `[]` in the output.
+    let mut empty = Event::new(json!({ "json": { "evidence": [], "keep": "v" } }));
+    assert!(try_params_painless(
+        &mut empty,
+        SENTINEL_WRAPPED,
+        &json!({ "values": [null, ""] }),
+    ));
+    assert!(!empty.has("json.evidence"));
+    assert_eq!(empty.get_str("json.keep"), Some("v"));
+}
+
+#[test]
+fn a_missing_map_is_not_a_failure() {
+    let mut event = Event::new(json!({ "other": 1 }));
+    assert!(try_params_painless(
+        &mut event,
+        SENTINEL,
+        &sentinel_params()
+    ));
+}
+
+const FILETIME: &str = "def convertToUnix(def longValue) {\n\
+                        if (longValue > 0x0100000000000000L) {\n\
+                        return (longValue / 10000) - 11644473600000L;\n}\nreturn longValue;\n}\n\
+                        for (def field : params.values) {\n\
+                        def fieldValue = ctx.crowdstrike.event[field];\n\
+                        ctx.crowdstrike.event[field] = convertToUnix(fieldValue);\n}";
+
+#[test]
+fn converts_every_filetime_field_the_params_name() {
+    let mut event = Event::new(json!({
+        "crowdstrike": { "event": {
+            // 2020-01-01T00:00:00Z as a FILETIME, as a number and as a string.
+            "StartTime": 132_223_104_000_000_000_i64,
+            "EndTime": "132223104000000000",
+            // Already UNIX seconds -- below the threshold, so untouched.
+            "ContextTimeStamp": 1_577_836_800_i64,
+            "Untouched": 132_223_104_000_000_000_i64,
+        }},
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        FILETIME,
+        &json!({ "values": ["StartTime", "EndTime", "ContextTimeStamp"] }),
+    ));
+
+    assert_eq!(
+        event.get_i64("crowdstrike.event.StartTime"),
+        Some(1_577_836_800_000)
+    );
+    assert_eq!(
+        event.get_i64("crowdstrike.event.EndTime"),
+        Some(1_577_836_800_000)
+    );
+    assert_eq!(
+        event.get_i64("crowdstrike.event.ContextTimeStamp"),
+        Some(1_577_836_800)
+    );
+    assert_eq!(
+        event.get_i64("crowdstrike.event.Untouched"),
+        Some(132_223_104_000_000_000)
+    );
+}
+
+/// Verbatim from `pipelines/azure/activitylogs/default.yml`.
+const LOOKUP: &str = "if (ctx?.azure?.activitylogs?.category == null) { return; } \
+                      def category = ctx.azure.activitylogs.category.toLowerCase(); \
+                      if (params.get(category) == null) { return; } \
+                      def hm = new HashMap(params.get(category)); \
+                      hm.forEach((k, v) -> ctx.event[k] = v);";
+
+fn lookup_params() -> Value {
+    json!({
+        "write": { "type": ["change"] },
+        "read": { "type": ["access"] },
+        "delete": { "type": ["deletion"] },
+    })
+}
+
+#[test]
+fn merges_the_row_the_keyed_field_selects() {
+    let mut event = Event::new(json!({
+        "azure": { "activitylogs": { "category": "Write" } },
+        "event": {},
+    }));
+
+    assert!(try_params_painless(&mut event, LOOKUP, &lookup_params()));
+    assert_eq!(event.get("event.type"), Some(&json!(["change"])));
+}
+
+#[test]
+fn a_key_absent_from_the_table_changes_nothing() {
+    let mut event = Event::new(json!({
+        "azure": { "activitylogs": { "category": "Unmapped" } },
+        "event": {},
+    }));
+
+    assert!(try_params_painless(&mut event, LOOKUP, &lookup_params()));
+    assert_eq!(event.get_object("event").unwrap().len(), 0);
+}
+
+/// panw's decryption-log flags, as the generator emits them.
+const BIT_FLAGS: &str = r"def labels = ctx.labels; if (labels == null) {
+  labels = new HashMap();
+  ctx['labels'] = labels;
+} long value = ctx._temp_.labels; for (entry in params.entrySet()) {
+  def flag = entry.getValue();
+  if (flag instanceof String) {
+  flag = Long.decode(flag);
+  }
+  if ((value & flag) != 0) {
+  labels[entry.getKey()] = true;
+  }
+}
+";
+
+fn flag_params() -> Value {
+    json!({
+        "nat_translated": 0x0040_0000,
+        "captive_portal": 0x0020_0000,
+        "ssl_decrypted": 0x0100_0000,
+    })
+}
+
+#[test]
+fn sets_a_label_for_every_bit_the_field_has_set() {
+    let mut event = Event::new(json!({
+        "_temp_": { "labels": 0x0060_0000 },
+    }));
+
+    assert!(try_params_painless(&mut event, BIT_FLAGS, &flag_params()));
+    assert_eq!(event.get("labels.nat_translated"), Some(&json!(true)));
+    assert_eq!(event.get("labels.captive_portal"), Some(&json!(true)));
+}
+
+/// The script only ever writes `true`, so a clear bit must leave the label
+/// ABSENT -- writing `false` would be an extra field Elastic never emits.
+#[test]
+fn a_clear_bit_leaves_its_label_absent() {
+    let mut event = Event::new(json!({
+        "_temp_": { "labels": 0x0040_0000 },
+    }));
+
+    assert!(try_params_painless(&mut event, BIT_FLAGS, &flag_params()));
+    assert_eq!(event.get("labels.nat_translated"), Some(&json!(true)));
+    assert_eq!(event.get("labels.captive_portal"), None);
+    assert_eq!(event.get("labels.ssl_decrypted"), None);
+}
+
+/// `Long.decode` is in the vendor script because the flags have been known
+/// to arrive stringified, and a hex string must decode as hex.
+#[test]
+fn a_stringified_hex_flag_decodes() {
+    let mut event = Event::new(json!({ "_temp_": { "labels": 0x0040_0000 } }));
+    let params = json!({ "nat_translated": "0x00400000" });
+
+    assert!(try_params_painless(&mut event, BIT_FLAGS, &params));
+    assert_eq!(event.get("labels.nat_translated"), Some(&json!(true)));
+}
+
+#[test]
+fn a_bitfield_carried_as_a_string_still_decodes() {
+    let mut event = Event::new(json!({ "_temp_": { "labels": "4194304" } }));
+
+    assert!(try_params_painless(&mut event, BIT_FLAGS, &flag_params()));
+    assert_eq!(event.get("labels.nat_translated"), Some(&json!(true)));
+}
+
+#[test]
+fn an_absent_bitfield_writes_no_labels() {
+    let mut event = Event::new(json!({ "event": {} }));
+
+    assert!(!try_params_painless(&mut event, BIT_FLAGS, &flag_params()));
+    assert_eq!(event.get("labels"), None);
+}
+
+/// A level whose key names no field stops the descent, and nothing of the
+/// row above it is merged -- the second level's keys are not fields.
+#[test]
+fn a_two_level_table_stops_where_the_key_is_absent() {
+    let script = "params.get(ctx.event.code).get(ctx._temp_.outcome)\
+                  .forEach((k, v) -> ctx.event[k] = v);";
+    let mut event = Event::new(json!({ "event": { "code": "750002" } }));
+
+    assert!(try_params_painless(
+        &mut event,
+        script,
+        &json!({ "750002": { "success": { "action": "started" } } }),
+    ));
+    assert_eq!(event.get("event.action"), None);
+    assert_eq!(event.get("event.success"), None);
+}
+
+/// Verbatim from `pipelines/cisco/nexus/default.yml`.
+const INDEXED: &str = "def LogLevelValue = (int) ctx.event.severity;\n\
+                       if (LogLevelValue >= 0 && LogLevelValue < params.LogLevel.length) {\n  \
+                       ctx.log.put('level', params['LogLevel'][LogLevelValue]);\n}";
+
+#[test]
+fn indexes_the_params_array_by_the_numeric_field() {
+    let mut event = Event::new(json!({ "event": { "severity": 3 }, "log": {} }));
+
+    assert!(try_params_painless(
+        &mut event,
+        INDEXED,
+        &json!({ "LogLevel": ["emergency", "alert", "critical", "error", "warning"] }),
+    ));
+    assert_eq!(event.get_str("log.level"), Some("error"));
+}
+
+/// The vendor's bounds check is the array's own length.
+#[test]
+fn an_index_past_the_end_sets_nothing() {
+    let mut event = Event::new(json!({ "event": { "severity": 9 }, "log": {} }));
+
+    assert!(try_params_painless(
+        &mut event,
+        INDEXED,
+        &json!({ "LogLevel": ["emergency", "alert"] }),
+    ));
+    assert!(!event.has("log.level"));
+}
+
+/// Verbatim from `pipelines/azure/auditlogs/default.yml`.
+const SCALE: &str = "ctx.event.duration = ctx.event.duration * params.param_nano";
+
+#[test]
+fn scales_a_duration_by_the_params_constant() {
+    let mut event = Event::new(json!({ "event": { "duration": 42 } }));
+
+    assert!(try_params_painless(
+        &mut event,
+        SCALE,
+        &json!({ "param_nano": 1_000_000_000_i64 }),
+    ));
+    assert_eq!(event.get_i64("event.duration"), Some(42_000_000_000));
+}
+
+/// Verbatim from `pipelines/aws/s3access/default.yml`.
+const SCALE_COMPOUND: &str = "ctx.event.duration *= params.MS_TO_NS;";
+
+#[test]
+fn scales_a_duration_written_as_a_compound_multiply() {
+    let mut event = Event::new(json!({ "event": { "duration": 17 } }));
+
+    assert!(try_params_painless(
+        &mut event,
+        SCALE_COMPOUND,
+        &json!({ "MS_TO_NS": 1_000_000_i64 }),
+    ));
+    assert_eq!(event.get_i64("event.duration"), Some(17_000_000));
+}
+
+/// Verbatim from `pipelines/azure/activitylogs/default.yml`.
+const REPLACE: &str = "ctx.message = ctx.message.replace(params.empty_field_name, '')";
+
+#[test]
+fn strips_the_marker_the_params_name() {
+    let mut event = Event::new(json!({ "message": "a<EMPTY>b<EMPTY>" }));
+
+    assert!(try_params_painless(
+        &mut event,
+        REPLACE,
+        &json!({ "empty_field_name": "<EMPTY>" }),
+    ));
+    assert_eq!(event.get_str("message"), Some("ab"));
+}
+
+#[test]
+fn a_script_without_params_falls_through() {
+    let mut event = Event::new(json!({}));
+    assert!(!try_params_painless(&mut event, SENTINEL, &Value::Null));
+}
+
+/// Verbatim from `crowdstrike/identity_protection_timeline/default.yml`,
+/// tagged `map_timeline_event_severity`: a TYPED local (`Integer severity`),
+/// not `def`, bound to the params lookup.
+#[test]
+fn a_typed_local_still_carries_the_params_lookup() {
+    let script = "Integer severity = params[ctx.crowdstrike.idp.timeline.event_severity.toUpperCase()];\n\
+         if (severity != null) {\n  ctx.event = ctx.event ?: [:];\n  ctx.event.severity = severity;\n}\n";
+    let params = json!({ "NEUTRAL": 21, "MODERATE": 47, "IMPORTANT": 73 });
+
+    let mut event = Event::new(json!({
+        "crowdstrike": { "idp": { "timeline": { "event_severity": "important" } } }
+    }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get("event.severity"), Some(&json!(73)));
+}
+
+/// A key the table does not list leaves the field unset, matching the
+/// script's own `if (severity != null)` guard.
+#[test]
+fn a_typed_local_lookup_miss_writes_nothing() {
+    let script = "Integer severity = params[ctx.crowdstrike.idp.timeline.event_severity.toUpperCase()];\n\
+         if (severity != null) {\n  ctx.event = ctx.event ?: [:];\n  ctx.event.severity = severity;\n}\n";
+    let params = json!({ "NEUTRAL": 21, "MODERATE": 47, "IMPORTANT": 73 });
+
+    let mut event = Event::new(json!({
+        "crowdstrike": { "idp": { "timeline": { "event_severity": "unheard-of" } } }
+    }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get("event.severity"), None);
+}
+
+/// Verbatim from `pipelines/watchguard_firebox/log/default.yml`: the merge
+/// lambda routes `log_type` to the vendor namespace and every other column
+/// to `ctx.event`.
+#[test]
+fn a_merge_lambda_routes_the_key_its_branch_names() {
+    let script = "if (ctx.watchguard_firebox?.log?.msg_id == null || \
+        params.get(ctx.watchguard_firebox.log.msg_id) == null) {\n  return;\n}\n\
+        params.get(ctx.watchguard_firebox.log.msg_id).forEach((k, v) -> {\n  \
+        if (k.equals(\"log_type\")) {\n    ctx.watchguard_firebox.log[k] = v;\n  \
+        } else if (v instanceof List) {\n    ctx.event[k] = new ArrayList(v);\n  \
+        } else {\n    ctx.event[k] = v;\n  }\n});";
+    let params = json!({ "3000-0148": {
+        "category": ["network"], "type": ["connection"],
+        "outcome": "success", "log_type": "traffic",
+    }});
+
+    let mut event = Event::new(json!({
+        "watchguard_firebox": { "log": { "msg_id": "3000-0148" } }
+    }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get("event.category"), Some(&json!(["network"])));
+    assert_eq!(event.get("event.type"), Some(&json!(["connection"])));
+    assert_eq!(event.get_str("event.outcome"), Some("success"));
+    assert_eq!(
+        event.get_str("watchguard_firebox.log.log_type"),
+        Some("traffic")
+    );
+    // The routed arm must not take the whole row with it.
+    assert_eq!(event.get("watchguard_firebox.log.category"), None);
+    assert_eq!(event.get("watchguard_firebox.log.type"), None);
+    assert_eq!(event.get("watchguard_firebox.log.outcome"), None);
+}
+
+/// Verbatim from `pipelines/cyberarkpas/audit/audit.yml`: the row is a list
+/// of instructions, each a literal value or a field to read.
+#[test]
+fn an_instruction_row_builds_the_list_its_foreach_writes() {
+    let script = "String msgID = ctx.event?.code;\ndef actions = params.get(msgID);\n\
+        if (actions == null) return;\nList values = new ArrayList();\n\
+        for (def item : actions) {\n  def val = item.value;\n  \
+        if (val == null && (val = read_field(ctx, item.from)) == null || val == \"\") continue;\n  \
+        values.add([\n    \"to\": item.set,\n    \"value\": clone(val)\n  ]);\n}\n\
+        if (!values.isEmpty()) ctx._tmp[\"values\"] = values;\n";
+    let params = json!({ "180": [
+        { "set": "user.target.name", "from": "cyberarkpas.audit.source_user" },
+        { "set": "event.type", "value": ["user", "creation"] },
+        { "set": "event.outcome", "value": "success" },
+        { "set": "user.name", "from": "cyberarkpas.audit.absent" },
+    ]});
+
+    let mut event = Event::new(json!({
+        "event": { "code": "180" },
+        "cyberarkpas": { "audit": { "source_user": "PSMPApp_localhost" } },
+    }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(
+        event.get("_tmp.values"),
+        Some(&json!([
+            { "to": "user.target.name", "value": "PSMPApp_localhost" },
+            { "to": "event.type", "value": ["user", "creation"] },
+            { "to": "event.outcome", "value": "success" },
+        ]))
+    );
+
+    // A code the table does not list writes nothing at all.
+    let mut unlisted = Event::new(json!({ "event": { "code": "999" } }));
+    assert!(try_params_painless(&mut unlisted, script, &params));
+    assert!(!unlisted.has("_tmp.values"));
+}
+
+/// Verbatim from `pipelines/box_events/events/default.yml`: params IS the
+/// table, and the two columns sit under a `map` member.
+#[test]
+fn a_keyed_row_appends_each_column_onto_its_array() {
+    let script = "def eventType = params.getOrDefault(ctx.box.event_type, null);\n\
+        if (eventType != null) {\n  for (category in eventType.map.get('category')) {\n    \
+        ctx.event.category.add(category);\n  }\n  \
+        for ( type in eventType.map.get('type')) {\n    \
+        ctx.event.type.add(type);\n  }\n}\n";
+    let params = json!({
+        "COPY": { "map": { "category": ["file"], "type": ["creation"] } },
+    });
+
+    let mut event = Event::new(json!({ "box": { "event_type": "COPY" } }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get("event.category"), Some(&json!(["file"])));
+    assert_eq!(event.get("event.type"), Some(&json!(["creation"])));
+
+    // A type the table does not list leaves both arrays alone.
+    let mut unlisted = Event::new(json!({ "box": { "event_type": "UNHEARD_OF" } }));
+    assert!(try_params_painless(&mut unlisted, script, &params));
+    assert!(!unlisted.has("event.category"));
+}
+
+/// Verbatim from `pipelines/suricata/eve/default.yml`: the other spelling
+/// of the guard, routing to a path the arm names in full rather than to a
+/// container keyed by `k`.
+#[test]
+fn a_merge_lambda_routes_to_the_path_its_arm_names() {
+    let script = "ctx.event.kind = 'event';\nctx.event.category = ['network'];\n\
+        def type_params = params.get(ctx?.suricata?.eve?.event_type);\n\
+        if (type_params == null) {\n    return;\n}\n\
+        type_params.forEach((k, v) -> {\n    if ('network_protocol' == k) {\n        \
+        if (ctx.network == null) {\n            ctx.network = ['protocol': v];\n        \
+        } else {\n            ctx.network.protocol = v;\n        }\n    \
+        } else if (v instanceof List) {\n        ctx.event[k] = new ArrayList(v);\n    \
+        } else {\n        ctx.event[k] = v;\n    }\n});";
+    let params = json!({ "tls": { "type": ["protocol"], "network_protocol": "tls" }});
+
+    let mut event = Event::new(json!({ "suricata": { "eve": { "event_type": "tls" } } }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get_str("network.protocol"), Some("tls"));
+    assert_eq!(event.get("event.type"), Some(&json!(["protocol"])));
+    assert_eq!(event.get("event.network_protocol"), None);
+    // The literals the script writes before the lookup still land.
+    assert_eq!(event.get_str("event.kind"), Some("event"));
+    assert_eq!(event.get("event.category"), Some(&json!(["network"])));
+}
+
+/// The single-assignment lambda every other integration writes, which has
+/// no routed arm and must still merge the row whole.
+#[test]
+fn a_merge_lambda_with_no_branch_still_merges_the_row() {
+    let script = "params.get(ctx.event.code)?.forEach((k, v) -> ctx.event[k] = v);";
+    let params = json!({ "302013": { "type": ["connection"], "outcome": "success" }});
+
+    let mut event = Event::new(json!({ "event": { "code": "302013" } }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get("event.type"), Some(&json!(["connection"])));
+    assert_eq!(event.get_str("event.outcome"), Some("success"));
+}
+
+/// Verbatim from `pipelines/opencanary/events/default.yml`: the log code
+/// named through the table, and KEPT as its own name when the table has
+/// no row for it. The target is a bracket subscript.
+#[test]
+fn an_unlisted_key_becomes_its_own_value() {
+    let script = "String logType = ctx.opencanary.logtype.toString();\n        \
+        if (ctx.log == null) {\n          ctx.log = new HashMap();\n        }\n        \
+        if (params.get(logType) == null) {\n          ctx.log['logger'] = logType;\n        \
+        } else {\n          ctx.log['logger'] = params.get(logType);\n        }";
+    let params = json!({ "13001": "LOG_SNMP_CMD" });
+
+    let mut known = Event::new(json!({ "opencanary": { "logtype": 13001 } }));
+    assert!(try_params_painless(&mut known, script, &params));
+    assert_eq!(known.get_str("log.logger"), Some("LOG_SNMP_CMD"));
+
+    // A code the table does not carry stays as itself, which is a
+    // FALLBACK rather than a default -- the value comes from the event.
+    let mut unlisted = Event::new(json!({ "opencanary": { "logtype": 4242 } }));
+    assert!(try_params_painless(&mut unlisted, script, &params));
+    assert_eq!(unlisted.get_str("log.logger"), Some("4242"));
+}
+
+/// Verbatim from `pipelines/bitdefender/push_notifications/default.yml`,
+/// which ships four of these back to back differing only in the target.
+/// The row is written WHOLE, so a list target takes the list.
+#[test]
+fn one_field_keys_a_table_and_the_row_lands_whole() {
+    let script = "def schemaId = ctx.bitdefender?.event?.module.toString();\n      \
+        def schema = params[schemaId];\n      if (schema != null) {\n        \
+        if (ctx.event == null) {\n          ctx.event = new HashMap();\n        }\n        \
+        ctx.event.type = schema;\n      }";
+    let params = json!({ "aph": ["info", "access"], "av": ["info"] });
+
+    let mut event = Event::new(json!({ "bitdefender": { "event": { "module": "aph" } } }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get("event.type"), Some(&json!(["info", "access"])));
+
+    // A module the table does not carry leaves the target alone.
+    let mut unlisted = Event::new(json!({ "bitdefender": { "event": { "module": "other" } } }));
+    assert!(try_params_painless(&mut unlisted, script, &params));
+    assert_eq!(unlisted.get("event.type"), None);
+}
+
+/// Verbatim from `pipelines/ti_eset/ip/default.yml`: the first label the
+/// table has a row for, in the DOCUMENT's order rather than the table's.
+#[test]
+fn the_first_label_the_table_carries_wins() {
+    let script = "for (def label : ctx.eset.labels) {\n  \
+        if (params.containsKey(label)) {\n    \
+        ctx.threat.indicator.confidence = params.get(label);\n    break;\n  }\n}";
+    let params = json!({
+        "malicious-activity": "High",
+        "unwanted-activity": "Medium",
+        "benign": "Low",
+    });
+
+    // `benign` is listed first in the DOCUMENT, so it wins over the
+    // higher-confidence label that follows it.
+    let mut event = Event::new(json!({ "eset": {
+        "labels": ["unlisted", "benign", "malicious-activity"],
+    }}));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get_str("threat.indicator.confidence"), Some("Low"));
+
+    // No label the table carries leaves the field unwritten.
+    let mut unlisted = Event::new(json!({ "eset": { "labels": ["other"] } }));
+    assert!(try_params_painless(&mut unlisted, script, &params));
+    assert_eq!(unlisted.get("threat.indicator.confidence"), None);
+}
+
+/// Verbatim from `pipelines/sonicwall_firewall/log/default.yml`: every
+/// mapped key deferred onto `_temp_.sets`, with the source key deferred
+/// onto `_temp_.removes` for the `foreach` that applies them.
+#[test]
+fn a_params_table_defers_a_set_and_a_remove_per_mapped_key() {
+    let script = "List sets = ctx._temp_.computeIfAbsent(\"sets\", k -> new ArrayList());\n\
+        List removes = ctx._temp_.computeIfAbsent(\"removes\", k -> new ArrayList());\n\
+        for (def src_field : ctx.sonicwall.firewall.entrySet()) {\n  \
+        def key = src_field.getKey();\n  if (params[key] != null) {\n    \
+        boolean mapped = false;\n    for (def action : params[key]) {\n      \
+        def value = action.map == null? src_field.getValue() : action.map[src_field.getValue()];\n      \
+        if (value != null) {\n        sets.add([\n          \"target\": action.to,\n          \
+        \"value\": value\n        ]);\n      }\n    }\n    removes.add(key);\n  }\n}\n";
+    let params = json!({
+        "id": [{ "to": "observer.name" }],
+        "pri": [
+            { "to": "event.severity" },
+            { "to": "log.level", "map": { "6": "info" } },
+        ],
+    });
+
+    let mut event = Event::new(json!({ "sonicwall": { "firewall": {
+        "id": "firewall", "pri": "6", "unmapped": "kept",
+    }}}));
+    assert!(try_params_painless(&mut event, script, &params));
+
+    assert_eq!(
+        event.get("_temp_.sets"),
+        Some(&json!([
+            { "target": "observer.name", "value": "firewall" },
+            { "target": "event.severity", "value": "6" },
+            { "target": "log.level", "value": "info" },
+        ]))
+    );
+    // Only the MAPPED keys are deferred for removal.
+    assert_eq!(event.get("_temp_.removes"), Some(&json!(["id", "pri"])));
+}
+
+/// The colon-joined spelling: one field split across the targets params
+/// lists for it. sonicwall's `dst` is address, port and egress interface.
+#[test]
+fn a_colon_joined_field_defers_a_set_per_part() {
+    let script = "List sets = ctx._temp_.computeIfAbsent(\"sets\", k -> new ArrayList());\n\
+        List removes = ctx._temp_.computeIfAbsent(\"removes\", k -> new ArrayList());\n\
+        for (def field : params.entrySet()) {\n  \
+        String value = ctx.sonicwall.firewall[field.getKey()];\n  \
+        if (value == null) continue;\n  String[] parts = value.splitOnToken(\":\");\n  \
+        List mapping = field.getValue();\n  for ( int i = (int)Math.min(parts.length, mapping.size()) - 1\n      \
+        ; i>=0\n      ; i--) {\n    sets.add([\n      \"target\": mapping[i],\n      \
+        \"value\": parts[i]\n    ]);\n  }\n  removes.add(field.getKey());\n}\n";
+    let params = json!({
+        "dst": ["destination.address", "destination.port", "observer.egress.interface.name"],
+    });
+
+    let mut event = Event::new(json!({ "sonicwall": { "firewall": {
+        "dst": "81.2.69.143:443:X1",
+    }}}));
+    assert!(try_params_painless(&mut event, script, &params));
+
+    // Deferred in reverse, which is the order the vendor's loop walks.
+    assert_eq!(
+        event.get("_temp_.sets"),
+        Some(&json!([
+            { "target": "observer.egress.interface.name", "value": "X1" },
+            { "target": "destination.port", "value": "443" },
+            { "target": "destination.address", "value": "81.2.69.143" },
+        ]))
+    );
+    assert_eq!(event.get("_temp_.removes"), Some(&json!(["dst"])));
+}
+
+/// Both directions totalled into one field, with the prefixes and the keys
+/// named by params rather than spelled in the script.
+#[test]
+fn a_params_named_total_sums_every_direction() {
+    let script = "for (def src : params.from) {\n  for (def key : params.keys) {\n    \
+        def v = null;\n    if (ctx[src] != null && (v = ctx[src][key]) != null && v instanceof Long) {\n      \
+        if (ctx[params.to] == null || !(ctx[params.to] instanceof Map)) {\n        \
+        ctx[params.to] = new HashMap();\n      }\n      \
+        if (ctx[params.to][key] == null || !(ctx[params.to][key] instanceof Long)) {\n        \
+        ctx[params.to][key] = v;\n      } else {\n        ctx[params.to][key] += v;\n      }\n    }\n  }\n}\n";
+    let params =
+        json!({ "keys": ["bytes", "packets"], "from": ["source", "destination"], "to": "network" });
+
+    let mut event = Event::new(json!({
+        "source": { "bytes": 60, "packets": 1 },
+        "destination": { "bytes": 40 },
+    }));
+    assert!(try_params_painless(&mut event, script, &params));
+
+    assert_eq!(event.get("network.bytes"), Some(&json!(100)));
+    // One side present is still a total; the other contributes nothing.
+    assert_eq!(event.get("network.packets"), Some(&json!(1)));
+
+    // A count still carrying its grok string is not a Long, so the
+    // vendor's guard skips it and no total is written.
+    let mut untyped = Event::new(json!({ "source": { "bytes": "60" } }));
+    assert!(try_params_painless(&mut untyped, script, &params));
+    assert_eq!(untyped.get("network.bytes"), None);
+}
+
+/// stormshield lifts its metadata keys into a child map, and REMOVES them.
+///
+/// Verbatim from `pipelines/stormshield/log/default.yml:613`. Leaving the
+/// original behind would emit a field Elasticsearch does not.
+#[test]
+fn a_named_set_of_keys_moves_into_a_child_map() {
+    let script = "if (!ctx.stormshield.containsKey(\"metadata\")) {\n    \
+        ctx.stormshield.metadata = [:];\n}\nparams.names.forEach(k -> {\n    \
+        if (ctx.stormshield.containsKey(k)) {\n        \
+        ctx.stormshield.metadata[k] = ctx.stormshield[k];\n        \
+        ctx.stormshield.remove(k);\n    }\n    return true;\n});";
+    let params = json!({ "names": ["id", "pri", "absent"] });
+
+    let mut event = Event::new(json!({
+        "stormshield": { "id": "7", "pri": "5", "logtype": "alarm" }
+    }));
+    assert!(try_params_painless(&mut event, script, &params));
+
+    assert_eq!(event.get_str("stormshield.metadata.id"), Some("7"));
+    assert_eq!(event.get_str("stormshield.metadata.pri"), Some("5"));
+    // MOVED, not copied.
+    assert!(!event.has("stormshield.id"));
+    assert!(!event.has("stormshield.pri"));
+    // A key the script does not name is untouched.
+    assert_eq!(event.get_str("stormshield.logtype"), Some("alarm"));
+    // A named key the document lacks is not created empty.
+    assert!(!event.has("stormshield.metadata.absent"));
+}
+
+/// stormshield keys its whole ECS event block off `logtype`.
+///
+/// Verbatim from `pipelines/stormshield/log/default.yml:699`, with the tables
+/// cut to the entries the assertions read. All 44 of its events carry the
+/// block and none of it was written.
+#[test]
+fn an_event_block_comes_from_the_table_its_subject_keys() {
+    let script = "def logtype = ctx.stormshield?.logtype; \
+        def entry = params.logtypes[logtype]; if (ctx.event == null) {\n    ctx.event = [:];\n} \
+        if (entry == null) {\n    ctx.event.kind = 'event';\n} else {\n    \
+        ctx.event.kind = entry.kind;\n    ctx.event.category = new ArrayList(entry.category);\n    \
+        ctx.event.type = new ArrayList(entry.type);\n    \
+        if (params.action_logtypes.contains(logtype) && ctx.event.action instanceof String) {\n      \
+        def mapped = params.action_types[ctx.event.action.toLowerCase()];\n      \
+        if (mapped != null && !ctx.event.type.contains(mapped)) {\n        \
+        ctx.event.type.add(mapped);\n      }\n    }\n}";
+    let params = json!({
+        "logtypes": {
+            "alarm": { "kind": "alert", "category": ["intrusion_detection", "network"],
+                       "type": ["info"] },
+            "authstat": { "kind": "metric", "category": ["authentication"], "type": ["info"] }
+        },
+        "action_types": { "pass": "allowed", "block": "denied" },
+        "action_logtypes": ["alarm", "connection"]
+    });
+
+    // A listed logtype whose action maps: the extra type is APPENDED.
+    let mut alarm = Event::new(json!({
+        "stormshield": { "logtype": "alarm" }, "event": { "action": "Block" }
+    }));
+    assert!(try_params_painless(&mut alarm, script, &params));
+    assert_eq!(alarm.get_str("event.kind"), Some("alert"));
+    assert_eq!(
+        alarm.get("event.category"),
+        Some(&json!(["intrusion_detection", "network"]))
+    );
+    assert_eq!(alarm.get("event.type"), Some(&json!(["info", "denied"])));
+
+    // Not in action_logtypes, so the action is never consulted.
+    let mut stat = Event::new(json!({
+        "stormshield": { "logtype": "authstat" }, "event": { "action": "pass" }
+    }));
+    assert!(try_params_painless(&mut stat, script, &params));
+    assert_eq!(stat.get_str("event.kind"), Some("metric"));
+    assert_eq!(stat.get("event.type"), Some(&json!(["info"])));
+
+    // No entry writes the bare default and nothing else.
+    let mut unknown = Event::new(json!({ "stormshield": { "logtype": "nosuch" } }));
+    assert!(try_params_painless(&mut unknown, script, &params));
+    assert_eq!(unknown.get_str("event.kind"), Some("event"));
+    assert_eq!(unknown.get("event.category"), None);
+
+    // The params table must not have grown a member from the append above.
+    assert_eq!(
+        params["logtypes"]["alarm"]["type"],
+        json!(["info"]),
+        "the entry was aliased rather than copied"
+    );
+}
+
+/// `ti_recordedfuture` names its CSV columns by which layout it read.
+///
+/// Verbatim from `pipelines/ti_recordedfuture/threat/decode_csv.yml:19`. Four
+/// columns for url, domain and IP; five for hash, with `Algorithm` inserted
+/// second. The absence of the last column is the whole discriminator, and
+/// without this the columns never become `json.Name` -- the next processor
+/// raises `field not found` and the event goes down the error path.
+#[test]
+fn csv_columns_are_named_by_the_table_the_layout_picks() {
+    let script = "def cols = params[ ctx._tmp_.col4 == null? \"default\" : \"hash\" ];\n\
+        def src = ctx._tmp_;\ndef dst = new HashMap();\n\
+        for (entry in cols.entrySet()) {\n  \
+        dst[entry.getValue()] = src[entry.getKey()];\n}\nctx['json'] = dst;";
+    let params = json!({
+        "default": { "col0": "Name", "col1": "Risk", "col2": "RiskString",
+                     "col3": "EvidenceDetails" },
+        "hash": { "col0": "Name", "col1": "Algorithm", "col2": "Risk",
+                  "col3": "RiskString", "col4": "EvidenceDetails" }
+    });
+
+    // Four columns: the default layout.
+    let mut four = Event::new(json!({ "_tmp_": {
+        "col0": "1.128.3.4", "col1": "99", "col2": "4/64", "col3": "{}"
+    } }));
+    assert!(try_params_painless(&mut four, script, &params));
+    assert_eq!(four.get_str("json.Name"), Some("1.128.3.4"));
+    assert_eq!(four.get_str("json.Risk"), Some("99"));
+    assert_eq!(four.get_str("json.EvidenceDetails"), Some("{}"));
+    assert!(!four.has("json.Algorithm"));
+
+    // Five columns: the hash layout, which shifts everything after col0.
+    let mut five = Event::new(json!({ "_tmp_": {
+        "col0": "abc123", "col1": "SHA-256", "col2": "89", "col3": "3/50",
+        "col4": "{}"
+    } }));
+    assert!(try_params_painless(&mut five, script, &params));
+    assert_eq!(five.get_str("json.Name"), Some("abc123"));
+    assert_eq!(five.get_str("json.Algorithm"), Some("SHA-256"));
+    assert_eq!(five.get_str("json.Risk"), Some("89"));
+    assert_eq!(five.get_str("json.EvidenceDetails"), Some("{}"));
+}
+
+/// The sentinel sweep reads a `ctx?.` path, not only the plain spelling.
+///
+/// Verbatim from `pipelines/juniper_srx/log`. `try_sentinel_removal` already
+/// did this job; it found no map here because `ctx_path_before` read only
+/// `ctx.`, so all 82 of the source's invocations were skipped.
+#[test]
+fn map_entries_are_dropped_by_the_value_a_params_list_names() {
+    let script =
+        "ctx?.juniper?.srx.entrySet().removeIf(entry -> params.values.contains(entry.getValue()));";
+    assert_eq!(
+        ctx_path_before(script, ".entrySet().removeIf("),
+        Some("juniper.srx".to_owned())
+    );
+
+    let params = json!({ "values": ["N/A", "unknown", ""] });
+    let mut event = Event::new(json!({ "juniper": { "srx": {
+        "source_address": "10.0.0.1",
+        "nat_source_port": "N/A",
+        "policy_name": "unknown",
+        "reason": ""
+    } } }));
+    assert!(try_params_painless(&mut event, script, &params));
+
+    assert_eq!(
+        event.get_str("juniper.srx.source_address"),
+        Some("10.0.0.1")
+    );
+    // Every placeholder goes, whichever key held it.
+    assert!(!event.has("juniper.srx.nat_source_port"));
+    assert!(!event.has("juniper.srx.policy_name"));
+    assert!(!event.has("juniper.srx.reason"));
+}
+
+/// auditd picks its action by which candidate's fields the record HOLDS.
+///
+/// Verbatim from `pipelines/auditd/log/default.yml:1998`, with the tables cut
+/// to the entries the assertions read. All 83 of its events go through it.
+#[test]
+fn a_record_action_comes_from_the_candidate_whose_fields_are_present() {
+    let script = r#"boolean hasFields(HashMap base, def list) {
+          if (list == null) return true;
+          for (int i=0; i<list.length; i++)
+            if (base[list[i]] == null) return false;
+          return true;
+        }
+        if (ctx?.auditd?.log?.record_type == null) {
+          return;
+        }
+        HashMap base = ctx.auditd.log;
+        def acts = params.types.get(base.record_type);
+        if (acts == null && base.syscall != null) {
+          acts = params.syscalls.get(base?.syscall);
+          if (acts == null) acts = params.syscalls.get('*');
+        }
+        if (acts == null) return;
+        def act = null;
+        for (int i=0; act == null && i<acts.length; i++) {
+          if (hasFields(base, acts[i]["has_fields"])) act = acts[i];
+        }
+        if (act?.event != null) {
+          def hm = new HashMap(act.event);
+          hm.forEach((k, v) -> ctx.event[k] = v);
+        }
+        if (act?.copy != null) {
+          List lst = new ArrayList();
+          for(int i=0; i<act.copy.length; i++) {
+            def value;
+            def srcList = act.copy[i]["from"];
+            for (int j=0; value == null && j<srcList.length; j++) {
+              value = base[srcList[j]];
+            }
+            if (value != null && value instanceof String && value != 'unset' && value != '?') {
+              String suffix = value ==~ /[0-9]+/? ".id" : ".name";
+              lst.add(["target": act.copy[i]["to"] + suffix, "value": value]);
+            }
+          }
+          if (lst.size() > 0) {
+            ctx.auditd.log["copy"] = lst;
+          }
+        }"#;
+    let params = json!({
+        "types": {
+            "AVC": [
+                { "event": { "action": "violated-selinux-policy" },
+                  "has_fields": ["seresult"] },
+                { "event": { "action": "violated-apparmor-policy" },
+                  "has_fields": ["apparmor"] }
+            ],
+            "ACCT_LOCK": [
+                { "event": { "action": "locked-account", "category": ["iam"] },
+                  "copy": [
+                    { "from": ["auid", "AUID"], "to": "user" },
+                    { "from": ["acct"], "to": "user.target" },
+                    { "from": ["missing"], "to": "user.effective" }
+                  ] }
+            ]
+        },
+        "syscalls": {
+            "execve": [{ "event": { "action": "executed" } }],
+            "*": [{ "event": { "action": "used-syscall" } }]
+        }
+    });
+
+    // Two candidates under one key: the one whose field is present wins.
+    let mut apparmor = Event::new(json!({
+        "auditd": { "log": { "record_type": "AVC", "apparmor": "DENIED" } }
+    }));
+    assert!(try_params_painless(&mut apparmor, script, &params));
+    assert_eq!(
+        apparmor.get_str("event.action"),
+        Some("violated-apparmor-policy")
+    );
+
+    let mut selinux = Event::new(json!({
+        "auditd": { "log": { "record_type": "AVC", "seresult": "denied" } }
+    }));
+    assert!(try_params_painless(&mut selinux, script, &params));
+    assert_eq!(
+        selinux.get_str("event.action"),
+        Some("violated-selinux-policy")
+    );
+
+    // Neither candidate's fields are present, so nothing is written.
+    let mut neither = Event::new(json!({
+        "auditd": { "log": { "record_type": "AVC" } }
+    }));
+    assert!(try_params_painless(&mut neither, script, &params));
+    assert!(!neither.has("event.action"));
+
+    // No entry in the primary table falls through to the syscall...
+    let mut syscall = Event::new(json!({
+        "auditd": { "log": { "record_type": "SYSCALL", "syscall": "execve" } }
+    }));
+    assert!(try_params_painless(&mut syscall, script, &params));
+    assert_eq!(syscall.get_str("event.action"), Some("executed"));
+
+    // ... and an unlisted syscall to the wildcard.
+    let mut wildcard = Event::new(json!({
+        "auditd": { "log": { "record_type": "SYSCALL", "syscall": "nosuch" } }
+    }));
+    assert!(try_params_painless(&mut wildcard, script, &params));
+    assert_eq!(wildcard.get_str("event.action"), Some("used-syscall"));
+
+    // A record type in neither table, with no syscall, writes nothing.
+    let mut unknown = Event::new(json!({
+        "auditd": { "log": { "record_type": "NOSUCH" } }
+    }));
+    assert!(try_params_painless(&mut unknown, script, &params));
+    assert!(!unknown.has("event.action"));
+
+    // The copy list: `.id` for a numeric value, `.name` otherwise, the FIRST
+    // source that holds a value, and nothing at all for a source list that
+    // resolves to nothing.
+    let mut copied = Event::new(json!({
+        "auditd": { "log": { "record_type": "ACCT_LOCK", "AUID": "1000", "acct": "root" } }
+    }));
+    assert!(try_params_painless(&mut copied, script, &params));
+    assert_eq!(copied.get_str("event.action"), Some("locked-account"));
+    assert_eq!(
+        copied.get("auditd.log.copy"),
+        Some(&json!([
+            { "target": "user.id", "value": "1000" },
+            { "target": "user.target.name", "value": "root" }
+        ]))
+    );
+}
+
+/// auditd normalises every value of its record map in one pass.
+///
+/// Verbatim from `pipelines/auditd/log/default.yml:20`. Leaving it unbound
+/// leaves a quote on `process.executable`, `process.name`, `user.terminal`
+/// and `auditd.log.hostname` in every record that carries one.
+#[test]
+fn every_value_of_a_map_is_normalised_in_place() {
+    let script = r#"String trimQuotes(def singleQuote, def doubleQuote, def v) {
+            if (v.startsWith(singleQuote) || v.startsWith(doubleQuote)) {
+                v = v.substring(1, v.length());
+            }
+            if (v.endsWith(singleQuote) || v.endsWith(doubleQuote)) {
+                v = v.substring(0, v.length()-1);
+            }
+            return v;
+        }
+        def processFieldValue(String k, def v, def possibleHexKeys, def possibleBooleanKeys) {
+            if (v == "?" || v == "(null)" || v == "") {
+                return null;
+            }
+            if (possibleHexKeys.contains(k) && isHexAscii(v)) {
+                v = convertHexToString(v);
+            }
+            if (possibleBooleanKeys.contains(k) && v instanceof String) {
+                v = convertStringToBoolean(v);
+            }
+            if (v instanceof String) {
+                v = trimQuotes("'", "\"", v);
+            }
+            if (k == "arch" && v == "c000003e") {
+                v = "x86_64";
+            }
+            return v;
+        }
+        def audit = ctx.auditd.get("log");
+        Iterator entries = audit.entrySet().iterator();
+        while (entries.hasNext()) {
+            def e = entries.next();
+            def k = e.getKey();
+            def v = e.getValue();
+            if (v instanceof List) {
+                int j = 0;
+                for (int i = 0; i < v.length; i++) {
+                    v[j] = processFieldValue(k, v[i], params.possibleHexKeys, params.possibleBooleanKeys);
+                    if (v[j] != null) {
+                        j++;
+                    }
+                }
+                if (j < v.length) {
+                    if (j == 0) {
+                        entries.remove();
+                        continue;
+                    }
+                    audit.put(k, v.subList(0, j));
+                }
+                continue;
+            }
+            v = processFieldValue(k, v, params.possibleHexKeys, params.possibleBooleanKeys);
+            if (v == null) {
+                entries.remove();
+            } else {
+                audit.put(k, v);
+            }
+        }"#;
+    let params = json!({
+        "possibleHexKeys": ["exe", "cmd", "cwd", "comm"],
+        "possibleBooleanKeys": ["success"]
+    });
+
+    let mut event = Event::new(json!({ "auditd": { "log": {
+        "exe": "\"/usr/sbin/sshd\"",
+        "comm": "'sshd'",
+        "cmd": "6C73202D6C",
+        "cwd": "2F686F6D65",
+        "success": "yes",
+        "arch": "c000003e",
+        "terminal": "?",
+        "acct": "(null)",
+        "empty": "",
+        "pid": 1234,
+        "a0": ["\"one\"", "?"],
+        "a1": ["?"]
+    } } }));
+    assert!(try_params_painless(&mut event, script, &params));
+
+    // Both quote spellings, one from each end.
+    assert_eq!(event.get_str("auditd.log.exe"), Some("/usr/sbin/sshd"));
+    assert_eq!(event.get_str("auditd.log.comm"), Some("sshd"));
+    // Hex that DECODES, because the result carries a space.
+    assert_eq!(event.get_str("auditd.log.cmd"), Some("ls -l"));
+    // Hex that does not: every byte lands above `"`, so the original stands.
+    assert_eq!(event.get_str("auditd.log.cwd"), Some("2F686F6D65"));
+    assert_eq!(event.get("auditd.log.success"), Some(&json!(true)));
+    assert_eq!(event.get_str("auditd.log.arch"), Some("x86_64"));
+    // The three spellings of absent remove the key outright.
+    assert!(!event.has("auditd.log.terminal"));
+    assert!(!event.has("auditd.log.acct"));
+    assert!(!event.has("auditd.log.empty"));
+    // A non-string is not a candidate for any of it.
+    assert_eq!(event.get("auditd.log.pid"), Some(&json!(1234)));
+    // A list drops its absent elements, and goes entirely when none survive.
+    assert_eq!(event.get("auditd.log.a0"), Some(&json!(["one"])));
+    assert!(!event.has("auditd.log.a1"));
+}
+
+/// `cisco_asa`'s distinguished-name fold, verbatim from
+/// `pipelines/cisco/asa/default.yml` (tag `script_b84935be`), with the params
+/// block that call site carries.
+///
+/// The compat corpus cannot score this one: it holds no ASA
+/// `Certificate was successfully validated` message, so `dn_parts` is never
+/// built and the script's own null guard returns on all 512 events. The test
+/// is what stands in for that.
+const DN_PARTS: &str = "if (ctx._temp_?.cisco?.dn_parts == null) {\n  return;\n}\n\
+    def parts = [:];\nctx._temp_.cisco.dn_parts.forEach((k,v) -> {\n  \
+    if (params.containsKey(k)) {\n    \
+    parts[params[k]] = (v instanceof List) ? v : [v];   \
+    // `[v]` is a Painless list literal\n  } else {\n    return false;\n  }\n});\n\
+    ctx._temp_.cisco.dn_parts = parts;\n";
+
+fn dn_params() -> Value {
+    json!({
+        "ST": "state_or_province",
+        "S": "state_or_province",
+        "P": "state_or_province",
+        "CN": "common_name",
+        "C": "country",
+        "L": "locality",
+        "O": "organization",
+        "OU": "organizational_unit"
+    })
+}
+
+/// Every key the table names is renamed and wrapped, in the MAP's own order.
+#[test]
+fn a_distinguished_name_is_renamed_onto_its_ecs_members() {
+    let mut event = Event::new(json!({ "_temp_": { "cisco": { "dn_parts": {
+        "CN": "vpn.example.com",
+        "OU": "IT",
+        "O": "Example Pty Ltd",
+        "C": "AU"
+    } } } }));
+
+    assert!(try_params_painless(&mut event, DN_PARTS, &dn_params()));
+    assert_eq!(
+        event.get("_temp_.cisco.dn_parts"),
+        Some(&json!({
+            "common_name": ["vpn.example.com"],
+            "organizational_unit": ["IT"],
+            "organization": ["Example Pty Ltd"],
+            "country": ["AU"]
+        }))
+    );
+}
+
+/// A key the table does not name is DROPPED, and a value that is already a
+/// list is not wrapped a second time.
+///
+/// Keeping the unnamed key is what the neighbouring `RenameKeys` does, and it
+/// would carry the vendor's own abbreviation into `tls.server.x509.subject`
+/// beside the ECS member.
+#[test]
+fn an_unnamed_distinguished_name_part_is_dropped() {
+    let mut event = Event::new(json!({ "_temp_": { "cisco": { "dn_parts": {
+        "CN": ["a.example.com", "b.example.com"],
+        "SERIALNUMBER": "1234",
+        "L": "Sydney"
+    } } } }));
+
+    assert!(try_params_painless(&mut event, DN_PARTS, &dn_params()));
+    assert_eq!(
+        event.get("_temp_.cisco.dn_parts"),
+        Some(&json!({
+            "common_name": ["a.example.com", "b.example.com"],
+            "locality": ["Sydney"]
+        }))
+    );
+}
+
+/// The script's own null guard: no map, no write, and nothing counted as run.
+#[test]
+fn a_missing_distinguished_name_writes_nothing() {
+    let mut event = Event::new(json!({ "_temp_": { "cisco": {} } }));
+    assert!(!try_params_painless(&mut event, DN_PARTS, &dn_params()));
+    assert_eq!(event.get("_temp_.cisco"), Some(&json!({})));
+}
+
+/// A stored expression the parse cannot say is declined WHOLE, rather than
+/// claimed and half-run: `v.toString()` is a third behaviour, and writing the
+/// keys right with the values wrong is the worse outcome.
+#[test]
+fn a_fold_storing_something_else_declines() {
+    let script = DN_PARTS.replace("(v instanceof List) ? v : [v]", "v.toString()");
+    assert!(!matches!(
+        params_pattern(&crate::common::normalise(&script)),
+        Some(ParamsPattern::SelectRenameKeys(_))
+    ));
+}
+
+/// Verbatim from the `beyondinsight_password_safe_asset` call site.
+const NUMERIC_IDS: &str = r"for (field in params.numeric_ids) {\n  def value = ctx.beyondinsight_password_safe.asset[field];\n  if (value instanceof Number) {\n    ctx.beyondinsight_password_safe.asset[field] =\n      Integer.toString(value.intValue());\n  }\n}\n";
+
+fn numeric_ids() -> Value {
+    json!({ "numeric_ids": ["AssetID", "WorkgroupID"] })
+}
+
+/// Elasticsearch's own output carries `"asset_id": "22"`, so the ids leave here
+/// as text and a field the table does not name is untouched.
+#[test]
+fn each_named_id_is_rendered_as_text() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "asset": {
+        "AssetID": 22,
+        "WorkgroupID": 1,
+        "AssetName": "HealthTiger"
+    } } }));
+
+    assert!(try_params_painless(&mut event, NUMERIC_IDS, &numeric_ids()));
+    assert_eq!(
+        event.get("beyondinsight_password_safe.asset"),
+        Some(&json!({
+            "AssetID": "22",
+            "WorkgroupID": "1",
+            "AssetName": "HealthTiger"
+        }))
+    );
+}
+
+/// The script's own `instanceof Number` guard: text the vendor already sent
+/// stays as it is, and a field the document does not carry is not created.
+#[test]
+fn a_field_that_is_not_a_number_is_left_alone() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "asset": {
+        "AssetID": "already text"
+    } } }));
+
+    assert!(try_params_painless(&mut event, NUMERIC_IDS, &numeric_ids()));
+    assert_eq!(
+        event.get("beyondinsight_password_safe.asset"),
+        Some(&json!({ "AssetID": "already text" }))
+    );
+    assert!(!event.has("beyondinsight_password_safe.asset.WorkgroupID"));
+}
+
+/// A negative id renders with its sign, which is what useraudit's `-1` needs:
+/// the pipeline's own `user.id` guard compares against the STRING `-1`.
+#[test]
+fn a_negative_id_keeps_its_sign() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "asset": {
+        "AssetID": -1
+    } } }));
+    assert!(try_params_painless(&mut event, NUMERIC_IDS, &numeric_ids()));
+    assert_eq!(
+        event.get_str("beyondinsight_password_safe.asset.AssetID"),
+        Some("-1")
+    );
+}
+
+/// A rendering this reader cannot say is declined WHOLE: `String.valueOf` on a
+/// Long writes the full 64-bit value where `Integer.toString(intValue())`
+/// narrows, and the two differ on any id past 2^31.
+#[test]
+fn another_rendering_declines() {
+    let script = NUMERIC_IDS.replace(
+        "Integer.toString(value.intValue())",
+        "String.valueOf(value)",
+    );
+    assert!(!matches!(
+        params_pattern(&crate::common::normalise(&script)),
+        Some(ParamsPattern::StringifyNamedFields(_))
+    ));
+}
+
+/// Verbatim from the `beyondinsight_password_safe_session` call site: the
+/// table is a NAMED params member, which no trigger in this ladder saw --
+/// `params.get(` is not a substring of `params.descriptions.get(`.
+const STATUS_DESCRIPTIONS: &str = r"def description = params.descriptions.get(ctx.beyondinsight_password_safe.session.status);\nif (description != null) {\n  ctx.beyondinsight_password_safe.session.status = description;\n}\n";
+
+fn status_descriptions() -> Value {
+    json!({ "descriptions": { "0": "not_started", "1": "in_progress", "2": "completed" } })
+}
+
+/// The row replaces the key it was looked up by.
+#[test]
+fn a_named_table_lookup_writes_its_row() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "session": {
+        "status": "1"
+    } } }));
+    assert!(try_params_painless(
+        &mut event,
+        STATUS_DESCRIPTIONS,
+        &status_descriptions()
+    ));
+    assert_eq!(
+        event.get_str("beyondinsight_password_safe.session.status"),
+        Some("in_progress")
+    );
+}
+
+/// The script's `!= null` guard: a key the table misses keeps whatever the
+/// field already held, rather than being written back or cleared.
+#[test]
+fn a_named_table_miss_keeps_the_field() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "session": {
+        "status": "99"
+    } } }));
+    assert!(try_params_painless(
+        &mut event,
+        STATUS_DESCRIPTIONS,
+        &status_descriptions()
+    ));
+    assert_eq!(
+        event.get_str("beyondinsight_password_safe.session.status"),
+        Some("99")
+    );
+}
+
+/// Verbatim from the `beyondinsight_password_safe_asset` call site, escapes
+/// and all -- a stored script arrives with its newlines escaped, so a test
+/// written with real ones passes while production still fails.
+const CAMEL_TO_SNAKE: &str = r"Map renamedFields = [:];\nfor (entry in ctx.beyondinsight_password_safe.asset.entrySet()) {\n  def originalKey = entry.getKey();\n  def snakeKey = params.field_mappings[originalKey];\n  if (snakeKey != null) {\n    renamedFields[snakeKey] = entry.getValue();\n  } else {\n    renamedFields[originalKey] = entry.getValue();\n  }\n}\nctx.beyondinsight_password_safe.asset = renamedFields;\n";
+
+/// The asset stream's own table, as the call site's `cached_params!` spells it.
+fn asset_field_mappings() -> Value {
+    json!({ "field_mappings": {
+        "AssetID": "asset_id",
+        "AssetName": "asset_name",
+        "IPAddress": "ip_address",
+        "MacAddress": "mac_address"
+    } })
+}
+
+/// The named table's keys are renamed and a key it misses keeps its own,
+/// because this script's else arm re-inserts it.
+#[test]
+fn a_named_table_renames_the_keys_it_holds_and_keeps_the_rest() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "asset": {
+        "AssetID": 22,
+        "AssetName": "HealthTiger",
+        "MacAddress": "00:1B:44:11:3A:B7",
+        "Workgroup": "default"
+    } } }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CAMEL_TO_SNAKE,
+        &asset_field_mappings()
+    ));
+    assert_eq!(
+        event.get("beyondinsight_password_safe.asset"),
+        Some(&json!({
+            "asset_id": 22,
+            "asset_name": "HealthTiger",
+            "mac_address": "00:1B:44:11:3A:B7",
+            "Workgroup": "default"
+        }))
+    );
+}
+
+/// The rebuild walks the map, so the ORDER is the vendor's own rather than the
+/// table's -- which is what Painless's `entrySet()` does, and what the `date`
+/// and `gsub` processors reading the renamed keys next see.
+#[test]
+fn the_rebuild_keeps_the_vendors_own_order() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "asset": {
+        "MacAddress": "00:1B:44:11:3A:B7",
+        "AssetID": 22
+    } } }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CAMEL_TO_SNAKE,
+        &asset_field_mappings()
+    ));
+    let renamed = event
+        .get("beyondinsight_password_safe.asset")
+        .and_then(Value::as_object)
+        .expect("the map is rebuilt");
+    assert_eq!(
+        renamed.keys().collect::<Vec<_>>(),
+        vec!["mac_address", "asset_id"]
+    );
+}
+
+/// An else arm this reader cannot place is declined WHOLE. Both spellings
+/// below would leave the map rebuilt without what that arm wrote, and the loss
+/// leaves no error behind.
+///
+/// The `.toString()` case is why the match carries the statement's own
+/// semicolon: `entry.getValue()` is a prefix of `entry.getValue().toString()`,
+/// so a substring test reads a conversion as the plain take.
+#[test]
+fn an_else_arm_this_cannot_read_declines() {
+    for arm in [
+        "return;",
+        r"renamedFields[originalKey] = entry.getValue().toString();",
+    ] {
+        let script = CAMEL_TO_SNAKE.replace(r"renamedFields[originalKey] = entry.getValue();", arm);
+        assert!(
+            !matches!(
+                params_pattern(&crate::common::normalise(&script)),
+                Some(ParamsPattern::SelectRenameKeys(_))
+            ),
+            "claimed an else arm it cannot place: {arm}"
+        );
+    }
+}
+
+/// A params block with no such member is not this pattern's to run: every
+/// lookup would miss and the rebuild would answer for a table it never read.
+#[test]
+fn a_missing_named_table_writes_nothing() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "asset": {
+        "AssetID": 22
+    } } }));
+    assert!(!try_params_painless(
+        &mut event,
+        CAMEL_TO_SNAKE,
+        &json!({ "other_table": {} })
+    ));
+    assert_eq!(
+        event.get("beyondinsight_password_safe.asset"),
+        Some(&json!({ "AssetID": 22 }))
+    );
+}
+
+/// Verbatim from `pipelines/iptables/log/default.yml`, escapes and all.
+const MEMBER_MAPPINGS: &str = r"for (action in params.mappings) {\n  def src = ctx[action.source.object];\n  if (src != null) {\n    Map map = action.map;\n    String key = src[action.source.key];\n    String mapping = map[key];\n    if (mapping != null) {\n      Map dst = ctx[action.destination.object];\n      if (dst == null) {\n          dst = new HashMap();\n          ctx[action.destination.object] = dst;\n      }\n      dst[action.destination.key] = mapping;\n    }\n  }\n}";
+
+/// The four specs the same pipeline ships, in the order it ships them.
+fn mapping_specs() -> Value {
+    json!({ "mappings": [
+        {
+            "source": { "object": "iptables", "key": "ether_type" },
+            "destination": { "object": "network", "key": "type" },
+            "map": { "08:00": "ipv4", "86:dd": "ipv6" }
+        },
+        {
+            "source": { "object": "event", "key": "action" },
+            "destination": { "object": "event", "key": "action" },
+            "map": { "d": "drop", "a": "accept" }
+        },
+        {
+            "source": { "object": "event", "key": "action" },
+            "destination": { "object": "event", "key": "type" },
+            "map": {
+                "drop": "denied",
+                "accept": "allowed",
+                "deny": "denied",
+                "drop_input": "denied"
+            }
+        },
+        {
+            "source": { "object": "network", "key": "transport" },
+            "destination": { "object": "network", "key": "transport" },
+            "map": { "icmpv6": "ipv6-icmp" }
+        }
+    ] })
+}
+
+/// The parse names the params list the specs sit under.
+#[test]
+fn the_mapping_loop_binds_its_params_list() {
+    let normalised = crate::common::normalise(MEMBER_MAPPINGS);
+    assert_eq!(
+        params_pattern(&normalised),
+        Some(ParamsPattern::MemberMappings("mappings".to_owned()))
+    );
+}
+
+/// A spec reads what the specs before it wrote.
+///
+/// The second spec folds `event.action` `d` into `drop` in place, and the
+/// third keys the same field to write `denied`; reading the original `d` would
+/// find no row and leave `event.type` absent.
+#[test]
+fn a_folded_field_keys_the_spec_that_follows_it() {
+    let mut event = Event::new(json!({
+        "iptables": { "ether_type": "08:00" },
+        "event": { "action": "d" },
+        "network": { "transport": "tcp" }
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        MEMBER_MAPPINGS,
+        &mapping_specs()
+    ));
+    assert_eq!(event.get_str("network.type"), Some("ipv4"));
+    assert_eq!(event.get_str("event.action"), Some("drop"));
+    assert_eq!(event.get_str("event.type"), Some("denied"));
+    // The transport map names only icmpv6, so tcp keeps its own value.
+    assert_eq!(event.get_str("network.transport"), Some("tcp"));
+}
+
+/// A spec whose source and destination are one field rewrites it in place.
+#[test]
+fn a_mapped_transport_replaces_the_value_it_was_keyed_by() {
+    let mut event = Event::new(json!({ "network": { "transport": "icmpv6" } }));
+    assert!(try_params_painless(
+        &mut event,
+        MEMBER_MAPPINGS,
+        &mapping_specs()
+    ));
+    assert_eq!(event.get_str("network.transport"), Some("ipv6-icmp"));
+}
+
+/// The destination object is created where the script's `new HashMap()` is.
+#[test]
+fn an_absent_destination_object_is_created() {
+    let mut event = Event::new(json!({ "iptables": { "ether_type": "86:dd" } }));
+    assert!(try_params_painless(
+        &mut event,
+        MEMBER_MAPPINGS,
+        &mapping_specs()
+    ));
+    assert_eq!(event.get_str("network.type"), Some("ipv6"));
+}
+
+/// Three ways a spec declines, none of which writes anything.
+#[test]
+fn a_spec_the_table_or_the_event_declines_writes_nothing() {
+    // The source object is absent.
+    let mut absent = Event::new(json!({ "event": { "action": "d" } }));
+    assert!(try_params_painless(
+        &mut absent,
+        MEMBER_MAPPINGS,
+        &mapping_specs()
+    ));
+    assert!(!absent.has("network"));
+
+    // The member is there and the map has no row for it.
+    let mut unlisted = Event::new(json!({ "iptables": { "ether_type": "81:00" } }));
+    assert!(try_params_painless(
+        &mut unlisted,
+        MEMBER_MAPPINGS,
+        &mapping_specs()
+    ));
+    assert!(!unlisted.has("network"));
+
+    // `String key = src[...]` is a ClassCastException on a number, so the
+    // member is not rendered into a table key.
+    let mut numeric = Event::new(json!({ "iptables": { "ether_type": 2048 } }));
+    assert!(try_params_painless(
+        &mut numeric,
+        MEMBER_MAPPINGS,
+        &mapping_specs()
+    ));
+    assert!(!numeric.has("network"));
+}
+
+/// A destination that is present and not a map is left alone.
+///
+/// `Map dst = ctx[<object>]` throws there and the vendor's document fails,
+/// which is not something to reproduce by overwriting the value.
+#[test]
+fn a_scalar_standing_where_an_object_should_be_is_left_alone() {
+    let mut event = Event::new(json!({
+        "iptables": { "ether_type": "08:00" },
+        "network": "not-a-map"
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        MEMBER_MAPPINGS,
+        &mapping_specs()
+    ));
+    assert_eq!(event.get("network"), Some(&json!("not-a-map")));
+}
+
+/// Params carrying no list under that name is not this pattern's block.
+#[test]
+fn params_without_the_named_list_declines() {
+    let mut event = Event::new(json!({ "iptables": { "ether_type": "08:00" } }));
+    assert!(!try_params_painless(
+        &mut event,
+        MEMBER_MAPPINGS,
+        &json!({ "other": [] })
+    ));
+    assert!(!event.has("network"));
+}
+
+/// A loop over some other params list spells none of the accessors.
+#[test]
+fn a_loop_that_is_not_the_pattern_declines_at_the_parse() {
+    let script = r"for (name in params.fields) {\n  ctx[name] = null;\n}";
+    assert_eq!(params_pattern(&crate::common::normalise(script)), None);
+}
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/citrix_adc_log/default.rs`, which is
+/// `pipelines/citrix_adc/log/default.yml`.
+const CONFIGURED_DATE: &str = r#"def zone = ctx.event?.timezone != null ? ZoneId.of(ctx.event.timezone) : null;\ndef formatter = DateTimeFormatter.ofPattern(ctx._conf.custom_date_format);\ndef outFormatter = DateTimeFormatter.ofPattern(\"yyyy-MM-dd'T'HH:mm:ss.SSSXXX\");\n\nparams.fields.forEach(field -> {\n  if (!ctx._tmp?.containsKey(field)) {\n    return true;\n  }\n\n  try {\n    def localDateTime = LocalDateTime.parse(ctx._tmp[field], formatter);\n    ctx.citrix_adc.log[field] = outFormatter.format(ZonedDateTime.of(localDateTime, zone));\n  } catch (Exception e) {\n    /* Intentionally ignored */\n    return true;\n  }\n});"#;
+
+fn configured_date_params() -> Value {
+    json!({ "fields": ["timestamp_native", "start_time", "end_time"] })
+}
+
+/// The document's own pattern decides the day and the month.
+///
+/// `10/08/2024` under `dd/MM/yyyy` is 10 August. Unclaimed, the date
+/// processors behind this script read it with their own hard-coded
+/// `MM/dd/yyyy` and put every such event in October.
+#[test]
+fn a_configured_date_format_reads_the_documents_own_pattern() {
+    let mut event = Event::new(json!({
+        "_conf": { "custom_date_format": "dd/MM/yyyy:HH:mm:ss" },
+        "event": { "timezone": "UTC" },
+        "_tmp": {
+            "timestamp_native": "10/08/2024:09:38:41",
+            "start_time": "10/08/2024:09:37:54"
+        }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        CONFIGURED_DATE,
+        &configured_date_params()
+    ));
+    assert_eq!(
+        event.get_str("citrix_adc.log.timestamp_native"),
+        Some("2024-08-10T09:38:41.000Z")
+    );
+    assert_eq!(
+        event.get_str("citrix_adc.log.start_time"),
+        Some("2024-08-10T09:37:54.000Z")
+    );
+    // A field the params list names but the document does not carry.
+    assert!(!event.has("citrix_adc.log.end_time"));
+}
+
+/// A value the pattern cannot read is left for the processor behind it.
+///
+/// The script's own `catch` swallows it, and `11/18/2024` has no
+/// eighteenth month -- so the target must stay ABSENT, or the fallback date
+/// processor's `!has_value` guard skips and the field is never written.
+#[test]
+fn a_value_the_configured_pattern_cannot_read_writes_nothing() {
+    let mut event = Event::new(json!({
+        "_conf": { "custom_date_format": "dd/MM/yyyy:HH:mm:ss" },
+        "event": { "timezone": "GMT" },
+        "_tmp": { "timestamp_native": "11/18/2024:12:18:56" }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        CONFIGURED_DATE,
+        &configured_date_params()
+    ));
+    assert!(!event.has("citrix_adc.log.timestamp_native"));
+}
+
+/// The zone the document names is the OUTPUT zone, as Java's `XXX` prints it.
+#[test]
+fn a_configured_date_renders_in_the_documents_zone() {
+    let mut event = Event::new(json!({
+        "_conf": { "custom_date_format": "dd/MM/yyyy:HH:mm:ss" },
+        "event": { "timezone": "Australia/Sydney" },
+        "_tmp": { "start_time": "10/08/2024:09:37:54" }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        CONFIGURED_DATE,
+        &configured_date_params()
+    ));
+    assert_eq!(
+        event.get_str("citrix_adc.log.start_time"),
+        Some("2024-08-10T09:37:54.000+10:00")
+    );
+}
+
+/// An output format the runner cannot render declines the whole script.
+#[test]
+fn a_configured_date_with_another_output_format_declines() {
+    let script = CONFIGURED_DATE.replace("SSSXXX", "SSSSSS");
+    assert_eq!(params_pattern(&crate::common::normalise(&script)), None);
+}
+
+/// The severity table's `getOrDefault` spelling, verbatim from the call sites
+/// in `qualys_was_vulnerability/default.rs` and
+/// `qualys_vmdr_asset_host_detection/default.rs`.
+const SEVERITY_ROW_DEFAULT: &str = r#"if (!(ctx.json?.knowledge_base?.SEVERITY_LEVEL instanceof String)) {\n  return;\n} String level = ctx.json.knowledge_base.SEVERITY_LEVEL; ctx.vulnerability.severity = params.vuln_level.getOrDefault(level, params.vuln_level[\"0\"]);"#;
+
+fn vuln_level() -> Value {
+    json!({ "vuln_level": {
+        "0": "None", "1": "Minimal", "2": "Medium",
+        "3": "Serious", "4": "Critical", "5": "Urgent"
+    } })
+}
+
+/// A key the table carries takes its row; one it does not takes the FALLBACK
+/// ROW rather than the key or a literal.
+#[test]
+fn a_row_defaulted_lookup_falls_back_to_another_row_of_its_own_table() {
+    let mut hit = Event::new(json!({
+        "json": { "knowledge_base": { "SEVERITY_LEVEL": "1" } }
+    }));
+    assert!(try_params_painless(
+        &mut hit,
+        SEVERITY_ROW_DEFAULT,
+        &vuln_level()
+    ));
+    assert_eq!(hit.get_str("vulnerability.severity"), Some("Minimal"));
+
+    let mut miss = Event::new(json!({
+        "json": { "knowledge_base": { "SEVERITY_LEVEL": "9" } }
+    }));
+    assert!(try_params_painless(
+        &mut miss,
+        SEVERITY_ROW_DEFAULT,
+        &vuln_level()
+    ));
+    assert_eq!(miss.get_str("vulnerability.severity"), Some("None"));
+}
+
+/// The script's own type guard: a level the document does not carry returns
+/// before the lookup, so the target stays absent.
+#[test]
+fn a_row_defaulted_lookup_with_no_source_writes_nothing() {
+    let mut event = Event::new(json!({ "json": { "knowledge_base": {} } }));
+    assert!(try_params_painless(
+        &mut event,
+        SEVERITY_ROW_DEFAULT,
+        &vuln_level()
+    ));
+    assert!(!event.has("vulnerability.severity"));
+}
+
+/// Every other `getOrDefault` in the generated tree, which the widened trigger
+/// now reaches and each of which the row reader has to decline: a default of
+/// `null`, of the key itself, of the field's own current value, of a quoted
+/// literal, and a helper defaulting out of a LOCAL map.
+///
+/// `digital_guardian`'s spelling was on this list and is not any more -- see
+/// [`a_row_defaulted_lookup_reads_an_unnamed_table`]. What separates the two is
+/// the FALLBACK: these name something the table does not hold, and that one
+/// names another of its own rows, which is the whole of what this reader
+/// models.
+#[test]
+fn the_other_get_or_default_spellings_are_declined() {
+    for script in [
+        r#"def value = ctx.a.result;\nif (value != null) {\n  ctx.b.result = params.error_codes.getOrDefault(value, null);\n}\n"#,
+        r#"ctx.salesforce.login.api.type = params.api_type_map.getOrDefault(ctx.salesforce?.login?.api?.type, ctx.salesforce.login.api.type);\n"#,
+        r#"def severity = String.valueOf(ctx.event.severity);\nctx.event.severity_label = params.descriptions.getOrDefault(\n  severity,\n  \"unknown\"\n);\n"#,
+        r#"def getField(Map src, String[] path) {\n for (int i=0; i<path.length-1; i++) {\n  src = src.getOrDefault(path[i], null);\n }\n return src;\n}"#,
+    ] {
+        let normalised = crate::common::normalise(script);
+        assert!(
+            !matches!(
+                params_pattern(&normalised),
+                Some(ParamsPattern::TableLookupOrLiteral { .. })
+            ),
+            "the row reader claimed a script it must decline: {script}"
+        );
+    }
+}
+
+/// `digital_guardian`'s severity table, verbatim from the call site in
+/// `digital_guardian_arc/default.rs`.
+const SEVERITY_UNNAMED_TABLE: &str = r#"if (ctx.event == null) {\n  ctx.event = new HashMap();\n}\ndef sev = ctx.digital_guardian.arc.inc_sev;\nctx.event.severity = params.getOrDefault(sev, params['Unknown']);"#;
+
+fn severity_labels() -> Value {
+    json!({
+        "Unknown": 9, "Informational": 6, "Low": 5, "Minor": 5,
+        "Medium": 4, "High": 2, "Critical": 1
+    })
+}
+
+/// The rows can BE the params block. `digital_guardian` puts its seven labels
+/// at the top level and falls back to one of them by name, which is qualys's
+/// lookup with the table one level up -- and reading only the named spelling
+/// left `event.severity` absent on every alert the source ships.
+#[test]
+fn a_row_defaulted_lookup_reads_an_unnamed_table() {
+    let normalised = crate::common::normalise(SEVERITY_UNNAMED_TABLE);
+    assert!(
+        matches!(
+            params_pattern(&normalised),
+            Some(ParamsPattern::TableLookupOrLiteral { table: None, .. })
+        ),
+        "bound {:?}",
+        params_pattern(&normalised)
+    );
+
+    let mut listed = Event::new(json!({
+        "digital_guardian": { "arc": { "inc_sev": "Critical" } }
+    }));
+    assert!(try_params_painless(
+        &mut listed,
+        SEVERITY_UNNAMED_TABLE,
+        &severity_labels()
+    ));
+    assert_eq!(listed.get("event.severity"), Some(&json!(1)));
+
+    // A label no row names takes the `Unknown` row, not the label itself.
+    let mut unlisted = Event::new(json!({
+        "digital_guardian": { "arc": { "inc_sev": "Catastrophic" } }
+    }));
+    assert!(try_params_painless(
+        &mut unlisted,
+        SEVERITY_UNNAMED_TABLE,
+        &severity_labels()
+    ));
+    assert_eq!(unlisted.get("event.severity"), Some(&json!(9)));
+
+    // The script's own guard: the processor gates on `inc_sev`, so an absent
+    // one writes nothing rather than the default.
+    let mut absent = Event::new(json!({ "digital_guardian": { "arc": {} } }));
+    assert!(try_params_painless(
+        &mut absent,
+        SEVERITY_UNNAMED_TABLE,
+        &severity_labels()
+    ));
+    assert!(!absent.has("event.severity"));
+}
+
+/// `qualys_vmdr`'s twin of [`SEVERITY_ROW_DEFAULT`], which writes the SAME
+/// table's row only where a second params list holds the finding's `vuln_type`.
+/// Verbatim from `qualys_vmdr_asset_host_detection/default.rs`, in the escaped
+/// one-line form the call site holds.
+const SEVERITY_ROW_GATED: &str = r#"if (!(ctx.qualys_vmdr?.asset_host_detection?.knowledge_base?.SEVERITY_LEVEL instanceof String)) {\n  return;\n} def vuln_type = ctx.qualys_vmdr?.asset_host_detection?.knowledge_base?.vuln_type; if (!(vuln_type instanceof String)) {\n  return;\n} String level = ctx.qualys_vmdr.asset_host_detection.knowledge_base.SEVERITY_LEVEL; if (params.vuln_types.contains(vuln_type)) {\n  ctx.qualys_vmdr.asset_host_detection.knowledge_base.SEVERITY_LEVEL = params.vuln_level.getOrDefault(level, params.vuln_level[\"0\"]);\n}"#;
+
+fn gated_vuln_level() -> Value {
+    json!({
+        "vuln_level": {
+            "0": "None", "1": "Minimal", "2": "Medium",
+            "3": "Serious", "4": "Critical", "5": "Urgent"
+        },
+        "vuln_types": [
+            "Potential Vulnerability",
+            "Vulnerability",
+            "Vulnerability or Potential Vulnerability",
+            "Information Gathered"
+        ]
+    })
+}
+
+fn gated_severity(vuln_type: &str, level: &str) -> Event {
+    Event::new(
+        json!({ "qualys_vmdr": { "asset_host_detection": { "knowledge_base": {
+            "SEVERITY_LEVEL": level,
+            "vuln_type": vuln_type,
+        }}}}),
+    )
+}
+
+const GATED_LEVEL: &str = "qualys_vmdr.asset_host_detection.knowledge_base.SEVERITY_LEVEL";
+
+/// A listed `vuln_type` takes the table's word, written back over the level.
+#[test]
+fn a_gated_lookup_maps_the_level_for_a_type_the_list_names() {
+    let mut event = gated_severity("Vulnerability", "4");
+    assert!(try_params_painless(
+        &mut event,
+        SEVERITY_ROW_GATED,
+        &gated_vuln_level()
+    ));
+    assert_eq!(event.get_str(GATED_LEVEL), Some("Critical"));
+}
+
+/// A type the list does not name keeps the digit it arrived with. Writing the
+/// word anyway is the defect the gate exists to stop.
+#[test]
+fn a_gated_lookup_leaves_a_type_the_list_omits_alone() {
+    let mut event = gated_severity("Practice", "4");
+    assert!(try_params_painless(
+        &mut event,
+        SEVERITY_ROW_GATED,
+        &gated_vuln_level()
+    ));
+    assert_eq!(event.get_str(GATED_LEVEL), Some("4"));
+}
+
+/// The script's own type guard: no `vuln_type` at all means the membership test
+/// is never reached, so the level stands.
+#[test]
+fn a_gated_lookup_with_no_type_leaves_the_level_alone() {
+    let mut event = Event::new(json!({ "qualys_vmdr": { "asset_host_detection": {
+        "knowledge_base": { "SEVERITY_LEVEL": "4" }
+    }}}));
+    assert!(try_params_painless(
+        &mut event,
+        SEVERITY_ROW_GATED,
+        &gated_vuln_level()
+    ));
+    assert_eq!(event.get_str(GATED_LEVEL), Some("4"));
+}
+
+/// The gate is read off the script, not assumed: the reader has to name the
+/// list and the field the vendor wrote.
+#[test]
+fn a_gated_lookup_names_the_list_and_the_field_it_tests() {
+    let normalised = crate::common::normalise(SEVERITY_ROW_GATED);
+    let Some(ParamsPattern::TableLookupOrLiteral { gate, target, .. }) =
+        params_pattern(&normalised)
+    else {
+        panic!("the gated lookup was not claimed");
+    };
+    assert_eq!(target, GATED_LEVEL);
+    let gate = gate.expect("the enclosing membership test");
+    assert_eq!(gate.list, "vuln_types");
+    assert_eq!(
+        gate.field,
+        "qualys_vmdr.asset_host_detection.knowledge_base.vuln_type"
+    );
+}
+
+/// Verbatim from `digital_guardian_arc/default.rs`, in the escaped one-line
+/// form the call site holds.
+///
+/// The join is parenthesised and folded as a whole, which is what
+/// `parse_concat` alone cannot read. Before this it fell through to the literal
+/// reader, which answered with the separator: every event carried
+/// `event.action = "-"`.
+#[test]
+fn a_parenthesised_join_is_folded_as_a_whole() {
+    let script = r#"if (ctx.event == null) {\n  ctx.event = new HashMap();\n}\nctx.event.action = (ctx.digital_guardian.arc.dg_utype + \"-\" + ctx.digital_guardian.arc.inc_state).toLowerCase();"#;
+    let mut event = Event::new(json!({ "digital_guardian": { "arc": {
+        "dg_utype": "Alert",
+        "inc_state": "New",
+    }}}));
+
+    assert!(crate::common::try_known_painless(&mut event, script));
+    assert_eq!(event.get_str("event.action"), Some("alert-new"));
+}
+
+/// Without the parentheses the case call binds to the LAST TERM, so the whole
+/// expression is a different one and this reader declines it.
+#[test]
+fn an_unparenthesised_join_is_not_folded_as_a_whole() {
+    assert!(parse_folded_concat(r#"ctx.a + "-" + ctx.b.toLowerCase()"#).is_none());
+    // A bracket that closes before the end is a call on something else.
+    assert!(parse_folded_concat(r#"(ctx.a) + "-" + ctx.b.toLowerCase()"#).is_none());
+}
+
+/// Verbatim from `zeek_connection/default.rs`.
+///
+/// The row carries two members and the script takes one for the vendor field
+/// and the other for ECS. A reader that takes the row WHOLE writes both as
+/// children of the first target, which is why `state_message.conn_str` and
+/// `state_message.types` read as wrong on 18 events beside `state_message`.
+#[test]
+fn a_rows_named_members_go_to_their_own_targets() {
+    let script = r#"if (ctx.zeek?.connection?.state == null) {\n  return;\n} if (params.containsKey(ctx.zeek.connection.state)) {\n  ctx.zeek.connection.state_message = params[ctx.zeek.connection.state][\"conn_str\"];\n  ctx.event.type = params[ctx.zeek.connection.state][\"types\"];\n}"#;
+    let table = json!({
+        "SF": { "conn_str": "Normal establishment and termination", "types": ["allowed"] },
+    });
+
+    let parsed = parse_row_members(&crate::common::normalise(script))
+        .expect("the member writes are recognised");
+    assert_eq!(parsed.key, "zeek.connection.state");
+    assert_eq!(
+        parsed.writes,
+        vec![
+            (
+                "conn_str".to_owned(),
+                "zeek.connection.state_message".to_owned()
+            ),
+            ("types".to_owned(), "event.type".to_owned()),
+        ]
+    );
+
+    let mut event = Event::new(json!({ "zeek": { "connection": { "state": "SF" } } }));
+    assert!(try_params_painless(&mut event, script, &table));
+    assert_eq!(
+        event.get_str("zeek.connection.state_message"),
+        Some("Normal establishment and termination")
+    );
+    assert_eq!(event.get("event.type"), Some(&json!(["allowed"])));
+
+    // A key the table does not carry writes NOTHING, which is what the
+    // script's own `containsKey` guard says.
+    let mut unknown = Event::new(json!({ "zeek": { "connection": { "state": "ZZ" } } }));
+    assert!(try_params_painless(&mut unknown, script, &table));
+    assert_eq!(unknown.get("zeek.connection.state_message"), None);
+    assert_eq!(unknown.get("event.type"), None);
+}
+
+/// Every write has to subscript the SAME lookup, or the script reads two rows
+/// and running only these writes would leave it half done.
+#[test]
+fn row_members_decline_a_second_lookup() {
+    let two = r#"if (params.containsKey(ctx.a.k)) {\n  ctx.a.one = params[ctx.a.k][\"x\"];\n  ctx.a.two = params[ctx.b.k][\"y\"];\n}"#;
+    assert!(parse_row_members(&crate::common::normalise(two)).is_none());
+}
+
+/// Verbatim from `ti_custom_indicator/default.rs`, and written again with a
+/// package namespace by `ti_socradar_taxii_indicator`.
+///
+/// The params block is three sentences rather than a table keyed by a field, so
+/// the guards decide which is written and the `else` writes on every event the
+/// processor reaches.
+#[test]
+fn a_guard_chain_picks_one_params_row() {
+    let script = r#"if (ctx.stix.valid_until != null) {\n  ctx.stix.ioc_expiration_reason = params.valid_until;\n} else if (ctx.stix.revoked != null && ctx.stix.revoked == true) {\n  ctx.stix.ioc_expiration_reason = params.revoked;\n} else {\n  ctx.stix.ioc_expiration_reason = params.default;\n}\n"#;
+    let table = json!({
+        "valid_until": "Expiration set from valid_until field",
+        "revoked": "Expiration set from revoked field",
+        "default": "Expiration set by Elastic",
+    });
+    let table = table.as_object().expect("a params table");
+
+    let mut dated = Event::new(json!({ "stix": { "valid_until": "2026-01-01" } }));
+    assert!(try_params_painless(&mut dated, script, &json!(table)));
+    assert_eq!(
+        dated.get_str("stix.ioc_expiration_reason"),
+        Some("Expiration set from valid_until field")
+    );
+
+    // The second arm needs the field PRESENT and equal to true, so a false one
+    // falls through to the else.
+    let mut revoked = Event::new(json!({ "stix": { "revoked": true } }));
+    assert!(try_params_painless(&mut revoked, script, &json!(table)));
+    assert_eq!(
+        revoked.get_str("stix.ioc_expiration_reason"),
+        Some("Expiration set from revoked field")
+    );
+
+    let mut plain = Event::new(json!({ "stix": { "revoked": false } }));
+    assert!(try_params_painless(&mut plain, script, &json!(table)));
+    assert_eq!(
+        plain.get_str("stix.ioc_expiration_reason"),
+        Some("Expiration set by Elastic")
+    );
+}
+
+/// Every arm has to write the SAME target, or running the chain would put a
+/// value where the vendor puts another.
+#[test]
+fn a_guard_chain_writing_two_fields_is_declined() {
+    let split = r#"if (ctx.a.x != null) {\n  ctx.a.one = params.first;\n} else {\n  ctx.a.two = params.second;\n}\n"#;
+    assert!(parse_guarded_params_row(&crate::common::normalise(split)).is_none());
+
+    // A value that is not a bare params key is an expression this does not read.
+    let computed = r#"if (ctx.a.x != null) {\n  ctx.a.one = params.first + \"!\";\n} else {\n  ctx.a.one = params.second;\n}\n"#;
+    assert!(parse_guarded_params_row(&crate::common::normalise(computed)).is_none());
+}
+
+/// Verbatim from `cisco_ise_log/default.rs`, which writes it at 24 sites.
+///
+/// The description reads `Passed-Authentication: Authentication succeeded`, and
+/// ECS wants the word before the colon. Before this the literal reader answered
+/// with the separator, so `event.action` was the single character `:`.
+#[test]
+fn a_split_part_is_the_word_before_the_separator() {
+    let script = r#"ctx.event.action = ctx.cisco_ise?.log?.message?.description?.splitOnToken(\":\")[0]?.toLowerCase();"#;
+    let mut event = Event::new(json!({ "cisco_ise": { "log": { "message": {
+        "description": "Passed-Authentication: Authentication succeeded"
+    }}}}));
+
+    assert!(crate::common::try_known_painless(&mut event, script));
+    assert_eq!(event.get_str("event.action"), Some("passed-authentication"));
+}
+
+/// The index, the separator and the fold are all read off the script.
+#[test]
+fn a_split_part_reads_its_index_and_declines_what_it_cannot() {
+    assert!(matches!(
+        parse_split_part(r#"ctx.url.original.splitOnToken("/api/v1/")[1]"#),
+        Some(Rhs::SplitPart {
+            index: 1,
+            fold: Fold::None,
+            ..
+        })
+    ));
+    // An empty separator throws in Painless, where `str::split` would answer
+    // with a boundary at every character.
+    assert!(parse_split_part(r#"ctx.a.splitOnToken("")[0]"#).is_none());
+    // A subscript that is not the whole expression is a different one.
+    assert!(parse_split_part(r#"ctx.a.splitOnToken(":")[0].length()"#).is_none());
+}
+
+/// Windows' Filtering Platform events carry their ports as text, and the
+/// vendor decodes them.
+///
+/// Verbatim from `filebeat/system_security/standard.rs`, the `Add Connection
+/// Events` script. `Long.decode` was unreadable, so the port write was dropped
+/// from the tree while the `remove` after it was kept -- the field the script
+/// prunes went and the field it sets never arrived.
+#[test]
+fn a_decoded_port_is_written_before_its_source_is_pruned() {
+    let script = r#"if (ctx.winlog?.event_data?.DestPort != null && ctx.winlog.event_data.DestPort != \"-\") {\n  if (ctx.destination == null) {\n    HashMap hm = new HashMap();\n    ctx.put(\"destination\", hm);\n  }\n  ctx.destination.put(\"port\", Long.decode(ctx.winlog.event_data.DestPort));\n  ctx.winlog.event_data.remove(\"DestPort\");\n}\n"#;
+    let mut event = Event::new(json!({
+        "winlog": { "event_data": { "DestPort": "3389", "Protocol": "6" } },
+    }));
+
+    assert!(Program::parse(&crate::common::normalise(script)).run(&mut event));
+    assert_eq!(event.get("destination.port"), Some(&json!(3389)));
+    assert_eq!(event.get("winlog.event_data.DestPort"), None);
+    // The prune takes only its own key.
+    assert_eq!(event.get_str("winlog.event_data.Protocol"), Some("6"));
+}
+
+/// `Long.decode` is Java's radix-sensitive read, which is the reason the vendor
+/// spells it rather than `parseLong`: Windows writes a pid in hex and a port in
+/// decimal, and one call has to read both.
+#[test]
+fn a_decode_reads_the_base_the_vendor_wrote() {
+    fn decoded(raw: &str) -> Value {
+        let script = r#"ctx.process.put(\"pid\", Long.decode(ctx.winlog.event_data.ProcessId));"#;
+        let mut event = Event::new(json!({
+            "winlog": { "event_data": { "ProcessId": raw } },
+        }));
+        Program::parse(&crate::common::normalise(script)).run(&mut event);
+        event.get("process.pid").cloned().unwrap_or(Value::Null)
+    }
+
+    assert_eq!(decoded("0x1f4"), json!(500));
+    assert_eq!(decoded("3389"), json!(3389));
+    // Text `Long.decode` cannot read THROWS, and the vendor's own on_failure
+    // handler decides -- a substitute would be a number Elasticsearch never
+    // emitted.
+    assert_eq!(decoded("not-a-number"), Value::Null);
+}
+
+/// Windows takes the leaf of an executable path through a local, and until the
+/// local is followed the write names something no event carries.
+///
+/// Verbatim from `filebeat/system_security/standard.rs`. The same two lines
+/// serve `process.name` and `process.parent.name`.
+#[test]
+fn the_last_part_of_a_split_bound_to_a_local_is_the_leaf() {
+    let script = r#"if (ctx.process?.name == null && ctx.process?.executable != null) {\n  def parts = ctx.process.executable.splitOnToken(\"\\\\\");\n  ctx.process.put(\"name\", parts[-1]);\n}\n"#;
+    let mut event = Event::new(json!({
+        "process": { "executable": r"C:\Windows\System32\svchost.exe" },
+    }));
+
+    assert!(Program::parse(&crate::common::normalise(script)).run(&mut event));
+    assert_eq!(event.get_str("process.name"), Some("svchost.exe"));
+}
+
+/// The binding goes with the substitution, and the substitution runs FORWARD
+/// of it.
+///
+/// Rewriting the declaration's own name too leaves `def <call> = <call>;`
+/// behind, which `drop_inlined_declaration` can no longer find by name -- the
+/// uses read correctly and a statement no walk can run stays in the text.
+#[test]
+fn an_inlined_split_local_leaves_no_binding_behind() {
+    let script = "def parts = ctx.process.executable.splitOnToken('/');\n\
+        ctx.process.name = parts[-1];\n";
+    let inlined = inline_split_locals(script);
+
+    assert!(!inlined.contains("def "), "{inlined}");
+    assert!(!inlined.contains("parts"), "{inlined}");
+    assert_eq!(
+        inlined.trim(),
+        "ctx.process.name = ctx.process.executable.splitOnToken('/')[-1];"
+    );
+}
+
+/// A path with no separator in it is its own last part.
+#[test]
+fn a_bare_executable_is_its_own_leaf() {
+    assert!(matches!(
+        parse_split_part(r#"ctx.process.executable.splitOnToken("\\")[-1]"#),
+        Some(Rhs::SplitLast { .. })
+    ));
+
+    let script = r#"ctx.process.put(\"name\", ctx.process.executable.splitOnToken(\"\\\\\")[-1]);"#;
+    let mut event = Event::new(json!({ "process": { "executable": "cmd.exe" } }));
+    assert!(Program::parse(&crate::common::normalise(script)).run(&mut event));
+    assert_eq!(event.get_str("process.name"), Some("cmd.exe"));
+}
+
+/// A local the script also asks the LENGTH of is left alone.
+///
+/// `aws_bedrock_agentcore` writes both its names under `if (parts.length == 2)`.
+/// Inlining there moves an expression no reader resolves into a guard, where an
+/// unreadable comparison's default polarity decides the branch instead of the
+/// event -- and running those writes unguarded is a wrong value where today
+/// there is a missing one.
+#[test]
+fn a_split_local_used_as_a_length_guard_is_not_inlined() {
+    let script = "def parts = ctx.aws.dimensions.Name.splitOnToken('::');\n\
+        if (parts.length == 2) {\n  ctx.aws.bedrock_agentcore.agent_name = parts[0];\n}\n";
+    assert_eq!(inline_split_locals(script), Cow::Borrowed(script));
+
+    let mut event = Event::new(json!({
+        "aws": { "dimensions": { "Name": "solo" }, "bedrock_agentcore": {} },
+    }));
+    assert!(!Program::parse(script).run(&mut event));
+    assert_eq!(event.get("aws.bedrock_agentcore.agent_name"), None);
+
+    // A `==` is a comparison, not the binding, so a local the script also tests
+    // for null declines rather than being inlined around its own guard.
+    let compared = "def parts = ctx.a.b.splitOnToken('/');\n\
+        if (parts == null) {\n  return;\n}\nctx.a.c = parts[0];\n";
+    assert_eq!(inline_split_locals(compared), Cow::Borrowed(compared));
+}
+
+/// A source shorter than the index writes nothing, rather than an empty string.
+///
+/// The whole script reports UNHANDLED, which is the contract every `Rhs` here
+/// already has: a value the event cannot supply means this is not the event the
+/// script was written for, and saying so leaves the ladder free to try another
+/// arm rather than writing a partial result.
+#[test]
+fn a_split_the_value_is_too_short_for_writes_nothing() {
+    let script = r#"ctx.event.action = ctx.a.splitOnToken(\":\")[3];"#;
+    let mut event = Event::new(json!({ "a": "one:two" }));
+
+    assert!(!crate::common::try_known_painless(&mut event, script));
+    assert_eq!(event.get("event.action"), None);
+}
+
+/// The literal reader is the LAST one tried, so whatever no other could read
+/// arrives there whole -- and answering it with a quoted run from inside it is
+/// a wrong value written with no error behind it.
+#[test]
+fn an_expression_is_not_read_as_a_literal_it_merely_contains() {
+    assert_eq!(literal_value(r#""alert""#), Some(json!("alert")));
+    assert_eq!(
+        literal_value("['info', 'warn']"),
+        Some(json!(["info", "warn"]))
+    );
+    assert_eq!(literal_value("null"), Some(Value::Null));
+
+    // The separator of a join, the argument of a call, and a list holding a
+    // field read: each used to come back as its first quoted run.
+    assert_eq!(literal_value(r#"ctx.a + "-" + ctx.b"#), None);
+    assert_eq!(literal_value(r#"ctx.a.replace("x", "y")"#), None);
+    assert_eq!(literal_value(r#"['ok', ctx.a]"#), None);
+}
+
+/// The elvis-keyed lookup, verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/trend_micro_vision_one_telemetry/default.rs`,
+/// which is `pipelines/trend_micro_vision_one/telemetry/default.yml:122-128`.
+const TMV1_EVENT_TYPE: &str = r#"def key = (ctx.trend_micro_vision_one?.telemetry?.event_id ?: \"\").toString();\nif (params.containsKey(key)) {\n  ctx.trend_micro_vision_one.telemetry.event_type = params[key];\n} else {\n  ctx.trend_micro_vision_one.telemetry.event_type = 'Other';\n}\n"#;
+
+fn tmv1_event_types() -> Value {
+    json!({ "1": "TELEMETRY_PROCESS", "2": "TELEMETRY_FILE", "3": "TELEMETRY_CONNECTION" })
+}
+
+/// The three parts are read off the script: the key's path, the elvis literal
+/// an absent field stands in as, and the `else` arm's default.
+#[test]
+fn the_elvis_lookup_reads_its_key_its_absent_stand_in_and_its_default() {
+    let pattern = params_pattern(&crate::common::normalise(TMV1_EVENT_TYPE));
+    assert_eq!(
+        pattern,
+        Some(ParamsPattern::StringifiedLookupOrLiteral {
+            source: "trend_micro_vision_one.telemetry.event_id".into(),
+            absent_key: String::new(),
+            target: "trend_micro_vision_one.telemetry.event_type".into(),
+            default: json!("Other"),
+        })
+    );
+}
+
+/// A NUMERIC field keys the table, because the script stringifies it. The
+/// captured events carry `eventId` as the integer 3 and Elasticsearch writes
+/// `TELEMETRY_CONNECTION`.
+#[test]
+fn a_numeric_key_finds_its_row() {
+    let script = crate::common::normalise(TMV1_EVENT_TYPE);
+    let mut event =
+        Event::new(json!({ "trend_micro_vision_one": { "telemetry": { "event_id": 3 } } }));
+    assert!(try_params_painless(
+        &mut event,
+        &script,
+        &tmv1_event_types()
+    ));
+    assert_eq!(
+        event.get_str("trend_micro_vision_one.telemetry.event_type"),
+        Some("TELEMETRY_CONNECTION")
+    );
+}
+
+/// A key with no row writes the `else` arm's LITERAL, where every other lookup
+/// in this ladder writes nothing.
+#[test]
+fn a_key_with_no_row_writes_the_scripts_own_default() {
+    let script = crate::common::normalise(TMV1_EVENT_TYPE);
+    let mut event =
+        Event::new(json!({ "trend_micro_vision_one": { "telemetry": { "event_id": 99 } } }));
+    assert!(try_params_painless(
+        &mut event,
+        &script,
+        &tmv1_event_types()
+    ));
+    assert_eq!(
+        event.get_str("trend_micro_vision_one.telemetry.event_type"),
+        Some("Other")
+    );
+}
+
+/// An ABSENT field is the elvis literal, not a null, so the default is written
+/// rather than the processor throwing.
+#[test]
+fn an_absent_field_falls_through_the_elvis_to_the_default() {
+    let script = crate::common::normalise(TMV1_EVENT_TYPE);
+    let mut event = Event::new(json!({ "trend_micro_vision_one": { "telemetry": {} } }));
+    assert!(try_params_painless(
+        &mut event,
+        &script,
+        &tmv1_event_types()
+    ));
+    assert_eq!(
+        event.get_str("trend_micro_vision_one.telemetry.event_type"),
+        Some("Other")
+    );
+}
+
+/// A CONTAINER keys nothing: Painless stringifies it to `[a, b]`, which no
+/// vendored table carries, so the default is written rather than the elvis
+/// literal's row.
+#[test]
+fn a_container_source_writes_the_default_and_not_the_elvis_row() {
+    let script = crate::common::normalise(TMV1_EVENT_TYPE);
+    let mut table = tmv1_event_types();
+    table[""] = json!("EMPTY_KEY_ROW");
+    let mut event =
+        Event::new(json!({ "trend_micro_vision_one": { "telemetry": { "event_id": [1, 2] } } }));
+    assert!(try_params_painless(&mut event, &script, &table));
+    assert_eq!(
+        event.get_str("trend_micro_vision_one.telemetry.event_type"),
+        Some("Other")
+    );
+
+    // The same table DOES answer for a genuinely absent field.
+    let mut event = Event::new(json!({ "trend_micro_vision_one": { "telemetry": {} } }));
+    assert!(try_params_painless(&mut event, &script, &table));
+    assert_eq!(
+        event.get_str("trend_micro_vision_one.telemetry.event_type"),
+        Some("EMPTY_KEY_ROW")
+    );
+}
+
+/// Without the elvis this is a different script: Painless throws on an absent
+/// field there, so the reader declines rather than guessing at the outcome.
+#[test]
+fn the_same_lookup_without_an_elvis_declines() {
+    let bare = TMV1_EVENT_TYPE.replace(r#" ?: \"\""#, "");
+    assert_ne!(bare, TMV1_EVENT_TYPE, "the replacement has to bite");
+    assert!(parse_stringified_lookup_or_literal(&crate::common::normalise(&bare)).is_none());
+}
+
+/// Two arms writing DIFFERENT fields is two lookups sharing a key, and is
+/// declined -- claiming it would drop whichever field the reader did not keep.
+#[test]
+fn arms_writing_different_fields_decline() {
+    let split = TMV1_EVENT_TYPE.replace(
+        r"} else {\n  ctx.trend_micro_vision_one.telemetry.event_type = 'Other';",
+        r"} else {\n  ctx.trend_micro_vision_one.telemetry.event_kind = 'Other';",
+    );
+    assert_ne!(split, TMV1_EVENT_TYPE, "the replacement has to bite");
+    assert!(parse_stringified_lookup_or_literal(&crate::common::normalise(&split)).is_none());
+}
+
+/// The `.put` spelling of a `containsKey` guard stays with `StringifiedLookup`,
+/// which sits above this in the ladder.
+#[test]
+fn the_put_spelling_is_left_to_the_matcher_above() {
+    let script = "def k = Long.toString(ctx.a.b); if (params.containsKey(k)) { \
+                  ctx.c.put('d', params[k]); }";
+    assert!(parse_stringified_lookup_or_literal(script).is_none());
+    assert!(matches!(
+        params_pattern(script),
+        Some(ParamsPattern::StringifiedLookup { .. })
+    ));
+}
+
+/// `infoblox_nios`'s DNS header flags, verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/infoblox_nios_log/default.rs`.
+const INFOBLOX_HEADER_FLAGS: &str = r#"ArrayList hf = new ArrayList();\nfor (entry in params.entrySet()) {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains(entry.getKey())) {\n    hf.add(entry.getValue());\n  }\n}\nif (ctx.dns?.response_code != null && ctx.dns.response_code != '') {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains('+')) {\n    hf.add('RA')\n  }\n} else {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains('+')) {\n    hf.add('RD')\n  }\n}\nif (hf.length == 0) {\n  return;\n}\nif (ctx.dns == null) {\n  HashMap hm = new HashMap();\n  ctx.put('dns', hm);\n}\nctx.dns.put('header_flags', hf);\n"#;
+
+/// The vendor's own table, in the order the processor writes it.
+fn header_flag_table() -> Value {
+    json!({ "A": "AA", "t": "TC", "C": "CD", "D": "DO" })
+}
+
+fn run_header_flags(token: &str, response_code: Option<&str>) -> Event {
+    let mut document = json!({ "infoblox_nios": { "log": { "dns": {
+        "header_flags": token
+    } } } });
+    if let Some(code) = response_code {
+        document["dns"] = json!({ "response_code": code });
+    }
+    let mut event = Event::new(document);
+    let script = crate::common::normalise(INFOBLOX_HEADER_FLAGS).into_owned();
+    assert!(
+        try_params_painless(&mut event, &script, &header_flag_table()),
+        "declined: {token}"
+    );
+    event
+}
+
+/// The `+` is recursion DESIRED on a query and recursion AVAILABLE on a
+/// response, so the response code is what names it.
+#[test]
+fn the_header_flag_token_names_one_flag_per_character_it_holds() {
+    assert_eq!(
+        run_header_flags("+ED", Some("NOERROR")).get("dns.header_flags"),
+        Some(&json!(["DO", "RA"]))
+    );
+    assert_eq!(
+        run_header_flags("+AED", Some("NOERROR")).get("dns.header_flags"),
+        Some(&json!(["AA", "DO", "RA"]))
+    );
+    assert_eq!(
+        run_header_flags("+", None).get("dns.header_flags"),
+        Some(&json!(["RD"]))
+    );
+    // An empty response code is the same as none, which is what `!= ''` says.
+    assert_eq!(
+        run_header_flags("+", Some("")).get("dns.header_flags"),
+        Some(&json!(["RD"]))
+    );
+}
+
+/// `if (hf.length == 0) { return; }` -- a token naming nothing writes nothing.
+#[test]
+fn a_token_that_names_no_flag_leaves_the_target_alone() {
+    assert!(!run_header_flags("-", Some("REFUSED")).has("dns.header_flags"));
+}
+
+/// The two scripts that share the bare `params.entrySet()` trigger and mean
+/// something else: cisco's protocol table read in either direction, and panw's
+/// per-field remap. Claiming either would write a flag list over a lookup.
+#[test]
+fn the_flag_reader_declines_the_other_params_entryset_walks() {
+    const CISCO_REVERSIBLE: &str = r#"def net = ctx.network; def iana = params[net.transport]; if (iana != null) {\n  net['iana_number'] = iana;\n  return;\n} def reverse = new HashMap(); def[] arr = new def[] { null }; for (entry in params.entrySet()) {\n  arr[0] = entry.getValue();\n  reverse.put(String.format(\"%d\", arr), entry.getKey());\n} def trans = reverse[net.transport]; if (trans != null) {\n  net['iana_number'] = net.transport;\n  net['transport'] = trans;\n}\n"#;
+    const PANW_REMAP: &str = r#"def getField(Map src, String[] path) {\n for (int i=0; i<path.length-1; i++) {\n  src = src.getOrDefault(path[i], null);\n  if (src == null || !(src instanceof Map)) {\n    return null;\n  }\n }\n return src[path[path.length-1]];\n}\ndef setField(Map dest, String[] path, def value) {\n for (int i=0; i<path.length-1; i++) {\n   dest = dest.computeIfAbsent(path[i], _ -> new HashMap());\n }\n dest[path[path.length-1]] = value;\n}\nfor (entry in params.entrySet()) {\n  def srcField = entry.getKey();\n  def param = entry.getValue();\n  String oldVal = getField(ctx, srcField.splitOnToken('.'));\n  if (oldVal == null) continue;\n  def newVal = param.map?.getOrDefault(oldVal.toLowerCase(), null);\n  if (newVal != null) {\n    def dstField = param.getOrDefault('target', srcField);\n    setField(ctx, dstField.splitOnToken('.'), newVal);\n  }\n}\n"#;
+
+    for script in [CISCO_REVERSIBLE, PANW_REMAP] {
+        assert!(
+            parse_contains_flags(&crate::common::normalise(script)).is_none(),
+            "claimed: {script}"
+        );
+    }
+    assert!(matches!(
+        params_pattern(&crate::common::normalise(INFOBLOX_HEADER_FLAGS)),
+        Some(ParamsPattern::ContainsFlags(_))
+    ));
+}
+
+/// Every near-miss of the flag reader, each for its own reason.
+#[test]
+fn the_flag_reader_declines_what_it_cannot_reproduce() {
+    for (why, script) in [
+        (
+            // Two arms testing different characters are two rules.
+            "arms that do not share their marker",
+            INFOBLOX_HEADER_FLAGS.replace(
+                r"} else {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains('+'))",
+                r"} else {\n  if (ctx.infoblox_nios.log.dns.header_flags.contains('-'))",
+            ),
+        ),
+        (
+            // Without the early return an empty list is written over the target.
+            "no guard on an empty list",
+            INFOBLOX_HEADER_FLAGS.replace(r"if (hf.length == 0) {\n  return;\n}", ""),
+        ),
+        (
+            // A second write is a script this reproduces only half of.
+            "a write past the flag list",
+            INFOBLOX_HEADER_FLAGS.replace(
+                r"ctx.dns.put('header_flags', hf);",
+                r"ctx.dns.put('header_flags', hf);\nctx.event.put('kind', 'event');",
+            ),
+        ),
+    ] {
+        assert_ne!(script, INFOBLOX_HEADER_FLAGS, "{why}: the replacement bit");
+        assert!(
+            parse_contains_flags(&crate::common::normalise(&script)).is_none(),
+            "claimed {why}"
+        );
+    }
+}
+
+/// A call whose argument is not a literal answers nothing, rather than the next
+/// quote in the file.
+#[test]
+fn a_literal_read_stops_at_its_own_call() {
+    assert_eq!(literal_at("'RA') }"), Some("RA".to_owned()));
+    assert_eq!(literal_at(" \"Owner\", x)"), Some("Owner".to_owned()));
+    assert_eq!(literal_at("entry.getKey()) { hf.add('RA') }"), None);
+    assert_eq!(literal_at("Sd + \"Owner\", translate(x))"), None);
+
+    // The offset and the literal come off the same occurrence, so a caller
+    // reading the subject as well cannot pair two different calls.
+    let script = "map.put(key, value); ctx.a.put('kind', 'event');";
+    let (at, key) = literal_call(script, ".put(").expect("the literal call is found");
+    assert_eq!(key, "kind");
+    assert_eq!(ctx_path_at_end(&script[..at]).as_deref(), Some("a"));
+    assert_eq!(literal_call("map.put(key, value);", ".put("), None);
+}
+
+/// `akamai_siem` opens with `map.put(key, value)`, so the first `.put(` in the
+/// script carries no key at all.
+#[test]
+fn a_put_target_skips_a_call_with_no_literal_key() {
+    let script = "for (String key : params.items) {\n  \
+        String value = data.decodeBase64();\n  map.put(key, value);\n  \
+        if (key == \"ruleTags\") {\n    rule_tags.add(value);\n  }\n}\n\
+        ctx.akamai.siem.rule_tags = rule_tags;";
+    // `ruleTags` is the run-on answer, and it is a params item rather than a
+    // field the script writes.
+    assert_eq!(quoted_after(script, ".put("), Some("ruleTags".to_owned()));
+    assert_eq!(put_target(script), None);
+}
+
+/// Windows builds an `event_data` key by concatenation, which is no literal.
+#[test]
+fn a_concatenated_put_key_is_not_read_as_its_tail() {
+    let statement = "  if (sdOwnerMatcher.find()) {\n    \
+        ctx.winlog.event_data.put(Sd + \"Owner\", translateSID(m.group(0), params))";
+    // The unanchored read called the key `Owner`, and the field Windows writes
+    // is whatever `Sd` holds followed by it.
+    assert_eq!(
+        quoted_after(statement.split_once(".put(").expect("a put").1, ""),
+        Some("Owner".to_owned())
+    );
+    assert!(parse_literal_statement(statement).is_none());
+
+    // The plain spelling beside it still reads.
+    let plain = "ctx.winlog.event_data.put(\"Owner\", 'S-1-5-18')";
+    assert!(matches!(
+        parse_literal_statement(plain),
+        Some(Literal::Set { ref path, .. }) if path == "winlog.event_data.Owner"
+    ));
+}
+
+/// `params[<ctx path>]` names no table, and the literal after it belongs to a
+/// different statement.
+#[test]
+fn an_indexed_params_read_needs_a_quoted_name() {
+    // ti_crowdstrike_ioc, whose block really does hold a `domain` row -- so the
+    // run-on answer is a lookup that succeeds against the wrong table.
+    let script = "String mapping = params[ctx.ti_crowdstrike.ioc.type];\n\
+        if (mapping != null) {\n  ctx.threat.indicator.type = mapping;\n  \
+        if (ctx.ti_crowdstrike.ioc.type == 'domain') {\n    \
+        ctx.threat.indicator.url.domain = ctx.ti_crowdstrike.ioc.value;\n  }\n}";
+    let params = json!({"domain": "domain", "md5": "file"});
+    let params = params.as_object().expect("an object");
+    assert_eq!(quoted_after(script, "params["), Some("domain".to_owned()));
+    assert_eq!(params_indexed(script, params), None);
+
+    // The form it is for still resolves.
+    let named = "ctx.a.put('level', params['LogLevel'][ctx.n]);";
+    let table = json!({"LogLevel": ["debug", "info"]});
+    let table = table.as_object().expect("an object");
+    assert_eq!(params_indexed(named, table), table.get("LogLevel"));
+}
+
+/// Verbatim from `crates/dfe-transforms/src/filebeat/google_scc_asset/default.rs`,
+/// tagged `script_to_map_fields_under_conditions_object`: the list is rebuilt,
+/// dropped off its container and put back under the SAME key.
+///
+/// Written in the ESCAPED form the tree stores, and normalised by the matcher:
+/// a stored script arrives as ONE line with its newlines escaped, so a test
+/// written with real newlines passes while production still fails.
+const GOOGLE_SCC_CONDITIONS: &str = r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef conditions = new ArrayList();\nfor(entity in ctx.json.asset.accessLevel.basic.conditions){\n  conditions.add(renameKeys(entity, params));\n}\nctx.json.asset.accessLevel.basic.remove('conditions');\nctx.json.asset.accessLevel.basic.put('conditions',conditions);\n"#;
+
+/// The same source, tagged `script_to_map_fields_under_org_policy_object`:
+/// the field it DROPS is not the field it writes.
+const GOOGLE_SCC_ORG_POLICY: &str = r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\n\ndef organization_policy = new ArrayList();\nfor(entity in ctx.json.asset.orgPolicy){\n  organization_policy.add(renameKeys(entity, params));\n}\nctx.json.asset.remove('orgPolicy');\nctx.google_scc.asset.put('organization_policy',organization_policy);\n"#;
+
+/// Verbatim from `filebeat/microsoft_defender_cloud_event/default.rs`: the
+/// list is stored by assignment, and the helper renames a scalar `location` to
+/// `location_value` on top of the table.
+const DEFENDER_CLOUD_ENTITIES: &str = r#"def renameKeys(Map json, Map keyMap) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = value;\n      } else {\n        updatedJson[key] = value;\n      }\n      if (key=='location') {\n        updatedJson['location_value'] = value;\n        updatedJson.remove('location');\n      }\n    }\n  }\n  return updatedJson;\n}\ndef entities_obj = new ArrayList();\nfor(entity in ctx.json.entities){\n  entities_obj.add(renameKeys(entity, params));\n}\nctx.entities_obj=entities_obj;\n"#;
+
+/// Verbatim from `filebeat/claroty_ctd_asset/default.rs`: five arguments, the
+/// name table and three retyping lists, appending straight onto a ctx path the
+/// script pre-created.
+const CLAROTY_CHILDREN: &str = r#"def convertToLong(def value) {\n  if (value instanceof String) {\n    return Long.parseLong(value);\n  } else if (value instanceof Number) {\n    return ((long) value).longValue();\n  } else {\n    throw new Exception('Unsupported type');\n  }\n}\ndef convertToBoolean(def value) {\n  if (value instanceof String) {\n    return Boolean.parseBoolean(value);\n  } else if (value instanceof Boolean) {\n    return (Boolean) value;\n  } else {\n    throw new Exception('Unsupported type');\n  }\n}\ndef renameKeys(Map json, Map keyMap, List longFields, List stringFields, List boolFields) {\n  def updatedJson = new HashMap();\n  for (def entry: json.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = renameKeys(value, keyMap, longFields, stringFields, boolFields);\n      } else {\n        updatedJson[key] = renameKeys(value, keyMap, longFields, stringFields, boolFields);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap, longFields, stringFields, boolFields));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        updatedJson[keyMap[key]] = updatedList;\n      } else {\n        updatedJson[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        if (longFields.contains(keyMap[key])) {\n          updatedJson[keyMap[key]] = convertToLong(value);\n        } else if (stringFields.contains(keyMap[key]) && value != null) {\n          updatedJson[keyMap[key]] = value.toString();\n        } else if (boolFields.contains(keyMap[key])) {\n          updatedJson[keyMap[key]] = convertToBoolean(value);\n        } else {\n          updatedJson[keyMap[key]] = value;\n        }\n      } else {\n        updatedJson[key] = value;\n      }\n    }\n  }\n  return updatedJson;\n}\nctx.claroty_ctd.asset.put('children', new ArrayList());\nfor (child in ctx.json.children) {\n  def children = renameKeys(child, params.renamefield, params.longfield, params.stringfield, params.boolfield);\n  ctx.claroty_ctd.asset.children.add(children);\n}\n"#;
+
+/// The in-place spelling, verbatim from `filebeat/aws_bedrock_invocation`.
+const AWS_BEDROCK_RENAME: &str = r#"def renameKeys(Map src, Map keyMap) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        dst[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = updatedList;\n      } else {\n        dst[key] = updatedList;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = value;\n      } else {\n        dst[key] = value;\n      }\n    }\n  }\n  return dst;\n}\n\nctx.aws_bedrock = renameKeys(ctx.aws_bedrock, params)\n"#;
+
+/// The in-place spelling again, with an `if (key == ...)` guard that rewrites
+/// a VALUE rather than renaming a key -- the near neighbour of the one
+/// `microsoft_defender_cloud` ships, and not the same thing.
+const AD_ENTITY_RENAME: &str = r#"String hexByte(Byte b) {\n    String x = Integer.toHexString(Byte.toUnsignedInt(b));\n    if (x.length() < 2) {\n        x = \"0\" + x;\n    }\n    return x;\n}\nString guid(String text) {\n    def bytes = Base64.getDecoder().decode(text);\n    def uid = \"\";\n    for (int i = 3; i >= 0; i--) {\n        uid += hexByte(bytes[i]);\n    }\n    uid += \"-\";\n    for (int i = 5; i > 3; i--) {\n        uid += hexByte(bytes[i]);\n    }\n    uid += \"-\";\n    for (int i = 7; i > 5; i--) {\n        uid += hexByte(bytes[i]);\n    }\n    uid += \"-\";\n    for (int i = 8; i < bytes.length; i++) {\n        if (i == 10) {\n            uid += \"-\";\n        }\n        uid += hexByte(bytes[i]);\n    }\n    return uid;\n}\nString sid(String text) {\n    def bytes = Base64.getDecoder().decode(text);\n    def uid = \"S-\"+Byte.toString(bytes[0])+\"-\";\n    int auth = 0;\n    for (int i = 2; i < 8; i++) {\n        auth |= Byte.toUnsignedInt(bytes[i])<<(8*(5-(i-2)));\n    }\n    uid += Integer.toString(auth);\n    int subauths = Byte.toUnsignedInt(bytes[1]);\n    int off = 8;\n    for (int i = 0; i < subauths; i++) {\n        int subauth = 0;\n        for (int k = 0; k < 4; k++) {\n            subauth |= (Byte.toUnsignedInt(bytes[off+k])&0xff)<<(8*k);\n        }\n        uid += \"-\"+Integer.toUnsignedString(subauth);\n        off += 4;\n    }\n    return uid;\n}\ndef renameKeys(Map src, Map keyMap) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        dst[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = updatedList;\n      } else {\n        dst[key] = value;\n      }\n    } else {\n      if (value instanceof String) {\n        if (key == \"objectGUID\") {\n          value = guid(value);\n        } else if (key == \"objectSid\") {\n          value = sid(value);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = value;\n      } else {\n        dst[key] = value;\n      }\n    }\n  }\n  return dst;\n}\n\nctx.activedirectory = renameKeys(ctx.activedirectory, params)\n"#;
+
+/// The in-place spelling, verbatim from `filebeat/microsoft_dnsserver_analytical`.
+const DNS_ANALYTICAL_RENAME: &str = r#"def renameKeys(Map src, Map keyMap) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        dst[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = updatedList;\n      } else {\n        dst[key] = value;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = value;\n      } else {\n        dst[key] = value;\n      }\n    }\n  }\n  return dst;\n}\nctx.microsoft_dnsserver.analytical = renameKeys(ctx.microsoft_dnsserver.analytical, params)\n"#;
+
+/// The in-place spelling, verbatim from `filebeat/microsoft_dnsserver_audit`.
+const DNS_AUDIT_RENAME: &str = r#"def renameKeys(Map src, Map keyMap) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = renameKeys(value, keyMap);\n      } else {\n        dst[key] = renameKeys(value, keyMap);\n      }\n    } else if (value instanceof List) {\n      def updatedList = [];\n      for (def item: value) {\n        if (item instanceof Map) {\n          updatedList.add(renameKeys(item, keyMap));\n        } else {\n          updatedList.add(item);\n        }\n      }\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = updatedList;\n      } else {\n        dst[key] = value;\n      }\n    } else {\n      if (keyMap.containsKey(key)) {\n        dst[keyMap[key]] = value;\n      } else {\n        dst[key] = value;\n      }\n    }\n  }\n  return dst;\n}\nctx.microsoft_dnsserver.audit = renameKeys(ctx.microsoft_dnsserver.audit, params)\n"#;
+
+/// okta's helper takes ONE argument and has no name table at all, so this arm
+/// must not claim it -- it binds a text matcher instead.
+const OKTA_UNDERSCORE: &str = r#"String underscore(String s) {\n  return /[ -]/.matcher(s).replaceAll('_');\n}\ndef renameKeys(Map src) {\n  def dst = new HashMap();\n  for (def entry: src.entrySet()) {\n    def key = entry.getKey();\n    def value = entry.getValue();\n    if (value instanceof Map) {\n      dst[underscore(key)] = renameKeys(value);\n    } else if (value instanceof List) {\n      for (int i = 0; i < value.length; i++) {\n        if (value[i] instanceof Map) {\n          value[i] = renameKeys(value[i]);\n        }\n      }\n      dst[underscore(key)] = value;\n    } else {\n      dst[underscore(key)] = value;\n    }\n  }\n  return dst;\n}\nctx.okta.debug_context.debug_data = renameKeys(ctx.okta.debug_context.debug_data)\n"#;
+
+/// The rename matcher a script binds to, or a panic naming what took it.
+fn rename_keys_pattern(script: &str) -> RenameKeys {
+    match params_pattern(&crate::common::normalise(script)) {
+        Some(ParamsPattern::RenameKeys(pattern)) => *pattern,
+        other => panic!("the rename matcher did not claim the script: {other:?}"),
+    }
+}
+
+/// The fan-out names the list it walks, the field it writes, and the field it
+/// drops -- here all three are the same key on the same container.
+#[test]
+fn the_fan_out_reads_its_list_its_target_and_the_field_it_drops() {
+    let pattern = rename_keys_pattern(GOOGLE_SCC_CONDITIONS);
+    assert_eq!(pattern.names, NameTable::Params);
+    assert_eq!(pattern.coerce, None);
+    assert_eq!(pattern.rename_key, None);
+    assert_eq!(
+        pattern.write,
+        RenameWrite::FanOut(Box::new(FanOut {
+            source: "json.asset.accessLevel.basic.conditions".into(),
+            target: "json.asset.accessLevel.basic.conditions".into(),
+            drop: Some("json.asset.accessLevel.basic.conditions".into()),
+        }))
+    );
+}
+
+/// The drop is its OWN field: this one takes `orgPolicy` off the raw asset and
+/// writes the renamed list somewhere else entirely.
+#[test]
+fn the_dropped_field_need_not_be_the_one_written() {
+    let pattern = rename_keys_pattern(GOOGLE_SCC_ORG_POLICY);
+    assert_eq!(
+        pattern.write,
+        RenameWrite::FanOut(Box::new(FanOut {
+            source: "json.asset.orgPolicy".into(),
+            target: "google_scc.asset.organization_policy".into(),
+            drop: Some("json.asset.orgPolicy".into()),
+        }))
+    );
+}
+
+/// The `.put(` spelling writes the renamed list back, and an element that is
+/// not a map is carried across as it stands.
+#[test]
+fn the_put_form_writes_the_renamed_list_and_carries_a_non_map_through() {
+    let mut event = Event::new(json!({
+        "json": { "asset": { "accessLevel": { "basic": { "conditions": [
+            { "ipSubnetworks": ["1.2.3.0/24"], "negate": false },
+            "not a map",
+        ] } } } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        GOOGLE_SCC_CONDITIONS,
+        &json!({ "ipSubnetworks": "ip_subnetworks" })
+    ));
+
+    assert_eq!(
+        event.get("json.asset.accessLevel.basic.conditions"),
+        Some(&json!([
+            { "ip_subnetworks": ["1.2.3.0/24"], "negate": false },
+            "not a map",
+        ]))
+    );
+}
+
+/// The dropped field goes and the written one is a different field, so the
+/// event carries the renamed list and nothing of the raw one.
+#[test]
+fn the_drop_takes_the_source_out_and_the_write_lands_elsewhere() {
+    let mut event = Event::new(json!({
+        "google_scc": { "asset": {} },
+        "json": { "asset": { "orgPolicy": [
+            { "constraint": "constraints/x", "updateTime": "2024-07-16T10:16:42Z" },
+        ] } },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        GOOGLE_SCC_ORG_POLICY,
+        &json!({ "updateTime": "update_time" })
+    ));
+
+    assert_eq!(
+        event.get("google_scc.asset.organization_policy"),
+        Some(&json!([
+            { "constraint": "constraints/x", "update_time": "2024-07-16T10:16:42Z" },
+        ]))
+    );
+    assert!(!event.has("json.asset.orgPolicy"));
+}
+
+/// The assignment spelling stores the list under a scratch field, and the
+/// helper's own key guard moves a SCALAR `location` to `location_value`.
+#[test]
+fn the_assign_form_writes_the_list_and_renames_the_key_the_guard_names() {
+    let pattern = rename_keys_pattern(DEFENDER_CLOUD_ENTITIES);
+    assert_eq!(
+        pattern.rename_key,
+        Some(("location".into(), "location_value".into()))
+    );
+
+    let mut event = Event::new(json!({
+        "json": { "entities": [
+            { "hostname": "web-1", "location": "australiaeast", "aadtenantid": "t-1" },
+            { "location": { "cloudprovider": "Azure" } },
+        ] },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        DEFENDER_CLOUD_ENTITIES,
+        &json!({
+            "hostname": "host_name",
+            "aadtenantid": "aad_tenant_id",
+            "cloudprovider": "cloud_provider",
+        })
+    ));
+
+    assert_eq!(
+        event.get("entities_obj"),
+        Some(&json!([
+            { "host_name": "web-1", "location_value": "australiaeast", "aad_tenant_id": "t-1" },
+            // The guard sits in the helper's SCALAR branch, so a `location`
+            // object keeps its own name and is renamed through instead.
+            { "location": { "cloud_provider": "Azure" } },
+        ]))
+    );
+}
+
+/// The five-argument call names its table and each of its three retyping
+/// lists, and appends straight onto the ctx path the script pre-created.
+#[test]
+fn the_five_argument_form_names_its_table_and_its_retyping_lists() {
+    let pattern = rename_keys_pattern(CLAROTY_CHILDREN);
+    assert_eq!(pattern.names, NameTable::Member("renamefield".into()));
+    assert_eq!(
+        pattern.coerce,
+        Some(Coercions {
+            longs: "longfield".into(),
+            strings: "stringfield".into(),
+            bools: "boolfield".into(),
+        })
+    );
+    assert_eq!(
+        pattern.write,
+        RenameWrite::FanOut(Box::new(FanOut {
+            source: "json.children".into(),
+            target: "claroty_ctd.asset.children".into(),
+            drop: None,
+        }))
+    );
+}
+
+/// Each retyping list is keyed by the RENAMED name, and a key the table does
+/// not name is never retyped however the lists spell it.
+#[test]
+fn the_five_argument_form_retypes_by_the_renamed_name() {
+    let mut event = Event::new(json!({
+        "claroty_ctd": { "asset": {} },
+        "json": { "children": [{
+            "asset_type": "2",
+            "criticality": 2.7,
+            "edge_id": 1,
+            "approved": "TRUE",
+            // In `boolfield` but NOT in the name table, so the retyping arm
+            // the table guards never runs and the string stands.
+            "ghost": "false",
+            "name": "10.1.30.1",
+            "network": { "edge_id": 7, "name": "Default" },
+        }] },
+    }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CLAROTY_CHILDREN,
+        &json!({
+            "renamefield": {
+                "asset_type": "asset_type",
+                "criticality": "criticality",
+                "edge_id": "edge_id",
+                "approved": "approved",
+            },
+            "longfield": ["asset_type", "criticality"],
+            "stringfield": ["edge_id"],
+            "boolfield": ["approved", "ghost"],
+        })
+    ));
+
+    assert_eq!(
+        event.get("claroty_ctd.asset.children"),
+        Some(&json!([{
+            "asset_type": 2,
+            "criticality": 2,
+            "edge_id": "1",
+            "approved": true,
+            "ghost": "false",
+            "name": "10.1.30.1",
+            "network": { "edge_id": "7", "name": "Default" },
+        }]))
+    );
+}
+
+/// Every in-place script still renames the map where it stands, and none of
+/// them picks up a table member or a retyping list it does not pass.
+#[test]
+fn the_in_place_scripts_still_rename_where_they_stand() {
+    for (script, path) in [
+        (AWS_BEDROCK_RENAME, "aws_bedrock"),
+        (AD_ENTITY_RENAME, "activedirectory"),
+        (DNS_ANALYTICAL_RENAME, "microsoft_dnsserver.analytical"),
+        (DNS_AUDIT_RENAME, "microsoft_dnsserver.audit"),
+    ] {
+        let pattern = rename_keys_pattern(script);
+        assert_eq!(pattern.names, NameTable::Params, "{path}");
+        assert_eq!(pattern.coerce, None, "{path}");
+        assert_eq!(pattern.write, RenameWrite::InPlace(path.into()), "{path}");
+    }
+}
+
+/// A guard that rewrites the VALUE is not a key rename. Reading it as one
+/// would move `objectGUID` to a key named after the next literal in the file.
+#[test]
+fn a_value_rewriting_key_guard_is_not_a_key_rename() {
+    assert_eq!(rename_keys_pattern(AD_ENTITY_RENAME).rename_key, None);
+}
+
+/// okta's one-argument helper spells no name table, so this arm leaves it to
+/// the text matcher that does read it.
+#[test]
+fn the_arm_does_not_claim_a_helper_with_no_name_table() {
+    assert!(params_pattern(&crate::common::normalise(OKTA_UNDERSCORE)).is_none());
+}
+
+/// A helper whose result goes somewhere no reader places writes NOTHING.
+/// Guessing at a target is a corruption that leaves no error behind.
+#[test]
+fn a_write_no_reader_places_leaves_the_event_alone() {
+    // A real helper with its tail cut off, so the case is the vendor's own text
+    // rather than one invented to fail.
+    let script = GOOGLE_SCC_CONDITIONS
+        .split_once("\\ndef conditions")
+        .expect("the helper ends where the fan-out begins")
+        .0;
+    let pattern = rename_keys_pattern(script);
+    assert_eq!(pattern.write, RenameWrite::Unreadable);
+
+    let before = json!({ "json": { "QNAME": "google.es." } });
+    let mut event = Event::new(before.clone());
+    assert!(!try_params_painless(
+        &mut event,
+        script,
+        &json!({ "QNAME": "question_name" })
+    ));
+    assert_eq!(event.as_value(), &before);
+}
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/jamf_protect_alerts/default.rs`, in the
+/// escaped one-line form the call site holds.
+const JAMF_EVENT_ACTION: &str =
+    r#"ctx.event.action = ctx.jamf_protect.alerts.input.match.facts[0].name;\n"#;
+
+/// Its guarded twin, which allocates the container before writing into it.
+const JAMF_RULE_NAME: &str = r#"if (ctx.rule == null) {\n  ctx.rule = new HashMap();\n}\nctx.rule.name = ctx.jamf_protect.alerts.input.match.facts[0].name\n"#;
+
+/// A numeric list subscript names the segment the document spells with a dot.
+///
+/// The bare-path reader always ADMITTED the bracket, so these scripts were
+/// claimed and then read a path `Event::get` cannot walk -- eleven events lost
+/// four fields each and nothing errored.
+#[test]
+fn a_numeric_subscript_reads_the_element_the_document_holds() {
+    let facts = json!({ "jamf_protect": { "alerts": { "input": { "match": {
+        "facts": [{
+            "name": "CustomURLHandlerCreation",
+            "human": "Application that uses custom url handler created",
+        }]
+    }}}}});
+
+    let mut event = Event::new(facts.clone());
+    assert!(crate::common::try_known_painless(
+        &mut event,
+        JAMF_EVENT_ACTION
+    ));
+    assert_eq!(
+        event.get_str("event.action"),
+        Some("CustomURLHandlerCreation")
+    );
+
+    let mut event = Event::new(facts);
+    assert!(crate::common::try_known_painless(
+        &mut event,
+        JAMF_RULE_NAME
+    ));
+    assert_eq!(event.get_str("rule.name"), Some("CustomURLHandlerCreation"));
+}
+
+/// An element the list does not hold writes nothing, rather than a null.
+#[test]
+fn a_subscript_past_the_end_of_the_list_writes_nothing() {
+    let mut event = Event::new(json!({ "jamf_protect": { "alerts": { "input": { "match": {
+        "facts": []
+    }}}}}));
+    crate::common::try_known_painless(&mut event, JAMF_EVENT_ACTION);
+    assert_eq!(event.get("event.action"), None);
+}
+
+/// A QUOTED subscript is a key that may hold dots of its own, which is a
+/// different question -- it is carried through untouched rather than guessed at.
+#[test]
+fn a_quoted_subscript_is_left_exactly_as_it_arrived() {
+    assert_eq!(dotted_subscripts("a['b.c'].d"), "a['b.c'].d");
+    assert_eq!(
+        dotted_subscripts("match.facts[0].name"),
+        "match.facts.0.name"
+    );
+    assert_eq!(dotted_subscripts("rows[0][1]"), "rows.0.1");
+    assert_eq!(dotted_subscripts("plain.path"), "plain.path");
+}
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/jamf_protect_telemetry/default.rs`.
+const JAMF_OUTCOME: &str = r#"ctx.event = ctx.event != null ? ctx.event : new HashMap(); if (ctx.jamf_protect?.telemetry?.event?.su?.success instanceof boolean) {\n  if (ctx.jamf_protect.telemetry.event.su.success) {\n    ctx.event.outcome = 'success';\n  } else {\n    ctx.event.outcome = 'failure';\n  }\n} if (ctx.event.outcome == null) {\n  ctx.event.outcome = 'unknown';\n}\n"#;
+
+/// JSON settles a boolean exactly, so `instanceof boolean` is answerable.
+///
+/// While it was not, the term parsed to `Term::Never`, the whole
+/// success/failure branch was dead, and the script's own trailing default wrote
+/// `unknown` over every one of the six telemetry events that carry the field.
+#[test]
+fn an_instanceof_boolean_takes_the_branch_the_value_chooses() {
+    for (success, outcome) in [(true, "success"), (false, "failure")] {
+        let mut event = Event::new(json!({
+            "jamf_protect": { "telemetry": { "event": { "su": { "success": success } } } }
+        }));
+        assert!(crate::common::try_known_painless(&mut event, JAMF_OUTCOME));
+        assert_eq!(event.get_str("event.outcome"), Some(outcome));
+    }
+}
+
+/// A field that is not a boolean leaves the vendor's own default standing.
+#[test]
+fn a_non_boolean_still_falls_to_the_scripts_own_default() {
+    let mut event = Event::new(json!({
+        "jamf_protect": { "telemetry": { "event": { "su": { "success": "yes" } } } }
+    }));
+    assert!(crate::common::try_known_painless(&mut event, JAMF_OUTCOME));
+    assert_eq!(event.get_str("event.outcome"), Some("unknown"));
+}
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/barracuda_waf/access.rs`.
+const BARRACUDA_HEADERS: &str = r#"def headers = ctx._temp.raw_custom_headers.splitOnToken(' ');\nif (ctx.barracuda.waf.custom_header == null) {\n    ctx.barracuda.waf.custom_header = new HashMap();\n}\nfor (int i = 0; i < headers.length; i++) {\n  ctx.barracuda.waf.custom_header[params[(i+1).toString()]] = headers[i];\n}\n"#;
+
+/// The params block the same call site carries.
+fn barracuda_positions() -> Value {
+    json!({
+        "1": "accept_encoding",
+        "2": "host",
+        "3": "connection",
+        "4": "cache_control",
+        "5": "user_agent",
+        "6": "content_type"
+    })
+}
+
+/// The table names each POSITION, so token `i` lands under `params[i + 1]`.
+///
+/// Read from `testdata/compat/barracuda/waf/test-access`, whose sixth event
+/// sends `gzip,deflate 2001::128 keep-alive` and whose capture holds all three.
+#[test]
+fn a_split_is_named_by_the_position_the_table_gives_it() {
+    let mut event = Event::new(json!({
+        "_temp": { "raw_custom_headers": "gzip,deflate 2001::128 keep-alive" }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        BARRACUDA_HEADERS,
+        &barracuda_positions()
+    ));
+    assert_eq!(
+        event.get_str("barracuda.waf.custom_header.accept_encoding"),
+        Some("gzip,deflate")
+    );
+    assert_eq!(
+        event.get_str("barracuda.waf.custom_header.host"),
+        Some("2001::128")
+    );
+    assert_eq!(
+        event.get_str("barracuda.waf.custom_header.connection"),
+        Some("keep-alive")
+    );
+}
+
+/// The vendor pads an absent header with `"-"`, and the position still decides
+/// the name -- the pipeline's own `drop_empty` is what takes the padding out.
+///
+/// The ninth event of the same capture sends `"-" "-" 1.128.0.1` and its
+/// capture holds `connection` alone.
+#[test]
+fn a_padded_position_still_names_the_token_it_holds() {
+    let mut event = Event::new(json!({
+        "_temp": { "raw_custom_headers": "\"-\" \"-\" 1.128.0.1" }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        BARRACUDA_HEADERS,
+        &barracuda_positions()
+    ));
+    assert_eq!(
+        event.get_str("barracuda.waf.custom_header.connection"),
+        Some("1.128.0.1")
+    );
+    assert_eq!(
+        event.get_str("barracuda.waf.custom_header.accept_encoding"),
+        Some("\"-\"")
+    );
+}
+
+/// A position the table does not name writes NOTHING.
+///
+/// Painless keys the map by the null the lookup returned, which names no field
+/// the document can hold; inventing a name for it would be a corruption that
+/// leaves no error behind.
+#[test]
+fn a_position_the_table_does_not_name_writes_nothing() {
+    let mut event = Event::new(json!({
+        "_temp": { "raw_custom_headers": "a b c d e f g h" }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        BARRACUDA_HEADERS,
+        &barracuda_positions()
+    ));
+    let written = event
+        .get_object("barracuda.waf.custom_header")
+        .expect("the named positions are written");
+    assert_eq!(written.len(), 6, "six named positions, and no seventh");
+    assert_eq!(
+        written.get("content_type").and_then(Value::as_str),
+        Some("f")
+    );
+}
+
+/// An absent source writes nothing: `splitOnToken` on a null throws, and a
+/// throw writes nothing at all.
+#[test]
+fn an_absent_split_source_writes_nothing() {
+    let mut event = Event::new(json!({ "barracuda": { "waf": {} } }));
+    assert!(try_params_painless(
+        &mut event,
+        BARRACUDA_HEADERS,
+        &barracuda_positions()
+    ));
+    assert!(!event.has("barracuda.waf.custom_header"));
+}
+
+/// The parse reads every part off the script, so a loop writing something else
+/// declines rather than binding to a runner that would invent positions.
+#[test]
+fn a_positional_loop_that_writes_something_else_declines() {
+    // The value is a DIFFERENT list from the one the loop bounds, so the pairing
+    // the pattern reproduces is not the one the script wrote.
+    let mismatched = "def headers = ctx._temp.raw.splitOnToken(' ');\n\
+        for (int i = 0; i < headers.length; i++) {\n  \
+        ctx.a.b[params[(i+1).toString()]] = other[i];\n}\n";
+    assert!(parse_split_named_by_position(mismatched).is_none());
+
+    // The key is offset by a LOCAL rather than a literal, which nothing can
+    // resolve at generation time.
+    let computed = "def headers = ctx._temp.raw.splitOnToken(' ');\n\
+        for (int i = 0; i < headers.length; i++) {\n  \
+        ctx.a.b[params[(i+n).toString()]] = headers[i];\n}\n";
+    assert!(parse_split_named_by_position(computed).is_none());
+}
+
+/// darktrace's model logic, verbatim from
+/// `crates/dfe-transforms/src/filebeat/darktrace_model_breach_alert/default.rs`.
+///
+/// Escaped exactly as the generated call site spells it: the subscripts read
+/// `[\"json\"]` in the literal, so a test written with bare quotes would be
+/// reading text production never sees.
+const DARKTRACE_MODEL_LOGIC: &str = r#"def data = ctx.json.model.logic.data; if (ctx.json.model.logic?.type != null) { if (['componentList', 'weightedComponentList'].contains(ctx.json.model.logic?.type)) { ctx[\"json\"][\"model\"][\"logic\"][params.get(ctx.json.model.logic?.type)] = data; } else { ctx[\"json\"][\"model\"][\"logic\"][\"data_\" + ctx.json.model.logic?.type] = data; } } ctx.json.model.logic.remove(\"data\");"#;
+
+/// The table darktrace ships with it: the row is the column NAME, not a value.
+fn darktrace_logic_names() -> Value {
+    json!({
+        "componentList": "data_component_list",
+        "weightedComponentList": "data_weighted_component_list",
+    })
+}
+
+/// The table NAMES the member, so the value moves and the source is pruned.
+#[test]
+fn a_member_is_renamed_to_the_name_the_table_gives_its_key() {
+    let mut event = Event::new(json!({
+        "json": { "model": { "logic": {
+            "data": [1594],
+            "type": "componentList",
+            "version": 1,
+        } } }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        DARKTRACE_MODEL_LOGIC,
+        &darktrace_logic_names()
+    ));
+    assert_eq!(
+        event.get("json.model.logic.data_component_list"),
+        Some(&json!([1594]))
+    );
+    assert!(!event.has("json.model.logic.data"));
+    // The key itself stays: the script reads it and never removes it.
+    assert_eq!(
+        event.get_str("json.model.logic.type"),
+        Some("componentList")
+    );
+}
+
+/// A key the script's own list does not carry takes its `else` arm, which
+/// names the member by concatenation rather than through the table.
+#[test]
+fn an_unlisted_key_takes_the_scripts_own_prefix() {
+    let mut event = Event::new(json!({
+        "json": { "model": { "logic": { "data": 7, "type": "threshold" } } }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        DARKTRACE_MODEL_LOGIC,
+        &darktrace_logic_names()
+    ));
+    assert_eq!(
+        event.get("json.model.logic.data_threshold"),
+        Some(&json!(7))
+    );
+    assert!(!event.has("json.model.logic.data"));
+}
+
+/// No key means no write, and the prune runs anyway -- the script's `remove`
+/// sits outside the null guard.
+#[test]
+fn an_absent_key_still_prunes_the_member() {
+    let mut event = Event::new(json!({
+        "json": { "model": { "logic": { "data": [1], "version": 1 } } }
+    }));
+    assert!(try_params_painless(
+        &mut event,
+        DARKTRACE_MODEL_LOGIC,
+        &darktrace_logic_names()
+    ));
+    assert!(!event.has("json.model.logic.data"));
+    assert_eq!(event.get("json.model.logic.version"), Some(&json!(1)));
+    assert_eq!(
+        event
+            .get_object("json.model.logic")
+            .map(serde_json::Map::len),
+        Some(1),
+        "nothing was written under a name the table never gave"
+    );
+}
+
+/// The parse reads every part off the script and cross-checks them, so a
+/// script saying something else declines rather than moving the wrong member.
+#[test]
+fn a_rename_whose_arms_disagree_declines() {
+    let normalised = crate::common::normalise(DARKTRACE_MODEL_LOGIC).into_owned();
+    assert!(parse_rename_member_by_lookup(&normalised).is_some());
+
+    // The `else` arm names a DIFFERENT container from the lookup arm.
+    let split = normalised.replace(
+        "{ ctx[\"json\"][\"model\"][\"logic\"][\"data_\"",
+        "{ ctx[\"json\"][\"other\"][\"logic\"][\"data_\"",
+    );
+    assert!(parse_rename_member_by_lookup(&split).is_none());
+
+    // The prune takes a member the local was never bound to, so the script is
+    // not moving the value this would move.
+    let elsewhere = normalised.replace(".remove(\"data\")", ".remove(\"version\")");
+    assert!(parse_rename_member_by_lookup(&elsewhere).is_none());
+
+    // The lookup is keyed on a different field from the guard.
+    let crossed = normalised.replace(
+        "[params.get(ctx.json.model.logic?.type)]",
+        "[params.get(ctx.json.model.logic?.version)]",
+    );
+    assert!(parse_rename_member_by_lookup(&crossed).is_none());
+}
+
+/// A write SUBSCRIPTED by an expression names a destination no `(path, value)`
+/// pair can spell, so it is not reported as a write at all.
+///
+/// Reading the last `ctx.` on such a line lands inside the subscript's own
+/// argument: darktrace came back as `json.model.logic.type]`, and
+/// `LookupNormalise` stored the table's row under that key on every event.
+#[test]
+fn a_subscripted_write_is_not_read_as_a_path() {
+    let normalised = crate::common::normalise(DARKTRACE_MODEL_LOGIC);
+    assert!(
+        ctx_writes(&normalised).is_empty(),
+        "both arms are subscripted by an expression: {:?}",
+        ctx_writes(&normalised)
+    );
+
+    // A subscript the script spells as a LITERAL is still a path, and still
+    // read -- the skip is for the ones the event decides.
+    assert_eq!(
+        ctx_writes("ctx.network['iana_number'] = 6"),
+        vec![("network.iana_number".to_string(), "6".to_string())]
+    );
+}
+
+/// The destination is the path the subscript is applied TO, whichever way the
+/// root is spelled.
+#[test]
+fn a_subscripts_subject_reads_backwards_to_the_root() {
+    assert_eq!(
+        subscripted_subject("  if (x) { ctx[\"json\"][\"model\"][\"logic\"]"),
+        Some("json.model.logic".to_string())
+    );
+    assert_eq!(
+        subscripted_subject("ctx.aws.waf['request']"),
+        Some("aws.waf.request".to_string())
+    );
+    assert_eq!(subscripted_subject("ctx.a.b"), Some("a.b".to_string()));
+    // A segment the EVENT decides names no path this can return.
+    assert!(subscripted_subject("ctx.a[ctx.b.c]").is_none());
+    // A local is not the document.
+    assert!(subscripted_subject("m[\"a\"]").is_none());
+}
+
+/// `beyondtrust_pra`'s action table, verbatim from
+/// `filebeat/beyondtrust_pra_access_session/default.rs`.
+///
+/// Two things the plain merge cannot do. One key is COLLECTED into a list the
+/// script seeds with `session` before the row's own members go in, so a row with
+/// no `category` still leaves `event.category` holding the seed -- which is what
+/// every `session-start` event in the corpus needed. And an action the table has
+/// no row for is not silence: the script writes a category and a type of its own
+/// and returns.
+const PRA_ACTIONS: &str = r#"if (params.get(ctx.event.action) == null) {\n  ctx.event.category = [\"session\"]; // As each event belongs to a session\n  ctx.event.type = [\"info\"]; // Remaining are of type info\n  return;\n}\n // As each event belongs to a session\ndef event_category = new ArrayList([\"session\"]); params.get(ctx.event.action).forEach((k, v) -> {\n    if (k.equals(\"category\")) {\n      event_category.addAll(v);\n    }else{\n        ctx.event[k] = v;\n    }  \n}); ctx.event.category = event_category"#;
+
+fn pra_actions() -> Value {
+    json!({
+        "file-download": { "category": ["file"], "type": ["access"] },
+        "session-start": { "type": ["start"] },
+    })
+}
+
+#[test]
+fn a_collected_key_keeps_the_seed_the_script_starts_it_with() {
+    // A row carrying `category`: the seed comes first, then the row's members.
+    let mut listed = Event::new(json!({ "event": { "action": "file-download" } }));
+    assert!(try_params_painless(
+        &mut listed,
+        PRA_ACTIONS,
+        &pra_actions()
+    ));
+    assert_eq!(
+        listed.get("event.category"),
+        Some(&json!(["session", "file"]))
+    );
+    assert_eq!(listed.get("event.type"), Some(&json!(["access"])));
+
+    // A row with no `category` at all still gets the seed.
+    let mut seeded = Event::new(json!({ "event": { "action": "session-start" } }));
+    assert!(try_params_painless(
+        &mut seeded,
+        PRA_ACTIONS,
+        &pra_actions()
+    ));
+    assert_eq!(seeded.get("event.category"), Some(&json!(["session"])));
+    assert_eq!(seeded.get("event.type"), Some(&json!(["start"])));
+}
+
+/// An action the table has no row for takes the script's own default, which the
+/// `Program` the pattern carries holds under a guard it can never read -- a
+/// `Program` never sees `params`.
+#[test]
+fn an_action_with_no_row_takes_the_scripts_own_default() {
+    let mut unlisted = Event::new(json!({ "event": { "action": "chat-message" } }));
+    assert!(try_params_painless(
+        &mut unlisted,
+        PRA_ACTIONS,
+        &pra_actions()
+    ));
+    assert_eq!(unlisted.get("event.category"), Some(&json!(["session"])));
+    assert_eq!(unlisted.get("event.type"), Some(&json!(["info"])));
+}
+
+/// The merges that carry no collected key are unchanged: `cisco_asa` still
+/// fans its row straight onto `ctx.event` and writes no list of its own.
+#[test]
+fn a_merge_with_no_collected_key_is_untouched() {
+    let script = "params.get(ctx.event.code)?.forEach((k, v) -> ctx.event[k] = v);";
+    let params = json!({ "302013": { "kind": "event", "type": ["connection", "start"] } });
+    let mut event = Event::new(json!({ "event": { "code": "302013" } }));
+    assert!(try_params_painless(&mut event, script, &params));
+    assert_eq!(event.get_str("event.kind"), Some("event"));
+    assert_eq!(
+        event.get("event.type"),
+        Some(&json!(["connection", "start"]))
+    );
+    assert!(!event.has("event.category"));
+
+    // A code with no row writes nothing, because this script has no default.
+    let mut unlisted = Event::new(json!({ "event": { "code": "999999" } }));
+    assert!(try_params_painless(&mut unlisted, script, &params));
+    assert!(!unlisted.has("event.kind"));
+}

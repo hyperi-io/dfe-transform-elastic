@@ -81,10 +81,18 @@ pub struct TransformMetrics {
     /// Offset commits that failed after a successful send.
     pub commit_failures: Counter,
 
+    /// Batches whose events did not look like the envelope the config pinned.
+    /// The pinned value still wins, so a steady rate means the pin is wrong.
+    pub envelope_contradicted: Counter,
+
+    /// Batches detected as an envelope the configured source cannot arrive in.
+    /// Unwrapped as Beats instead, which every source accepts.
+    pub envelope_unaccepted: Counter,
+
     /// Events per received batch. Shows whether `batch_size` is being reached.
     pub batch_events: Histogram,
 
-    /// Wall-clock seconds to transform one batch.
+    /// Elapsed seconds to transform one batch.
     pub batch_duration: Histogram,
 }
 
@@ -156,6 +164,14 @@ impl TransformMetrics {
             commit_failures: manager.counter(
                 "commit_failures_total",
                 "Offset commits that failed after a successful send",
+            ),
+            envelope_contradicted: manager.counter(
+                "envelope_contradicted_total",
+                "Batches whose events did not look like the pinned envelope",
+            ),
+            envelope_unaccepted: manager.counter(
+                "envelope_unaccepted_total",
+                "Batches detected as an envelope this source cannot arrive in",
             ),
             batch_events: manager.histogram("batch_events", "Events per received batch"),
             batch_duration: manager

@@ -33,82 +33,75 @@ impl Transform for CspmEvents {
                 event.set("event.outcome", json!("failure"))?;
             }
 
-            if event.has("crowdstrike.event.EventAction") {
+            if event.has_value("crowdstrike.event.EventAction") {
                 event.rename("crowdstrike.event.EventAction", "event.action")?;
             }
 
-            if event.has("crowdstrike.event.ReportUrl") {
+            if event.has_value("crowdstrike.event.ReportUrl") {
                 event.rename("crowdstrike.event.ReportUrl", "event.reference")?;
             }
 
             let _cond = { event.has_value("crowdstrike.event.ResourceAttributes") };
             if _cond {
-                if let Some(s) = event.get_string("crowdstrike.event.ResourceAttributes") {
-                    let parsed: Value =
-                        serde_json::from_str(&s).map_err(|e| TransformError::ParseError {
-                            path: "crowdstrike.event.ResourceAttributes".into(),
-                            message: format!("failed to parse JSON: {}", e),
-                        })?;
-                    event.set("crowdstrike.event.ResourceAttributes", parsed)?;
-                }
+                parse_json_field(
+                    event,
+                    "crowdstrike.event.ResourceAttributes",
+                    "crowdstrike.event.ResourceAttributes",
+                )?;
             }
 
-            if event.has("crowdstrike.event.EventSource") {
+            if event.has_value("crowdstrike.event.EventSource") {
                 event.rename("crowdstrike.event.EventSource", "event.provider")?;
-            }
-
-            if event.has("crowdstrike.event.Severity") {
-                event.rename("crowdstrike.event.Severity", "event.severity")?;
             }
 
             let _cond = { !event.has_value("cloud.account.id") };
             if _cond {
-                if event.has("crowdstrike.event.AccountId") {
+                if event.has_value("crowdstrike.event.AccountId") {
                     event.rename("crowdstrike.event.AccountId", "cloud.account.id")?;
                 }
             }
 
             let _cond = { !event.has_value("cloud.region") };
             if _cond {
-                if event.has("crowdstrike.event.Region") {
+                if event.has_value("crowdstrike.event.Region") {
                     event.rename("crowdstrike.event.Region", "cloud.region")?;
                 }
             }
 
             let _cond = { !event.has_value("cloud.provider") };
             if _cond {
-                if event.has("crowdstrike.event.CloudProvider") {
+                if event.has_value("crowdstrike.event.CloudProvider") {
                     event.rename("crowdstrike.event.CloudProvider", "cloud.provider")?;
                 }
             }
 
             let _cond = { !event.has_value("cloud.provider") };
             if _cond {
-                if event.has("crowdstrike.event.CloudPlatform") {
+                if event.has_value("crowdstrike.event.CloudPlatform") {
                     event.rename("crowdstrike.event.CloudPlatform", "cloud.provider")?;
                 }
             }
 
             let _cond = { !event.has_value("cloud.service.name") };
             if _cond {
-                if event.has("crowdstrike.event.CloudService") {
+                if event.has_value("crowdstrike.event.CloudService") {
                     event.rename("crowdstrike.event.CloudService", "cloud.service.name")?;
                 }
             }
 
-            if event.has("crowdstrike.event.PolicyStatement") {
+            if event.has_value("crowdstrike.event.PolicyStatement") {
                 event.rename("crowdstrike.event.PolicyStatement", "message")?;
             }
 
-            if event.has("crowdstrike.event.UserName") {
+            if event.has_value("crowdstrike.event.UserName") {
                 event.rename("crowdstrike.event.UserName", "user.name")?;
             }
 
-            if event.has("crowdstrike.event.UserId") {
+            if event.has_value("crowdstrike.event.UserId") {
                 event.rename("crowdstrike.event.UserId", "user.id")?;
             }
 
-            if event.has("crowdstrike.event.UserSourceIp") {
+            if event.has_value("crowdstrike.event.UserSourceIp") {
                 event.rename("crowdstrike.event.UserSourceIp", "source.ip")?;
             }
 
@@ -120,15 +113,13 @@ impl Transform for CspmEvents {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.Timestamp") {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.Timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -142,17 +133,13 @@ impl Transform for CspmEvents {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.Timestamp") {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.Timestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -168,15 +155,13 @@ impl Transform for CspmEvents {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.EventCreatedTimestamp")
                 {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.EventCreatedTimestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -192,17 +177,13 @@ impl Transform for CspmEvents {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.EventCreatedTimestamp")
                 {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "@timestamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("@timestamp", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.EventCreatedTimestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -226,15 +207,15 @@ impl Transform for CspmEvents {
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ResourceCreateTime")
                 {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "crowdstrike.event.ResourceCreateTime",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => {
+                            event.set("crowdstrike.event.ResourceCreateTime", parsed)?
+                        }
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ResourceCreateTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -250,17 +231,15 @@ impl Transform for CspmEvents {
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ResourceCreateTime")
                 {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "crowdstrike.event.ResourceCreateTime",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => {
+                            event.set("crowdstrike.event.ResourceCreateTime", parsed)?
+                        }
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ResourceCreateTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -270,10 +249,11 @@ impl Transform for CspmEvents {
             if _cond {
                 event.append(
                     "threat.tactic.name",
-                    event
-                        .get("crowdstrike.event.Tactic")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.Tactic")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -281,10 +261,11 @@ impl Transform for CspmEvents {
             if _cond {
                 event.append(
                     "threat.technique.name",
-                    event
-                        .get("crowdstrike.event.Technique")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.Technique")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -296,30 +277,13 @@ impl Transform for CspmEvents {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

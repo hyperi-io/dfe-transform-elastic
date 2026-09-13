@@ -34,62 +34,81 @@ impl Transform for IpdDetectionSummary {
                 event.set("event.outcome", json!("failure"))?;
             }
 
-            if event.has("crowdstrike.event.DetectDescription") {
+            if event.has_value("crowdstrike.event.DetectDescription") {
                 event.rename("crowdstrike.event.DetectDescription", "message")?;
             }
 
-            if event.has("crowdstrike.event.LocationCountryCode") {
+            if event.has_value("crowdstrike.event.LocationCountryCode") {
                 event.rename(
                     "crowdstrike.event.LocationCountryCode",
                     "host.geo.country_iso_code",
                 )?;
             }
 
-            if event.has("crowdstrike.event.PatternId") {
+            if event.has_value("crowdstrike.event.PatternId") {
                 if let Some(val) = event.get("crowdstrike.event.PatternId") {
-                    let converted = match val {
-                        Value::String(_) => val.clone(),
-                        Value::Number(n) => json!(n.to_string()),
-                        Value::Bool(b) => json!(b.to_string()),
-                        Value::Null => json!("null"),
-                        _ => json!(val.to_string()),
-                    };
+                    let converted = convert_value(val, "string").map_err(|message| {
+                        TransformError::ParseError {
+                            path: "crowdstrike.event.PatternId".into(),
+                            message,
+                        }
+                    })?;
                     event.set("rule.uuid", converted)?;
                 }
             }
 
-            if event.has("crowdstrike.event.Severity") {
-                event.rename("crowdstrike.event.Severity", "event.severity")?;
-            }
-
-            if event.has("crowdstrike.event.SourceAccountDomain") {
+            if event.has_value("crowdstrike.event.SourceAccountDomain") {
                 event.rename("crowdstrike.event.SourceAccountDomain", "user.domain")?;
             }
 
-            if event.has("crowdstrike.event.SourceAccountName") {
+            if event.has_value("crowdstrike.event.SourceAccountName") {
                 event.rename("crowdstrike.event.SourceAccountName", "user.name")?;
             }
 
-            if event.has("crowdstrike.event.SourceAccountObjectSid") {
+            if event.has_value("crowdstrike.event.SourceAccountObjectSid") {
                 event.rename("crowdstrike.event.SourceAccountObjectSid", "user.id")?;
             }
 
-            if event.has("crowdstrike.event.SourceEndpointHostName") {
+            if event.has_value("crowdstrike.event.SourceEndpointHostName") {
                 event.rename("crowdstrike.event.SourceEndpointHostName", "host.name")?;
             }
 
-            if event.has("crowdstrike.event.SourceEndpointIpAddress") {
-                event.rename("crowdstrike.event.SourceEndpointIpAddress", "host.ip")?;
+            let _cond = {
+                event.has_value("crowdstrike.event.SourceEndpointIpAddress")
+                    && event.get_str("crowdstrike.event.SourceEndpointIpAddress") != Some("")
+            };
+            if _cond {
+                event.append(
+                    "host.ip",
+                    json!(
+                        event
+                            .get("crowdstrike.event.SourceEndpointIpAddress")
+                            .map_or_else(String::new, template_to_string)
+                    ),
+                )?;
+            }
+
+            let _cond = { event.has_value("crowdstrike.event.SourceEndpointIpAddress") };
+            if _cond {
+                if event
+                    .remove("crowdstrike.event.SourceEndpointIpAddress")
+                    .is_none()
+                {
+                    return Err(TransformError::FieldNotFound {
+                        path: "crowdstrike.event.SourceEndpointIpAddress".into(),
+                    });
+                }
             }
 
             let _cond = { event.has_value("crowdstrike.event.Technique") };
             if _cond {
                 event.append(
                     "threat.technique.name",
-                    event
-                        .get("crowdstrike.event.Technique")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.Technique")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -97,10 +116,11 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 event.append(
                     "threat.technique.id",
-                    event
-                        .get("crowdstrike.event.TechniqueId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TechniqueId")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -108,10 +128,11 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 event.append(
                     "threat.tactic.name",
-                    event
-                        .get("crowdstrike.event.Tactic")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.Tactic")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -119,10 +140,11 @@ impl Transform for IpdDetectionSummary {
             if _cond {
                 event.append(
                     "threat.tactic.id",
-                    event
-                        .get("crowdstrike.event.TacticId")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TacticId")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -133,15 +155,15 @@ impl Transform for IpdDetectionSummary {
                 }
             }
 
-            if event.has("crowdstrike.event.DetectName") {
+            if event.has_value("crowdstrike.event.DetectName") {
                 event.rename("crowdstrike.event.DetectName", "rule.name")?;
             }
 
-            if event.has("crowdstrike.event.DetectId") {
+            if event.has_value("crowdstrike.event.DetectId") {
                 event.rename("crowdstrike.event.DetectId", "rule.id")?;
             }
 
-            if event.has("crowdstrike.event.FalconHostLink") {
+            if event.has_value("crowdstrike.event.FalconHostLink") {
                 event.rename("crowdstrike.event.FalconHostLink", "event.reference")?;
             }
 
@@ -152,15 +174,14 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.ContextTimeStamp") };
             if _cond {
-                if event.has("crowdstrike.event.ContextTimeStamp") {
+                if event.has_value("crowdstrike.event.ContextTimeStamp") {
                     if let Some(val) = event.get("crowdstrike.event.ContextTimeStamp") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.ContextTimeStamp".into(),
+                                message,
+                            }
+                        })?;
                         event.set("crowdstrike.event.ContextTimeStamp", converted)?;
                     }
                 }
@@ -173,11 +194,13 @@ impl Transform for IpdDetectionSummary {
                         .is_some_and(|s| s.len() > 18)
             };
             if _cond {
-                if let Some(s) = event.get_string("crowdstrike.event.ContextTimeStamp") {
-                    let re = cached_regex!("\\d{6}$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("crowdstrike.event.ContextTimeStamp", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "crowdstrike.event.ContextTimeStamp",
+                    "crowdstrike.event.ContextTimeStamp",
+                    cached_regex!("\\d{6}$"),
+                    "",
+                )?;
             }
 
             let _cond = {
@@ -188,15 +211,13 @@ impl Transform for IpdDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "event.created",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.created", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ContextTimeStamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -210,17 +231,13 @@ impl Transform for IpdDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ContextTimeStamp") {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "event.created",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.created", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ContextTimeStamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -228,15 +245,14 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.AccountCreationTimeStamp") };
             if _cond {
-                if event.has("crowdstrike.event.AccountCreationTimeStamp") {
+                if event.has_value("crowdstrike.event.AccountCreationTimeStamp") {
                     if let Some(val) = event.get("crowdstrike.event.AccountCreationTimeStamp") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.AccountCreationTimeStamp".into(),
+                                message,
+                            }
+                        })?;
                         event.set("crowdstrike.event.AccountCreationTimeStamp", converted)?;
                     }
                 }
@@ -249,11 +265,13 @@ impl Transform for IpdDetectionSummary {
                         .is_some_and(|s| s.len() > 18)
             };
             if _cond {
-                if let Some(s) = event.get_string("crowdstrike.event.AccountCreationTimeStamp") {
-                    let re = cached_regex!("\\d{6}$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("crowdstrike.event.AccountCreationTimeStamp", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "crowdstrike.event.AccountCreationTimeStamp",
+                    "crowdstrike.event.AccountCreationTimeStamp",
+                    cached_regex!("\\d{6}$"),
+                    "",
+                )?;
             }
 
             let _cond = {
@@ -266,15 +284,15 @@ impl Transform for IpdDetectionSummary {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.AccountCreationTimeStamp")
                 {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "crowdstrike.event.AccountCreationTimeStamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => {
+                            event.set("crowdstrike.event.AccountCreationTimeStamp", parsed)?
+                        }
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.AccountCreationTimeStamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -290,17 +308,15 @@ impl Transform for IpdDetectionSummary {
                 if let Some(date_str) =
                     event.get_as_string("crowdstrike.event.AccountCreationTimeStamp")
                 {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "crowdstrike.event.AccountCreationTimeStamp",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => {
+                            event.set("crowdstrike.event.AccountCreationTimeStamp", parsed)?
+                        }
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.AccountCreationTimeStamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -308,15 +324,14 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.StartTime") };
             if _cond {
-                if event.has("crowdstrike.event.StartTime") {
+                if event.has_value("crowdstrike.event.StartTime") {
                     if let Some(val) = event.get("crowdstrike.event.StartTime") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.StartTime".into(),
+                                message,
+                            }
+                        })?;
                         event.set("crowdstrike.event.StartTime", converted)?;
                     }
                 }
@@ -329,11 +344,13 @@ impl Transform for IpdDetectionSummary {
                         .is_some_and(|s| s.len() > 18)
             };
             if _cond {
-                if let Some(s) = event.get_string("crowdstrike.event.StartTime") {
-                    let re = cached_regex!("\\d{6}$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("crowdstrike.event.StartTime", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "crowdstrike.event.StartTime",
+                    "crowdstrike.event.StartTime",
+                    cached_regex!("\\d{6}$"),
+                    "",
+                )?;
             }
 
             let _cond = {
@@ -344,15 +361,13 @@ impl Transform for IpdDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "event.start",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.start", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.StartTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -366,17 +381,13 @@ impl Transform for IpdDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.StartTime") {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "event.start",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.start", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.StartTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -384,15 +395,14 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.EndTime") };
             if _cond {
-                if event.has("crowdstrike.event.EndTime") {
+                if event.has_value("crowdstrike.event.EndTime") {
                     if let Some(val) = event.get("crowdstrike.event.EndTime") {
-                        let converted = match val {
-                            Value::String(_) => val.clone(),
-                            Value::Number(n) => json!(n.to_string()),
-                            Value::Bool(b) => json!(b.to_string()),
-                            Value::Null => json!("null"),
-                            _ => json!(val.to_string()),
-                        };
+                        let converted = convert_value(val, "string").map_err(|message| {
+                            TransformError::ParseError {
+                                path: "crowdstrike.event.EndTime".into(),
+                                message,
+                            }
+                        })?;
                         event.set("crowdstrike.event.EndTime", converted)?;
                     }
                 }
@@ -405,11 +415,13 @@ impl Transform for IpdDetectionSummary {
                         .is_some_and(|s| s.len() > 18)
             };
             if _cond {
-                if let Some(s) = event.get_string("crowdstrike.event.EndTime") {
-                    let re = cached_regex!("\\d{6}$");
-                    let replaced = re.replace_all(&s, "").into_owned();
-                    event.set("crowdstrike.event.EndTime", replaced)?;
-                }
+                gsub_field(
+                    event,
+                    "crowdstrike.event.EndTime",
+                    "crowdstrike.event.EndTime",
+                    cached_regex!("\\d{6}$"),
+                    "",
+                )?;
             }
 
             let _cond = {
@@ -420,15 +432,13 @@ impl Transform for IpdDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "event.end",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.end", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.EndTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -442,17 +452,13 @@ impl Transform for IpdDetectionSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.EndTime") {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "event.end",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.end", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.EndTime".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -460,78 +466,85 @@ impl Transform for IpdDetectionSummary {
 
             let _cond = { event.has_value("crowdstrike.event.TargetEndpointHostName") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
-                    event
-                        .get("crowdstrike.event.TargetEndpointHostName")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TargetEndpointHostName")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
             let _cond = { event.has_value("crowdstrike.event.TargetDomain") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
-                    event
-                        .get("crowdstrike.event.TargetDomain")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TargetDomain")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
             let _cond = { event.has_value("crowdstrike.event.TargetAccountName") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.user",
-                    event
-                        .get("crowdstrike.event.TargetAccountName")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.TargetAccountName")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
             let _cond = { event.has_value("crowdstrike.event.AdditionalAccountDomain") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
-                    event
-                        .get("crowdstrike.event.AdditionalAccountDomain")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.AdditionalAccountDomain")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
             let _cond = { event.has_value("crowdstrike.event.AdditionalAccountName") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
-                    event
-                        .get("crowdstrike.event.AdditionalAccountName")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.AdditionalAccountName")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
             let _cond = { event.has_value("crowdstrike.event.AdditionalEndpointHostName") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.hosts",
-                    event
-                        .get("crowdstrike.event.AdditionalEndpointHostName")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.AdditionalEndpointHostName")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
             let _cond = { event.has_value("crowdstrike.event.AdditionalEndpointIpAddress") };
             if _cond {
-                event.append(
+                event.append_unique(
                     "related.ip",
-                    event
-                        .get("crowdstrike.event.AdditionalEndpointIpAddress")
-                        .cloned()
-                        .unwrap_or(Value::Null),
+                    json!(
+                        event
+                            .get("crowdstrike.event.AdditionalEndpointIpAddress")
+                            .map_or_else(String::new, template_to_string)
+                    ),
                 )?;
             }
 
@@ -543,30 +556,13 @@ impl Transform for IpdDetectionSummary {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }

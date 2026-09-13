@@ -1,0 +1,205 @@
+# What matters when comparing DFE output against Elastic's.
+#
+# Byte equality is not the goal. DFE deliberately does not emit Elastic's
+# plumbing, and resolves some enrichment against different databases. This file
+# is the single definition of which differences are defects, read by
+# scripts/compat.py and by the Rust comparison harness.
+#
+# Adding an entry hides a difference, so every entry carries a reason and every
+# run reports how many fields each rule excluded.
+#
+# An entry may carry `sources: [name, ...]`, and it then holds for those sources
+# alone. Omit it only where the reason is a fact about the FIELD rather than one
+# source's quirk -- `event.ingested` is write time everywhere. A quirk left
+# unscoped blinds every other source: `event.kind` and `error.message` were
+# excluded corpus-wide for a cisco_nexus date failure, so a transform emitting
+# `pipeline_error` anywhere else did not show up as a difference at all.
+#
+# scripts/compat.py does not read `sources` yet and applies every rule globally,
+# so its audit is the wider reading of the two.
+
+version: 1
+
+# Carry no information and vary run to run. Removed at capture, not compared.
+nondeterministic:
+  - path: _ingest.timestamp
+    why: Written by the simulate API on every call.
+  - path: event.ingested
+    why: Write time, not event time.
+  - path: event.created
+    why: Agent read time, not event time.
+  - path: "@timestamp"
+    why: Pipelines that fall back to now() when the payload carries no time.
+  - path: ticura.indicator.feed_ingest_timestamp
+    why: >
+      `set` with `value: "{{{_ingest.timestamp}}}"`, so it is the capture's own
+      write time and no transform can reproduce it. It is ti_ticura's most
+      frequent wrong field, wrong on 12 of 13 events, and chasing it with a
+      matcher would be chasing the clock.
+  - path: abusech.ja3_fingerprints.deleted_at
+    why: >
+      event.ingested plus labels.interval, so it inherits write time. The
+      arithmetic is held instead by
+      painless_common::tests::an_interval_expiry_settles_before_the_next_run,
+      which asserts the captured value against the captured ingest instant.
+  - path: abusech.sslblacklist.deleted_at
+    why: Same script as abusech.ja3_fingerprints.deleted_at, same write time.
+  - path: anomali.threatstream.deletion_scheduled_at
+    why: >
+      `@timestamp` plus `_conf.ioc_duration_before_deletion`, and `@timestamp`
+      is itself write time on this source -- the captured value carries the
+      same sub-second digits as the captured `event.ingested`. Capped at
+      `json.expiration_ts` when that is earlier, which IS deterministic, but
+      the uncapped path is not.
+
+# Elastic and Beats plumbing DFE does not emit. Never a defect. Prefix match on
+# the dotted path, list indices removed first.
+not_emitted:
+  - prefix: tags
+    why: Beats and test-harness tagging, plus _tag_on_failure. Not vendor data.
+  - prefix: _ingest
+    why: Ingest-pipeline scratch.
+  - prefix: "@metadata"
+    why: Beats internal.
+  - prefix: _id
+    why: Elasticsearch document identity.
+  - prefix: ecs.version
+    why: DFE declares its own schema version, not the pipeline's.
+  - prefix: fileset
+    why: Beats fileset naming, superseded by event.dataset in ECS 7.
+  - prefix: log.offset
+    why: Byte offset into the source file.
+  - prefix: log.file
+    why: Path on the collecting host.
+  - prefix: input.type
+    why: Beats input that collected the event.
+  - prefix: host.id
+    why: Identity of the collecting host, not the observed one.
+  - prefix: host.name
+    why: Identity of the collecting host, not the observed one.
+  - prefix: event.module
+    why: Beats module naming, superseded by event.dataset in ECS 7.
+  - prefix: service.type
+    why: Set by the Beats harness from module configuration.
+  - prefix: agent
+    why: Collecting agent identity.
+  - prefix: data_stream
+    why: Destination routing, decided downstream of the transform.
+
+# Produced by both sides, differently. Debt, not plumbing: each entry should
+# eventually go away, and the count is expected to fall rather than grow.
+known_different:
+  - prefix: source.geo
+    why: DB-IP Lite against MaxMind GeoLite2.
+  - prefix: destination.geo
+    why: DB-IP Lite against MaxMind GeoLite2.
+  - prefix: client.geo
+    why: DB-IP Lite against MaxMind GeoLite2.
+  - prefix: server.geo
+    why: DB-IP Lite against MaxMind GeoLite2.
+  - prefix: host.geo
+    why: DB-IP Lite against MaxMind GeoLite2.
+  - prefix: geo
+    why: Azure writes activity-log locations to a bare geo object.
+  - prefix: source.as
+    why: DB-IP Lite against MaxMind GeoLite2 ASN.
+  - prefix: destination.as
+    why: DB-IP Lite against MaxMind GeoLite2 ASN.
+  - prefix: client.as
+    why: DB-IP Lite against MaxMind GeoLite2 ASN.
+  - prefix: server.as
+    why: DB-IP Lite against MaxMind GeoLite2 ASN.
+  - prefix: host.as
+    why: DB-IP Lite against MaxMind GeoLite2 ASN.
+  - prefix: user_agent
+    why: Our parser against Elastic's ua-parser, differing on edge cases.
+  - prefix: event.original
+    why: Present or absent by the preserve_original_event tag, which is deployment config.
+  - prefix: okta.debug_context.debug_data.flattened.risk_object
+    why: A raw string rendering of a parsed object, so formatting rather than content.
+  - prefix: cisco_nexus.log.time
+    why: A yearless syslog date, so Elastic fills in the ingesting node's current year.
+  - prefix: cisco_nexus.log.syslog_time
+    why: A yearless syslog date, so Elastic fills in the ingesting node's current year.
+  - prefix: dns.question.registered_domain
+    sources: [aws, cisco_umbrella]
+    why: >-
+      Our public suffix list is NEWER than the snapshot Elasticsearch 9.2.2
+      bundles, so it splits at a suffix that exists today and Elastic splits at
+      the deepest one it knows -- s3.us-east-1.amazonaws.com for aws route53,
+      servicebus.windows.net for umbrella. Debt, not a defect either side: it
+      goes away when the corpus is regenerated against an engine whose list is
+      as new as ours.
+  - prefix: dns.question.subdomain
+    sources: [aws, cisco_umbrella]
+    why: The other half of the same split.
+  - prefix: dns.question.top_level_domain
+    sources: [aws, cisco_umbrella]
+    why: The other half of the same split.
+
+# Permanent divergences, each with its reason named -- a divergence without one
+# is indistinguishable from a defect of our own. Most are Elasticsearch being
+# wrong where we are right. The rest is text only the vendor's own runtime can
+# produce, which no amount of work here will reproduce.
+corrected:
+  - prefix: event.duration
+    sources: [azure]
+    why: >-
+      Elasticsearch 9.2.2 multiplies milliseconds into a 32-bit int, so azure's
+      durationMs 2826 overflows to -1468967296 where the answer is 2826000000.
+  - prefix: event.kind
+    sources: [cisco_nexus]
+    why: >-
+      cisco_nexus ships 27 events whose timestamp its own date processor cannot
+      parse, so Elastic emits pipeline_error where we emit a parsed event.
+  - prefix: error.message
+    sources: [cisco_nexus]
+    why: >-
+      The other half of the cisco_nexus date failure -- Elastic's own error
+      text, which we have nothing to report.
+  - prefix: error.message
+    sources: [symantec_endpoint_security]
+    why: >-
+      51 events carry a non-JSON `event.original`, so both engines fail the
+      same json processor and report it in their own words: Jackson's
+      "Unrecognized token" with a source excerpt, against serde_json's. The
+      failure agrees; only the wording is the runtime's own.
+  - prefix: error.message
+    sources: [atlassian_cloud]
+    why: >-
+      10 events carry an OBJECT `event.original`, so both engines fail the same
+      json processor and report it in their own words: Jackson's parse error on
+      Java's `Map.toString` rendering, against ours declining a container. The
+      wording can never agree -- Elastic's quotes the map in HashMap iteration
+      order, which is not reproducible -- but the failure does.
+
+# ECS fields whose values are sets. Same members in a different sequence is
+# equality, not a difference.
+unordered:
+  - event.category
+  - event.type
+  - event.kind
+  - related.user
+  - related.hosts
+  - related.ip
+  - related.hash
+  - related.entity
+  - threat.tactic.name
+  - threat.technique.name
+  - okta.debug_context.debug_data.risk_behaviors
+  # o365 collects the forwarding addresses into a Java HashSet and lists it,
+  # so Elastic's order is the hash-bucket walk and carries no meaning.
+  - email.to.address
+  # symantec_endpoint_security collects both of these into a Java HashSet the
+  # same way. Its email direction ids 0 then 1 map to unknown then inbound and
+  # every capture holds ["inbound","unknown"]; six attribute ids go in in
+  # numeric order and come back [encrypted, hidden, readonly, archive,
+  # compressed, directory]. Reproducing the bucket walk would bake a
+  # meaningless order into shipped data to score a test.
+  - email.direction
+  - file.attributes
+
+# Per-fixture declarations Elastic already ships are honoured in addition to the
+# above, read from each `*-config.yml`:
+#   dynamic_fields          value need only match a regex
+#   numeric_keyword_fields  compare the number as a string

@@ -34,29 +34,33 @@ impl Transform for ReconNotificationSummary {
                     json!(format!(
                         "recon-notification-{}",
                         event
-                            .get("ctx.crowdstrike.event.ItemType")
-                            .map_or_else(String::new, painless_to_string)
+                            .get("crowdstrike.event.ItemType")
+                            .map_or_else(String::new, template_to_string)
                     )),
                 )?;
             }
 
-            if event.has("crowdstrike.event.ItemId") {
+            if event.has_value("crowdstrike.event.ItemId") {
                 event.rename("crowdstrike.event.ItemId", "event.id")?;
             }
 
-            if event.has("crowdstrike.event.RuleId") {
+            if event.has_value("crowdstrike.event.RuleId") {
                 event.rename("crowdstrike.event.RuleId", "rule.id")?;
             }
 
-            if event.has("crowdstrike.event.RuleName") {
+            if event.has_value("crowdstrike.event.RuleName") {
                 event.rename("crowdstrike.event.RuleName", "rule.name")?;
             }
 
-            if event.has("crowdstrike.event.RuleTopic") {
-                event.rename("crowdstrike.event.RuleTopic", "rule.ruleset")?;
+            if let Some(v) = event
+                .get("crowdstrike.event.RuleTopic")
+                .filter(|v| !painless_is_empty_value(v))
+                .cloned()
+            {
+                event.set("rule.ruleset", v)?;
             }
 
-            if event.has("crowdstrike.event.RuleTopic") {
+            if event.has_value("crowdstrike.event.RuleTopic") {
                 event.rename("crowdstrike.event.RuleTopic", "rule.description")?;
             }
 
@@ -68,15 +72,13 @@ impl Transform for ReconNotificationSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.MatchedTimestamp") {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "event.created",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.created", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.MatchedTimestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -90,17 +92,13 @@ impl Transform for ReconNotificationSummary {
             };
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.MatchedTimestamp") {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "event.created",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.created", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.MatchedTimestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -115,15 +113,13 @@ impl Transform for ReconNotificationSummary {
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ItemPostedTimestamp")
                 {
-                    // Try UNIX_MS timestamp (skip epoch 0)
-                    if let Ok(ms) = date_str.parse::<i64>() {
-                        if ms > 0 {
-                            if let Some(dt) = chrono::DateTime::from_timestamp_millis(ms) {
-                                event.set(
-                                    "event.created",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX_MS"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.created", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ItemPostedTimestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -138,17 +134,13 @@ impl Transform for ReconNotificationSummary {
             if _cond {
                 if let Some(date_str) = event.get_as_string("crowdstrike.event.ItemPostedTimestamp")
                 {
-                    // Try UNIX timestamp (skip epoch 0)
-                    if let Ok(ts) = date_str.parse::<f64>() {
-                        if ts > 0.0 {
-                            let secs = ts as i64;
-                            let nsecs = ((ts - secs as f64) * 1_000_000_000.0) as u32;
-                            if let Some(dt) = chrono::DateTime::from_timestamp(secs, nsecs) {
-                                event.set(
-                                    "event.created",
-                                    dt.format("%Y-%m-%dT%H:%M:%S%.3fZ").to_string(),
-                                )?;
-                            }
+                    match parse_date_out(&date_str, &["UNIX"], Some("UTC"), None) {
+                        Some(parsed) => event.set("event.created", parsed)?,
+                        None => {
+                            return Err(TransformError::ParseError {
+                                path: "crowdstrike.event.ItemPostedTimestamp".into(),
+                                message: format!("unable to parse date [{date_str}]"),
+                            });
                         }
                     }
                 }
@@ -162,30 +154,13 @@ impl Transform for ReconNotificationSummary {
             Ok(_) => {}
             Err(err) => {
                 event.set("_ingest.on_failure_message", err.to_string())?;
-                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, painless_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, painless_to_string))))?;
+                event.append("error.message", json!(format!("Processor \"{}\" with tag \"{}\" in pipeline \"{}\" failed with message \"{}\"", event.get("_ingest.on_failure_processor_type").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_processor_tag").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_pipeline").map_or_else(String::new, template_to_string), event.get("_ingest.on_failure_message").map_or_else(String::new, template_to_string))))?;
                 event.set("event.kind", json!("pipeline_error"))?;
+                event.append_unique("tags", json!("preserve_original_event"))?;
                 event.remove("_ingest.on_failure_message");
             }
         }
 
-        // --- Post-processing (codegen-emitted) ---
-        // Dedup related.* arrays (same value can be appended multiple times)
-        if let Some(Value::Array(mut arr)) = event.get("related.ip").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.ip", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.user").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.user", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hash").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hash", Value::Array(arr))?;
-        }
-        if let Some(Value::Array(mut arr)) = event.get("related.hosts").cloned() {
-            dedup_array(&mut arr);
-            event.set("related.hosts", Value::Array(arr))?;
-        }
         Ok(TransformResult::Continue)
     }
 }
