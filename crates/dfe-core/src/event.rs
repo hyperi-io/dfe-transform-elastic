@@ -345,6 +345,24 @@ impl Event {
         Ok(())
     }
 
+    /// Overwrite a value that ALREADY exists, reporting whether one did.
+    ///
+    /// [`Event::set`] splits on every dot and builds the objects it needs, so a
+    /// key holding dots of its own gets a nested twin beside it rather than a
+    /// new value: panw carries `filesystem.use_percent` as one key under
+    /// `panw.system`, and setting through the dotted path would leave the
+    /// vendor's own value untouched under a duplicate. This resolves what
+    /// [`Event::get`] resolves and writes there or nowhere.
+    pub fn update(&mut self, path: &str, value: impl Into<Value>) -> bool {
+        match resolve_path_mut(&mut self.inner, path) {
+            Some(slot) => {
+                *slot = value.into();
+                true
+            }
+            None => false,
+        }
+    }
+
     /// Remove a value at a dotted path, returning it if it existed.
     ///
     /// The walk is iterator-only. Collecting the segments into a `Vec` first

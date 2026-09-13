@@ -169,7 +169,8 @@ impl Transform for Default {
                     // Source: ctx.event.duration = (ctx.ibm_qradar.offense.close_time - ctx.ibm_qradar.offense.start_time) * 1000000;
                     scale_field(
                         event,
-                        &ScaleField::new(
+                        &ScaleField::between(
+                            "ibm_qradar.offense.close_time",
                             "ibm_qradar.offense.start_time",
                             "event.duration",
                             Factor::Long(1000000),

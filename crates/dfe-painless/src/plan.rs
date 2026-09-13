@@ -344,6 +344,16 @@ mod tests {
                  \"event.duration\", Factor::Double(1000000000.0)));",
             ),
             (
+                // The same scale over a DIFFERENCE, which canva and ibm_qradar
+                // both write. Read as a plain path the source was whichever
+                // `ctx.` came last, so both shipped the START scaled to
+                // nanoseconds where the elapsed time belonged.
+                "ctx.event.duration = (ctx.json.action.end_timestamp - \
+                 ctx.json.action.start_timestamp) * 1000000;",
+                "scale_field(event, &ScaleField::between(\"json.action.end_timestamp\", \
+                 \"json.action.start_timestamp\", \"event.duration\", Factor::Long(1000000)));",
+            ),
+            (
                 // The commonest pattern in the catalogue, 759 call sites.
                 "boolean drop(Object o) { if (o == null || o == '') return true; \
                  if (o instanceof Map) { ((Map) o).values().removeIf(v -> drop(v)); \
