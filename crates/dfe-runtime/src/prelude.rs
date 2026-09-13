@@ -92,6 +92,7 @@ pub use crate::painless_stringify_member::{StringifyMember, stringify_member};
 pub use crate::painless_threat_artifacts::{ThreatArtifacts, run_threat_artifacts};
 pub use crate::painless_time_order_flag::{TimeOrderFlag, time_order_flag};
 pub use crate::painless_totals::{SumTotals, Total, sum_totals};
+pub use crate::painless_typed_member_rename::{MemberType, TypedMemberRename, typed_member_rename};
 // `lookup_normalise` is NOT here: it now takes the call site's parsed literal
 // tail, which is a runtime detail rather than something a generator resolves.
 pub use crate::painless_params::{Fold, LookupNormaliseScript};

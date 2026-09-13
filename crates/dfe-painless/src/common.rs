@@ -21107,6 +21107,16 @@ fn parse_collect_from_list(script: &str) -> Option<CollectFromList> {
             .split(|c: char| !c.is_alphanumeric() && c != '_')
             .next()
             .filter(|member| !member.is_empty())?;
+        // The name is taken off the GUARD, so whatever follows it there says
+        // whether the guard is reading a member at all. A `(` means it named a
+        // METHOD -- `obj.get('techniqueId')` collected a member called `get`,
+        // and every record answered `None` -- and a `.` means the guard walks
+        // one segment further than the runner can, which put an empty list in
+        // `host.geo.location` where google_secops wants coordinates. Neither
+        // fails, and neither leaves an error behind.
+        if arm[member.len()..].starts_with(['(', '.']) {
+            return None;
+        }
         let (head, added) = arm.split_once(".add(")?;
         if !appends_a_member(arm, added, var) {
             return None;
@@ -23467,6 +23477,9 @@ pub(crate) enum KnownPattern {
     MemberTags(Box<crate::member_tags::MemberTags>),
     /// Every record of a list appended to one list, its null members dropped.
     AppendRecords(Box<crate::append_records::AppendRecords>),
+    /// A member of every record in a list moved to a new name, gated on the
+    /// value's runtime type.
+    TypedMemberRename(Box<crate::typed_member_rename::TypedMemberRename>),
 }
 
 /// Copies that apply only where `guard` holds `literal`.
@@ -26357,6 +26370,19 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: a member of every record in a list moved to a new name, gated on
+    // the value's runtime type. Last for the reason the three above are: both
+    // its scripts read `binding: []`, and neither spells the `.add(` or
+    // `.replace(` the two emptying arms are gated on. The parse demands every
+    // guarded block in the walk, so a walk doing anything else declines whole.
+    if normalised.contains(" instanceof ")
+        && normalised.contains(".containsKey(")
+        && let Some(pattern) = crate::typed_member_rename::parse_typed_member_rename(normalised)
+    {
+        patterns.push(KnownPattern::TypedMemberRename(Box::new(pattern)));
+        return patterns;
+    }
+
     patterns
 }
 
@@ -27020,6 +27046,9 @@ pub(crate) fn run_known_pattern(
             crate::stringify_member::stringify_member(event, pattern)
         }
         KnownPattern::MemberTags(pattern) => crate::member_tags::member_tags(event, pattern),
+        KnownPattern::TypedMemberRename(pattern) => {
+            crate::typed_member_rename::typed_member_rename(event, pattern)
+        }
         KnownPattern::AppendRecords(pattern) => {
             crate::append_records::append_records(event, pattern)
         }

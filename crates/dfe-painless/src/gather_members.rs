@@ -49,6 +49,9 @@ pub struct GatheredColumn {
     target: String,
     /// The literal values the script admits, empty where it filters nothing.
     allowed: Vec<String>,
+    /// Whether the value is folded on the way in, which is also the spelling
+    /// the allow-list is tested in.
+    lowercase: bool,
 }
 
 /// Members gathered out of a list's records into parallel lists.
@@ -66,17 +69,18 @@ impl GatherMembers {
     pub fn new(
         list: impl Into<String>,
         stop_on_null_element: bool,
-        columns: Vec<(String, String, Vec<String>)>,
+        columns: Vec<(String, String, Vec<String>, bool)>,
     ) -> Self {
         Self {
             list: list.into(),
             stop_on_null_element,
             columns: columns
                 .into_iter()
-                .map(|(member, target, allowed)| GatheredColumn {
+                .map(|(member, target, allowed, lowercase)| GatheredColumn {
                     member,
                     target,
                     allowed,
+                    lowercase,
                 })
                 .collect(),
         }
@@ -147,6 +151,25 @@ fn accumulators(script: &str) -> Vec<String> {
         .collect()
 }
 
+/// The allow-list a guard writes INLINE at the test it makes.
+///
+/// `["linux", "macos"].contains(...)` is the same filter `ti_threatq` binds to a
+/// local first, and cybereason spells it at the point of use.
+fn inline_allow_list(arm: &str) -> Option<Vec<String>> {
+    let (head, _) = arm.split_once("].contains(")?;
+    let at = head.rfind('[')?;
+    let members: Vec<String> = head[at + 1..]
+        .split(',')
+        .map(|member| member.trim().trim_matches(['\'', '"']).to_owned())
+        .collect();
+    // A list holding anything but quoted literals is not a filter this can
+    // check a value against.
+    (!members.is_empty()
+        && !members.iter().any(String::is_empty)
+        && !head[at + 1..].contains(['(', ':', '[']))
+    .then_some(members)
+}
+
 /// The loop variable and the `ctx.` list it walks.
 ///
 /// Painless spells the same for-each two ways -- `for (v in ctx.x)` and
@@ -181,15 +204,32 @@ pub fn parse_gather_members(script: &str) -> Option<GatherMembers> {
         // `<acc>.add(<var>["<member>"])` -- the add says what is gathered, and
         // an add of anything but the walked record's own member is a value
         // this reader cannot resolve.
-        let appended = format!("{accumulator}.add({var}[");
-        let Some((guard, rest)) = body.split_once(&appended) else {
+        //
+        // `.get("<member>")` is the same read written as a call, which is what
+        // `ti_threatconnect` spells. Reading only the subscript declined it,
+        // and `CollectFromList` then named the member off the guard and
+        // gathered one called `get`. The DOTTED spelling stays out: gdacs walks
+        // `c.countryname` and writes its lists whether or not they hold
+        // anything, which is that matcher's script and not this one.
+        let Some((guard, rest, closing)) = [
+            (format!("{accumulator}.add({var}["), ']'),
+            (format!("{accumulator}.add({var}.get("), ')'),
+        ]
+        .iter()
+        .find_map(|(appended, closing)| {
+            let (guard, rest) = body.split_once(appended.as_str())?;
+            Some((guard, rest, *closing))
+        }) else {
             continue;
         };
-        let (member, _) = rest.split_once(']')?;
+        let (member, after) = rest.split_once(closing)?;
         let member = member.trim().trim_matches(['\'', '"']).to_owned();
         if member.is_empty() || !rest.starts_with(['"', '\'']) {
             return None;
         }
+        // `.toLowerCase()` on the way into the list, which cybereason applies to
+        // the value AND to the allow-list test that admits it.
+        let lowercase = after.trim_start().starts_with(".toLowerCase()");
 
         // `ctx.<target> = <acc>;`, guarded on the walk having come to
         // something. Without the guard the script writes an empty list, which
@@ -212,12 +252,14 @@ pub fn parse_gather_members(script: &str) -> Option<GatherMembers> {
             return None;
         }
 
-        // The allow-list is whichever literal list the arm's own guard tests.
+        // The allow-list is whichever list the arm's own guard tests: a local
+        // the script bound, or one written inline at the test.
         let arm = guard.rsplit_once("if (").map_or(guard, |(_, arm)| arm);
         let allowed = lists
             .iter()
             .find(|(name, _)| arm.contains(&format!("{name}.contains(")))
             .map(|(_, members)| members.clone())
+            .or_else(|| inline_allow_list(arm))
             .unwrap_or_default();
 
         columns.push((
@@ -226,6 +268,7 @@ pub fn parse_gather_members(script: &str) -> Option<GatherMembers> {
                 member,
                 target,
                 allowed,
+                lowercase,
             },
         ));
     }
@@ -264,6 +307,12 @@ pub fn gather_members(event: &mut Event, pattern: &GatherMembers) -> bool {
             let Some(value) = record.get(&column.member).filter(|v| !v.is_null()) else {
                 continue;
             };
+            // The fold happens BEFORE the test, because the script tests the
+            // folded spelling and gathers the folded value.
+            let value = match (column.lowercase, value.as_str()) {
+                (true, Some(text)) => Value::String(text.to_lowercase()),
+                _ => value.clone(),
+            };
             if !column.allowed.is_empty()
                 && !value
                     .as_str()
@@ -271,7 +320,7 @@ pub fn gather_members(event: &mut Event, pattern: &GatherMembers) -> bool {
             {
                 continue;
             }
-            gathered.push(value.clone());
+            gathered.push(value);
         }
         if !gathered.is_empty() {
             let _ = event.set(&column.target, Value::Array(gathered));
@@ -316,11 +365,13 @@ mod tests {
                         ["WHITE", "GREEN", "AMBER", "RED", "CLEAR", "AMBER+STRICT"]
                             .map(str::to_owned)
                             .to_vec(),
+                        false,
                     ),
                     (
                         "name".to_owned(),
                         "threat.indicator.provider".to_owned(),
                         Vec::new(),
+                        false,
                     ),
                 ],
             ))
@@ -376,6 +427,50 @@ mod tests {
     }
 
     /// Verbatim from the generated call site in
+    /// `crates/dfe-transforms/src/filebeat/cybereason_poll_malop/default.rs`.
+    ///
+    /// The same walk again, reading its member through `.get("<member>")`,
+    /// folding the value on the way in, and writing its allow-list INLINE at
+    /// the test rather than binding it to a local first.
+    const CYBEREASON_OS_TYPES: &str = r#"def os_types = new ArrayList(); for (def obj : ctx.json.machines) {\n  if (obj.containsKey(\"os_type\") && [\"linux\", \"macos\", \"unix\", \"windows\", \"ios\", \"android\"].contains((obj.get(\"os_type\")).toLowerCase())) {\n    os_types.add(obj.get(\"os_type\").toLowerCase());\n  }\n} if (os_types.size() > 0){\n  if (ctx.host.os == null) {\n    ctx.host.os = new HashMap();\n  }\n  ctx.host.os.type= os_types;\n}"#;
+
+    /// The fold and the allow-list are what this script gathers BY, so a reader
+    /// dropping either writes the vendor's own casing into a closed ECS
+    /// vocabulary.
+    #[test]
+    fn a_folded_member_is_tested_and_gathered_in_the_folded_spelling() {
+        assert_eq!(
+            parse_gather_members(&crate::common::normalise(CYBEREASON_OS_TYPES)),
+            Some(GatherMembers::new(
+                "json.machines",
+                false,
+                vec![(
+                    "os_type".to_owned(),
+                    "host.os.type".to_owned(),
+                    ["linux", "macos", "unix", "windows", "ios", "android"]
+                        .map(str::to_owned)
+                        .to_vec(),
+                    true,
+                )],
+            ))
+        );
+
+        let mut event = Event::new(json!({ "json": { "machines": [
+            { "os_type": "Windows" },
+            { "os_type": "LINUX" },
+            { "os_type": "Solaris" },
+        ]}}));
+        assert!(crate::common::try_known_painless(
+            &mut event,
+            CYBEREASON_OS_TYPES
+        ));
+        assert_eq!(
+            event.get("host.os.type"),
+            Some(&json!(["windows", "linux"]))
+        );
+    }
+
+    /// Verbatim from the generated call site in
     /// `crates/dfe-transforms/src/filebeat/jamf_protect_alerts/default.rs`.
     ///
     /// The SAME walk as threatq's, spelled `for (def v : ctx.x)` rather than
@@ -395,7 +490,12 @@ mod tests {
             Some(GatherMembers::new(
                 "jamf_protect.alerts.input.related.users",
                 false,
-                vec![("name".to_owned(), "related.user".to_owned(), Vec::new())],
+                vec![(
+                    "name".to_owned(),
+                    "related.user".to_owned(),
+                    Vec::new(),
+                    false,
+                )],
             ))
         );
 
@@ -432,6 +532,46 @@ mod tests {
             JAMF_RELATED_USERS
         ));
         assert_eq!(event.get("related.user"), None);
+    }
+
+    /// Verbatim from the generated call site in
+    /// `crates/dfe-transforms/src/filebeat/ti_threatconnect_indicator/default.rs`.
+    ///
+    /// The member is read through `.get('<member>')` and the guard tests a
+    /// DIFFERENT member for presence, which is what sent it to
+    /// `CollectFromList` -- where the member came back named `get` and the
+    /// technique names were written as an empty list.
+    const THREATCONNECT_TECHNIQUES: &str = r#"def t_names = new ArrayList();\nfor (def obj : ctx.json.tags.data) {\n  if (obj.get('techniqueId') != null) {\n    t_names.add(obj.get('name'));\n  }\n}\nif (t_names.size() > 0){\n  if (ctx.threat.technique == null) {\n    ctx.threat.technique = new HashMap();\n  }\n  ctx.threat.technique.name = t_names;\n}"#;
+
+    /// The `add` says what is gathered, whichever way the record is read.
+    #[test]
+    fn a_member_read_through_get_is_gathered_by_its_own_name() {
+        assert_eq!(
+            parse_gather_members(&crate::common::normalise(THREATCONNECT_TECHNIQUES)),
+            Some(GatherMembers::new(
+                "json.tags.data",
+                false,
+                vec![(
+                    "name".to_owned(),
+                    "threat.technique.name".to_owned(),
+                    Vec::new(),
+                    false,
+                )],
+            ))
+        );
+
+        let mut event = Event::new(json!({ "json": { "tags": { "data": [
+            { "techniqueId": "T1055.005", "name": "userexecution:maliciouslink" },
+            { "name": "no-technique-id" },
+        ]}}}));
+        assert!(crate::common::try_known_painless(
+            &mut event,
+            THREATCONNECT_TECHNIQUES
+        ));
+        assert_eq!(
+            event.get("threat.technique.name"),
+            Some(&json!(["userexecution:maliciouslink", "no-technique-id"]))
+        );
     }
 
     #[test]

@@ -53,7 +53,8 @@ pub use dfe_painless::{
     seconds_between as painless_seconds_between, split_fanout as painless_split_fanout,
     stats as painless_stats, stringify_member as painless_stringify_member,
     threat_artifacts as painless_threat_artifacts, time_order_flag as painless_time_order_flag,
-    totals as painless_totals, windows as painless_windows,
+    totals as painless_totals, typed_member_rename as painless_typed_member_rename,
+    windows as painless_windows,
 };
 
 pub use dfe_core::{Event, Result, TransformError};

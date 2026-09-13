@@ -73,5 +73,6 @@ pub mod threat_artifacts;
 pub mod time_order_flag;
 pub mod totals;
 pub mod trim_delimited;
+pub mod typed_member_rename;
 pub mod url_action;
 pub mod windows;
