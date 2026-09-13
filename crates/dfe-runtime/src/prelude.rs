@@ -84,7 +84,10 @@ pub use crate::painless_map_entries::{
     KeyNamedByField, WrapEntries, key_named_by_field, wrap_entries,
 };
 pub use crate::painless_member_fan_out::{MemberFanOut, member_fan_out};
+pub use crate::painless_member_kv_fold::{MemberKvFold, member_kv_fold};
+pub use crate::painless_member_ladder::{MemberLadder, member_ladder};
 pub use crate::painless_member_tags::{MemberTags, member_tags};
+pub use crate::painless_member_value_wrap::{MemberValueWrap, member_value_wrap};
 pub use crate::painless_nth_separator::{NthSeparatorPrefix, nth_separator_prefix};
 pub use crate::painless_pair_table::{PairTable, pair_table};
 pub use crate::painless_record_fold::{RecordFold, record_fold};
@@ -96,6 +99,7 @@ pub use crate::painless_securityhub_ocsf::{
     OcsfRemediation, OcsfResource, OcsfSeverity, OcsfVulnerability, run_ocsf_remediation,
     run_ocsf_resource, run_ocsf_severity, run_ocsf_vulnerability,
 };
+pub use crate::painless_set_ladder::{SetLadder, set_ladder};
 pub use crate::painless_split_fanout::{SplitFanOut, split_fan_out};
 pub use crate::painless_stringify_member::{StringifyMember, stringify_member};
 pub use crate::painless_threat_artifacts::{ThreatArtifacts, run_threat_artifacts};

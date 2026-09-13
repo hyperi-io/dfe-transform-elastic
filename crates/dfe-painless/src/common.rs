@@ -16170,7 +16170,7 @@ fn for_loop_parts(script: &str) -> Option<(String, String, &str, &str, &str)> {
 ///
 /// Quoted text is stepped over: a brace inside a string literal would
 /// otherwise end the body early and leave the rest of the script unread.
-fn matching_brace(text: &str) -> Option<usize> {
+pub(crate) fn matching_brace(text: &str) -> Option<usize> {
     if !text.starts_with('{') {
         return None;
     }
@@ -23569,6 +23569,14 @@ pub(crate) enum KnownPattern {
     SwapSubtrees,
     CollectingLadder,
     CaseInsensitiveLadder,
+    /// A ladder banding one member of every element of a list.
+    MemberLadder(Box<crate::member_ladder::MemberLadder>),
+    /// Words collected into `HashSet` accumulators and written out as lists.
+    SetLadder(Box<crate::set_ladder::SetLadder>),
+    /// Named members of every record of a list, each folded into one map.
+    MemberKvFold(Box<crate::member_kv_fold::MemberKvFold>),
+    /// A member renamed in every record, a value that is not a map wrapped.
+    MemberValueWrap(Box<crate::member_value_wrap::MemberValueWrap>),
     /// A threat indicator's expiry, dated forward from when it was last seen.
     IndicatorExpiry(Box<crate::indicator_expiry::IndicatorExpiry>),
     EqualityLadder(Ladder),
@@ -25455,12 +25463,35 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: words collected into `HashSet` accumulators and written out as
+    // lists. A WHOLE-SCRIPT match, so it wants nothing any arm below claims --
+    // it is here rather than lower because the `.add(` arms above are hard
+    // stops that return the plan they failed to build.
+    if normalised.contains("new HashSet()")
+        && let Some(pattern) = crate::set_ladder::parse_set_ladder(normalised)
+    {
+        patterns.push(KnownPattern::SetLadder(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: a ladder collecting into a list, written as scalar or array.
     if normalised.contains(".add(")
         && normalised.contains(".size()")
         && normalised.contains("else if (")
     {
         patterns.push(KnownPattern::CollectingLadder);
+    }
+
+    // Pattern: a ladder banding one MEMBER of every element of a list. Ahead of
+    // the case-insensitive ladder below, whose subject is a scalar read off the
+    // document: that reader declines a subscript on a loop variable and its arm
+    // returns, so google_secops's alert_v2 severity was claimed and served by
+    // nothing.
+    if normalised.contains("for (")
+        && let Some(pattern) = crate::member_ladder::parse_member_ladder(normalised)
+    {
+        patterns.push(KnownPattern::MemberLadder(Box::new(pattern)));
+        return patterns;
     }
 
     // Pattern: a case-insensitive ladder mapping one field onto a literal.
@@ -25578,6 +25609,16 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
     // Pattern: re-key an array of maps into an object indexed by position.
     if normalised.contains("new HashMap()") && normalised.contains("String.valueOf(") {
         patterns.push(KnownPattern::ArrayToIndexedObject);
+        return patterns;
+    }
+
+    // Pattern: several NAMED MEMBERS of every record of a list, each a
+    // `{key, value}` array folded into one map. Ahead of the single-list fold
+    // below, which writes back over the path it read and declines a second loop.
+    if normalised.contains("new String[] {")
+        && let Some(pattern) = crate::member_kv_fold::parse_member_kv_fold(normalised)
+    {
+        patterns.push(KnownPattern::MemberKvFold(Box::new(pattern)));
         return patterns;
     }
 
@@ -26796,6 +26837,18 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: the same member rename, unconditional, wrapping a value that is
+    // not a map. Beside the type-gated rename above rather than folded into it:
+    // there the type test decides WHETHER the key moves, here it decides only
+    // what the moved value is wrapped in.
+    if normalised.contains(".containsKey(")
+        && normalised.contains(" instanceof Map")
+        && let Some(pattern) = crate::member_value_wrap::parse_member_value_wrap(normalised)
+    {
+        patterns.push(KnownPattern::MemberValueWrap(Box::new(pattern)));
+        return patterns;
+    }
+
     patterns
 }
 
@@ -27369,6 +27422,14 @@ pub(crate) fn run_known_pattern(
         KnownPattern::SwapSubtrees => try_swap_subtrees(event, normalised),
         KnownPattern::CollectingLadder => try_collecting_ladder(event, normalised),
         KnownPattern::CaseInsensitiveLadder => try_case_insensitive_ladder(event, normalised),
+        KnownPattern::MemberLadder(pattern) => crate::member_ladder::member_ladder(event, pattern),
+        KnownPattern::SetLadder(pattern) => crate::set_ladder::set_ladder(event, pattern),
+        KnownPattern::MemberKvFold(pattern) => {
+            crate::member_kv_fold::member_kv_fold(event, pattern)
+        }
+        KnownPattern::MemberValueWrap(pattern) => {
+            crate::member_value_wrap::member_value_wrap(event, pattern)
+        }
         KnownPattern::IndicatorExpiry(pattern) => {
             crate::indicator_expiry::indicator_expiry(event, pattern)
         }

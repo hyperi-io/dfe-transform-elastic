@@ -10067,6 +10067,53 @@ impl Term {
                 lowered,
             };
         }
+        // `ctx.<path>.equals('<text>')` is the `==` below written as a call, and
+        // no arm read a call -- so the term fell through to `Never`, which the
+        // `!` in front of it turns into a guard that always holds. box_events
+        // opens all four Shield builders with
+        // `if (ctx.rule?.category == null || !ctx.rule.category.equals("..."))
+        // { return; }` and so returned on every event.
+        //
+        // A receiver that is not a document path falls THROUGH rather than
+        // declining, because `Objects.equals(a, b)` is a different call and the
+        // arms below still have a claim on it.
+        for (call, folded) in [(".equalsIgnoreCase(", true), (".equals(", false)] {
+            let Some((subject, argument)) = term.split_once(call) else {
+                continue;
+            };
+            let Some(path) = subject.trim().strip_prefix("ctx.") else {
+                continue;
+            };
+            // The WHOLE subject has to be that path: `ctx.a == ctx.b.equals(c)`
+            // splits here too, and reading its left half as a path would compare
+            // a field called `a == ctx.b`.
+            if !path
+                .chars()
+                .all(|c| c.is_alphanumeric() || "._?@['\"]".contains(c))
+            {
+                continue;
+            }
+            // Anchored on the argument's OPENING quote: an unanchored read
+            // answers with a literal from further along the term, which is a
+            // comparison against text this call never names.
+            let opens_quoted = argument.trim_start().starts_with(['\'', '"']);
+            let wanted =
+                if let Some(text) = opens_quoted.then(|| quoted_after(argument, "")).flatten() {
+                    // `equalsIgnoreCase` folds BOTH sides, and `Compare` folds only
+                    // the held value -- so the literal is folded here, once.
+                    Wanted::Text(if folded { text.to_lowercase() } else { text })
+                } else if let Some(other) = contains_tail(argument).trim().strip_prefix("ctx.") {
+                    Wanted::Field(clean_path(other))
+                } else {
+                    continue;
+                };
+            return Self::Compare {
+                path: clean_path(path),
+                wanted,
+                negated: false,
+                lowered: folded,
+            };
+        }
         // Before the `==` pair, because `>=` and `<=` carry an `=` that the
         // split below would take for the start of an equality test.
         for (operator, greater) in [(">=", true), ("<=", false), (">", true), ("<", false)] {
