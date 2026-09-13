@@ -73,6 +73,15 @@ impl Unit {
             Self::Minutes => TimeDelta::try_minutes(n),
         }
     }
+
+    /// The letter `dfe_core::date_formats::iso8601_plus` names this unit by.
+    fn letter(self) -> char {
+        match self {
+            Self::Days => 'd',
+            Self::Hours => 'h',
+            Self::Minutes => 'm',
+        }
+    }
 }
 
 /// One indicator type and the shelf life it earns.
@@ -403,6 +412,171 @@ fn configured_span(
     Some((unit, amount))
 }
 
+/// The same shelf life, chosen by a FLAG rather than by the indicator's type.
+///
+/// `ti_strider` dates every indicator ninety days from when it arrives, except
+/// an archived one, which expires as it lands:
+///
+/// ```painless
+/// ZonedDateTime now = ZonedDateTime.parse(ctx['@timestamp']);
+/// if (ctx.ti_strider?.indicator?.archive == 1) {
+///   ctx.ti_strider.indicator.expires_at = now;
+/// } else {
+///   ctx.ti_strider.indicator.expires_at = now.plusDays(90);
+/// }
+/// ```
+///
+/// Neither reader beside it reaches this. [`IndicatorExpiry`] above demands
+/// per-TYPE arms and a configured fallback; `DatePlusDays` in
+/// [`crate::common`] reads the single-expression form and declines this one
+/// because the base is bound to a LOCAL before the adder sees it. Nothing
+/// claimed the script, so `expires_at` was absent on every indicator carrying a
+/// timestamp.
+///
+/// Both arms are read off the script rather than assumed: which one shortens
+/// the life is the vendor's to say, and a matcher that assumed the flagged arm
+/// expires the record would silently invert a source that means the opposite.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct FlaggedExpiry {
+    /// The timestamp both arms date from.
+    base: String,
+    /// The field the script tests, and the value that selects the first arm.
+    flag: String,
+    wanted: Value,
+    /// The span each arm adds, `None` where the arm writes the base as it
+    /// stands.
+    matched: Option<(Unit, i64)>,
+    unmatched: Option<(Unit, i64)>,
+    /// Where the date lands. Both arms write it.
+    target: String,
+}
+
+/// Date the record forward by whichever arm the flag selects.
+///
+/// A base the event does not carry, or one that will not parse, writes
+/// nothing: Painless throws in `ZonedDateTime.parse` and the processor's own
+/// `if` is what guards it, so inventing a date would be worse than the absence.
+pub fn flagged_expiry(event: &mut Event, pattern: &FlaggedExpiry) -> bool {
+    let Some(base) = event.get_string(&pattern.base) else {
+        return true;
+    };
+    // The literal comparison a guard makes: absent and explicitly null are one
+    // value, and nothing else compares equal to a number or a word.
+    let selected = event.get(&pattern.flag) == Some(&pattern.wanted);
+    let arm = if selected {
+        pattern.matched
+    } else {
+        pattern.unmatched
+    };
+    // Zero days through the same renderer, so the unmoved arm is written in the
+    // same words as the moved one rather than echoed back as it arrived.
+    let (unit, amount) = arm.unwrap_or((Unit::Days, 0));
+    if let Some(moved) = dfe_core::date_formats::iso8601_plus(&base, unit.letter(), amount, 0) {
+        let _ = event.set(&pattern.target, Value::String(moved));
+    }
+    true
+}
+
+/// Read the base, the flag and both arms off the script, or decline.
+///
+/// Whole-script: one parse into a local, then one `if`/`else` and nothing after
+/// it. A script that also writes elsewhere declines rather than being claimed
+/// and half run.
+#[must_use]
+pub fn parse_flagged_expiry(script: &str) -> Option<FlaggedExpiry> {
+    // `ZonedDateTime <local> = ZonedDateTime.parse(ctx[...]);`
+    let (head, tail) = script.split_once("ZonedDateTime.parse(")?;
+    let local = head
+        .rsplit_once('=')?
+        .0
+        .trim()
+        .rsplit(char::is_whitespace)
+        .next()?;
+    if local.is_empty() {
+        return None;
+    }
+    let (subject, rest) = tail.split_once(");")?;
+    // `ctx['@timestamp']` or `ctx.a.b` -- the subscript is how a script names
+    // the one field no dotted path can spell.
+    let base = clean_path(
+        subject
+            .trim()
+            .strip_prefix("ctx")?
+            .trim_start_matches('.')
+            .trim_matches(['[', ']', '\'', '"']),
+    );
+    if base.is_empty() || base.contains([' ', '(', ')']) {
+        return None;
+    }
+
+    let rest = skip_trivia(skip_trivia(rest).strip_prefix("if")?);
+    let (test, tail) = balanced(rest, '(', ')')?;
+    let (then, tail) = balanced(skip_trivia(tail), '{', '}')?;
+    let tail = skip_trivia(skip_trivia(tail).strip_prefix("else")?);
+    let (alt, tail) = balanced(tail, '{', '}')?;
+    if !skip_trivia(tail).is_empty() {
+        return None;
+    }
+
+    let (flag, wanted) = flag_test(test)?;
+    let (matched_target, matched) = arm_write(then, local)?;
+    let (unmatched_target, unmatched) = arm_write(alt, local)?;
+    // Two arms writing different fields is a different script, and one where
+    // neither adds a span is a copy rather than an expiry.
+    if matched_target != unmatched_target || (matched.is_none() && unmatched.is_none()) {
+        return None;
+    }
+
+    Some(FlaggedExpiry {
+        base,
+        flag,
+        wanted,
+        matched,
+        unmatched,
+        target: matched_target,
+    })
+}
+
+/// `ctx.<path> == <literal>` as the field and the value it is compared against.
+fn flag_test(test: &str) -> Option<(String, Value)> {
+    let (subject, wanted) = test.split_once("==")?;
+    let path = clean_path(subject.trim().strip_prefix("ctx.")?);
+    if path.is_empty() || path.contains([' ', '(', ')']) {
+        return None;
+    }
+    Some((path, crate::common::painless_literal(wanted.trim())?))
+}
+
+/// One arm: the path it writes, and the span it adds on the way.
+fn arm_write(block: &str, local: &str) -> Option<(String, Option<(Unit, i64)>)> {
+    let (statement, tail) = skip_trivia(block).split_once(';')?;
+    if !skip_trivia(tail).is_empty() {
+        return None;
+    }
+    let (assigned, written) = statement.split_once('=')?;
+    let target = clean_path(assigned.trim().strip_prefix("ctx.")?);
+    if target.is_empty() || target.contains([' ', '(', ')']) {
+        return None;
+    }
+
+    let written = written.trim();
+    if written == local {
+        return Some((target, None));
+    }
+    let rest = written.strip_prefix(local)?;
+    let (call, unit) = Unit::CALLS
+        .iter()
+        .find_map(|(call, unit)| rest.starts_with(call).then_some((*call, *unit)))?;
+    let amount: i64 = rest[call.len()..]
+        .split(')')
+        .next()?
+        .trim()
+        .trim_end_matches(['L', 'l'])
+        .parse()
+        .ok()?;
+    Some((target, Some((unit, amount))))
+}
+
 #[cfg(test)]
 #[allow(clippy::unwrap_used, clippy::panic)]
 mod tests {
@@ -573,5 +747,141 @@ mod tests {
                 "claimed a script it cannot serve: {missing}"
             );
         }
+    }
+
+    /// `ti_strider`'s expiry as the generated call site carries it, newlines
+    /// escaped.
+    const FLAGGED: &str = r"ZonedDateTime now = ZonedDateTime.parse(ctx['@timestamp']);\nif (ctx.ti_strider?.indicator?.archive == 1) {\n  ctx.ti_strider.indicator.expires_at = now;\n} else {\n  ctx.ti_strider.indicator.expires_at = now.plusDays(90);\n}\n";
+
+    fn flagged() -> FlaggedExpiry {
+        parse_flagged_expiry(&crate::common::normalise(FLAGGED)).unwrap()
+    }
+
+    fn expiry(archive: Option<i64>) -> Option<Value> {
+        let mut indicator = json!({});
+        if let Some(archive) = archive {
+            indicator["archive"] = json!(archive);
+        }
+        let mut event = Event::new(json!({
+            "@timestamp": "2021-11-11T01:02:03.123Z",
+            "ti_strider": { "indicator": indicator }
+        }));
+        assert!(flagged_expiry(&mut event, &flagged()));
+        event.get("ti_strider.indicator.expires_at").cloned()
+    }
+
+    /// Every part comes off the script: the base, the flag, both arms and the
+    /// target.
+    #[test]
+    fn the_flagged_expiry_reads_both_arms_off_the_script() {
+        assert_eq!(
+            flagged(),
+            FlaggedExpiry {
+                base: "@timestamp".into(),
+                flag: "ti_strider.indicator.archive".into(),
+                wanted: json!(1),
+                matched: None,
+                unmatched: Some((Unit::Days, 90)),
+                target: "ti_strider.indicator.expires_at".into(),
+            }
+        );
+    }
+
+    /// The captured events: an archived indicator expires as it lands, and
+    /// everything else ninety days later.
+    #[test]
+    fn an_archived_indicator_expires_at_ingest_and_the_rest_in_ninety_days() {
+        assert_eq!(expiry(Some(1)), Some(json!("2021-11-11T01:02:03.123Z")));
+        assert_eq!(expiry(None), Some(json!("2022-02-09T01:02:03.123Z")));
+        // A flag set to anything else takes the same arm as an absent one.
+        assert_eq!(expiry(Some(0)), Some(json!("2022-02-09T01:02:03.123Z")));
+    }
+
+    /// No timestamp writes nothing: Painless throws in `parse` and the
+    /// processor's own `if` is what guards it.
+    #[test]
+    fn a_flagged_expiry_with_no_base_writes_nothing() {
+        let mut event = Event::new(json!({ "ti_strider": { "indicator": { "archive": 1 } } }));
+        assert!(flagged_expiry(&mut event, &flagged()));
+        assert!(!event.has("ti_strider.indicator.expires_at"));
+    }
+
+    /// The arms are read, not assumed. A script that lengthens the flagged life
+    /// instead of shortening it binds the other way round.
+    #[test]
+    fn the_flagged_arm_is_whichever_one_the_script_writes() {
+        let inverted = crate::common::normalise(FLAGGED)
+            .replace(
+                "expires_at = now;",
+                "expires_at = now.plusDays(90);\n_swap_",
+            )
+            .replace(
+                "expires_at = now.plusDays(90);\n}\n",
+                "expires_at = now;\n}\n",
+            )
+            .replace("\n_swap_", "");
+        let pattern = parse_flagged_expiry(&inverted).unwrap();
+        assert_eq!(pattern.matched, Some((Unit::Days, 90)));
+        assert_eq!(pattern.unmatched, None);
+    }
+
+    /// One part the reader cannot place declines the WHOLE script, so a
+    /// near-miss never writes a date that is present and wrong.
+    #[test]
+    fn a_flagged_expiry_missing_a_part_declines() {
+        let script = crate::common::normalise(FLAGGED).into_owned();
+        for broken in [
+            // The two arms writing different fields.
+            script.replace(
+                "ctx.ti_strider.indicator.expires_at = now.plusDays(90);",
+                "ctx.ti_strider.indicator.other = now.plusDays(90);",
+            ),
+            // Neither arm adding a span, which is a copy rather than an expiry.
+            script.replace("= now.plusDays(90);", "= now;"),
+            // A guard this reader does not model.
+            script.replace("ctx.ti_strider?.indicator?.archive == 1", "now != null"),
+            // A statement after the branch.
+            script.replace("}\n", "}\nctx.a = 1;\n"),
+            // A second statement inside an arm.
+            script.replace(
+                "ctx.ti_strider.indicator.expires_at = now;",
+                "ctx.ti_strider.indicator.expires_at = now; ctx.a = 1;",
+            ),
+        ] {
+            assert_ne!(broken, script, "each replacement has to bite");
+            assert!(
+                parse_flagged_expiry(&broken).is_none(),
+                "claimed a script it cannot serve: {broken}"
+            );
+        }
+    }
+
+    /// The dispatch reaches this matcher, and nothing else is bound beside it.
+    #[test]
+    fn the_ladder_dispatches_the_flagged_expiry_here() {
+        let bound = crate::common::known_patterns(&crate::common::normalise(FLAGGED));
+        assert_eq!(
+            bound.len(),
+            1,
+            "the ladder bound {bound:?} instead of this matcher alone"
+        );
+    }
+
+    /// The production path, from the call site's own escaped literal.
+    #[test]
+    fn the_escaped_flagged_call_site_runs() {
+        let _guard = crate::stats::serialised();
+        let plan = crate::plan::PainlessPlan::new(FLAGGED);
+        assert!(plan.matches(), "the call site's own literal binds nothing");
+
+        let mut event = Event::new(json!({
+            "@timestamp": "2021-11-11T01:02:03.123Z",
+            "ti_strider": { "indicator": {} }
+        }));
+        assert!(crate::plan::painless_exec_plan(&mut event, &plan).is_ok());
+        assert_eq!(
+            event.get("ti_strider.indicator.expires_at"),
+            Some(&json!("2022-02-09T01:02:03.123Z"))
+        );
     }
 }

@@ -1865,3 +1865,87 @@ fn the_two_carbonblack_scripts_bind_to_their_own_matchers() {
     assert!(held.contains(r#"target_member: "target""#), "{held}");
     assert!(held.contains(r#"flag: Some("_tmp_ioc_done")"#), "{held}");
 }
+
+/// Verbatim from the generated call site in
+/// `crates/dfe-transforms/src/filebeat/aws_bedrock_agentcore_runtime_application_logs/default.rs`.
+/// The gateway and memory streams ship the same script against their own maps.
+const BEDROCK_ATTRIBUTES: &str = r"def attrs = ctx.aws.bedrock_agentcore.resource.attributes;\n\nif (attrs.containsKey('service.name')) {\n  if (ctx.service == null) ctx.service = new HashMap();\n  ctx.service.name = attrs['service.name'];\n}\n";
+
+/// The binding was EMPTY on all three of `aws_bedrock_agentcore`'s streams, and
+/// that one script is the whole of the source's debt.
+///
+/// The key carries a DOT, so it is an entry in a map rather than a path, and no
+/// reader in the ladder spells one. Behind it sits a `dissect` on `service.name`
+/// that cuts the value into `agent_name` and `endpoint_name` -- three fields
+/// over seven events, all downstream of this write.
+#[test]
+fn the_bedrock_resource_attributes_bind_to_the_dotted_key_copy() {
+    let held = binding(BEDROCK_ATTRIBUTES).join(" ");
+    assert!(held.starts_with("DottedKeyCopies"), "{held}");
+    assert!(
+        held.contains(r#"map: "aws.bedrock_agentcore.resource.attributes""#),
+        "{held}"
+    );
+    assert!(
+        held.contains(r#"copies: [("service.name", "service.name")]"#),
+        "{held}"
+    );
+}
+
+/// Verbatim from the generated call sites in
+/// `crates/dfe-transforms/src/filebeat/ti_strider_indicator/default.rs`.
+const STRIDER_IS_NEW: &str = r"if (ctx.ti_strider?.indicator?.is_new != null) {\n  ctx.ti_strider.indicator.is_new = (ctx.ti_strider.indicator.is_new == 1);\n}\n";
+
+const STRIDER_EXPIRES: &str = r"ZonedDateTime now = ZonedDateTime.parse(ctx['@timestamp']);\nif (ctx.ti_strider?.indicator?.archive == 1) {\n  ctx.ti_strider.indicator.expires_at = now;\n} else {\n  ctx.ti_strider.indicator.expires_at = now.plusDays(90);\n}\n";
+
+/// `ti_strider`'s two scripts, and the flag conversion is why the binding alone
+/// never showed the defect.
+///
+/// `GuardedCopy` claimed the conversion and its `Program` held an EMPTY branch,
+/// so the single-copy fallback underneath copied `is_new` onto itself and
+/// reported the script handled. The comparison reads as a VALUE now, which is
+/// what the vendor means by it, and the claimant does not move -- only the
+/// write appears. That is the pin: a head test alone would have passed either
+/// way.
+#[test]
+fn the_strider_flag_is_a_boolean_and_its_expiry_is_read() {
+    let held = binding(STRIDER_IS_NEW).join(" ");
+    assert!(held.starts_with("GuardedCopy"), "{held}");
+    assert!(
+        held.contains(r#"Set { path: "ti_strider.indicator.is_new", value: Test("#),
+        "the guard is claimed with nothing under it: {held}"
+    );
+
+    let held = binding(STRIDER_EXPIRES).join(" ");
+    assert!(held.starts_with("FlaggedExpiry"), "{held}");
+    assert!(held.contains(r#"base: "@timestamp""#), "{held}");
+    assert!(
+        held.contains(r#"flag: "ti_strider.indicator.archive""#),
+        "{held}"
+    );
+    assert!(held.contains("matched: None"), "{held}");
+    assert!(held.contains("unmatched: Some((Days, 90))"), "{held}");
+}
+
+/// Verbatim from `pipelines/digital_guardian/arc/default.yml:41-54`.
+const DIGITAL_GUARDIAN_DROP: &str = r#"boolean dropEmptyFields(Object object) {\n  if (object == null || ['', '{}', 'NA', 'None', 'null', '-'].contains(object)) {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\ndropEmptyFields(ctx);"#;
+
+/// The runtime reads `digital_guardian`'s six sentinels; the SHIPPED call site
+/// does not carry them.
+///
+/// That call site was generated on 2026-09-06 and the list reader landed on
+/// 2026-09-13, so the module holds a policy with neither the words nor the
+/// empty-string axis, and the vendor's `-` survives into three fields. No
+/// matcher can fix it: `direct_call` BAKES the policy into the generated
+/// literal, so it takes a whole-tree regeneration. This says the reader is
+/// right, so that regeneration closes it rather than re-opening the question.
+#[test]
+fn the_digital_guardian_sentinels_are_read_and_the_shipped_call_site_is_stale() {
+    let held = binding(DIGITAL_GUARDIAN_DROP).join(" ");
+    assert!(held.starts_with("DropEmpty"), "{held}");
+    assert!(held.contains("empty_strings: true"), "{held}");
+    assert!(
+        held.contains(r#"sentinels: ["{}", "NA", "None", "null", "-"]"#),
+        "{held}"
+    );
+}

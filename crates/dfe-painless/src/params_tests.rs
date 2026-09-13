@@ -4427,13 +4427,18 @@ fn a_row_defaulted_lookup_with_no_source_writes_nothing() {
 /// Every other `getOrDefault` in the generated tree, which the widened trigger
 /// now reaches and each of which the row reader has to decline: a default of
 /// `null`, of the key itself, of the field's own current value, of a quoted
-/// literal, and a table that is `params` rather than a named member of it.
+/// literal, and a helper defaulting out of a LOCAL map.
+///
+/// `digital_guardian`'s spelling was on this list and is not any more -- see
+/// [`a_row_defaulted_lookup_reads_an_unnamed_table`]. What separates the two is
+/// the FALLBACK: these name something the table does not hold, and that one
+/// names another of its own rows, which is the whole of what this reader
+/// models.
 #[test]
 fn the_other_get_or_default_spellings_are_declined() {
     for script in [
         r#"def value = ctx.a.result;\nif (value != null) {\n  ctx.b.result = params.error_codes.getOrDefault(value, null);\n}\n"#,
         r#"ctx.salesforce.login.api.type = params.api_type_map.getOrDefault(ctx.salesforce?.login?.api?.type, ctx.salesforce.login.api.type);\n"#,
-        r#"def sev = ctx.digital_guardian.arc.inc_sev;\nctx.event.severity = params.getOrDefault(sev, params['Unknown']);"#,
         r#"def severity = String.valueOf(ctx.event.severity);\nctx.event.severity_label = params.descriptions.getOrDefault(\n  severity,\n  \"unknown\"\n);\n"#,
         r#"def getField(Map src, String[] path) {\n for (int i=0; i<path.length-1; i++) {\n  src = src.getOrDefault(path[i], null);\n }\n return src;\n}"#,
     ] {
@@ -4446,6 +4451,65 @@ fn the_other_get_or_default_spellings_are_declined() {
             "the row reader claimed a script it must decline: {script}"
         );
     }
+}
+
+/// `digital_guardian`'s severity table, verbatim from the call site in
+/// `digital_guardian_arc/default.rs`.
+const SEVERITY_UNNAMED_TABLE: &str = r#"if (ctx.event == null) {\n  ctx.event = new HashMap();\n}\ndef sev = ctx.digital_guardian.arc.inc_sev;\nctx.event.severity = params.getOrDefault(sev, params['Unknown']);"#;
+
+fn severity_labels() -> Value {
+    json!({
+        "Unknown": 9, "Informational": 6, "Low": 5, "Minor": 5,
+        "Medium": 4, "High": 2, "Critical": 1
+    })
+}
+
+/// The rows can BE the params block. `digital_guardian` puts its seven labels
+/// at the top level and falls back to one of them by name, which is qualys's
+/// lookup with the table one level up -- and reading only the named spelling
+/// left `event.severity` absent on every alert the source ships.
+#[test]
+fn a_row_defaulted_lookup_reads_an_unnamed_table() {
+    let normalised = crate::common::normalise(SEVERITY_UNNAMED_TABLE);
+    assert!(
+        matches!(
+            params_pattern(&normalised),
+            Some(ParamsPattern::TableLookupOrLiteral { table: None, .. })
+        ),
+        "bound {:?}",
+        params_pattern(&normalised)
+    );
+
+    let mut listed = Event::new(json!({
+        "digital_guardian": { "arc": { "inc_sev": "Critical" } }
+    }));
+    assert!(try_params_painless(
+        &mut listed,
+        SEVERITY_UNNAMED_TABLE,
+        &severity_labels()
+    ));
+    assert_eq!(listed.get("event.severity"), Some(&json!(1)));
+
+    // A label no row names takes the `Unknown` row, not the label itself.
+    let mut unlisted = Event::new(json!({
+        "digital_guardian": { "arc": { "inc_sev": "Catastrophic" } }
+    }));
+    assert!(try_params_painless(
+        &mut unlisted,
+        SEVERITY_UNNAMED_TABLE,
+        &severity_labels()
+    ));
+    assert_eq!(unlisted.get("event.severity"), Some(&json!(9)));
+
+    // The script's own guard: the processor gates on `inc_sev`, so an absent
+    // one writes nothing rather than the default.
+    let mut absent = Event::new(json!({ "digital_guardian": { "arc": {} } }));
+    assert!(try_params_painless(
+        &mut absent,
+        SEVERITY_UNNAMED_TABLE,
+        &severity_labels()
+    ));
+    assert!(!absent.has("event.severity"));
 }
 
 /// `qualys_vmdr`'s twin of [`SEVERITY_ROW_DEFAULT`], which writes the SAME

@@ -23619,6 +23619,11 @@ pub(crate) enum KnownPattern {
     /// A member of every record in a list moved to a new name, gated on the
     /// value's runtime type.
     TypedMemberRename(Box<crate::typed_member_rename::TypedMemberRename>),
+    /// Entries lifted out of a map by a key that carries dots, which no path
+    /// reader can spell.
+    DottedKeyCopies(Box<crate::dotted_keys::DottedKeyCopies>),
+    /// An indicator's shelf life, cut short by a flag rather than by its type.
+    FlaggedExpiry(Box<crate::indicator_expiry::FlaggedExpiry>),
 }
 
 /// Copies that apply only where `guard` holds `literal`.
@@ -25522,6 +25527,18 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: the same expiry again, its span chosen by a FLAG. Directly BELOW
+    // the arm above, which reads the single-expression form and declines this
+    // one because the base is bound to a local first. ti_strider is the only
+    // source that spells it, and nothing claimed the script at all.
+    if normalised.contains("ZonedDateTime.parse(")
+        && normalised.contains(".plus")
+        && let Some(pattern) = crate::indicator_expiry::parse_flagged_expiry(normalised)
+    {
+        patterns.push(KnownPattern::FlaggedExpiry(Box::new(pattern)));
+        return patterns;
+    }
+
     // Pattern: join two optional fields, each alone if the other is absent.
     //
     // The trigger counts rather than parses, so it claims by coincidence and
@@ -26196,6 +26213,22 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = crate::list_records::parse_scan_tagged_list(normalised)
     {
         patterns.push(KnownPattern::ScanTaggedList(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: entries lifted out of a map by a key that carries dots.
+    //
+    // LOW, so every narrower arm above keeps first refusal -- the trigger is a
+    // call a great many scripts spell, and the parse is what separates them:
+    // whole-script, one local, and nothing in it but guarded copies out of that
+    // local. Neither catch-all below reaches it, which is why the binding read
+    // EMPTY: `GuardedCopy` is gated on `!= null` and this script spells only
+    // `== null`, and `PlainAssignments` demands every statement be readable,
+    // which the `containsKey` guard and the braceless `if` both are not.
+    if normalised.contains(".containsKey(")
+        && let Some(pattern) = crate::dotted_keys::parse_dotted_key_copies(normalised)
+    {
+        patterns.push(KnownPattern::DottedKeyCopies(Box::new(pattern)));
         return patterns;
     }
 
@@ -27274,6 +27307,12 @@ pub(crate) fn run_known_pattern(
         KnownPattern::LevelLabels(pattern) => crate::level_labels::level_labels(event, pattern),
         KnownPattern::DelimitedTable(pattern) => {
             crate::delimited_table::delimited_table(event, pattern)
+        }
+        KnownPattern::DottedKeyCopies(pattern) => {
+            crate::dotted_keys::dotted_key_copies(event, pattern)
+        }
+        KnownPattern::FlaggedExpiry(pattern) => {
+            crate::indicator_expiry::flagged_expiry(event, pattern)
         }
     }
 }

@@ -200,7 +200,10 @@ pub(crate) enum ParamsPattern {
     /// which folds case, reads the whole `params` map, and defaults to the KEY.
     TableLookupOrLiteral {
         source: String,
-        table: String,
+        /// The params key holding the rows, or `None` where the rows ARE the
+        /// params block -- `digital_guardian` spells its severity table that
+        /// way, with the seven labels at the top level.
+        table: Option<String>,
         target: String,
         default: TableDefault,
         gate: Option<TableGate>,
@@ -2365,7 +2368,10 @@ pub(crate) fn run_params_pattern(
             // The script's own guard: an absent source writes nothing at all,
             // not the default.
             if let Some(key) = event.get_as_string(source) {
-                let rows = params.get(table).and_then(Value::as_object);
+                let rows = match table {
+                    Some(name) => params.get(name).and_then(Value::as_object),
+                    None => Some(params),
+                };
                 // A fallback ROW the table does not carry writes nothing --
                 // Painless would store the null `getOrDefault` handed back, and
                 // an explicit null is a field Elasticsearch's own prune removes.
@@ -2863,7 +2869,8 @@ fn parse_table_lookup_or_literal(script: &str) -> Option<ParamsPattern> {
 /// The parts either spelling of the lookup resolves to.
 struct TableLookup {
     source: String,
-    table: String,
+    /// `None` where the rows are the params block itself.
+    table: Option<String>,
     target: String,
     default: TableDefault,
     gate: Option<TableGate>,
@@ -2902,6 +2909,7 @@ fn parse_ternary_table_lookup(script: &str) -> Option<TableLookup> {
     if table.is_empty() || table.contains(['.', ' ', '(', '[']) {
         return None;
     }
+    let table = Some(table);
 
     // `? params.<table>[key] : '<default>'` -- the default is the quoted half.
     let (_, defaulted) = after.split_once('?')?;
@@ -2940,6 +2948,12 @@ fn parse_ternary_table_lookup(script: &str) -> Option<TableLookup> {
 /// Every other `getOrDefault` in the tree defaults to `null`, to the key, or to
 /// the field's own current value, and each of those is a different pattern.
 ///
+/// The table need not be NAMED. `digital_guardian` puts its seven severity
+/// labels at the top of the params block and reads them as
+/// `params.getOrDefault(sev, params['Unknown'])`, which is the same lookup with
+/// the table one level up. Reading only the named spelling left that script
+/// unbound and `event.severity` absent on every alert it ships.
+///
 /// `qualys_vmdr`'s `asset_host_detection` stream writes the same lookup inside
 /// `if (params.vuln_types.contains(vuln_type)) { ... }`, which
 /// [`parse_membership_gate`] reads and the runner then honours.
@@ -2955,16 +2969,30 @@ fn parse_table_lookup_or_row(script: &str) -> Option<TableLookup> {
         Some(parse_membership_gate(script, head)?)
     };
 
-    let table = head.rsplit("params.").next()?.trim().to_string();
-    if table.is_empty() || table.contains(['.', ' ', '(', '[', '?']) {
-        return None;
-    }
+    // `params` alone is the whole block; `params.<name>` is one table in it.
+    // The character before decides, so a local called `myparams` is not read as
+    // the block.
+    let called_on = head.trim_end();
+    let table = if let Some(before) = called_on.strip_suffix("params")
+        && !before.ends_with(|c: char| c.is_alphanumeric() || c == '_' || c == '.')
+    {
+        None
+    } else {
+        let named = called_on.rsplit("params.").next()?.trim().to_string();
+        if named.is_empty() || named.contains(['.', ' ', '(', '[', '?']) {
+            return None;
+        }
+        Some(named)
+    };
 
     let (key, fallback) = rest.split_once(',')?;
     let key = key.trim();
+    let subscript = table
+        .as_deref()
+        .map_or_else(|| "params[".to_string(), |name| format!("params.{name}["));
     let row = fallback
         .trim_start()
-        .strip_prefix(&format!("params.{table}["))?
+        .strip_prefix(&subscript)?
         .split(']')
         .next()?
         .trim()
@@ -8936,6 +8964,14 @@ enum Rhs {
         separator: String,
         fold: Fold,
     },
+    /// `(ctx.<path> == <literal>)` -- a comparison written where a value goes,
+    /// which is a BOOLEAN rather than a test. `ti_strider` folds the `isNew`
+    /// flag it receives as 0 or 1 into the true/false Elasticsearch stores.
+    ///
+    /// `EqualsLiteralFlag` in [`crate::common`] reads the same intent through a
+    /// local and a quoted literal; this is the inline spelling, and the only
+    /// difference is which reader gets there first.
+    Test(Box<Guard>),
     Literal(Value),
 }
 
@@ -9936,6 +9972,19 @@ impl Guard {
             .iter()
             .any(|conjunction| conjunction.iter().all(|term| term.holds(event)))
     }
+
+    /// Whether every term is a comparison the document settles.
+    ///
+    /// What makes a test readable as a VALUE. [`Term::Truthy`] and
+    /// [`Term::Never`] are both answers the parse reaches by falling through
+    /// rather than by reading an operator, and writing either as a boolean
+    /// would put a value on the event the vendor never computed.
+    fn is_comparison(&self) -> bool {
+        !self.0.is_empty()
+            && self.0.iter().flatten().all(|term| {
+                matches!(term, Term::Compare { wanted, .. } if *wanted != Wanted::Unreadable)
+            })
+    }
 }
 
 impl Term {
@@ -10287,6 +10336,11 @@ fn parse_rhs(text: &str) -> Option<Rhs> {
     if let Some(part) = parse_split_part(text) {
         return Some(part);
     }
+    // A comparison, before the bare-path read below strips its parentheses and
+    // takes the operator for part of a field name.
+    if let Some(test) = parse_test_rhs(text) {
+        return Some(Rhs::Test(Box::new(test)));
+    }
     if let Some(inner) = text
         .strip_prefix("String.valueOf(")
         .and_then(|rest| rest.strip_suffix(')'))
@@ -10374,6 +10428,36 @@ fn parse_rhs(text: &str) -> Option<Rhs> {
             .then(|| Rhs::Field(dotted_subscripts(&clean_path(path))));
     }
     literal_value(text).map(Rhs::Literal)
+}
+
+/// A comparison standing where a value goes, or `None`.
+///
+/// Deliberately narrow. [`Term::parse`] answers a BARE `ctx.` path as a
+/// `Truthy` test and anything else as `Never`, so reading every right-hand side
+/// through it would turn every plain field copy into a boolean and every
+/// expression into a constant `false`. Both are demanded instead: an operator
+/// has to be there, and every term the guard parses to has to be a comparison
+/// the evaluator decides from the document.
+fn parse_test_rhs(text: &str) -> Option<Guard> {
+    // A byte scan first: the overwhelmingly common right-hand side carries no
+    // operator at all, and it should not pay for the reads below.
+    if !text.contains("==") && !text.contains("!=") {
+        return None;
+    }
+    // The vendors parenthesise it, but the brackets are not the pattern -- one
+    // balanced pair spanning the whole expression comes off, and a bare
+    // comparison is read just the same.
+    let inner = match balanced(text, '(', ')') {
+        Some((inner, rest)) if rest.trim().is_empty() => inner,
+        _ => text,
+    };
+    // A ternary carries the same operators and means something else entirely.
+    // `?.` is null-safe navigation rather than one, so it goes first.
+    if inner.replace("?.", "").contains('?') {
+        return None;
+    }
+    let guard = Guard::parse(inner);
+    guard.is_comparison().then_some(guard)
 }
 
 /// `'<literal>' + ctx.<path> + ...` as its terms, in order.
@@ -10890,6 +10974,10 @@ fn resolve_rhs(event: &Event, value: &Rhs) -> Option<Value> {
             .get_str(path)
             .and_then(crate::coercion::java_decode)
             .map(Value::from),
+        // A comparison always has an answer, so this always writes. An absent
+        // field compares unequal rather than declining -- Painless reads it as
+        // null, and `null == 1` is false.
+        Rhs::Test(test) => Some(Value::Bool(test.holds(event))),
         // A field the event does not carry writes NOTHING, where Painless
         // would splice in the text `null`. Every site is guarded by its
         // processor's own `if` on that field, so an absent one means this is

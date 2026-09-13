@@ -60,6 +60,7 @@ pub use crate::painless_common::{
 };
 pub use crate::painless_deep_merge::{DeepMerge, run_deep_merge};
 pub use crate::painless_delimited_table::{DelimitedTable, delimited_table};
+pub use crate::painless_dotted_keys::{DottedKeyCopies, dotted_key_copies};
 pub use crate::painless_dump_into_map::{DumpIntoMap, run_dump_into_map};
 pub use crate::painless_element_mapping::{ElementMapping, element_mapping};
 pub use crate::painless_expr::{Expr, FloatLit, Op, ScalarExpression, scalar_expression};
@@ -67,7 +68,9 @@ pub use crate::painless_gather_members::{GatherMembers, gather_members};
 pub use crate::painless_group_records::{GroupRecords, group_records};
 pub use crate::painless_guarded_records::{GuardedRecords, run_guarded_records};
 pub use crate::painless_hoist::{HoistMember, hoist_member};
-pub use crate::painless_indicator_expiry::{IndicatorExpiry, indicator_expiry};
+pub use crate::painless_indicator_expiry::{
+    FlaggedExpiry, IndicatorExpiry, flagged_expiry, indicator_expiry,
+};
 pub use crate::painless_item_writes::{ItemWrites, item_writes};
 pub use crate::painless_last_element::{LastElementMember, run_last_element_member};
 pub use crate::painless_level_labels::{LevelLabels, level_labels};
