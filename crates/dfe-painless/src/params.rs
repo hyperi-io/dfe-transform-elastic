@@ -2990,29 +2990,34 @@ fn parse_table_lookup_or_row(script: &str) -> Option<TableLookup> {
     let subscript = table
         .as_deref()
         .map_or_else(|| "params[".to_string(), |name| format!("params.{name}["));
-    let row = fallback
+    // A ROW of the same table first, then the quoted literal varonis grades
+    // its syslog severity with. Reading only the row left that script unbound
+    // and `event.severity_label` absent on every event it ships.
+    let default = match fallback
         .trim_start()
-        .strip_prefix(&subscript)?
-        .split(']')
-        .next()?
-        .trim()
-        .trim_matches(['\'', '"'])
-        .to_owned();
-    if row.is_empty() {
-        return None;
-    }
+        .strip_prefix(&subscript)
+        .and_then(|rest| rest.split(']').next())
+        .map(|row| row.trim().trim_matches(['\'', '"']).to_owned())
+        .filter(|row| !row.is_empty())
+    {
+        Some(row) => TableDefault::Row(row),
+        None => TableDefault::Literal(quoted_after(fallback.split(';').next()?, "")?),
+    };
 
     // The key is either the ctx path itself or a local bound to one.
-    let source = match key.strip_prefix("ctx.") {
-        Some(path) => clean_path(path),
-        None => clean_path(
-            script
-                .split_once(&format!(" {key} = ctx."))?
-                .1
-                .split([';', '\n'])
-                .next()?
-                .trim(),
-        ),
+    let source = if let Some(path) = key.strip_prefix("ctx.") {
+        clean_path(path)
+    } else {
+        let bound = script.split_once(&format!(" {key} = "))?.1;
+        let bound = bound.split([';', '\n']).next()?.trim();
+        // `String.valueOf(ctx.<p>)` is the vendors' spelling of "read this as
+        // text", and a params key is looked up by that rendering either way.
+        let bound = bound
+            .strip_prefix("String.valueOf(")
+            .and_then(|rest| rest.strip_suffix(')'))
+            .unwrap_or(bound)
+            .trim();
+        clean_path(bound.strip_prefix("ctx.")?)
     };
     if source.is_empty() || source.contains(char::is_whitespace) {
         return None;
@@ -3028,7 +3033,7 @@ fn parse_table_lookup_or_row(script: &str) -> Option<TableLookup> {
         source,
         table,
         target,
-        default: TableDefault::Row(row),
+        default,
         gate,
     })
 }
@@ -9213,6 +9218,11 @@ fn strip_case_fold(text: &str) -> (&str, bool) {
 /// rather than applied, because [`Term::parse`] reads it and the fold has to
 /// happen against the EVENT's value, not this text.
 fn ctx_alias_value(value: &str) -> Option<String> {
+    // Ahead of the guard below, which declines this spelling for the
+    // parentheses its call and its arms carry.
+    if let Some(path) = null_default_ternary(value) {
+        return Some(path);
+    }
     // The path travels UNCAST: the comparisons and arithmetic downstream read
     // the event's own number, so the `(long)` says nothing they need.
     let value = value.strip_prefix("(long)").map_or(value, |rest| {
@@ -9230,6 +9240,25 @@ fn ctx_alias_value(value: &str) -> Option<String> {
     }
     // A call or a subscript is a value this cannot follow.
     (!bare.contains(['(', ')', '[', ']', ' ', '\n'])).then(|| value.to_string())
+}
+
+/// The path a `<map>.containsKey('<key>') ? <map>.<key> : null` ternary reads.
+///
+/// Painless answers an absent member with null either way, so the ternary IS
+/// the plain read and collapses to it. Both halves have to name the same
+/// member, or the value is something else entirely.
+fn null_default_ternary(value: &str) -> Option<String> {
+    // `ctx?.a` carries a `?` of its own, so the null-safe spelling is resolved
+    // before the ternary is split on one.
+    let value = subject_path(value);
+    let (test, arms) = value.split_once('?')?;
+    let (present, absent) = arms.split_once(':')?;
+    if absent.trim() != "null" {
+        return None;
+    }
+    let (map, key) = contains_key_term(test.trim())?;
+    let read = clean_path(present.trim().strip_prefix("ctx.")?);
+    (read == format!("{map}.{key}")).then(|| format!("ctx.{read}"))
 }
 
 /// Drop `def <name> = ...;` once every use of it has been inlined.
@@ -9595,10 +9624,38 @@ impl Program {
     }
 }
 
+/// The map and the key of a `ctx.<path>.containsKey('<key>')` test.
+///
+/// ONE reader, shared by [`Term::parse`] and [`readable_term`] on purpose: this
+/// file's own history is a form taught to one walk and missed by the other, so
+/// the strict gate and the parse cannot disagree about what a term is.
+///
+/// `.contains(` does not occur inside `.containsKey(`, so the neighbouring
+/// readers never see this text and this one never sees theirs.
+fn contains_key_term(term: &str) -> Option<(String, String)> {
+    let term = subject_path(term);
+    let (subject, argument) = term.split_once(".containsKey(")?;
+    let path = subject.trim().strip_prefix("ctx.")?;
+    // The WHOLE subject has to be that path: `ctx.a == ctx.b.containsKey(c)`
+    // splits here too, and reading its left half as a path would name a field
+    // called `a == ctx.b`.
+    if !path
+        .chars()
+        .all(|c| c.is_alphanumeric() || "._?@['\"]".contains(c))
+    {
+        return None;
+    }
+    let key = quoted_after(argument, "")?;
+    Some((clean_path(path), key))
+}
+
 /// Whether one comparison is a form [`Term::holds`] resolves rather than
 /// answering `false` by default.
 fn readable_term(term: &str) -> bool {
     let term = term.trim().trim_start_matches('!').trim();
+    if contains_key_term(term).is_some() {
+        return true;
+    }
     if term.starts_with('[') {
         // A literal list's `.contains`, which reads its argument itself.
         return term.contains(".contains(");
@@ -9870,6 +9927,14 @@ enum Term {
     /// those exactly. `instanceof long` is NOT read: a JSON number carries no
     /// width, so a `long` test cannot be told from a `double` one here.
     InstanceOf { path: String, kind: JsonKind },
+    /// `ctx.<path>.containsKey('<key>')` -- whether the map HOLDS the key,
+    /// which a null test cannot answer: Painless reads a present-but-null
+    /// member as null, and `containsKey` still says true for one.
+    ///
+    /// `proofpoint_365totalprotection` opens four scripts on it, and unread the
+    /// term parsed to [`Term::Never`] -- so the six fields behind those guards
+    /// were written on no event.
+    ContainsKey { path: String, key: String },
     /// Nothing the text resolves, so no event can make it hold.
     Never,
 }
@@ -10038,6 +10103,11 @@ impl Term {
                 path: clean_path(path),
                 kind,
             };
+        }
+        // Beside the `.contains(` reader below, which asks a different question
+        // of a different receiver and cannot see this text.
+        if let Some((path, key)) = contains_key_term(term) {
+            return Self::ContainsKey { path, key };
         }
         if let Some((subject, literal)) = term.split_once(".contains(") {
             // A field argument is the append-once guard these scripts write.
@@ -10243,6 +10313,11 @@ impl Term {
             // An absent field is not an instance of anything, which is what
             // Painless answers for a null too.
             Self::InstanceOf { path, kind } => event.get(path).is_some_and(|v| kind.matches(v)),
+            // Read off the map itself: joining the path to the key would
+            // allocate once per event to ask the same question.
+            Self::ContainsKey { path, key } => event
+                .get_object(path)
+                .is_some_and(|map| map.contains_key(key.as_str())),
             // Compared as a `long`, which is what the script cast it to, and
             // exactly: 1e18 is past the integer f64 represents without loss.
             // A field that is not a number is neither greater nor less.

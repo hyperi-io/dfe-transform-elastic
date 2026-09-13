@@ -168,7 +168,8 @@ impl Transform for Default {
                     // Painless script, resolved to its runners at generation time
                     scale_field(
                         event,
-                        &ScaleField::new(
+                        &ScaleField::between(
+                            "ibm_qradar.offense.close_time",
                             "ibm_qradar.offense.start_time",
                             "event.duration",
                             Factor::Long(1000000),

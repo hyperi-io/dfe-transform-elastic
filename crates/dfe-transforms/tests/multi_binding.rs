@@ -78,7 +78,13 @@ use dfe_runtime::painless_plan::PainlessPlan;
 /// recursive prune. hackerone's was claimed by `CollectingLadder` AND
 /// `CollectMapValues`, neither of which prunes anything, and it now binds the
 /// one matcher that does.
-const MULTI_BINDING: usize = 57;
+///
+/// 57 to 58 with the `LabelledKeyRename` arm, varonis's CEF label rename. It
+/// shadows `FirstContainedMember` and shadows nothing: that is a params matcher
+/// and the call site passes no `params` block, so dispatch skips it and this
+/// arm is the only one that can run. The source scored 0 of 2 events with 26
+/// fields Elasticsearch does not emit, and 2 of 2 with none once it bound.
+const MULTI_BINDING: usize = 58;
 
 /// The `cached_painless!` literals a generated file holds, in full.
 ///

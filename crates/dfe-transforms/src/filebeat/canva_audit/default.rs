@@ -393,7 +393,8 @@ impl Transform for Default {
                     // Painless script, resolved to its runners at generation time
                     scale_field(
                         event,
-                        &ScaleField::new(
+                        &ScaleField::between(
+                            "json.action.end_timestamp",
                             "json.action.start_timestamp",
                             "event.duration",
                             Factor::Long(1000000),

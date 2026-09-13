@@ -4425,21 +4425,23 @@ fn a_row_defaulted_lookup_with_no_source_writes_nothing() {
 }
 
 /// Every other `getOrDefault` in the generated tree, which the widened trigger
-/// now reaches and each of which the row reader has to decline: a default of
-/// `null`, of the key itself, of the field's own current value, of a quoted
-/// literal, and a helper defaulting out of a LOCAL map.
+/// now reaches and each of which the reader has to decline: a default of
+/// `null`, of the field's own current value, and a helper defaulting out of a
+/// LOCAL map.
 ///
-/// `digital_guardian`'s spelling was on this list and is not any more -- see
-/// [`a_row_defaulted_lookup_reads_an_unnamed_table`]. What separates the two is
-/// the FALLBACK: these name something the table does not hold, and that one
-/// names another of its own rows, which is the whole of what this reader
-/// models.
+/// What separates these from the two spellings the reader takes is that the
+/// fallback is not a VALUE the lookup can write. A row of the table and a
+/// quoted literal both are; null, a re-read of the target, and a local map's
+/// row are not.
+///
+/// `digital_guardian`'s spelling came off this list with
+/// [`a_row_defaulted_lookup_reads_an_unnamed_table`], and varonis's with
+/// [`a_table_lookup_takes_a_literal_default_through_a_wrapper`].
 #[test]
 fn the_other_get_or_default_spellings_are_declined() {
     for script in [
         r#"def value = ctx.a.result;\nif (value != null) {\n  ctx.b.result = params.error_codes.getOrDefault(value, null);\n}\n"#,
         r#"ctx.salesforce.login.api.type = params.api_type_map.getOrDefault(ctx.salesforce?.login?.api?.type, ctx.salesforce.login.api.type);\n"#,
-        r#"def severity = String.valueOf(ctx.event.severity);\nctx.event.severity_label = params.descriptions.getOrDefault(\n  severity,\n  \"unknown\"\n);\n"#,
         r#"def getField(Map src, String[] path) {\n for (int i=0; i<path.length-1; i++) {\n  src = src.getOrDefault(path[i], null);\n }\n return src;\n}"#,
     ] {
         let normalised = crate::common::normalise(script);
@@ -5993,4 +5995,123 @@ fn a_merge_with_no_collected_key_is_untouched() {
     let mut unlisted = Event::new(json!({ "event": { "code": "999999" } }));
     assert!(try_params_painless(&mut unlisted, script, &params));
     assert!(!unlisted.has("event.kind"));
+}
+
+/// A `getOrDefault` table read keyed through `String.valueOf` and falling back
+/// to a LITERAL, which is how varonis grades a syslog severity.
+///
+/// Two spellings apart from the bound twin (`qualys_vmdr`): the key travels
+/// through a wrapper, and the fallback is a quoted word rather than another row
+/// of the table. Either one alone left the script unbound.
+/// The literal `crates/dfe-transforms/src/filebeat/varonis_logs/default.rs:65`
+/// holds, escapes and all -- a matcher that works only on resolved text passes
+/// its own test and does nothing in the service.
+#[test]
+fn a_table_lookup_takes_a_literal_default_through_a_wrapper() {
+    const SCRIPT: &str = r#"String severity = String.valueOf(ctx.event.severity);\nctx.event.severity_label = params.descriptions.getOrDefault(\n  severity,\n  \"unknown\"\n);\n"#;
+    let normalised = crate::common::normalise(SCRIPT);
+    let params = json!({ "descriptions": { "2": "critical", "3": "error" } });
+
+    let mut graded = Event::new(json!({ "event": { "severity": 2 } }));
+    assert!(try_params_painless(&mut graded, &normalised, &params));
+    assert_eq!(graded.get_str("event.severity_label"), Some("critical"));
+
+    // A severity the table does not list takes the script's own literal.
+    let mut unlisted = Event::new(json!({ "event": { "severity": 9 } }));
+    assert!(try_params_painless(&mut unlisted, &normalised, &params));
+    assert_eq!(unlisted.get_str("event.severity_label"), Some("unknown"));
+}
+
+/// `containsKey` asks about the KEY, which is the whole reason a script reaches
+/// for it over `!= null`: a member the vendor wrote as null is still there.
+#[test]
+fn contains_key_reads_presence_not_value() {
+    let event = Event::new(json!({ "a": { "set": 1, "null": null } }));
+    assert!(guard_holds(&event, "ctx.a.containsKey('set')"));
+    assert!(guard_holds(&event, "ctx.a.containsKey('null')"));
+    assert!(!guard_holds(&event, "ctx.a.containsKey('absent')"));
+    assert!(!guard_holds(&event, "ctx.missing.containsKey('set')"));
+    // A scalar is not a map, and asking one for a key answers no rather than
+    // reading the scalar itself.
+    let scalar = Event::new(json!({ "a": "text" }));
+    assert!(!guard_holds(&scalar, "ctx.a.containsKey('text')"));
+}
+
+/// The guard and the strict gate read the term the same way, so a script that
+/// opens on `containsKey` is claimed rather than skipped in silence.
+///
+/// `proofpoint_365totalprotection` spells all four of its extractions this way.
+#[test]
+fn a_contains_key_guard_is_a_statement_the_gate_accepts() {
+    const SCRIPT: &str = "if (ctx.p.classification.containsKey('text')) {\n    \
+        ctx.p.classification_text = ctx.p.classification.text;\n    \
+        ctx.p.classification_id = ctx.p.classification.id;\n}\n";
+
+    let program = Program::parse(SCRIPT);
+    assert!(program.is_whole(), "{program:?}");
+
+    let mut event = Event::new(json!({ "p": { "classification": { "id": 2, "text": "clean" } } }));
+    assert!(program.run(&mut event));
+    assert_eq!(event.get_str("p.classification_text"), Some("clean"));
+    assert_eq!(event.get("p.classification_id"), Some(&json!(2)));
+
+    // No `text` member, so the vendor's own guard writes neither field.
+    let mut untyped = Event::new(json!({ "p": { "classification": { "id": 2 } } }));
+    assert!(!Program::parse(SCRIPT).run(&mut untyped));
+    assert!(!untyped.has("p.classification_text"));
+}
+
+/// `<map>.containsKey('<k>') ? <map>.<k> : null` is the long spelling of
+/// `<map>.<k>`, so the local it binds resolves to the plain path.
+///
+/// Left unread the ternary declined, every guard reading the local parsed to
+/// [`Term::Never`], and `proofpoint_365totalprotection` bound a matcher that
+/// wrote nothing on any event.
+#[test]
+fn a_null_default_ternary_binds_the_path_it_reads() {
+    assert_eq!(
+        ctx_alias_value("ctx.p.e.containsKey('direction') ? ctx.p.e.direction : null"),
+        Some("ctx.p.e.direction".to_string())
+    );
+    // The null-safe spelling carries a `?` of its own and still resolves.
+    assert_eq!(
+        ctx_alias_value("ctx?.p?.e.containsKey('direction') ? ctx.p.e.direction : null"),
+        Some("ctx.p.e.direction".to_string())
+    );
+    // A different member on either side is not the read this collapses to.
+    assert_eq!(
+        ctx_alias_value("ctx.p.e.containsKey('direction') ? ctx.p.e.owner : null"),
+        None
+    );
+    // A default that is not null keeps the branch, so the ternary stands.
+    assert_eq!(
+        ctx_alias_value("ctx.p.e.containsKey('direction') ? ctx.p.e.direction : 0"),
+        None
+    );
+}
+
+/// The whole shape that ternary unlocks: a direction read through a local,
+/// each arm copying one address onto another.
+#[test]
+fn a_local_bound_through_that_ternary_runs_its_guards() {
+    const SCRIPT: &str = "def direction = ctx.p.e.containsKey('direction') ? \
+        ctx.p.e.direction : null;\nif (direction != null && direction == 1) {\n  \
+        ctx.p.e.to = ctx.p.e.owner;\n} else if (direction != null && direction == 2) {\n  \
+        ctx.p.e.from = ctx.p.e.owner;\n}\n";
+
+    fn addresses(direction: i64) -> Value {
+        let mut event = Event::new(json!({
+            "p": { "e": { "direction": direction, "owner": "user@example.com" } },
+        }));
+        Program::parse(SCRIPT).run(&mut event);
+        event.as_value().clone()
+    }
+
+    assert_eq!(addresses(1)["p"]["e"]["to"], json!("user@example.com"));
+    assert!(addresses(1)["p"]["e"].get("from").is_none());
+    assert_eq!(addresses(2)["p"]["e"]["from"], json!("user@example.com"));
+    assert!(addresses(2)["p"]["e"].get("to").is_none());
+    // A direction no arm names writes neither address.
+    assert!(addresses(3)["p"]["e"].get("to").is_none());
+    assert!(addresses(3)["p"]["e"].get("from").is_none());
 }

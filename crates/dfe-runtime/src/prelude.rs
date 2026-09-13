@@ -72,6 +72,7 @@ pub use crate::painless_indicator_expiry::{
     FlaggedExpiry, IndicatorExpiry, flagged_expiry, indicator_expiry,
 };
 pub use crate::painless_item_writes::{ItemWrites, item_writes};
+pub use crate::painless_labelled_keys::{LabelledKeyRename, labelled_key_rename};
 pub use crate::painless_last_element::{LastElementMember, run_last_element_member};
 pub use crate::painless_level_labels::{LevelLabels, level_labels};
 pub use crate::painless_list_records::{
@@ -88,12 +89,14 @@ pub use crate::painless_member_kv_fold::{MemberKvFold, member_kv_fold};
 pub use crate::painless_member_ladder::{MemberLadder, member_ladder};
 pub use crate::painless_member_tags::{MemberTags, member_tags};
 pub use crate::painless_member_value_wrap::{MemberValueWrap, member_value_wrap};
+pub use crate::painless_needle_table::{NeedleTable, needle_table};
 pub use crate::painless_nth_separator::{NthSeparatorPrefix, nth_separator_prefix};
 pub use crate::painless_pair_table::{PairTable, pair_table};
 pub use crate::painless_record_fold::{RecordFold, record_fold};
 pub use crate::painless_records::{
     RecordFromFields, RecordRenames, record_from_fields, record_renames,
 };
+pub use crate::painless_rescale::{RescaleFields, rescale_fields};
 pub use crate::painless_seconds_between::{SecondsBetween, seconds_between};
 pub use crate::painless_securityhub_ocsf::{
     OcsfRemediation, OcsfResource, OcsfSeverity, OcsfVulnerability, run_ocsf_remediation,

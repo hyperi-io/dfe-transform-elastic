@@ -13048,7 +13048,7 @@ fn cut_line_comment(line: &str) -> &str {
 /// A script fragment with its `//` notes cut, line by line.
 ///
 /// The newlines stay, so nothing that was on two lines reads as one statement.
-fn strip_line_comments(text: &str) -> Cow<'_, str> {
+pub(crate) fn strip_line_comments(text: &str) -> Cow<'_, str> {
     if !text.contains("//") {
         return Cow::Borrowed(text);
     }
@@ -13070,15 +13070,26 @@ fn strip_line_comments(text: &str) -> Cow<'_, str> {
 /// `None` where the body assigns nothing a literal reader can take, which is
 /// how a guard that merely reads the subject is kept out of the arm list.
 fn ladder_arm(literals: Vec<String>, body: &str) -> Option<LadderArm> {
-    use crate::params::clean_path;
-
     // A note between the `{` and the statement it explains sits where the
     // reader expects `ctx.`, so the arm reads as assigning nothing --
     // aws_securityhub's severity bands annotate every arm that way.
     let body = strip_line_comments(body);
 
-    // Every assignment in the arm, not just the first -- a graded severity
-    // writes a score alongside it.
+    let writes = ladder_writes(&body);
+    (!writes.is_empty()).then(|| LadderArm {
+        literals,
+        writes,
+        removes: arm_removes(&body),
+    })
+}
+
+/// Every `ctx.<path> = <literal>` a branch body assigns, in script order.
+///
+/// Every assignment, not just the first -- a graded severity writes a score
+/// alongside it.
+fn ladder_writes(body: &str) -> Vec<(String, Value)> {
+    use crate::params::clean_path;
+
     let mut writes = Vec::new();
     for statement in body.split(';') {
         let Some((lhs, rhs)) = statement.split_once('=') else {
@@ -13097,11 +13108,7 @@ fn ladder_arm(literals: Vec<String>, body: &str) -> Option<LadderArm> {
         };
         writes.push((clean_path(target.trim()), value));
     }
-    (!writes.is_empty()).then(|| LadderArm {
-        literals,
-        writes,
-        removes: arm_removes(&body),
-    })
+    writes
 }
 
 /// Parse an equality ladder, or `None` if the script is a different pattern.
@@ -13116,12 +13123,17 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
         return None;
     }
 
-    // The subject is whatever the FIRST ARM compares against -- a leading
-    // type guard such as `if (level instanceof String) { ... }` has no `==`
-    // of its own, so it is passed over rather than mistaken for the ladder.
+    // The subject is whatever the FIRST ARM compares against, and an arm is a
+    // condition testing a QUOTED literal -- the same test the arm walk below
+    // applies. A leading type guard such as `if (level instanceof String)` has
+    // no `==` at all; a leading `if (ctx.event == null) { ctx.event = [:]; }`
+    // map-creation guard has one, and taking it read doppel's subject as
+    // `event`, so every arm compared a map against a severity word and the
+    // ladder wrote nothing on any event.
     let lhs = script.split("if (").skip(1).find_map(|segment| {
         let (cond, _) = segment.split_once(')')?;
-        let (lhs, _) = cond.split_once("==")?;
+        let (lhs, rhs) = cond.split_once("==")?;
+        quoted_first(rhs)?;
         Some(lhs.trim())
     })?;
     let mut through_put = false;
@@ -13143,6 +13155,17 @@ fn parse_ladder(script: &str) -> Option<Ladder> {
             })
             .collect();
         if literals.is_empty() {
+            // A branch this reader cannot express, that WRITES, means the
+            // ladder is not the whole script -- and claiming it here costs the
+            // matcher that reads the script whole, because the ladder's arm
+            // returns before any later one is tried. arista gates
+            // `event.outcome` and `event.type` on a bare `if (ctx.arista.blocked)`
+            // ahead of three `filterPrefix` arms; reading only those three lost
+            // both fields on 39 of its 141 events. A map-creation guard
+            // (`ctx.event = [:];`) assigns no literal, so it still passes over.
+            if !ladder_writes(&strip_line_comments(body)).is_empty() {
+                return None;
+            }
             continue;
         }
         // `ctx.<parent>.put('<key>', '<value>')` writes the same thing an
@@ -13299,15 +13322,29 @@ fn self_folds(script: &str, name: &str) -> bool {
         .any(|fold| script.contains(&format!("{name} = {name}{fold}")))
 }
 
-/// Split a trailing `.toLowerCase()` / `.toUpperCase()` off a path, reporting
-/// whether one was there.
-fn strip_case_fold(path: &str) -> (String, bool) {
-    match path
-        .strip_suffix(".toLowerCase()")
-        .or_else(|| path.strip_suffix(".toUpperCase()"))
-    {
-        Some(bare) => (bare.to_string(), true),
-        None => (path.to_string(), false),
+/// Strip the value-conversion calls off the tail of a path, reporting whether
+/// any of them folded case.
+///
+/// `.toString()` is a no-op for a subject the reader compares as text either
+/// way, and it is written in the MIDDLE of the chain: withsecure binds its
+/// severity through `riskLevelValue.toString().toLowerCase()`, and stopping at
+/// the `toString` left `riskLevelValue` unreadable and both its ladders
+/// unclaimed.
+pub(crate) fn strip_case_fold(path: &str) -> (String, bool) {
+    let mut path = path.trim();
+    let mut folded = false;
+    loop {
+        if let Some(bare) = path
+            .strip_suffix(".toLowerCase()")
+            .or_else(|| path.strip_suffix(".toUpperCase()"))
+        {
+            path = bare;
+            folded = true;
+        } else if let Some(bare) = path.strip_suffix(".toString()") {
+            path = bare;
+        } else {
+            return (path.to_string(), folded);
+        }
     }
 }
 
@@ -17525,6 +17562,14 @@ pub(crate) fn painless_path(fragment: &str) -> Option<String> {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ScaleField {
     source: String,
+    /// Subtracted from the source before scaling, where the script scales a
+    /// DIFFERENCE rather than a field.
+    ///
+    /// `ctx.event.duration = (ctx.a.end - ctx.a.start) * 1000000` is how canva
+    /// and `ibm_qradar` both write a duration, and reading the source as a plain
+    /// path took the LAST `ctx.` in the parentheses -- the start -- so both
+    /// shipped a timestamp scaled to nanoseconds in place of an elapsed time.
+    minus: Option<String>,
     target: String,
     factor: Factor,
 }
@@ -17535,6 +17580,23 @@ impl ScaleField {
     pub fn new(source: impl Into<String>, target: impl Into<String>, factor: Factor) -> Self {
         Self {
             source: source.into(),
+            minus: None,
+            target: target.into(),
+            factor,
+        }
+    }
+
+    /// The same, scaling the DIFFERENCE between two fields.
+    #[must_use]
+    pub fn between(
+        source: impl Into<String>,
+        minus: impl Into<String>,
+        target: impl Into<String>,
+        factor: Factor,
+    ) -> Self {
+        Self {
+            source: source.into(),
+            minus: Some(minus.into()),
             target: target.into(),
             factor,
         }
@@ -17595,15 +17657,47 @@ fn parse_scale_field(script: &str) -> Option<ScaleField> {
 
     let at = last_assignment(head)?;
     let target = painless_path(&head[..at])?;
-    let source = painless_path(&head[at + 1..])?;
+    let scaled = &head[at + 1..];
+
+    // A DIFFERENCE of two fields, which `painless_path` would otherwise read as
+    // whichever `ctx.` came last. Split on the subtraction before either side is
+    // read, so the two operands stay apart.
+    let (source, minus) = match split_difference(scaled) {
+        Some((left, right)) => (painless_path(left)?, Some(painless_path(right)?)),
+        None => (painless_path(scaled)?, None),
+    };
 
     // Source and target may be the SAME field: scaling in place is the older
     // spelling and four vendored scripts still use it.
-    (!target.is_empty() && !source.is_empty()).then_some(ScaleField {
-        source,
-        target,
-        factor,
-    })
+    (!target.is_empty() && !source.is_empty() && minus.as_ref().is_none_or(|m| !m.is_empty()))
+        .then_some(ScaleField {
+            source,
+            minus,
+            target,
+            factor,
+        })
+}
+
+/// Split `(ctx.a - ctx.b)` into its two operands, or `None` where the text is
+/// not one subtraction of two field reads.
+///
+/// A NEGATIVE literal (`ctx.a * -1`) never reaches here, because the factor walk
+/// above has already taken the multiply off; what is left is one operand and,
+/// where the vendor wrote a duration, the pair it is the gap between.
+fn split_difference(text: &str) -> Option<(&str, &str)> {
+    let inner = text.trim();
+    let inner = inner
+        .strip_prefix('(')
+        .and_then(|rest| rest.strip_suffix(')'))
+        .unwrap_or(inner);
+    let (left, right) = inner.split_once(" - ")?;
+    // Exactly two operands, each one field read. Anything longer is arithmetic
+    // this reader has not understood, and claiming it writes a wrong number
+    // rather than none.
+    if right.contains(" - ") || right.contains('+') || right.contains('/') {
+        return None;
+    }
+    (left.contains("ctx.") && right.contains("ctx.")).then_some((left, right))
 }
 
 /// A computation written into a LOCAL and then assigned to a field, rewritten as
@@ -17691,6 +17785,9 @@ pub(crate) fn assigns_at(bytes: &[u8], at: usize) -> bool {
 
 /// Multiply the source into the target.
 pub fn scale_field(event: &mut Event, pattern: &ScaleField) -> bool {
+    if let Some(minus) = &pattern.minus {
+        return scale_difference(event, pattern, minus);
+    }
     if let Some(n) = event.get_as_i64(&pattern.source) {
         let scaled = match pattern.factor {
             Factor::Long(factor) => json!(n.saturating_mul(factor)),
@@ -17717,6 +17814,39 @@ pub fn scale_field(event: &mut Event, pattern: &ScaleField) -> bool {
             Factor::Double(factor) => factor,
         };
         let _ = event.set(&pattern.target, json!(n * factor));
+    }
+    true
+}
+
+/// Scale the gap between two fields, writing nothing where either is absent.
+///
+/// Elasticsearch's own `if` gates both sides, so an event carrying only one of
+/// them gets no duration there either.
+fn scale_difference(event: &mut Event, pattern: &ScaleField, minus: &str) -> bool {
+    if let (Some(end), Some(start)) = (event.get_as_i64(&pattern.source), event.get_as_i64(minus)) {
+        let gap = end.saturating_sub(start);
+        let scaled = match pattern.factor {
+            Factor::Long(factor) => json!(gap.saturating_mul(factor)),
+            #[allow(clippy::cast_precision_loss)]
+            Factor::Double(factor) => json!(gap as f64 * factor),
+        };
+        let _ = event.set(&pattern.target, scaled);
+        return true;
+    }
+
+    let read = |path: &str| {
+        event.get(path).and_then(|value| match value {
+            Value::String(text) => text.parse::<f64>().ok(),
+            other => other.as_f64(),
+        })
+    };
+    if let (Some(end), Some(start)) = (read(&pattern.source), read(minus)) {
+        #[allow(clippy::cast_precision_loss)]
+        let factor = match pattern.factor {
+            Factor::Long(factor) => factor as f64,
+            Factor::Double(factor) => factor,
+        };
+        let _ = event.set(&pattern.target, json!((end - start) * factor));
     }
     true
 }
@@ -19470,6 +19600,21 @@ fn parse_wrap_map_in_list(script: &str) -> Option<String> {
 /// DIFFERENT field, spells the divisor `100.0`, and puts no space either side
 /// of the slash; each of those alone was enough to miss it, which is why the
 /// statement is split apart rather than pattern-matched whole.
+/// A divisor literal read as an integer.
+///
+/// `100` and `100.0` are the same divisor, and Painless allows a type suffix on
+/// either. Integer because the patterns holding one derive `Eq`, and no vendor
+/// divides by a fraction.
+pub(crate) fn literal_divisor(text: &str) -> Option<i64> {
+    let literal = text.trim().trim_end_matches(['L', 'l', 'd', 'D', 'f', 'F']);
+    let literal = match literal.split_once('.') {
+        Some((whole, fraction)) if fraction.chars().all(|c| c == '0') => whole,
+        Some(_) => return None,
+        None => literal,
+    };
+    literal.parse::<i64>().ok().filter(|n| *n != 0)
+}
+
 fn parse_guarded_divide(script: &str) -> Option<KnownPattern> {
     use crate::params::clean_path;
 
@@ -19490,18 +19635,7 @@ fn parse_guarded_divide(script: &str) -> Option<KnownPattern> {
     let target = clean_path(lhs.trim().strip_prefix("ctx.")?);
 
     let (value, divisor) = rhs.trim().rsplit_once('/')?;
-    // `100` and `100.0` are the same divisor, and Painless allows a type
-    // suffix on either. Read as an INTEGER -- `KnownPattern` derives `Eq`, and no
-    // vendor divides by a fraction.
-    let literal = divisor
-        .trim()
-        .trim_end_matches(['L', 'l', 'd', 'D', 'f', 'F']);
-    let literal = match literal.split_once('.') {
-        Some((whole, fraction)) if fraction.chars().all(|c| c == '0') => whole,
-        Some(_) => return None,
-        None => literal,
-    };
-    let divisor = literal.parse::<i64>().ok().filter(|n| *n != 0)?;
+    let divisor = literal_divisor(divisor)?;
     let source = clean_path(value.trim().strip_prefix("ctx.")?);
     // The dividend has to be a plain field path. Read loosely it took endace's
     // `ctx._conf.event.start - ctx._conf.timedelta` whole, claimed the script,
@@ -23365,6 +23499,8 @@ pub(crate) enum KnownPattern {
     RenameMapKeys(RenameMapKeys),
     ParametersIntoMap(ParametersIntoMap),
     UnwrapSuffixedKeys(UnwrapSuffixedKeys),
+    /// A map's label keys folded into the slots they name.
+    LabelledKeyRename(Box<crate::labelled_keys::LabelledKeyRename>),
     /// An ECS `geo_point` built from a `GeoJSON` coordinate array.
     GeoPointFromCoordinates(GeoPointFromCoordinates),
     /// A `GeoJSON` geometry rendered as WKT, with the point and the copies the
@@ -23634,6 +23770,13 @@ pub(crate) enum KnownPattern {
         absent: Option<String>,
         divisor: i64,
     },
+    /// Several NAMED fields rescaled in place by one divisor, which is how the
+    /// metrics packages turn a 0-100 percentage into the 0-1 fraction they
+    /// declare.
+    RescaleFields(Box<crate::rescale::RescaleFields>),
+    /// One label chosen from a substring table the vendor spells as a counted
+    /// loop over parallel list literals.
+    NeedleTable(Box<crate::needle_table::NeedleTable>),
     /// Both catch-alls carry the guarded-literal tail already parsed, so the
     /// four-hundred-line bodies are read once per call site, not per event.
     GuardedCopy(Program),
@@ -24352,6 +24495,18 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_join_present_fields(normalised)
     {
         patterns.push(KnownPattern::JoinPresentFields(pattern));
+        return patterns;
+    }
+
+    // Pattern: a map's label keys folded into the slots they name. Beside the
+    // matcher below because they walk the same key set cutting the same
+    // suffix, and only the write tells them apart -- that one rewrites a key
+    // in place, this one re-keys a PAIR by what its label says.
+    if normalised.contains(".endsWith(")
+        && normalised.contains(".keySet()")
+        && let Some(pattern) = crate::labelled_keys::parse_labelled_key_rename(normalised)
+    {
+        patterns.push(KnownPattern::LabelledKeyRename(Box::new(pattern)));
         return patterns;
     }
 
@@ -26342,6 +26497,29 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         return patterns;
     }
 
+    // Pattern: one label chosen from a substring table, written as a
+    // single-element list. The loop header is the trigger, because the table is
+    // a counted walk over parallel list literals rather than an `else if` chain.
+    if normalised.contains("for (def ")
+        && normalised.contains(".contains(")
+        && let Some(pattern) = crate::needle_table::parse_needle_table(normalised)
+    {
+        patterns.push(KnownPattern::NeedleTable(Box::new(pattern)));
+        return patterns;
+    }
+
+    // Pattern: a run of NAMED fields rescaled in place by one literal, which is
+    // how the metrics packages turn a device's 0-100 percentage into the 0-1
+    // fraction their mappings declare. Above the guarded divide below, which
+    // reads ONE statement and would claim the first of several.
+    if normalised.contains('/')
+        && !normalised.contains("params")
+        && let Some(pattern) = crate::rescale::parse_rescale_fields(normalised)
+    {
+        patterns.push(KnownPattern::RescaleFields(Box::new(pattern)));
+        return patterns;
+    }
+
     // The two catch-alls below are patterns a longer script also CONTAINS, so
     // they run only after every structural matcher has declined.
 
@@ -27023,11 +27201,19 @@ impl KnownPattern {
                     Factor::Long(n) => format!("Factor::Long({n})"),
                     Factor::Double(n) => format!("Factor::Double({n:?})"),
                 };
-                Some(format!(
-                    "scale_field(event, &ScaleField::new({}, {}, {factor}));",
-                    rust_str(&pattern.source),
-                    rust_str(&pattern.target),
-                ))
+                Some(match &pattern.minus {
+                    Some(minus) => format!(
+                        "scale_field(event, &ScaleField::between({}, {}, {}, {factor}));",
+                        rust_str(&pattern.source),
+                        rust_str(minus),
+                        rust_str(&pattern.target),
+                    ),
+                    None => format!(
+                        "scale_field(event, &ScaleField::new({}, {}, {factor}));",
+                        rust_str(&pattern.source),
+                        rust_str(&pattern.target),
+                    ),
+                })
             }
             Self::SyslogPriority(pattern) => {
                 let source = pattern.source.as_deref().map_or_else(
@@ -27157,6 +27343,9 @@ pub(crate) fn run_known_pattern(
         KnownPattern::RenameMapKeys(pattern) => rename_map_keys(event, pattern),
         KnownPattern::ParametersIntoMap(pattern) => parameters_into_map(event, pattern),
         KnownPattern::UnwrapSuffixedKeys(pattern) => unwrap_suffixed_keys(event, pattern),
+        KnownPattern::LabelledKeyRename(pattern) => {
+            crate::labelled_keys::labelled_key_rename(event, pattern)
+        }
         KnownPattern::GeoPointFromCoordinates(pattern) => {
             geo_point_from_coordinates(event, pattern)
         }
@@ -27514,6 +27703,8 @@ pub(crate) fn run_known_pattern(
             absent,
             divisor,
         } => run_guarded_divide(event, target, source, absent.as_ref(), *divisor),
+        KnownPattern::RescaleFields(pattern) => crate::rescale::rescale_fields(event, pattern),
+        KnownPattern::NeedleTable(pattern) => crate::needle_table::needle_table(event, pattern),
         KnownPattern::FlattenMapInto(pattern) => run_flatten_map_into(event, pattern),
         KnownPattern::StringifyLongs(fields) => run_stringify_longs(event, fields),
         KnownPattern::LongCoercion(pattern) => crate::coercion::long_coercion(event, pattern),
