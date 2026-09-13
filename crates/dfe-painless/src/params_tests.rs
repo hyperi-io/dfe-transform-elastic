@@ -703,13 +703,6 @@ fn a_member_lookup_reads_its_miss_behaviour_off_the_guard() {
 #[test]
 fn a_member_lookup_declines_what_it_cannot_wholly_say() {
     for script in [
-        // qualys_gav: a branch writes a LITERAL to the same member, which
-        // claiming the lookup half would drop.
-        "def os_type = ctx.qualys_gav.asset.operating_system.category1.toLowerCase();\\n\\n\
-         ctx.host = ctx.host ?: [:];\\nctx.host.os = ctx.host.os ?: [:];\\n\\n\
-         if (os_type.contains('centos') || os_type.contains('ubuntu')) {\\n  \
-         ctx.host.os.put('type', 'linux');\\n} else {\\n  \
-         ctx.host.os.put('type', params.get(os_type));\\n}\\n",
         // fortinet: the miss branch writes the folded KEY back, which is
         // `LookupNormalise`'s whole reason to exist.
         "def k = ctx.network.direction.toLowerCase(); def normalized = params.get(k); \
@@ -731,6 +724,73 @@ fn a_member_lookup_declines_what_it_cannot_wholly_say() {
             "claimed a script it cannot wholly say: {script}"
         );
     }
+}
+
+/// Verbatim from the `qualys_gav_asset` call site: one branch puts a LITERAL
+/// on `host.os.type` and the other the table's row, and the container the two
+/// share is guaranteed first.
+const QUALYS_OS_TYPE: &str = "def os_type = ctx.qualys_gav.asset.operating_system.category1.toLowerCase();\\n\\n\
+     ctx.host = ctx.host ?: [:];\\nctx.host.os = ctx.host.os ?: [:];\\n\\n\
+     if (os_type.contains('centos') || os_type.contains('ubuntu')) {\\n  \
+     ctx.host.os.put('type', 'linux');\\n} else {\\n  \
+     ctx.host.os.put('type', params.get(os_type));\\n}\\n";
+
+fn os_type_params() -> Value {
+    json!({
+        "macos": "macos",
+        "linux": "linux",
+        "unix": "unix",
+        "windows": "windows",
+        "ios": "ios",
+        "android": "android"
+    })
+}
+
+/// Both arms of a branch writing the SAME member are one script, so the lookup
+/// lands on `host.os.type` and the literal arm replaces it where its own guard
+/// holds.
+///
+/// `LookupNormalise` sits below this and reads the container guarantee as the
+/// write, so declining here stored the string AT `host.os` -- and every later
+/// `host.os.<sub>` then failed on it, taking all five of the source's events
+/// down the error path with 217 extra fields.
+#[test]
+fn a_branch_writing_one_member_from_both_arms_is_read_whole() {
+    let mut ubuntu = Event::new(json!({ "qualys_gav": { "asset": {
+        "operating_system": { "category1": "Ubuntu" }
+    } } }));
+    assert!(try_params_painless(
+        &mut ubuntu,
+        QUALYS_OS_TYPE,
+        &os_type_params()
+    ));
+    assert_eq!(ubuntu.get("host.os"), Some(&json!({ "type": "linux" })));
+
+    let mut linux = Event::new(json!({ "qualys_gav": { "asset": {
+        "operating_system": { "category1": "Linux" }
+    } } }));
+    assert!(try_params_painless(
+        &mut linux,
+        QUALYS_OS_TYPE,
+        &os_type_params()
+    ));
+    assert_eq!(linux.get("host.os"), Some(&json!({ "type": "linux" })));
+}
+
+/// A key the table misses stores the lookup's own null, which is what
+/// Painless's `put` does with it -- the pipeline's drop-empty pass then takes
+/// it away, and Elasticsearch's own output carries no `host.os.type` for a Mac.
+#[test]
+fn a_missed_row_stores_the_null_the_put_would_have() {
+    let mut event = Event::new(json!({ "qualys_gav": { "asset": {
+        "operating_system": { "category1": "Mac" }
+    } } }));
+    assert!(try_params_painless(
+        &mut event,
+        QUALYS_OS_TYPE,
+        &os_type_params()
+    ));
+    assert_eq!(event.get("host.os"), Some(&json!({ "type": null })));
 }
 
 /// Verbatim from `pipelines/stan/log/default.yml`: the abbreviation and
@@ -3837,6 +3897,232 @@ fn a_fold_storing_something_else_declines() {
         params_pattern(&crate::common::normalise(&script)),
         Some(ParamsPattern::SelectRenameKeys(_))
     ));
+}
+
+/// Verbatim from the `beyondinsight_password_safe_asset` call site.
+const NUMERIC_IDS: &str = r"for (field in params.numeric_ids) {\n  def value = ctx.beyondinsight_password_safe.asset[field];\n  if (value instanceof Number) {\n    ctx.beyondinsight_password_safe.asset[field] =\n      Integer.toString(value.intValue());\n  }\n}\n";
+
+fn numeric_ids() -> Value {
+    json!({ "numeric_ids": ["AssetID", "WorkgroupID"] })
+}
+
+/// Elasticsearch's own output carries `"asset_id": "22"`, so the ids leave here
+/// as text and a field the table does not name is untouched.
+#[test]
+fn each_named_id_is_rendered_as_text() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "asset": {
+        "AssetID": 22,
+        "WorkgroupID": 1,
+        "AssetName": "HealthTiger"
+    } } }));
+
+    assert!(try_params_painless(&mut event, NUMERIC_IDS, &numeric_ids()));
+    assert_eq!(
+        event.get("beyondinsight_password_safe.asset"),
+        Some(&json!({
+            "AssetID": "22",
+            "WorkgroupID": "1",
+            "AssetName": "HealthTiger"
+        }))
+    );
+}
+
+/// The script's own `instanceof Number` guard: text the vendor already sent
+/// stays as it is, and a field the document does not carry is not created.
+#[test]
+fn a_field_that_is_not_a_number_is_left_alone() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "asset": {
+        "AssetID": "already text"
+    } } }));
+
+    assert!(try_params_painless(&mut event, NUMERIC_IDS, &numeric_ids()));
+    assert_eq!(
+        event.get("beyondinsight_password_safe.asset"),
+        Some(&json!({ "AssetID": "already text" }))
+    );
+    assert!(!event.has("beyondinsight_password_safe.asset.WorkgroupID"));
+}
+
+/// A negative id renders with its sign, which is what useraudit's `-1` needs:
+/// the pipeline's own `user.id` guard compares against the STRING `-1`.
+#[test]
+fn a_negative_id_keeps_its_sign() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "asset": {
+        "AssetID": -1
+    } } }));
+    assert!(try_params_painless(&mut event, NUMERIC_IDS, &numeric_ids()));
+    assert_eq!(
+        event.get_str("beyondinsight_password_safe.asset.AssetID"),
+        Some("-1")
+    );
+}
+
+/// A rendering this reader cannot say is declined WHOLE: `String.valueOf` on a
+/// Long writes the full 64-bit value where `Integer.toString(intValue())`
+/// narrows, and the two differ on any id past 2^31.
+#[test]
+fn another_rendering_declines() {
+    let script = NUMERIC_IDS.replace(
+        "Integer.toString(value.intValue())",
+        "String.valueOf(value)",
+    );
+    assert!(!matches!(
+        params_pattern(&crate::common::normalise(&script)),
+        Some(ParamsPattern::StringifyNamedFields(_))
+    ));
+}
+
+/// Verbatim from the `beyondinsight_password_safe_session` call site: the
+/// table is a NAMED params member, which no trigger in this ladder saw --
+/// `params.get(` is not a substring of `params.descriptions.get(`.
+const STATUS_DESCRIPTIONS: &str = r"def description = params.descriptions.get(ctx.beyondinsight_password_safe.session.status);\nif (description != null) {\n  ctx.beyondinsight_password_safe.session.status = description;\n}\n";
+
+fn status_descriptions() -> Value {
+    json!({ "descriptions": { "0": "not_started", "1": "in_progress", "2": "completed" } })
+}
+
+/// The row replaces the key it was looked up by.
+#[test]
+fn a_named_table_lookup_writes_its_row() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "session": {
+        "status": "1"
+    } } }));
+    assert!(try_params_painless(
+        &mut event,
+        STATUS_DESCRIPTIONS,
+        &status_descriptions()
+    ));
+    assert_eq!(
+        event.get_str("beyondinsight_password_safe.session.status"),
+        Some("in_progress")
+    );
+}
+
+/// The script's `!= null` guard: a key the table misses keeps whatever the
+/// field already held, rather than being written back or cleared.
+#[test]
+fn a_named_table_miss_keeps_the_field() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "session": {
+        "status": "99"
+    } } }));
+    assert!(try_params_painless(
+        &mut event,
+        STATUS_DESCRIPTIONS,
+        &status_descriptions()
+    ));
+    assert_eq!(
+        event.get_str("beyondinsight_password_safe.session.status"),
+        Some("99")
+    );
+}
+
+/// Verbatim from the `beyondinsight_password_safe_asset` call site, escapes
+/// and all -- a stored script arrives with its newlines escaped, so a test
+/// written with real ones passes while production still fails.
+const CAMEL_TO_SNAKE: &str = r"Map renamedFields = [:];\nfor (entry in ctx.beyondinsight_password_safe.asset.entrySet()) {\n  def originalKey = entry.getKey();\n  def snakeKey = params.field_mappings[originalKey];\n  if (snakeKey != null) {\n    renamedFields[snakeKey] = entry.getValue();\n  } else {\n    renamedFields[originalKey] = entry.getValue();\n  }\n}\nctx.beyondinsight_password_safe.asset = renamedFields;\n";
+
+/// The asset stream's own table, as the call site's `cached_params!` spells it.
+fn asset_field_mappings() -> Value {
+    json!({ "field_mappings": {
+        "AssetID": "asset_id",
+        "AssetName": "asset_name",
+        "IPAddress": "ip_address",
+        "MacAddress": "mac_address"
+    } })
+}
+
+/// The named table's keys are renamed and a key it misses keeps its own,
+/// because this script's else arm re-inserts it.
+#[test]
+fn a_named_table_renames_the_keys_it_holds_and_keeps_the_rest() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "asset": {
+        "AssetID": 22,
+        "AssetName": "HealthTiger",
+        "MacAddress": "00:1B:44:11:3A:B7",
+        "Workgroup": "default"
+    } } }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CAMEL_TO_SNAKE,
+        &asset_field_mappings()
+    ));
+    assert_eq!(
+        event.get("beyondinsight_password_safe.asset"),
+        Some(&json!({
+            "asset_id": 22,
+            "asset_name": "HealthTiger",
+            "mac_address": "00:1B:44:11:3A:B7",
+            "Workgroup": "default"
+        }))
+    );
+}
+
+/// The rebuild walks the map, so the ORDER is the vendor's own rather than the
+/// table's -- which is what Painless's `entrySet()` does, and what the `date`
+/// and `gsub` processors reading the renamed keys next see.
+#[test]
+fn the_rebuild_keeps_the_vendors_own_order() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "asset": {
+        "MacAddress": "00:1B:44:11:3A:B7",
+        "AssetID": 22
+    } } }));
+
+    assert!(try_params_painless(
+        &mut event,
+        CAMEL_TO_SNAKE,
+        &asset_field_mappings()
+    ));
+    let renamed = event
+        .get("beyondinsight_password_safe.asset")
+        .and_then(Value::as_object)
+        .expect("the map is rebuilt");
+    assert_eq!(
+        renamed.keys().collect::<Vec<_>>(),
+        vec!["mac_address", "asset_id"]
+    );
+}
+
+/// An else arm this reader cannot place is declined WHOLE. Both spellings
+/// below would leave the map rebuilt without what that arm wrote, and the loss
+/// leaves no error behind.
+///
+/// The `.toString()` case is why the match carries the statement's own
+/// semicolon: `entry.getValue()` is a prefix of `entry.getValue().toString()`,
+/// so a substring test reads a conversion as the plain take.
+#[test]
+fn an_else_arm_this_cannot_read_declines() {
+    for arm in [
+        "return;",
+        r"renamedFields[originalKey] = entry.getValue().toString();",
+    ] {
+        let script = CAMEL_TO_SNAKE.replace(r"renamedFields[originalKey] = entry.getValue();", arm);
+        assert!(
+            !matches!(
+                params_pattern(&crate::common::normalise(&script)),
+                Some(ParamsPattern::SelectRenameKeys(_))
+            ),
+            "claimed an else arm it cannot place: {arm}"
+        );
+    }
+}
+
+/// A params block with no such member is not this pattern's to run: every
+/// lookup would miss and the rebuild would answer for a table it never read.
+#[test]
+fn a_missing_named_table_writes_nothing() {
+    let mut event = Event::new(json!({ "beyondinsight_password_safe": { "asset": {
+        "AssetID": 22
+    } } }));
+    assert!(!try_params_painless(
+        &mut event,
+        CAMEL_TO_SNAKE,
+        &json!({ "other_table": {} })
+    ));
+    assert_eq!(
+        event.get("beyondinsight_password_safe.asset"),
+        Some(&json!({ "AssetID": 22 }))
+    );
 }
 
 /// Verbatim from `pipelines/iptables/log/default.yml`, escapes and all.

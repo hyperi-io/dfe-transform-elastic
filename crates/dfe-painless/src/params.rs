@@ -105,6 +105,7 @@ pub(crate) enum ParamsPattern {
     KeyedByLookup(Box<KeyedByLookup>),
     /// Named fields parsed from hex text into numbers, in place.
     HexFields(crate::hex::HexFields),
+    StringifyNamedFields(StringifyNamedFields),
     AwsEntity(Box<crate::entity::EntityScript>),
     DropEmptyMembers {
         parent: String,
@@ -904,7 +905,12 @@ fn params_pattern_tail(normalised: &str) -> Option<ParamsPattern> {
     // guarantee as the write and so targets the bare container: chrome stored
     // a string AT `event`, and every later `event.<sub>` write then failed on
     // it, scoring zero on six events whose every field was right.
-    if normalised.contains("params.get(")
+    //
+    // The trigger is the lookup CALL rather than the unnamed spelling of it,
+    // so `params.<table>.get(` reaches the same reader. Everything that
+    // follows is gated on the parse, which takes only a script whose every
+    // other write is the container it guarantees.
+    if params_lookup_call(normalised).is_some()
         && let Some(pattern) = parse_member_lookup(normalised)
     {
         return Some(ParamsPattern::MemberLookup(pattern));
@@ -1107,6 +1113,16 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
         return Some(ParamsPattern::HexFields(pattern));
     }
 
+    // Pattern: the same walk over a params list, rendering each named field as
+    // TEXT rather than parsing it. Beside its hex sibling because the two
+    // share only the loop header and differ entirely in what they write, which
+    // is what keeps them two concrete readers rather than one with a knob.
+    if normalised.contains(" in params.")
+        && let Some(pattern) = parse_stringify_named_fields(normalised)
+    {
+        return Some(ParamsPattern::StringifyNamedFields(pattern));
+    }
+
     // Pattern: a one-entry map whose KEY is a params row's value, which is what
     // Painless's `[local: value]` literal builds.
     if normalised.contains("= params[ctx.")
@@ -1127,12 +1143,14 @@ fn params_pattern_rest(normalised: &str) -> Option<ParamsPattern> {
         return Some(ParamsPattern::ScalarExpression(Box::new(pattern)));
     }
 
-    // Pattern: a map rebuilt from ONLY the keys the table names, each renamed
-    // to the table's value. LAST, so it takes only what nothing above took --
-    // `RenameKeys` further up KEEPS a key the table misses where this one
-    // DROPS it, and letting the general reader claim this script would carry
-    // the vendor's own abbreviations into ECS beside the renamed ones.
-    if normalised.contains("params.containsKey(")
+    // Pattern: a map rebuilt key by key through the table, a key it misses
+    // kept or dropped as the script spells. LAST, so it takes only what
+    // nothing above took -- `RenameKeys` further up reads a vendor HELPER
+    // rather than a table, and letting the general reader claim these would
+    // carry the vendor's own spellings into ECS beside the renamed ones.
+    // The entry-loop spelling reaches no earlier trigger at all: it carries no
+    // `params.get(`, no `params[ctx.` and no `.put(`.
+    if (normalised.contains("params.containsKey(") || normalised.contains(".entrySet()"))
         && let Some(pattern) = parse_select_rename_keys(normalised)
     {
         return Some(ParamsPattern::SelectRenameKeys(pattern));
@@ -2219,6 +2237,9 @@ pub(crate) fn run_params_pattern(
             run_split_named_by_position(event, pattern, params)
         }
         ParamsPattern::HexFields(pattern) => crate::hex::hex_fields(event, pattern, params),
+        ParamsPattern::StringifyNamedFields(pattern) => {
+            run_stringify_named_fields(event, pattern, params)
+        }
         ParamsPattern::AwsEntity(script) => crate::entity::run_entity_script(event, script, params),
         ParamsPattern::DropEmptyMembers { parent, list } => {
             run_drop_empty_members(event, parent, list, params)
@@ -7108,12 +7129,20 @@ fn run_rename_member_by_lookup(
 pub(crate) struct MemberLookupScript {
     /// The `ctx.` path the lookup key comes from.
     key: String,
+    /// The params member the rows come from, or `None` where the script reads
+    /// the whole block.
+    table: Option<String>,
     fold: Fold,
     /// The member written, container and leaf joined into one dotted path.
     target: String,
     /// The write wraps the row in a one-element list.
     wrap: bool,
     miss: LookupMiss,
+    /// The OTHER arm of a branch whose two halves write the same member, read
+    /// as literals. Empty for a script that has no such arm, which is every
+    /// spelling this matcher claimed before the branch form was read -- so an
+    /// existing call site runs exactly what it ran before.
+    literals: Program,
 }
 
 /// What a script does where the params table holds no row for its key.
@@ -7136,19 +7165,21 @@ pub(crate) enum LookupMiss {
 /// every direct `ctx.<path> = params.get(...)` right and only the member
 /// spellings wrong.
 fn parse_member_lookup(script: &str) -> Option<MemberLookupScript> {
+    let (table, call) = params_lookup_call(script)?;
+
     // ONE lookup, spelled with `get`, and no `containsKey` guard: a second read
     // or either of the other spellings means the script says more than this
     // pattern can, and claiming it would drop the rest.
-    if script.matches("params.get(").count() != 1
+    if script.matches(call.as_str()).count() != 1
         || script.contains("params[")
         || script.contains("params.containsKey(")
     {
         return None;
     }
 
-    let lookup_at = script.find("params.get(")?;
+    let lookup_at = script.find(call.as_str())?;
     let statement = enclosing_statement(script, lookup_at);
-    let (local, wrapped_at_binding) = lookup_binding(statement)?;
+    let (local, wrapped_at_binding) = lookup_binding(statement, &call)?;
 
     // The one write that carries the lookup's value, and the list wrap where
     // the write rather than the binding spells it.
@@ -7162,33 +7193,64 @@ fn parse_member_lookup(script: &str) -> Option<MemberLookupScript> {
         Some(_) => carriers.next()?,
         // The lookup reaches the member with no local in between, so the write
         // is the statement it sits in.
-        None => puts.iter().find(|(_, rhs)| rhs.contains("params.get("))?,
+        None => puts.iter().find(|(_, rhs)| rhs.contains(call.as_str()))?,
     };
     let wrap = wrapped_at_binding || unwrapped_value(value).1;
 
-    // Everything else the script writes has to be a container guarantee, or
-    // claiming it would silently drop a write -- qualys_gav puts a literal
-    // `linux` on the same member from the other arm of a branch.
-    let accounted = |path: &String, rhs: &String| {
-        std::ptr::eq(path, target) || is_container_guarantee(path, rhs)
-    };
-    if !assignments
-        .iter()
-        .chain(puts.iter())
-        .all(|(path, rhs)| accounted(path, rhs))
-    {
+    // Everything else the script writes has to be a container guarantee, or a
+    // write to the SAME member: qualys_gav's branch puts a literal `linux` on
+    // `host.os.type` from one arm and the lookup from the other, and the two
+    // together are the whole script. A write to any OTHER path is something
+    // this pattern cannot say, and claiming it would drop that write in
+    // silence.
+    let mut same_member = false;
+    for (path, rhs) in assignments.iter().chain(puts.iter()) {
+        if std::ptr::eq(path, target) || is_container_guarantee(path, rhs) {
+            continue;
+        }
+        if path == target {
+            same_member = true;
+            continue;
+        }
         return None;
     }
 
-    let (key, fold) = lookup_key_path(script, &last_call_argument(script, "params.get(")?)?;
+    // Only the branch form needs the other arm read, and reading it for every
+    // other spelling would run statements this matcher has always ignored.
+    // Ordering is the same as `LookupNormalise`'s: the lookup lands first and
+    // the arm's own guard then decides, which is total because both halves
+    // write the one member.
+    //
+    // The tree has to CARRY that arm and hold nothing else, or the claim is
+    // not whole. fortinet spells the same member twice and means the opposite:
+    // its fallback writes the folded key back from a local, which reads as no
+    // statement at all -- so the emptiness is the tell, and a tree that writes
+    // nothing leaves the second write unaccounted for. Its script is
+    // `LookupNormalise`'s, not this one's.
+    let literals = if same_member {
+        let literals = Program::parse(script);
+        if !literals.can_write() || !literals.writes_only_guarded(target) {
+            return None;
+        }
+        literals
+    } else {
+        Program {
+            statements: Vec::new(),
+            whole: true,
+        }
+    };
+
+    let (key, fold) = lookup_key_path(script, &last_call_argument(script, &call)?)?;
     Some(MemberLookupScript {
         key,
+        table,
         fold,
         target: target.clone(),
         wrap,
         miss: local.map_or(LookupMiss::Null, |local| {
             lookup_miss(script, &local, target)
         }),
+        literals,
     })
 }
 
@@ -7201,20 +7263,47 @@ fn enclosing_statement(script: &str, at: usize) -> &str {
     &script[start..end]
 }
 
+/// The params lookup a script makes, as the table it reads and the call's own
+/// text.
+///
+/// `params.get(` reads the whole block; `params.<name>.get(` reads one member.
+/// `beyondinsight_password_safe` writes the named form for every one of its six
+/// value maps -- `params.descriptions.get(ctx.<path>)` -- and no trigger in
+/// this ladder saw them, because the unnamed spelling is not a substring of
+/// the named one.
+///
+/// The unnamed form is tried FIRST so this is strictly additive: every script
+/// that read as a lookup before reads the same way still.
+fn params_lookup_call(script: &str) -> Option<(Option<String>, String)> {
+    if script.contains("params.get(") {
+        return Some((None, "params.get(".to_owned()));
+    }
+    // ONE named table, and no other read of the block. The count check below
+    // this counts the CHOSEN call, so a script reading `params.a.get(` and
+    // `params.b.get(` would pass it with two lookups and one of them dropped.
+    if script.matches("params.").count() != 1 {
+        return None;
+    }
+    let (_, tail) = script.split_once("params.")?;
+    let (name, _) = tail.split_once(".get(")?;
+    (!name.is_empty() && name.chars().all(|c| c.is_alphanumeric() || c == '_'))
+        .then(|| (Some(name.to_owned()), format!("params.{name}.get(")))
+}
+
 /// The local a lookup statement binds its row to, and whether that binding put
 /// the row in a list.
 ///
 /// `None` for a statement that binds nothing -- the `.put(` spelling reads the
 /// table inline, and a direct `ctx.<path> = params.get(...)` is
 /// `LookupNormalise`'s to claim.
-fn lookup_binding(statement: &str) -> Option<(Option<String>, bool)> {
+fn lookup_binding(statement: &str, call: &str) -> Option<(Option<String>, bool)> {
     // `def type = new ArrayList(); type.add(params.get(...));` -- data_studio.
-    if let Some((head, _)) = statement.split_once(".add(params.get(") {
+    if let Some((head, _)) = statement.split_once(&format!(".add({call}")) {
         let local = identifier_ending(head)?;
         return Some((Some(local), true));
     }
     // `def type = params.get(...);` -- the guarded spellings.
-    if let Some((head, _)) = statement.split_once("= params.get(")
+    if let Some((head, _)) = statement.split_once(&format!("= {call}"))
         && let Some(local) = identifier_ending(head)
     {
         return Some((Some(local), false));
@@ -7362,8 +7451,20 @@ fn member_lookup(
             value
         }
     };
+    let table = match &pattern.table {
+        None => params,
+        Some(name) => {
+            let Some(table) = params.get(name).and_then(Value::as_object) else {
+                // No such member, so every lookup misses. That is the script's
+                // own reading too: `params.<name>.get(...)` on an absent member
+                // throws, and the processor's `on_failure` writes nothing.
+                return true;
+            };
+            table
+        }
+    };
 
-    match params.get(&pattern.fold.apply(&raw)) {
+    match table.get(&pattern.fold.apply(&raw)) {
         Some(row) => {
             let _ = event.set(&pattern.target, wrap(row.clone()));
         }
@@ -7377,6 +7478,9 @@ fn member_lookup(
             }
         },
     }
+    // The branch's other arm, which writes the same member and so replaces
+    // whatever the lookup just left there. Empty for every script without one.
+    pattern.literals.run(event);
     true
 }
 
@@ -8014,22 +8118,142 @@ fn as_boolean(value: &Value) -> Option<Value> {
     }
 }
 
-/// A map rebuilt from ONLY the keys the params table names, each key renamed
-/// to the table's value.
+/// Named fields rendered as TEXT in place, the names coming from a params list.
+///
+/// ```text
+/// for (<field> in params.<table>) {
+///   def <value> = ctx.<container>[<field>];
+///   if (<value> instanceof Number) {
+///     ctx.<container>[<field>] = Integer.toString(<value>.intValue());
+///   }
+/// }
+/// ```
+///
+/// The same walk as [`crate::hex::HexFields`] and the opposite conversion: the
+/// names come from the params so a sixth id added upstream needs no change
+/// here.
+///
+/// `beyondinsight_password_safe` ships it in all five data streams, ahead of
+/// its key rename, so every id is still spelled the vendor's way at this point.
+/// Elasticsearch's own output carries `"asset_id": "22"`, and a `set` copying
+/// `user_id` onto `user.id` carries the type across with it -- so unclaimed the
+/// source loses 45 fields and four of its seven events on the type alone.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct StringifyNamedFields {
+    /// The map holding the fields.
+    container: String,
+    /// The `params` member listing which of its keys to render.
+    table: String,
+}
+
+/// Read the container and the table off the loop, or decline.
+fn parse_stringify_named_fields(script: &str) -> Option<StringifyNamedFields> {
+    // The loop's element name, and the params member it walks.
+    let (head, tail) = script.split_once(" in params.")?;
+    let field = identifier(head.rsplit('(').next()?)?.to_owned();
+    let table = tail.split(')').next()?.trim().to_owned();
+    if table.is_empty() || !table.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return None;
+    }
+
+    // The map the conversion is WRITTEN back into, which is the one that
+    // matters: a script reading one map and writing another is moving values,
+    // not converting them.
+    let (before, after) = script.split_once(&format!("[{field}] ="))?;
+    let container = ctx_path_ending(before)?;
+
+    // The read has to name the same map, or the guard below is testing a value
+    // this never writes.
+    let value = local_bound_exactly_to(script, &format!("ctx.{container}[{field}]"))?;
+    if !script.contains(&format!("{value} instanceof Number")) {
+        return None;
+    }
+
+    // `Integer.toString(<value>.intValue())` and nothing else. Any other
+    // rendering -- `String.valueOf`, a concatenation, a format -- writes a
+    // different string, and claiming it would put a value in the document that
+    // Elasticsearch never emitted.
+    let written = after.trim_start().split(';').next()?.trim();
+    (written == format!("Integer.toString({value}.intValue())"))
+        .then_some(StringifyNamedFields { container, table })
+}
+
+/// Render each named field as text, in place.
+///
+/// Only a NUMBER is rendered, which is the script's own `instanceof` guard: a
+/// field the vendor already sent as text is left exactly as it arrived, and so
+/// is one the document does not carry.
+///
+/// Java's `intValue()` truncates a fractional value towards zero and then
+/// keeps the low 32 bits, which is what both `as` casts below do.
+fn run_stringify_named_fields(
+    event: &mut Event,
+    pattern: &StringifyNamedFields,
+    params: &Map<String, Value>,
+) -> bool {
+    let Some(names) = params.get(&pattern.table).and_then(Value::as_array) else {
+        return true;
+    };
+    let mut rendered = Vec::new();
+    for name in names {
+        let Some(name) = name.as_str() else {
+            continue;
+        };
+        let path = format!("{}.{name}", pattern.container);
+        let Some(value) = event.get(&path).filter(|value| value.is_number()) else {
+            continue;
+        };
+        let Some(wide) = crate::coercion::as_long(value) else {
+            continue;
+        };
+        #[allow(
+            clippy::cast_possible_truncation,
+            reason = "the narrowing IS the conversion -- Java's intValue() keeps the low 32 bits"
+        )]
+        let narrowed = wide as i32;
+        rendered.push((path, narrowed.to_string()));
+    }
+    for (path, text) in rendered {
+        let _ = event.set(&path, Value::String(text));
+    }
+    true
+}
+
+/// A map rebuilt key by key through a params table.
 ///
 /// `cisco_asa` splits a validated certificate's distinguished name into its
 /// `CN`, `OU`, `O` and `C` abbreviations, folds those onto their ECS names,
 /// and only then renames the map to `tls.server.x509.subject`. A key the table
-/// does not name is DROPPED, which is how the vendor keeps its own
-/// abbreviations out of ECS -- the near neighbour [`ParamsPattern::RenameKeys`]
-/// KEEPS them, so the two are not interchangeable.
+/// does not name is DROPPED there, which is how the vendor keeps its own
+/// abbreviations out of ECS.
+///
+/// Whether a missed key is dropped or kept is READ off the script's own else
+/// arm rather than fixed by the pattern, because both ship: `cisco_asa` drops,
+/// `beyondinsight_password_safe` re-inserts the key it arrived with. Guessing
+/// either way is a whole source -- dropping writes an empty map over the
+/// vendor's payload, keeping carries the vendor's spelling into ECS beside the
+/// renamed one.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct SelectRenameKeys {
     /// The `ctx.` map read and written back in place.
     subject: String,
+    /// The params member the names come from, or `None` where the script reads
+    /// the whole block.
+    table: Option<String>,
+    /// A key the table does not name keeps its own rather than being dropped.
+    keep_unmapped: bool,
     /// The script wraps a value that is not already a list in a one-element
     /// list, which is what ECS's array-typed x509 subject fields want.
     wrap_in_list: bool,
+}
+
+/// Read whichever of the two spellings the script writes.
+///
+/// ONE intent, two spellings, so one pattern with two readers rather than two
+/// patterns: the runner is the same rebuild either way, and a second pattern
+/// would have to be placed in the ladder against this one.
+fn parse_select_rename_keys(script: &str) -> Option<SelectRenameKeys> {
+    parse_foreach_rename_keys(script).or_else(|| parse_entry_rename_keys(script))
 }
 
 /// Read the select-and-rename fold: the map walked, and whether each value is
@@ -8052,7 +8276,7 @@ pub(crate) struct SelectRenameKeys {
 /// The stored expression is READ rather than assumed: `v` and
 /// `(v instanceof List) ? v : [v]` store different things, and a third
 /// expression is a behaviour this cannot say, so it declines.
-fn parse_select_rename_keys(script: &str) -> Option<SelectRenameKeys> {
+fn parse_foreach_rename_keys(script: &str) -> Option<SelectRenameKeys> {
     // The local map the fold builds, and the map it walks.
     let declaration = script.find("= [:];")?;
     let out = script[..declaration].split_whitespace().next_back()?;
@@ -8089,15 +8313,164 @@ fn parse_select_rename_keys(script: &str) -> Option<SelectRenameKeys> {
     let wrap_in_list = stored == format!("({value} instanceof List) ? {value} : [{value}]");
     (wrap_in_list || stored == value).then_some(SelectRenameKeys {
         subject,
+        table: None,
+        keep_unmapped: false,
         wrap_in_list,
     })
 }
 
-/// Rebuild the map from the keys the table names, in the map's OWN order.
+/// The same rebuild written as a LOOP over the map's entries, through a table
+/// the params block NAMES, with an `else` arm that keeps a key the table
+/// misses.
 ///
-/// A key the table does not name is dropped -- that is the script's `else {
-/// return false; }` arm, which adds nothing for it. An empty result is still
-/// stored, because the script assigns unconditionally once the fold has run.
+/// ```text
+/// Map <out> = [:];
+/// for (<entry> in ctx.<subject>.entrySet()) {
+///   def <key> = <entry>.getKey();
+///   def <renamed> = params.<table>[<key>];
+///   if (<renamed> != null) {
+///     <out>[<renamed>] = <entry>.getValue();
+///   } else {
+///     <out>[<key>] = <entry>.getValue();
+///   }
+/// }
+/// ctx.<subject> = <out>;
+/// ```
+///
+/// `beyondinsight_password_safe` ships it in all five of its data streams, and
+/// every processor after it names the renamed key. Unclaimed, the vendor's own
+/// `AssetID` survives beside a missing `asset_id`, so each field is counted
+/// twice over -- 145 extras against 22 of 219 fields right.
+///
+/// Every local is read off its own `def` rather than assumed: the vendor names
+/// them for the conversion it happens to be doing, and `snakeKey` is a name
+/// this reader must not depend on.
+fn parse_entry_rename_keys(script: &str) -> Option<SelectRenameKeys> {
+    // The local the rebuild accumulates into, and the map the loop walks.
+    let declaration = script.find("= [:];")?;
+    let out = script[..declaration].split_whitespace().next_back()?;
+    let (entry, subject) = entry_set_loop(script)?;
+
+    // Written back over the map it walked. A rebuild stored anywhere else does
+    // more than this pattern.
+    if !ctx_writes(script)
+        .iter()
+        .any(|(path, rhs)| path == &subject && rhs == out)
+    {
+        return None;
+    }
+
+    // The key, and the table's answer for it.
+    let key = local_bound_exactly_to(script, &format!("{entry}.getKey()"))?;
+    let (renamed, table) = params_lookup_binding(script, &key)?;
+
+    // The guard is the LOOKUP's own null test, which is what makes the else
+    // arm the table's miss rather than some other condition.
+    if !script.contains(&format!("{renamed} != null")) {
+        return None;
+    }
+
+    // Both arms store the entry's own value, one under the table's name and one
+    // under the vendor's. The TERMINATOR is part of the match: without it
+    // `entry.getValue().toString()` reads as the plain take, and the map would
+    // be rebuilt with the keys right and the values wrong.
+    let value = format!("{entry}.getValue();");
+    if !script.contains(&format!("{out}[{renamed}] = {value}")) {
+        return None;
+    }
+    // The else arm re-inserts the entry under the key it arrived with. A script
+    // with no such arm drops the key instead -- which is the cisco_asa
+    // behaviour and a real spelling, but not one this loop form has been seen
+    // written in, so it declines and stays visible in the census rather than
+    // emptying the vendor's payload on a guess.
+    if !script.contains(&format!("{out}[{key}] = {value}")) {
+        return None;
+    }
+
+    Some(SelectRenameKeys {
+        subject,
+        table,
+        keep_unmapped: true,
+        wrap_in_list: false,
+    })
+}
+
+/// A `for (<entry> in ctx.<subject>.entrySet())` header, as the element name
+/// and the map's path.
+///
+/// The `.entrySet()` is REQUIRED: a loop over a list binds an element, not an
+/// entry, and `getKey()` on it is a script this reader cannot place.
+fn entry_set_loop(script: &str) -> Option<(String, String)> {
+    let mut at = 0;
+    while let Some(found) = script[at..].find("for") {
+        at += found + "for".len();
+        let Some((inside, _)) = balanced(script[at..].trim_start(), '(', ')') else {
+            continue;
+        };
+        let Some((element, map)) = inside.split_once(" in ") else {
+            continue;
+        };
+        let Some(map) = map.trim().strip_suffix(".entrySet()") else {
+            continue;
+        };
+        if let Some(element) = identifier(element)
+            && let Some(path) = ctx_path_term(map)
+            && is_ctx_path(&path)
+        {
+            return Some((element.to_owned(), path));
+        }
+    }
+    None
+}
+
+/// The name and bound expression of the `def` a statement ENDS with.
+///
+/// Read from wherever the `def` sits rather than from the start of the chunk:
+/// a split on `;` leaves the `for` header attached to the first declaration in
+/// its body, so the first `def` of any loop opens with `for (...) {`.
+fn declaration(statement: &str) -> Option<(&str, &str)> {
+    let at = statement.rfind("def ")?;
+    let (name, bound) = statement[at + "def ".len()..].split_once('=')?;
+    Some((name.trim(), bound.trim()))
+}
+
+/// The local a `def <name> = <value>;` statement binds, for the one statement
+/// whose bound expression is EXACTLY `value`.
+///
+/// Not the marker-based [`local_bound_to`], which takes the statement a text
+/// merely OPENS: `def k = entry.getKey().toLowerCase()` would bind there, and
+/// this reader would then rebuild the map under the key the vendor sent rather
+/// than the folded one it actually stored.
+fn local_bound_exactly_to(script: &str, value: &str) -> Option<String> {
+    script
+        .split(';')
+        .find_map(|statement| declaration(statement).filter(|(_, bound)| *bound == value))
+        .map(|(name, _)| name.to_owned())
+}
+
+/// The local bound to a params lookup subscripted by `key`, and the params
+/// member it reads -- `None` where the subscript is on the block itself.
+fn params_lookup_binding(script: &str, key: &str) -> Option<(String, Option<String>)> {
+    let subscript = format!("[{key}]");
+    script.split(';').find_map(|statement| {
+        let (name, bound) = declaration(statement)?;
+        let table = bound
+            .strip_suffix(&subscript)?
+            .trim_end()
+            .strip_prefix("params")?;
+        let table = match table.trim() {
+            "" => None,
+            named => Some(named.strip_prefix('.')?.to_owned()),
+        };
+        Some((name.to_owned(), table))
+    })
+}
+
+/// Rebuild the map key by key, in the map's OWN order.
+///
+/// A key the table does not name is kept or dropped as the script's own else
+/// arm spells it. An empty result is still stored, because the script assigns
+/// unconditionally once the rebuild has run.
 fn run_select_rename_keys(
     event: &mut Event,
     pattern: &SelectRenameKeys,
@@ -8113,9 +8486,24 @@ fn run_select_rename_keys(
         return false;
     };
 
+    let table = match &pattern.table {
+        None => params,
+        Some(name) => {
+            let Some(table) = params.get(name).and_then(Value::as_object) else {
+                // The params block names no such table, so the script's every
+                // lookup is a miss and the rebuild is not this pattern's to do.
+                return false;
+            };
+            table
+        }
+    };
+
     let mut renamed = Map::with_capacity(subject.len());
     for (key, value) in &subject {
-        let Some(name) = params.get(key).and_then(Value::as_str) else {
+        let Some(name) = table.get(key).and_then(Value::as_str) else {
+            if pattern.keep_unmapped {
+                renamed.insert(key.clone(), value.clone());
+            }
             continue;
         };
         let value = if pattern.wrap_in_list && !value.is_array() {
@@ -8467,6 +8855,18 @@ enum Literal {
     Remove {
         path: String,
     },
+}
+
+impl Literal {
+    /// The one field this write touches.
+    fn path(&self) -> &str {
+        match self {
+            Self::Append { path, .. }
+            | Self::AppendAll { path, .. }
+            | Self::Set { path, .. }
+            | Self::Remove { path } => path,
+        }
+    }
 }
 
 /// Where a write's value comes from.
@@ -9120,6 +9520,26 @@ impl Program {
     /// claim a script at all, so it declines wherever it is not certain.
     pub(crate) fn is_whole(&self) -> bool {
         self.whole
+    }
+
+    /// Whether every write the tree holds lands on `path` AND sits inside a
+    /// guard.
+    ///
+    /// The question a caller asks before letting this tree run after a write of
+    /// its own: an unguarded statement would fire on every event and clobber
+    /// what the caller just put there, and a write to another path is a
+    /// statement the caller has not accounted for. Both were live risks in
+    /// `parse_member_lookup` -- fortinet's fallback writes the same member from
+    /// an unguarded statement and means the opposite thing by it.
+    pub(crate) fn writes_only_guarded(&self, path: &str) -> bool {
+        fn walk(statements: &[Stmt], path: &str, guarded: bool) -> bool {
+            statements.iter().all(|statement| match statement {
+                Stmt::Return => true,
+                Stmt::Literal(literal) => guarded && literal.path() == path,
+                Stmt::If { then, alt, .. } => walk(then, path, true) && walk(alt, path, true),
+            })
+        }
+        walk(&self.statements, path, false)
     }
 
     /// Whether any branch holds a write at all.

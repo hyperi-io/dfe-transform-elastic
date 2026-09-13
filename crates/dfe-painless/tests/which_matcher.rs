@@ -210,17 +210,18 @@ fn the_zoom_duration_reads_fields_the_script_writes_first() {
 }
 
 #[test]
-fn the_beyondinsight_drop_is_claimed_and_its_rename_is_not() {
-    // Two halves of one source, and only the second is a missing matcher.
+fn the_beyondinsight_drop_and_rename_are_both_claimed() {
+    // Two halves of one source. The rename read as unbound while the loop
+    // spelling went unread, and every key then survived under the vendor's own
+    // name beside a missing snake-cased one -- 22 of 219 fields right.
     assert_eq!(
         heads(BEYONDINSIGHT_DROP),
         ["SentinelRemoval", "SentinelRemovalLiteral"]
     );
-    assert!(
-        binding(BEYONDINSIGHT_RENAME).is_empty(),
-        "{:?}",
-        binding(BEYONDINSIGHT_RENAME)
-    );
+    let held = binding(BEYONDINSIGHT_RENAME).join(" ");
+    assert!(held.starts_with("SelectRenameKeys"), "{held}");
+    assert!(held.contains(r#"table: Some("field_mappings")"#), "{held}");
+    assert!(held.contains("keep_unmapped: true"), "{held}");
 }
 
 /// Verbatim from the generated call site in

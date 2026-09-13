@@ -349,15 +349,16 @@
  78 ArmedTable
  79 RowOrDefaults
  80 HexFields
- 81 KeyedByLookup
- 82 ScalarExpression
- 83 SelectRenameKeys
- 84 FieldTables
+ 81 StringifyNamedFields
+ 82 KeyedByLookup
+ 83 ScalarExpression
+ 84 SelectRenameKeys
  85 FieldTables
- 86 MemberMappings
- 87 ConfiguredDateFormat
- 88 SplitNamedByPosition
- 89 ActionMapping
- 90 RowNamedTarget
- 91 LabelledScore
+ 86 FieldTables
+ 87 MemberMappings
+ 88 ConfiguredDateFormat
+ 89 SplitNamedByPosition
+ 90 ActionMapping
+ 91 RowNamedTarget
+ 92 LabelledScore
 
