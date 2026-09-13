@@ -397,7 +397,8 @@ impl Transform for Default {
                     // Source: ctx.event.duration = (ctx.json.action.end_timestamp - ctx.json.action.start_timestamp) * 1000000;
                     scale_field(
                         event,
-                        &ScaleField::new(
+                        &ScaleField::between(
+                            "json.action.end_timestamp",
                             "json.action.start_timestamp",
                             "event.duration",
                             Factor::Long(1000000),
