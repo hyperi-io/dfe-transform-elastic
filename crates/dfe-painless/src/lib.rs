@@ -36,6 +36,7 @@ pub mod collect_rows;
 pub mod common;
 pub mod deep_merge;
 pub mod delimited_table;
+pub mod dump_into_map;
 pub mod element_mapping;
 pub mod entity;
 pub mod expr;

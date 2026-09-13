@@ -23212,6 +23212,8 @@ pub(crate) enum KnownPattern {
     /// maps the script creates for itself.
     ElementMapping(Box<crate::element_mapping::ElementMapping>),
     LastElementMember(Box<crate::last_element::LastElementMember>),
+    /// A field that is not a map, replaced by a map holding its own JSON form.
+    DumpIntoMap(Box<crate::dump_into_map::DumpIntoMap>),
     /// Several candidate fields collected into one list, the absent ones
     /// dropped, and a lone survivor unwrapped.
     CollectPresent(Box<crate::collect_present::CollectPresent>),
@@ -23538,6 +23540,23 @@ fn shallow_prune_policy(normalised: &str) -> Option<DropPolicy> {
 #[allow(clippy::too_many_lines)] // A transliteration of the dispatch ladder; splitting it would hide the order.
 pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
     let mut patterns = Vec::new();
+
+    // Pattern: a field that is not a map, replaced by a map holding its own
+    // JSON form -- contrast_security's rescue of a scalar `event`.
+    //
+    // FIRST, because the parse is a WHOLE-SCRIPT match: three statements in one
+    // fixed order and nothing else, so there is no script below that it could
+    // want, and first is the only position no earlier arm's empty return can
+    // shadow. Twelve other call sites spell `Json.dump` and every one of them
+    // carries a fourth statement, a guard or a loop, so the parse declines
+    // them -- see `dump_into_map` for why claiming those would cost more than
+    // it bought.
+    if normalised.contains("Json.dump(")
+        && let Some(pattern) = crate::dump_into_map::parse_dump_into_map(normalised)
+    {
+        patterns.push(KnownPattern::DumpIntoMap(Box::new(pattern)));
+        return patterns;
+    }
 
     // Pattern: seconds to nanoseconds, closing the span it opens. Ahead of the
     // scale-by-literal fallback, which reads the same multiply and stops
@@ -26766,6 +26785,9 @@ pub(crate) fn run_known_pattern(
         }
         KnownPattern::LastElementMember(pattern) => {
             crate::last_element::run_last_element_member(event, pattern)
+        }
+        KnownPattern::DumpIntoMap(pattern) => {
+            crate::dump_into_map::run_dump_into_map(event, pattern)
         }
         KnownPattern::CollectPresent(pattern) => {
             crate::collect_present::collect_present(event, pattern)

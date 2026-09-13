@@ -60,6 +60,7 @@ pub use crate::painless_common::{
 };
 pub use crate::painless_deep_merge::{DeepMerge, run_deep_merge};
 pub use crate::painless_delimited_table::{DelimitedTable, delimited_table};
+pub use crate::painless_dump_into_map::{DumpIntoMap, run_dump_into_map};
 pub use crate::painless_element_mapping::{ElementMapping, element_mapping};
 pub use crate::painless_expr::{Expr, FloatLit, Op, ScalarExpression, scalar_expression};
 pub use crate::painless_gather_members::{GatherMembers, gather_members};
