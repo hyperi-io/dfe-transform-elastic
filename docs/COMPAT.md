@@ -184,7 +184,43 @@ nothing else.
 Byte equality is not the goal. `tests/compare-policy.yaml` is the single
 definition of which differences are defects, read by this tool and by the Rust
 comparison harness. Every rule carries a reason, and every run reports what it
-excluded:
+excluded. Adding an entry HIDES a difference, which is why the reason is
+mandatory and why the section a rule lands in is a decision rather than a
+filing choice:
+
+| Section | What it claims | What follows from it |
+|---|---|---|
+| `nondeterministic` | the value varies run to run and carries no information | removed at capture, never compared at all |
+| `not_emitted` | Elastic or Beats plumbing DFE does not produce | never a defect |
+| `known_different` | both sides produce it, differently | DEBT. Each entry should eventually go away and the count is expected to FALL |
+| `corrected` | Elasticsearch is wrong and we are right | permanent. It never goes away, and matching the bug would have scored better |
+| `unordered` | the field's value is a SET | the same members in another sequence is equality, not a difference |
+
+`known_different` and `corrected` read alike and mean opposite things, and the
+test is whether the difference is ours to close. An array NOT named in
+`unordered` is compared in order, deliberately.
+
+### Scope a rule to its source, or it blinds every other one
+
+A rule may carry `sources: [name, ...]` and then holds for those sources alone.
+Omit it only where the reason is a fact about the FIELD -- `event.ingested` is
+write time everywhere. An unscoped quirk is the expensive mistake: `event.kind`
+and `error.message` were once excluded corpus-wide for one source's date
+failure, so a transform emitting `pipeline_error` anywhere else did not register
+as a difference at all. `unordered` is never scoped, because a set is a fact
+about the field.
+
+The two readers differ. `crates/dfe-runtime/src/testutil/policy.rs` honours
+`sources` and chains the four rule sections into ONE skip set, keeping no column
+breakdown -- a skipped path is simply not compared, whichever section it came
+from. `scripts/compat.py` keeps them apart to build its audit columns and does
+not read `sources` yet, so every rule applies globally, the wider reading of the
+two. And a comparison that does not know its source cannot honour scoping, so
+every scoped rule applies to it, which is how the committed-fixture tests run.
+
+### The audit's four columns
+
+Every run reports what it excluded:
 
 ```text
 excluded 156 field differences by 5 rules:
@@ -192,13 +228,16 @@ excluded 156 field differences by 5 rules:
       24x  tags          Beats and test-harness tagging. Not vendor data.
 ```
 
-Differences are sorted into four columns:
+What it still counts is sorted into four columns, which is where the sections
+above land:
 
-- **real** -- the only one that means something is wrong.
-- **order** -- same members, different sequence, for fields the policy declares
-  to be sets. An undeclared array in a different order is still real.
-- **meta** -- Elastic and Beats plumbing DFE does not emit.
-- **enrich** -- GeoIP and user agent, which we knowingly resolve differently.
+- **real** -- the only one that means something is wrong. Everything the policy
+  did not explain.
+- **order** -- `unordered`, where the members match and the sequence does not.
+  An undeclared array in a different order is still real.
+- **meta** -- `not_emitted`.
+- **enrich** -- `known_different` and `corrected` together. `nondeterministic`
+  reaches no column, because it is dropped before the comparison.
 
 Each fixture's own `dynamic_fields` and `numeric_keyword_fields` are honoured
 on top of the policy. A source reports `CURRENT` when `real` is zero, and the

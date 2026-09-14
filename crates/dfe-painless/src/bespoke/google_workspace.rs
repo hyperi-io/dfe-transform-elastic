@@ -19,7 +19,7 @@ use serde_json::{Map, Value};
 use dfe_core::Event;
 
 use super::Entry;
-use crate::helpers::{java_bucket, java_table_size};
+use crate::helpers::java_string_set_order;
 
 /// The reports API's own event detail.
 const PARAMETERS: &str = "json.events.parameters";
@@ -125,7 +125,7 @@ fn gmail_attachment_hashes(event: &mut Event, _params: &Value) {
     if !event.has("related") {
         let _ = event.set("related", Value::Object(Map::new()));
     }
-    let _ = event.set("related.hash", Value::Array(java_set(shas)));
+    let _ = event.set("related.hash", Value::Array(java_string_set_order(shas)));
 }
 
 /// `google_workspace/gmail`: the event's microsecond stamp as milliseconds,
@@ -160,21 +160,6 @@ fn gmail_email_content_type(event: &mut Event, params: &Value) {
         let _ = event.set("email", Value::Object(Map::new()));
     }
     let _ = event.set("email.content_type", content_type);
-}
-
-/// The order a Java `HashSet` hands its members back in.
-fn java_set(members: Vec<String>) -> Vec<Value> {
-    let table = java_table_size(members.len());
-    let mut ordered: Vec<(usize, usize, String)> = members
-        .into_iter()
-        .enumerate()
-        .map(|(position, member)| (java_bucket(&member, table), position, member))
-        .collect();
-    ordered.sort_by_key(|(bucket, position, _)| (*bucket, *position));
-    ordered
-        .into_iter()
-        .map(|(_, _, member)| Value::from(member))
-        .collect()
 }
 
 /// `google_workspace/admin`: the reports API's `parameters` list folded onto

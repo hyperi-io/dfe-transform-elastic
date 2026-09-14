@@ -654,7 +654,7 @@ mod tests {
         input["threat"]["indicator"]
             .as_object_mut()
             .unwrap()
-            .remove("last_seen");
+            .shift_remove("last_seen");
         let mut event = Event::new(input);
         assert!(indicator_expiry(&mut event, &pattern));
         assert_eq!(
