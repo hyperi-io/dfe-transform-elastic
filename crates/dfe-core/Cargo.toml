@@ -50,3 +50,9 @@ harness = false
 name = "hashing"
 harness = false
 
+# What a `date` processor costs per event, and how much of that is re-derived
+# from a format literal the call site already owns.
+[[bench]]
+name = "date_formats"
+harness = false
+

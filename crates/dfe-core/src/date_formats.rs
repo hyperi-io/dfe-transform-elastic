@@ -107,12 +107,20 @@ fn named_output(name: &str, parsed: &DateTime<FixedOffset>) -> Option<String> {
     Some(match name {
         "UNIX_MS" | "epoch_millis" => utc.timestamp_millis().to_string(),
         "UNIX" | "epoch_second" => {
-            let fraction = utc.format("%9f").to_string();
-            let fraction = fraction.trim_end_matches('0');
-            if fraction.is_empty() {
-                utc.timestamp().to_string()
+            let seconds = utc.timestamp();
+            let nanos = utc.timestamp_subsec_nanos();
+            if nanos == 0 {
+                seconds.to_string()
+            } else if seconds < 0 {
+                // A pre-1970 instant FLOORS its seconds, so half a second
+                // before the epoch is second -1 plus 500 ms and printing the
+                // pair as they stand gives -1.5 rather than -0.5.
+                let whole = -(seconds + 1);
+                let fraction = format!("{:09}", 1_000_000_000 - u64::from(nanos));
+                format!("-{whole}.{}", fraction.trim_end_matches('0'))
             } else {
-                format!("{}.{fraction}", utc.timestamp())
+                let fraction = format!("{nanos:09}");
+                format!("{seconds}.{}", fraction.trim_end_matches('0'))
             }
         }
         // Elasticsearch's nanosecond printer takes between three and nine
@@ -144,11 +152,13 @@ fn named_output(name: &str, parsed: &DateTime<FixedOffset>) -> Option<String> {
 
 /// Whether the TEXT carried a zone of its own, which beats the processor's.
 fn offset_in_text(input: &str) -> bool {
-    // Only past the date, so `2023-10-16` is not read as carrying one.
-    input.len() > 10
-        && (input.ends_with('Z')
-            || input[10..].contains('+')
-            || input[10..].rfind('-').is_some_and(|at| at > 2))
+    // Only past the date, so `2023-10-16` is not read as carrying one. `get`
+    // rather than a slice, because byte 10 lands mid-character on a text whose
+    // date is spelled with anything multi-byte and the slice panics there.
+    let Some(past_date) = input.get(10..).filter(|rest| !rest.is_empty()) else {
+        return false;
+    };
+    input.ends_with('Z') || past_date.contains('+') || past_date.rfind('-').is_some_and(|at| at > 2)
 }
 
 fn parse_one(input: &str, format: &str, timezone: Option<&str>) -> Option<DateTime<FixedOffset>> {
@@ -235,6 +245,12 @@ fn parse_iso8601(input: &str) -> Option<DateTime<FixedOffset>> {
 /// A yearless Cisco date fell back to whatever `@timestamp` already held,
 /// which the comparison skips, so only `event.start` and `event.end` showed it.
 fn parse_java(input: &str, java: &str, timezone: Option<&str>) -> Option<DateTime<FixedOffset>> {
+    // Almost every vendor pattern carries no optional section at all, and
+    // building a one-element `Vec` for it is an allocation per format per
+    // event.
+    if !java.contains('[') {
+        return parse_java_exact(input, java, timezone);
+    }
     expand_optional(java)
         .iter()
         .find_map(|candidate| parse_java_exact(input, candidate, timezone))
@@ -441,9 +457,16 @@ fn parse_naive(input: &str, chrono: &str) -> Option<(NaiveDateTime, Option<Strin
         .or_else(|| chrono.strip_suffix("%Z"))
     {
         let trimmed = input.trim_end();
-        let zone_start = trimmed
-            .rfind(|c: char| !c.is_ascii_alphabetic())
-            .map_or(0, |at| at + 1);
+        // Counted from the END rather than found from the front: the character
+        // before the abbreviation may be multi-byte -- an accented letter, a
+        // no-break space -- and one past its FIRST byte is not a character
+        // boundary, which is a panic on the per-event path.
+        let zone_start = trimmed.len()
+            - trimmed
+                .chars()
+                .rev()
+                .take_while(char::is_ascii_alphabetic)
+                .count();
         let (head, zone) = trimmed.split_at(zone_start);
         if !zone.is_empty()
             && let Ok(naive) = NaiveDateTime::parse_from_str(head.trim_end(), stripped.trim_end())
@@ -703,6 +726,12 @@ pub fn java_to_chrono(java: &str) -> Cow<'_, str> {
                 if lit == '\'' {
                     break;
                 }
+                // A quoted `%` is text, so it is doubled the same way a bare
+                // one is -- passing it through made chrono read the character
+                // after it as a directive.
+                if lit == '%' {
+                    out.push('%');
+                }
                 out.push(lit);
             }
             continue;
@@ -760,6 +789,10 @@ fn token(letter: char, run: usize) -> String {
         ('s', _) => "%S",
         // Java writes the fraction WITHOUT a separator, so the dot in the
         // pattern is a literal the chrono directive must not repeat.
+        // chrono has only `%3f`, `%6f` and `%9f`, so a run of any other width
+        // with no dot ahead of it emits a directive chrono rejects and the
+        // whole format declines; no vendor pattern in the tree spells one, and
+        // it is what declines Java's `ISO_INSTANT` constant.
         ('S', n) => return format!("%{}f", n.min(9)),
         ('n' | 'N', _) => "%9f",
         ('a', _) => "%p",
@@ -1409,5 +1442,120 @@ mod tests {
             Some("yyyy-MM-dd HH:mm:ss"),
         );
         assert_eq!(out.as_deref(), Some("2024-07-01 10:48:39"));
+    }
+
+    /// A multi-byte character abutting the trailing zone abbreviation used to
+    /// land the split one byte into it, which panics on the per-event path.
+    #[test]
+    fn a_multi_byte_character_before_the_zone_does_not_split_mid_character() {
+        const FORMATS: [&str; 1] = ["yyyy-MM-dd HH:mm:ss z"];
+
+        // A no-break space is whitespace, so the date still reads and AEST
+        // still shifts it.
+        assert_eq!(
+            parse_date_out("2023-06-20 18:06:08\u{a0}AEST", &FORMATS, None, None).as_deref(),
+            Some("2023-06-20T08:06:08.000Z")
+        );
+
+        // An accented letter is not whitespace, so the parse declines -- which
+        // is an answer rather than a panic.
+        assert!(parse_date_out("2023-06-20 18:06:08 \u{e9}AEST", &FORMATS, None, None).is_none());
+    }
+
+    /// A multi-byte character straddling byte ten used to slice the text
+    /// mid-character while deciding whether it carried an offset.
+    #[test]
+    fn a_multi_byte_character_at_byte_ten_does_not_slice_mid_character() {
+        assert_eq!(
+            parse_date_out(
+                "abcdefghi\u{3a9}2024-12-15 09:30:00",
+                &["'abcdefghi\u{3a9}'yyyy-MM-dd HH:mm:ss"],
+                Some("+1000"),
+                None
+            )
+            .as_deref(),
+            Some("2024-12-15T09:30:00.000+10:00")
+        );
+    }
+
+    /// A `%` inside a Java quoted literal is TEXT, so it is doubled the same
+    /// way a bare one is rather than turning the character after it into a
+    /// directive.
+    #[test]
+    fn a_percent_in_a_quoted_literal_stays_text() {
+        assert_eq!(java_to_chrono("yyyy'%d'"), "%Y%%d");
+        assert_eq!(
+            parse_date_out(
+                "2024-12-15%H09:30:00",
+                &["yyyy-MM-dd'%H'HH:mm:ss"],
+                None,
+                None
+            )
+            .as_deref(),
+            Some("2024-12-15T09:30:00.000Z")
+        );
+    }
+
+    /// A pre-1970 instant floors its seconds, so the fraction has to come off
+    /// the whole rather than be appended to the floor.
+    #[test]
+    fn a_pre_1970_epoch_second_prints_its_own_sign_and_fraction() {
+        for (input, expected) in [
+            ("1969-12-31T23:59:59.500Z", "-0.5"),
+            ("1969-12-31T23:59:58.250Z", "-1.75"),
+            ("1969-12-31T23:59:59Z", "-1"),
+            // The post-epoch side is unchanged.
+            ("1970-01-01T00:00:00.500Z", "0.5"),
+            ("1970-01-01T00:00:01Z", "1"),
+        ] {
+            assert_eq!(
+                parse_date_out(input, &["ISO8601"], None, Some("epoch_second")).as_deref(),
+                Some(expected),
+                "{input}"
+            );
+        }
+    }
+
+    /// Every pattern letter the translator claims, at the widths that select a
+    /// different directive.
+    #[test]
+    fn each_pattern_letter_translates_at_its_own_width() {
+        for (java, chrono) in [
+            ("G", "AD"),
+            ("D", "%j"),
+            ("uu", "%y"),
+            ("uuuu", "%Y"),
+            ("L", "%-m"),
+            ("LL", "%m"),
+            ("LLL", "%b"),
+            ("LLLL", "%B"),
+            ("N", "%9f"),
+            ("VV", "%Z"),
+            ("x", "%:z"),
+            ("xxx", "%:z"),
+            ("EEE", "%a"),
+            ("EEEE", "%A"),
+            ("H:m:s", "%-H:%-M:%-S"),
+            ("h a", "%-I %p"),
+        ] {
+            assert_eq!(java_to_chrono(java), chrono, "{java}");
+        }
+    }
+
+    /// `ZoneId.of` takes its own `SHORT_IDS` map and nothing else, so a
+    /// processor configured with an abbreviation outside it FAILS its date
+    /// rather than falling back to UTC.
+    #[test]
+    fn a_configured_abbreviation_resolves_only_where_zone_id_of_would() {
+        const FORMATS: [&str; 1] = ["yyyy-MM-dd HH:mm:ss"];
+
+        assert!(resolve_zone("EST").is_some());
+        assert!(resolve_zone("EDT").is_none());
+
+        assert_eq!(
+            parse_date_out("2023-06-20 18:06:08", &FORMATS, Some("EST"), None).as_deref(),
+            Some("2023-06-20T18:06:08.000-05:00")
+        );
+        assert!(parse_date_out("2023-06-20 18:06:08", &FORMATS, Some("EDT"), None).is_none());
     }
 }

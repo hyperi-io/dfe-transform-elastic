@@ -22,21 +22,41 @@
 //! The key is a parsed [`IpAddr`], never the event string it came from: a
 //! 17-byte key cannot be grown by whatever a vendor decided to put in
 //! `source.ip`.
+//!
+//! A hit hands back an `Arc`, so it costs a refcount bump rather than a deep
+//! clone of the nine-field city result. Cloning the map out was 769 ns a hit on
+//! one thread and 5.3 us on eight, because the allocator ran nine times inside
+//! the read lock; the enrichers only ever read the result, never mutate it.
 
 use std::collections::HashMap;
 use std::net::IpAddr;
-use std::sync::RwLock;
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::{Arc, OnceLock};
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use parking_lot::RwLock;
 use serde_json::Value;
+
+/// A lookup result, shared rather than copied.
+pub type Fields = Arc<HashMap<String, Value>>;
 
 /// Entries kept before eviction starts.
 const DEFAULT_CAPACITY: usize = 100_000;
 
 /// Fraction of the cache dropped when it fills, as a divisor. Evicting a
-/// quarter at a time amortises the sort over many inserts.
+/// quarter at a time amortises the selection over many inserts.
 const EVICT_DIVISOR: usize = 4;
+
+/// The one empty result every miss hands back.
+///
+/// A private address has no data in any database and is the commonest input in
+/// log data, so minting an `Arc` for each would put an allocation on the path
+/// this cache exists to keep free.
+#[must_use]
+pub fn no_fields() -> Fields {
+    static EMPTY: OnceLock<Fields> = OnceLock::new();
+    Arc::clone(EMPTY.get_or_init(|| Arc::new(HashMap::new())))
+}
 
 /// Which database a lookup went to. Part of the cache key, because the city
 /// and ASN databases answer differently for the same address.
@@ -50,7 +70,7 @@ pub enum Database {
 
 /// A cached lookup and when it was stored.
 struct Entry {
-    fields: HashMap<String, Value>,
+    fields: Fields,
     stored_at: u64,
 }
 
@@ -93,31 +113,35 @@ impl Cache {
 
     /// The cached fields for `ip` in `database`, if any.
     ///
-    /// A poisoned lock counts as a miss rather than propagating: a cache that
-    /// panics is worse than one that stops caching.
+    /// The read lock is held for a hash lookup and a refcount bump and nothing
+    /// else, which is what keeps one transform thread per partition off each
+    /// other's back.
     #[must_use]
-    pub fn get(&self, database: Database, ip: IpAddr) -> Option<HashMap<String, Value>> {
-        let entries = self.entries.read().ok()?;
-        let hit = entries.get(&(database, ip));
+    pub fn get(&self, database: Database, ip: IpAddr) -> Option<Fields> {
+        let hit = self
+            .entries
+            .read()
+            .get(&(database, ip))
+            .map(|entry| Arc::clone(&entry.fields));
         if hit.is_some() {
             self.hits.fetch_add(1, Ordering::Relaxed);
         } else {
             self.misses.fetch_add(1, Ordering::Relaxed);
         }
-        hit.map(|entry| entry.fields.clone())
+        hit
     }
 
     /// Store `fields` for `ip`, evicting the oldest entries if full.
     ///
     /// An empty result is cached too: a miss in the database is as worth
     /// remembering as a hit, and private ranges are the common case.
-    pub fn put(&self, database: Database, ip: IpAddr, fields: HashMap<String, Value>) {
-        let Ok(mut entries) = self.entries.write() else {
-            return;
-        };
+    pub fn put(&self, database: Database, ip: IpAddr, fields: Fields) {
+        let mut entries = self.entries.write();
 
         if entries.len() >= self.capacity {
-            evict_oldest(&mut entries, self.capacity / EVICT_DIVISOR);
+            // At least one, or a capacity under four makes the eviction a
+            // no-op and the map grows without a bound.
+            evict_oldest(&mut entries, (self.capacity / EVICT_DIVISOR).max(1));
         }
 
         entries.insert(
@@ -132,7 +156,7 @@ impl Cache {
     /// Hits, misses and current size.
     #[must_use]
     pub fn stats(&self) -> Stats {
-        let size = self.entries.read().map_or(0, |e| e.len());
+        let size = self.entries.read().len();
         Stats {
             hits: self.hits.load(Ordering::Relaxed),
             misses: self.misses.load(Ordering::Relaxed),
@@ -142,15 +166,18 @@ impl Cache {
 
     /// Drop every entry, keeping the counters.
     pub fn clear(&self) {
-        if let Ok(mut entries) = self.entries.write() {
-            entries.clear();
-        }
+        self.entries.write().clear();
     }
 }
 
 /// Remove the `count` oldest entries.
+///
+/// Partitioned rather than sorted: every transform thread is parked on the
+/// write lock for the duration, and ordering the 75,000 entries that survive is
+/// work the eviction never reads.
 fn evict_oldest(entries: &mut HashMap<(Database, IpAddr), Entry>, count: usize) {
-    if entries.is_empty() || count == 0 {
+    let count = count.min(entries.len());
+    if count == 0 {
         return;
     }
 
@@ -158,10 +185,10 @@ fn evict_oldest(entries: &mut HashMap<(Database, IpAddr), Entry>, count: usize) 
         .iter()
         .map(|(key, entry)| (*key, entry.stored_at))
         .collect();
-    by_age.sort_unstable_by_key(|(_, stored_at)| *stored_at);
+    let (older, nth, _) = by_age.select_nth_unstable_by_key(count - 1, |(_, stored_at)| *stored_at);
 
-    for (key, _) in by_age.into_iter().take(count) {
-        entries.remove(&key);
+    for (key, _) in older.iter().chain(std::iter::once(&*nth)) {
+        entries.remove(key);
     }
 }
 
@@ -178,10 +205,10 @@ mod tests {
     use super::*;
     use serde_json::json;
 
-    fn fields(country: &str) -> HashMap<String, Value> {
+    fn fields(country: &str) -> Fields {
         let mut map = HashMap::new();
         map.insert("country_iso_code".to_string(), json!(country));
-        map
+        Arc::new(map)
     }
 
     fn addr(ip: &str) -> IpAddr {
@@ -236,13 +263,25 @@ mod tests {
     #[test]
     fn an_empty_result_is_cached() {
         let cache = Cache::default();
-        cache.put(Database::City, addr("203.0.113.1"), HashMap::new());
+        cache.put(Database::City, addr("203.0.113.1"), no_fields());
 
         assert_eq!(
             cache.get(Database::City, addr("203.0.113.1")),
-            Some(HashMap::new())
+            Some(no_fields())
         );
         assert_eq!(cache.stats().hits, 1);
+    }
+
+    /// A hit hands back a HANDLE, not a copy. A second hit that allocated a
+    /// fresh map would be the deep clone this cache was measured to be paying.
+    #[test]
+    fn two_hits_share_one_result() {
+        let cache = Cache::default();
+        cache.put(Database::City, addr("8.8.8.8"), fields("US"));
+
+        let first = cache.get(Database::City, addr("8.8.8.8")).expect("a hit");
+        let second = cache.get(Database::City, addr("8.8.8.8")).expect("a hit");
+        assert!(Arc::ptr_eq(&first, &second));
     }
 
     #[test]
@@ -281,11 +320,29 @@ mod tests {
         assert!(cache.get(Database::City, addr("1.1.1.1")).is_none());
     }
 
+    /// A capacity under the evict divisor still bounds the map.
+    ///
+    /// `capacity / EVICT_DIVISOR` is zero for anything below four, which made
+    /// the eviction a no-op and let the cache grow without a ceiling. One entry
+    /// could never see it: the map only exceeds its capacity on the SECOND
+    /// insert.
     #[test]
-    fn capacity_is_never_zero() {
-        let cache = Cache::with_capacity(0);
-        cache.put(Database::City, addr("8.8.8.8"), fields("US"));
-        assert!(cache.stats().size <= 1);
+    fn a_capacity_below_the_evict_divisor_still_bounds_the_map() {
+        for capacity in 0..=4 {
+            let cache = Cache::with_capacity(capacity);
+            for i in 0..40 {
+                cache.put(
+                    Database::City,
+                    addr(&format!("198.51.100.{i}")),
+                    fields("AU"),
+                );
+            }
+            let size = cache.stats().size;
+            assert!(
+                size <= capacity.max(1),
+                "capacity {capacity} held {size} entries"
+            );
+        }
     }
 
     #[test]

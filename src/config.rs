@@ -3,10 +3,20 @@
 
 //! Service configuration.
 //!
-//! Loaded through scalo's config cascade under the `DFE_TRANSFORM_ELASTIC`
-//! environment prefix. `retry`, `scaling` and `source.batch_size` take effect
-//! on the next batch. Transports, enrichment and the HTTP bind are read once at
-//! startup and need a restart.
+//! Read ONCE at startup and never re-read: the loaded [`Config`] is handed to
+//! the batch loop by reference, and scalo's `config-reload` feature is not
+//! enabled. Every value here needs a pod restart to change.
+//!
+//! Two ways in, and they are not equivalent. With no `--config` the whole scalo
+//! cascade applies, so `DFE_TRANSFORM_ELASTIC_*` overrides the files. With
+//! `--config` -- which is what the container passes -- the named file IS the
+//! configuration: scalo 2.11.1 has no way to merge an arbitrarily-named file
+//! into the cascade as a layer (`ConfigOptions::config_paths` searches for
+//! `defaults`/`settings` by name, and `merge_cli` sits above the environment),
+//! so the file is read directly and no `DFE_TRANSFORM_ELASTIC_*` variable
+//! reaches it. The cascade is still installed either way, because the rest of
+//! scalo reads it. Kafka credentials are unaffected: `KafkaConfig::from_env`
+//! reads `KAFKA_*` separately.
 
 use scalo::config::{self, ConfigOptions};
 use schemars::JsonSchema;
@@ -59,6 +69,17 @@ pub struct SourceConfig {
     #[serde(default = "default_batch_size")]
     pub batch_size: usize,
 
+    /// Ceiling on the BYTES one fetch may bring back, the inbound mirror of
+    /// `sink.max_message_bytes`.
+    ///
+    /// `batch_size` bounds the event count and nothing bounds their size, so a
+    /// producer sending large records decides this service's memory. Applied as
+    /// librdkafka's `fetch.max.bytes`, which enforces it at the broker rather
+    /// than after the bytes have arrived; the pod's memory limit has to cover
+    /// this plus the parsed document trees, which are several times larger.
+    #[serde(default = "default_max_batch_bytes")]
+    pub max_batch_bytes: usize,
+
     /// Kafka consumer group.
     pub group_id: String,
 
@@ -93,6 +114,24 @@ const fn default_batch_size() -> usize {
     20_000
 }
 
+/// Default ceiling on one inbound fetch.
+///
+/// 16 MiB of raw payload parses into several times that as `IndexMap` trees, so
+/// this is what the pod's memory request is sized against. Below
+/// [`MIN_BATCH_BYTES`] the per-partition quarter of it falls under librdkafka's
+/// own `message.max.bytes` and a full-sized record can never be fetched.
+#[must_use]
+pub const fn default_max_batch_bytes() -> usize {
+    16 * 1024 * 1024
+}
+
+/// The smallest inbound fetch budget librdkafka can honour here.
+const MIN_BATCH_BYTES: usize = 4 * 1024 * 1024;
+
+/// The largest inbound fetch budget, bounded by what `i32` can carry into
+/// librdkafka.
+const MAX_BATCH_BYTES: usize = 256 * 1024 * 1024;
+
 /// Default ceiling on one produced Kafka record.
 ///
 /// librdkafka's producer `message.max.bytes` defaults to 1,000,000 and scalo
@@ -112,6 +151,23 @@ impl Config {
     /// Returns [`crate::Error::Config`] if the file is missing or unreadable,
     /// or if the cascade cannot be unmarshalled into this shape.
     pub fn load(config_path: Option<&str>) -> crate::Result<Self> {
+        // Installed whichever branch runs: `version_check` and the deployment
+        // module read the cascade themselves, and they get defaults rather than
+        // an error if nothing set it up. Installing twice is a no-op, not a
+        // failure -- the cascade is a process-wide `OnceLock`.
+        match config::setup(ConfigOptions {
+            env_prefix: ENV_PREFIX.to_string(),
+            load_dotenv: true,
+            ..Default::default()
+        }) {
+            Ok(()) | Err(config::ConfigError::AlreadyInitialised) => {}
+            Err(e) => {
+                return Err(crate::Error::Config(format!("cascade setup failed: {e}")));
+            }
+        }
+
+        // An explicit file is the whole configuration -- see the module docs
+        // for why it cannot be a cascade layer on scalo 2.11.1.
         if let Some(path) = config_path {
             let text = std::fs::read_to_string(path).map_err(|e| {
                 crate::Error::Config(format!("config file not found at '{path}': {e}"))
@@ -119,13 +175,6 @@ impl Config {
             return serde_yaml_ng::from_str(&text)
                 .map_err(|e| crate::Error::Config(format!("invalid config at '{path}': {e}")));
         }
-
-        config::setup(ConfigOptions {
-            env_prefix: ENV_PREFIX.to_string(),
-            load_dotenv: true,
-            ..Default::default()
-        })
-        .map_err(|e| crate::Error::Config(format!("cascade setup failed: {e}")))?;
 
         config::get()
             .unmarshal()
@@ -158,6 +207,15 @@ impl Config {
         }
         if self.source.batch_size == 0 {
             return Err(crate::Error::Config("source.batch_size is zero".into()));
+        }
+        if self.source.max_batch_bytes < MIN_BATCH_BYTES
+            || self.source.max_batch_bytes > MAX_BATCH_BYTES
+        {
+            return Err(crate::Error::Config(format!(
+                "source.max_batch_bytes must be between {MIN_BATCH_BYTES} and {MAX_BATCH_BYTES}, \
+                 got {}",
+                self.source.max_batch_bytes
+            )));
         }
         // A budget under one event's worth would drop every event as oversize,
         // and one over librdkafka's producer default would have every record
@@ -211,6 +269,7 @@ mod tests {
                 envelope: crate::envelope::EnvelopeSetting::Beats,
                 topics: vec!["in".into()],
                 batch_size: 100,
+                max_batch_bytes: default_max_batch_bytes(),
                 group_id: "g".into(),
                 brokers: vec!["localhost:9092".into()],
             },

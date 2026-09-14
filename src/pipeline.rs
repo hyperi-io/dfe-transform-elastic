@@ -8,7 +8,11 @@
 //! leaves the event out and increments the error count rather than failing
 //! the batch, so one malformed record cannot stall a partition.
 
-use dfe_runtime::{Event, Transform, TransformResult};
+use std::borrow::Cow;
+
+use dfe_runtime::{Event, Transform, TransformError, TransformResult};
+
+use crate::envelope::{Delivery, Resolution, Resolver};
 
 /// What a batch produced.
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
@@ -28,6 +32,30 @@ impl BatchOutcome {
     }
 }
 
+/// What a batch's envelopes turned out to be.
+///
+/// Both flags are batch-wide rather than per event, which is the reading the
+/// `envelope_contradicted` and `envelope_unaccepted` counters have always had:
+/// one increment per batch that saw the condition at all.
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
+pub struct EnvelopeOutcome {
+    /// The first event's resolution, which is what the log line reports.
+    pub first: Option<Resolution>,
+    /// At least one event contradicted the pinned family.
+    pub contradicted: bool,
+    /// At least one event's detected family is not one this source accepts.
+    pub unaccepted: bool,
+}
+
+/// How each event's envelope is decided.
+enum Route<'a> {
+    /// One delivery, decided by the caller and applied to every event. What an
+    /// offline tool and the envelope tests take.
+    Fixed(&'a Delivery),
+    /// Decided per event, because one batch can span producers.
+    PerEvent(&'a Resolver),
+}
+
 /// Apply `transform` to every event, returning the survivors.
 ///
 /// The output vector is pre-sized to the input length: the common case is
@@ -37,7 +65,7 @@ pub fn transform_batch(
     transform: &dyn Transform,
     events: Vec<Event>,
 ) -> (Vec<Event>, BatchOutcome) {
-    transform_batch_with(transform, &crate::envelope::Delivery::beats(), events)
+    transform_batch_with(transform, &Delivery::beats(), events)
 }
 
 /// Unwrap and stamp `delivery`, then apply `transform` to every event.
@@ -46,16 +74,57 @@ pub fn transform_batch(
 /// footing as one the transform rejects -- neither fails the batch.
 pub fn transform_batch_with(
     transform: &dyn Transform,
-    delivery: &crate::envelope::Delivery,
+    delivery: &Delivery,
     events: Vec<Event>,
 ) -> (Vec<Event>, BatchOutcome) {
+    let (out, outcome, _) = run_batch(transform, &Route::Fixed(delivery), events);
+    (out, outcome)
+}
+
+/// Detect each event's envelope, unwrap it, then apply `transform`.
+///
+/// The service path. A scalo `WorkBatch` spans partitions, so the family is
+/// read per event rather than off the batch's first one.
+pub fn transform_batch_resolved(
+    transform: &dyn Transform,
+    resolver: &Resolver,
+    events: Vec<Event>,
+) -> (Vec<Event>, BatchOutcome, EnvelopeOutcome) {
+    run_batch(transform, &Route::PerEvent(resolver), events)
+}
+
+fn run_batch(
+    transform: &dyn Transform,
+    route: &Route<'_>,
+    events: Vec<Event>,
+) -> (Vec<Event>, BatchOutcome, EnvelopeOutcome) {
     let mut out = Vec::with_capacity(events.len());
     let mut outcome = BatchOutcome::default();
+    let mut envelopes = EnvelopeOutcome::default();
+    // One sample of each kind, reported once for the whole batch rather than
+    // once per event -- see `report_failures`.
+    let mut unwrap_failure: Option<String> = None;
+    let mut transform_failure: Option<String> = None;
 
     for mut event in events {
-        if let Err(e) = delivery.apply(&mut event) {
+        let unwrapped = match route {
+            Route::Fixed(delivery) => delivery.apply(&mut event),
+            Route::PerEvent(resolver) => {
+                let resolution = resolver.resolve(&event);
+                envelopes.contradicted |= resolution.contradicted;
+                envelopes.unaccepted |= resolution.unaccepted;
+                let applied = resolution.delivery.apply(&mut event);
+                if envelopes.first.is_none() {
+                    envelopes.first = Some(resolution);
+                }
+                applied
+            }
+        };
+        if let Err(e) = unwrapped {
             outcome.errored += 1;
-            tracing::warn!(error = %e, "envelope unwrap failed");
+            if unwrap_failure.is_none() {
+                unwrap_failure = Some(e.to_string());
+            }
             continue;
         }
         match transform.transform(&mut event) {
@@ -66,16 +135,80 @@ pub fn transform_batch_with(
             Ok(TransformResult::Drop) => outcome.dropped += 1,
             Err(e) => {
                 outcome.errored += 1;
-                tracing::warn!(
-                    transform = transform.name(),
-                    error = %e,
-                    "event transform failed"
-                );
+                if transform_failure.is_none() {
+                    transform_failure = Some(for_the_log(&e).into_owned());
+                }
             }
         }
     }
 
-    (out, outcome)
+    if outcome.errored > 0 {
+        report_failures(
+            transform.name(),
+            outcome.errored,
+            unwrap_failure.as_deref(),
+            transform_failure.as_deref(),
+        );
+    }
+
+    (out, outcome, envelopes)
+}
+
+/// One line per batch for the events that did not make it.
+///
+/// A grok miss is normal on a device that mixes formats, so the per-event warn
+/// this replaces put up to 20,000 lines in the log for one batch and drowned
+/// everything else. The count is the signal; the samples make it actionable.
+fn report_failures(
+    transform: &str,
+    errored: usize,
+    unwrap_failure: Option<&str>,
+    transform_failure: Option<&str>,
+) {
+    tracing::warn!(
+        transform,
+        errored,
+        unwrap_sample = unwrap_failure.unwrap_or("-"),
+        transform_sample = transform_failure.unwrap_or("-"),
+        "events did not transform"
+    );
+}
+
+/// Bytes of a grok's input that may reach a log line.
+///
+/// Enough to recognise which line it was, and short enough that 20,000 of them
+/// could not export a batch of customer data into the service log.
+const GROK_VALUE_LOG_MAX: usize = 120;
+
+/// One transform error, rendered for an operator rather than for the document.
+///
+/// [`TransformError::GrokNoMatch`] carries the WHOLE field value, which on a
+/// grok miss is the customer's raw log line. The document still gets the full
+/// text -- the corpus compares Elasticsearch's wording verbatim -- and this is
+/// the log-facing half.
+fn for_the_log(error: &TransformError) -> Cow<'_, str> {
+    match error {
+        TransformError::GrokNoMatch { value } => Cow::Owned(format!(
+            "Provided Grok expressions do not match field value: [{}]",
+            elided(value)
+        )),
+        // The wrapper renders its source, so an unwrapped one would leak the
+        // same value through a different variant.
+        TransformError::ProcessorError { processor, source } => Cow::Owned(format!(
+            "processor '{processor}' failed: {}",
+            for_the_log(source)
+        )),
+        other => Cow::Owned(other.to_string()),
+    }
+}
+
+/// The head of a value, with the full length named where it was cut.
+fn elided(value: &str) -> Cow<'_, str> {
+    let Some((head, _)) = value.char_indices().nth(GROK_VALUE_LOG_MAX) else {
+        return Cow::Borrowed(value);
+    };
+    let kept = value.get(..head).unwrap_or_default();
+    Cow::Owned(format!("{kept}... ({} bytes)", value.len()))
 }
 
 /// What a payload cost to decode.
@@ -112,7 +245,11 @@ pub fn parse_batch(payload: &[u8]) -> (Vec<Event>, ParseOutcome) {
         ..ParseOutcome::default()
     };
 
-    let mut events = Vec::new();
+    // Sized from the payload's own newline count -- one SIMD pass against a
+    // `Vec` that reallocated its way up to 20,000 events on every batch.
+    let lines = memchr::memchr_iter(b'\n', payload).count();
+    let mut events = Vec::with_capacity(lines.max(1));
+    let mut first_bad: Option<String> = None;
     for line in text.lines() {
         if line.trim().is_empty() {
             continue;
@@ -124,9 +261,21 @@ pub fn parse_batch(payload: &[u8]) -> (Vec<Event>, ParseOutcome) {
             }
             Err(e) => {
                 outcome.bad_lines += 1;
-                tracing::warn!(error = %e, "line is not valid JSON, skipped");
+                if first_bad.is_none() {
+                    first_bad = Some(e.to_string());
+                }
             }
         }
+    }
+
+    // One line per payload, not one per bad line: a payload of 20,000 lines
+    // that a producer wrote in the wrong format is 20,000 warns otherwise.
+    if let Some(sample) = first_bad {
+        tracing::warn!(
+            skipped = outcome.bad_lines,
+            sample = %sample,
+            "lines are not valid JSON, skipped"
+        );
     }
 
     (events, outcome)
@@ -381,6 +530,40 @@ mod tests {
         assert_eq!(outcome.oversize, 0);
         assert_eq!(outcome.serialised, 4);
         assert_eq!(chunks.len(), 1);
+    }
+
+    /// The clamp raises the budget, and an event that sits BETWEEN the
+    /// configured value and the floor is what tells the direction apart: the
+    /// other way round it would be dropped as oversize rather than sent.
+    #[test]
+    fn the_clamp_raises_the_budget_rather_than_lowering_it() {
+        let events = padded(1, 2_000);
+        let (chunks, outcome) = serialise_chunks(&events, 512);
+
+        assert_eq!(outcome.oversize, 0, "the event was judged against 512");
+        assert_eq!(outcome.serialised, 1);
+        assert_eq!(chunks.len(), 1);
+        assert!(
+            chunks.first().is_some_and(|c| c.len() > 512),
+            "a chunk under 512 bytes means the budget was obeyed, not clamped"
+        );
+    }
+
+    /// A budget ABOVE the floor is obeyed as given -- the clamp is a floor, not
+    /// a replacement.
+    #[test]
+    fn a_budget_above_the_floor_is_used_as_given() {
+        let events = padded(40, 400);
+        let (chunks, outcome) = serialise_chunks(&events, MIN_MESSAGE_BYTES * 2);
+
+        assert_eq!(outcome.serialised, 40);
+        assert!(
+            chunks.len() > 1,
+            "40 events of 400 bytes must split at 8 KB"
+        );
+        for chunk in &chunks {
+            assert!(chunk.len() <= MIN_MESSAGE_BYTES * 2, "{}", chunk.len());
+        }
     }
 
     #[test]

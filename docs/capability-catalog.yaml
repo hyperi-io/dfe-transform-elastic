@@ -10,10 +10,14 @@
   - name: source.envelope
     type: enum
     required: false
-    description: How the payload is wrapped on the way in. `syslog` reads dfe-receiver's output and applies only to device sources.
+    default: auto
+    description: How the payload is wrapped on the way in. `auto` reads it off each event; `receiver` (spelled `syslog` before it grew the other transports) reads dfe-receiver's output and applies only to device sources; `fetcher` reads dfe-fetcher's and applies only to sources Elastic pulls from an API.
     enum_values:
+    - auto
     - beats
+    - receiver
     - syslog
+    - fetcher
   children:
   - kind: service
     name: filebeat.1password_audit_events.default
@@ -4396,6 +4400,11 @@
     type: string
     required: true
     description: Topic the normalised events are produced to.
+  - name: source.max_batch_bytes
+    type: int
+    required: false
+    default: 16777216
+    description: Ceiling on the bytes one fetch brings back, applied as librdkafka's fetch.max.bytes. The pod's memory limit has to cover this plus the parsed documents, which are several times larger.
 - kind: enrichment
   name: geoip
   description: City and ASN lookups for the geoip processors 14 of the source pipelines carry. scalo downloads and refreshes the MMDB files; the lookup runs in-process behind a bounded cache. A database that cannot be obtained leaves the geo fields empty and never stops the service.

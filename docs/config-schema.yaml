@@ -65,6 +65,20 @@ $defs:
         format: uint
         minimum: 0
         default: 20000
+      max_batch_bytes:
+        description: |-
+          Ceiling on the BYTES one fetch may bring back, the inbound mirror of
+          `sink.max_message_bytes`.
+
+          `batch_size` bounds the event count and nothing bounds their size, so a
+          producer sending large records decides this service's memory. Applied as
+          librdkafka's `fetch.max.bytes`, which enforces it at the broker rather
+          than after the bytes have arrived; the pod's memory limit has to cover
+          this plus the parsed document trees, which are several times larger.
+        type: integer
+        format: uint
+        minimum: 0
+        default: 16777216
       group_id:
         description: Kafka consumer group.
         type: string
