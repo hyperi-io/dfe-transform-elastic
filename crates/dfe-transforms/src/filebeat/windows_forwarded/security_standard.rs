@@ -100,8 +100,10 @@ impl Transform for SecurityStandard {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("_temp.MemberNameParts", Value::Array(parts))?;
                 }
@@ -197,8 +199,10 @@ impl Transform for SecurityStandard {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("winlog.event_data.PrivilegeList", Value::Array(parts))?;
                 }

@@ -147,8 +147,10 @@ impl Transform for Default {
             if event.has_value("eti.pattern") {
                 if let Some(s) = event.get_string("eti.pattern") {
                     let mut parts: Vec<Value> = s.split(" OR ").map(|p| json!(p)).collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("eti._patterns", Value::Array(parts))?;
                 }

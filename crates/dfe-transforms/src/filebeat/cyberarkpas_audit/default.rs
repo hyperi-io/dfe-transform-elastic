@@ -444,8 +444,10 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("cyberarkpas.audit.ExtraDetails") {
                         if let Some(kv_str) = event.get_string("cyberarkpas.audit.ExtraDetails") {
+                            let mut kv_gap = false;
                             for pair in cached_regex!("(?<!\\\\);").split(&kv_str).into_iter() {
-                                if pair.trim().is_empty() {
+                                if pair.is_empty() {
+                                    kv_gap = true;
                                     continue;
                                 }
                                 let Some((key, value)) = ({
@@ -454,10 +456,11 @@ impl Transform for Default {
                                         (Some(k), Some(v)) => Some((k.clone(), v.clone())),
                                         _ => None,
                                     }
-                                }) else {
-                                    return Err(TransformError::ParseError {
-                                        path: "cyberarkpas.audit.ExtraDetails".into(),
-                                        message: format!("does not contain value_split: {pair}"),
+                                })
+                                .filter(|_| !kv_gap) else {
+                                    return Err(TransformError::KvValueSplit {
+                                        field: "cyberarkpas.audit.ExtraDetails".into(),
+                                        split: "(?<!\\\\)=".into(),
                                     });
                                 };
                                 {

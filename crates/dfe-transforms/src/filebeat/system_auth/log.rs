@@ -352,30 +352,28 @@ impl Transform for Log {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                 if let Some(kv_str) = event.get_string("syslog5424_sd") {
+                let mut kv_gap = false;
                 for pair in cached_regex!("(?<=\"); ").split(&kv_str).into_iter() {
-                if pair.trim().is_empty() {
+                if pair.is_empty() {
+                kv_gap = true;
                 continue;
                 }
-                let Some((key, value)) = ({ let parts = cached_regex!("(?i)(?<=[a-z]):{1,2}(?=\")").splitn(&pair, 2); match (parts.first(), parts.get(1)) { (Some(k), Some(v)) => Some((k.clone(), v.clone())), _ => None } }) else {
-                return Err(TransformError::ParseError {
-                path: "syslog5424_sd".into(),
-                message: format!("does not contain value_split: {pair}"),
+                let Some((key, value)) = ({ let parts = cached_regex!("(?i)(?<=[a-z]):{1,2}(?=\")").splitn(&pair, 2); match (parts.first(), parts.get(1)) { (Some(k), Some(v)) => Some((k.clone(), v.clone())), _ => None } }).filter(|_| !kv_gap) else {
+                return Err(TransformError::KvValueSplit {
+                field: "syslog5424_sd".into(),
+                split: "(?i)(?<=[a-z]):{1,2}(?=\")".into(),
                 });
                 };
                 {
                 let key = &key[..];
-                let key = key.trim_matches(|c| " ".contains(c));
-                let value = match (value.chars().next(), value.chars().last()) {
-                (Some('('), Some(')'))
-                | (Some('['), Some(']'))
-                | (Some('<'), Some('>'))
-                | (Some('"'), Some('"'))
-                | (Some('\''), Some('\'')) if value.chars().count() > 1 => {
-                &value[1..value.len() - 1]
-                }
-                _ => &value[..],
-                };
-                let value = value.trim_matches(|c| " ".contains(c));
+                let key = key.trim_matches(|c: char| matches!(c, ' '));
+                let value = value.as_str()
+                .strip_prefix(['(', '[', '<', '"', '\''])
+                .unwrap_or(value.as_str());
+                let value = value
+                .strip_suffix([']', ')', '>', '"', '\''])
+                .unwrap_or(value);
+                let value = value.trim_matches(|c: char| matches!(c, ' '));
                 if !key.is_empty() {
                 kv_put(event, &format!("system.auth.{}", key), value)?;
                 }
@@ -425,30 +423,28 @@ impl Transform for Log {
                 // on_failure: 1 handler(s)
                 if let Err(err) = (|| -> Result<()> {
                 if let Some(kv_str) = event.get_string("syslog5424_sd") {
+                let mut kv_gap = false;
                 for pair in cached_regex!("(?<=\") ").split(&kv_str).into_iter() {
-                if pair.trim().is_empty() {
+                if pair.is_empty() {
+                kv_gap = true;
                 continue;
                 }
-                let Some((key, value)) = ({ let parts = cached_regex!("(?i)(?<=[a-z])=(?=\")").splitn(&pair, 2); match (parts.first(), parts.get(1)) { (Some(k), Some(v)) => Some((k.clone(), v.clone())), _ => None } }) else {
-                return Err(TransformError::ParseError {
-                path: "syslog5424_sd".into(),
-                message: format!("does not contain value_split: {pair}"),
+                let Some((key, value)) = ({ let parts = cached_regex!("(?i)(?<=[a-z])=(?=\")").splitn(&pair, 2); match (parts.first(), parts.get(1)) { (Some(k), Some(v)) => Some((k.clone(), v.clone())), _ => None } }).filter(|_| !kv_gap) else {
+                return Err(TransformError::KvValueSplit {
+                field: "syslog5424_sd".into(),
+                split: "(?i)(?<=[a-z])=(?=\")".into(),
                 });
                 };
                 {
                 let key = &key[..];
-                let key = key.trim_matches(|c| " ".contains(c));
-                let value = match (value.chars().next(), value.chars().last()) {
-                (Some('('), Some(')'))
-                | (Some('['), Some(']'))
-                | (Some('<'), Some('>'))
-                | (Some('"'), Some('"'))
-                | (Some('\''), Some('\'')) if value.chars().count() > 1 => {
-                &value[1..value.len() - 1]
-                }
-                _ => &value[..],
-                };
-                let value = value.trim_matches(|c| " ".contains(c));
+                let key = key.trim_matches(|c: char| matches!(c, ' '));
+                let value = value.as_str()
+                .strip_prefix(['(', '[', '<', '"', '\''])
+                .unwrap_or(value.as_str());
+                let value = value
+                .strip_suffix([']', ')', '>', '"', '\''])
+                .unwrap_or(value);
+                let value = value.trim_matches(|c: char| matches!(c, ' '));
                 if !key.is_empty() {
                 kv_put(event, &format!("system.auth.{}", key), value)?;
                 }

@@ -104,14 +104,16 @@ impl Transform for PipelineTacacsAccounting {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(kv_str) = event.get_string("cisco_ise.log.log_details_raw") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!(", (?=[^,=]+=)").split(&kv_str).into_iter() {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "cisco_ise.log.log_details_raw".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "cisco_ise.log.log_details_raw".into(),
+                                split: "=".into(),
                             });
                         };
                         {
@@ -153,14 +155,16 @@ impl Transform for PipelineTacacsAccounting {
                             // on_failure: 1 handler(s)
                             if let Err(err) = (|| -> Result<()> {
                             if let Some(kv_str) = event.get_string("_ingest._value") {
+                            let mut kv_gap = false;
                             for pair in kv_str.split(", ") {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                             }
-                            let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                            path: "_ingest._value".into(),
-                            message: format!("does not contain value_split: {pair}"),
+                            let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                            field: "_ingest._value".into(),
+                            split: "=".into(),
                             });
                             };
                             {
@@ -213,14 +217,16 @@ impl Transform for PipelineTacacsAccounting {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("cisco_ise.log.log_details.cisco-av-pair") {
                 if let Some(kv_str) = event.get_string("cisco_ise.log.log_details.cisco-av-pair") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split(", ") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "cisco_ise.log.log_details.cisco-av-pair".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "cisco_ise.log.log_details.cisco-av-pair".into(),
+                                split: "=".into(),
                             });
                         };
                         {
@@ -811,14 +817,16 @@ impl Transform for PipelineTacacsAccounting {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(kv_str) = event.get_string("_tmp.response") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split("; ") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "_tmp.response".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "_tmp.response".into(),
+                                split: "=".into(),
                             });
                         };
                         {

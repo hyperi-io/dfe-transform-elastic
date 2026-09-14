@@ -1232,8 +1232,10 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("cisco.umbrella.audit.before") {
                         if let Some(kv_str) = event.get_string("cisco.umbrella.audit.before") {
+                            let mut kv_gap = false;
                             for pair in cached_regex!("\\n").split(&kv_str).into_iter() {
-                                if pair.trim().is_empty() {
+                                if pair.is_empty() {
+                                    kv_gap = true;
                                     continue;
                                 }
                                 let Some((key, value)) = ({
@@ -1242,15 +1244,16 @@ impl Transform for Default {
                                         (Some(k), Some(v)) => Some((k.clone(), v.clone())),
                                         _ => None,
                                     }
-                                }) else {
-                                    return Err(TransformError::ParseError {
-                                        path: "cisco.umbrella.audit.before".into(),
-                                        message: format!("does not contain value_split: {pair}"),
+                                })
+                                .filter(|_| !kv_gap) else {
+                                    return Err(TransformError::KvValueSplit {
+                                        field: "cisco.umbrella.audit.before".into(),
+                                        split: ":\\s*".into(),
                                     });
                                 };
                                 {
                                     let key = &key[..];
-                                    let key = key.trim_matches(|c| " ".contains(c));
+                                    let key = key.trim_matches(|c: char| matches!(c, ' '));
                                     if !key.is_empty() {
                                         kv_put(
                                             event,
@@ -1303,8 +1306,10 @@ impl Transform for Default {
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("cisco.umbrella.audit.before", Value::Array(parts))?;
                     }
@@ -1317,8 +1322,10 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if event.has_value("cisco.umbrella.audit.after") {
                         if let Some(kv_str) = event.get_string("cisco.umbrella.audit.after") {
+                            let mut kv_gap = false;
                             for pair in cached_regex!("\\n").split(&kv_str).into_iter() {
-                                if pair.trim().is_empty() {
+                                if pair.is_empty() {
+                                    kv_gap = true;
                                     continue;
                                 }
                                 let Some((key, value)) = ({
@@ -1327,15 +1334,16 @@ impl Transform for Default {
                                         (Some(k), Some(v)) => Some((k.clone(), v.clone())),
                                         _ => None,
                                     }
-                                }) else {
-                                    return Err(TransformError::ParseError {
-                                        path: "cisco.umbrella.audit.after".into(),
-                                        message: format!("does not contain value_split: {pair}"),
+                                })
+                                .filter(|_| !kv_gap) else {
+                                    return Err(TransformError::KvValueSplit {
+                                        field: "cisco.umbrella.audit.after".into(),
+                                        split: ":\\s*".into(),
                                     });
                                 };
                                 {
                                     let key = &key[..];
-                                    let key = key.trim_matches(|c| " ".contains(c));
+                                    let key = key.trim_matches(|c: char| matches!(c, ' '));
                                     if !key.is_empty() {
                                         kv_put(
                                             event,
@@ -1388,8 +1396,10 @@ impl Transform for Default {
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("cisco.umbrella.audit.after", Value::Array(parts))?;
                     }
@@ -1447,8 +1457,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("cisco.umbrella._tmp.identities_tail", Value::Array(parts))?;
                 }
@@ -1485,8 +1497,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("cisco.umbrella.identities", Value::Array(parts))?;
                 }
@@ -1510,8 +1524,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("cisco.umbrella.categories", Value::Array(parts))?;
                 }
@@ -1535,8 +1551,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("cisco.umbrella.blocked_categories", Value::Array(parts))?;
                 }
@@ -1550,8 +1568,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("cisco.umbrella.identity_types", Value::Array(parts))?;
                 }
@@ -1565,8 +1585,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("cisco.umbrella.fqdns", Value::Array(parts))?;
                 }

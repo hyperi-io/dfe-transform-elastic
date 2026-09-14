@@ -956,8 +956,10 @@ impl Transform for PipelineBigipasm {
                     .into_iter()
                     .map(|p| json!(p))
                     .collect();
-                while parts.last().and_then(Value::as_str) == Some("") {
-                    parts.pop();
+                if parts.len() > 1 {
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                 }
                 event.set("json.x_forwarded_for_header_value", Value::Array(parts))?;
             }

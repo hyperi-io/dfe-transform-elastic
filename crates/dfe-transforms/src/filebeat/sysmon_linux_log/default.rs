@@ -242,14 +242,17 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if let Some(kv_str) = event.get_string("winlog.event_data.Hashes") {
+                        let mut kv_gap = false;
                         for pair in kv_str.split(",") {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
-                            let Some((key, value)) = pair.split_once("=") else {
-                                return Err(TransformError::ParseError {
-                                    path: "winlog.event_data.Hashes".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap)
+                            else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "winlog.event_data.Hashes".into(),
+                                    split: "=".into(),
                                 });
                             };
                             {
@@ -1165,8 +1168,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("_temp.user_parts", Value::Array(parts))?;
                 }

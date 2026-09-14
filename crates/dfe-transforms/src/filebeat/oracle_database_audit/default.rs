@@ -89,8 +89,10 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(kv_str) = event.get_string("audit") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!("\\\n(?=[a-zA-Z])").split(&kv_str).into_iter() {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
                         let Some((key, value)) = ({
@@ -99,16 +101,17 @@ impl Transform for Default {
                                 (Some(k), Some(v)) => Some((k.clone(), v.clone())),
                                 _ => None,
                             }
-                        }) else {
-                            return Err(TransformError::ParseError {
-                                path: "audit".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        })
+                        .filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "audit".into(),
+                                split: ":\\S\\d+\\S(?= ')".into(),
                             });
                         };
                         {
                             let key = &key[..];
-                            let key = key.trim_matches(|c| " ".contains(c));
-                            let value = value.trim_matches(|c| " '".contains(c));
+                            let key = key.trim_matches(|c: char| matches!(c, ' '));
+                            let value = value.trim_matches(|c: char| matches!(c, ' ' | '\''));
                             if !key.is_empty() {
                                 kv_put(event, &format!("oracle.database_audit.{}", key), value)?;
                             }
@@ -124,8 +127,10 @@ impl Transform for Default {
             };
             if _cond {
                 if let Some(kv_str) = event.get_string("audit") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split("\" ") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
                         let Some((key, value)) = ({
@@ -134,26 +139,22 @@ impl Transform for Default {
                                 (Some(k), Some(v)) => Some((k.clone(), v.clone())),
                                 _ => None,
                             }
-                        }) else {
-                            return Err(TransformError::ParseError {
-                                path: "audit".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        })
+                        .filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "audit".into(),
+                                split: ":\\S\\d+\\S (?=\")".into(),
                             });
                         };
                         {
                             let key = &key[..];
-                            let value = match (value.chars().next(), value.chars().last()) {
-                                (Some('('), Some(')'))
-                                | (Some('['), Some(']'))
-                                | (Some('<'), Some('>'))
-                                | (Some('"'), Some('"'))
-                                | (Some('\''), Some('\''))
-                                    if value.chars().count() > 1 =>
-                                {
-                                    &value[1..value.len() - 1]
-                                }
-                                _ => &value[..],
-                            };
+                            let value = value
+                                .as_str()
+                                .strip_prefix(['(', '[', '<', '"', '\''])
+                                .unwrap_or(value.as_str());
+                            let value = value
+                                .strip_suffix([']', ')', '>', '"', '\''])
+                                .unwrap_or(value);
                             if !key.is_empty() {
                                 kv_put(event, &format!("oracle.database_audit.{}", key), value)?;
                             }

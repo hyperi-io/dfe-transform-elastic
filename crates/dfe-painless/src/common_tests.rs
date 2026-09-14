@@ -2317,6 +2317,24 @@ fn a_stream_split_removes_a_field_with_no_pieces() {
     assert_eq!(event.get_str("json.keep"), Some("me"));
 }
 
+/// A stream filter over a list of lists drops the blank members, which is what
+/// keeps a split of an empty provider string out of the indicator.
+#[test]
+fn a_stream_filter_drops_the_blank_members() {
+    const FILTER: &str = "if (ctx._temp_ != null && ctx._temp_.providers != null) {\n  \
+                          ctx._temp_.providers = ctx._temp_.providers.stream()\n    \
+                          .filter(p -> p != null && p.size() > 0 && !p.get(0).isEmpty())\n    \
+                          .collect(Collectors.toList());\n}\n";
+    let mut event = Event::new(json!({
+        "_temp_": { "providers": [["Recorded Future"], [""], ["Insikt"]] },
+    }));
+    assert!(try_known_painless(&mut event, FILTER));
+    assert_eq!(
+        event.get("_temp_.providers"),
+        Some(&json!([["Recorded Future"], ["Insikt"]]))
+    );
+}
+
 #[test]
 fn a_returning_band_ladder_takes_the_first_band_that_holds() {
     for (confidence, expected) in [

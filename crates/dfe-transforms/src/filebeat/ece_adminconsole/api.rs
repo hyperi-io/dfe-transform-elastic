@@ -291,9 +291,8 @@ impl Transform for Api {
                     event.rename("destination.as.organization_name", "destination.as.organization.name")?;
                 }
 
-            // SKIPPED: condition not transpiled: ctx.url?.path instanceof String && ctx.url.path.contains('/deployments/') && !['_search','traffic-filter/rulesets', 'templates'].contains(ctx.url.path.splitOnToken('/deployments/')[-1])
-            #[allow(unreachable_code, unused_variables)]
-            if false {
+            let _cond = { event.get("url.path").is_some_and(|v| v.is_string()) && event.get("url.path").is_some_and(|v| match v { serde_json::Value::Array(a) => a.iter().any(|x| x.as_str() == Some("/deployments/")), serde_json::Value::String(s) => s.contains("/deployments/"), _ => false }) && !(event.get_str("url.path").is_some_and(|s| ["_search", "traffic-filter/rulesets", "templates"].contains(&s.rsplit("/deployments/").next().unwrap_or(s)))) };
+            if _cond {
                 if let Some(input) = event.get_string("url.path") {
                     // Grok pattern: \\/deployments\\/(?P<ece_adminconsole_log_deployment_id>[^\\/]+).*
                     if !cached_grok_mapped!("\\/deployments\\/(?P<ece_adminconsole_log_deployment_id>[^\\/]+).*", [("ece_adminconsole_log_deployment_id", "ece_adminconsole.log.deployment.id")]).extract_into(&input, event)? {

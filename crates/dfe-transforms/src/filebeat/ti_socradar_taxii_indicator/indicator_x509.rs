@@ -110,18 +110,20 @@ impl Transform for IndicatorX509 {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(kv_str) = event.get_string("_tmp.issuer") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!("(?<!\\\\),").split(&kv_str).into_iter() {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "_tmp.issuer".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "_tmp.issuer".into(),
+                                split: "=".into(),
                             });
                         };
                         {
-                            let key = key.trim_matches(|c| " ".contains(c));
+                            let key = key.trim_matches(|c: char| matches!(c, ' '));
                             if !key.is_empty() {
                                 kv_put(event, &format!("_tmp.issuer_fields.{}", key), value)?;
                             }
@@ -177,18 +179,20 @@ impl Transform for IndicatorX509 {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(kv_str) = event.get_string("_tmp.subject") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!("(?<!\\\\),").split(&kv_str).into_iter() {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "_tmp.subject".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "_tmp.subject".into(),
+                                split: "=".into(),
                             });
                         };
                         {
-                            let key = key.trim_matches(|c| " ".contains(c));
+                            let key = key.trim_matches(|c: char| matches!(c, ' '));
                             if !key.is_empty() {
                                 kv_put(event, &format!("_tmp.subject_fields.{}", key), value)?;
                             }

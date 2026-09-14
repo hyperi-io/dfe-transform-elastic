@@ -19,8 +19,10 @@ impl Transform for Default {
             let _cond = { event.get_str("winlog.event_id") == Some("4103") };
             if _cond {
                 if let Some(kv_str) = event.get_string("winlog.event_data.ContextInfo") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!("\\n(?!\\n)\\s+").split(&kv_str).into_iter() {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
                         let Some((key, value)) = ({
@@ -29,16 +31,18 @@ impl Transform for Default {
                                 (Some(k), Some(v)) => Some((k.clone(), v.clone())),
                                 _ => None,
                             }
-                        }) else {
-                            return Err(TransformError::ParseError {
-                                path: "winlog.event_data.ContextInfo".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        })
+                        .filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "winlog.event_data.ContextInfo".into(),
+                                split: "[:=]".into(),
                             });
                         };
                         {
                             let key = &key[..];
-                            let key = key.trim_matches(|c| " \n\t".contains(c));
-                            let value = value.trim_matches(|c| " \n\t".contains(c));
+                            let key = key.trim_matches(|c: char| matches!(c, '\t' | '\n' | ' '));
+                            let value =
+                                value.trim_matches(|c: char| matches!(c, '\t' | '\n' | ' '));
                             if !key.is_empty() {
                                 kv_put(event, &format!("winlog.event_data.{}", key), value)?;
                             }
@@ -332,8 +336,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("_temp.connected_user_parts", Value::Array(parts))?;
                 }
@@ -739,8 +745,10 @@ impl Transform for Default {
                     if event.has_value("winlog.event_data.Payload") {
                         if let Some(s) = event.get_string("winlog.event_data.Payload") {
                             let mut parts: Vec<Value> = s.split("\n").map(|p| json!(p)).collect();
-                            while parts.last().and_then(Value::as_str) == Some("") {
-                                parts.pop();
+                            if parts.len() > 1 {
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                             }
                             event.set("winlog.event_data.Payload", Value::Array(parts))?;
                         }

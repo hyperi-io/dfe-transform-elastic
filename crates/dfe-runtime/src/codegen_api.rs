@@ -389,6 +389,35 @@ pub fn remove_templated(event: &mut Event, template: &str) {
     event.remove(&path);
 }
 
+/// Append a value to the list at a path whose NAME is a mustache template.
+///
+/// The third of the family, and needed for the same reason as the other two:
+/// `ti_abusech_malwarebazaar` hangs every code-signing hash off
+/// `threat.indicator.file.hash.{{{ _ingest._value.thumbprint_algorithm }}}`, so
+/// the algorithm names the field and only the iteration knows it. Appending to
+/// the template produced one field whose name was the mustache text.
+///
+/// # Errors
+///
+/// Propagates whatever [`Event::append`] returns for the rendered path.
+pub fn append_templated(
+    event: &mut Event,
+    template: &str,
+    value: Value,
+    unique: bool,
+) -> Result<()> {
+    let path = render_path(event, template);
+    // An unresolved template names no field, so there is nothing to append to.
+    if path.is_empty() {
+        return Ok(());
+    }
+    if unique {
+        event.append_unique(&path, value)
+    } else {
+        event.append(&path, value)
+    }
+}
+
 /// Substitute every `{{expr}}` / `{{{expr}}}` with the event's value for it.
 fn render_path(event: &Event, template: &str) -> String {
     let mut out = String::with_capacity(template.len());
