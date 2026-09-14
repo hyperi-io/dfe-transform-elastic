@@ -65,8 +65,22 @@ impl UserAgentResult {
     }
 }
 
+/// Bytes of a User-Agent header this parser will look at.
+///
+/// Eleven regex passes and about fifteen substring scans run over the value,
+/// and the value is whatever a client put in the header -- 8 KiB is an order of
+/// magnitude above the longest real one, and every product token that decides
+/// the answer sits in the first few hundred bytes.
+const UA_MAX_BYTES: usize = 8 * 1024;
+
 /// Parse a User-Agent string into structured components.
 pub fn parse(ua: &str) -> UserAgentResult {
+    // Cut on a character boundary, so an oversized value is truncated rather
+    // than rejected and a real browser at the front is still recognised.
+    let ua = match ua.char_indices().nth(UA_MAX_BYTES) {
+        Some((at, _)) => ua.get(..at).unwrap_or(ua),
+        None => ua,
+    };
     let mut result = UserAgentResult::default();
 
     // Browser detection (ordered by specificity)

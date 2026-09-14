@@ -110,26 +110,35 @@ impl Pattern {
     /// dropped the sign off every offset it normalised.
     #[must_use]
     pub fn replace_all<'t>(&self, text: &'t str, replacement: &str) -> std::borrow::Cow<'t, str> {
-        let bounded = self.bind_group_numbers(replacement);
+        let bounded = self.bind_replacement(replacement);
         match self {
             Self::Fast(re) => re.replace_all(text, bounded.as_ref()),
             Self::Backtracking(re) => re.replace_all(text, bounded.as_ref()),
         }
     }
 
-    /// Brace every `$N` whose digits run past the groups this pattern has.
+    /// The replacement as Rust's engine has to read it to mean what Java's
+    /// `Matcher.replaceAll` means by it.
     ///
-    /// Borrows when no reference is ambiguous, which is every replacement bar
-    /// a handful in the whole catalogue.
-    fn bind_group_numbers<'r>(&self, replacement: &'r str) -> std::borrow::Cow<'r, str> {
+    /// Two spellings differ. Java braces nothing, so a `$N` whose digits run
+    /// past the groups the pattern has needs bracing here. And Java treats a
+    /// backslash as an ESCAPE that yields the next character as itself, where
+    /// Rust's engine has no escape at all and writes the backslash out -- so
+    /// `cisco_ftd`'s `\\` collapsed two backslashes to two rather than to one and
+    /// corrupted every `DOMAIN\user` it split.
+    ///
+    /// Borrows when neither applies, which is every replacement bar a handful
+    /// in the whole catalogue.
+    fn bind_replacement<'r>(&self, replacement: &'r str) -> std::borrow::Cow<'r, str> {
         let ambiguous = |bytes: &[u8], at: usize| {
             bytes.get(at + 1).is_some_and(u8::is_ascii_digit)
                 && bytes.get(at + 2).is_some_and(|b| b.is_ascii_alphanumeric())
         };
         let bytes = replacement.as_bytes();
-        if !replacement
-            .match_indices('$')
-            .any(|(at, _)| ambiguous(bytes, at))
+        if !replacement.contains('\\')
+            && !replacement
+                .match_indices('$')
+                .any(|(at, _)| ambiguous(bytes, at))
         {
             return std::borrow::Cow::Borrowed(replacement);
         }
@@ -137,9 +146,24 @@ impl Pattern {
         let groups = self.capture_names().len();
         let mut out = String::with_capacity(replacement.len() + 8);
         let mut rest = replacement;
-        while let Some(at) = rest.find('$') {
+        while let Some(at) = rest.find(['$', '\\']) {
             out.push_str(&rest[..at]);
+            let escape = rest.as_bytes()[at] == b'\\';
             rest = &rest[at + 1..];
+            if escape {
+                let mut escaped = rest.chars();
+                match escaped.next() {
+                    // An escaped `$` is text, and text is how Rust's engine
+                    // reads a doubled one.
+                    Some('$') => out.push_str("$$"),
+                    Some(c) => out.push(c),
+                    // Java throws on a trailing backslash; keeping it is the
+                    // narrower answer.
+                    None => out.push('\\'),
+                }
+                rest = escaped.as_str();
+                continue;
+            }
             let digits = rest
                 .find(|c: char| !c.is_ascii_digit())
                 .unwrap_or(rest.len());
@@ -223,6 +247,11 @@ pub fn regex(pattern: &str) -> &'static Pattern {
         return hit;
     }
 
+    // Compiled outside the write lock, so two threads racing the same pattern
+    // both build one and the loser's copy is leaked. Bounded by the number of
+    // distinct patterns times the threads that race them during warm-up, and
+    // never on the steady-state path -- holding the lock across a compile would
+    // park every transform thread instead.
     let compiled: &'static Pattern = Box::leak(Box::new(Pattern::compile(pattern, pattern)));
 
     if let Ok(mut guard) = PLAIN.write() {
@@ -232,4 +261,64 @@ pub fn regex(pattern: &str) -> &'static Pattern {
             .or_insert(compiled);
     }
     compiled
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Verbatim from `pipelines/cisco_ftd/default.yml`, which collapses a run
+    /// of backslashes before splitting `DOMAIN\user`. Java reads the `\\` in
+    /// the replacement as ONE backslash; writing both out left the run intact
+    /// and the split saw a name it could not cut.
+    #[test]
+    fn a_backslash_in_the_replacement_escapes_the_character_after_it() {
+        let pattern = Pattern::compile(r"\\{2,}", r"\\{2,}");
+        assert_eq!(pattern.replace_all(r"CORP\\\user", r"\\"), r"CORP\user");
+
+        // Verbatim from `ti_opencti_indicator`, which halves a doubled
+        // registry separator.
+        let doubled = Pattern::compile(r"\\\\", r"\\\\");
+        assert_eq!(
+            doubled.replace_all(r"HKLM\\SOFTWARE\\Bad", r"\\"),
+            r"HKLM\SOFTWARE\Bad"
+        );
+
+        // Verbatim from `sentinel_one_cloud_funnel_event`, which halves four
+        // to two.
+        let quadrupled = Pattern::compile(r"\\\\\\\\", r"\\\\\\\\");
+        assert_eq!(quadrupled.replace_all(r"a\\\\b", r"\\\\"), r"a\\b");
+    }
+
+    /// An escaped `$` is TEXT in Java, so it must not become a group
+    /// reference once the replacement reaches Rust's engine.
+    #[test]
+    fn an_escaped_dollar_stays_text() {
+        let pattern = Pattern::compile("(a)", "(a)");
+        assert_eq!(pattern.replace_all("a", r"\$1"), "$1");
+        // An unescaped one is still the group.
+        assert_eq!(pattern.replace_all("a", "$1"), "a");
+    }
+
+    /// Java keeps taking digits while the number is still a group it has, so a
+    /// `$10` over three groups is group 1 followed by a literal zero.
+    ///
+    /// Verbatim from the checkpoint offset normaliser, which asked for group
+    /// 10, got nothing, and dropped the sign off every offset.
+    #[test]
+    fn a_group_number_binds_only_as_far_as_the_pattern_has_groups() {
+        let pattern = Pattern::compile(r"([+-])(\d):(\d\d)", r"([+-])(\d):(\d\d)");
+        assert_eq!(pattern.replace_all("-5:00", "$10$2:$3"), "-05:00");
+    }
+
+    /// A replacement with neither an escape nor an ambiguous group reference
+    /// is handed to the engine as it arrived.
+    #[test]
+    fn an_ordinary_replacement_is_not_rebuilt() {
+        let pattern = Pattern::compile("(a)(b)", "(a)(b)");
+        assert!(matches!(
+            pattern.bind_replacement("${1}_${2}"),
+            std::borrow::Cow::Borrowed(_)
+        ));
+    }
 }
