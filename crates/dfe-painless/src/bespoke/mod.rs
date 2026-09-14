@@ -55,13 +55,16 @@ mod backstage;
 mod beelzebub;
 mod beyondtrust_epm;
 mod bitwarden;
+mod cef;
 mod checkpoint;
 mod cisco_secure_endpoint;
 mod citrix_adc;
 mod cyberark_pta;
+mod cybereason;
 mod cyera;
 mod darktrace;
 mod dataminr_pulse;
+mod doppler;
 mod elastic_agent;
 mod elastic_package_registry;
 mod entityanalytics_ad;
@@ -71,12 +74,14 @@ mod github;
 mod gitlab;
 mod google_workspace;
 mod grafana;
+mod hackerone;
 mod island_browser;
 mod jamf_compliance_reporter;
 mod jamf_pro;
 mod kolide;
 mod kubernetes;
 mod microsoft_intune;
+mod microsoft_sqlserver;
 mod modsecurity;
 mod mongodb_atlas;
 mod netbox;
@@ -92,6 +97,7 @@ mod sublime_security;
 mod suricata;
 mod symantec_endpoint_security;
 mod sysdig;
+mod tenable_io;
 mod tenable_sc;
 mod ti_crowdstrike;
 mod ti_mandiant_advantage;
@@ -99,9 +105,11 @@ mod ti_misp;
 mod ti_opencti;
 mod ti_rapid7_threat_command;
 mod ti_recordedfuture;
+mod ti_socradar_feeds;
 mod ti_ticura;
 mod trend_micro_vision_one;
 mod trendmicro;
+mod tychon;
 mod vsphere;
 mod wiz;
 mod xm_cyber;
@@ -157,13 +165,16 @@ const ENTRIES: &[&[Entry]] = &[
     beelzebub::ENTRIES,
     beyondtrust_epm::ENTRIES,
     bitwarden::ENTRIES,
+    cef::ENTRIES,
     checkpoint::ENTRIES,
     cisco_secure_endpoint::ENTRIES,
     citrix_adc::ENTRIES,
     cyberark_pta::ENTRIES,
+    cybereason::ENTRIES,
     cyera::ENTRIES,
     darktrace::ENTRIES,
     dataminr_pulse::ENTRIES,
+    doppler::ENTRIES,
     elastic_agent::ENTRIES,
     elastic_package_registry::ENTRIES,
     entityanalytics_ad::ENTRIES,
@@ -173,12 +184,14 @@ const ENTRIES: &[&[Entry]] = &[
     gitlab::ENTRIES,
     google_workspace::ENTRIES,
     grafana::ENTRIES,
+    hackerone::ENTRIES,
     island_browser::ENTRIES,
     jamf_compliance_reporter::ENTRIES,
     jamf_pro::ENTRIES,
     kolide::ENTRIES,
     kubernetes::ENTRIES,
     microsoft_intune::ENTRIES,
+    microsoft_sqlserver::ENTRIES,
     modsecurity::ENTRIES,
     mongodb_atlas::ENTRIES,
     netbox::ENTRIES,
@@ -194,6 +207,7 @@ const ENTRIES: &[&[Entry]] = &[
     suricata::ENTRIES,
     symantec_endpoint_security::ENTRIES,
     sysdig::ENTRIES,
+    tenable_io::ENTRIES,
     tenable_sc::ENTRIES,
     ti_crowdstrike::ENTRIES,
     ti_mandiant_advantage::ENTRIES,
@@ -201,9 +215,11 @@ const ENTRIES: &[&[Entry]] = &[
     ti_opencti::ENTRIES,
     ti_rapid7_threat_command::ENTRIES,
     ti_recordedfuture::ENTRIES,
+    ti_socradar_feeds::ENTRIES,
     ti_ticura::ENTRIES,
     trend_micro_vision_one::ENTRIES,
     trendmicro::ENTRIES,
+    tychon::ENTRIES,
     vsphere::ENTRIES,
     wiz::ENTRIES,
     xm_cyber::ENTRIES,
