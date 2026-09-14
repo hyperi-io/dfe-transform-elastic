@@ -210,6 +210,14 @@ pub fn template_to_string(v: &Value) -> String {
     if v.is_null() {
         return String::new();
     }
+    // An EMPTY container is nothing to iterate, so mustache writes nothing for
+    // it. Rendering the empty pair instead put a literal `{}` into axonius's
+    // `related.user`, between two real addresses.
+    if matches!(v, Value::Array(items) if items.is_empty())
+        || matches!(v, Value::Object(map) if map.is_empty())
+    {
+        return String::new();
+    }
     let Value::Array(items) = v else {
         return painless_to_string(v);
     };
@@ -803,7 +811,11 @@ mod tests {
             template_to_string(&json!(["golang.org/x/net", "nerdctl"])),
             "{0=golang.org/x/net, 1=nerdctl}"
         );
-        assert_eq!(template_to_string(&json!([])), "{}");
+        // An EMPTY container has nothing to iterate, so mustache writes
+        // nothing for it -- one rendered as `{}` sat in axonius's
+        // `related.user` between two real addresses.
+        assert_eq!(template_to_string(&json!([])), "");
+        assert_eq!(template_to_string(&json!({})), "");
 
         // A null renders as NOTHING, the way an absent field does -- Painless
         // gives the four letters and appending those is a literal "null".

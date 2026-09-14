@@ -5392,6 +5392,21 @@ fn drop_everything() -> DropPolicy {
     }
 }
 
+/// A prune reads the value, never the TEXT of a value -- mimecast's vendor
+/// payload carries the two characters `[]` as a real list entry and
+/// Elasticsearch keeps it.
+#[test]
+fn drop_empty_keeps_a_vendor_value_that_reads_like_an_empty_container() {
+    let mut event = Event::new(json!({
+        "mimecast": { "tagMap": { "Inspect_MimeTypes": ["[]"] } }
+    }));
+    drop_empty_recursive(&mut event, &drop_everything());
+    assert_eq!(
+        event.get("mimecast.tagMap.Inspect_MimeTypes"),
+        Some(&json!(["[]"]))
+    );
+}
+
 #[test]
 fn drop_empty_removes_nulls() {
     let mut event = Event::new(json!({
