@@ -5591,6 +5591,15 @@ pub struct DropPolicy {
     /// `keySet()` and removes at the top level, so descending would take
     /// nested nulls it keeps.
     pub shallow: bool,
+    /// The script TRIMS a string before it tests it for empty, so a value of
+    /// whitespace is empty too. Most spell the bare `v == ''` and mean the
+    /// empty string alone.
+    pub trim_strings: bool,
+    /// The script drops an entry whose KEY trims to empty, which is a test on
+    /// the key rather than on anything under it.
+    /// `proofpoint_on_demand` writes `e.getKey().trim() == ''` and so takes the
+    /// `" "` and `"  "` headers a mail part carries.
+    pub trim_keys: bool,
 }
 
 impl DropPolicy {
@@ -5608,6 +5617,8 @@ impl DropPolicy {
             sentinels: Vec::new(),
             sentinels_ci: Vec::new(),
             shallow: false,
+            trim_strings: false,
+            trim_keys: false,
         }
     }
 
@@ -5649,6 +5660,9 @@ impl DropPolicy {
             // The recursive spellings this reads all descend; only the
             // `keySet()` walk sets it, and it does so at its own trigger.
             shallow: false,
+            trim_strings: script.contains(".trim() == ''") || script.contains(".trim() == \"\""),
+            trim_keys: script.contains("getKey().trim() == ''")
+                || script.contains("getKey().trim() == \"\""),
         }
     }
 
@@ -9517,6 +9531,9 @@ fn drop_value(
     match value {
         Value::Null => policy.nulls,
         Value::String(s) if s.is_empty() => policy.empty_strings,
+        // A trimming script reads whitespace as empty, which the empty test
+        // above cannot see.
+        Value::String(s) if policy.trim_strings && s.trim().is_empty() => policy.empty_strings,
         Value::String(s) if policy.is_sentinel(s) => true,
         Value::Object(map) => {
             let built = map.len();
@@ -9524,6 +9541,11 @@ fn drop_value(
             let keys_to_remove: Vec<String> = map
                 .iter_mut()
                 .filter_map(|(k, v)| {
+                    // The KEY test comes first and is the whole entry's: a key
+                    // that trims to empty takes its value however full it is.
+                    if policy.trim_keys && k.trim().is_empty() {
+                        return Some(k.clone());
+                    }
                     marks.descend(mark, k);
                     drop_value(v, policy, marks, shrunk).then(|| k.clone())
                 })
@@ -27316,6 +27338,8 @@ impl KnownPattern {
                     ("empty_collections", policy.empty_collections),
                     ("prune_lists", policy.prune_lists),
                     ("shallow", policy.shallow),
+                    ("trim_strings", policy.trim_strings),
+                    ("trim_keys", policy.trim_keys),
                 ]
                 .into_iter()
                 .filter(|(_, on)| *on)
