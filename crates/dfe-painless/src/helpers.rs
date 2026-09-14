@@ -345,6 +345,27 @@ pub(crate) fn java_set_order(members: Vec<Value>) -> Vec<Value> {
     placed.into_iter().map(|(_, _, member)| member).collect()
 }
 
+/// A map's values in the order a Java `HashMap` iterates them: bucket index
+/// ascending, insertion order within a bucket.
+///
+/// `table` is the table the map holds its entries in, which the CALLER knows
+/// and this cannot: one grown a put at a time takes [`java_table_size`], and
+/// one built from parsed content in a single `HashMap(Map)` takes a table sized
+/// for the whole map at once.
+#[must_use]
+pub(crate) fn java_map_values(map: &Map<String, Value>, table: usize) -> Vec<Value> {
+    let mut placed: Vec<(usize, usize, &Value)> = map
+        .iter()
+        .enumerate()
+        .map(|(position, (key, value))| (java_bucket(key, table), position, value))
+        .collect();
+    placed.sort_by_key(|(bucket, position, _)| (*bucket, *position));
+    placed
+        .into_iter()
+        .map(|(_, _, value)| value.clone())
+        .collect()
+}
+
 /// Painless equality — null-safe, with type coercion for numbers.
 pub fn painless_eq(a: &Value, b: &Value) -> bool {
     if a == b {

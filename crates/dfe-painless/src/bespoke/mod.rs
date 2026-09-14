@@ -42,14 +42,17 @@ use dfe_core::event::Event;
 mod abnormal_security;
 mod airlock_digital;
 mod akamai;
+mod amazon_security_lake;
 mod anthropic_metrics;
 mod arista_ngfw;
 mod atlassian_jira;
 mod auditd;
 mod aws;
+mod aws_bedrock;
 mod aws_billing;
 mod axonius;
 mod azure_ai_foundry;
+mod azure_frontdoor;
 mod azure_openai;
 mod backstage;
 mod beelzebub;
@@ -62,6 +65,8 @@ mod checkpoint;
 mod cisco_ise;
 mod cisco_secure_endpoint;
 mod citrix_adc;
+mod claroty_ctd;
+mod cloudflare_logpush;
 mod cyberark_pta;
 mod cybereason;
 mod cyera;
@@ -72,6 +77,7 @@ mod elastic_agent;
 mod elastic_package_registry;
 mod entityanalytics_ad;
 mod entityanalytics_okta;
+mod eset_protect;
 mod ess_billing;
 mod extrahop;
 mod f5_bigip;
@@ -85,6 +91,7 @@ mod jamf_compliance_reporter;
 mod jamf_pro;
 mod kolide;
 mod kubernetes;
+mod microsoft_defender_cloud;
 mod microsoft_intune;
 mod microsoft_sqlserver;
 mod modsecurity;
@@ -93,16 +100,22 @@ mod netbox;
 mod nginx;
 mod nozomi_networks;
 mod prisma_access;
+mod prisma_cloud;
+mod proofpoint_365totalprotection;
 mod qualys_vmdr;
 mod rubrik;
+mod salesforce;
 mod sentinel_one_cloud_funnel;
 mod snyk;
 mod splunk;
+mod stormshield;
 mod sublime_security;
 mod suricata;
 mod symantec_endpoint_security;
 mod sysdig;
+mod tanium;
 mod tenable_io;
+mod tenable_ot_security;
 mod tenable_sc;
 mod ti_crowdstrike;
 mod ti_mandiant_advantage;
@@ -158,14 +171,17 @@ const ENTRIES: &[&[Entry]] = &[
     abnormal_security::ENTRIES,
     airlock_digital::ENTRIES,
     akamai::ENTRIES,
+    amazon_security_lake::ENTRIES,
     anthropic_metrics::ENTRIES,
     arista_ngfw::ENTRIES,
     atlassian_jira::ENTRIES,
     auditd::ENTRIES,
     aws::ENTRIES,
+    aws_bedrock::ENTRIES,
     aws_billing::ENTRIES,
     axonius::ENTRIES,
     azure_ai_foundry::ENTRIES,
+    azure_frontdoor::ENTRIES,
     azure_openai::ENTRIES,
     backstage::ENTRIES,
     beelzebub::ENTRIES,
@@ -178,6 +194,8 @@ const ENTRIES: &[&[Entry]] = &[
     cisco_ise::ENTRIES,
     cisco_secure_endpoint::ENTRIES,
     citrix_adc::ENTRIES,
+    claroty_ctd::ENTRIES,
+    cloudflare_logpush::ENTRIES,
     cyberark_pta::ENTRIES,
     cybereason::ENTRIES,
     cyera::ENTRIES,
@@ -188,6 +206,7 @@ const ENTRIES: &[&[Entry]] = &[
     elastic_package_registry::ENTRIES,
     entityanalytics_ad::ENTRIES,
     entityanalytics_okta::ENTRIES,
+    eset_protect::ENTRIES,
     ess_billing::ENTRIES,
     extrahop::ENTRIES,
     f5_bigip::ENTRIES,
@@ -201,6 +220,7 @@ const ENTRIES: &[&[Entry]] = &[
     jamf_pro::ENTRIES,
     kolide::ENTRIES,
     kubernetes::ENTRIES,
+    microsoft_defender_cloud::ENTRIES,
     microsoft_intune::ENTRIES,
     microsoft_sqlserver::ENTRIES,
     modsecurity::ENTRIES,
@@ -209,16 +229,22 @@ const ENTRIES: &[&[Entry]] = &[
     nginx::ENTRIES,
     nozomi_networks::ENTRIES,
     prisma_access::ENTRIES,
+    prisma_cloud::ENTRIES,
+    proofpoint_365totalprotection::ENTRIES,
     qualys_vmdr::ENTRIES,
     rubrik::ENTRIES,
+    salesforce::ENTRIES,
     sentinel_one_cloud_funnel::ENTRIES,
     snyk::ENTRIES,
     splunk::ENTRIES,
+    stormshield::ENTRIES,
     sublime_security::ENTRIES,
     suricata::ENTRIES,
     symantec_endpoint_security::ENTRIES,
     sysdig::ENTRIES,
+    tanium::ENTRIES,
     tenable_io::ENTRIES,
+    tenable_ot_security::ENTRIES,
     tenable_sc::ENTRIES,
     ti_crowdstrike::ENTRIES,
     ti_mandiant_advantage::ENTRIES,
