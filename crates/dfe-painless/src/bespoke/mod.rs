@@ -47,26 +47,32 @@ mod anthropic_metrics;
 mod arista_ngfw;
 mod atlassian_jira;
 mod auditd;
+mod auditd_manager;
 mod aws;
 mod aws_bedrock;
 mod aws_billing;
 mod axonius;
 mod azure_ai_foundry;
 mod azure_frontdoor;
+mod azure_network_watcher_nsg;
+mod azure_network_watcher_vnet;
 mod azure_openai;
 mod backstage;
 mod beelzebub;
 mod beyondtrust_epm;
 mod bitwarden;
 mod box_events;
+mod canva;
 mod cato_networks;
 mod cef;
+mod ceph;
 mod checkpoint;
 mod cisco_ise;
 mod cisco_secure_endpoint;
 mod citrix_adc;
 mod claroty_ctd;
 mod cloudflare_logpush;
+mod couchbase;
 mod cyberark_pta;
 mod cybereason;
 mod cyera;
@@ -83,14 +89,17 @@ mod extrahop;
 mod f5_bigip;
 mod github;
 mod gitlab;
+mod google_scc;
 mod google_workspace;
 mod grafana;
 mod hackerone;
+mod imperva;
 mod island_browser;
 mod jamf_compliance_reporter;
 mod jamf_pro;
 mod kolide;
 mod kubernetes;
+mod lastpass;
 mod microsoft_defender_cloud;
 mod microsoft_intune;
 mod microsoft_sqlserver;
@@ -111,6 +120,7 @@ mod splunk;
 mod stormshield;
 mod sublime_security;
 mod suricata;
+mod swimlane;
 mod symantec_endpoint_security;
 mod sysdig;
 mod tanium;
@@ -125,6 +135,7 @@ mod ti_rapid7_threat_command;
 mod ti_recordedfuture;
 mod ti_socradar_feeds;
 mod ti_ticura;
+mod traefik;
 mod trend_micro_vision_one;
 mod trendmicro;
 mod tychon;
@@ -176,26 +187,32 @@ const ENTRIES: &[&[Entry]] = &[
     arista_ngfw::ENTRIES,
     atlassian_jira::ENTRIES,
     auditd::ENTRIES,
+    auditd_manager::ENTRIES,
     aws::ENTRIES,
     aws_bedrock::ENTRIES,
     aws_billing::ENTRIES,
     axonius::ENTRIES,
     azure_ai_foundry::ENTRIES,
     azure_frontdoor::ENTRIES,
+    azure_network_watcher_nsg::ENTRIES,
+    azure_network_watcher_vnet::ENTRIES,
     azure_openai::ENTRIES,
     backstage::ENTRIES,
     beelzebub::ENTRIES,
     beyondtrust_epm::ENTRIES,
     bitwarden::ENTRIES,
     box_events::ENTRIES,
+    canva::ENTRIES,
     cato_networks::ENTRIES,
     cef::ENTRIES,
+    ceph::ENTRIES,
     checkpoint::ENTRIES,
     cisco_ise::ENTRIES,
     cisco_secure_endpoint::ENTRIES,
     citrix_adc::ENTRIES,
     claroty_ctd::ENTRIES,
     cloudflare_logpush::ENTRIES,
+    couchbase::ENTRIES,
     cyberark_pta::ENTRIES,
     cybereason::ENTRIES,
     cyera::ENTRIES,
@@ -212,14 +229,17 @@ const ENTRIES: &[&[Entry]] = &[
     f5_bigip::ENTRIES,
     github::ENTRIES,
     gitlab::ENTRIES,
+    google_scc::ENTRIES,
     google_workspace::ENTRIES,
     grafana::ENTRIES,
     hackerone::ENTRIES,
+    imperva::ENTRIES,
     island_browser::ENTRIES,
     jamf_compliance_reporter::ENTRIES,
     jamf_pro::ENTRIES,
     kolide::ENTRIES,
     kubernetes::ENTRIES,
+    lastpass::ENTRIES,
     microsoft_defender_cloud::ENTRIES,
     microsoft_intune::ENTRIES,
     microsoft_sqlserver::ENTRIES,
@@ -240,6 +260,7 @@ const ENTRIES: &[&[Entry]] = &[
     stormshield::ENTRIES,
     sublime_security::ENTRIES,
     suricata::ENTRIES,
+    swimlane::ENTRIES,
     symantec_endpoint_security::ENTRIES,
     sysdig::ENTRIES,
     tanium::ENTRIES,
@@ -254,6 +275,7 @@ const ENTRIES: &[&[Entry]] = &[
     ti_recordedfuture::ENTRIES,
     ti_socradar_feeds::ENTRIES,
     ti_ticura::ENTRIES,
+    traefik::ENTRIES,
     trend_micro_vision_one::ENTRIES,
     trendmicro::ENTRIES,
     tychon::ENTRIES,
