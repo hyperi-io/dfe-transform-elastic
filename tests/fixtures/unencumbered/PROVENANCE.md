@@ -6,7 +6,7 @@ whose licences permit redistribution. Nothing here comes from Elastic.
 These are INPUTS ONLY. There is no expected output beside them, because the only
 authority on what a source should produce is Elastic's own engine --
 `scripts/compat.py` runs these through it and writes the confirmed documents to
-`testdata/compat/`, which is not committed. See [docs/COMPAT.md](../../../docs/COMPAT.md).
+`testdata/compat/`, which is not committed. See [docs/compat.md](../../../docs/compat.md).
 
 The full corpus lives outside this repo, at `/projects/elastic-stuff/unencumbered`,
 with a per-file event count and byte size in its own `MANIFEST.md`. Three fortinet

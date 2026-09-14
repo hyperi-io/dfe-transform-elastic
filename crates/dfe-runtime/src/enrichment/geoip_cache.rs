@@ -5,7 +5,7 @@
 //!
 //! Ported from dfe-loader's `GeoIpEnricher`, which owns IP enrichment for the
 //! platform. The two repos keep independent copies while both are moving; the
-//! shared parts are extracted once they settle (see docs/SHARED-CRATES.md).
+//! shared parts are extracted once they settle (see docs/shared-crates.md).
 //!
 //! Worth having because the miss path walks an MMDB B-tree and log data
 //! repeats addresses heavily: a firewall talks to the same handful of
