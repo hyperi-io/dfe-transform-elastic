@@ -179,6 +179,14 @@ corrected:
       Java's `Map.toString` rendering, against ours declining a container. The
       wording can never agree -- Elastic's quotes the map in HashMap iteration
       order, which is not reproducible -- but the failure does.
+  - prefix: dns.header_flags
+    sources: [amazon_security_lake]
+    why: >-
+      The pipeline's own prune script tests `instanceof List` and never
+      `Collection`, so the empty `HashSet` its dns script writes survives in
+      Elasticsearch as `[]`. The pipeline means to drop empty collections and
+      we do; JSON carries no Set to tell apart from a List, so this can never
+      be matched.
 
 # ECS fields whose values are sets. Same members in a different sequence is
 # equality, not a difference.
