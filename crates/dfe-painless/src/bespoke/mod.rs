@@ -46,16 +46,24 @@ mod azure_openai;
 mod beyondtrust_epm;
 mod checkpoint;
 mod citrix_adc;
+mod cyberark_pta;
 mod darktrace;
+mod elastic_package_registry;
 mod extrahop;
+mod github;
 mod gitlab;
 mod grafana;
+mod island_browser;
+mod mysql_enterprise;
+mod sentinel_one_cloud_funnel;
 mod snyk;
 mod symantec_endpoint_security;
+mod sysdig;
 mod ti_opencti;
 mod ti_recordedfuture;
 mod ti_ticura;
 mod trend_micro_vision_one;
+mod vsphere;
 mod wiz;
 
 /// A transcribed script's effect on one event.
@@ -99,16 +107,24 @@ const ENTRIES: &[&[Entry]] = &[
     beyondtrust_epm::ENTRIES,
     checkpoint::ENTRIES,
     citrix_adc::ENTRIES,
+    cyberark_pta::ENTRIES,
     darktrace::ENTRIES,
+    elastic_package_registry::ENTRIES,
     extrahop::ENTRIES,
+    github::ENTRIES,
     gitlab::ENTRIES,
     grafana::ENTRIES,
+    island_browser::ENTRIES,
+    mysql_enterprise::ENTRIES,
+    sentinel_one_cloud_funnel::ENTRIES,
     snyk::ENTRIES,
     symantec_endpoint_security::ENTRIES,
+    sysdig::ENTRIES,
     ti_opencti::ENTRIES,
     ti_recordedfuture::ENTRIES,
     ti_ticura::ENTRIES,
     trend_micro_vision_one::ENTRIES,
+    vsphere::ENTRIES,
     wiz::ENTRIES,
 ];
 
