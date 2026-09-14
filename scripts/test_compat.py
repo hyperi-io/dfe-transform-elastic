@@ -196,6 +196,50 @@ class VendorPayloadWithAMessageMember(unittest.TestCase):
         self.assertEqual(json.loads(source["message"]), json.loads(line))
 
 
+class TheCaptureRewritesNothing(unittest.TestCase):
+    """The capture neither shortens a value nor escapes one a second time.
+
+    Both have been read off the corpus as harness defects and neither is one.
+    ` (truncated)` is the vendor pipelines' own `filterMassive` helper, which
+    qualys_vmdr and servicenow run over the whole document; a `message` holding
+    four backslashes against an `event.original` holding two is ti_custom's
+    `script_unscape_values` walking the document and replacing `\\\\` with `\\`.
+    Teaching the capture to compensate for either would put the corpus out of
+    step with upstream's own committed expectation, which it currently matches.
+    """
+
+    def test_a_long_value_reaches_the_document_at_full_length(self) -> None:
+        line = "x" * 40_000
+        source = compat.build_docs([line], _config())[0]["_source"]
+        self.assertEqual(len(source["message"]), 40_000)
+        self.assertNotIn(" (truncated)", source["message"])
+
+    def test_a_long_value_survives_the_round_trip_to_disk(self) -> None:
+        line = "x" * 40_000
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "input.ndjson"
+            compat._write_ndjson(path, [{"message": line}])
+            recorded = json.loads(path.read_text(encoding="utf-8").splitlines()[0])
+        self.assertEqual(recorded["message"], line)
+
+    def test_backslash_runs_reach_the_document_unchanged(self) -> None:
+        line = r'{"pattern":"HKEY_LOCAL_MACHINE\\\\System"}'
+        source = compat.build_docs([line], _config())[0]["_source"]
+        self.assertEqual(source["message"], line)
+        self.assertEqual(source["message"].count("\\"), 4)
+
+    def test_backslash_runs_survive_the_round_trip_to_disk(self) -> None:
+        line = r'{"pattern":"HKEY_LOCAL_MACHINE\\\\System"}'
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "input.ndjson"
+            compat._write_ndjson(path, [{"message": line}])
+            raw = path.read_text(encoding="utf-8").splitlines()[0]
+            recorded = json.loads(raw)
+        # Eight on the line and four in the value: one JSON encoding, not two.
+        self.assertIn("HKEY_LOCAL_MACHINE" + "\\" * 8 + "System", raw)
+        self.assertEqual(recorded["message"], line)
+
+
 class TestConfigLayering(unittest.TestCase):
     """The shared config and the fixture's own BOTH apply, shared first.
 
