@@ -142,7 +142,11 @@ fn every_site() -> (Vec<Site>, usize) {
 /// `read_dir` that fails, a renamed macro, rustfmt moving the literal off the
 /// invocation line. This test is the SOLE guard for a class that costs whole
 /// sources -- cisco_asa scored 0 of 512 events that way.
-const MIN_SITES: usize = 4_000;
+///
+/// Was 4,000 against 4,566 literals. Removing the 653 modules no `mod.rs`
+/// declared left 3,336, because the walk reads the disk and 1,230 of them sat
+/// in files nothing compiled; the floor follows at the same ratio.
+const MIN_SITES: usize = 2_900;
 
 #[test]
 fn every_grok_literal_compiles() {

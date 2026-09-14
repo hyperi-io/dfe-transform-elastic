@@ -46,7 +46,11 @@ const MARKER: &str = "// SKIPPED: condition not transpiled: ";
 /// zero markers is indistinguishable from scanning zero files, and that is
 /// exactly how the previous version of this file passed for a fortnight while
 /// measuring nothing.
-const FILES_SCANNED: usize = 2_500;
+///
+/// Was 2,500 against 2,863 files, 653 of which no `mod.rs` declared and
+/// nothing compiled. The walk sees the disk, so the floor follows the 2,210
+/// the crate actually builds, at the same ratio.
+const FILES_SCANNED: usize = 1_900;
 
 /// Where the ratchets live, relative to this crate.
 fn workspace_root() -> PathBuf {

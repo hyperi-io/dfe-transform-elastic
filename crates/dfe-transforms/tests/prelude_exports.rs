@@ -42,7 +42,9 @@ use regex::Regex;
 /// is indistinguishable from scanning zero files, and that is how a scanner
 /// passes for a fortnight while measuring nothing.
 const MIN_PUBLIC_SYMBOLS: usize = 60;
-const MIN_FILES_SCANNED: usize = 2_500;
+/// The generated tree holds about 2,210 files that a `mod.rs` declares; the
+/// 653 that nothing compiled are gone, and the floor follows the walk.
+const MIN_FILES_SCANNED: usize = 1_900;
 /// Five modules write a `direct_call` today. A floor rather than the count, so
 /// adding a sixth does not fail this and deleting four does.
 const MIN_EMITTING_MODULES: usize = 4;
