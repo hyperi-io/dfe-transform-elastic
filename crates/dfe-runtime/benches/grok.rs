@@ -146,5 +146,51 @@ fn word_boundaries(c: &mut Criterion) {
     group.finish();
 }
 
-criterion_group!(benches, native_vs_regex, first_line, word_boundaries);
+/// `%{IPV4}` without its word boundaries, which is what it used to be.
+const IPV4_BARE: &str = r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}";
+
+/// The shipped form, which refuses a start or an end inside a digit run.
+const IPV4_BOUNDED: &str = r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b";
+
+/// A line carrying no address, which is the common case for any one
+/// alternative of a grok list.
+const NO_ADDRESS: &str = "Feb 11 13:12:45 fw01 kernel: nothing here looks like an address at all";
+
+/// What the word boundaries on `%{IPV4}` cost, against the bare form.
+///
+/// Both forms are built here rather than compared across runs, so the answer
+/// does not move with whatever else the machine is doing -- and the answer is
+/// NOT `%{WORD}`'s. The boundaries cost on a line that matches and save almost
+/// nothing on one that does not, so they are paid for the address they get
+/// right rather than for throughput.
+fn ipv4_boundaries(c: &mut Criterion) {
+    use regex::Regex;
+
+    let mut group = c.benchmark_group("grok_ipv4");
+
+    for (name, pattern) in [("bare", IPV4_BARE), ("bounded", IPV4_BOUNDED)] {
+        let anchored = Regex::new(&format!("^{pattern}:(?P<p>\\d+)$")).expect("a port pair");
+        let scanning = Regex::new(&format!("^.*{pattern}:(?P<p>\\d+)$")).expect("a greedy prefix");
+
+        group.bench_function(format!("{name}/matching"), |b| {
+            b.iter(|| black_box(anchored.captures(black_box(PAIR))));
+        });
+        group.bench_function(format!("{name}/not_matching"), |b| {
+            b.iter(|| black_box(anchored.captures(black_box(NO_ADDRESS))));
+        });
+        group.bench_function(format!("{name}/after_greedy"), |b| {
+            b.iter(|| black_box(scanning.captures(black_box("[AF_INET]175.16.199.1:34745"))));
+        });
+    }
+
+    group.finish();
+}
+
+criterion_group!(
+    benches,
+    native_vs_regex,
+    first_line,
+    word_boundaries,
+    ipv4_boundaries
+);
 criterion_main!(benches);
