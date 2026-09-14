@@ -33,8 +33,10 @@ const SITE: &str = "cached_painless!(";
 /// runner AT GENERATION TIME, so it no longer carries a literal for the ladder
 /// to re-match per event, and only the ones no arm claims still do. That is a
 /// structural change, which is the one thing a floor moves for -- and the same
-/// ratio to the live count as before.
-const MIN_SITES: usize = 2_100;
+/// ratio to the live count as before. Removing the 653 modules no `mod.rs`
+/// declared took it to 1,892: 556 of the literals sat in files nothing
+/// compiled, and the scanner reads the disk.
+const MIN_SITES: usize = 1_600;
 
 /// Where the ratchets live, relative to this crate.
 fn workspace_root() -> std::path::PathBuf {
