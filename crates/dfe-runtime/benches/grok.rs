@@ -117,5 +117,34 @@ fn first_line(c: &mut Criterion) {
     group.finish();
 }
 
-criterion_group!(benches, native_vs_regex, first_line);
+/// What the word boundaries in `%{WORD}` cost.
+///
+/// `WORD` is spelled at 2,194 call sites, and a line the pattern does NOT
+/// match is the common case there -- a grok list tries each alternative in
+/// turn, so most attempts fail. Both are measured, because the boundaries are
+/// an assertion the engine checks at every candidate start.
+fn word_boundaries(c: &mut Criterion) {
+    let mut group = c.benchmark_group("grok_word");
+
+    let compiled = dfe_runtime::grok_cache::grok(
+        "^%{WORD:action} %{WORD:outcome} for %{WORD:user} on %{WORD:host}$",
+    );
+    let re = compiled.regex.fast().expect("a word needs no lookaround");
+
+    group.bench_function("matching", |b| {
+        b.iter(|| black_box(re.captures(black_box("login success for alice on fw01"))));
+    });
+
+    group.bench_function("not_matching", |b| {
+        b.iter(|| {
+            black_box(re.captures(black_box(
+                "Feb 11 13:12:45 fw01 kernel: nothing here looks like that pattern at all",
+            )))
+        });
+    });
+
+    group.finish();
+}
+
+criterion_group!(benches, native_vs_regex, first_line, word_boundaries);
 criterion_main!(benches);

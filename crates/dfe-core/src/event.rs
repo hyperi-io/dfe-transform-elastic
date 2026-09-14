@@ -423,6 +423,23 @@ impl Event {
         let mut rest = path.trim_end_matches('.');
         let mut descended = false;
         loop {
+            // A numeric segment on an array is an index, exactly as
+            // [`resolve_path`] reads one. Without it a path `has_value`
+            // answered for was unremovable, so a generated
+            // `if has_value(x) { rename(x, y) }` raised `field not found` on
+            // the rename it had just guarded and took the rest of the pipeline
+            // with it -- dataminr_pulse's `json.liveBrief.0.summary`.
+            if let Value::Array(items) = current {
+                let (segment, tail) = rest.split_once('.').unwrap_or((rest, ""));
+                let index: usize = segment.parse().ok()?;
+                if tail.is_empty() {
+                    return (index < items.len()).then(|| items.remove(index));
+                }
+                current = items.get_mut(index)?;
+                rest = tail;
+                descended = true;
+                continue;
+            }
             let Value::Object(map) = current else {
                 return None;
             };
@@ -1170,6 +1187,32 @@ mod tests {
             Some("procFS auid"),
             "a leaf nothing renamed survives"
         );
+    }
+
+    /// A numeric segment indexes a list for a REMOVE the way it does for a
+    /// read, or a generated `if has_value(x) { rename(x, y) }` raises `field
+    /// not found` on the rename it just guarded -- `dataminr_pulse`'s
+    /// `json.liveBrief.0.summary`, which took the whole pipeline with it.
+    #[test]
+    fn a_removal_indexes_a_list_the_way_a_read_does() {
+        let mut event = Event::new(json!({
+            "json": { "liveBrief": [{ "summary": "one", "keep": 1 }, { "summary": "two" }] }
+        }));
+
+        assert!(event.has_value("json.liveBrief.0.summary"));
+        assert_eq!(
+            event.remove("json.liveBrief.0.summary"),
+            Some(json!("one")),
+            "the element's own key is removed"
+        );
+        assert!(!event.has("json.liveBrief.0.summary"));
+        assert_eq!(event.get_str("json.liveBrief.1.summary"), Some("two"));
+        assert_eq!(event.get("json.liveBrief.0.keep"), Some(&json!(1)));
+
+        // A trailing index removes the ENTRY, which is what Elasticsearch's
+        // own `removeField` does with a numeric leaf on a list.
+        assert_eq!(event.remove("json.liveBrief.0"), Some(json!({ "keep": 1 })));
+        assert_eq!(event.get_str("json.liveBrief.0.summary"), Some("two"));
     }
 
     /// Removing the alias ITSELF -- or an ancestor of it, which is the vendor

@@ -310,6 +310,10 @@ where
 fn json_processor_value(event: &Event, field: &str) -> std::result::Result<Option<Value>, String> {
     match event.get(field) {
         None => Ok(None),
+        // Text holding no token at all is NULL, not a failure: Elastic's
+        // processor reads the first token and leaves the value unset when
+        // there is none.
+        Some(Value::String(text)) if text.trim().is_empty() => Ok(Some(Value::Null)),
         Some(Value::String(text)) => parse_json_str(text).map(Some),
         Some(scalar @ (Value::Number(_) | Value::Bool(_) | Value::Null)) => {
             Ok(Some(scalar.clone()))
@@ -1409,7 +1413,13 @@ static CISCO_TIMESTAMP: LazyLock<String> = LazyLock::new(|| {
 /// bare `2a02` included -- and `IP` carried no v6 branch at all, so a grok
 /// reading a v6 address failed outright and took every capture in the pattern
 /// with it. `cisco_ios`'s syslog header is exactly that pattern.
-const IPV6: &str = r"((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?";
+///
+/// The ZONE ID is bounded rather than logstash's `(%.+)?`, which crosses
+/// spaces: an iis access line reads `fe81::64ae:95c0:196e:8adf%3` and the
+/// greedy tail took the user agent after it into `source.address`, shifting
+/// every later field one token left and costing six of them an event.
+/// RFC 6874 spells a zone id as unreserved characters, so a space ends it.
+const IPV6: &str = r"((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%[0-9A-Za-z_.~-]+)?";
 
 /// The simplified `IPV4`. Elastic's own guards it with `(?<![0-9])` and
 /// `(?![0-9])` and range-checks every octet; ours does neither, so a greedy
@@ -1454,7 +1464,15 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         "POSINT" => r"\b(?:[1-9][0-9]*)\b",
         "PORT" => r"\d+",
         "INT" => r"[+-]?\d+",
-        "NUMBER" | "BASE10NUM" => r"[+-]?(?:\d+\.?\d*|\.\d+)",
+        // Logstash's `BASE10NUM` requires a DIGIT after the dot, and the form
+        // here admitted a trailing one: cisco_asa's 313005 ends its sentence
+        // `dst 175.16.199.1/10872.` and the port capture took the full stop
+        // with it, where the pattern's own `[.]?` is what reads it.
+        // Elastic's leading `(?<![0-9.+-])` is deliberately left out --
+        // `Pattern::compile` drops to `fancy_regex` for lookaround, measured
+        // 55x slower on a line the pattern does not match, and `%{NUMBER}` is
+        // spelt across most of the generated tree.
+        "NUMBER" | "BASE10NUM" => r"[+-]?(?:\d+(?:\.\d+)?|\.\d+)",
         // Elastic's own, look-behind and all, so it compiles on fancy-regex.
         // Without the guard `deadbeef` would match starting at `eadbeef`.
         "BASE16NUM" => r"(?<![0-9A-Fa-f])(?:[+-]?(?:0x)?(?:[0-9A-Fa-f]+))",
@@ -1469,11 +1487,15 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         }
         "GREEDYDATA" => r".*",
         "DATA" => r".*?",
-        // Elastic's own is `\b\w+\b`. Measured over the whole corpus, taking
-        // the boundaries buys ONE field and costs 7.5% on a matching grok and
-        // 30% on a non-matching one, across 2,194 sites -- so the bare form
-        // stands until that trade is taken deliberately.
-        "WORD" => r"\w+",
+        // Elastic's own, boundaries and all. The bare `\w+` can be entered
+        // part-way, so `.*.%{WORD}` read one letter out of the last word
+        // instead of the word -- `sublime_security`'s `event.action`.
+        // Re-measured in `benches/grok.rs`: the boundaries cost 17.8% on a
+        // grok that matches and SAVE 28.1% on one that does not, because the
+        // engine rejects a candidate start without matching a word run first.
+        // A grok list tries each alternative in turn, so the second case is
+        // the common one.
+        "WORD" => r"\b\w+\b",
         "MONTH" => MONTH,
         // Elastic's `MAC` is `(?:%{CISCOMAC}|%{WINDOWSMAC}|%{COMMONMAC})`, and
         // the Cisco form is the one this used to miss. `0200.0000.0000` failed
@@ -1510,7 +1532,13 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // because an inlined alternation would reach past whatever sits either
         // side of it in the pattern.
         "MONTHNUM2" => r"(?:0[1-9]|1[0-2])",
-        "YEAR" => r"\d{4}",
+        // Elastic's own takes TWO digits or four, so a vendor date written
+        // `2/20/25` reads as a year at all: eset_protect's detection grok
+        // spells `%{MONTHNUM}/%{MONTHDAY}/%{YEAR}` and the four-digit form
+        // failed the whole pattern. The atomic group Elastic writes round it is
+        // dropped -- it changes backtracking, not the language, and `(?>` would
+        // push every pattern spelling a year onto the backtracking engine.
+        "YEAR" => r"(?:\d\d){1,2}",
         // Elastic's own, and each part earns its pattern. HOUR takes one digit
         // or two, because an offset is written `-5:00` as often as `-05:00`.
         // SECOND carries an optional fraction, without which checkpoint's
@@ -2385,6 +2413,9 @@ pub fn gsub_field(
 /// `L_PATH` is `pchar` plus `;` and `/`, so it carries no bracket, where the
 /// query's `L_URIC` admits one through `reserved`.
 fn java_uri_legal(text: &str, uri: &UriRef<'_>) -> bool {
+    if !java_scheme_prefix_legal(text) || !java_authority_legal(uri) {
+        return false;
+    }
     let bytes = text.as_bytes();
     let mut i = 0;
     while i < bytes.len() {
@@ -2412,6 +2443,64 @@ fn java_uri_legal(text: &str, uri: &UriRef<'_>) -> bool {
         return false;
     }
     text.chars().all(|c| !c.is_control() && !is_space_char(c))
+}
+
+/// Whether the colon `java.net.URI` looks for first has a scheme name in front.
+///
+/// `URI$Parser.parse` scans for the first `:` that comes before any `/`, `?` or
+/// `#`, and once it finds one the text in front of it MUST be a scheme name --
+/// so a RELATIVE reference whose first path segment carries a colon throws
+/// rather than parsing as a path. `ti_threatq` ships `89.160.20.156:8080/maf.html`
+/// and Elasticsearch writes no `url.*` at all for it, which also leaves the
+/// source field standing where `remove_if_successful` would have taken it.
+fn java_scheme_prefix_legal(text: &str) -> bool {
+    let stop = text.find(['/', '?', '#']).unwrap_or(text.len());
+    match text[..stop].find(':') {
+        Some(0) => false,
+        Some(colon) => is_scheme(&text[..colon]),
+        None => true,
+    }
+}
+
+/// Whether the AUTHORITY holds a bracket Java will not read.
+///
+/// A bracket is legal there only as an IPv6 literal, which opens the host and
+/// closes it. Anywhere else the server parse fails on it AND `L_REG_NAME`
+/// refuses it, so neither reading is available and the whole URI throws --
+/// where we read the authority as written and gave `ti_misp` a `url.scheme` and
+/// `url.path` Elasticsearch has not got.
+fn java_authority_legal(uri: &UriRef<'_>) -> bool {
+    let bracketed = |part: &str| part.contains(['[', ']']);
+    if uri.user_info.is_some_and(bracketed) || uri.port.is_some_and(bracketed) {
+        return false;
+    }
+    match uri.host {
+        Some(host) if bracketed(host) => {
+            host.starts_with('[') && host.ends_with(']') && !host[1..host.len() - 1].contains('[')
+        }
+        _ => true,
+    }
+}
+
+/// The scheme of a URI `java.net.URI` reads as OPAQUE, if it is one.
+///
+/// A scheme whose scheme-specific part does not start with `/` has no
+/// hierarchy at all: `getPath`, `getHost` and `getQuery` all answer null and
+/// the processor writes the scheme alone. `blob:chrome-extension://...` is one,
+/// and reading it as a path gave `google_workspace` a `url.path` and a
+/// `url.extension` Elasticsearch does not write. Only the fragment survives,
+/// because the parser cuts that off before the opaque part.
+fn java_opaque_scheme(text: &str) -> Option<&str> {
+    let stop = text.find(['/', '?', '#']).unwrap_or(text.len());
+    let colon = text[..stop].find(':')?;
+    let scheme = &text[..colon];
+    if !is_scheme(scheme) {
+        return None;
+    }
+    let part = &text[colon + 1..text.find('#').unwrap_or(text.len())];
+    // An empty scheme-specific part is `failExpecting`, not an opaque URI --
+    // the character check above has already refused the text by then.
+    (!part.is_empty() && !part.starts_with('/')).then_some(scheme)
 }
 
 /// Java's `Character.isSpaceChar`: the Unicode space separators.
@@ -2565,6 +2654,23 @@ pub fn uri_parts(
     }
     let mut parts = serde_json::Map::new();
 
+    // An OPAQUE URI has no hierarchy for the processor to report, so the
+    // scheme and the fragment are the whole of it.
+    if let Some(scheme) = uri_legal.then(|| java_opaque_scheme(&original)).flatten() {
+        parts.insert("scheme".into(), Value::String(scheme.to_owned()));
+        if let Some(fragment) = uri.fragment {
+            parts.insert("fragment".into(), Value::String(fragment.to_owned()));
+        }
+        if keep_original {
+            parts.insert("original".into(), Value::String(original.clone()));
+        }
+        if remove_if_successful && field != target {
+            event.remove(field);
+        }
+        event.set(target, Value::Object(parts))?;
+        return Ok(true);
+    }
+
     if let Some(scheme) = uri.scheme {
         parts.insert("scheme".into(), Value::String(scheme.to_owned()));
     }
@@ -2601,9 +2707,19 @@ pub fn uri_parts(
             parts.insert("path".into(), Value::String(String::new()));
         }
     } else {
-        parts.insert("path".into(), Value::String(uri.path.to_owned()));
-        if let Some(extension) = path_extension(uri.path) {
-            parts.insert("extension".into(), Value::String(extension.to_owned()));
+        // `getPath` DECODES percent escapes once, the way `getQuery` below
+        // does, so f5_bigip's asm alert reads `/admin/..%2F..%2F../file` as
+        // `/admin/../../file`. The URL fallback decodes nothing, so a text
+        // java.net.URI refused keeps its path as written.
+        let path = if uri_legal {
+            percent_decode_strict(uri.path).unwrap_or_else(|| uri.path.to_owned())
+        } else {
+            uri.path.to_owned()
+        };
+        let extension = path_extension(&path).map(str::to_owned);
+        parts.insert("path".into(), Value::String(path));
+        if let Some(extension) = extension {
+            parts.insert("extension".into(), Value::String(extension));
         }
     }
     if let Some(query) = uri.query {
@@ -3255,6 +3371,19 @@ mod tests {
         }
     }
 
+    /// Verbatim from `testdata/compat/vectra_detect/log/test-host-scoring`:
+    /// three events send `""` for the detection profile, and failing them cost
+    /// each one an `error.message` and a `pipeline_error` Elasticsearch does
+    /// not raise.
+    #[test]
+    fn parse_json_field_reads_empty_text_as_null() {
+        for text in ["", "   ", "\n"] {
+            let mut event = Event::new(json!({ "message": text }));
+            parse_json_field(&mut event, "message", "json").unwrap();
+            assert_eq!(event.get("json"), Some(&Value::Null), "{text:?}");
+        }
+    }
+
     /// `add_to_root` reads the field the same way, so a container declines
     /// there too rather than merging an object it never parsed.
     #[test]
@@ -3665,6 +3794,89 @@ mod tests {
         let mut queried = Event::new(json!({ "src": "http://example.com/a?f[0]=x%20y" }));
         assert!(uri_parts(&mut queried, "src", "url", false, false).unwrap());
         assert_eq!(queried.get_str("url.query"), Some("f[0]=x y"));
+    }
+
+    /// `URI$Parser.parse` demands a scheme name in front of the first colon it
+    /// meets before any `/`, `?` or `#`, so a relative reference whose first
+    /// path segment carries one throws. `ti_threatq` ships exactly that, and
+    /// writing nothing is what leaves the source field standing.
+    #[test]
+    fn uri_parts_refuses_a_colon_in_the_first_path_segment() {
+        let mut event = Event::new(json!({ "src": "89.160.20.156:8080/maf.html" }));
+        assert!(!uri_parts(&mut event, "src", "url", false, true).unwrap());
+        assert!(!event.has("url"));
+        assert!(event.has("src"), "the source survives a failed parse");
+
+        // A colon PAST the first slash is inside a path segment Java has
+        // already committed to, so it parses.
+        let mut relative = Event::new(json!({ "src": "/a/b:c" }));
+        assert!(uri_parts(&mut relative, "src", "url", false, false).unwrap());
+        assert_eq!(relative.get_str("url.path"), Some("/a/b:c"));
+    }
+
+    /// An OPAQUE URI -- a scheme whose scheme-specific part does not start
+    /// with `/` -- has no path, host or query in Java at all, so the processor
+    /// writes the scheme and nothing else. `google_workspace` ships a
+    /// `blob:chrome-extension://...`.
+    #[test]
+    fn uri_parts_reports_only_the_scheme_of_an_opaque_uri() {
+        let mut event = Event::new(json!({
+            "src": "blob:chrome-extension://abcdef/1234-5678"
+        }));
+        assert!(uri_parts(&mut event, "src", "url", true, false).unwrap());
+        assert_eq!(event.get_str("url.scheme"), Some("blob"));
+        assert_eq!(
+            event.get_str("url.original"),
+            Some("blob:chrome-extension://abcdef/1234-5678")
+        );
+        assert_eq!(event.get("url.path"), None);
+        assert_eq!(event.get("url.domain"), None);
+        assert_eq!(event.get("url.extension"), None);
+
+        // `mailto:` is opaque too, and its address is not a path.
+        let mut mail = Event::new(json!({ "src": "mailto:someone@example.com" }));
+        assert!(uri_parts(&mut mail, "src", "url", false, false).unwrap());
+        assert_eq!(mail.get_str("url.scheme"), Some("mailto"));
+        assert_eq!(mail.get("url.path"), None);
+    }
+
+    /// A bracket is legal in an AUTHORITY only as an IPv6 literal. Anywhere
+    /// else neither the server parse nor `L_REG_NAME` will take it, so the
+    /// whole URI throws.
+    #[test]
+    fn uri_parts_refuses_a_bracket_in_the_authority() {
+        // ti_misp ships defanged indicators, and `hxxp` is no protocol the JDK
+        // ships a handler for -- so the URL fallback refuses it too and the
+        // processor writes nothing at all.
+        let mut event = Event::new(json!({ "src": "hxxp://bad[.]example[.]com/malware/drop" }));
+        assert!(!uri_parts(&mut event, "src", "url", false, false).unwrap());
+        assert!(!event.has("url"));
+
+        // The IPv6 literal is the form that keeps its brackets.
+        let mut six = Event::new(json!({ "src": "http://[2001:db8::1]:80/a" }));
+        assert!(uri_parts(&mut six, "src", "url", false, false).unwrap());
+        assert_eq!(six.get_str("url.domain"), Some("[2001:db8::1]"));
+
+        // A KNOWN protocol still reaches the `java.net.URL` fallback, which is
+        // far more forgiving about the host than `java.net.URI` is.
+        let mut fallback = Event::new(json!({ "src": "http://exam[ple.com/a" }));
+        assert!(uri_parts(&mut fallback, "src", "url", false, false).unwrap());
+        assert_eq!(fallback.get_str("url.domain"), Some("exam[ple.com"));
+    }
+
+    /// `getPath` decodes percent escapes once, the way `getQuery` does, so an
+    /// encoded traversal reads as the path it names. `f5_bigip`'s asm alert is
+    /// the case in the corpus.
+    #[test]
+    fn uri_parts_decodes_the_path() {
+        let mut event = Event::new(json!({
+            "src": "http://example.com/admin/..%2F..%2F..%2Fdirectory/file"
+        }));
+        assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
+        assert_eq!(
+            event.get_str("url.path"),
+            Some("/admin/../../../directory/file")
+        );
     }
 
     /// The caller runs its `on_failure` on a false return, so a value that is

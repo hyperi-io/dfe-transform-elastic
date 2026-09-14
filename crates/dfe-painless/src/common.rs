@@ -5583,8 +5583,13 @@ impl DropPolicy {
             // A listed `''` is the same axis as a chained `== ''`, and
             // `listed_sentinels` drops it from the word list rather than
             // carrying an empty literal nothing can match.
+            // `.equals("")` is the method spelling of the same test and
+            // apache's only one, so the empty `apache.error.module` a
+            // `[:error]` heading leaves behind survived the prune.
             empty_strings: script.contains("== ''")
                 || script.contains("== \"\"")
+                || script.contains(".equals(\"\")")
+                || script.contains(".equals('')")
                 || lists_empty_string(script)
                 || is_empty_strings,
             // `.isEmpty()` is the third spelling of the collection test and
@@ -5744,11 +5749,39 @@ fn listed_sentinels(script: &str) -> Vec<String> {
 /// above to find. `digital_guardian` writes its six that way.
 fn predicate_sentinels(script: &str) -> Vec<String> {
     let mut found = listed_sentinels(script);
+    for literal in chained_sentinels(script, false) {
+        if !found.contains(&literal) {
+            found.push(literal);
+        }
+    }
+    found
+}
+
+/// Whether a comparison's left side has already folded the value's case.
+///
+/// `v.toString().toLowerCase() == "unknown"` is equality against a folded
+/// value, so it matches every spelling the vendor writes.
+fn folds_case(subject: &str) -> bool {
+    subject.contains(".toLowerCase()") || subject.contains(".toUpperCase()")
+}
+
+/// The literals a drop predicate's `==` chains name, split by whether the
+/// comparison folds case.
+///
+/// `forescout_host` drops `Unknown` and `N/A` by folding the value first, and
+/// reading those as exact words left every capitalised spelling in the
+/// document -- nine fields on every host event, plus the `convert` to `ip`
+/// that then failed on the word `Unknown`.
+fn chained_sentinels(script: &str, folded: bool) -> Vec<String> {
+    let mut found: Vec<String> = Vec::new();
     let mut collect = |chain: &str| {
         for term in chain.split("||") {
-            let Some((_, rest)) = term.split_once("== ") else {
+            let Some((subject, rest)) = term.split_once("== ") else {
                 continue;
             };
+            if folds_case(subject) != folded {
+                continue;
+            }
             // Quoted, so the `null` keyword is not read as the string "null"
             // -- and read to the CLOSING quote, so a lambda's trailing `)`
             // stays out of the literal.
@@ -5791,6 +5824,9 @@ fn predicate_sentinels(script: &str) -> Vec<String> {
 
 /// The words a drop predicate compares against case-INSENSITIVELY.
 ///
+/// Two spellings mean it: `equalsIgnoreCase`, and an `==` against a value the
+/// script has already folded with `toLowerCase`.
+///
 /// servicenow spells the scalar half of the recurring prune as
 ///
 /// ```painless
@@ -5815,7 +5851,7 @@ fn predicate_sentinels(script: &str) -> Vec<String> {
 /// ASCII, and a prune that guesses wide leaves no error behind.
 fn predicate_sentinels_ignoring_case(script: &str) -> Vec<String> {
     const CALL: &str = ".equalsIgnoreCase(";
-    let mut found: Vec<String> = Vec::new();
+    let mut found: Vec<String> = chained_sentinels(script, true);
     for (at, _) in script.match_indices(CALL) {
         if !conjunction_around(script, at).contains("instanceof String") {
             continue;
@@ -7398,6 +7434,62 @@ fn parse_rewrite_keys(script: &str) -> Option<RewriteKeys> {
     ))
 }
 
+/// Java's `\p{C}` -- the general category "other" -- as the ranges a heading
+/// can carry.
+///
+/// `char::is_control` is category Cc ALONE, and the character these scripts are
+/// written to remove is U+FEFF, which is Cf: a CSV report written by Microsoft
+/// opens with a byte-order mark, so the first heading keeps it and every later
+/// `rename`, `convert` and `date` naming that field misses. Cf and Co are
+/// listed here; the rest of Cn -- every unassigned code point -- needs a
+/// Unicode table this crate does not carry.
+const OTHER_CATEGORY: &[(u32, u32)] = &[
+    (0x00AD, 0x00AD),
+    (0x0600, 0x0605),
+    (0x061C, 0x061C),
+    (0x06DD, 0x06DD),
+    (0x070F, 0x070F),
+    (0x0890, 0x0891),
+    (0x08E2, 0x08E2),
+    (0x180E, 0x180E),
+    (0x200B, 0x200F),
+    (0x202A, 0x202E),
+    (0x2060, 0x2064),
+    (0x2066, 0x206F),
+    (0xE000, 0xF8FF),
+    (0xFEFF, 0xFEFF),
+    (0xFFF9, 0xFFFB),
+    (0x0001_10BD, 0x0001_10BD),
+    (0x0001_10CD, 0x0001_10CD),
+    (0x0001_3430, 0x0001_343F),
+    (0x0001_BCA0, 0x0001_BCA3),
+    (0x0001_D173, 0x0001_D17A),
+    (0x000E_0001, 0x000E_0001),
+    (0x000E_0020, 0x000E_007F),
+    (0x000F_0000, 0x000F_FFFD),
+    (0x0010_0000, 0x0010_FFFD),
+];
+
+/// Whether a character falls in Java's `\p{C}`.
+fn is_other_category(c: char) -> bool {
+    // A heading is overwhelmingly ASCII, and there the whole class is Cc.
+    if c.is_ascii() {
+        return c.is_ascii_control();
+    }
+    let point = c as u32;
+    OTHER_CATEGORY
+        .binary_search_by(|&(first, last)| {
+            if point < first {
+                std::cmp::Ordering::Greater
+            } else if point > last {
+                std::cmp::Ordering::Less
+            } else {
+                std::cmp::Ordering::Equal
+            }
+        })
+        .is_ok()
+}
+
 /// One key through the script's steps, left to right.
 fn rewrite_key(key: &str, steps: &[KeyRewriteStep]) -> String {
     let mut key = key.to_owned();
@@ -7405,7 +7497,7 @@ fn rewrite_key(key: &str, steps: &[KeyRewriteStep]) -> String {
         key = match step {
             KeyRewriteStep::CamelBreak => camel_break(&key, true),
             KeyRewriteStep::Lowercase => key.to_lowercase(),
-            KeyRewriteStep::DropControl => key.chars().filter(|c| !c.is_control()).collect(),
+            KeyRewriteStep::DropControl => key.chars().filter(|c| !is_other_category(*c)).collect(),
             KeyRewriteStep::ReplaceChars(chars, with) => key
                 .chars()
                 .filter_map(|c| if chars.contains(c) { *with } else { Some(c) })
