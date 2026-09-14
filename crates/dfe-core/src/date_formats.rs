@@ -251,53 +251,282 @@ fn parse_java(input: &str, java: &str, timezone: Option<&str>) -> Option<DateTim
     if !java.contains('[') {
         return parse_java_exact(input, java, timezone);
     }
-    expand_optional(java)
-        .iter()
-        .find_map(|candidate| parse_java_exact(input, candidate, timezone))
+    let sections = optional_sections(java);
+    if sections.is_empty() {
+        return parse_java_exact(input, java, timezone);
+    }
+    let readings = 1u32 << sections.len().min(READING_BITS);
+    for mask in 0..readings {
+        let candidate = reading(java, &sections, mask);
+        if let Some(parsed) = parse_java_exact(input, &candidate, timezone) {
+            return Some(parsed);
+        }
+    }
+    // The readings are capped, and the ALL-ABSENT one is the last of them --
+    // so it is exactly what a truncation loses. Java reaches it by taking no
+    // optional section at all, which is the reading a pattern of nine
+    // fractional-second alternatives needs for a text carrying none.
+    if sections.len() > READING_BITS {
+        return parse_java_exact(input, &reading(java, &sections, u32::MAX), timezone);
+    }
+    None
 }
 
-/// Every reading of a pattern's optional sections, the fullest one first.
+/// How many optional sections are expanded exhaustively.
 ///
-/// Java takes an optional section when it can, so the order matters: `[ yyyy]`
-/// present must be tried before `[ yyyy]` absent, or a date carrying a year
-/// parses without it and the year is silently replaced by this one.
-fn expand_optional(java: &str) -> Vec<Cow<'_, str>> {
-    let Some(open) = java.find('[') else {
-        return vec![Cow::Borrowed(java)];
-    };
-    let mut depth = 1usize;
-    let mut close = None;
-    for (index, c) in java[open + 1..].char_indices() {
+/// Ten is 1,024 readings, above the nine that `amazon_security_lake`'s
+/// fractional-second pattern spells and far above every other pattern in the
+/// tree. The bound is on the WORK a text that matches nothing can ask for.
+const READING_BITS: usize = 10;
+
+/// The top-level `[...]` sections of a pattern, as byte ranges.
+///
+/// A nested bracket stays inside its parent's body and reaches the translator
+/// verbatim, which is how this has always read them.
+fn optional_sections(java: &str) -> Vec<(usize, usize)> {
+    let mut sections = Vec::new();
+    let mut depth = 0usize;
+    let mut open = 0usize;
+    for (index, c) in java.char_indices() {
         match c {
-            '[' => depth += 1,
-            ']' => {
+            '[' => {
+                if depth == 0 {
+                    open = index;
+                }
+                depth += 1;
+            }
+            ']' if depth > 0 => {
                 depth -= 1;
                 if depth == 0 {
-                    close = Some(open + 1 + index);
-                    break;
+                    sections.push((open, index));
                 }
             }
             _ => {}
         }
     }
-    let Some(close) = close else {
-        return vec![Cow::Borrowed(java)];
+    sections
+}
+
+/// One reading of a pattern, with each optional section kept or dropped.
+///
+/// Bit `n - 1 - k` of `mask` drops section `k`, so counting up from zero walks
+/// the readings fullest-first: Java takes an optional section when it can, and
+/// `[ yyyy]` present must be tried before `[ yyyy]` absent or a date carrying a
+/// year parses without it and the year is silently replaced by this one.
+///
+/// Built one at a time rather than collected. A nine-section pattern has 512
+/// readings, and materialising them allocated dozens of strings for a date that
+/// matches on the first.
+///
+/// A section past [`READING_BITS`] is kept, because the counting has no bit
+/// left for it; `u32::MAX` still drops every one, which is the all-absent
+/// reading the caller falls back to.
+fn reading(java: &str, sections: &[(usize, usize)], mask: u32) -> String {
+    let counted = sections.len().min(READING_BITS);
+    let mut out = String::with_capacity(java.len());
+    let mut at = 0usize;
+    for (index, (open, close)) in sections.iter().enumerate() {
+        out.push_str(&java[at..*open]);
+        let drop = match counted.checked_sub(index + 1) {
+            Some(shift) => mask >> shift & 1 == 1,
+            None => mask == u32::MAX,
+        };
+        if !drop {
+            out.push_str(&java[*open + 1..*close]);
+        }
+        at = *close + 1;
+    }
+    out.push_str(&java[at..]);
+    out
+}
+
+/// The DATE alone, from a pattern whose time Java refuses to resolve.
+///
+/// chrono cannot hold a fraction without a second either, so `NaiveDateTime`
+/// is no use here: the fields go into a `Parsed` and only the date comes back
+/// out of it. The trailing zone is split off by hand for the same reason
+/// [`parse_naive`] does it -- chrono's `%Z` consumes far more than a name.
+fn parse_date_only(
+    input: &str,
+    chrono: &str,
+    timezone: Option<&str>,
+) -> Option<DateTime<FixedOffset>> {
+    use chrono::format::{Parsed, StrftimeItems, parse};
+
+    let mut named = None;
+    let (text, pattern) = match chrono.strip_suffix("%Z") {
+        Some(stem) => {
+            let trimmed = input.trim_end();
+            // Counted from the END: the character before the abbreviation may
+            // be multi-byte, and one past its first byte is not a boundary.
+            let start = trimmed.len()
+                - trimmed
+                    .chars()
+                    .rev()
+                    .take_while(char::is_ascii_alphabetic)
+                    .count();
+            let (head, zone) = trimmed.split_at(start);
+            if zone.is_empty() {
+                return None;
+            }
+            named = Some(zone);
+            (head.trim_end(), stem.trim_end())
+        }
+        None => (input, chrono),
     };
 
-    let (head, inner, tail) = (&java[..open], &java[open + 1..close], &java[close + 1..]);
-    let mut out = Vec::new();
-    for present in [true, false] {
-        let body = if present { inner } else { "" };
-        for rest in expand_optional(tail) {
-            out.push(Cow::Owned(format!("{head}{body}{rest}")));
-            // A pattern of many optional sections would otherwise expand
-            // exponentially; the vendor ones have at most a handful.
-            if out.len() >= 64 {
-                return out;
-            }
+    let mut parsed = Parsed::new();
+    parse(&mut parsed, text, StrftimeItems::new(pattern)).ok()?;
+    let naive = parsed.to_naive_date().ok()?.and_time(NaiveTime::MIN);
+
+    parsed
+        .to_fixed_offset()
+        .ok()
+        .map(ProcessorZone::Fixed)
+        .or_else(|| named.and_then(zone_offset).map(ProcessorZone::Fixed))
+        .or_else(|| timezone.and_then(resolve_zone))
+        .unwrap_or(ProcessorZone::Fixed(UTC_OFFSET))
+        .read_local(&naive)
+}
+
+/// Whether a chrono pattern names a field under either of its two spellings.
+///
+/// chrono writes the zero-padded and the unpadded directive differently, and a
+/// Java run of one letter translates to the second of them.
+fn names_both(chrono: &str, padded: &str, bare: &str) -> bool {
+    chrono.contains(padded) || chrono.contains(bare)
+}
+
+/// Which of hour, minute, second and fraction a chrono pattern names.
+///
+/// Walked rather than searched for substrings: the fraction is spelled `%.f`
+/// and `%1f` through `%9f`, and a directive's modifiers sit between the `%`
+/// and the letter that names the field.
+fn time_parts(chrono: &str) -> (bool, bool, bool, bool) {
+    let (mut hour, mut minute, mut second, mut fraction) = (false, false, false, false);
+    let mut chars = chrono.chars();
+    while let Some(c) = chars.next() {
+        if c != '%' {
+            continue;
+        }
+        let mut letter = chars.next();
+        while letter.is_some_and(|c| matches!(c, '-' | '.' | ':' | '#' | '0'..='9')) {
+            letter = chars.next();
+        }
+        match letter {
+            Some('H' | 'I' | 'k' | 'l') => hour = true,
+            Some('M') => minute = true,
+            Some('S') => second = true,
+            Some('f') => fraction = true,
+            _ => {}
         }
     }
-    out
+    (hour, minute, second, fraction)
+}
+
+/// A pattern spelling Java's week-based year `Y`, read the way Java reads it.
+///
+/// `Y` is `WeekFields.weekBasedYear()`, which is NOT `ChronoField.YEAR` -- so a
+/// month and a day beside it have no year to build a date with and Java
+/// resolves the date from the week fields alone. With no week and no day of
+/// the week in the text that is the first day of the year's first week.
+///
+/// `symantec_endpoint`'s pipeline spells `YYYY-dd-MM HH:mm:ss` where it means
+/// `yyyy-MM-dd HH:mm:ss`, so `2020-01-16 08:00:31` arrives as week-based year
+/// 2020, day-of-month 1 and month 16. Elasticsearch reads it faithfully and
+/// writes `2019-12-29T08:00:31.000Z`; the vendor's spelling is the bug, and
+/// matching what the other engine does with it is the parity. Failing the
+/// parse instead raised out of the date processor and cost the whole event.
+///
+/// Returns `None` for any pattern letter this does not read, and for one that
+/// also names a real year -- both fall back to the ordinary reading.
+fn parse_week_based_year(
+    input: &str,
+    java: &str,
+    timezone: Option<&str>,
+) -> Option<DateTime<FixedOffset>> {
+    let mut rest = input;
+    let mut week_year: Option<i32> = None;
+    let (mut hour, mut minute, mut second, mut nanos) = (0u32, 0u32, 0u32, 0u32);
+    let mut chars = java.chars().peekable();
+
+    while let Some(c) = chars.next() {
+        if c == '\'' {
+            // Java quotes a literal run, and doubles the quote for one of its
+            // own. An empty pair `''` is the quote character itself.
+            if chars.peek() == Some(&'\'') {
+                chars.next();
+                rest = rest.strip_prefix('\'')?;
+                continue;
+            }
+            for quoted in chars.by_ref() {
+                if quoted == '\'' {
+                    break;
+                }
+                rest = rest.strip_prefix(quoted)?;
+            }
+            continue;
+        }
+        if !c.is_ascii_alphabetic() {
+            rest = rest.strip_prefix(c)?;
+            continue;
+        }
+        let mut run = 1usize;
+        while chars.peek() == Some(&c) {
+            chars.next();
+            run += 1;
+        }
+        let (value, tail) = take_digits(rest, run)?;
+        rest = tail;
+        match c {
+            'Y' => week_year = Some(i32::try_from(value).ok()?),
+            // A field whose digits are read only to consume them: without a
+            // year Java builds no date out of them.
+            'M' | 'L' | 'd' | 'D' | 'w' | 'W' | 'F' => {}
+            'H' | 'k' => hour = value,
+            'm' => minute = value,
+            's' => second = value,
+            'S' => nanos = value * 10u32.pow(u32::try_from(9 - run.min(9)).ok()?),
+            // A real year, a zone, a half of the day, a name -- each of them
+            // changes the reading, so the pattern goes back to the ordinary path.
+            _ => return None,
+        }
+    }
+    if !rest.is_empty() {
+        return None;
+    }
+
+    let naive =
+        first_day_of_week_year(week_year?)?.and_hms_nano_opt(hour, minute, second, nanos)?;
+    timezone
+        .and_then(resolve_zone)
+        .unwrap_or(ProcessorZone::Fixed(UTC_OFFSET))
+        .read_local(&naive)
+}
+
+/// Digits off the front of `text`: exactly `width` of them, or the whole run
+/// where the pattern letter stood alone and Java parses greedily.
+fn take_digits(text: &str, width: usize) -> Option<(u32, &str)> {
+    let digits = text
+        .find(|c: char| !c.is_ascii_digit())
+        .unwrap_or(text.len())
+        .min(if width > 1 { width } else { text.len() });
+    if digits == 0 || (width > 1 && digits < width) {
+        return None;
+    }
+    Some((text[..digits].parse().ok()?, &text[digits..]))
+}
+
+/// The first day of the first week of a week-based year.
+///
+/// `WeekFields.of(Locale.ROOT)` starts its week on SUNDAY and needs one day in
+/// the first week, so week one is the week holding January 1 and its first day
+/// is the Sunday on or before it.
+fn first_day_of_week_year(year: i32) -> Option<NaiveDate> {
+    let first = NaiveDate::from_ymd_opt(year, 1, 1)?;
+    first.checked_sub_days(chrono::Days::new(u64::from(
+        first.weekday().num_days_from_sunday(),
+    )))
 }
 
 /// Parse against one fully-resolved pattern, zoned first, then local.
@@ -306,6 +535,14 @@ fn parse_java_exact(
     java: &str,
     timezone: Option<&str>,
 ) -> Option<DateTime<FixedOffset>> {
+    // A WEEK-BASED year names no year, so the month and day beside it build no
+    // date and Java resolves one from the week fields alone. Declines to the
+    // ordinary reading below for a pattern it cannot walk.
+    if java.contains('Y')
+        && let Some(parsed) = parse_week_based_year(input, java, timezone)
+    {
+        return Some(parsed);
+    }
     // `h` with no `a` names no half of the day, so Java resolves no hour and
     // drops the whole time group, keeping the date and the offset. The hour is
     // read as 24-hour so the text is still consumed, and the time discarded.
@@ -315,6 +552,23 @@ fn parse_java_exact(
         return parse_java_exact_chrono(input, readable, timezone)?
             .with_time(NaiveTime::MIN)
             .single();
+    }
+    // Java's `resolveTimeLenient` will not invent a SECOND between a minute it
+    // was given and a fraction it was given, nor a minute between an hour and a
+    // second, so it resolves no time at all and the date processor stores the
+    // date at midnight. f5_bigip's `yyyy-MM-dd:HH:mm.SSSz` is exactly that:
+    // Elasticsearch reads `2019-01-01:01:01.000Z` as `2019-01-01T00:00:00.000Z`.
+    //
+    // Only a pattern MISSING one of the two can have such a gap, and a
+    // two-byte search answers that far more cheaply than the walk does -- which
+    // matters because this runs per format per event.
+    if !names_both(&chrono, "%M", "%-M") || !names_both(&chrono, "%S", "%-S") {
+        let (hour, minute, second, fraction) = time_parts(&chrono);
+        let no_minute_below_one = !minute && (second || fraction);
+        let no_second_below_a_fraction = minute && !second && fraction;
+        if hour && (no_minute_below_one || no_second_below_a_fraction) {
+            return parse_date_only(input, &chrono, timezone);
+        }
     }
     parse_java_exact_chrono(input, chrono, timezone)
 }
@@ -442,6 +696,20 @@ fn parse_offset_for_zone_name(input: &str, chrono: &str) -> Option<DateTime<Fixe
         .find_map(|offset| DateTime::parse_from_str(input, &format!("{stem}{offset}")).ok())
 }
 
+/// Where a trailing `UTC+01:00` zone id begins, for the texts that carry one.
+///
+/// `ZoneIdPrinterParser` reads `UTC`, `GMT` and `UT` followed by an offset as a
+/// zone, and a Java `z` falls back to it -- so `eset_protect`'s
+/// `2/20/25, 4:27:59 PM UTC+01:00` names a zone the trailing-alphabetic split
+/// cannot see, because the offset digits come after the letters.
+fn prefixed_zone_start(text: &str) -> Option<usize> {
+    ["UTC", "GMT", "UT"].into_iter().find_map(|prefix| {
+        let at = text.rfind(prefix)?;
+        let rest = &text[at + prefix.len()..];
+        (rest.starts_with(['+', '-']) && zone_offset(rest).is_some()).then_some(at)
+    })
+}
+
 /// A naive datetime plus the zone name the pattern asked for, if any.
 ///
 /// chrono's `%Z` parse consumes far more than a zone name -- digits and
@@ -461,12 +729,14 @@ fn parse_naive(input: &str, chrono: &str) -> Option<(NaiveDateTime, Option<Strin
         // before the abbreviation may be multi-byte -- an accented letter, a
         // no-break space -- and one past its FIRST byte is not a character
         // boundary, which is a panic on the per-event path.
-        let zone_start = trimmed.len()
-            - trimmed
-                .chars()
-                .rev()
-                .take_while(char::is_ascii_alphabetic)
-                .count();
+        let zone_start = prefixed_zone_start(trimmed).unwrap_or_else(|| {
+            trimmed.len()
+                - trimmed
+                    .chars()
+                    .rev()
+                    .take_while(char::is_ascii_alphabetic)
+                    .count()
+        });
         let (head, zone) = trimmed.split_at(zone_start);
         if !zone.is_empty()
             && let Ok(naive) = NaiveDateTime::parse_from_str(head.trim_end(), stripped.trim_end())
@@ -594,7 +864,12 @@ fn resolve_zone(zone: &str) -> Option<ProcessorZone> {
         && !matches!(trimmed, "UTC" | "GMT" | "Z" | "UT" | "Zulu")
         && !JAVA_SHORT_ZONE_IDS.contains(&trimmed)
     {
-        return None;
+        // `ZoneId.of` takes every zone tzdb ships, and CET, EET, MET and WET
+        // are zones in their own right rather than `SHORT_IDS` aliases -- so
+        // `ZoneId.of("CET")` succeeds where reading it as unknown failed the
+        // date and ran sophos's `on_failure`. Each carries summer-time rules,
+        // so it stays a zone until an instant picks the offset.
+        return trimmed.parse::<Tz>().ok().map(ProcessorZone::Named);
     }
     zone_offset(trimmed).map(ProcessorZone::Fixed)
 }
@@ -798,7 +1073,11 @@ fn token(letter: char, run: usize) -> String {
         ('a', _) => "%p",
         ('X', 1) | ('Z', 1..=3) => "%z",
         ('X' | 'x' | 'Z', _) => "%:z",
-        ('z' | 'V', _) => "%Z",
+        // `v` is the GENERIC zone name, printed and parsed by the same
+        // `ZoneTextPrinterParser` as `z` and falling back to a zone id the same
+        // way -- so `+00:00` satisfies it, which is what tanium's
+        // `yyyy-MM-dd' 'HH:mm:ss' 'v` reads.
+        ('z' | 'V' | 'v', _) => "%Z",
         ('G', _) => "AD",
         _ => "",
     }
@@ -954,10 +1233,143 @@ mod tests {
     /// parsed by the yearless variant and quietly given this year instead.
     #[test]
     fn optional_sections_expand_fullest_first() {
-        let expanded = expand_optional("[EEE ]MMM [ ]d[ yyyy] HH:mm:ss");
-        assert_eq!(expanded.first().unwrap(), "EEE MMM  d yyyy HH:mm:ss");
-        assert_eq!(expanded.last().unwrap(), "MMM d HH:mm:ss");
-        assert_eq!(expanded.len(), 8);
+        const PATTERN: &str = "[EEE ]MMM [ ]d[ yyyy] HH:mm:ss";
+        let sections = optional_sections(PATTERN);
+        assert_eq!(sections.len(), 3);
+        let readings: Vec<String> = (0..8)
+            .map(|mask| reading(PATTERN, &sections, mask))
+            .collect();
+        assert_eq!(readings.first().unwrap(), "EEE MMM  d yyyy HH:mm:ss");
+        assert_eq!(readings.last().unwrap(), "MMM d HH:mm:ss");
+    }
+
+    /// Nine optional sections is 512 readings and the all-absent one is the
+    /// last of them, which a cap of 64 never reached -- so a text carrying no
+    /// fraction at all failed the pattern that describes it.
+    /// Verbatim from `pipelines/amazon_security_lake/event/default.yml`.
+    #[test]
+    fn a_text_with_no_fractional_second_reaches_the_all_absent_reading() {
+        const FORMAT: &str = "yyyy-MM-dd HH:mm:ss[.SSSSSSSSS][.SSSSSSSS][.SSSSSSS][.SSSSSS][.SSSSS][.SSSS][.SSS][.SS][.S]X";
+
+        assert_eq!(
+            parse_date_out("2016-02-29 10:42:23-0700", &[FORMAT], None, None).as_deref(),
+            Some("2016-02-29T17:42:23.000Z")
+        );
+        // A fraction the pattern DOES describe still reads through its own
+        // section rather than being dropped with the rest.
+        assert_eq!(
+            parse_date_out("2016-02-29 10:42:23.125-0700", &[FORMAT], None, None).as_deref(),
+            Some("2016-02-29T17:42:23.125Z")
+        );
+    }
+
+    /// Java's `v` is the generic zone name and falls back to a zone id, so the
+    /// offset `+00:00` satisfies it. Verbatim from `pipelines/tanium`.
+    #[test]
+    fn a_generic_zone_name_takes_an_offset() {
+        assert_eq!(
+            parse_date_out(
+                "2022-11-18 10:10:57 +00:00",
+                &["yyyy-MM-dd' 'HH:mm:ss' 'v"],
+                None,
+                None
+            )
+            .as_deref(),
+            Some("2022-11-18T10:10:57.000Z")
+        );
+    }
+
+    /// `Y` is the WEEK-BASED year, which names no year for a month and a day
+    /// to build a date with -- so Java resolves the date from the week fields
+    /// alone. Verbatim from `pipelines/symantec_endpoint/log/default.yml`,
+    /// which spells `YYYY-dd-MM` where it means `yyyy-MM-dd`: Elasticsearch
+    /// reads it faithfully and writes the first day of week-based year 2020.
+    #[test]
+    fn a_week_based_year_resolves_without_its_month_and_day() {
+        assert_eq!(
+            parse_date_out(
+                "2020-01-16 08:00:31",
+                &["YYYY-dd-MM HH:mm:ss"],
+                Some("UTC"),
+                None
+            )
+            .as_deref(),
+            Some("2019-12-29T08:00:31.000Z")
+        );
+    }
+
+    /// A Java `z` falls back to a zone ID, and `UTC+01:00` is one. Verbatim
+    /// from `pipelines/eset_protect/event/default.yml`, whose gsub pads the
+    /// vendor's `UTC+1` out to the full offset before the date processor runs.
+    #[test]
+    fn a_zone_name_carrying_an_offset_is_read_whole() {
+        assert_eq!(
+            parse_date_out(
+                "2/20/25, 4:27:59 PM UTC+01:00",
+                &["dd-MMM-yyyy HH:mm:ss", "M/d/yy, h:m:s a z"],
+                None,
+                None
+            )
+            .as_deref(),
+            Some("2025-02-20T15:27:59.000Z")
+        );
+    }
+
+    /// `ZoneId.of("CET")` succeeds: CET, EET, MET and WET are tzdb zones in
+    /// their own right rather than `SHORT_IDS` aliases. Reading one as unknown
+    /// failed the date outright and ran the processor's `on_failure`.
+    #[test]
+    fn a_tzdb_zone_that_is_not_a_short_id_resolves() {
+        assert_eq!(
+            parse_date_out(
+                "2023-06-15 12:00:00",
+                &["yyyy-MM-dd HH:mm:ss"],
+                Some("CET"),
+                None
+            )
+            .as_deref(),
+            Some("2023-06-15T12:00:00.000+02:00")
+        );
+        // Still nothing for an abbreviation `ZoneId.of` throws on.
+        assert_eq!(
+            parse_date_out(
+                "2023-06-15 12:00:00",
+                &["yyyy-MM-dd HH:mm:ss"],
+                Some("EDT"),
+                None
+            ),
+            None
+        );
+    }
+
+    /// Java will not invent a SECOND between a minute it was given and a
+    /// fraction it was given, so it resolves no time and the date processor
+    /// stores the date at midnight. Verbatim from
+    /// `pipelines/f5_bigip/log/pipeline_bigipltm.yml`, and the value is the
+    /// one Elasticsearch captured.
+    #[test]
+    fn a_fraction_with_no_seconds_drops_the_whole_time() {
+        assert_eq!(
+            parse_date_out(
+                "2019-01-01:01:01.000Z",
+                &["yyyy-MM-dd:HH:mm.SSSz"],
+                None,
+                None
+            )
+            .as_deref(),
+            Some("2019-01-01T00:00:00.000Z")
+        );
+        // The same pattern WITH seconds resolves the time as written.
+        assert_eq!(
+            parse_date_out(
+                "2019-01-01:01:01:02.000Z",
+                &["yyyy-MM-dd:HH:mm:ss.SSSz"],
+                None,
+                None
+            )
+            .as_deref(),
+            Some("2019-01-01T01:01:02.000Z")
+        );
     }
 
     /// Verbatim from `pipelines/cisco_asa/default.yml`. Cisco pads a
