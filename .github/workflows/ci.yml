@@ -47,7 +47,9 @@ jobs:
   ci:
     uses: hyperi-io/hyperi-ci/.github/workflows/rust-ci.yml@main
     with:
-      publish-target: internal
+      # `both` resolves to the release channel; `internal` is the spike
+      # channel and would demote a release build silently.
+      publish-target: both
       tag: ${{ inputs.tag || '' }}
       from-head: ${{ inputs.from-head || '' }}
       bump: ${{ inputs.bump || 'auto' }}

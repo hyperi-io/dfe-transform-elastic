@@ -53,6 +53,7 @@ fn config_sized(
             envelope: EnvelopeSetting::Auto,
             topics: vec![source_topic.to_string()],
             batch_size,
+            max_batch_bytes: dfe_transform_elastic::config::default_max_batch_bytes(),
             group_id: group.to_string(),
             brokers: brokers.clone(),
         },

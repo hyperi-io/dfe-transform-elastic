@@ -33,14 +33,23 @@ build:
   strategies:
     - native
   rust:
+    # amd64 only for now. The arm64 leg runs on GitHub's hosted 4-core arm
+    # runner, and the release build of the crate that holds one module per
+    # data stream dies there without a log; an arm64 runner with the memory
+    # for it is issue #27.
     targets:
       - x86_64-unknown-linux-gnu
-      - aarch64-unknown-linux-gnu
 
-# Publishing (on release)
+# Publishing (on release). The stack pins every app by GHCR image digest, so
+# a release must land an image. The deployed chart is dfe-infra's, so the
+# in-repo chart stays unpublished.
 publish:
   enabled: true
+  target: both
   container:
-    enabled: false
+    enabled: true
+    dockerfile: Dockerfile
+    platforms:
+      - linux/amd64
   helm:
     enabled: false

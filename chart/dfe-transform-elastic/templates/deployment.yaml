@@ -75,6 +75,19 @@ spec:
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: {{ .Values.otel.protocol | quote }}
             {{- end }}
+            # The wire protocol. librdkafka only presents SASL credentials when
+            # this names a SASL mechanism, so leaving it unset connects
+            # anonymously in the clear with the secret mounted and unused.
+            - name: KAFKA_SECURITY_PROTOCOL
+              value: {{ .Values.kafka.securityProtocol | quote }}
+            {{- if .Values.kafka.saslMechanism }}
+            - name: KAFKA_SASL_MECHANISM
+              value: {{ .Values.kafka.saslMechanism | quote }}
+            {{- end }}
+            # An empty string counts as a credential, so the secret is projected
+            # only when there is actually one to project -- otherwise an
+            # unauthenticated broker cannot be configured at all.
+            {{- if or .Values.kafka.existingSecret .Values.kafka.password }}
             # kafka credentials via Secret (figment env cascade overrides file config)
             - name: KAFKA_SASL_USERNAME
               valueFrom:
@@ -86,6 +99,15 @@ spec:
                 secretKeyRef:
                   name: {{ include "dfe-transform-elastic.kafkaSecretName" . }}
                   key: {{ .Values.kafka.secretKeys.password }}
+            {{- end }}
+            # A grok miss is normal on a device that mixes formats, and scalo's
+            # throttle is off unless asked for.
+            - name: LOG_THROTTLE_ENABLED
+              value: {{ .Values.logThrottle.enabled | quote }}
+            - name: LOG_THROTTLE_BURST
+              value: {{ .Values.logThrottle.burst | quote }}
+            - name: LOG_THROTTLE_RATE
+              value: {{ .Values.logThrottle.rate | quote }}
           livenessProbe:
             httpGet:
               path: /livez
@@ -110,6 +132,13 @@ spec:
             - name: config
               mountPath: /etc/dfe-transform-elastic
               readOnly: true
+            {{- if (.Values.config.geoip).auto_download }}
+            # The downloader writes here, and the root filesystem is read-only.
+            - name: geoip
+              mountPath: {{ .Values.config.geoip.auto_download.data_dir | quote }}
+            {{- end }}
+            - name: scratch
+              mountPath: /tmp
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
@@ -118,6 +147,14 @@ spec:
         - name: config
           configMap:
             name: {{ include "dfe-transform-elastic.fullname" . }}-config
+        {{- if (.Values.config.geoip).auto_download }}
+        - name: geoip
+          emptyDir:
+            sizeLimit: {{ .Values.geoip.sizeLimit }}
+        {{- end }}
+        - name: scratch
+          emptyDir:
+            sizeLimit: {{ .Values.scratch.sizeLimit }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

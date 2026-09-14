@@ -55,47 +55,52 @@ enum AppCommand {
 impl App {
     /// Handle subcommands that bypass the service lifecycle.
     ///
-    /// Returns `Some(())` when handled.
-    pub fn handle_local_command(&self) -> Option<()> {
+    /// `None` means the command belongs to the scalo lifecycle; otherwise the
+    /// exit code this process should take, so the failure path stays a return
+    /// rather than a `process::exit` that skips every destructor.
+    pub fn handle_local_command(&self) -> Option<i32> {
         match self.command.as_ref()? {
             AppCommand::Sources => {
                 for name in crate::registry::sources() {
                     println!("{name}");
                 }
-                Some(())
+                Some(0)
             }
             AppCommand::EmitDockerfile => {
                 println!(
                     "{}",
                     generate_dockerfile(&crate::deployment::contract(), None)
                 );
-                Some(())
+                Some(0)
             }
-            AppCommand::EmitChart { dir } => {
-                if let Err(e) = generate_chart(&crate::deployment::contract(), dir, None) {
-                    eprintln!("error: failed to generate Helm chart: {e}");
-                    std::process::exit(1);
-                }
-                if let Err(e) = crate::deployment::retarget_keda_trigger(dir) {
-                    eprintln!("error: {e}");
-                    std::process::exit(1);
-                }
-                eprintln!("Helm chart generated in {dir}/");
-                Some(())
-            }
+            AppCommand::EmitChart { dir } => Some(Self::emit_chart(dir)),
             AppCommand::EmitCompose => {
                 println!(
                     "{}",
                     generate_compose_fragment(&crate::deployment::contract())
                 );
-                Some(())
+                Some(0)
             }
             AppCommand::EmitConfig => {
                 print!("{}", crate::deployment::default_config_yaml());
-                Some(())
+                Some(0)
             }
             AppCommand::Standard(_) => None,
         }
+    }
+
+    /// Generate the chart into `dir`, reporting the exit code.
+    fn emit_chart(dir: &str) -> i32 {
+        if let Err(e) = generate_chart(&crate::deployment::contract(), dir, None) {
+            eprintln!("error: failed to generate Helm chart: {e}");
+            return 1;
+        }
+        if let Err(e) = crate::deployment::retarget_keda_trigger(dir) {
+            eprintln!("error: {e}");
+            return 1;
+        }
+        eprintln!("Helm chart generated in {dir}/");
+        0
     }
 }
 
@@ -214,7 +219,7 @@ mod tests {
     fn sources_bypasses_the_lifecycle() {
         let app = parse(&["sources"]);
         assert!(app.command().is_none());
-        assert!(app.handle_local_command().is_some());
+        assert_eq!(app.handle_local_command(), Some(0));
     }
 
     #[test]

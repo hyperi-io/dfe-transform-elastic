@@ -346,7 +346,7 @@ pub fn detect(event: &Event) -> Detected {
         variant: keys
             .get(key)
             .and_then(Value::as_str)
-            .map_or(Cow::Borrowed(UNNAMED), |v| Cow::Owned(v.to_string())),
+            .map_or(Cow::Borrowed(UNNAMED), safe_variant),
     };
 
     if keys.contains_key("_source_fetcher") {
@@ -449,14 +449,17 @@ impl Delivery {
         self.envelope
             .unwrap_into_beats(event, self.framing, &self.variant)?;
 
-        event.set("agent.type", json!(self.envelope.producer()))?;
-        event.set("agent.version", json!(env!("CARGO_PKG_VERSION")))?;
-        event.set("input.type", json!(self.variant.as_ref()))?;
-        event.set("data_stream.type", json!("logs"))?;
-        event.set("data_stream.dataset", json!(self.dataset))?;
-        event.set("data_stream.namespace", json!("default"))?;
+        // `set_resolved`, not `set`: a payload already spelling one of these as
+        // a single dotted key keeps it and gains a nested twin beside it, and
+        // the transform reads past both.
+        event.set_resolved("agent.type", json!(self.envelope.producer()))?;
+        event.set_resolved("agent.version", json!(env!("CARGO_PKG_VERSION")))?;
+        event.set_resolved("input.type", json!(self.variant.as_ref()))?;
+        event.set_resolved("data_stream.type", json!("logs"))?;
+        event.set_resolved("data_stream.dataset", json!(self.dataset))?;
+        event.set_resolved("data_stream.namespace", json!("default"))?;
         if let Some(ingested) = ingested {
-            event.set("event.ingested", ingested)?;
+            event.set_resolved("event.ingested", ingested)?;
         }
         Ok(())
     }
@@ -541,6 +544,66 @@ pub fn resolve(
 /// where its own name should be.
 const UNNAMED: &str = "unnamed";
 
+/// The longest a producer-supplied variant name may be.
+///
+/// Every transport name dfe-receiver and dfe-fetcher use is under a dozen
+/// characters, so this is a ceiling rather than a limit anything real reaches.
+const VARIANT_MAX: usize = 64;
+
+/// A producer's own name for its transport, trimmed to something safe to log
+/// and to stamp into `input.type`.
+///
+/// The value comes off the wire in `_source` or `_source_fetcher` with no
+/// length and no character restriction, and it reaches a log line and an output
+/// field unaltered. Non-graphic bytes are dropped rather than escaped, because
+/// a transport name is ASCII; a value left with nothing after that is reported
+/// as [`UNNAMED`], the same as a non-string.
+fn safe_variant(raw: &str) -> Cow<'static, str> {
+    let trimmed: String = raw
+        .chars()
+        .filter(char::is_ascii_graphic)
+        .take(VARIANT_MAX)
+        .collect();
+    if trimmed.is_empty() {
+        Cow::Borrowed(UNNAMED)
+    } else {
+        Cow::Owned(trimmed)
+    }
+}
+
+/// Decides each event's envelope, with the source's intake and dataset fixed.
+///
+/// Detection is per EVENT rather than per batch. A scalo `WorkBatch` spans
+/// partitions -- a `Record` carries no partition -- so a topic fed by two
+/// producers has both wrappers in the same batch, and reading only the first
+/// event unwrapped every one of them as whatever that first event looked like.
+/// The cost is the handful of top-level `contains_key` calls in [`detect`],
+/// against an unwrap measured at 2,740 ns an event.
+#[derive(Debug, Clone, Copy)]
+pub struct Resolver {
+    setting: EnvelopeSetting,
+    intake: Intake,
+    dataset: &'static str,
+}
+
+impl Resolver {
+    /// A resolver for one configured source.
+    #[must_use]
+    pub const fn new(setting: EnvelopeSetting, intake: Intake, dataset: &'static str) -> Self {
+        Self {
+            setting,
+            intake,
+            dataset,
+        }
+    }
+
+    /// How this event arrived, and what was odd about it.
+    #[must_use]
+    pub fn resolve(&self, event: &Event) -> Resolution {
+        resolve(self.setting, Some(event), self.intake, self.dataset)
+    }
+}
+
 /// Move the provider's payload into `message` as the string the transform
 /// expects, and drop the fetcher's delivery keys.
 ///
@@ -561,7 +624,16 @@ fn unwrap_fetcher(event: &mut Event) {
         return;
     }
 
-    let payload = serde_json::to_string(event.as_value()).unwrap_or_default();
+    let payload = match serde_json::to_string(event.as_value()) {
+        Ok(payload) => payload,
+        // A parsed document cannot hold a non-string key or a non-finite
+        // number, so this is unreachable today -- but writing an empty
+        // `message` in silence would look like a vendor that sent nothing.
+        Err(e) => {
+            tracing::warn!(error = %e, "fetcher payload would not re-serialise; message left empty");
+            String::new()
+        }
+    };
     *event.as_value_mut() = json!({ "message": payload });
 }
 
@@ -615,18 +687,21 @@ fn apply_transport(event: &mut Event, spec: &Transport) -> crate::Result<()> {
         if is_unset(&value) {
             continue;
         }
+        // `set_resolved` throughout: a transport's payload can spell an ECS
+        // target as one dotted key of its own, and splitting the path leaves
+        // that key holding the value the pipeline then fails to find.
         match *to {
             EPOCH_SECONDS => {
                 if let Some(stamped) = epoch_stamp(&value, 1000.0) {
-                    event.set("@timestamp", stamped)?;
+                    event.set_resolved("@timestamp", stamped)?;
                 }
             }
             EPOCH_MILLIS => {
                 if let Some(stamped) = epoch_stamp(&value, 1.0) {
-                    event.set("@timestamp", stamped)?;
+                    event.set_resolved("@timestamp", stamped)?;
                 }
             }
-            path => event.set(path, value)?,
+            path => event.set_resolved(path, value)?,
         }
     }
     for key in spec.drop {
@@ -640,6 +715,11 @@ fn apply_transport(event: &mut Event, spec: &Transport) -> crate::Result<()> {
 /// OTLP fills `trace_id`, `span_id` and `_observed_timestamp` in every log,
 /// with an empty string or the Unix epoch where it had no value, and lifting
 /// those writes an ECS field that says something false.
+///
+/// The trade is deliberate: a sender that genuinely means midnight on
+/// 1970-01-01 loses that stamp. Nothing this service ingests does -- the epoch
+/// is what a zeroed `Timestamp` renders as -- and treating it as real puts
+/// every OTLP log's `event.created` fifty-six years in the past.
 fn is_unset(value: &Value) -> bool {
     match value {
         Value::Null => true,
@@ -774,17 +854,29 @@ fn lift_to_ecs(event: &mut Event) -> crate::Result<()> {
     apply_renames(event, SYSLOG_TO_ECS)
 }
 
-/// Copy each `from` onto its `to`, skipping the fields this event does not
+/// Move each `from` onto its `to`, skipping the fields this event does not
 /// carry.
 ///
-/// The source field stays put: `unwrap_syslog` needs `hostname` twice, and the
-/// receiver's own names are removed as a set afterwards.
+/// A source that feeds a LATER destination as well is cloned; the last
+/// destination for a source takes the value itself. Of the eight pairs only
+/// `hostname` has two destinations, so seven events' worth of clone per
+/// receiver event goes away, and every source here is in [`RECEIVER_KEYS`] and
+/// would have been removed a few lines later regardless.
 fn apply_renames(event: &mut Event, renames: &[(&str, &str)]) -> crate::Result<()> {
-    for (from, to) in renames {
-        // Cloned rather than borrowed because `set` needs the event mutably,
-        // and the same source feeds more than one destination.
-        if let Some(value) = event.get(from).cloned() {
-            event.set(to, value)?;
+    for (index, (from, to)) in renames.iter().enumerate() {
+        let reused = renames
+            .iter()
+            .skip(index + 1)
+            .any(|(later, _)| later == from);
+        // `set` needs the event mutably, so a value fed to a later destination
+        // has to be cloned out first.
+        let value = if reused {
+            event.get(from).cloned()
+        } else {
+            event.remove(from)
+        };
+        if let Some(value) = value {
+            event.set_resolved(to, value)?;
         }
     }
     Ok(())
