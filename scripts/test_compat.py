@@ -534,7 +534,7 @@ class SourceTable(unittest.TestCase):
 
     @property
     def SOURCES_WITHOUT_FIXTURES(self) -> int:  # noqa: N802 - a ratchet, named as one
-        """Streams with no fixtures upstream, which COMPAT.md states as expected.
+        """Streams with no fixtures upstream, which compat.md states as expected.
 
         A ceiling rather than zero, so a mistyped fixture_dir still fails. Read
         from the same `tests/ratchets.json` the Rust ratchets use, which is

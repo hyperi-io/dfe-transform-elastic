@@ -13,7 +13,7 @@ shipped service -- the Elasticsearch image is Elastic Licence 2.0 / SSPL / AGPL
 and must not become a runtime or distributed dependency.
 
 Full guide, including the two fixture lineages and the known limits:
-docs/COMPAT.md.
+docs/compat.md.
 
 Examples:
     scripts/compat.py check
