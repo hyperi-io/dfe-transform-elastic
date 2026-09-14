@@ -39,6 +39,12 @@
 #            all the parsing and dfe-fetcher can obtain the same bytes. These
 #            are the sources where the agent adds nothing we would lose.
 
+# The shape of this file, for readers outside this repo: the DFE engine
+# offers it as the source catalogue from a release asset and refuses a shape
+# it does not know. Bump it when a per-source key is renamed or removed,
+# never for a new source or a new key.
+catalogue_version: 1
+
 sources:
   # Every aws input is a PULL -- aws-s3, aws-cloudwatch, aws/metrics,
   # httpjson, cel -- so `fetcher` is the intake throughout and no stream
