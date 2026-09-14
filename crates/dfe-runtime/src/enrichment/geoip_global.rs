@@ -27,17 +27,15 @@
 //! `source.geo`, `destination.geo`, `client.geo` and `server.geo`, up to four
 //! per event.
 
-use std::collections::HashMap;
 use std::net::IpAddr;
 use std::path::PathBuf;
-use std::sync::OnceLock;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, OnceLock};
 
-use serde_json::Value;
 use tracing::{debug, info, warn};
 
 use super::geoip::GeoIpEnrichment;
-use super::geoip_cache::{Cache, Database, Stats};
+use super::geoip_cache::{Cache, Database, Fields, Stats, no_fields};
 
 /// Global enrichers — one per database type.
 struct GlobalGeoIp {
@@ -213,7 +211,11 @@ fn find_db(env_var: &str, filenames: &[&str]) -> Option<PathBuf> {
 /// `db_name` selects the database: "`geoip_city`" or "`geoip_asn`".
 /// Returns a flat map of field names to values, or an empty map if
 /// the database is not loaded or the IP is private.
-pub fn geoip_lookup(db_name: &str, ip: &str) -> HashMap<String, Value> {
+///
+/// The map is shared, not copied: 14 of the source pipelines carry a geoip
+/// processor and several call it four or more times per event, so a hit is a
+/// refcount bump rather than nine allocations.
+pub fn geoip_lookup(db_name: &str, ip: &str) -> Fields {
     let global = GLOBAL_GEOIP.get_or_init(init_global);
 
     // Parse FIRST. `ip` is whatever the vendor put in the field, and an
@@ -221,13 +223,13 @@ pub fn geoip_lookup(db_name: &str, ip: &str) -> HashMap<String, Value> {
     // vendor string of arbitrary length become a cache key.
     let Ok(address) = ip.parse::<IpAddr>() else {
         debug!(ip = ip, "not an IP address, no enrichment");
-        return HashMap::new();
+        return no_fields();
     };
 
     // Private ranges have no data anywhere, so they never reach the cache or
     // a database.
     if is_private(address) {
-        return HashMap::new();
+        return no_fields();
     }
 
     let database = database_for(db_name);
@@ -240,18 +242,18 @@ pub fn geoip_lookup(db_name: &str, ip: &str) -> HashMap<String, Value> {
         Database::Asn => global.asn.as_ref(),
     };
 
-    let fields = match enricher {
+    let fields: Fields = match enricher {
         Some(e) => match e.lookup_addr(address) {
-            Ok(result) => result,
+            Ok(result) => Arc::new(result),
             Err(msg) => {
                 debug!(ip = ip, error = %msg, "GeoIP lookup failed");
-                HashMap::new()
+                no_fields()
             }
         },
-        None => HashMap::new(),
+        None => no_fields(),
     };
 
-    global.cache.put(database, address, fields.clone());
+    global.cache.put(database, address, Arc::clone(&fields));
     fields
 }
 

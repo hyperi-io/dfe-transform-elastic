@@ -62,13 +62,19 @@ pub fn contract() -> DeploymentContract {
             "pipeline_name": "dfe-transform-elastic",
             "source": {
                 "name": "filebeat.okta.default",
-                // `syslog` reads dfe-receiver's output and `fetcher`
-                // dfe-fetcher's. Which a source accepts is in the capability
-                // catalogue, and a wrong one is refused at startup.
-                "envelope": "beats",
+                // `auto` reads the family off each event, which is what the
+                // code defaults to. Naming one instead pins it: `receiver`
+                // reads dfe-receiver's output and `fetcher` dfe-fetcher's.
+                // Which a source accepts is in the capability catalogue, and a
+                // wrong one is refused at startup.
+                "envelope": "auto",
                 "topics": ["raw_events"],
                 // Batch-first default: amortises commit, allocation and SIMD setup.
                 "batch_size": 20000,
+                // The inbound mirror of `sink.max_message_bytes`: 20,000
+                // records of unbounded size is unbounded memory, so the fetch
+                // is capped in bytes as well as in records.
+                "max_batch_bytes": 16_777_216,
                 "group_id": "dfe-transform-elastic",
                 "brokers": ["kafka:9092"]
             },
@@ -155,12 +161,18 @@ pub fn default_config_yaml() -> String {
 # `source.topics`, `source.brokers` and `sink.topic` are the ones that
 # always change.
 #
-# `source.envelope` selects which transport delivered the payload:
-# `beats` (default), `syslog` for dfe-receiver's output, or `fetcher` for
-# dfe-fetcher's. The transform is the same for all three; only the unwrapping
-# differs. Which envelopes a source accepts is listed per source in the
-# capability catalogue, and an envelope it cannot arrive in is refused at
-# startup rather than at the first batch.
+# `source.envelope` selects which transport delivered the payload. `auto`, the
+# default, reads it off each event, so a topic fed by two producers still
+# unwraps both. Naming one pins it: `beats`, `receiver` (also spelled `syslog`)
+# for dfe-receiver's output, or `fetcher` for dfe-fetcher's. The transform is
+# the same for all of them; only the unwrapping differs. Which envelopes a
+# source accepts is listed per source in the capability catalogue, and an
+# envelope it cannot arrive in is refused at startup rather than at the first
+# batch.
+#
+# `source.max_batch_bytes` caps one inbound fetch, the way
+# `sink.max_message_bytes` caps one outbound record. Raise the pod's memory
+# limit with it: the parsed documents are several times the raw bytes.
 #
 # `geoip` provisions the MMDB databases at startup and refreshes them when the
 # local copy passes `max_age_days`. Mount `data_dir` on a volume that survives
@@ -262,9 +274,17 @@ fn capabilities() -> Vec<Capability> {
                     .description("Which compiled transform to apply, e.g. filebeat.okta.default."),
             )
             .field(
-                FieldSpec::enumeration("source.envelope", ["beats", "syslog"]).description(
-                    "How the payload is wrapped on the way in. `syslog` reads \
-                     dfe-receiver's output and applies only to device sources.",
+                FieldSpec::enumeration(
+                    "source.envelope",
+                    ["auto", "beats", "receiver", "syslog", "fetcher"],
+                )
+                .default_value("auto")
+                .description(
+                    "How the payload is wrapped on the way in. `auto` reads it off each \
+                     event; `receiver` (spelled `syslog` before it grew the other \
+                     transports) reads dfe-receiver's output and applies only to device \
+                     sources; `fetcher` reads dfe-fetcher's and applies only to sources \
+                     Elastic pulls from an API.",
                 ),
             )
             .children(sources),
@@ -280,6 +300,16 @@ fn capabilities() -> Vec<Capability> {
                 FieldSpec::string("sink.topic")
                     .required()
                     .description("Topic the normalised events are produced to."),
+            )
+            .field(
+                FieldSpec::int("source.max_batch_bytes")
+                    .default_value(16_777_216)
+                    .description(
+                        "Ceiling on the bytes one fetch brings back, applied as \
+                         librdkafka's fetch.max.bytes. The pod's memory limit has to \
+                         cover this plus the parsed documents, which are several times \
+                         larger.",
+                    ),
             ),
         Capability::new("enrichment", "geoip")
             .description(
@@ -433,6 +463,48 @@ mod tests {
         }
     }
 
+    /// The catalogue's enumeration is what an operator reads before writing a
+    /// value, so a variant missing from it reads as unsupported. `syslog` is in
+    /// the list as well because it is a serde alias the old configs still use.
+    #[test]
+    fn the_envelope_enumeration_names_every_setting() {
+        use crate::envelope::EnvelopeSetting;
+
+        let listed = contract()
+            .capabilities
+            .iter()
+            .find(|cap| cap.name == "elastic")
+            .and_then(|cap| {
+                cap.fields
+                    .iter()
+                    .find(|field| field.name == "source.envelope")
+                    .map(|field| field.enum_values.clone())
+            })
+            .expect("source.envelope is enumerated");
+
+        for setting in [
+            EnvelopeSetting::Auto,
+            EnvelopeSetting::Beats,
+            EnvelopeSetting::Receiver,
+            EnvelopeSetting::Fetcher,
+        ] {
+            let name = serde_json::to_value(setting).expect("a setting serialises");
+            let name = name.as_str().expect("a setting is a string");
+            assert!(listed.iter().any(|v| v == name), "{name} is not offered");
+        }
+    }
+
+    /// Every enumerated value has to be one the config actually accepts, or the
+    /// catalogue offers a value that fails at startup.
+    #[test]
+    fn every_enumerated_envelope_parses() {
+        for name in ["auto", "beats", "receiver", "syslog", "fetcher"] {
+            let parsed: crate::envelope::EnvelopeSetting =
+                serde_json::from_value(serde_json::json!(name)).expect("an offered value parses");
+            let _ = parsed.pinned();
+        }
+    }
+
     #[test]
     fn keda_is_configured_for_batch_sized_lag() {
         let c = contract();
@@ -529,6 +601,72 @@ mod tests {
         assert!(template.contains("join \",\" .Values.config.source.brokers"));
         assert!(template.contains(".Values.config.source.group_id"));
         assert!(template.contains(".Values.config.source.topics"));
+    }
+
+    /// The chart directory, which is committed alongside the generator output.
+    fn chart_dir() -> std::path::PathBuf {
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("chart/dfe-transform-elastic")
+    }
+
+    /// The chart's `config:` block IS the contract's default config, and a
+    /// drifted one ships a `ConfigMap` the binary refuses at startup. The
+    /// Dockerfile and `config.example.yaml` already have this guard; the chart
+    /// did not. Refresh with `dfe-transform-elastic emit-chart`.
+    #[test]
+    fn the_chart_config_block_matches_the_contract() {
+        let text = std::fs::read_to_string(chart_dir().join("values.yaml"))
+            .expect("the chart values are committed");
+        let values: serde_json::Value =
+            serde_yaml_ng::from_str(&text).expect("values.yaml parses as YAML");
+
+        let contract = contract();
+        assert_eq!(
+            values.get("config"),
+            contract.default_config.as_ref(),
+            "chart values.yaml has drifted from the contract"
+        );
+    }
+
+    /// librdkafka only presents SASL credentials when the protocol names a SASL
+    /// mechanism, so a chart that never stamps the protocol connects
+    /// anonymously in the clear with the secret mounted and unused.
+    #[test]
+    fn the_chart_stamps_the_kafka_wire_protocol() {
+        let values = std::fs::read_to_string(chart_dir().join("values.yaml"))
+            .expect("the chart values are committed");
+        let deployment = std::fs::read_to_string(chart_dir().join("templates/deployment.yaml"))
+            .expect("the deployment template is committed");
+
+        assert!(values.contains("securityProtocol:"), "no securityProtocol");
+        assert!(values.contains("saslMechanism:"), "no saslMechanism");
+        for stamped in ["KAFKA_SECURITY_PROTOCOL", "KAFKA_SASL_MECHANISM"] {
+            assert!(
+                deployment.contains(stamped),
+                "{stamped} never reaches the pod"
+            );
+        }
+    }
+
+    /// The downloader writes to `geoip.auto_download.data_dir` under a
+    /// read-only root filesystem, so that path needs a writable volume or 14 of
+    /// the source pipelines enrich to nothing and nothing says so.
+    #[test]
+    fn the_chart_gives_the_geoip_downloader_somewhere_to_write() {
+        let deployment = std::fs::read_to_string(chart_dir().join("templates/deployment.yaml"))
+            .expect("the deployment template is committed");
+
+        let data_dir = contract()
+            .default_config
+            .as_ref()
+            .and_then(|c| c.pointer("/geoip/auto_download/data_dir").cloned())
+            .and_then(|d| d.as_str().map(str::to_string))
+            .expect("the contract names a geoip data_dir");
+
+        assert!(
+            deployment.contains(&data_dir) || deployment.contains("auto_download.data_dir"),
+            "nothing mounts {data_dir}"
+        );
+        assert!(deployment.contains("emptyDir"), "no writable volume at all");
     }
 
     /// A chart directory with no KEDA template is not an error.

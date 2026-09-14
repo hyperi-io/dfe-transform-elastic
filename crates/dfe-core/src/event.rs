@@ -345,6 +345,27 @@ impl Event {
         Ok(())
     }
 
+    /// Set a value where [`Event::get`] would read one, and build the path
+    /// otherwise.
+    ///
+    /// [`Event::set`] splits on every dot, so a target the document already
+    /// holds as ONE key with dots in it gets a nested twin beside it -- the
+    /// vendor's `filesystem.use_percent` keeps its value and the document
+    /// carries both readings, which the corpus scores as an extra field. This
+    /// writes through whichever reading is already there.
+    ///
+    /// # Errors
+    ///
+    /// Propagates whatever [`Event::set`] returns when nothing is there yet.
+    pub fn set_resolved(&mut self, path: &str, value: impl Into<Value>) -> Result<()> {
+        let value = value.into();
+        if let Some(slot) = resolve_path_mut(&mut self.inner, path) {
+            *slot = value;
+            return Ok(());
+        }
+        self.set(path, value)
+    }
+
     /// Overwrite a value that ALREADY exists, reporting whether one did.
     ///
     /// [`Event::set`] splits on every dot and builds the objects it needs, so a
@@ -405,7 +426,7 @@ impl Event {
             let Value::Object(map) = current else {
                 return None;
             };
-            let Some((segment, tail)) = rest.split_once('.') else {
+            let Some((segment, _)) = rest.split_once('.') else {
                 // `shift_remove`, never `remove`: under `preserve_order` the
                 // plain one is `swap_remove`, which moves the LAST key into
                 // the freed slot. Insertion order is what parity rests on --
@@ -415,19 +436,22 @@ impl Event {
                 return map.shift_remove(rest);
             };
             // Decided before anything is taken, because the borrow checker will
-            // not let the miss branch look in `map` again after `get_mut`.
-            let key: String = if map.contains_key(segment) {
-                rest = tail;
-                segment.to_string()
+            // not let the miss branch look in `map` again after `get_mut`. Only
+            // the LENGTH crosses the branch -- both readings name a prefix of
+            // `rest`, so the key is re-sliced out of the path and the walk
+            // allocates nothing.
+            let key_len = if map.contains_key(segment) {
+                segment.len()
             } else if descended && map.contains_key(rest) {
                 return map.shift_remove(rest);
             } else {
-                let key = flat_key(map, rest)?.to_string();
-                rest = &rest[key.len() + 1..];
-                key
+                flat_key(map, rest)?.len()
             };
+            let (key, after) = rest.split_at(key_len);
+            // Past the dot that follows the key.
+            rest = after.get(1..).unwrap_or_default();
             descended = true;
-            current = map.get_mut(&key)?;
+            current = map.get_mut(key)?;
         }
     }
 
@@ -475,7 +499,10 @@ impl Event {
     /// pipelines ship ask for it.
     pub fn rename_over(&mut self, from: &str, to: &str) -> Result<()> {
         match self.remove(from) {
-            Some(value) => self.set(to, value),
+            // Resolved, not split: `rename` guards on [`Self::has`], which
+            // reads a flat dotted key, so the write has to reach the same slot
+            // or the rename lands on a nested twin and leaves the original.
+            Some(value) => self.set_resolved(to, value),
             None => Err(TransformError::FieldNotFound {
                 path: from.to_string(),
             }),
@@ -628,7 +655,8 @@ fn resolve_path<'a>(value: &'a Value, path: &str) -> Option<&'a Value> {
                 return Some(found);
             }
             let key = flat_key(map, rest)?;
-            rest = &rest[key.len() + 1..];
+            // Past the dot that follows the key.
+            rest = rest.get(key.len() + 1..).unwrap_or_default();
             current = map.get(key)?;
             descended = true;
             continue;
@@ -662,23 +690,26 @@ fn resolve_path_mut<'a>(value: &'a mut Value, path: &str) -> Option<&'a mut Valu
         let Value::Object(map) = current else {
             return None;
         };
-        let Some((segment, tail)) = rest.split_once('.') else {
+        let Some((segment, _)) = rest.split_once('.') else {
             return map.get_mut(rest);
         };
         // The borrow checker will not let the miss branch look in `map` again
         // after `get_mut`, so the decision is made before anything is taken.
-        let key: String = if map.contains_key(segment) {
-            rest = tail;
-            segment.to_string()
+        // Only the LENGTH crosses the branch -- both readings name a prefix of
+        // `rest`, so the key is re-sliced out of the path and the walk
+        // allocates nothing.
+        let key_len = if map.contains_key(segment) {
+            segment.len()
         } else if descended && map.contains_key(rest) {
             return map.get_mut(rest);
         } else {
-            let key = flat_key(map, rest)?.to_string();
-            rest = &rest[key.len() + 1..];
-            key
+            flat_key(map, rest)?.len()
         };
+        let (key, after) = rest.split_at(key_len);
+        // Past the dot that follows the key.
+        rest = after.get(1..).unwrap_or_default();
         descended = true;
-        current = map.get_mut(&key)?;
+        current = map.get_mut(key)?;
     }
 }
 
@@ -692,13 +723,18 @@ fn resolve_path_mut<'a>(value: &'a mut Value, path: &str) -> Option<&'a mut Valu
 /// both readings exist, which is what Painless does: this runs only after the
 /// plain segment lookup has already missed, so an ordinary path never pays for
 /// it.
-fn flat_key<'m>(map: &'m serde_json::Map<String, Value>, rest: &str) -> Option<&'m str> {
-    map.keys()
-        .filter(|k| {
-            k.len() < rest.len() && rest.as_bytes()[k.len()] == b'.' && rest.starts_with(k.as_str())
-        })
-        .max_by_key(|k| k.len())
-        .map(String::as_str)
+///
+/// Asked of the MAP, never scanned across it. The candidates are exactly the
+/// prefixes of `rest` that end at a dot, so a path of four segments costs four
+/// hash lookups whatever the document's width; scanning every key instead put a
+/// 150,000-key record x a thousand processor guards at 10^8 comparisons an
+/// event, which is a `max.poll.interval` breach and a rebalance loop.
+///
+/// Longest first, because the document's own spelling wins over a split of it.
+fn flat_key<'r>(map: &serde_json::Map<String, Value>, rest: &'r str) -> Option<&'r str> {
+    rest.rmatch_indices('.')
+        .map(|(at, _)| rest.get(..at).unwrap_or_default())
+        .find(|candidate| map.contains_key(*candidate))
 }
 
 /// Return a human-readable type name for a JSON value.
@@ -895,6 +931,31 @@ mod tests {
         assert_eq!(event.get_str("trace.id"), Some("abc"));
         assert_eq!(event.get("tmp.ece.log.trace.id"), None);
         assert_eq!(event.get_str("tmp.ece.log.level"), Some("INFO"));
+    }
+
+    /// A rename whose TARGET the document already holds as one dotted key
+    /// replaces that key. Splitting the path instead left the vendor's value
+    /// untouched under a nested twin, which the corpus scores as an extra
+    /// field and a missing one at once.
+    #[test]
+    fn rename_over_writes_through_a_flat_dotted_target() {
+        let mut event = Event::new(json!({
+            "panw": { "system": { "filesystem.use_percent": "12", "src": "94" } },
+        }));
+
+        event
+            .rename_over("panw.system.src", "panw.system.filesystem.use_percent")
+            .unwrap();
+
+        assert_eq!(
+            event.get_str("panw.system.filesystem.use_percent"),
+            Some("94")
+        );
+        let system = event.get_object("panw.system").expect("the system object");
+        assert!(
+            !system.contains_key("filesystem"),
+            "a nested twin was built beside the flat key: {system:?}"
+        );
     }
 
     /// The whole-key reading still needs a real segment walked first, so a

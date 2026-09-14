@@ -50,25 +50,29 @@ podSecurityContext:
   seccompProfile:
     type: RuntimeDefault
 
-# -- Container-level security context. readOnlyRootFilesystem stays
-# false because the spool and DLQ write to disk and the only volume
-# mounted here is the read-only config map; set it true only for an
-# app that spools nowhere.
+# -- Container-level security context. This service spools nowhere: the
+# only writable paths are the GeoIP volume and the scratch volume below,
+# so the root filesystem is read-only.
 securityContext:
   allowPrivilegeEscalation: false
   privileged: false
-  readOnlyRootFilesystem: false
+  readOnlyRootFilesystem: true
   capabilities:
     drop:
       - ALL
 
+# -- Memory has to cover one inbound fetch (config.source.max_batch_bytes,
+# 16 MiB) parsed into document trees, which are several times the raw
+# bytes, plus the outbound chunks and the GeoIP cache. Raise both together
+# with max_batch_bytes.
 resources:
   requests:
     cpu: 250m
-    memory: 256Mi
+    memory: 512Mi
   limits:
     cpu: "2"
-    memory: 1Gi
+    memory: 2Gi
+    ephemeral-storage: 1Gi
 
 # -- Metrics and health endpoint service
 service:
@@ -80,9 +84,11 @@ config:
   pipeline_name: dfe-transform-elastic
   source:
     name: filebeat.okta.default
+    envelope: auto
     topics:
     - raw_events
     batch_size: 20000
+    max_batch_bytes: 16777216
     group_id: dfe-transform-elastic
     brokers:
     - kafka:9092
@@ -90,18 +96,57 @@ config:
     topic: normalised_events
     brokers:
     - kafka:9092
+    max_message_bytes: 900000
+  geoip:
+    enabled: true
+    provider: db_ip_lite
+    auto_download:
+      enabled: true
+      data_dir: /var/lib/dfe/geoip
+      max_age_days: 30
   scaling:
     enabled: true
     memory_gate_threshold: 0.8
 
-# -- kafka credentials
+# -- kafka wire protocol and credentials.
+#
+# securityProtocol is NOT optional: librdkafka only presents SASL
+# credentials when the protocol names a SASL mechanism, so leaving it at
+# librdkafka's `plaintext` default connects anonymously in the clear
+# while the secret sits mounted and unused. The service refuses that
+# pairing at startup rather than running with it.
+#
+# Leave username and password empty (and existingSecret unset) for an
+# unauthenticated broker, and set securityProtocol to `plaintext` with
+# it -- credentials and protocol have to agree in both directions.
 kafka:
+  securityProtocol: sasl_ssl
+  saslMechanism: SCRAM-SHA-512
   existingSecret: ""
   secretKeys:
     username: kafka-username
     password: kafka-password
   username: ""
   password: ""
+
+# -- Where the GeoIP databases are written. `config.geoip.auto_download`
+# downloads them at startup, and the root filesystem is read-only, so this
+# volume has to exist or 14 of the source pipelines enrich to nothing. Use
+# a PVC instead to stop every new pod re-downloading.
+geoip:
+  sizeLimit: 512Mi
+
+# -- Scratch space for anything that writes a temporary file under a
+# read-only root.
+scratch:
+  sizeLimit: 64Mi
+
+# -- Log deduplication. A device that mixes formats misses grok on most of
+# a batch, and scalo's throttle is off by default.
+logThrottle:
+  enabled: true
+  burst: 50
+  rate: "1.0"
 
 # -- KEDA autoscaling (requires KEDA operator installed)
 keda:
