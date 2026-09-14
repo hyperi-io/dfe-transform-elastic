@@ -131,12 +131,14 @@ mod tenable_io;
 mod tenable_ot_security;
 mod tenable_sc;
 mod ti_crowdstrike;
+mod ti_custom;
 mod ti_mandiant_advantage;
 mod ti_misp;
 mod ti_opencti;
 mod ti_rapid7_threat_command;
 mod ti_recordedfuture;
 mod ti_socradar_feeds;
+mod ti_socradar_taxii;
 mod ti_ticura;
 mod traefik;
 mod trend_micro_vision_one;
@@ -274,12 +276,14 @@ const ENTRIES: &[&[Entry]] = &[
     tenable_ot_security::ENTRIES,
     tenable_sc::ENTRIES,
     ti_crowdstrike::ENTRIES,
+    ti_custom::ENTRIES,
     ti_mandiant_advantage::ENTRIES,
     ti_misp::ENTRIES,
     ti_opencti::ENTRIES,
     ti_rapid7_threat_command::ENTRIES,
     ti_recordedfuture::ENTRIES,
     ti_socradar_feeds::ENTRIES,
+    ti_socradar_taxii::ENTRIES,
     ti_ticura::ENTRIES,
     traefik::ENTRIES,
     trend_micro_vision_one::ENTRIES,
