@@ -51,6 +51,13 @@ nondeterministic:
       same sub-second digits as the captured `event.ingested`. Capped at
       `json.expiration_ts` when that is earlier, which IS deterministic, but
       the uncapped path is not.
+  - path: ti_socradar_feeds.feed.ioc_expiration_date
+    sources: [ti_socradar_feeds]
+    why: >
+      `new Date()` plus the configured `ioc_expiration_duration`, so it is the
+      capture's own clock (2026-08-27T06:01:17.989Z plus 90 days) and no
+      transform can reproduce it. The duration and reason beside it are
+      deterministic and are compared.
 
 # Elastic and Beats plumbing DFE does not emit. Never a defect. Prefix match on
 # the dotted path, list indices removed first.
