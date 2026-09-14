@@ -61,12 +61,15 @@ mod citrix_adc;
 mod cyberark_pta;
 mod cyera;
 mod darktrace;
+mod dataminr_pulse;
 mod elastic_agent;
 mod elastic_package_registry;
+mod entityanalytics_ad;
 mod ess_billing;
 mod extrahop;
 mod github;
 mod gitlab;
+mod google_workspace;
 mod grafana;
 mod island_browser;
 mod jamf_compliance_reporter;
@@ -89,6 +92,7 @@ mod sublime_security;
 mod suricata;
 mod symantec_endpoint_security;
 mod sysdig;
+mod tenable_sc;
 mod ti_crowdstrike;
 mod ti_mandiant_advantage;
 mod ti_misp;
@@ -159,12 +163,15 @@ const ENTRIES: &[&[Entry]] = &[
     cyberark_pta::ENTRIES,
     cyera::ENTRIES,
     darktrace::ENTRIES,
+    dataminr_pulse::ENTRIES,
     elastic_agent::ENTRIES,
     elastic_package_registry::ENTRIES,
+    entityanalytics_ad::ENTRIES,
     ess_billing::ENTRIES,
     extrahop::ENTRIES,
     github::ENTRIES,
     gitlab::ENTRIES,
+    google_workspace::ENTRIES,
     grafana::ENTRIES,
     island_browser::ENTRIES,
     jamf_compliance_reporter::ENTRIES,
@@ -187,6 +194,7 @@ const ENTRIES: &[&[Entry]] = &[
     suricata::ENTRIES,
     symantec_endpoint_security::ENTRIES,
     sysdig::ENTRIES,
+    tenable_sc::ENTRIES,
     ti_crowdstrike::ENTRIES,
     ti_mandiant_advantage::ENTRIES,
     ti_misp::ENTRIES,
