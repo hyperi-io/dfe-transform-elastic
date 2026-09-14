@@ -41,8 +41,10 @@ use dfe_core::event::Event;
 
 mod abnormal_security;
 mod airlock_digital;
+mod akamai;
 mod anthropic_metrics;
 mod arista_ngfw;
+mod atlassian_jira;
 mod auditd;
 mod aws;
 mod aws_billing;
@@ -61,6 +63,7 @@ mod cyera;
 mod darktrace;
 mod elastic_agent;
 mod elastic_package_registry;
+mod ess_billing;
 mod extrahop;
 mod github;
 mod gitlab;
@@ -74,9 +77,11 @@ mod microsoft_intune;
 mod modsecurity;
 mod mongodb_atlas;
 mod netbox;
+mod nginx;
 mod nozomi_networks;
 mod prisma_access;
 mod qualys_vmdr;
+mod rubrik;
 mod sentinel_one_cloud_funnel;
 mod snyk;
 mod splunk;
@@ -86,11 +91,13 @@ mod symantec_endpoint_security;
 mod sysdig;
 mod ti_crowdstrike;
 mod ti_mandiant_advantage;
+mod ti_misp;
 mod ti_opencti;
 mod ti_rapid7_threat_command;
 mod ti_recordedfuture;
 mod ti_ticura;
 mod trend_micro_vision_one;
+mod trendmicro;
 mod vsphere;
 mod wiz;
 mod xm_cyber;
@@ -132,8 +139,10 @@ impl Eq for Entry {}
 const ENTRIES: &[&[Entry]] = &[
     abnormal_security::ENTRIES,
     airlock_digital::ENTRIES,
+    akamai::ENTRIES,
     anthropic_metrics::ENTRIES,
     arista_ngfw::ENTRIES,
+    atlassian_jira::ENTRIES,
     auditd::ENTRIES,
     aws::ENTRIES,
     aws_billing::ENTRIES,
@@ -152,6 +161,7 @@ const ENTRIES: &[&[Entry]] = &[
     darktrace::ENTRIES,
     elastic_agent::ENTRIES,
     elastic_package_registry::ENTRIES,
+    ess_billing::ENTRIES,
     extrahop::ENTRIES,
     github::ENTRIES,
     gitlab::ENTRIES,
@@ -165,9 +175,11 @@ const ENTRIES: &[&[Entry]] = &[
     modsecurity::ENTRIES,
     mongodb_atlas::ENTRIES,
     netbox::ENTRIES,
+    nginx::ENTRIES,
     nozomi_networks::ENTRIES,
     prisma_access::ENTRIES,
     qualys_vmdr::ENTRIES,
+    rubrik::ENTRIES,
     sentinel_one_cloud_funnel::ENTRIES,
     snyk::ENTRIES,
     splunk::ENTRIES,
@@ -177,11 +189,13 @@ const ENTRIES: &[&[Entry]] = &[
     sysdig::ENTRIES,
     ti_crowdstrike::ENTRIES,
     ti_mandiant_advantage::ENTRIES,
+    ti_misp::ENTRIES,
     ti_opencti::ENTRIES,
     ti_rapid7_threat_command::ENTRIES,
     ti_recordedfuture::ENTRIES,
     ti_ticura::ENTRIES,
     trend_micro_vision_one::ENTRIES,
+    trendmicro::ENTRIES,
     vsphere::ENTRIES,
     wiz::ENTRIES,
     xm_cyber::ENTRIES,
