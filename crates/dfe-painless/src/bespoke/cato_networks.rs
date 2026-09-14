@@ -15,7 +15,7 @@ use serde_json::{Map, Value};
 use dfe_core::Event;
 
 use super::Entry;
-use crate::helpers::{java_bucket, painless_to_string};
+use crate::helpers::{java_map_values as java_values_in_order, painless_to_string};
 
 /// The subtree all four scripts work over.
 const AUDIT: &str = "cato_networks.audit";
@@ -225,20 +225,9 @@ fn member_slot<'a>(item: &'a mut Value, member: &str) -> Option<&'a mut Value> {
     Some(current)
 }
 
-/// A map's values in the order a Java `HashMap` iterates them: bucket index
-/// ascending, insertion order within a bucket.
+/// A map's values in the order the vendor's own parsed map iterates them.
 fn java_map_values(map: &Map<String, Value>) -> Vec<Value> {
-    let table = parsed_table_size(map.len());
-    let mut placed: Vec<(usize, usize, &Value)> = map
-        .iter()
-        .enumerate()
-        .map(|(position, (key, value))| (java_bucket(key, table), position, value))
-        .collect();
-    placed.sort_by_key(|(bucket, position, _)| (*bucket, *position));
-    placed
-        .into_iter()
-        .map(|(_, _, value)| value.clone())
-        .collect()
+    java_values_in_order(map, parsed_table_size(map.len()))
 }
 
 /// The table a map Elasticsearch built from parsed content holds `entries` in.
