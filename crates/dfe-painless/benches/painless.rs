@@ -1108,8 +1108,62 @@ fn bench_stringify_member_list(c: &mut Criterion) {
     });
 }
 
+/// The helpers every matched runner reaches through, measured on their own
+/// rather than behind a ladder dispatch that would swamp them.
+///
+/// `dedup_array` is emitted after an append run by the generator's own
+/// post-processing, so its cost is tree-wide, and `java_set_order` runs
+/// wherever a script collects into a `HashSet`.
+fn bench_helpers(c: &mut Criterion) {
+    use dfe_painless::helpers::{dedup_array, java_set_order, painless_add};
+
+    // The width a related-field append reaches: a handful of addresses with
+    // repeats, which is what `related.ip` carries after two appends.
+    let related: Vec<serde_json::Value> = [
+        "10.4.7.21",
+        "192.0.2.8",
+        "10.4.7.21",
+        "198.51.100.3",
+        "192.0.2.8",
+        "203.0.113.9",
+        "10.4.7.21",
+        "198.51.100.3",
+    ]
+    .iter()
+    .map(|ip| json!(ip))
+    .collect();
+
+    c.bench_function("helpers/dedup_array", |b| {
+        b.iter_batched_ref(
+            || related.clone(),
+            |values| dedup_array(black_box(values)),
+            BatchSize::SmallInput,
+        );
+    });
+
+    c.bench_function("helpers/java_set_order", |b| {
+        b.iter_batched(
+            || related.clone(),
+            |values| java_set_order(black_box(values)),
+            BatchSize::SmallInput,
+        );
+    });
+
+    let left = json!("user@example.test");
+    let right = json!(" (blocked)");
+    c.bench_function("helpers/painless_add_strings", |b| {
+        b.iter(|| painless_add(black_box(&left), black_box(&right)));
+    });
+
+    let big = json!(9_000_000_000_000_000_000_i64);
+    c.bench_function("helpers/painless_add_integers", |b| {
+        b.iter(|| painless_add(black_box(&big), black_box(&big)));
+    });
+}
+
 criterion_group!(
     benches,
+    bench_helpers,
     bench_params_matcher,
     bench_text_matcher,
     bench_unhandled,

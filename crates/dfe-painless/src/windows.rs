@@ -331,9 +331,9 @@ pub(crate) fn run_registry(event: &mut Event, params: &Map<String, Value>) -> bo
         } else if let Some(caps) = DWORD.captures(&data) {
             parsed(&caps[1]).map(|value| (value.to_string(), "SZ_DWORD"))
         } else if data == "Binary Data" {
-            Some((data.clone(), "REG_BINARY"))
+            Some((data, "REG_BINARY"))
         } else {
-            Some((data.clone(), "REG_SZ"))
+            Some((data, "REG_SZ"))
         };
         if let Some((value, kind)) = entry {
             registry.insert("data".into(), json!({ "strings": [value], "type": kind }));
@@ -841,7 +841,7 @@ pub(crate) fn run_copy_target_user(event: &mut Event, codes: &[String]) -> bool 
         } else {
             "user.name"
         };
-        let _ = event.set(field, json!(first.clone()));
+        let _ = event.set(field, json!(first));
         let _ = event.append_unique("related.user", Value::String(first));
     }
 
@@ -877,7 +877,7 @@ pub(crate) fn run_copy_subject_user(event: &mut Event, codes: &[String]) -> bool
         .get_str("winlog.event_data.SubjectUserName")
         .map(str::to_string)
     {
-        let _ = event.set("user.name", json!(name.clone()));
+        let _ = event.set("user.name", json!(name));
         let _ = event.append_unique("related.user", Value::String(name));
     }
     if let Some(domain) = event
@@ -901,7 +901,7 @@ pub(crate) fn run_copy_member_name(event: &mut Event, codes: &[String]) -> bool 
     if let Some(Value::Array(parts)) = event.get("_temp.MemberNameParts").cloned() {
         if let Some(first) = parts.first().and_then(Value::as_str) {
             let name = first.replace("CN=", "").replace("cn=", "");
-            let _ = event.set("user.target.name", json!(name.clone()));
+            let _ = event.set("user.target.name", json!(name));
             let _ = event.append_unique("related.user", Value::String(name));
         }
         if parts.len() >= 4
@@ -989,7 +989,7 @@ pub(crate) fn run_copy_user_to_base(
     }
     if let Some(name) = valid(event.get_str("winlog.event_data.TargetUserName")) {
         let name = name.split('@').next().unwrap_or(&name).to_string();
-        let _ = event.set(&format!("user.{base}.name"), json!(name.clone()));
+        let _ = event.set(&format!("user.{base}.name"), json!(name));
         let _ = event.append_unique("related.user", Value::String(name));
     }
     if let Some(domain) = valid(event.get_str("winlog.event_data.TargetDomainName")) {

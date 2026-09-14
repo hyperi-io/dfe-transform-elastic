@@ -181,7 +181,10 @@ pub fn set_ladder(event: &mut Event, pattern: &SetLadder) -> bool {
         if words.is_empty() {
             continue;
         }
-        let _ = event.set(target, Value::Array(java_set_order(words)));
+        let _ = event.set(
+            target,
+            Value::Array(crate::helpers::java_string_set_order(words)),
+        );
     }
     true
 }
@@ -204,14 +207,6 @@ fn run_chains(chains: &[Chain], read: &[String], collected: &mut [Vec<String>]) 
             break;
         }
     }
-}
-
-/// The order a `HashSet` hands its words to the serialiser: bucket index
-/// ascending, insertion order within a bucket.
-fn java_set_order(mut words: Vec<String>) -> Vec<Value> {
-    let table = crate::helpers::java_table_size(words.len());
-    words.sort_by_key(|word| crate::helpers::java_bucket(word, table));
-    words.into_iter().map(Value::String).collect()
 }
 
 /// The statements of a block, an `if ... else ...` CHAIN counting as ONE.

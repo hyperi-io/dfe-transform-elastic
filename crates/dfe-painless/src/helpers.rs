@@ -33,6 +33,9 @@ pub fn painless_truthy(v: &Value) -> bool {
 }
 
 /// Painless addition: string concat if either operand is a string, else numeric.
+///
+/// The integer arms WRAP, because Java's `long` keeps the low 64 bits where
+/// Rust's `+` panics under the `overflow-checks` the dev profile builds with.
 pub fn painless_add(a: &Value, b: &Value) -> Value {
     // String concatenation takes priority (Painless/Java behaviour)
     if a.is_string() || b.is_string() {
@@ -41,25 +44,23 @@ pub fn painless_add(a: &Value, b: &Value) -> Value {
         return json!(format!("{a_str}{b_str}"));
     }
 
-    // Numeric addition
-    let a_num = painless_to_f64(a);
-    let b_num = painless_to_f64(b);
-    let result = a_num + b_num;
-
     // Preserve integer type if both inputs are integers
     if a.is_i64() && b.is_i64() {
-        json!(a.as_i64().unwrap_or(0) + b.as_i64().unwrap_or(0))
+        let (left, right) = (a.as_i64().unwrap_or(0), b.as_i64().unwrap_or(0));
+        json!(left.wrapping_add(right))
     } else if a.is_u64() && b.is_u64() {
-        json!(a.as_u64().unwrap_or(0) + b.as_u64().unwrap_or(0))
+        let (left, right) = (a.as_u64().unwrap_or(0), b.as_u64().unwrap_or(0));
+        json!(left.wrapping_add(right))
     } else {
-        json!(result)
+        json!(painless_to_f64(a) + painless_to_f64(b))
     }
 }
 
 /// Painless subtraction.
 pub fn painless_sub(a: &Value, b: &Value) -> Value {
     if a.is_i64() && b.is_i64() {
-        json!(a.as_i64().unwrap_or(0) - b.as_i64().unwrap_or(0))
+        let (left, right) = (a.as_i64().unwrap_or(0), b.as_i64().unwrap_or(0));
+        json!(left.wrapping_sub(right))
     } else {
         json!(painless_to_f64(a) - painless_to_f64(b))
     }
@@ -68,32 +69,40 @@ pub fn painless_sub(a: &Value, b: &Value) -> Value {
 /// Painless multiplication.
 pub fn painless_mul(a: &Value, b: &Value) -> Value {
     if a.is_i64() && b.is_i64() {
-        json!(a.as_i64().unwrap_or(0) * b.as_i64().unwrap_or(0))
+        let (left, right) = (a.as_i64().unwrap_or(0), b.as_i64().unwrap_or(0));
+        json!(left.wrapping_mul(right))
     } else {
         json!(painless_to_f64(a) * painless_to_f64(b))
     }
 }
 
 /// Painless division (integer division for integers, float otherwise).
+///
+/// `wrapping_div` because `Long.MIN_VALUE / -1` is `Long.MIN_VALUE` in Java
+/// and an overflow panic in Rust.
 pub fn painless_div(a: &Value, b: &Value) -> Value {
     let b_val = painless_to_f64(b);
     if b_val == 0.0 {
         return Value::Null;
     }
     if a.is_i64() && b.is_i64() {
-        json!(a.as_i64().unwrap_or(0) / b.as_i64().unwrap_or(1))
+        let (left, right) = (a.as_i64().unwrap_or(0), b.as_i64().unwrap_or(1));
+        json!(left.wrapping_div(right))
     } else {
         json!(painless_to_f64(a) / b_val)
     }
 }
 
 /// Painless modulo.
+///
+/// `wrapping_rem` for the same reason as the division above: `Long.MIN_VALUE %
+/// -1` is `0` in Java and an overflow panic in Rust.
 pub fn painless_mod(a: &Value, b: &Value) -> Value {
     let b_val = painless_to_i64(b);
     if b_val == 0 {
         return Value::Null;
     }
-    json!(painless_to_i64(a) % b_val)
+    json!(painless_to_i64(a).wrapping_rem(b_val))
 }
 
 /// Convert a `Value` to `i64`. Handles strings, floats, bools.
@@ -336,21 +345,42 @@ pub(crate) fn java_bucket(key: &str, table: usize) -> usize {
 /// spelled the members nor a sorted one. `members` is the DISTINCT members in
 /// the order they were added.
 #[must_use]
-pub(crate) fn java_set_order(members: Vec<Value>) -> Vec<Value> {
+pub fn java_set_order(members: Vec<Value>) -> Vec<Value> {
     let table = java_table_size(members.len());
-    let mut placed: Vec<(usize, usize, Value)> = members
+    java_bucket_order(members, |member| set_bucket(member, table))
+}
+
+/// The same, for members the caller already holds as strings.
+///
+/// Four sources collect names into a `Vec<String>` and each spelled the walk
+/// out for itself.
+#[must_use]
+pub(crate) fn java_string_set_order(members: Vec<String>) -> Vec<Value> {
+    let table = java_table_size(members.len());
+    java_bucket_order(members, |member| java_bucket(member, table))
         .into_iter()
-        .enumerate()
-        .map(|(position, member)| {
-            (
-                java_bucket(&painless_to_string(&member), table),
-                position,
-                member,
-            )
-        })
-        .collect();
-    placed.sort_by_key(|(bucket, position, _)| (*bucket, *position));
-    placed.into_iter().map(|(_, _, member)| member).collect()
+        .map(Value::String)
+        .collect()
+}
+
+/// Members placed in bucket order, insertion order preserved within a bucket.
+///
+/// The sort is STABLE, so the bucket alone is the whole key -- carrying the
+/// position beside it costs a second vector and orders nothing further.
+pub(crate) fn java_bucket_order<T>(mut members: Vec<T>, bucket: impl Fn(&T) -> usize) -> Vec<T> {
+    members.sort_by_cached_key(bucket);
+    members
+}
+
+/// The bucket one set member lands in.
+///
+/// A member that is ALREADY a string hashes where it stands, because rendering
+/// it first allocates a copy per member to hash and then drops it.
+fn set_bucket(member: &Value, table: usize) -> usize {
+    match member {
+        Value::String(text) => java_bucket(text, table),
+        other => java_bucket(&painless_to_string(other), table),
+    }
 }
 
 /// A map's values in the order a Java `HashMap` iterates them: bucket index
@@ -488,16 +518,19 @@ pub fn filetime_to_unix_ms(value: i64) -> i64 {
 /// Used after multiple `append` calls that may produce duplicates
 /// (e.g., related.ip being appended from both source.ip and destination.ip
 /// when they're the same address).
+///
+/// The kept members compact to the front rather than into a second list, so
+/// the distinct prefix IS the seen-set and nothing is cloned.
 pub fn dedup_array(arr: &mut Vec<Value>) {
-    let mut seen = Vec::with_capacity(arr.len());
-    arr.retain(|v| {
-        if seen.contains(v) {
-            false
-        } else {
-            seen.push(v.clone());
-            true
+    let mut kept = 0;
+    for at in 0..arr.len() {
+        if arr[..kept].contains(&arr[at]) {
+            continue;
         }
-    });
+        arr.swap(kept, at);
+        kept += 1;
+    }
+    arr.truncate(kept);
 }
 
 /// Recursive camelCase-to-snake_case key renaming on a `Value` tree.
@@ -962,6 +995,20 @@ mod tests {
     fn division_integer() {
         assert_eq!(painless_div(&json!(10), &json!(3)), json!(3));
         assert_eq!(painless_div(&json!(10), &json!(0)), Value::Null);
+    }
+
+    /// Java's `long` arithmetic keeps the low 64 bits where Rust's panics under
+    /// the `overflow-checks` the dev profile builds with.
+    #[test]
+    fn integer_arithmetic_wraps_the_way_java_wraps() {
+        let max = json!(i64::MAX);
+        let min = json!(i64::MIN);
+        assert_eq!(painless_add(&max, &json!(1)), json!(i64::MIN));
+        assert_eq!(painless_sub(&min, &json!(1)), json!(i64::MAX));
+        assert_eq!(painless_mul(&max, &json!(2)), json!(-2_i64));
+        // `Long.MIN_VALUE / -1` is `Long.MIN_VALUE` and `% -1` is zero.
+        assert_eq!(painless_div(&min, &json!(-1)), json!(i64::MIN));
+        assert_eq!(painless_mod(&min, &json!(-1)), json!(0));
     }
 
     #[test]
