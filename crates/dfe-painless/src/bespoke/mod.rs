@@ -39,6 +39,15 @@ use sha2::{Digest, Sha256};
 
 use dfe_core::event::Event;
 
+mod anthropic_metrics;
+mod auditd;
+mod aws;
+mod cisco_secure_endpoint;
+mod elastic_agent;
+mod jamf_compliance_reporter;
+mod mongodb_atlas;
+mod nozomi_networks;
+
 /// A transcribed script's effect on one event.
 ///
 /// `params` is the pipeline's `params` block verbatim, [`Value::Null`] when
@@ -72,7 +81,16 @@ impl PartialEq for Entry {
 impl Eq for Entry {}
 
 /// Every source module's entries, in registration order.
-const ENTRIES: &[&[Entry]] = &[];
+const ENTRIES: &[&[Entry]] = &[
+    anthropic_metrics::ENTRIES,
+    auditd::ENTRIES,
+    aws::ENTRIES,
+    cisco_secure_endpoint::ENTRIES,
+    elastic_agent::ENTRIES,
+    jamf_compliance_reporter::ENTRIES,
+    mongodb_atlas::ENTRIES,
+    nozomi_networks::ENTRIES,
+];
 
 /// The key a script is registered under.
 ///
