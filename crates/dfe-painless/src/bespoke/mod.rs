@@ -39,12 +39,20 @@ use sha2::{Digest, Sha256};
 
 use dfe_core::event::Event;
 
+mod abnormal_security;
+mod aws_billing;
+mod axonius;
 mod backstage;
 mod beelzebub;
+mod bitwarden;
+mod cyera;
 mod kolide;
+mod kubernetes;
 mod netbox;
 mod prisma_access;
+mod sublime_security;
 mod ti_crowdstrike;
+mod ti_mandiant_advantage;
 mod ti_rapid7_threat_command;
 
 /// A transcribed script's effect on one event.
@@ -81,12 +89,20 @@ impl Eq for Entry {}
 
 /// Every source module's entries, in registration order.
 const ENTRIES: &[&[Entry]] = &[
+    abnormal_security::ENTRIES,
+    aws_billing::ENTRIES,
+    axonius::ENTRIES,
     backstage::ENTRIES,
     beelzebub::ENTRIES,
+    bitwarden::ENTRIES,
+    cyera::ENTRIES,
     kolide::ENTRIES,
+    kubernetes::ENTRIES,
     netbox::ENTRIES,
     prisma_access::ENTRIES,
+    sublime_security::ENTRIES,
     ti_crowdstrike::ENTRIES,
+    ti_mandiant_advantage::ENTRIES,
     ti_rapid7_threat_command::ENTRIES,
 ];
 
