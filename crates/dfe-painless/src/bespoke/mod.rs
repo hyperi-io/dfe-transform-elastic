@@ -39,39 +39,55 @@ use sha2::{Digest, Sha256};
 
 use dfe_core::event::Event;
 
+mod abnormal_security;
 mod airlock_digital;
 mod anthropic_metrics;
 mod arista_ngfw;
 mod auditd;
 mod aws;
+mod aws_billing;
+mod axonius;
 mod azure_ai_foundry;
 mod azure_openai;
 mod backstage;
 mod beelzebub;
 mod beyondtrust_epm;
+mod bitwarden;
 mod checkpoint;
 mod cisco_secure_endpoint;
 mod citrix_adc;
+mod cyera;
 mod darktrace;
 mod elastic_agent;
 mod extrahop;
 mod gitlab;
 mod grafana;
 mod jamf_compliance_reporter;
+mod jamf_pro;
 mod kolide;
+mod kubernetes;
+mod microsoft_intune;
+mod modsecurity;
 mod mongodb_atlas;
 mod netbox;
 mod nozomi_networks;
 mod prisma_access;
+mod qualys_vmdr;
 mod snyk;
+mod splunk;
+mod sublime_security;
+mod suricata;
 mod symantec_endpoint_security;
 mod ti_crowdstrike;
+mod ti_mandiant_advantage;
 mod ti_opencti;
 mod ti_rapid7_threat_command;
 mod ti_recordedfuture;
 mod ti_ticura;
 mod trend_micro_vision_one;
 mod wiz;
+mod xm_cyber;
+mod zoom;
 
 /// A transcribed script's effect on one event.
 ///
@@ -107,39 +123,55 @@ impl Eq for Entry {}
 
 /// Every source module's entries, in registration order.
 const ENTRIES: &[&[Entry]] = &[
+    abnormal_security::ENTRIES,
     airlock_digital::ENTRIES,
     anthropic_metrics::ENTRIES,
     arista_ngfw::ENTRIES,
     auditd::ENTRIES,
     aws::ENTRIES,
+    aws_billing::ENTRIES,
+    axonius::ENTRIES,
     azure_ai_foundry::ENTRIES,
     azure_openai::ENTRIES,
     backstage::ENTRIES,
     beelzebub::ENTRIES,
     beyondtrust_epm::ENTRIES,
+    bitwarden::ENTRIES,
     checkpoint::ENTRIES,
     cisco_secure_endpoint::ENTRIES,
     citrix_adc::ENTRIES,
+    cyera::ENTRIES,
     darktrace::ENTRIES,
     elastic_agent::ENTRIES,
     extrahop::ENTRIES,
     gitlab::ENTRIES,
     grafana::ENTRIES,
     jamf_compliance_reporter::ENTRIES,
+    jamf_pro::ENTRIES,
     kolide::ENTRIES,
+    kubernetes::ENTRIES,
+    microsoft_intune::ENTRIES,
+    modsecurity::ENTRIES,
     mongodb_atlas::ENTRIES,
     netbox::ENTRIES,
     nozomi_networks::ENTRIES,
     prisma_access::ENTRIES,
+    qualys_vmdr::ENTRIES,
     snyk::ENTRIES,
+    splunk::ENTRIES,
+    sublime_security::ENTRIES,
+    suricata::ENTRIES,
     symantec_endpoint_security::ENTRIES,
     ti_crowdstrike::ENTRIES,
+    ti_mandiant_advantage::ENTRIES,
     ti_opencti::ENTRIES,
     ti_rapid7_threat_command::ENTRIES,
     ti_recordedfuture::ENTRIES,
     ti_ticura::ENTRIES,
     trend_micro_vision_one::ENTRIES,
     wiz::ENTRIES,
+    xm_cyber::ENTRIES,
+    zoom::ENTRIES,
 ];
 
 /// The key a script is registered under.
