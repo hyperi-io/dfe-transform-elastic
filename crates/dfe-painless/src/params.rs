@@ -5183,7 +5183,7 @@ fn try_mimecast_log_type(event: &mut Event, params: &Map<String, Value>) -> bool
 
     // The event's keys, lowercased into a HashSet and walked in ITS hash
     // order -- insertion order is the mimecast map's own bucket walk.
-    let mut keys: Vec<String> = {
+    let keys: Vec<String> = {
         let map_table = java_table_size(mimecast.len());
         let mut walked: Vec<(usize, usize, String)> = mimecast
             .keys()
@@ -5200,13 +5200,7 @@ fn try_mimecast_log_type(event: &mut Event, params: &Map<String, Value>) -> bool
         seen
     };
     let set_table = java_table_size(keys.len());
-    let mut ordered: Vec<(usize, usize, String)> = keys
-        .drain(..)
-        .enumerate()
-        .map(|(position, key)| (java_bucket(&key, set_table), position, key))
-        .collect();
-    ordered.sort_by_key(|(bucket, position, _)| (*bucket, *position));
-    let keys: Vec<String> = ordered.into_iter().map(|(_, _, key)| key).collect();
+    let keys = crate::helpers::java_bucket_order(keys, |key| java_bucket(key, set_table));
 
     for key in &keys {
         if let Some(kind) = definite.get(key).and_then(Value::as_str) {
