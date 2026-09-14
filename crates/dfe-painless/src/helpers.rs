@@ -320,6 +320,31 @@ pub(crate) fn java_bucket(key: &str, table: usize) -> usize {
     (spread as u32 as usize) & (table - 1)
 }
 
+/// The members of a Java `HashSet` in the order it iterates them: bucket index
+/// ascending, insertion order within a bucket.
+///
+/// A script that collects into a `HashSet` and assigns it to a field leaves a
+/// JSON array in exactly this order, which is neither the order the source
+/// spelled the members nor a sorted one. `members` is the DISTINCT members in
+/// the order they were added.
+#[must_use]
+pub(crate) fn java_set_order(members: Vec<Value>) -> Vec<Value> {
+    let table = java_table_size(members.len());
+    let mut placed: Vec<(usize, usize, Value)> = members
+        .into_iter()
+        .enumerate()
+        .map(|(position, member)| {
+            (
+                java_bucket(&painless_to_string(&member), table),
+                position,
+                member,
+            )
+        })
+        .collect();
+    placed.sort_by_key(|(bucket, position, _)| (*bucket, *position));
+    placed.into_iter().map(|(_, _, member)| member).collect()
+}
+
 /// Painless equality — null-safe, with type coercion for numbers.
 pub fn painless_eq(a: &Value, b: &Value) -> bool {
     if a == b {

@@ -55,8 +55,11 @@ mod backstage;
 mod beelzebub;
 mod beyondtrust_epm;
 mod bitwarden;
+mod box_events;
+mod cato_networks;
 mod cef;
 mod checkpoint;
+mod cisco_ise;
 mod cisco_secure_endpoint;
 mod citrix_adc;
 mod cyberark_pta;
@@ -68,8 +71,10 @@ mod doppler;
 mod elastic_agent;
 mod elastic_package_registry;
 mod entityanalytics_ad;
+mod entityanalytics_okta;
 mod ess_billing;
 mod extrahop;
+mod f5_bigip;
 mod github;
 mod gitlab;
 mod google_workspace;
@@ -114,6 +119,7 @@ mod vsphere;
 mod wiz;
 mod xm_cyber;
 mod zoom;
+mod zscaler_zpa;
 
 /// A transcribed script's effect on one event.
 ///
@@ -165,8 +171,11 @@ const ENTRIES: &[&[Entry]] = &[
     beelzebub::ENTRIES,
     beyondtrust_epm::ENTRIES,
     bitwarden::ENTRIES,
+    box_events::ENTRIES,
+    cato_networks::ENTRIES,
     cef::ENTRIES,
     checkpoint::ENTRIES,
+    cisco_ise::ENTRIES,
     cisco_secure_endpoint::ENTRIES,
     citrix_adc::ENTRIES,
     cyberark_pta::ENTRIES,
@@ -178,8 +187,10 @@ const ENTRIES: &[&[Entry]] = &[
     elastic_agent::ENTRIES,
     elastic_package_registry::ENTRIES,
     entityanalytics_ad::ENTRIES,
+    entityanalytics_okta::ENTRIES,
     ess_billing::ENTRIES,
     extrahop::ENTRIES,
+    f5_bigip::ENTRIES,
     github::ENTRIES,
     gitlab::ENTRIES,
     google_workspace::ENTRIES,
@@ -224,6 +235,7 @@ const ENTRIES: &[&[Entry]] = &[
     wiz::ENTRIES,
     xm_cyber::ENTRIES,
     zoom::ENTRIES,
+    zscaler_zpa::ENTRIES,
 ];
 
 /// The key a script is registered under.
