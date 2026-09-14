@@ -51,6 +51,7 @@ mod aws;
 mod aws_billing;
 mod axonius;
 mod azure_ai_foundry;
+mod azure_frontdoor;
 mod azure_openai;
 mod backstage;
 mod beelzebub;
@@ -71,6 +72,7 @@ mod elastic_agent;
 mod elastic_package_registry;
 mod entityanalytics_ad;
 mod entityanalytics_okta;
+mod eset_protect;
 mod ess_billing;
 mod extrahop;
 mod f5_bigip;
@@ -97,10 +99,12 @@ mod rubrik;
 mod sentinel_one_cloud_funnel;
 mod snyk;
 mod splunk;
+mod stormshield;
 mod sublime_security;
 mod suricata;
 mod symantec_endpoint_security;
 mod sysdig;
+mod tanium;
 mod tenable_ot_security;
 mod tenable_sc;
 mod ti_crowdstrike;
@@ -164,6 +168,7 @@ const ENTRIES: &[&[Entry]] = &[
     aws_billing::ENTRIES,
     axonius::ENTRIES,
     azure_ai_foundry::ENTRIES,
+    azure_frontdoor::ENTRIES,
     azure_openai::ENTRIES,
     backstage::ENTRIES,
     beelzebub::ENTRIES,
@@ -184,6 +189,7 @@ const ENTRIES: &[&[Entry]] = &[
     elastic_package_registry::ENTRIES,
     entityanalytics_ad::ENTRIES,
     entityanalytics_okta::ENTRIES,
+    eset_protect::ENTRIES,
     ess_billing::ENTRIES,
     extrahop::ENTRIES,
     f5_bigip::ENTRIES,
@@ -210,10 +216,12 @@ const ENTRIES: &[&[Entry]] = &[
     sentinel_one_cloud_funnel::ENTRIES,
     snyk::ENTRIES,
     splunk::ENTRIES,
+    stormshield::ENTRIES,
     sublime_security::ENTRIES,
     suricata::ENTRIES,
     symantec_endpoint_security::ENTRIES,
     sysdig::ENTRIES,
+    tanium::ENTRIES,
     tenable_ot_security::ENTRIES,
     tenable_sc::ENTRIES,
     ti_crowdstrike::ENTRIES,
