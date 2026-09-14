@@ -197,16 +197,16 @@ fn the_lyve_cloud_client_ip_is_a_last_element_take_not_a_first() {
 }
 
 #[test]
-fn the_zoom_duration_reads_fields_the_script_writes_first() {
+fn the_zoom_duration_is_transcribed_because_it_writes_its_own_inputs() {
     // `NanosBetween` takes `event.start` and `event.end` as inputs, and the two
-    // assignments that create them from `zoom.phone.*` are not in the plan.
+    // assignments that create them from `zoom.phone.*` are not in its parse, so
+    // it measures a span nothing has written.
     let held = binding(ZOOM_DURATION).join(" ");
-    assert!(held.starts_with("NanosBetween"), "{held}");
-    assert!(held.contains(r#"start: "event.start""#), "{held}");
     assert!(
-        !held.contains("zoom.phone"),
-        "the plan now carries the source assignments -- re-measure zoom: {held}"
+        held.starts_with("Bespoke(zoom::ringing_call_span)"),
+        "{held}"
     );
+    assert!(held.contains("NanosBetween"), "{held}");
 }
 
 #[test]
