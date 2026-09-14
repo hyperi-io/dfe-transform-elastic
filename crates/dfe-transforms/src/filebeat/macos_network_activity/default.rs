@@ -524,6 +524,7 @@ impl Transform for Default {
             if _cond {
                 // Painless script, resolved to its runners at generation time
                 // Source: ctx.network = new HashMap();\nctx.network.bytes = ctx.source.bytes + ctx.destination.bytes\n
+                event.set("network", json!({}))?;
                 sum_directions(event, &["bytes"]);
             }
 

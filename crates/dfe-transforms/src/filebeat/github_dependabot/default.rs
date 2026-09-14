@@ -371,15 +371,17 @@ impl Transform for Default {
                 if let Some(kv_str) =
                     event.get_string("github.dependabot.security_advisory.cvss.vector_string")
                 {
+                    let mut kv_gap = false;
                     for pair in kv_str.split("/") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once(":") else {
-                            return Err(TransformError::ParseError {
-                                path: "github.dependabot.security_advisory.cvss.vector_string"
+                        let Some((key, value)) = pair.split_once(":").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "github.dependabot.security_advisory.cvss.vector_string"
                                     .into(),
-                                message: format!("does not contain value_split: {pair}"),
+                                split: ":".into(),
                             });
                         };
                         {

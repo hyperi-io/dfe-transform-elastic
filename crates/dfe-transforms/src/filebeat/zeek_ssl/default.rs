@@ -351,14 +351,16 @@ impl Transform for Default {
 
             if event.has_value("zeek.ssl.issuer") {
                 if let Some(kv_str) = event.get_string("zeek.ssl.issuer") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split(",") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "zeek.ssl.issuer".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "zeek.ssl.issuer".into(),
+                                split: "=".into(),
                             });
                         };
                         {
@@ -531,14 +533,16 @@ impl Transform for Default {
 
             if event.has_value("zeek.ssl.subject") {
                 if let Some(kv_str) = event.get_string("zeek.ssl.subject") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split(",") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "zeek.ssl.subject".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "zeek.ssl.subject".into(),
+                                split: "=".into(),
                             });
                         };
                         {
@@ -704,14 +708,16 @@ impl Transform for Default {
 
             if event.has_value("zeek.ssl.client_issuer") {
                 if let Some(kv_str) = event.get_string("zeek.ssl.client_issuer") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split(",") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "zeek.ssl.client_issuer".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "zeek.ssl.client_issuer".into(),
+                                split: "=".into(),
                             });
                         };
                         {
@@ -871,14 +877,16 @@ impl Transform for Default {
 
             if event.has_value("zeek.ssl.client_subject") {
                 if let Some(kv_str) = event.get_string("zeek.ssl.client_subject") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split(",") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "zeek.ssl.client_subject".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "zeek.ssl.client_subject".into(),
+                                split: "=".into(),
                             });
                         };
                         {

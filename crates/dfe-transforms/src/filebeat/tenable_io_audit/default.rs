@@ -797,8 +797,10 @@ impl Transform for Default {
                 if event.has_value("tenable_io.audit.fields.x-forwarded-for") {
                     if let Some(s) = event.get_string("tenable_io.audit.fields.x-forwarded-for") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set(
                             "tenable_io.audit.fields.x_forwarded_for",

@@ -63,19 +63,22 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if event.has_value("_temp_.full_message") {
                     if let Some(kv_str) = event.get_string("_temp_.full_message") {
+                        let mut kv_gap = false;
                         for pair in kv_str.split(";") {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
-                            let Some((key, value)) = pair.split_once(": ") else {
-                                return Err(TransformError::ParseError {
-                                    path: "_temp_.full_message".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            let Some((key, value)) = pair.split_once(": ").filter(|_| !kv_gap)
+                            else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "_temp_.full_message".into(),
+                                    split: ": ".into(),
                                 });
                             };
                             {
-                                let key = key.trim_matches(|c| " ".contains(c));
-                                let value = value.trim_matches(|c| " ".contains(c));
+                                let key = key.trim_matches(|c: char| matches!(c, ' '));
+                                let value = value.trim_matches(|c: char| matches!(c, ' '));
                                 if !key.is_empty() {
                                     kv_put(event, &format!("fortinet.edr.{}", key), value)?;
                                 }

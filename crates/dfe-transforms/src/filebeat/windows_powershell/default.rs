@@ -19,19 +19,21 @@ impl Transform for Default {
             let _cond = { event.get_str("winlog.event_id") == Some("800") };
             if _cond {
                 if let Some(kv_str) = event.get_string("winlog.event_data.param2") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split("\n\t") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "winlog.event_data.param2".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "winlog.event_data.param2".into(),
+                                split: "=".into(),
                             });
                         };
                         {
-                            let key = key.trim_matches(|c| "\n\t".contains(c));
-                            let value = value.trim_matches(|c| "\n\t".contains(c));
+                            let key = key.trim_matches(|c: char| matches!(c, '\t' | '\n'));
+                            let value = value.trim_matches(|c: char| matches!(c, '\t' | '\n'));
                             if !key.is_empty() {
                                 kv_put(event, &format!("winlog.event_data.{}", key), value)?;
                             }
@@ -249,8 +251,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("_temp.user_parts", Value::Array(parts))?;
                 }
@@ -555,8 +559,10 @@ impl Transform for Default {
                     if event.has_value("winlog.event_data.param3") {
                         if let Some(s) = event.get_string("winlog.event_data.param3") {
                             let mut parts: Vec<Value> = s.split("\n").map(|p| json!(p)).collect();
-                            while parts.last().and_then(Value::as_str) == Some("") {
-                                parts.pop();
+                            if parts.len() > 1 {
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                             }
                             event.set("winlog.event_data.param3", Value::Array(parts))?;
                         }

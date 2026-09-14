@@ -3644,8 +3644,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("cef.extensions.PanOSDNSResponse", Value::Array(parts))?;
                 }
@@ -10813,8 +10815,10 @@ impl Transform for Default {
             if _cond {
                 if let Some(s) = event.get_string("prisma_access.event.record_type") {
                     let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("_temp.dns_answers", Value::Array(parts))?;
                 }

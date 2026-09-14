@@ -231,8 +231,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("_temp.user_parts", Value::Array(parts))?;
                 }
@@ -246,8 +248,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("_temp.user_parts", Value::Array(parts))?;
                 }
@@ -327,8 +331,10 @@ impl Transform for Default {
                 if event.has_value("winlog.event_data.Path") {
                     if let Some(s) = event.get_string("winlog.event_data.Path") {
                         let mut parts: Vec<Value> = s.split(";").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("windows_defender.evidence_paths", Value::Array(parts))?;
                     }

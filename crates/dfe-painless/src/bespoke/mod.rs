@@ -93,6 +93,7 @@ mod google_scc;
 mod google_workspace;
 mod grafana;
 mod hackerone;
+mod iis;
 mod imperva;
 mod island_browser;
 mod jamf_compliance_reporter;
@@ -115,6 +116,7 @@ mod qualys_vmdr;
 mod rubrik;
 mod salesforce;
 mod sentinel_one_cloud_funnel;
+mod servicenow;
 mod snyk;
 mod splunk;
 mod stormshield;
@@ -123,17 +125,20 @@ mod suricata;
 mod swimlane;
 mod symantec_endpoint_security;
 mod sysdig;
+mod system;
 mod tanium;
 mod tenable_io;
 mod tenable_ot_security;
 mod tenable_sc;
 mod ti_crowdstrike;
+mod ti_custom;
 mod ti_mandiant_advantage;
 mod ti_misp;
 mod ti_opencti;
 mod ti_rapid7_threat_command;
 mod ti_recordedfuture;
 mod ti_socradar_feeds;
+mod ti_socradar_taxii;
 mod ti_ticura;
 mod traefik;
 mod trend_micro_vision_one;
@@ -233,6 +238,7 @@ const ENTRIES: &[&[Entry]] = &[
     google_workspace::ENTRIES,
     grafana::ENTRIES,
     hackerone::ENTRIES,
+    iis::ENTRIES,
     imperva::ENTRIES,
     island_browser::ENTRIES,
     jamf_compliance_reporter::ENTRIES,
@@ -255,6 +261,7 @@ const ENTRIES: &[&[Entry]] = &[
     rubrik::ENTRIES,
     salesforce::ENTRIES,
     sentinel_one_cloud_funnel::ENTRIES,
+    servicenow::ENTRIES,
     snyk::ENTRIES,
     splunk::ENTRIES,
     stormshield::ENTRIES,
@@ -263,17 +270,20 @@ const ENTRIES: &[&[Entry]] = &[
     swimlane::ENTRIES,
     symantec_endpoint_security::ENTRIES,
     sysdig::ENTRIES,
+    system::ENTRIES,
     tanium::ENTRIES,
     tenable_io::ENTRIES,
     tenable_ot_security::ENTRIES,
     tenable_sc::ENTRIES,
     ti_crowdstrike::ENTRIES,
+    ti_custom::ENTRIES,
     ti_mandiant_advantage::ENTRIES,
     ti_misp::ENTRIES,
     ti_opencti::ENTRIES,
     ti_rapid7_threat_command::ENTRIES,
     ti_recordedfuture::ENTRIES,
     ti_socradar_feeds::ENTRIES,
+    ti_socradar_taxii::ENTRIES,
     ti_ticura::ENTRIES,
     traefik::ENTRIES,
     trend_micro_vision_one::ENTRIES,

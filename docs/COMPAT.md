@@ -289,6 +289,37 @@ for `scripts/compat.py`, which applies the rules globally.
 A scan of `testdata/` cannot see this gate, and sizing a prize off the captures
 alone over-counts it by roughly six times.
 
+## Two upstream behaviours that read as capture defects
+
+Both have been diagnosed as harness bugs and neither is one. `compat.py` holds
+no truncation code and applies no escaping pass of its own, so a captured value
+that looks mangled came out of Elasticsearch that way.
+
+- **` (truncated)` at 32,712 characters.** The vendor pipeline truncates: a
+  `filterMassive` helper returns `src.substring(0, 32700)+' (truncated)'` for
+  any string over 32,766, in `qualys_vmdr/asset_host_detection`,
+  `qualys_vmdr/knowledge_base` and `servicenow/event`. Upstream's own
+  `-expected.json` carries the same 32,712-character value, and those three
+  fixtures are the only ones in the corpus that carry the marker at all.
+- **Four backslashes in `input.ndjson` against two in `event.original`.** The
+  input is the fixture line verbatim -- `build_docs` wraps it in `message` and
+  nothing escapes it a second time. The halving is a `script_unscape_values`
+  processor near the end of the ti_custom pipeline (`script_unescape_values` in
+  ti_socradar_taxii), which walks the whole document and replaces `\\` with `\`
+  in every string it finds, `event.original` included. A bare
+  `rename message -> event.original` over the same line leaves all four in
+  place, so the script is the only candidate. Four literal backslashes in an
+  `input.ndjson` are ordinary either way: 244 of them carry a JSON payload as a
+  string in `message`, which doubles every backslash inside it.
+
+Neither script is claimed by a matcher, so the transform emits the untruncated
+and still-escaped value and every such field scores wrong. That is transform
+debt, and reading it as corpus damage sends the repair to the wrong tree.
+
+`audit --source <name>` settles this whole class in one run, because it scores
+upstream's committed expectation against what the current pipelines produce.
+All five data streams named above report `CURRENT` with `real=0`.
+
 ## Older stacks
 
 Every committed expectation declares ECS 1.12.0, which is the Beats 7 era,

@@ -417,8 +417,10 @@ impl Transform for Default {
                 if event.has_value("google_workspace.chrome.local_ip") {
                     if let Some(s) = event.get_string("google_workspace.chrome.local_ip") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("google_workspace.chrome.local_ip", Value::Array(parts))?;
                     }
@@ -522,8 +524,10 @@ impl Transform for Default {
                 if event.has_value("google_workspace.chrome.remote_ip") {
                     if let Some(s) = event.get_string("google_workspace.chrome.remote_ip") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("google_workspace.chrome.remote_ip", Value::Array(parts))?;
                     }
@@ -1285,8 +1289,10 @@ impl Transform for Default {
                                 .into_iter()
                                 .map(|p| json!(p))
                                 .collect();
-                            while parts.last().and_then(Value::as_str) == Some("") {
-                                parts.pop();
+                            if parts.len() > 1 {
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                             }
                             event.set("event.action", Value::Array(parts))?;
                         }

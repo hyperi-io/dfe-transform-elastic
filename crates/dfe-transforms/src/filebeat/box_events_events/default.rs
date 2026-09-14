@@ -157,8 +157,10 @@ impl Transform for Default {
             if _cond {
                 if let Some(s) = event.get_string("box.created_by.login") {
                     let mut parts: Vec<Value> = s.split("@").map(|p| json!(p)).collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("_tmp.created_login", Value::Array(parts))?;
                 }
@@ -260,8 +262,10 @@ impl Transform for Default {
             if _cond {
                 if let Some(s) = event.get_string("box.accessible_by.login") {
                     let mut parts: Vec<Value> = s.split("@").map(|p| json!(p)).collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("_tmp.accessible_login", Value::Array(parts))?;
                 }

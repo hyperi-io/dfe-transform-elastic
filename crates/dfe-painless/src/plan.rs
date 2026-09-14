@@ -474,7 +474,11 @@ mod tests {
         );
         assert!(matches!(
             plan.known.as_slice(),
-            [KnownPattern::DropEmpty { policy, root: None }] if policy.empty_strings
+            [KnownPattern::DropEmpty {
+                policy,
+                root: None,
+                ..
+            }] if policy.empty_strings
         ));
     }
 }

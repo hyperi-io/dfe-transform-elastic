@@ -138,11 +138,13 @@ impl Transform for Default {
             if let Err(err) = (|| -> Result<()> {
                 if event.has_value("temp.message") {
                     if let Some(kv_str) = event.get_string("temp.message") {
+                        let mut kv_gap = false;
                         for pair in cached_regex!("(,(?=(?:[^'\"]|'[^']*'|\"[^\"]*\")*$))")
                             .split(&kv_str)
                             .into_iter()
                         {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
                             let Some((key, value)) = ({
@@ -151,16 +153,17 @@ impl Transform for Default {
                                     (Some(k), Some(v)) => Some((k.clone(), v.clone())),
                                     _ => None,
                                 }
-                            }) else {
-                                return Err(TransformError::ParseError {
-                                    path: "temp.message".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            })
+                            .filter(|_| !kv_gap) else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "temp.message".into(),
+                                    split: "(?<!\\\\)=".into(),
                                 });
                             };
                             {
                                 let key = &key[..];
-                                let key = key.trim_matches(|c| " ".contains(c));
-                                let value = value.trim_matches(|c| "\"'".contains(c));
+                                let key = key.trim_matches(|c: char| matches!(c, ' '));
+                                let value = value.trim_matches(|c: char| matches!(c, '\"' | '\''));
                                 if !key.is_empty() {
                                     kv_put(event, &format!("temp.{}", key), value)?;
                                 }

@@ -605,8 +605,10 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(s) = event.get_string("azure.graphactivitylogs.properties.roles") {
                         let mut parts: Vec<Value> = s.split(" ").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set(
                             "azure.graphactivitylogs.properties.roles",
@@ -653,8 +655,10 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(s) = event.get_string("azure.graphactivitylogs.properties.scopes") {
                         let mut parts: Vec<Value> = s.split(" ").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set(
                             "azure.graphactivitylogs.properties.scopes",
@@ -701,8 +705,10 @@ impl Transform for Default {
                 if let Err(err) = (|| -> Result<()> {
                     if let Some(s) = event.get_string("azure.graphactivitylogs.properties.wids") {
                         let mut parts: Vec<Value> = s.split(" ").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set(
                             "azure.graphactivitylogs.properties.wids",

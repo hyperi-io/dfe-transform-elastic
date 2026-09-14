@@ -299,8 +299,10 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("json.httpMessage.responseHeaders") {
                     if let Some(kv_str) = event.get_string("json.httpMessage.responseHeaders") {
+                        let mut kv_gap = false;
                         for pair in cached_regex!("\\r\\n").split(&kv_str).into_iter() {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
                             let Some((key, value)) = ({
@@ -309,16 +311,17 @@ impl Transform for Default {
                                     (Some(k), Some(v)) => Some((k.clone(), v.clone())),
                                     _ => None,
                                 }
-                            }) else {
-                                return Err(TransformError::ParseError {
-                                    path: "json.httpMessage.responseHeaders".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            })
+                            .filter(|_| !kv_gap) else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "json.httpMessage.responseHeaders".into(),
+                                    split: ":\\s*".into(),
                                 });
                             };
                             {
                                 let key = &key[..];
-                                let key = key.trim_matches(|c| " ".contains(c));
-                                let value = value.trim_matches(|c| " ".contains(c));
+                                let key = key.trim_matches(|c: char| matches!(c, ' '));
+                                let value = value.trim_matches(|c: char| matches!(c, ' '));
                                 if !key.is_empty() {
                                     kv_put(
                                         event,
@@ -387,8 +390,10 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("json.httpMessage.requestHeaders") {
                     if let Some(kv_str) = event.get_string("json.httpMessage.requestHeaders") {
+                        let mut kv_gap = false;
                         for pair in cached_regex!("\\r\\n").split(&kv_str).into_iter() {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
                             let Some((key, value)) = ({
@@ -397,16 +402,17 @@ impl Transform for Default {
                                     (Some(k), Some(v)) => Some((k.clone(), v.clone())),
                                     _ => None,
                                 }
-                            }) else {
-                                return Err(TransformError::ParseError {
-                                    path: "json.httpMessage.requestHeaders".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            })
+                            .filter(|_| !kv_gap) else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "json.httpMessage.requestHeaders".into(),
+                                    split: ":\\s*".into(),
                                 });
                             };
                             {
                                 let key = &key[..];
-                                let key = key.trim_matches(|c| " ".contains(c));
-                                let value = value.trim_matches(|c| " ".contains(c));
+                                let key = key.trim_matches(|c: char| matches!(c, ' '));
+                                let value = value.trim_matches(|c: char| matches!(c, ' '));
                                 if !key.is_empty() {
                                     kv_put(
                                         event,
@@ -1035,14 +1041,17 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("json.userRiskData.risk") {
                     if let Some(kv_str) = event.get_string("json.userRiskData.risk") {
+                        let mut kv_gap = false;
                         for pair in cached_regex!("\\|").split(&kv_str).into_iter() {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
-                            let Some((key, value)) = pair.split_once(":") else {
-                                return Err(TransformError::ParseError {
-                                    path: "json.userRiskData.risk".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            let Some((key, value)) = pair.split_once(":").filter(|_| !kv_gap)
+                            else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "json.userRiskData.risk".into(),
+                                    split: ":".into(),
                                 });
                             };
                             {
@@ -1063,14 +1072,17 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("json.userRiskData.trust") {
                     if let Some(kv_str) = event.get_string("json.userRiskData.trust") {
+                        let mut kv_gap = false;
                         for pair in cached_regex!("\\|").split(&kv_str).into_iter() {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
-                            let Some((key, value)) = pair.split_once(":") else {
-                                return Err(TransformError::ParseError {
-                                    path: "json.userRiskData.trust".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            let Some((key, value)) = pair.split_once(":").filter(|_| !kv_gap)
+                            else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "json.userRiskData.trust".into(),
+                                    split: ":".into(),
                                 });
                             };
                             {

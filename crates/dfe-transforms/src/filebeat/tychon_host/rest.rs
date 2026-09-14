@@ -34,8 +34,10 @@ impl Transform for Rest {
 
             if let Some(s) = event.get_string("tychon.host.security.antivirus.exists") {
                 let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                while parts.last().and_then(Value::as_str) == Some("") {
-                    parts.pop();
+                if parts.len() > 1 {
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                 }
                 event.set("_tmp_av", Value::Array(parts))?;
             }

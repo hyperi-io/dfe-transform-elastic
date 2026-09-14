@@ -70,11 +70,13 @@ impl Transform for Default {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(kv_str) = event.get_string("syslog5424_sd") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!("(?<!\\\\\")(?<=\"); (?=\\w)")
                         .split(&kv_str)
                         .into_iter()
                     {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
                         let Some((key, value)) = ({
@@ -84,28 +86,24 @@ impl Transform for Default {
                                 (Some(k), Some(v)) => Some((k.clone(), v.clone())),
                                 _ => None,
                             }
-                        }) else {
-                            return Err(TransformError::ParseError {
-                                path: "syslog5424_sd".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        })
+                        .filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "syslog5424_sd".into(),
+                                split: "(?i)(?<=[0-9a-z]):{1,2}(?=\")".into(),
                             });
                         };
                         {
                             let key = &key[..];
-                            let key = key.trim_matches(|c| " ".contains(c));
-                            let value = match (value.chars().next(), value.chars().last()) {
-                                (Some('('), Some(')'))
-                                | (Some('['), Some(']'))
-                                | (Some('<'), Some('>'))
-                                | (Some('"'), Some('"'))
-                                | (Some('\''), Some('\''))
-                                    if value.chars().count() > 1 =>
-                                {
-                                    &value[1..value.len() - 1]
-                                }
-                                _ => &value[..],
-                            };
-                            let value = value.trim_matches(|c| " ".contains(c));
+                            let key = key.trim_matches(|c: char| matches!(c, ' '));
+                            let value = value
+                                .as_str()
+                                .strip_prefix(['(', '[', '<', '"', '\''])
+                                .unwrap_or(value.as_str());
+                            let value = value
+                                .strip_suffix([']', ')', '>', '"', '\''])
+                                .unwrap_or(value);
+                            let value = value.trim_matches(|c: char| matches!(c, ' '));
                             if [
                                 "flags",
                                 "layer_uuid",
@@ -145,8 +143,10 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if let Some(kv_str) = event.get_string("syslog5424_sd") {
+                        let mut kv_gap = false;
                         for pair in cached_regex!("(?<=\") ").split(&kv_str).into_iter() {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
                             let Some((key, value)) = ({
@@ -156,28 +156,24 @@ impl Transform for Default {
                                     (Some(k), Some(v)) => Some((k.clone(), v.clone())),
                                     _ => None,
                                 }
-                            }) else {
-                                return Err(TransformError::ParseError {
-                                    path: "syslog5424_sd".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            })
+                            .filter(|_| !kv_gap) else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "syslog5424_sd".into(),
+                                    split: "(?i)(?<=[0-9a-z])=(?=\")".into(),
                                 });
                             };
                             {
                                 let key = &key[..];
-                                let key = key.trim_matches(|c| " ".contains(c));
-                                let value = match (value.chars().next(), value.chars().last()) {
-                                    (Some('('), Some(')'))
-                                    | (Some('['), Some(']'))
-                                    | (Some('<'), Some('>'))
-                                    | (Some('"'), Some('"'))
-                                    | (Some('\''), Some('\''))
-                                        if value.chars().count() > 1 =>
-                                    {
-                                        &value[1..value.len() - 1]
-                                    }
-                                    _ => &value[..],
-                                };
-                                let value = value.trim_matches(|c| " ".contains(c));
+                                let key = key.trim_matches(|c: char| matches!(c, ' '));
+                                let value = value
+                                    .as_str()
+                                    .strip_prefix(['(', '[', '<', '"', '\''])
+                                    .unwrap_or(value.as_str());
+                                let value = value
+                                    .strip_suffix([']', ')', '>', '"', '\''])
+                                    .unwrap_or(value);
+                                let value = value.trim_matches(|c: char| matches!(c, ' '));
                                 if [
                                     "flags",
                                     "layer_uuid",
