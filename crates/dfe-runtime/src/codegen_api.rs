@@ -8,7 +8,6 @@
 //! or stub what needs configuration this build may not have (`GeoIP`
 //! databases, a Painless interpreter).
 
-use std::collections::HashMap;
 use std::sync::LazyLock;
 
 use serde_json::{Map, Value};
@@ -30,7 +29,10 @@ pub struct RegisteredDomainResult {
 ///
 /// Returns a flat map of field names to values (e.g., "`country_iso_code`" -> "AU").
 /// Uses the global auto-initialised enricher (auto-detects MMDB files).
-pub fn geoip_lookup(db_name: &str, ip: &str) -> Result<HashMap<String, Value>> {
+///
+/// The map is SHARED with the cache rather than copied out of it, so a call
+/// site reads through it and never mutates it.
+pub fn geoip_lookup(db_name: &str, ip: &str) -> Result<crate::enrichment::geoip_cache::Fields> {
     Ok(crate::enrichment::geoip_global::geoip_lookup(db_name, ip))
 }
 
@@ -84,11 +86,10 @@ pub fn registered_domain_lookup(domain: &str) -> Option<RegisteredDomainResult> 
         domain
     };
 
-    let parts: Vec<&str> = domain.rsplitn(3, '.').collect();
-    if parts.len() < 2 {
-        return None;
-    }
-    if !psl::suffix(parts[0].as_bytes()).is_some_and(|suffix| suffix.is_known()) {
+    // The LAST label decides whether the name has a top-level domain at all,
+    // and a name with no dot has none.
+    let (_, last_label) = domain.rsplit_once('.')?;
+    if !psl::suffix(last_label.as_bytes()).is_some_and(|suffix| suffix.is_known()) {
         return None;
     }
 
@@ -112,7 +113,7 @@ pub fn registered_domain_lookup(domain: &str) -> Option<RegisteredDomainResult> 
         .map(|(suffix, _)| suffix);
 
     // Everything the suffix does not cover, split at its last label.
-    let suffix = icann.unwrap_or(parts[0]);
+    let suffix = icann.unwrap_or(last_label);
     let head = &domain[..domain.len() - suffix.len() - 1];
     let label = head.rsplit_once('.').map_or(head, |(_, label)| label);
     if label.is_empty() {
@@ -210,13 +211,19 @@ where
         out.push(event.remove("_ingest._value").unwrap_or(Value::Null));
     }
 
-    match enclosing {
-        // Restore BEFORE the write-back: a nested loop's field lives inside
-        // the restored element.
-        Some(previous) => {
-            event.set("_ingest._value", previous)?;
-        }
-        None => {
+    // Restore BEFORE the write-back: a nested loop's field lives inside the
+    // restored element.
+    if let Some(previous) = enclosing {
+        event.set("_ingest._value", previous)?;
+    } else {
+        // Only this loop's own key goes, the way [`foreach_map`] drops only
+        // its own: `_ingest` also carries `_grok_match_index`, which a later
+        // processor BRANCHES on.
+        event.remove("_ingest._value");
+        if event
+            .get_object("_ingest")
+            .is_some_and(serde_json::Map::is_empty)
+        {
             event.remove("_ingest");
         }
     }
@@ -342,19 +349,6 @@ pub fn parse_json_field(event: &mut Event, field: &str, target: &str) -> Result<
     Ok(())
 }
 
-/// Parse a JSON field and add its members to the document ROOT.
-///
-/// Elastic's `add_to_root`. The parsed value must be an object -- anything
-/// else throws, which is what hands the document to `on_failure`. `merge`
-/// recursively merges an incoming object into an existing one of the same
-/// name and throws where either side is not an object; `replace`, the
-/// default, overwrites whatever was there.
-///
-/// Kibana's ECS log line is the whole reason: the message IS the document,
-/// and without this its four packages parse nothing at all.
-///
-/// # Errors
-///
 /// Set a value at a path whose NAME is a mustache template.
 ///
 /// A `set` inside a `foreach` names its target through `_ingest._value`, so the
@@ -413,6 +407,19 @@ fn render_path(event: &Event, template: &str) -> String {
     out
 }
 
+/// Parse a JSON field and add its members to the document ROOT.
+///
+/// Elastic's `add_to_root`. The parsed value must be an object -- anything
+/// else throws, which is what hands the document to `on_failure`. `merge`
+/// recursively merges an incoming object into an existing one of the same
+/// name and throws where either side is not an object; `replace`, the
+/// default, overwrites whatever was there.
+///
+/// Kibana's ECS log line is the whole reason: the message IS the document,
+/// and without this its four packages parse nothing at all.
+///
+/// # Errors
+///
 /// Returns a `ParseError` naming the field when the text is not JSON, when the
 /// field holds a container rather than text (see [`json_processor_value`]), or
 /// when what parses is not an object.
@@ -646,11 +653,21 @@ pub fn convert_value(value: &Value, kind: &str) -> std::result::Result<Value, St
                 );
                 parsed.map(Value::from).ok_or_else(|| cannot("integer"))
             }
-            #[allow(clippy::cast_possible_truncation)]
-            Value::Number(n) => Ok(Value::from(
-                n.as_i64()
-                    .unwrap_or_else(|| n.as_f64().unwrap_or(0.0) as i64),
-            )),
+            Value::Number(n) => {
+                if let Some(whole) = n.as_i64() {
+                    return Ok(Value::from(whole));
+                }
+                // `Long.parseLong` THROWS on a magnitude `i64` cannot hold,
+                // where an `as` cast saturates and invents a value the engine
+                // never wrote.
+                let real = n.as_f64().ok_or_else(|| cannot("integer"))?;
+                #[allow(clippy::cast_possible_truncation)]
+                let narrowed = real as i64;
+                if narrowed == i64::MAX || narrowed == i64::MIN {
+                    return Err(cannot("integer"));
+                }
+                Ok(Value::from(narrowed))
+            }
             // A BOOLEAN is not a number to this processor. Elastic parses the
             // value's `toString()`, so `false` reaches `Long.parseLong` as the
             // word and throws -- which runs the pipeline's `on_failure`, and
@@ -913,10 +930,14 @@ pub fn sort_values(value: &Value, descending: bool) -> Option<Vec<Value>> {
     if all(Value::is_string) {
         sorted.sort_by(|a, b| a.as_str().cmp(&b.as_str()));
     } else if all(Value::is_number) {
-        sorted.sort_by(|a, b| {
-            a.as_f64()
-                .partial_cmp(&b.as_f64())
-                .unwrap_or(std::cmp::Ordering::Equal)
+        sorted.sort_by(|one, two| match (one.as_i64(), two.as_i64()) {
+            // Two integers past an `f64`'s 53-bit mantissa compare EQUAL once
+            // widened, so distinct ids would tie and keep their input order.
+            (Some(one), Some(two)) => one.cmp(&two),
+            _ => one
+                .as_f64()
+                .partial_cmp(&two.as_f64())
+                .unwrap_or(std::cmp::Ordering::Equal),
         });
     } else if all(Value::is_boolean) {
         sorted.sort_by_key(Value::as_bool);
@@ -971,11 +992,17 @@ pub fn url_decode(text: &str) -> Option<std::borrow::Cow<'_, str>> {
 /// Join an array's elements into one separated string, the way Elastic's
 /// `join` processor does.
 ///
-/// Every element is stringified first -- Elastic calls `toString()` on each,
-/// so a list of numbers joins as readily as a list of strings, and only a
-/// nested object or array has no sensible rendering. Those are skipped rather
-/// than written as their JSON, which is what `to_string` would give and is
-/// never what the pipeline meant.
+/// Every element is stringified first: Elastic's join is
+/// `map(Object::toString)`, so a list of numbers joins as readily as a list of
+/// strings and a NESTED container renders through Java's own `Map.toString` /
+/// `List.toString` -- `{k=v}` and `[a, b]`, which is what
+/// [`crate::painless_helpers::painless_to_string`] produces. Skipping those
+/// dropped an element the engine wrote.
+///
+/// A null element is the one Elastic does NOT render: `Object::toString`
+/// throws on it, so the processor fails and the document takes its
+/// `on_failure`. Skipping it here writes a shorter string than Elastic writes
+/// nothing at all for, which is the narrower divergence of the two.
 ///
 /// Returns `None` when the value is not an array, which is the case Elastic
 /// throws on: writing a joined string for a scalar would invent one.
@@ -991,7 +1018,8 @@ pub fn join_values(value: &Value, separator: &str) -> Option<String> {
             Value::String(s) => s.clone(),
             Value::Number(n) => n.to_string(),
             Value::Bool(b) => b.to_string(),
-            Value::Null | Value::Array(_) | Value::Object(_) => continue,
+            Value::Array(_) | Value::Object(_) => crate::painless_helpers::painless_to_string(item),
+            Value::Null => continue,
         };
         if !first {
             out.push_str(separator);
@@ -1055,19 +1083,20 @@ pub fn csv_close_quote_gap(line: &str, delimiter: char, quote: char) -> std::bor
 /// Convert a grok pattern string to a regex pattern string.
 ///
 /// Expands `%{NAME:field}` to named capture groups with type-appropriate
-/// sub-patterns. Returns `(regex_string, field_map)` where `field_map` maps
-/// safe capture names back to original dotted field paths.
-///
-/// Phase 3 will replace grok with native dfe-parse parsers.
+/// sub-patterns, and returns the regex alone -- the capture-name map is what
+/// [`grok_to_regex_with_map`] adds, and the capture TYPES what
+/// [`grok_to_regex_typed`] adds on top of that.
+#[must_use]
 pub fn grok_to_regex(pattern: &str) -> String {
     grok_to_regex_with_map(pattern).0
 }
 
-/// Like `grok_to_regex` but also returns a map of `capture_name` → `original_field_path`.
+/// As [`grok_to_regex`], plus a map of `capture_name` to the original dotted
+/// field path.
 ///
-/// This is needed because regex capture names can't contain dots, so
-/// `user.name` becomes `user_name` in the regex. The map lets callers
-/// restore the original dotted path when setting fields.
+/// A regex capture name cannot contain a dot, so `user.name` is captured as
+/// `user_name` and the map is what restores the path a field is set at.
+#[must_use]
 pub fn grok_to_regex_with_map(
     pattern: &str,
 ) -> (String, std::collections::HashMap<String, String>) {
@@ -1359,27 +1388,20 @@ const TIME: &str = r"\d{1,2}:\d{2}(?::\d{2}(?:[.,]\d+)?)?";
 
 /// `%{MONTHDAY}/%{MONTH}/%{YEAR}:%{TIME} %{INT}` -- the Apache common-log
 /// date, which the AWS load-balancer and cloudfront pipelines grok.
-const HTTPDATE: &str = concat!(
-    r"\d{1,2}/",
-    r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?",
-    r"|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)",
-    r"/\d{4}:\d{1,2}:\d{2}(?::\d{2}(?:[.,]\d+)?)? [+-]?\d+",
-);
+///
+/// Built once at first use rather than spelled with `concat!`, which will not
+/// expand a const, so [`MONTH`] and [`TIME`] are named here rather than copied.
+static HTTPDATE: LazyLock<String> =
+    LazyLock::new(|| format!(r"\d{{1,2}}/{MONTH}/\d{{4}}:{TIME} [+-]?\d+"));
 
 /// `%{MONTH} +%{MONTHDAY} %{TIME}` -- the BSD syslog date, fraction and all.
-const SYSLOG_TIMESTAMP: &str = concat!(
-    r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?",
-    r"|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)",
-    r" +\d{1,2} \d{1,2}:\d{2}(?::\d{2}(?:[.,]\d+)?)?",
-);
+static SYSLOG_TIMESTAMP: LazyLock<String> = LazyLock::new(|| format!(r"{MONTH} +\d{{1,2}} {TIME}"));
 
 /// Cisco's syslog date: the year may sit on either side of the time, and the
 /// seconds may carry a fraction -- `Jan  6 2022 20:52:12.861`.
-const CISCO_TIMESTAMP: &str = concat!(
-    r"(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?",
-    r"|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)",
-    r" +\d{1,2}(?: \d{4})? \d{2}:\d{2}:\d{2}(?:\.\d+)?(?: \d{4})?",
-);
+static CISCO_TIMESTAMP: LazyLock<String> = LazyLock::new(|| {
+    format!(r"{MONTH} +\d{{1,2}}(?: \d{{4}})? \d{{2}}:\d{{2}}:\d{{2}}(?:\.\d+)?(?: \d{{4}})?")
+});
 
 /// Elastic's own `IPV6`, verbatim from logstash-patterns-core's ecs-v1 set.
 ///
@@ -1501,7 +1523,7 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // containing %{SPACE} match arbitrary text -- 152 sites' worth.
         "SPACE" => r"\s*",
         "TIME" => TIME,
-        "HTTPDATE" => HTTPDATE,
+        "HTTPDATE" => HTTPDATE.as_str(),
         "IPORHOST" | "SYSLOGHOST" => IPORHOST.as_str(),
         // Elastic accepts the abbreviation or the full name, either case.
         "DAY" => {
@@ -1538,19 +1560,21 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // Printable ASCII minus space, `=`, `]` and `"` -- RFC 5424's own
         // definition, which is what bounds a structured-data name.
         "SYSLOG5424PRINTASCII" => r"[!#-<>-\\\^-~]+",
-        "SYSLOGTIMESTAMP" => SYSLOG_TIMESTAMP,
-        "CISCOTIMESTAMP" => CISCO_TIMESTAMP,
+        "SYSLOGTIMESTAMP" => SYSLOG_TIMESTAMP.as_str(),
+        "CISCOTIMESTAMP" => CISCO_TIMESTAMP.as_str(),
         "CISCOMAC" => r"(?:[A-Fa-f0-9]{4}\.){2}[A-Fa-f0-9]{4}",
         // Elastic quotes with any of the three, and reading only the double
         // form left cisco_meraki's `ssid=''` unmatched -- which took the whole
         // key-value line with it, on every airmarshal event.
         "QS" | "QUOTEDSTRING" => r#"(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)"#,
         "LOGLEVEL" => r"(?i:emerg|alert|crit|err|warn|notice|info|debug|trace)\w*",
-        // The fraction takes a comma as well as a dot: Elastic's SECOND does,
-        // and hadoop's log4j writes `05:04:53,776` -- one missing comma
-        // failed the whole emr grok on every event.
+        // Elastic composes this one `%{HOUR}:?%{MINUTE}(?::?%{SECOND})?`, so
+        // the SECONDS are optional and `12:30` is a whole time. SECOND's body
+        // is inlined the way the other composites inline theirs, which is
+        // where the fraction's colon and comma come from -- hadoop's log4j
+        // writes `05:04:53,776` and checkpoint writes `16:39:12.000Z`.
         "TIMESTAMP_ISO8601" => {
-            r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:[.,]\d+)?(?:Z|[+-]\d{2}:?\d{2})?"
+            r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(?::?(?:[0-5]?\d|60)(?:[:.,]\d+)?)?(?:Z|[+-]\d{2}:?\d{2})?"
         }
         // Unknown name. `.+?` captures arbitrary text rather than failing, so
         // the field is populated with the wrong thing and nothing says so --
@@ -2116,10 +2140,12 @@ fn network_equals(network: &str, address: std::net::IpAddr) -> bool {
 ///
 /// Returns `None` when a reference resolves to nothing, because the name it
 /// would build has an empty segment and matches no field either.
+///
+/// Borrows the template where it carries no reference, which is most of them.
 #[must_use]
-pub fn resolve_path(event: &Event, template: &str) -> Option<String> {
+pub fn resolve_path<'t>(event: &Event, template: &'t str) -> Option<std::borrow::Cow<'t, str>> {
     if !template.contains("{{") {
-        return Some(template.to_string());
+        return Some(std::borrow::Cow::Borrowed(template));
     }
 
     let mut resolved = String::with_capacity(template.len());
@@ -2142,7 +2168,7 @@ pub fn resolve_path(event: &Event, template: &str) -> Option<String> {
         rest = tail;
     }
     resolved.push_str(rest);
-    Some(resolved)
+    Some(std::borrow::Cow::Owned(resolved))
 }
 
 /// The pieces of a URI reference, borrowed from the string they came from.
@@ -2223,7 +2249,7 @@ fn split_uri(uri: &str) -> UriRef<'_> {
 /// Whether `candidate` is a scheme: `ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )`.
 fn is_scheme(candidate: &str) -> bool {
     let mut chars = candidate.chars();
-    chars.next().is_some_and(char::is_alphabetic)
+    chars.next().is_some_and(|c| c.is_ascii_alphabetic())
         && chars.all(|c| c.is_ascii_alphanumeric() || matches!(c, '+' | '-' | '.'))
 }
 
@@ -2354,7 +2380,11 @@ pub fn gsub_field(
 /// control character, one of the excluded ASCII punctuation marks, or a `%` not
 /// followed by two hex digits throws `URISyntaxException` -- which is where
 /// Elasticsearch drops to the `java.net.URL` fallback below.
-fn java_uri_legal(text: &str) -> bool {
+///
+/// The PATH is narrower than the rest and has to be checked separately: Java's
+/// `L_PATH` is `pchar` plus `;` and `/`, so it carries no bracket, where the
+/// query's `L_URIC` admits one through `reserved`.
+fn java_uri_legal(text: &str, uri: &UriRef<'_>) -> bool {
     let bytes = text.as_bytes();
     let mut i = 0;
     while i < bytes.len() {
@@ -2377,6 +2407,9 @@ fn java_uri_legal(text: &str) -> bool {
             return false;
         }
         i += 1;
+    }
+    if uri.path.contains(['[', ']']) {
+        return false;
     }
     text.chars().all(|c| !c.is_control() && !is_space_char(c))
 }
@@ -2526,7 +2559,7 @@ pub fn uri_parts(
     }
 
     let uri = split_uri(&original);
-    let uri_legal = java_uri_legal(&original);
+    let uri_legal = java_uri_legal(&original, &uri);
     if !uri_legal && !java_url_parses(&uri) {
         return Ok(false);
     }
@@ -3125,33 +3158,42 @@ mod tests {
         assert_eq!(event.get("_ingest._value"), Some(&json!("bad")));
     }
 
-    /// An empty array still clears `_ingest` and writes the field back,
-    /// which is what the inline loop did.
+    /// An empty array still clears the loop's own `_ingest._value` and writes
+    /// the field back, which is what the inline loop did.
     #[test]
     fn foreach_array_handles_an_empty_array() {
-        let mut event = Event::new(json!({ "tags": [], "_ingest": { "old": 1 } }));
+        let mut event = Event::new(json!({ "tags": [] }));
         foreach_array(&mut event, "tags", |_| Ok(())).unwrap();
         assert_eq!(event.as_value(), &json!({ "tags": [] }));
     }
 
-    // --- parse_json_field ---
-
-    /// The SIMD path and `serde_json` agree on what a document MEANS --
-    /// nesting, numbers at both integer extremes, floats, escapes, unicode.
+    /// The loop drops only its own key. `_ingest` also carries
+    /// `_grok_match_index`, which a pipeline that asks for it BRANCHES on --
+    /// removing the whole container took that answer with it.
     #[test]
-    fn simd_parse_agrees_with_serde_json() {
-        for text in [
-            r#"{"a": {"b": [1, 2.5, -3, 18446744073709551615, -9223372036854775808]}}"#,
-            r#"{"s": "line\nbreak \"quoted\" é", "t": true, "n": null}"#,
-            r#"[{"k": "v"}, [], {}, ""]"#,
-            "42",
-            r#""bare string""#,
-        ] {
-            let via_simd = parse_json_str(text).unwrap();
-            let via_serde: Value = serde_json::from_str(text).unwrap();
-            assert_eq!(via_simd, via_serde, "input: {text}");
-        }
+    fn foreach_array_keeps_the_rest_of_the_ingest_metadata() {
+        let mut event = Event::new(json!({
+            "tags": ["a", "b"],
+            "_ingest": { "_grok_match_index": 2 },
+        }));
+        foreach_array(&mut event, "tags", |event| {
+            let text = event.get_str("_ingest._value").unwrap().to_string();
+            event.set("_ingest._value", text.to_uppercase())
+        })
+        .unwrap();
+
+        assert_eq!(event.get("tags"), Some(&json!(["A", "B"])));
+        assert_eq!(event.get("_ingest._grok_match_index"), Some(&json!(2)));
+        assert_eq!(event.get("_ingest._value"), None);
+
+        // With nothing else left in it the container still goes, so a
+        // document that never had one does not grow an empty `_ingest`.
+        let mut bare = Event::new(json!({ "tags": ["a"] }));
+        foreach_array(&mut bare, "tags", |_| Ok(())).unwrap();
+        assert_eq!(bare.as_value(), &json!({ "tags": ["a"] }));
     }
+
+    // --- parse_json_field ---
 
     /// An absent field is a no-op, which is what the old inline `if let` did.
     #[test]
@@ -3355,8 +3397,6 @@ mod tests {
         let line = r#""a,  b", "c""#;
         assert_eq!(csv_close_quote_gap(line, ',', '"'), r#""a,  b","c""#);
     }
-
-    // --- resolve_path ---
 
     // --- duplicate grok capture names ---
 
@@ -3607,6 +3647,24 @@ mod tests {
             assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
             assert_eq!(event.get_str("url.domain"), Some(domain), "input: {input}");
         }
+    }
+
+    /// Java's `L_PATH` is `pchar` plus `;` and `/` and carries no bracket, so
+    /// `java.net.URI` throws on one in the PATH and the processor drops to the
+    /// `java.net.URL` fallback -- which decodes nothing and knows no host.
+    #[test]
+    fn uri_parts_refuses_a_bracket_in_the_path() {
+        let mut event = Event::new(json!({ "src": "http://example.com/a[1]?q=x%20y" }));
+        assert!(uri_parts(&mut event, "src", "url", false, false).unwrap());
+        // The URL fallback decodes nothing, which is how the two paths tell
+        // each other apart once the URI parse has refused the text.
+        assert_eq!(event.get_str("url.query"), Some("q=x%20y"));
+
+        // The QUERY's `L_URIC` does admit a bracket through `reserved`, so the
+        // URI parse still holds there and still decodes.
+        let mut queried = Event::new(json!({ "src": "http://example.com/a?f[0]=x%20y" }));
+        assert!(uri_parts(&mut queried, "src", "url", false, false).unwrap());
+        assert_eq!(queried.get_str("url.query"), Some("f[0]=x y"));
     }
 
     /// The caller runs its `on_failure` on a false return, so a value that is
@@ -3929,5 +3987,164 @@ mod tests {
             "grok regex with type suffixes should compile: {:?}",
             re.err()
         );
+    }
+
+    // --- gsub_field ---
+
+    /// Verbatim from `pipelines/cisco_ftd/default.yml`, which collapses a run
+    /// of backslashes before splitting `DOMAIN\user`. Java reads the `\\` in
+    /// the replacement as ONE backslash, so writing both out left the run
+    /// intact and the split downstream saw a name it could not cut.
+    #[test]
+    fn gsub_reads_a_backslash_in_the_replacement_the_way_java_does() {
+        let mut event = Event::new(json!({ "user": r"CORP\\\alice" }));
+        gsub_field(
+            &mut event,
+            "user",
+            "user",
+            crate::grok_cache::regex(r"\\{2,}"),
+            r"\\",
+        )
+        .unwrap();
+        assert_eq!(event.get("user"), Some(&json!(r"CORP\alice")));
+
+        // A LIST is rewritten element by element, the same as a string.
+        let mut listed = Event::new(json!({ "user": [r"A\\\b", 7] }));
+        gsub_field(
+            &mut listed,
+            "user",
+            "user",
+            crate::grok_cache::regex(r"\\{2,}"),
+            r"\\",
+        )
+        .unwrap();
+        assert_eq!(listed.get("user"), Some(&json!([r"A\b", 7])));
+    }
+
+    // --- join_values ---
+
+    /// Elastic's join is `map(Object::toString)`, so a NESTED container
+    /// renders through Java's own `Map.toString` -- skipping it dropped an
+    /// element the engine wrote.
+    #[test]
+    fn join_renders_a_nested_container_as_java_text() {
+        assert_eq!(
+            join_values(&json!(["a", { "k": "v" }, ["x", 1], 2]), ",").as_deref(),
+            Some("a,{k=v},[x, 1],2")
+        );
+        // A null is the one element Elastic does not render, because
+        // `Object::toString` throws on it.
+        assert_eq!(
+            join_values(&json!(["a", null, "b"]), "-").as_deref(),
+            Some("a-b")
+        );
+        // A scalar is not an array, which is where Elastic throws.
+        assert_eq!(join_values(&json!("a"), ","), None);
+    }
+
+    // --- sort_values ---
+
+    /// Two integers past an `f64`'s 53-bit mantissa compare EQUAL once
+    /// widened, so comparing through `as_f64` left distinct ids in their input
+    /// order and called it sorted.
+    #[test]
+    fn sort_orders_integers_an_f64_cannot_tell_apart() {
+        let ids = json!([i64::MAX, i64::MAX - 1]);
+        assert_eq!(
+            sort_values(&ids, false),
+            Some(vec![json!(i64::MAX - 1), json!(i64::MAX)])
+        );
+        // Mixed integers and floats still compare as numbers.
+        assert_eq!(
+            sort_values(&json!([2.5, 1, 2]), false),
+            Some(vec![json!(1), json!(2), json!(2.5)])
+        );
+    }
+
+    // --- convert_value ---
+
+    /// `Long.parseLong` THROWS on a magnitude `i64` cannot hold, so
+    /// saturating to the bound wrote a value the engine never did.
+    #[test]
+    fn converting_a_number_past_i64_fails_rather_than_saturating() {
+        assert!(convert_value(&json!(u64::MAX), "long").is_err());
+        assert!(convert_value(&json!(1e300), "long").is_err());
+        // The range `i64` does hold is unaffected, and a float still truncates.
+        assert_eq!(
+            convert_value(&json!(i64::MAX), "long").unwrap(),
+            json!(i64::MAX)
+        );
+        assert_eq!(convert_value(&json!(2.7), "long").unwrap(), json!(2));
+    }
+
+    // --- ip_in_networks ---
+
+    /// Every named range the processor takes, plus a CIDR block and the bare
+    /// address Elastic reads as a single-host range.
+    #[test]
+    fn ip_in_networks_answers_each_named_range() {
+        for (ip, network) in [
+            ("127.0.0.1", "loopback"),
+            ("::1", "loopback"),
+            ("0.0.0.0", "unspecified"),
+            ("224.0.0.1", "multicast"),
+            ("10.1.2.3", "private"),
+            ("fd00::1", "private"),
+            ("169.254.1.1", "link_local_unicast"),
+            ("fe80::1", "link_local_unicast"),
+            ("224.0.0.5", "link_local_multicast"),
+            ("ff02::1", "link_local_multicast"),
+            ("ff01::1", "interface_local_multicast"),
+            ("8.8.8.8", "unicast"),
+            ("8.8.8.8", "global_unicast"),
+            ("8.8.8.8", "public"),
+        ] {
+            assert!(ip_in_networks(ip, &[network]), "{ip} in {network}");
+        }
+
+        for (ip, network) in [
+            ("8.8.8.8", "loopback"),
+            ("8.8.8.8", "private"),
+            ("10.1.2.3", "public"),
+            ("127.0.0.1", "public"),
+            ("224.0.0.1", "unicast"),
+            ("127.0.0.1", "global_unicast"),
+            ("224.0.0.1", "interface_local_multicast"),
+        ] {
+            assert!(!ip_in_networks(ip, &[network]), "{ip} not in {network}");
+        }
+    }
+
+    /// A CIDR block masks both families, and a bare address is the
+    /// single-host range Elastic reads it as.
+    #[test]
+    fn ip_in_networks_masks_a_cidr_and_matches_a_bare_address() {
+        assert!(ip_in_networks("10.1.2.3", &["10.1.0.0/16"]));
+        assert!(!ip_in_networks("10.2.2.3", &["10.1.0.0/16"]));
+        assert!(ip_in_networks("2001:db8::1", &["2001:db8::/32"]));
+        assert!(!ip_in_networks("2001:dba::1", &["2001:db8::/32"]));
+
+        assert!(ip_in_networks("10.1.2.3", &["10.1.2.3"]));
+        assert!(!ip_in_networks("10.1.2.4", &["10.1.2.3"]));
+
+        // A `/0` covers its whole family and nothing outside it.
+        assert!(ip_in_networks("8.8.8.8", &["0.0.0.0/0"]));
+        assert!(!ip_in_networks("::1", &["0.0.0.0/0"]));
+
+        // A value that is not an address, and a block that is not one.
+        assert!(!ip_in_networks("not an ip", &["10.1.0.0/16"]));
+        assert!(!ip_in_networks("10.1.2.3", &["10.1.0.0/x"]));
+    }
+
+    // --- dot_expand ---
+
+    /// A dotted key whose prefix is already a SCALAR cannot become the object
+    /// it names, which is where the expander raises rather than overwriting
+    /// what is there.
+    #[test]
+    fn dot_expand_raises_where_a_segment_is_not_an_object() {
+        let mut event = Event::new(json!({ "id": "taken", "id.orig_h": "10.0.0.1" }));
+        let error = dot_expand(&mut event, "", "*").unwrap_err();
+        assert!(error.to_string().contains("id.orig_h"), "{error}");
     }
 }
