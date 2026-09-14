@@ -42,6 +42,7 @@ use dfe_core::event::Event;
 mod abnormal_security;
 mod airlock_digital;
 mod akamai;
+mod amazon_security_lake;
 mod anthropic_metrics;
 mod arista_ngfw;
 mod atlassian_jira;
@@ -61,6 +62,7 @@ mod checkpoint;
 mod cisco_ise;
 mod cisco_secure_endpoint;
 mod citrix_adc;
+mod cloudflare_logpush;
 mod cyberark_pta;
 mod cyera;
 mod darktrace;
@@ -88,6 +90,8 @@ mod netbox;
 mod nginx;
 mod nozomi_networks;
 mod prisma_access;
+mod prisma_cloud;
+mod proofpoint_365totalprotection;
 mod qualys_vmdr;
 mod rubrik;
 mod sentinel_one_cloud_funnel;
@@ -97,6 +101,7 @@ mod sublime_security;
 mod suricata;
 mod symantec_endpoint_security;
 mod sysdig;
+mod tenable_ot_security;
 mod tenable_sc;
 mod ti_crowdstrike;
 mod ti_mandiant_advantage;
@@ -150,6 +155,7 @@ const ENTRIES: &[&[Entry]] = &[
     abnormal_security::ENTRIES,
     airlock_digital::ENTRIES,
     akamai::ENTRIES,
+    amazon_security_lake::ENTRIES,
     anthropic_metrics::ENTRIES,
     arista_ngfw::ENTRIES,
     atlassian_jira::ENTRIES,
@@ -169,6 +175,7 @@ const ENTRIES: &[&[Entry]] = &[
     cisco_ise::ENTRIES,
     cisco_secure_endpoint::ENTRIES,
     citrix_adc::ENTRIES,
+    cloudflare_logpush::ENTRIES,
     cyberark_pta::ENTRIES,
     cyera::ENTRIES,
     darktrace::ENTRIES,
@@ -196,6 +203,8 @@ const ENTRIES: &[&[Entry]] = &[
     nginx::ENTRIES,
     nozomi_networks::ENTRIES,
     prisma_access::ENTRIES,
+    prisma_cloud::ENTRIES,
+    proofpoint_365totalprotection::ENTRIES,
     qualys_vmdr::ENTRIES,
     rubrik::ENTRIES,
     sentinel_one_cloud_funnel::ENTRIES,
@@ -205,6 +214,7 @@ const ENTRIES: &[&[Entry]] = &[
     suricata::ENTRIES,
     symantec_endpoint_security::ENTRIES,
     sysdig::ENTRIES,
+    tenable_ot_security::ENTRIES,
     tenable_sc::ENTRIES,
     ti_crowdstrike::ENTRIES,
     ti_mandiant_advantage::ENTRIES,
