@@ -154,10 +154,17 @@ which is what the container passes -- the named file IS the configuration and
 changes nothing and warns about nothing. Kafka credentials are unaffected
 either way: they are read from `KAFKA_*` separately.
 
-One consequence to know before tuning it: the `scaling` block in the shipped
-config is read by scalo from the CASCADE, not from the service's own config
-struct. Under `--config` the cascade never sees your file, so a `scaling:` block
-written there has no effect and the defaults apply.
+One consequence to know before tuning it: a section scalo resolves from the
+cascade for itself cannot be set from a `--config` file at all. `scaling` is the
+one that bites, and the service REFUSES such a file rather than ignoring the
+block -- an operator who sets `memory_gate_threshold` has a reason, and running
+on a default they did not choose is what the refusal exists to stop. The error
+names the variable to set instead
+(`DFE_TRANSFORM_ELASTIC_SCALING__MEMORY_GATE_THRESHOLD`), and the scaling values
+that took effect are logged once at startup. `CASCADE_ONLY_SECTIONS` in
+`src/config.rs` is the full list, and nothing this repo ships carries one of
+them. `geoip` is deliberately absent from it: the service declares that section
+itself and hands it to scalo, which is what makes it work from a file.
 
 ## Behaviour under bad input
 

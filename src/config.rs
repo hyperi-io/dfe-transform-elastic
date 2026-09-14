@@ -17,6 +17,13 @@
 //! reaches it. The cascade is still installed either way, because the rest of
 //! scalo reads it. Kafka credentials are unaffected: `KafkaConfig::from_env`
 //! reads `KAFKA_*` separately.
+//!
+//! The consequence is invisible and so is stated outright: a section scalo
+//! resolves from the cascade for itself cannot be set from a `--config` file at
+//! all. That file yields only what this [`Config`] declares, and scalo sees
+//! only what the service then hands it -- which is why `geoip` works from a
+//! file. Every other scalo section is listed in [`CASCADE_ONLY_SECTIONS`] and
+//! refused here, because a block that changes nothing is worse than no block.
 
 use scalo::config::{self, ConfigOptions};
 use schemars::JsonSchema;
@@ -24,6 +31,54 @@ use serde::{Deserialize, Serialize};
 
 /// Environment prefix for the config cascade.
 pub const ENV_PREFIX: &str = "DFE_TRANSFORM_ELASTIC";
+
+/// Sections scalo loads from its OWN cascade, which a `--config` file is not a
+/// layer of.
+///
+/// Each is read by a `from_cascade` call inside scalo -- `scaling` by
+/// `ServiceRuntime::build`, the rest by whichever subsystem owns them -- and
+/// every one of those calls falls back to the type's `Default` when the key is
+/// absent. So a block under one of these names in a `--config` file is read by
+/// NOTHING, and the operator gets defaults while believing otherwise.
+///
+/// `geoip` is deliberately absent: it is declared on [`Config`] and handed to
+/// `scalo::geoip_download` explicitly, which is what makes it work from a file.
+/// Anything added here must be a section scalo resolves for itself.
+pub const CASCADE_ONLY_SECTIONS: &[&str] = &[
+    "http_client",
+    "logger",
+    "memory",
+    "metrics",
+    "otel_tracing",
+    "scaling",
+    "secrets",
+    "self_regulation",
+];
+
+/// Refuse a `--config` file carrying a section only the cascade reads.
+///
+/// The section is not dropped quietly and not warned about: an operator who
+/// sets `scaling.memory_gate_threshold` has a reason, and running on a default
+/// they did not choose is the failure this exists to stop.
+fn reject_cascade_only_sections(path: &str, doc: &serde_yaml_ng::Value) -> crate::Result<()> {
+    let Some(map) = doc.as_mapping() else {
+        return Ok(());
+    };
+    for section in CASCADE_ONLY_SECTIONS {
+        if map.contains_key(*section) {
+            return Err(crate::Error::Config(format!(
+                "config file '{path}' sets `{section}`, which nothing reads. scalo resolves \
+                 `{section}` from its config cascade -- ./defaults.yaml, ./settings.yaml, \
+                 /config/settings.yaml, then {ENV_PREFIX}_* environment variables -- and a file \
+                 named with --config is not one of those layers. Set it as \
+                 `{ENV_PREFIX}_{upper}__<KEY>` in the environment, or delete the section to take \
+                 scalo's defaults",
+                upper = section.to_uppercase()
+            )));
+        }
+    }
+    Ok(())
+}
 
 /// Top-level service configuration.
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
@@ -172,7 +227,10 @@ impl Config {
             let text = std::fs::read_to_string(path).map_err(|e| {
                 crate::Error::Config(format!("config file not found at '{path}': {e}"))
             })?;
-            return serde_yaml_ng::from_str(&text)
+            let doc: serde_yaml_ng::Value = serde_yaml_ng::from_str(&text)
+                .map_err(|e| crate::Error::Config(format!("invalid config at '{path}': {e}")))?;
+            reject_cascade_only_sections(path, &doc)?;
+            return serde_yaml_ng::from_value(doc)
                 .map_err(|e| crate::Error::Config(format!("invalid config at '{path}': {e}")));
         }
 
@@ -453,6 +511,76 @@ mod tests {
         let mut c = valid();
         c.source.envelope = crate::envelope::EnvelopeSetting::Fetcher;
         assert!(c.validate().is_ok());
+    }
+
+    /// A minimal config file body, to which a test appends the section under
+    /// examination.
+    const FILE_BASE: &str = "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
+                             group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n";
+
+    /// Write `body` to a file and load it the way `--config` does.
+    fn load_file(body: &str) -> crate::Result<Config> {
+        let dir = tempfile::tempdir().expect("temp dir");
+        let path = dir.path().join("config.yaml");
+        std::fs::write(&path, body).expect("write config");
+        Config::load(Some(path.to_str().expect("utf-8 path")))
+    }
+
+    /// The trap this refusal exists to close: the chart passes `--config`, and
+    /// scalo reads `scaling` from a cascade that file is not a layer of, so a
+    /// threshold written there reaches nothing.
+    #[test]
+    fn a_config_file_carrying_scaling_is_refused() {
+        let message = load_file(&format!(
+            "{FILE_BASE}scaling:\n  enabled: true\n  memory_gate_threshold: 0.9\n"
+        ))
+        .expect_err("a --config file carrying `scaling` must be refused")
+        .to_string();
+
+        // The error has to name the mechanism and the way out, or it just
+        // moves the operator from a silent default to a blocked startup.
+        assert!(message.contains("sets `scaling`"), "{message}");
+        assert!(message.contains("nothing reads"), "{message}");
+        assert!(message.contains("cascade"), "{message}");
+        assert!(
+            message.contains("DFE_TRANSFORM_ELASTIC_SCALING__<KEY>"),
+            "{message}"
+        );
+    }
+
+    /// Every name on the list is refused, so adding one to the list is the
+    /// whole job of covering a new scalo section.
+    #[test]
+    fn every_cascade_only_section_is_refused() {
+        for section in CASCADE_ONLY_SECTIONS {
+            let body = format!("{FILE_BASE}{section}:\n  enabled: true\n");
+            let message = load_file(&body)
+                .expect_err("a cascade-only section must be refused")
+                .to_string();
+            assert!(message.contains(&format!("sets `{section}`")), "{message}");
+        }
+    }
+
+    /// The other half of the rule: a section this service declares and hands to
+    /// scalo itself DOES work from a file, and must not be caught by the sweep.
+    #[test]
+    fn geoip_still_loads_from_a_config_file() {
+        let loaded = load_file(&format!("{FILE_BASE}geoip:\n  enabled: false\n"))
+            .expect("geoip is declared on Config, so a file may set it");
+        assert!(!loaded.geoip.enabled);
+        assert!(
+            !CASCADE_ONLY_SECTIONS.contains(&"geoip"),
+            "geoip reaches scalo explicitly, so refusing it would be wrong"
+        );
+    }
+
+    /// The refusal must not fire on the configuration the service actually
+    /// ships, or every deployment fails to start.
+    #[test]
+    fn the_shipped_example_is_not_refused() {
+        let loaded =
+            load_file(&crate::deployment::default_config_yaml()).expect("the example loads");
+        assert_eq!(loaded.source.batch_size, 20_000);
     }
 
     #[test]

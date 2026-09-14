@@ -172,7 +172,7 @@ transform and runs it over every batch on the scalo runtime.
 |---|---|
 | `main.rs` | Entry point, hands off to `cli.rs` |
 | `cli.rs` | Subcommands: run the service, `sources` (list registered transforms), `emit-dockerfile`, `emit-chart`, `emit-compose`, `generate-artefacts`, `metrics-manifest` |
-| `config.rs` | The service's config shape: `pipeline_name`, `source.*`, `sink.*`, `geoip`, read once at startup |
+| `config.rs` | The service's config shape: `pipeline_name`, `source.*`, `sink.*`, `geoip`, read once at startup, and `CASCADE_ONLY_SECTIONS` -- the scalo sections a `--config` file is refused for carrying |
 | `registry.rs` | Source name to `Transform` lookup, plus each source's `Intake` (which envelopes it accepts), `Framing` and dataset |
 | `envelope.rs` | Detects which of the three producer families wrapped an event and unwraps it into the shape every transform expects |
 | `pipeline.rs` | Batch processing: NDJSON parse, envelope unwrap, transform, serialise, with per-batch outcome counts |
@@ -187,6 +187,21 @@ loaded value is handed to the batch loop by reference, so every value needs a re
 ways in also differ -- with no `--config` the scalo cascade applies and `DFE_TRANSFORM_ELASTIC_*`
 overrides the files, while `--config` reads the named file directly and no such variable reaches
 it. `src/config.rs` states both at the top of the file.
+
+**Scaling is configured through the environment, not the config file.** The container is started
+with `--config`, and scalo resolves `scaling` from its own cascade -- `./defaults.yaml`,
+`./settings.yaml`, `/config/settings.yaml`, then `DFE_TRANSFORM_ELASTIC_*` -- so a file named on
+the command line reaches it through no layer at all. Set
+`DFE_TRANSFORM_ELASTIC_SCALING__ENABLED` or
+`DFE_TRANSFORM_ELASTIC_SCALING__MEMORY_GATE_THRESHOLD`; the effective values are logged once at
+startup, with the layer that supplied them. The same holds for every section in
+`config::CASCADE_ONLY_SECTIONS`, and `Config::load` refuses one in a `--config` file rather than
+ignoring it -- a block that changes nothing is worse than no block. `geoip` is the exception
+that proves the rule: it is declared on `Config` and handed to scalo explicitly, so a file may
+set it.
+
+KEDA replica scaling is separate and unaffected -- it is Kubernetes-side, driven by the chart's
+`keda.*` values and the `scaling_pressure` gauge.
 
 ### Envelopes: the same pipeline, a different wrapper
 

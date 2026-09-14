@@ -51,6 +51,3 @@ geoip:
     enabled: true
     data_dir: /var/lib/dfe/geoip
     max_age_days: 30
-scaling:
-  enabled: true
-  memory_gate_threshold: 0.8

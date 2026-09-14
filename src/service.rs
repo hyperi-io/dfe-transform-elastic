@@ -116,6 +116,7 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
         pressure: std::sync::Arc::clone(pressure),
         memory: std::sync::Arc::clone(&runtime.memory_guard),
     });
+    log_effective_scaling(runtime.scaling.as_deref());
 
     run_loop(
         &config,
@@ -126,6 +127,25 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
         scaling.as_ref(),
     )
     .await
+}
+
+/// State the scaling settings that actually took effect, once, at startup.
+///
+/// These come from scalo's config cascade and NOT from the `--config` file, so
+/// without this line an operator has nothing to read them back from -- which is
+/// how a threshold edited in the wrong place goes unnoticed. `source` names the
+/// layer that supplied them, so a value left at scalo's default is visibly a
+/// default rather than a choice.
+fn log_effective_scaling(pressure: Option<&scalo::scaling::ScalingPressure>) {
+    let config = scalo::scaling::ScalingPressureConfig::from_cascade();
+    let configured = scalo::config::try_get().is_some_and(|cfg| cfg.contains("scaling"));
+    let source = if configured { "cascade" } else { "default" };
+    tracing::info!(
+        enabled = pressure.is_some_and(scalo::scaling::ScalingPressure::is_enabled),
+        memory_gate_threshold = config.memory_gate_threshold,
+        source,
+        "scaling pressure configured; set DFE_TRANSFORM_ELASTIC_SCALING__* to change it"
+    );
 }
 
 /// Get the MMDB databases onto disk before the first batch reaches a geoip
