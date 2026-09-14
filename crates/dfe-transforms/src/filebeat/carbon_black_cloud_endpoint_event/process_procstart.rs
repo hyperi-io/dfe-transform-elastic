@@ -139,8 +139,10 @@ impl Transform for ProcessProcstart {
                     .into_iter()
                     .map(|p| json!(p))
                     .collect();
+                    if parts.len() > 1 {
                     while parts.last().and_then(Value::as_str) == Some("") {
                     parts.pop();
+                    }
                     }
                     event.set("_ingest._value.state", Value::Array(parts))?;
                     }
@@ -270,8 +272,10 @@ impl Transform for ProcessProcstart {
                     .into_iter()
                     .map(|p| json!(p))
                     .collect();
+                    if parts.len() > 1 {
                     while parts.last().and_then(Value::as_str) == Some("") {
                     parts.pop();
+                    }
                     }
                     event.set("_ingest._value.state", Value::Array(parts))?;
                     }

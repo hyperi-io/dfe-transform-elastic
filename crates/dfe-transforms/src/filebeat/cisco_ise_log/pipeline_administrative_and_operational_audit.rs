@@ -68,14 +68,16 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
                 event.set("_ingest.on_failure_processor_type", "grok")?;
                 event.set("_ingest.on_failure_processor_tag", "grok_cisco_ise_log_log_details_raw_7eca9d29")?;
                         if let Some(kv_str) = event.get_string("cisco_ise.log.log_details_raw") {
+                            let mut kv_gap = false;
                             for pair in cached_regex!(", (?=[^,=]+=)").split(&kv_str).into_iter() {
-                                if pair.trim().is_empty() {
+                                if pair.is_empty() {
+                                    kv_gap = true;
                                     continue;
                                 }
-                                let Some((key, value)) = pair.split_once("=") else {
-                                    return Err(TransformError::ParseError {
-                                        path: "cisco_ise.log.log_details_raw".into(),
-                                        message: format!("does not contain value_split: {pair}"),
+                                let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                                    return Err(TransformError::KvValueSplit {
+                                        field: "cisco_ise.log.log_details_raw".into(),
+                                        split: "=".into(),
                                     });
                                 };
                                 {
@@ -97,14 +99,16 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
             let _cond = { event.get_str("cisco_ise.log.message.code") == Some("52001") };
             if _cond {
                 if let Some(kv_str) = event.get_string("cisco_ise.log.log_details_raw") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!("(?<!\\\\), ").split(&kv_str).into_iter() {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "cisco_ise.log.log_details_raw".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "cisco_ise.log.log_details_raw".into(),
+                                split: "=".into(),
                             });
                         };
                         {
@@ -208,18 +212,20 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
             if let Err(err) = (|| -> Result<()> {
             if event.has_value("cisco_ise.log.log_details.log_description") {
                 if let Some(kv_str) = event.get_string("cisco_ise.log.log_details.log_description") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split(", ") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "cisco_ise.log.log_details.log_description".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "cisco_ise.log.log_details.log_description".into(),
+                                split: "=".into(),
                             });
                         };
                         {
-                            let key = key.trim_matches(|c| " ".contains(c));
+                            let key = key.trim_matches(|c: char| matches!(c, ' '));
                             if !key.is_empty() {
                                 kv_put(event, &format!("cisco_ise.log.log_details.{}", key), value)?;
                             }
@@ -262,18 +268,20 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(kv_str) = event.get_string("_tmp.ConfigChangeData") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split(", ") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "_tmp.ConfigChangeData".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "_tmp.ConfigChangeData".into(),
+                                split: "=".into(),
                             });
                         };
                         {
-                            let key = key.trim_matches(|c| " ".contains(c));
+                            let key = key.trim_matches(|c: char| matches!(c, ' '));
                             if !key.is_empty() {
                                 kv_put(event, &format!("cisco_ise.log.log_details.{}", key), value)?;
                             }
@@ -289,18 +297,20 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(kv_str) = event.get_string("cisco_ise.log.log_details_raw") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!(", (?=[^,=]+=)").split(&kv_str).into_iter() {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "cisco_ise.log.log_details_raw".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "cisco_ise.log.log_details_raw".into(),
+                                split: "=".into(),
                             });
                         };
                         {
-                            let key = key.trim_matches(|c| " ".contains(c));
+                            let key = key.trim_matches(|c: char| matches!(c, ' '));
                             if !key.is_empty() {
                                 kv_put(event, &format!("cisco_ise.log.log_details.{}", key), value)?;
                             }
@@ -316,18 +326,20 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(kv_str) = event.get_string("cisco_ise.log.log_details.OperationMessageText") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split(", ") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "cisco_ise.log.log_details.OperationMessageText".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "cisco_ise.log.log_details.OperationMessageText".into(),
+                                split: "=".into(),
                             });
                         };
                         {
-                            let key = key.trim_matches(|c| " ".contains(c));
+                            let key = key.trim_matches(|c: char| matches!(c, ' '));
                             if !key.is_empty() {
                                 kv_put(event, &format!("cisco_ise.log.log_details.{}", key), value)?;
                             }
@@ -344,8 +356,10 @@ impl Transform for PipelineAdministrativeAndOperationalAudit {
             let _ = (|| -> Result<()> {
                 if let Some(s) = event.get_string("cisco_ise.log.log_details.AssignedTargets") {
                     let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("cisco_ise.log.assigned_targets", Value::Array(parts))?;
                 }

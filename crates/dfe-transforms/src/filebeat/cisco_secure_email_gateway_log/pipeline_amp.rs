@@ -50,14 +50,16 @@ impl Transform for PipelineAmp {
             let _cond = { event.has_value("_tmp.new_message") && event.get_str("_tmp.grok_match_index") != Some("1") };
             if _cond {
                 if let Some(kv_str) = event.get_string("_tmp.new_message") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!(",\\s*(?=(File Name|FileName|File Size|File Type|Reputation Score|Analysis Score|verdict_source|upload_action|Disposition|Malware|Verdict|Spyname|Timestamp|SHA256|sha256|MID)\\s*[=:])").split(&kv_str).into_iter() {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = ({ let parts = cached_regex!("\\s*=\\s*|:\\s*").splitn(&pair, 2); match (parts.first(), parts.get(1)) { (Some(k), Some(v)) => Some((k.clone(), v.clone())), _ => None } }) else {
-                            return Err(TransformError::ParseError {
-                                path: "_tmp.new_message".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = ({ let parts = cached_regex!("\\s*=\\s*|:\\s*").splitn(&pair, 2); match (parts.first(), parts.get(1)) { (Some(k), Some(v)) => Some((k.clone(), v.clone())), _ => None } }).filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "_tmp.new_message".into(),
+                                split: "\\s*=\\s*|:\\s*".into(),
                             });
                         };
                         {
@@ -73,14 +75,16 @@ impl Transform for PipelineAmp {
             let _cond = { event.has_value("_tmp.new_message") && event.get_str("_tmp.grok_match_index") == Some("1") };
             if _cond {
                 if let Some(kv_str) = event.get_string("_tmp.new_message") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!(",\\s*(?=(File Name|FileName|File Size|File Type|Reputation Score|Analysis Score|verdict_source|upload_action|Disposition|Malware|Verdict|Spyname|Timestamp|SHA256|sha256|MID)\\s*=)").split(&kv_str).into_iter() {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = ({ let parts = cached_regex!("\\s*=\\s*").splitn(&pair, 2); match (parts.first(), parts.get(1)) { (Some(k), Some(v)) => Some((k.clone(), v.clone())), _ => None } }) else {
-                            return Err(TransformError::ParseError {
-                                path: "_tmp.new_message".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = ({ let parts = cached_regex!("\\s*=\\s*").splitn(&pair, 2); match (parts.first(), parts.get(1)) { (Some(k), Some(v)) => Some((k.clone(), v.clone())), _ => None } }).filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "_tmp.new_message".into(),
+                                split: "\\s*=\\s*".into(),
                             });
                         };
                         {

@@ -90,7 +90,7 @@ impl Transform for Default {
 
             if event.has_value("netbox.ip.nat_outside") {
                 foreach_array(event, "netbox.ip.nat_outside", |event| {
-                    let _cond = { event.has_value("_ingest._value") };
+                    let _cond = { false };
                     if _cond {
                         event.append_unique(
                             "related.ip",

@@ -389,6 +389,35 @@ pub fn remove_templated(event: &mut Event, template: &str) {
     event.remove(&path);
 }
 
+/// Append a value to the list at a path whose NAME is a mustache template.
+///
+/// The third of the family, and needed for the same reason as the other two:
+/// `ti_abusech_malwarebazaar` hangs every code-signing hash off
+/// `threat.indicator.file.hash.{{{ _ingest._value.thumbprint_algorithm }}}`, so
+/// the algorithm names the field and only the iteration knows it. Appending to
+/// the template produced one field whose name was the mustache text.
+///
+/// # Errors
+///
+/// Propagates whatever [`Event::append`] returns for the rendered path.
+pub fn append_templated(
+    event: &mut Event,
+    template: &str,
+    value: Value,
+    unique: bool,
+) -> Result<()> {
+    let path = render_path(event, template);
+    // An unresolved template names no field, so there is nothing to append to.
+    if path.is_empty() {
+        return Ok(());
+    }
+    if unique {
+        event.append_unique(&path, value)
+    } else {
+        event.append(&path, value)
+    }
+}
+
 /// Substitute every `{{expr}}` / `{{{expr}}}` with the event's value for it.
 fn render_path(event: &Event, template: &str) -> String {
     let mut out = String::with_capacity(template.len());
@@ -1422,21 +1451,43 @@ static CISCO_TIMESTAMP: LazyLock<String> = LazyLock::new(|| {
 const IPV6: &str = r"((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%[0-9A-Za-z_.~-]+)?";
 
 /// The simplified `IPV4`. Elastic's own guards it with `(?<![0-9])` and
-/// `(?![0-9])` and range-checks every octet; ours does neither, so a greedy
-/// `%{GREEDYDATA}` in front backs off to the shortest satisfying suffix and
-/// `[AF_INET]175.16.199.1:34745` reads a `source.ip` of `5.16.199.1`.
-/// `999.999.999.999` is accepted too.
+/// `(?![0-9])` and range-checks every octet; the range check is still missing
+/// here, so `999.999.999.999` is accepted.
 ///
-/// Taking the guards is a throughput decision rather than a compile one:
-/// `Pattern::compile` falls back to `fancy-regex` for lookaround, the way
-/// `BASE16NUM` below does, and that engine measures 55x slower than `regex` on
-/// a line the pattern does not match. `%{IP}` and `%{IPORHOST}` are spelt
-/// across most of the generated tree, and a line a pattern does not match is
-/// the common case.
-const IPV4: &str = r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}";
+/// The guards themselves are spelt as word boundaries. Lookaround is what
+/// Elastic writes and what this cannot afford -- `Pattern::compile` falls back
+/// to `fancy-regex` for it, the way `BASE16NUM` below does, and that engine
+/// measures 55x slower than `regex` on a line the pattern does not match, with
+/// `%{IP}` and `%{IPORHOST}` spelt across most of the generated tree. A `\b`
+/// either end rejects the same starts and ends the lookaround does: without
+/// them a greedy `%{GREEDYDATA}` in front backed off to the shortest satisfying
+/// suffix and `[AF_INET]175.16.199.1:34745` read a `source.ip` of `5.16.199.1`.
+///
+/// It is not the same assertion. `(?<![0-9])` admits a letter before the first
+/// digit and `\b` does not, so a run abutting a word character is refused here
+/// and taken by Elasticsearch; no capture in the tree spells one.
+///
+/// The boundaries COST, unlike `WORD`'s. Measured in `benches/grok.rs` against
+/// the bare form in the same run: 120 -> 158 ns on a line that matches, 69 ->
+/// 71 ns on one that does not, and 924 ns -> 1.32 us behind a greedy prefix.
+/// Paid because the alternative is a wrong address in a security event rather
+/// than a missing one.
+const IPV4: &str = r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b";
 
 /// A hostname as Elastic defines it, for the composites below.
-const HOSTNAME: &str = r"[a-zA-Z0-9._-]+";
+///
+/// Each label starts with an ALPHANUMERIC, which is what separates this from
+/// [`USERNAME`]: traefik groks a service address with
+/// `(%{IP:destination.ip}|%{HOSTNAME:destination.domain})` and the vendor's
+/// own `-` placeholder must fail it, as it does in Elasticsearch.
+const HOSTNAME: &str = concat!(
+    r"\b(?:[0-9A-Za-z][0-9A-Za-z-]{0,62})",
+    r"(?:\.(?:[0-9A-Za-z][0-9A-Za-z-]{0,62}))*(?:\.?|\b)",
+);
+
+/// A user name as Elastic defines it, which is the loose form `HOSTNAME` used
+/// to share. `%{USER}` is `%{USERNAME}` in the same registry.
+const USERNAME: &str = r"[a-zA-Z0-9._-]+";
 
 /// `%{IP}` is `(?:%{IPV6}|%{IPV4})` and `%{IPORHOST}` is `(?:%{IP}|%{HOSTNAME})`,
 /// v6 first, exactly as Elastic orders them. Built once because `concat!` will
@@ -1444,10 +1495,37 @@ const HOSTNAME: &str = r"[a-zA-Z0-9._-]+";
 static IP: LazyLock<String> = LazyLock::new(|| format!("(?:{IPV6}|{IPV4})"));
 static IPORHOST: LazyLock<String> = LazyLock::new(|| format!("(?:{IPV6}|{IPV4}|{HOSTNAME})"));
 
+/// Elastic's own URI parts, verbatim.
+const URIPROTO: &str = r"[A-Za-z][A-Za-z0-9+\-.]+";
+const URIPATH: &str = r"(?:/[A-Za-z0-9$.+!*'(){},~:;=@#%&_\-]*)+";
+const URIPARAM: &str = r"\?[A-Za-z0-9$.+!*'|(){},~@#%&/=:;_?\-\[\]<>]*";
+const URIPATHPARAM: &str = concat!(
+    r"(?:/[A-Za-z0-9$.+!*'(){},~:;=@#%&_\-]*)+",
+    r"(?:\?[A-Za-z0-9$.+!*'|(){},~@#%&/=:;_?\-\[\]<>]*)?",
+);
+
+/// `%{URIHOST}` is `%{IPORHOST}(?::%{POSINT})?` and `%{URI}` is
+/// `%{URIPROTO}://(?:%{USER}(?::[^@]*)?@)?(?:%{URIHOST})?(?:%{URIPATHPARAM})?`.
+///
+/// The `\S+` this replaces took any run without a space, so pfsense's squid
+/// grok read `github.com:443` as a whole `url.original` and never reached the
+/// `%{IPORHOST}(?::%{DATA})?` alternative beside it that Elasticsearch reads it
+/// with -- costing the source a `url.domain` and a `url.port` and giving it a
+/// `url.scheme` of `github.com` from the `uri_parts` that then ran.
+static URIHOST: LazyLock<String> =
+    LazyLock::new(|| format!(r"{}(?::\b(?:[1-9][0-9]*)\b)?", IPORHOST.as_str()));
+static URI: LazyLock<String> = LazyLock::new(|| {
+    format!(
+        "{URIPROTO}://(?:{USERNAME}(?::[^@]*)?@)?(?:{})?(?:{URIPATHPARAM})?",
+        URIHOST.as_str()
+    )
+});
+
 /// Map well-known grok pattern names to their regex equivalents.
 fn grok_pattern_regex(name: &str) -> &'static str {
     match name {
-        "USER" | "USERNAME" | "HOSTNAME" => HOSTNAME,
+        "USER" | "USERNAME" => USERNAME,
+        "HOSTNAME" => HOSTNAME,
         "IP" => IP.as_str(),
         "IPV4" => IPV4,
         "IPV6" => IPV6,
@@ -1476,15 +1554,16 @@ fn grok_pattern_regex(name: &str) -> &'static str {
         // Elastic's own, look-behind and all, so it compiles on fancy-regex.
         // Without the guard `deadbeef` would match starting at `eadbeef`.
         "BASE16NUM" => r"(?<![0-9A-Fa-f])(?:[+-]?(?:0x)?(?:[0-9A-Fa-f]+))",
-        "NOTSPACE" | "URI" | "URIPROTO" => r"\S+",
+        "NOTSPACE" => r"\S+",
         // Elastic's own URI parts, verbatim. On the catch-all `URIPATHPARAM`
         // captured arbitrary text, so pfsense's haproxy line read the whole
         // request target AND the `HTTP/1.1` after it into `url.original`.
-        "URIPATH" => r"(?:/[A-Za-z0-9$.+!*'(){},~:;=@#%&_\-]*)+",
-        "URIPARAM" => r"\?[A-Za-z0-9$.+!*'|(){},~@#%&/=:;_?\-\[\]<>]*",
-        "URIPATHPARAM" => {
-            r"(?:/[A-Za-z0-9$.+!*'(){},~:;=@#%&_\-]*)+(?:\?[A-Za-z0-9$.+!*'|(){},~@#%&/=:;_?\-\[\]<>]*)?"
-        }
+        "URI" => URI.as_str(),
+        "URIHOST" => URIHOST.as_str(),
+        "URIPROTO" => URIPROTO,
+        "URIPATH" => URIPATH,
+        "URIPARAM" => URIPARAM,
+        "URIPATHPARAM" => URIPATHPARAM,
         "GREEDYDATA" => r".*",
         "DATA" => r".*?",
         // Elastic's own, boundaries and all. The bare `\w+` can be entered
@@ -2475,11 +2554,36 @@ fn java_authority_legal(uri: &UriRef<'_>) -> bool {
         return false;
     }
     match uri.host {
-        Some(host) if bracketed(host) => {
-            host.starts_with('[') && host.ends_with(']') && !host[1..host.len() - 1].contains('[')
-        }
+        Some(host) if bracketed(host) => java_ipv6_reference(host),
         _ => true,
     }
+}
+
+/// Whether `host` is the bracketed IPv6 literal `java.net.URI` would read.
+///
+/// The brackets alone are not enough. `parseIPv6Reference` parses the ADDRESS
+/// inside them and throws where it is not one, and `L_REG_NAME` carries no
+/// bracket either -- so neither reading is left and the URI fails outright.
+/// `arista_ngfw`'s web filter logs `http://[81.2.69.142:80]/...`, which we read
+/// as a host and gave the source five `url.*` fields Elasticsearch has not got.
+fn java_ipv6_reference(host: &str) -> bool {
+    let Some(inner) = host.strip_prefix('[').and_then(|h| h.strip_suffix(']')) else {
+        return false;
+    };
+    // RFC 6874 spells a zone id after the address, and the address is what
+    // decides the form.
+    let address = inner.split_once('%').map_or(inner, |(head, _)| head);
+    address.parse::<std::net::Ipv6Addr>().is_ok()
+}
+
+/// The text `java.net.URL` parses, which is not the text it was given.
+///
+/// Its constructor walks the leading and trailing characters at or below a
+/// space off the spec before it looks at anything, so netskope's `https:// `
+/// reaches the parser as `https://` and reports an EMPTY host rather than a
+/// host of one space.
+fn java_url_spec(text: &str) -> &str {
+    text.trim_matches(|c: char| c <= ' ')
 }
 
 /// The scheme of a URI `java.net.URI` reads as OPAQUE, if it is one.
@@ -2619,6 +2723,13 @@ fn java_url_parses(uri: &UriRef<'_>) -> bool {
     ) {
         return false;
     }
+    // The one character check it does make: a host opening with a bracket is
+    // run through `isIPv6LiteralAddress` and throws where it is not one.
+    if uri.host.is_some_and(|host| host.starts_with('['))
+        && !uri.host.is_some_and(java_ipv6_reference)
+    {
+        return false;
+    }
     uri.port
         .is_none_or(|port| port.is_empty() || port.bytes().all(|b| b.is_ascii_digit()))
 }
@@ -2649,6 +2760,13 @@ pub fn uri_parts(
 
     let uri = split_uri(&original);
     let uri_legal = java_uri_legal(&original, &uri);
+    // The fallback reads a DIFFERENT text from the one `java.net.URI` refused,
+    // because `java.net.URL` trims the spec before it parses.
+    let uri = if uri_legal {
+        uri
+    } else {
+        split_uri(java_url_spec(&original))
+    };
     if !uri_legal && !java_url_parses(&uri) {
         return Ok(false);
     }
@@ -3864,6 +3982,37 @@ mod tests {
         assert_eq!(fallback.get_str("url.domain"), Some("exam[ple.com"));
     }
 
+    /// A bracketed host has to BE an IPv6 literal. `java.net.URI` parses the
+    /// address inside the brackets and `java.net.URL` runs it through
+    /// `isIPv6LiteralAddress`, so neither reading is left and the processor
+    /// writes nothing -- `arista_ngfw`'s web filter logs a bracketed v4 host.
+    #[test]
+    fn uri_parts_refuses_a_bracketed_host_that_is_no_ipv6_address() {
+        let mut event = Event::new(json!({
+            "src": "http://[81.2.69.142:80]/vendor/phpunit/src/eval-stdin.php"
+        }));
+        assert!(!uri_parts(&mut event, "src", "url", false, false).unwrap());
+        assert!(!event.has("url"));
+
+        // A zone id after the address is still the same form.
+        let mut zoned = Event::new(json!({ "src": "http://[fe80::1%25eth0]/a" }));
+        assert!(uri_parts(&mut zoned, "src", "url", false, false).unwrap());
+        assert_eq!(zoned.get_str("url.domain"), Some("[fe80::1%25eth0]"));
+    }
+
+    /// `java.net.URL` walks whitespace off both ends of the spec before it
+    /// parses, so netskope's `https:// ` reports an EMPTY host rather than a
+    /// host of one space.
+    #[test]
+    fn uri_parts_trims_the_spec_the_url_fallback_reads() {
+        let mut event = Event::new(json!({ "src": "https:// " }));
+        assert!(uri_parts(&mut event, "src", "url", true, false).unwrap());
+        assert_eq!(event.get("url.domain"), None);
+        assert_eq!(event.get_str("url.scheme"), Some("https"));
+        // `original` is the field as it stands, not the trimmed spec.
+        assert_eq!(event.get_str("url.original"), Some("https:// "));
+    }
+
     /// `getPath` decodes percent escapes once, the way `getQuery` does, so an
     /// encoded traversal reads as the path it names. `f5_bigip`'s asm alert is
     /// the case in the corpus.
@@ -4033,6 +4182,31 @@ mod tests {
     fn grok_unknown_pattern_fallback() {
         let regex = grok_to_regex("%{UNKNOWN_THING:field}");
         assert!(regex.contains(".+?")); // fallback
+    }
+
+    /// `%{HOSTNAME}` needs an alphanumeric to open each label and `%{USERNAME}`
+    /// does not, which is what makes traefik's `-` placeholder fail the grok
+    /// Elasticsearch also fails it on.
+    #[test]
+    fn a_hostname_is_stricter_than_a_username() {
+        let host = regex::Regex::new(&grok_to_regex("^%{HOSTNAME:h}$")).unwrap();
+        assert!(!host.is_match("-"));
+        assert!(host.is_match("mail-1.example.com"));
+        assert!(host.is_match("example.com."));
+
+        let user = regex::Regex::new(&grok_to_regex("^%{USERNAME:u}$")).unwrap();
+        assert!(user.is_match("-"));
+        assert!(user.is_match("_svc.account"));
+    }
+
+    /// `%{IPV4}` may not start or end part-way through a digit run, which is
+    /// what a greedy `%{GREEDYDATA}` in front of it used to do.
+    #[test]
+    fn an_ipv4_cannot_begin_inside_a_digit_run() {
+        let re =
+            regex::Regex::new(&grok_to_regex("^%{GREEDYDATA:pre}%{IPV4:ip}:%{PORT:p}$")).unwrap();
+        let caught = re.captures("[AF_INET]175.16.199.1:34745").unwrap();
+        assert_eq!(&caught["ip"], "175.16.199.1");
     }
 
     // --- parse_user_agent ---

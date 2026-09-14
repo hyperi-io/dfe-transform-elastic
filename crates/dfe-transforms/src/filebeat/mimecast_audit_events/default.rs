@@ -359,14 +359,17 @@ impl Transform for Default {
             let _ = (|| -> Result<()> {
                 if event.has_value("mimecast.rest_of_event_info") {
                     if let Some(kv_str) = event.get_string("mimecast.rest_of_event_info") {
+                        let mut kv_gap = false;
                         for pair in kv_str.split(", ") {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
-                            let Some((key, value)) = pair.split_once(": ") else {
-                                return Err(TransformError::ParseError {
-                                    path: "mimecast.rest_of_event_info".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            let Some((key, value)) = pair.split_once(": ").filter(|_| !kv_gap)
+                            else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "mimecast.rest_of_event_info".into(),
+                                    split: ": ".into(),
                                 });
                             };
                             {
@@ -967,8 +970,10 @@ impl Transform for Default {
             if _cond {
                 if let Some(s) = event.get_string("user.email") {
                     let mut parts: Vec<Value> = s.split("@").map(|p| json!(p)).collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("user.parts", Value::Array(parts))?;
                 }
@@ -1013,8 +1018,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("file.parts", Value::Array(parts))?;
                 }

@@ -202,8 +202,10 @@ impl Transform for Default {
                     if event.has_value("beyondtrust_isi.incident.entityName") {
                         if let Some(s) = event.get_string("beyondtrust_isi.incident.entityName") {
                             let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                            while parts.last().and_then(Value::as_str) == Some("") {
-                                parts.pop();
+                            if parts.len() > 1 {
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                             }
                             event
                                 .set("beyondtrust_isi.incident.entityName", Value::Array(parts))?;
@@ -252,8 +254,10 @@ impl Transform for Default {
                     if event.has_value("beyondtrust_isi.incident.entityType") {
                         if let Some(s) = event.get_string("beyondtrust_isi.incident.entityType") {
                             let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                            while parts.last().and_then(Value::as_str) == Some("") {
-                                parts.pop();
+                            if parts.len() > 1 {
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                             }
                             event
                                 .set("beyondtrust_isi.incident.entityType", Value::Array(parts))?;
@@ -302,8 +306,10 @@ impl Transform for Default {
                     if event.has_value("beyondtrust_isi.incident.source") {
                         if let Some(s) = event.get_string("beyondtrust_isi.incident.source") {
                             let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                            while parts.last().and_then(Value::as_str) == Some("") {
-                                parts.pop();
+                            if parts.len() > 1 {
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                             }
                             event.set("beyondtrust_isi.incident.source", Value::Array(parts))?;
                         }
@@ -351,8 +357,10 @@ impl Transform for Default {
                     if event.has_value("beyondtrust_isi.incident.location") {
                         if let Some(s) = event.get_string("beyondtrust_isi.incident.location") {
                             let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                            while parts.last().and_then(Value::as_str) == Some("") {
-                                parts.pop();
+                            if parts.len() > 1 {
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                             }
                             event.set("beyondtrust_isi.incident.location", Value::Array(parts))?;
                         }

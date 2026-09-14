@@ -45,14 +45,16 @@ impl Transform for Default {
             }
 
             if let Some(kv_str) = event.get_string("kvpairs") {
+                let mut kv_gap = false;
                 for pair in cached_regex!("\\|").split(&kv_str).into_iter() {
-                    if pair.trim().is_empty() {
+                    if pair.is_empty() {
+                        kv_gap = true;
                         continue;
                     }
-                    let Some((key, value)) = pair.split_once("=") else {
-                        return Err(TransformError::ParseError {
-                            path: "kvpairs".into(),
-                            message: format!("does not contain value_split: {pair}"),
+                    let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                        return Err(TransformError::KvValueSplit {
+                            field: "kvpairs".into(),
+                            split: "=".into(),
                         });
                     };
                     {

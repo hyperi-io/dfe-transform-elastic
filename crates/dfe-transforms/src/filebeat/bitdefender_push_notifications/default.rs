@@ -1517,8 +1517,10 @@ impl Transform for Default {
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("host.ip", Value::Array(parts))?;
                     }
@@ -3075,6 +3077,18 @@ impl Transform for Default {
             }
 
             // Painless script, resolved to its runners at generation time
+            fill_empty_elements(
+                event,
+                &ListFill::new("bitdefender.event.filePath".into(), "-".into()),
+            );
+            fill_empty_elements(
+                event,
+                &ListFill::new("bitdefender.event.fileSizes".into(), "-".into()),
+            );
+            fill_empty_elements(
+                event,
+                &ListFill::new("bitdefender.event.remediationActions".into(), "-".into()),
+            );
             drop_empty(
                 event,
                 &DropPolicy {

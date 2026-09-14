@@ -45,18 +45,18 @@ pub use crate::painless_collect_present::{CollectPresent, collect_present};
 pub use crate::painless_common::{
     AllowedValueCopy, BasenameCuts, CoerceBoolean, CombineFields, DedupeMapValues, DropPolicy,
     DurationWindow, EnsureAppend, EnsurePrefix, Factor, FirstPresentKeyName, FloatSecondsToNanos,
-    GeoPointFromCoordinates, GuardedReplace, JoinPresentFields, KeyRewriteStep, LiteralValueMap,
-    MailtoUriFields, MemberFromVariantKey, MoveMapEntry, OctalString, ParametersIntoMap,
-    PermissionOctal, RemoveEmptyChildMaps, RenameMapKeys, RewriteKeys, ScaleField,
-    SnakeCaseListElements, SplitAtDelimiter, StringOp, StringOps, SumMemberOverList,
+    GeoPointFromCoordinates, GuardedReplace, JoinPresentFields, KeyRewriteStep, ListFill,
+    LiteralValueMap, MailtoUriFields, MemberFromVariantKey, MoveMapEntry, OctalString,
+    ParametersIntoMap, PermissionOctal, RemoveEmptyChildMaps, RenameMapKeys, RewriteKeys,
+    ScaleField, SnakeCaseListElements, SplitAtDelimiter, StringOp, StringOps, SumMemberOverList,
     SyslogPriorityScript, UnwrapSuffixedKeys, allowed_value_copy, basename_cuts, coerce_boolean,
     combine_fields, dedupe_map_values, drop_empty, duration_window, ensure_append, ensure_prefix,
-    first_present_key_name, float_seconds_to_nanos, geo_point_from_coordinates, guarded_replace,
-    join_present_fields, kv_into_fields, literal_value_map, mailto_uri_fields,
-    member_from_variant_key, move_map_entry, octal_string, parameters_into_map, permission_octal,
-    remove_empty_child_maps, rename_map_keys, rewrite_keys, scale_field, snake_case_list_elements,
-    split_at_delimiter, string_ops, sum_directions, sum_directions_into_existing,
-    sum_member_over_list, syslog_priority, unwrap_suffixed_keys,
+    fill_empty_elements, first_present_key_name, float_seconds_to_nanos,
+    geo_point_from_coordinates, guarded_replace, join_present_fields, kv_into_fields,
+    literal_value_map, mailto_uri_fields, member_from_variant_key, move_map_entry, octal_string,
+    parameters_into_map, permission_octal, remove_empty_child_maps, rename_map_keys, rewrite_keys,
+    scale_field, snake_case_list_elements, split_at_delimiter, string_ops, sum_directions,
+    sum_directions_into_existing, sum_member_over_list, syslog_priority, unwrap_suffixed_keys,
 };
 pub use crate::painless_deep_merge::{DeepMerge, run_deep_merge};
 pub use crate::painless_delimited_table::{DelimitedTable, delimited_table};
@@ -116,12 +116,13 @@ pub use crate::painless_params::{Fold, LookupNormaliseScript};
 pub use crate::date_formats::{parse_date, parse_date_out};
 
 pub use crate::codegen_api::{
-    RegisteredDomainResult, community_id_v1, condition_eq, convert_value, csv_close_quote_gap,
-    dot_expand, fingerprint_default, fingerprint_with, foreach_array, geoip_lookup, grok_to_regex,
-    grok_to_regex_with_map, gsub_field, html_strip, ip_in_networks, is_internal_ip, join_values,
-    kv_put, map_strings, painless_exec, painless_exec_params, parse_json_field,
-    parse_json_field_to_root, parse_json_str, parse_user_agent, registered_domain_lookup,
-    remove_templated, resolve_path, set_templated, sort_values, uri_parts, url_decode,
+    RegisteredDomainResult, append_templated, community_id_v1, condition_eq, convert_value,
+    csv_close_quote_gap, dot_expand, fingerprint_default, fingerprint_with, foreach_array,
+    geoip_lookup, grok_to_regex, grok_to_regex_with_map, gsub_field, html_strip, ip_in_networks,
+    is_internal_ip, join_values, kv_put, map_strings, painless_exec, painless_exec_params,
+    parse_json_field, parse_json_field_to_root, parse_json_str, parse_user_agent,
+    registered_domain_lookup, remove_templated, resolve_path, set_templated, sort_values,
+    uri_parts, url_decode,
 };
 
 pub use crate::painless_helpers::{

@@ -677,15 +677,18 @@ impl Transform for Default {
                     if let Some(kv_str) =
                         event.get_string("okta.debug_context.debug_data.flattened.behaviors")
                     {
+                        let mut kv_gap = false;
                         for pair in kv_str.split(", ") {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
-                            let Some((key, value)) = pair.split_once("=") else {
-                                return Err(TransformError::ParseError {
-                                    path: "okta.debug_context.debug_data.flattened.behaviors"
+                            let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap)
+                            else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "okta.debug_context.debug_data.flattened.behaviors"
                                         .into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                                    split: "=".into(),
                                 });
                             };
                             {
@@ -769,14 +772,18 @@ impl Transform for Default {
                         if let Some(kv_str) =
                             event.get_string("okta.debug_context.debug_data.flattened.risk")
                         {
+                            let mut kv_gap = false;
                             for pair in kv_str.split(", ") {
-                                if pair.trim().is_empty() {
+                                if pair.is_empty() {
+                                    kv_gap = true;
                                     continue;
                                 }
-                                let Some((key, value)) = pair.split_once("=") else {
-                                    return Err(TransformError::ParseError {
-                                        path: "okta.debug_context.debug_data.flattened.risk".into(),
-                                        message: format!("does not contain value_split: {pair}"),
+                                let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap)
+                                else {
+                                    return Err(TransformError::KvValueSplit {
+                                        field: "okta.debug_context.debug_data.flattened.risk"
+                                            .into(),
+                                        split: "=".into(),
                                     });
                                 };
                                 {
@@ -1010,8 +1017,10 @@ impl Transform for Default {
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set(
                             "okta.debug_context.debug_data.risk_reasons",
@@ -1066,8 +1075,10 @@ impl Transform for Default {
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set(
                             "okta.debug_context.debug_data.risk_reasons",
@@ -1190,14 +1201,17 @@ impl Transform for Default {
                     if let Some(kv_str) =
                         event.get_string("okta.debug_context.debug_data.behaviors")
                     {
+                        let mut kv_gap = false;
                         for pair in kv_str.split(", ") {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
-                            let Some((key, value)) = pair.split_once("=") else {
-                                return Err(TransformError::ParseError {
-                                    path: "okta.debug_context.debug_data.behaviors".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap)
+                            else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "okta.debug_context.debug_data.behaviors".into(),
+                                    split: "=".into(),
                                 });
                             };
                             {
@@ -1276,14 +1290,17 @@ impl Transform for Default {
                     if let Err(err) = (|| -> Result<()> {
                         if let Some(kv_str) = event.get_string("okta.debug_context.debug_data.risk")
                         {
+                            let mut kv_gap = false;
                             for pair in kv_str.split(", ") {
-                                if pair.trim().is_empty() {
+                                if pair.is_empty() {
+                                    kv_gap = true;
                                     continue;
                                 }
-                                let Some((key, value)) = pair.split_once("=") else {
-                                    return Err(TransformError::ParseError {
-                                        path: "okta.debug_context.debug_data.risk".into(),
-                                        message: format!("does not contain value_split: {pair}"),
+                                let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap)
+                                else {
+                                    return Err(TransformError::KvValueSplit {
+                                        field: "okta.debug_context.debug_data.risk".into(),
+                                        split: "=".into(),
                                     });
                                 };
                                 {
@@ -1415,8 +1432,10 @@ impl Transform for Default {
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set(
                             "okta.debug_context.debug_data.risk_reasons",
@@ -1467,8 +1486,10 @@ impl Transform for Default {
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set(
                             "okta.debug_context.debug_data.risk_reasons",

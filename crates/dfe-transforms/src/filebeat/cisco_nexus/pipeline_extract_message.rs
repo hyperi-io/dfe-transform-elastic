@@ -332,14 +332,17 @@ impl Transform for PipelineExtractMessage {
             let _ = (|| -> Result<()> {
                 if event.has_value("temp.message") {
                     if let Some(kv_str) = event.get_string("temp.message") {
+                        let mut kv_gap = false;
                         for pair in cached_regex!("\\s+").split(&kv_str).into_iter() {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
-                            let Some((key, value)) = pair.split_once("=") else {
-                                return Err(TransformError::ParseError {
-                                    path: "temp.message".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap)
+                            else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "temp.message".into(),
+                                    split: "=".into(),
                                 });
                             };
                             {
@@ -357,14 +360,17 @@ impl Transform for PipelineExtractMessage {
             let _ = (|| -> Result<()> {
                 if event.has_value("temp.message2") {
                     if let Some(kv_str) = event.get_string("temp.message2") {
+                        let mut kv_gap = false;
                         for pair in kv_str.split(" ; ") {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
-                            let Some((key, value)) = pair.split_once("=") else {
-                                return Err(TransformError::ParseError {
-                                    path: "temp.message2".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap)
+                            else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "temp.message2".into(),
+                                    split: "=".into(),
                                 });
                             };
                             {

@@ -93,6 +93,7 @@ mod google_scc;
 mod google_workspace;
 mod grafana;
 mod hackerone;
+mod iis;
 mod imperva;
 mod island_browser;
 mod jamf_compliance_reporter;
@@ -115,6 +116,7 @@ mod qualys_vmdr;
 mod rubrik;
 mod salesforce;
 mod sentinel_one_cloud_funnel;
+mod servicenow;
 mod snyk;
 mod splunk;
 mod stormshield;
@@ -123,6 +125,7 @@ mod suricata;
 mod swimlane;
 mod symantec_endpoint_security;
 mod sysdig;
+mod system;
 mod tanium;
 mod tenable_io;
 mod tenable_ot_security;
@@ -233,6 +236,7 @@ const ENTRIES: &[&[Entry]] = &[
     google_workspace::ENTRIES,
     grafana::ENTRIES,
     hackerone::ENTRIES,
+    iis::ENTRIES,
     imperva::ENTRIES,
     island_browser::ENTRIES,
     jamf_compliance_reporter::ENTRIES,
@@ -255,6 +259,7 @@ const ENTRIES: &[&[Entry]] = &[
     rubrik::ENTRIES,
     salesforce::ENTRIES,
     sentinel_one_cloud_funnel::ENTRIES,
+    servicenow::ENTRIES,
     snyk::ENTRIES,
     splunk::ENTRIES,
     stormshield::ENTRIES,
@@ -263,6 +268,7 @@ const ENTRIES: &[&[Entry]] = &[
     swimlane::ENTRIES,
     symantec_endpoint_security::ENTRIES,
     sysdig::ENTRIES,
+    system::ENTRIES,
     tanium::ENTRIES,
     tenable_io::ENTRIES,
     tenable_ot_security::ENTRIES,

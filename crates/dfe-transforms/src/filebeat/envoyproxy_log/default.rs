@@ -314,6 +314,7 @@ impl Transform for Default {
                     let _cond = { event.has_value("proto") && event.get_str("proto") != Some("-") };
                     if _cond {
                         // Painless script, resolved to its runners at generation time
+                        event.set("http", json!({}))?;
                         split_at_delimiter(
                             event,
                             &SplitAtDelimiter::new(
@@ -517,8 +518,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(s) = event.get_string("envoyproxy.log.response_flags") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("envoyproxy.log.response_flags", Value::Array(parts))?;
                     }
@@ -815,6 +818,7 @@ impl Transform for Default {
                     let _cond = { event.has_value("proto") && event.get_str("proto") != Some("-") };
                     if _cond {
                         // Painless script, resolved to its runners at generation time
+                        event.set("http", json!({}))?;
                         split_at_delimiter(
                             event,
                             &SplitAtDelimiter::new(
@@ -1018,8 +1022,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(s) = event.get_string("envoyproxy.log.response_flags") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("envoyproxy.log.response_flags", Value::Array(parts))?;
                     }

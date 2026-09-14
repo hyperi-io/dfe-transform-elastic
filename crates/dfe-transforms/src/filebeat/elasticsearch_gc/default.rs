@@ -103,8 +103,10 @@ impl Transform for Default {
             if event.has_value("elasticsearch.gc.tags") {
                 if let Some(s) = event.get_string("elasticsearch.gc.tags") {
                     let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("elasticsearch.gc.tags", Value::Array(parts))?;
                 }

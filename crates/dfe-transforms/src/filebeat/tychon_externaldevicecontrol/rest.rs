@@ -42,8 +42,10 @@ impl Transform for Rest {
         if event.has_value("tychon.policy.whitelist.previous_value") {
             if let Some(s) = event.get_string("tychon.policy.whitelist.previous_value") {
                 let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                while parts.last().and_then(Value::as_str) == Some("") {
-                    parts.pop();
+                if parts.len() > 1 {
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                 }
                 event.set("tychon.policy.whitelist.previous_value", Value::Array(parts))?;
             }
@@ -52,8 +54,10 @@ impl Transform for Rest {
         if event.has_value("tychon.policy.whitelist.current_value") {
             if let Some(s) = event.get_string("tychon.policy.whitelist.current_value") {
                 let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                while parts.last().and_then(Value::as_str) == Some("") {
-                    parts.pop();
+                if parts.len() > 1 {
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                 }
                 event.set("tychon.policy.whitelist.current_value", Value::Array(parts))?;
             }

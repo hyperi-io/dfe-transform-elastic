@@ -956,8 +956,10 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(s) = event.get_string("lastpass.event_report.data.original") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set(
                             "lastpass.event_report.data.deleted_site",
@@ -995,8 +997,10 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(s) = event.get_string("lastpass.event_report.data.original") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("lastpass.event_report.data.user_email", Value::Array(parts))?;
                     }

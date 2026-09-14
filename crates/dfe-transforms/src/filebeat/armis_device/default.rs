@@ -862,8 +862,10 @@ impl Transform for Default {
                     if event.has_value("json.ipAddress") {
                         if let Some(s) = event.get_string("json.ipAddress") {
                             let mut parts: Vec<Value> = s.split(", ").map(|p| json!(p)).collect();
-                            while parts.last().and_then(Value::as_str) == Some("") {
-                                parts.pop();
+                            if parts.len() > 1 {
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                             }
                             event.set("armis.device.ip_address", Value::Array(parts))?;
                         }
@@ -1147,8 +1149,10 @@ impl Transform for Default {
                     if event.has_value("json.macAddress") {
                         if let Some(s) = event.get_string("json.macAddress") {
                             let mut parts: Vec<Value> = s.split(", ").map(|p| json!(p)).collect();
-                            while parts.last().and_then(Value::as_str) == Some("") {
-                                parts.pop();
+                            if parts.len() > 1 {
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                             }
                             event.set("armis.device.mac_address", Value::Array(parts))?;
                         }
@@ -1302,8 +1306,10 @@ impl Transform for Default {
                     if event.has_value("json.names") {
                         if let Some(s) = event.get_string("json.names") {
                             let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                            while parts.last().and_then(Value::as_str) == Some("") {
-                                parts.pop();
+                            if parts.len() > 1 {
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                             }
                             event.set("armis.device.names", Value::Array(parts))?;
                         }

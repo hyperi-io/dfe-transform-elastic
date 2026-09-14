@@ -307,14 +307,16 @@ impl Transform for PipelinePassedAuthentications {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(kv_str) = event.get_string("cisco_ise.log.log_details_raw") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!(", (?=[^,=]+=)").split(&kv_str).into_iter() {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "cisco_ise.log.log_details_raw".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "cisco_ise.log.log_details_raw".into(),
+                                split: "=".into(),
                             });
                         };
                         {
@@ -356,14 +358,16 @@ impl Transform for PipelinePassedAuthentications {
             // ignore_failure: true
             let _ = (|| -> Result<()> {
                 if let Some(kv_str) = event.get_string("_tmp.response") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split("; ") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "_tmp.response".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "_tmp.response".into(),
+                                split: "=".into(),
                             });
                         };
                         {

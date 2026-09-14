@@ -20,18 +20,20 @@ impl Transform for Packetfilter {
             if _cond {
             if event.has_value("_tmp.raw_data") {
                 if let Some(kv_str) = event.get_string("_tmp.raw_data") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!(" (?=[a-z0-9\\_\\-]+=)").split(&kv_str).into_iter() {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "_tmp.raw_data".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "_tmp.raw_data".into(),
+                                split: "=".into(),
                             });
                         };
                         {
-                            let value = value.trim_matches(|c| "\" ".contains(c));
+                            let value = value.trim_matches(|c: char| matches!(c, ' ' | '\"'));
                             if !key.is_empty() {
                                 kv_put(event, &format!("sophos.utm.{}", key), value)?;
                             }
@@ -176,8 +178,10 @@ impl Transform for Packetfilter {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("sophos.utm.tcpflags", Value::Array(parts))?;
                 }
