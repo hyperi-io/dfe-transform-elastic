@@ -39,6 +39,7 @@ thiserror = { workspace = true }
 tracing = { workspace = true }
 clap = { workspace = true }
 bytes = { workspace = true }
+memchr = { workspace = true }
 metrics = { workspace = true }
 schemars = { workspace = true }
 chrono = { workspace = true }
@@ -50,6 +51,9 @@ tikv-jemallocator = { workspace = true, optional = true }
 # configured out whenever this package is built ALONE -- a whole-workspace
 # build only worked because dfe-transforms happens to ask for it.
 dfe-runtime = { workspace = true, features = ["testutil"] }
+# `start_paused` for the send-retry tests: the attempt budget spans ~25 seconds
+# of backoff, which a paused clock fast-forwards instead of waiting out.
+tokio = { workspace = true, features = ["test-util"] }
 tempfile = { workspace = true }
 testcontainers = { workspace = true }
 testcontainers-modules = { workspace = true }
@@ -81,6 +85,7 @@ dbg_macro = "deny"
 module_name_repetitions = "allow"
 must_use_candidate = "allow"
 missing_errors_doc = "allow"
+missing_panics_doc = "allow"
 
 [workspace]
 members = [
@@ -90,7 +95,9 @@ members = [
     "crates/dfe-runtime",
     "crates/dfe-transforms",
 ]
-resolver = "2"
+# Edition 2024's resolver. Feature unification is per-target, so a dev- or
+# build-dependency's features no longer leak into the normal build.
+resolver = "3"
 
 # The member crates ARE the hot path, so they carry the same panic guards the
 # root package does. `missing_docs` is deliberately absent: it is a library
@@ -183,6 +190,12 @@ serde_yaml_ng = ">=0.10"
 
 # SIMD byte search
 memchr = ">=2.7"
+
+# The lock in front of the GeoIP cache. std's RwLock carries poisoning and a
+# slower uncontended path, and this one is taken on the per-event path across
+# one transform thread per Kafka partition. Already in the lockfile through
+# scalo, so this adds no supply chain.
+parking_lot = ">=0.12.5, <0.13"
 
 # Pre-compiled DFA regex (serialisable, zero-cost startup)
 regex-automata = ">=0.4"

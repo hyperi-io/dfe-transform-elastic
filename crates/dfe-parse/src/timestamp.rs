@@ -6,8 +6,9 @@
 //!
 //! Uses fixed-position byte extraction instead of regex for 10-12x speedup.
 
+use chrono::{DateTime, Datelike, FixedOffset, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Utc};
+
 use crate::error::{ParseError, ParseResult};
-use chrono::{DateTime, FixedOffset, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Utc};
 
 /// Parse an ISO 8601 timestamp.
 ///
@@ -367,8 +368,6 @@ fn month_from_abbrev(s: &[u8]) -> Result<u32, ParseError> {
         _ => Err(ParseError::invalid("unknown month abbreviation")),
     }
 }
-
-use chrono::Datelike;
 
 #[cfg(test)]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]

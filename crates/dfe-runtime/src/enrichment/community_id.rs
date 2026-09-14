@@ -14,25 +14,42 @@ use sha1::{Digest, Sha1};
 use crate::error::{Result, TransformError};
 use crate::event::Event;
 
-/// IANA protocol number mapping from transport name.
+/// IANA protocol numbers by the names the vendors spell them with.
+///
+/// ONE table, read by both [`protocol_number`] and the ICMP branch of
+/// [`enrich`]. A second list would disagree with this one -- a spelling missing
+/// from the port switch hashes `source.port` where the spec wants the ICMP
+/// message type.
+const PROTOCOLS: &[(&str, u8)] = &[
+    ("hopopt", 0),
+    ("icmp", PROTO_ICMP),
+    ("igmp", 2),
+    ("tcp", PROTO_TCP),
+    ("udp", PROTO_UDP),
+    ("rsvp", 46),
+    ("gre", 47),
+    ("esp", 50),
+    ("ah", 51),
+    ("icmpv6", PROTO_ICMPV6),
+    ("icmp6", PROTO_ICMPV6),
+    ("ipv6-icmp", PROTO_ICMPV6),
+    ("eigrp", 88),
+    ("ospf", 89),
+    ("vrrp", 112),
+    ("sctp", PROTO_SCTP),
+];
+
+/// IANA protocol number from a transport name, or from its decimal number.
+///
+/// Compared without allocating, because this runs per event. The decimal
+/// fallback covers every numeric spelling: `"58"` parses to 58 whatever the
+/// table holds.
 fn protocol_number(transport: &str) -> Option<u8> {
-    match transport.to_uppercase().as_str() {
-        "HOPOPT" | "0" => Some(0),
-        "ICMP" | "1" => Some(1),
-        "IGMP" | "2" => Some(2),
-        "TCP" | "6" => Some(6),
-        "UDP" | "17" => Some(17),
-        "RSVP" | "46" => Some(46),
-        "GRE" | "47" => Some(47),
-        "ESP" | "50" => Some(50),
-        "AH" | "51" => Some(51),
-        "ICMPV6" | "ICMP6" | "IPV6-ICMP" | "58" => Some(58),
-        "EIGRP" | "88" => Some(88),
-        "OSPF" | "89" => Some(89),
-        "VRRP" | "112" => Some(112),
-        "SCTP" | "132" => Some(132),
-        _ => transport.parse::<u8>().ok(),
-    }
+    PROTOCOLS
+        .iter()
+        .find(|(name, _)| name.eq_ignore_ascii_case(transport))
+        .map(|(_, number)| *number)
+        .or_else(|| transport.parse::<u8>().ok())
 }
 
 const PROTO_ICMP: u8 = 1;
@@ -225,15 +242,15 @@ pub fn enrich(event: &mut Event, config: &CommunityIdConfig<'_>) -> Result<()> {
         }
     };
 
-    // ICMP carries no ports; the spec hashes the message type and code.
-    let (src_port_field, dst_port_field) = if matches!(
-        transport.to_ascii_lowercase().as_str(),
-        "icmp" | "1" | "icmpv6" | "ipv6-icmp" | "58"
-    ) {
-        ("icmp.type", "icmp.code")
-    } else {
-        (*src_port_field, *dst_port_field)
-    };
+    // ICMP carries no ports; the spec hashes the message type and code. Read
+    // through the same table `community_id_v1` reads, so the two cannot
+    // disagree about how a vendor spells ICMP6.
+    let (src_port_field, dst_port_field) =
+        if matches!(protocol_number(&transport), Some(PROTO_ICMP | PROTO_ICMPV6)) {
+            ("icmp.type", "icmp.code")
+        } else {
+            (*src_port_field, *dst_port_field)
+        };
 
     // A port outside 0-65535 is malformed input, not a value to wrap around.
     let src_port = u16::try_from(event.get_as_i64(src_port_field).unwrap_or(0)).unwrap_or(0);
@@ -334,6 +351,45 @@ mod tests {
     fn invalid_ip() {
         let result = community_id_v1("not-an-ip", "5.6.7.8", 80, 443, "TCP", 0);
         assert!(result.is_err());
+    }
+
+    /// Every spelling of ICMP6 a vendor uses names the same protocol, on both
+    /// the hash and the field switch.
+    #[test]
+    fn the_icmp6_spellings_all_name_protocol_58() {
+        for spelling in ["icmpv6", "ICMPv6", "icmp6", "ICMP6", "ipv6-icmp", "58"] {
+            assert_eq!(protocol_number(spelling), Some(58), "{spelling}");
+        }
+    }
+
+    /// `icmp6` reached the hash as protocol 58 while the field switch did not
+    /// know it, so the ports were hashed where the message type belongs. Both
+    /// spellings must produce the same id for the same flow.
+    #[test]
+    fn icmp6_hashes_its_message_type_not_its_ports() {
+        let config = CommunityIdConfig {
+            ignore_missing: true,
+            ..default_config()
+        };
+        let event = |transport: &str| {
+            let mut event = Event::new(serde_json::json!({
+                "source": { "ip": "2001:db8::1", "port": 12345 },
+                "destination": { "ip": "2001:db8::2", "port": 80 },
+                "icmp": { "type": 128, "code": 0 },
+                "network": { "transport": transport }
+            }));
+            enrich(&mut event, &config).unwrap();
+            event.get_str("network.community_id").map(str::to_string)
+        };
+
+        let spelled = event("icmp6").expect("icmp6 hashes");
+        assert_eq!(spelled, event("icmpv6").expect("icmpv6 hashes"));
+        // Type 128 is the echo request, whose counterpart is 129, so the id is
+        // the one the reply produces too.
+        assert_eq!(
+            spelled,
+            community_id_v1("2001:db8::2", "2001:db8::1", 129, 0, "icmpv6", 0).unwrap()
+        );
     }
 
     fn default_config() -> CommunityIdConfig<'static> {

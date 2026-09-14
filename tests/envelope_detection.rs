@@ -17,6 +17,7 @@
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
 use std::path::{Path, PathBuf};
+use std::sync::LazyLock;
 
 use dfe_transform_elastic::envelope::{self, Envelope, EnvelopeSetting};
 use dfe_transform_elastic::registry;
@@ -59,7 +60,13 @@ impl Fixture {
     }
 }
 
-fn fixtures() -> Vec<Fixture> {
+/// Every fixture, read from disk once for the whole binary.
+fn fixtures() -> &'static [Fixture] {
+    static FIXTURES: LazyLock<Vec<Fixture>> = LazyLock::new(load_fixtures);
+    &FIXTURES
+}
+
+fn load_fixtures() -> Vec<Fixture> {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/envelopes");
     let mut found = Vec::new();
 
@@ -92,9 +99,9 @@ fn fixtures() -> Vec<Fixture> {
 }
 
 /// One fixture by file name, so a transport test names the shape it drives.
-fn fixture(name: &str) -> Fixture {
+fn fixture(name: &str) -> &'static Fixture {
     fixtures()
-        .into_iter()
+        .iter()
         .find(|f| f.path.file_name().is_some_and(|f| f == name))
         .unwrap_or_else(|| panic!("no fixture named {name}"))
 }
@@ -384,6 +391,51 @@ fn a_pinned_envelope_beats_detection_and_is_counted() {
     let pinned = envelope::resolve(EnvelopeSetting::Beats, Some(&event), intake, "test.dataset");
     assert_eq!(pinned.delivery.envelope, Envelope::Beats);
     assert!(pinned.contradicted, "the mismatch must be reported");
+}
+
+/// A scalo `WorkBatch` spans partitions, so one batch can carry two producers'
+/// wrappers. Each event is unwrapped as what IT is, not as what the batch's
+/// first event was.
+#[test]
+fn a_batch_carrying_two_producers_unwraps_each_event_as_itself() {
+    use dfe_transform_elastic::pipeline::transform_batch_resolved;
+    use dfe_transform_elastic::registry;
+
+    let source = "filebeat.cisco_ios.default";
+    let intake = registry::intake(source).expect("registered");
+    let dataset = registry::dataset(source).expect("registered");
+    let transform = registry::lookup(source).expect("registered");
+    let resolver = envelope::Resolver::new(EnvelopeSetting::Auto, intake, dataset);
+
+    // A bare Beats event first, then a receiver one. Reading the family off the
+    // first event alone left the second wrapped, `_source` and all.
+    let events = vec![
+        dfe_runtime::Event::new(serde_json::json!({
+            "message": "<134>Feb  8 04:00:48 host 1: a beats line",
+        })),
+        dfe_runtime::Event::new(serde_json::json!({
+            "message": "a receiver body",
+            "facility": "local0",
+            "severity": "info",
+            "hostname": "host",
+            "_source": "syslog",
+        })),
+    ];
+
+    let (out, outcome, envelopes) = transform_batch_resolved(transform, &resolver, events);
+
+    assert_eq!(outcome.total(), 2);
+    assert_eq!(out.len(), 2, "neither event may be dropped");
+    assert_eq!(
+        envelopes.first.as_ref().map(|r| r.delivery.envelope),
+        Some(Envelope::Beats),
+        "the first event is the one reported"
+    );
+    // The receiver's own keys are gone, which only the receiver unwrap does.
+    let second = out.get(1).expect("the second event");
+    assert!(!second.has("_source"), "the second event was not unwrapped");
+    assert_eq!(second.get_str("agent.type"), Some("dfe-receiver"));
+    assert_eq!(second.get_str("log.syslog.hostname"), Some("host"));
 }
 
 /// Detecting a family the source cannot arrive in must not unwrap a shape that

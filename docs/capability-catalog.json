@@ -15,10 +15,14 @@
         "name": "source.envelope",
         "type": "enum",
         "required": false,
-        "description": "How the payload is wrapped on the way in. `syslog` reads dfe-receiver's output and applies only to device sources.",
+        "default": "auto",
+        "description": "How the payload is wrapped on the way in. `auto` reads it off each event; `receiver` (spelled `syslog` before it grew the other transports) reads dfe-receiver's output and applies only to device sources; `fetcher` reads dfe-fetcher's and applies only to sources Elastic pulls from an API.",
         "enum_values": [
+          "auto",
           "beats",
-          "syslog"
+          "receiver",
+          "syslog",
+          "fetcher"
         ]
       }
     ],
@@ -6594,6 +6598,13 @@
         "type": "string",
         "required": true,
         "description": "Topic the normalised events are produced to."
+      },
+      {
+        "name": "source.max_batch_bytes",
+        "type": "int",
+        "required": false,
+        "default": 16777216,
+        "description": "Ceiling on the bytes one fetch brings back, applied as librdkafka's fetch.max.bytes. The pod's memory limit has to cover this plus the parsed documents, which are several times larger."
       }
     ]
   },
