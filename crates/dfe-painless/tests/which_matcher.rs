@@ -778,6 +778,10 @@ const GOOGLE_SECOPS_KV_FIELDS: &str = r#"String[] kvFields = new String[] {\"det
 /// which: `[:]` folds the list into one map, `[]` keeps the list and folds
 /// each record into a single-key map of its own. Read from the loop body
 /// alone, all three of these are the same script.
+///
+/// The production fold is transcribed and resolves to its runner ahead of the
+/// ladder, so the matcher behind it is the audit: the widening that reads the
+/// accumulator has to keep answering while the transcription stands in front.
 #[test]
 fn the_gitlab_key_value_folds_bind_to_the_accumulator_they_declare() {
     assert_eq!(
@@ -789,10 +793,13 @@ fn the_gitlab_key_value_folds_bind_to_the_accumulator_they_declare() {
     );
     assert_eq!(
         binding(GITLAB_PRODUCTION_PARAMS),
-        [concat!(
-            r#"KeyValuePairs(KeyValueFold { path: "gitlab.production.params", "#,
-            r#"into: OneMap, key_steps: [], dump_key: Some("variables") })"#
-        )]
+        [
+            "Bespoke(gitlab::fold_params_pairs)",
+            concat!(
+                r#"KeyValuePairs(KeyValueFold { path: "gitlab.production.params", "#,
+                r#"into: OneMap, key_steps: [], dump_key: Some("variables") })"#
+            )
+        ]
     );
     assert_eq!(
         binding(AZURE_AUTH_DETAILS),
@@ -1818,17 +1825,19 @@ const CARBONBLACK_IOC: &str = r#"void _set(Map base, def path, def value) {\n  i
 /// `.../pipeline_host_infrastructure.rs`.
 const BT_DIGESTS: &str = r#"if (ctx.related == null) {\n  ctx.related = new HashMap();\n}\nif (ctx.related.hash == null) {\n  ctx.related.hash = new ArrayList();\n}\nfor (def entry : ctx.beyondtrust_epm.event.container.image.hash.all) {\n  if (entry == null) {\n    continue;\n  }\n  def digest = entry.toString().replace('[', '').replace(']', '');\n  int sep = digest.indexOf(':');\n  if (sep >= 0) {\n    digest = digest.substring(sep + 1);\n  }\n  if (digest.length() > 0 && !ctx.related.hash.contains(digest)) {\n    ctx.related.hash.add(digest);\n  }\n}"#;
 
-/// Nothing claims the container-digest loop, and that empty binding is the
-/// whole of what `beyondtrust_epm` still loses.
+/// The container-digest loop is transcribed, because no ladder arm reaches it.
 ///
 /// It cuts each `sha256:<digest>` at its FIRST colon and appends the tail into
 /// `related.hash` unless it is already there. `SuffixAfterSeparator` reads the
 /// LAST separator off a scalar and `AppendUnique` names one hard-coded pair, so
-/// neither is a widening away -- a list walked with a per-element cut is a
+/// neither was a widening away -- a list walked with a per-element cut is a
 /// matcher this ladder does not have.
 #[test]
-fn the_beyondtrust_container_digests_bind_to_nothing() {
-    assert!(binding(BT_DIGESTS).is_empty(), "{:?}", binding(BT_DIGESTS));
+fn the_beyondtrust_container_digests_take_a_transcription() {
+    assert_eq!(
+        binding(BT_DIGESTS),
+        ["Bespoke(beyondtrust_epm::container_digests_into_related_hash)"]
+    );
 }
 
 /// Verbatim from the generated call sites in
@@ -1836,18 +1845,20 @@ fn the_beyondtrust_container_digests_bind_to_nothing() {
 /// `.../anthropic_metrics_usage/default.rs`.
 const ANTHROPIC_PRUNE: &str = r#"if (ctx.json.containsKey('workspace_id') && ctx.json.workspace_id == null) {\n  ctx.json.workspace_id = 'Default';\n} ctx.json.entrySet().removeIf(e -> e.getValue() == null);"#;
 
-/// The prune claims this script, and the DEFAULT FILL in front of it is debt
-/// the claim hides.
+/// The transcription resolves ahead of the prune, which still stands behind it.
 ///
 /// The script is two statements: a `null` replaced by `'Default'`, then a null
-/// prune. `SentinelRemovalLiteral` runs the second and the first goes
-/// unwritten, so `anthropic.cost.workspace_id` and `anthropic.usage.workspace_id`
-/// stay missing -- recorded here because a claimed script leaves no error
-/// behind. It was unbound before the prune's trigger read the short lambda
-/// parameter, so the fill was never written either way.
+/// prune. `SentinelRemovalLiteral` runs only the second, so
+/// `anthropic.cost.workspace_id` and `anthropic.usage.workspace_id` stayed
+/// missing for as long as it was the claimant -- a claimed script leaves no
+/// error behind, so nothing else reported it. The hand-written runner does both
+/// statements.
 #[test]
-fn the_anthropic_prune_is_claimed_and_its_default_fill_is_not() {
-    assert_eq!(heads(ANTHROPIC_PRUNE), ["SentinelRemovalLiteral"]);
+fn the_anthropic_prune_resolves_to_its_transcription() {
+    assert_eq!(
+        heads(ANTHROPIC_PRUNE),
+        ["Bespoke", "SentinelRemovalLiteral"]
+    );
 }
 
 #[test]
