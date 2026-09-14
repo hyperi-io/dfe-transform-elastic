@@ -46,14 +46,22 @@ mod backstage;
 mod beelzebub;
 mod bitwarden;
 mod cyera;
+mod jamf_pro;
 mod kolide;
 mod kubernetes;
+mod microsoft_intune;
+mod modsecurity;
 mod netbox;
 mod prisma_access;
+mod qualys_vmdr;
+mod splunk;
 mod sublime_security;
+mod suricata;
 mod ti_crowdstrike;
 mod ti_mandiant_advantage;
 mod ti_rapid7_threat_command;
+mod xm_cyber;
+mod zoom;
 
 /// A transcribed script's effect on one event.
 ///
@@ -96,14 +104,22 @@ const ENTRIES: &[&[Entry]] = &[
     beelzebub::ENTRIES,
     bitwarden::ENTRIES,
     cyera::ENTRIES,
+    jamf_pro::ENTRIES,
     kolide::ENTRIES,
     kubernetes::ENTRIES,
+    microsoft_intune::ENTRIES,
+    modsecurity::ENTRIES,
     netbox::ENTRIES,
     prisma_access::ENTRIES,
+    qualys_vmdr::ENTRIES,
+    splunk::ENTRIES,
     sublime_security::ENTRIES,
+    suricata::ENTRIES,
     ti_crowdstrike::ENTRIES,
     ti_mandiant_advantage::ENTRIES,
     ti_rapid7_threat_command::ENTRIES,
+    xm_cyber::ENTRIES,
+    zoom::ENTRIES,
 ];
 
 /// The key a script is registered under.
