@@ -56,12 +56,16 @@ mod bitwarden;
 mod checkpoint;
 mod cisco_secure_endpoint;
 mod citrix_adc;
+mod cyberark_pta;
 mod cyera;
 mod darktrace;
 mod elastic_agent;
+mod elastic_package_registry;
 mod extrahop;
+mod github;
 mod gitlab;
 mod grafana;
+mod island_browser;
 mod jamf_compliance_reporter;
 mod jamf_pro;
 mod kolide;
@@ -73,11 +77,13 @@ mod netbox;
 mod nozomi_networks;
 mod prisma_access;
 mod qualys_vmdr;
+mod sentinel_one_cloud_funnel;
 mod snyk;
 mod splunk;
 mod sublime_security;
 mod suricata;
 mod symantec_endpoint_security;
+mod sysdig;
 mod ti_crowdstrike;
 mod ti_mandiant_advantage;
 mod ti_opencti;
@@ -85,6 +91,7 @@ mod ti_rapid7_threat_command;
 mod ti_recordedfuture;
 mod ti_ticura;
 mod trend_micro_vision_one;
+mod vsphere;
 mod wiz;
 mod xm_cyber;
 mod zoom;
@@ -140,12 +147,16 @@ const ENTRIES: &[&[Entry]] = &[
     checkpoint::ENTRIES,
     cisco_secure_endpoint::ENTRIES,
     citrix_adc::ENTRIES,
+    cyberark_pta::ENTRIES,
     cyera::ENTRIES,
     darktrace::ENTRIES,
     elastic_agent::ENTRIES,
+    elastic_package_registry::ENTRIES,
     extrahop::ENTRIES,
+    github::ENTRIES,
     gitlab::ENTRIES,
     grafana::ENTRIES,
+    island_browser::ENTRIES,
     jamf_compliance_reporter::ENTRIES,
     jamf_pro::ENTRIES,
     kolide::ENTRIES,
@@ -157,11 +168,13 @@ const ENTRIES: &[&[Entry]] = &[
     nozomi_networks::ENTRIES,
     prisma_access::ENTRIES,
     qualys_vmdr::ENTRIES,
+    sentinel_one_cloud_funnel::ENTRIES,
     snyk::ENTRIES,
     splunk::ENTRIES,
     sublime_security::ENTRIES,
     suricata::ENTRIES,
     symantec_endpoint_security::ENTRIES,
+    sysdig::ENTRIES,
     ti_crowdstrike::ENTRIES,
     ti_mandiant_advantage::ENTRIES,
     ti_opencti::ENTRIES,
@@ -169,6 +182,7 @@ const ENTRIES: &[&[Entry]] = &[
     ti_recordedfuture::ENTRIES,
     ti_ticura::ENTRIES,
     trend_micro_vision_one::ENTRIES,
+    vsphere::ENTRIES,
     wiz::ENTRIES,
     xm_cyber::ENTRIES,
     zoom::ENTRIES,
