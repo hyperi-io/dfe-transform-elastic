@@ -39,6 +39,14 @@ use sha2::{Digest, Sha256};
 
 use dfe_core::event::Event;
 
+mod backstage;
+mod beelzebub;
+mod kolide;
+mod netbox;
+mod prisma_access;
+mod ti_crowdstrike;
+mod ti_rapid7_threat_command;
+
 /// A transcribed script's effect on one event.
 ///
 /// `params` is the pipeline's `params` block verbatim, [`Value::Null`] when
@@ -72,7 +80,15 @@ impl PartialEq for Entry {
 impl Eq for Entry {}
 
 /// Every source module's entries, in registration order.
-const ENTRIES: &[&[Entry]] = &[];
+const ENTRIES: &[&[Entry]] = &[
+    backstage::ENTRIES,
+    beelzebub::ENTRIES,
+    kolide::ENTRIES,
+    netbox::ENTRIES,
+    prisma_access::ENTRIES,
+    ti_crowdstrike::ENTRIES,
+    ti_rapid7_threat_command::ENTRIES,
+];
 
 /// The key a script is registered under.
 ///

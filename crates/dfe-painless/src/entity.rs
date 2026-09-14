@@ -973,9 +973,36 @@ fn classify_actor(actor: &str, user_type: Option<&str>, params: &Map<String, Val
     Kind::Generic
 }
 
-/// A sorted set as the JSON array a `TreeSet` serialises to.
+/// A set as the JSON array Elasticsearch ships it in.
+///
+/// The script collects into `TreeSet`s, but nothing sorted reaches the
+/// document: the ingest document's copy constructor rebuilds every `Set` as a
+/// plain `HashSet`, so the members come out in hash-table order -- bucket
+/// ascending, and within a bucket the order they went in, which is the sorted
+/// one. `target.entity.id` proves it, shipping `sgr-...` ahead of `sg-...`.
 fn as_array(values: impl IntoIterator<Item = String>) -> Value {
+    let mut values: Vec<String> = values.into_iter().collect();
+    let table = copied_set_table(values.len());
+    values.sort_by_cached_key(|value| crate::helpers::java_bucket(value, table));
     Value::Array(values.into_iter().map(Value::String).collect())
+}
+
+/// The table a `HashSet` built from a set of `entries` ends up holding.
+///
+/// `new HashSet<>(size)` starts at the power of two at or above that size
+/// rather than the default 16, so the table is smaller than
+/// [`crate::helpers::java_table_size`] answers and the buckets differ. It still
+/// doubles once the count crosses three quarters of it, which a two-member set
+/// does immediately.
+fn copied_set_table(entries: usize) -> usize {
+    let mut capacity = 1usize;
+    while capacity < entries {
+        capacity *= 2;
+    }
+    while entries > capacity * 3 / 4 {
+        capacity *= 2;
+    }
+    capacity
 }
 
 /// Run a parsed entity script against one event.
@@ -1249,7 +1276,7 @@ mod tests {
         assert_eq!(
             event.get("target.entity.id"),
             Some(&json!(["100", "acl-3"])),
-            "the rule number is stringified and the set is sorted"
+            "the rule number is stringified, and both members share a bucket"
         );
         // acl-3 classifies as service by prefix; "100" is generic.
         assert_eq!(
