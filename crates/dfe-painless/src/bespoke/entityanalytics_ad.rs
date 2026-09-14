@@ -18,7 +18,7 @@ use serde_json::{Map, Value};
 use dfe_core::Event;
 
 use super::Entry;
-use crate::helpers::{java_bucket, java_table_size};
+use crate::helpers::{java_bucket, java_string_set_order, java_table_size};
 
 /// The subtree every one of these pipelines works over.
 const AD: &str = "activedirectory";
@@ -306,31 +306,19 @@ fn user_group_details(event: &mut Event, params: &Value, subtree: &str) {
 
     let _ = event.set("activedirectory.groups", Value::Array(stamped));
     if !names.is_empty() {
-        let _ = event.set("user.group.name", Value::Array(java_set(names)));
+        let _ = event.set(
+            "user.group.name",
+            Value::Array(java_string_set_order(names)),
+        );
     }
     if !ids.is_empty() {
-        let _ = event.set("user.group.id", Value::Array(java_set(ids)));
+        let _ = event.set("user.group.id", Value::Array(java_string_set_order(ids)));
     }
     let member = privileged.unwrap_or(Value::Bool(false));
     // Painless raises on the assignment where the parent map is absent.
     if event.has(subtree) {
         let _ = event.set(&format!("{subtree}.privileged_group_member"), member);
     }
-}
-
-/// The order a Java `HashSet` hands its members back in.
-fn java_set(members: Vec<String>) -> Vec<Value> {
-    let table = java_table_size(members.len());
-    let mut ordered: Vec<(usize, usize, String)> = members
-        .into_iter()
-        .enumerate()
-        .map(|(position, member)| (java_bucket(&member, table), position, member))
-        .collect();
-    ordered.sort_by_key(|(bucket, position, _)| (*bucket, *position));
-    ordered
-        .into_iter()
-        .map(|(_, _, member)| Value::from(member))
-        .collect()
 }
 
 /// `entityanalytics_ad/entity`, `set_user_relationships`: the entity

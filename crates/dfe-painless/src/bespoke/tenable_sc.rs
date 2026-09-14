@@ -17,7 +17,7 @@ use serde_json::{Map, Value};
 use dfe_core::Event;
 
 use super::Entry;
-use crate::helpers::{java_bucket, java_table_size, painless_to_string};
+use crate::helpers::{java_string_set_order, painless_to_string};
 
 /// `tenable_sc/vulnerability`: the record key the vendor's `uniqueness` names,
 /// written to `tenable_sc.vulnerability.id`.
@@ -48,7 +48,7 @@ fn asset_custom_hash(event: &mut Event, _params: &Value) {
 ///
 /// A named field the record does not carry contributes Java's own `null`,
 /// which is part of the key rather than a reason to skip it.
-fn unique_key(event: &mut Event) -> Option<String> {
+fn unique_key(event: &Event) -> Option<String> {
     let uniqueness = event.get("json.uniqueness").map(painless_to_string)?;
     let keys: Vec<&str> = uniqueness.split(',').collect();
     let mut key = String::new();
@@ -162,22 +162,10 @@ fn vulnerability_reference(event: &mut Event, _params: &Value) {
     if !event.has("vulnerability") {
         return;
     }
-    let _ = event.set("vulnerability.reference", Value::Array(java_set(links)));
-}
-
-/// The order a Java `HashSet` hands its members back in.
-fn java_set(members: Vec<String>) -> Vec<Value> {
-    let table = java_table_size(members.len());
-    let mut ordered: Vec<(usize, usize, String)> = members
-        .into_iter()
-        .enumerate()
-        .map(|(position, member)| (java_bucket(&member, table), position, member))
-        .collect();
-    ordered.sort_by_key(|(bucket, position, _)| (*bucket, *position));
-    ordered
-        .into_iter()
-        .map(|(_, _, member)| Value::from(member))
-        .collect()
+    let _ = event.set(
+        "vulnerability.reference",
+        Value::Array(java_string_set_order(links)),
+    );
 }
 
 /// Every `tenable_sc` script transcribed here.

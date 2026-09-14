@@ -14,7 +14,7 @@ use serde_json::{Map, Value};
 use dfe_core::Event;
 
 use super::Entry;
-use crate::helpers::{java_bucket, java_table_size, painless_to_string};
+use crate::helpers::{java_set_order, painless_to_string};
 
 /// The observable edges, as the API returns them.
 const EDGES: &str = "observables.edges";
@@ -342,28 +342,6 @@ fn add_unique(gathered: &mut Vec<Value>, value: &Value) {
     if !gathered.contains(value) {
         gathered.push(value.clone());
     }
-}
-
-/// A Java `HashSet` read back out: bucket order, insertion order inside a
-/// bucket.
-///
-/// The bucket comes off the value's string rendering, which is what every
-/// member an observable gathers here is.
-fn java_set_order(values: Vec<Value>) -> Vec<Value> {
-    let table = java_table_size(values.len());
-    let mut placed: Vec<(usize, usize, Value)> = values
-        .into_iter()
-        .enumerate()
-        .map(|(position, value)| {
-            (
-                java_bucket(&painless_to_string(&value), table),
-                position,
-                value,
-            )
-        })
-        .collect();
-    placed.sort_by_key(|(bucket, position, _)| (*bucket, *position));
-    placed.into_iter().map(|(.., value)| value).collect()
 }
 
 /// The untagged hash gatherer in `ti_opencti/indicator`: every file digest the

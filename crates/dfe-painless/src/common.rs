@@ -3234,7 +3234,7 @@ fn run_securityhub_resource(event: &mut Event, source: &str) -> bool {
         || (*tokens.last().unwrap_or(&"")).to_string(),
         str::to_string,
     );
-    let _ = event.set("resource.name", json!(res_name.clone()));
+    let _ = event.set("resource.name", json!(res_name));
 
     if details.is_some() {
         for (wanted, member, target) in [
@@ -3338,7 +3338,7 @@ fn run_securityhub_resource(event: &mut Event, source: &str) -> bool {
     if kind == "AwsEc2Instance" {
         let _ = event.set("host.id", json!(id.clone()));
         let _ = event.set("cloud.instance.id", json!(id.clone()));
-        let _ = event.set("cloud.instance.name", json!(res_name.clone()));
+        let _ = event.set("cloud.instance.name", json!(res_name));
     }
     if kind.starts_with("AwsEks") || kind.starts_with("AwsEcs") {
         let _ = event.set("orchestrator.resource.id", json!(id.clone()));
@@ -4230,7 +4230,7 @@ fn run_hash_by_width_or_prefix(event: &mut Event, pattern: &HashByWidthOrPrefix)
     // A value that is neither the width nor tagged writes NOTHING, because the
     // tags the script lists are the only ones whose tail is this digest.
     let digest = if text.chars().count() == pattern.width {
-        Some(text.clone())
+        Some(text)
     } else {
         pattern
             .prefixes
@@ -10652,7 +10652,7 @@ fn run_decay_window(event: &mut Event, pattern: &DecayWindow) -> bool {
     let Some(expiry) = dfe_core::date_formats::iso8601_plus(&base, unit, count, 0) else {
         return true;
     };
-    let _ = event.set(&pattern.target, json!(expiry.clone()));
+    let _ = event.set(&pattern.target, json!(expiry));
     if let Some(ingested) = event.get_as_string(&pattern.ingested)
         && let Some(decayed) = dfe_core::date_formats::iso8601_is_before(&expiry, &ingested)
     {
@@ -17772,7 +17772,7 @@ pub(crate) fn painless_path(fragment: &str) -> Option<String> {
         .map(|at| at + "ctx.".len())
         .or_else(|| fragment.rfind("ctx[").map(|at| at + "ctx".len()))?;
     let mut path = String::new();
-    let mut chars = fragment[start..].chars().peekable();
+    let mut chars = fragment[start..].chars();
 
     while let Some(c) = chars.next() {
         match c {

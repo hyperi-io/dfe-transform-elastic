@@ -83,8 +83,12 @@ fn flow_tuples(event: &mut Event, _params: &Value) {
 
 /// One inner flow's raw lines parsed into `tuples`, the raw list taken out.
 fn rewrite_tuples(inner: &mut Map<String, Value>, gathered: &mut Gathered) {
-    let lines = match inner.get("flowTuples") {
-        Some(Value::Array(lines)) => lines.clone(),
+    // `shift_remove`, never `remove`: the plain one reorders under
+    // `preserve_order`. Removing BEFORE the walk hands the lines over instead
+    // of copying them, and leaves the same key order -- `tuples` is appended
+    // at the end whichever way round the two run.
+    let lines = match inner.shift_remove("flowTuples") {
+        Some(Value::Array(lines)) => lines,
         _ => Vec::new(),
     };
 
@@ -101,9 +105,6 @@ fn rewrite_tuples(inner: &mut Map<String, Value>, gathered: &mut Gathered) {
     }
 
     inner.insert("tuples".to_owned(), Value::Array(tuples));
-    // `shift_remove`, never `remove`: the plain one reorders under
-    // `preserve_order`.
-    inner.shift_remove("flowTuples");
 }
 
 /// One flow line as the map the script builds, gathering as it goes.

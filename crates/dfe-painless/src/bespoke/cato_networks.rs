@@ -117,8 +117,9 @@ const FRACTIONAL_LISTS: [(&str, &[&str]); 7] = [
 /// `script_remove_fractional_part` in `cato_networks/audit`: the four epoch
 /// fields the record carries directly.
 fn cut_fractional_scalars(event: &mut Event, _params: &Value) {
+    let mut path = String::new();
     for tail in FRACTIONAL_SCALARS {
-        let path = format!("{AUDIT}.{tail}");
+        set_audit_path(&mut path, tail);
         let Some(held) = event.get(&path) else {
             continue;
         };
@@ -133,8 +134,9 @@ fn cut_fractional_scalars(event: &mut Event, _params: &Value) {
 /// `script_convert_to_array` in `cato_networks/audit`: every numbered map back
 /// into the list it was sent as.
 fn fold_numbered_maps(event: &mut Event, _params: &Value) {
+    let mut path = String::new();
     for (tail, members) in ARRAY_FOLDS {
-        let path = format!("{AUDIT}.{tail}");
+        set_audit_path(&mut path, tail);
         fold_one(event, &path);
         if members.is_empty() {
             continue;
@@ -154,8 +156,9 @@ fn fold_numbered_maps(event: &mut Event, _params: &Value) {
 /// `script_remove_fractional_part_from_lists` in `cato_networks/audit`: the
 /// same epoch cut, inside the lists the fold above produced.
 fn cut_fractional_in_lists(event: &mut Event, _params: &Value) {
+    let mut path = String::new();
     for (tail, members) in FRACTIONAL_LISTS {
-        let path = format!("{AUDIT}.{tail}");
+        set_audit_path(&mut path, tail);
         let Some(mut items) = event.take_array(&path) else {
             continue;
         };
@@ -173,13 +176,27 @@ fn cut_fractional_in_lists(event: &mut Event, _params: &Value) {
 /// A key holding `@` is dropped along with what it holds, which is how the
 /// vendor's own `@`-prefixed metadata is kept out of the rewritten record.
 fn convert_camel_case_keys(event: &mut Event, _params: &Value) {
-    let Some(audit) = event.get(AUDIT).cloned() else {
+    let Some(audit) = event.get(AUDIT) else {
         return;
     };
     if audit.is_null() {
         return;
     }
-    let _ = event.update(AUDIT, convert(&audit));
+    // `convert` rebuilds rather than borrowing, so the read ends here and the
+    // subtree needs no copy of its own.
+    let converted = convert(audit);
+    let _ = event.update(AUDIT, converted);
+}
+
+/// The document path one audit tail names, written into a reused buffer.
+///
+/// The three passes walk 33 constant tails between them, so a `format!` each
+/// is 33 allocations an event for paths the tables already determine.
+fn set_audit_path(path: &mut String, tail: &str) {
+    path.clear();
+    path.push_str(AUDIT);
+    path.push('.');
+    path.push_str(tail);
 }
 
 /// Fold the map at one path into the list of its values.
