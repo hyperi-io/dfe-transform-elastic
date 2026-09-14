@@ -310,6 +310,10 @@ where
 fn json_processor_value(event: &Event, field: &str) -> std::result::Result<Option<Value>, String> {
     match event.get(field) {
         None => Ok(None),
+        // Text holding no token at all is NULL, not a failure: Elastic's
+        // processor reads the first token and leaves the value unset when
+        // there is none.
+        Some(Value::String(text)) if text.trim().is_empty() => Ok(Some(Value::Null)),
         Some(Value::String(text)) => parse_json_str(text).map(Some),
         Some(scalar @ (Value::Number(_) | Value::Bool(_) | Value::Null)) => {
             Ok(Some(scalar.clone()))
@@ -3252,6 +3256,19 @@ mod tests {
             let mut event = Event::new(json!({ "message": value.clone() }));
             parse_json_field(&mut event, "message", "json").unwrap();
             assert_eq!(event.get("json"), Some(&value));
+        }
+    }
+
+    /// Verbatim from `testdata/compat/vectra_detect/log/test-host-scoring`:
+    /// three events send `""` for the detection profile, and failing them cost
+    /// each one an `error.message` and a `pipeline_error` Elasticsearch does
+    /// not raise.
+    #[test]
+    fn parse_json_field_reads_empty_text_as_null() {
+        for text in ["", "   ", "\n"] {
+            let mut event = Event::new(json!({ "message": text }));
+            parse_json_field(&mut event, "message", "json").unwrap();
+            assert_eq!(event.get("json"), Some(&Value::Null), "{text:?}");
         }
     }
 
