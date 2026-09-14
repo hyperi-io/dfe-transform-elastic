@@ -30,10 +30,13 @@ use tokio_util::sync::CancellationToken;
 
 use crate::config::Config;
 use crate::metrics::TransformMetrics;
-use crate::pipeline::{parse_batch, serialise_chunks, transform_batch_with};
+use crate::pipeline::{EnvelopeOutcome, parse_batch, serialise_chunks, transform_batch_resolved};
 
-/// How often the loop pushes scaling signals. One librdkafka stats read per
-/// interval, independent of batch cadence.
+/// The longest the loop goes without pushing scaling signals.
+///
+/// A batch pushes them as it finishes too, so a busy partition signals at the
+/// batch cadence and this is the floor for an idle one -- KEDA still sees the
+/// lag on a topic that has stopped producing.
 const SCALING_SIGNAL_INTERVAL: Duration = Duration::from_secs(5);
 
 /// Attempts one record gets before the batch is abandoned uncommitted.
@@ -50,11 +53,18 @@ const SEND_BACKOFF_BASE: Duration = Duration::from_millis(100);
 /// and trigger a rebalance while the loop is still retrying.
 const SEND_BACKOFF_MAX: Duration = Duration::from_secs(5);
 
-/// First wait after a failed receive, doubling to [`SEND_BACKOFF_MAX`].
+/// First wait after a failed receive, doubling to [`RECV_BACKOFF_MAX`].
 ///
 /// An unreachable broker fails every `recv` immediately, so without a wait the
 /// loop spins as fast as the call returns and logs an error on every turn.
 const RECV_BACKOFF_BASE: Duration = Duration::from_millis(100);
+
+/// Ceiling on the receive wait.
+///
+/// The same five seconds the send side uses, and for the same reason: a wait
+/// longer than that outruns `max.poll.interval` and the broker rebalances the
+/// partition away while the loop is still backing off.
+const RECV_BACKOFF_MAX: Duration = Duration::from_secs(5);
 
 /// The per-pod signals `/scaling/pressure` serves to KEDA.
 ///
@@ -76,7 +86,15 @@ pub struct ScalingSignals {
 /// protocol disagree, or [`crate::Error::Transport`] if either Kafka side
 /// cannot be created.
 pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
-    check_credentials(&transport_defaults())?;
+    let transport = transport_defaults();
+    check_credentials(&transport)?;
+    // scalo's own floor: SASL PLAIN over a plaintext transport is refused in
+    // every environment, and in production so are `ssl_skip_verify` and an
+    // unencrypted protocol without `allow_insecure_transport`. The dev escape
+    // hatch is `APP_ENV`, which is what decides the profile everywhere else.
+    transport
+        .validate(scalo::env::is_production())
+        .map_err(crate::Error::Config)?;
 
     provision_geoip(&config.geoip).await;
 
@@ -172,6 +190,7 @@ pub async fn run_loop(
         .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
     let dataset = crate::registry::dataset(&config.source.name)
         .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
+    let resolver = crate::envelope::Resolver::new(config.source.envelope, intake, dataset);
 
     metrics.dfe.pipeline_ready(true);
 
@@ -229,7 +248,7 @@ pub async fn run_loop(
                     () = shutdown.cancelled() => break,
                     () = tokio::time::sleep(recv_backoff) => {}
                 }
-                recv_backoff = recv_backoff.saturating_mul(2).min(SEND_BACKOFF_MAX);
+                recv_backoff = recv_backoff.saturating_mul(2).min(RECV_BACKOFF_MAX);
                 continue;
             }
         };
@@ -271,11 +290,9 @@ pub async fn run_loop(
             .transport_received_events(TransportKind::Kafka, received);
         metrics.app.records_received.increment(received);
 
-        let resolution =
-            crate::envelope::resolve(config.source.envelope, events.first(), intake, dataset);
-        report_envelope(&resolution, &mut last_envelope, metrics);
-
-        let (transformed, outcome) = transform_batch_with(transform, &resolution.delivery, events);
+        let (transformed, outcome, envelopes) =
+            transform_batch_resolved(transform, &resolver, events);
+        report_envelope(&envelopes, &mut last_envelope, metrics);
         metrics
             .batch_duration
             .record(started.elapsed().as_secs_f64());
@@ -345,9 +362,9 @@ enum SendOutcome {
 /// caller must not commit. Records already accepted when a later one fails are
 /// therefore replayed on restart -- the duplicate half of at-least-once.
 #[allow(clippy::cast_precision_loss)]
-async fn publish(
+async fn publish<S: TransportSender>(
     config: &Config,
-    producer: &KafkaTransport,
+    producer: &S,
     shutdown: &CancellationToken,
     metrics: &TransformMetrics,
     transformed: &[dfe_runtime::Event],
@@ -391,8 +408,17 @@ async fn publish(
 /// Backpressure in particular is the NORMAL response from a slow sink -- a
 /// full local producer queue -- so it is retried rather than counted as sent;
 /// treating it as success is how a batch gets acknowledged and never written.
-async fn send_chunk(
-    producer: &KafkaTransport,
+///
+/// [`SendResult::Fatal`] is retried on the same schedule, because the transport
+/// reports a leader election, an unavailable broker and a rejected record
+/// through the one variant and only the first two are worth waiting out. The
+/// distinction costs nothing to get wrong in one direction -- eight attempts
+/// over ~25 seconds, then the batch is abandoned uncommitted and replayed --
+/// and loses the batch in the other.
+/// Generic over the sender rather than taking `KafkaTransport`, so the three
+/// non-delivery branches are reachable in a test without a broker.
+async fn send_chunk<S: TransportSender>(
+    producer: &S,
     topic: &str,
     payload: Vec<u8>,
     shutdown: &CancellationToken,
@@ -512,13 +538,37 @@ fn check_credentials(kafka: &KafkaConfig) -> crate::Result<()> {
     Ok(())
 }
 
+/// The consumer, bounded by BYTES as well as by event count.
+///
+/// `recv(batch_size)` bounds the batch by count alone, and 20,000 records of
+/// whatever size the producer chose is an unbounded amount of memory: the
+/// outbound side has always been bounded by bytes (`sink.max_message_bytes`)
+/// and the inbound side had no equivalent. `fetch.max.bytes` is where
+/// librdkafka enforces it, so the ceiling applies before the bytes are in the
+/// process rather than after.
 fn consumer_config(config: &Config) -> KafkaConfig {
+    let fetch_bytes = i32::try_from(config.source.max_batch_bytes).unwrap_or(i32::MAX);
+    // One partition must not be able to fill the whole fetch on its own.
+    let partition_bytes = fetch_bytes / 4;
+
+    let defaults = transport_defaults();
+    // The SIZING knobs, not only the plain fields: `KafkaTransport::new` writes
+    // the plain fields first and then applies `sizing.resolved_consumer_map()`,
+    // which sets `fetch.max.bytes` unconditionally and would put the 50 MiB
+    // default back over the top of ours.
+    let mut sizing = defaults.sizing.clone();
+    sizing.consumer.fetch_max_bytes = Some(fetch_bytes);
+    sizing.consumer.max_partition_fetch_bytes = Some(partition_bytes);
+
     KafkaConfig {
         brokers: config.source.brokers.clone(),
         group: config.source.group_id.clone(),
         client_id: "dfe-transform-elastic-consumer".to_string(),
         topics: config.source.topics.clone(),
-        ..transport_defaults()
+        fetch_max_bytes: fetch_bytes,
+        max_partition_fetch_bytes: partition_bytes,
+        sizing,
+        ..defaults
     }
 }
 
@@ -578,20 +628,26 @@ fn record_batch(
 
 /// Log the batch's envelope when it changes, and count what was wrong with it.
 ///
-/// The counters fire every batch; the log line only on a change, because the
-/// steady state is thousands of identical batches.
+/// The counters fire once per batch that saw the condition at all, which is
+/// what they have always meant; the log line only on a change, because the
+/// steady state is thousands of identical batches. The reported shape is the
+/// batch's FIRST event -- detection now runs per event, so a batch spanning two
+/// producers raises the counter even where the first event looked ordinary.
 fn report_envelope(
-    resolution: &crate::envelope::Resolution,
+    envelopes: &EnvelopeOutcome,
     last: &mut Option<crate::envelope::Detected>,
     metrics: &TransformMetrics,
 ) {
-    if resolution.contradicted {
+    if envelopes.contradicted {
         metrics.envelope_contradicted.increment(1);
     }
-    if resolution.unaccepted {
+    if envelopes.unaccepted {
         metrics.envelope_unaccepted.increment(1);
     }
 
+    let Some(resolution) = envelopes.first.as_ref() else {
+        return;
+    };
     let Some(detected) = resolution.detected.as_ref() else {
         return;
     };
@@ -600,14 +656,14 @@ fn report_envelope(
     }
     *last = Some(detected.clone());
 
-    if resolution.contradicted {
+    if envelopes.contradicted {
         tracing::warn!(
             configured = ?resolution.delivery.envelope,
             detected = ?detected.family,
             variant = %detected.variant,
             "events do not look like the configured envelope; unwrapping as configured"
         );
-    } else if resolution.unaccepted {
+    } else if envelopes.unaccepted {
         tracing::warn!(
             detected = ?detected.family,
             variant = %detected.variant,
@@ -626,6 +682,8 @@ fn report_envelope(
 #[cfg(test)]
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
+    use std::future::Future;
+
     use super::*;
     use crate::config::{SinkConfig, SourceConfig};
 
@@ -637,6 +695,7 @@ mod tests {
                 envelope: crate::envelope::EnvelopeSetting::Auto,
                 topics: vec!["in".into()],
                 batch_size: 100,
+                max_batch_bytes: crate::config::default_max_batch_bytes(),
                 group_id: "g".into(),
                 brokers: vec!["localhost:9092".into()],
             },
@@ -742,5 +801,228 @@ mod tests {
     #[test]
     fn plaintext_without_credentials_is_accepted() {
         assert!(check_credentials(&KafkaConfig::default()).is_ok());
+    }
+
+    /// scalo's own floor, wired in beside the credential check: SASL PLAIN over
+    /// a plaintext transport is refused whatever the environment.
+    #[test]
+    fn plain_over_a_plaintext_transport_is_refused_in_every_environment() {
+        let kafka = KafkaConfig {
+            security_protocol: "sasl_plaintext".into(),
+            sasl_mechanism: Some("PLAIN".into()),
+            sasl_username: Some("svc".into()),
+            sasl_password: Some("hunter2".into()),
+            ..KafkaConfig::default()
+        };
+        // The pairing passes our own check, which is why scalo's is also called.
+        assert!(check_credentials(&kafka).is_ok());
+        assert!(kafka.validate(false).is_err());
+    }
+
+    /// Verification-skipping TLS and an unencrypted protocol are dev-only.
+    #[test]
+    fn production_refuses_an_insecure_transport() {
+        let skip_verify = KafkaConfig {
+            security_protocol: "ssl".into(),
+            ssl_skip_verify: true,
+            ..KafkaConfig::default()
+        };
+        assert!(skip_verify.validate(false).is_ok());
+        assert!(skip_verify.validate(true).is_err());
+
+        let plaintext = KafkaConfig::default();
+        assert!(plaintext.validate(false).is_ok());
+        assert!(plaintext.validate(true).is_err());
+    }
+
+    /// The inbound byte ceiling has to reach librdkafka, or `batch_size` is
+    /// still the only bound on how much memory one fetch can take.
+    #[test]
+    fn the_consumer_is_bounded_by_bytes_as_well_as_by_count() {
+        let mut c = config();
+        c.source.max_batch_bytes = 32 * 1024 * 1024;
+        let kc = consumer_config(&c);
+
+        assert_eq!(kc.fetch_max_bytes, 32 * 1024 * 1024);
+        // No single partition may fill the whole fetch.
+        assert_eq!(kc.max_partition_fetch_bytes, 8 * 1024 * 1024);
+        // And the sizing surface, which the transport applies LAST.
+        assert_eq!(kc.sizing.consumer.fetch_max_bytes, Some(32 * 1024 * 1024));
+        assert_eq!(
+            kc.sizing.consumer.max_partition_fetch_bytes,
+            Some(8 * 1024 * 1024)
+        );
+        assert_eq!(
+            kc.sizing.resolved_consumer_map().get("fetch.max.bytes"),
+            Some(&(32 * 1024 * 1024).to_string()),
+            "the sizing map is what reaches librdkafka"
+        );
+    }
+
+    // -- The at-least-once failure branch ---------------------------------
+
+    /// What the sink answers, scripted, so the branches that need a broker to
+    /// reach in production are reachable here.
+    #[derive(Clone, Copy)]
+    enum Answer {
+        Backpressured,
+        Fatal,
+        FilteredDlq,
+    }
+
+    struct Scripted {
+        answer: Answer,
+        attempts: std::sync::atomic::AtomicUsize,
+    }
+
+    impl Scripted {
+        fn new(answer: Answer) -> Self {
+            Self {
+                answer,
+                attempts: std::sync::atomic::AtomicUsize::new(0),
+            }
+        }
+
+        fn attempts(&self) -> usize {
+            self.attempts.load(std::sync::atomic::Ordering::Relaxed)
+        }
+    }
+
+    impl scalo::transport::TransportBase for Scripted {
+        fn close(&self) -> impl Future<Output = scalo::transport::TransportResult<()>> + Send {
+            std::future::ready(Ok(()))
+        }
+        fn is_healthy(&self) -> bool {
+            true
+        }
+        fn name(&self) -> &'static str {
+            "scripted"
+        }
+    }
+
+    impl TransportSender for Scripted {
+        fn send(
+            &self,
+            _destination: &str,
+            _payload: bytes::Bytes,
+        ) -> impl Future<Output = SendResult> + Send {
+            self.attempts
+                .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            std::future::ready(match self.answer {
+                Answer::Backpressured => SendResult::Backpressured,
+                Answer::Fatal => SendResult::Fatal(scalo::transport::TransportError::Connection(
+                    "broker gone".into(),
+                )),
+                Answer::FilteredDlq => SendResult::FilteredDlq,
+            })
+        }
+    }
+
+    fn test_metrics() -> TransformMetrics {
+        static MANAGER: std::sync::OnceLock<scalo::metrics::MetricsManager> =
+            std::sync::OnceLock::new();
+        let manager =
+            MANAGER.get_or_init(|| scalo::metrics::MetricsManager::new("transform_elastic_test"));
+        TransformMetrics::register(manager, "0.0.0-test", "test")
+    }
+
+    /// A slow sink is the normal case, so backpressure is retried -- but only
+    /// to the attempt budget. Past it the batch is abandoned UNCOMMITTED, which
+    /// is what makes the replay at-least-once rather than loss.
+    #[tokio::test(start_paused = true)]
+    async fn backpressure_is_retried_to_the_budget_and_then_fails() {
+        let sink = Scripted::new(Answer::Backpressured);
+        let outcome = send_chunk(
+            &sink,
+            "out",
+            b"{}\n".to_vec(),
+            &CancellationToken::new(),
+            &test_metrics(),
+        )
+        .await;
+
+        assert!(
+            matches!(outcome, SendOutcome::Failed(_)),
+            "must not report sent"
+        );
+        assert_eq!(sink.attempts(), SEND_MAX_ATTEMPTS as usize);
+    }
+
+    /// The transport reports a leader election and a rejected record through
+    /// the one variant, so a fatal send is retried on the same schedule.
+    #[tokio::test(start_paused = true)]
+    async fn a_fatal_send_is_retried_and_then_fails() {
+        let sink = Scripted::new(Answer::Fatal);
+        let outcome = send_chunk(
+            &sink,
+            "out",
+            b"{}\n".to_vec(),
+            &CancellationToken::new(),
+            &test_metrics(),
+        )
+        .await;
+
+        assert!(matches!(outcome, SendOutcome::Failed(_)));
+        assert_eq!(sink.attempts(), SEND_MAX_ATTEMPTS as usize);
+    }
+
+    /// This service configures no outbound filter and has no DLQ, so a record
+    /// routed to one is refused on the first attempt rather than retried into a
+    /// livelock or counted as delivered.
+    #[tokio::test]
+    async fn a_record_filtered_to_a_dlq_fails_without_retrying() {
+        let sink = Scripted::new(Answer::FilteredDlq);
+        let outcome = send_chunk(
+            &sink,
+            "out",
+            b"{}\n".to_vec(),
+            &CancellationToken::new(),
+            &test_metrics(),
+        )
+        .await;
+
+        let SendOutcome::Failed(e) = outcome else {
+            panic!("a filtered record must fail the batch");
+        };
+        assert!(e.to_string().contains("DLQ"), "{e}");
+        assert_eq!(
+            sink.attempts(),
+            1,
+            "a deterministic filter must not be retried"
+        );
+    }
+
+    /// A shutdown mid-retry is not a failure: the batch is left uncommitted and
+    /// the restarted consumer replays it.
+    #[tokio::test(start_paused = true)]
+    async fn a_shutdown_during_a_retry_stops_rather_than_failing() {
+        let sink = Scripted::new(Answer::Backpressured);
+        let shutdown = CancellationToken::new();
+        shutdown.cancel();
+
+        let outcome = send_chunk(&sink, "out", b"{}\n".to_vec(), &shutdown, &test_metrics()).await;
+
+        assert!(matches!(outcome, SendOutcome::ShuttingDown));
+        assert_eq!(sink.attempts(), 1, "the retry wait must observe the cancel");
+    }
+
+    /// A batch the sink will not take must not report as published, whatever
+    /// the chunking did -- `publish` is what the loop reads to decide whether
+    /// to commit.
+    #[tokio::test(start_paused = true)]
+    async fn publish_reports_failure_when_no_chunk_lands() {
+        let sink = Scripted::new(Answer::Fatal);
+        let events = crate::pipeline::parse_batch(b"{\"a\":1}\n{\"a\":2}\n").0;
+
+        let outcome = publish(
+            &config(),
+            &sink,
+            &CancellationToken::new(),
+            &test_metrics(),
+            &events,
+        )
+        .await;
+
+        assert!(matches!(outcome, SendOutcome::Failed(_)));
     }
 }

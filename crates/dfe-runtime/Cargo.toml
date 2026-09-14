@@ -41,6 +41,7 @@ thiserror = { workspace = true }
 anyhow = { workspace = true }
 tracing = { workspace = true }
 rustc-hash = { workspace = true }
+parking_lot = { workspace = true }
 uuid = { workspace = true }
 sha1 = { workspace = true }
 sha2 = { workspace = true }
@@ -71,4 +72,11 @@ harness = false
 # alongside `Event::from_bytes`.
 [[bench]]
 name = "json_parse"
+harness = false
+
+# The GeoIP cache hit, on one thread and on eight. 14 of the 60 source
+# pipelines carry a geoip processor, several of them four or more times per
+# event, and the service runs one transform thread per Kafka partition.
+[[bench]]
+name = "geoip"
 harness = false

@@ -346,6 +346,10 @@ impl CompiledGrok {
     }
 
     /// Write one capture to the field it names, typed as Elastic types it.
+    ///
+    /// `set_resolved`, not `set`: a vendor payload that already spells the
+    /// target as one dotted key keeps it, and splitting the path leaves the
+    /// capture in a nested twin the rest of the pipeline never reads.
     fn write_capture(
         &self,
         name: &str,
@@ -358,22 +362,22 @@ impl CompiledGrok {
             // every fractional value a string -- lambda's duration_ms among them.
             Some(crate::codegen_api::CaptureType::Number) => {
                 if let Ok(n) = value.parse::<i64>() {
-                    event.set(path, n)?;
+                    event.set_resolved(path, n)?;
                 } else if let Ok(f) = value.parse::<f64>() {
-                    event.set(path, f)?;
+                    event.set_resolved(path, f)?;
                 } else {
-                    event.set(path, value)?;
+                    event.set_resolved(path, value)?;
                 }
             }
             // Grok does not invent a value it cannot read: only the exact
             // text "true" or "false" becomes a boolean, and anything else
             // stays the string it was captured as.
             Some(crate::codegen_api::CaptureType::Boolean) => match value {
-                "true" => event.set(path, true)?,
-                "false" => event.set(path, false)?,
-                _ => event.set(path, value)?,
+                "true" => event.set_resolved(path, true)?,
+                "false" => event.set_resolved(path, false)?,
+                _ => event.set_resolved(path, value)?,
             },
-            None => event.set(path, value)?,
+            None => event.set_resolved(path, value)?,
         }
         Ok(())
     }
@@ -454,13 +458,23 @@ pub fn extract_first_match(
     input: &str,
     event: &mut crate::Event,
 ) -> crate::Result<bool> {
-    let mut best: Option<(usize, usize)> = None;
+    let Some((_, winner)) = best_match(patterns, input) else {
+        return Ok(false);
+    };
+    winner.extract_into(input, event)
+}
+
+/// The pattern Elastic's single alternation would have matched, and its index.
+///
+/// Earliest start wins; only a tie is broken by list order.
+fn best_match<'p>(patterns: &[&'p CompiledGrok], input: &str) -> Option<(usize, &'p CompiledGrok)> {
+    let mut best: Option<(usize, usize, &'p CompiledGrok)> = None;
     for (index, pattern) in patterns.iter().enumerate() {
         let Some(start) = pattern.match_start(input) else {
             continue;
         };
-        if best.is_none_or(|(best_start, _)| start < best_start) {
-            best = Some((start, index));
+        if best.is_none_or(|(best_start, _, _)| start < best_start) {
+            best = Some((start, index, pattern));
         }
         // Nothing later can start earlier than the front of the line, so the
         // common case still costs one probe.
@@ -468,10 +482,7 @@ pub fn extract_first_match(
             break;
         }
     }
-    let Some((_, index)) = best else {
-        return Ok(false);
-    };
-    patterns[index].extract_into(input, event)
+    best.map(|(_, index, pattern)| (index, pattern))
 }
 
 /// [`extract_first_match`], recording WHICH pattern won.
@@ -493,23 +504,11 @@ pub fn extract_first_match_traced(
     input: &str,
     event: &mut crate::Event,
 ) -> crate::Result<bool> {
-    let mut best: Option<(usize, usize)> = None;
-    for (index, pattern) in patterns.iter().enumerate() {
-        let Some(start) = pattern.match_start(input) else {
-            continue;
-        };
-        if best.is_none_or(|(best_start, _)| start < best_start) {
-            best = Some((start, index));
-        }
-        if start == 0 {
-            break;
-        }
-    }
-    let Some((_, index)) = best else {
+    let Some((index, winner)) = best_match(patterns, input) else {
         return Ok(false);
     };
     event.set("_ingest._grok_match_index", index)?;
-    patterns[index].extract_into(input, event)
+    winner.extract_into(input, event)
 }
 
 /// The names of the captures in `expanded` whose body cannot match the empty
@@ -1098,6 +1097,32 @@ mod tests {
 
         let mut empty = crate::Event::new(serde_json::json!({}));
         assert!(!extract_first_match(&[grok("^%{IP:ip}$")], "not-an-ip", &mut empty).unwrap());
+    }
+
+    /// Elastic composes `TIMESTAMP_ISO8601` as
+    /// `%{HOUR}:?%{MINUTE}(?::?%{SECOND})?`, so the seconds are OPTIONAL and
+    /// SECOND's fraction takes a colon as well as a dot and a comma.
+    #[test]
+    fn an_iso8601_timestamp_reads_optional_seconds_and_every_fraction_mark() {
+        for (line, expected) in [
+            ("2024-04-03T21:02:19.168Z x", "2024-04-03T21:02:19.168Z"),
+            ("2024-04-03T21:02:19,168 x", "2024-04-03T21:02:19,168"),
+            // SECOND's own class carries the colon, which is what an ISO-8601
+            // fraction written `ss:SSS` needs.
+            ("2024-04-03T21:02:19:168 x", "2024-04-03T21:02:19:168"),
+            // The seconds themselves are optional.
+            ("2024-04-03T21:02 x", "2024-04-03T21:02"),
+            ("2024-04-03 21:02:19+05:30 x", "2024-04-03 21:02:19+05:30"),
+        ] {
+            let mut event = crate::Event::new(serde_json::json!({}));
+            assert!(
+                grok("^%{TIMESTAMP_ISO8601:ts} %{NOTSPACE:rest}$")
+                    .extract_into(line, &mut event)
+                    .expect("extraction"),
+                "{line}"
+            );
+            assert_eq!(event.get_str("ts"), Some(expected), "{line}");
+        }
     }
 
     #[test]

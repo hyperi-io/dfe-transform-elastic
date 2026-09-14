@@ -18,8 +18,8 @@ async fn main() {
 
     // The listing and emit subcommands need neither config nor a runtime, so
     // they are handled before scalo's lifecycle tries to load one.
-    if app.handle_local_command().is_some() {
-        return;
+    if let Some(code) = app.handle_local_command() {
+        std::process::exit(code);
     }
 
     if let Err(e) = scalo::cli::run_app(app).await {
