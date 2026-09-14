@@ -166,7 +166,7 @@ transform and runs it over every batch on the scalo runtime.
 |---|---|
 | `main.rs` | Entry point, hands off to `cli.rs` |
 | `cli.rs` | Subcommands: run the service, `sources` (list registered transforms), `emit-dockerfile`, `emit-chart`, `emit-compose`, `generate-artefacts`, `metrics-manifest` |
-| `config.rs` | The service's config shape: `pipeline_name`, `source.*`, `sink.*`, `scaling.*`, loaded through scalo's config cascade |
+| `config.rs` | The service's config shape: `pipeline_name`, `source.*`, `sink.*`, `geoip.*`, read from the `--config` file or, with no such flag, scalo's config cascade |
 | `registry.rs` | Source name to `Transform` lookup, and each source's `Origin` (API-only or syslog-capable) |
 | `envelope.rs` | Unwraps the Beats or syslog wrapper into the shape every transform expects |
 | `pipeline.rs` | Batch processing: NDJSON parse, envelope unwrap, transform, serialise, with per-batch outcome counts |
@@ -176,9 +176,20 @@ transform and runs it over every batch on the scalo runtime.
 | `error.rs` | The service's top-level error type |
 
 A config naming a source the build does not carry is rejected at startup, not discovered at
-the first batch. `source.batch_size` and `scaling.*` are hot-reloaded on the next batch;
-broker/topic settings, `source.name`, `envelope.*` and `pipeline_name` need a restart because
-Kafka connections, the resolved transform and the metrics labels are all set at startup.
+the first batch. Nothing is hot-reloaded: scalo's `config-reload` feature is not enabled, so
+the config is read once and every change needs a pod restart.
+
+**Scaling is configured through the environment, not the config file.** The container is
+started with `--config`, and scalo resolves `scaling` from its own cascade -- `defaults.yaml`,
+`settings.yaml`, `/config/settings.yaml`, then `DFE_TRANSFORM_ELASTIC_*` -- which a file named
+on the command line is not a layer of. Set `DFE_TRANSFORM_ELASTIC_SCALING__ENABLED` or
+`DFE_TRANSFORM_ELASTIC_SCALING__MEMORY_GATE_THRESHOLD`; the effective values are logged once at
+startup. The same holds for every section in `CASCADE_ONLY_SECTIONS`, and `Config::load`
+refuses one in a `--config` file rather than ignoring it. `geoip` is the exception that proves
+the rule: it is declared on `Config` and handed to scalo explicitly, so a file may set it.
+
+KEDA replica scaling is separate and unaffected -- it is Kubernetes-side, driven by the chart's
+`keda.*` values and the `scaling_pressure` gauge.
 
 ### Envelopes: the same pipeline, a different wrapper
 
@@ -802,7 +813,7 @@ on `&str` / `Value` with no transport coupling, so it can be extracted once prov
 | `rustc-hash`, `sha1`, `sha2`, `base64` | latest majors | Fingerprinting and Community ID hashing |
 | `url` | >=2.5 | URL parsing (`uri_parts`) |
 | `csv` | >=1.3 | CSV processor |
-| `scalo` | >=2.10.9, <3 | Config, logging, metrics, Kafka transport, deployment, memory guard, scaling — the service binary's runtime |
+| `scalo` | >=2.11.1, <3 | Config, logging, metrics, Kafka transport, deployment, memory guard, scaling — the service binary's runtime |
 | `clap` | >=4.5 | Service CLI surface |
 | `tokio` | >=1.48 | Async runtime |
 | `thiserror` | >=2.0 | Error types in every crate, including the service binary's `src/error.rs` |

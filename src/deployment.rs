@@ -99,16 +99,14 @@ pub fn contract() -> DeploymentContract {
                     "max_age_days": 30
                 }
             },
-            // No `health` or `metrics` address here: scalo's `--metrics-addr`
-            // (env `METRICS_ADDR`) is the single source of truth, and a key
-            // this service never reads is a knob that silently does nothing.
-            // Gate thresholds only -- the weighted components are registered
-            // in code via `ServiceApp::scaling_components`. The memory gate
-            // forces pressure to 100 before OOM.
-            "scaling": {
-                "enabled": true,
-                "memory_gate_threshold": 0.8
-            }
+            // No `health`, `metrics` or `scaling` section here: a key this
+            // service never reads is a knob that silently does nothing.
+            // scalo's `--metrics-addr` (env `METRICS_ADDR`) owns the listener,
+            // and it resolves `scaling` from its config cascade, which the
+            // file this contract ships is not a layer of. Scaling runs on
+            // `ScalingPressureConfig::default()` with the components
+            // registered by `ServiceApp::scaling_components`; move a gate
+            // threshold with `DFE_TRANSFORM_ELASTIC_SCALING__*`.
         })),
         depends_on: vec!["kafka".into()],
         native_deps: NativeDepsContract::for_scalo_features(&["transport-kafka"], &base_image),
@@ -421,17 +419,12 @@ mod tests {
         assert_eq!(config.source.batch_size, 20_000);
     }
 
-    /// The `scaling` section the contract ships must deserialise as scalo's
-    /// own type, so a rename here cannot silently leave the engine on defaults.
+    /// Nothing this repo ships can set the scaling gate, so scalo's defaults
+    /// ARE the deployed values and a change to them moves our gate silently.
+    /// Pin them here, where a scalo upgrade has to acknowledge the move.
     #[test]
-    fn scaling_section_matches_scalo_pressure_config() {
-        use scalo::scaling::ScalingPressureConfig;
-
-        let cfg = contract().default_config.expect("default_config present");
-        let scaling = cfg.get("scaling").expect("scaling section present");
-        let pressure: ScalingPressureConfig = serde_json::from_value(scaling.clone())
-            .expect("scaling section must deser as ScalingPressureConfig");
-
+    fn scaling_runs_on_scalo_defaults() {
+        let pressure = scalo::scaling::ScalingPressureConfig::default();
         assert!(pressure.enabled);
         assert!((pressure.memory_gate_threshold - 0.8).abs() < f64::EPSILON);
     }
@@ -450,17 +443,40 @@ mod tests {
 
     /// The shipped config must not carry keys this service never reads: a
     /// knob that silently does nothing is worse than no knob.
+    ///
+    /// The contract is delivered as the `--config` file, so every section in
+    /// [`crate::config::CASCADE_ONLY_SECTIONS`] is dead here by construction.
+    /// Checking that list rather than a hand-typed set means a new scalo
+    /// section is covered by naming it in one place.
     #[test]
     fn default_config_has_no_keys_the_service_ignores() {
         let cfg = contract().default_config.expect("default_config present");
         let object = cfg.as_object().expect("default_config is an object");
 
-        for dead in ["health", "metrics", "retry", "enrichment", "transforms"] {
+        for dead in ["health", "retry", "enrichment", "transforms"] {
             assert!(
                 !object.contains_key(dead),
                 "`{dead}` is in the shipped config but nothing reads it"
             );
         }
+        for dead in crate::config::CASCADE_ONLY_SECTIONS {
+            assert!(
+                !object.contains_key(*dead),
+                "`{dead}` is in the shipped config, but scalo reads it from the cascade and \
+                 `--config` is not a cascade layer, so it would be ignored"
+            );
+        }
+    }
+
+    /// The shipped config must also be one `Config::load` accepts through the
+    /// `--config` path, which is stricter than deserialising it.
+    #[test]
+    fn the_shipped_config_survives_the_config_file_path() {
+        let dir = tempfile::tempdir().expect("temp dir");
+        let path = dir.path().join("config.yaml");
+        std::fs::write(&path, default_config_yaml()).expect("write config");
+        crate::config::Config::load(Some(path.to_str().expect("utf-8 path")))
+            .expect("the shipped config must load through --config");
     }
 
     /// The catalogue's enumeration is what an operator reads before writing a
