@@ -39,10 +39,12 @@ complete-filebeat **vocabulary** is. So:
 - **Sub schema** — a package's own namespace, grouping its data streams.
 - **Deployable table** — common header + meta + sub, at data-stream grain.
 
-The grouping needs no new taxonomy. `src/registry.rs` already holds 1,092
-entries shaped
+The grouping needs no new taxonomy. `src/registry.rs` already holds one entry
+per source, shaped
 `("<beat>.<module>.<pipeline>", transform, intake, "<package>.<data_stream>")`,
-and the fourth element is the grouping key.
+and the fourth element is the grouping key. `dfe-transform-elastic sources`
+lists them, so count them there rather than from a figure written here -- the
+table grows with every onboarded source.
 
 ## Types come from `fields/*.yml`, not from the corpus
 
@@ -108,8 +110,10 @@ NULL for fields we never emit. Each generated column records which it is:
 | emitted, not declared | We produce it; the mapping does not declare it. |
 
 The third row matters beyond schemas: the corpus ratchet counts only missing and
-mismatched fields, so the 11,962 *extra* fields it reports are gated by nothing.
-Schema generation is the first thing that would surface them.
+mismatched fields, so the *extra* fields it reports are gated by nothing. The
+run prints the current figure and it moves on every matcher change, so read it
+there rather than from a number written here. Schema generation is the first
+thing that would surface them.
 
 ## Regeneration must be deterministic
 
@@ -129,8 +133,10 @@ We generate those tables. We do not rename fields in the stream:
 
 1. The query-time mechanism already exists; in-stream duplicates it.
 2. Renaming would destroy ECS, which our output *is* — `ecs.version` is stamped
-   at 1,003 sites across 998 generated transform modules. It would bake one
-   Sigma rule generation into stored data that can never be reinterpreted.
+   by very nearly every generated transform module
+   (`rg -c ecs.version crates/dfe-transforms/src/ --stats` for today's count).
+   It would bake one Sigma rule generation into stored data that can never be
+   reinterpreted.
 3. SigmaHQ ships rule changes constantly. As data, a change is a pull request;
    in-stream, it is a fleet redeploy plus a backfill.
 4. Per-event renaming costs throughput for a query-time concern.

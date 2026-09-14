@@ -33,14 +33,14 @@ enrich, and route the data.
 | Elastic Component | dfe-transform-elastic Equivalent | Status |
 |-------------------|----------------------------------|--------|
 | **Ingest processors** (27 used) | Rust processor implementations, one per Elastic processor type | Done |
-| **Painless scripts** | Pattern-matched against known script patterns in `crates/dfe-painless/src/common.rs`; unrecognised scripts are skipped | see Painless Coverage -- the figure is a corpus-run output, not a constant, so re-derive it rather than quoting one from here |
+| **Painless scripts** | A hand-transcribed runner from `crates/dfe-painless/src/bespoke/` where one is registered for that script, otherwise pattern-matched against `params.rs` and the ladder in `common.rs`; unrecognised scripts are skipped | see Painless Coverage -- the figure is a corpus-run output, not a constant, so re-derive it rather than quoting one from here |
 | **Foreach processor** | Per-event loop inside the transform function | Okta, O365 |
-| **Pipeline chaining** | One transform module calls into another's logic directly | Partial (CrowdStrike done) |
+| **Pipeline chaining** | A nested pipeline is INLINED into the calling module between `// Begin nested pipeline` / `// End nested pipeline` markers, so there is no call and no dispatch on the hot path | Done. `rg -c "Begin nested pipeline" crates/dfe-transforms/src/` counts today's call sites |
 | **GeoIP enrichment** | Global MMDB enricher, auto-detected at startup, LRU-cached | Done (DB-IP Lite) |
 | **User Agent parsing** | Regex-based parser | Done (minor diffs from Elastic UA parser) |
 | **Community ID** | Hash-based network flow ID | Done |
-| **Conditional evaluation** | Native Rust `if`/`match` expressions per condition pattern | Done (all patterns covered) |
-| **On-failure handlers** | Not yet implemented | Planned |
+| **Conditional evaluation** | Native Rust `if`/`match` expressions per condition pattern | Nearly. A condition the transpiler cannot read emits `if false`, making the processor it guards dead code -- `skipped_processors` in `tests/ratchets.json` is the live count, with a per-source table beside it |
+| **On-failure handlers** | Wrapped around EVERY processor by the generator, alongside `if` and `ignore_failure`, so a new processor cannot quietly omit them. A raised error runs the handlers and records `_ingest.on_failure_message` and `_ingest.on_failure_processor_type` | Done |
 
 ### What We Do NOT Replicate
 
@@ -62,12 +62,17 @@ pipeline logic, enrichment, ECS normalisation.
 
 ### Parity Verification
 
-Every integration is validated against Elastic's own test fixtures, committed under
-`tests/fixtures/{azure,cisco,crowdstrike,enrichment_tables,fortinet,o365,okta,panw}/`:
-- Input: `.log` files matching the layout of `_dev/test/pipeline/` in the source integration package
-- Expected: `-expected.json` files with the expected post-pipeline output
-- Comparison: Semantic mode (skips non-deterministic fields like `@timestamp`, GeoIP)
-- Target: >90% match rate per source before declaring integration complete
+**Parity is measured ONLY against the compat corpus.**
+`crates/dfe-transforms/tests/compat_corpus.rs` compares per FIELD against output captured from a
+real Elasticsearch and ratchets `tests/compat-baseline.json`, which holds every per-source score.
+`docs/COMPAT.md` is the full account: how the corpus is generated, what `tests/compare-policy.yaml`
+excludes and why, and how the ratchet refuses to be lowered.
+
+The `.log` / `-expected.json` fixtures under `crates/dfe-transforms/tests/fixtures/` predate the
+current pipelines and disagree with what Elasticsearch emits now, so **their parity assertions
+are retired**. `integration/` and `untested_sources.rs` beside them still run them, as panic,
+error and enrichment floors -- which is what holds on a fresh clone, where the corpus is
+gitignored and absent.
 
 Per-processor runtime status and code pattern: see Processor Taxonomy below.
 
@@ -87,25 +92,26 @@ flowchart LR
         HB[Heartbeat]
         PB[Packetbeat]
         EA[Elastic Agent]
-        RX[dfe-receiver<br/>syslog devices]
+        RX[dfe-receiver<br/>pushed transports]
+        FX[dfe-fetcher<br/>pulled APIs]
     end
 
     K[Kafka<br/>JSON events]
 
     subgraph dfe-transform-elastic
-        D[simd-json<br/>Deserialise]
+        D[serde_json<br/>Deserialise]
         T[Rust Transform<br/>Pipeline]
         E[Enrichment<br/>GeoIP / UA / CID]
     end
 
     O[Output<br/>Kafka / ClickHouse]
 
-    FB & WB & AB & MB & HB & PB & EA & RX --> K
+    FB & WB & AB & MB & HB & PB & EA & RX & FX --> K
     K --> D --> T --> O
     T <--> E
 ```
 
-**Input:** JSON events from Kafka, either Beats-shaped or dfe-receiver's syslog envelope
+**Input:** JSON events from Kafka in any of the three producer envelopes -- Beats-shaped, dfe-receiver's, or dfe-fetcher's
 **Transform:** Elastic ingest pipeline logic expressed as native Rust
 **Output:** Transformed, normalised events (to Kafka, ClickHouse via dfe-loader, or other sinks)
 
@@ -120,7 +126,7 @@ flowchart TD
     service[dfe-transform-elastic<br/><i>Service binary: cli, config,<br/>envelope, pipeline, registry</i>]
     transforms[dfe-transforms<br/><i>Transform modules,<br/>one per Elastic pipeline</i>]
     runtime[dfe-runtime<br/><i>Grok cache, enrichment,<br/>codegen_api, Transform trait</i>]
-    painless[dfe-painless<br/><i>Painless matchers,<br/>plan, params, patterns.lock</i>]
+    painless[dfe-painless<br/><i>Painless matchers, bespoke<br/>runners, plan, params</i>]
     core[dfe-core<br/><i>Event, errors, date formats,<br/>syslog priority, regex cache</i>]
     parse[dfe-parse<br/><i>High-performance parsers<br/>replacing grok/regex</i>]
 
@@ -139,7 +145,7 @@ flowchart TD
 | `dfe-transform-elastic` | Binary + Library | Service binary: CLI, config cascade, envelope unwrapping, registry lookup, batch pipeline, deployment artefact generation |
 | `dfe-transforms` | Library | Transform modules per data source (`filebeat::<source>::<pipeline>`) |
 | `dfe-runtime` | Library | Grok caching, enrichment, `codegen_api`, the Transform trait, and the prelude |
-| `dfe-painless` | Library | Painless pattern matching: the `known_patterns` ladder, `plan`, `params`, `patterns.lock` |
+| `dfe-painless` | Library | Painless pattern matching: the `known_patterns` ladder, `plan`, `params`, `patterns.lock`, and `bespoke/` -- one module per source holding the scripts transcribed by hand, resolved by script hash ahead of every matcher |
 | `dfe-core` | Library | `Event`, error types, date formats, syslog priority, the regex cache |
 | `dfe-parse` | Library | Zero-copy parsers replacing grok/regex patterns |
 
@@ -166,30 +172,41 @@ transform and runs it over every batch on the scalo runtime.
 |---|---|
 | `main.rs` | Entry point, hands off to `cli.rs` |
 | `cli.rs` | Subcommands: run the service, `sources` (list registered transforms), `emit-dockerfile`, `emit-chart`, `emit-compose`, `generate-artefacts`, `metrics-manifest` |
-| `config.rs` | The service's config shape: `pipeline_name`, `source.*`, `sink.*`, `scaling.*`, loaded through scalo's config cascade |
-| `registry.rs` | Source name to `Transform` lookup, and each source's `Origin` (API-only or syslog-capable) |
-| `envelope.rs` | Unwraps the Beats or syslog wrapper into the shape every transform expects |
+| `config.rs` | The service's config shape: `pipeline_name`, `source.*`, `sink.*`, `geoip`, read once at startup |
+| `registry.rs` | Source name to `Transform` lookup, plus each source's `Intake` (which envelopes it accepts), `Framing` and dataset |
+| `envelope.rs` | Detects which of the three producer families wrapped an event and unwraps it into the shape every transform expects |
 | `pipeline.rs` | Batch processing: NDJSON parse, envelope unwrap, transform, serialise, with per-batch outcome counts |
 | `service.rs` | Wires the scalo Kafka consumer/producer to `pipeline.rs`, and owns the send/commit semantics below |
-| `deployment.rs` | The single deployment contract: Dockerfile, Helm chart, compose fragment and KEDA scaler are all generated from here, and pinned against drift by tests |
+| `deployment.rs` | The single deployment contract: Dockerfile, Helm chart, compose fragment and KEDA scaler are all generated from here. Its tests pin the Dockerfile, `config.example.yaml`, the chart's `config:` block and the `docs/` config artefacts against a fresh regen -- not every artefact, see the README |
 | `metrics.rs` | Metric definitions registered with scalo's `MetricsManager` |
 | `error.rs` | The service's top-level error type |
 
 A config naming a source the build does not carry is rejected at startup, not discovered at
-the first batch. `source.batch_size` and `scaling.*` are hot-reloaded on the next batch;
-broker/topic settings, `source.name`, `envelope.*` and `pipeline_name` need a restart because
-Kafka connections, the resolved transform and the metrics labels are all set at startup.
+the first batch. Nothing is hot-reloaded: `Config::load` reads the configuration once and the
+loaded value is handed to the batch loop by reference, so every value needs a restart. The two
+ways in also differ -- with no `--config` the scalo cascade applies and `DFE_TRANSFORM_ELASTIC_*`
+overrides the files, while `--config` reads the named file directly and no such variable reaches
+it. `src/config.rs` states both at the top of the file.
 
 ### Envelopes: the same pipeline, a different wrapper
 
-`source.envelope` selects `beats` (default) or `syslog`. A Beats-shaped event carries the raw
-vendor payload as a string in `message`. The syslog envelope instead reads
-[dfe-receiver](https://github.com/hyperi-io/dfe-receiver)'s JSON: the MSG body in `message`,
-with the parsed header as siblings, and unwraps it into the same Beats shape before handing it
-to the same transform.
+`source.envelope` selects `auto` (the default), `beats`, `receiver` or `fetcher`.
 
-Two families of pipeline disagree about what they want back in `message`, and `registry.rs`
-records which is which via the `Framing` enum:
+- **beats** — the raw vendor payload as a string in `message`, which is what the transforms are
+  written for, and what Elastic Agent and anything passing a Beats document through unaltered
+  also produce.
+- **receiver** — [dfe-receiver](https://github.com/hyperi-io/dfe-receiver)'s JSON on any of its
+  transports. The syslog arm rebuilds a line into `message`; the rest pass their payload through
+  with their own field names moved onto the ECS paths those names would otherwise shadow.
+- **fetcher** — [dfe-fetcher](https://github.com/hyperi-io/dfe-fetcher)'s JSON, the provider's
+  own payload at the top level, for the sources where Elastic's agent input is a pure transport.
+
+`auto` resolves the family PER EVENT rather than per batch: a scalo `WorkBatch` spans
+partitions, so one batch can carry two producers' wrappers and reading only its first event
+unwrapped every one of them the same way. The cost is a handful of top-level key checks against
+an unwrap measured at 2,740 ns an event.
+
+Two syslog framings, recorded per source in `registry.rs` as the `Framing` enum:
 
 - **Body** — `panw.*` and `cisco_meraki` read `message` as CSV or key-value. The receiver's
   body goes through untouched; a prefixed header would corrupt the first field.
@@ -199,8 +216,10 @@ records which is which via the `Framing` enum:
   not enough for `cisco_ios` (wants a source IP) or `cisco_nexus` (wants a sequence number),
   since the receiver keeps neither.
 
-`envelope: syslog` is rejected at startup for a source whose `Origin` is `Api` rather than
-`Syslog` — okta and the other API-pulled sources have no syslog wrapper to unwrap.
+A PINNED envelope a source cannot arrive in is rejected at startup, checked against that
+source's `Intake` — okta is pulled from an API, so it accepts `beats` and `fetcher` and refuses
+`receiver`. `auto` cannot be checked that way, since there is no event yet, so the same
+mismatch is counted per batch instead.
 
 ### Delivery: at-least-once, enforced by stopping
 
@@ -248,7 +267,7 @@ sequenceDiagram
     participant T3 as Transform 3<br/>(geoip)
     participant O as Output
 
-    K->>E: simd_json::from_bytes(payload)
+    K->>E: Event::from_bytes(payload)
     E->>C: chain.execute(&mut event)
     C->>T1: transform(&mut event)
     T1->>E: event.set("event.kind", "event")
@@ -343,8 +362,8 @@ event.set("source.geo.city_name", "Sydney")?;
 
 ### Design Decisions
 
-- **`serde_json::Value` over custom types:** Simpler to implement, compatible with simd-json's `OwnedValue` conversion. Typed structs can be layered on later for hot-path fields.
-- **`from_bytes` uses simd-json:** The primary Kafka ingestion path uses `simd_json::from_slice` for 2-3x faster deserialisation. `from_json` uses `serde_json` as fallback.
+- **`serde_json::Value` over custom types:** Simpler to implement, and the map underneath is an `IndexMap` because `preserve_order` is not optional here -- Elasticsearch's own ingest documents are insertion-ordered and parity rests on it. Typed structs can be layered on later for hot-path fields.
+- **`from_bytes` uses `serde_json`, not simd-json:** measured on this workload and it is the faster of the two, because getting a `serde_json::Value` out of simd-json goes tape to serde deserializer to `Value`, which is strictly more work than parsing straight into the same tree. simd-json is a dev-dependency of `dfe-runtime` now, kept only for `benches/json_parse.rs`, which is the measurement. Re-run it before reopening this.
 - **Dotted-path splitting:** Split on `.` with no escaping. ECS field names never contain dots within a single field segment.
 
 ---
@@ -414,9 +433,9 @@ pub trait Transform: Send + Sync {
 ## Parser Architecture
 
 Three-layer strategy for replacing grok/regex with native Rust, implemented in `dfe-parse`.
-None of the three layers is called from `dfe-transforms` yet: the transform modules build a
-regex from the grok pattern at call time via `grok_to_regex` and match against it, which is
-the gap this architecture exists to close.
+Layer 1 is WIRED, for the two whole-pattern forms `grok_cache::native_form` recognises;
+everything else still falls back to the compiled regex the grok expands to. The dispatch table
+below is the current state, and widening it is the gap this architecture exists to close.
 
 ```mermaid
 flowchart TD
@@ -533,8 +552,11 @@ For patterns that can't be decomposed into Layer 1/2:
 | Timestamp (ISO8601) | ~500ns | ~40ns | ~12x |
 | Integer parse | ~100ns | ~10ns | ~10x |
 | Syslog header (5 fields) | ~2us | ~100ns | ~20x |
-| JSON parse (1KB event) | ~3us (serde) | ~1us (simd-json) | ~3x |
 | Full DNS log line (8 fields) | ~5us | ~300ns | ~15x |
+
+JSON parsing is deliberately absent: it is not a grok replacement, and the one
+candidate that would have belonged here lost its own benchmark
+(`crates/dfe-runtime/benches/json_parse.rs`).
 
 ---
 
@@ -571,7 +593,7 @@ sources exercise it.
 |---|---|---|---|
 | `grok` | Done (regex fallback) | All | `grok_to_regex` builds a pattern, `regex::Regex` matches it |
 | `dissect` | Done | Cisco, Meraki | Tokenizer-based split parser |
-| `json` | Done | All | `simd_json::from_str` / `serde_json::from_str` |
+| `json` | Done | All | `codegen_api::parse_json_str`, on `serde_json` |
 | `kv` | Done | Okta | Key-value split, configurable delimiters |
 | `csv` | Done | Fortinet | Separator/quote config |
 | `foreach` | Done | Okta, O365, sysmon | Each element bound to `_ingest._value`, the inner processor run, the list rebuilt |
@@ -589,7 +611,7 @@ sources exercise it.
 | `registered_domain` | Done | Panw | Split heuristic (full public suffix list deferred) |
 | `network_direction` | Done | Fortinet, Panw | CIDR-based internal/external classification |
 | `fingerprint` | Done | O365, M365 | `fingerprint_default`: SHA-1, base64, NUL before each value. `salt` and `method` are refused, so the default is the only path. |
-| `pipeline` (nested) | Partial | CrowdStrike, Fortinet | Direct call into the target module |
+| `pipeline` (nested) | Done | most multi-pipeline packages -- derive with `rg -l "Begin nested pipeline"` | Inlined into the caller, not a call |
 
 Not implemented (not used by any vendored pipeline): bytes, cef, date_index_name,
 enrich, geo_grid, html_strip, inference, redact, reroute, set_security_user.
@@ -601,20 +623,24 @@ using one fails to onboard and says which -- that is how `join`, `sort`,
 
 A script the runtime cannot execute is skipped rather than failing the event, so the skips have
 to be counted or they are indistinguishable from a script that did nothing. `painless_exec`
-(`crates/dfe-runtime/src/codegen_api.rs`) tries each script against the known patterns in
-`crates/dfe-painless/src/common.rs` and records the outcome through
-`crates/dfe-painless/src/stats.rs`.
+lives in `crates/dfe-painless/src/plan.rs` and is re-exported through
+`crates/dfe-runtime/src/codegen_api.rs` for the generated call sites. It resolves a
+hand-transcribed runner from `crates/dfe-painless/src/bespoke/` first, then the params patterns
+in `params.rs`, then the `known_patterns` ladder in `common.rs`, and records the outcome
+through `crates/dfe-painless/src/stats.rs`.
 
 **Two measurements, and only the second is honest about reach.**
 
 `crates/dfe-transforms/tests/painless_coverage.rs` drives the committed fixtures and holds a
-floor of 100%: 4,243 scripts across 80 fixture files, none skipped. That floor is real but its
-driver is narrow - 80 files against the compat corpus's 939 data streams - so it says the
-fixtures are fully covered, not that the runtime is.
+floor of 100%, none skipped. That floor is real but its driver is narrow -- a few dozen fixture
+files against the compat corpus's several hundred data streams -- so it says the fixtures are
+fully covered, not that the runtime is.
 
-Running the same counters over the compat corpus is what says that:
-**59,308 handled and 11,230 skipped**, across 1,257 distinct scripts, **522 of which never
-applied on any event**. `DFE_PAINLESS_UNHANDLED=<path>` on the corpus test writes the detail.
+Running the same counters over the compat corpus is what says that. Both figures are run
+outputs rather than constants, so derive them rather than quoting a number from here: the
+corpus run prints handled, skipped and distinct-script counts, `never_ran` is ratcheted in
+`tests/compat-baseline.json`, and `DFE_PAINLESS_UNHANDLED=<path>` on the corpus test writes the
+per-script detail.
 
 The gap between the two is the point. A pattern can MATCH a script statically and then decline at
 run time, which reads as covered from everywhere except that dump - so
@@ -631,13 +657,13 @@ Runtime enrichment modules loaded once, shared across transforms:
 ```mermaid
 flowchart TD
     subgraph "Enrichment Runtime (dfe-runtime)"
-        geoip[GeoIP<br/>MaxMind MMDB<br/>mmap + LRU cache]
+        geoip[GeoIP<br/>MMDB via maxminddb<br/>mmap + LRU cache]
         ua[User Agent<br/>Regex-based<br/>UA parsing]
         cid[Community ID<br/>v1 hash<br/>algorithm]
     end
 
     subgraph "Data Sources"
-        mmdb[(GeoLite2-City.mmdb<br/>~70MB mmap'd)]
+        mmdb[(DB-IP Lite city mmdb<br/>provisioned by scalo)]
         uareg[(UA regex<br/>patterns)]
     end
 
@@ -663,6 +689,7 @@ pub trait Enrichment: Send + Sync {
 
 ### GeoIP Design
 
+- **Provisioning:** the config's `geoip` section is scalo's `GeoIpConfig` verbatim, because provisioning is shared across the fleet while the lookup engine and its cache stay in `dfe-runtime`. It defaults to ENABLED with auto-download from DB-IP Lite, so an operator gets databases without configuring anything, and it is read once at startup.
 - **Storage:** mmap'd MMDB via `maxminddb` crate (zero-copy read)
 - **Cache:** an LRU cache in front of the MMDB reader (`crates/dfe-runtime/src/enrichment/geoip_cache.rs`), 100,000 entries by default, a quarter evicted at a time when full. 325 of the 1,069 generated data-stream modules carry a geoip call, 2,953 call sites between them, so a single 20k-event batch can hit the cache several times per event. Re-derive both counts by scanning `crates/dfe-transforms/src/filebeat/` rather than trusting these -- the previous pair, "14 of the 60 source pipelines", predated most of the tree.
 - **Output fields:** `country_name`, `country_iso_code`, `city_name`, `location.lat`, `location.lon`, `continent_name`, `timezone`
@@ -683,30 +710,36 @@ pub trait Enrichment: Send + Sync {
 
 ## Testing Strategy
 
+Three tracks, and only the first measures parity.
+
 ```mermaid
 flowchart LR
-    subgraph "Test Data"
-        fixtures[tests/fixtures/<br/>azure, cisco, crowdstrike,<br/>fortinet, o365, okta, panw]
+    subgraph "Parity -- the only correctness measure"
+        corpus[(testdata/compat<br/>captured from a<br/>real Elasticsearch)]
+        cc[compat_corpus.rs<br/>compare per FIELD]
+        policy[compare-policy.yaml<br/>what is not a defect]
+        base[compat-baseline.json<br/>the ratchet]
     end
 
-    subgraph "Test Framework"
-        harness[run_transform_test /<br/>run_integration_test<br/>load → transform → compare]
-        cmp[JsonDiff::compare<br/>Exact / Semantic / Subset]
+    subgraph "Floors -- hold on a fresh clone"
+        fixtures[(tests/fixtures/)]
+        floors[integration.rs<br/>untested_sources.rs<br/>panic / error / enrichment]
     end
 
-    subgraph "Validation Scope"
-        az[Azure activity/audit/<br/>platform/signin logs]
-        ci[Cisco IOS, Meraki, Nexus]
-        cs[CrowdStrike Falcon]
-        fn[Fortinet FortiGate]
-        o3[O365 audit]
-        ok[Okta system]
-        pw[Panw PAN-OS<br/>11 log types]
+    subgraph "Scanners -- over the generated tree"
+        ratchets[ratchets.json<br/>dead branches, skipped]
+        binding[painless_binding.rs<br/>bespoke_registry.rs<br/>grok_pattern_coverage.rs]
     end
 
-    fixtures --> harness --> cmp
-    cmp --> az & ci & cs & fn & o3 & ok & pw
+    corpus --> cc
+    policy --> cc
+    cc --> base
+    fixtures --> floors
 ```
+
+The corpus is GITIGNORED, so it exists only where it has been generated. Its absence makes
+`compat_corpus.rs` pass, which is why a run outside the main tree needs `DFE_COMPAT_CORPUS`
+pointed at one.
 
 ### Match Modes
 
@@ -737,9 +770,12 @@ case discovered in production.
 
 | Library | Use | SIMD Features |
 |---|---|---|
-| `simd-json` | Kafka JSON deserialisation | AVX2/SSE4.2/NEON structural character detection |
 | `memchr` | Delimiter scanning in parsers (`string.rs`) | AVX2/SSE2 byte search |
 | `regex-automata` | Layer 3 DFA fallback (`dfa.rs`) | Compiled DFA (no backtracking) |
+
+JSON deserialisation is NOT on this list. simd-json was measured against
+`serde_json` on this workload and lost on both paths -- see the Event Model
+above.
 
 Build targets in `.cargo/config.toml`:
 - **x86_64 release:** `-C target-cpu=x86-64-v3` (AVX2, BMI1/2, FMA — Haswell+)
@@ -748,7 +784,7 @@ Build targets in `.cargo/config.toml`:
 
 ### Zero-Copy Patterns
 
-1. **Kafka → Event:** `simd_json::from_slice(&mut bytes)` borrows strings from message buffer
+1. **Kafka → Event:** `Event::from_bytes` borrows from the message buffer rather than copying it
 2. **Parser returns:** `ParseResult<'a, &'a str>` — parsed values reference input slice
 3. **Field access:** `event.get_str()` returns `Option<&str>` borrowing from inner Value
 4. **Cow for transforms:** `Cow<'_, str>` when field may or may not need modification
@@ -791,18 +827,21 @@ on `&str` / `Value` with no transport coupling, so it can be extracted once prov
 
 | Crate | Version | Purpose |
 |---|---|---|
-| `simd-json` | >=0.14, <0.15 | SIMD JSON parsing (known-key feature) |
-| `serde` / `serde_json` | >=1.0 | Serialisation framework |
+| `serde` / `serde_json` | >=1.0 | Serialisation framework, and both JSON paths. `preserve_order` is on, so object keys keep document order |
+| `simd-json` | >=0.14, <0.15 | DEV-dependency of `dfe-runtime` only, for `benches/json_parse.rs` -- the bench that demoted it |
 | `serde_yaml_ng` | >=0.10 | YAML config parsing |
 | `memchr` | >=2.7 | SIMD byte search (`crates/dfe-parse/src/string.rs`) |
 | `regex-automata` | >=0.4 | Pre-compiled DFA regex (`crates/dfe-parse/src/dfa.rs`) |
 | `regex` | >=1.10 | Grok-derived pattern matching in `dfe-transforms` |
+| `fancy-regex` | >=0.13 | Backtracking fallback for the vendor patterns `regex` rejects by design -- lookaround and backreferences. Reached only when `regex` fails to COMPILE, so the hot path is unchanged |
+| `psl` | >=2.1 | Mozilla's Public Suffix List, compiled in, for `registered_domain` |
+| `parking_lot` | >=0.12.5, <0.13 | The lock in front of the GeoIP cache, taken per event across one transform thread per partition |
 | `chrono` | >=0.4 | Timestamp handling |
-| `maxminddb` | >=0.24 | GeoIP lookups (mmap, simdutf8) |
+| `maxminddb` | >=0.27, <0.28 | GeoIP lookups (mmap, simdutf8) |
 | `rustc-hash`, `sha1`, `sha2`, `base64` | latest majors | Fingerprinting and Community ID hashing |
 | `url` | >=2.5 | URL parsing (`uri_parts`) |
 | `csv` | >=1.3 | CSV processor |
-| `scalo` | >=2.10.9, <3 | Config, logging, metrics, Kafka transport, deployment, memory guard, scaling — the service binary's runtime |
+| `scalo` | >=2.11.1, <3 | Config, logging, metrics, Kafka transport, deployment, memory guard, scaling — the service binary's runtime |
 | `clap` | >=4.5 | Service CLI surface |
 | `tokio` | >=1.48 | Async runtime |
 | `thiserror` | >=2.0 | Error types in every crate, including the service binary's `src/error.rs` |
