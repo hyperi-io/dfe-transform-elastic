@@ -39,6 +39,15 @@ use sha2::{Digest, Sha256};
 
 use dfe_core::event::Event;
 
+mod airlock_digital;
+mod arista_ngfw;
+mod azure_ai_foundry;
+mod extrahop;
+mod symantec_endpoint_security;
+mod ti_recordedfuture;
+mod ti_ticura;
+mod wiz;
+
 /// A transcribed script's effect on one event.
 ///
 /// `params` is the pipeline's `params` block verbatim, [`Value::Null`] when
@@ -72,7 +81,16 @@ impl PartialEq for Entry {
 impl Eq for Entry {}
 
 /// Every source module's entries, in registration order.
-const ENTRIES: &[&[Entry]] = &[];
+const ENTRIES: &[&[Entry]] = &[
+    airlock_digital::ENTRIES,
+    arista_ngfw::ENTRIES,
+    azure_ai_foundry::ENTRIES,
+    extrahop::ENTRIES,
+    symantec_endpoint_security::ENTRIES,
+    ti_recordedfuture::ENTRIES,
+    ti_ticura::ENTRIES,
+    wiz::ENTRIES,
+];
 
 /// The key a script is registered under.
 ///
