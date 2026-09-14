@@ -60,6 +60,11 @@ sink:
   max_message_bytes: 900000      # ceiling on one produced record
 ```
 
+That is the shape, not the whole surface. `config.example.yaml` is the COMPLETE
+set of defaults with every key commented, generated from the deployment contract
+and pinned against drift by a test -- read it rather than this snippet when you
+need a key that is not here. `dfe-transform-elastic emit-config` reprints it.
+
 A batch is split into as many records as `max_message_bytes` allows -- 20,000
 events do not fit in one. Keep it below your broker's `message.max.bytes`.
 
@@ -68,68 +73,91 @@ discovered at the first batch.
 
 ### Input shape
 
-Events arrive as NDJSON, one JSON object per line, and each object must be
-**Beats-shaped**: the raw vendor payload is a STRING in `message`, which is how
-filebeat and Elastic Agent deliver it.
+Events arrive as NDJSON, one JSON object per line, wrapped by one of the three
+producers below. Whichever it is, the transform sees the same thing once the
+wrapper is off: the raw vendor payload as a STRING in `message`, which is how
+filebeat and Elastic Agent deliver it and what every transform is written for.
 
 ```json
 {"message": "{\"actor\":{\"displayName\":\"...\"},\"eventType\":\"user.session.end\"}"}
 ```
 
-Handing the service a bare vendor object instead is the one failure mode that
-is not loud. The transform still runs and still emits, but almost nothing is
-renamed, because every processor after the first reads fields that only exist
-once `message` has been unpacked. If the output looks like the input with an
-`ecs.version` bolted on, this is why.
+Handing the service a bare vendor object carrying no producer marker is the one
+failure mode that is not loud. Detection finds nothing to recognise, falls back
+to `beats`, and there is no `message` to unpack -- so the transform still runs
+and still emits, but almost nothing is renamed, because every processor after
+the first reads fields that only exist once `message` has been unpacked. If the
+output looks like the input with an `ecs.version` bolted on, this is why.
 
 ### Envelopes: the same pipeline, a different wrapper
 
-A device that emits over syslog can be fed from
-[dfe-receiver](https://github.com/hyperi-io/dfe-receiver) instead of from
-Beats. It is the same transform, the same output; only the wrapper differs.
+The same transform and the same output whatever wrapped the payload. Three
+families:
+
+- **`beats`** -- the raw vendor payload as a string in `message`, which is how
+  Beats and Elastic Agent deliver it, and what the transforms are written for.
+- **`receiver`** -- [dfe-receiver](https://github.com/hyperi-io/dfe-receiver)'s
+  JSON, on any of its transports. The syslog arm rebuilds a line into
+  `message` because that is what the vendor groks match, and lifts the parsed
+  header onto `log.syslog.*` so it survives a grok that does not. The rest pass
+  their payload through with their own field names moved onto the ECS paths
+  those names would otherwise shadow.
+- **`fetcher`** -- [dfe-fetcher](https://github.com/hyperi-io/dfe-fetcher)'s
+  JSON, the provider's own payload at the top level. It applies wherever
+  Elastic's agent input is a pure transport, because there the ingest pipeline
+  does all the parsing.
 
 ```yaml
 source:
   name: filebeat.fortinet.default
-  envelope: syslog          # beats (default) | syslog
+  envelope: auto            # auto (default) | beats | receiver | fetcher
   topics: ["logs_syslog_land"]
 ```
 
-`envelope: syslog` reads the receiver's syslog JSON: the MSG body in
-`message`, the header parsed into siblings. Unwrapping it puts back whatever
-that pipeline groks, and lifts the parsed header onto `log.syslog.*` so it
-survives regardless.
+**`auto` reads the family off each event**, not off the batch, because one
+Kafka batch spans partitions and can carry two producers' wrappers at once. It
+costs a handful of top-level key checks against an unwrap measured at 2,740 ns,
+so a deployment that changes producer needs no config change. Name a family to
+pin it instead, which is what a shape carrying no marker needs.
 
-The two families want different things, and the registry records which is
-which:
+Two syslog framings, recorded per source in the registry: `panw.*` and
+`cisco_meraki` read `message` as CSV or key-value, so the receiver's body goes
+through untouched -- a prefixed header would corrupt the first field. Everything
+else groks the header out of `message`, so a line is put back: the receiver's
+`_raw` verbatim if it kept one, otherwise an RFC 3164 line rebuilt from the
+parsed fields. Reconstruction is enough for `fortinet`, which only needs
+`<PRI>`. It is NOT enough for `cisco_ios` (wants a source IP) or `cisco_nexus`
+(wants a sequence number) -- the receiver keeps neither, so those two need
+`_raw`.
 
-- **Body** — `panw.*` and `cisco_meraki` read `message` as CSV or key-value.
-  The receiver's body goes through untouched; a prefixed header would corrupt
-  the first field.
-- **Line** — `fortinet`, `cisco_ios` and `cisco_nexus` grok the header out of
-  `message`, so a line is put back. If the receiver supplied `_raw` that is
-  used verbatim; otherwise an RFC 3164 line is rebuilt from the parsed fields.
-
-Reconstruction is enough for `fortinet`, which only needs `<PRI>`. It is NOT
-enough for `cisco_ios` (wants a source IP) or `cisco_nexus` (wants a sequence
-number) — the receiver keeps neither, so those two need `_raw`.
-
-The envelope applies only to sources a device can actually emit. Asking for
-`envelope: syslog` on an API source such as okta is rejected at startup, with
-the list of sources that would work.
+A pinned envelope a source cannot arrive in is rejected at startup, with the
+list of sources that would work: okta is pulled from an API, so
+`envelope: receiver` on it is a config error rather than a silent no-op at the
+first batch.
 
 The metrics and probe listener is not configured here. scalo's `--metrics-addr`
 (env `METRICS_ADDR`, default `0.0.0.0:9090`) is the single source of truth, so
 charts and deployments override that rather than a YAML field.
 
-### What reloads and what does not
+### Nothing reloads, and `--config` ignores the environment
 
-`source.batch_size` and the `scaling` section take effect on the next batch.
+The configuration is read ONCE at startup and handed to the batch loop by
+reference, so **every value needs a restart to change** -- the Kafka connections
+are established at startup, the transform is resolved once rather than per
+event, the GeoIP databases are loaded at startup, and the metrics labels are set
+at startup.
 
-Everything else needs a restart: broker and topic settings, because the Kafka
-connections are established at startup; `source.name`, because the transform is
-resolved once rather than per event; and `pipeline_name`, because the metrics
-labels are set at startup.
+The two ways in are not equivalent. With no `--config` the whole scalo cascade
+applies, so `DFE_TRANSFORM_ELASTIC_*` overrides the files. With `--config` --
+which is what the container passes -- the named file IS the configuration and
+**no `DFE_TRANSFORM_ELASTIC_*` variable reaches it**, so setting one there
+changes nothing and warns about nothing. Kafka credentials are unaffected
+either way: they are read from `KAFKA_*` separately.
+
+One consequence to know before tuning it: the `scaling` block in the shipped
+config is read by scalo from the CASCADE, not from the service's own config
+struct. Under `--config` the cascade never sees your file, so a `scaling:` block
+written there has no effect and the defaults apply.
 
 ## Behaviour under bad input
 
@@ -170,8 +198,24 @@ dfe-transform-elastic emit-compose
 dfe-transform-elastic generate-artefacts --output-dir docs
 ```
 
-The committed `Dockerfile` and the artefacts under `docs/` are pinned against a
-fresh regen by tests, so they cannot drift from the contract.
+`generate-artefacts` writes into `docs/`: `metrics-manifest.json`,
+`deployment-contract.json`, `container-manifest.json`, `Dockerfile.runtime`,
+`argocd-application.yaml`, and the reflectable config pair `config-schema.*` and
+`capability-catalog.*`.
+
+**Only the config pair is pinned against a fresh regen.**
+`committed_config_artefacts_do_not_drift` in `src/deployment.rs` compares
+`config-schema.{json,yaml}` and `capability-catalog.{json,yaml}`, and its
+sibling tests do the same for the committed `Dockerfile`, `config.example.yaml`
+and the chart's `config:` block. Nothing compares `deployment-contract.json`,
+`container-manifest.json`, `Dockerfile.runtime` or `argocd-application.yaml`, so
+those can and do fall behind -- re-run the command when `src/deployment.rs`
+changes rather than assuming a test caught it.
+
+`metrics-manifest.json` is the one that could not be drift-tested as it stands:
+it carries a `registered_at` timestamp written at generation time, so a
+byte-comparison would fail on every run that did not regenerate it. Expect that
+line to change whenever the command is run, and ignore it in review.
 
 The image expects the release binary in the build context:
 
