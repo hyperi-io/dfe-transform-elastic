@@ -223,6 +223,11 @@ pub fn regex(pattern: &str) -> &'static Pattern {
         return hit;
     }
 
+    // Compiled outside the write lock, so two threads racing the same pattern
+    // both build one and the loser's copy is leaked. Bounded by the number of
+    // distinct patterns times the threads that race them during warm-up, and
+    // never on the steady-state path -- holding the lock across a compile would
+    // park every transform thread instead.
     let compiled: &'static Pattern = Box::leak(Box::new(Pattern::compile(pattern, pattern)));
 
     if let Ok(mut guard) = PLAIN.write() {

@@ -9,12 +9,18 @@
 # `source.topics`, `source.brokers` and `sink.topic` are the ones that
 # always change.
 #
-# `source.envelope` selects which transport delivered the payload:
-# `beats` (default), `syslog` for dfe-receiver's output, or `fetcher` for
-# dfe-fetcher's. The transform is the same for all three; only the unwrapping
-# differs. Which envelopes a source accepts is listed per source in the
-# capability catalogue, and an envelope it cannot arrive in is refused at
-# startup rather than at the first batch.
+# `source.envelope` selects which transport delivered the payload. `auto`, the
+# default, reads it off each event, so a topic fed by two producers still
+# unwraps both. Naming one pins it: `beats`, `receiver` (also spelled `syslog`)
+# for dfe-receiver's output, or `fetcher` for dfe-fetcher's. The transform is
+# the same for all of them; only the unwrapping differs. Which envelopes a
+# source accepts is listed per source in the capability catalogue, and an
+# envelope it cannot arrive in is refused at startup rather than at the first
+# batch.
+#
+# `source.max_batch_bytes` caps one inbound fetch, the way
+# `sink.max_message_bytes` caps one outbound record. Raise the pod's memory
+# limit with it: the parsed documents are several times the raw bytes.
 #
 # `geoip` provisions the MMDB databases at startup and refreshes them when the
 # local copy passes `max_age_days`. Mount `data_dir` on a volume that survives
@@ -25,10 +31,11 @@
 pipeline_name: dfe-transform-elastic
 source:
   name: filebeat.okta.default
-  envelope: beats
+  envelope: auto
   topics:
   - raw_events
   batch_size: 20000
+  max_batch_bytes: 16777216
   group_id: dfe-transform-elastic
   brokers:
   - kafka:9092

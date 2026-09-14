@@ -8,7 +8,6 @@
 //! or stub what needs configuration this build may not have (`GeoIP`
 //! databases, a Painless interpreter).
 
-use std::collections::HashMap;
 use std::sync::LazyLock;
 
 use serde_json::{Map, Value};
@@ -30,7 +29,10 @@ pub struct RegisteredDomainResult {
 ///
 /// Returns a flat map of field names to values (e.g., "`country_iso_code`" -> "AU").
 /// Uses the global auto-initialised enricher (auto-detects MMDB files).
-pub fn geoip_lookup(db_name: &str, ip: &str) -> Result<HashMap<String, Value>> {
+///
+/// The map is SHARED with the cache rather than copied out of it, so a call
+/// site reads through it and never mutates it.
+pub fn geoip_lookup(db_name: &str, ip: &str) -> Result<crate::enrichment::geoip_cache::Fields> {
     Ok(crate::enrichment::geoip_global::geoip_lookup(db_name, ip))
 }
 
@@ -342,19 +344,6 @@ pub fn parse_json_field(event: &mut Event, field: &str, target: &str) -> Result<
     Ok(())
 }
 
-/// Parse a JSON field and add its members to the document ROOT.
-///
-/// Elastic's `add_to_root`. The parsed value must be an object -- anything
-/// else throws, which is what hands the document to `on_failure`. `merge`
-/// recursively merges an incoming object into an existing one of the same
-/// name and throws where either side is not an object; `replace`, the
-/// default, overwrites whatever was there.
-///
-/// Kibana's ECS log line is the whole reason: the message IS the document,
-/// and without this its four packages parse nothing at all.
-///
-/// # Errors
-///
 /// Set a value at a path whose NAME is a mustache template.
 ///
 /// A `set` inside a `foreach` names its target through `_ingest._value`, so the
@@ -413,6 +402,19 @@ fn render_path(event: &Event, template: &str) -> String {
     out
 }
 
+/// Parse a JSON field and add its members to the document ROOT.
+///
+/// Elastic's `add_to_root`. The parsed value must be an object -- anything
+/// else throws, which is what hands the document to `on_failure`. `merge`
+/// recursively merges an incoming object into an existing one of the same
+/// name and throws where either side is not an object; `replace`, the
+/// default, overwrites whatever was there.
+///
+/// Kibana's ECS log line is the whole reason: the message IS the document,
+/// and without this its four packages parse nothing at all.
+///
+/// # Errors
+///
 /// Returns a `ParseError` naming the field when the text is not JSON, when the
 /// field holds a container rather than text (see [`json_processor_value`]), or
 /// when what parses is not an object.
