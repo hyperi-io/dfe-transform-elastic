@@ -14,28 +14,27 @@ use sha1::{Digest, Sha1};
 use crate::error::{Result, TransformError};
 use crate::event::Event;
 
-/// IANA protocol numbers by the names the vendors spell them with.
+/// IANA protocol numbers by the ELEVEN names Elasticsearch's processor knows.
 ///
 /// ONE table, read by both [`protocol_number`] and the ICMP branch of
 /// [`enrich`]. A second list would disagree with this one -- a spelling missing
 /// from the port switch hashes `source.port` where the spec wants the ICMP
 /// message type.
+///
+/// The list is CLOSED, and matching it is the whole point: a name off it makes
+/// Elasticsearch's processor throw, so a flow logged as `esp` carries no
+/// community id at all. Accepting more names than it does invents one.
 const PROTOCOLS: &[(&str, u8)] = &[
-    ("hopopt", 0),
     ("icmp", PROTO_ICMP),
     ("igmp", 2),
     ("tcp", PROTO_TCP),
     ("udp", PROTO_UDP),
-    ("rsvp", 46),
     ("gre", 47),
-    ("esp", 50),
-    ("ah", 51),
     ("icmpv6", PROTO_ICMPV6),
-    ("icmp6", PROTO_ICMPV6),
     ("ipv6-icmp", PROTO_ICMPV6),
     ("eigrp", 88),
     ("ospf", 89),
-    ("vrrp", 112),
+    ("pim", 103),
     ("sctp", PROTO_SCTP),
 ];
 
@@ -43,13 +42,15 @@ const PROTOCOLS: &[(&str, u8)] = &[
 ///
 /// Compared without allocating, because this runs per event. The decimal
 /// fallback covers every numeric spelling: `"58"` parses to 58 whatever the
-/// table holds.
+/// table holds, which is how a portless protocol such as VRRP still hashes
+/// where the pipeline hands over `network.iana_number`. 255 is reserved and
+/// Elasticsearch rejects it, so the number has to fit in 0-254.
 fn protocol_number(transport: &str) -> Option<u8> {
     PROTOCOLS
         .iter()
         .find(|(name, _)| name.eq_ignore_ascii_case(transport))
         .map(|(_, number)| *number)
-        .or_else(|| transport.parse::<u8>().ok())
+        .or_else(|| transport.parse::<u8>().ok().filter(|number| *number < 255))
 }
 
 const PROTO_ICMP: u8 = 1;
@@ -93,6 +94,19 @@ fn icmp_counterpart(proto: u8, icmp_type: u16) -> Option<u16> {
     })
 }
 
+/// An IPv4-mapped IPv6 address as the four bytes it stands for.
+///
+/// Java hands the processor an `Inet4Address` for `::ffff:10.47.0.122`, so the
+/// hash covers four bytes and the flow orders as an IPv4 address. Hashing the
+/// sixteen-byte form instead both changes the digest and sorts the pair the
+/// other way round, because every IPv6 address outranks every IPv4 one.
+fn unmap(address: IpAddr) -> IpAddr {
+    match address {
+        IpAddr::V6(v6) => v6.to_ipv4_mapped().map_or(address, IpAddr::V4),
+        IpAddr::V4(_) => address,
+    }
+}
+
 /// Compute Community ID v1 hash.
 ///
 /// Follows the spec: `1:<base64(sha1(seed + src_ip + dst_ip + proto + 0 + src_port + dst_port))>`
@@ -104,12 +118,16 @@ pub fn community_id_v1(
     transport: &str,
     seed: u16,
 ) -> std::result::Result<String, String> {
-    let src: IpAddr = src_ip
-        .parse()
-        .map_err(|e| format!("invalid source IP '{src_ip}': {e}"))?;
-    let dst: IpAddr = dst_ip
-        .parse()
-        .map_err(|e| format!("invalid destination IP '{dst_ip}': {e}"))?;
+    let src = unmap(
+        src_ip
+            .parse()
+            .map_err(|e| format!("invalid source IP '{src_ip}': {e}"))?,
+    );
+    let dst = unmap(
+        dst_ip
+            .parse()
+            .map_err(|e| format!("invalid destination IP '{dst_ip}': {e}"))?,
+    );
     let proto =
         protocol_number(transport).ok_or_else(|| format!("unknown transport: {transport}"))?;
 
@@ -353,20 +371,39 @@ mod tests {
         assert!(result.is_err());
     }
 
-    /// Every spelling of ICMP6 a vendor uses names the same protocol, on both
-    /// the hash and the field switch.
+    /// Both spellings of `ICMPv6` Elasticsearch accepts name the same protocol,
+    /// on the hash and on the field switch alike.
     #[test]
-    fn the_icmp6_spellings_all_name_protocol_58() {
-        for spelling in ["icmpv6", "ICMPv6", "icmp6", "ICMP6", "ipv6-icmp", "58"] {
+    fn the_icmpv6_spellings_all_name_protocol_58() {
+        for spelling in ["icmpv6", "ICMPv6", "ipv6-icmp", "IPv6-ICMP", "58"] {
             assert_eq!(protocol_number(spelling), Some(58), "{spelling}");
         }
     }
 
-    /// `icmp6` reached the hash as protocol 58 while the field switch did not
-    /// know it, so the ports were hashed where the message type belongs. Both
-    /// spellings must produce the same id for the same flow.
+    /// A name Elasticsearch's processor does not know throws there, so the
+    /// event carries no community id -- `esp` is the one iptables logs, and
+    /// `icmp6` reads like a spelling of 58 without being one.
     #[test]
-    fn icmp6_hashes_its_message_type_not_its_ports() {
+    fn a_transport_name_elasticsearch_rejects_gets_no_id() {
+        for spelling in ["esp", "ah", "hopopt", "rsvp", "vrrp", "icmp6"] {
+            assert_eq!(protocol_number(spelling), None, "{spelling}");
+        }
+        let err = community_id_v1("192.168.110.116", "192.168.2.25", 0, 0, "esp", 0)
+            .expect_err("esp is not a transport protocol Elasticsearch knows");
+        assert!(err.contains("esp"), "{err}");
+    }
+
+    /// 255 is reserved and Elasticsearch's own range check stops at 254.
+    #[test]
+    fn the_reserved_protocol_number_is_rejected() {
+        assert_eq!(protocol_number("254"), Some(254));
+        assert_eq!(protocol_number("255"), None);
+    }
+
+    /// An `ICMPv6` flow hashes its message type rather than its ports, whichever
+    /// of the two accepted spellings the vendor writes.
+    #[test]
+    fn icmpv6_hashes_its_message_type_not_its_ports() {
         let config = CommunityIdConfig {
             ignore_missing: true,
             ..default_config()
@@ -382,13 +419,34 @@ mod tests {
             event.get_str("network.community_id").map(str::to_string)
         };
 
-        let spelled = event("icmp6").expect("icmp6 hashes");
+        let spelled = event("ipv6-icmp").expect("ipv6-icmp hashes");
         assert_eq!(spelled, event("icmpv6").expect("icmpv6 hashes"));
         // Type 128 is the echo request, whose counterpart is 129, so the id is
         // the one the reply produces too.
         assert_eq!(
             spelled,
             community_id_v1("2001:db8::2", "2001:db8::1", 129, 0, "icmpv6", 0).unwrap()
+        );
+    }
+
+    /// Verbatim from `testdata/compat/system/security/test-5152`: Windows logs
+    /// the source as an IPv4-mapped IPv6 address, and Elasticsearch hashes the
+    /// four bytes it stands for.
+    #[test]
+    fn an_ipv4_mapped_address_hashes_as_ipv4() {
+        let mapped = community_id_v1(
+            "::ffff:10.47.0.122",
+            "255.255.255.255",
+            58231,
+            1947,
+            "udp",
+            0,
+        )
+        .unwrap();
+        assert_eq!(mapped, "1:FgoAQGl+ATfnW8e628q6RGGOh/I=");
+        assert_eq!(
+            mapped,
+            community_id_v1("10.47.0.122", "255.255.255.255", 58231, 1947, "udp", 0).unwrap()
         );
     }
 

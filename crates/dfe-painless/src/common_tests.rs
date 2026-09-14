@@ -806,6 +806,44 @@ fn a_fold_written_as_a_foreach_subscript_is_read_too() {
     );
 }
 
+/// A Microsoft usage report opens with a byte-order mark, so its first CSV
+/// heading carries U+FEFF and the whole tail of the pipeline names the folded
+/// key without it.
+///
+/// Verbatim from `pipelines/o365_metrics/groups_activity_group_detail`. The
+/// mark is category Cf, not Cc, so `char::is_control` left it on the key and
+/// the `rename` to `report.refresh_date`, the `@timestamp` it feeds and the
+/// `convert` of every counter after it all missed.
+#[test]
+fn the_byte_order_mark_a_csv_heading_carries_is_dropped() {
+    let pattern = RewriteKeys::new(
+        "json".into(),
+        "json".into(),
+        vec![
+            KeyRewriteStep::DropControl,
+            KeyRewriteStep::ReplaceChars(" -".into(), Some('_')),
+            KeyRewriteStep::ReplaceChars("()".into(), None),
+            KeyRewriteStep::Lowercase,
+        ],
+    );
+    let mut event = Event::new(serde_json::json!({ "json": {
+        "\u{feff}Report Refresh Date": "2024-12-24",
+        "Exchange Mailbox Storage Used (Byte)": "698640",
+        "Member\u{7}Count": "2"
+    } }));
+    assert!(rewrite_keys(&mut event, &pattern));
+    assert_eq!(
+        event.get_str("json.report_refresh_date"),
+        Some("2024-12-24")
+    );
+    assert_eq!(
+        event.get_str("json.exchange_mailbox_storage_used_byte"),
+        Some("698640")
+    );
+    // Cc was already dropped and has to stay dropped.
+    assert_eq!(event.get_str("json.membercount"), Some("2"));
+}
+
 /// The three `forEach` folds this reader must NOT claim, each verbatim.
 ///
 /// Claiming any of them writes SOME keys right and the rest wrong, which reads
@@ -5392,6 +5430,21 @@ fn drop_everything() -> DropPolicy {
     }
 }
 
+/// A prune reads the value, never the TEXT of a value -- mimecast's vendor
+/// payload carries the two characters `[]` as a real list entry and
+/// Elasticsearch keeps it.
+#[test]
+fn drop_empty_keeps_a_vendor_value_that_reads_like_an_empty_container() {
+    let mut event = Event::new(json!({
+        "mimecast": { "tagMap": { "Inspect_MimeTypes": ["[]"] } }
+    }));
+    drop_empty_recursive(&mut event, &drop_everything());
+    assert_eq!(
+        event.get("mimecast.tagMap.Inspect_MimeTypes"),
+        Some(&json!(["[]"]))
+    );
+}
+
 #[test]
 fn drop_empty_removes_nulls() {
     let mut event = Event::new(json!({
@@ -5664,9 +5717,49 @@ fn the_words_go_and_everything_the_script_keeps_stays() {
     );
 }
 
-/// The `==` list stays EXACT. `forescout_host` spells `n/a` and `unknown` as
-/// `==` terms, and folding both lists together would drop the capitalised
-/// spellings that script keeps.
+/// A drop predicate spelling the empty test as a method call.
+///
+/// Verbatim from `pipelines/apache/error/default.yml:117-137`. `.equals("")`
+/// carries no `==`, so the policy read empty strings as kept and an
+/// `[:error]` heading left `apache.error.module` in the document as `""`.
+#[test]
+fn an_equals_call_names_the_empty_string() {
+    let script = "void handleMap(Map map) {\n  for (def x : map.values()) {\n    \
+        if (x instanceof Map) {\n        handleMap(x);\n    } else if (x instanceof List) {\n \
+        handleList(x);\n    }\n  }\n  map.values().removeIf(v -> v == null || v.equals(\"\") \
+        || (v instanceof Map && v.values().isEmpty()));\n}\nhandleMap(ctx);\n";
+
+    let policy = DropPolicy::read(script);
+    assert!(policy.empty_strings, "{policy:?}");
+    assert!(policy.nulls && policy.empty_collections, "{policy:?}");
+}
+
+/// A drop predicate that folds the value before comparing it.
+///
+/// Verbatim from `pipelines/forescout/host/default.yml:48-69`. The literals are
+/// lower case because the value is, so reading them as exact words kept
+/// `Unknown` and `N/A` -- and left `forescout.host.access_ip` for the `convert`
+/// to `ip` after it to fail on.
+#[test]
+fn a_folded_comparison_names_a_case_insensitive_sentinel() {
+    let script = "void handleMap(Map map) {\nmap.values().removeIf(v -> {\n\tif (v instanceof Map) \
+        {\n\thandleMap(v);\n\t} else if (v instanceof List) {\n\thandleList(v);\n\t}\n\t\
+        return v == null || v == ''|| v.toString().toLowerCase() == \"n/a\" \
+        || v.toString().toLowerCase() == \"unknown\" || (v instanceof Map && v.size() == 0) \
+        || (v instanceof List && v.size() == 0)\n});\n}\nhandleMap(ctx);";
+
+    let policy = DropPolicy::read(script);
+    assert!(policy.sentinels.is_empty(), "{:?}", policy.sentinels);
+    assert_eq!(policy.sentinels_ci, vec!["n/a", "unknown"]);
+    assert!(
+        policy.is_sentinel("Unknown") && policy.is_sentinel("N/A"),
+        "{policy:?}"
+    );
+}
+
+/// The `==` list stays EXACT where the script compares the value as it stands.
+/// Folding the two lists together would drop capitalised spellings an unfolded
+/// comparison keeps.
 #[test]
 fn an_equals_list_is_not_made_case_insensitive_by_a_neighbour() {
     let policy = DropPolicy {
