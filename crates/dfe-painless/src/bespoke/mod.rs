@@ -39,6 +39,23 @@ use sha2::{Digest, Sha256};
 
 use dfe_core::event::Event;
 
+mod airlock_digital;
+mod anthropic_metrics;
+mod arista_ngfw;
+mod auditd;
+mod aws;
+mod azure_ai_foundry;
+mod cisco_secure_endpoint;
+mod elastic_agent;
+mod extrahop;
+mod jamf_compliance_reporter;
+mod mongodb_atlas;
+mod nozomi_networks;
+mod symantec_endpoint_security;
+mod ti_recordedfuture;
+mod ti_ticura;
+mod wiz;
+
 /// A transcribed script's effect on one event.
 ///
 /// `params` is the pipeline's `params` block verbatim, [`Value::Null`] when
@@ -72,7 +89,24 @@ impl PartialEq for Entry {
 impl Eq for Entry {}
 
 /// Every source module's entries, in registration order.
-const ENTRIES: &[&[Entry]] = &[];
+const ENTRIES: &[&[Entry]] = &[
+    airlock_digital::ENTRIES,
+    anthropic_metrics::ENTRIES,
+    arista_ngfw::ENTRIES,
+    auditd::ENTRIES,
+    aws::ENTRIES,
+    azure_ai_foundry::ENTRIES,
+    cisco_secure_endpoint::ENTRIES,
+    elastic_agent::ENTRIES,
+    extrahop::ENTRIES,
+    jamf_compliance_reporter::ENTRIES,
+    mongodb_atlas::ENTRIES,
+    nozomi_networks::ENTRIES,
+    symantec_endpoint_security::ENTRIES,
+    ti_recordedfuture::ENTRIES,
+    ti_ticura::ENTRIES,
+    wiz::ENTRIES,
+];
 
 /// The key a script is registered under.
 ///

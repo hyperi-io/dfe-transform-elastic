@@ -1836,18 +1836,20 @@ fn the_beyondtrust_container_digests_bind_to_nothing() {
 /// `.../anthropic_metrics_usage/default.rs`.
 const ANTHROPIC_PRUNE: &str = r#"if (ctx.json.containsKey('workspace_id') && ctx.json.workspace_id == null) {\n  ctx.json.workspace_id = 'Default';\n} ctx.json.entrySet().removeIf(e -> e.getValue() == null);"#;
 
-/// The prune claims this script, and the DEFAULT FILL in front of it is debt
-/// the claim hides.
+/// The transcription resolves ahead of the prune, which still stands behind it.
 ///
 /// The script is two statements: a `null` replaced by `'Default'`, then a null
-/// prune. `SentinelRemovalLiteral` runs the second and the first goes
-/// unwritten, so `anthropic.cost.workspace_id` and `anthropic.usage.workspace_id`
-/// stay missing -- recorded here because a claimed script leaves no error
-/// behind. It was unbound before the prune's trigger read the short lambda
-/// parameter, so the fill was never written either way.
+/// prune. `SentinelRemovalLiteral` runs only the second, so
+/// `anthropic.cost.workspace_id` and `anthropic.usage.workspace_id` stayed
+/// missing for as long as it was the claimant -- a claimed script leaves no
+/// error behind, so nothing else reported it. The hand-written runner does both
+/// statements.
 #[test]
-fn the_anthropic_prune_is_claimed_and_its_default_fill_is_not() {
-    assert_eq!(heads(ANTHROPIC_PRUNE), ["SentinelRemovalLiteral"]);
+fn the_anthropic_prune_resolves_to_its_transcription() {
+    assert_eq!(
+        heads(ANTHROPIC_PRUNE),
+        ["Bespoke", "SentinelRemovalLiteral"]
+    );
 }
 
 #[test]
