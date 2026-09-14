@@ -167,11 +167,13 @@ impl Transform for Default {
                 let _cond = { event.has_value("auditd.log.kv") };
                 if _cond {
                     if let Some(kv_str) = event.get_string("auditd.log.kv") {
+                        let mut kv_gap = false;
                         for pair in cached_regex!("(?:\\s+|\\x1d)(?=[^\\s\\x1d]+=)")
                             .split(&kv_str)
                             .into_iter()
                         {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
                             let Some((key, value)) = ({
@@ -180,10 +182,11 @@ impl Transform for Default {
                                     (Some(k), Some(v)) => Some((k.clone(), v.clone())),
                                     _ => None,
                                 }
-                            }) else {
-                                return Err(TransformError::ParseError {
-                                    path: "auditd.log.kv".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            })
+                            .filter(|_| !kv_gap) else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "auditd.log.kv".into(),
+                                    split: "(?<!\\\\)=".into(),
                                 });
                             };
                             {
@@ -197,14 +200,17 @@ impl Transform for Default {
                 }
                 if event.has_value("auditd.log.sub_kv") {
                     if let Some(kv_str) = event.get_string("auditd.log.sub_kv") {
+                        let mut kv_gap = false;
                         for pair in cached_regex!("\\s+(?=[^\\s]+=)").split(&kv_str).into_iter() {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
-                            let Some((key, value)) = pair.split_once("=") else {
-                                return Err(TransformError::ParseError {
-                                    path: "auditd.log.sub_kv".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap)
+                            else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "auditd.log.sub_kv".into(),
+                                    split: "=".into(),
                                 });
                             };
                             {
@@ -217,14 +223,17 @@ impl Transform for Default {
                 }
                 if event.has_value("auditd.log.sub_kv_enriched") {
                     if let Some(kv_str) = event.get_string("auditd.log.sub_kv_enriched") {
+                        let mut kv_gap = false;
                         for pair in cached_regex!("\\s+(?=[^\\s]+=)").split(&kv_str).into_iter() {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
-                            let Some((key, value)) = pair.split_once("=") else {
-                                return Err(TransformError::ParseError {
-                                    path: "auditd.log.sub_kv_enriched".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap)
+                            else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "auditd.log.sub_kv_enriched".into(),
+                                    split: "=".into(),
                                 });
                             };
                             {
@@ -888,8 +897,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("process.args", Value::Array(parts))?;
                 }

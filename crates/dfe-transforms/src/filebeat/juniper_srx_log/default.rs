@@ -52,21 +52,23 @@ impl Transform for Default {
 
             if event.has_value("_temp_.traffic_structured") {
                 if let Some(kv_str) = event.get_string("_temp_.traffic_structured") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!(" (?=[a-z0-9\\_\\-]+=)")
                         .split(&kv_str)
                         .into_iter()
                     {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "_temp_.traffic_structured".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "_temp_.traffic_structured".into(),
+                                split: "=".into(),
                             });
                         };
                         {
-                            let value = value.trim_matches(|c| "\"".contains(c));
+                            let value = value.trim_matches(|c: char| matches!(c, '\"'));
                             if !key.is_empty() {
                                 kv_put(event, &format!("juniper.srx.{}", key), value)?;
                             }
@@ -77,21 +79,23 @@ impl Transform for Default {
 
             if event.has_value("_temp_.system_structured") {
                 if let Some(kv_str) = event.get_string("_temp_.system_structured") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!(" (?=[a-z0-9\\_\\-]+=)")
                         .split(&kv_str)
                         .into_iter()
                     {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "_temp_.system_structured".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "_temp_.system_structured".into(),
+                                split: "=".into(),
                             });
                         };
                         {
-                            let value = value.trim_matches(|c| "\"".contains(c));
+                            let value = value.trim_matches(|c: char| matches!(c, '\"'));
                             if !key.is_empty() {
                                 kv_put(event, &format!("juniper.srx.{}", key), value)?;
                             }
@@ -6137,23 +6141,25 @@ impl Transform for Default {
                     let _ = (|| -> Result<()> {
                         if event.has_value("message") {
                             if let Some(kv_str) = event.get_string("message") {
+                                let mut kv_gap = false;
                                 for pair in cached_regex!(",\\s(?=[a-zA-Z0-9\\_\\-\\s]+:)")
                                     .split(&kv_str)
                                     .into_iter()
                                 {
-                                    if pair.trim().is_empty() {
+                                    if pair.is_empty() {
+                                        kv_gap = true;
                                         continue;
                                     }
-                                    let Some((key, value)) = pair.split_once(":") else {
-                                        return Err(TransformError::ParseError {
-                                            path: "message".into(),
-                                            message: format!(
-                                                "does not contain value_split: {pair}"
-                                            ),
+                                    let Some((key, value)) =
+                                        pair.split_once(":").filter(|_| !kv_gap)
+                                    else {
+                                        return Err(TransformError::KvValueSplit {
+                                            field: "message".into(),
+                                            split: ":".into(),
                                         });
                                     };
                                     {
-                                        let value = value.trim_matches(|c| "\"".contains(c));
+                                        let value = value.trim_matches(|c: char| matches!(c, '\"'));
                                         if !key.is_empty() {
                                             kv_put(
                                                 event,

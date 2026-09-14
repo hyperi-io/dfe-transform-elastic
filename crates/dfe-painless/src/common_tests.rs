@@ -2317,6 +2317,24 @@ fn a_stream_split_removes_a_field_with_no_pieces() {
     assert_eq!(event.get_str("json.keep"), Some("me"));
 }
 
+/// A stream filter over a list of lists drops the blank members, which is what
+/// keeps a split of an empty provider string out of the indicator.
+#[test]
+fn a_stream_filter_drops_the_blank_members() {
+    const FILTER: &str = "if (ctx._temp_ != null && ctx._temp_.providers != null) {\n  \
+                          ctx._temp_.providers = ctx._temp_.providers.stream()\n    \
+                          .filter(p -> p != null && p.size() > 0 && !p.get(0).isEmpty())\n    \
+                          .collect(Collectors.toList());\n}\n";
+    let mut event = Event::new(json!({
+        "_temp_": { "providers": [["Recorded Future"], [""], ["Insikt"]] },
+    }));
+    assert!(try_known_painless(&mut event, FILTER));
+    assert_eq!(
+        event.get("_temp_.providers"),
+        Some(&json!([["Recorded Future"], ["Insikt"]]))
+    );
+}
+
 #[test]
 fn a_returning_band_ladder_takes_the_first_band_that_holds() {
     for (confidence, expected) in [
@@ -5424,9 +5442,7 @@ fn drop_everything() -> DropPolicy {
         empty_strings: true,
         empty_collections: true,
         prune_lists: true,
-        sentinels: Vec::new(),
-        sentinels_ci: Vec::new(),
-        shallow: false,
+        ..DropPolicy::none()
     }
 }
 
@@ -5479,12 +5495,7 @@ fn a_null_only_predicate_keeps_empty_strings_and_objects() {
         policy,
         DropPolicy {
             nulls: true,
-            empty_strings: false,
-            empty_collections: false,
-            prune_lists: false,
-            sentinels: Vec::new(),
-            sentinels_ci: Vec::new(),
-            shallow: false,
+            ..DropPolicy::none()
         }
     );
 
@@ -5537,13 +5548,8 @@ fn an_instanceof_string_guard_makes_is_empty_the_string_test() {
     assert_eq!(
         DropPolicy::read(STRING_IS_EMPTY),
         DropPolicy {
-            nulls: false,
             empty_strings: true,
-            empty_collections: false,
-            prune_lists: false,
-            sentinels: Vec::new(),
-            sentinels_ci: Vec::new(),
-            shallow: false,
+            ..DropPolicy::none()
         }
     );
 
@@ -5586,10 +5592,8 @@ fn an_instanceof_collection_guard_keeps_the_collection_reading() {
             nulls: true,
             empty_strings: true,
             empty_collections: true,
-            prune_lists: false,
             sentinels: vec!["-".to_string()],
-            sentinels_ci: Vec::new(),
-            shallow: false,
+            ..DropPolicy::none()
         }
     );
 }
@@ -5631,11 +5635,8 @@ fn an_equals_ignore_case_chain_names_the_words_the_prune_drops() {
     assert_eq!(
         policy,
         DropPolicy {
-            nulls: false,
-            empty_strings: false,
             empty_collections: true,
             prune_lists: true,
-            sentinels: Vec::new(),
             sentinels_ci: vec![
                 "unknown".to_string(),
                 "none".to_string(),
@@ -5643,7 +5644,7 @@ fn an_equals_ignore_case_chain_names_the_words_the_prune_drops() {
                 "n/a".to_string(),
                 "na".to_string(),
             ],
-            shallow: false,
+            ..DropPolicy::none()
         },
         "the five words are read off the chain, and no other axis with them"
     );
@@ -5810,6 +5811,48 @@ fn an_equals_ignore_case_against_a_field_names_no_sentinel() {
         DropPolicy::read(script).sentinels_ci.is_empty(),
         "an unquoted argument is not a word"
     );
+}
+
+/// `proofpoint_on_demand` trims both halves of an entry before it tests them,
+/// so a value of whitespace and a KEY of whitespace both go. A mail part's
+/// `metadata` carries `" "` and `"  "` as header names, and Elasticsearch keeps
+/// neither.
+#[test]
+fn a_trimming_prune_takes_a_whitespace_key_and_value() {
+    let script = "boolean drop(Object o) { if (o == null || o == '' \
+        || (o instanceof String && ((String) o).trim() == '')) { return true; } \
+        else if (o instanceof Map) { ((Map) o).entrySet().removeIf(e -> \
+        e.getKey().trim() == '' || drop(e.getValue())); return (((Map) o).size() == 0); } \
+        else if (o instanceof List) { ((List) o).removeIf(v -> drop(v)); \
+        return (((List) o).length == 0); } return false; } drop(ctx);";
+
+    let policy = DropPolicy::read(script);
+    assert!(policy.trim_strings && policy.trim_keys, "{policy:?}");
+
+    let mut event = Event::new(json!({
+        "metadata": { "MISSING_KEY": "missing header label", " ": " ", "  ": "not empty" },
+    }));
+    drop_empty(&mut event, &policy, None);
+    assert_eq!(
+        event.get("metadata"),
+        Some(&json!({ "MISSING_KEY": "missing header label" }))
+    );
+}
+
+/// The bare `== ''` is the common spelling and means the empty string alone, so
+/// the axes stay off and a value of one space survives.
+#[test]
+fn a_prune_without_a_trim_keeps_whitespace() {
+    let script = "boolean drop(Object o) { if (o == null || o == '') { return true; } \
+        else if (o instanceof Map) { ((Map) o).values().removeIf(v -> drop(v)); \
+        return ((Map) o).size() == 0; } return false; } drop(ctx);";
+
+    let policy = DropPolicy::read(script);
+    assert!(!policy.trim_strings && !policy.trim_keys, "{policy:?}");
+
+    let mut event = Event::new(json!({ "metadata": { " ": " " } }));
+    drop_empty(&mut event, &policy, None);
+    assert_eq!(event.get("metadata"), Some(&json!({ " ": " " })));
 }
 
 #[test]

@@ -337,8 +337,10 @@ impl Transform for Default {
             if _cond {
                 if let Some(s) = event.get_string("json.meta.tags") {
                     let mut parts: Vec<Value> = s.split(";").map(|p| json!(p)).collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("tags", Value::Array(parts))?;
                 }

@@ -31,14 +31,16 @@ impl Transform for PipelineConsolidatedEvent {
             let _ = (|| -> Result<()> {
             if event.has_value("_tmp.details") {
                 if let Some(kv_str) = event.get_string("_tmp.details") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!("(?:((\\s+)?$|\\s+(?=\\w+=)))").split(&kv_str).into_iter() {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "_tmp.details".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "_tmp.details".into(),
+                                split: "=".into(),
                             });
                         };
                         {

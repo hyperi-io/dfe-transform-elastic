@@ -53,14 +53,16 @@ impl Transform for Tls {
 
             if event.has_value("suricata.eve.tls.subject") {
                 if let Some(kv_str) = event.get_string("suricata.eve.tls.subject") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!(", (?=[a-zA-Z]+=)").split(&kv_str).into_iter() {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "suricata.eve.tls.subject".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "suricata.eve.tls.subject".into(),
+                                split: "=".into(),
                             });
                         };
                         {
@@ -137,14 +139,16 @@ impl Transform for Tls {
 
             if event.has_value("suricata.eve.tls.issuerdn") {
                 if let Some(kv_str) = event.get_string("suricata.eve.tls.issuerdn") {
+                    let mut kv_gap = false;
                     for pair in cached_regex!(", (?=[a-zA-Z]+=)").split(&kv_str).into_iter() {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "suricata.eve.tls.issuerdn".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "suricata.eve.tls.issuerdn".into(),
+                                split: "=".into(),
                             });
                         };
                         {
@@ -233,8 +237,10 @@ impl Transform for Tls {
             if event.has_value("tls.server.hash.sha1") {
                 if let Some(s) = event.get_string("tls.server.hash.sha1") {
                     let mut parts: Vec<Value> = s.split(":").map(|p| json!(p)).collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("tls.server.hash.sha1", Value::Array(parts))?;
                 }

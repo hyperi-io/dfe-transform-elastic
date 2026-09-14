@@ -2766,8 +2766,10 @@ impl Transform for Default {
                                 if let Some(s) = event.get_string("_ingest._value.address_ip_v4") {
                                     let mut parts: Vec<Value> =
                                         s.split(",").map(|p| json!(p)).collect();
-                                    while parts.last().and_then(Value::as_str) == Some("") {
-                                        parts.pop();
+                                    if parts.len() > 1 {
+                                        while parts.last().and_then(Value::as_str) == Some("") {
+                                            parts.pop();
+                                        }
                                     }
                                     event
                                         .set("_ingest._value.address_ip_v4", Value::Array(parts))?;
@@ -2998,8 +3000,10 @@ impl Transform for Default {
                                 if let Some(s) = event.get_string("_ingest._value.address_ip_v6") {
                                     let mut parts: Vec<Value> =
                                         s.split(", ").map(|p| json!(p)).collect();
-                                    while parts.last().and_then(Value::as_str) == Some("") {
-                                        parts.pop();
+                                    if parts.len() > 1 {
+                                        while parts.last().and_then(Value::as_str) == Some("") {
+                                            parts.pop();
+                                        }
                                     }
                                     event
                                         .set("_ingest._value.address_ip_v6", Value::Array(parts))?;

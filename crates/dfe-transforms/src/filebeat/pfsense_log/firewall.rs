@@ -71,8 +71,10 @@ impl Transform for Firewall {
             if event.has_value("pfsense.tcp.options") {
                 if let Some(s) = event.get_string("pfsense.tcp.options") {
                     let mut parts: Vec<Value> = s.split(";").map(|p| json!(p)).collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("pfsense.tcp.options", Value::Array(parts))?;
                 }

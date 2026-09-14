@@ -196,8 +196,12 @@ fn parse_one(input: &str, format: &str, timezone: Option<&str>) -> Option<DateTi
         // Elasticsearch's own named formats, not Java patterns; every one of
         // them is ISO 8601 with a different optionality, and nanosecond
         // precision renders back at Elastic's milliseconds.
-        "ISO8601"
-        | "strict_date_optional_time_nanos"
+        // `iso8601` is the only one of them with a COMMA branch of its own --
+        // its builder appends the fraction twice, once behind a `.` and once
+        // behind a `,` -- so a keycloak line stamped `2024-07-17T12:05:32,104`
+        // parses there and nowhere else.
+        "ISO8601" => parse_iso8601(input).or_else(|| parse_iso8601(&comma_fraction_as_dot(input)?)),
+        "strict_date_optional_time_nanos"
         | "strict_date_optional_time"
         | "date_optional_time"
         | "date_time"
@@ -215,6 +219,27 @@ fn parse_one(input: &str, format: &str, timezone: Option<&str>) -> Option<DateTi
         "basic_date" => parse_java(input, "yyyyMMdd", timezone),
         java => parse_java(input, java, timezone),
     }
+}
+
+/// The same text with a fraction-separating comma respelt as a dot, or `None`
+/// where there is no comma to respell.
+///
+/// Allocates only for a text that carries one, which is the rare case -- and
+/// only the SECONDS separator is rewritten, so a comma anywhere else leaves the
+/// text alone and the parse declines the way it did.
+fn comma_fraction_as_dot(input: &str) -> Option<String> {
+    let at = input.find(',')?;
+    let bytes = input.as_bytes();
+    let before = bytes[..at].last()?;
+    let after = bytes.get(at + 1)?;
+    if !before.is_ascii_digit() || !after.is_ascii_digit() {
+        return None;
+    }
+    let mut out = String::with_capacity(input.len());
+    out.push_str(&input[..at]);
+    out.push('.');
+    out.push_str(&input[at + 1..]);
+    Some(out)
 }
 
 fn parse_iso8601(input: &str) -> Option<DateTime<FixedOffset>> {
@@ -383,7 +408,7 @@ fn parse_date_only(
         .to_fixed_offset()
         .ok()
         .map(ProcessorZone::Fixed)
-        .or_else(|| named.and_then(zone_offset).map(ProcessorZone::Fixed))
+        .or_else(|| named.and_then(text_zone))
         .or_else(|| timezone.and_then(resolve_zone))
         .unwrap_or(ProcessorZone::Fixed(UTC_OFFSET))
         .read_local(&naive)
@@ -530,7 +555,60 @@ fn first_day_of_week_year(year: i32) -> Option<NaiveDate> {
 }
 
 /// Parse against one fully-resolved pattern, zoned first, then local.
+///
+/// A `yyyy` sets a MINIMUM width of four on the text, which chrono's `%Y` does
+/// not: `dd/MM/yyyy H:mm:ss` over servicenow's `24/10/23 7:07:31` read a year
+/// of 23, and the zone that then applied was `America/Los_Angeles`'s local mean
+/// time at -07:53. Java declines that reading and falls through to the `dd/MM/yy`
+/// format the same list carries.
 fn parse_java_exact(
+    input: &str,
+    java: &str,
+    timezone: Option<&str>,
+) -> Option<DateTime<FixedOffset>> {
+    let parsed = parse_java_exact_any(input, java, timezone)?;
+    let year = parsed.year();
+    if (0..1000).contains(&year) && wide_year(java) && !input.contains(&format!("{year:04}")) {
+        return None;
+    }
+    Some(parsed)
+}
+
+/// Whether a Java pattern spells its year four letters or more, outside quotes.
+fn wide_year(java: &str) -> bool {
+    let mut chars = java.chars().peekable();
+    while let Some(c) = chars.next() {
+        if c == '\'' {
+            // A quoted run is a literal, and `''` is a literal quote.
+            if chars.peek() == Some(&'\'') {
+                chars.next();
+                continue;
+            }
+            for lit in chars.by_ref() {
+                if lit == '\'' {
+                    break;
+                }
+            }
+            continue;
+        }
+        if !matches!(c, 'y' | 'u') {
+            continue;
+        }
+        let mut run = 1usize;
+        while chars.peek() == Some(&c) {
+            chars.next();
+            run += 1;
+        }
+        if run >= 4 {
+            return true;
+        }
+    }
+    false
+}
+
+/// [`parse_java_exact`] without the year-width check, so every reading it holds
+/// answers through one place.
+fn parse_java_exact_any(
     input: &str,
     java: &str,
     timezone: Option<&str>,
@@ -641,11 +719,17 @@ fn parse_java_exact_chrono(
     // re-parsed without it and the trailing abbreviation is read separately.
     let (naive, named) = parse_naive(&input, &chrono)?;
     named
-        .and_then(|zone| zone_offset(&zone))
-        .map(ProcessorZone::Fixed)
+        .and_then(|zone| text_zone(&zone))
         .or_else(|| timezone.and_then(resolve_zone))
         .unwrap_or(ProcessorZone::Fixed(UTC_OFFSET))
         .read_local(&naive)
+}
+
+/// The zone a `z` in the TEXT names, by either reading.
+fn text_zone(zone: &str) -> Option<ProcessorZone> {
+    zone_offset(zone)
+        .map(ProcessorZone::Fixed)
+        .or_else(|| java_short_zone(zone))
 }
 
 /// The same text read with Java's `Z` spelling of a zero offset.
@@ -745,6 +829,9 @@ fn parse_naive(input: &str, chrono: &str) -> Option<(NaiveDateTime, Option<Strin
         }
         return None;
     }
+    if let Some((naive, zone)) = parse_inner_zone(input, chrono) {
+        return Some((naive, Some(zone)));
+    }
     if let Ok(naive) = NaiveDateTime::parse_from_str(input, chrono) {
         return Some((naive, None));
     }
@@ -760,12 +847,39 @@ fn parse_naive(input: &str, chrono: &str) -> Option<(NaiveDateTime, Option<Strin
         .map(|date| (date.into(), None))
 }
 
+/// A naive datetime plus the zone name a `%Z` the pattern does NOT end on sits
+/// over.
+///
+/// chrono's `%Z` matches a zone name and DISCARDS it, so a pattern carrying one
+/// mid-way parsed cleanly and answered with no zone at all -- watchguard's
+/// `EEE., MMM d, HH:mm:ss z yyyy` reads `CST` there and was stamped as UTC. The
+/// zone is the alphabetic run where the pattern says it is, so the text either
+/// side of it is parsed as written and nothing is guessed.
+fn parse_inner_zone(input: &str, chrono: &str) -> Option<(NaiveDateTime, String)> {
+    use chrono::format::{Parsed, StrftimeItems, parse, parse_and_remainder};
+
+    let at = chrono.find("%Z")?;
+    let (head, tail) = (&chrono[..at], &chrono[at + "%Z".len()..]);
+    let mut parsed = Parsed::new();
+    let rest = parse_and_remainder(&mut parsed, input, StrftimeItems::new(head)).ok()?;
+    let width = rest.chars().take_while(char::is_ascii_alphabetic).count();
+    if width == 0 {
+        return None;
+    }
+    let (zone, after) = rest.split_at(width);
+    parse(&mut parsed, after, StrftimeItems::new(tail)).ok()?;
+    // No offset is in play yet -- the zone name is what resolves it, and the
+    // caller does that once it has the local time.
+    let naive = parsed.to_naive_datetime_with_offset(0).ok()?;
+    Some((naive, zone.to_string()))
+}
+
 /// Zone abbreviations with one unambiguous offset, in minutes east.
 ///
 /// Deliberately partial. `CST` and `IST` each name several zones, so an
-/// entry for them would silently pick one; they are left out and fall back
-/// to the processor's own `timezone` setting, which is where a deployment
-/// says which one it means.
+/// entry for them would silently pick one; they are left out and
+/// [`JAVA_SHORT_ZONE_IDS`] below says which one Java picks, for a `z` reading a
+/// zone out of the TEXT.
 const ZONE_ABBREVIATIONS: &[(&str, i32)] = &[
     ("ACDT", 630),
     ("ACST", 570),
@@ -798,18 +912,63 @@ const ZONE_ABBREVIATIONS: &[(&str, i32)] = &[
     ("WET", 0),
 ];
 
-/// The three-letter abbreviations `java.time.ZoneId.of` accepts.
+/// `java.time.ZoneId.SHORT_IDS`, verbatim: the abbreviation and the zone it
+/// stands for.
 ///
-/// Its `SHORT_IDS` map, and nothing else. A `z` in a FORMAT parses a zone's
-/// display name, so `EDT` in the text is fine; `ZoneId.of("EDT")` throws, so a
-/// processor configured with it FAILS its date and runs its `on_failure` --
-/// which for cisco/ftd removes `event.timezone` and re-parses as UTC. Reading
-/// it as an offset kept a field Elasticsearch had deleted.
-const JAVA_SHORT_ZONE_IDS: [&str; 28] = [
-    "ACT", "AET", "AGT", "ART", "AST", "BET", "BST", "CAT", "CNT", "CST", "CTT", "EAT", "ECT",
-    "EST", "HST", "IET", "IST", "JST", "MIT", "MST", "NET", "NST", "PLT", "PNT", "PRT", "PST",
-    "SST", "VST",
+/// It answers two different questions. `ZoneId.of` does NOT consult it, so a
+/// processor configured with `EDT` FAILS its date and runs its `on_failure` --
+/// which for cisco/ftd removes `event.timezone` and re-parses as UTC, and
+/// reading it as an offset kept a field Elasticsearch had deleted. A `z` in a
+/// FORMAT is the other question: `ZoneTextPrinterParser` builds its tree from
+/// this map, so `CST` in the TEXT resolves to `America/Chicago` and carries
+/// that zone's summer-time rules with it.
+const JAVA_SHORT_ZONE_IDS: [(&str, &str); 28] = [
+    ("ACT", "Australia/Darwin"),
+    ("AET", "Australia/Sydney"),
+    ("AGT", "America/Argentina/Buenos_Aires"),
+    ("ART", "Africa/Cairo"),
+    ("AST", "America/Anchorage"),
+    ("BET", "America/Sao_Paulo"),
+    ("BST", "Asia/Dhaka"),
+    ("CAT", "Africa/Harare"),
+    ("CNT", "America/St_Johns"),
+    ("CST", "America/Chicago"),
+    ("CTT", "Asia/Shanghai"),
+    ("EAT", "Africa/Addis_Ababa"),
+    ("ECT", "Europe/Paris"),
+    ("EST", "-05:00"),
+    ("HST", "-10:00"),
+    ("IET", "America/Indiana/Indianapolis"),
+    ("IST", "Asia/Kolkata"),
+    ("JST", "Asia/Tokyo"),
+    ("MIT", "Pacific/Apia"),
+    ("MST", "-07:00"),
+    ("NET", "Asia/Yerevan"),
+    ("NST", "Pacific/Auckland"),
+    ("PLT", "Asia/Karachi"),
+    ("PNT", "America/Phoenix"),
+    ("PRT", "America/Puerto_Rico"),
+    ("PST", "America/Los_Angeles"),
+    ("SST", "Pacific/Guadalcanal"),
+    ("VST", "Asia/Ho_Chi_Minh"),
 ];
+
+/// The zone a `z` in the TEXT names, for an abbreviation that carries no single
+/// offset of its own.
+///
+/// [`ZONE_ABBREVIATIONS`] answers first and keeps its reading where it has one:
+/// `PST` in a log means Pacific STANDARD time at -08:00, and Java's map sends
+/// it to `America/Los_Angeles`, which is -07:00 for half the year. What is left
+/// are the abbreviations that table deliberately omits -- `CST` above all, and
+/// watchguard's `Sat., Jan 5, 11:27:23 CST 2013` was read as UTC and stamped
+/// six hours early.
+fn java_short_zone(zone: &str) -> Option<ProcessorZone> {
+    let (_, id) = JAVA_SHORT_ZONE_IDS.iter().find(|(name, _)| *name == zone)?;
+    match id.strip_prefix(['+', '-']) {
+        Some(_) => zone_offset(id).map(ProcessorZone::Fixed),
+        None => id.parse::<Tz>().ok().map(ProcessorZone::Named),
+    }
+}
 
 /// A zone a PROCESSOR's `timezone` setting names, resolved as far as it can be
 /// without an instant.
@@ -862,7 +1021,7 @@ fn resolve_zone(zone: &str) -> Option<ProcessorZone> {
     let alphabetic = trimmed.chars().all(|c| c.is_ascii_alphabetic());
     if alphabetic
         && !matches!(trimmed, "UTC" | "GMT" | "Z" | "UT" | "Zulu")
-        && !JAVA_SHORT_ZONE_IDS.contains(&trimmed)
+        && !JAVA_SHORT_ZONE_IDS.iter().any(|(name, _)| *name == trimmed)
     {
         // `ZoneId.of` takes every zone tzdb ships, and CET, EET, MET and WET
         // are zones in their own right rather than `SHORT_IDS` aliases -- so
@@ -1069,7 +1228,13 @@ fn token(letter: char, run: usize) -> String {
         // whole format declines; no vendor pattern in the tree spells one, and
         // it is what declines Java's `ISO_INSTANT` constant.
         ('S', n) => return format!("%{}f", n.min(9)),
-        ('n' | 'N', _) => "%9f",
+        // `n` is the nano-of-second as a VALUE, where `S` is a FRACTION of one:
+        // Java appends it with `appendValue`, so `.9196243` is 9,196,243
+        // nanoseconds and renders back as `.009`, not `.919`. chrono's `%f`
+        // reads a digit run as that same plain count, and the `%9f` this used
+        // to emit demands nine digits -- so `yyyy-MM-dd HH:mm:ss.n Z z` matched
+        // nothing and system's `ClientCreationTime` took its `on_failure`.
+        ('n' | 'N', _) => "%f",
         ('a', _) => "%p",
         ('X', 1) | ('Z', 1..=3) => "%z",
         ('X' | 'x' | 'Z', _) => "%:z",
@@ -1941,7 +2106,7 @@ mod tests {
             ("LL", "%m"),
             ("LLL", "%b"),
             ("LLLL", "%B"),
-            ("N", "%9f"),
+            ("N", "%f"),
             ("VV", "%Z"),
             ("x", "%:z"),
             ("xxx", "%:z"),
@@ -1969,5 +2134,99 @@ mod tests {
             Some("2023-06-20T18:06:08.000-05:00")
         );
         assert!(parse_date_out("2023-06-20 18:06:08", &FORMATS, Some("EDT"), None).is_none());
+    }
+
+    /// Elasticsearch's `iso8601` appends its fraction twice, once behind a dot
+    /// and once behind a comma, and it is the only named format that does --
+    /// keycloak stamps `2024-07-17T12:05:32,104`.
+    #[test]
+    fn iso8601_reads_a_comma_as_the_fraction_separator() {
+        assert_eq!(
+            parse_date_out("2024-07-17T12:05:32,104", &["ISO8601"], None, None).as_deref(),
+            Some("2024-07-17T12:05:32.104Z")
+        );
+        // The dot spelling is unchanged, and a comma that separates no fraction
+        // still fails.
+        assert_eq!(
+            parse_date_out("2024-07-17T12:05:32.104", &["ISO8601"], None, None).as_deref(),
+            Some("2024-07-17T12:05:32.104Z")
+        );
+        assert!(parse_date_out("2024-07-17,12:05:32", &["ISO8601"], None, None).is_none());
+    }
+
+    /// A `z` reads a zone name wherever the pattern puts it, and an
+    /// abbreviation Java resolves through `SHORT_IDS` carries that zone's
+    /// summer-time rules -- watchguard's expiry stamp is `CST` in January.
+    #[test]
+    fn a_zone_name_mid_pattern_resolves_through_the_short_ids() {
+        const FORMAT: [&str; 1] = ["EEE., MMM d, HH:mm:ss z yyyy"];
+
+        assert_eq!(
+            parse_date_out("Sat., Jan 5, 11:27:23 CST 2013", &FORMAT, None, None).as_deref(),
+            Some("2013-01-05T17:27:23.000Z")
+        );
+        // July is the same zone at -05:00, which is what makes it a zone rather
+        // than an offset.
+        assert_eq!(
+            parse_date_out("Mon., Jul 1, 11:27:23 CST 2013", &FORMAT, None, None).as_deref(),
+            Some("2013-07-01T16:27:23.000Z")
+        );
+    }
+
+    /// `ZONE_ABBREVIATIONS` answers first, so `PST` in a text keeps the
+    /// standard-time offset it names rather than taking Java's map to a zone
+    /// that observes summer time.
+    #[test]
+    fn a_named_offset_beats_the_short_id_for_the_same_abbreviation() {
+        assert_eq!(
+            parse_date_out(
+                "2013-07-01 11:27:23 PST",
+                &["yyyy-MM-dd HH:mm:ss z"],
+                None,
+                None
+            )
+            .as_deref(),
+            Some("2013-07-01T19:27:23.000Z")
+        );
+    }
+
+    /// Java's `yyyy` takes a MINIMUM of four digits, so a two-digit year falls
+    /// through to the `yy` format the same list carries rather than parsing as
+    /// year 23.
+    #[test]
+    fn a_four_letter_year_will_not_take_two_digits() {
+        const FORMATS: [&str; 2] = ["dd/MM/yyyy H:mm:ss", "dd/MM/yy H:mm:ss"];
+
+        assert_eq!(
+            parse_date_out(
+                "24/10/23 7:07:31",
+                &FORMATS,
+                Some("America/Los_Angeles"),
+                None
+            )
+            .as_deref(),
+            Some("2023-10-24T07:07:31.000-07:00")
+        );
+        // A four-digit year still parses on the first format.
+        assert_eq!(
+            parse_date_out("24/10/2023 7:07:31", &FORMATS, Some("UTC"), None).as_deref(),
+            Some("2023-10-24T07:07:31.000Z")
+        );
+    }
+
+    /// `n` is the nano-of-second as a plain VALUE, so seven digits are seven
+    /// nanoseconds' worth of magnitude, not seven decimal places.
+    #[test]
+    fn a_nano_of_second_is_a_count_not_a_fraction() {
+        assert_eq!(
+            parse_date_out(
+                "2025-03-19 05:33:45.9196243 +0000 UTC",
+                &["yyyy-MM-dd HH:mm:ss.n Z z"],
+                None,
+                None
+            )
+            .as_deref(),
+            Some("2025-03-19T05:33:45.009Z")
+        );
     }
 }

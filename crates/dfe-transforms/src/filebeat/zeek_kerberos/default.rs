@@ -525,14 +525,16 @@ impl Transform for Default {
 
             if event.has_value("zeek.kerberos.cert.client.subject") {
                 if let Some(kv_str) = event.get_string("zeek.kerberos.cert.client.subject") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split(",") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "zeek.kerberos.cert.client.subject".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "zeek.kerberos.cert.client.subject".into(),
+                                split: "=".into(),
                             });
                         };
                         {
@@ -658,14 +660,16 @@ impl Transform for Default {
 
             if event.has_value("zeek.kerberos.cert.server.subject") {
                 if let Some(kv_str) = event.get_string("zeek.kerberos.cert.server.subject") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split(",") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "zeek.kerberos.cert.server.subject".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "zeek.kerberos.cert.server.subject".into(),
+                                split: "=".into(),
                             });
                         };
                         {

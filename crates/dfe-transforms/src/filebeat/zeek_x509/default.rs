@@ -464,14 +464,16 @@ impl Transform for Default {
 
             if event.has_value("zeek.x509.certificate.iss") {
                 if let Some(kv_str) = event.get_string("zeek.x509.certificate.iss") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split(",") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "zeek.x509.certificate.iss".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "zeek.x509.certificate.iss".into(),
+                                split: "=".into(),
                             });
                         };
                         {
@@ -639,14 +641,16 @@ impl Transform for Default {
 
             if event.has_value("zeek.x509.certificate.sub") {
                 if let Some(kv_str) = event.get_string("zeek.x509.certificate.sub") {
+                    let mut kv_gap = false;
                     for pair in kv_str.split(",") {
-                        if pair.trim().is_empty() {
+                        if pair.is_empty() {
+                            kv_gap = true;
                             continue;
                         }
-                        let Some((key, value)) = pair.split_once("=") else {
-                            return Err(TransformError::ParseError {
-                                path: "zeek.x509.certificate.sub".into(),
-                                message: format!("does not contain value_split: {pair}"),
+                        let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                            return Err(TransformError::KvValueSplit {
+                                field: "zeek.x509.certificate.sub".into(),
+                                split: "=".into(),
                             });
                         };
                         {

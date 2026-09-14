@@ -232,8 +232,10 @@ impl Transform for Default {
             if _cond {
                 if let Some(s) = event.get_string("eti.pattern") {
                     let mut parts: Vec<Value> = s.split(" AND ").map(|p| json!(p)).collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("eti._patterns", Value::Array(parts))?;
                 }
@@ -831,19 +833,22 @@ impl Transform for Default {
                         if let Some(kv_str) =
                             event.get_string("threat.indicator.x509.issuer.distinguished_name")
                         {
+                            let mut kv_gap = false;
                             for pair in cached_regex!("(?<!\\\\),").split(&kv_str).into_iter() {
-                                if pair.trim().is_empty() {
+                                if pair.is_empty() {
+                                    kv_gap = true;
                                     continue;
                                 }
-                                let Some((key, value)) = pair.split_once("=") else {
-                                    return Err(TransformError::ParseError {
-                                        path: "threat.indicator.x509.issuer.distinguished_name"
+                                let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap)
+                                else {
+                                    return Err(TransformError::KvValueSplit {
+                                        field: "threat.indicator.x509.issuer.distinguished_name"
                                             .into(),
-                                        message: format!("does not contain value_split: {pair}"),
+                                        split: "=".into(),
                                     });
                                 };
                                 {
-                                    let key = key.trim_matches(|c| " ".contains(c));
+                                    let key = key.trim_matches(|c: char| matches!(c, ' '));
                                     if !key.is_empty() {
                                         kv_put(
                                             event,
@@ -952,19 +957,22 @@ impl Transform for Default {
                         if let Some(kv_str) =
                             event.get_string("threat.indicator.x509.subject.distinguished_name")
                         {
+                            let mut kv_gap = false;
                             for pair in cached_regex!("(?<!\\\\),").split(&kv_str).into_iter() {
-                                if pair.trim().is_empty() {
+                                if pair.is_empty() {
+                                    kv_gap = true;
                                     continue;
                                 }
-                                let Some((key, value)) = pair.split_once("=") else {
-                                    return Err(TransformError::ParseError {
-                                        path: "threat.indicator.x509.subject.distinguished_name"
+                                let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap)
+                                else {
+                                    return Err(TransformError::KvValueSplit {
+                                        field: "threat.indicator.x509.subject.distinguished_name"
                                             .into(),
-                                        message: format!("does not contain value_split: {pair}"),
+                                        split: "=".into(),
                                     });
                                 };
                                 {
-                                    let key = key.trim_matches(|c| " ".contains(c));
+                                    let key = key.trim_matches(|c: char| matches!(c, ' '));
                                     if !key.is_empty() {
                                         kv_put(
                                             event,

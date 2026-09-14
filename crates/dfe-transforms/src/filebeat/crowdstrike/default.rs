@@ -2117,8 +2117,10 @@ impl Transform for Default {
                 if event.has_value("crowdstrike.event.HostGroups") {
                     if let Some(s) = event.get_string("crowdstrike.event.HostGroups") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("crowdstrike.event.HostGroups", Value::Array(parts))?;
                     }
@@ -2738,8 +2740,10 @@ impl Transform for Default {
                 if event.has_value("crowdstrike.event.HostGroups") {
                     if let Some(s) = event.get_string("crowdstrike.event.HostGroups") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("crowdstrike.event.HostGroups", Value::Array(parts))?;
                     }
@@ -3318,8 +3322,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(s) = event.get_string("crowdstrike.event.DataDomains") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("crowdstrike.event.DataDomains", Value::Array(parts))?;
                     }
@@ -3339,8 +3345,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(s) = event.get_string("crowdstrike.event.EmailAddresses") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("crowdstrike.event.EmailAddresses", Value::Array(parts))?;
                     }
@@ -3360,8 +3368,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(s) = event.get_string("crowdstrike.event.IPV4Addresses") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("related.ip", Value::Array(parts))?;
                     }
@@ -3403,8 +3413,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(s) = event.get_string("crowdstrike.event.IPV6Addresses") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("related.ip", Value::Array(parts))?;
                     }
@@ -3446,8 +3458,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(s) = event.get_string("crowdstrike.event.HostNames") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("related.hosts", Value::Array(parts))?;
                     }
@@ -3489,8 +3503,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(s) = event.get_string("crowdstrike.event.DomainNames") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("related.hosts", Value::Array(parts))?;
                     }
@@ -3532,8 +3548,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(s) = event.get_string("crowdstrike.event.SHA256Hashes") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("related.hash", Value::Array(parts))?;
                     }
@@ -3575,8 +3593,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(s) = event.get_string("crowdstrike.event.MD5Hashes") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("related.hash", Value::Array(parts))?;
                     }
@@ -3618,8 +3638,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(s) = event.get_string("crowdstrike.event.Users") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("related.user", Value::Array(parts))?;
                     }
@@ -3798,8 +3820,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(s) = event.get_string("crowdstrike.event.Techniques") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("threat.technique.name", Value::Array(parts))?;
                     }
@@ -3808,8 +3832,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(s) = event.get_string("crowdstrike.event.TechniqueIds") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("threat.technique.id", Value::Array(parts))?;
                     }
@@ -3818,8 +3844,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(s) = event.get_string("crowdstrike.event.Tactics") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("threat.tactic.name", Value::Array(parts))?;
                     }
@@ -3828,8 +3856,10 @@ impl Transform for Default {
                 if _cond {
                     if let Some(s) = event.get_string("crowdstrike.event.TacticIds") {
                         let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("threat.tactic.id", Value::Array(parts))?;
                     }

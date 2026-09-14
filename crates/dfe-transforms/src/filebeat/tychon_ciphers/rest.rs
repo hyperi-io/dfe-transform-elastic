@@ -89,8 +89,10 @@ impl Transform for Rest {
         if event.has_value("tychon.tls.client.supported_ciphers") {
             if let Some(s) = event.get_string("tychon.tls.client.supported_ciphers") {
                 let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                while parts.last().and_then(Value::as_str) == Some("") {
-                    parts.pop();
+                if parts.len() > 1 {
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                 }
                 event.set("tychon.tls.client.supported_ciphers", Value::Array(parts))?;
             }
