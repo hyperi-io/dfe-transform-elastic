@@ -42,10 +42,20 @@ use dfe_core::event::Event;
 mod airlock_digital;
 mod arista_ngfw;
 mod azure_ai_foundry;
+mod azure_openai;
+mod beyondtrust_epm;
+mod checkpoint;
+mod citrix_adc;
+mod darktrace;
 mod extrahop;
+mod gitlab;
+mod grafana;
+mod snyk;
 mod symantec_endpoint_security;
+mod ti_opencti;
 mod ti_recordedfuture;
 mod ti_ticura;
+mod trend_micro_vision_one;
 mod wiz;
 
 /// A transcribed script's effect on one event.
@@ -85,10 +95,20 @@ const ENTRIES: &[&[Entry]] = &[
     airlock_digital::ENTRIES,
     arista_ngfw::ENTRIES,
     azure_ai_foundry::ENTRIES,
+    azure_openai::ENTRIES,
+    beyondtrust_epm::ENTRIES,
+    checkpoint::ENTRIES,
+    citrix_adc::ENTRIES,
+    darktrace::ENTRIES,
     extrahop::ENTRIES,
+    gitlab::ENTRIES,
+    grafana::ENTRIES,
+    snyk::ENTRIES,
     symantec_endpoint_security::ENTRIES,
+    ti_opencti::ENTRIES,
     ti_recordedfuture::ENTRIES,
     ti_ticura::ENTRIES,
+    trend_micro_vision_one::ENTRIES,
     wiz::ENTRIES,
 ];
 
