@@ -37,10 +37,17 @@ build:
       - x86_64-unknown-linux-gnu
       - aarch64-unknown-linux-gnu
 
-# Publishing (on release)
+# Publishing (on release). The stack pins every app by GHCR image digest, so
+# a release must land an image. The deployed chart is dfe-infra's, so the
+# in-repo chart stays unpublished.
 publish:
   enabled: true
+  target: both
   container:
-    enabled: false
+    enabled: true
+    dockerfile: Dockerfile
+    platforms:
+      - linux/amd64
+      - linux/arm64
   helm:
     enabled: false
