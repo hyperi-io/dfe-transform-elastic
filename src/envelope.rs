@@ -327,8 +327,9 @@ pub struct Detected {
 /// Name the family from the marker keys, most specific first.
 ///
 /// Top-level `contains_key` and nothing else -- no path walking, no parse, and
-/// no allocation on the Elastic arms. Called once per batch, since one
-/// partition has one producer.
+/// no allocation on the Elastic arms. Called once per EVENT through
+/// [`Resolver::resolve`]: a scalo `WorkBatch` spans partitions, so one batch
+/// can carry two producers' wrappers.
 ///
 /// `_source_fetcher` is tested before `_source` because a fetched payload can
 /// carry a field of that name itself.

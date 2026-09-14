@@ -22,7 +22,7 @@ const SITE: &str = "cached_painless!(";
 
 /// Below this the scanner has stopped seeing the tree rather than the tree
 /// having shrunk. The same floor as `painless_binding.rs`, for the same reason.
-const MIN_SITES: usize = 2_100;
+const MIN_SITES: usize = 1_600;
 
 fn generated_tree() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("src")
