@@ -45,22 +45,32 @@ mod arista_ngfw;
 mod auditd;
 mod aws;
 mod azure_ai_foundry;
+mod azure_openai;
 mod backstage;
 mod beelzebub;
+mod beyondtrust_epm;
+mod checkpoint;
 mod cisco_secure_endpoint;
+mod citrix_adc;
+mod darktrace;
 mod elastic_agent;
 mod extrahop;
+mod gitlab;
+mod grafana;
 mod jamf_compliance_reporter;
 mod kolide;
 mod mongodb_atlas;
 mod netbox;
 mod nozomi_networks;
 mod prisma_access;
+mod snyk;
 mod symantec_endpoint_security;
 mod ti_crowdstrike;
+mod ti_opencti;
 mod ti_rapid7_threat_command;
 mod ti_recordedfuture;
 mod ti_ticura;
+mod trend_micro_vision_one;
 mod wiz;
 
 /// A transcribed script's effect on one event.
@@ -103,22 +113,32 @@ const ENTRIES: &[&[Entry]] = &[
     auditd::ENTRIES,
     aws::ENTRIES,
     azure_ai_foundry::ENTRIES,
+    azure_openai::ENTRIES,
     backstage::ENTRIES,
     beelzebub::ENTRIES,
+    beyondtrust_epm::ENTRIES,
+    checkpoint::ENTRIES,
     cisco_secure_endpoint::ENTRIES,
+    citrix_adc::ENTRIES,
+    darktrace::ENTRIES,
     elastic_agent::ENTRIES,
     extrahop::ENTRIES,
+    gitlab::ENTRIES,
+    grafana::ENTRIES,
     jamf_compliance_reporter::ENTRIES,
     kolide::ENTRIES,
     mongodb_atlas::ENTRIES,
     netbox::ENTRIES,
     nozomi_networks::ENTRIES,
     prisma_access::ENTRIES,
+    snyk::ENTRIES,
     symantec_endpoint_security::ENTRIES,
     ti_crowdstrike::ENTRIES,
+    ti_opencti::ENTRIES,
     ti_rapid7_threat_command::ENTRIES,
     ti_recordedfuture::ENTRIES,
     ti_ticura::ENTRIES,
+    trend_micro_vision_one::ENTRIES,
     wiz::ENTRIES,
 ];
 
