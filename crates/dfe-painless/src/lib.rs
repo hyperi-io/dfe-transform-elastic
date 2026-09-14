@@ -28,6 +28,7 @@
 pub mod action_mapping;
 pub mod actor_kind;
 pub mod append_records;
+pub mod bespoke;
 pub mod byte_size;
 pub mod coercion;
 pub mod collect_by_literal;
