@@ -47,6 +47,7 @@ mod arista_ngfw;
 mod atlassian_jira;
 mod auditd;
 mod aws;
+mod aws_bedrock;
 mod aws_billing;
 mod axonius;
 mod azure_ai_foundry;
@@ -62,6 +63,7 @@ mod checkpoint;
 mod cisco_ise;
 mod cisco_secure_endpoint;
 mod citrix_adc;
+mod claroty_ctd;
 mod cyberark_pta;
 mod cybereason;
 mod cyera;
@@ -85,6 +87,7 @@ mod jamf_compliance_reporter;
 mod jamf_pro;
 mod kolide;
 mod kubernetes;
+mod microsoft_defender_cloud;
 mod microsoft_intune;
 mod microsoft_sqlserver;
 mod modsecurity;
@@ -95,6 +98,7 @@ mod nozomi_networks;
 mod prisma_access;
 mod qualys_vmdr;
 mod rubrik;
+mod salesforce;
 mod sentinel_one_cloud_funnel;
 mod snyk;
 mod splunk;
@@ -163,6 +167,7 @@ const ENTRIES: &[&[Entry]] = &[
     atlassian_jira::ENTRIES,
     auditd::ENTRIES,
     aws::ENTRIES,
+    aws_bedrock::ENTRIES,
     aws_billing::ENTRIES,
     axonius::ENTRIES,
     azure_ai_foundry::ENTRIES,
@@ -178,6 +183,7 @@ const ENTRIES: &[&[Entry]] = &[
     cisco_ise::ENTRIES,
     cisco_secure_endpoint::ENTRIES,
     citrix_adc::ENTRIES,
+    claroty_ctd::ENTRIES,
     cyberark_pta::ENTRIES,
     cybereason::ENTRIES,
     cyera::ENTRIES,
@@ -201,6 +207,7 @@ const ENTRIES: &[&[Entry]] = &[
     jamf_pro::ENTRIES,
     kolide::ENTRIES,
     kubernetes::ENTRIES,
+    microsoft_defender_cloud::ENTRIES,
     microsoft_intune::ENTRIES,
     microsoft_sqlserver::ENTRIES,
     modsecurity::ENTRIES,
@@ -211,6 +218,7 @@ const ENTRIES: &[&[Entry]] = &[
     prisma_access::ENTRIES,
     qualys_vmdr::ENTRIES,
     rubrik::ENTRIES,
+    salesforce::ENTRIES,
     sentinel_one_cloud_funnel::ENTRIES,
     snyk::ENTRIES,
     splunk::ENTRIES,
