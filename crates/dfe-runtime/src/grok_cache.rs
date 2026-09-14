@@ -1099,6 +1099,32 @@ mod tests {
         assert!(!extract_first_match(&[grok("^%{IP:ip}$")], "not-an-ip", &mut empty).unwrap());
     }
 
+    /// Elastic composes `TIMESTAMP_ISO8601` as
+    /// `%{HOUR}:?%{MINUTE}(?::?%{SECOND})?`, so the seconds are OPTIONAL and
+    /// SECOND's fraction takes a colon as well as a dot and a comma.
+    #[test]
+    fn an_iso8601_timestamp_reads_optional_seconds_and_every_fraction_mark() {
+        for (line, expected) in [
+            ("2024-04-03T21:02:19.168Z x", "2024-04-03T21:02:19.168Z"),
+            ("2024-04-03T21:02:19,168 x", "2024-04-03T21:02:19,168"),
+            // SECOND's own class carries the colon, which is what an ISO-8601
+            // fraction written `ss:SSS` needs.
+            ("2024-04-03T21:02:19:168 x", "2024-04-03T21:02:19:168"),
+            // The seconds themselves are optional.
+            ("2024-04-03T21:02 x", "2024-04-03T21:02"),
+            ("2024-04-03 21:02:19+05:30 x", "2024-04-03 21:02:19+05:30"),
+        ] {
+            let mut event = crate::Event::new(serde_json::json!({}));
+            assert!(
+                grok("^%{TIMESTAMP_ISO8601:ts} %{NOTSPACE:rest}$")
+                    .extract_into(line, &mut event)
+                    .expect("extraction"),
+                "{line}"
+            );
+            assert_eq!(event.get_str("ts"), Some(expected), "{line}");
+        }
+    }
+
     #[test]
     fn the_same_pattern_returns_the_same_instance() {
         let first = grok("%{USER:user.name}");
