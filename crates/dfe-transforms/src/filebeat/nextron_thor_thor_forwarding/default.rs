@@ -3568,10 +3568,7 @@ impl Transform for Default {
             if _cond {
                 if event.has_value("thor.files") {
                     foreach_array(event, "thor.files", |event| {
-                        let _cond = {
-                            event.has_value("_ingest._value.owner")
-                                && event.get_str("_ingest._value.owner") != Some("")
-                        };
+                        let _cond = { false && true };
                         if _cond {
                             event.append_unique(
                                 "related.user",

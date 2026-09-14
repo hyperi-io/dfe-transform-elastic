@@ -1073,7 +1073,7 @@ impl Transform for Default {
             let _cond = { event.has_value("misp.object.attribute") };
             if _cond {
                 foreach_array(event, "misp.object.attribute", |event| {
-                    let _cond = { event.has_value("_ingest._value") };
+                    let _cond = { false };
                     if _cond {
                         event.append(
                             "debug_timestamp",

@@ -20,6 +20,7 @@ impl Transform for Http {
             if _cond {
                 // Painless script, resolved to its runners at generation time
                 // Source: ctx['http'] = new HashMap(); def p = ctx.proto.indexOf ('/'); def l = ctx.proto.length(); ctx.http.version = ctx.proto.substring(p+1, l);
+                event.set("http", json!({}))?;
                 split_at_delimiter(event, &SplitAtDelimiter::new("proto".into(), "/".into(), None, Some("http.version".into()), None, false));
             }
 

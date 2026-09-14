@@ -127,18 +127,20 @@ impl Transform for PipelineCert {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if let Some(kv_str) = event.get_string("threat.indicator.x509.issuer.distinguished_name") {
+                let mut kv_gap = false;
                 for pair in cached_regex!("(?<!\\\\),").split(&kv_str).into_iter() {
-                    if pair.trim().is_empty() {
+                    if pair.is_empty() {
+                        kv_gap = true;
                         continue;
                     }
-                    let Some((key, value)) = pair.split_once("=") else {
-                        return Err(TransformError::ParseError {
-                            path: "threat.indicator.x509.issuer.distinguished_name".into(),
-                            message: format!("does not contain value_split: {pair}"),
+                    let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                        return Err(TransformError::KvValueSplit {
+                            field: "threat.indicator.x509.issuer.distinguished_name".into(),
+                            split: "=".into(),
                         });
                     };
                     {
-                        let key = key.trim_matches(|c| " ".contains(c));
+                        let key = key.trim_matches(|c: char| matches!(c, ' '));
                         if !key.is_empty() {
                             kv_put(event, &format!("eti._issuer_fields.{}", key), value)?;
                         }
@@ -194,18 +196,20 @@ impl Transform for PipelineCert {
         // ignore_failure: true
         let _ = (|| -> Result<()> {
             if let Some(kv_str) = event.get_string("threat.indicator.x509.subject.distinguished_name") {
+                let mut kv_gap = false;
                 for pair in cached_regex!("(?<!\\\\),").split(&kv_str).into_iter() {
-                    if pair.trim().is_empty() {
+                    if pair.is_empty() {
+                        kv_gap = true;
                         continue;
                     }
-                    let Some((key, value)) = pair.split_once("=") else {
-                        return Err(TransformError::ParseError {
-                            path: "threat.indicator.x509.subject.distinguished_name".into(),
-                            message: format!("does not contain value_split: {pair}"),
+                    let Some((key, value)) = pair.split_once("=").filter(|_| !kv_gap) else {
+                        return Err(TransformError::KvValueSplit {
+                            field: "threat.indicator.x509.subject.distinguished_name".into(),
+                            split: "=".into(),
                         });
                     };
                     {
-                        let key = key.trim_matches(|c| " ".contains(c));
+                        let key = key.trim_matches(|c: char| matches!(c, ' '));
                         if !key.is_empty() {
                             kv_put(event, &format!("eti._subject_fields.{}", key), value)?;
                         }

@@ -277,8 +277,10 @@ impl Transform for Default {
                     if event.has_value("panw_cortex.xdr.mac") {
                         if let Some(s) = event.get_string("panw_cortex.xdr.mac") {
                             let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                            while parts.last().and_then(Value::as_str) == Some("") {
-                                parts.pop();
+                            if parts.len() > 1 {
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                             }
                             event.set("host.mac", Value::Array(parts))?;
                         }

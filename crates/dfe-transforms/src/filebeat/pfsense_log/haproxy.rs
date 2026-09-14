@@ -106,8 +106,10 @@ impl Transform for Haproxy {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("haproxy.http.request.captured_headers", Value::Array(parts))?;
                 }
@@ -124,8 +126,10 @@ impl Transform for Haproxy {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("haproxy.http.response.captured_headers", Value::Array(parts))?;
                 }

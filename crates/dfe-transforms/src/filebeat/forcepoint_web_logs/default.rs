@@ -396,8 +396,10 @@ impl Transform for Default {
             if event.has_value("forcepoint_web.risk_class") {
                 if let Some(s) = event.get_string("forcepoint_web.risk_class") {
                     let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("forcepoint_web.risk_class", Value::Array(parts))?;
                 }
@@ -406,8 +408,10 @@ impl Transform for Default {
             if event.has_value("forcepoint_web.category") {
                 if let Some(s) = event.get_string("forcepoint_web.category") {
                     let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("forcepoint_web.category", Value::Array(parts))?;
                 }

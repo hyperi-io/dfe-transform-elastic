@@ -733,8 +733,10 @@ impl Transform for Default {
                     if event.has_value("microsoft_sentinel.event.tactics") {
                         if let Some(s) = event.get_string("microsoft_sentinel.event.tactics") {
                             let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                            while parts.last().and_then(Value::as_str) == Some("") {
-                                parts.pop();
+                            if parts.len() > 1 {
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                             }
                             event.set("microsoft_sentinel.event.tactics", Value::Array(parts))?;
                         }
@@ -804,8 +806,10 @@ impl Transform for Default {
                     if event.has_value("microsoft_sentinel.event.techniques") {
                         if let Some(s) = event.get_string("microsoft_sentinel.event.techniques") {
                             let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                            while parts.last().and_then(Value::as_str) == Some("") {
-                                parts.pop();
+                            if parts.len() > 1 {
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                             }
                             event
                                 .set("microsoft_sentinel.event.techniques", Value::Array(parts))?;

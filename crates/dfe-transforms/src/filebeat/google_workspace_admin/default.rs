@@ -1414,8 +1414,10 @@ impl Transform for Default {
                         if let Some(s) = event.get_string("google_workspace.admin.RELATED_ALERT_ID")
                         {
                             let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                            while parts.last().and_then(Value::as_str) == Some("") {
-                                parts.pop();
+                            if parts.len() > 1 {
+                                while parts.last().and_then(Value::as_str) == Some("") {
+                                    parts.pop();
+                                }
                             }
                             event.set(
                                 "google_workspace.admin.alert.related_id",
@@ -2073,8 +2075,10 @@ impl Transform for Default {
             if event.has_value("google_workspace.admin.WHITELISTED_GROUPS") {
                 if let Some(s) = event.get_string("google_workspace.admin.WHITELISTED_GROUPS") {
                     let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set(
                         "google_workspace.admin.group.allowed_list",

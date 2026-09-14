@@ -1522,8 +1522,10 @@ impl Transform for Default {
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("host.ip", Value::Array(parts))?;
                     }
@@ -3081,6 +3083,18 @@ impl Transform for Default {
 
             // Painless script, resolved to its runners at generation time
             // Source: boolean dropEmptyFields(Object object) {\n  if (object == null || object == '' || object == 'undefined') {\n    return true;\n  } else if (object instanceof Map) {\n    ((Map) object).values().removeIf(value -> dropEmptyFields(value));\n    return (((Map) object).size() == 0);\n  } else if (object instanceof List) {\n    ((List) object).removeIf(value -> dropEmptyFields(value));\n    return (((List) object).length == 0);\n  }\n  return false;\n}\n// Prevent empty fields in correlated arrays from being removed.\n// The first two cases should never happen, but are included\n// defensively. The remediationActions elements may be validly\n// empty.\nctx.bitdefender?.event?.filePath?.replaceAll(e -> e == \"\" ? \"-\" : e);\nctx.bitdefender?.event?.fileSizes?.replaceAll(e -> e == \"\" ? \"-\" : e);\nctx.bitdefender?.event?.remediationActions?.replaceAll(e -> e == \"\" ? \"-\" : e);\ndropEmptyFields(ctx);\n
+            fill_empty_elements(
+                event,
+                &ListFill::new("bitdefender.event.filePath".into(), "-".into()),
+            );
+            fill_empty_elements(
+                event,
+                &ListFill::new("bitdefender.event.fileSizes".into(), "-".into()),
+            );
+            fill_empty_elements(
+                event,
+                &ListFill::new("bitdefender.event.remediationActions".into(), "-".into()),
+            );
             drop_empty(
                 event,
                 &DropPolicy {
