@@ -14,10 +14,15 @@
 //! What the plan carries beyond the routing: whatever the trigger's own parse
 //! already recovered -- a drop-empty script's [`DropPolicy`], an equality
 //! ladder's arms -- so those parses stop running per event too.
+//!
+//! A script transcribed by hand ([`crate::bespoke`]) is resolved here too, ahead
+//! of every matcher: the table is keyed by the script's hash, so the lookup is
+//! one hash per call site and nothing per event.
 
 use serde_json::Value;
 use tracing::debug;
 
+use crate::bespoke;
 use crate::common::{KnownPattern, known_patterns, normalise, run_known_pattern};
 use crate::params::{ParamsPattern, params_pattern, run_params_pattern};
 use dfe_core::error::Result;
@@ -33,6 +38,7 @@ use crate::common::DropPolicy;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PainlessPlan {
     text: String,
+    bespoke: Option<&'static bespoke::Entry>,
     params: Option<ParamsPattern>,
     known: Vec<KnownPattern>,
 }
@@ -43,6 +49,7 @@ impl PainlessPlan {
     pub fn new(script: &str) -> Self {
         let text = normalise(script).into_owned();
         Self {
+            bespoke: bespoke::lookup(&text),
             params: params_pattern(&text),
             known: known_patterns(&text),
             text,
@@ -62,7 +69,7 @@ impl PainlessPlan {
     /// `tests/compat_corpus.rs` is what measures that.
     #[must_use]
     pub fn matches(&self) -> bool {
-        self.params.is_some() || !self.known.is_empty()
+        self.bespoke.is_some() || self.params.is_some() || !self.known.is_empty()
     }
 
     /// The runner calls that reproduce this script, for a generator emitting
@@ -74,11 +81,12 @@ impl PainlessPlan {
     ///
     /// A params pattern declines the whole plan: every params runner still reads
     /// the script text or the `params` block at run time, so none of them can
-    /// be reproduced from extracted parts alone.
+    /// be reproduced from extracted parts alone. A bespoke entry declines it
+    /// too, so the site keeps its literal and the table serves it at run time.
     #[cfg(feature = "codegen")]
     #[must_use]
     pub fn direct_call(&self) -> Option<Vec<String>> {
-        if !self.matches() || self.params.is_some() {
+        if !self.matches() || self.bespoke.is_some() || self.params.is_some() {
             return None;
         }
         self.known.iter().map(KnownPattern::direct_call).collect()
@@ -91,9 +99,10 @@ impl PainlessPlan {
     /// pattern first and the order is the answer.
     #[must_use]
     pub fn binding(&self) -> Vec<String> {
-        self.params
+        self.bespoke
             .iter()
-            .map(|pattern| format!("{pattern:?}"))
+            .map(|entry| format!("{entry:?}"))
+            .chain(self.params.iter().map(|pattern| format!("{pattern:?}")))
             .chain(self.known.iter().map(|pattern| format!("{pattern:?}")))
             .collect()
     }
@@ -123,6 +132,11 @@ pub fn painless_exec(event: &mut Event, script: &str) -> Result<()> {
 ///
 /// Never fails today: an unrecognised script is counted and skipped.
 pub fn painless_exec_params(event: &mut Event, script: &str, params: &Value) -> Result<()> {
+    if let Some(entry) = bespoke::lookup(&normalise(script)) {
+        (entry.run)(event, params);
+        crate::stats::record_handled(script);
+        return Ok(());
+    }
     if crate::params::try_params_painless(event, script, params) {
         crate::stats::record_handled(script);
         return Ok(());
@@ -165,6 +179,11 @@ pub fn painless_exec_plan_params(
     plan: &PainlessPlan,
     params: &Value,
 ) -> Result<()> {
+    if let Some(entry) = plan.bespoke {
+        (entry.run)(event, params);
+        crate::stats::record_handled(&plan.text);
+        return Ok(());
+    }
     if let Some(pattern) = &plan.params
         && let Some(map) = params.as_object()
         && run_params_pattern(event, &plan.text, map, pattern)
