@@ -290,6 +290,7 @@ impl Transform for Default {
                 event,
                 &DropPolicy {
                     nulls: true,
+                    empty_strings: true,
                     empty_collections: true,
                     ..DropPolicy::none()
                 },

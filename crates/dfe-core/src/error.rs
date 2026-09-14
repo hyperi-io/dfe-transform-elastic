@@ -42,6 +42,14 @@ pub enum TransformError {
     #[error("Provided Grok expressions do not match field value: [{value}]")]
     GrokNoMatch { value: String },
 
+    /// A `kv` fragment carried no `value_split`.
+    ///
+    /// Elasticsearch's own wording, verbatim, for the same reason as
+    /// [`Self::GrokNoMatch`]: the handler this failure runs templates the
+    /// message into `error.message`, and the corpus compares that string.
+    #[error("field [{field}] does not contain value_split [{split}]")]
+    KvValueSplit { field: String, split: String },
+
     /// An enrichment module (geoip, `user_agent`, `community_id`) failed.
     #[error("enrichment '{enrichment}' failed: {message}")]
     EnrichmentError { enrichment: String, message: String },

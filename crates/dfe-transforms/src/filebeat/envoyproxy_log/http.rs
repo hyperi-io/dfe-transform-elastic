@@ -19,6 +19,7 @@ impl Transform for Http {
             let _cond = { event.has_value("proto") && event.get_str("proto") != Some("-") };
             if _cond {
                 // Painless script, resolved to its runners at generation time
+                event.set("http", json!({}))?;
                 split_at_delimiter(event, &SplitAtDelimiter::new("proto".into(), "/".into(), None, Some("http.version".into()), None, false));
             }
 

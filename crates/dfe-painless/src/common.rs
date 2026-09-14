@@ -2135,6 +2135,43 @@ fn replaced_away(chain: &str) -> Vec<String> {
     out
 }
 
+/// `ctx.a = ctx.a.stream().filter(p -> p != null && p.size() > 0 &&
+/// !p.get(0).isEmpty()).collect(Collectors.toList())` -- the list it prunes.
+///
+/// Every arm of the predicate must be one of the three, so a filter that also
+/// tests something else is declined rather than pruned wider than the vendor
+/// asks. `ti_recordedfuture` splits a provider string that is routinely blank
+/// and drops the one-element list the split leaves behind.
+fn parse_stream_blank_filter(script: &str) -> Option<String> {
+    use crate::params::clean_path;
+
+    let (head, tail) = script.split_once(".stream()")?;
+    let source = clean_path(head.rsplit("ctx.").next()?.trim());
+    if source.is_empty() || source.contains(char::is_whitespace) {
+        return None;
+    }
+
+    let (element, rest) = tail
+        .trim_start()
+        .strip_prefix(".filter(")?
+        .split_once("->")?;
+    let element = element.trim();
+    let predicate = rest.split_once(".collect(")?.0.trim().strip_suffix(')')?;
+
+    let mut saw_member = false;
+    for arm in predicate.split("&&") {
+        let arm = arm.trim().trim_start_matches('!').trim();
+        let arm = arm.strip_prefix(element)?;
+        match arm.trim() {
+            "!= null" | ".size() > 0" => {}
+            ".get(0).isEmpty()" => saw_member = true,
+            _ => return None,
+        }
+    }
+
+    saw_member.then_some(source)
+}
+
 fn parse_tags_and_marking(script: &str) -> Option<TagsAndMarking> {
     use crate::params::clean_path;
 
@@ -9299,6 +9336,101 @@ fn capitalised(word: &str) -> Option<String> {
     let mut characters = word.chars();
     let first = characters.next()?;
     Some(first.to_ascii_uppercase().to_string() + characters.as_str())
+}
+
+/// A list whose empty elements are filled before a prune walks the document.
+///
+/// Correlated lists are read positionally by whatever consumes them, so an
+/// element the prune removes shifts every later one against its partners.
+/// bitdefender fills `filePath`, `fileSizes` and `remediationActions` with a
+/// dash for exactly that reason, and says so in its own comment.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ListFill {
+    path: String,
+    filler: String,
+}
+
+impl ListFill {
+    /// Build one from resolved parts, for a caller that already knows them.
+    #[must_use]
+    pub fn new(path: String, filler: String) -> Self {
+        Self { path, filler }
+    }
+
+    #[cfg(feature = "codegen")]
+    pub(crate) fn direct_call(&self) -> String {
+        format!(
+            "fill_empty_elements(event, &ListFill::new({}.into(), {}.into()));",
+            rust_str(&self.path),
+            rust_str(&self.filler),
+        )
+    }
+}
+
+/// Replace every empty string in the named list with the filler.
+pub fn fill_empty_elements(event: &mut Event, fill: &ListFill) {
+    let Some(Value::Array(items)) = crate::params::pointer_mut(event, &fill.path) else {
+        return;
+    };
+    for item in items.iter_mut() {
+        if item.as_str() == Some("") {
+            *item = Value::String(fill.filler.clone());
+        }
+    }
+}
+
+/// The lists a prune script fills before it runs -- `x.replaceAll(e -> e == ""
+/// ? "-" : e)`, one per list.
+///
+/// Only that exact substitution: anything else the lambda does is a rewrite
+/// this cannot reproduce, and claiming it would drop the rest in silence.
+fn parse_list_fills(normalised: &str) -> Vec<ListFill> {
+    let mut fills = Vec::new();
+    let mut chunks = normalised.split(".replaceAll(");
+    let Some(mut head) = chunks.next() else {
+        return fills;
+    };
+    for tail in chunks {
+        if let Some(fill) = parse_list_fill(head, tail) {
+            fills.push(fill);
+        }
+        head = tail;
+    }
+    fills
+}
+
+fn parse_list_fill(head: &str, tail: &str) -> Option<ListFill> {
+    let path = crate::params::clean_path(head.rsplit("ctx.").next()?.trim());
+    if path.is_empty() || path.contains(char::is_whitespace) {
+        return None;
+    }
+
+    let (element, body) = tail.split_once("->")?;
+    let element = element.trim();
+    let (test, arms) = body.split_once('?')?;
+    let (subject, empty) = test.split_once("==")?;
+    if subject.trim() != element || !matches!(empty.trim(), "\"\"" | "''") {
+        return None;
+    }
+
+    // One statement only: the arms run to the `;`, and what follows is the next
+    // line's own call.
+    let (filler, otherwise) = arms.split_once(':')?;
+    let otherwise = otherwise.split([';', '\n']).next()?;
+    if otherwise.trim().trim_end_matches(')').trim() != element {
+        return None;
+    }
+    let filler = filler.trim();
+    let filler = filler
+        .strip_prefix('"')
+        .and_then(|rest| rest.strip_suffix('"'))
+        .or_else(|| {
+            filler
+                .strip_prefix('\'')
+                .and_then(|rest| rest.strip_suffix('\''))
+        })?;
+
+    Some(ListFill::new(path, filler.to_owned()))
 }
 
 /// Prune the whole document, or one subtree where the script names a root.
@@ -23517,6 +23649,8 @@ pub(crate) enum KnownPattern {
     DropEmpty {
         policy: DropPolicy,
         root: Option<String>,
+        /// Lists the script fills before it prunes, to keep them aligned.
+        fills: Vec<ListFill>,
     },
     SplitCommandLine(crate::windows::ArgvScript),
     Basename(Box<BasenameCuts>),
@@ -24808,6 +24942,7 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         patterns.push(KnownPattern::DropEmpty {
             policy,
             root: Some(root),
+            fills: Vec::new(),
         });
         return patterns;
     }
@@ -24821,10 +24956,14 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && normalised.contains("instanceof Map")
         && normalised.contains("instanceof List")
     {
+        // A correlated list the script fills FIRST, so the prune cannot shift
+        // one of a set of parallel arrays against the others.
+        let fills = parse_list_fills(normalised);
         if normalised.contains("(ctx)") {
             patterns.push(KnownPattern::DropEmpty {
                 policy: DropPolicy::read(normalised),
                 root: None,
+                fills,
             });
             return patterns;
         }
@@ -24837,6 +24976,7 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
             patterns.push(KnownPattern::DropEmpty {
                 policy: DropPolicy::read(normalised),
                 root: Some(crate::params::clean_path(root)),
+                fills,
             });
             return patterns;
         }
@@ -24859,6 +24999,7 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
                 ..DropPolicy::none()
             },
             root: (!root.is_empty()).then_some(root),
+            fills: Vec::new(),
         });
         return patterns;
     }
@@ -25919,6 +26060,27 @@ pub(crate) fn known_patterns(normalised: &str) -> Vec<KnownPattern> {
         && let Some(pattern) = parse_drop_last_char(normalised)
     {
         patterns.push(pattern);
+        return patterns;
+    }
+
+    // Pattern: a list of lists with its blank members filtered out, which is
+    // the prune written as a stream. The policy is spelled out rather than
+    // read, because the predicate's `isEmpty()` and `size() > 0` name
+    // different axes from the ones `DropPolicy::read` would take them for.
+    if normalised.contains("Collectors.toList()")
+        && let Some(root) = parse_stream_blank_filter(normalised)
+    {
+        patterns.push(KnownPattern::DropEmpty {
+            policy: DropPolicy {
+                nulls: true,
+                empty_strings: true,
+                empty_collections: true,
+                prune_lists: true,
+                ..DropPolicy::none()
+            },
+            root: Some(root),
+            fills: Vec::new(),
+        });
         return patterns;
     }
 
@@ -27140,7 +27302,11 @@ impl KnownPattern {
     #[allow(clippy::too_many_lines)] // One arm per emittable pattern; it grows with the allowlist.
     pub(crate) fn direct_call(&self) -> Option<String> {
         match self {
-            Self::DropEmpty { policy, root } => {
+            Self::DropEmpty {
+                policy,
+                root,
+                fills,
+            } => {
                 // Only the axes this script turns on, over `none()`. Listing
                 // every field would make each new axis a regeneration of the
                 // whole tree.
@@ -27171,8 +27337,11 @@ impl KnownPattern {
                 let root = root
                     .as_deref()
                     .map_or_else(|| "None".to_string(), |r| format!("Some({})", rust_str(r)));
+                // The fills run BEFORE the prune, so they are emitted in front
+                // of it as statements of their own.
+                let prefix: String = fills.iter().map(|fill| fill.direct_call() + "\n").collect();
                 Some(format!(
-                    "drop_empty(event, &DropPolicy {{ {}, ..DropPolicy::none() }}, {root});",
+                    "{prefix}drop_empty(event, &DropPolicy {{ {}, ..DropPolicy::none() }}, {root});",
                     set.join(", "),
                 ))
             }
@@ -27347,7 +27516,16 @@ pub(crate) fn run_known_pattern(
         }
         KnownPattern::DurationWindow(pattern) => duration_window(event, pattern),
         KnownPattern::SumTotals(pattern) => crate::totals::sum_totals(event, pattern),
-        KnownPattern::DropEmpty { policy, root } => drop_empty(event, policy, root.as_deref()),
+        KnownPattern::DropEmpty {
+            policy,
+            root,
+            fills,
+        } => {
+            for fill in fills {
+                fill_empty_elements(event, fill);
+            }
+            drop_empty(event, policy, root.as_deref())
+        }
         KnownPattern::SplitCommandLine(script) => crate::windows::run_argv_script(event, script),
         KnownPattern::Basename(pattern) => basename_cuts(event, pattern),
         KnownPattern::FileInfo(source) => crate::windows::run_file_info(event, source),

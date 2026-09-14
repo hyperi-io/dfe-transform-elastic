@@ -521,6 +521,7 @@ impl Transform for Default {
             let _cond = { event.has_value("source.bytes") && event.has_value("destination.bytes") };
             if _cond {
                 // Painless script, resolved to its runners at generation time
+                event.set("network", json!({}))?;
                 sum_directions(event, &["bytes"]);
             }
 

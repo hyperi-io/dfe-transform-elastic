@@ -86,8 +86,10 @@ impl Transform for Default {
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("mattermost.audit.error.message", Value::Array(parts))?;
                     }
@@ -275,8 +277,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("user.target.roles", Value::Array(parts))?;
                 }
@@ -305,8 +309,10 @@ impl Transform for Default {
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("json.user_ids", Value::Array(parts))?;
                     }

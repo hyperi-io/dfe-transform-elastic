@@ -140,8 +140,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("wiz.audit.action", Value::Array(parts))?;
                 }

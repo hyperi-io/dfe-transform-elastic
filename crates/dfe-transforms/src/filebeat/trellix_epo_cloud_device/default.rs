@@ -1214,8 +1214,10 @@ impl Transform for Default {
             if event.has_value("json.attributes.tags") {
                 if let Some(s) = event.get_string("json.attributes.tags") {
                     let mut parts: Vec<Value> = s.split(", ").map(|p| json!(p)).collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set(
                         "trellix_epo_cloud.device.attributes.tags",

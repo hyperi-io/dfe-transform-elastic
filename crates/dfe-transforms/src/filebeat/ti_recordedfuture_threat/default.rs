@@ -208,8 +208,10 @@ impl Transform for Default {
                             .into_iter()
                             .map(|p| json!(p))
                             .collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("_ingest._value", Value::Array(parts))?;
                     }
@@ -219,14 +221,18 @@ impl Transform for Default {
 
             // ignore_failure: true
             let _ = (|| -> Result<()> {
-                // Painless script
-                // TODO: Transpile Painless to Rust (2.2.3)
-                painless_exec_plan(
+                // Painless script, resolved to its runners at generation time
+                drop_empty(
                     event,
-                    cached_painless!(
-                        r#"if (ctx._temp_ != null && ctx._temp_.providers != null) {\n  ctx._temp_.providers = ctx._temp_.providers.stream()\n    .filter(p -> p != null && p.size() > 0 && !p.get(0).isEmpty())\n    .collect(Collectors.toList());\n}\n"#
-                    ),
-                )?;
+                    &DropPolicy {
+                        nulls: true,
+                        empty_strings: true,
+                        empty_collections: true,
+                        prune_lists: true,
+                        ..DropPolicy::none()
+                    },
+                    Some("_temp_.providers"),
+                );
                 Ok(())
             })();
 

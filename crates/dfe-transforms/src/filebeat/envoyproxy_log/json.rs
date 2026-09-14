@@ -194,6 +194,7 @@ impl Transform for Json {
                 let _cond = { event.has_value("proto") && event.get_str("proto") != Some("-") };
                 if _cond {
                 // Painless script, resolved to its runners at generation time
+                event.set("http", json!({}))?;
                 split_at_delimiter(event, &SplitAtDelimiter::new("proto".into(), "/".into(), None, Some("http.version".into()), None, false));
                 }
                 event.rename("method", "http.request.method")?;
@@ -335,8 +336,10 @@ impl Transform for Json {
                 if _cond {
                 if let Some(s) = event.get_string("envoyproxy.log.response_flags") {
                 let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
+                if parts.len() > 1 {
                 while parts.last().and_then(Value::as_str) == Some("") {
                 parts.pop();
+                }
                 }
                 event.set("envoyproxy.log.response_flags", Value::Array(parts))?;
                 }

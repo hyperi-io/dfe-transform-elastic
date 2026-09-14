@@ -23,8 +23,10 @@ impl Transform for CommonHost {
         if event.has_value("tychon.host.mac") {
             if let Some(s) = event.get_string("tychon.host.mac") {
                 let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                while parts.last().and_then(Value::as_str) == Some("") {
-                    parts.pop();
+                if parts.len() > 1 {
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                 }
                 event.set("tychon.host.mac", Value::Array(parts))?;
             }
@@ -36,8 +38,10 @@ impl Transform for CommonHost {
         if event.has_value("tychon.host.ip") {
             if let Some(s) = event.get_string("tychon.host.ip") {
                 let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                while parts.last().and_then(Value::as_str) == Some("") {
-                    parts.pop();
+                if parts.len() > 1 {
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                 }
                 event.set("tychon.host.ip", Value::Array(parts))?;
             }
@@ -49,8 +53,10 @@ impl Transform for CommonHost {
         if event.has_value("tychon.host.ipv4") {
             if let Some(s) = event.get_string("tychon.host.ipv4") {
                 let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                while parts.last().and_then(Value::as_str) == Some("") {
-                    parts.pop();
+                if parts.len() > 1 {
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                 }
                 event.set("tychon.host.ipv4", Value::Array(parts))?;
             }
@@ -62,8 +68,10 @@ impl Transform for CommonHost {
         if event.has_value("tychon.host.ipv6") {
             if let Some(s) = event.get_string("tychon.host.ipv6") {
                 let mut parts: Vec<Value> = s.split(",").map(|p| json!(p)).collect();
-                while parts.last().and_then(Value::as_str) == Some("") {
-                    parts.pop();
+                if parts.len() > 1 {
+                    while parts.last().and_then(Value::as_str) == Some("") {
+                        parts.pop();
+                    }
                 }
                 event.set("tychon.host.ipv6", Value::Array(parts))?;
             }

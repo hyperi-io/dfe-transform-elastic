@@ -7479,8 +7479,10 @@ impl Transform for Default {
                         .into_iter()
                         .map(|p| json!(p))
                         .collect();
-                    while parts.last().and_then(Value::as_str) == Some("") {
-                        parts.pop();
+                    if parts.len() > 1 {
+                        while parts.last().and_then(Value::as_str) == Some("") {
+                            parts.pop();
+                        }
                     }
                     event.set("_temp_.cisco.dap_records", Value::Array(parts))?;
                 }
@@ -7755,12 +7757,12 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     let mut remaining: &str = &input;
-                    let mut captured: Vec<(&str, &str)> = Vec::new();
+                    let mut captured: Vec<(&str, &str, bool)> = Vec::new();
                     let matched = 'dissect: {
                         let Some(pos) = remaining.find("from ") else {
                             break 'dissect false;
                         };
-                        captured.push(("event.reason", &remaining[..pos]));
+                        captured.push(("event.reason", &remaining[..pos], false));
                         remaining = &remaining[pos..];
                         let Some(rest) = remaining.strip_prefix("from ") else {
                             break 'dissect false;
@@ -7769,7 +7771,7 @@ impl Transform for Default {
                         let Some(pos) = remaining.find(":") else {
                             break 'dissect false;
                         };
-                        captured.push(("_temp_.cisco.source_interface", &remaining[..pos]));
+                        captured.push(("_temp_.cisco.source_interface", &remaining[..pos], false));
                         remaining = &remaining[pos..];
                         let Some(rest) = remaining.strip_prefix(":") else {
                             break 'dissect false;
@@ -7778,7 +7780,7 @@ impl Transform for Default {
                         let Some(pos) = remaining.find("/") else {
                             break 'dissect false;
                         };
-                        captured.push(("source.address", &remaining[..pos]));
+                        captured.push(("source.address", &remaining[..pos], false));
                         remaining = &remaining[pos..];
                         let Some(rest) = remaining.strip_prefix("/") else {
                             break 'dissect false;
@@ -7787,7 +7789,7 @@ impl Transform for Default {
                         let Some(pos) = remaining.find(" to ") else {
                             break 'dissect false;
                         };
-                        captured.push(("source.port", &remaining[..pos]));
+                        captured.push(("source.port", &remaining[..pos], false));
                         remaining = &remaining[pos..];
                         let Some(rest) = remaining.strip_prefix(" to ") else {
                             break 'dissect false;
@@ -7796,7 +7798,11 @@ impl Transform for Default {
                         let Some(pos) = remaining.find(":") else {
                             break 'dissect false;
                         };
-                        captured.push(("_temp_.cisco.destination_interface", &remaining[..pos]));
+                        captured.push((
+                            "_temp_.cisco.destination_interface",
+                            &remaining[..pos],
+                            false,
+                        ));
                         remaining = &remaining[pos..];
                         let Some(rest) = remaining.strip_prefix(":") else {
                             break 'dissect false;
@@ -7805,7 +7811,7 @@ impl Transform for Default {
                         let Some(pos) = remaining.find("/") else {
                             break 'dissect false;
                         };
-                        captured.push(("destination.address", &remaining[..pos]));
+                        captured.push(("destination.address", &remaining[..pos], false));
                         remaining = &remaining[pos..];
                         let Some(rest) = remaining.strip_prefix("/") else {
                             break 'dissect false;
@@ -7814,18 +7820,26 @@ impl Transform for Default {
                         let Some(pos) = remaining.find(" ") else {
                             break 'dissect false;
                         };
-                        captured.push(("destination.port", &remaining[..pos]));
+                        captured.push(("destination.port", &remaining[..pos], false));
                         remaining = &remaining[pos..];
                         let Some(rest) = remaining.strip_prefix(" ") else {
                             break 'dissect false;
                         };
                         remaining = rest;
-                        captured.push(("event.reason", remaining));
+                        captured.push(("event.reason", remaining, true));
                         true
                     };
                     if matched {
-                        for (path, value) in captured {
-                            event.set(path, value)?;
+                        for (path, value, append) in captured {
+                            if append {
+                                let joined = event.get_str(path).map_or_else(
+                                    || value.to_owned(),
+                                    |held| format!("{held}{value}"),
+                                );
+                                event.set(path, joined)?;
+                            } else {
+                                event.set(path, value)?;
+                            }
                         }
                     } else {
                         return Err(TransformError::ParseError {
@@ -8196,7 +8210,7 @@ impl Transform for Default {
             if _cond {
                 if let Some(input) = event.get_string("message") {
                     let mut remaining: &str = &input;
-                    let mut captured: Vec<(&str, &str)> = Vec::new();
+                    let mut captured: Vec<(&str, &str, bool)> = Vec::new();
                     let matched = 'dissect: {
                         let Some(rest) = remaining.strip_prefix("Local:") else {
                             break 'dissect false;
@@ -8205,7 +8219,7 @@ impl Transform for Default {
                         let Some(pos) = remaining.find(":") else {
                             break 'dissect false;
                         };
-                        captured.push(("source.address", &remaining[..pos]));
+                        captured.push(("source.address", &remaining[..pos], false));
                         remaining = &remaining[pos..];
                         let Some(rest) = remaining.strip_prefix(":") else {
                             break 'dissect false;
@@ -8214,7 +8228,7 @@ impl Transform for Default {
                         let Some(pos) = remaining.find(" Remote:") else {
                             break 'dissect false;
                         };
-                        captured.push(("source.port", &remaining[..pos]));
+                        captured.push(("source.port", &remaining[..pos], false));
                         remaining = &remaining[pos..];
                         let Some(rest) = remaining.strip_prefix(" Remote:") else {
                             break 'dissect false;
@@ -8223,7 +8237,7 @@ impl Transform for Default {
                         let Some(pos) = remaining.find(":") else {
                             break 'dissect false;
                         };
-                        captured.push(("destination.address", &remaining[..pos]));
+                        captured.push(("destination.address", &remaining[..pos], false));
                         remaining = &remaining[pos..];
                         let Some(rest) = remaining.strip_prefix(":") else {
                             break 'dissect false;
@@ -8232,7 +8246,7 @@ impl Transform for Default {
                         let Some(pos) = remaining.find(" Username:") else {
                             break 'dissect false;
                         };
-                        captured.push(("destination.port", &remaining[..pos]));
+                        captured.push(("destination.port", &remaining[..pos], false));
                         remaining = &remaining[pos..];
                         let Some(rest) = remaining.strip_prefix(" Username:") else {
                             break 'dissect false;
@@ -8241,7 +8255,7 @@ impl Transform for Default {
                         let Some(pos) = remaining.find(" ") else {
                             break 'dissect false;
                         };
-                        captured.push(("user.name", &remaining[..pos]));
+                        captured.push(("user.name", &remaining[..pos], false));
                         remaining = &remaining[pos..];
                         let Some(rest) = remaining.strip_prefix(" ") else {
                             break 'dissect false;
@@ -8250,18 +8264,26 @@ impl Transform for Default {
                         let Some(pos) = remaining.find(" ERROR:") else {
                             break 'dissect false;
                         };
-                        captured.push(("event.reason", &remaining[..pos]));
+                        captured.push(("event.reason", &remaining[..pos], false));
                         remaining = &remaining[pos..];
                         let Some(rest) = remaining.strip_prefix(" ERROR:") else {
                             break 'dissect false;
                         };
                         remaining = rest;
-                        captured.push(("event.reason", remaining));
+                        captured.push(("event.reason", remaining, true));
                         true
                     };
                     if matched {
-                        for (path, value) in captured {
-                            event.set(path, value)?;
+                        for (path, value, append) in captured {
+                            if append {
+                                let joined = event.get_str(path).map_or_else(
+                                    || value.to_owned(),
+                                    |held| format!("{held}{value}"),
+                                );
+                                event.set(path, joined)?;
+                            } else {
+                                event.set(path, value)?;
+                            }
                         }
                     } else {
                         return Err(TransformError::ParseError {
@@ -8700,22 +8722,25 @@ impl Transform for Default {
                 // ignore_failure: true
                 let _ = (|| -> Result<()> {
                     if let Some(kv_str) = event.get_string("message") {
+                        let mut kv_gap = false;
                         for pair in cached_regex!(",(?=[A-za-z1-9\\s]+:)")
                             .split(&kv_str)
                             .into_iter()
                         {
-                            if pair.trim().is_empty() {
+                            if pair.is_empty() {
+                                kv_gap = true;
                                 continue;
                             }
-                            let Some((key, value)) = pair.split_once(":") else {
-                                return Err(TransformError::ParseError {
-                                    path: "message".into(),
-                                    message: format!("does not contain value_split: {pair}"),
+                            let Some((key, value)) = pair.split_once(":").filter(|_| !kv_gap)
+                            else {
+                                return Err(TransformError::KvValueSplit {
+                                    field: "message".into(),
+                                    split: ":".into(),
                                 });
                             };
                             {
-                                let key = key.trim_matches(|c| " ".contains(c));
-                                let value = value.trim_matches(|c| " ".contains(c));
+                                let key = key.trim_matches(|c: char| matches!(c, ' '));
+                                let value = value.trim_matches(|c: char| matches!(c, ' '));
                                 if !key.is_empty() {
                                     kv_put(event, &format!("_temp_.orig_security.{}", key), value)?;
                                 }

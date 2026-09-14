@@ -208,8 +208,10 @@ impl Transform for Default {
                 let _ = (|| -> Result<()> {
                     if let Some(s) = event.get_string("file.path") {
                         let mut parts: Vec<Value> = s.split("/").map(|p| json!(p)).collect();
-                        while parts.last().and_then(Value::as_str) == Some("") {
-                            parts.pop();
+                        if parts.len() > 1 {
+                            while parts.last().and_then(Value::as_str) == Some("") {
+                                parts.pop();
+                            }
                         }
                         event.set("file.name", Value::Array(parts))?;
                     }

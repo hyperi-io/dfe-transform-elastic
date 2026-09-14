@@ -46,7 +46,7 @@ impl Transform for Default {
                     empty_strings: true,
                     empty_collections: true,
                     prune_lists: true,
-                    sentinels: vec!["n/a".into(), "unknown".into()],
+                    sentinels_ci: vec!["n/a".into(), "unknown".into()],
                     ..DropPolicy::none()
                 },
                 None,
