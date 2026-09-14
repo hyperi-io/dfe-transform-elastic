@@ -115,6 +115,17 @@ pub struct CompiledGrok {
     /// Only ever populated for a pattern on the backtracking engine, and only
     /// read there. See [`never_empty_captures`].
     never_empty: std::collections::HashSet<String>,
+    /// Destinations this pattern names MORE THAN ONCE, which collect a list.
+    ///
+    /// Joni takes the same capture name twice and Elasticsearch's grok gathers
+    /// both values, so `eset_protect`'s `Detection type: ... Detection name:
+    /// ...` writes `["Trojan", "JS/TrojanDownloader.Nemucod.AIC"]`. The
+    /// renaming that lets Rust's engine compile such a pattern pointed both
+    /// groups at one destination and the last one won.
+    ///
+    /// Empty for all but a handful of patterns, and the extract loop only
+    /// leaves its plain path when it is not.
+    repeated: Vec<String>,
 }
 
 static GROK: RwLock<Option<HashMap<String, &'static CompiledGrok>>> = RwLock::new(None);
@@ -175,12 +186,14 @@ pub fn grok_mapped(pattern: &str, extra: &[(&str, &str)]) -> &'static CompiledGr
         Pattern::Fast(_) => std::collections::HashSet::new(),
         Pattern::Backtracking(_) => never_empty_captures(&expanded),
     };
+    let repeated = repeated_destinations(&field_map);
     let compiled: &'static CompiledGrok = Box::leak(Box::new(CompiledGrok {
         regex,
         field_map,
         capture_types,
         native: native_form(pattern),
         never_empty,
+        repeated,
     }));
 
     if let Ok(mut guard) = GROK.write() {
@@ -193,6 +206,22 @@ pub fn grok_mapped(pattern: &str, extra: &[(&str, &str)]) -> &'static CompiledGr
             .or_insert(compiled);
     }
     compiled
+}
+
+/// The destinations more than one capture in `field_map` writes to.
+///
+/// Sorted so a pattern compiles to the same answer whatever order the map
+/// iterates in, and empty for all but a handful of patterns.
+fn repeated_destinations(field_map: &HashMap<String, String>) -> Vec<String> {
+    let mut seen: std::collections::HashSet<&str> = std::collections::HashSet::new();
+    let mut repeated: Vec<String> = field_map
+        .values()
+        .filter(|path| !seen.insert(path.as_str()))
+        .map(String::clone)
+        .collect();
+    repeated.sort_unstable();
+    repeated.dedup();
+    repeated
 }
 
 /// The pattern and its mapping, as one cache key.
@@ -296,6 +325,11 @@ impl CompiledGrok {
             return Self::extract_native(native, input, event);
         }
 
+        // Values bound for a destination this pattern names twice, in the
+        // order the pattern names them. Allocates nothing for a pattern that
+        // names each destination once, which is all but a handful.
+        let mut collected: Vec<(&str, serde_json::Value)> = Vec::new();
+
         match &self.regex {
             Pattern::Fast(re) => {
                 let Some(caps) = re.captures(input) else {
@@ -303,7 +337,7 @@ impl CompiledGrok {
                 };
                 for name in re.capture_names().flatten() {
                     if let Some(m) = caps.name(name) {
-                        self.write_capture(name, m.as_str(), event)?;
+                        self.write_capture(name, m.as_str(), event, &mut collected)?;
                     }
                 }
             }
@@ -324,12 +358,43 @@ impl CompiledGrok {
                         if m.as_str().is_empty() && self.never_empty.contains(name) {
                             continue;
                         }
-                        self.write_capture(name, m.as_str(), event)?;
+                        self.write_capture(name, m.as_str(), event, &mut collected)?;
                     }
                 }
             }
         }
+        self.write_repeated(&collected, event)?;
         Ok(true)
+    }
+
+    /// Write the destinations the pattern named twice, gathered.
+    ///
+    /// A DUPLICATE value is kept: `watchguard_firebox` reads `from N seconds to
+    /// M seconds` through one capture name and Elasticsearch writes
+    /// `["seconds", "seconds"]`. iis's own pipeline ships a script that
+    /// `distinct`s such a list and collapses a single survivor back to a
+    /// scalar, which is the vendor compensating for the same behaviour.
+    ///
+    /// A repeat only ONE branch of an alternation reached collects a single
+    /// value and stays a scalar, which is what Elasticsearch writes for it.
+    fn write_repeated(
+        &self,
+        collected: &[(&str, serde_json::Value)],
+        event: &mut crate::Event,
+    ) -> crate::Result<()> {
+        for path in &self.repeated {
+            let mut values: Vec<serde_json::Value> = collected
+                .iter()
+                .filter(|(destination, _)| *destination == path)
+                .map(|(_, value)| value.clone())
+                .collect();
+            match values.len() {
+                0 => {}
+                1 => event.set_resolved(path, values.remove(0))?,
+                _ => event.set_resolved(path, serde_json::Value::Array(values))?,
+            }
+        }
+        Ok(())
     }
 
     /// Where this pattern's leftmost match begins in `input`, if it matches.
@@ -350,36 +415,50 @@ impl CompiledGrok {
     /// `set_resolved`, not `set`: a vendor payload that already spells the
     /// target as one dotted key keeps it, and splitting the path leaves the
     /// capture in a nested twin the rest of the pipeline never reads.
-    fn write_capture(
-        &self,
+    fn write_capture<'a>(
+        &'a self,
         name: &str,
         value: &str,
         event: &mut crate::Event,
+        collected: &mut Vec<(&'a str, serde_json::Value)>,
     ) -> crate::Result<()> {
-        let path = self.field_map.get(name).map_or(name, String::as_str);
+        let typed = self.capture_value(name, value);
+        let Some(path) = self.field_map.get(name) else {
+            // Unmapped, so the group name IS the destination -- and a repeated
+            // destination always comes from the map, so this one never is.
+            return event.set_resolved(name, typed);
+        };
+        if !self.repeated.is_empty() && self.repeated.iter().any(|repeat| repeat == path) {
+            collected.push((path.as_str(), typed));
+            return Ok(());
+        }
+        event.set_resolved(path, typed)
+    }
+
+    /// One capture's text as the value Elastic's type suffix makes of it.
+    fn capture_value(&self, name: &str, value: &str) -> serde_json::Value {
         match self.capture_types.get(name) {
             // A `:float` capture is numeric too, and an i64 parse alone left
             // every fractional value a string -- lambda's duration_ms among them.
             Some(crate::codegen_api::CaptureType::Number) => {
                 if let Ok(n) = value.parse::<i64>() {
-                    event.set_resolved(path, n)?;
+                    serde_json::Value::from(n)
                 } else if let Ok(f) = value.parse::<f64>() {
-                    event.set_resolved(path, f)?;
+                    serde_json::Value::from(f)
                 } else {
-                    event.set_resolved(path, value)?;
+                    serde_json::Value::from(value)
                 }
             }
             // Grok does not invent a value it cannot read: only the exact
             // text "true" or "false" becomes a boolean, and anything else
             // stays the string it was captured as.
             Some(crate::codegen_api::CaptureType::Boolean) => match value {
-                "true" => event.set_resolved(path, true)?,
-                "false" => event.set_resolved(path, false)?,
-                _ => event.set_resolved(path, value)?,
+                "true" => serde_json::Value::Bool(true),
+                "false" => serde_json::Value::Bool(false),
+                _ => serde_json::Value::from(value),
             },
-            None => event.set_resolved(path, value)?,
+            None => serde_json::Value::from(value),
         }
-        Ok(())
     }
 
     fn extract_native(
@@ -930,6 +1009,144 @@ mod tests {
         assert!(!event.has("pfsense.tcp.seq"));
     }
 
+    /// Logstash's `BASE10NUM` wants a digit AFTER the dot, so a number ending
+    /// a sentence leaves the full stop behind. `cisco_asa`'s 313005 closes with
+    /// `dst 175.16.199.1/10872.` and the pattern's own `[.]?` is what reads it.
+    #[test]
+    fn a_number_does_not_take_a_trailing_dot() {
+        let compiled =
+            grok(r"dst %{IP:destination.address}(/%{NUMBER:destination.port:long})?[.]?$");
+
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into("dst 175.16.199.1/10872.", &mut event)
+                .expect("extraction"),
+        );
+        assert_eq!(event.get_i64("destination.port"), Some(10872));
+
+        // A real fraction still reads as one.
+        let mut fractional = crate::Event::new(serde_json::json!({}));
+        assert!(
+            grok(r"^%{NUMBER:n}$")
+                .extract_into("81.2", &mut fractional)
+                .expect("extraction"),
+        );
+        assert_eq!(fractional.get_str("n"), Some("81.2"));
+    }
+
+    /// The IPv6 zone id stops at a space. Logstash spells it `(%.+)?`, and the
+    /// greedy tail took the user agent after an iis access line's
+    /// `fe81::64ae:95c0:196e:8adf%3` into `source.address`, shifting every
+    /// later field one token left.
+    #[test]
+    fn an_ipv6_zone_id_stops_at_the_space() {
+        let compiled = grok("%{IPORHOST:source.address} %{NOTSPACE:user_agent.original}");
+
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into("fe81::64ae:95c0:196e:8adf%3 Mozilla/4.0", &mut event)
+                .expect("extraction"),
+        );
+        assert_eq!(
+            event.get_str("source.address"),
+            Some("fe81::64ae:95c0:196e:8adf%3")
+        );
+        assert_eq!(event.get_str("user_agent.original"), Some("Mozilla/4.0"));
+    }
+
+    /// Elastic's `WORD` carries word boundaries, and the bare `\w+` could be
+    /// entered part-way: `.*.%{WORD}` read one letter out of the last word.
+    #[test]
+    fn a_word_is_entered_at_its_boundary() {
+        let compiled = grok("^.*%{WORD:event.action}$");
+
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into("message.flagged", &mut event)
+                .expect("extraction"),
+        );
+        assert_eq!(event.get_str("event.action"), Some("flagged"));
+    }
+
+    /// Joni takes the same capture name twice and Elasticsearch's grok gathers
+    /// both values. `eset_protect`'s `Detection type: ... Detection name: ...`
+    /// writes a list of the two.
+    #[test]
+    fn a_capture_named_twice_collects_a_list() {
+        let compiled = grok(
+            "Detection type: %{DATA:json.threat_name} Detection name: %{DATA:json.threat_name} Computer name: %{HOSTNAME:json.hostname}",
+        );
+
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into(
+                    "Detection type: Trojan Detection name: JS/Downloader.A Computer name: host.local",
+                    &mut event,
+                )
+                .expect("extraction"),
+        );
+        assert_eq!(
+            event.get("json.threat_name"),
+            Some(&serde_json::json!(["Trojan", "JS/Downloader.A"]))
+        );
+        assert_eq!(event.get_str("json.hostname"), Some("host.local"));
+    }
+
+    /// Elastic's `YEAR` takes two digits or four. `eset_protect`'s detection
+    /// grok reads `2/20/25`, and a four-digit-only year failed the whole
+    /// pattern and every capture in it.
+    #[test]
+    fn a_year_takes_two_digits_or_four() {
+        let compiled = grok("^%{MONTHNUM:m}/%{MONTHDAY:d}/%{YEAR:y}$");
+
+        let mut short = crate::Event::new(serde_json::json!({}));
+        assert!(compiled.extract_into("2/20/25", &mut short).expect("short"));
+        assert_eq!(short.get_str("y"), Some("25"));
+
+        let mut long = crate::Event::new(serde_json::json!({}));
+        assert!(compiled.extract_into("2/20/2025", &mut long).expect("long"));
+        assert_eq!(long.get_str("y"), Some("2025"));
+    }
+
+    /// A name repeated across ALTERNATION branches is the other reason a
+    /// pattern spells one twice, and only one branch ever participates -- so
+    /// the value stays a scalar, exactly as Elasticsearch writes it.
+    #[test]
+    fn a_name_repeated_across_branches_stays_a_scalar() {
+        let compiled = grok("(?:in %{WORD:direction}|out %{WORD:direction})");
+
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into("out west", &mut event)
+                .expect("extraction"),
+        );
+        assert_eq!(event.get("direction"), Some(&serde_json::json!("west")));
+    }
+
+    /// A duplicate VALUE is collected too. `watchguard_firebox` reads `from N
+    /// seconds to M seconds` through one capture name, and Elasticsearch
+    /// writes both.
+    #[test]
+    fn the_same_value_captured_twice_collects_both() {
+        let compiled = grok("^from %{DATA:n} %{DATA:unit} to %{DATA:m} %{DATA:unit}$");
+
+        let mut event = crate::Event::new(serde_json::json!({}));
+        assert!(
+            compiled
+                .extract_into("from 30 seconds to 60 seconds", &mut event)
+                .expect("extraction"),
+        );
+        assert_eq!(
+            event.get("unit"),
+            Some(&serde_json::json!(["seconds", "seconds"]))
+        );
+    }
+
     /// Ruby has no word-start escape, so rabbitmq's `\<...\>` is a pair of
     /// literal brackets round an Erlang pid.
     #[test]
@@ -1414,6 +1631,7 @@ mod tests {
             capture_types: compiled.capture_types.clone(),
             native: None,
             never_empty: compiled.never_empty.clone(),
+            repeated: compiled.repeated.clone(),
         };
         let mut regex_event = crate::Event::new(serde_json::json!({}));
         let regex_matched = regex_only
