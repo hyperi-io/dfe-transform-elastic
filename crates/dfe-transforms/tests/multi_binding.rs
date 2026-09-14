@@ -14,6 +14,10 @@
 //! 170 do, and it is harmless where the runner is its script's only binding.
 //! The hazard needs BOTH halves, so this counts the other one.
 //!
+//! A `Bespoke` claim is stripped before the count, because the floor watches
+//! ladder contention and a hand transcription consulted ahead of the ladder
+//! competes with nothing -- what remains is the ladder's own search space.
+//!
 //! The generated modules are the source of script text on purpose: they carry
 //! the literal in full, where `DFE_PAINLESS_UNHANDLED` groups scripts by their
 //! first 200 characters and cannot be parsed back.
@@ -152,7 +156,11 @@ fn the_shadowing_search_space_has_not_grown() {
     let mut multi: Vec<(usize, String)> = every_script()
         .into_iter()
         .filter_map(|script| {
-            let names = PainlessPlan::new(&script).binding();
+            let names: Vec<String> = PainlessPlan::new(&script)
+                .binding()
+                .into_iter()
+                .filter(|name| !name.starts_with("Bespoke("))
+                .collect();
             (names.len() > 1).then(|| {
                 let heads: Vec<&str> = names
                     .iter()
