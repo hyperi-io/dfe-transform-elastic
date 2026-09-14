@@ -778,6 +778,10 @@ const GOOGLE_SECOPS_KV_FIELDS: &str = r#"String[] kvFields = new String[] {\"det
 /// which: `[:]` folds the list into one map, `[]` keeps the list and folds
 /// each record into a single-key map of its own. Read from the loop body
 /// alone, all three of these are the same script.
+///
+/// The production fold is transcribed and resolves to its runner ahead of the
+/// ladder, so the matcher behind it is the audit: the widening that reads the
+/// accumulator has to keep answering while the transcription stands in front.
 #[test]
 fn the_gitlab_key_value_folds_bind_to_the_accumulator_they_declare() {
     assert_eq!(
@@ -789,10 +793,13 @@ fn the_gitlab_key_value_folds_bind_to_the_accumulator_they_declare() {
     );
     assert_eq!(
         binding(GITLAB_PRODUCTION_PARAMS),
-        [concat!(
-            r#"KeyValuePairs(KeyValueFold { path: "gitlab.production.params", "#,
-            r#"into: OneMap, key_steps: [], dump_key: Some("variables") })"#
-        )]
+        [
+            "Bespoke(gitlab::fold_params_pairs)",
+            concat!(
+                r#"KeyValuePairs(KeyValueFold { path: "gitlab.production.params", "#,
+                r#"into: OneMap, key_steps: [], dump_key: Some("variables") })"#
+            )
+        ]
     );
     assert_eq!(
         binding(AZURE_AUTH_DETAILS),
@@ -1818,17 +1825,19 @@ const CARBONBLACK_IOC: &str = r#"void _set(Map base, def path, def value) {\n  i
 /// `.../pipeline_host_infrastructure.rs`.
 const BT_DIGESTS: &str = r#"if (ctx.related == null) {\n  ctx.related = new HashMap();\n}\nif (ctx.related.hash == null) {\n  ctx.related.hash = new ArrayList();\n}\nfor (def entry : ctx.beyondtrust_epm.event.container.image.hash.all) {\n  if (entry == null) {\n    continue;\n  }\n  def digest = entry.toString().replace('[', '').replace(']', '');\n  int sep = digest.indexOf(':');\n  if (sep >= 0) {\n    digest = digest.substring(sep + 1);\n  }\n  if (digest.length() > 0 && !ctx.related.hash.contains(digest)) {\n    ctx.related.hash.add(digest);\n  }\n}"#;
 
-/// Nothing claims the container-digest loop, and that empty binding is the
-/// whole of what `beyondtrust_epm` still loses.
+/// The container-digest loop is transcribed, because no ladder arm reaches it.
 ///
 /// It cuts each `sha256:<digest>` at its FIRST colon and appends the tail into
 /// `related.hash` unless it is already there. `SuffixAfterSeparator` reads the
 /// LAST separator off a scalar and `AppendUnique` names one hard-coded pair, so
-/// neither is a widening away -- a list walked with a per-element cut is a
+/// neither was a widening away -- a list walked with a per-element cut is a
 /// matcher this ladder does not have.
 #[test]
-fn the_beyondtrust_container_digests_bind_to_nothing() {
-    assert!(binding(BT_DIGESTS).is_empty(), "{:?}", binding(BT_DIGESTS));
+fn the_beyondtrust_container_digests_take_a_transcription() {
+    assert_eq!(
+        binding(BT_DIGESTS),
+        ["Bespoke(beyondtrust_epm::container_digests_into_related_hash)"]
+    );
 }
 
 /// Verbatim from the generated call sites in
