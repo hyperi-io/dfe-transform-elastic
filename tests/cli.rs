@@ -49,7 +49,10 @@ fn help_lists_every_local_subcommand() {
         "emit-compose",
         "emit-config",
     ] {
-        assert!(help.contains(command), "`--help` omits `{command}`:\n{help}");
+        assert!(
+            help.contains(command),
+            "`--help` omits `{command}`:\n{help}"
+        );
     }
 }
 
@@ -91,7 +94,11 @@ fn emit_config_prints_a_config_the_binary_accepts() {
     let path = dir.path().join("config.yaml");
     std::fs::write(&path, &emitted).expect("write the emitted config");
 
-    let out = run(&["--config", path.to_str().expect("utf-8 path"), "config-check"]);
+    let out = run(&[
+        "--config",
+        path.to_str().expect("utf-8 path"),
+        "config-check",
+    ]);
     assert!(
         out.status.success(),
         "the binary rejects its own emitted config: {}",
