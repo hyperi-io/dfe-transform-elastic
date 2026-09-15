@@ -75,6 +75,14 @@ SOURCES=(
 
 SLICE=$(( DURATION / ${#SOURCES[@]} ))
 
+# Each source is a separate profile, so the floor applies per run rather than
+# to the total the runs divide.
+if [[ "$SLICE" -lt 60 ]]; then
+    echo "error: each source needs >= 60s, but ${#SOURCES[@]} sources split ${DURATION}s into ${SLICE}s each" >&2
+    echo "  raise PGO_WORKLOAD_DURATION_SECS to at least $(( 60 * ${#SOURCES[@]} ))" >&2
+    exit 1
+fi
+
 # ----------------------------------------------------------------------------
 # Locate the driver
 # ----------------------------------------------------------------------------
@@ -221,10 +229,19 @@ for entry in "${SOURCES[@]}"; do
     # this. The client runs with --network host so it reaches the advertised
     # localhost:19092 listener.
     for topic in "$IN_TOPIC" "$OUT_TOPIC"; do
+        # An "already exists" failure is expected on a re-run, and any other
+        # failure ends in the deadlock above, so presence is checked.
         docker run --rm --network host "$KAFKA_IMAGE" \
             topic create "$topic" -p 3 -X brokers=localhost:19092 >/dev/null 2>&1 || true
+        if ! docker run --rm --network host "$KAFKA_IMAGE" \
+            topic describe "$topic" -X brokers=localhost:19092 >/dev/null 2>&1; then
+            echo "error: topic $topic is absent and could not be created" >&2
+            echo "  the consumer would subscribe to a missing topic, never reach" >&2
+            echo "  ready, and the driver would never produce" >&2
+            exit 1
+        fi
     done
-    echo "pgo-workload: topics $IN_TOPIC, $OUT_TOPIC"
+    echo "pgo-workload: topics $IN_TOPIC, $OUT_TOPIC confirmed"
 
     CONFIG_FILE="$WORK_DIR/$SLUG.yaml"
     # geoip is off because provisioning downloads MMDB databases at startup,

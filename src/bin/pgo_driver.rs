@@ -28,8 +28,8 @@
 //! Exit codes: 0 when the workload ran its full duration, 1 on a setup failure
 //! (no fixtures, no events in them, or a producer that would not start).
 
-// A load driver reports by printing and stops by exiting; neither is library
-// code, and the workspace bans the panic that `expect` would otherwise add.
+// The throughput report divides counters by elapsed seconds, and losing
+// precision on a rate printed to one decimal place costs nothing.
 #![allow(clippy::cast_precision_loss)]
 
 use std::time::{Duration, Instant};
@@ -46,13 +46,6 @@ const MAX_RECORD_BYTES: usize = 256 * 1024;
 
 /// How often the driver prints throughput.
 const REPORT_INTERVAL: Duration = Duration::from_secs(15);
-
-/// The pacing window: the rate is applied in slices this long rather than
-/// sleeping per event, which would cost a syscall per message.
-const PACE_WINDOW_MS: u64 = 10;
-
-/// The pacing window as a [`Duration`].
-const PACE_WINDOW: Duration = Duration::from_millis(PACE_WINDOW_MS);
 
 fn main() {
     let config = Config::from_env();
@@ -192,43 +185,40 @@ fn run(producer: &KafkaProducer, config: &Config, records: &[Vec<u8>]) -> Stats 
     let deadline = stats.start + config.duration;
     let mut next_report = stats.start + REPORT_INTERVAL;
     let mut index = 0_usize;
-
-    // Events per pacing window, rounded up so a rate below one window's worth
-    // still produces rather than stalling on an integer-divided zero.
-    let events_per_window = (config.rps * PACE_WINDOW_MS).div_ceil(1000).max(1);
+    let mut events_offered = 0_u64;
 
     while Instant::now() < deadline {
-        let window_start = Instant::now();
-        let mut events_this_window = 0_u64;
+        let record = &records[index % records.len()];
+        index = index.wrapping_add(1);
+        let events = count_events(record);
 
-        while events_this_window < events_per_window {
-            let record = &records[index % records.len()];
-            index = index.wrapping_add(1);
-
-            let key = (index % 1024).to_string();
-            match producer.send(&config.topic, Some(key.as_bytes()), record) {
-                Ok(()) => {
-                    stats.records_sent += 1;
-                    stats.events_sent += count_events(record);
-                }
-                Err(e) => {
-                    stats.send_errors += 1;
-                    stats.last_error = Some(e.to_string());
-                    // A full queue is backpressure, not a fault; yielding lets
-                    // librdkafka drain rather than spinning on the error.
-                    std::thread::sleep(Duration::from_millis(1));
-                }
+        let key = (index % 1024).to_string();
+        match producer.send(&config.topic, Some(key.as_bytes()), record) {
+            Ok(()) => {
+                stats.records_sent += 1;
+                stats.events_sent += events;
             }
-            events_this_window += count_events(record);
+            Err(e) => {
+                stats.send_errors += 1;
+                stats.last_error = Some(e.to_string());
+                // A full queue is backpressure, not a fault; yielding lets
+                // librdkafka drain rather than spinning on the error.
+                std::thread::sleep(Duration::from_millis(1));
+            }
+        }
+
+        // Pace against the running total, because one record carries up to
+        // EVENTS_PER_RECORD events and a fixed window smaller than that would
+        // ship it whole and overrun the rate.
+        events_offered += events;
+        let earned = Duration::from_secs_f64(events_offered as f64 / config.rps as f64);
+        if let Some(remaining) = earned.checked_sub(stats.start.elapsed()) {
+            std::thread::sleep(remaining);
         }
 
         if Instant::now() >= next_report {
             stats.report();
             next_report = Instant::now() + REPORT_INTERVAL;
-        }
-
-        if let Some(remaining) = PACE_WINDOW.checked_sub(window_start.elapsed()) {
-            std::thread::sleep(remaining);
         }
     }
 
