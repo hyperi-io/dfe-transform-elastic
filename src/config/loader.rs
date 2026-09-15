@@ -8,9 +8,10 @@
 //! section scalo resolves for itself reaches nothing when written there and is
 //! warned about rather than refused.
 
+use scalo::config::flat_env::{ApplyFlatEnv, flat_env_list, flat_env_parsed, flat_env_string};
 use scalo::config::{self, ConfigOptions};
 
-use super::Config;
+use super::{Config, SinkConfig, SourceConfig};
 
 /// Environment prefix for the config cascade.
 pub const ENV_PREFIX: &str = "DFE_TRANSFORM_ELASTIC";
@@ -103,20 +104,94 @@ impl Config {
 
         // An explicit file is the whole configuration -- see the module docs
         // for why it cannot be a cascade layer on scalo 2.11.1.
-        if let Some(path) = config_path {
+        let mut config: Self = if let Some(path) = config_path {
             let text = std::fs::read_to_string(path).map_err(|e| {
                 crate::Error::Config(format!("config file not found at '{path}': {e}"))
             })?;
             let doc: serde_yaml_ng::Value = serde_yaml_ng::from_str(&text)
                 .map_err(|e| crate::Error::Config(format!("invalid config at '{path}': {e}")))?;
             warn_unreachable_cascade_sections(path, &doc);
-            return serde_yaml_ng::from_value(doc)
-                .map_err(|e| crate::Error::Config(format!("invalid config at '{path}': {e}")));
-        }
+            serde_yaml_ng::from_value(doc)
+                .map_err(|e| crate::Error::Config(format!("invalid config at '{path}': {e}")))?
+        } else {
+            config::get()
+                .unmarshal()
+                .map_err(|e| crate::Error::Config(format!("cascade unmarshal failed: {e}")))?
+        };
 
-        config::get()
-            .unmarshal()
-            .map_err(|e| crate::Error::Config(format!("cascade unmarshal failed: {e}")))
+        // Applied on BOTH branches, which is the point: the flat form is the
+        // only override that reaches a `--config` deployment.
+        config.apply_flat_env(ENV_PREFIX);
+
+        Ok(config)
+    }
+}
+
+/// Flat, single-underscore env overrides -- `DFE_TRANSFORM_ELASTIC_SOURCE_TOPICS`.
+///
+/// This is the one override that reaches a `--config` deployment, because scalo
+/// resolves its own cascade from the double-underscore form and a named file is
+/// not one of those layers.
+///
+/// `geoip` takes none: it is scalo's type and this is scalo's trait, so the
+/// orphan rule puts it out of reach. It stays settable from the file and the
+/// cascade.
+impl ApplyFlatEnv for Config {
+    fn apply_flat_env(&mut self, prefix: &str) {
+        if let Some(name) = flat_env_string(prefix, "PIPELINE_NAME") {
+            self.pipeline_name = name;
+        }
+        self.source.apply_flat_env(&format!("{prefix}_SOURCE"));
+        self.sink.apply_flat_env(&format!("{prefix}_SINK"));
+    }
+}
+
+impl ApplyFlatEnv for SourceConfig {
+    fn apply_flat_env(&mut self, prefix: &str) {
+        if let Some(name) = flat_env_string(prefix, "NAME") {
+            self.name = name;
+        }
+        // An unknown name keeps the configured envelope rather than failing the
+        // load, because detection is the default and still works.
+        if let Some(raw) = flat_env_string(prefix, "ENVELOPE") {
+            match serde_yaml_ng::from_str(&raw) {
+                Ok(envelope) => self.envelope = envelope,
+                Err(e) => tracing::warn!(
+                    value = %raw,
+                    error = %e,
+                    "ignoring an envelope name this service does not know"
+                ),
+            }
+        }
+        if let Some(topics) = flat_env_list(prefix, "TOPICS") {
+            self.topics = topics;
+        }
+        if let Some(size) = flat_env_parsed(prefix, "BATCH_SIZE") {
+            self.batch_size = size;
+        }
+        if let Some(bytes) = flat_env_parsed(prefix, "MAX_BATCH_BYTES") {
+            self.max_batch_bytes = bytes;
+        }
+        if let Some(group) = flat_env_string(prefix, "GROUP_ID") {
+            self.group_id = group;
+        }
+        if let Some(brokers) = flat_env_list(prefix, "BROKERS") {
+            self.brokers = brokers;
+        }
+    }
+}
+
+impl ApplyFlatEnv for SinkConfig {
+    fn apply_flat_env(&mut self, prefix: &str) {
+        if let Some(topic) = flat_env_string(prefix, "TOPIC") {
+            self.topic = topic;
+        }
+        if let Some(brokers) = flat_env_list(prefix, "BROKERS") {
+            self.brokers = Some(brokers);
+        }
+        if let Some(bytes) = flat_env_parsed(prefix, "MAX_MESSAGE_BYTES") {
+            self.max_message_bytes = bytes;
+        }
     }
 }
 

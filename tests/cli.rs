@@ -26,6 +26,18 @@ fn run(args: &[&str]) -> Output {
         .expect("the built binary runs")
 }
 
+/// Run it with one variable set on the CHILD's environment.
+///
+/// `std::env::set_var` is unsafe in edition 2024 and this crate forbids unsafe,
+/// so the child's environment is the only one a test may set.
+fn run_with_env(args: &[&str], key: &str, value: &str) -> Output {
+    Command::new(env!("CARGO_BIN_EXE_dfe-transform-elastic"))
+        .args(args)
+        .env(key, value)
+        .output()
+        .expect("the built binary runs")
+}
+
 /// Run it and require a zero exit, reporting stderr when it is not.
 fn run_ok(args: &[&str]) -> String {
     let out = run(args);
@@ -151,5 +163,35 @@ fn an_unknown_subcommand_is_refused() {
     assert!(
         !out.status.success(),
         "an unknown subcommand exited 0, so the parser accepts anything"
+    );
+}
+
+/// The flat, single-underscore form is the one override that reaches a
+/// `--config` deployment, because the named file is not a scalo cascade layer
+/// and the double-underscore form never sees it.
+#[test]
+fn a_flat_env_var_overrides_a_config_file() {
+    let dir = tempfile::tempdir().expect("temp dir");
+    let path = dir.path().join("config.yaml");
+    std::fs::write(&path, run_ok(&["emit-config"])).expect("write the emitted config");
+    let path = path.to_str().expect("utf-8 path");
+
+    let clean = run(&["--config", path, "config-check"]);
+    assert!(
+        clean.status.success(),
+        "the emitted config is refused before any override: {}",
+        String::from_utf8_lossy(&clean.stderr)
+    );
+
+    // Validation refuses a source this build does not carry, so a refusal here
+    // can only mean the variable reached the loaded config.
+    let overridden = run_with_env(
+        &["--config", path, "config-check"],
+        "DFE_TRANSFORM_ELASTIC_SOURCE_NAME",
+        "filebeat.nosuchthing",
+    );
+    assert!(
+        !overridden.status.success(),
+        "the flat env override did not reach a --config deployment"
     );
 }
