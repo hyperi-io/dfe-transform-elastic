@@ -158,6 +158,61 @@ When your pull request is merged to `main`:
 
 This happens automatically - no manual intervention required.
 
+## CI is slow here, so iterate off it
+
+**A push to find out what CI says costs the better part of an hour.** Treat CI
+as the gate that proves a finished change, never as the type checker.
+
+Measured on this repo, per release run:
+
+| Stage | Elapsed |
+|---|---|
+| Quality | ~18 min |
+| Build, linux-amd64 | ~30 min |
+| Build, linux-arm64 | ~6-16% longer again than amd64 |
+
+The cause is this repo's shape rather than a misconfiguration. `dfe-transforms`
+carries one module per data stream, over two thousand of them, so it compiles as
+a single `rustc` holding about 13 GiB whatever `-j` says, and the binary then
+links under fat LTO in one thread. Neither step spreads across cores, which is
+why a bigger runner buys very little.
+
+**It gets worse when PGO and BOLT land.** That pipeline is not one build with a
+flag -- it is four sequential cargo passes (PGO instrument, PGO optimise, BOLT
+instrument, BOLT optimise) plus two fixed 300-second workload runs, and a failed
+BOLT attempt retries the pair. On a binary whose single pass already takes 30
+minutes that projects to roughly two hours per architecture, and about three if
+the retry fires.
+
+### What to run instead
+
+Everything below runs locally and answers in seconds:
+
+```bash
+# The same gates CI runs, before pushing.
+hyperi-ci check
+
+# One source against the corpus, ~6s once built. The name is a corpus directory
+# (okta, cisco_ios, panw) and must match exactly. A filtered run SKIPS both
+# ratchets, so it tells you about that source and nothing else.
+DFE_COMPAT_ONLY=okta cargo test -p dfe-transforms --test compat_corpus
+
+# The whole corpus, ~18s once built. This is the one that moves the ratchets.
+cargo test -p dfe-transforms --test compat_corpus
+```
+
+Keep a `bacon` session running while you edit -- it recompiles on save and gives
+verdicts without you spending a CI run on them. The first build of the workspace
+is cold and takes around twenty minutes, and every one after it is incremental.
+
+Two traps worth knowing before you burn a run on them:
+
+- **Never set `CARGO_BUILD_JOBS` by hand.** `~/.local/bin/cargo` derives it, and
+  a hand-set value beats both the shim and the project's own pinning.
+- **The compat corpus is gitignored and its absence PASSES.** A run in a git
+  worktree measures nothing and still reports success, so pass
+  `DFE_COMPAT_CORPUS=/projects/dfe-transform-elastic/testdata/compat` there.
+
 ## Questions
 
 If you have questions about contributing, please open an issue or contact us.
