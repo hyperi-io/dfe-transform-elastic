@@ -81,7 +81,6 @@ service:
 
 # -- Application configuration (mounted as /etc/dfe-transform-elastic/config.yaml)
 config:
-  pipeline_name: dfe-transform-elastic
   source:
     name: filebeat.okta.default
     envelope: auto
