@@ -28,7 +28,6 @@
 # `geoip.city_db_path` and `geoip.asn_db_path`; to run without enrichment, set
 # `geoip.enabled: false`.
 
-pipeline_name: dfe-transform-elastic
 source:
   name: filebeat.okta.default
   envelope: auto

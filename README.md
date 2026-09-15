@@ -45,8 +45,6 @@ Loaded from an explicit `--config` path, or from scalo's config cascade under
 the `DFE_TRANSFORM_ELASTIC` environment prefix.
 
 ```yaml
-pipeline_name: my-pipeline
-
 source:
   name: filebeat.okta.default    # one of `sources` above
   brokers: ["kafka:9092"]
@@ -161,7 +159,7 @@ so it works against a `--config` deployment:
     DFE_TRANSFORM_ELASTIC_SOURCE_BATCH_SIZE=5000
     DFE_TRANSFORM_ELASTIC_SINK_TOPIC=out
 
-The fields it covers are `pipeline_name`, every `source.*` and every `sink.*`.
+The fields it covers are every `source.*` and every `sink.*`.
 `geoip` is not among them -- it is scalo's own type, so the orphan rule puts it
 out of reach, and it stays settable from the file and the cascade. scalo's
 DOUBLE-underscore form is resolved from the cascade instead, which a named file

@@ -719,7 +719,6 @@ mod tests {
 
     fn config() -> Config {
         Config {
-            pipeline_name: "test".into(),
             source: SourceConfig {
                 name: "filebeat.okta.default".into(),
                 envelope: crate::envelope::EnvelopeSetting::Auto,

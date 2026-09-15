@@ -59,7 +59,6 @@ pub fn contract() -> DeploymentContract {
             ],
         }],
         default_config: Some(serde_json::json!({
-            "pipeline_name": "dfe-transform-elastic",
             "source": {
                 "name": "filebeat.okta.default",
                 // `auto` reads the family off each event, which is what the
