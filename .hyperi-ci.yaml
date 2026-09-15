@@ -33,12 +33,14 @@ build:
   strategies:
     - native
   rust:
-    # amd64 only for now. The arm64 leg runs on GitHub's hosted 4-core arm
-    # runner, and the release build of the crate that holds one module per
-    # data stream dies there without a log; an arm64 runner with the memory
-    # for it is issue #27.
+    # The arm64 leg needs a larger runner for MEMORY, not cores. `dfe-transforms`
+    # carries one module per data stream and holds 13.15 GiB in a single rustc at
+    # opt-level 1; the hosted `ubuntu-24.04-arm` is 2 vCPU and 8 GiB on a private
+    # repo, so the build was OOM-killed after 12 minutes. A repo-level
+    # `GH_RUNNER_ARM64` points this repo at a 16-core, 64 GiB runner (issue #27).
     targets:
       - x86_64-unknown-linux-gnu
+      - aarch64-unknown-linux-gnu
 
 # Publishing (on release). The stack pins every app by GHCR image digest, so
 # a release must land an image. The deployed chart is dfe-infra's, so the
@@ -51,5 +53,6 @@ publish:
     dockerfile: Dockerfile
     platforms:
       - linux/amd64
+      - linux/arm64
   helm:
     enabled: false
