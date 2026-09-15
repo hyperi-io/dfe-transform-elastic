@@ -61,6 +61,10 @@ pub fn contract() -> DeploymentContract {
         default_config: Some(serde_json::json!({
             "source": {
                 "name": "filebeat.okta.default",
+                // `bus` consumes `topics`; `direct` accepts pushes on `listen`
+                // and is declared but not yet constructed (issue #19).
+                "transport": "bus",
+                "listen": "0.0.0.0:6000",
                 // `auto` reads the family off each event, which is what the
                 // code defaults to. Naming one instead pins it: `receiver`
                 // reads dfe-receiver's output and `fetcher` dfe-fetcher's.
@@ -79,6 +83,9 @@ pub fn contract() -> DeploymentContract {
             },
             "sink": {
                 "topic": "normalised_events",
+                // `bus` produces to `topic`; `direct` pushes to `endpoint`.
+                "transport": "bus",
+                "endpoint": "http://dfe-loader:6000",
                 "brokers": ["kafka:9092"],
                 // A batch is split into as many records as this allows.
                 // librdkafka's producer ceiling is 1,000,000; the rest is
