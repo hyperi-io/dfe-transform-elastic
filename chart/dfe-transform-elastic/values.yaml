@@ -83,6 +83,8 @@ service:
 config:
   source:
     name: filebeat.okta.default
+    transport: bus
+    listen: 0.0.0.0:6000
     envelope: auto
     topics:
     - raw_events
@@ -93,6 +95,8 @@ config:
     - kafka:9092
   sink:
     topic: normalised_events
+    transport: bus
+    endpoint: http://dfe-loader:6000
     brokers:
     - kafka:9092
     max_message_bytes: 900000

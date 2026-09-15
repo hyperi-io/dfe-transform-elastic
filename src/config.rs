@@ -45,6 +45,29 @@ pub use loader::{CASCADE_ONLY_SECTIONS, ENV_PREFIX};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
+/// Which transport a side of the service uses.
+///
+/// `bus` is Kafka between the stages; `direct` is a scalo Push listener inbound
+/// and a gRPC client outbound, needing no broker at all. The record and the
+/// transform are identical either way -- only who hands the record over changes.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+#[serde(rename_all = "lowercase")]
+pub enum Transport {
+    /// Kafka topics.
+    #[default]
+    Bus,
+    /// A scalo Push listener inbound, a gRPC client outbound.
+    Direct,
+}
+
+impl Transport {
+    /// Whether this side is on the direct transport.
+    #[must_use]
+    pub const fn is_direct(self) -> bool {
+        matches!(self, Self::Direct)
+    }
+}
+
 /// Top-level service configuration.
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct Config {
@@ -75,6 +98,16 @@ pub struct Config {
 pub struct SourceConfig {
     /// Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.
     pub name: String,
+
+    /// Which transport the inbound side uses: `bus` consumes `topics`, `direct`
+    /// accepts pushes on `listen`.
+    #[serde(default)]
+    pub transport: Transport,
+
+    /// Address the Push listener binds on the direct transport, ignored on the
+    /// bus.
+    #[serde(default = "default_listen")]
+    pub listen: String,
 
     /// Which producer wrapped the payload. The transform is the same for all
     /// of them; only the unwrapping differs.
@@ -116,6 +149,15 @@ pub struct SinkConfig {
     /// Topic to produce to.
     pub topic: String,
 
+    /// Which transport the outbound side uses: `bus` produces to `topic`,
+    /// `direct` pushes to `endpoint`.
+    #[serde(default)]
+    pub transport: Transport,
+
+    /// Downstream Push listener on the direct transport, ignored on the bus.
+    #[serde(default = "default_endpoint")]
+    pub endpoint: String,
+
     /// Broker list. Defaults to the source brokers when unset.
     #[serde(default)]
     pub brokers: Option<Vec<String>>,
@@ -135,6 +177,8 @@ impl Default for SourceConfig {
     fn default() -> Self {
         Self {
             name: String::new(),
+            transport: Transport::default(),
+            listen: default_listen(),
             envelope: crate::envelope::EnvelopeSetting::default(),
             topics: Vec::new(),
             batch_size: default_batch_size(),
@@ -150,6 +194,8 @@ impl Default for SinkConfig {
     fn default() -> Self {
         Self {
             topic: String::new(),
+            transport: Transport::default(),
+            endpoint: default_endpoint(),
             brokers: None,
             max_message_bytes: default_max_message_bytes(),
         }
@@ -158,6 +204,17 @@ impl Default for SinkConfig {
 
 const fn default_batch_size() -> usize {
     20_000
+}
+
+/// Default bind address for the Push listener, matching the port dfe-infra's
+/// chart already advertises for this app.
+fn default_listen() -> String {
+    "0.0.0.0:6000".to_string()
+}
+
+/// Default downstream Push listener, which is dfe-loader on the direct path.
+fn default_endpoint() -> String {
+    "http://dfe-loader:6000".to_string()
 }
 
 /// Default ceiling on one inbound fetch.
@@ -190,16 +247,21 @@ impl Config {
 
     /// Does this configuration give the transform work?
     ///
-    /// A source name and at least one topic are what make this instance a
-    /// transform for something. With neither there is nothing to consume, so
-    /// the service starts, stays Ready, holds no consumer group, and picks up
-    /// the first configuration that names work -- rather than crash-looping
-    /// before any probe is serving.
+    /// A source name and somewhere for records to arrive are what make this
+    /// instance a transform for something. With neither there is nothing to
+    /// consume, so the service starts, stays Ready, holds no consumer group,
+    /// and picks up the first configuration that names work -- rather than
+    /// crash-looping before any probe is serving.
+    ///
+    /// On the direct transport the LISTENER is the work, so empty topics do not
+    /// idle. An unnamed source idles on both, because `validate` resolves the
+    /// name through the registry and an empty one raises there.
     #[must_use]
     pub fn work_state(&self) -> scalo::lifecycle::WorkState {
+        let no_intake = !self.source.transport.is_direct() && self.source.topics.is_empty();
         scalo::lifecycle::WorkState::idle_if(
-            self.source.name.trim().is_empty() || self.source.topics.is_empty(),
-            "no source name or topics configured",
+            self.source.name.trim().is_empty() || no_intake,
+            "no source name, or no topics on the bus transport",
         )
     }
 }
@@ -211,6 +273,8 @@ fn valid() -> Config {
     Config {
         source: SourceConfig {
             name: "filebeat.okta.default".into(),
+            transport: Transport::Bus,
+            listen: default_listen(),
             envelope: crate::envelope::EnvelopeSetting::Beats,
             topics: vec!["in".into()],
             batch_size: 100,
@@ -220,6 +284,8 @@ fn valid() -> Config {
         },
         sink: SinkConfig {
             topic: "out".into(),
+            transport: Transport::Bus,
+            endpoint: default_endpoint(),
             brokers: None,
             max_message_bytes: default_max_message_bytes(),
         },
@@ -253,6 +319,56 @@ mod tests {
         assert!(parsed.work_state().is_idle());
         assert_eq!(parsed.source.batch_size, 20_000);
         assert_eq!(parsed.sink.max_message_bytes, 900_000);
+    }
+
+    /// On the direct transport the listener is the work, so empty topics must
+    /// not idle -- an idle direct pod would stay Ready and accept nothing.
+    #[test]
+    fn a_direct_source_with_no_topics_has_work() {
+        let mut c = valid();
+        c.source.transport = Transport::Direct;
+        c.source.topics.clear();
+        assert!(!c.work_state().is_idle());
+    }
+
+    /// The name condition holds on BOTH transports, because `validate` resolves
+    /// it through the registry and an empty one raises there.
+    #[test]
+    fn an_unnamed_direct_source_still_idles() {
+        let mut c = valid();
+        c.source.transport = Transport::Direct;
+        c.source.name.clear();
+        assert!(c.work_state().is_idle());
+    }
+
+    /// Every config written before the transport existed still parses, and
+    /// parses onto the bus.
+    #[test]
+    fn a_config_without_a_transport_is_on_the_bus() {
+        let parsed: Config = serde_yaml_ng::from_str(
+            "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
+             group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
+        )
+        .expect("config parses without a transport key");
+        assert_eq!(parsed.source.transport, Transport::Bus);
+        assert_eq!(parsed.sink.transport, Transport::Bus);
+        assert_eq!(parsed.source.listen, "0.0.0.0:6000");
+        assert_eq!(parsed.sink.endpoint, "http://dfe-loader:6000");
+    }
+
+    /// A direct deployment names no brokers, group or topics, and is valid.
+    #[test]
+    fn the_direct_transport_round_trips_through_yaml() {
+        let parsed: Config = serde_yaml_ng::from_str(
+            "source:\n  name: filebeat.okta.default\n  transport: direct\n  \
+             listen: 0.0.0.0:6000\n  topics: []\n  group_id: ''\n  brokers: []\n\
+             sink:\n  topic: ''\n  transport: direct\n  endpoint: http://loader:6000\n",
+        )
+        .expect("config parses with the direct transport");
+        assert!(parsed.source.transport.is_direct());
+        assert!(parsed.sink.transport.is_direct());
+        assert!(!parsed.work_state().is_idle());
+        assert!(parsed.validate().is_ok());
     }
 
     #[test]
