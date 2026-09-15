@@ -23,7 +23,9 @@
 //! all. That file yields only what this [`Config`] declares, and scalo sees
 //! only what the service then hands it -- which is why `geoip` works from a
 //! file. Every other scalo section is listed in [`CASCADE_ONLY_SECTIONS`] and
-//! refused here, because a block that changes nothing is worse than no block.
+//! WARNED about here rather than refused: the infra chart renders
+//! `.Values.config` verbatim, so a section we do not control can appear in that
+//! file, and stopping the pod over it polices something that was never ours.
 
 use scalo::config::{self, ConfigOptions};
 use schemars::JsonSchema;
@@ -32,19 +34,26 @@ use serde::{Deserialize, Serialize};
 /// Environment prefix for the config cascade.
 pub const ENV_PREFIX: &str = "DFE_TRANSFORM_ELASTIC";
 
-/// Sections scalo loads from its OWN cascade, which a `--config` file is not a
-/// layer of.
+/// Sections that reach NOTHING when written into a `--config` file.
 ///
-/// Each is read by a `from_cascade` call inside scalo -- `scaling` by
-/// `ServiceRuntime::build`, the rest by whichever subsystem owns them -- and
-/// every one of those calls falls back to the type's `Default` when the key is
-/// absent. So a block under one of these names in a `--config` file is read by
-/// NOTHING, and the operator gets defaults while believing otherwise.
+/// scalo discovers cascade files by fixed base name -- `defaults.yaml`,
+/// `settings.yaml`, `settings.{env}.yaml` -- so a file named with `--config` is
+/// not one of its layers. Every section here is resolved by scalo itself, from
+/// that cascade or from the environment, and each resolver falls back to the
+/// type's `Default` when the key is absent. So the operator gets defaults while
+/// believing otherwise.
+///
+/// The test for membership is "does writing it into the `--config` file reach
+/// anything", NOT "does scalo resolve it from the cascade for us". Two entries
+/// only make sense under the wider test. `memory` is read by
+/// `MemoryGuardConfig::from_env`, not from the cascade, and `batch_processing`
+/// is gated on scalo's `worker-batch`, which this binary does not enable --
+/// both are inert in that file either way, which is the thing worth saying.
 ///
 /// `geoip` is deliberately absent: it is declared on [`Config`] and handed to
 /// `scalo::geoip_download` explicitly, which is what makes it work from a file.
-/// Anything added here must be a section scalo resolves for itself.
 pub const CASCADE_ONLY_SECTIONS: &[&str] = &[
+    "batch_processing",
     "http_client",
     "logger",
     "memory",
@@ -53,31 +62,39 @@ pub const CASCADE_ONLY_SECTIONS: &[&str] = &[
     "scaling",
     "secrets",
     "self_regulation",
+    "version_check",
+    "worker_pool",
 ];
 
-/// Refuse a `--config` file carrying a section only the cascade reads.
+/// Warn for every [`CASCADE_ONLY_SECTIONS`] entry a `--config` file carries.
 ///
-/// The section is not dropped quietly and not warned about: an operator who
-/// sets `scaling.memory_gate_threshold` has a reason, and running on a default
-/// they did not choose is the failure this exists to stop.
-fn reject_cascade_only_sections(path: &str, doc: &serde_yaml_ng::Value) -> crate::Result<()> {
+/// This used to REFUSE, on the reasoning that an operator who sets
+/// `scaling.memory_gate_threshold` has a reason and running on a default they
+/// did not choose is worse than not starting. The deployment says otherwise:
+/// the infra chart renders `.Values.config` verbatim from whatever dfe-engine
+/// publishes, so a section we do not control can appear in that file and a
+/// refusal stops the pod over a value that was never ours to police. Warning
+/// tells the operator the same thing and leaves the service running, which is
+/// what dfe-transform-vrl does.
+///
+/// Every offending section is reported, not just the first -- a config with
+/// three of them should not need three restarts to discover that.
+fn warn_unreachable_cascade_sections(path: &str, doc: &serde_yaml_ng::Value) {
     let Some(map) = doc.as_mapping() else {
-        return Ok(());
+        return;
     };
     for section in CASCADE_ONLY_SECTIONS {
         if map.contains_key(*section) {
-            return Err(crate::Error::Config(format!(
-                "config file '{path}' sets `{section}`, which nothing reads. scalo resolves \
-                 `{section}` from its config cascade -- ./defaults.yaml, ./settings.yaml, \
-                 /config/settings.yaml, then {ENV_PREFIX}_* environment variables -- and a file \
-                 named with --config is not one of those layers. Set it as \
-                 `{ENV_PREFIX}_{upper}__<KEY>` in the environment, or delete the section to take \
-                 scalo's defaults",
-                upper = section.to_uppercase()
-            )));
+            tracing::warn!(
+                section = *section,
+                path = path,
+                instead = format!("{ENV_PREFIX}_{}__<KEY>", section.to_uppercase()),
+                "config section is not applied: scalo resolves it for itself, and a file named \
+                 with --config is not one of its cascade layers -- set it in the environment or \
+                 delete the section to take scalo's defaults"
+            );
         }
     }
-    Ok(())
 }
 
 /// Top-level service configuration.
@@ -263,7 +280,7 @@ impl Config {
             })?;
             let doc: serde_yaml_ng::Value = serde_yaml_ng::from_str(&text)
                 .map_err(|e| crate::Error::Config(format!("invalid config at '{path}': {e}")))?;
-            reject_cascade_only_sections(path, &doc)?;
+            warn_unreachable_cascade_sections(path, &doc);
             return serde_yaml_ng::from_value(doc)
                 .map_err(|e| crate::Error::Config(format!("invalid config at '{path}': {e}")));
         }
@@ -626,38 +643,42 @@ mod tests {
         Config::load(Some(path.to_str().expect("utf-8 path")))
     }
 
-    /// The trap this refusal exists to close: the chart passes `--config`, and
+    /// The trap this warning exists to name: the chart passes `--config`, and
     /// scalo reads `scaling` from a cascade that file is not a layer of, so a
     /// threshold written there reaches nothing.
+    ///
+    /// It LOADS. A surplus section is reported and stepped over, because the
+    /// chart renders that file from what dfe-engine publishes and refusing
+    /// would stop the pod over a value that was never this service's to police.
     #[test]
-    fn a_config_file_carrying_scaling_is_refused() {
-        let message = load_file(&format!(
+    fn a_config_file_carrying_scaling_still_loads() {
+        let loaded = load_file(&format!(
             "{FILE_BASE}scaling:\n  enabled: true\n  memory_gate_threshold: 0.9\n"
         ))
-        .expect_err("a --config file carrying `scaling` must be refused")
-        .to_string();
+        .expect("a surplus cascade section is warned about, not refused");
 
-        // The error has to name the mechanism and the way out, or it just
-        // moves the operator from a silent default to a blocked startup.
-        assert!(message.contains("sets `scaling`"), "{message}");
-        assert!(message.contains("nothing reads"), "{message}");
-        assert!(message.contains("cascade"), "{message}");
-        assert!(
-            message.contains("DFE_TRANSFORM_ELASTIC_SCALING__<KEY>"),
-            "{message}"
-        );
+        // Loading past it must not disturb what the file DOES configure.
+        assert_eq!(loaded.source.name, "filebeat.okta.default");
+        assert_eq!(loaded.sink.topic, "out");
     }
 
-    /// Every name on the list is refused, so adding one to the list is the
-    /// whole job of covering a new scalo section.
+    /// No name on the list stops a config from loading, so adding one to the
+    /// list is the whole job of covering a new scalo section.
     #[test]
-    fn every_cascade_only_section_is_refused() {
+    fn no_cascade_only_section_stops_a_config_loading() {
+        // A floor, so an emptied list cannot make this pass by looping zero
+        // times. It moves only when scalo gains or loses a section.
+        assert!(
+            CASCADE_ONLY_SECTIONS.len() >= 11,
+            "the cascade-only list lost entries: {}",
+            CASCADE_ONLY_SECTIONS.len()
+        );
+
         for section in CASCADE_ONLY_SECTIONS {
             let body = format!("{FILE_BASE}{section}:\n  enabled: true\n");
-            let message = load_file(&body)
-                .expect_err("a cascade-only section must be refused")
-                .to_string();
-            assert!(message.contains(&format!("sets `{section}`")), "{message}");
+            let loaded = load_file(&body)
+                .unwrap_or_else(|e| panic!("`{section}` must be warned about, not refused: {e}"));
+            assert_eq!(loaded.source.name, "filebeat.okta.default", "{section}");
         }
     }
 
