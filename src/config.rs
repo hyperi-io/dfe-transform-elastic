@@ -88,9 +88,16 @@ pub struct Config {
     pub pipeline_name: String,
 
     /// Inbound side.
+    ///
+    /// Defaulted so an instance nothing has configured yet still PARSES and
+    /// reaches the idle gate. Without it the process dies on a missing
+    /// `source` field before `ServiceRuntime::build`, so no `/livez` or
+    /// `/readyz` is serving when it exits and the pod crash-loops.
+    #[serde(default)]
     pub source: SourceConfig,
 
     /// Outbound side.
+    #[serde(default)]
     pub sink: SinkConfig,
 
     /// Which MMDB databases the geoip processors read, and how to obtain them.
@@ -159,6 +166,33 @@ pub struct SinkConfig {
     /// producer's -- raising the broker limit alone does nothing.
     #[serde(default = "default_max_message_bytes")]
     pub max_message_bytes: usize,
+}
+
+/// An unconfigured inbound side: no source, no topics, and the shipped numeric
+/// defaults. [`Config::work_state`] reads this as no work and idles.
+impl Default for SourceConfig {
+    fn default() -> Self {
+        Self {
+            name: String::new(),
+            envelope: crate::envelope::EnvelopeSetting::default(),
+            topics: Vec::new(),
+            batch_size: default_batch_size(),
+            max_batch_bytes: default_max_batch_bytes(),
+            group_id: String::new(),
+            brokers: Vec::new(),
+        }
+    }
+}
+
+/// An unconfigured outbound side, with the shipped record budget.
+impl Default for SinkConfig {
+    fn default() -> Self {
+        Self {
+            topic: String::new(),
+            brokers: None,
+            max_message_bytes: default_max_message_bytes(),
+        }
+    }
 }
 
 fn default_pipeline_name() -> String {
@@ -244,25 +278,18 @@ impl Config {
         self.sink.brokers.as_deref().unwrap_or(&self.source.brokers)
     }
 
-    /// Reject a configuration that cannot produce a working service.
+    /// Reject a configuration that is structurally wrong.
+    ///
+    /// Empty is NOT wrong: an instance nothing has configured yet is valid and
+    /// idles, which [`Config::work_state`] decides. This refuses only what is
+    /// present and cannot work.
     ///
     /// # Errors
     ///
-    /// Returns [`crate::Error::Config`] when a required value is empty or a
-    /// numeric value is out of range.
+    /// Returns [`crate::Error::Config`] when a numeric value is out of range,
+    /// or -- once the configuration names work -- when a value that work needs
+    /// is missing or names a source this build does not carry.
     pub fn validate(&self) -> crate::Result<()> {
-        if self.source.topics.is_empty() {
-            return Err(crate::Error::Config("source.topics is empty".into()));
-        }
-        if self.source.brokers.is_empty() {
-            return Err(crate::Error::Config("source.brokers is empty".into()));
-        }
-        if self.source.group_id.trim().is_empty() {
-            return Err(crate::Error::Config("source.group_id is empty".into()));
-        }
-        if self.sink.topic.trim().is_empty() {
-            return Err(crate::Error::Config("sink.topic is empty".into()));
-        }
         if self.source.batch_size == 0 {
             return Err(crate::Error::Config("source.batch_size is zero".into()));
         }
@@ -284,6 +311,23 @@ impl Config {
                 self.sink.max_message_bytes
             )));
         }
+        // Emptiness is not invalidity. An instance deployed before anything
+        // names a source idles instead of refusing, so every check below runs
+        // only once the configuration actually gives the transform work.
+        if self.work_state().is_idle() {
+            return Ok(());
+        }
+
+        if self.source.brokers.is_empty() {
+            return Err(crate::Error::Config("source.brokers is empty".into()));
+        }
+        if self.source.group_id.trim().is_empty() {
+            return Err(crate::Error::Config("source.group_id is empty".into()));
+        }
+        if self.sink.topic.trim().is_empty() {
+            return Err(crate::Error::Config("sink.topic is empty".into()));
+        }
+
         let intake = crate::registry::intake(&self.source.name)
             .ok_or_else(|| crate::Error::UnknownSource(self.source.name.clone()))?;
 
@@ -311,6 +355,21 @@ impl Config {
         }
 
         Ok(())
+    }
+
+    /// Does this configuration give the transform work?
+    ///
+    /// A source name and at least one topic are what make this instance a
+    /// transform for something. With neither there is nothing to consume, so
+    /// the service starts, stays Ready, holds no consumer group, and picks up
+    /// the first configuration that names work -- rather than crash-looping
+    /// before any probe is serving.
+    #[must_use]
+    pub fn work_state(&self) -> scalo::lifecycle::WorkState {
+        scalo::lifecycle::WorkState::idle_if(
+            self.source.name.trim().is_empty() || self.source.topics.is_empty(),
+            "no source name or topics configured",
+        )
     }
 }
 
@@ -350,10 +409,51 @@ mod tests {
         assert_eq!(valid().sink_brokers(), ["localhost:9092".to_string()]);
     }
 
+    /// Empty is not invalid. A transform with no topics has nothing to consume,
+    /// so it idles until a configuration names work instead of refusing.
     #[test]
-    fn rejects_empty_topics() {
+    fn empty_topics_idle_rather_than_refuse() {
         let mut c = valid();
         c.source.topics.clear();
+        assert!(c.validate().is_ok(), "empty topics must not refuse");
+        assert!(c.work_state().is_idle());
+    }
+
+    /// The same for a source nothing has named yet: the engine writes the
+    /// variant only once the deployment carries one.
+    #[test]
+    fn an_unnamed_source_idles() {
+        let mut c = valid();
+        c.source.name.clear();
+        assert!(c.validate().is_ok());
+        assert!(c.work_state().is_idle());
+    }
+
+    #[test]
+    fn a_complete_config_has_work() {
+        assert!(!valid().work_state().is_idle());
+        assert_eq!(valid().work_state().reason(), None);
+    }
+
+    /// The whole point of the defaults: an instance nothing has configured must
+    /// PARSE. Without that it dies on a missing field before
+    /// `ServiceRuntime::build`, so no probe is serving when it exits.
+    #[test]
+    fn an_empty_document_parses_and_idles() {
+        let parsed: Config = serde_yaml_ng::from_str("{}").expect("an empty config parses");
+        assert!(parsed.validate().is_ok());
+        assert!(parsed.work_state().is_idle());
+        assert_eq!(parsed.source.batch_size, 20_000);
+        assert_eq!(parsed.sink.max_message_bytes, 900_000);
+    }
+
+    /// A value someone SET being out of range is structurally wrong whether or
+    /// not there is work yet, so the range checks run ahead of the idle gate.
+    #[test]
+    fn a_structural_fault_refuses_even_when_idle() {
+        let mut c = valid();
+        c.source.topics.clear();
+        c.sink.max_message_bytes = 4_000_000;
         assert!(c.validate().is_err());
     }
 

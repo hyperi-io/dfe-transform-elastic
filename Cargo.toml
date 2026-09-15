@@ -69,7 +69,8 @@ default = ["kafka"]
 # system allocator so `cargo build` is not paying for it.
 jemalloc = ["dep:tikv-jemallocator"]
 # The Kafka service loop. Separable so the crate still builds and tests on a
-# host without librdkafka-dev; needs >= 2.12.1 when enabled.
+# host without librdkafka-dev; needs the LIBRDKAFKA C library at 2.12.1 or
+# later when enabled, which is unrelated to the scalo version below.
 kafka = ["scalo/transport-kafka"]
 
 [lints.rust]
@@ -137,7 +138,7 @@ dfe-transforms = { path = "crates/dfe-transforms" }
 
 # Batteries-included runtime (crates.io) — NEVER a path dependency.
 # Features are added when their API is actually referenced, not speculatively.
-scalo = { version = ">=2.11.1, <3", features = [
+scalo = { version = ">=2.12.2, <3", features = [
     "cli-service",
     "config",
     "config-schema",

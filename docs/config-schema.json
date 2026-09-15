@@ -10,12 +10,26 @@
       "default": "dfe-transform-elastic"
     },
     "source": {
-      "description": "Inbound side.",
-      "$ref": "#/$defs/SourceConfig"
+      "description": "Inbound side.\n\nDefaulted so an instance nothing has configured yet still PARSES and\nreaches the idle gate. Without it the process dies on a missing\n`source` field before `ServiceRuntime::build`, so no `/livez` or\n`/readyz` is serving when it exits and the pod crash-loops.",
+      "$ref": "#/$defs/SourceConfig",
+      "default": {
+        "name": "",
+        "envelope": "auto",
+        "topics": [],
+        "batch_size": 20000,
+        "max_batch_bytes": 16777216,
+        "group_id": "",
+        "brokers": []
+      }
     },
     "sink": {
       "description": "Outbound side.",
-      "$ref": "#/$defs/SinkConfig"
+      "$ref": "#/$defs/SinkConfig",
+      "default": {
+        "topic": "",
+        "brokers": null,
+        "max_message_bytes": 900000
+      }
     },
     "geoip": {
       "description": "Which MMDB databases the geoip processors read, and how to obtain them.\n\nscalo's type verbatim: provisioning is shared across the fleet, and the\nlookup engine and its cache stay in `dfe-runtime`. Read once at startup,\nso a change needs a restart.",
@@ -36,10 +50,6 @@
       }
     }
   },
-  "required": [
-    "source",
-    "sink"
-  ],
   "$defs": {
     "SourceConfig": {
       "description": "Inbound configuration.",
