@@ -126,9 +126,12 @@ transform and runs it over every batch on the scalo runtime.
 A config naming a source the build does not carry is rejected at startup, not discovered at
 the first batch. Nothing is hot-reloaded: `Config::load` reads the configuration once and the
 loaded value is handed to the batch loop by reference, so every value needs a restart. The two
-ways in also differ -- with no `--config` the scalo cascade applies and `DFE_TRANSFORM_ELASTIC_*`
-overrides the files, while `--config` reads the named file directly and no such variable reaches
-it. `src/config.rs` states both at the top of the file.
+ways in also differ -- with no `--config` the scalo cascade applies, while `--config` reads the
+named file directly because scalo cannot merge an arbitrarily-named file in as a cascade layer.
+Which env spelling is used decides whether it reaches that file: the FLAT, single-underscore
+form (`DFE_TRANSFORM_ELASTIC_SOURCE_TOPICS`) is applied to the loaded configuration on both
+branches, while scalo's double-underscore form is resolved from the cascade and reaches a
+`--config` deployment never. `src/config.rs` states both at the top of the file.
 
 **Scaling is configured through the environment, not the config file.** The container is started
 with `--config`, and scalo resolves `scaling` from its own cascade -- `./defaults.yaml`,

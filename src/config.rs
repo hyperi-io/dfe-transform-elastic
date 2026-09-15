@@ -8,15 +8,21 @@
 //! enabled. Every value here needs a pod restart to change.
 //!
 //! Two ways in, and they are not equivalent. With no `--config` the whole scalo
-//! cascade applies, so `DFE_TRANSFORM_ELASTIC_*` overrides the files. With
-//! `--config` -- which is what the container passes -- the named file IS the
-//! configuration: scalo 2.11.1 has no way to merge an arbitrarily-named file
-//! into the cascade as a layer (`ConfigOptions::config_paths` searches for
-//! `defaults`/`settings` by name, and `merge_cli` sits above the environment),
-//! so the file is read directly and no `DFE_TRANSFORM_ELASTIC_*` variable
-//! reaches it. The cascade is still installed either way, because the rest of
-//! scalo reads it. Kafka credentials are unaffected: `KafkaConfig::from_env`
-//! reads `KAFKA_*` separately.
+//! cascade applies. With `--config` -- which is what the container passes --
+//! the named file IS the configuration: scalo has no way to merge an
+//! arbitrarily-named file into the cascade as a layer
+//! (`ConfigOptions::config_paths` searches for `defaults`/`settings` by name,
+//! and `merge_cli` sits above the environment), so the file is read directly.
+//! The cascade is still installed either way, because the rest of scalo reads
+//! it. Kafka credentials are unaffected: `KafkaConfig::from_env` reads
+//! `KAFKA_*` separately.
+//!
+//! **Two env spellings, and only one of them reaches a `--config` file.** The
+//! FLAT, single-underscore form -- `DFE_TRANSFORM_ELASTIC_SOURCE_TOPICS` -- is
+//! applied by `loader`'s [`ApplyFlatEnv`](scalo::config::flat_env::ApplyFlatEnv)
+//! impls after the configuration is loaded, on both branches. scalo's own
+//! double-underscore form is resolved from the cascade, which a named file is
+//! not a layer of, so it reaches that deployment never.
 //!
 //! The consequence is invisible and so is stated outright: a section scalo
 //! resolves from the cascade for itself cannot be set from a `--config` file at
