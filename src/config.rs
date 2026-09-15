@@ -90,9 +90,9 @@ pub struct Config {
     /// Inbound side.
     ///
     /// Defaulted so an instance nothing has configured yet still PARSES and
-    /// reaches the idle gate. Without it the process dies on
-    /// `missing field `source`` before `ServiceRuntime::build`, so no `/livez`
-    /// or `/readyz` is serving when it exits and the pod crash-loops.
+    /// reaches the idle gate. Without it the process dies on a missing
+    /// `source` field before `ServiceRuntime::build`, so no `/livez` or
+    /// `/readyz` is serving when it exits and the pod crash-loops.
     #[serde(default)]
     pub source: SourceConfig,
 
