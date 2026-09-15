@@ -10,7 +10,7 @@
       "default": "dfe-transform-elastic"
     },
     "source": {
-      "description": "Inbound side.\n\nDefaulted so an instance nothing has configured yet still PARSES and\nreaches the idle gate. Without it the process dies on\n`missing field `source`` before `ServiceRuntime::build`, so no `/livez`\nor `/readyz` is serving when it exits and the pod crash-loops.",
+      "description": "Inbound side.\n\nDefaulted so an instance nothing has configured yet still PARSES and\nreaches the idle gate. Without it the process dies on a missing\n`source` field before `ServiceRuntime::build`, so no `/livez` or\n`/readyz` is serving when it exits and the pod crash-loops.",
       "$ref": "#/$defs/SourceConfig",
       "default": {
         "name": "",
