@@ -150,23 +150,21 @@ impl ServiceApp for App {
         config.work_state()
     }
 
+    fn version_check_defaults(&self) -> scalo::version_check::VersionCheckConfig {
+        // The runtime overlays the version_check cascade keys on this, so a
+        // deployment's explicit enabled: false always wins.
+        scalo::version_check::VersionCheckConfig {
+            api_url: "https://releases.hyperi.io/api/v1/check".into(),
+            ..Default::default()
+        }
+    }
+
     #[cfg(feature = "kafka")]
     async fn run_service(
         &self,
         config: Config,
         runtime: scalo::cli::ServiceRuntime,
     ) -> Result<(), CliError> {
-        // Fire-and-forget, and OFF unless `version_check.enabled` says
-        // otherwise, so an operator who never configures it pays nothing and
-        // reaches nothing. It must not sit on the batch loop's path.
-        scalo::version_check::VersionCheck::new(
-            scalo::version_check::VersionCheckConfig::from_cascade(
-                self.name(),
-                env!("CARGO_PKG_VERSION"),
-            ),
-        )
-        .check_on_startup();
-
         crate::service::run(config, runtime)
             .await
             .map_err(|e| CliError::Service(e.to_string()))
