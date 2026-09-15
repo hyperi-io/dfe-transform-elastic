@@ -36,7 +36,6 @@
     }
   ],
   "default_config": {
-    "pipeline_name": "dfe-transform-elastic",
     "source": {
       "name": "filebeat.okta.default",
       "envelope": "auto",
@@ -114,18 +113,31 @@
     "description": "Top-level service configuration.",
     "type": "object",
     "properties": {
-      "pipeline_name": {
-        "description": "Name reported in metrics labels.",
-        "type": "string",
-        "default": "dfe-transform-elastic"
-      },
       "source": {
-        "description": "Inbound side.",
-        "$ref": "#/$defs/SourceConfig"
+        "description": "Inbound side.\n\nDefaulted so an instance nothing has configured yet still PARSES and\nreaches the idle gate. Without it the process dies on a missing\n`source` field before `ServiceRuntime::build`, so no `/livez` or\n`/readyz` is serving when it exits and the pod crash-loops.",
+        "$ref": "#/$defs/SourceConfig",
+        "default": {
+          "name": "",
+          "transport": "bus",
+          "listen": "0.0.0.0:6000",
+          "envelope": "auto",
+          "topics": [],
+          "batch_size": 20000,
+          "max_batch_bytes": 16777216,
+          "group_id": "",
+          "brokers": []
+        }
       },
       "sink": {
         "description": "Outbound side.",
-        "$ref": "#/$defs/SinkConfig"
+        "$ref": "#/$defs/SinkConfig",
+        "default": {
+          "topic": "",
+          "transport": "bus",
+          "endpoint": "http://dfe-loader:6000",
+          "brokers": null,
+          "max_message_bytes": 900000
+        }
       },
       "geoip": {
         "description": "Which MMDB databases the geoip processors read, and how to obtain them.\n\nscalo's type verbatim: provisioning is shared across the fleet, and the\nlookup engine and its cache stay in `dfe-runtime`. Read once at startup,\nso a change needs a restart.",
@@ -146,10 +158,6 @@
         }
       }
     },
-    "required": [
-      "source",
-      "sink"
-    ],
     "$defs": {
       "SourceConfig": {
         "description": "Inbound configuration.",
@@ -158,6 +166,16 @@
           "name": {
             "description": "Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.",
             "type": "string"
+          },
+          "transport": {
+            "description": "Which transport the inbound side uses: `bus` consumes `topics`, `direct`\naccepts pushes on `listen`.",
+            "$ref": "#/$defs/Transport",
+            "default": "bus"
+          },
+          "listen": {
+            "description": "Address the Push listener binds on the direct transport, ignored on the\nbus.",
+            "type": "string",
+            "default": "0.0.0.0:6000"
           },
           "envelope": {
             "description": "Which producer wrapped the payload. The transform is the same for all\nof them; only the unwrapping differs.\n\nDefaults to `auto`, which reads it off each batch's first event. Naming\na family instead pins it, and validation then rejects one the source\ncannot actually arrive in.",
@@ -204,6 +222,21 @@
           "brokers"
         ]
       },
+      "Transport": {
+        "description": "Which transport a side of the service uses.\n\n`bus` is Kafka between the stages; `direct` is a scalo Push listener inbound\nand a gRPC client outbound, needing no broker at all. The record and the\ntransform are identical either way -- only who hands the record over changes.",
+        "oneOf": [
+          {
+            "description": "Kafka topics.",
+            "type": "string",
+            "const": "bus"
+          },
+          {
+            "description": "A scalo Push listener inbound, a gRPC client outbound.",
+            "type": "string",
+            "const": "direct"
+          }
+        ]
+      },
       "EnvelopeSetting": {
         "description": "What the operator said about the envelope.\n\n`auto` is the default: the family is read off the first event of each batch,\nso a deployment that changes producer needs no config change. Naming one\npins it, which is the way through for a shape that carries no marker.",
         "oneOf": [
@@ -236,6 +269,16 @@
           "topic": {
             "description": "Topic to produce to.",
             "type": "string"
+          },
+          "transport": {
+            "description": "Which transport the outbound side uses: `bus` produces to `topic`,\n`direct` pushes to `endpoint`.",
+            "$ref": "#/$defs/Transport",
+            "default": "bus"
+          },
+          "endpoint": {
+            "description": "Downstream Push listener on the direct transport, ignored on the bus.",
+            "type": "string",
+            "default": "http://dfe-loader:6000"
           },
           "brokers": {
             "description": "Broker list. Defaults to the source brokers when unset.",

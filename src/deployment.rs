@@ -589,6 +589,26 @@ mod tests {
         config.validate().expect("example validates");
     }
 
+    /// The committed `deployment-contract.json` must match a fresh generation.
+    /// Refresh with `dfe-transform-elastic generate-artefacts --output-dir docs`.
+    ///
+    /// scalo's `check_config_artifact_drift` does NOT cover this file -- it
+    /// renders `config-schema.*` and `capability-catalog.*` only -- so without
+    /// this test a narrow regeneration leaves the contract stale in silence.
+    /// It is the artefact dfe-infra reads, and it had drifted across two
+    /// merges before this test existed.
+    #[test]
+    fn committed_deployment_contract_does_not_drift() {
+        let path =
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("docs/deployment-contract.json");
+        let committed =
+            std::fs::read_to_string(&path).expect("deployment-contract.json is committed");
+        // The same serde call `generate-artefacts` makes, on scalo's own
+        // public type, so its JSON shape is followed rather than restated.
+        let fresh = serde_json::to_string_pretty(&contract()).expect("contract serialises");
+        assert_eq!(committed.trim_end(), fresh.trim_end());
+    }
+
     /// The committed `Dockerfile` must match a fresh emit. Refresh with
     /// `dfe-transform-elastic emit-dockerfile > Dockerfile`.
     #[test]
