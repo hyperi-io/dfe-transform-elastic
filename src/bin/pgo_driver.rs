@@ -237,7 +237,7 @@ fn run(producer: &KafkaProducer, config: &Config, records: &[Vec<u8>]) -> Stats 
 
 /// Events in one NDJSON record, which is its line count.
 fn count_events(record: &[u8]) -> u64 {
-    record.iter().filter(|byte| **byte == b'\n').count() as u64
+    memchr::memchr_iter(b'\n', record).count() as u64
 }
 
 /// What the run produced, printed periodically and once at the end.
