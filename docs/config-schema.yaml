@@ -8,11 +8,29 @@ properties:
     type: string
     default: dfe-transform-elastic
   source:
-    description: Inbound side.
+    description: |-
+      Inbound side.
+
+      Defaulted so an instance nothing has configured yet still PARSES and
+      reaches the idle gate. Without it the process dies on
+      `missing field `source`` before `ServiceRuntime::build`, so no `/livez`
+      or `/readyz` is serving when it exits and the pod crash-loops.
     $ref: '#/$defs/SourceConfig'
+    default:
+      name: ''
+      envelope: auto
+      topics: []
+      batch_size: 20000
+      max_batch_bytes: 16777216
+      group_id: ''
+      brokers: []
   sink:
     description: Outbound side.
     $ref: '#/$defs/SinkConfig'
+    default:
+      topic: ''
+      brokers: null
+      max_message_bytes: 900000
   geoip:
     description: |-
       Which MMDB databases the geoip processors read, and how to obtain them.
@@ -33,9 +51,6 @@ properties:
         maxmind_license_key: null
         ipinfo_token: null
         max_age_days: 30
-required:
-- source
-- sink
 $defs:
   SourceConfig:
     description: Inbound configuration.
