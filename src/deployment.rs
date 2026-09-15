@@ -13,6 +13,9 @@ use scalo::deployment::{
     KedaContract, NativeDepsContract, PortContract, SecretEnvContract, SecretGroupContract,
     base_image_from_cascade,
 };
+use scalo::geoip_download::{AutoDownloadConfig, GeoIpConfig};
+
+use crate::config::{Config, SinkConfig, SourceConfig, Transport};
 
 /// Build the deployment contract for dfe-transform-elastic.
 #[must_use]
@@ -62,62 +65,19 @@ pub fn contract() -> DeploymentContract {
                 },
             ],
         }],
-        default_config: Some(serde_json::json!({
-            "source": {
-                "name": "filebeat.okta.default",
-                // `bus` consumes `topics`; `direct` accepts pushes on `listen`
-                // and is declared but not yet constructed (issue #19).
-                "transport": "bus",
-                "listen": "0.0.0.0:6000",
-                // `auto` reads the family off each event, which is what the
-                // code defaults to. Naming one instead pins it: `receiver`
-                // reads dfe-receiver's output and `fetcher` dfe-fetcher's.
-                // Which a source accepts is in the capability catalogue, and a
-                // wrong one is refused at startup.
-                "envelope": "auto",
-                "topics": ["raw_events"],
-                // Batch-first default: amortises commit, allocation and SIMD setup.
-                "batch_size": 20000,
-                // The inbound mirror of `sink.max_message_bytes`: 20,000
-                // records of unbounded size is unbounded memory, so the fetch
-                // is capped in bytes as well as in records.
-                "max_batch_bytes": 16_777_216,
-                "group_id": "dfe-transform-elastic",
-                "brokers": ["kafka:9092"]
-            },
-            "sink": {
-                "topic": "normalised_events",
-                // `bus` produces to `topic`; `direct` pushes to `endpoint`.
-                "transport": "bus",
-                "endpoint": "http://dfe-loader:6000",
-                "brokers": ["kafka:9092"],
-                // A batch is split into as many records as this allows.
-                // librdkafka's producer ceiling is 1,000,000; the rest is
-                // headroom for the key, headers and framing.
-                "max_message_bytes": 900_000
-            },
-            // scalo provisions the MMDB databases, re-downloading a file older
-            // than `max_age_days` and keeping the stale copy when a provider is
-            // down. `/var/lib/dfe/geoip` is dfe-loader's directory too, so one
-            // volume serves both stages.
-            "geoip": {
-                "enabled": true,
-                "provider": "db_ip_lite",
-                "auto_download": {
-                    "enabled": true,
-                    "data_dir": "/var/lib/dfe/geoip",
-                    "max_age_days": 30
-                }
-            },
-            // No `health`, `metrics` or `scaling` section here: a key this
-            // service never reads is a knob that silently does nothing.
-            // scalo's `--metrics-addr` (env `METRICS_ADDR`) owns the listener,
-            // and it resolves `scaling` from its config cascade, which the
-            // file this contract ships is not a layer of. Scaling runs on
-            // `ScalingPressureConfig::default()` with the components
-            // registered by `ServiceApp::scaling_components`; move a gate
-            // threshold with `DFE_TRANSFORM_ELASTIC_SCALING__*`.
-        })),
+        // Rendered from a [`Config`] value, so a field added to the type cannot
+        // go missing from what ships -- see `shipped_config`. A `None` renders
+        // as no key at all, which `strip_nulls` explains.
+        //
+        // There is no `health`, `metrics` or `scaling` section because `Config`
+        // declares none: a key this service never reads is a knob that silently
+        // does nothing. scalo's `--metrics-addr` (env `METRICS_ADDR`) owns the
+        // listener, and it resolves `scaling` from its config cascade, which
+        // the file this contract ships is not a layer of. Scaling runs on
+        // `ScalingPressureConfig::default()` with the components registered by
+        // `ServiceApp::scaling_components`; move a gate threshold with
+        // `DFE_TRANSFORM_ELASTIC_SCALING__*`.
+        default_config: serde_json::to_value(shipped_config()).ok().map(strip_nulls),
         depends_on: vec!["kafka".into()],
         native_deps: NativeDepsContract::for_scalo_features(&["transport-kafka"], &base_image),
         image_profile: ImageProfile::Production,
@@ -147,6 +107,98 @@ pub fn contract() -> DeploymentContract {
         },
         config_schema: Some(scalo::deployment::config_schema_json::<crate::config::Config>()),
         capabilities: capabilities(),
+    }
+}
+
+/// The configuration this image ships, as a [`Config`] value.
+///
+/// Four artefacts render from it -- the contract's `default_config`, the
+/// committed `config.example.yaml`, the config schema and the chart's `config:`
+/// block -- so it is built as a VALUE rather than a JSON literal: a field added
+/// to [`Config`] stops this file compiling until someone gives it a shipped
+/// value. A literal carried only the keys somebody had typed, and the transport
+/// fields shipped missing from the example while every test stayed green.
+///
+/// That is why there is no `..Default::default()` on this service's own types.
+/// `geoip` is the exception and takes one, because it is scalo's type and scalo
+/// owns its shape; a field added there arrives through serialisation instead.
+///
+/// The values are illustrative, not defaults. Every field of [`Config`] carries
+/// a serde default, and taking all of them gives the IDLE configuration -- no
+/// source name, no topics, no brokers -- so deriving the values as well as the
+/// structure would ship an example that parses, validates, and gives the
+/// transform nothing to do.
+fn shipped_config() -> Config {
+    Config {
+        source: SourceConfig {
+            name: "filebeat.okta.default".into(),
+            // `bus` consumes `topics`; `direct` accepts pushes on `listen`
+            // (issue #19).
+            transport: Transport::Bus,
+            listen: "0.0.0.0:6000".into(),
+            // `auto` reads the family off each event, which is what the code
+            // defaults to. Naming one instead pins it: `receiver` reads
+            // dfe-receiver's output and `fetcher` dfe-fetcher's. Which a source
+            // accepts is in the capability catalogue, and a wrong one is
+            // refused at startup.
+            envelope: crate::envelope::EnvelopeSetting::Auto,
+            topics: vec!["raw_events".into()],
+            // Batch-first default: amortises commit, allocation and SIMD setup.
+            batch_size: 20_000,
+            // The inbound mirror of `sink.max_message_bytes`: 20,000 records of
+            // unbounded size is unbounded memory, so the fetch is capped in
+            // bytes as well as in records.
+            max_batch_bytes: crate::config::default_max_batch_bytes(),
+            group_id: "dfe-transform-elastic".into(),
+            brokers: vec!["kafka:9092".into()],
+        },
+        sink: SinkConfig {
+            topic: "normalised_events".into(),
+            // `bus` produces to `topic`; `direct` pushes to `endpoint`.
+            transport: Transport::Bus,
+            endpoint: "http://dfe-loader:6000".into(),
+            brokers: Some(vec!["kafka:9092".into()]),
+            // A batch is split into as many records as this allows. librdkafka's
+            // producer ceiling is 1,000,000; the rest is headroom for the key,
+            // headers and framing.
+            max_message_bytes: crate::config::default_max_message_bytes(),
+        },
+        // scalo provisions the MMDB databases, re-downloading a file older than
+        // `max_age_days` and keeping the stale copy when a provider is down.
+        // `/var/lib/dfe/geoip` is dfe-loader's directory too, so one volume
+        // serves both stages; scalo's own default is `/var/lib/geoip`.
+        geoip: GeoIpConfig {
+            auto_download: AutoDownloadConfig {
+                data_dir: "/var/lib/dfe/geoip".into(),
+                ..Default::default()
+            },
+            ..Default::default()
+        },
+    }
+}
+
+/// Drop every null-valued key from a rendered configuration.
+///
+/// A null configures nothing, and this value is written verbatim into the
+/// chart's `ConfigMap` -- where `geoip.auto_download.maxmind_license_key: null`
+/// invites a credential into a `ConfigMap`. scalo's `GeoIpConfig` serialises all
+/// five of its unset `Option`s, so dropping them is what keeps them out.
+///
+/// Completeness does not rest on this: [`shipped_config`] is a struct literal,
+/// so a new field is a compile error whatever value it renders to. A null
+/// ELEMENT of a list is positional and stays.
+fn strip_nulls(value: serde_json::Value) -> serde_json::Value {
+    match value {
+        serde_json::Value::Object(map) => serde_json::Value::Object(
+            map.into_iter()
+                .filter(|(_, v)| !v.is_null())
+                .map(|(k, v)| (k, strip_nulls(v)))
+                .collect(),
+        ),
+        serde_json::Value::Array(items) => {
+            serde_json::Value::Array(items.into_iter().map(strip_nulls).collect())
+        }
+        other => other,
     }
 }
 
@@ -427,6 +479,49 @@ mod tests {
             serde_json::from_value(value).expect("default_config must deser as Config");
         config.validate().expect("default_config must validate");
         assert_eq!(config.source.batch_size, 20_000);
+    }
+
+    /// The trade a derived default has to solve. An empty document deserialises
+    /// and validates, because an unconfigured instance is valid and idles -- so
+    /// an example derived from the serde defaults alone would ship a config that
+    /// starts, stays ready and transforms nothing, and every other guard here
+    /// would still be green.
+    #[test]
+    fn the_shipped_config_gives_the_transform_work() {
+        let config = shipped_config();
+        assert!(
+            !config.work_state().is_idle(),
+            "the shipped example must name work: {:?}",
+            config.work_state().reason()
+        );
+        config.validate().expect("the shipped config validates");
+    }
+
+    /// The chart renders `default_config` verbatim into its `ConfigMap`, and
+    /// scalo's `GeoIpConfig` serialises five unset `Option`s -- three of them
+    /// credentials. The raw serialisation carries them; what ships must not.
+    #[test]
+    fn the_unset_geoip_credentials_do_not_reach_the_configmap() {
+        let raw = serde_json::to_value(shipped_config()).expect("the config serialises");
+        assert!(
+            raw.pointer("/geoip/auto_download/maxmind_license_key")
+                .is_some_and(serde_json::Value::is_null),
+            "scalo no longer serialises the unset credential, so nothing here is being tested"
+        );
+
+        let shipped = contract().default_config.expect("default_config present");
+        for absent in [
+            "/geoip/auto_download/maxmind_license_key",
+            "/geoip/auto_download/maxmind_account_id",
+            "/geoip/auto_download/ipinfo_token",
+            "/geoip/city_db_path",
+            "/geoip/asn_db_path",
+        ] {
+            assert!(
+                shipped.pointer(absent).is_none(),
+                "{absent} reaches the ConfigMap as a null"
+            );
+        }
     }
 
     /// Nothing this repo ships can set the scaling gate, so scalo's defaults
