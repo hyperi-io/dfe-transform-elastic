@@ -26,7 +26,7 @@ use dfe_transform_elastic::envelope::EnvelopeSetting;
 use dfe_transform_elastic::metrics::TransformMetrics;
 use dfe_transform_elastic::service;
 use scalo::metrics::MetricsManager;
-use scalo::transport::{TransportReceiver, TransportSender};
+use scalo::transport::{AnyReceiver, AnySender, TransportReceiver, TransportSender};
 use tokio_util::sync::CancellationToken;
 
 /// How long to wait for the loop to move a batch end to end. Generous, because
@@ -206,8 +206,10 @@ async fn a_batch_survives_in_transform_out() {
     let config = config(broker.list(), &source_topic, &sink_topic, &group);
     let shutdown = CancellationToken::new();
 
-    let consumer = broker.consumer("service", &source_topic, &group).await;
-    let producer = broker.producer("service").await;
+    // `run_loop` takes the factory's enums, so the round trip wraps the real
+    // Kafka pair rather than passing it bare.
+    let consumer = AnyReceiver::Kafka(broker.consumer("service", &source_topic, &group).await);
+    let producer = AnySender::Kafka(broker.producer("service").await);
     let manager = MetricsManager::new("dfe-transform-elastic-test");
     let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
 
@@ -283,8 +285,8 @@ async fn offsets_commit_after_the_batch_is_sent() {
     // First run: consume, transform, send, commit.
     {
         let shutdown = CancellationToken::new();
-        let consumer = broker.consumer("first", &source_topic, &group).await;
-        let producer = broker.producer("first").await;
+        let consumer = AnyReceiver::Kafka(broker.consumer("first", &source_topic, &group).await);
+        let producer = AnySender::Kafka(broker.producer("first").await);
         let manager = MetricsManager::new("dfe-transform-elastic-test");
         let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
 
@@ -357,8 +359,10 @@ async fn a_batch_larger_than_one_kafka_record_arrives() {
     assert_eq!(config.source.batch_size, 20_000);
 
     let shutdown = CancellationToken::new();
-    let consumer = broker.consumer("service", &source_topic, &group).await;
-    let producer = broker.producer("service").await;
+    // `run_loop` takes the factory's enums, so the round trip wraps the real
+    // Kafka pair rather than passing it bare.
+    let consumer = AnyReceiver::Kafka(broker.consumer("service", &source_topic, &group).await);
+    let producer = AnySender::Kafka(broker.producer("service").await);
     let manager = MetricsManager::new("dfe-transform-elastic-test");
     let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
 
