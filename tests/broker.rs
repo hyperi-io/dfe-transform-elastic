@@ -47,7 +47,6 @@ fn config_sized(
     batch_size: usize,
 ) -> Config {
     Config {
-        pipeline_name: "broker-test".into(),
         source: SourceConfig {
             name: "filebeat.okta.default".into(),
             envelope: EnvelopeSetting::Auto,

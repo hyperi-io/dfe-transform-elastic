@@ -48,10 +48,6 @@ use serde::{Deserialize, Serialize};
 /// Top-level service configuration.
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct Config {
-    /// Name reported in metrics labels.
-    #[serde(default = "default_pipeline_name")]
-    pub pipeline_name: String,
-
     /// Inbound side.
     ///
     /// Defaulted so an instance nothing has configured yet still PARSES and
@@ -160,10 +156,6 @@ impl Default for SinkConfig {
     }
 }
 
-fn default_pipeline_name() -> String {
-    "dfe-transform-elastic".to_string()
-}
-
 const fn default_batch_size() -> usize {
     20_000
 }
@@ -217,7 +209,6 @@ impl Config {
 #[cfg(test)]
 fn valid() -> Config {
     Config {
-        pipeline_name: "test".into(),
         source: SourceConfig {
             name: "filebeat.okta.default".into(),
             envelope: crate::envelope::EnvelopeSetting::Beats,

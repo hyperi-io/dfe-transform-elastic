@@ -138,9 +138,6 @@ impl Config {
 /// cascade.
 impl ApplyFlatEnv for Config {
     fn apply_flat_env(&mut self, prefix: &str) {
-        if let Some(name) = flat_env_string(prefix, "PIPELINE_NAME") {
-            self.pipeline_name = name;
-        }
         self.source.apply_flat_env(&format!("{prefix}_SOURCE"));
         self.sink.apply_flat_env(&format!("{prefix}_SINK"));
     }

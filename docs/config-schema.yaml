@@ -3,10 +3,6 @@ title: Config
 description: Top-level service configuration.
 type: object
 properties:
-  pipeline_name:
-    description: Name reported in metrics labels.
-    type: string
-    default: dfe-transform-elastic
   source:
     description: |-
       Inbound side.
