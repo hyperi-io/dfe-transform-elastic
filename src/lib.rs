@@ -18,6 +18,8 @@ pub mod metrics;
 pub mod pipeline;
 pub mod registry;
 
+// Kafka alone while this module is built on `KafkaTransport`; admitting the
+// `grpc` feature here compiles a configuration that cannot resolve (issue #19).
 #[cfg(feature = "kafka")]
 pub mod service;
 

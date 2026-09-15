@@ -112,7 +112,7 @@ transform and runs it over every batch on the scalo runtime.
 |---|---|
 | `main.rs` | Entry point, hands off to `cli.rs` |
 | `cli.rs` | Subcommands: run the service, `sources` (list registered transforms), `emit-dockerfile`, `emit-chart`, `emit-compose`, `generate-artefacts`, `metrics-manifest` |
-| `config.rs` | The config shape: `source.*`, `sink.*`, `geoip`, read once at startup, and `work_state`, which decides whether an instance has work or idles |
+| `config.rs` | The config shape: `source.*`, `sink.*`, `geoip`, read once at startup, and `work_state`, which decides whether an instance has work or idles. Also `Transport`, the `bus`/`direct` selector on each side -- declared and validated, with nothing yet constructing the direct one (issue #19) |
 | `config/loader.rs` | Reading it, from the scalo cascade or an explicit `--config` file, and `CASCADE_ONLY_SECTIONS` -- the scalo sections that file is warned for carrying |
 | `config/validate.rs` | Refusing a configuration that cannot work. The range checks run ahead of the idle gate, so a value someone set out of range still refuses while an unconfigured instance idles |
 | `registry.rs` | Source name to `Transform` lookup, plus each source's `Intake` (which envelopes it accepts), `Framing` and dataset |

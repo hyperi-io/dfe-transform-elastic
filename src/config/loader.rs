@@ -199,10 +199,35 @@ impl ApplyFlatEnv for Config {
     }
 }
 
+/// Parse a transport name, keeping `current` on anything unrecognised so a typo
+/// cannot silently move a deployment off its transport.
+///
+/// Both spellings are accepted because issue #19 names them `kafka`/`grpc`
+/// while this config and dfe-infra name them `bus`/`direct`.
+fn parse_transport(value: &str, current: super::Transport) -> super::Transport {
+    match value.trim().to_ascii_lowercase().as_str() {
+        "bus" | "kafka" => super::Transport::Bus,
+        "direct" | "grpc" => super::Transport::Direct,
+        other => {
+            tracing::warn!(
+                value = other,
+                "ignoring an unknown transport, keeping the configured one"
+            );
+            current
+        }
+    }
+}
+
 impl ApplyFlatEnv for SourceConfig {
     fn apply_flat_env(&mut self, prefix: &str) {
         if let Some(name) = flat_env_string(prefix, "NAME") {
             self.name = name;
+        }
+        if let Some(raw) = flat_env_string(prefix, "TRANSPORT") {
+            self.transport = parse_transport(&raw, self.transport);
+        }
+        if let Some(listen) = flat_env_string(prefix, "LISTEN") {
+            self.listen = listen;
         }
         // An unknown name keeps the configured envelope rather than failing the
         // load, because detection is the default and still works.
@@ -238,6 +263,12 @@ impl ApplyFlatEnv for SinkConfig {
     fn apply_flat_env(&mut self, prefix: &str) {
         if let Some(topic) = flat_env_string(prefix, "TOPIC") {
             self.topic = topic;
+        }
+        if let Some(raw) = flat_env_string(prefix, "TRANSPORT") {
+            self.transport = parse_transport(&raw, self.transport);
+        }
+        if let Some(endpoint) = flat_env_string(prefix, "ENDPOINT") {
+            self.endpoint = endpoint;
         }
         if let Some(brokers) = flat_env_list(prefix, "BROKERS") {
             self.brokers = Some(brokers);

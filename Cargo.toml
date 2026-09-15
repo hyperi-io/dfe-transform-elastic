@@ -79,6 +79,11 @@ jemalloc = ["dep:tikv-jemallocator"]
 # host without librdkafka-dev; needs the LIBRDKAFKA C library at 2.12.1 or
 # later when enabled, which is unrelated to the scalo version below.
 kafka = ["scalo/transport-kafka"]
+# The direct transport: a scalo Push listener inbound, a gRPC client outbound.
+# Additive to `kafka` rather than an alternative, and NOT in `default` until the
+# service loop constructs it -- enabling it costs a tonic build and a protoc run
+# for a transport nothing yet reaches.
+grpc = ["scalo/transport-grpc"]
 # The PGO workload driver's bin target. It produces through scalo's Kafka
 # producer, so it needs the same transport the service loop runs on.
 pgo-driver = ["kafka"]

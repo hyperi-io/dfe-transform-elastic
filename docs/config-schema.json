@@ -9,6 +9,8 @@
       "$ref": "#/$defs/SourceConfig",
       "default": {
         "name": "",
+        "transport": "bus",
+        "listen": "0.0.0.0:6000",
         "envelope": "auto",
         "topics": [],
         "batch_size": 20000,
@@ -22,6 +24,8 @@
       "$ref": "#/$defs/SinkConfig",
       "default": {
         "topic": "",
+        "transport": "bus",
+        "endpoint": "http://dfe-loader:6000",
         "brokers": null,
         "max_message_bytes": 900000
       }
@@ -53,6 +57,16 @@
         "name": {
           "description": "Beats or Agent source whose transform to apply, e.g. `filebeat.okta`.",
           "type": "string"
+        },
+        "transport": {
+          "description": "Which transport the inbound side uses: `bus` consumes `topics`, `direct`\naccepts pushes on `listen`.",
+          "$ref": "#/$defs/Transport",
+          "default": "bus"
+        },
+        "listen": {
+          "description": "Address the Push listener binds on the direct transport, ignored on the\nbus.",
+          "type": "string",
+          "default": "0.0.0.0:6000"
         },
         "envelope": {
           "description": "Which producer wrapped the payload. The transform is the same for all\nof them; only the unwrapping differs.\n\nDefaults to `auto`, which reads it off each batch's first event. Naming\na family instead pins it, and validation then rejects one the source\ncannot actually arrive in.",
@@ -99,6 +113,21 @@
         "brokers"
       ]
     },
+    "Transport": {
+      "description": "Which transport a side of the service uses.\n\n`bus` is Kafka between the stages; `direct` is a scalo Push listener inbound\nand a gRPC client outbound, needing no broker at all. The record and the\ntransform are identical either way -- only who hands the record over changes.",
+      "oneOf": [
+        {
+          "description": "Kafka topics.",
+          "type": "string",
+          "const": "bus"
+        },
+        {
+          "description": "A scalo Push listener inbound, a gRPC client outbound.",
+          "type": "string",
+          "const": "direct"
+        }
+      ]
+    },
     "EnvelopeSetting": {
       "description": "What the operator said about the envelope.\n\n`auto` is the default: the family is read off the first event of each batch,\nso a deployment that changes producer needs no config change. Naming one\npins it, which is the way through for a shape that carries no marker.",
       "oneOf": [
@@ -131,6 +160,16 @@
         "topic": {
           "description": "Topic to produce to.",
           "type": "string"
+        },
+        "transport": {
+          "description": "Which transport the outbound side uses: `bus` produces to `topic`,\n`direct` pushes to `endpoint`.",
+          "$ref": "#/$defs/Transport",
+          "default": "bus"
+        },
+        "endpoint": {
+          "description": "Downstream Push listener on the direct transport, ignored on the bus.",
+          "type": "string",
+          "default": "http://dfe-loader:6000"
         },
         "brokers": {
           "description": "Broker list. Defaults to the source brokers when unset.",

@@ -721,6 +721,8 @@ mod tests {
         Config {
             source: SourceConfig {
                 name: "filebeat.okta.default".into(),
+                transport: crate::config::Transport::Bus,
+                listen: String::new(),
                 envelope: crate::envelope::EnvelopeSetting::Auto,
                 topics: vec!["in".into()],
                 batch_size: 100,
@@ -730,6 +732,8 @@ mod tests {
             },
             sink: SinkConfig {
                 topic: "out".into(),
+                transport: crate::config::Transport::Bus,
+                endpoint: String::new(),
                 brokers: Some(vec!["other:9092".into()]),
                 max_message_bytes: crate::config::default_max_message_bytes(),
             },

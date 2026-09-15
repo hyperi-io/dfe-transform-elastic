@@ -58,13 +58,31 @@ impl Config {
             return Ok(());
         }
 
-        if self.source.brokers.is_empty() {
-            return Err(crate::Error::Config("source.brokers is empty".into()));
+        // Each transport needs different things, so requiring the bus's fields
+        // on the direct path would refuse a deployment that can work.
+        if self.source.transport.is_direct() {
+            if self.source.listen.parse::<std::net::SocketAddr>().is_err() {
+                return Err(crate::Error::Config(format!(
+                    "source.listen must be a bind address on the direct transport, got '{}'",
+                    self.source.listen
+                )));
+            }
+        } else {
+            if self.source.brokers.is_empty() {
+                return Err(crate::Error::Config("source.brokers is empty".into()));
+            }
+            if self.source.group_id.trim().is_empty() {
+                return Err(crate::Error::Config("source.group_id is empty".into()));
+            }
         }
-        if self.source.group_id.trim().is_empty() {
-            return Err(crate::Error::Config("source.group_id is empty".into()));
-        }
-        if self.sink.topic.trim().is_empty() {
+
+        if self.sink.transport.is_direct() {
+            if self.sink.endpoint.trim().is_empty() {
+                return Err(crate::Error::Config(
+                    "sink.endpoint is empty on the direct transport".into(),
+                ));
+            }
+        } else if self.sink.topic.trim().is_empty() {
             return Err(crate::Error::Config("sink.topic is empty".into()));
         }
 
@@ -135,6 +153,58 @@ mod tests {
         let mut c = valid();
         c.source.topics.clear();
         c.sink.max_message_bytes = 4_000_000;
+        assert!(c.validate().is_err());
+    }
+
+    /// The bus's fields are meaningless on the direct transport, so requiring
+    /// them would refuse a deployment that works.
+    #[test]
+    fn a_direct_source_needs_no_brokers_or_group() {
+        let mut c = valid();
+        c.source.transport = crate::config::Transport::Direct;
+        c.source.brokers.clear();
+        c.source.group_id.clear();
+        assert!(c.validate().is_ok());
+    }
+
+    #[test]
+    fn a_direct_source_refuses_a_listen_that_is_not_an_address() {
+        let mut c = valid();
+        c.source.transport = crate::config::Transport::Direct;
+        c.source.listen = "not-an-address".into();
+        let message = c
+            .validate()
+            .expect_err("a bad bind address must refuse")
+            .to_string();
+        assert!(message.contains("source.listen"), "{message}");
+    }
+
+    #[test]
+    fn a_direct_sink_refuses_an_empty_endpoint() {
+        let mut c = valid();
+        c.sink.transport = crate::config::Transport::Direct;
+        c.sink.endpoint.clear();
+        let message = c
+            .validate()
+            .expect_err("an empty endpoint must refuse")
+            .to_string();
+        assert!(message.contains("sink.endpoint"), "{message}");
+    }
+
+    /// A direct sink pushes to an endpoint rather than producing to a topic.
+    #[test]
+    fn a_direct_sink_needs_no_topic() {
+        let mut c = valid();
+        c.sink.transport = crate::config::Transport::Direct;
+        c.sink.topic.clear();
+        assert!(c.validate().is_ok());
+    }
+
+    /// The bus still needs its own fields, so the split must not relax them.
+    #[test]
+    fn the_bus_still_refuses_missing_brokers() {
+        let mut c = valid();
+        c.source.brokers.clear();
         assert!(c.validate().is_err());
     }
 

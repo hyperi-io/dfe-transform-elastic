@@ -61,6 +61,10 @@ pub fn contract() -> DeploymentContract {
         default_config: Some(serde_json::json!({
             "source": {
                 "name": "filebeat.okta.default",
+                // `bus` consumes `topics`; `direct` accepts pushes on `listen`
+                // and is declared but not yet constructed (issue #19).
+                "transport": "bus",
+                "listen": "0.0.0.0:6000",
                 // `auto` reads the family off each event, which is what the
                 // code defaults to. Naming one instead pins it: `receiver`
                 // reads dfe-receiver's output and `fetcher` dfe-fetcher's.
@@ -79,6 +83,9 @@ pub fn contract() -> DeploymentContract {
             },
             "sink": {
                 "topic": "normalised_events",
+                // `bus` produces to `topic`; `direct` pushes to `endpoint`.
+                "transport": "bus",
+                "endpoint": "http://dfe-loader:6000",
                 "brokers": ["kafka:9092"],
                 // A batch is split into as many records as this allows.
                 // librdkafka's producer ceiling is 1,000,000; the rest is
@@ -587,6 +594,26 @@ mod tests {
         let config: crate::config::Config =
             serde_yaml_ng::from_str(&yaml).expect("example parses as Config");
         config.validate().expect("example validates");
+    }
+
+    /// The committed `deployment-contract.json` must match a fresh generation.
+    /// Refresh with `dfe-transform-elastic generate-artefacts --output-dir docs`.
+    ///
+    /// scalo's `check_config_artifact_drift` does NOT cover this file -- it
+    /// renders `config-schema.*` and `capability-catalog.*` only -- so without
+    /// this test a narrow regeneration leaves the contract stale in silence.
+    /// It is the artefact dfe-infra reads, and it had drifted across two
+    /// merges before this test existed.
+    #[test]
+    fn committed_deployment_contract_does_not_drift() {
+        let path =
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("docs/deployment-contract.json");
+        let committed =
+            std::fs::read_to_string(&path).expect("deployment-contract.json is committed");
+        // The same serde call `generate-artefacts` makes, on scalo's own
+        // public type, so its JSON shape is followed rather than restated.
+        let fresh = serde_json::to_string_pretty(&contract()).expect("contract serialises");
+        assert_eq!(committed.trim_end(), fresh.trim_end());
     }
 
     /// The committed `Dockerfile` must match a fresh emit. Refresh with

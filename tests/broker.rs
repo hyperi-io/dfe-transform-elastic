@@ -49,6 +49,8 @@ fn config_sized(
     Config {
         source: SourceConfig {
             name: "filebeat.okta.default".into(),
+            transport: dfe_transform_elastic::config::Transport::Bus,
+            listen: String::new(),
             envelope: EnvelopeSetting::Auto,
             topics: vec![source_topic.to_string()],
             batch_size,
@@ -58,6 +60,8 @@ fn config_sized(
         },
         sink: SinkConfig {
             topic: sink_topic.to_string(),
+            transport: dfe_transform_elastic::config::Transport::Bus,
+            endpoint: String::new(),
             brokers: Some(brokers),
             max_message_bytes: dfe_transform_elastic::config::default_max_message_bytes(),
         },
