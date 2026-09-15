@@ -159,7 +159,18 @@ so it works against a `--config` deployment:
     DFE_TRANSFORM_ELASTIC_SOURCE_BATCH_SIZE=5000
     DFE_TRANSFORM_ELASTIC_SINK_TOPIC=out
 
-The fields it covers are every `source.*` and every `sink.*`.
+The fields it covers are every `source.*` and every `sink.*`, including the
+transport selector:
+
+    DFE_TRANSFORM_ELASTIC_SOURCE_TRANSPORT=direct
+    DFE_TRANSFORM_ELASTIC_SOURCE_LISTEN=0.0.0.0:6000
+    DFE_TRANSFORM_ELASTIC_SINK_ENDPOINT=http://dfe-loader:6000
+
+`bus` and `kafka` name the same transport, as do `direct` and `grpc`, and an
+unrecognised value keeps the configured one rather than silently moving the
+deployment. **`direct` is declared and validated but nothing constructs it yet**
+(issue #19), so today every deployment runs on the bus.
+
 `geoip` is not among them -- it is scalo's own type, so the orphan rule puts it
 out of reach, and it stays settable from the file and the cascade. scalo's
 DOUBLE-underscore form is resolved from the cascade instead, which a named file
