@@ -79,6 +79,60 @@ fn warn_unreachable_cascade_sections(path: &str, doc: &serde_yaml_ng::Value) {
     }
 }
 
+/// Warn for every key in `doc` that the service does not read.
+///
+/// serde drops an unknown field in silence, so a typo costs the whole setting
+/// with no message -- `source.topic` for `source.topics` leaves the instance
+/// idle and says nothing about why.
+///
+/// The comparison is a ROUND TRIP rather than a list of valid keys: what
+/// survives [`Config`] and comes back out is what the service read, so a field
+/// added or removed later needs no maintenance here.
+///
+/// A [`CASCADE_ONLY_SECTIONS`] entry is skipped, having its own warning that
+/// names the environment variable which would reach it.
+fn warn_ignored_keys(path: &str, doc: &serde_yaml_ng::Value, parsed: &Config) {
+    let Ok(kept) = serde_yaml_ng::to_value(parsed) else {
+        return;
+    };
+    let mut ignored = Vec::new();
+    collect_ignored(doc, &kept, "", &mut ignored);
+    for key in ignored {
+        tracing::warn!(
+            key = %key,
+            path = path,
+            "config key is not read by this service, so setting it does nothing"
+        );
+    }
+}
+
+/// Collect dotted paths present in `doc` and absent from `kept`.
+fn collect_ignored(
+    doc: &serde_yaml_ng::Value,
+    kept: &serde_yaml_ng::Value,
+    prefix: &str,
+    out: &mut Vec<String>,
+) {
+    let (Some(doc_map), Some(kept_map)) = (doc.as_mapping(), kept.as_mapping()) else {
+        return;
+    };
+    for (key, value) in doc_map {
+        let Some(name) = key.as_str() else { continue };
+        if prefix.is_empty() && CASCADE_ONLY_SECTIONS.contains(&name) {
+            continue;
+        }
+        let dotted = if prefix.is_empty() {
+            name.to_string()
+        } else {
+            format!("{prefix}.{name}")
+        };
+        match kept_map.get(key) {
+            None => out.push(dotted),
+            Some(kept_value) => collect_ignored(value, kept_value, &dotted, out),
+        }
+    }
+}
+
 impl Config {
     /// Load from an explicit path, or from scalo's config cascade.
     ///
@@ -111,8 +165,10 @@ impl Config {
             let doc: serde_yaml_ng::Value = serde_yaml_ng::from_str(&text)
                 .map_err(|e| crate::Error::Config(format!("invalid config at '{path}': {e}")))?;
             warn_unreachable_cascade_sections(path, &doc);
-            serde_yaml_ng::from_value(doc)
-                .map_err(|e| crate::Error::Config(format!("invalid config at '{path}': {e}")))?
+            let parsed: Self = serde_yaml_ng::from_value(doc.clone())
+                .map_err(|e| crate::Error::Config(format!("invalid config at '{path}': {e}")))?;
+            warn_ignored_keys(path, &doc, &parsed);
+            parsed
         } else {
             config::get()
                 .unmarshal()
@@ -260,6 +316,49 @@ mod tests {
             !CASCADE_ONLY_SECTIONS.contains(&"geoip"),
             "geoip reaches scalo explicitly, so refusing it would be wrong"
         );
+    }
+
+    /// Collect the ignored keys a file would be warned about.
+    fn ignored_in(body: &str) -> Vec<String> {
+        let doc: serde_yaml_ng::Value = serde_yaml_ng::from_str(body).expect("the body parses");
+        let parsed: Config = serde_yaml_ng::from_value(doc.clone()).expect("it deserialises");
+        let kept = serde_yaml_ng::to_value(&parsed).expect("it re-serialises");
+        let mut out = Vec::new();
+        collect_ignored(&doc, &kept, "", &mut out);
+        out
+    }
+
+    /// A typo costs the whole setting and serde says nothing, so the warning is
+    /// the only thing between a misspelled key and an instance that idles for
+    /// no stated reason.
+    #[test]
+    fn a_misspelled_key_is_reported() {
+        // Written out in full rather than appended to FILE_BASE, which ends
+        // inside the `sink:` block -- an appended key would nest under the
+        // wrong section.
+        let ignored = ignored_in(
+            "source:\n  name: filebeat.okta.default\n  topic: singular\n  \
+             topics: [in]\n  group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
+        );
+        assert_eq!(ignored, ["source.topic"], "got {ignored:?}");
+    }
+
+    /// The other half, and the one a round trip can get wrong: every key the
+    /// service DOES read must stay silent, or the warning trains an operator to
+    /// ignore it.
+    #[test]
+    fn a_config_the_service_reads_warns_about_nothing() {
+        assert!(ignored_in(FILE_BASE).is_empty());
+        assert!(ignored_in(&crate::deployment::default_config_yaml()).is_empty());
+    }
+
+    /// `sink.brokers` is an `Option` that defaults to `None`. A round trip that
+    /// omitted it rather than writing null would report a broker list the
+    /// service had just read as ignored.
+    #[test]
+    fn an_optional_field_a_file_sets_is_not_called_ignored() {
+        let ignored = ignored_in(&format!("{FILE_BASE}  brokers: [b:9092]\n"));
+        assert!(ignored.is_empty(), "got {ignored:?}");
     }
 
     /// The refusal must not fire on the configuration the service actually
