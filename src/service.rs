@@ -102,6 +102,16 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
         .await
         .map_err(|e| crate::Error::Transport(format!("consumer: {e}")))?;
 
+    // The governor is constructed before the transports whether or not an app
+    // attaches it, so unattached it costs a startup and brakes nothing.
+    // The gate pauses assigned partitions instead of unsubscribing, so this
+    // member stays in the group and no rebalance follows.
+    // `None` is self-regulation turned off, which leaves intake unchanged.
+    let consumer = match runtime.governor {
+        Some(ref governor) => governor.attach_kafka_gate(consumer),
+        None => consumer,
+    };
+
     let producer = KafkaTransport::new(&producer_config(&config))
         .await
         .map_err(|e| crate::Error::Transport(format!("producer: {e}")))?;
