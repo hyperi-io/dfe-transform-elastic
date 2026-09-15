@@ -26,6 +26,13 @@ path = "src/lib.rs"
 name = "dfe-transform-elastic"
 path = "src/main.rs"
 
+# The PGO workload driver, built only with `--features pgo-driver` and run by
+# scripts/pgo-workload.sh. A default `cargo build` skips it entirely.
+[[bin]]
+name = "pgo-driver"
+path = "src/bin/pgo_driver.rs"
+required-features = ["pgo-driver"]
+
 [dependencies]
 dfe-runtime = { workspace = true }
 dfe-transforms = { workspace = true }
@@ -77,6 +84,9 @@ kafka = ["scalo/transport-kafka"]
 # service loop constructs it -- enabling it costs a tonic build and a protoc run
 # for a transport nothing yet reaches.
 grpc = ["scalo/transport-grpc"]
+# The PGO workload driver's bin target. It produces through scalo's Kafka
+# producer, so it needs the same transport the service loop runs on.
+pgo-driver = ["kafka"]
 
 [lints.rust]
 unsafe_code = "forbid"
