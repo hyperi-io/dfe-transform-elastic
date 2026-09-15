@@ -154,17 +154,15 @@ which is what the container passes -- the named file IS the configuration and
 changes nothing and warns about nothing. Kafka credentials are unaffected
 either way: they are read from `KAFKA_*` separately.
 
-One consequence to know before tuning it: a section scalo resolves from the
-cascade for itself cannot be set from a `--config` file at all. `scaling` is the
-one that bites, and the service REFUSES such a file rather than ignoring the
-block -- an operator who sets `memory_gate_threshold` has a reason, and running
-on a default they did not choose is what the refusal exists to stop. The error
-names the variable to set instead
-(`DFE_TRANSFORM_ELASTIC_SCALING__MEMORY_GATE_THRESHOLD`), and the scaling values
-that took effect are logged once at startup. `CASCADE_ONLY_SECTIONS` in
-`src/config.rs` is the full list, and nothing this repo ships carries one of
-them. `geoip` is deliberately absent from it: the service declares that section
-itself and hands it to scalo, which is what makes it work from a file.
+One consequence to know before tuning it: a section scalo resolves for itself
+cannot be set from a `--config` file at all. `scaling` is the one that bites.
+The service WARNS for each such section rather than refusing the file, naming it
+and the `DFE_TRANSFORM_ELASTIC_SCALING__<KEY>` form that does reach it --
+refusing would let a surplus key stop the pod, and that file is rendered from
+what dfe-engine publishes rather than written here. `CASCADE_ONLY_SECTIONS` in
+`src/config.rs` is the full list and nothing this repo ships carries one.
+`geoip` is deliberately absent: the service declares that section itself and
+hands it to scalo, which is what makes it work from a file.
 
 ## Behaviour under bad input
 
