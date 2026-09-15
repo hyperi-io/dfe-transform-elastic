@@ -13,7 +13,13 @@
   "metric_prefix": "transform_elastic",
   "config_mount_path": "/etc/dfe-transform-elastic/config.yaml",
   "image_registry": "ghcr.io/hyperi-io",
-  "extra_ports": [],
+  "extra_ports": [
+    {
+      "name": "push",
+      "port": 6000,
+      "protocol": "TCP"
+    }
+  ],
   "entrypoint_args": [
     "--config",
     "/etc/dfe-transform-elastic/config.yaml"

@@ -25,7 +25,8 @@
     "unresolved_base_image": null
   },
   "expose_ports": [
-    9090
+    9090,
+    6000
   ],
   "healthcheck": {
     "path": "/livez",

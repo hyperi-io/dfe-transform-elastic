@@ -10,7 +10,7 @@
 
 use scalo::deployment::{
     Capability, DeploymentContract, FieldSpec, HealthContract, ImageProfile, KedaConfig,
-    KedaContract, NativeDepsContract, SecretEnvContract, SecretGroupContract,
+    KedaContract, NativeDepsContract, PortContract, SecretEnvContract, SecretGroupContract,
     base_image_from_cascade,
 };
 
@@ -35,10 +35,14 @@ pub fn contract() -> DeploymentContract {
         config_mount_path: "/etc/dfe-transform-elastic/config.yaml".into(),
         image_registry: "ghcr.io/hyperi-io".into(),
         base_image: base_image.clone(),
-        // No extra ports. scalo serves /livez, /readyz, /metrics and
-        // /scaling/pressure from the ONE metrics listener, so a second
-        // declared port would be exposed with nothing behind it.
-        extra_ports: vec![],
+        // scalo still serves /livez, /readyz, /metrics and /scaling/pressure
+        // from the ONE metrics listener; this second port is the Push listener
+        // the direct transport binds (issue #19).
+        extra_ports: vec![PortContract {
+            name: "push".into(),
+            port: 6000,
+            protocol: "TCP".into(),
+        }],
         entrypoint_args: vec![
             "--config".into(),
             "/etc/dfe-transform-elastic/config.yaml".into(),
@@ -444,7 +448,12 @@ mod tests {
         assert_eq!(c.health.readiness_path, "/readyz");
         assert_eq!(c.health.metrics_path, "/metrics");
         assert_eq!(c.metrics_port, 9090);
-        assert!(c.extra_ports.is_empty());
+        // The property this defends is that no probe moved off 9090, not that
+        // the contract declares nothing else: `push` is the direct transport's
+        // listener and serves no health path.
+        assert_eq!(c.extra_ports.len(), 1);
+        assert_eq!(c.extra_ports[0].name, "push");
+        assert_eq!(c.extra_ports[0].port, 6000);
     }
 
     /// The shipped config must not carry keys this service never reads: a
