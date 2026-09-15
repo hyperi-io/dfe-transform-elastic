@@ -72,6 +72,11 @@ jemalloc = ["dep:tikv-jemallocator"]
 # host without librdkafka-dev; needs the LIBRDKAFKA C library at 2.12.1 or
 # later when enabled, which is unrelated to the scalo version below.
 kafka = ["scalo/transport-kafka"]
+# The direct transport: a scalo Push listener inbound, a gRPC client outbound.
+# Additive to `kafka` rather than an alternative, and NOT in `default` until the
+# service loop constructs it -- enabling it costs a tonic build and a protoc run
+# for a transport nothing yet reaches.
+grpc = ["scalo/transport-grpc"]
 
 [lints.rust]
 unsafe_code = "forbid"
