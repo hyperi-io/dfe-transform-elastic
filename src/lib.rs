@@ -18,9 +18,9 @@ pub mod metrics;
 pub mod pipeline;
 pub mod registry;
 
-// Kafka alone while this module is built on `KafkaTransport`; admitting the
-// `grpc` feature here compiles a configuration that cannot resolve (issue #19).
-#[cfg(feature = "kafka")]
+// The loop is built on scalo's transport factory, so it serves whichever of the
+// two backends is compiled in and needs at least one of them (issue #19).
+#[cfg(any(feature = "kafka", feature = "grpc"))]
 pub mod service;
 
 pub use error::{Error, Result};

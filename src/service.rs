@@ -19,16 +19,27 @@
 //! records, so a failure partway through replays the records that already
 //! landed. The consumer downstream must be idempotent, which is the same
 //! contract every other DFE stage carries.
+//!
+//! All of that describes the BUS arm. The direct transport has no offsets to
+//! commit -- a Push RPC acknowledges itself and scalo's gRPC `commit` is a
+//! documented no-op -- so there the replay guarantee belongs to whatever
+//! pushed the batch, not to this service (issue #19).
 
 use std::time::{Duration, Instant};
 
 use scalo::cli::ServiceRuntime;
 use scalo::metrics::TransportKind;
-use scalo::transport::kafka::{KafkaConfig, KafkaTransport, total_consumer_lag};
-use scalo::transport::{SendResult, TransportReceiver, TransportSender};
+#[cfg(feature = "grpc")]
+use scalo::transport::grpc::GrpcConfig;
+#[cfg(feature = "kafka")]
+use scalo::transport::kafka::{KafkaConfig, total_consumer_lag};
+use scalo::transport::{
+    AnyReceiver, AnySender, SendResult, TransportConfig, TransportReceiver, TransportSender,
+    TransportType,
+};
 use tokio_util::sync::CancellationToken;
 
-use crate::config::Config;
+use crate::config::{Config, Transport};
 use crate::metrics::TransformMetrics;
 use crate::pipeline::{EnvelopeOutcome, parse_batch, serialise_chunks, transform_batch_resolved};
 
@@ -83,38 +94,29 @@ pub struct ScalingSignals {
 ///
 /// Returns [`crate::Error::UnknownSource`] if the configured source has no
 /// transform, [`crate::Error::Config`] if the mounted credentials and the wire
-/// protocol disagree, or [`crate::Error::Transport`] if either Kafka side
-/// cannot be created.
+/// protocol disagree or a configured transport is not compiled in, or
+/// [`crate::Error::Transport`] if either side cannot be created.
 pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
-    let transport = transport_defaults();
-    check_credentials(&transport)?;
-    // scalo's own floor: SASL PLAIN over a plaintext transport is refused in
-    // every environment, and in production so are `ssl_skip_verify` and an
-    // unencrypted protocol without `allow_insecure_transport`. The dev escape
-    // hatch is `APP_ENV`, which is what decides the profile everywhere else.
-    transport
-        .validate(scalo::env::is_production())
-        .map_err(crate::Error::Config)?;
+    // The credentials are Kafka's and are read from the environment, so the
+    // check runs for whichever side is on the bus and not at all when both
+    // sides are direct.
+    #[cfg(feature = "kafka")]
+    if !config.source.transport.is_direct() || !config.sink.transport.is_direct() {
+        let transport = transport_defaults();
+        check_credentials(&transport)?;
+        // scalo's own floor: SASL PLAIN over a plaintext transport is refused
+        // in every environment, and in production so are `ssl_skip_verify` and
+        // an unencrypted protocol without `allow_insecure_transport`. The dev
+        // escape hatch is `APP_ENV`, which decides the profile everywhere else.
+        transport
+            .validate(scalo::env::is_production())
+            .map_err(crate::Error::Config)?;
+    }
 
     provision_geoip(&config.geoip).await;
 
-    let consumer = KafkaTransport::new(&consumer_config(&config))
-        .await
-        .map_err(|e| crate::Error::Transport(format!("consumer: {e}")))?;
-
-    // The governor is constructed before the transports whether or not an app
-    // attaches it, so unattached it costs a startup and brakes nothing.
-    // The gate pauses assigned partitions instead of unsubscribing, so this
-    // member stays in the group and no rebalance follows.
-    // `None` is self-regulation turned off, which leaves intake unchanged.
-    let consumer = match runtime.governor {
-        Some(ref governor) => governor.attach_kafka_gate(consumer),
-        None => consumer,
-    };
-
-    let producer = KafkaTransport::new(&producer_config(&config))
-        .await
-        .map_err(|e| crate::Error::Transport(format!("producer: {e}")))?;
+    let consumer = build_receiver(&config, runtime.governor.as_ref()).await?;
+    let producer = build_sender(&config).await?;
 
     let metrics = TransformMetrics::register(
         &runtime.metrics,
@@ -137,6 +139,109 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
         scaling.as_ref(),
     )
     .await
+}
+
+/// Build the inbound transport with the governor's brake attached.
+///
+/// The factory attaches it, and the two arms brake DIFFERENTLY. On the bus the
+/// consumer's assigned partitions are paused, so the member stays in the group,
+/// no rebalance follows, and consumer lag rises. On direct the listener refuses
+/// the push with `unavailable` and the sender upstream wears it.
+async fn build_receiver(
+    config: &Config,
+    governor: Option<&scalo::SelfRegulationGovernor>,
+) -> crate::Result<AnyReceiver> {
+    let transport = source_transport(config)?;
+    // `None` is self-regulation turned off, which leaves intake unchanged.
+    let receiver = match governor {
+        Some(governor) => {
+            AnyReceiver::from_transport_config_with_governor(&transport, governor).await
+        }
+        None => AnyReceiver::from_transport_config(&transport).await,
+    };
+    receiver.map_err(|e| crate::Error::Transport(format!("consumer: {e}")))
+}
+
+/// Build the outbound transport, which is never governed.
+///
+/// Braking the outbound drain would deadlock the loop, because a batch cannot
+/// be committed until it is sent. `sink.max_message_bytes` bounds each record
+/// on both arms and sits well under scalo's 16 MiB gRPC message ceiling.
+async fn build_sender(config: &Config) -> crate::Result<AnySender> {
+    let transport = sink_transport(config)?;
+    AnySender::from_transport_config(&transport)
+        .await
+        .map_err(|e| crate::Error::Transport(format!("producer: {e}")))
+}
+
+/// The inbound half of the transport configuration scalo's factory reads.
+///
+/// Our own [`consumer_config`] is carried through rather than left to the
+/// cascade, so the `fetch.max.bytes` sizing still reaches librdkafka.
+fn source_transport(config: &Config) -> crate::Result<TransportConfig> {
+    match config.source.transport {
+        #[cfg(feature = "grpc")]
+        Transport::Direct => Ok(TransportConfig {
+            transport_type: TransportType::Grpc,
+            grpc: Some(GrpcConfig::server(&config.source.listen)),
+            ..TransportConfig::default()
+        }),
+        #[cfg(feature = "kafka")]
+        Transport::Bus => Ok(TransportConfig {
+            transport_type: TransportType::Kafka,
+            kafka: Some(consumer_config(config)),
+            ..TransportConfig::default()
+        }),
+        // Unreachable in the shipped build, which carries both arms.
+        #[allow(unreachable_patterns)]
+        other => Err(missing_transport("source", other)),
+    }
+}
+
+/// The outbound half of the same.
+fn sink_transport(config: &Config) -> crate::Result<TransportConfig> {
+    match config.sink.transport {
+        #[cfg(feature = "grpc")]
+        Transport::Direct => Ok(TransportConfig {
+            transport_type: TransportType::Grpc,
+            grpc: Some(GrpcConfig::client(&config.sink.endpoint)),
+            ..TransportConfig::default()
+        }),
+        #[cfg(feature = "kafka")]
+        Transport::Bus => Ok(TransportConfig {
+            transport_type: TransportType::Kafka,
+            kafka: Some(producer_config(config)),
+            ..TransportConfig::default()
+        }),
+        #[allow(unreachable_patterns)]
+        other => Err(missing_transport("sink", other)),
+    }
+}
+
+/// A configured transport this binary carries no backend for.
+///
+/// Only a build that dropped a feature reaches it, so the message names the
+/// feature rather than the setting.
+fn missing_transport(side: &str, transport: Transport) -> crate::Error {
+    let (name, feature) = match transport {
+        Transport::Bus => ("bus", "kafka"),
+        Transport::Direct => ("direct", "grpc"),
+    };
+    crate::Error::Config(format!(
+        "{side}.transport is '{name}', which this binary has no transport for -- rebuild it \
+         with `--features {feature}`"
+    ))
+}
+
+/// The metric label for a configured transport.
+///
+/// Without it every direct deployment's transport counters carry the kafka
+/// label and a dashboard reads them as a bus deployment.
+const fn transport_kind(transport: Transport) -> TransportKind {
+    match transport {
+        Transport::Bus => TransportKind::Kafka,
+        Transport::Direct => TransportKind::Grpc,
+    }
 }
 
 /// State the scaling settings that actually took effect, once, at startup.
@@ -208,12 +313,16 @@ async fn provision_geoip(config: &scalo::geoip_download::GeoIpConfig) {
 #[allow(clippy::cast_precision_loss)]
 pub async fn run_loop(
     config: &Config,
-    consumer: &KafkaTransport,
-    producer: &KafkaTransport,
+    consumer: &AnyReceiver,
+    producer: &AnySender,
     shutdown: &CancellationToken,
     metrics: &TransformMetrics,
     scaling: Option<&ScalingSignals>,
 ) -> crate::Result<()> {
+    // The two sides are configured separately, so a deployment can consume off
+    // the bus and push downstream, and the labels have to follow each.
+    let source_kind = transport_kind(config.source.transport);
+    let sink_kind = transport_kind(config.sink.transport);
     let transform = crate::registry::lookup(&config.source.name)
         .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
     let intake = crate::registry::intake(&config.source.name)
@@ -227,6 +336,8 @@ pub async fn run_loop(
     tracing::info!(
         source = %config.source.name,
         transform = transform.name(),
+        source_transport = ?config.source.transport,
+        sink_transport = ?config.sink.transport,
         topics = ?config.source.topics,
         sink_topic = %config.sink.topic,
         batch_size = config.source.batch_size,
@@ -290,7 +401,7 @@ pub async fn run_loop(
         let received_bytes: usize = batch.records.iter().map(|r| r.payload.len()).sum();
         metrics
             .dfe
-            .transport_received_bytes(TransportKind::Kafka, received_bytes as u64);
+            .transport_received_bytes(source_kind, received_bytes as u64);
         metrics.app.bytes_received.increment(received_bytes as u64);
         metrics.batch_events.record(batch.records.len() as f64);
 
@@ -315,9 +426,7 @@ pub async fn run_loop(
 
         let received = events.len() as u64;
         metrics.dfe.records_received(received);
-        metrics
-            .dfe
-            .transport_received_events(TransportKind::Kafka, received);
+        metrics.dfe.transport_received_events(source_kind, received);
         metrics.app.records_received.increment(received);
 
         let (transformed, outcome, envelopes) =
@@ -343,7 +452,7 @@ pub async fn run_loop(
         last_signal = Instant::now();
 
         if !transformed.is_empty() {
-            match publish(config, producer, shutdown, metrics, &transformed).await {
+            match publish(config, producer, shutdown, metrics, sink_kind, &transformed).await {
                 SendOutcome::Sent => {}
                 // The batch is deliberately left uncommitted, and the loop
                 // deliberately does not continue: the next batch's cumulative
@@ -397,6 +506,7 @@ async fn publish<S: TransportSender>(
     producer: &S,
     shutdown: &CancellationToken,
     metrics: &TransformMetrics,
+    kind: TransportKind,
     transformed: &[dfe_runtime::Event],
 ) -> SendOutcome {
     let (chunks, serialised) = serialise_chunks(transformed, config.sink.max_message_bytes);
@@ -416,12 +526,10 @@ async fn publish<S: TransportSender>(
 
     for chunk in chunks {
         let chunk_bytes = chunk.len() as u64;
-        match send_chunk(producer, &config.sink.topic, chunk, shutdown, metrics).await {
+        match send_chunk(producer, &config.sink.topic, chunk, shutdown, metrics, kind).await {
             SendOutcome::Sent => {
-                metrics.dfe.transport_sent(TransportKind::Kafka, 1);
-                metrics
-                    .dfe
-                    .transport_sent_bytes(TransportKind::Kafka, chunk_bytes);
+                metrics.dfe.transport_sent(kind, 1);
+                metrics.dfe.transport_sent_bytes(kind, chunk_bytes);
                 metrics.app.bytes_written.increment(chunk_bytes);
             }
             other => return other,
@@ -453,6 +561,7 @@ async fn send_chunk<S: TransportSender>(
     payload: Vec<u8>,
     shutdown: &CancellationToken,
     metrics: &TransformMetrics,
+    kind: TransportKind,
 ) -> SendOutcome {
     // Refcounted, so each retry re-sends the same buffer rather than copying.
     let payload = bytes::Bytes::from(payload);
@@ -466,7 +575,7 @@ async fn send_chunk<S: TransportSender>(
                 tracing::warn!(attempt, "sink is backpressured, retrying");
             }
             SendResult::Fatal(e) => {
-                metrics.dfe.transport_send_errors(TransportKind::Kafka, 1);
+                metrics.dfe.transport_send_errors(kind, 1);
                 tracing::warn!(attempt, error = %e, "send failed, retrying");
             }
             // scalo's contract makes DLQ routing the caller's job. This
@@ -497,22 +606,49 @@ async fn send_chunk<S: TransportSender>(
     )))
 }
 
+/// How far behind this pod's assigned partitions are, where that has meaning.
+///
+/// `stats()` is inherent on `KafkaTransport` rather than part of any transport
+/// trait, so the lag can only be read off that variant. A Push listener has no
+/// consumer group to be behind, which is why the answer is `None` and not zero.
+// The `Option` is not redundant across feature sets: the grpc arm below and the
+// kafka-less twin both answer `None`, and clippy sees only one build at a time.
+#[allow(clippy::unnecessary_wraps)]
+#[cfg(feature = "kafka")]
+fn consumer_lag(consumer: &AnyReceiver) -> Option<i64> {
+    match consumer {
+        AnyReceiver::Kafka(consumer) => Some(total_consumer_lag(&consumer.stats()).max(0)),
+        // scalo gates the variant itself, so naming it unconditionally would
+        // not compile without the feature.
+        #[cfg(feature = "grpc")]
+        AnyReceiver::Grpc(_) => None,
+    }
+}
+
+/// The same, in a build with no Kafka transport to read stats from.
+#[cfg(not(feature = "kafka"))]
+const fn consumer_lag(_consumer: &AnyReceiver) -> Option<i64> {
+    None
+}
+
 /// Push the per-pod signals `/scaling/pressure` serves to KEDA.
 ///
 /// The component names must match those declared in
 /// [`crate::cli::App::scaling_components`]; `set_component` silently ignores an
 /// unregistered name.
+///
+/// `kafka_lag` is skipped entirely on the direct transport rather than pushed
+/// as zero, and [`crate::cli::App::scaling_components`] declines to declare it
+/// there for the same reason: a declared component holds at zero while still
+/// taking its weight out of the composite.
 #[allow(clippy::cast_precision_loss)]
-fn push_scaling_signals(
-    scaling: Option<&ScalingSignals>,
-    consumer: &KafkaTransport,
-    saturation: f64,
-) {
+fn push_scaling_signals(scaling: Option<&ScalingSignals>, consumer: &AnyReceiver, saturation: f64) {
     let Some(scaling) = scaling else {
         return;
     };
-    let lag = total_consumer_lag(&consumer.stats()).max(0);
-    scaling.pressure.set_component("kafka_lag", lag as f64);
+    if let Some(lag) = consumer_lag(consumer) {
+        scaling.pressure.set_component("kafka_lag", lag as f64);
+    }
     scaling
         .pressure
         .set_component("batch_saturation", saturation);
@@ -528,6 +664,7 @@ fn push_scaling_signals(
 /// projects `KAFKA_SASL_USERNAME` and `KAFKA_SASL_PASSWORD` from a secret, and
 /// a secret must not be readable in a `ConfigMap`. `from_env` takes the service
 /// prefix first and falls back to the bare `KAFKA_*` names the chart mounts.
+#[cfg(feature = "kafka")]
 fn transport_defaults() -> KafkaConfig {
     KafkaConfig::from_env(crate::config::ENV_PREFIX)
 }
@@ -538,6 +675,7 @@ fn transport_defaults() -> KafkaConfig {
 /// SASL mechanism. Mounting the secret and leaving the protocol at `plaintext`
 /// therefore connects ANONYMOUSLY, in the clear, while the operator believes
 /// the secret is in use -- so the pairing is rejected instead of guessed at.
+#[cfg(feature = "kafka")]
 fn check_credentials(kafka: &KafkaConfig) -> crate::Result<()> {
     let has_credentials = kafka.sasl_username.is_some() || kafka.sasl_password.is_some();
     let is_sasl = kafka
@@ -576,6 +714,7 @@ fn check_credentials(kafka: &KafkaConfig) -> crate::Result<()> {
 /// and the inbound side had no equivalent. `fetch.max.bytes` is where
 /// librdkafka enforces it, so the ceiling applies before the bytes are in the
 /// process rather than after.
+#[cfg(feature = "kafka")]
 fn consumer_config(config: &Config) -> KafkaConfig {
     let fetch_bytes = i32::try_from(config.source.max_batch_bytes).unwrap_or(i32::MAX);
     // One partition must not be able to fill the whole fetch on its own.
@@ -602,6 +741,7 @@ fn consumer_config(config: &Config) -> KafkaConfig {
     }
 }
 
+#[cfg(feature = "kafka")]
 fn producer_config(config: &Config) -> KafkaConfig {
     KafkaConfig {
         brokers: config.sink_brokers().to_vec(),
@@ -741,155 +881,164 @@ mod tests {
         }
     }
 
-    #[test]
-    fn consumer_subscribes_to_the_configured_topics() {
-        let kc = consumer_config(&config());
-        assert_eq!(kc.topics, vec!["in".to_string()]);
-        assert_eq!(kc.group, "g");
-        assert_eq!(kc.brokers, ["localhost:9092".to_string()]);
-    }
+    /// The bus arm's own surface: the two Kafka config builders and the
+    /// credential pairing they are checked against. A grpc-only build has no
+    /// `KafkaConfig` to build, so none of this exists there.
+    #[cfg(feature = "kafka")]
+    mod bus {
+        use super::*;
 
-    #[test]
-    fn producer_uses_the_sink_brokers_when_set() {
-        assert_eq!(
-            producer_config(&config()).brokers,
-            ["other:9092".to_string()]
-        );
-    }
+        #[test]
+        fn consumer_subscribes_to_the_configured_topics() {
+            let kc = consumer_config(&config());
+            assert_eq!(kc.topics, vec!["in".to_string()]);
+            assert_eq!(kc.group, "g");
+            assert_eq!(kc.brokers, ["localhost:9092".to_string()]);
+        }
 
-    #[test]
-    fn producer_falls_back_to_source_brokers() {
-        let mut c = config();
-        c.sink.brokers = None;
-        assert_eq!(producer_config(&c).brokers, ["localhost:9092".to_string()]);
-    }
+        #[test]
+        fn producer_uses_the_sink_brokers_when_set() {
+            assert_eq!(
+                producer_config(&config()).brokers,
+                ["other:9092".to_string()]
+            );
+        }
 
-    #[test]
-    fn consumer_and_producer_have_distinct_client_ids() {
-        let c = config();
-        assert_ne!(consumer_config(&c).client_id, producer_config(&c).client_id);
-    }
+        #[test]
+        fn producer_falls_back_to_source_brokers() {
+            let mut c = config();
+            c.sink.brokers = None;
+            assert_eq!(producer_config(&c).brokers, ["localhost:9092".to_string()]);
+        }
 
-    /// The whole point of reading the environment: a mounted secret has to
-    /// reach the transport, on both the consumer and the producer.
-    #[test]
-    fn mounted_credentials_reach_both_transports() {
-        let kafka = KafkaConfig {
-            security_protocol: "sasl_ssl".into(),
-            sasl_mechanism: Some("SCRAM-SHA-512".into()),
-            sasl_username: Some("svc".into()),
-            sasl_password: Some("hunter2".into()),
-            ..KafkaConfig::default()
-        };
+        #[test]
+        fn consumer_and_producer_have_distinct_client_ids() {
+            let c = config();
+            assert_ne!(consumer_config(&c).client_id, producer_config(&c).client_id);
+        }
 
-        // What `..transport_defaults()` carries through -- the struct-update
-        // syntax the two builders use keeps every field they do not name.
-        let consumer = KafkaConfig {
-            brokers: vec!["b:9092".into()],
-            ..kafka.clone()
-        };
-        assert_eq!(consumer.sasl_username.as_deref(), Some("svc"));
-        assert_eq!(consumer.security_protocol, "sasl_ssl");
-        assert!(check_credentials(&kafka).is_ok());
-    }
+        /// The whole point of reading the environment: a mounted secret has to
+        /// reach the transport, on both the consumer and the producer.
+        #[test]
+        fn mounted_credentials_reach_both_transports() {
+            let kafka = KafkaConfig {
+                security_protocol: "sasl_ssl".into(),
+                sasl_mechanism: Some("SCRAM-SHA-512".into()),
+                sasl_username: Some("svc".into()),
+                sasl_password: Some("hunter2".into()),
+                ..KafkaConfig::default()
+            };
 
-    /// The defect: credentials mounted, protocol left at the default, so
-    /// librdkafka connects anonymously in cleartext and nothing says so.
-    #[test]
-    fn credentials_without_a_sasl_protocol_are_rejected() {
-        let kafka = KafkaConfig {
-            sasl_username: Some("svc".into()),
-            sasl_password: Some("hunter2".into()),
-            ..KafkaConfig::default()
-        };
-        assert_eq!(kafka.security_protocol, "plaintext");
+            // What `..transport_defaults()` carries through -- the struct-update
+            // syntax the two builders use keeps every field they do not name.
+            let consumer = KafkaConfig {
+                brokers: vec!["b:9092".into()],
+                ..kafka.clone()
+            };
+            assert_eq!(consumer.sasl_username.as_deref(), Some("svc"));
+            assert_eq!(consumer.security_protocol, "sasl_ssl");
+            assert!(check_credentials(&kafka).is_ok());
+        }
 
-        let err = check_credentials(&kafka).expect_err("plaintext + credentials must be rejected");
-        assert!(err.to_string().contains("never be sent"), "{err}");
-    }
+        /// The defect: credentials mounted, protocol left at the default, so
+        /// librdkafka connects anonymously in cleartext and nothing says so.
+        #[test]
+        fn credentials_without_a_sasl_protocol_are_rejected() {
+            let kafka = KafkaConfig {
+                sasl_username: Some("svc".into()),
+                sasl_password: Some("hunter2".into()),
+                ..KafkaConfig::default()
+            };
+            assert_eq!(kafka.security_protocol, "plaintext");
 
-    #[test]
-    fn a_sasl_protocol_without_credentials_is_rejected() {
-        let kafka = KafkaConfig {
-            security_protocol: "sasl_ssl".into(),
-            sasl_mechanism: Some("SCRAM-SHA-512".into()),
-            ..KafkaConfig::default()
-        };
-        assert!(check_credentials(&kafka).is_err());
-    }
+            let err =
+                check_credentials(&kafka).expect_err("plaintext + credentials must be rejected");
+            assert!(err.to_string().contains("never be sent"), "{err}");
+        }
 
-    #[test]
-    fn a_sasl_protocol_without_a_mechanism_is_rejected() {
-        let kafka = KafkaConfig {
-            security_protocol: "sasl_ssl".into(),
-            sasl_username: Some("svc".into()),
-            sasl_password: Some("hunter2".into()),
-            ..KafkaConfig::default()
-        };
-        assert!(check_credentials(&kafka).is_err());
-    }
+        #[test]
+        fn a_sasl_protocol_without_credentials_is_rejected() {
+            let kafka = KafkaConfig {
+                security_protocol: "sasl_ssl".into(),
+                sasl_mechanism: Some("SCRAM-SHA-512".into()),
+                ..KafkaConfig::default()
+            };
+            assert!(check_credentials(&kafka).is_err());
+        }
 
-    /// An unauthenticated broker is the local and dev-cluster case, and must
-    /// not be turned into a startup failure.
-    #[test]
-    fn plaintext_without_credentials_is_accepted() {
-        assert!(check_credentials(&KafkaConfig::default()).is_ok());
-    }
+        #[test]
+        fn a_sasl_protocol_without_a_mechanism_is_rejected() {
+            let kafka = KafkaConfig {
+                security_protocol: "sasl_ssl".into(),
+                sasl_username: Some("svc".into()),
+                sasl_password: Some("hunter2".into()),
+                ..KafkaConfig::default()
+            };
+            assert!(check_credentials(&kafka).is_err());
+        }
 
-    /// scalo's own floor, wired in beside the credential check: SASL PLAIN over
-    /// a plaintext transport is refused whatever the environment.
-    #[test]
-    fn plain_over_a_plaintext_transport_is_refused_in_every_environment() {
-        let kafka = KafkaConfig {
-            security_protocol: "sasl_plaintext".into(),
-            sasl_mechanism: Some("PLAIN".into()),
-            sasl_username: Some("svc".into()),
-            sasl_password: Some("hunter2".into()),
-            ..KafkaConfig::default()
-        };
-        // The pairing passes our own check, which is why scalo's is also called.
-        assert!(check_credentials(&kafka).is_ok());
-        assert!(kafka.validate(false).is_err());
-    }
+        /// An unauthenticated broker is the local and dev-cluster case, and must
+        /// not be turned into a startup failure.
+        #[test]
+        fn plaintext_without_credentials_is_accepted() {
+            assert!(check_credentials(&KafkaConfig::default()).is_ok());
+        }
 
-    /// Verification-skipping TLS and an unencrypted protocol are dev-only.
-    #[test]
-    fn production_refuses_an_insecure_transport() {
-        let skip_verify = KafkaConfig {
-            security_protocol: "ssl".into(),
-            ssl_skip_verify: true,
-            ..KafkaConfig::default()
-        };
-        assert!(skip_verify.validate(false).is_ok());
-        assert!(skip_verify.validate(true).is_err());
+        /// scalo's own floor, wired in beside the credential check: SASL PLAIN over
+        /// a plaintext transport is refused whatever the environment.
+        #[test]
+        fn plain_over_a_plaintext_transport_is_refused_in_every_environment() {
+            let kafka = KafkaConfig {
+                security_protocol: "sasl_plaintext".into(),
+                sasl_mechanism: Some("PLAIN".into()),
+                sasl_username: Some("svc".into()),
+                sasl_password: Some("hunter2".into()),
+                ..KafkaConfig::default()
+            };
+            // The pairing passes our own check, which is why scalo's is also called.
+            assert!(check_credentials(&kafka).is_ok());
+            assert!(kafka.validate(false).is_err());
+        }
 
-        let plaintext = KafkaConfig::default();
-        assert!(plaintext.validate(false).is_ok());
-        assert!(plaintext.validate(true).is_err());
-    }
+        /// Verification-skipping TLS and an unencrypted protocol are dev-only.
+        #[test]
+        fn production_refuses_an_insecure_transport() {
+            let skip_verify = KafkaConfig {
+                security_protocol: "ssl".into(),
+                ssl_skip_verify: true,
+                ..KafkaConfig::default()
+            };
+            assert!(skip_verify.validate(false).is_ok());
+            assert!(skip_verify.validate(true).is_err());
 
-    /// The inbound byte ceiling has to reach librdkafka, or `batch_size` is
-    /// still the only bound on how much memory one fetch can take.
-    #[test]
-    fn the_consumer_is_bounded_by_bytes_as_well_as_by_count() {
-        let mut c = config();
-        c.source.max_batch_bytes = 32 * 1024 * 1024;
-        let kc = consumer_config(&c);
+            let plaintext = KafkaConfig::default();
+            assert!(plaintext.validate(false).is_ok());
+            assert!(plaintext.validate(true).is_err());
+        }
 
-        assert_eq!(kc.fetch_max_bytes, 32 * 1024 * 1024);
-        // No single partition may fill the whole fetch.
-        assert_eq!(kc.max_partition_fetch_bytes, 8 * 1024 * 1024);
-        // And the sizing surface, which the transport applies LAST.
-        assert_eq!(kc.sizing.consumer.fetch_max_bytes, Some(32 * 1024 * 1024));
-        assert_eq!(
-            kc.sizing.consumer.max_partition_fetch_bytes,
-            Some(8 * 1024 * 1024)
-        );
-        assert_eq!(
-            kc.sizing.resolved_consumer_map().get("fetch.max.bytes"),
-            Some(&(32 * 1024 * 1024).to_string()),
-            "the sizing map is what reaches librdkafka"
-        );
+        /// The inbound byte ceiling has to reach librdkafka, or `batch_size` is
+        /// still the only bound on how much memory one fetch can take.
+        #[test]
+        fn the_consumer_is_bounded_by_bytes_as_well_as_by_count() {
+            let mut c = config();
+            c.source.max_batch_bytes = 32 * 1024 * 1024;
+            let kc = consumer_config(&c);
+
+            assert_eq!(kc.fetch_max_bytes, 32 * 1024 * 1024);
+            // No single partition may fill the whole fetch.
+            assert_eq!(kc.max_partition_fetch_bytes, 8 * 1024 * 1024);
+            // And the sizing surface, which the transport applies LAST.
+            assert_eq!(kc.sizing.consumer.fetch_max_bytes, Some(32 * 1024 * 1024));
+            assert_eq!(
+                kc.sizing.consumer.max_partition_fetch_bytes,
+                Some(8 * 1024 * 1024)
+            );
+            assert_eq!(
+                kc.sizing.resolved_consumer_map().get("fetch.max.bytes"),
+                Some(&(32 * 1024 * 1024).to_string()),
+                "the sizing map is what reaches librdkafka"
+            );
+        }
     }
 
     // -- The at-least-once failure branch ---------------------------------
@@ -971,6 +1120,7 @@ mod tests {
             b"{}\n".to_vec(),
             &CancellationToken::new(),
             &test_metrics(),
+            TransportKind::Kafka,
         )
         .await;
 
@@ -992,6 +1142,7 @@ mod tests {
             b"{}\n".to_vec(),
             &CancellationToken::new(),
             &test_metrics(),
+            TransportKind::Kafka,
         )
         .await;
 
@@ -1011,6 +1162,7 @@ mod tests {
             b"{}\n".to_vec(),
             &CancellationToken::new(),
             &test_metrics(),
+            TransportKind::Kafka,
         )
         .await;
 
@@ -1033,7 +1185,15 @@ mod tests {
         let shutdown = CancellationToken::new();
         shutdown.cancel();
 
-        let outcome = send_chunk(&sink, "out", b"{}\n".to_vec(), &shutdown, &test_metrics()).await;
+        let outcome = send_chunk(
+            &sink,
+            "out",
+            b"{}\n".to_vec(),
+            &shutdown,
+            &test_metrics(),
+            TransportKind::Kafka,
+        )
+        .await;
 
         assert!(matches!(outcome, SendOutcome::ShuttingDown));
         assert_eq!(sink.attempts(), 1, "the retry wait must observe the cancel");
@@ -1052,6 +1212,7 @@ mod tests {
             &sink,
             &CancellationToken::new(),
             &test_metrics(),
+            TransportKind::Kafka,
             &events,
         )
         .await;
