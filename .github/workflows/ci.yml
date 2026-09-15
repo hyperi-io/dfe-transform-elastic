@@ -63,3 +63,45 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
       CONTAINER_MGT_APP_PRIVATE_KEY: ${{ secrets.CONTAINER_MGT_APP_PRIVATE_KEY }}
+
+  # The engine offers `sources.yaml` as its source catalogue and content-pins it
+  # the way it pins dfe-schemas, so a release has to carry the file (issue #18).
+  # hyperi-ci has no release-asset stanza and this needs no change there: the
+  # upload lives in this repo's own workflow.
+  #
+  # NOT triggered on `release: published` -- semantic-release creates the
+  # release with a token whose events cannot start another workflow run, so
+  # that trigger would never fire. This gates on the same events that can
+  # publish and then proves a release for THIS commit exists before uploading.
+  catalogue-asset:
+    name: Source catalogue asset
+    needs: ci
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Attach sources.yaml to the release this run created
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="$(gh release view --json tagName --jq .tagName 2>/dev/null || true)"
+          if [[ -z "$tag" ]]; then
+            echo "no release exists yet -- nothing to attach"
+            exit 0
+          fi
+          # Resolve the tag through the API rather than a local ref: the
+          # checkout above fetches no tags, and a release from an earlier run
+          # must not collect this run's catalogue.
+          released="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${tag}" --jq .object.sha)"
+          if [[ "$released" != "$GITHUB_SHA" ]]; then
+            echo "latest release $tag is $released, not this commit -- nothing published here"
+            exit 0
+          fi
+          gh release upload "$tag" sources.yaml --clobber
+          echo "attached sources.yaml to $tag"
