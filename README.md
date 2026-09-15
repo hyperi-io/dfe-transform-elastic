@@ -139,7 +139,7 @@ The metrics and probe listener is not configured here. scalo's `--metrics-addr`
 (env `METRICS_ADDR`, default `0.0.0.0:9090`) is the single source of truth, so
 charts and deployments override that rather than a YAML field.
 
-### Nothing reloads, and `--config` ignores the environment
+### Nothing reloads, and only one env spelling reaches a `--config` file
 
 The configuration is read ONCE at startup and handed to the batch loop by
 reference, so **every value needs a restart to change** -- the Kafka connections
@@ -148,11 +148,24 @@ event, the GeoIP databases are loaded at startup, and the metrics labels are set
 at startup.
 
 The two ways in are not equivalent. With no `--config` the whole scalo cascade
-applies, so `DFE_TRANSFORM_ELASTIC_*` overrides the files. With `--config` --
-which is what the container passes -- the named file IS the configuration and
-**no `DFE_TRANSFORM_ELASTIC_*` variable reaches it**, so setting one there
-changes nothing and warns about nothing. Kafka credentials are unaffected
-either way: they are read from `KAFKA_*` separately.
+applies. With `--config` -- which is what the container passes -- the named file
+IS the configuration, because scalo cannot merge an arbitrarily-named file into
+the cascade as a layer. Kafka credentials are unaffected either way: they are
+read from `KAFKA_*` separately.
+
+**Which spelling you use decides whether it reaches that file.** The FLAT,
+single-underscore form is applied to the loaded configuration on both branches,
+so it works against a `--config` deployment:
+
+    DFE_TRANSFORM_ELASTIC_SOURCE_TOPICS=a,b
+    DFE_TRANSFORM_ELASTIC_SOURCE_BATCH_SIZE=5000
+    DFE_TRANSFORM_ELASTIC_SINK_TOPIC=out
+
+The fields it covers are `pipeline_name`, every `source.*` and every `sink.*`.
+`geoip` is not among them -- it is scalo's own type, so the orphan rule puts it
+out of reach, and it stays settable from the file and the cascade. scalo's
+DOUBLE-underscore form is resolved from the cascade instead, which a named file
+is not a layer of, so it reaches such a deployment never.
 
 One consequence to know before tuning it: a section scalo resolves for itself
 cannot be set from a `--config` file at all. `scaling` is the one that bites.
