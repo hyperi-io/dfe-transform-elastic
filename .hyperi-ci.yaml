@@ -41,6 +41,22 @@ build:
     targets:
       - x86_64-unknown-linux-gnu
       - aarch64-unknown-linux-gnu
+    # The cost lands on a RELEASE and never on a PR: the build half only runs
+    # behind the `Publish: true` trailer or a `hyperi-ci publish` dispatch, so
+    # the day-to-day loop is untouched. Release in groups, sparingly.
+    optimize:
+      pgo:
+        enabled: true
+        workload_cmd: "bash scripts/pgo-workload.sh"
+        # 600 rather than the 300 the sibling services use, because our
+        # workload splits its budget across TWO sources -- cisco_ios is grok
+        # over syslog, okta is Painless over JSON -- and profiles each
+        # separately, so 300 would leave each with 150s. A short run biases the
+        # profile toward startup paths, which the loader canary measured as
+        # NEGATIVE PGO.
+        duration_secs: 600
+      bolt:
+        enabled: true  # Linux only; skipped on non-Linux targets
 
 # Publishing (on release). The stack pins every app by GHCR image digest, so
 # a release must land an image. The deployed chart is dfe-infra's, so the
