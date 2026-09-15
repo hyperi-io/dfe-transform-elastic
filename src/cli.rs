@@ -141,6 +141,15 @@ impl ServiceApp for App {
         Ok(config)
     }
 
+    /// Does this configuration give the transform work?
+    ///
+    /// Evaluated after the runtime is up, so an instance deployed before
+    /// anything names a source serves its probes and parks on the config file
+    /// instead of crash-looping with no probe surface.
+    fn work_state(&self, config: &Config) -> scalo::lifecycle::WorkState {
+        config.work_state()
+    }
+
     #[cfg(feature = "kafka")]
     async fn run_service(
         &self,

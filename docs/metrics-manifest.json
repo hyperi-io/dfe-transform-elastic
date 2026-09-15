@@ -3,7 +3,7 @@
   "app": "dfe-transform-elastic",
   "version": "0.1.0",
   "commit": "unknown",
-  "registered_at": "2026-09-14T18:22:28Z",
+  "registered_at": "2026-09-15T00:17:42Z",
   "metrics": [
     {
       "name": "dfe-transform-elastic_transport_sent_total",
@@ -123,6 +123,14 @@
       "labels": [
         "transport"
       ],
+      "group": "platform"
+    },
+    {
+      "name": "dfe-transform-elastic_pipeline_idle",
+      "type": "gauge",
+      "description": "Service has no work configured (1=idle, 0=working)",
+      "unit": "",
+      "labels": [],
       "group": "platform"
     },
     {

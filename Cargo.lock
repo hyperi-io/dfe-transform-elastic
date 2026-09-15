@@ -851,7 +851,7 @@ dependencies = [
 name = "dfe-painless"
 version = "0.1.0"
 dependencies = [
- "base64 0.22.1",
+ "base64 0.23.1",
  "chrono",
  "chrono-tz",
  "criterion",
@@ -3411,9 +3411,9 @@ dependencies = [
 
 [[package]]
 name = "scalo"
-version = "2.11.1"
+version = "2.12.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "038f62e7235f153ae7ccab1eccc08a2000108fe06b6fc54418e683f1e6b24371"
+checksum = "aac643024e640e390ddae3a0d065ff958f21a5baee1f255ea79bd664a15085c6"
 dependencies = [
  "axum",
  "backon",
