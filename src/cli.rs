@@ -159,7 +159,7 @@ impl ServiceApp for App {
         }
     }
 
-    #[cfg(feature = "kafka")]
+    #[cfg(any(feature = "kafka", feature = "grpc"))]
     async fn run_service(
         &self,
         config: Config,
@@ -170,14 +170,14 @@ impl ServiceApp for App {
             .map_err(|e| CliError::Service(e.to_string()))
     }
 
-    #[cfg(not(feature = "kafka"))]
+    #[cfg(not(any(feature = "kafka", feature = "grpc")))]
     async fn run_service(
         &self,
         _config: Config,
         _runtime: scalo::cli::ServiceRuntime,
     ) -> Result<(), CliError> {
         Err(CliError::Service(
-            "built without the `kafka` feature; there is no transport to run".into(),
+            "built without the `kafka` and `grpc` features; there is no transport to run".into(),
         ))
     }
 
@@ -191,9 +191,19 @@ impl ServiceApp for App {
         );
     }
 
-    fn scaling_components(&self, _config: &Config) -> Vec<ScalingComponent> {
-        // `set_component` is a no-op for an unregistered name, so every
-        // component the service feeds must be declared here.
+    /// The weighted signals `/scaling/pressure` composes for KEDA.
+    ///
+    /// `set_component` is a no-op for an unregistered name, so every component
+    /// the service feeds must be declared here -- and the converse costs just
+    /// as much: a declared component nothing feeds holds at zero while still
+    /// taking its weight, so declaring `kafka_lag` on a direct deployment would
+    /// cap that pod's pressure at 30 however saturated it is. Direct has no
+    /// consumer group to lag behind, so there it scales on batch saturation and
+    /// the memory gate alone.
+    fn scaling_components(&self, config: &Config) -> Vec<ScalingComponent> {
+        if config.source.transport.is_direct() {
+            return vec![ScalingComponent::new("batch_saturation", 1.0, 1.0)];
+        }
         vec![
             ScalingComponent::new("kafka_lag", 0.70, 200_000.0),
             ScalingComponent::new("batch_saturation", 0.30, 1.0),
