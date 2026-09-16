@@ -177,8 +177,9 @@ source files, so it compiles as a single `rustc` holding about 13 GiB whatever
 `-j` says, and the binary then links under fat LTO in one thread. Neither step
 spreads across cores, which is why a bigger runner buys very little.
 
-**PGO and BOLT are enabled on the release build, and they multiply the build
-half by four.** That pipeline is not one build with a flag -- it is four
+**PGO is enabled on the release build, BOLT rejoins it once
+hyperi-io/hyperi-ci#136 lands, and together they multiply the build half by
+four.** That pipeline is not one build with a flag -- it is four
 sequential cargo passes (PGO instrument, PGO optimise, BOLT instrument, BOLT
 optimise) plus two workload runs of `duration_secs` each (600 here, because
 `scripts/pgo-workload.sh` splits its budget across two sources), and a failed
