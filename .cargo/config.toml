@@ -8,9 +8,13 @@
 rustflags = ["-C", "target-cpu=x86-64-v3"]
 
 # aarch64: NEON is baseline, so generic already has it.
+#
+# lld rather than the default bfd, because a PGO-instrumented build of this
+# binary overflows AArch64's 128 MB direct branch and bfd cannot reach past it
+# (hyperi-io/hyperi-ci#142). lld inserts the range-extension thunks.
 [target.aarch64-unknown-linux-gnu]
 linker = "aarch64-linux-gnu-gcc"
-rustflags = ["-C", "target-cpu=generic"]
+rustflags = ["-C", "target-cpu=generic", "-C", "link-arg=-fuse-ld=lld"]
 
 # Untargeted local builds get the build host's own features. The per-target
 # sections above win whenever `--target` is passed, which is what CI does.
