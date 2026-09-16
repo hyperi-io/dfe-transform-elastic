@@ -1,0 +1,42 @@
+# Project:   dfe-transform-elastic
+# File:      crates/pgo-driver/Cargo.toml
+# Purpose:   PGO workload driver manifest
+# Language:  TOML
+#
+# License:   BUSL-1.1
+# Copyright: (c) 2026 HYPERI PTY LIMITED
+
+[package]
+name = "pgo-driver"
+description = "Load driver that feeds the committed Beats fixtures to a PGO-instrumented dfe-transform-elastic"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[features]
+# hyperi-ci packages every non-gated bin in the workspace, and its
+# `_detect_binary_names` skips a target carrying `required-features`, so the
+# gate is what keeps this driver out of a release payload.
+driver = []
+
+[[bin]]
+name = "pgo-driver"
+path = "src/main.rs"
+required-features = ["driver"]
+
+[dependencies]
+# Declared here rather than inherited: the workspace entry carries the
+# service's full feature list, and this crate must build with the Kafka
+# transport alone so the workload's driver build takes minutes.
+scalo = { version = ">=2.12.2, <3", default-features = false, features = [
+    "transport-kafka",
+] }
+serde_json = { workspace = true }
+memchr = { workspace = true }

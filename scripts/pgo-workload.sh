@@ -15,8 +15,9 @@
 # binary accumulates a representative profile.
 #
 # Environment variables (all optional):
-#   PGO_WORKLOAD_DURATION_SECS   Total load duration (default 300, floor 60)
+#   PGO_WORKLOAD_DURATION_SECS   Total load duration (default 600, floor 60)
 #   PGO_WORKLOAD_KAFKA_IMAGE     Override the Redpanda image
+#   PGO_WORKLOAD_KAFKA_PORT      Loopback port the broker publishes on (default 19092)
 #   PGO_WORKLOAD_METRICS_PORT    Port the service serves /readyz on (default 9090)
 #   PGO_WORKLOAD_KEEP            Set to 1 to skip cleanup (debug)
 #   PGO_DRIVER_PATH              Override the pgo-driver binary path
@@ -25,7 +26,7 @@
 # Preconditions:
 #   - Docker daemon running, and the user has access to it
 #   - $1 is a dfe-transform-elastic binary built with PGO instrumentation
-#   - pgo-driver built with --features pgo-driver (built on demand if missing)
+#   - pgo-driver built with --features driver (built on demand if missing)
 #
 # Breadth across sources is THIS script's job, not the driver's. One service
 # instance resolves ONE source and applies that transform to everything that
@@ -44,16 +45,42 @@ if [[ $# -lt 1 ]]; then
     exit 1
 fi
 
-SERVICE_BIN="$1"
+SERVICE_BIN="$(realpath "$1")"
 if [[ ! -x "$SERVICE_BIN" ]]; then
     echo "error: $SERVICE_BIN is not executable" >&2
     exit 1
 fi
 
-DURATION="${PGO_WORKLOAD_DURATION_SECS:-300}"
-KAFKA_IMAGE="${PGO_WORKLOAD_KAFKA_IMAGE:-docker.redpanda.com/redpandadata/redpanda:v26.1.9}"
+DURATION="${PGO_WORKLOAD_DURATION_SECS:-600}"
+# The tag sits on its own line so the fleet's one Renovate regex can read it,
+# and the org preset bounds this image to the broker version dfe-infra pairs
+# with its Redpanda operator chart.
+# renovate: datasource=docker depName=docker.redpanda.com/redpandadata/redpanda
+KAFKA_TAG="v26.1.8"
+KAFKA_IMAGE="${PGO_WORKLOAD_KAFKA_IMAGE:-docker.redpanda.com/redpandadata/redpanda:${KAFKA_TAG}}"
+KAFKA_PORT="${PGO_WORKLOAD_KAFKA_PORT:-19092}"
 METRICS_PORT="${PGO_WORKLOAD_METRICS_PORT:-9090}"
 KEEP="${PGO_WORKLOAD_KEEP:-0}"
+
+# The workload broker is plaintext. A host running the dev stack exports SASL
+# settings under every spelling scalo reads, and scalo also loads a `.env`
+# from the working directory, so the service starts from the scratch
+# directory with those names unset and the protocol pinned.
+KAFKA_ENV_SCRUB=(
+    -u KAFKA_SASL_USER -u KAFKA_SASL_USERNAME -u KAFKA_SASL_PASSWORD
+    -u KAFKA_SASL_MECHANISM
+    -u DFE_TRANSFORM_ELASTIC_SASL_USER -u DFE_TRANSFORM_ELASTIC_SASL_USERNAME
+    -u DFE_TRANSFORM_ELASTIC_SASL_PASSWORD -u DFE_TRANSFORM_ELASTIC_SASL_MECHANISM
+    -u DFE_TRANSFORM_ELASTIC_SECURITY_PROTOCOL
+    KAFKA_SECURITY_PROTOCOL=plaintext
+)
+
+# Both `-lt` and `$(( ))` evaluate a non-numeric string rather than rejecting
+# it, so the duration is checked as digits before any arithmetic reads it.
+if [[ ! "$DURATION" =~ ^[0-9]+$ ]]; then
+    echo "error: PGO_WORKLOAD_DURATION_SECS must be a whole number of seconds (got '$DURATION')" >&2
+    exit 1
+fi
 
 if [[ "$DURATION" -lt 60 ]]; then
     echo "error: PGO_WORKLOAD_DURATION_SECS must be >= 60 (got $DURATION)" >&2
@@ -94,8 +121,8 @@ fi
 find_driver() {
     local build_log="$WORK_DIR/pgo-driver-build.json"
     echo "pgo-workload: building pgo-driver" >&2
-    if ! (cd "$PROJECT_ROOT" && cargo build --release --features pgo-driver \
-        --bin pgo-driver --message-format=json) >"$build_log"; then
+    if ! (cd "$PROJECT_ROOT" && cargo build --release -p pgo-driver \
+        --features driver --message-format=json) >"$build_log"; then
         echo "error: failed to build pgo-driver" >&2
         return 1
     fi
@@ -169,15 +196,18 @@ echo "pgo-workload: driver at $PGO_DRIVER_PATH"
 # Redpanda rather than the Kafka JVM: a JVM heap starves the instrumented binary
 # on a small runner, and the wire protocol is the same either way.
 echo "pgo-workload: starting Redpanda ($KAFKA_IMAGE)"
+# Two listeners: a client follows the broker's advertised address after its
+# first connection, so rpk inside the container needs one it can reach there
+# and the service and driver on the host need the published port.
 KAFKA_CID=$(docker run -d --rm \
-    -p 19092:9092 \
+    -p "127.0.0.1:${KAFKA_PORT}:${KAFKA_PORT}" \
     "$KAFKA_IMAGE" \
     redpanda start \
     --mode dev-container \
     --smp 1 \
     --memory 512M \
-    --kafka-addr PLAINTEXT://0.0.0.0:9092 \
-    --advertise-kafka-addr PLAINTEXT://localhost:19092)
+    --kafka-addr "internal://0.0.0.0:9092,external://0.0.0.0:${KAFKA_PORT}" \
+    --advertise-kafka-addr "internal://localhost:9092,external://localhost:${KAFKA_PORT}")
 echo "pgo-workload: Redpanda CID: $KAFKA_CID"
 
 # The admin API's own health verdict, not a TCP probe: the port accepts a
@@ -226,15 +256,15 @@ for entry in "${SOURCES[@]}"; do
     # consumer SUBSCRIBE, so the service would never find its topic, never
     # reach ready, and the driver -- which only starts once it is ready --
     # would never produce. Apache Kafka's auto-create-on-subscribe used to mask
-    # this. The client runs with --network host so it reaches the advertised
-    # localhost:19092 listener.
+    # this. The client runs inside the broker container, against the internal
+    # listener the readiness check above already uses.
     for topic in "$IN_TOPIC" "$OUT_TOPIC"; do
         # An "already exists" failure is expected on a re-run, and any other
         # failure ends in the deadlock above, so presence is checked.
-        docker run --rm --network host "$KAFKA_IMAGE" \
-            topic create "$topic" -p 3 -X brokers=localhost:19092 >/dev/null 2>&1 || true
-        if ! docker run --rm --network host "$KAFKA_IMAGE" \
-            topic describe "$topic" -X brokers=localhost:19092 >/dev/null 2>&1; then
+        docker exec "$KAFKA_CID" rpk \
+            topic create "$topic" -p 3 -X brokers=localhost:9092 >/dev/null || true
+        if ! docker exec "$KAFKA_CID" rpk \
+            topic describe "$topic" -X brokers=localhost:9092 >/dev/null 2>&1; then
             echo "error: topic $topic is absent and could not be created" >&2
             echo "  the consumer would subscribe to a missing topic, never reach" >&2
             echo "  ready, and the driver would never produce" >&2
@@ -256,11 +286,11 @@ source:
   max_batch_bytes: 16777216
   group_id: pgo-workload-$SLUG
   brokers:
-  - localhost:19092
+  - localhost:${KAFKA_PORT}
 sink:
   topic: $OUT_TOPIC
   brokers:
-  - localhost:19092
+  - localhost:${KAFKA_PORT}
   max_message_bytes: 900000
 geoip:
   enabled: false
@@ -269,7 +299,8 @@ geoip:
 YAML
 
     echo "pgo-workload: $SOURCE_NAME for ${SLICE}s (fixture $FIXTURE_REL)"
-    METRICS_ADDR="127.0.0.1:$METRICS_PORT" \
+    env --chdir="$WORK_DIR" "${KAFKA_ENV_SCRUB[@]}" \
+        METRICS_ADDR="127.0.0.1:$METRICS_PORT" \
         "$SERVICE_BIN" --config "$CONFIG_FILE" run \
         >"$WORK_DIR/$SLUG.log" 2>&1 &
     SERVICE_PID=$!
@@ -297,8 +328,9 @@ YAML
     # rather than transformed now.
     sleep 2
 
-    PGO_DRIVER_DURATION_SECS="$SLICE" \
-        PGO_DRIVER_BROKERS="127.0.0.1:19092" \
+    env "${KAFKA_ENV_SCRUB[@]}" \
+        PGO_DRIVER_DURATION_SECS="$SLICE" \
+        PGO_DRIVER_BROKERS="127.0.0.1:${KAFKA_PORT}" \
         PGO_DRIVER_TOPIC="$IN_TOPIC" \
         PGO_DRIVER_RPS="${PGO_DRIVER_RPS:-5000}" \
         PGO_DRIVER_FIXTURES="$FIXTURE" \

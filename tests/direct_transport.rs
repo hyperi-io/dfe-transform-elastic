@@ -83,14 +83,25 @@ async fn a_record_pushed_at_the_listener_comes_back_out_of_it() {
         let result = pusher
             .send("elastic_in", Bytes::from(payload.clone()))
             .await;
-        assert!(result.is_ok(), "push failed: {result:?}");
+        assert!(
+            matches!(result, scalo::transport::SendResult::Ok),
+            "push failed: {result:?}"
+        );
     }
 
     let mut received: Vec<Vec<u8>> = Vec::new();
     let deadline = tokio::time::Instant::now() + Duration::from_secs(10);
-    while received.len() < sent.len() && tokio::time::Instant::now() < deadline {
-        if let Ok(batch) = listener.recv(10).await {
-            received.extend(batch.records.into_iter().map(|r| r.payload.to_vec()));
+    while received.len() < sent.len() {
+        let remaining = deadline.saturating_duration_since(tokio::time::Instant::now());
+        if remaining.is_zero() {
+            break;
+        }
+        match tokio::time::timeout(remaining, listener.recv(10)).await {
+            Ok(Ok(batch)) => {
+                received.extend(batch.records.into_iter().map(|r| r.payload.to_vec()));
+            }
+            Ok(Err(_)) => tokio::time::sleep(Duration::from_millis(20)).await,
+            Err(_) => break,
         }
     }
 
@@ -126,8 +137,6 @@ fn direct_config(listen: &str, endpoint: &str) -> Config {
             brokers: Vec::new(),
         },
         sink: SinkConfig {
-            // Carried on the record here too: `publish` hands the topic to the
-            // sender whichever transport sits underneath it.
             topic: "elastic_out".into(),
             transport: Transport::Direct,
             endpoint: endpoint.into(),
@@ -160,9 +169,7 @@ fn okta_events(count: usize) -> Vec<u8> {
 
 #[tokio::test]
 async fn a_batch_pushed_over_grpc_comes_out_the_grpc_sink_transformed() {
-    // The downstream stage, standing in for the loader.
     let (loader_endpoint, loader) = start_listener().await;
-    // The transform's own listener, and a client that pushes into it.
     let (transform_endpoint, transform_listener) = start_listener().await;
     let pusher = GrpcTransport::new(&GrpcConfig::client(&transform_endpoint))
         .await
@@ -193,13 +200,30 @@ async fn a_batch_pushed_over_grpc_comes_out_the_grpc_sink_transformed() {
 
     let mut events: Vec<serde_json::Value> = Vec::new();
     let deadline = tokio::time::Instant::now() + Duration::from_secs(30);
-    while events.len() < 3 && tokio::time::Instant::now() < deadline {
-        if let Ok(batch) = loader.recv(16).await {
-            for record in &batch.records {
-                for line in String::from_utf8_lossy(&record.payload).lines() {
-                    if !line.trim().is_empty() {
-                        events.push(serde_json::from_str(line).expect("output is JSON"));
-                    }
+    while events.len() < 3 {
+        let remaining = deadline.saturating_duration_since(tokio::time::Instant::now());
+        if remaining.is_zero() {
+            break;
+        }
+        let batch = match tokio::time::timeout(remaining, loader.recv(16)).await {
+            Ok(Ok(batch)) => batch,
+            Ok(Err(_)) => {
+                tokio::time::sleep(Duration::from_millis(20)).await;
+                continue;
+            }
+            Err(_) => break,
+        };
+        for record in &batch.records {
+            // `publish` hands `sink.topic` to the sender whichever transport
+            // sits underneath, and the listener carries it as the routing key.
+            assert_eq!(
+                record.key.as_deref(),
+                Some("elastic_out"),
+                "the sink topic must reach the wire"
+            );
+            for line in String::from_utf8_lossy(&record.payload).lines() {
+                if !line.trim().is_empty() {
+                    events.push(serde_json::from_str(line).expect("output is JSON"));
                 }
             }
         }

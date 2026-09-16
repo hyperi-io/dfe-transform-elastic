@@ -59,9 +59,11 @@ impl Broker {
         use testcontainers_modules::kafka::apache::KAFKA_PORT;
 
         // Pinned here rather than left to the module default: a tag baked into
-        // a dependency's source is invisible to dependency review.
+        // a dependency's source is invisible to dependency review. The org
+        // Renovate preset caps this image at the version Strimzi runs, so the
+        // fixture cannot pass on a broker production cannot deploy.
         // renovate: datasource=docker depName=apache/kafka-native
-        const KAFKA_TAG: &str = "4.3.1";
+        const KAFKA_TAG: &str = "4.2.0";
 
         let name = container_name(test);
         reap_stale(&name);

@@ -1,7 +1,7 @@
 # Architecture
 
 **Project:** dfe-transform-elastic
-**Purpose:** Rust-optimised transform service for Elastic Stack data (Beats + Elastic Agent) ingested via Kafka
+**Purpose:** Rust-optimised transform service for Elastic Stack data (Beats + Elastic Agent) ingested over Kafka or a direct gRPC push
 
 Converts Elastic ingest pipeline logic (Painless scripts + processors) into compiled Rust
 transform functions, one module per source. There is no interpreter, no scripting VM and no
@@ -41,16 +41,17 @@ flowchart LR
         E[Enrichment<br/>GeoIP / UA / CID]
     end
 
-    O[Output<br/>Kafka / ClickHouse]
+    O[Output<br/>Kafka, or a gRPC push<br/>to dfe-loader]
 
     FB & WB & AB & MB & HB & PB & EA & RX & FX --> K
+    RX & FX -.->|direct gRPC push| D
     K --> D --> T --> O
     T <--> E
 ```
 
-**Input:** JSON events from Kafka in any of the three producer envelopes -- Beats-shaped, dfe-receiver's, or dfe-fetcher's
-**Transform:** Elastic ingest pipeline logic expressed as native Rust
-**Output:** Transformed, normalised events (to Kafka, ClickHouse via dfe-loader, or other sinks)
+JSON events arrive from Kafka or over a direct gRPC push, in any of the three producer
+envelopes, and leave the same way as normalised events. Between the two, Elastic's ingest
+pipeline logic runs as native Rust.
 
 ---
 
@@ -79,7 +80,7 @@ flowchart TD
 
 | Crate | Type | Purpose |
 |-------|------|---------|
-| `dfe-transform-elastic` | Binary + Library | Service binary: CLI, config cascade, envelope unwrapping, registry lookup, batch pipeline, deployment artefact generation |
+| `dfe-transform-elastic` | Binary + Library | The service, module by module in the table below |
 | `dfe-transforms` | Library | Transform modules per data source (`filebeat::<source>::<pipeline>`) |
 | `dfe-runtime` | Library | Grok caching, enrichment, `codegen_api`, the Transform trait, and the prelude |
 | `dfe-painless` | Library | Painless pattern matching: the `known_patterns` ladder, `plan`, `params`, `patterns.lock`, and `bespoke/` -- one module per source holding the scripts transcribed by hand, resolved by script hash ahead of every matcher |
@@ -92,11 +93,8 @@ is why the thousand generated modules did not change when the split landed.
 
 `dfe-parse` is reached, but only for two whole-pattern forms: `grok_cache` dispatches
 `^%{IPV4:f}$` and `^%{IPV4:a}:%{PORT:p}$` to it and falls back to the compiled regex for
-everything else. The regex is no longer built per call either -- the `cached_grok!` and
-`cached_regex!` macros hold a site-local `OnceLock`, deliberately rather than a shared
-map, because a shared reader-count atomic bounces between cores once one transform thread
-runs per partition. Widening what `dfe-parse` covers is future work; wiring it in at all
-is not.
+everything else. Each call site holds that regex in its own `OnceLock` rather than a shared
+map, for the reason [performance.md](performance.md) measures.
 
 The third-party libraries underneath all six crates are
 [Key dependencies](performance.md#key-dependencies).
@@ -105,60 +103,41 @@ The third-party libraries underneath all six crates are
 
 ## Service binary
 
-`src/` is the Kafka-to-Kafka service that resolves a configured source name to one compiled
-transform and runs it over every batch on the scalo runtime.
+`src/` is the service that resolves a configured source name to one compiled transform and
+runs it over every batch on the scalo runtime, over the bus (Kafka) or the direct (gRPC push)
+transport.
 
 | Module | Responsibility |
 |---|---|
 | `main.rs` | Entry point, hands off to `cli.rs` |
-| `cli.rs` | Subcommands: run the service, `sources` (list registered transforms), `emit-dockerfile`, `emit-chart`, `emit-compose`, `generate-artefacts`, `metrics-manifest` |
-| `config.rs` | The config shape: `source.*`, `sink.*`, `geoip`, read once at startup, and `work_state`, which decides whether an instance has work or idles. Also `Transport`, the `bus`/`direct` selector on each side -- declared and validated, with nothing yet constructing the direct one (issue #19) |
+| `cli.rs` | Subcommands: `sources` (list registered transforms), `emit-dockerfile`, `emit-chart`, `emit-compose`, `emit-config`, plus scalo's `run`, `version`, `config-check`, `config-schema`, `generate-artefacts` and `metrics-manifest` |
+| `config.rs` | The config shape: `source.*`, `sink.*`, `geoip`, read once at startup, and `work_state`, which decides whether an instance has work or idles. Also `Transport`, the `bus`/`direct` selector on each side |
 | `config/loader.rs` | Reading it, from the scalo cascade or an explicit `--config` file, and `CASCADE_ONLY_SECTIONS` -- the scalo sections that file is warned for carrying |
 | `config/validate.rs` | Refusing a configuration that cannot work. The range checks run ahead of the idle gate, so a value someone set out of range still refuses while an unconfigured instance idles |
 | `registry.rs` | Source name to `Transform` lookup, plus each source's `Intake` (which envelopes it accepts), `Framing` and dataset |
 | `envelope.rs` | Detects which of the three producer families wrapped an event and unwraps it into the shape every transform expects |
 | `pipeline.rs` | Batch processing: NDJSON parse, envelope unwrap, transform, serialise, with per-batch outcome counts |
-| `service.rs` | Wires the scalo Kafka consumer/producer to `pipeline.rs`, and owns the send/commit semantics below |
+| `service.rs` | Wires the scalo consumer and producer to `pipeline.rs` -- Kafka on the bus, a Push listener and a gRPC client on direct -- and owns the send/commit semantics below |
 | `deployment.rs` | The single deployment contract: Dockerfile, Helm chart, compose fragment and KEDA scaler are all generated from here. Its tests pin the Dockerfile, `config.example.yaml`, the chart's `config:` block and the `docs/` config artefacts against a fresh regen -- not every artefact, see the README |
 | `metrics.rs` | Metric definitions registered with scalo's `MetricsManager` |
 | `error.rs` | The service's top-level error type |
 
-A config naming a source the build does not carry is rejected at startup, not discovered at
-the first batch. Nothing is hot-reloaded: `Config::load` reads the configuration once and the
-loaded value is handed to the batch loop by reference, so every value needs a restart. The two
-ways in also differ -- with no `--config` the scalo cascade applies, while `--config` reads the
-named file directly because scalo cannot merge an arbitrarily-named file in as a cascade layer.
-Which env spelling is used decides whether it reaches that file: the FLAT, single-underscore
-form (`DFE_TRANSFORM_ELASTIC_SOURCE_TOPICS`) is applied to the loaded configuration on both
-branches, while scalo's double-underscore form is resolved from the cascade and reaches a
-`--config` deployment never. `src/config.rs` states both at the top of the file.
-
-**Scaling is configured through the environment, not the config file.** The container is started
-with `--config`, and scalo resolves `scaling` from its own cascade -- `./defaults.yaml`,
-`./settings.yaml`, `/config/settings.yaml`, then `DFE_TRANSFORM_ELASTIC_*` -- so a file named on
-the command line reaches it through no layer at all. Set
-`DFE_TRANSFORM_ELASTIC_SCALING__ENABLED` or
-`DFE_TRANSFORM_ELASTIC_SCALING__MEMORY_GATE_THRESHOLD`; the effective values are logged once at
-startup, with the layer that supplied them. The same holds for every section in
-`config::CASCADE_ONLY_SECTIONS`, and `Config::load` WARNS for each one rather than refusing the
-file -- it is rendered from what dfe-engine publishes, so a surplus section is not ours to stop a
-pod over. `geoip` is the exception that proves the rule: it is declared on `Config` and handed to
-scalo explicitly, so a file may set it.
-
-KEDA replica scaling is separate and unaffected -- it is Kubernetes-side, driven by the chart's
-`keda.*` values and the `scaling_pressure` gauge.
+Nothing is hot-reloaded, the two ways in (`--config` against the scalo cascade)
+are not equivalent, and only one env spelling reaches a `--config` file:
+[configuration.md](configuration.md) carries all three, and `src/config.rs` states them at the
+top of the file.
 
 ## Envelopes: the same pipeline, a different wrapper
 
 `source.envelope` selects `auto` (the default), `beats`, `receiver` or `fetcher`.
 
-- **beats** — the raw vendor payload as a string in `message`, which is what the transforms are
+- **beats** -- the raw vendor payload as a string in `message`, which is what the transforms are
   written for, and what Elastic Agent and anything passing a Beats document through unaltered
   also produce.
-- **receiver** — [dfe-receiver](https://github.com/hyperi-io/dfe-receiver)'s JSON on any of its
-  transports. The syslog arm rebuilds a line into `message`; the rest pass their payload through
-  with their own field names moved onto the ECS paths those names would otherwise shadow.
-- **fetcher** — [dfe-fetcher](https://github.com/hyperi-io/dfe-fetcher)'s JSON, the provider's
+- **receiver** -- [dfe-receiver](https://github.com/hyperi-io/dfe-receiver)'s JSON on any of its
+  transports. The syslog arm rebuilds a line into `message`, and the rest pass their payload
+  through with their own field names moved onto the ECS paths those names would otherwise shadow.
+- **fetcher** -- [dfe-fetcher](https://github.com/hyperi-io/dfe-fetcher)'s JSON, the provider's
   own payload at the top level, for the sources where Elastic's agent input is a pure transport.
 
 `auto` resolves the family PER EVENT rather than per batch: a scalo `WorkBatch` spans
@@ -166,24 +145,29 @@ partitions, so one batch can carry two producers' wrappers and reading only its 
 unwrapped every one of them the same way. The cost is a handful of top-level key checks against
 an unwrap measured at 2,740 ns an event.
 
+A bare vendor object carrying no producer marker is the one failure that is not loud. Detection
+falls back to `beats`, there is no `message` to unpack, and the transform still runs and emits
+with almost nothing renamed. Output that looks like the input with an `ecs.version` bolted on is
+this.
+
 Two syslog framings, recorded per source in `registry.rs` as the `Framing` enum:
 
-- **Body** — `panw.*` and `cisco_meraki` read `message` as CSV or key-value. The receiver's
-  body goes through untouched; a prefixed header would corrupt the first field.
-- **Line** — `fortinet`, `cisco_ios` and `cisco_nexus` grok the header out of `message`, so a
+- **Body** -- `panw.*` and `cisco_meraki` read `message` as CSV or key-value. The receiver's
+  body goes through untouched, because a prefixed header would corrupt the first field.
+- **Line** -- `fortinet`, `cisco_ios` and `cisco_nexus` grok the header out of `message`, so a
   line is put back: the receiver's `_raw` verbatim if present, otherwise an RFC 3164 line
   rebuilt from the parsed fields. Reconstruction is enough for `fortinet` (`<PRI>` only); it is
   not enough for `cisco_ios` (wants a source IP) or `cisco_nexus` (wants a sequence number),
   since the receiver keeps neither.
 
 A PINNED envelope a source cannot arrive in is rejected at startup, checked against that
-source's `Intake` — okta is pulled from an API, so it accepts `beats` and `fetcher` and refuses
+source's `Intake` -- okta is pulled from an API, so it accepts `beats` and `fetcher` and refuses
 `receiver`. `auto` cannot be checked that way, since there is no event yet, so the same
 mismatch is counted per batch instead.
 
 ## Delivery: at-least-once, enforced by stopping
 
-Kafka commits are **cumulative** — the highest offset per partition — so an uncommitted batch is
+Kafka commits are **cumulative** -- the highest offset per partition -- so an uncommitted batch is
 only replayed if nothing after it commits. The loop therefore stops on a send it cannot complete
 rather than continuing to the next batch, whose commit would acknowledge the failed one. The
 process exits, and the restarted consumer resumes from the last committed offset. scalo's
@@ -196,7 +180,7 @@ All four `SendResult` variants are handled, and three of them are not delivery:
 | `Ok` | The broker accepted it | Count as delivered |
 | `Backpressured` | The local producer queue is full | Retry, bounded backoff to ~25s |
 | `Fatal` | The send failed | Retry, then stop uncommitted |
-| `FilteredDlq` | An outbound filter wants DLQ routing | Refuse — this service has no DLQ |
+| `FilteredDlq` | An outbound filter wants DLQ routing | Refuse -- this service has no DLQ |
 
 Backpressure is the NORMAL response from a slow sink, so treating it as success would
 acknowledge batches that were never written.
@@ -205,7 +189,7 @@ acknowledge batches that were never written.
 by BYTE budget (`sink.max_message_bytes`, default 900 KB) against librdkafka's 1,000,000-byte
 producer `message.max.bytes` default, which scalo does not override. At `batch_size: 20000` a
 single concatenated record is tens of megabytes and no batch would ever produce. An event that
-exceeds the whole budget on its own is dropped and counted on `events_oversize_total` — no
+exceeds the whole budget on its own is dropped and counted on `events_oversize_total` -- no
 broker would take it, and retrying it blocks the partition.
 
 Duplicates are the accepted cost: a batch that fails partway through replays the records that
@@ -223,7 +207,7 @@ sequenceDiagram
     participant E as Event
     participant C as TransformChain
     participant T1 as Transform 1<br/>(set)
-    participant T2 as Transform 2<br/>(grok → regex)
+    participant T2 as Transform 2<br/>(grok to regex)
     participant T3 as Transform 3<br/>(geoip)
     participant O as Output
 
