@@ -105,16 +105,18 @@ pub struct SourceConfig {
     pub transport: Transport,
 
     /// Address the Push listener binds on the direct transport, ignored on the
-    /// bus.
+    /// bus. The listener speaks plaintext gRPC with no authentication of its
+    /// own, so it belongs behind the mesh route dfe-infra provisions and never
+    /// on an interface reachable from outside the cluster.
     #[serde(default = "default_listen")]
     pub listen: String,
 
     /// Which producer wrapped the payload. The transform is the same for all
     /// of them; only the unwrapping differs.
     ///
-    /// Defaults to `auto`, which reads it off each batch's first event. Naming
-    /// a family instead pins it, and validation then rejects one the source
-    /// cannot actually arrive in.
+    /// Defaults to `auto`, which reads it off each event. Naming a family
+    /// instead pins it, and validation then rejects one the source cannot
+    /// actually arrive in.
     #[serde(default)]
     pub envelope: crate::envelope::EnvelopeSetting,
 
@@ -155,6 +157,7 @@ pub struct SinkConfig {
     pub transport: Transport,
 
     /// Downstream Push listener on the direct transport, ignored on the bus.
+    /// Reached in the clear, so it too stays inside the mesh.
     #[serde(default = "default_endpoint")]
     pub endpoint: String,
 

@@ -4,10 +4,11 @@ Beats and Elastic Agent JSON in, DFE-normalised events out.
 
 ## Overview
 
-dfe-transform-elastic is a Kafka-to-Kafka transform service. It consumes JSON
-event batches produced by filebeat, winlogbeat, metricbeat, auditbeat,
-heartbeat, packetbeat or Elastic Agent, applies the Elastic ingest-pipeline
-logic for that source, and produces normalised events downstream.
+dfe-transform-elastic is a batch transform service. It consumes JSON event
+batches produced by filebeat, winlogbeat, metricbeat, auditbeat, heartbeat,
+packetbeat or Elastic Agent, from Kafka or over a direct gRPC push, applies the
+Elastic ingest-pipeline logic for that source, and produces normalised events
+downstream the same way.
 
 The transform logic is **compiled in**. There is no interpreter, no scripting
 VM and no plugin system: each supported source is a Rust module, and the
@@ -17,8 +18,8 @@ binary, the hot path has no dynamic dispatch per event, and adding a source
 means a release rather than a config change.
 
 It is built on the [scalo](https://github.com/hyperi-io/scalo-rs) data-plane
-runtime: config cascade, logging, metrics, Kafka transport, health probes,
-memory guard and scaling pressure.
+runtime: config cascade, logging, metrics, the Kafka and gRPC transports, health
+probes, memory guard and scaling pressure.
 
 **Sibling services.** `dfe-transform-vrl` runs user-supplied VRL programs and
 is the right choice when the transform must be changed without a release. This
@@ -69,122 +70,18 @@ events do not fit in one. Keep it below your broker's `message.max.bytes`.
 A config naming a source this build does not carry is rejected at startup, not
 discovered at the first batch.
 
-### Input shape
+Events arrive as NDJSON, one JSON object per line, wrapped by one of three
+producers: Beats and Elastic Agent (`beats`), dfe-receiver (`receiver`) or
+dfe-fetcher (`fetcher`). `source.envelope` defaults to `auto`, which reads the
+family off each event, and naming one pins it. What each family carries, and
+what a payload with no marker does, are in
+[docs/architecture.md](docs/architecture.md#envelopes-the-same-pipeline-a-different-wrapper).
 
-Events arrive as NDJSON, one JSON object per line, wrapped by one of the three
-producers below. Whichever it is, the transform sees the same thing once the
-wrapper is off: the raw vendor payload as a STRING in `message`, which is how
-filebeat and Elastic Agent deliver it and what every transform is written for.
-
-```json
-{"message": "{\"actor\":{\"displayName\":\"...\"},\"eventType\":\"user.session.end\"}"}
-```
-
-Handing the service a bare vendor object carrying no producer marker is the one
-failure mode that is not loud. Detection finds nothing to recognise, falls back
-to `beats`, and there is no `message` to unpack -- so the transform still runs
-and still emits, but almost nothing is renamed, because every processor after
-the first reads fields that only exist once `message` has been unpacked. If the
-output looks like the input with an `ecs.version` bolted on, this is why.
-
-### Envelopes: the same pipeline, a different wrapper
-
-The same transform and the same output whatever wrapped the payload. Three
-families:
-
-- **`beats`** -- the raw vendor payload as a string in `message`, which is how
-  Beats and Elastic Agent deliver it, and what the transforms are written for.
-- **`receiver`** -- [dfe-receiver](https://github.com/hyperi-io/dfe-receiver)'s
-  JSON, on any of its transports. The syslog arm rebuilds a line into
-  `message` because that is what the vendor groks match, and lifts the parsed
-  header onto `log.syslog.*` so it survives a grok that does not. The rest pass
-  their payload through with their own field names moved onto the ECS paths
-  those names would otherwise shadow.
-- **`fetcher`** -- [dfe-fetcher](https://github.com/hyperi-io/dfe-fetcher)'s
-  JSON, the provider's own payload at the top level. It applies wherever
-  Elastic's agent input is a pure transport, because there the ingest pipeline
-  does all the parsing.
-
-```yaml
-source:
-  name: filebeat.fortinet.default
-  envelope: auto            # auto (default) | beats | receiver | fetcher
-  topics: ["logs_syslog_land"]
-```
-
-**`auto` reads the family off each event**, not off the batch, because one
-Kafka batch spans partitions and can carry two producers' wrappers at once. It
-costs a handful of top-level key checks against an unwrap measured at 2,740 ns,
-so a deployment that changes producer needs no config change. Name a family to
-pin it instead, which is what a shape carrying no marker needs.
-
-Two syslog framings, recorded per source in the registry: `panw.*` and
-`cisco_meraki` read `message` as CSV or key-value, so the receiver's body goes
-through untouched -- a prefixed header would corrupt the first field. Everything
-else groks the header out of `message`, so a line is put back: the receiver's
-`_raw` verbatim if it kept one, otherwise an RFC 3164 line rebuilt from the
-parsed fields. Reconstruction is enough for `fortinet`, which only needs
-`<PRI>`. It is NOT enough for `cisco_ios` (wants a source IP) or `cisco_nexus`
-(wants a sequence number) -- the receiver keeps neither, so those two need
-`_raw`.
-
-A pinned envelope a source cannot arrive in is rejected at startup, with the
-list of sources that would work: okta is pulled from an API, so
-`envelope: receiver` on it is a config error rather than a silent no-op at the
-first batch.
-
-The metrics and probe listener is not configured here. scalo's `--metrics-addr`
-(env `METRICS_ADDR`, default `0.0.0.0:9090`) is the single source of truth, so
-charts and deployments override that rather than a YAML field.
-
-### Nothing reloads, and only one env spelling reaches a `--config` file
-
-The configuration is read ONCE at startup and handed to the batch loop by
-reference, so **every value needs a restart to change** -- the Kafka connections
-are established at startup, the transform is resolved once rather than per
-event, the GeoIP databases are loaded at startup, and the metrics labels are set
-at startup.
-
-The two ways in are not equivalent. With no `--config` the whole scalo cascade
-applies. With `--config` -- which is what the container passes -- the named file
-IS the configuration, because scalo cannot merge an arbitrarily-named file into
-the cascade as a layer. Kafka credentials are unaffected either way: they are
-read from `KAFKA_*` separately.
-
-**Which spelling you use decides whether it reaches that file.** The FLAT,
-single-underscore form is applied to the loaded configuration on both branches,
-so it works against a `--config` deployment:
-
-    DFE_TRANSFORM_ELASTIC_SOURCE_TOPICS=a,b
-    DFE_TRANSFORM_ELASTIC_SOURCE_BATCH_SIZE=5000
-    DFE_TRANSFORM_ELASTIC_SINK_TOPIC=out
-
-The fields it covers are every `source.*` and every `sink.*`, including the
-transport selector:
-
-    DFE_TRANSFORM_ELASTIC_SOURCE_TRANSPORT=direct
-    DFE_TRANSFORM_ELASTIC_SOURCE_LISTEN=0.0.0.0:6000
-    DFE_TRANSFORM_ELASTIC_SINK_ENDPOINT=http://dfe-loader:6000
-
-`bus` and `kafka` name the same transport, as do `direct` and `grpc`, and an
-unrecognised value keeps the configured one rather than silently moving the
-deployment. **`direct` is declared and validated but nothing constructs it yet**
-(issue #19), so today every deployment runs on the bus.
-
-`geoip` is not among them -- it is scalo's own type, so the orphan rule puts it
-out of reach, and it stays settable from the file and the cascade. scalo's
-DOUBLE-underscore form is resolved from the cascade instead, which a named file
-is not a layer of, so it reaches such a deployment never.
-
-One consequence to know before tuning it: a section scalo resolves for itself
-cannot be set from a `--config` file at all. `scaling` is the one that bites.
-The service WARNS for each such section rather than refusing the file, naming it
-and the `DFE_TRANSFORM_ELASTIC_SCALING__<KEY>` form that does reach it --
-refusing would let a surplus key stop the pod, and that file is rendered from
-what dfe-engine publishes rather than written here. `CASCADE_ONLY_SECTIONS` in
-`src/config.rs` is the full list and nothing this repo ships carries one.
-`geoip` is deliberately absent: the service declares that section itself and
-hands it to scalo, which is what makes it work from a file.
+Each side also carries a `transport`: `bus`, the default, is Kafka, and
+`direct` is a scalo Push listener inbound and a gRPC push outbound. Where the
+values come from, which env spelling reaches a `--config` file, and which
+sections that file cannot carry are in
+[docs/configuration.md](docs/configuration.md).
 
 ## Behaviour under bad input
 
@@ -209,7 +106,7 @@ rather than assumed:
   cumulative -- that is loss, not replay. Delivery is at-least-once, so a
   downstream consumer must be idempotent.
 
-Non-English text is a first-class case, not an edge case. `tests/unicode.rs`
+Non-English text is a tested case, not an edge case. `tests/unicode.rs`
 runs every registered transform against seventeen scripts and a set of
 degenerate inputs.
 
@@ -275,8 +172,6 @@ default. Building without it still works:
 ```bash
 cargo build --no-default-features
 ```
-
-## Documentation
 
 [docs/](docs/README.md) carries everything deeper than this page --
 [architecture.md](docs/architecture.md) for the code map,

@@ -172,21 +172,27 @@ Measured on this repo, per release run:
 | Build, linux-arm64 | ~6-16% longer again than amd64 |
 
 The cause is this repo's shape rather than a misconfiguration. `dfe-transforms`
-carries one module per data stream, over two thousand of them, so it compiles as
-a single `rustc` holding about 13 GiB whatever `-j` says, and the binary then
-links under fat LTO in one thread. Neither step spreads across cores, which is
-why a bigger runner buys very little.
+carries one module per data stream, over a thousand of them across about 2,200
+source files, so it compiles as a single `rustc` holding about 13 GiB whatever
+`-j` says, and the binary then links under fat LTO in one thread. Neither step
+spreads across cores, which is why a bigger runner buys very little.
 
-**It gets worse when PGO and BOLT land.** That pipeline is not one build with a
-flag -- it is four sequential cargo passes (PGO instrument, PGO optimise, BOLT
-instrument, BOLT optimise) plus two fixed 300-second workload runs, and a failed
+**PGO and BOLT are enabled on the release build, and they multiply the build
+half by four.** That pipeline is not one build with a flag -- it is four
+sequential cargo passes (PGO instrument, PGO optimise, BOLT instrument, BOLT
+optimise) plus two workload runs of `duration_secs` each (600 here, because
+`scripts/pgo-workload.sh` splits its budget across two sources), and a failed
 BOLT attempt retries the pair. On a binary whose single pass already takes 30
-minutes that projects to roughly two hours per architecture, and about three if
-the retry fires.
+minutes that is roughly two hours per architecture, and about three if the
+retry fires. That cost falls only on a release, never on a PR: the build half
+runs behind the `Publish: true` trailer or a `hyperi-ci publish` dispatch. Until
+hyperi-io/hyperi-ci#136 lands, the BOLT stage packages nothing of BOLT's output,
+so its hour per architecture buys nothing on top of PGO.
 
 ### What to run instead
 
-Everything below runs locally and answers in seconds:
+Everything below runs locally. `hyperi-ci check` takes about an hour and runs
+the same gates CI does, and the rest answer in seconds:
 
 ```bash
 # The same gates CI runs, before pushing.

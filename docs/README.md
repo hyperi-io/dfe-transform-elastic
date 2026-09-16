@@ -7,6 +7,7 @@ Everything deeper than the [README](../README.md). Start at
 | Page | What it is for |
 |---|---|
 | [architecture.md](architecture.md) | The code map: system context, the crate graph, what the service binary does, and what an `Event` is on the way through |
+| [configuration.md](configuration.md) | Where the values come from, which env spelling reaches a `--config` file, the `bus`/`direct` transport selector, and the sections the file cannot carry |
 | [parity.md](parity.md) | What the service promises against Elastic's own output, what it leaves alone, and how the claim is measured |
 | [parsers.md](parsers.md) | The three parser layers over grok and regex, every ingest processor the transforms use, and how far the Painless matchers reach |
 | [enrichment.md](enrichment.md) | GeoIP, user agent and community ID -- the three runtime enrichers and the cache in front of the MMDB |

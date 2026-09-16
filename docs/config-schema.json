@@ -64,12 +64,12 @@
           "default": "bus"
         },
         "listen": {
-          "description": "Address the Push listener binds on the direct transport, ignored on the\nbus.",
+          "description": "Address the Push listener binds on the direct transport, ignored on the\nbus. The listener speaks plaintext gRPC with no authentication of its\nown, so it belongs behind the mesh route dfe-infra provisions and never\non an interface reachable from outside the cluster.",
           "type": "string",
           "default": "0.0.0.0:6000"
         },
         "envelope": {
-          "description": "Which producer wrapped the payload. The transform is the same for all\nof them; only the unwrapping differs.\n\nDefaults to `auto`, which reads it off each batch's first event. Naming\na family instead pins it, and validation then rejects one the source\ncannot actually arrive in.",
+          "description": "Which producer wrapped the payload. The transform is the same for all\nof them; only the unwrapping differs.\n\nDefaults to `auto`, which reads it off each event. Naming a family\ninstead pins it, and validation then rejects one the source cannot\nactually arrive in.",
           "$ref": "#/$defs/EnvelopeSetting",
           "default": "auto"
         },
@@ -167,7 +167,7 @@
           "default": "bus"
         },
         "endpoint": {
-          "description": "Downstream Push listener on the direct transport, ignored on the bus.",
+          "description": "Downstream Push listener on the direct transport, ignored on the bus.\nReached in the clear, so it too stays inside the mesh.",
           "type": "string",
           "default": "http://dfe-loader:6000"
         },
