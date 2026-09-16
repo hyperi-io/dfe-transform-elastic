@@ -167,9 +167,12 @@ Measured on this repo, per release run:
 
 | Stage | Elapsed |
 |---|---|
-| Quality | ~18 min |
-| Build, linux-amd64 | ~30 min |
+| Quality | ~18 min warm, ~40 after a lockfile change |
+| Build, linux-amd64 | ~30 min plain, 93 min with PGO |
 | Build, linux-arm64 | ~6-16% longer again than amd64 |
+
+The PGO figure is measured rather than projected: instrument build, then 300
+seconds of load against each of two sources, then the optimise build.
 
 The cause is this repo's shape rather than a misconfiguration. `dfe-transforms`
 carries one module per data stream, over a thousand of them across about 2,200
@@ -177,18 +180,14 @@ source files, so it compiles as a single `rustc` holding about 13 GiB whatever
 `-j` says, and the binary then links under fat LTO in one thread. Neither step
 spreads across cores, which is why a bigger runner buys very little.
 
-**PGO is enabled on the release build, BOLT rejoins it once
-hyperi-io/hyperi-ci#136 lands, and together they multiply the build half by
-four.** That pipeline is not one build with a flag -- it is four
-sequential cargo passes (PGO instrument, PGO optimise, BOLT instrument, BOLT
-optimise) plus two workload runs of `duration_secs` each (600 here, because
-`scripts/pgo-workload.sh` splits its budget across two sources), and a failed
-BOLT attempt retries the pair. On a binary whose single pass already takes 30
-minutes that is roughly two hours per architecture, and about three if the
-retry fires. That cost falls only on a release, never on a PR: the build half
-runs behind the `Publish: true` trailer or a `hyperi-ci publish` dispatch. Until
-hyperi-io/hyperi-ci#136 lands, the BOLT stage packages nothing of BOLT's output,
-so its hour per architecture buys nothing on top of PGO.
+**PGO is enabled on the release build, and BOLT rejoins it once
+hyperi-io/hyperi-ci#136 lands.** PGO alone is two cargo passes around 600
+seconds of load, which measured 93 minutes. BOLT adds two more passes and
+another workload, and retries the pair on a failure, so the two together are
+roughly two hours per architecture and three with a retry.
+
+That cost falls only on a release, never on a PR, because the build half runs
+behind the `Publish: true` trailer or a `hyperi-ci publish` dispatch.
 
 ### What to run instead
 
