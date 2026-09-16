@@ -16,7 +16,9 @@
 //! to everything that arrives, so feeding it another source's payloads profiles
 //! the error paths instead.
 //!
-//! Built only with `--features pgo-driver`; the service binary is unaffected.
+//! This crate stands alone from the service so the workload's driver build
+//! never rebuilds the transforms, and `scripts/pgo-workload.sh` builds it with
+//! `cargo build --release -p pgo-driver --features driver`.
 //!
 //! Configuration is environment-only:
 //! - `PGO_DRIVER_DURATION_SECS` (default 300) -- how long to produce for
@@ -133,11 +135,29 @@ fn producer_config(config: &Config) -> KafkaConfig {
     }
 }
 
-/// Fixture lines, wrapped and framed into the records a Beats producer sends.
+/// One fixture line as the event bytes a Beats producer would send.
 ///
-/// Each line is the raw vendor payload and becomes one event as
-/// `{"message": <line>}`, which is how Beats and Elastic Agent deliver it and
-/// what the transforms are written against.
+/// A line that parses as a JSON object carrying a `message` key is already an
+/// event and is re-serialised as it stands, because wrapping it again leaves
+/// `message` holding a JSON object as text and every grok in the source misses.
+/// Anything else is a raw vendor payload and becomes `{"message": <line>}`,
+/// which is how Beats and Elastic Agent deliver it.
+fn event_line(line: &str) -> Result<Vec<u8>, String> {
+    let parsed_event = serde_json::from_str::<serde_json::Value>(line)
+        .ok()
+        .filter(|value| {
+            value
+                .as_object()
+                .is_some_and(|map| map.contains_key("message"))
+        });
+    let event = parsed_event.unwrap_or_else(|| serde_json::json!({ "message": line }));
+    serde_json::to_vec(&event).map_err(|e| e.to_string())
+}
+
+/// Fixture lines, framed into the records a Beats producer sends.
+///
+/// Both fixture forms are accepted, and `event_line` decides per line which one
+/// it is holding.
 fn build_records(fixtures: &[String]) -> Result<Vec<Vec<u8>>, String> {
     if fixtures.is_empty() {
         return Err("PGO_DRIVER_FIXTURES is empty; name at least one .log fixture".to_string());
@@ -152,8 +172,7 @@ fn build_records(fixtures: &[String]) -> Result<Vec<Vec<u8>>, String> {
             .map_err(|e| format!("fixture {path} could not be read: {e}"))?;
 
         for line in raw.lines().filter(|line| !line.trim().is_empty()) {
-            let event = serde_json::json!({ "message": line });
-            let mut bytes = serde_json::to_vec(&event)
+            let mut bytes = event_line(line)
                 .map_err(|e| format!("fixture {path} holds a line that will not serialise: {e}"))?;
             bytes.push(b'\n');
 
@@ -263,5 +282,32 @@ impl Stats {
         if let Some(error) = &self.last_error {
             println!("pgo-driver: most recent send error: {error}");
         }
+    }
+}
+
+#[cfg(test)]
+#[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
+mod tests {
+    use super::event_line;
+
+    const SYSLOG: &str =
+        "Feb  8 04:00:48 192.168.100.2 585917: %SEC-6-IPACCESSLOGRP: list 177 denied igmp";
+
+    #[test]
+    fn a_raw_vendor_line_is_wrapped_in_message() {
+        let bytes = event_line(SYSLOG).unwrap();
+        let event: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+        assert_eq!(event["message"], SYSLOG);
+    }
+
+    #[test]
+    fn an_event_line_keeps_its_message_a_string() {
+        let bytes = event_line(r#"{ "message": "x" }"#).unwrap();
+        let event: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+        assert_eq!(event["message"], "x");
+        assert!(
+            event["message"].is_string(),
+            "a second wrap would leave message holding an object"
+        );
     }
 }

@@ -22,17 +22,11 @@ publish.workspace = true
 # adopting it means changing codegen first.
 
 [dependencies]
-dfe-parse = { workspace = true }
 dfe-runtime = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
-chrono = { workspace = true }
-thiserror = { workspace = true }
-anyhow = { workspace = true }
-tracing = { workspace = true }
 regex = { workspace = true }
 sha2 = { workspace = true }
-url = { workspace = true }
 csv = { workspace = true }
 
 [dev-dependencies]
