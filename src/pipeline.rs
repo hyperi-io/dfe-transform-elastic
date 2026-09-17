@@ -343,8 +343,6 @@ pub fn serialise_events(events: &[Event], max_bytes: usize) -> (Vec<Vec<u8>>, Se
             tracing::warn!(error = %e, "event could not be serialised, dropped");
             continue;
         }
-        hint = payload.len().max(1024);
-
         if payload.len() > budget {
             outcome.oversize += 1;
             tracing::error!(
@@ -355,6 +353,9 @@ pub fn serialise_events(events: &[Event], max_bytes: usize) -> (Vec<Vec<u8>>, Se
             continue;
         }
 
+        // Seeded only from a payload that fits, so one oversize event does not
+        // size the next allocation to a record the budget already refused.
+        hint = payload.len().max(1024);
         outcome.serialised += 1;
         payloads.push(payload);
     }
