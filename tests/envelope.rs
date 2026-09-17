@@ -159,6 +159,22 @@ fn receiver_field_names_never_reach_the_output() {
     }
 }
 
+/// `_source` is the one receiver field that must come out the far side: it
+/// carries the variant id dfe-loader matches to pick the row's table, so a
+/// transform that strips it lands every row in the catch-all
+/// (hyperi-io/dfe-transform-elastic#67).
+#[test]
+fn the_variant_id_survives_a_whole_transform() {
+    let out = run(
+        "filebeat.panw.traffic",
+        Envelope::Receiver,
+        receiver_syslog(PANW_BODY),
+    )
+    .expect("emitted");
+
+    assert_eq!(out.get("_source").and_then(Value::as_str), Some("syslog"));
+}
+
 /// What a `Framing::Line` source is handed: a `<PRI>`-prefixed line, rebuilt
 /// when the receiver kept no raw one.
 ///
@@ -611,8 +627,12 @@ fn cisco_ios_produces_the_same_output_from_beats_or_the_agent() {
     );
 }
 
-/// The delivery keys are the fetcher's own bookkeeping and must not survive
-/// onto the event, under any spelling.
+/// The delivery keys are the fetcher's own bookkeeping and must not reach the
+/// payload the transform parses, under any spelling.
+///
+/// `_source_fetcher` is the exception on the EVENT: dfe-engine compiles a
+/// fetched source's routing rule against that field, so it has to come out the
+/// far side the way `_source` does on the receiver path.
 ///
 /// The keys are inserted with the types the fetcher writes rather than looped
 /// out of `FETCHER_KEYS`, because `_timestamp_received` is read before it is
@@ -641,15 +661,28 @@ fn the_fetchers_own_keys_never_reach_the_output() {
     )
     .expect("emitted");
 
+    // The payload the transform parsed, which is what `event.original` holds.
+    let payload = out
+        .pointer("/event/original")
+        .and_then(Value::as_str)
+        .expect("event.original is set");
+    for key in dfe_transform_elastic::envelope::FETCHER_KEYS {
+        assert!(
+            !payload.contains(&format!("\"{key}\"")),
+            "`{key}` reached the payload"
+        );
+    }
+
     let rendered = serde_json::to_string(&out).expect("serialises");
-    for key in [
-        "_source_fetcher",
-        "_timestamp_fetcher",
-        "_timestamp_received",
-    ] {
+    for key in ["_timestamp_fetcher", "_timestamp_received"] {
         assert!(
             !rendered.contains(&format!("\"{key}\"")),
             "`{key}` reached the output"
         );
     }
+    assert_eq!(
+        out.get("_source_fetcher").and_then(Value::as_str),
+        Some("okta.system_log"),
+        "the routing field the loader matches on was stripped"
+    );
 }

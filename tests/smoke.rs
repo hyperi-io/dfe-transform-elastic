@@ -19,7 +19,7 @@
 use dfe_transform_elastic::config::Config;
 use dfe_transform_elastic::envelope::Resolver;
 use dfe_transform_elastic::metrics::TransformMetrics;
-use dfe_transform_elastic::pipeline::{parse_batch, serialise_chunks, transform_batch_resolved};
+use dfe_transform_elastic::pipeline::{parse_batch, serialise_events, transform_batch_resolved};
 use dfe_transform_elastic::registry;
 
 /// The file the chart mounts and the image points `--config` at.
@@ -86,10 +86,10 @@ fn the_service_starts_on_the_shipped_config() {
     assert_eq!(event.get_str("ecs.version"), Some("8.11.0"));
     assert!(event.has("okta.event_type"), "the payload was not unpacked");
 
-    let (chunks, serialised) = serialise_chunks(&out, config.sink.max_message_bytes);
+    let (payloads, serialised) = serialise_events(&out, config.sink.max_message_bytes);
     assert_eq!(serialised.serialised, 1);
     assert_eq!(serialised.oversize, 0);
-    assert_eq!(chunks.len(), 1);
+    assert_eq!(payloads.len(), 1, "one message per event");
 }
 
 /// `GeoIP` is resolved lazily on the first lookup, and a deployment with no

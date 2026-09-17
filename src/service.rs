@@ -25,6 +25,7 @@
 //! documented no-op -- so there the replay guarantee belongs to whatever
 //! pushed the batch, not to this service (issue #19).
 
+use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 use scalo::cli::ServiceRuntime;
@@ -34,14 +35,16 @@ use scalo::transport::grpc::GrpcConfig;
 #[cfg(feature = "kafka")]
 use scalo::transport::kafka::{KafkaConfig, total_consumer_lag};
 use scalo::transport::{
-    AnyReceiver, AnySender, SendResult, TransportConfig, TransportReceiver, TransportSender,
-    TransportType,
+    AnyReceiver, AnySender, PayloadFormat, Record, RecordMeta, SendResult, TransportConfig,
+    TransportReceiver, TransportSender, TransportType,
 };
 use tokio_util::sync::CancellationToken;
 
 use crate::config::{Config, Transport};
 use crate::metrics::TransformMetrics;
-use crate::pipeline::{EnvelopeOutcome, parse_batch, serialise_chunks, transform_batch_resolved};
+use crate::pipeline::{
+    EnvelopeOutcome, message_budget, parse_batch, serialise_events, transform_batch_resolved,
+};
 
 /// The longest the loop goes without pushing scaling signals.
 ///
@@ -453,7 +456,10 @@ pub async fn run_loop(
 
         if !transformed.is_empty() {
             match publish(config, producer, shutdown, metrics, sink_kind, &transformed).await {
-                SendOutcome::Sent => {}
+                // A filtered block never reached the sink and never will, so
+                // committing is the only way out that does not stall the
+                // partition behind a record the filter re-matches every time.
+                SendOutcome::Sent | SendOutcome::Filtered => {}
                 // The batch is deliberately left uncommitted, and the loop
                 // deliberately does not continue: the next batch's cumulative
                 // commit would acknowledge this one.
@@ -485,22 +491,29 @@ pub async fn run_loop(
     Ok(())
 }
 
-/// What became of one outbound record.
+/// What became of one outbound block.
 enum SendOutcome {
-    /// The broker accepted it.
+    /// The sink accepted every record in it.
     Sent,
+    /// An outbound filter handled it instead of the sink, which a retry cannot
+    /// change -- the same filter matches the same records every time.
+    Filtered,
     /// Retries ran out, or the transport refused in a way retrying cannot fix.
     Failed(crate::Error),
     /// The service was asked to stop mid-retry.
     ShuttingDown,
 }
 
-/// Serialise a transformed batch and produce every record it splits into.
+/// Serialise a transformed batch and produce every record it became.
+///
+/// ONE record per event. dfe-loader parses exactly one JSON document per
+/// message and has no NDJSON path, so a batch concatenated into a single
+/// payload was dead-lettered whole rather than loaded
+/// (hyperi-io/dfe-transform-elastic#67).
 ///
 /// The batch is one unit for commit purposes: unless every record lands, the
-/// caller must not commit. Records already accepted when a later one fails are
-/// therefore replayed on restart -- the duplicate half of at-least-once.
-#[allow(clippy::cast_precision_loss)]
+/// caller must not commit. Records already accepted when a later block fails
+/// are therefore replayed on restart -- the duplicate half of at-least-once.
 async fn publish<S: TransportSender>(
     config: &Config,
     producer: &S,
@@ -509,7 +522,7 @@ async fn publish<S: TransportSender>(
     kind: TransportKind,
     transformed: &[dfe_runtime::Event],
 ) -> SendOutcome {
-    let (chunks, serialised) = serialise_chunks(transformed, config.sink.max_message_bytes);
+    let (payloads, serialised) = serialise_events(transformed, config.sink.max_message_bytes);
 
     if serialised.oversize > 0 {
         metrics
@@ -524,23 +537,75 @@ async fn publish<S: TransportSender>(
             .increment(serialised.failed as u64);
     }
 
-    for chunk in chunks {
-        let chunk_bytes = chunk.len() as u64;
-        match send_chunk(producer, &config.sink.topic, chunk, shutdown, metrics, kind).await {
+    let topic: Arc<str> = Arc::from(config.sink.topic.as_str());
+    let budget = message_budget(config.sink.max_message_bytes);
+    for block in into_blocks(payloads, &topic, budget) {
+        let count = block.len() as u64;
+        let sent_bytes: u64 = block.iter().map(|r| r.payload.len() as u64).sum();
+        match send_records(producer, &block, shutdown, metrics, kind).await {
             SendOutcome::Sent => {
-                metrics.dfe.transport_sent(kind, 1);
-                metrics.dfe.transport_sent_bytes(kind, chunk_bytes);
-                metrics.app.bytes_written.increment(chunk_bytes);
+                metrics.dfe.transport_sent(kind, count);
+                metrics.dfe.transport_sent_bytes(kind, sent_bytes);
+                metrics.app.bytes_written.increment(sent_bytes);
+                metrics.dfe.records_delivered(count);
             }
-            other => return other,
+            // Nothing reached the sink, so nothing is counted as delivered.
+            SendOutcome::Filtered => {}
+            stopped @ (SendOutcome::Failed(_) | SendOutcome::ShuttingDown) => return stopped,
         }
     }
 
-    metrics.dfe.records_delivered(serialised.serialised as u64);
     SendOutcome::Sent
 }
 
-/// Send one record, retrying while the sink will not take it.
+/// Address each payload at the sink topic and group them into blocks.
+///
+/// `max_bytes` is the per-MESSAGE budget on both arms, which is why one number
+/// bounds both halves: a Kafka record is one message, and a gRPC `send_batch`
+/// block is one RPC message against scalo's own 16 MiB ceiling. A block always
+/// takes at least one record, so a payload at the budget goes out alone rather
+/// than not at all.
+///
+/// `key` is the DESTINATION rather than a partition key -- scalo models no
+/// per-record partition key at this layer -- so every record carries the sink
+/// topic and the per-record `send` the default `send_batch` falls back to
+/// routes correctly.
+fn into_blocks(payloads: Vec<Vec<u8>>, topic: &Arc<str>, max_bytes: usize) -> Vec<Vec<Record>> {
+    let mut blocks = Vec::new();
+    let mut block: Vec<Record> = Vec::new();
+    let mut block_bytes = 0_usize;
+
+    for payload in payloads {
+        if !block.is_empty() && block_bytes.saturating_add(payload.len()) > max_bytes {
+            blocks.push(std::mem::take(&mut block));
+            block_bytes = 0;
+        }
+        block_bytes = block_bytes.saturating_add(payload.len());
+        block.push(Record {
+            // Refcounted, so each retry re-sends the same buffer.
+            payload: bytes::Bytes::from(payload),
+            key: Some(Arc::clone(topic)),
+            headers: Vec::new(),
+            metadata: RecordMeta {
+                timestamp_ms: None,
+                format: PayloadFormat::Json,
+            },
+        });
+    }
+
+    if !block.is_empty() {
+        blocks.push(block);
+    }
+    blocks
+}
+
+/// Send one block, retrying while the sink will not take it.
+///
+/// [`TransportSender::send_batch`] is NOT atomic where the transport has no
+/// native batch RPC: it sends record by record, so a non-`Ok` answer partway
+/// through leaves the records before it on the wire and the retry re-delivers
+/// them. That is the duplicate half of at-least-once, and the alternative --
+/// committing a block that only partly landed -- is loss.
 ///
 /// [`SendResult`] has four variants and three of them are not delivery.
 /// Backpressure in particular is the NORMAL response from a slow sink -- a
@@ -555,20 +620,17 @@ async fn publish<S: TransportSender>(
 /// and loses the batch in the other.
 /// Generic over the sender rather than taking `KafkaTransport`, so the three
 /// non-delivery branches are reachable in a test without a broker.
-async fn send_chunk<S: TransportSender>(
+async fn send_records<S: TransportSender>(
     producer: &S,
-    topic: &str,
-    payload: Vec<u8>,
+    records: &[Record],
     shutdown: &CancellationToken,
     metrics: &TransformMetrics,
     kind: TransportKind,
 ) -> SendOutcome {
-    // Refcounted, so each retry re-sends the same buffer rather than copying.
-    let payload = bytes::Bytes::from(payload);
     let mut backoff = SEND_BACKOFF_BASE;
 
     for attempt in 1..=SEND_MAX_ATTEMPTS {
-        match producer.send(topic, payload.clone()).await {
+        match producer.send_batch(records).await {
             SendResult::Ok => return SendOutcome::Sent,
             SendResult::Backpressured => {
                 metrics.send_backpressure.increment(1);
@@ -578,16 +640,15 @@ async fn send_chunk<S: TransportSender>(
                 metrics.dfe.transport_send_errors(kind, 1);
                 tracing::warn!(attempt, error = %e, "send failed, retrying");
             }
-            // scalo's contract makes DLQ routing the caller's job. This
-            // service configures no outbound filters and has no DLQ, so the
-            // only honest response is to refuse rather than drop the record.
+            // An outbound filter HANDLED the block rather than failing it, and
+            // retrying re-matches the same records forever.
             SendResult::FilteredDlq => {
                 metrics.send_filtered_dlq.increment(1);
-                return SendOutcome::Failed(crate::Error::Transport(
-                    "an outbound filter routed a record to a DLQ this service does not \
-                     have; remove the filter or wire a DLQ"
-                        .into(),
-                ));
+                tracing::warn!(
+                    records = records.len(),
+                    "an outbound filter routed a block to a DLQ this service does not have"
+                );
+                return SendOutcome::Filtered;
             }
         }
 
@@ -602,7 +663,8 @@ async fn send_chunk<S: TransportSender>(
     }
 
     SendOutcome::Failed(crate::Error::Transport(format!(
-        "sink did not accept a record after {SEND_MAX_ATTEMPTS} attempts"
+        "sink did not accept a block of {} records after {SEND_MAX_ATTEMPTS} attempts",
+        records.len()
     )))
 }
 
@@ -1082,22 +1144,91 @@ mod tests {
         }
     }
 
+    impl Scripted {
+        fn reply(&self) -> SendResult {
+            self.attempts
+                .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            match self.answer {
+                Answer::Backpressured => SendResult::Backpressured,
+                Answer::Fatal => SendResult::Fatal(scalo::transport::TransportError::Connection(
+                    "broker gone".into(),
+                )),
+                Answer::FilteredDlq => SendResult::FilteredDlq,
+            }
+        }
+    }
+
     impl TransportSender for Scripted {
         fn send(
             &self,
             _destination: &str,
             _payload: bytes::Bytes,
         ) -> impl Future<Output = SendResult> + Send {
-            self.attempts
-                .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-            std::future::ready(match self.answer {
-                Answer::Backpressured => SendResult::Backpressured,
-                Answer::Fatal => SendResult::Fatal(scalo::transport::TransportError::Connection(
-                    "broker gone".into(),
-                )),
-                Answer::FilteredDlq => SendResult::FilteredDlq,
-            })
+            std::future::ready(self.reply())
         }
+
+        /// Answer the BLOCK directly, which is the only way `FilteredDlq` can
+        /// reach the caller: scalo's per-record default absorbs a filtered
+        /// record and answers `Ok`, so a native batch override is what
+        /// `send_records` has to be tested against.
+        fn send_batch(&self, _records: &[Record]) -> impl Future<Output = SendResult> + Send {
+            std::future::ready(self.reply())
+        }
+    }
+
+    /// A sink that accepts everything and keeps what reached the wire.
+    #[derive(Default)]
+    struct Recording {
+        sent: std::sync::Mutex<Vec<(String, Vec<u8>)>>,
+    }
+
+    impl Recording {
+        fn sent(&self) -> Vec<(String, Vec<u8>)> {
+            self.sent.lock().unwrap().clone()
+        }
+    }
+
+    impl scalo::transport::TransportBase for Recording {
+        fn close(&self) -> impl Future<Output = scalo::transport::TransportResult<()>> + Send {
+            std::future::ready(Ok(()))
+        }
+        fn is_healthy(&self) -> bool {
+            true
+        }
+        fn name(&self) -> &'static str {
+            "recording"
+        }
+    }
+
+    impl TransportSender for Recording {
+        fn send(
+            &self,
+            destination: &str,
+            payload: bytes::Bytes,
+        ) -> impl Future<Output = SendResult> + Send {
+            self.sent
+                .lock()
+                .unwrap()
+                .push((destination.to_string(), payload.to_vec()));
+            std::future::ready(SendResult::Ok)
+        }
+    }
+
+    /// `count` records addressed at the sink topic, which is what `publish`
+    /// hands the sender.
+    fn records(count: usize) -> Vec<Record> {
+        let topic: Arc<str> = Arc::from("out");
+        (0..count)
+            .map(|i| Record {
+                payload: bytes::Bytes::from(format!("{{\"i\":{i}}}")),
+                key: Some(Arc::clone(&topic)),
+                headers: Vec::new(),
+                metadata: RecordMeta {
+                    timestamp_ms: None,
+                    format: PayloadFormat::Json,
+                },
+            })
+            .collect()
     }
 
     fn test_metrics() -> TransformMetrics {
@@ -1114,10 +1245,9 @@ mod tests {
     #[tokio::test(start_paused = true)]
     async fn backpressure_is_retried_to_the_budget_and_then_fails() {
         let sink = Scripted::new(Answer::Backpressured);
-        let outcome = send_chunk(
+        let outcome = send_records(
             &sink,
-            "out",
-            b"{}\n".to_vec(),
+            &records(1),
             &CancellationToken::new(),
             &test_metrics(),
             TransportKind::Kafka,
@@ -1136,10 +1266,9 @@ mod tests {
     #[tokio::test(start_paused = true)]
     async fn a_fatal_send_is_retried_and_then_fails() {
         let sink = Scripted::new(Answer::Fatal);
-        let outcome = send_chunk(
+        let outcome = send_records(
             &sink,
-            "out",
-            b"{}\n".to_vec(),
+            &records(1),
             &CancellationToken::new(),
             &test_metrics(),
             TransportKind::Kafka,
@@ -1150,26 +1279,25 @@ mod tests {
         assert_eq!(sink.attempts(), SEND_MAX_ATTEMPTS as usize);
     }
 
-    /// This service configures no outbound filter and has no DLQ, so a record
-    /// routed to one is refused on the first attempt rather than retried into a
-    /// livelock or counted as delivered.
+    /// A deterministic filter matches the same block on every attempt, so a
+    /// retry is a livelock that stalls the source and a failure crash-loops the
+    /// pod. The block is reported handled instead, and counted.
     #[tokio::test]
-    async fn a_record_filtered_to_a_dlq_fails_without_retrying() {
+    async fn a_block_filtered_to_a_dlq_is_handled_without_retrying() {
         let sink = Scripted::new(Answer::FilteredDlq);
-        let outcome = send_chunk(
+        let outcome = send_records(
             &sink,
-            "out",
-            b"{}\n".to_vec(),
+            &records(1),
             &CancellationToken::new(),
             &test_metrics(),
             TransportKind::Kafka,
         )
         .await;
 
-        let SendOutcome::Failed(e) = outcome else {
-            panic!("a filtered record must fail the batch");
-        };
-        assert!(e.to_string().contains("DLQ"), "{e}");
+        assert!(
+            matches!(outcome, SendOutcome::Filtered),
+            "a filtered block is neither delivered nor a failure"
+        );
         assert_eq!(
             sink.attempts(),
             1,
@@ -1185,10 +1313,9 @@ mod tests {
         let shutdown = CancellationToken::new();
         shutdown.cancel();
 
-        let outcome = send_chunk(
+        let outcome = send_records(
             &sink,
-            "out",
-            b"{}\n".to_vec(),
+            &records(1),
             &shutdown,
             &test_metrics(),
             TransportKind::Kafka,
@@ -1200,10 +1327,10 @@ mod tests {
     }
 
     /// A batch the sink will not take must not report as published, whatever
-    /// the chunking did -- `publish` is what the loop reads to decide whether
+    /// the blocking did -- `publish` is what the loop reads to decide whether
     /// to commit.
     #[tokio::test(start_paused = true)]
-    async fn publish_reports_failure_when_no_chunk_lands() {
+    async fn publish_reports_failure_when_a_block_does_not_land() {
         let sink = Scripted::new(Answer::Fatal);
         let events = crate::pipeline::parse_batch(b"{\"a\":1}\n{\"a\":2}\n").0;
 
@@ -1218,5 +1345,69 @@ mod tests {
         .await;
 
         assert!(matches!(outcome, SendOutcome::Failed(_)));
+    }
+
+    /// The defect the fix is for: dfe-loader parses ONE JSON document per
+    /// message, so a batch that goes out as one NDJSON payload is dead-lettered
+    /// whole. Three events must reach the wire as three messages.
+    #[tokio::test]
+    async fn publish_sends_one_record_per_event() {
+        let sink = Recording::default();
+        let events = crate::pipeline::parse_batch(b"{\"a\":1}\n{\"a\":2}\n{\"a\":3}\n").0;
+
+        let outcome = publish(
+            &config(),
+            &sink,
+            &CancellationToken::new(),
+            &test_metrics(),
+            TransportKind::Kafka,
+            &events,
+        )
+        .await;
+
+        assert!(matches!(outcome, SendOutcome::Sent));
+        let sent = sink.sent();
+        assert_eq!(sent.len(), 3, "the batch went out as one message");
+        for (destination, payload) in &sent {
+            assert_eq!(destination, "out", "the sink topic must reach the wire");
+            let parsed: serde_json::Value =
+                serde_json::from_slice(payload).expect("one document per message");
+            assert!(parsed.get("a").is_some(), "payload is not the event");
+        }
+    }
+
+    /// A gRPC `send_batch` block is ONE RPC message against scalo's 16 MiB
+    /// ceiling, so the block is bounded by the same budget a Kafka record is.
+    #[test]
+    fn a_block_is_bounded_by_the_per_message_budget() {
+        let topic: Arc<str> = Arc::from("out");
+        let payloads: Vec<Vec<u8>> = (0..10).map(|_| vec![b'x'; 400]).collect();
+
+        let blocks = into_blocks(payloads, &topic, 1000);
+        assert_eq!(
+            blocks.len(),
+            5,
+            "two 400-byte records fit a 1000-byte block"
+        );
+        for block in &blocks {
+            let bytes: usize = block.iter().map(|r| r.payload.len()).sum();
+            assert!(bytes <= 1000, "block of {bytes} bytes");
+            for record in block {
+                assert_eq!(record.key.as_deref(), Some("out"));
+            }
+        }
+    }
+
+    /// A payload at or above the budget still has to go out, so a block always
+    /// takes at least one record.
+    #[test]
+    fn a_payload_at_the_budget_goes_out_in_a_block_of_its_own() {
+        let topic: Arc<str> = Arc::from("out");
+        let payloads = vec![vec![b'x'; 10], vec![b'y'; 4000], vec![b'z'; 10]];
+
+        let blocks = into_blocks(payloads, &topic, 100);
+        assert_eq!(blocks.len(), 3);
+        assert_eq!(blocks[1].len(), 1);
+        assert_eq!(blocks[1][0].payload.len(), 4000);
     }
 }
