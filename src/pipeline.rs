@@ -299,7 +299,10 @@ pub struct SerialiseOutcome {
 ///
 /// Below this a single ordinary event is oversize and the batch is dropped
 /// wholesale, so a misconfigured value is clamped up rather than obeyed.
-const MIN_MESSAGE_BYTES: usize = 4096;
+///
+/// Public for the same reason as [`message_budget`]: the floor is part of what
+/// that function promises, so a caller reading the promise can read the value.
+pub const MIN_MESSAGE_BYTES: usize = 4096;
 
 /// The per-message byte budget actually applied, floored at
 /// [`MIN_MESSAGE_BYTES`].
