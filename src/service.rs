@@ -456,10 +456,7 @@ pub async fn run_loop(
 
         if !transformed.is_empty() {
             match publish(config, producer, shutdown, metrics, sink_kind, &transformed).await {
-                // A filtered block never reached the sink and never will, so
-                // committing is the only way out that does not stall the
-                // partition behind a record the filter re-matches every time.
-                SendOutcome::Sent | SendOutcome::Filtered => {}
+                SendOutcome::Sent => {}
                 // The batch is deliberately left uncommitted, and the loop
                 // deliberately does not continue: the next batch's cumulative
                 // commit would acknowledge this one.
@@ -495,9 +492,6 @@ pub async fn run_loop(
 enum SendOutcome {
     /// The sink accepted every record in it.
     Sent,
-    /// An outbound filter handled it instead of the sink, which a retry cannot
-    /// change -- the same filter matches the same records every time.
-    Filtered,
     /// Retries ran out, or the transport refused in a way retrying cannot fix.
     Failed(crate::Error),
     /// The service was asked to stop mid-retry.
@@ -549,8 +543,6 @@ async fn publish<S: TransportSender>(
                 metrics.app.bytes_written.increment(sent_bytes);
                 metrics.dfe.records_delivered(count);
             }
-            // Nothing reached the sink, so nothing is counted as delivered.
-            SendOutcome::Filtered => {}
             stopped @ (SendOutcome::Failed(_) | SendOutcome::ShuttingDown) => return stopped,
         }
     }
@@ -640,15 +632,16 @@ async fn send_records<S: TransportSender>(
                 metrics.dfe.transport_send_errors(kind, 1);
                 tracing::warn!(attempt, error = %e, "send failed, retrying");
             }
-            // An outbound filter HANDLED the block rather than failing it, and
-            // retrying re-matches the same records forever.
+            // scalo's contract makes DLQ routing the caller's job. This
+            // service configures no outbound filters and has no DLQ, so the
+            // only honest response is to refuse rather than drop the block.
             SendResult::FilteredDlq => {
                 metrics.send_filtered_dlq.increment(1);
-                tracing::warn!(
-                    records = records.len(),
-                    "an outbound filter routed a block to a DLQ this service does not have"
-                );
-                return SendOutcome::Filtered;
+                return SendOutcome::Failed(crate::Error::Transport(format!(
+                    "an outbound filter routed a block of {} records to a DLQ this \
+                     service does not have; remove the filter or wire a DLQ",
+                    records.len()
+                )));
             }
         }
 
@@ -1279,11 +1272,12 @@ mod tests {
         assert_eq!(sink.attempts(), SEND_MAX_ATTEMPTS as usize);
     }
 
-    /// A deterministic filter matches the same block on every attempt, so a
-    /// retry is a livelock that stalls the source and a failure crash-loops the
-    /// pod. The block is reported handled instead, and counted.
+    /// This service configures no outbound filter and has no DLQ, so a block
+    /// routed to one is refused on the first attempt rather than retried into a
+    /// livelock or counted as delivered. Committing it instead would be silent
+    /// loss: there is no DLQ for the records to be sitting in.
     #[tokio::test]
-    async fn a_block_filtered_to_a_dlq_is_handled_without_retrying() {
+    async fn a_block_filtered_to_a_dlq_fails_without_retrying() {
         let sink = Scripted::new(Answer::FilteredDlq);
         let outcome = send_records(
             &sink,
@@ -1294,10 +1288,10 @@ mod tests {
         )
         .await;
 
-        assert!(
-            matches!(outcome, SendOutcome::Filtered),
-            "a filtered block is neither delivered nor a failure"
-        );
+        let SendOutcome::Failed(e) = outcome else {
+            panic!("a filtered block must fail the batch");
+        };
+        assert!(e.to_string().contains("DLQ"), "{e}");
         assert_eq!(
             sink.attempts(),
             1,
