@@ -64,8 +64,9 @@ set of defaults with every key commented, generated from the deployment contract
 and pinned against drift by a test -- read it rather than this snippet when you
 need a key that is not here. `dfe-transform-elastic emit-config` reprints it.
 
-A batch is split into as many records as `max_message_bytes` allows -- 20,000
-events do not fit in one. Keep it below your broker's `message.max.bytes`.
+Every transformed event goes out as its OWN record, because dfe-loader parses
+one JSON document per message. `max_message_bytes` bounds each one, so keep it
+below your broker's `message.max.bytes`.
 
 A config naming a source this build does not carry is rejected at startup, not
 discovered at the first batch.
@@ -73,7 +74,10 @@ discovered at the first batch.
 Events arrive as NDJSON, one JSON object per line, wrapped by one of three
 producers: Beats and Elastic Agent (`beats`), dfe-receiver (`receiver`) or
 dfe-fetcher (`fetcher`). `source.envelope` defaults to `auto`, which reads the
-family off each event, and naming one pins it. What each family carries, and
+family off each event, and naming one pins it. The producer's own field names
+are stripped once they have been lifted onto ECS, except the one dfe-loader
+routes on -- `_source` from the receiver and `_source_fetcher` from the fetcher
+come through unchanged. What each family carries, and
 what a payload with no marker does, are in
 [docs/architecture.md](docs/architecture.md#envelopes-the-same-pipeline-a-different-wrapper).
 

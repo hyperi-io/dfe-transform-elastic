@@ -433,9 +433,15 @@ fn a_batch_carrying_two_producers_unwraps_each_event_as_itself() {
     );
     // The receiver's own keys are gone, which only the receiver unwrap does.
     let second = out.get(1).expect("the second event");
-    assert!(!second.has("_source"), "the second event was not unwrapped");
+    assert!(
+        !second.has("facility"),
+        "the second event was not unwrapped"
+    );
     assert_eq!(second.get_str("agent.type"), Some("dfe-receiver"));
     assert_eq!(second.get_str("log.syslog.hostname"), Some("host"));
+    // `_source` is the one receiver key that survives -- it is what dfe-loader
+    // routes the row to its source's table on.
+    assert_eq!(second.get_str("_source"), Some("syslog"));
 }
 
 /// Detecting a family the source cannot arrive in must not unwrap a shape that

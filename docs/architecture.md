@@ -180,17 +180,19 @@ All four `SendResult` variants are handled, and three of them are not delivery:
 | `Ok` | The broker accepted it | Count as delivered |
 | `Backpressured` | The local producer queue is full | Retry, bounded backoff to ~25s |
 | `Fatal` | The send failed | Retry, then stop uncommitted |
-| `FilteredDlq` | An outbound filter wants DLQ routing | Refuse -- this service has no DLQ |
+| `FilteredDlq` | An outbound filter wants DLQ routing | Handled, not retried -- the same filter matches every time |
 
 Backpressure is the NORMAL response from a slow sink, so treating it as success would
 acknowledge batches that were never written.
 
-**A batch is not one Kafka record.** `pipeline.rs::serialise_chunks` splits the outbound NDJSON
-by BYTE budget (`sink.max_message_bytes`, default 900 KB) against librdkafka's 1,000,000-byte
-producer `message.max.bytes` default, which scalo does not override. At `batch_size: 20000` a
-single concatenated record is tens of megabytes and no batch would ever produce. An event that
-exceeds the whole budget on its own is dropped and counted on `events_oversize_total` -- no
-broker would take it, and retrying it blocks the partition.
+**One record per event.** `pipeline.rs::serialise_events` gives each event its own payload and
+`service.rs::publish` sends them via `TransportSender::send_batch`, because dfe-loader parses
+exactly one JSON document per message
+([#67](https://github.com/hyperi-io/dfe-transform-elastic/issues/67)).
+`sink.max_message_bytes` (default 900 KB) bounds each payload against librdkafka's
+1,000,000-byte producer default, and the `send_batch` block against gRPC's 16 MiB ceiling. An
+event over the budget is dropped and counted on `events_oversize_total`: no broker would take
+it, and retrying blocks the partition.
 
 Duplicates are the accepted cost: a batch that fails partway through replays the records that
 already landed, so every downstream consumer must be idempotent.

@@ -38,15 +38,19 @@ use crate::registry::{Framing, Intake};
 
 /// The receiver's own field names, removed once they have been lifted.
 ///
+/// `_source` is deliberately NOT here. It carries the receiver's variant id,
+/// and dfe-loader routes a transformed row to its source's table by matching
+/// that field, so stripping it put every row in the catch-all `dfe.main` with
+/// nothing to attribute it by (hyperi-io/dfe-transform-elastic#67).
+///
 /// Public so a test asserts against THIS list rather than a copy of it. The
-/// integration suite held a hand-written six of these twelve, so `procid`,
-/// `msgid`, `timestamp`, `structured_data`, `facility`, `severity`, `hostname`
-/// and `appname` were checked by nothing outside this file.
+/// integration suite held a hand-written six of them, so `procid`, `msgid`,
+/// `timestamp`, `structured_data`, `facility`, `severity`, `hostname` and
+/// `appname` were checked by nothing outside this file.
 pub const RECEIVER_KEYS: &[&str] = &[
-    "_source",
     "_raw",
-    // OTLP and Vector's gRPC tag with these instead of `_source`; both are
-    // routing marks rather than event data.
+    // OTLP and Vector's gRPC tag with these instead of `_source`, so a record
+    // from either reaches the loader with no field to route on.
     "_signal",
     "_vector_type",
     "facility",
@@ -61,9 +65,9 @@ pub const RECEIVER_KEYS: &[&str] = &[
 
 /// What one dfe-receiver transport calls things, and what ECS calls them.
 ///
-/// A transport with no entry keeps its payload and loses only `_source` and
-/// `_raw`, which is the conservative reading: the transform's grok gets what
-/// arrived rather than a shape invented for it.
+/// A transport with no entry keeps its payload and loses only `_raw`, which is
+/// the conservative reading: the transform's grok gets what arrived rather than
+/// a shape invented for it.
 struct Transport {
     /// The value the converter writes into `_source`.
     name: &'static str,
@@ -178,8 +182,10 @@ const TRANSPORTS: &[Transport] = &[
 
 /// The fetcher's own field names, added to every record it delivers.
 ///
-/// Stripped before the payload is handed to the transform, the same way the
-/// receiver's are: they describe the delivery, not the event.
+/// Stripped from the PAYLOAD before it is handed to the transform, the same way
+/// the receiver's are: they describe the delivery, not the event. `_source_fetcher`
+/// is put back at the top level afterwards, because that is the field dfe-engine
+/// compiles a fetched source's routing rule against.
 ///
 /// Public for the same reason as [`RECEIVER_KEYS`].
 pub const FETCHER_KEYS: &[&str] = &[
@@ -187,6 +193,10 @@ pub const FETCHER_KEYS: &[&str] = &[
     "_timestamp_received",
     "_source_fetcher",
 ];
+
+/// The fetcher's marker, which is also what the loader routes a fetched record
+/// on, so it survives the unwrap rather than being stripped with the rest.
+const FETCHER_SOURCE: &str = "_source_fetcher";
 
 /// The facility used when the receiver saw no PRI. 1 (user) is what a syslogd
 /// assumes for an unprefixed line.
@@ -288,10 +298,7 @@ impl Envelope {
         match self {
             Self::Beats => Ok(()),
             Self::Receiver => unwrap_receiver(event, framing.unwrap_or(Framing::Line), variant),
-            Self::Fetcher => {
-                unwrap_fetcher(event);
-                Ok(())
-            }
+            Self::Fetcher => unwrap_fetcher(event),
         }
     }
 
@@ -350,8 +357,8 @@ pub fn detect(event: &Event) -> Detected {
             .map_or(Cow::Borrowed(UNNAMED), safe_variant),
     };
 
-    if keys.contains_key("_source_fetcher") {
-        return owned(Envelope::Fetcher, "_source_fetcher");
+    if keys.contains_key(FETCHER_SOURCE) {
+        return owned(Envelope::Fetcher, FETCHER_SOURCE);
     }
     if keys.contains_key("_source") {
         return owned(Envelope::Receiver, "_source");
@@ -606,36 +613,51 @@ impl Resolver {
 }
 
 /// Move the provider's payload into `message` as the string the transform
-/// expects, and drop the fetcher's delivery keys.
+/// expects, drop the fetcher's delivery keys, and put its marker back.
 ///
 /// Beats hands an API source its payload as a SERIALISED string in `message`,
 /// which is what every one of these pipelines parses first. dfe-fetcher
 /// delivers the same payload as a real object at the top level, so the
 /// conversion is a re-serialise rather than a reshape.
-fn unwrap_fetcher(event: &mut Event) {
+///
+/// `_source_fetcher` is lifted out before that re-serialise and written back
+/// after it. The delivery keys must not reach the vendor payload, but this one
+/// is what dfe-engine compiles a fetched source's routing rule against, so an
+/// output without it lands in the loader's catch-all table
+/// (hyperi-io/dfe-transform-elastic#67).
+///
+/// # Errors
+///
+/// Returns [`crate::Error`] if the marker cannot be written back.
+fn unwrap_fetcher(event: &mut Event) -> crate::Result<()> {
+    let marker = event.remove(FETCHER_SOURCE);
     for key in FETCHER_KEYS {
         event.remove(key);
     }
 
     // Already in the Beats shape: a fetcher whose provider hands back a bare
     // line rather than an object leaves `message` where it is.
-    if event.get_string("message").is_some()
-        && event.as_value().as_object().is_some_and(|o| o.len() == 1)
-    {
-        return;
+    let wrapped = event.get_string("message").is_some()
+        && event.as_value().as_object().is_some_and(|o| o.len() == 1);
+
+    if !wrapped {
+        let payload = match serde_json::to_string(event.as_value()) {
+            Ok(payload) => payload,
+            // A parsed document cannot hold a non-string key or a non-finite
+            // number, so this is unreachable today -- but writing an empty
+            // `message` in silence would look like a vendor that sent nothing.
+            Err(e) => {
+                tracing::warn!(error = %e, "fetcher payload would not re-serialise; message left empty");
+                String::new()
+            }
+        };
+        *event.as_value_mut() = json!({ "message": payload });
     }
 
-    let payload = match serde_json::to_string(event.as_value()) {
-        Ok(payload) => payload,
-        // A parsed document cannot hold a non-string key or a non-finite
-        // number, so this is unreachable today -- but writing an empty
-        // `message` in silence would look like a vendor that sent nothing.
-        Err(e) => {
-            tracing::warn!(error = %e, "fetcher payload would not re-serialise; message left empty");
-            String::new()
-        }
-    };
-    *event.as_value_mut() = json!({ "message": payload });
+    if let Some(marker) = marker {
+        event.set(FETCHER_SOURCE, marker)?;
+    }
+    Ok(())
 }
 
 /// Dispatch on the transport the receiver took it from.
@@ -644,6 +666,9 @@ fn unwrap_fetcher(event: &mut Event) {
 /// transports that write one and the marker key for the ones that do not.
 /// syslog is the only transport that rebuilds a line; the rest pass their
 /// payload through with their own names moved out of ECS's way.
+///
+/// `_source` itself is READ here and left on the event -- see [`RECEIVER_KEYS`]
+/// for why it is the one receiver key that survives.
 fn unwrap_receiver(event: &mut Event, framing: Framing, variant: &str) -> crate::Result<()> {
     let transport = variant_or_source(event, variant);
     if transport == "syslog" {
@@ -969,8 +994,53 @@ mod tests {
 
         assert_eq!(event.get_str("whatever"), Some("the sender called it"));
         assert_eq!(event.get("value"), Some(&json!(1234.0)));
-        assert!(!event.has("_source"));
         assert!(!event.has("message"), "no line may be reconstructed");
+    }
+
+    /// dfe-loader routes a transformed row to its source's table by matching
+    /// `_source`, so an unwrap that strips it costs the row its table.
+    #[test]
+    fn the_receivers_variant_id_survives_every_arm() {
+        let arms: [(&str, Event); 3] = [
+            ("syslog", receiver_event()),
+            (
+                "gelf",
+                Event::new(
+                    json!({ "_source": "gelf", "message": "m", "host": "web01", "level": 6 }),
+                ),
+            ),
+            (
+                "a_transport_from_the_future",
+                Event::new(json!({ "_source": "a_transport_from_the_future", "whatever": "x" })),
+            ),
+        ];
+
+        for (variant, mut event) in arms {
+            Envelope::Receiver
+                .unwrap_into_beats(&mut event, Some(Framing::Line), variant)
+                .unwrap();
+            assert_eq!(
+                event.get_str("_source"),
+                Some(variant),
+                "{variant}: the variant id was stripped"
+            );
+        }
+    }
+
+    /// Splunk HEC writes no `_source`, so there is nothing to carry through --
+    /// and inventing one would put a value into a routing field nothing owns.
+    #[test]
+    fn a_transport_that_wrote_no_variant_id_gains_none() {
+        let mut event = Event::new(json!({
+            "message": "a line",
+            "sourcetype": "pan:traffic",
+        }));
+
+        Envelope::Receiver
+            .unwrap_into_beats(&mut event, Some(Framing::Body), "splunk_hec")
+            .unwrap();
+
+        assert!(!event.has("_source"));
     }
 
     /// A bare `host` string is an ECS OBJECT everywhere else, so leaving one
@@ -1001,7 +1071,7 @@ mod tests {
         // `host` is present, but as the ECS object -- what must not survive is
         // the bare string that was standing where the object goes.
         assert_eq!(event.get_str("host"), None);
-        for gone in ["version", "short_message", "severity", "_source"] {
+        for gone in ["version", "short_message", "severity"] {
             assert!(!event.has(gone), "{gone} survived");
         }
     }
@@ -1090,7 +1160,11 @@ mod tests {
     }
 
     /// The fetcher's own keys describe the delivery, not the event, so none of
-    /// them may reach the transform.
+    /// them may reach the payload the transform parses.
+    ///
+    /// `_source_fetcher` is the exception on the EVENT: it is what dfe-engine
+    /// compiles a fetched source's routing rule against, so it has to come out
+    /// the far side.
     #[test]
     fn fetcher_keys_never_reach_the_payload() {
         let mut event = Event::new(json!({
@@ -1104,15 +1178,20 @@ mod tests {
             .unwrap_into_beats(&mut event, None, "syslog")
             .unwrap();
 
-        let message = event.get_str("message").expect("payload in message");
+        let message = event.get_string("message").expect("payload in message");
         for key in FETCHER_KEYS {
             assert!(!message.contains(key), "{key} survived into {message}");
-            assert!(!event.has(key), "{key} survived on the event");
         }
+        assert!(!event.has("_timestamp_fetcher"));
+        assert!(!event.has("_timestamp_received"));
+        assert_eq!(event.get_str("_source_fetcher"), Some("okta"));
     }
 
     /// A provider that hands back a bare line is already in the Beats shape,
     /// so re-serialising it would wrap the string in a second layer of JSON.
+    ///
+    /// The marker has to survive this branch of the unwrap as well as the
+    /// re-serialising one.
     #[test]
     fn fetcher_leaves_an_already_wrapped_line_alone() {
         let mut event = Event::new(json!({
@@ -1124,6 +1203,7 @@ mod tests {
             .unwrap_into_beats(&mut event, None, "syslog")
             .unwrap();
         assert_eq!(event.get_str("message"), Some("<134>1 raw syslog line"));
+        assert_eq!(event.get_str("_source_fetcher"), Some("somewhere"));
     }
 
     #[test]

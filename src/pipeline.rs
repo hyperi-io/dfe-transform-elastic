@@ -284,7 +284,7 @@ pub fn parse_batch(payload: &[u8]) -> (Vec<Event>, ParseOutcome) {
 /// What serialising a batch produced.
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
 pub struct SerialiseOutcome {
-    /// Events written into a chunk.
+    /// Events that became an outbound message.
     pub serialised: usize,
     /// Events that on their own exceed the whole per-message budget. No
     /// broker will ever accept one, so it is dropped rather than blocking the
@@ -301,66 +301,82 @@ pub struct SerialiseOutcome {
 /// wholesale, so a misconfigured value is clamped up rather than obeyed.
 const MIN_MESSAGE_BYTES: usize = 4096;
 
-/// Serialise events to NDJSON, split into messages of at most `max_bytes`.
+/// The per-message byte budget actually applied, floored at
+/// [`MIN_MESSAGE_BYTES`].
 ///
-/// A 20,000-event batch is 2 MB of 100-byte events and tens of MB of real ECS
-/// ones, while librdkafka's producer `message.max.bytes` defaults to 1,000,000
-/// -- so the outbound size is bounded by BYTES here, never by the event count
-/// the batch happened to arrive with.
-///
-/// Every chunk is a complete NDJSON payload: no event is split across two.
+/// Public because the service bounds an outbound BLOCK by the same number, and
+/// a block judged against the raw value while the records in it were judged
+/// against the floor would disagree about what fits.
 #[must_use]
-pub fn serialise_chunks(events: &[Event], max_bytes: usize) -> (Vec<Vec<u8>>, SerialiseOutcome) {
-    let budget = max_bytes.max(MIN_MESSAGE_BYTES);
-    // One allocation per chunk, sized to whichever is smaller: the budget, or
-    // what the whole batch is likely to need.
-    let reserve = budget.min(events.len().saturating_mul(512).max(MIN_MESSAGE_BYTES));
+pub const fn message_budget(max_bytes: usize) -> usize {
+    if max_bytes > MIN_MESSAGE_BYTES {
+        max_bytes
+    } else {
+        MIN_MESSAGE_BYTES
+    }
+}
 
-    let mut chunks = Vec::new();
-    let mut current: Vec<u8> = Vec::with_capacity(reserve);
-    let mut line: Vec<u8> = Vec::with_capacity(1024);
+/// Serialise each event into a message payload of its own.
+///
+/// ONE JSON document per payload, never NDJSON. dfe-loader parses exactly one
+/// document per message and has no NDJSON path, so a batch concatenated into a
+/// single payload was dead-lettered whole instead of loaded
+/// (hyperi-io/dfe-transform-elastic#67).
+///
+/// `max_bytes` bounds each payload on its own, because that is what a broker
+/// bounds: librdkafka's producer `message.max.bytes` defaults to 1,000,000, so
+/// an event above the budget can never be produced and is dropped rather than
+/// blocking the partition behind a record that can only fail.
+#[must_use]
+pub fn serialise_events(events: &[Event], max_bytes: usize) -> (Vec<Vec<u8>>, SerialiseOutcome) {
+    let budget = message_budget(max_bytes);
+    let mut payloads = Vec::with_capacity(events.len());
     let mut outcome = SerialiseOutcome::default();
+    // Seeded from the previous document: a batch is one source's events, so the
+    // next one is close to the same size and the buffer does not regrow.
+    let mut hint = 1024;
 
     for event in events {
-        line.clear();
-        if let Err(e) = serde_json::to_writer(&mut line, event.as_value()) {
+        let mut payload: Vec<u8> = Vec::with_capacity(hint);
+        if let Err(e) = serde_json::to_writer(&mut payload, event.as_value()) {
             outcome.failed += 1;
             tracing::warn!(error = %e, "event could not be serialised, dropped");
             continue;
         }
-        line.push(b'\n');
-
-        if line.len() > budget {
+        if payload.len() > budget {
             outcome.oversize += 1;
             tracing::error!(
-                bytes = line.len(),
+                bytes = payload.len(),
                 budget,
                 "event exceeds the per-message budget and cannot be produced, dropped"
             );
             continue;
         }
 
-        if !current.is_empty() && current.len() + line.len() > budget {
-            chunks.push(std::mem::replace(&mut current, Vec::with_capacity(reserve)));
-        }
-        current.extend_from_slice(&line);
+        // Seeded only from a payload that fits, so one oversize event does not
+        // size the next allocation to a record the budget already refused.
+        hint = payload.len().max(1024);
         outcome.serialised += 1;
+        payloads.push(payload);
     }
 
-    if !current.is_empty() {
-        chunks.push(current);
-    }
-    (chunks, outcome)
+    (payloads, outcome)
 }
 
 /// Serialise every event into ONE NDJSON payload, whatever its size.
 ///
-/// For tests and offline tools. The service uses [`serialise_chunks`], because
-/// a default-sized batch does not fit in one Kafka record.
+/// For tests and offline tools, and what [`parse_batch`] reads back. The
+/// service sends one record per event ([`serialise_events`]), because the
+/// loader parses one document per message.
 #[must_use]
 pub fn serialise_batch(events: &[Event]) -> (Vec<u8>, SerialiseOutcome) {
-    let (mut chunks, outcome) = serialise_chunks(events, usize::MAX);
-    (chunks.pop().unwrap_or_default(), outcome)
+    let (payloads, outcome) = serialise_events(events, usize::MAX);
+    let mut ndjson = Vec::with_capacity(payloads.iter().map(|p| p.len() + 1).sum());
+    for payload in payloads {
+        ndjson.extend_from_slice(&payload);
+        ndjson.push(b'\n');
+    }
+    (ndjson, outcome)
 }
 
 #[cfg(test)]
@@ -465,46 +481,50 @@ mod tests {
         parse_batch(lines.as_bytes()).0
     }
 
+    /// The defect: dfe-loader parses ONE JSON document per message, so a batch
+    /// concatenated into one NDJSON payload is dead-lettered whole. N events
+    /// must produce N messages.
     #[test]
-    fn every_chunk_stays_within_the_budget() {
+    fn every_event_gets_a_message_of_its_own() {
         let events = padded(200, 400);
-        let (chunks, outcome) = serialise_chunks(&events, 8192);
+        let (payloads, outcome) = serialise_events(&events, 8192);
 
-        assert!(chunks.len() > 1, "200 events of 400 bytes must split");
+        assert_eq!(payloads.len(), 200);
         assert_eq!(outcome.serialised, 200);
-        for chunk in &chunks {
-            assert!(chunk.len() <= 8192, "chunk of {} bytes", chunk.len());
+        for payload in &payloads {
+            let parsed: serde_json::Value =
+                serde_json::from_slice(payload).expect("one document per message");
+            assert!(parsed.get("i").is_some(), "payload is not the event");
         }
     }
 
+    /// A trailing newline would make a payload NDJSON of one line rather than a
+    /// document, which is the framing the loader has no path for.
     #[test]
-    fn splitting_loses_no_events() {
-        let events = padded(200, 400);
-        let (chunks, _) = serialise_chunks(&events, 8192);
-
-        let reassembled: usize = chunks.iter().map(|c| parse_batch(c).0.len()).sum();
-        assert_eq!(reassembled, 200);
+    fn a_message_carries_no_ndjson_framing() {
+        let (payloads, _) = serialise_events(&padded(3, 40), 8192);
+        for payload in &payloads {
+            assert!(!payload.contains(&b'\n'), "payload carries a newline");
+        }
     }
 
-    /// The defect this split exists to fix: at the shipped `batch_size` of
-    /// 20,000, one concatenated payload is tens of MB against librdkafka's
-    /// 1,000,000-byte producer default, so every batch fails to produce.
+    /// At the shipped `batch_size` of 20,000, every message still has to be one
+    /// librdkafka's producer default will accept.
     #[test]
     fn a_default_sized_batch_produces_messages_the_broker_accepts() {
         let events = padded(20_000, 400);
         let budget = crate::config::default_max_message_bytes();
-        let (chunks, outcome) = serialise_chunks(&events, budget);
+        let (payloads, outcome) = serialise_events(&events, budget);
 
         assert_eq!(outcome.serialised, 20_000);
-        for chunk in &chunks {
+        assert_eq!(payloads.len(), 20_000);
+        for payload in &payloads {
             assert!(
-                chunk.len() <= 1_000_000,
-                "chunk of {} bytes exceeds librdkafka's message.max.bytes default",
-                chunk.len()
+                payload.len() <= 1_000_000,
+                "message of {} bytes exceeds librdkafka's message.max.bytes default",
+                payload.len()
             );
         }
-        let reassembled: usize = chunks.iter().map(|c| parse_batch(c).0.len()).sum();
-        assert_eq!(reassembled, 20_000);
     }
 
     /// A record no broker can accept is dropped and counted, rather than
@@ -514,11 +534,10 @@ mod tests {
         let mut events = padded(2, 100);
         events.extend(padded(1, 20_000));
 
-        let (chunks, outcome) = serialise_chunks(&events, MIN_MESSAGE_BYTES);
+        let (payloads, outcome) = serialise_events(&events, MIN_MESSAGE_BYTES);
         assert_eq!(outcome.oversize, 1);
         assert_eq!(outcome.serialised, 2);
-        let reassembled: usize = chunks.iter().map(|c| parse_batch(c).0.len()).sum();
-        assert_eq!(reassembled, 2);
+        assert_eq!(payloads.len(), 2);
     }
 
     /// A budget below one ordinary event would drop the entire batch as
@@ -526,10 +545,10 @@ mod tests {
     #[test]
     fn an_absurd_budget_is_clamped_not_obeyed() {
         let events = padded(4, 100);
-        let (chunks, outcome) = serialise_chunks(&events, 1);
+        let (payloads, outcome) = serialise_events(&events, 1);
         assert_eq!(outcome.oversize, 0);
         assert_eq!(outcome.serialised, 4);
-        assert_eq!(chunks.len(), 1);
+        assert_eq!(payloads.len(), 4);
     }
 
     /// The clamp raises the budget, and an event that sits BETWEEN the
@@ -538,38 +557,32 @@ mod tests {
     #[test]
     fn the_clamp_raises_the_budget_rather_than_lowering_it() {
         let events = padded(1, 2_000);
-        let (chunks, outcome) = serialise_chunks(&events, 512);
+        let (payloads, outcome) = serialise_events(&events, 512);
 
         assert_eq!(outcome.oversize, 0, "the event was judged against 512");
         assert_eq!(outcome.serialised, 1);
-        assert_eq!(chunks.len(), 1);
         assert!(
-            chunks.first().is_some_and(|c| c.len() > 512),
-            "a chunk under 512 bytes means the budget was obeyed, not clamped"
+            payloads.first().is_some_and(|p| p.len() > 512),
+            "a payload under 512 bytes means the budget was obeyed, not clamped"
         );
     }
 
     /// A budget ABOVE the floor is obeyed as given -- the clamp is a floor, not
-    /// a replacement.
+    /// a replacement. An event between the two is what tells them apart.
     #[test]
     fn a_budget_above_the_floor_is_used_as_given() {
-        let events = padded(40, 400);
-        let (chunks, outcome) = serialise_chunks(&events, MIN_MESSAGE_BYTES * 2);
+        let events = padded(1, 6_000);
+        let (payloads, outcome) = serialise_events(&events, MIN_MESSAGE_BYTES * 2);
 
-        assert_eq!(outcome.serialised, 40);
-        assert!(
-            chunks.len() > 1,
-            "40 events of 400 bytes must split at 8 KB"
-        );
-        for chunk in &chunks {
-            assert!(chunk.len() <= MIN_MESSAGE_BYTES * 2, "{}", chunk.len());
-        }
+        assert_eq!(outcome.oversize, 0, "the floor was used instead of 8192");
+        assert_eq!(payloads.len(), 1);
+        assert_eq!(message_budget(MIN_MESSAGE_BYTES * 2), MIN_MESSAGE_BYTES * 2);
     }
 
     #[test]
     fn an_empty_batch_produces_no_messages() {
-        let (chunks, outcome) = serialise_chunks(&[], 8192);
-        assert!(chunks.is_empty());
+        let (payloads, outcome) = serialise_events(&[], 8192);
+        assert!(payloads.is_empty());
         assert_eq!(outcome.serialised, 0);
     }
 }
