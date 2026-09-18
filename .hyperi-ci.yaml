@@ -62,9 +62,8 @@ build:
 # Publishing (on release). The stack pins every app by GHCR image digest, so
 # a release must land an image. The deployed chart is dfe-infra's, so the
 # in-repo chart stays unpublished.
-publish:
+release:
   enabled: true
-  target: both
   container:
     enabled: true
     dockerfile: Dockerfile
