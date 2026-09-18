@@ -321,12 +321,13 @@ async fn offsets_commit_after_the_batch_is_sent() {
     );
 }
 
-/// A batch at the SHIPPED `batch_size` does not fit in one Kafka record.
+/// A batch at the SHIPPED `batch_size` arrives as one record per event.
 ///
 /// librdkafka's producer `message.max.bytes` defaults to 1,000,000 and scalo
 /// sets no override, so publishing a whole batch as one record fails for every
-/// batch of any size. The other tests in this file run a `batch_size` of 16 and
-/// never touched the ceiling -- this one uses the default and seeds several MB.
+/// batch of any size -- and dfe-loader would reject the concatenation anyway.
+/// The other tests in this file run a `batch_size` of 16 and never touched the
+/// ceiling; this one uses the default and seeds several MB.
 #[tokio::test(flavor = "multi_thread")]
 #[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
 async fn a_batch_larger_than_one_kafka_record_arrives() {
@@ -391,10 +392,10 @@ async fn a_batch_larger_than_one_kafka_record_arrives() {
         .expect("service task did not panic")
         .expect("service loop returned an error");
 
-    assert_eq!(out.len(), EVENTS, "the split lost events");
+    assert_eq!(out.len(), EVENTS, "the batch lost events");
     assert!(
-        records > 1,
-        "the batch was published as one record, so the split never ran"
+        records >= EVENTS,
+        "{records} records carried {EVENTS} events, so something was concatenated"
     );
     for event in &out {
         assert!(
@@ -404,10 +405,10 @@ async fn a_batch_larger_than_one_kafka_record_arrives() {
     }
 }
 
-/// The premise the split rests on: librdkafka refuses a record above its
-/// `message.max.bytes` producer default of 1,000,000 bytes, and scalo sets no
-/// override. If that ever stops being true, the budget can be raised -- but it
-/// should be raised deliberately, not discovered in production.
+/// The premise the per-record budget rests on: librdkafka refuses a record
+/// above its `message.max.bytes` producer default of 1,000,000 bytes, and scalo
+/// sets no override. If that ever stops being true, the budget can be raised --
+/// but it should be raised deliberately, not discovered in production.
 #[tokio::test(flavor = "multi_thread")]
 #[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
 async fn the_producer_refuses_a_record_above_one_megabyte() {
