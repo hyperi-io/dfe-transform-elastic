@@ -5,14 +5,13 @@
 //!
 //! Two layers, both from scalo:
 //!
-//! - [`ServiceMetrics`] -- the platform-wide `dfe_*` data-plane metrics every
-//!   DFE component reports, so a dashboard can sum across components.
-//! - [`AppMetrics`] plus the handful below -- namespaced
-//!   `dfe_transform_elastic_*`, for the questions only this service can answer.
+//! - [`ServiceMetrics`] -- the platform-wide data-plane metrics every DFE
+//!   component reports, so a dashboard can sum across components.
+//! - [`AppMetrics`] plus the handful below, for the questions only this service
+//!   can answer.
 //!
-//! Names registered here are BARE. The `MetricsManager` namespace layer
-//! prepends `dfe_transform_elastic_` once at emit time, so a name written with
-//! the prefix already on it would double up.
+//! Names are registered and served BARE: scalo prepends `metrics.namespace` only
+//! when a deployment sets one, so services are told apart by scrape labels.
 //!
 //! Every metric here is emitted by [`crate::service`].
 //! `ServiceApp::register_metrics` builds the same set without starting the
@@ -24,7 +23,7 @@ use scalo::metrics::{MetricsManager, ServiceMetrics};
 
 /// Every metric the transform service reports.
 pub struct TransformMetrics {
-    /// Platform `dfe_*` data-plane metrics shared with the rest of DFE.
+    /// Platform data-plane metrics shared with the rest of DFE.
     pub dfe: ServiceMetrics,
 
     /// Mandatory app-level group: build info, record counts, memory gauges.
@@ -242,15 +241,18 @@ mod tests {
         }
     }
 
+    /// The manager the service registers into: no namespace, as the running
+    /// service has unless a deployment sets `metrics.namespace`.
+    fn served_manager() -> MetricsManager {
+        MetricsManager::with_config(scalo::metrics::MetricsConfig::offline(""))
+    }
+
     /// A metric registered twice appears twice in the manifest and doubles in
-    /// any dashboard that sums the catalogue.
-    ///
-    /// `records_received_total` is the one known overlap: scalo's own
-    /// `ServiceMetrics` and `AppMetrics` both declare it, and both layers are
-    /// mandatory. Any other duplicate is ours and is a defect.
+    /// any dashboard that sums the catalogue; scalo's registry lists each name
+    /// once (scalo-rs#125), so any duplicate here is ours.
     #[test]
-    fn only_the_known_scalo_overlap_is_registered_twice() {
-        let manager = MetricsManager::new("dfe-transform-elastic");
+    fn no_metric_is_registered_twice() {
+        let manager = served_manager();
         let _m = TransformMetrics::register(&manager, "0.1.0", "abc1234");
 
         let mut counts: std::collections::HashMap<String, usize> = std::collections::HashMap::new();
@@ -265,7 +267,7 @@ mod tests {
             .collect();
         duplicates.sort_unstable();
 
-        assert_eq!(duplicates, ["dfe-transform-elastic_records_received_total"]);
+        assert!(duplicates.is_empty(), "registered twice: {duplicates:?}");
     }
 
     #[test]
@@ -275,8 +277,8 @@ mod tests {
 
     /// The committed `docs/metrics-manifest.json` is what an operator builds a
     /// dashboard from, and it went stale the moment three metrics were added
-    /// without regenerating it. Compared by NAME SET rather than byte-for-byte:
-    /// the file carries a `registered_at` timestamp, so no two emits match.
+    /// without regenerating it. Compared by NAME SET rather than byte-for-byte,
+    /// because the file also carries the version and commit of the build.
     ///
     /// Refresh with `dfe-transform-elastic metrics-manifest > docs/metrics-manifest.json`.
     #[test]
@@ -297,7 +299,7 @@ mod tests {
         on_disk.sort_unstable();
         on_disk.dedup();
 
-        let manager = MetricsManager::new("dfe-transform-elastic");
+        let manager = served_manager();
         let _m = TransformMetrics::register(&manager, "0.1.0", "abc1234");
         let mut registered = manifest_names(&manager);
         registered.sort_unstable();

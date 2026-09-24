@@ -144,7 +144,7 @@ dfe-transforms = { path = "crates/dfe-transforms" }
 
 # Batteries-included runtime (crates.io) — NEVER a path dependency.
 # Features are added when their API is actually referenced, not speculatively.
-scalo = { version = ">=2.12.2, <3", features = [
+scalo = { version = ">=2.12.6, <3", features = [
     "cli-service",
     "config",
     "config-schema",

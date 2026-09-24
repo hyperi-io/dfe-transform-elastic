@@ -1,12 +1,13 @@
 {
   "schema_version": 1,
   "app": "dfe-transform-elastic",
+  "namespace": "",
   "version": "0.1.0",
   "commit": "unknown",
-  "registered_at": "2026-09-15T00:17:42Z",
+  "registered_at": "",
   "metrics": [
     {
-      "name": "dfe-transform-elastic_transport_sent_total",
+      "name": "transport_sent_total",
       "type": "counter",
       "description": "Messages successfully sent to transport",
       "unit": "",
@@ -16,7 +17,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_transport_send_errors_total",
+      "name": "transport_send_errors_total",
       "type": "counter",
       "description": "Messages that failed to send",
       "unit": "",
@@ -26,7 +27,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_transport_backpressured_total",
+      "name": "transport_backpressured_total",
       "type": "counter",
       "description": "Messages delayed due to backpressure",
       "unit": "",
@@ -36,7 +37,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_transport_refused_total",
+      "name": "transport_refused_total",
       "type": "counter",
       "description": "Messages refused by transport (circuit open, capacity)",
       "unit": "",
@@ -46,7 +47,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_transport_healthy",
+      "name": "transport_healthy",
       "type": "gauge",
       "description": "Transport health (1=healthy, 0=unhealthy)",
       "unit": "",
@@ -56,7 +57,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_transport_queue_size",
+      "name": "transport_queue_size",
       "type": "gauge",
       "description": "Current number of messages in transport queue",
       "unit": "",
@@ -66,7 +67,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_transport_queue_capacity",
+      "name": "transport_queue_capacity",
       "type": "gauge",
       "description": "Maximum transport queue capacity",
       "unit": "",
@@ -76,7 +77,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_transport_inflight",
+      "name": "transport_inflight",
       "type": "gauge",
       "description": "Messages currently in-flight (sent but not acked)",
       "unit": "",
@@ -86,7 +87,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_transport_send_duration_seconds",
+      "name": "transport_send_duration_seconds",
       "type": "histogram",
       "description": "Time to send a batch to transport",
       "unit": "seconds",
@@ -96,7 +97,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_transport_sent_bytes_total",
+      "name": "transport_sent_bytes_total",
       "type": "counter",
       "description": "Raw bytes written to transport (egress)",
       "unit": "bytes",
@@ -106,7 +107,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_transport_received_bytes_total",
+      "name": "transport_received_bytes_total",
       "type": "counter",
       "description": "Raw bytes read from transport (ingress)",
       "unit": "bytes",
@@ -116,7 +117,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_transport_received_events_total",
+      "name": "transport_received_events_total",
       "type": "counter",
       "description": "Events received off the transport (ingress count)",
       "unit": "",
@@ -126,7 +127,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_pipeline_idle",
+      "name": "pipeline_idle",
       "type": "gauge",
       "description": "Service has no work configured (1=idle, 0=working)",
       "unit": "",
@@ -134,7 +135,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_pipeline_ready",
+      "name": "pipeline_ready",
       "type": "gauge",
       "description": "Pipeline readiness (1=ready, 0=not ready)",
       "unit": "",
@@ -142,7 +143,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_pipeline_stall_seconds_total",
+      "name": "pipeline_stall_seconds_total",
       "type": "counter",
       "description": "Cumulative seconds the pipeline was stalled",
       "unit": "seconds",
@@ -150,7 +151,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_records_received_total",
+      "name": "records_received_total",
       "type": "counter",
       "description": "Records received from all sources",
       "unit": "",
@@ -158,7 +159,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_records_delivered_total",
+      "name": "records_delivered_total",
       "type": "counter",
       "description": "Records successfully delivered to sink",
       "unit": "",
@@ -166,7 +167,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_records_filtered_total",
+      "name": "records_filtered_total",
       "type": "counter",
       "description": "Records dropped by filter/routing rules",
       "unit": "",
@@ -174,7 +175,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_records_dlq_total",
+      "name": "records_dlq_total",
       "type": "counter",
       "description": "Records sent to dead letter queue",
       "unit": "",
@@ -182,7 +183,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_scaling_pressure",
+      "name": "scaling_pressure",
       "type": "gauge",
       "description": "Normalised scaling pressure (0-100)",
       "unit": "",
@@ -190,7 +191,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_scaling_circuit_open",
+      "name": "scaling_circuit_open",
       "type": "gauge",
       "description": "Circuit breaker state (1=open, 0=closed)",
       "unit": "",
@@ -198,7 +199,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_scaling_memory_pressure",
+      "name": "scaling_memory_pressure",
       "type": "gauge",
       "description": "Memory pressure ratio (0.0-1.0)",
       "unit": "",
@@ -206,7 +207,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_spool_bytes",
+      "name": "spool_bytes",
       "type": "gauge",
       "description": "Current spool size in bytes",
       "unit": "",
@@ -214,7 +215,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_spool_messages",
+      "name": "spool_messages",
       "type": "gauge",
       "description": "Current spool message count",
       "unit": "",
@@ -222,7 +223,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_spool_disk_available",
+      "name": "spool_disk_available",
       "type": "gauge",
       "description": "Available disk space for spool in bytes",
       "unit": "",
@@ -230,7 +231,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_auth_failures_total",
+      "name": "auth_failures_total",
       "type": "counter",
       "description": "Authentication failures by reason",
       "unit": "",
@@ -240,7 +241,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_validation_failures_total",
+      "name": "validation_failures_total",
       "type": "counter",
       "description": "Validation failures by reason",
       "unit": "",
@@ -250,7 +251,7 @@
       "group": "platform"
     },
     {
-      "name": "dfe-transform-elastic_info",
+      "name": "info",
       "type": "gauge",
       "description": "Application info for service discovery",
       "unit": "",
@@ -261,7 +262,7 @@
       "group": "app"
     },
     {
-      "name": "dfe-transform-elastic_start_time_seconds",
+      "name": "start_time_seconds",
       "type": "gauge",
       "description": "Unix timestamp of process start",
       "unit": "",
@@ -269,7 +270,7 @@
       "group": "app"
     },
     {
-      "name": "dfe-transform-elastic_config_reloads_total",
+      "name": "config_reloads_total",
       "type": "counter",
       "description": "Config reload attempts",
       "unit": "",
@@ -279,15 +280,7 @@
       "group": "app"
     },
     {
-      "name": "dfe-transform-elastic_records_received_total",
-      "type": "counter",
-      "description": "Records received from source",
-      "unit": "",
-      "labels": [],
-      "group": "app"
-    },
-    {
-      "name": "dfe-transform-elastic_records_processed_total",
+      "name": "records_processed_total",
       "type": "counter",
       "description": "Records successfully processed",
       "unit": "",
@@ -295,7 +288,7 @@
       "group": "app"
     },
     {
-      "name": "dfe-transform-elastic_records_error_total",
+      "name": "records_error_total",
       "type": "counter",
       "description": "Records that failed processing",
       "unit": "",
@@ -303,7 +296,7 @@
       "group": "app"
     },
     {
-      "name": "dfe-transform-elastic_bytes_received_total",
+      "name": "bytes_received_total",
       "type": "counter",
       "description": "Bytes received from source",
       "unit": "",
@@ -311,7 +304,7 @@
       "group": "app"
     },
     {
-      "name": "dfe-transform-elastic_bytes_written_total",
+      "name": "bytes_written_total",
       "type": "counter",
       "description": "Bytes written to sink",
       "unit": "",
@@ -319,7 +312,7 @@
       "group": "app"
     },
     {
-      "name": "dfe-transform-elastic_memory_used_bytes",
+      "name": "memory_used_bytes",
       "type": "gauge",
       "description": "Current memory usage (cgroup-aware)",
       "unit": "",
@@ -327,7 +320,7 @@
       "group": "app"
     },
     {
-      "name": "dfe-transform-elastic_memory_limit_bytes",
+      "name": "memory_limit_bytes",
       "type": "gauge",
       "description": "Effective memory limit",
       "unit": "",
@@ -335,7 +328,7 @@
       "group": "app"
     },
     {
-      "name": "dfe-transform-elastic_events_transformed_total",
+      "name": "events_transformed_total",
       "type": "counter",
       "description": "Events emitted by the transform",
       "unit": "",
@@ -343,7 +336,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_events_dropped_total",
+      "name": "events_dropped_total",
       "type": "counter",
       "description": "Events the transform dropped by design",
       "unit": "",
@@ -351,7 +344,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_events_errored_total",
+      "name": "events_errored_total",
       "type": "counter",
       "description": "Events whose transform returned an error",
       "unit": "",
@@ -359,7 +352,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_parse_errors_total",
+      "name": "parse_errors_total",
       "type": "counter",
       "description": "NDJSON lines that would not parse as JSON",
       "unit": "",
@@ -367,7 +360,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_lossy_payloads_total",
+      "name": "lossy_payloads_total",
       "type": "counter",
       "description": "Payloads decoded with U+FFFD replacements for invalid UTF-8",
       "unit": "",
@@ -375,7 +368,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_painless_handled_total",
+      "name": "painless_handled_total",
       "type": "counter",
       "description": "Painless scripts the runtime recognised and ran",
       "unit": "",
@@ -383,7 +376,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_painless_unhandled_total",
+      "name": "painless_unhandled_total",
       "type": "counter",
       "description": "Painless scripts skipped because nothing recognised them",
       "unit": "",
@@ -391,7 +384,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_geoip_cache_hits_total",
+      "name": "geoip_cache_hits_total",
       "type": "counter",
       "description": "GeoIP lookups answered from the cache",
       "unit": "",
@@ -399,7 +392,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_geoip_cache_misses_total",
+      "name": "geoip_cache_misses_total",
       "type": "counter",
       "description": "GeoIP lookups that reached a database",
       "unit": "",
@@ -407,7 +400,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_geoip_cache_entries",
+      "name": "geoip_cache_entries",
       "type": "gauge",
       "description": "Addresses currently held in the GeoIP cache",
       "unit": "",
@@ -415,7 +408,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_send_failures_total",
+      "name": "send_failures_total",
       "type": "counter",
       "description": "Sends that exhausted their retries, leaving the batch uncommitted",
       "unit": "",
@@ -423,7 +416,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_send_backpressure_total",
+      "name": "send_backpressure_total",
       "type": "counter",
       "description": "Sends the sink refused because its queue was full",
       "unit": "",
@@ -431,7 +424,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_send_filtered_dlq_total",
+      "name": "send_filtered_dlq_total",
       "type": "counter",
       "description": "Sends an outbound filter routed to a DLQ this service does not have",
       "unit": "",
@@ -439,7 +432,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_events_oversize_total",
+      "name": "events_oversize_total",
       "type": "counter",
       "description": "Events too large for one Kafka record, dropped",
       "unit": "",
@@ -447,7 +440,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_commit_failures_total",
+      "name": "commit_failures_total",
       "type": "counter",
       "description": "Offset commits that failed after a successful send",
       "unit": "",
@@ -455,7 +448,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_envelope_contradicted_total",
+      "name": "envelope_contradicted_total",
       "type": "counter",
       "description": "Batches whose events did not look like the pinned envelope",
       "unit": "",
@@ -463,7 +456,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_envelope_unaccepted_total",
+      "name": "envelope_unaccepted_total",
       "type": "counter",
       "description": "Batches detected as an envelope this source cannot arrive in",
       "unit": "",
@@ -471,7 +464,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_batch_events",
+      "name": "batch_events",
       "type": "histogram",
       "description": "Events per received batch",
       "unit": "seconds",
@@ -479,7 +472,7 @@
       "group": "custom"
     },
     {
-      "name": "dfe-transform-elastic_batch_duration_seconds",
+      "name": "batch_duration_seconds",
       "type": "histogram",
       "description": "Seconds to transform one batch",
       "unit": "seconds",
