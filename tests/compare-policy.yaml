@@ -58,6 +58,13 @@ nondeterministic:
       capture's own clock (2026-08-27T06:01:17.989Z plus 90 days) and no
       transform can reproduce it. The duration and reason beside it are
       deterministic and are compared.
+  - path: event.id
+    sources: [extrahop]
+    why: >
+      The detection id, a dash, then a stamp that is the capture's own clock:
+      the corpus holds 3-1788085957276 where the harness's pinned ingest
+      instant gives 3-1788220800000. Wrong on 4 of 7 events and on no other
+      field of theirs, so the id before the dash is not what differs.
 
 # Elastic and Beats plumbing DFE does not emit. Never a defect. Prefix match on
 # the dotted path, list indices removed first.
@@ -143,6 +150,19 @@ known_different:
   - prefix: dns.question.top_level_domain
     sources: [aws, cisco_umbrella]
     why: The other half of the same split.
+  - prefix: url.registered_domain
+    sources: [bbot]
+    why: >-
+      The same public suffix list split, on bbot's url.* rather than
+      dns.question.*: mux-livestream-assets.s3.us-east-1.amazonaws.com splits
+      at s3.us-east-1.amazonaws.com here and at us-east-1.amazonaws.com in
+      Elasticsearch 9.2.2. One event of 805.
+  - prefix: url.subdomain
+    sources: [bbot]
+    why: The other half of the same split.
+  - prefix: url.top_level_domain
+    sources: [bbot]
+    why: The other half of the same split.
 
 # Permanent divergences, each with its reason named -- a divergence without one
 # is indistinguishable from a defect of our own. Most are Elasticsearch being
@@ -171,6 +191,13 @@ corrected:
       same json processor and report it in their own words: Jackson's
       "Unrecognized token" with a source excerpt, against serde_json's. The
       failure agrees; only the wording is the runtime's own.
+  - prefix: error.message
+    sources: [cisco_umbrella]
+    why: >-
+      One event's kv processor fails in both engines with the same message,
+      but Elasticsearch's on_failure text names the pipeline id the capture
+      harness registered (compat-cisco_umbrella-log-...), which nothing in the
+      transform can know.
   - prefix: error.message
     sources: [atlassian_cloud]
     why: >-

@@ -6,7 +6,7 @@
 //! Every other test in this repo drives the transform directly. These drive the
 //! service loop over a real broker, which is the only place the parts that
 //! matter in production are exercised: consumer-group subscription, batch
-//! assembly, NDJSON framing on the wire, and commit-after-send.
+//! assembly, one record per event on the wire, and commit-after-send.
 //!
 //! Ignored by default. A test that reaches a broker must be asked for:
 //! `cargo test --test broker -- --ignored`.
@@ -403,6 +403,208 @@ async fn a_batch_larger_than_one_kafka_record_arrives() {
             "output was not transformed: {event}"
         );
     }
+}
+
+/// The catalogue name dfe-engine renders into `source.name` for a `cisco-ios`
+/// source on this app (`filebeat.{entry}.{transform}` in dfe-infra's
+/// `apps.yaml`).
+const CISCO_IOS_SOURCE: &str = "filebeat.cisco_ios.default";
+
+/// What dfe-receiver stamps into `_source` when a source rule matches, and what
+/// dfe-loader then routes the transformed row to that source's table on.
+const CISCO_IOS_VARIANT: &str = "cisco-ios";
+
+/// A `cisco_ios` syslog line unique to `i`, so a lost or duplicated event shows
+/// up by value and not only by count.
+fn cisco_ios_line(i: usize) -> String {
+    format!(
+        "<189>{}: Jan  6 2022 20:52:12.861: %SYS-5-CONFIG_I: Configured from console by \
+         akroh on vty0 (10.100.11.10)",
+        2_360_957 + i
+    )
+}
+
+/// `count` Elastic Agent `cisco_ios` documents as dfe-receiver writes them to a
+/// source's land topic: the agent's own document with the receive stamp and
+/// the matched `_source` appended, one Kafka record per event.
+fn receiver_cisco_ios_records(count: usize) -> Vec<Vec<u8>> {
+    let raw = std::fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/tests/envelopes/beats/agent_cisco_ios.json"
+    ))
+    .expect("agent_cisco_ios fixture is committed");
+    let fixture: serde_json::Value = serde_json::from_str(&raw).expect("fixture is JSON");
+    let agent = fixture
+        .get("event")
+        .cloned()
+        .expect("the fixture carries the agent document under `event`");
+
+    (0..count)
+        .map(|i| {
+            let mut event = agent.clone();
+            event["message"] = serde_json::Value::String(cisco_ios_line(i));
+            event["_timestamp_receiver"] = serde_json::json!(1_757_000_000_000_u64);
+            event["_source"] = serde_json::Value::String(CISCO_IOS_VARIANT.into());
+            serde_json::to_vec(&event).expect("event serialises")
+        })
+        .collect()
+}
+
+/// Read Kafka records off the consumer's topic, unsplit, until they carry
+/// `want` events or the timeout expires.
+///
+/// Returned as they came off the wire, so the assertions judge each record the
+/// way dfe-loader does: one record, one JSON document.
+async fn drain_records(
+    consumer: &scalo::transport::kafka::KafkaTransport,
+    want: usize,
+) -> Vec<bytes::Bytes> {
+    let deadline = tokio::time::Instant::now() + ROUND_TRIP_TIMEOUT;
+    let mut records = Vec::new();
+    let mut events = 0;
+
+    while events < want && tokio::time::Instant::now() < deadline {
+        let Ok(batch) = consumer.recv(64).await else {
+            tokio::time::sleep(Duration::from_millis(200)).await;
+            continue;
+        };
+        if batch.records.is_empty() {
+            tokio::time::sleep(Duration::from_millis(200)).await;
+            continue;
+        }
+        for record in batch.records {
+            events += String::from_utf8_lossy(&record.payload)
+                .lines()
+                .filter(|line| !line.trim().is_empty())
+                .count();
+            records.push(record.payload);
+        }
+    }
+
+    records
+}
+
+/// A multi-event batch through the service loop, on the receiver path the rc.14
+/// filebeat e2e drives: every event reaches the sink as a record of its own,
+/// each record is ONE JSON document, and each carries the `_source` dfe-loader
+/// routes on (hyperi-io/dfe-transform-elastic#84).
+///
+/// A batch framed as one NDJSON record is dead-lettered whole by dfe-loader,
+/// and a record without `_source` lands in the catch-all table. Both are silent
+/// everywhere upstream of a row count.
+#[tokio::test(flavor = "multi_thread")]
+#[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
+async fn a_receiver_batch_reaches_the_sink_as_one_routable_record_per_event() {
+    const EVENTS: usize = 6;
+
+    let broker = broker_or_skip!("receiver-batch");
+    let source_topic = common::topic("rcv-src");
+    let sink_topic = common::topic("rcv-sink");
+    let group = common::topic("rcv-cg");
+
+    let seed = broker.producer("seed").await;
+    for record in receiver_cisco_ios_records(EVENTS) {
+        let sent = seed.send(&source_topic, bytes::Bytes::from(record)).await;
+        assert!(
+            matches!(sent, scalo::transport::SendResult::Ok),
+            "seed produce failed: {sent:?}"
+        );
+    }
+
+    // Every seed record readable before the service starts, so its first
+    // receive takes them as one batch rather than one at a time.
+    {
+        let probe = broker
+            .consumer("probe", &source_topic, &common::topic("rcv-probe-cg"))
+            .await;
+        let deadline = tokio::time::Instant::now() + Duration::from_secs(30);
+        let mut readable = 0;
+        while readable < EVENTS && tokio::time::Instant::now() < deadline {
+            match probe.recv(64).await {
+                Ok(batch) if !batch.records.is_empty() => readable += batch.records.len(),
+                _ => tokio::time::sleep(Duration::from_millis(200)).await,
+            }
+        }
+        assert_eq!(
+            readable, EVENTS,
+            "the seed is not readable from the source topic"
+        );
+    }
+
+    let mut config = config(broker.list(), &source_topic, &sink_topic, &group);
+    config.source.name = CISCO_IOS_SOURCE.into();
+
+    let shutdown = CancellationToken::new();
+    let consumer = AnyReceiver::Kafka(broker.consumer("service", &source_topic, &group).await);
+    let producer = AnySender::Kafka(broker.producer("service").await);
+    let manager = MetricsManager::new("dfe-transform-elastic-test");
+    let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
+
+    let loop_shutdown = shutdown.clone();
+    let service = tokio::spawn(async move {
+        service::run_loop(
+            &config,
+            &consumer,
+            &producer,
+            &loop_shutdown,
+            &metrics,
+            None,
+        )
+        .await
+    });
+
+    let sink = broker
+        .consumer("verify", &sink_topic, &common::topic("rcv-verify-cg"))
+        .await;
+    let records = drain_records(&sink, EVENTS).await;
+
+    shutdown.cancel();
+    tokio::time::timeout(Duration::from_secs(30), service)
+        .await
+        .expect("service loop stops on cancel")
+        .expect("service task did not panic")
+        .expect("service loop returned an error");
+
+    assert_eq!(
+        records.len(),
+        EVENTS,
+        "{} record(s) carried the {EVENTS} events; the loader needs one per event",
+        records.len()
+    );
+
+    let mut originals = Vec::with_capacity(EVENTS);
+    for payload in &records {
+        // The loader's own parse: the whole record as ONE value.
+        let event: serde_json::Value = serde_json::from_slice(payload).unwrap_or_else(|e| {
+            panic!(
+                "a record is not one JSON document ({e}): {}",
+                String::from_utf8_lossy(payload)
+            )
+        });
+        assert!(event.is_object(), "a record is not an object: {event}");
+        assert_eq!(
+            event.get("_source").and_then(|v| v.as_str()),
+            Some(CISCO_IOS_VARIANT),
+            "the routing field dfe-loader matches on did not survive: {event}"
+        );
+        assert_eq!(
+            event.pointer("/observer/vendor").and_then(|v| v.as_str()),
+            Some("Cisco"),
+            "the record did not go through the cisco_ios transform: {event}"
+        );
+        originals.push(
+            event
+                .pointer("/event/original")
+                .and_then(|v| v.as_str())
+                .expect("event.original carries the vendor line")
+                .to_string(),
+        );
+    }
+
+    originals.sort();
+    let mut expected: Vec<String> = (0..EVENTS).map(cisco_ios_line).collect();
+    expected.sort();
+    assert_eq!(originals, expected, "an event was lost or duplicated");
 }
 
 /// The premise the per-record budget rests on: librdkafka refuses a record
