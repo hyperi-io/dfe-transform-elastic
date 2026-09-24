@@ -432,7 +432,8 @@ def _request(method: str, path: str, body: Any = None) -> dict[str, Any]:
         headers={"Content-Type": "application/json"},
     )
     try:
-        with urllib.request.urlopen(request, timeout=60) as response:  # nosec B310
+        # The URL is the fixed loopback ES_URL plus a path from this module.
+        with urllib.request.urlopen(request, timeout=60) as response:  # nosec B310 # nosemgrep: python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected
             return json.loads(response.read().decode("utf-8"))
     except urllib.error.HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="replace")

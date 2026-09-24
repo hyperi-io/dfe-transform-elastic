@@ -86,7 +86,7 @@ for each bound; this is the map of which crate does what.
 | Crate | Version | Purpose |
 |---|---|---|
 | `serde` / `serde_json` | >=1.0 | Serialisation framework, and both JSON paths. `preserve_order` is on, so object keys keep document order |
-| `simd-json` | >=0.14, <0.15 | DEV-dependency of `dfe-runtime` only, for `benches/json_parse.rs` -- the bench that demoted it |
+| `simd-json` | >=0.14, <0.15 | DEV-dependency of `dfe-runtime` only, for `crates/dfe-runtime/benches/json_parse.rs` -- the bench that demoted it |
 | `serde_yaml_ng` | >=0.10 | YAML config parsing |
 | `memchr` | >=2.7 | SIMD byte search (`crates/dfe-parse/src/string.rs`) |
 | `regex-automata` | >=0.4 | Pre-compiled DFA regex (`crates/dfe-parse/src/dfa.rs`) |
