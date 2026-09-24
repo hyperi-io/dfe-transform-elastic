@@ -25,8 +25,7 @@
     "unresolved_base_image": null
   },
   "expose_ports": [
-    9090,
-    6000
+    9090
   ],
   "healthcheck": {
     "path": "/livez",
@@ -53,5 +52,17 @@
     "org.opencontainers.image.description": "Beats and Elastic Agent JSON in, DFE-normalised events out",
     "org.opencontainers.image.vendor": "HYPERI PTY LIMITED",
     "org.opencontainers.image.licenses": "BUSL-1.1"
-  }
+  },
+  "conditional_ports": [
+    {
+      "name": "push",
+      "port": 6000,
+      "protocol": "TCP",
+      "when": {
+        "kind": "equals",
+        "path": "config.source.transport",
+        "value": "direct"
+      }
+    }
+  ]
 }

@@ -35,7 +35,7 @@ required-features = ["driver"]
 # Declared here rather than inherited: the workspace entry carries the
 # service's full feature list, and this crate must build with the Kafka
 # transport alone so the workload's driver build takes minutes.
-scalo = { version = ">=2.12.2, <3", default-features = false, features = [
+scalo = { version = ">=2.12.6, <3", default-features = false, features = [
     "transport-kafka",
 ] }
 serde_json = { workspace = true }

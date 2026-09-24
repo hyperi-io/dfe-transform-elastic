@@ -558,10 +558,9 @@ async fn publish<S: TransportSender>(
 /// takes at least one record, so a payload at the budget goes out alone rather
 /// than not at all.
 ///
-/// `key` is the DESTINATION rather than a partition key -- scalo models no
-/// per-record partition key at this layer -- so every record carries the sink
-/// topic and the per-record `send` the default `send_batch` falls back to
-/// routes correctly.
+/// `key` is the DESTINATION rather than a partition key: Kafka's `send_batch`
+/// produces each record to the topic its `key` names, so every record carries
+/// the sink topic.
 fn into_blocks(payloads: Vec<Vec<u8>>, topic: &Arc<str>, max_bytes: usize) -> Vec<Vec<Record>> {
     let mut blocks = Vec::new();
     let mut block: Vec<Record> = Vec::new();
@@ -593,11 +592,10 @@ fn into_blocks(payloads: Vec<Vec<u8>>, topic: &Arc<str>, max_bytes: usize) -> Ve
 
 /// Send one block, retrying while the sink will not take it.
 ///
-/// [`TransportSender::send_batch`] is NOT atomic where the transport has no
-/// native batch RPC: it sends record by record, so a non-`Ok` answer partway
-/// through leaves the records before it on the wire and the retry re-delivers
-/// them. That is the duplicate half of at-least-once, and the alternative --
-/// committing a block that only partly landed -- is loss.
+/// [`TransportSender::send_batch`] is NOT atomic on Kafka: a non-`Ok` block may
+/// already have left any subset of its records on the broker, and the retry
+/// re-delivers them. That is the duplicate half of at-least-once, and the
+/// alternative -- committing a block that only partly landed -- is loss.
 ///
 /// [`SendResult`] has four variants and three of them are not delivery.
 /// Backpressure in particular is the NORMAL response from a slow sink -- a

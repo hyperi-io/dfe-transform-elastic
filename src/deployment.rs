@@ -9,9 +9,9 @@
 //! -- the transforms are compiled in, which is the whole design.
 
 use scalo::deployment::{
-    Capability, DeploymentContract, FieldSpec, HealthContract, ImageProfile, KedaConfig,
-    KedaContract, NativeDepsContract, PortContract, SecretEnvContract, SecretGroupContract,
-    base_image_from_cascade,
+    Capability, DeploymentContract, FieldSpec, HealthContract, ImageProfile, KafkaLagTrigger,
+    KedaConfig, KedaContract, NativeDepsContract, PortContract, SecretEnvContract,
+    SecretGroupContract, base_image_from_cascade,
 };
 use scalo::geoip_download::{AutoDownloadConfig, GeoIpConfig};
 
@@ -38,14 +38,13 @@ pub fn contract() -> DeploymentContract {
         config_mount_path: "/etc/dfe-transform-elastic/config.yaml".into(),
         image_registry: "ghcr.io/hyperi-io".into(),
         base_image: base_image.clone(),
-        // scalo still serves /livez, /readyz, /metrics and /scaling/pressure
-        // from the ONE metrics listener; this second port is the Push listener
-        // the direct transport binds (issue #19).
-        extra_ports: vec![PortContract {
-            name: "push".into(),
-            port: 6000,
-            protocol: "TCP".into(),
-        }],
+        // Published only on the direct transport, the one arm that binds a Push listener.
+        extra_ports: vec![
+            PortContract::tcp("push", 6000)
+                .when_equals("config.source.transport", "direct")
+                .bound_from("source.listen"),
+        ],
+        unbound_listen_paths: vec![],
         entrypoint_args: vec![
             "--config".into(),
             "/etc/dfe-transform-elastic/config.yaml".into(),
@@ -81,22 +80,19 @@ pub fn contract() -> DeploymentContract {
         depends_on: vec!["kafka".into()],
         native_deps: NativeDepsContract::for_scalo_features(&["transport-kafka"], &base_image),
         image_profile: ImageProfile::Production,
-        // KedaContract is #[non_exhaustive], so it is built from a KedaConfig.
-        // The default leaves the scaling_pressure_* trigger off; its Prometheus
-        // serverAddress is cluster-specific.
-        keda: Some(KedaContract::from_config(&KedaConfig {
-            min_replicas: 1,
-            max_replicas: 10,
-            polling_interval: 15,
-            cooldown_period: 300,
-            // One batch is 20k events, so the threshold sits an order of
-            // magnitude above it -- KEDA reacts to a backlog, not to batching.
-            kafka_lag_threshold: 200_000,
-            activation_lag_threshold: 0,
-            cpu_enabled: true,
-            cpu_threshold: 80,
-            ..Default::default()
-        })),
+        // No raw-lag trigger: DFE scales on the pressure composite in dfe-infra's charts.
+        keda: Some(
+            KedaContract::from_config(&KedaConfig {
+                min_replicas: 1,
+                max_replicas: 10,
+                polling_interval: 15,
+                cooldown_period: 300,
+                cpu_enabled: true,
+                cpu_threshold: 80,
+                ..Default::default()
+            })
+            .with_kafka_trigger(KafkaLagTrigger::disabled()),
+        ),
         schema_version: 3,
         oci_labels: scalo::deployment::OciLabels {
             title: "dfe-transform-elastic".into(),
@@ -248,53 +244,6 @@ pub fn default_config_yaml() -> String {
         .unwrap_or_default();
 
     format!("{header}\n{body}")
-}
-
-/// Point the generated KEDA trigger at this service's config shape.
-///
-/// scalo's Helm generator hard-codes `.Values.config.kafka.*` for the Kafka
-/// scaler, and this service configures its broker list under
-/// `.Values.config.source.*`. Without the rewrite the template fails
-/// `helm lint` on a nil pointer, so `emit-chart` applies it after generating.
-///
-/// # Errors
-///
-/// Returns [`crate::Error::Config`] if the generated template cannot be read
-/// or rewritten.
-pub fn retarget_keda_trigger(chart_dir: &str) -> crate::Result<()> {
-    let path = std::path::Path::new(chart_dir)
-        .join("templates")
-        .join("keda-scaledobject.yaml");
-
-    let Ok(template) = std::fs::read_to_string(&path) else {
-        // No KEDA template means no trigger to retarget.
-        return Ok(());
-    };
-
-    let patched = template
-        .replace(
-            "{{ .Values.config.kafka.brokers | quote }}",
-            "{{ join \",\" .Values.config.source.brokers | quote }}",
-        )
-        .replace(
-            ".Values.config.kafka.group_id",
-            ".Values.config.source.group_id",
-        )
-        .replace(
-            ".Values.config.kafka.topics",
-            ".Values.config.source.topics",
-        );
-
-    if patched.contains(".Values.config.kafka.") {
-        return Err(crate::Error::Config(format!(
-            "{} still references .Values.config.kafka after the rewrite; \
-             the scalo Helm generator has changed shape",
-            path.display()
-        )));
-    }
-
-    std::fs::write(&path, patched)
-        .map_err(|e| crate::Error::Config(format!("failed to write {}: {e}", path.display())))
 }
 
 /// Capability catalogue: the transform sources this build can run.
@@ -631,17 +580,59 @@ mod tests {
         }
     }
 
+    /// KEDA stays on with CPU as its only trigger: raw consumer lag rises when a
+    /// downstream stage breaks, and scaling out then does nothing.
     #[test]
-    fn keda_is_configured_for_batch_sized_lag() {
+    fn keda_has_no_kafka_lag_trigger() {
         let c = contract();
         let keda = c.keda.as_ref().expect("keda present");
-        assert_eq!(keda.min_replicas, 1);
-        assert_eq!(keda.max_replicas, 10);
-        assert!(
-            keda.kafka_lag_threshold > 20_000,
-            "lag threshold must sit above one batch, or KEDA scales on normal batching"
-        );
+        assert!(keda.enabled);
         assert!(keda.cpu_enabled);
+        assert!(!keda.kafka_trigger.enabled, "a raw-lag trigger is declared");
+        assert!(keda.min_replicas >= 1, "CPU alone cannot scale from zero");
+        assert_eq!(keda.max_replicas, 10);
+        let unresolved = c.unresolved_values_paths();
+        assert!(unresolved.is_empty(), "{unresolved:?}");
+    }
+
+    /// `generate-artefacts` and `generate_chart` refuse a contract that fails
+    /// these checks, and write nothing.
+    #[test]
+    fn the_contract_passes_the_generator_checks() {
+        contract()
+            .validate()
+            .expect("contract must pass DeploymentContract::validate");
+    }
+
+    #[test]
+    fn every_listener_has_a_port() {
+        scalo::deployment::assert_listeners_declared(&contract());
+    }
+
+    /// The push port follows `source.transport`: off on the shipped bus default,
+    /// on for direct, and the address it serves agrees with its number.
+    #[test]
+    fn the_push_port_exists_on_the_direct_transport_only() {
+        let mut c = contract();
+        let push = c
+            .extra_ports
+            .iter()
+            .find(|p| p.name == "push")
+            .expect("push port")
+            .clone();
+        assert_eq!(push.port, 6000);
+        let gate = push.when.as_ref().expect("push port must be gated");
+
+        let mut config = c.default_config.clone().expect("default config");
+        assert_eq!(gate.holds_in(&config), Some(false));
+
+        config["source"]["transport"] =
+            serde_json::to_value(Transport::Direct).expect("a transport serialises");
+        assert_eq!(gate.holds_in(&config), Some(true));
+
+        c.default_config = Some(config);
+        let undeclared = c.undeclared_listeners();
+        assert!(undeclared.is_empty(), "{undeclared:?}");
     }
 
     /// The capability catalogue is generated from the registry, so it must
@@ -730,25 +721,6 @@ mod tests {
         assert_eq!(committed.trim_end(), fresh.trim_end());
     }
 
-    /// The generated chart must lint, which means the KEDA trigger has to
-    /// reference value paths that exist in `values.yaml`.
-    #[test]
-    fn keda_retarget_removes_every_config_kafka_reference() {
-        let dir = tempfile::tempdir().expect("tempdir");
-        let chart = dir.path().to_str().expect("utf-8 path");
-
-        scalo::deployment::generate_chart(&contract(), chart, None).expect("chart generates");
-        retarget_keda_trigger(chart).expect("retarget succeeds");
-
-        let template = std::fs::read_to_string(dir.path().join("templates/keda-scaledobject.yaml"))
-            .expect("keda template written");
-
-        assert!(!template.contains(".Values.config.kafka."));
-        assert!(template.contains("join \",\" .Values.config.source.brokers"));
-        assert!(template.contains(".Values.config.source.group_id"));
-        assert!(template.contains(".Values.config.source.topics"));
-    }
-
     /// The chart directory, which is committed alongside the generator output.
     fn chart_dir() -> std::path::PathBuf {
         std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("chart/dfe-transform-elastic")
@@ -813,14 +785,6 @@ mod tests {
             "nothing mounts {data_dir}"
         );
         assert!(deployment.contains("emptyDir"), "no writable volume at all");
-    }
-
-    /// A chart directory with no KEDA template is not an error.
-    #[test]
-    fn keda_retarget_is_a_no_op_without_a_template() {
-        let dir = tempfile::tempdir().expect("tempdir");
-        let chart = dir.path().to_str().expect("utf-8 path");
-        assert!(retarget_keda_trigger(chart).is_ok());
     }
 
     #[test]

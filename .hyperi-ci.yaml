@@ -13,10 +13,6 @@ classification: product
 # Values: python, typescript, golang, rust, bash, none
 language: rust
 
-# Runner settings (override GH_RUNNER_* variables)
-runners:
-  default: arc-native-16cpu
-
 # Quality checks
 quality:
   enabled: true
@@ -29,6 +25,8 @@ test:
 # Building
 build:
   enabled: true
+  # PGO and BOLT stay off until the last rc.14 stage; a stable release meanwhile needs `release-unoptimized: true` at dispatch.
+  skip_optimize: true
   type: app
   strategies:
     - native
