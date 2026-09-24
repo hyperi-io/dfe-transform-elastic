@@ -87,6 +87,27 @@
       "group": "platform"
     },
     {
+      "name": "transport_commit_errors_total",
+      "type": "counter",
+      "description": "Source commits that failed after the block was delivered",
+      "unit": "",
+      "labels": [
+        "transport"
+      ],
+      "group": "platform"
+    },
+    {
+      "name": "transport_recv_errors_total",
+      "type": "counter",
+      "description": "Receive failures by class (transient: retried, permanent: returned)",
+      "unit": "",
+      "labels": [
+        "transport",
+        "class"
+      ],
+      "group": "platform"
+    },
+    {
       "name": "transport_send_duration_seconds",
       "type": "histogram",
       "description": "Time to send a batch to transport",
@@ -123,6 +144,16 @@
       "unit": "",
       "labels": [
         "transport"
+      ],
+      "group": "platform"
+    },
+    {
+      "name": "pipeline_retries_total",
+      "type": "counter",
+      "description": "Run-loop steps retried after a transient source or sink failure",
+      "unit": "",
+      "labels": [
+        "stage"
       ],
       "group": "platform"
     },
