@@ -17,7 +17,13 @@
     {
       "name": "push",
       "port": 6000,
-      "protocol": "TCP"
+      "protocol": "TCP",
+      "when": {
+        "kind": "equals",
+        "path": "config.source.transport",
+        "value": "direct"
+      },
+      "bound_from": "source.listen"
     }
   ],
   "entrypoint_args": [
@@ -80,14 +86,21 @@
     "kafka"
   ],
   "keda": {
+    "enabled": true,
     "min_replicas": 1,
     "max_replicas": 10,
     "polling_interval": 15,
     "cooldown_period": 300,
-    "kafka_lag_threshold": 200000,
+    "kafka_lag_threshold": 1000,
     "activation_lag_threshold": 0,
     "cpu_enabled": true,
-    "cpu_threshold": 80
+    "cpu_threshold": 80,
+    "kafka_trigger": {
+      "enabled": false,
+      "brokers_path": "config.kafka.brokers",
+      "group_path": "config.kafka.group_id",
+      "topics_path": "config.kafka.topics"
+    }
   },
   "base_image": "debian:trixie-slim",
   "native_deps": {

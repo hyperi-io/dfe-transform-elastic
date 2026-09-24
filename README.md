@@ -131,19 +131,9 @@ dfe-transform-elastic generate-artefacts --output-dir docs
 `argocd-application.yaml`, and the reflectable config pair `config-schema.*` and
 `capability-catalog.*`.
 
-**Only the config pair is pinned against a fresh regen.**
-`committed_config_artefacts_do_not_drift` in `src/deployment.rs` compares
-`config-schema.{json,yaml}` and `capability-catalog.{json,yaml}`, and its
-sibling tests do the same for the committed `Dockerfile`, `config.example.yaml`
-and the chart's `config:` block. Nothing compares `deployment-contract.json`,
-`container-manifest.json`, `Dockerfile.runtime` or `argocd-application.yaml`, so
-those can and do fall behind -- re-run the command when `src/deployment.rs`
-changes rather than assuming a test caught it.
+**Not every artefact is pinned against a fresh regen.** `committed_config_artefacts_do_not_drift` in `src/deployment.rs` compares `config-schema.{json,yaml}` and `capability-catalog.{json,yaml}`, and its sibling tests do the same for the committed `deployment-contract.json`, `Dockerfile`, `config.example.yaml` and the chart's `config:` block. Nothing compares `container-manifest.json`, `Dockerfile.runtime` or `argocd-application.yaml`, so those can and do fall behind -- re-run the command when `src/deployment.rs` changes rather than assuming a test caught it.
 
-`metrics-manifest.json` is the one that could not be drift-tested as it stands:
-it carries a `registered_at` timestamp written at generation time, so a
-byte-comparison would fail on every run that did not regenerate it. Expect that
-line to change whenever the command is run, and ignore it in review.
+`metrics-manifest.json` is compared by metric NAME SET in `src/metrics.rs`, not byte for byte, because it also records the version and commit of the build that wrote it.
 
 The image expects the release binary in the build context:
 

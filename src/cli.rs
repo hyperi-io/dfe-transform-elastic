@@ -95,10 +95,6 @@ impl App {
             eprintln!("error: failed to generate Helm chart: {e}");
             return 1;
         }
-        if let Err(e) = crate::deployment::retarget_keda_trigger(dir) {
-            eprintln!("error: {e}");
-            return 1;
-        }
         eprintln!("Helm chart generated in {dir}/");
         0
     }
