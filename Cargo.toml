@@ -262,7 +262,7 @@ rayon = ">=1.10, <2"
 # Ephemeral broker for the round-trip test. Same range as the rest of the
 # fleet so one version is shared across dfe-receiver, dfe-loader and the
 # transform services.
-testcontainers = ">=0.27, <0.28"
+testcontainers = ">=0.28.0, <0.29"
 testcontainers-modules = { version = ">=0.15, <0.16", features = ["kafka"] }
 
 [profile.release]
