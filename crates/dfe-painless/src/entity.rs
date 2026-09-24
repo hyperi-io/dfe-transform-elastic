@@ -1233,6 +1233,8 @@ mod tests {
             "json": {
                 "eventSource": "ec2.amazonaws.com",
                 "eventName": "RunInstances",
+                // An all-zero key id shaped like AWS's, not a credential.
+                // nosemgrep: generic.secrets.security.detected-aws-access-key-id-value.detected-aws-access-key-id-value
                 "userIdentity": { "arn": "arn:aws:iam::1:user/alice", "accessKeyId": "AKIA0000000000000000" },
                 "requestParameters": { "groupId": "sg-1", "vpcId": "vpc-9" },
                 "responseElements": { "instancesSet": { "items": [
@@ -1252,6 +1254,7 @@ mod tests {
             "arn:aws:iam::1:instance-profile/p",
             "eni-7",
             "arn:aws:iam::1:user/alice",
+            // nosemgrep: generic.secrets.security.detected-aws-access-key-id-value.detected-aws-access-key-id-value
             "AKIA0000000000000000",
         ] {
             assert!(
