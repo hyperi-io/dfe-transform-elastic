@@ -2,7 +2,7 @@
   "schema_version": "1",
   "app_name": "dfe-transform-elastic",
   "binary_name": "dfe-transform-elastic",
-  "base_image": "debian:trixie-slim",
+  "base_image": "debian:trixie-slim@sha256:a99cfc517144bc59b1978475ec53b46ecabec7e43635402ee5b77cc54cd1b20a",
   "image_registry": "ghcr.io/hyperi-io",
   "image_profile": "production",
   "runtime_packages": {
