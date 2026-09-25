@@ -102,13 +102,9 @@ rather than assumed:
 - **An event too large for one Kafka record** is dropped and counted on
   `events_oversize_total`. No broker would accept it, and retrying it forever
   would block the partition behind it.
-- **A backpressured sink** is retried with a bounded backoff, counted on
-  `send_backpressure_total`. Backpressure is not delivery.
-- **A send that cannot be completed** STOPS the service with the batch
-  uncommitted, and the restarted consumer replays it. Carrying on would let the
-  next batch's commit acknowledge the failed one, because Kafka commits are
-  cumulative -- that is loss, not replay. Delivery is at-least-once, so a
-  downstream consumer must be idempotent.
+- **A sink that refuses for now** -- a full producer queue, a broker outage -- is retried for as long as it refuses, counted on `send_backpressure_total`. The Kafka offset commit, or the answer to a push, is held until the sink takes the block, so an outage is waited out and nothing after the block is committed past it.
+- **A send no retry can fix** STOPS the service with the block unreleased, and the restarted consumer reads it again. Delivery is at-least-once, so a downstream consumer must be idempotent.
+- **A record the sink transport would refuse** is dropped before the send and counted on `pipeline_dead_letters_dropped_total`, never counted delivered.
 
 Non-English text is a tested case, not an edge case. `tests/unicode.rs`
 runs every registered transform against seventeen scripts and a set of

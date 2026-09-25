@@ -143,6 +143,16 @@ pub struct SourceConfig {
 
     /// Broker list.
     pub brokers: Vec<String>,
+
+    /// When the source is told its records are safe: a Kafka offset commit on
+    /// the bus, the answer to a push on direct.
+    ///
+    /// `enabled: true`, the default, holds it until every event built from a
+    /// record is delivered, or dropped and counted, so a crash or a sink outage
+    /// redelivers rather than loses. `enabled: false` releases it at receipt,
+    /// before the transform runs, and loses what was in flight.
+    #[serde(default)]
+    pub acknowledgements: scalo::transport::AcknowledgementsConfig,
 }
 
 /// Outbound configuration.
@@ -188,6 +198,7 @@ impl Default for SourceConfig {
             max_batch_bytes: default_max_batch_bytes(),
             group_id: String::new(),
             brokers: Vec::new(),
+            acknowledgements: scalo::transport::AcknowledgementsConfig::default(),
         }
     }
 }
@@ -284,6 +295,7 @@ fn valid() -> Config {
             max_batch_bytes: default_max_batch_bytes(),
             group_id: "g".into(),
             brokers: vec!["localhost:9092".into()],
+            acknowledgements: scalo::transport::AcknowledgementsConfig::default(),
         },
         sink: SinkConfig {
             topic: "out".into(),
@@ -372,6 +384,26 @@ mod tests {
         assert!(parsed.sink.transport.is_direct());
         assert!(!parsed.work_state().is_idle());
         assert!(parsed.validate().is_ok());
+    }
+
+    /// Holding the acknowledgement is the default, so a config written before
+    /// the key existed gets at-least-once without naming it.
+    #[test]
+    fn acknowledgements_are_held_unless_turned_off() {
+        let base = "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
+                    group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n";
+
+        let parsed: Config = serde_yaml_ng::from_str(base).expect("config parses without the key");
+        assert!(parsed.source.acknowledgements.enabled);
+
+        let off: Config = serde_yaml_ng::from_str(
+            "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
+             group_id: g\n  brokers: [b:9092]\n  acknowledgements:\n    enabled: false\n\
+             sink:\n  topic: out\n",
+        )
+        .expect("config parses with acknowledgements off");
+        assert!(!off.source.acknowledgements.enabled);
+        assert!(off.validate().is_ok());
     }
 
     #[test]

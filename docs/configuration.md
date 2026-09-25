@@ -20,7 +20,7 @@ It covers every `source.*` and `sink.*` field. `geoip` is not among them: it is 
 
 ## `transport` selects the bus or a direct push, per side
 
-Each side carries a `transport` of `bus` (the default) or `direct`, and in a config file those two spellings are the only ones accepted. The flat env form also takes `kafka` for `bus` and `grpc` for `direct`, and an unrecognised env value keeps the configured transport rather than moving the deployment. Both transports are compiled in by default and both are constructed: on `direct` the service binds a scalo Push listener on `source.listen` (default `0.0.0.0:6000`) and pushes to `sink.endpoint` (default `http://dfe-loader:6000`). `commit` is a documented no-op on that arm, so its replay guarantee is the upstream producer's, not this service's.
+Each side carries a `transport` of `bus` (the default) or `direct`, and in a config file those two spellings are the only ones accepted. The flat env form also takes `kafka` for `bus` and `grpc` for `direct`, and an unrecognised env value keeps the configured transport rather than moving the deployment. Both transports are compiled in by default and both are constructed: on `direct` the service binds a scalo Push listener on `source.listen` (default `0.0.0.0:6000`) and pushes to `sink.endpoint` (default `http://dfe-loader:6000`). The listener answers a push only once its events are delivered, so a refused push is the upstream sender's to retry.
 
     DFE_TRANSFORM_ELASTIC_SOURCE_TRANSPORT=direct
     DFE_TRANSFORM_ELASTIC_SOURCE_LISTEN=0.0.0.0:6000
@@ -29,6 +29,10 @@ Each side carries a `transport` of `bus` (the default) or `direct`, and in a con
 On `direct`, `source.brokers`, `source.group_id` and `sink.topic` are not required, and an instance with empty topics does not idle, because the listener is the work. The fleet routes over the bus until dfe-infra flips the selector (issue #19).
 
 The listener speaks plaintext gRPC with no authentication of its own, and the push to the endpoint travels in the clear. Both belong behind the mesh route dfe-infra provisions for them, never on an interface reachable from outside the cluster.
+
+## `source.acknowledgements` holds the source until delivery
+
+`source.acknowledgements.enabled` (default `true`) holds the source's acknowledgement -- the Kafka offset commit on the bus, the answer to a push on direct -- until every event built from a record is delivered, or dropped and counted. A sink outage is then waited out, and a crash redelivers rather than loses. `false` acknowledges at receipt, before the transform runs, and a crash loses what was in flight. The flat env form is `DFE_TRANSFORM_ELASTIC_SOURCE_ACKNOWLEDGEMENTS_ENABLED`.
 
 ## A section scalo resolves for itself cannot be set from the file
 

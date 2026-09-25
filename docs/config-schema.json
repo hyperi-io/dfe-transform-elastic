@@ -16,7 +16,10 @@
         "batch_size": 20000,
         "max_batch_bytes": 16777216,
         "group_id": "",
-        "brokers": []
+        "brokers": [],
+        "acknowledgements": {
+          "enabled": true
+        }
       }
     },
     "sink": {
@@ -104,6 +107,13 @@
           "items": {
             "type": "string"
           }
+        },
+        "acknowledgements": {
+          "description": "When the source is told its records are safe: a Kafka offset commit on\nthe bus, the answer to a push on direct.\n\n`enabled: true`, the default, holds it until every event built from a\nrecord is delivered, or dropped and counted, so a crash or a sink outage\nredelivers rather than loses. `enabled: false` releases it at receipt,\nbefore the transform runs, and loses what was in flight.",
+          "$ref": "#/$defs/AcknowledgementsConfig",
+          "default": {
+            "enabled": true
+          }
         }
       },
       "required": [
@@ -152,6 +162,17 @@
           "const": "fetcher"
         }
       ]
+    },
+    "AcknowledgementsConfig": {
+      "description": "The `acknowledgements` section of an ack-capable transport.\n\nWith `enabled: true` (the default) a source releases its acknowledgement --\na Kafka offset commit, a gRPC or HTTP response -- only once every piece of\nwork built from the record has been delivered, dead-lettered with the DLQ's\nconfirmation, or dropped by policy. A failed delivery withholds it, so the\nrecord is delivered again: duplicates are possible, loss is not.\n\nWith `enabled: false` the source acknowledges at receipt, before the record\nis processed: a crash or a failed delivery loses what was acknowledged.\n\n```yaml\nkafka:\n  acknowledgements:\n    enabled: true\n```",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Hold the source acknowledgement until every piece is delivered.",
+          "type": "boolean",
+          "default": true
+        }
+      }
     },
     "SinkConfig": {
       "description": "Outbound configuration.",

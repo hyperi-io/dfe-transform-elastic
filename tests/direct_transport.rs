@@ -28,6 +28,7 @@ use dfe_transform_elastic::service;
 use scalo::metrics::MetricsManager;
 use scalo::transport::grpc::{GrpcConfig, GrpcTransport};
 use scalo::transport::{AnyReceiver, AnySender, Record, TransportReceiver, TransportSender};
+use scalo::worker::BatchEngine;
 use tokio_util::sync::CancellationToken;
 
 /// Allocate a free loopback port.
@@ -138,6 +139,7 @@ fn direct_config(listen: &str, endpoint: &str) -> Config {
             max_batch_bytes: dfe_transform_elastic::config::default_max_batch_bytes(),
             group_id: String::new(),
             brokers: Vec::new(),
+            acknowledgements: scalo::transport::AcknowledgementsConfig::default(),
         },
         sink: SinkConfig {
             topic: "elastic_out".into(),
@@ -220,11 +222,21 @@ async fn a_batch_pushed_over_grpc_comes_out_the_grpc_sink_transformed() {
     let consumer = AnyReceiver::Grpc(transform_listener);
     let manager = MetricsManager::new("dfe-transform-elastic-test");
     let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
+    let engine = BatchEngine::new(service::engine_config(&config));
 
     let shutdown = CancellationToken::new();
     let loop_shutdown = shutdown.clone();
     let loop_task = tokio::spawn(async move {
-        service::run_loop(&config, &consumer, &sink, &loop_shutdown, &metrics, None).await
+        service::run_loop(
+            &config,
+            &engine,
+            &consumer,
+            &sink,
+            &loop_shutdown,
+            &metrics,
+            None,
+        )
+        .await
     });
 
     let sent = pusher.send("elastic_in", Bytes::from(okta_events(3))).await;
@@ -367,6 +379,7 @@ fn a_pushed_batch_is_counted_once_by_the_transform() {
             let consumer = AnyReceiver::Grpc(transform_listener);
             let manager = MetricsManager::with_config(scalo::metrics::MetricsConfig::offline(""));
             let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
+            let engine = BatchEngine::new(service::engine_config(&config));
             let shutdown = CancellationToken::new();
 
             let push = neighbours.spawn(async move {
@@ -383,7 +396,9 @@ fn a_pushed_batch_is_counted_once_by_the_transform() {
                     .sum::<u64>()
             });
 
-            let run = service::run_loop(&config, &consumer, &sink, &shutdown, &metrics, None);
+            let run = service::run_loop(
+                &config, &engine, &consumer, &sink, &shutdown, &metrics, None,
+            );
             let stop = async {
                 let sent = push.await.expect("push task");
                 assert!(matches!(sent, scalo::transport::SendResult::Ok), "{sent:?}");

@@ -909,6 +909,7 @@ dependencies = [
  "dfe-transforms",
  "memchr",
  "metrics",
+ "parking_lot",
  "scalo",
  "schemars 1.2.2",
  "serde",
@@ -3494,9 +3495,8 @@ dependencies = [
 
 [[package]]
 name = "scalo"
-version = "2.12.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e20a778ba0224513f688db556007f9f7375b0fae04b75b9f7f2a8c9b6ce6a389"
+version = "2.12.0"
+source = "git+https://github.com/hyperi-io/scalo-rs?branch=fix%2Fat-least-once#42a88ba54d5f37f8dcc271fb7088639dd44fd828"
 dependencies = [
  "axum",
  "backon",
@@ -3504,11 +3504,13 @@ dependencies = [
  "bytes",
  "chrono",
  "clap",
+ "dashmap",
  "dirs",
  "dotenvy",
  "figment",
  "flate2",
  "governor",
+ "hyper-util",
  "memchr",
  "metrics",
  "metrics-exporter-opentelemetry",
@@ -3522,6 +3524,7 @@ dependencies = [
  "prost",
  "prost-build",
  "prost-types",
+ "rayon",
  "rdkafka",
  "regex",
  "reqwest 0.13.5",

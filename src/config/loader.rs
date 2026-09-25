@@ -8,7 +8,9 @@
 //! section scalo resolves for itself reaches nothing when written there and is
 //! warned about rather than refused.
 
-use scalo::config::flat_env::{ApplyFlatEnv, flat_env_list, flat_env_parsed, flat_env_string};
+use scalo::config::flat_env::{
+    ApplyFlatEnv, flat_env_bool, flat_env_list, flat_env_parsed, flat_env_string,
+};
 use scalo::config::{self, ConfigOptions};
 
 use super::{Config, SinkConfig, SourceConfig};
@@ -29,8 +31,9 @@ pub const ENV_PREFIX: &str = "DFE_TRANSFORM_ELASTIC";
 /// anything", NOT "does scalo resolve it from the cascade for us". Two entries
 /// only make sense under the wider test. `memory` is read by
 /// `MemoryGuardConfig::from_env`, not from the cascade, and `batch_processing`
-/// is gated on scalo's `worker-batch`, which this binary does not enable --
-/// both are inert in that file either way, which is the thing worth saying.
+/// configures the runtime's own batch engine, which the service loop does not
+/// run -- its engine takes the record cap from `source.batch_size` -- so both
+/// are inert in that file either way, which is the thing worth saying.
 ///
 /// `geoip` is deliberately absent: it is declared on [`Config`] and handed to
 /// `scalo::geoip_download` explicitly, which is what makes it work from a file.
@@ -255,6 +258,9 @@ impl ApplyFlatEnv for SourceConfig {
         }
         if let Some(brokers) = flat_env_list(prefix, "BROKERS") {
             self.brokers = brokers;
+        }
+        if let Some(enabled) = flat_env_bool(prefix, "ACKNOWLEDGEMENTS_ENABLED") {
+            self.acknowledgements = scalo::transport::AcknowledgementsConfig::new(enabled);
         }
     }
 }

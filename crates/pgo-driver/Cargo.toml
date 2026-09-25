@@ -34,8 +34,9 @@ required-features = ["driver"]
 [dependencies]
 # Declared here rather than inherited: the workspace entry carries the
 # service's full feature list, and this crate must build with the Kafka
-# transport alone so the workload's driver build takes minutes.
-scalo = { version = ">=2.12.6, <3", default-features = false, features = [
+# transport alone so the workload's driver build takes minutes. The floor
+# follows the root manifest's while its scalo [patch.crates-io] is in place.
+scalo = { version = ">=2.12.0, <3", default-features = false, features = [
     "transport-kafka",
 ] }
 serde_json = { workspace = true }

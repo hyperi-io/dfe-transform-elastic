@@ -6,7 +6,8 @@
 //! Every other test in this repo drives the transform directly. These drive the
 //! service loop over a real broker, which is the only place the parts that
 //! matter in production are exercised: consumer-group subscription, batch
-//! assembly, one record per event on the wire, and commit-after-send.
+//! assembly, one record per event on the wire, and the offset commit held
+//! until the block is delivered.
 //!
 //! Ignored by default. A test that reaches a broker must be asked for:
 //! `cargo test --test broker -- --ignored`.
@@ -19,6 +20,7 @@
 
 mod common;
 
+use std::collections::BTreeSet;
 use std::time::Duration;
 
 use dfe_transform_elastic::config::{Config, SinkConfig, SourceConfig};
@@ -27,6 +29,8 @@ use dfe_transform_elastic::metrics::TransformMetrics;
 use dfe_transform_elastic::service;
 use scalo::metrics::MetricsManager;
 use scalo::transport::{AnyReceiver, AnySender, TransportReceiver, TransportSender};
+use scalo::worker::BatchEngine;
+use tokio::task::JoinHandle;
 use tokio_util::sync::CancellationToken;
 
 /// How long to wait for the loop to move a batch end to end. Generous, because
@@ -57,6 +61,7 @@ fn config_sized(
             max_batch_bytes: dfe_transform_elastic::config::default_max_batch_bytes(),
             group_id: group.to_string(),
             brokers: brokers.clone(),
+            acknowledgements: scalo::transport::AcknowledgementsConfig::default(),
         },
         sink: SinkConfig {
             topic: sink_topic.to_string(),
@@ -71,6 +76,74 @@ fn config_sized(
     }
 }
 
+/// Run the service loop over `consumer` and `producer` until the returned
+/// token is cancelled.
+///
+/// `run_loop` takes the factory's enums, so the round trip wraps the real Kafka
+/// pair rather than passing it bare.
+fn start_loop(
+    config: Config,
+    consumer: AnyReceiver,
+    producer: AnySender,
+    metrics: TransformMetrics,
+) -> (
+    CancellationToken,
+    JoinHandle<dfe_transform_elastic::Result<()>>,
+) {
+    let shutdown = CancellationToken::new();
+    let loop_shutdown = shutdown.clone();
+    let service = tokio::spawn(async move {
+        let engine = BatchEngine::new(service::engine_config(&config));
+        service::run_loop(
+            &config,
+            &engine,
+            &consumer,
+            &producer,
+            &loop_shutdown,
+            &metrics,
+            None,
+        )
+        .await
+    });
+    (shutdown, service)
+}
+
+/// Cancel the loop and require it to stop cleanly.
+async fn stop_loop(
+    shutdown: &CancellationToken,
+    service: JoinHandle<dfe_transform_elastic::Result<()>>,
+) {
+    shutdown.cancel();
+    tokio::time::timeout(Duration::from_secs(30), service)
+        .await
+        .expect("service loop stops on cancel")
+        .expect("service task did not panic")
+        .expect("service loop returned an error");
+}
+
+/// The manager a test reads its counters back from: no namespace, as the
+/// running service has unless a deployment sets `metrics.namespace`.
+fn scraped_manager() -> MetricsManager {
+    MetricsManager::with_config(scalo::metrics::MetricsConfig::offline(""))
+}
+
+/// `name` summed over every series whose labels contain `label`, as a scrape
+/// of `manager` reads it.
+fn scraped(manager: &MetricsManager, name: &str, label: &str) -> f64 {
+    let text = manager.render();
+    assert!(!text.is_empty(), "no metrics recorder is installed");
+    text.lines()
+        .filter(|line| !line.starts_with('#'))
+        .filter_map(|line| {
+            let (series, value) = line.rsplit_once(' ')?;
+            let metric = series.split('{').next()?;
+            (metric == name && series.contains(label))
+                .then(|| value.parse::<f64>().ok())
+                .flatten()
+        })
+        .sum()
+}
+
 /// The display name stamped into every seeded event, so the round trip proves
 /// non-ASCII survives the WIRE and not merely the in-process transform.
 const NON_ASCII_ACTOR: &str = "Björn Ärlig 日本語";
@@ -82,6 +155,18 @@ const NON_ASCII_ACTOR: &str = "Björn Ärlig 日本語";
 /// The fixture holds 24 lines; asking for more cycles through them, so a test
 /// can ask for a payload big enough to exceed one Kafka record.
 fn okta_events(count: usize) -> Vec<u8> {
+    okta_events_named("seed", count)
+}
+
+/// The same, with each event's okta `uuid` set to `{prefix}-{i}`, so a lost or
+/// duplicated event shows up by value and not only by count.
+fn okta_events_named(prefix: &str, count: usize) -> Vec<u8> {
+    okta_events_padded(prefix, count, 0)
+}
+
+/// The same, with `pad` bytes added to each event's `displayMessage`, which the
+/// transform carries into its output.
+fn okta_events_padded(prefix: &str, count: usize, pad: usize) -> Vec<u8> {
     let raw = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/tests/fixtures/okta/system/test-okta-system-events.log"
@@ -96,8 +181,10 @@ fn okta_events(count: usize) -> Vec<u8> {
         let mut vendor: serde_json::Value =
             serde_json::from_str(lines[i % lines.len()]).expect("fixture line is JSON");
         vendor["actor"]["displayName"] = serde_json::Value::String(NON_ASCII_ACTOR.into());
-        // Unique per event, so a duplicate cannot be mistaken for an arrival.
-        vendor["uuid"] = serde_json::Value::String(format!("seed-{i}"));
+        vendor["uuid"] = serde_json::Value::String(format!("{prefix}-{i}"));
+        if pad > 0 {
+            vendor["displayMessage"] = serde_json::Value::String("x".repeat(pad));
+        }
 
         let beat = serde_json::json!({
             "message": serde_json::to_string(&vendor).expect("vendor payload serialises"),
@@ -106,6 +193,20 @@ fn okta_events(count: usize) -> Vec<u8> {
         out.push(b'\n');
     }
     out
+}
+
+/// The okta `uuid` of every transformed event.
+fn uuids(events: &[serde_json::Value]) -> BTreeSet<String> {
+    events
+        .iter()
+        .filter_map(|event| event.pointer("/okta/uuid").and_then(|v| v.as_str()))
+        .map(String::from)
+        .collect()
+}
+
+/// `{prefix}-0` to `{prefix}-{count - 1}`, the uuids a seed carries.
+fn expected_uuids(prefix: &str, count: usize) -> BTreeSet<String> {
+    (0..count).map(|i| format!("{prefix}-{i}")).collect()
 }
 
 /// Split an NDJSON payload into records the producer will actually accept.
@@ -135,7 +236,16 @@ async fn drain(
     consumer: &scalo::transport::kafka::KafkaTransport,
     want: usize,
 ) -> (Vec<serde_json::Value>, usize) {
-    let deadline = tokio::time::Instant::now() + ROUND_TRIP_TIMEOUT;
+    drain_for(consumer, want, ROUND_TRIP_TIMEOUT).await
+}
+
+/// [`drain`], waiting at most `timeout`.
+async fn drain_for(
+    consumer: &scalo::transport::kafka::KafkaTransport,
+    want: usize,
+    timeout: Duration,
+) -> (Vec<serde_json::Value>, usize) {
+    let deadline = tokio::time::Instant::now() + timeout;
     let mut events = Vec::new();
     let mut records = 0;
 
@@ -161,6 +271,28 @@ async fn drain(
     }
 
     (events, records)
+}
+
+/// Read transformed events off `consumer` until every uuid in `want` has
+/// arrived or `timeout` passes, returning every uuid seen.
+///
+/// Other uuids are allowed through: a consumer that rejoins its group after a
+/// broker restart reads the topic again from the start.
+async fn drain_uuids(
+    consumer: &scalo::transport::kafka::KafkaTransport,
+    want: &BTreeSet<String>,
+    timeout: Duration,
+) -> BTreeSet<String> {
+    let deadline = tokio::time::Instant::now() + timeout;
+    let mut seen = BTreeSet::new();
+    while !seen.is_superset(want) {
+        let remaining = deadline.saturating_duration_since(tokio::time::Instant::now());
+        if remaining.is_zero() {
+            break;
+        }
+        seen.extend(uuids(&drain_for(consumer, 1, remaining).await.0));
+    }
+    seen
 }
 
 #[tokio::test(flavor = "multi_thread")]
@@ -204,39 +336,18 @@ async fn a_batch_survives_in_transform_out() {
     }
 
     let config = config(broker.list(), &source_topic, &sink_topic, &group);
-    let shutdown = CancellationToken::new();
-
-    // `run_loop` takes the factory's enums, so the round trip wraps the real
-    // Kafka pair rather than passing it bare.
     let consumer = AnyReceiver::Kafka(broker.consumer("service", &source_topic, &group).await);
     let producer = AnySender::Kafka(broker.producer("service").await);
     let manager = MetricsManager::new("dfe-transform-elastic-test");
     let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
-
-    let loop_shutdown = shutdown.clone();
-    let service = tokio::spawn(async move {
-        service::run_loop(
-            &config,
-            &consumer,
-            &producer,
-            &loop_shutdown,
-            &metrics,
-            None,
-        )
-        .await
-    });
+    let (shutdown, service) = start_loop(config, consumer, producer, metrics);
 
     let sink = broker
         .consumer("verify", &sink_topic, &common::topic("verify-cg"))
         .await;
     let (out, _) = drain(&sink, 5).await;
 
-    shutdown.cancel();
-    let result = tokio::time::timeout(Duration::from_secs(30), service)
-        .await
-        .expect("service loop stops on cancel")
-        .expect("service task did not panic");
-    result.expect("service loop returned an error");
+    stop_loop(&shutdown, service).await;
 
     assert_eq!(out.len(), 5, "every event must come out the far side");
 
@@ -284,29 +395,18 @@ async fn offsets_commit_after_the_batch_is_sent() {
 
     // First run: consume, transform, send, commit.
     {
-        let shutdown = CancellationToken::new();
         let consumer = AnyReceiver::Kafka(broker.consumer("first", &source_topic, &group).await);
         let producer = AnySender::Kafka(broker.producer("first").await);
         let manager = MetricsManager::new("dfe-transform-elastic-test");
         let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
-
-        let loop_shutdown = shutdown.clone();
-        let cfg = config.clone();
-        let service = tokio::spawn(async move {
-            service::run_loop(&cfg, &consumer, &producer, &loop_shutdown, &metrics, None).await
-        });
+        let (shutdown, service) = start_loop(config.clone(), consumer, producer, metrics);
 
         let sink = broker
             .consumer("verify", &sink_topic, &common::topic("commit-verify-cg"))
             .await;
         assert_eq!(drain(&sink, 3).await.0.len(), 3);
 
-        shutdown.cancel();
-        tokio::time::timeout(Duration::from_secs(30), service)
-            .await
-            .expect("first run stops")
-            .expect("first run did not panic")
-            .expect("first run returned an error");
+        stop_loop(&shutdown, service).await;
     }
 
     // Second run, same group: the committed offset means nothing is replayed.
@@ -323,9 +423,8 @@ async fn offsets_commit_after_the_batch_is_sent() {
 
 /// A batch at the SHIPPED `batch_size` arrives as one record per event.
 ///
-/// librdkafka's producer `message.max.bytes` defaults to 1,000,000 and scalo
-/// sets no override, so publishing a whole batch as one record fails for every
-/// batch of any size -- and dfe-loader would reject the concatenation anyway.
+/// Publishing a whole batch as one record fails once it passes the broker's
+/// `message.max.bytes` -- and dfe-loader would reject the concatenation anyway.
 /// The other tests in this file run a `batch_size` of 16 and never touched the
 /// ceiling; this one uses the default and seeds several MB.
 #[tokio::test(flavor = "multi_thread")]
@@ -359,38 +458,18 @@ async fn a_batch_larger_than_one_kafka_record_arrives() {
     let config = config_sized(broker.list(), &source_topic, &sink_topic, &group, 20_000);
     assert_eq!(config.source.batch_size, 20_000);
 
-    let shutdown = CancellationToken::new();
-    // `run_loop` takes the factory's enums, so the round trip wraps the real
-    // Kafka pair rather than passing it bare.
     let consumer = AnyReceiver::Kafka(broker.consumer("service", &source_topic, &group).await);
     let producer = AnySender::Kafka(broker.producer("service").await);
     let manager = MetricsManager::new("dfe-transform-elastic-test");
     let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
-
-    let loop_shutdown = shutdown.clone();
-    let service = tokio::spawn(async move {
-        service::run_loop(
-            &config,
-            &consumer,
-            &producer,
-            &loop_shutdown,
-            &metrics,
-            None,
-        )
-        .await
-    });
+    let (shutdown, service) = start_loop(config, consumer, producer, metrics);
 
     let sink = broker
         .consumer("verify", &sink_topic, &common::topic("big-verify-cg"))
         .await;
     let (out, records) = drain(&sink, EVENTS).await;
 
-    shutdown.cancel();
-    tokio::time::timeout(Duration::from_secs(30), service)
-        .await
-        .expect("service loop stops on cancel")
-        .expect("service task did not panic")
-        .expect("service loop returned an error");
+    stop_loop(&shutdown, service).await;
 
     assert_eq!(out.len(), EVENTS, "the batch lost events");
     assert!(
@@ -403,6 +482,175 @@ async fn a_batch_larger_than_one_kafka_record_arrives() {
             "output was not transformed: {event}"
         );
     }
+}
+
+/// A sink broker down for longer than any fixed retry budget is waited out:
+/// the loop never exits, the source offsets are held, and every event arrives
+/// once the broker is back.
+///
+/// The service producer fails a delivery after one second, so each send comes
+/// back refused quickly and repeatedly for the whole outage. A loop that gave
+/// up after a fixed number of attempts -- eight, over about 25 seconds of
+/// backoff -- exits long before the broker returns.
+#[tokio::test(flavor = "multi_thread")]
+#[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
+async fn a_sink_outage_longer_than_a_retry_budget_is_held_not_crashed() {
+    const EVENTS: usize = 5;
+    const OUTAGE: Duration = Duration::from_secs(90);
+
+    let Some(source) = common::Broker::container("outage-source").await else {
+        common::require_broker_in_ci();
+        eprintln!("SKIP: no container runtime.");
+        return;
+    };
+    let Some(downstream) = common::Broker::container("outage-sink").await else {
+        common::require_broker_in_ci();
+        eprintln!("SKIP: no container runtime.");
+        return;
+    };
+    let source_topic = common::topic("outage-src");
+    let sink_topic = common::topic("outage-sink");
+    let group = common::topic("outage-cg");
+
+    let mut config = config(source.list(), &source_topic, &sink_topic, &group);
+    config.sink.brokers = Some(downstream.list());
+
+    let seed = source.producer("seed").await;
+    let sent = seed
+        .send(
+            &source_topic,
+            bytes::Bytes::from(okta_events_named("before", EVENTS)),
+        )
+        .await;
+    assert!(matches!(sent, scalo::transport::SendResult::Ok), "{sent:?}");
+
+    let consumer = AnyReceiver::Kafka(source.consumer("service", &source_topic, &group).await);
+    let producer = AnySender::Kafka(
+        downstream
+            .producer_with("service", &[("message.timeout.ms", "1000")])
+            .await,
+    );
+    let manager = scraped_manager();
+    let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
+    let (shutdown, service) = start_loop(config, consumer, producer, metrics);
+
+    let sink = downstream
+        .consumer("verify", &sink_topic, &common::topic("outage-verify-cg"))
+        .await;
+    let (before, _) = drain(&sink, EVENTS).await;
+    assert_eq!(
+        uuids(&before),
+        expected_uuids("before", EVENTS),
+        "the loop is not running before the outage"
+    );
+
+    downstream.stop().await;
+    let sent = seed
+        .send(
+            &source_topic,
+            bytes::Bytes::from(okta_events_named("during", EVENTS)),
+        )
+        .await;
+    assert!(matches!(sent, scalo::transport::SendResult::Ok), "{sent:?}");
+
+    tokio::time::sleep(OUTAGE).await;
+    assert!(!service.is_finished(), "the loop exited during the outage");
+    // More refusals than the eight attempts a fixed budget would have allowed.
+    let refused = scraped(&manager, "send_backpressure_total", "");
+    assert!(
+        refused > 8.0,
+        "the sink refused {refused} sends, so the outage never outlasted a fixed budget"
+    );
+
+    downstream.start().await;
+    let during = expected_uuids("during", EVENTS);
+    let after = drain_uuids(&sink, &during, Duration::from_mins(3)).await;
+
+    assert!(!service.is_finished(), "the loop exited after the outage");
+    stop_loop(&shutdown, service).await;
+
+    let lost: Vec<&String> = during.difference(&after).collect();
+    assert!(
+        lost.is_empty(),
+        "events produced during the outage were lost: {lost:?}"
+    );
+}
+
+/// A record the sink would refuse is dropped and counted, never counted
+/// delivered, and never stalls the partition behind it.
+///
+/// The service producer's `message.max.bytes` is set below one padded event,
+/// so the pipeline's screen takes that event out before the send while the
+/// events beside it go through.
+#[tokio::test(flavor = "multi_thread")]
+#[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
+async fn a_record_the_sink_refuses_is_counted_not_delivered() {
+    const KEPT: usize = 3;
+    /// Below `sink.max_message_bytes`, so the service's own budget lets the
+    /// padded event through and the sink transport is what refuses it.
+    const SINK_CEILING: &str = "262144";
+
+    let broker = broker_or_skip!("refused-record");
+    let source_topic = common::topic("refused-src");
+    let sink_topic = common::topic("refused-sink");
+    let group = common::topic("refused-cg");
+
+    let seed = broker.producer("seed").await;
+    for payload in [
+        okta_events_named("kept", KEPT),
+        okta_events_padded("refused", 1, 150_000),
+    ] {
+        let sent = seed.send(&source_topic, bytes::Bytes::from(payload)).await;
+        assert!(matches!(sent, scalo::transport::SendResult::Ok), "{sent:?}");
+    }
+
+    let config = config(broker.list(), &source_topic, &sink_topic, &group);
+    let consumer = AnyReceiver::Kafka(broker.consumer("service", &source_topic, &group).await);
+    let producer = AnySender::Kafka(
+        broker
+            .producer_with("service", &[("message.max.bytes", SINK_CEILING)])
+            .await,
+    );
+    let manager = scraped_manager();
+    let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
+    let (shutdown, service) = start_loop(config.clone(), consumer, producer, metrics);
+
+    let sink = broker
+        .consumer("verify", &sink_topic, &common::topic("refused-verify-cg"))
+        .await;
+    let (mut out, _) = drain(&sink, KEPT).await;
+    // Room for the refused event to turn up, which it must not.
+    out.extend(drain_for(&sink, 1, Duration::from_secs(10)).await.0);
+
+    stop_loop(&shutdown, service).await;
+
+    assert_eq!(
+        uuids(&out),
+        expected_uuids("kept", KEPT),
+        "the sink received something other than the events it can take"
+    );
+    let kept = f64::from(u32::try_from(KEPT).unwrap());
+    assert!(
+        (scraped(&manager, "records_delivered_total", "") - kept).abs() < f64::EPSILON,
+        "the refused event was counted delivered"
+    );
+    assert!(
+        (scraped(
+            &manager,
+            "pipeline_dead_letters_dropped_total",
+            "reason=\"too_large\""
+        ) - 1.0)
+            .abs()
+            < f64::EPSILON,
+        "the refused event was not counted"
+    );
+
+    // The block was released despite the refusal, so nothing replays.
+    let replay = broker.consumer("second", &source_topic, &group).await;
+    let replayed = tokio::time::timeout(Duration::from_secs(15), replay.recv(64))
+        .await
+        .map_or(0, |r| r.map_or(0, |b| b.records.len()));
+    assert_eq!(replayed, 0, "the refused record held its block unreleased");
 }
 
 /// The catalogue name dfe-engine renders into `source.name` for a `cisco-ios`
@@ -534,36 +782,18 @@ async fn a_receiver_batch_reaches_the_sink_as_one_routable_record_per_event() {
     let mut config = config(broker.list(), &source_topic, &sink_topic, &group);
     config.source.name = CISCO_IOS_SOURCE.into();
 
-    let shutdown = CancellationToken::new();
     let consumer = AnyReceiver::Kafka(broker.consumer("service", &source_topic, &group).await);
     let producer = AnySender::Kafka(broker.producer("service").await);
     let manager = MetricsManager::new("dfe-transform-elastic-test");
     let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
-
-    let loop_shutdown = shutdown.clone();
-    let service = tokio::spawn(async move {
-        service::run_loop(
-            &config,
-            &consumer,
-            &producer,
-            &loop_shutdown,
-            &metrics,
-            None,
-        )
-        .await
-    });
+    let (shutdown, service) = start_loop(config, consumer, producer, metrics);
 
     let sink = broker
         .consumer("verify", &sink_topic, &common::topic("rcv-verify-cg"))
         .await;
     let records = drain_records(&sink, EVENTS).await;
 
-    shutdown.cancel();
-    tokio::time::timeout(Duration::from_secs(30), service)
-        .await
-        .expect("service loop stops on cancel")
-        .expect("service task did not panic")
-        .expect("service loop returned an error");
+    stop_loop(&shutdown, service).await;
 
     assert_eq!(
         records.len(),
@@ -607,10 +837,26 @@ async fn a_receiver_batch_reaches_the_sink_as_one_routable_record_per_event() {
     assert_eq!(originals, expected, "an event was lost or duplicated");
 }
 
-/// The premise the per-record budget rests on: librdkafka refuses a record
-/// above its `message.max.bytes` producer default of 1,000,000 bytes, and scalo
-/// sets no override. If that ever stops being true, the budget can be raised --
-/// but it should be raised deliberately, not discovered in production.
+/// `len` bytes no codec can shrink.
+fn incompressible(len: usize) -> Vec<u8> {
+    let mut state: u64 = 0x9E37_79B9_7F4A_7C15;
+    (0..len)
+        .map(|_| {
+            state ^= state << 13;
+            state ^= state >> 7;
+            state ^= state << 17;
+            state.to_le_bytes()[0]
+        })
+        .collect()
+}
+
+/// The premise the per-record budget rests on: a record above the broker's
+/// `message.max.bytes` default of about 1 MB is refused. If that ever stops
+/// being true, the budget can be raised -- but it should be raised
+/// deliberately, not discovered in production.
+///
+/// The producer allows 16 MiB and compresses with lz4, and the broker judges
+/// the compressed batch, so only an incompressible record reaches it at size.
 #[tokio::test(flavor = "multi_thread")]
 #[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
 async fn the_producer_refuses_a_record_above_one_megabyte() {
@@ -619,7 +865,7 @@ async fn the_producer_refuses_a_record_above_one_megabyte() {
     let producer = broker.producer("oversize-record").await;
 
     let sent = producer
-        .send(&topic, bytes::Bytes::from(vec![b'x'; 1_100_000]))
+        .send(&topic, bytes::Bytes::from(incompressible(1_100_000)))
         .await;
 
     assert!(

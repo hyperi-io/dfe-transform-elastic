@@ -147,6 +147,9 @@ fn shipped_config() -> Config {
             max_batch_bytes: crate::config::default_max_batch_bytes(),
             group_id: "dfe-transform-elastic".into(),
             brokers: vec!["kafka:9092".into()],
+            // Held until every event built from a record is delivered: a Kafka
+            // offset commits, or a push is answered, only then.
+            acknowledgements: scalo::transport::AcknowledgementsConfig::new(true),
         },
         sink: SinkConfig {
             topic: "normalised_events".into(),
@@ -229,6 +232,11 @@ pub fn default_config_yaml() -> String {
 # `source.max_batch_bytes` caps one inbound fetch, the way
 # `sink.max_message_bytes` caps one outbound record. Raise the pod's memory
 # limit with it: the parsed documents are several times the raw bytes.
+#
+# `source.acknowledgements.enabled` holds the Kafka offset commit, or the answer
+# to a push, until every event built from a record is delivered. A sink outage
+# is waited out, not crashed on. `false` acknowledges at receipt instead, and a
+# crash then loses what was in flight.
 #
 # `geoip` provisions the MMDB databases at startup and refreshes them when the
 # local copy passes `max_age_days`. Mount `data_dir` on a volume that survives

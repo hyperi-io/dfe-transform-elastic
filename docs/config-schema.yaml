@@ -22,6 +22,8 @@ properties:
       max_batch_bytes: 16777216
       group_id: ''
       brokers: []
+      acknowledgements:
+        enabled: true
   sink:
     description: Outbound side.
     $ref: '#/$defs/SinkConfig'
@@ -116,6 +118,18 @@ $defs:
         type: array
         items:
           type: string
+      acknowledgements:
+        description: |-
+          When the source is told its records are safe: a Kafka offset commit on
+          the bus, the answer to a push on direct.
+
+          `enabled: true`, the default, holds it until every event built from a
+          record is delivered, or dropped and counted, so a crash or a sink outage
+          redelivers rather than loses. `enabled: false` releases it at receipt,
+          before the transform runs, and loses what was in flight.
+        $ref: '#/$defs/AcknowledgementsConfig'
+        default:
+          enabled: true
     required:
     - name
     - topics
@@ -155,6 +169,30 @@ $defs:
     - description: dfe-fetcher.
       type: string
       const: fetcher
+  AcknowledgementsConfig:
+    description: |-
+      The `acknowledgements` section of an ack-capable transport.
+
+      With `enabled: true` (the default) a source releases its acknowledgement --
+      a Kafka offset commit, a gRPC or HTTP response -- only once every piece of
+      work built from the record has been delivered, dead-lettered with the DLQ's
+      confirmation, or dropped by policy. A failed delivery withholds it, so the
+      record is delivered again: duplicates are possible, loss is not.
+
+      With `enabled: false` the source acknowledges at receipt, before the record
+      is processed: a crash or a failed delivery loses what was acknowledged.
+
+      ```yaml
+      kafka:
+        acknowledgements:
+          enabled: true
+      ```
+    type: object
+    properties:
+      enabled:
+        description: Hold the source acknowledgement until every piece is delivered.
+        type: boolean
+        default: true
   SinkConfig:
     description: Outbound configuration.
     type: object

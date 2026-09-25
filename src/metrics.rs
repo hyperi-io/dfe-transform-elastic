@@ -61,24 +61,23 @@ pub struct TransformMetrics {
     /// Addresses currently held in the `GeoIP` cache.
     pub geoip_cache_size: metrics::Gauge,
 
-    /// Sends that exhausted their retries, stopping the loop with the batch
-    /// uncommitted so the restarted service replays it.
+    /// Sends the sink refused in a way no retry can fix, stopping the loop with
+    /// the block unreleased so the restarted service reads it again.
     pub send_failures: Counter,
 
-    /// Sends the sink refused because its queue was full. Retried, not lost.
-    /// A steady rate means the sink, not the transform, is the constraint.
+    /// Sends the sink refused for now: a full producer queue, or a broker or
+    /// listener it cannot reach. Retried until it takes them, not lost. A
+    /// steady rate means the sink, not the transform, is the constraint.
     pub send_backpressure: Counter,
 
-    /// Sends an outbound transport filter routed to a DLQ. This service
-    /// configures no such filter and has no DLQ, so any value is a defect.
+    /// Sends the sink transport dead-lettered. This service has no DLQ, so
+    /// their records are dropped and not counted delivered; the pipeline
+    /// screens such records out before the send, so any value is a defect.
     pub send_filtered_dlq: Counter,
 
     /// Events too large for one Kafka record even on their own. Dropped: no
     /// broker would ever accept one, and retrying blocks the partition.
     pub events_oversize: Counter,
-
-    /// Offset commits that failed after a successful send.
-    pub commit_failures: Counter,
 
     /// Batches whose events did not look like the envelope the config pinned.
     /// The pinned value still wins, so a steady rate means the pin is wrong.
@@ -146,23 +145,19 @@ impl TransformMetrics {
             ),
             send_failures: manager.counter(
                 "send_failures_total",
-                "Sends that exhausted their retries, leaving the batch uncommitted",
+                "Sends the sink refused permanently, stopping the loop with the block unreleased",
             ),
             send_backpressure: manager.counter(
                 "send_backpressure_total",
-                "Sends the sink refused because its queue was full",
+                "Sends the sink refused for now, retried until it takes them",
             ),
             send_filtered_dlq: manager.counter(
                 "send_filtered_dlq_total",
-                "Sends an outbound filter routed to a DLQ this service does not have",
+                "Sends the sink transport dead-lettered, dropped with no DLQ to hold them",
             ),
             events_oversize: manager.counter(
                 "events_oversize_total",
                 "Events too large for one Kafka record, dropped",
-            ),
-            commit_failures: manager.counter(
-                "commit_failures_total",
-                "Offset commits that failed after a successful send",
             ),
             envelope_contradicted: manager.counter(
                 "envelope_contradicted_total",
@@ -227,7 +222,6 @@ mod tests {
             "_send_backpressure_total",
             "_send_filtered_dlq_total",
             "_events_oversize_total",
-            "_commit_failures_total",
             "_batch_events",
             "_batch_duration_seconds",
             // AppMetrics layer.
@@ -275,6 +269,19 @@ mod tests {
         assert!(!TransformMetrics::commit().is_empty());
     }
 
+    /// The runtime sets `metrics-manifest` lists beside this service's own
+    /// that `TransformMetrics` does not register: the worker pool's and the
+    /// batch engine's, which scalo's `worker-batch` feature compiles in.
+    fn register_runtime_worker_sets(manager: &MetricsManager) {
+        scalo::worker::engine::metrics::describe(manager);
+        scalo::worker::AdaptiveWorkerPool::new(scalo::worker::WorkerPoolConfig {
+            min_threads: 1,
+            max_threads: 1,
+            ..scalo::worker::WorkerPoolConfig::default()
+        })
+        .register_metrics(manager);
+    }
+
     /// The committed `docs/metrics-manifest.json` is what an operator builds a
     /// dashboard from, and it went stale the moment three metrics were added
     /// without regenerating it. Compared by NAME SET rather than byte-for-byte,
@@ -301,6 +308,7 @@ mod tests {
 
         let manager = served_manager();
         let _m = TransformMetrics::register(&manager, "0.1.0", "abc1234");
+        register_runtime_worker_sets(&manager);
         let mut registered = manifest_names(&manager);
         registered.sort_unstable();
         registered.dedup();

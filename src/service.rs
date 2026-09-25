@@ -1,42 +1,43 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! The service loop: consume a batch, transform it, produce the survivors.
+//! The service loop: receive a block, transform it, produce the survivors.
 //!
 //! The transform is resolved once at startup, not per event.
 //!
 //! ## Delivery
 //!
-//! At-least-once, and the offset commit is what enforces it. Kafka commits are
-//! cumulative -- the highest offset per partition -- so an uncommitted batch is
-//! only replayed if NOTHING after it commits. The loop therefore stops on a
-//! send it cannot complete rather than carrying on: the process exits, and the
-//! restarted consumer resumes from the last committed offset. Carrying on
-//! would let the next batch's commit acknowledge the failed one, which is loss,
-//! not replay.
+//! At-least-once, held by scalo's `BatchEngine` pipeline. Each block's source
+//! acknowledgement -- a Kafka offset commit on the bus, the answer to a push on
+//! direct -- is released only once the sink has taken every event built from
+//! it. A sink that refuses for now (a broker outage, a leader election, a full
+//! producer queue) is retried by the engine for as long as it refuses, so an
+//! outage is waited out rather than crashed on. Only a refusal no retry can fix
+//! stops the loop, with the block unreleased so a restart reads it again.
 //!
-//! Duplicates are the accepted cost. A batch is produced as several Kafka
-//! records, so a failure partway through replays the records that already
-//! landed. The consumer downstream must be idempotent, which is the same
-//! contract every other DFE stage carries.
+//! Duplicates are the accepted cost. A block goes out as several Kafka records
+//! or RPCs, and a retry re-sends the ones that already landed. The consumer
+//! downstream must be idempotent, which is the contract every DFE stage carries.
 //!
-//! All of that describes the BUS arm. The direct transport has no offsets to
-//! commit -- a Push RPC acknowledges itself and scalo's gRPC `commit` is a
-//! documented no-op -- so there the replay guarantee belongs to whatever
-//! pushed the batch, not to this service (issue #19).
+//! An event that cannot be delivered is dropped and counted, never counted
+//! delivered: one that will not parse, transform or serialise, one over
+//! `sink.max_message_bytes`, and one the sink transport would refuse, which the
+//! pipeline screens out before the send and counts in
+//! `pipeline_dead_letters_dropped_total`.
 
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 use scalo::cli::ServiceRuntime;
 #[cfg(feature = "grpc")]
-use scalo::transport::grpc::GrpcConfig;
+use scalo::transport::grpc::{GrpcConfig, GrpcTransport};
 #[cfg(feature = "kafka")]
 use scalo::transport::kafka::{KafkaConfig, total_consumer_lag};
 use scalo::transport::{
-    AnyReceiver, AnySender, PayloadFormat, Record, RecordMeta, SendResult, TransportConfig,
-    TransportReceiver, TransportSender, TransportType,
+    AcknowledgementsConfig, AnyReceiver, AnySender, AnyToken, PayloadFormat, Record, RecordMeta,
+    SendResult, TransportConfig, TransportError, TransportSender, TransportType, WorkBatch,
 };
+use scalo::worker::{BatchEngine, BatchProcessingConfig, EngineError};
 use tokio_util::sync::CancellationToken;
 
 use crate::config::{Config, Transport};
@@ -47,37 +48,10 @@ use crate::pipeline::{
 
 /// The longest the loop goes without pushing scaling signals.
 ///
-/// A batch pushes them as it finishes too, so a busy partition signals at the
-/// batch cadence and this is the floor for an idle one -- KEDA still sees the
-/// lag on a topic that has stopped producing.
+/// A block pushes them as it is transformed too, so a busy partition signals at
+/// the block cadence and this is the floor for an idle one -- KEDA still sees
+/// the lag on a topic that has stopped producing.
 const SCALING_SIGNAL_INTERVAL: Duration = Duration::from_secs(5);
-
-/// Attempts one record gets before the batch is abandoned uncommitted.
-///
-/// With the backoff below this rides out roughly 25 seconds of a slow or
-/// re-electing sink, which covers a leader change without a restart, and gives
-/// up on a real outage rather than blocking the partition indefinitely.
-const SEND_MAX_ATTEMPTS: u32 = 8;
-
-/// First wait between send attempts. Doubles up to [`SEND_BACKOFF_MAX`].
-const SEND_BACKOFF_BASE: Duration = Duration::from_millis(100);
-
-/// Ceiling on the retry wait, so the backoff cannot outrun `max.poll.interval`
-/// and trigger a rebalance while the loop is still retrying.
-const SEND_BACKOFF_MAX: Duration = Duration::from_secs(5);
-
-/// First wait after a failed receive, doubling to [`RECV_BACKOFF_MAX`].
-///
-/// An unreachable broker fails every `recv` immediately, so without a wait the
-/// loop spins as fast as the call returns and logs an error on every turn.
-const RECV_BACKOFF_BASE: Duration = Duration::from_millis(100);
-
-/// Ceiling on the receive wait.
-///
-/// The same five seconds the send side uses, and for the same reason: a wait
-/// longer than that outruns `max.poll.interval` and the broker rebalances the
-/// partition away while the loop is still backing off.
-const RECV_BACKOFF_MAX: Duration = Duration::from_secs(5);
 
 /// The per-pod signals `/scaling/pressure` serves to KEDA.
 ///
@@ -97,7 +71,8 @@ pub struct ScalingSignals {
 /// Returns [`crate::Error::UnknownSource`] if the configured source has no
 /// transform, [`crate::Error::Config`] if the mounted credentials and the wire
 /// protocol disagree or a configured transport is not compiled in, or
-/// [`crate::Error::Transport`] if either side cannot be created.
+/// [`crate::Error::Transport`] if either side cannot be created or fails in a
+/// way no retry can fix.
 pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
     // The credentials are Kafka's and are read from the environment, so the
     // check runs for whichever side is on the bus and not at all when both
@@ -117,6 +92,7 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
 
     provision_geoip(&config.geoip).await;
 
+    let engine = batch_engine(&config, &runtime);
     let consumer = build_receiver(&config, runtime.governor.as_ref()).await?;
     let producer = build_sender(&config).await?;
 
@@ -134,6 +110,7 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
 
     run_loop(
         &config,
+        &engine,
         &consumer,
         &producer,
         &runtime.shutdown,
@@ -143,17 +120,60 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
     .await
 }
 
-/// Build the inbound transport with the governor's brake attached.
+/// The engine the loop runs on, wired to the runtime the way scalo wires its
+/// own: the memory guard leases each block's bytes, and the governor's byte
+/// budget makes every receive a byte-bounded `recv_limited`.
 ///
-/// The factory attaches it, and the two arms brake DIFFERENTLY. On the bus the
-/// consumer's assigned partitions are paused, so the member stays in the group,
-/// no rebalance follows, and consumer lag rises. On direct the listener refuses
-/// the push with `unavailable` and the sender upstream wears it.
+/// Built here rather than taken from the runtime because the runtime's engine
+/// reads its record cap from the cascade, which a `--config` file is not a
+/// layer of, and this one takes it from `source.batch_size`.
+fn batch_engine(config: &Config, runtime: &ServiceRuntime) -> BatchEngine {
+    let settings = engine_config(config);
+    let mut engine = match runtime.worker_pool.as_ref() {
+        Some(pool) => BatchEngine::with_pool(Arc::clone(pool), settings),
+        None => BatchEngine::new(settings),
+    };
+    engine.auto_wire(&runtime.metrics, Some(&runtime.memory_guard));
+    if let Some(governor) = runtime.governor.as_ref() {
+        engine.set_byte_budget(governor.budget());
+    }
+    engine
+}
+
+/// The engine settings this service decides: at most `source.batch_size`
+/// records per receive.
+#[must_use]
+pub fn engine_config(config: &Config) -> BatchProcessingConfig {
+    BatchProcessingConfig {
+        max_chunk_size: config.source.batch_size,
+        ..BatchProcessingConfig::default()
+    }
+}
+
+/// Build the inbound transport with the governor's brake attached and
+/// `source.acknowledgements` applied.
+///
+/// The factory attaches the brake, and the two arms brake DIFFERENTLY. On the
+/// bus the consumer's assigned partitions are paused, so the member stays in
+/// the group, no rebalance follows, and consumer lag rises. On direct the
+/// listener refuses the push with `unavailable` and the sender upstream wears
+/// it.
 async fn build_receiver(
     config: &Config,
     governor: Option<&scalo::SelfRegulationGovernor>,
 ) -> crate::Result<AnyReceiver> {
     let transport = source_transport(config)?;
+    let acknowledgements = config.source.acknowledgements;
+    let consumer_error = |e: TransportError| crate::Error::Transport(format!("consumer: {e}"));
+
+    #[cfg(feature = "grpc")]
+    if let Some(grpc) = transport.grpc.as_ref() {
+        return armed_listener(grpc, acknowledgements, governor)
+            .await
+            .map(AnyReceiver::Grpc)
+            .map_err(consumer_error);
+    }
+
     // `None` is self-regulation turned off, which leaves intake unchanged.
     let receiver = match governor {
         Some(governor) => {
@@ -161,13 +181,55 @@ async fn build_receiver(
         }
         None => AnyReceiver::from_transport_config(&transport).await,
     };
-    receiver.map_err(|e| crate::Error::Transport(format!("consumer: {e}")))
+    receiver
+        .map(|receiver| with_acknowledgements(receiver, acknowledgements))
+        .map_err(consumer_error)
+}
+
+/// The direct listener, armed before it binds.
+///
+/// Unarmed, a push that lands before the loop starts is answered at enqueue,
+/// with nothing yet able to deliver it, so the listener is armed at
+/// construction rather than by the loop.
+#[cfg(feature = "grpc")]
+async fn armed_listener(
+    grpc: &GrpcConfig,
+    acknowledgements: AcknowledgementsConfig,
+    governor: Option<&scalo::SelfRegulationGovernor>,
+) -> scalo::transport::TransportResult<GrpcTransport> {
+    let builder = GrpcTransport::builder(grpc)
+        .acknowledgements(acknowledgements)
+        .armed(true);
+    match governor {
+        Some(governor) => builder.pressure(governor.pressure()),
+        None => builder,
+    }
+    .start()
+    .await
+}
+
+/// Apply `source.acknowledgements` to a pull source, which the pipeline arms
+/// before its first receive.
+fn with_acknowledgements(
+    receiver: AnyReceiver,
+    #[cfg_attr(not(feature = "kafka"), allow(unused_variables))]
+    acknowledgements: AcknowledgementsConfig,
+) -> AnyReceiver {
+    match receiver {
+        #[cfg(feature = "kafka")]
+        AnyReceiver::Kafka(kafka) => {
+            AnyReceiver::Kafka(kafka.with_acknowledgements(acknowledgements))
+        }
+        // scalo's enum, whose other variants hold no acknowledgement to apply.
+        #[allow(unreachable_patterns)]
+        other => other,
+    }
 }
 
 /// Build the outbound transport, which is never governed.
 ///
-/// Braking the outbound drain would deadlock the loop, because a batch cannot
-/// be committed until it is sent. `sink.max_message_bytes` bounds each record
+/// Braking the outbound drain would deadlock the loop, because a block cannot
+/// be released until it is sent. `sink.max_message_bytes` bounds each record
 /// on both arms and sits well under scalo's 16 MiB gRPC message ceiling.
 async fn build_sender(config: &Config) -> crate::Result<AnySender> {
     let transport = sink_transport(config)?;
@@ -289,7 +351,7 @@ async fn provision_geoip(config: &scalo::geoip_download::GeoIpConfig) {
     }
 }
 
-/// The batch loop, over transports the caller already built.
+/// The batch loop, over an engine and transports the caller already built.
 ///
 /// Separate from [`run`] so a broker round-trip can drive it without a
 /// `ServiceRuntime`, which scalo only constructs inside its own lifecycle.
@@ -297,15 +359,14 @@ async fn provision_geoip(config: &scalo::geoip_download::GeoIpConfig) {
 /// # Errors
 ///
 /// Returns [`crate::Error::UnknownSource`] if the configured source has no
-/// transform, or [`crate::Error::Transport`] if the sink would not accept a
-/// record. The batch is left uncommitted in that case, so the restarted
-/// service replays it.
-// Batch and byte counts are bounded far below 2^53, so the f64 casts are exact.
-#[allow(clippy::cast_precision_loss)]
-pub async fn run_loop(
+/// transform, or [`crate::Error::Transport`] if the source or the sink failed
+/// in a way no retry can fix. The block in hand is left unreleased then, so a
+/// restart reads it again.
+pub async fn run_loop<S: TransportSender>(
     config: &Config,
+    engine: &BatchEngine,
     consumer: &AnyReceiver,
-    producer: &AnySender,
+    producer: &S,
     shutdown: &CancellationToken,
     metrics: &TransformMetrics,
     scaling: Option<&ScalingSignals>,
@@ -316,7 +377,18 @@ pub async fn run_loop(
         .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
     let dataset = crate::registry::dataset(&config.source.name)
         .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
-    let resolver = crate::envelope::Resolver::new(config.source.envelope, intake, dataset);
+
+    let stage = Stage {
+        config,
+        transform,
+        resolver: crate::envelope::Resolver::new(config.source.envelope, intake, dataset),
+        topic: Arc::from(config.sink.topic.as_str()),
+        metrics,
+        scaling,
+        consumer,
+        state: parking_lot::Mutex::new(LoopState::new()),
+    };
+    let budget = message_budget(config.sink.max_message_bytes);
 
     metrics.dfe.pipeline_ready(true);
 
@@ -328,19 +400,11 @@ pub async fn run_loop(
         topics = ?config.source.topics,
         sink_topic = %config.sink.topic,
         batch_size = config.source.batch_size,
+        acknowledgements = config.source.acknowledgements.enabled,
         "transform service started"
     );
 
     push_scaling_signals(scaling, consumer, 0.0);
-    let mut last_signal = Instant::now();
-    let mut recv_backoff = RECV_BACKOFF_BASE;
-    // `painless_stats` counts cumulatively for the process; the metrics want
-    // per-batch deltas.
-    let mut painless_seen = (0_u64, 0_u64);
-    let mut geoip_seen = (0_u64, 0_u64);
-    // The shape last reported, so a steady stream logs once rather than per
-    // batch and a producer change is still visible the batch it happens.
-    let mut last_envelope: Option<crate::envelope::Detected> = None;
 
     // 14 of the source pipelines carry a geoip processor, so a deployment
     // that mounted no database gets empty geo fields rather than an error.
@@ -354,44 +418,93 @@ pub async fn run_loop(
         );
     }
 
-    while !shutdown.is_cancelled() {
-        if last_signal.elapsed() >= SCALING_SIGNAL_INTERVAL {
-            push_scaling_signals(scaling, consumer, 0.0);
-            last_signal = Instant::now();
+    let result = engine
+        .pipeline(consumer)
+        .shutdown(shutdown.clone())
+        .sender(producer)
+        .ticker(SCALING_SIGNAL_INTERVAL, || {
+            stage.signal_if_idle();
+            std::future::ready(Ok(()))
+        })
+        .run(
+            |block| Ok(block.map_records(|records| stage.transform(&records))),
+            |out: &WorkBatch<AnyToken>| send_blocks(producer, metrics, out.records.clone(), budget),
+        )
+        .await;
+
+    metrics.dfe.pipeline_ready(false);
+    match result {
+        Ok(()) => {
+            tracing::info!("transform service stopped");
+            Ok(())
         }
-
-        let received = tokio::select! {
-            () = shutdown.cancelled() => break,
-            result = consumer.recv(config.source.batch_size) => result,
-        };
-
-        let batch = match received {
-            Ok(batch) => {
-                recv_backoff = RECV_BACKOFF_BASE;
-                batch
-            }
-            Err(e) => {
-                tracing::error!(error = %e, "receive failed");
-                tokio::select! {
-                    () = shutdown.cancelled() => break,
-                    () = tokio::time::sleep(recv_backoff) => {}
-                }
-                recv_backoff = recv_backoff.saturating_mul(2).min(RECV_BACKOFF_MAX);
-                continue;
-            }
-        };
-
-        if batch.records.is_empty() {
-            continue;
+        Err(e) => {
+            tracing::error!(
+                error = %e,
+                "stopping: the block in hand is left unreleased, so a restart reads it again"
+            );
+            Err(crate::Error::Transport(e.to_string()))
         }
+    }
+}
 
-        let received_bytes: usize = batch.records.iter().map(|r| r.payload.len()).sum();
+/// What the loop carries from one block to the next.
+struct LoopState {
+    /// `painless_stats` counts cumulatively for the process; the metrics want
+    /// per-block deltas.
+    painless_seen: (u64, u64),
+    /// The `GeoIP` cache's cumulative hits and misses, for the same reason.
+    geoip_seen: (u64, u64),
+    /// The shape last reported, so a steady stream logs once rather than per
+    /// block and a producer change is still visible the block it happens.
+    last_envelope: Option<crate::envelope::Detected>,
+    /// When the scaling signals were last pushed.
+    last_signal: Instant,
+}
+
+impl LoopState {
+    fn new() -> Self {
+        Self {
+            painless_seen: (0, 0),
+            geoip_seen: (0, 0),
+            last_envelope: None,
+            last_signal: Instant::now(),
+        }
+    }
+}
+
+/// Everything the transform half of the loop needs, shared with the ticker.
+struct Stage<'a> {
+    config: &'a Config,
+    transform: &'static (dyn dfe_runtime::Transform + Sync),
+    resolver: crate::envelope::Resolver,
+    /// The sink topic, carried by every outbound record.
+    topic: Arc<str>,
+    metrics: &'a TransformMetrics,
+    scaling: Option<&'a ScalingSignals>,
+    consumer: &'a AnyReceiver,
+    /// Locked once per block and once per tick, never across an await.
+    state: parking_lot::Mutex<LoopState>,
+}
+
+impl Stage<'_> {
+    /// Parse, transform and serialise one block, returning a record per event
+    /// that survived.
+    // Block and byte counts are bounded far below 2^53, so the f64 casts are exact.
+    #[allow(clippy::cast_precision_loss)]
+    fn transform(&self, records: &[Record]) -> Vec<Record> {
+        if records.is_empty() {
+            return Vec::new();
+        }
+        let metrics = self.metrics;
+
+        let received_bytes: usize = records.iter().map(|r| r.payload.len()).sum();
         metrics.app.bytes_received.increment(received_bytes as u64);
-        metrics.batch_events.record(batch.records.len() as f64);
+        metrics.batch_events.record(records.len() as f64);
 
         let started = Instant::now();
-        let mut events = Vec::with_capacity(batch.records.len());
-        for record in &batch.records {
+        let mut events = Vec::with_capacity(records.len());
+        for record in records {
             let (parsed, parse_outcome) = parse_batch(&record.payload);
             if parse_outcome.bad_lines > 0 {
                 metrics
@@ -410,17 +523,25 @@ pub async fn run_loop(
 
         // One series, counted once. The source transport counts its own wire
         // records in `transport_received_*`; these are the events parsed out.
-        let received = events.len() as u64;
-        metrics.dfe.records_received(received);
+        metrics.dfe.records_received(events.len() as u64);
 
         let (transformed, outcome, envelopes) =
-            transform_batch_resolved(transform, &resolver, events);
-        report_envelope(&envelopes, &mut last_envelope, metrics);
+            transform_batch_resolved(self.transform, &self.resolver, events);
+        {
+            let mut state = self.state.lock();
+            let state = &mut *state;
+            report_envelope(&envelopes, &mut state.last_envelope, metrics);
+            record_batch(
+                metrics,
+                outcome,
+                &mut state.painless_seen,
+                &mut state.geoip_seen,
+            );
+            state.last_signal = Instant::now();
+        }
         metrics
             .batch_duration
             .record(started.elapsed().as_secs_f64());
-
-        record_batch(metrics, outcome, &mut painless_seen, &mut geoip_seen);
 
         tracing::debug!(
             emitted = outcome.emitted,
@@ -431,209 +552,148 @@ pub async fn run_loop(
 
         // Batch saturation: how full the pull came back. A consistently full
         // batch means the transform is the constraint, not the topic.
-        let saturation = batch.records.len() as f64 / config.source.batch_size as f64;
-        push_scaling_signals(scaling, consumer, saturation.min(1.0));
-        last_signal = Instant::now();
+        let saturation = records.len() as f64 / self.config.source.batch_size as f64;
+        push_scaling_signals(self.scaling, self.consumer, saturation.min(1.0));
 
-        if !transformed.is_empty() {
-            match publish(config, producer, shutdown, metrics, &transformed).await {
-                SendOutcome::Sent => {}
-                // The batch is deliberately left uncommitted, and the loop
-                // deliberately does not continue: the next batch's cumulative
-                // commit would acknowledge this one.
-                SendOutcome::Failed(e) => {
-                    metrics.send_failures.increment(1);
-                    metrics.dfe.pipeline_ready(false);
-                    tracing::error!(
-                        error = %e,
-                        "sink send failed; stopping uncommitted so the batch replays"
-                    );
-                    return Err(e);
-                }
-                SendOutcome::ShuttingDown => {
-                    metrics.dfe.pipeline_ready(false);
-                    tracing::info!("shutdown during send; batch left uncommitted for replay");
-                    return Ok(());
-                }
-            }
+        let (payloads, serialised) =
+            serialise_events(&transformed, self.config.sink.max_message_bytes);
+        if serialised.oversize > 0 {
+            metrics
+                .events_oversize
+                .increment(serialised.oversize as u64);
+        }
+        if serialised.failed > 0 {
+            metrics.events_errored.increment(serialised.failed as u64);
+            metrics
+                .app
+                .records_error
+                .increment(serialised.failed as u64);
         }
 
-        if let Err(e) = consumer.commit(&batch.commit_tokens).await {
-            metrics.commit_failures.increment(1);
-            tracing::warn!(error = %e, "offset commit failed");
-        }
+        payloads
+            .into_iter()
+            .map(|payload| outbound_record(payload, &self.topic))
+            .collect()
     }
 
-    metrics.dfe.pipeline_ready(false);
-    tracing::info!("transform service stopped");
-    Ok(())
+    /// Push a zero saturation when no block has pushed the signals for
+    /// [`SCALING_SIGNAL_INTERVAL`], so an idle pod still reports its lag.
+    fn signal_if_idle(&self) {
+        let due = {
+            let mut state = self.state.lock();
+            let due = state.last_signal.elapsed() >= SCALING_SIGNAL_INTERVAL;
+            if due {
+                state.last_signal = Instant::now();
+            }
+            due
+        };
+        if due {
+            push_scaling_signals(self.scaling, self.consumer, 0.0);
+        }
+    }
 }
 
-/// What became of one outbound block.
-enum SendOutcome {
-    /// The sink accepted every record in it.
-    Sent,
-    /// Retries ran out, or the transport refused in a way retrying cannot fix.
-    Failed(crate::Error),
-    /// The service was asked to stop mid-retry.
-    ShuttingDown,
-}
-
-/// Serialise a transformed batch and produce every record it became.
+/// One event's payload, addressed at the sink topic.
 ///
-/// ONE record per event. dfe-loader parses exactly one JSON document per
+/// ONE record per event: dfe-loader parses exactly one JSON document per
 /// message and has no NDJSON path, so a batch concatenated into a single
 /// payload was dead-lettered whole rather than loaded
 /// (hyperi-io/dfe-transform-elastic#67).
 ///
-/// The batch is one unit for commit purposes: unless every record lands, the
-/// caller must not commit. Records already accepted when a later block fails
-/// are therefore replayed on restart -- the duplicate half of at-least-once.
-async fn publish<S: TransportSender>(
-    config: &Config,
-    producer: &S,
-    shutdown: &CancellationToken,
-    metrics: &TransformMetrics,
-    transformed: &[dfe_runtime::Event],
-) -> SendOutcome {
-    let (payloads, serialised) = serialise_events(transformed, config.sink.max_message_bytes);
-
-    if serialised.oversize > 0 {
-        metrics
-            .events_oversize
-            .increment(serialised.oversize as u64);
+/// `key` is the DESTINATION rather than a partition key: Kafka's `send_batch`
+/// produces each record to the topic its `key` names.
+fn outbound_record(payload: Vec<u8>, topic: &Arc<str>) -> Record {
+    Record {
+        // Refcounted, so each retry re-sends the same buffer.
+        payload: bytes::Bytes::from(payload),
+        key: Some(Arc::clone(topic)),
+        headers: Vec::new(),
+        metadata: RecordMeta {
+            timestamp_ms: None,
+            format: PayloadFormat::Json,
+        },
     }
-    if serialised.failed > 0 {
-        metrics.events_errored.increment(serialised.failed as u64);
-        metrics
-            .app
-            .records_error
-            .increment(serialised.failed as u64);
-    }
-
-    let topic: Arc<str> = Arc::from(config.sink.topic.as_str());
-    let budget = message_budget(config.sink.max_message_bytes);
-    for block in into_blocks(payloads, &topic, budget) {
-        let count = block.len() as u64;
-        let sent_bytes: u64 = block.iter().map(|r| r.payload.len() as u64).sum();
-        match send_records(producer, &block, shutdown, metrics).await {
-            // The sink transport counts its own `transport_*` series.
-            SendOutcome::Sent => {
-                metrics.app.bytes_written.increment(sent_bytes);
-                metrics.dfe.records_delivered(count);
-            }
-            stopped @ (SendOutcome::Failed(_) | SendOutcome::ShuttingDown) => return stopped,
-        }
-    }
-
-    SendOutcome::Sent
 }
 
-/// Address each payload at the sink topic and group them into blocks.
+/// Split `records` into blocks of at most `max_bytes` of payload each.
 ///
 /// `max_bytes` is the per-MESSAGE budget on both arms, which is why one number
 /// bounds both halves: a Kafka record is one message, and a gRPC `send_batch`
 /// block is one RPC message against scalo's own 16 MiB ceiling. A block always
 /// takes at least one record, so a payload at the budget goes out alone rather
 /// than not at all.
-///
-/// `key` is the DESTINATION rather than a partition key: Kafka's `send_batch`
-/// produces each record to the topic its `key` names, so every record carries
-/// the sink topic.
-fn into_blocks(payloads: Vec<Vec<u8>>, topic: &Arc<str>, max_bytes: usize) -> Vec<Vec<Record>> {
+fn blocks(records: &[Record], max_bytes: usize) -> Vec<&[Record]> {
     let mut blocks = Vec::new();
-    let mut block: Vec<Record> = Vec::new();
+    let mut start = 0;
     let mut block_bytes = 0_usize;
 
-    for payload in payloads {
-        if !block.is_empty() && block_bytes.saturating_add(payload.len()) > max_bytes {
-            blocks.push(std::mem::take(&mut block));
+    for (index, record) in records.iter().enumerate() {
+        let bytes = record.payload.len();
+        if index > start && block_bytes.saturating_add(bytes) > max_bytes {
+            blocks.push(&records[start..index]);
+            start = index;
             block_bytes = 0;
         }
-        block_bytes = block_bytes.saturating_add(payload.len());
-        block.push(Record {
-            // Refcounted, so each retry re-sends the same buffer.
-            payload: bytes::Bytes::from(payload),
-            key: Some(Arc::clone(topic)),
-            headers: Vec::new(),
-            metadata: RecordMeta {
-                timestamp_ms: None,
-                format: PayloadFormat::Json,
-            },
-        });
+        block_bytes = block_bytes.saturating_add(bytes);
     }
 
-    if !block.is_empty() {
-        blocks.push(block);
+    if start < records.len() {
+        blocks.push(&records[start..]);
     }
     blocks
 }
 
-/// Send one block, retrying while the sink will not take it.
+/// Produce one transformed block, in sends of at most `budget` bytes.
 ///
-/// [`TransportSender::send_batch`] is NOT atomic on Kafka: a non-`Ok` block may
-/// already have left any subset of its records on the broker, and the retry
-/// re-delivers them. That is the duplicate half of at-least-once, and the
-/// alternative -- committing a block that only partly landed -- is loss.
+/// A refusal the sink may lift -- backpressure, a broker outage, a timeout -- is
+/// returned as a transient error, which the pipeline retries for as long as it
+/// lasts; the retry re-sends every send in the block, including any that
+/// already landed. A refusal no retry can fix is returned as a permanent error,
+/// which stops the loop with the block unreleased.
 ///
-/// [`SendResult`] has four variants and three of them are not delivery.
-/// Backpressure in particular is the NORMAL response from a slow sink -- a
-/// full local producer queue -- so it is retried rather than counted as sent;
-/// treating it as success is how a batch gets acknowledged and never written.
-///
-/// [`SendResult::Fatal`] is retried on the same schedule, because the transport
-/// reports a leader election, an unavailable broker and a rejected record
-/// through the one variant and only the first two are worth waiting out. The
-/// distinction costs nothing to get wrong in one direction -- eight attempts
-/// over ~25 seconds, then the batch is abandoned uncommitted and replayed --
-/// and loses the batch in the other.
-/// Generic over the sender rather than taking `KafkaTransport`, so the three
-/// non-delivery branches are reachable in a test without a broker.
-async fn send_records<S: TransportSender>(
+/// [`TransportSender::send_batch`] is NOT atomic on Kafka: a failed send may
+/// already have left any subset of its records on the broker. That is the
+/// duplicate half of at-least-once; the other half is never counting a record
+/// delivered until the send it went in returned `Ok`.
+async fn send_blocks<S: TransportSender>(
     producer: &S,
-    records: &[Record],
-    shutdown: &CancellationToken,
     metrics: &TransformMetrics,
-) -> SendOutcome {
-    let mut backoff = SEND_BACKOFF_BASE;
-
-    for attempt in 1..=SEND_MAX_ATTEMPTS {
-        match producer.send_batch(records).await {
-            SendResult::Ok => return SendOutcome::Sent,
+    records: Vec<Record>,
+    budget: usize,
+) -> Result<(), EngineError> {
+    for block in blocks(&records, budget) {
+        let count = block.len() as u64;
+        match producer.send_batch(block).await {
+            SendResult::Ok => {
+                // The sink transport counts its own `transport_*` series.
+                let bytes: u64 = block.iter().map(|r| r.payload.len() as u64).sum();
+                metrics.app.bytes_written.increment(bytes);
+                metrics.dfe.records_delivered(count);
+            }
+            // The NORMAL response from a slow sink, and what a Kafka or gRPC
+            // sink answers while its broker or listener is unreachable.
             SendResult::Backpressured => {
                 metrics.send_backpressure.increment(1);
-                tracing::warn!(attempt, "sink is backpressured, retrying");
+                return Err(EngineError::Transport(TransportError::Backpressure));
             }
+            SendResult::Fatal(e) if e.is_recoverable() => return Err(EngineError::Transport(e)),
             SendResult::Fatal(e) => {
-                tracing::warn!(attempt, error = %e, "send failed, retrying");
+                metrics.send_failures.increment(1);
+                return Err(EngineError::Transport(e));
             }
-            // scalo's contract makes DLQ routing the caller's job. This
-            // service configures no outbound filters and has no DLQ, so the
-            // only honest response is to refuse rather than drop the block.
+            // The pipeline screens out what the sink would dead-letter before
+            // the send, so this is a refusal the screen could not foresee.
             SendResult::FilteredDlq => {
                 metrics.send_filtered_dlq.increment(1);
-                return SendOutcome::Failed(crate::Error::Transport(format!(
-                    "an outbound filter routed a block of {} records to a DLQ this \
-                     service does not have; remove the filter or wire a DLQ",
-                    records.len()
-                )));
+                tracing::warn!(
+                    records = count,
+                    "the sink transport dead-lettered a send and this service has no DLQ; \
+                     its records are dropped and not counted delivered"
+                );
             }
         }
-
-        if attempt == SEND_MAX_ATTEMPTS {
-            break;
-        }
-        tokio::select! {
-            () = shutdown.cancelled() => return SendOutcome::ShuttingDown,
-            () = tokio::time::sleep(backoff) => {}
-        }
-        backoff = backoff.saturating_mul(2).min(SEND_BACKOFF_MAX);
     }
-
-    SendOutcome::Failed(crate::Error::Transport(format!(
-        "sink did not accept a block of {} records after {SEND_MAX_ATTEMPTS} attempts",
-        records.len()
-    )))
+    Ok(())
 }
 
 /// How far behind this pod's assigned partitions are, where that has meaning.
@@ -652,6 +712,10 @@ fn consumer_lag(consumer: &AnyReceiver) -> Option<i64> {
         // not compile without the feature.
         #[cfg(feature = "grpc")]
         AnyReceiver::Grpc(_) => None,
+        // The in-memory source the unit tests drive, which only a dev build of
+        // scalo carries.
+        #[allow(unreachable_patterns, clippy::match_wildcard_for_single_variants)]
+        _ => None,
     }
 }
 
@@ -738,12 +802,11 @@ fn check_credentials(kafka: &KafkaConfig) -> crate::Result<()> {
 
 /// The consumer, bounded by BYTES as well as by event count.
 ///
-/// `recv(batch_size)` bounds the batch by count alone, and 20,000 records of
-/// whatever size the producer chose is an unbounded amount of memory: the
-/// outbound side has always been bounded by bytes (`sink.max_message_bytes`)
-/// and the inbound side had no equivalent. `fetch.max.bytes` is where
-/// librdkafka enforces it, so the ceiling applies before the bytes are in the
-/// process rather than after.
+/// A receive capped by count alone lets 20,000 records of whatever size the
+/// producer chose take an unbounded amount of memory: the outbound side has
+/// always been bounded by bytes (`sink.max_message_bytes`) and the inbound side
+/// had no equivalent. `fetch.max.bytes` is where librdkafka enforces it, so the
+/// ceiling applies before the bytes are in the process rather than after.
 #[cfg(feature = "kafka")]
 fn consumer_config(config: &Config) -> KafkaConfig {
     let fetch_bytes = i32::try_from(config.source.max_batch_bytes).unwrap_or(i32::MAX);
@@ -899,6 +962,7 @@ mod tests {
                 max_batch_bytes: crate::config::default_max_batch_bytes(),
                 group_id: "g".into(),
                 brokers: vec!["localhost:9092".into()],
+                acknowledgements: AcknowledgementsConfig::default(),
             },
             sink: SinkConfig {
                 topic: "out".into(),
@@ -1071,7 +1135,15 @@ mod tests {
         }
     }
 
-    // -- The at-least-once failure branch ---------------------------------
+    /// The receive cap is the configured batch size, not the engine's default.
+    #[test]
+    fn the_engine_receives_at_most_batch_size_records() {
+        let mut c = config();
+        c.source.batch_size = 1_234;
+        assert_eq!(engine_config(&c).max_chunk_size, 1_234);
+    }
+
+    // -- What the sink answers --------------------------------------------
 
     /// What the sink answers, scripted, so the branches that need a broker to
     /// reach in production are reachable here.
@@ -1079,6 +1151,7 @@ mod tests {
     enum Answer {
         Backpressured,
         Fatal,
+        Timeout,
         FilteredDlq,
     }
 
@@ -1098,6 +1171,19 @@ mod tests {
         fn attempts(&self) -> usize {
             self.attempts.load(std::sync::atomic::Ordering::Relaxed)
         }
+
+        fn reply(&self) -> SendResult {
+            self.attempts
+                .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            match self.answer {
+                Answer::Backpressured => SendResult::Backpressured,
+                Answer::Fatal => {
+                    SendResult::Fatal(TransportError::Connection("broker gone".into()))
+                }
+                Answer::Timeout => SendResult::Fatal(TransportError::Timeout),
+                Answer::FilteredDlq => SendResult::FilteredDlq,
+            }
+        }
     }
 
     impl scalo::transport::TransportBase for Scripted {
@@ -1112,20 +1198,6 @@ mod tests {
         }
     }
 
-    impl Scripted {
-        fn reply(&self) -> SendResult {
-            self.attempts
-                .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-            match self.answer {
-                Answer::Backpressured => SendResult::Backpressured,
-                Answer::Fatal => SendResult::Fatal(scalo::transport::TransportError::Connection(
-                    "broker gone".into(),
-                )),
-                Answer::FilteredDlq => SendResult::FilteredDlq,
-            }
-        }
-    }
-
     impl TransportSender for Scripted {
         fn send(
             &self,
@@ -1135,67 +1207,19 @@ mod tests {
             std::future::ready(self.reply())
         }
 
-        /// Answer the BLOCK directly, which is the only way `FilteredDlq` can
-        /// reach the caller: scalo's per-record default absorbs a filtered
-        /// record and answers `Ok`, so a native batch override is what
-        /// `send_records` has to be tested against.
+        /// Answer the BLOCK directly: scalo's per-record default absorbs a
+        /// filtered record and answers `Ok`.
         fn send_batch(&self, _records: &[Record]) -> impl Future<Output = SendResult> + Send {
             std::future::ready(self.reply())
         }
     }
 
-    /// A sink that accepts everything and keeps what reached the wire.
-    #[derive(Default)]
-    struct Recording {
-        sent: std::sync::Mutex<Vec<(String, Vec<u8>)>>,
-    }
-
-    impl Recording {
-        fn sent(&self) -> Vec<(String, Vec<u8>)> {
-            self.sent.lock().unwrap().clone()
-        }
-    }
-
-    impl scalo::transport::TransportBase for Recording {
-        fn close(&self) -> impl Future<Output = scalo::transport::TransportResult<()>> + Send {
-            std::future::ready(Ok(()))
-        }
-        fn is_healthy(&self) -> bool {
-            true
-        }
-        fn name(&self) -> &'static str {
-            "recording"
-        }
-    }
-
-    impl TransportSender for Recording {
-        fn send(
-            &self,
-            destination: &str,
-            payload: bytes::Bytes,
-        ) -> impl Future<Output = SendResult> + Send {
-            self.sent
-                .lock()
-                .unwrap()
-                .push((destination.to_string(), payload.to_vec()));
-            std::future::ready(SendResult::Ok)
-        }
-    }
-
-    /// `count` records addressed at the sink topic, which is what `publish`
-    /// hands the sender.
+    /// `count` records addressed at the sink topic, which is what the
+    /// transform half hands the sink.
     fn records(count: usize) -> Vec<Record> {
         let topic: Arc<str> = Arc::from("out");
         (0..count)
-            .map(|i| Record {
-                payload: bytes::Bytes::from(format!("{{\"i\":{i}}}")),
-                key: Some(Arc::clone(&topic)),
-                headers: Vec::new(),
-                metadata: RecordMeta {
-                    timestamp_ms: None,
-                    format: PayloadFormat::Json,
-                },
-            })
+            .map(|i| outbound_record(format!("{{\"i\":{i}}}").into_bytes(), &topic))
             .collect()
     }
 
@@ -1207,130 +1231,67 @@ mod tests {
         TransformMetrics::register(manager, "0.0.0-test", "test")
     }
 
-    /// A slow sink is the normal case, so backpressure is retried -- but only
-    /// to the attempt budget. Past it the batch is abandoned UNCOMMITTED, which
-    /// is what makes the replay at-least-once rather than loss.
-    #[tokio::test(start_paused = true)]
-    async fn backpressure_is_retried_to_the_budget_and_then_fails() {
-        let sink = Scripted::new(Answer::Backpressured);
-        let outcome = send_records(
-            &sink,
-            &records(1),
-            &CancellationToken::new(),
-            &test_metrics(),
-        )
-        .await;
-
-        assert!(
-            matches!(outcome, SendOutcome::Failed(_)),
-            "must not report sent"
-        );
-        assert_eq!(sink.attempts(), SEND_MAX_ATTEMPTS as usize);
+    /// Whether the pipeline waits this failure out rather than stopping.
+    fn is_transient(error: &EngineError) -> bool {
+        matches!(error, EngineError::Transport(e) if e.is_recoverable())
     }
 
-    /// The transport reports a leader election and a rejected record through
-    /// the one variant, so a fatal send is retried on the same schedule.
-    #[tokio::test(start_paused = true)]
-    async fn a_fatal_send_is_retried_and_then_fails() {
-        let sink = Scripted::new(Answer::Fatal);
-        let outcome = send_records(
-            &sink,
-            &records(1),
-            &CancellationToken::new(),
-            &test_metrics(),
-        )
-        .await;
-
-        assert!(matches!(outcome, SendOutcome::Failed(_)));
-        assert_eq!(sink.attempts(), SEND_MAX_ATTEMPTS as usize);
-    }
-
-    /// This service configures no outbound filter and has no DLQ, so a block
-    /// routed to one is refused on the first attempt rather than retried into a
-    /// livelock or counted as delivered. Committing it instead would be silent
-    /// loss: there is no DLQ for the records to be sitting in.
+    /// Backpressure is the NORMAL answer from a slow or unreachable sink, so it
+    /// must reach the pipeline as something it retries, and never as delivery.
     #[tokio::test]
-    async fn a_block_filtered_to_a_dlq_fails_without_retrying() {
+    async fn backpressure_is_handed_back_for_the_pipeline_to_retry() {
+        let sink = Scripted::new(Answer::Backpressured);
+        let error = send_blocks(&sink, &test_metrics(), records(3), 1_000_000)
+            .await
+            .expect_err("backpressure is not delivery");
+
+        assert!(is_transient(&error), "the pipeline would stop on {error}");
+        assert_eq!(sink.attempts(), 1, "the pipeline retries, not the sink");
+    }
+
+    /// A timeout reads the same way: the sink may take it next time.
+    #[tokio::test]
+    async fn a_timed_out_send_is_retried() {
+        let sink = Scripted::new(Answer::Timeout);
+        let error = send_blocks(&sink, &test_metrics(), records(1), 1_000_000)
+            .await
+            .expect_err("a timeout is not delivery");
+        assert!(is_transient(&error), "the pipeline would stop on {error}");
+    }
+
+    /// A refusal no retry can fix stops the loop, which leaves the block
+    /// unreleased so a restart reads it again.
+    #[tokio::test]
+    async fn a_permanent_refusal_stops_the_loop() {
+        let sink = Scripted::new(Answer::Fatal);
+        let error = send_blocks(&sink, &test_metrics(), records(1), 1_000_000)
+            .await
+            .expect_err("a fatal send is not delivery");
+        assert!(!is_transient(&error), "a permanent refusal was retried");
+    }
+
+    /// A send the sink dead-letters is dropped and counted, and the rest of the
+    /// block still goes: a deterministic refusal retried is a stalled partition.
+    #[tokio::test]
+    async fn a_dead_lettered_send_does_not_stall_the_block() {
         let sink = Scripted::new(Answer::FilteredDlq);
-        let outcome = send_records(
-            &sink,
-            &records(1),
-            &CancellationToken::new(),
-            &test_metrics(),
-        )
-        .await;
+        let payload = records(1)[0].payload.len();
 
-        let SendOutcome::Failed(e) = outcome else {
-            panic!("a filtered block must fail the batch");
-        };
-        assert!(e.to_string().contains("DLQ"), "{e}");
-        assert_eq!(
-            sink.attempts(),
-            1,
-            "a deterministic filter must not be retried"
-        );
+        send_blocks(&sink, &test_metrics(), records(3), payload)
+            .await
+            .expect("a dead-lettered send is handled");
+        assert_eq!(sink.attempts(), 3, "every block must still be offered");
     }
 
-    /// A shutdown mid-retry is not a failure: the batch is left uncommitted and
-    /// the restarted consumer replays it.
-    #[tokio::test(start_paused = true)]
-    async fn a_shutdown_during_a_retry_stops_rather_than_failing() {
-        let sink = Scripted::new(Answer::Backpressured);
-        let shutdown = CancellationToken::new();
-        shutdown.cancel();
-
-        let outcome = send_records(&sink, &records(1), &shutdown, &test_metrics()).await;
-
-        assert!(matches!(outcome, SendOutcome::ShuttingDown));
-        assert_eq!(sink.attempts(), 1, "the retry wait must observe the cancel");
-    }
-
-    /// A batch the sink will not take must not report as published, whatever
-    /// the blocking did -- `publish` is what the loop reads to decide whether
-    /// to commit.
-    #[tokio::test(start_paused = true)]
-    async fn publish_reports_failure_when_a_block_does_not_land() {
-        let sink = Scripted::new(Answer::Fatal);
-        let events = crate::pipeline::parse_batch(b"{\"a\":1}\n{\"a\":2}\n").0;
-
-        let outcome = publish(
-            &config(),
-            &sink,
-            &CancellationToken::new(),
-            &test_metrics(),
-            &events,
-        )
-        .await;
-
-        assert!(matches!(outcome, SendOutcome::Failed(_)));
-    }
-
-    /// The defect the fix is for: dfe-loader parses ONE JSON document per
-    /// message, so a batch that goes out as one NDJSON payload is dead-lettered
-    /// whole. Three events must reach the wire as three messages.
+    /// The first failed send stops the block, so no later send is counted
+    /// delivered while an earlier one is still unconfirmed.
     #[tokio::test]
-    async fn publish_sends_one_record_per_event() {
-        let sink = Recording::default();
-        let events = crate::pipeline::parse_batch(b"{\"a\":1}\n{\"a\":2}\n{\"a\":3}\n").0;
+    async fn the_first_failed_send_ends_the_attempt() {
+        let sink = Scripted::new(Answer::Backpressured);
+        let payload = records(1)[0].payload.len();
 
-        let outcome = publish(
-            &config(),
-            &sink,
-            &CancellationToken::new(),
-            &test_metrics(),
-            &events,
-        )
-        .await;
-
-        assert!(matches!(outcome, SendOutcome::Sent));
-        let sent = sink.sent();
-        assert_eq!(sent.len(), 3, "the batch went out as one message");
-        for (destination, payload) in &sent {
-            assert_eq!(destination, "out", "the sink topic must reach the wire");
-            let parsed: serde_json::Value =
-                serde_json::from_slice(payload).expect("one document per message");
-            assert!(parsed.get("a").is_some(), "payload is not the event");
-        }
+        let _ = send_blocks(&sink, &test_metrics(), records(3), payload).await;
+        assert_eq!(sink.attempts(), 1);
     }
 
     /// A gRPC `send_batch` block is ONE RPC message against scalo's 16 MiB
@@ -1338,9 +1299,11 @@ mod tests {
     #[test]
     fn a_block_is_bounded_by_the_per_message_budget() {
         let topic: Arc<str> = Arc::from("out");
-        let payloads: Vec<Vec<u8>> = (0..10).map(|_| vec![b'x'; 400]).collect();
+        let records: Vec<Record> = (0..10)
+            .map(|_| outbound_record(vec![b'x'; 400], &topic))
+            .collect();
 
-        let blocks = into_blocks(payloads, &topic, 1000);
+        let blocks = blocks(&records, 1000);
         assert_eq!(
             blocks.len(),
             5,
@@ -1349,7 +1312,7 @@ mod tests {
         for block in &blocks {
             let bytes: usize = block.iter().map(|r| r.payload.len()).sum();
             assert!(bytes <= 1000, "block of {bytes} bytes");
-            for record in block {
+            for record in *block {
                 assert_eq!(record.key.as_deref(), Some("out"));
             }
         }
@@ -1360,11 +1323,220 @@ mod tests {
     #[test]
     fn a_payload_at_the_budget_goes_out_in_a_block_of_its_own() {
         let topic: Arc<str> = Arc::from("out");
-        let payloads = vec![vec![b'x'; 10], vec![b'y'; 4000], vec![b'z'; 10]];
+        let records = vec![
+            outbound_record(vec![b'x'; 10], &topic),
+            outbound_record(vec![b'y'; 4000], &topic),
+            outbound_record(vec![b'z'; 10], &topic),
+        ];
 
-        let blocks = into_blocks(payloads, &topic, 100);
+        let blocks = blocks(&records, 100);
         assert_eq!(blocks.len(), 3);
         assert_eq!(blocks[1].len(), 1);
         assert_eq!(blocks[1][0].payload.len(), 4000);
+    }
+
+    #[test]
+    fn no_records_is_no_blocks() {
+        assert!(blocks(&[], 100).is_empty());
+    }
+
+    // -- The loop over an in-process source ---------------------------------
+
+    /// A sink that refuses its first `refusals` sends, then keeps what it is
+    /// given, and names every record over `ceiling` bytes one it would refuse.
+    struct Flaky {
+        refusals: usize,
+        ceiling: usize,
+        attempts: std::sync::atomic::AtomicUsize,
+        delivered: std::sync::Mutex<Vec<bytes::Bytes>>,
+    }
+
+    impl Flaky {
+        fn new(refusals: usize, ceiling: usize) -> Self {
+            Self {
+                refusals,
+                ceiling,
+                attempts: std::sync::atomic::AtomicUsize::new(0),
+                delivered: std::sync::Mutex::new(Vec::new()),
+            }
+        }
+
+        fn attempts(&self) -> usize {
+            self.attempts.load(std::sync::atomic::Ordering::Relaxed)
+        }
+
+        fn delivered(&self) -> Vec<bytes::Bytes> {
+            self.delivered.lock().unwrap().clone()
+        }
+
+        /// Poll until `count` records have been delivered.
+        async fn wait_for(&self, count: usize) {
+            while self.delivered().len() < count {
+                tokio::time::sleep(Duration::from_millis(10)).await;
+            }
+        }
+    }
+
+    impl scalo::transport::TransportBase for Flaky {
+        fn close(&self) -> impl Future<Output = scalo::transport::TransportResult<()>> + Send {
+            std::future::ready(Ok(()))
+        }
+        fn is_healthy(&self) -> bool {
+            true
+        }
+        fn name(&self) -> &'static str {
+            "flaky"
+        }
+    }
+
+    impl TransportSender for Flaky {
+        fn send(
+            &self,
+            _destination: &str,
+            _payload: bytes::Bytes,
+        ) -> impl Future<Output = SendResult> + Send {
+            std::future::ready(SendResult::Fatal(TransportError::Internal(
+                "the loop sends blocks".into(),
+            )))
+        }
+
+        fn send_batch(&self, records: &[Record]) -> impl Future<Output = SendResult> + Send {
+            let attempt = self
+                .attempts
+                .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            let result = if attempt < self.refusals {
+                SendResult::Backpressured
+            } else {
+                self.delivered
+                    .lock()
+                    .unwrap()
+                    .extend(records.iter().map(|r| r.payload.clone()));
+                SendResult::Ok
+            };
+            std::future::ready(result)
+        }
+
+        fn dead_letter_reason(
+            &self,
+            record: &Record,
+        ) -> Option<scalo::transport::DeadLetterReason> {
+            (record.payload.len() > self.ceiling).then_some(
+                scalo::transport::DeadLetterReason::TooLarge {
+                    bytes: record.payload.len(),
+                    limit: self.ceiling,
+                },
+            )
+        }
+    }
+
+    /// One Beats-wrapped okta event with its `uuid` set to `uuid` and `pad`
+    /// bytes added to `displayMessage`, which the transform carries through.
+    fn okta_event(uuid: &str, pad: usize) -> Vec<u8> {
+        let raw = std::fs::read_to_string(concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/tests/fixtures/okta/system/test-okta-system-events.log"
+        ))
+        .unwrap();
+        let line = raw.lines().find(|l| !l.trim().is_empty()).unwrap();
+        let mut vendor: serde_json::Value = serde_json::from_str(line).unwrap();
+        vendor["uuid"] = serde_json::Value::String(uuid.into());
+        if pad > 0 {
+            vendor["displayMessage"] = serde_json::Value::String("x".repeat(pad));
+        }
+        serde_json::to_vec(&serde_json::json!({ "message": vendor.to_string() })).unwrap()
+    }
+
+    /// An in-process source holding `events`, one record each.
+    async fn memory_source(events: Vec<Vec<u8>>) -> AnyReceiver {
+        let source =
+            scalo::transport::memory::MemoryTransport::new(&scalo::transport::MemoryConfig {
+                recv_timeout_ms: 50,
+                ..scalo::transport::MemoryConfig::default()
+            })
+            .unwrap();
+        for event in events {
+            source.inject(Some("in"), event).await.unwrap();
+        }
+        AnyReceiver::Memory(source)
+    }
+
+    /// A sink that refuses for longer than any fixed retry budget is waited out:
+    /// the loop retries the same block until the sink takes it, and does not
+    /// stop on its own.
+    #[tokio::test(start_paused = true)]
+    async fn a_sink_refusing_past_a_retry_budget_is_waited_out() {
+        // Well past the eight attempts a fixed budget used to allow.
+        const REFUSALS: usize = 40;
+
+        let config = config();
+        let engine = BatchEngine::new(engine_config(&config));
+        let consumer = memory_source(vec![okta_event("held", 0)]).await;
+        let sink = Flaky::new(REFUSALS, usize::MAX);
+        let shutdown = CancellationToken::new();
+        let metrics = test_metrics();
+
+        let run = run_loop(
+            &config, &engine, &consumer, &sink, &shutdown, &metrics, None,
+        );
+        tokio::pin!(run);
+        tokio::select! {
+            result = &mut run => panic!("the loop stopped while the sink refused: {result:?}"),
+            () = sink.wait_for(1) => {}
+        }
+        assert_eq!(sink.attempts(), REFUSALS + 1, "every refusal was retried");
+
+        shutdown.cancel();
+        run.await.expect("the loop stops cleanly on shutdown");
+        assert_eq!(
+            sink.delivered().len(),
+            1,
+            "the held event went once it could"
+        );
+    }
+
+    /// A record the sink would refuse never reaches it and does not hold up
+    /// the block: the event beside it is delivered, and so is the next block.
+    #[tokio::test(start_paused = true)]
+    async fn a_record_the_sink_would_refuse_is_screened_out() {
+        const CEILING: usize = 16 * 1024;
+
+        let config = config();
+        let engine = BatchEngine::new(engine_config(&config));
+        let consumer =
+            memory_source(vec![okta_event("kept", 0), okta_event("big", 64 * 1024)]).await;
+        let sink = Flaky::new(0, CEILING);
+        let shutdown = CancellationToken::new();
+        let metrics = test_metrics();
+
+        let run = run_loop(
+            &config, &engine, &consumer, &sink, &shutdown, &metrics, None,
+        );
+        tokio::pin!(run);
+        tokio::select! {
+            result = &mut run => panic!("the loop stopped: {result:?}"),
+            () = sink.wait_for(1) => {}
+        }
+        if let AnyReceiver::Memory(source) = &consumer {
+            source
+                .inject(Some("in"), okta_event("next", 0))
+                .await
+                .unwrap();
+        }
+        tokio::select! {
+            result = &mut run => panic!("the loop stopped: {result:?}"),
+            () = sink.wait_for(2) => {}
+        }
+
+        shutdown.cancel();
+        run.await.expect("the loop stops cleanly on shutdown");
+
+        let delivered = sink.delivered();
+        assert_eq!(delivered.len(), 2, "only the events the sink can take");
+        for payload in &delivered {
+            assert!(
+                payload.len() <= CEILING,
+                "a refused record reached the sink"
+            );
+        }
     }
 }
