@@ -29,7 +29,6 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 use scalo::cli::ServiceRuntime;
-use scalo::metrics::TransportKind;
 #[cfg(feature = "grpc")]
 use scalo::transport::grpc::GrpcConfig;
 #[cfg(feature = "kafka")]
@@ -236,17 +235,6 @@ fn missing_transport(side: &str, transport: Transport) -> crate::Error {
     ))
 }
 
-/// The metric label for a configured transport.
-///
-/// Without it every direct deployment's transport counters carry the kafka
-/// label and a dashboard reads them as a bus deployment.
-const fn transport_kind(transport: Transport) -> TransportKind {
-    match transport {
-        Transport::Bus => TransportKind::Kafka,
-        Transport::Direct => TransportKind::Grpc,
-    }
-}
-
 /// State the scaling settings that actually took effect, once, at startup.
 ///
 /// These come from scalo's config cascade and NOT from the `--config` file, so
@@ -322,10 +310,6 @@ pub async fn run_loop(
     metrics: &TransformMetrics,
     scaling: Option<&ScalingSignals>,
 ) -> crate::Result<()> {
-    // The two sides are configured separately, so a deployment can consume off
-    // the bus and push downstream, and the labels have to follow each.
-    let source_kind = transport_kind(config.source.transport);
-    let sink_kind = transport_kind(config.sink.transport);
     let transform = crate::registry::lookup(&config.source.name)
         .ok_or_else(|| crate::Error::UnknownSource(config.source.name.clone()))?;
     let intake = crate::registry::intake(&config.source.name)
@@ -402,9 +386,6 @@ pub async fn run_loop(
         }
 
         let received_bytes: usize = batch.records.iter().map(|r| r.payload.len()).sum();
-        metrics
-            .dfe
-            .transport_received_bytes(source_kind, received_bytes as u64);
         metrics.app.bytes_received.increment(received_bytes as u64);
         metrics.batch_events.record(batch.records.len() as f64);
 
@@ -427,10 +408,10 @@ pub async fn run_loop(
             events.extend(parsed);
         }
 
+        // One series, counted once. The source transport counts its own wire
+        // records in `transport_received_*`; these are the events parsed out.
         let received = events.len() as u64;
         metrics.dfe.records_received(received);
-        metrics.dfe.transport_received_events(source_kind, received);
-        metrics.app.records_received.increment(received);
 
         let (transformed, outcome, envelopes) =
             transform_batch_resolved(transform, &resolver, events);
@@ -455,7 +436,7 @@ pub async fn run_loop(
         last_signal = Instant::now();
 
         if !transformed.is_empty() {
-            match publish(config, producer, shutdown, metrics, sink_kind, &transformed).await {
+            match publish(config, producer, shutdown, metrics, &transformed).await {
                 SendOutcome::Sent => {}
                 // The batch is deliberately left uncommitted, and the loop
                 // deliberately does not continue: the next batch's cumulative
@@ -513,7 +494,6 @@ async fn publish<S: TransportSender>(
     producer: &S,
     shutdown: &CancellationToken,
     metrics: &TransformMetrics,
-    kind: TransportKind,
     transformed: &[dfe_runtime::Event],
 ) -> SendOutcome {
     let (payloads, serialised) = serialise_events(transformed, config.sink.max_message_bytes);
@@ -536,10 +516,9 @@ async fn publish<S: TransportSender>(
     for block in into_blocks(payloads, &topic, budget) {
         let count = block.len() as u64;
         let sent_bytes: u64 = block.iter().map(|r| r.payload.len() as u64).sum();
-        match send_records(producer, &block, shutdown, metrics, kind).await {
+        match send_records(producer, &block, shutdown, metrics).await {
+            // The sink transport counts its own `transport_*` series.
             SendOutcome::Sent => {
-                metrics.dfe.transport_sent(kind, count);
-                metrics.dfe.transport_sent_bytes(kind, sent_bytes);
                 metrics.app.bytes_written.increment(sent_bytes);
                 metrics.dfe.records_delivered(count);
             }
@@ -615,7 +594,6 @@ async fn send_records<S: TransportSender>(
     records: &[Record],
     shutdown: &CancellationToken,
     metrics: &TransformMetrics,
-    kind: TransportKind,
 ) -> SendOutcome {
     let mut backoff = SEND_BACKOFF_BASE;
 
@@ -627,7 +605,6 @@ async fn send_records<S: TransportSender>(
                 tracing::warn!(attempt, "sink is backpressured, retrying");
             }
             SendResult::Fatal(e) => {
-                metrics.dfe.transport_send_errors(kind, 1);
                 tracing::warn!(attempt, error = %e, "send failed, retrying");
             }
             // scalo's contract makes DLQ routing the caller's job. This
@@ -1241,7 +1218,6 @@ mod tests {
             &records(1),
             &CancellationToken::new(),
             &test_metrics(),
-            TransportKind::Kafka,
         )
         .await;
 
@@ -1262,7 +1238,6 @@ mod tests {
             &records(1),
             &CancellationToken::new(),
             &test_metrics(),
-            TransportKind::Kafka,
         )
         .await;
 
@@ -1282,7 +1257,6 @@ mod tests {
             &records(1),
             &CancellationToken::new(),
             &test_metrics(),
-            TransportKind::Kafka,
         )
         .await;
 
@@ -1305,14 +1279,7 @@ mod tests {
         let shutdown = CancellationToken::new();
         shutdown.cancel();
 
-        let outcome = send_records(
-            &sink,
-            &records(1),
-            &shutdown,
-            &test_metrics(),
-            TransportKind::Kafka,
-        )
-        .await;
+        let outcome = send_records(&sink, &records(1), &shutdown, &test_metrics()).await;
 
         assert!(matches!(outcome, SendOutcome::ShuttingDown));
         assert_eq!(sink.attempts(), 1, "the retry wait must observe the cancel");
@@ -1331,7 +1298,6 @@ mod tests {
             &sink,
             &CancellationToken::new(),
             &test_metrics(),
-            TransportKind::Kafka,
             &events,
         )
         .await;
@@ -1352,7 +1318,6 @@ mod tests {
             &sink,
             &CancellationToken::new(),
             &test_metrics(),
-            TransportKind::Kafka,
             &events,
         )
         .await;

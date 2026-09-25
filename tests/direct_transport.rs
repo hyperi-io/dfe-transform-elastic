@@ -15,6 +15,9 @@
 #![cfg(feature = "grpc")]
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
+use std::collections::HashMap;
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 use bytes::Bytes;
@@ -24,7 +27,7 @@ use dfe_transform_elastic::metrics::TransformMetrics;
 use dfe_transform_elastic::service;
 use scalo::metrics::MetricsManager;
 use scalo::transport::grpc::{GrpcConfig, GrpcTransport};
-use scalo::transport::{AnyReceiver, AnySender, TransportReceiver, TransportSender};
+use scalo::transport::{AnyReceiver, AnySender, Record, TransportReceiver, TransportSender};
 use tokio_util::sync::CancellationToken;
 
 /// Allocate a free loopback port.
@@ -167,6 +170,35 @@ fn okta_events(count: usize) -> Vec<u8> {
     out
 }
 
+/// Read records off `listener` until they carry `events` JSON lines, or 30s pass.
+async fn drain(listener: &GrpcTransport, events: usize) -> Vec<Record> {
+    let mut records: Vec<Record> = Vec::new();
+    let mut lines = 0;
+    let deadline = tokio::time::Instant::now() + Duration::from_secs(30);
+    while lines < events {
+        let remaining = deadline.saturating_duration_since(tokio::time::Instant::now());
+        if remaining.is_zero() {
+            break;
+        }
+        let batch = match tokio::time::timeout(remaining, listener.recv(16)).await {
+            Ok(Ok(batch)) => batch,
+            Ok(Err(_)) => {
+                tokio::time::sleep(Duration::from_millis(20)).await;
+                continue;
+            }
+            Err(_) => break,
+        };
+        for record in batch.records {
+            lines += String::from_utf8_lossy(&record.payload)
+                .lines()
+                .filter(|line| !line.trim().is_empty())
+                .count();
+            records.push(record);
+        }
+    }
+    records
+}
+
 #[tokio::test]
 async fn a_batch_pushed_over_grpc_comes_out_the_grpc_sink_transformed() {
     let (loader_endpoint, loader) = start_listener().await;
@@ -199,32 +231,17 @@ async fn a_batch_pushed_over_grpc_comes_out_the_grpc_sink_transformed() {
     assert!(matches!(sent, scalo::transport::SendResult::Ok), "{sent:?}");
 
     let mut events: Vec<serde_json::Value> = Vec::new();
-    let deadline = tokio::time::Instant::now() + Duration::from_secs(30);
-    while events.len() < 3 {
-        let remaining = deadline.saturating_duration_since(tokio::time::Instant::now());
-        if remaining.is_zero() {
-            break;
-        }
-        let batch = match tokio::time::timeout(remaining, loader.recv(16)).await {
-            Ok(Ok(batch)) => batch,
-            Ok(Err(_)) => {
-                tokio::time::sleep(Duration::from_millis(20)).await;
-                continue;
-            }
-            Err(_) => break,
-        };
-        for record in &batch.records {
-            // `publish` hands `sink.topic` to the sender whichever transport
-            // sits underneath, and the listener carries it as the routing key.
-            assert_eq!(
-                record.key.as_deref(),
-                Some("elastic_out"),
-                "the sink topic must reach the wire"
-            );
-            for line in String::from_utf8_lossy(&record.payload).lines() {
-                if !line.trim().is_empty() {
-                    events.push(serde_json::from_str(line).expect("output is JSON"));
-                }
+    for record in drain(&loader, 3).await {
+        // `publish` hands `sink.topic` to the sender whichever transport
+        // sits underneath, and the listener carries it as the routing key.
+        assert_eq!(
+            record.key.as_deref(),
+            Some("elastic_out"),
+            "the sink topic must reach the wire"
+        );
+        for line in String::from_utf8_lossy(&record.payload).lines() {
+            if !line.trim().is_empty() {
+                events.push(serde_json::from_str(line).expect("output is JSON"));
             }
         }
     }
@@ -246,6 +263,152 @@ async fn a_batch_pushed_over_grpc_comes_out_the_grpc_sink_transformed() {
             "output did not reach the transform: {event}"
         );
     }
+}
+
+/// Every counter series by name and labels, as a scrape keys it.
+#[derive(Default)]
+struct SeriesCapture {
+    counters: Mutex<HashMap<metrics::Key, Arc<AtomicU64>>>,
+}
+
+impl SeriesCapture {
+    /// `name` summed over every label set, as a `sum()` over it reads.
+    fn total(&self, name: &str) -> u64 {
+        self.counters
+            .lock()
+            .unwrap()
+            .iter()
+            .filter(|(key, _)| key.name() == name)
+            .map(|(_, cell)| cell.load(Ordering::Acquire))
+            .sum()
+    }
+}
+
+impl metrics::Recorder for SeriesCapture {
+    fn describe_counter(
+        &self,
+        _: metrics::KeyName,
+        _: Option<metrics::Unit>,
+        _: metrics::SharedString,
+    ) {
+    }
+    fn describe_gauge(
+        &self,
+        _: metrics::KeyName,
+        _: Option<metrics::Unit>,
+        _: metrics::SharedString,
+    ) {
+    }
+    fn describe_histogram(
+        &self,
+        _: metrics::KeyName,
+        _: Option<metrics::Unit>,
+        _: metrics::SharedString,
+    ) {
+    }
+
+    fn register_counter(&self, key: &metrics::Key, _: &metrics::Metadata<'_>) -> metrics::Counter {
+        let cell = Arc::clone(
+            self.counters
+                .lock()
+                .unwrap()
+                .entry(key.clone())
+                .or_default(),
+        );
+        metrics::Counter::from_arc(cell)
+    }
+
+    fn register_gauge(&self, _: &metrics::Key, _: &metrics::Metadata<'_>) -> metrics::Gauge {
+        metrics::Gauge::noop()
+    }
+
+    fn register_histogram(
+        &self,
+        _: &metrics::Key,
+        _: &metrics::Metadata<'_>,
+    ) -> metrics::Histogram {
+        metrics::Histogram::noop()
+    }
+}
+
+/// The transform's own view of one pushed batch: each record and each byte
+/// counted once, with the scalo transports owning the `transport_*` series.
+#[test]
+fn a_pushed_batch_is_counted_once_by_the_transform() {
+    let capture = SeriesCapture::default();
+    // The pusher and the downstream listener stand in for other services, so
+    // they run on a runtime of their own, off the thread whose metrics are read.
+    let neighbours = tokio::runtime::Builder::new_multi_thread()
+        .worker_threads(1)
+        .enable_all()
+        .build()
+        .expect("neighbour runtime");
+    let (loader_endpoint, loader) = neighbours.block_on(start_listener());
+    let wire = okta_events(3);
+    let wire_bytes = wire.len() as u64;
+
+    let service = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .expect("service runtime");
+    let delivered_bytes = metrics::with_local_recorder(&capture, || {
+        service.block_on(async {
+            let (transform_endpoint, transform_listener) = start_listener().await;
+            let sink = AnySender::Grpc(
+                GrpcTransport::new(&GrpcConfig::client(&loader_endpoint))
+                    .await
+                    .expect("sink client"),
+            );
+            let listen = transform_endpoint
+                .strip_prefix("http://")
+                .expect("endpoint is http")
+                .to_string();
+            let config = direct_config(&listen, &loader_endpoint);
+            let consumer = AnyReceiver::Grpc(transform_listener);
+            let manager = MetricsManager::with_config(scalo::metrics::MetricsConfig::offline(""));
+            let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
+            let shutdown = CancellationToken::new();
+
+            let push = neighbours.spawn(async move {
+                let pusher = GrpcTransport::new(&GrpcConfig::client(&transform_endpoint))
+                    .await
+                    .expect("push client");
+                pusher.send("elastic_in", Bytes::from(wire)).await
+            });
+            let delivered = neighbours.spawn(async move {
+                drain(&loader, 3)
+                    .await
+                    .iter()
+                    .map(|record| record.payload.len() as u64)
+                    .sum::<u64>()
+            });
+
+            let run = service::run_loop(&config, &consumer, &sink, &shutdown, &metrics, None);
+            let stop = async {
+                let sent = push.await.expect("push task");
+                assert!(matches!(sent, scalo::transport::SendResult::Ok), "{sent:?}");
+                let bytes = delivered.await.expect("drain task");
+                shutdown.cancel();
+                bytes
+            };
+            let (result, bytes) = tokio::join!(run, stop);
+            result.expect("service loop returned an error");
+            bytes
+        })
+    });
+
+    assert!(delivered_bytes > 0, "the sink delivered nothing");
+    // (records received, wire records received, bytes received, bytes sent)
+    assert_eq!(
+        (
+            capture.total("records_received_total"),
+            capture.total("transport_received_events_total"),
+            capture.total("transport_received_bytes_total"),
+            capture.total("transport_sent_bytes_total"),
+        ),
+        (3, 1, wire_bytes, delivered_bytes),
+        "three events in one pushed record, and each byte, read once"
+    );
 }
 
 #[tokio::test]
