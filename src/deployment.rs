@@ -313,11 +313,10 @@ fn capabilities() -> Vec<Capability> {
                     .required()
                     .description("Topics to consume."),
             )
-            .field(
-                FieldSpec::string("sink.topic")
-                    .required()
-                    .description("Topic the normalised events are produced to."),
-            )
+            .field(FieldSpec::string("sink.topic").required().description(
+                "Topic the normalised events are produced to, and on the direct \
+                         transport the routing key every push carries.",
+            ))
             .field(
                 FieldSpec::int("source.max_batch_bytes")
                     .default_value(16_777_216)

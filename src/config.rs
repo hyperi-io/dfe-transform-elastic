@@ -158,11 +158,12 @@ pub struct SourceConfig {
 /// Outbound configuration.
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct SinkConfig {
-    /// Topic to produce to.
+    /// Where the events land: the topic produced to on the bus, and the
+    /// routing key every push carries on direct. Required on both.
     pub topic: String,
 
     /// Which transport the outbound side uses: `bus` produces to `topic`,
-    /// `direct` pushes to `endpoint`.
+    /// `direct` pushes to `endpoint` with `topic` as the routing key.
     #[serde(default)]
     pub transport: Transport,
 
@@ -371,13 +372,14 @@ mod tests {
         assert_eq!(parsed.sink.endpoint, "http://dfe-loader:6000");
     }
 
-    /// A direct deployment names no brokers, group or topics, and is valid.
+    /// A direct deployment names no brokers, group or source topics, and is
+    /// valid. It still names a sink topic, which is its routing key.
     #[test]
     fn the_direct_transport_round_trips_through_yaml() {
         let parsed: Config = serde_yaml_ng::from_str(
             "source:\n  name: filebeat.okta.default\n  transport: direct\n  \
              listen: 0.0.0.0:6000\n  topics: []\n  group_id: ''\n  brokers: []\n\
-             sink:\n  topic: ''\n  transport: direct\n  endpoint: http://loader:6000\n",
+             sink:\n  topic: okta_load\n  transport: direct\n  endpoint: http://loader:6000\n",
         )
         .expect("config parses with the direct transport");
         assert!(parsed.source.transport.is_direct());

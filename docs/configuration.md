@@ -26,7 +26,9 @@ Each side carries a `transport` of `bus` (the default) or `direct`, and in a con
     DFE_TRANSFORM_ELASTIC_SOURCE_LISTEN=0.0.0.0:6000
     DFE_TRANSFORM_ELASTIC_SINK_ENDPOINT=http://dfe-loader:6000
 
-On `direct`, `source.brokers`, `source.group_id` and `sink.topic` are not required, and an instance with empty topics does not idle, because the listener is the work. The fleet routes over the bus until dfe-infra flips the selector (issue #19).
+On `direct`, `source.brokers`, `source.group_id` and `source.topics` may be empty, and an instance with empty topics does not idle, because the listener is the work. Their keys must still be present, because a `--config` file is the whole configuration. The fleet routes over the bus until dfe-infra flips the selector (issue #19).
+
+`sink.topic` is required on both transports. On `direct` it is the routing key every push carries, and dfe-loader routes a record with no `_source` on that key, so a push without one lands under the loader's `default_topic`.
 
 The listener speaks plaintext gRPC with no authentication of its own, and the push to the endpoint travels in the clear. Both belong behind the mesh route dfe-infra provisions for them, never on an interface reachable from outside the cluster.
 

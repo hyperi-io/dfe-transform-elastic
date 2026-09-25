@@ -123,6 +123,9 @@ async fn a_record_pushed_at_the_listener_comes_back_out_of_it() {
     }
 }
 
+/// The sink topic, in the `{source}_load` shape dfe-loader derives a table from.
+const SINK_TOPIC: &str = "okta_load";
+
 /// A direct deployment: no brokers, no group, no topics.
 ///
 /// `work_state` does not idle on empty topics here, because on this arm the
@@ -142,7 +145,7 @@ fn direct_config(listen: &str, endpoint: &str) -> Config {
             acknowledgements: scalo::transport::AcknowledgementsConfig::default(),
         },
         sink: SinkConfig {
-            topic: "elastic_out".into(),
+            topic: SINK_TOPIC.into(),
             transport: Transport::Direct,
             endpoint: endpoint.into(),
             brokers: None,
@@ -244,12 +247,12 @@ async fn a_batch_pushed_over_grpc_comes_out_the_grpc_sink_transformed() {
 
     let mut events: Vec<serde_json::Value> = Vec::new();
     for record in drain(&loader, 3).await {
-        // `publish` hands `sink.topic` to the sender whichever transport
-        // sits underneath, and the listener carries it as the routing key.
+        // dfe-loader routes a record with no `_source` on this key, and one
+        // that arrives without it lands under the loader's default topic.
         assert_eq!(
             record.key.as_deref(),
-            Some("elastic_out"),
-            "the sink topic must reach the wire"
+            Some(SINK_TOPIC),
+            "the sink topic must reach the listener as the routing key"
         );
         for line in String::from_utf8_lossy(&record.payload).lines() {
             if !line.trim().is_empty() {

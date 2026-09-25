@@ -6597,7 +6597,7 @@
         "name": "sink.topic",
         "type": "string",
         "required": true,
-        "description": "Topic the normalised events are produced to."
+        "description": "Topic the normalised events are produced to, and on the direct transport the routing key every push carries."
       },
       {
         "name": "source.max_batch_bytes",

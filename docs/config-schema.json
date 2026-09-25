@@ -179,11 +179,11 @@
       "type": "object",
       "properties": {
         "topic": {
-          "description": "Topic to produce to.",
+          "description": "Where the events land: the topic produced to on the bus, and the\nrouting key every push carries on direct. Required on both.",
           "type": "string"
         },
         "transport": {
-          "description": "Which transport the outbound side uses: `bus` produces to `topic`,\n`direct` pushes to `endpoint`.",
+          "description": "Which transport the outbound side uses: `bus` produces to `topic`,\n`direct` pushes to `endpoint` with `topic` as the routing key.",
           "$ref": "#/$defs/Transport",
           "default": "bus"
         },
