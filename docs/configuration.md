@@ -34,6 +34,8 @@ The listener speaks plaintext gRPC with no authentication of its own, and the pu
 
 `source.acknowledgements.enabled` (default `true`) holds the source's acknowledgement -- the Kafka offset commit on the bus, the answer to a push on direct -- until every event built from a record is delivered, or dropped and counted. A sink outage is then waited out, and a crash redelivers rather than loses. `false` acknowledges at receipt, before the transform runs, and a crash loses what was in flight. The flat env form is `DFE_TRANSFORM_ELASTIC_SOURCE_ACKNOWLEDGEMENTS_ENABLED`.
 
+On a direct source a push is held at most 18 s, so every send it waits on gives up at 15 s: a direct sink's gRPC deadline, and a bus sink's `message.timeout.ms` (librdkafka's default is 300 s).
+
 ## A section scalo resolves for itself cannot be set from the file
 
 `scaling` is the one that bites. The container starts with `--config`, and scalo reads `scaling` from its own cascade, so a `scaling:` block in the named file reaches nothing and the defaults stand. Set `DFE_TRANSFORM_ELASTIC_SCALING__ENABLED` or `DFE_TRANSFORM_ELASTIC_SCALING__MEMORY_GATE_THRESHOLD` instead. The effective values are logged once at startup, with whether each came from the cascade or the default.

@@ -171,6 +171,8 @@ The loop is scalo's `BatchEngine` pipeline (`service.rs::run_loop`): process is 
 
 A sink that refuses for now is retried for as long as it refuses, with the block held and nothing after it committed, so a broker outage is waited out rather than crashed on. Only a refusal no retry can fix stops the loop, with the block unreleased for the restarted consumer to read again. The direct listener is built armed, so a push that lands before the loop starts is held rather than answered at enqueue.
 
+A push is held at most 18 s (`PUSH_MAX_HOLD`), inside the 20 s the stage in front waits, and the bytes held are leased on the memory guard. Every send the held block waits on gives up sooner, at 15 s (`NEXT_HOP_SEND_TIMEOUT_MS`): a direct sink's gRPC deadline always, and on the bus the producer's `message.timeout.ms` while a direct source holds its pushes. A send that outlasted the hold would land after the push was answered `unavailable`, so the retry it provokes is a duplicate.
+
 All four `SendResult` variants are handled, and three of them are not delivery:
 
 | Variant | Meaning | Response |
@@ -178,7 +180,7 @@ All four `SendResult` variants are handled, and three of them are not delivery:
 | `Ok` | The broker accepted it | Count as delivered |
 | `Backpressured` | A full producer queue, or a broker or listener out of reach | Retried until the sink takes it |
 | `Fatal` | Recoverable (a timeout): as `Backpressured`. Otherwise authorisation, a missing topic, a closed transport | Stop, block unreleased |
-| `FilteredDlq` | The sink transport dead-lettered the send | Dropped and counted on `send_filtered_dlq_total`, never counted delivered |
+| `FilteredDlq` | The sink transport dead-lettered the send | Dropped and counted on `send_filtered_dlq_total` and `records_filtered_total`, block released as dropped, never counted delivered |
 
 A record the sink transport would refuse -- over its `message.max.bytes`, or matched by an outbound `dlq` filter -- is screened out by the pipeline before the send. The service has no DLQ, so it is dropped and counted on `pipeline_dead_letters_dropped_total{reason}`, and its block is released rather than held behind a record no retry can deliver.
 

@@ -9,8 +9,9 @@
 //! assembly, one record per event on the wire, and the offset commit held
 //! until the block is delivered.
 //!
-//! Ignored by default. A test that reaches a broker must be asked for:
-//! `cargo test --test broker -- --ignored`.
+//! They run by default, on a live broker named by `KAFKA_BROKERS` or else an
+//! ephemeral container. With neither, a test skips locally and FAILS when `CI`
+//! is set, so CI cannot report green on a suite that tested nothing.
 
 // The whole file drives the Kafka service loop, which the `kafka` feature
 // gates. Without it there is no `service` module and no scalo Kafka transport.
@@ -296,7 +297,6 @@ async fn drain_uuids(
 }
 
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
 async fn a_batch_survives_in_transform_out() {
     let broker = broker_or_skip!("round-trip");
     let source_topic = common::topic("src");
@@ -380,7 +380,6 @@ async fn a_batch_survives_in_transform_out() {
 /// Offsets must move only after a successful send. A second service with the
 /// same group must therefore find nothing left to read.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
 async fn offsets_commit_after_the_batch_is_sent() {
     let broker = broker_or_skip!("commit-after-send");
     let source_topic = common::topic("commit-src");
@@ -428,7 +427,6 @@ async fn offsets_commit_after_the_batch_is_sent() {
 /// The other tests in this file run a `batch_size` of 16 and never touched the
 /// ceiling; this one uses the default and seeds several MB.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
 async fn a_batch_larger_than_one_kafka_record_arrives() {
     /// 2,000 okta events is roughly 4 MB in and more out -- several records at
     /// the 900 KB budget, without the elapsed time of a full 20,000.
@@ -493,7 +491,6 @@ async fn a_batch_larger_than_one_kafka_record_arrives() {
 /// up after a fixed number of attempts -- eight, over about 25 seconds of
 /// backoff -- exits long before the broker returns.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
 async fn a_sink_outage_longer_than_a_retry_budget_is_held_not_crashed() {
     const EVENTS: usize = 5;
     const OUTAGE: Duration = Duration::from_secs(90);
@@ -583,7 +580,6 @@ async fn a_sink_outage_longer_than_a_retry_budget_is_held_not_crashed() {
 /// so the pipeline's screen takes that event out before the send while the
 /// events beside it go through.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
 async fn a_record_the_sink_refuses_is_counted_not_delivered() {
     const KEPT: usize = 3;
     /// Below `sink.max_message_bytes`, so the service's own budget lets the
@@ -741,7 +737,6 @@ async fn drain_records(
 /// and a record without `_source` lands in the catch-all table. Both are silent
 /// everywhere upstream of a row count.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
 async fn a_receiver_batch_reaches_the_sink_as_one_routable_record_per_event() {
     const EVENTS: usize = 6;
 
@@ -858,7 +853,6 @@ fn incompressible(len: usize) -> Vec<u8> {
 /// The producer allows 16 MiB and compresses with lz4, and the broker judges
 /// the compressed batch, so only an incompressible record reaches it at size.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
 async fn the_producer_refuses_a_record_above_one_megabyte() {
     let broker = broker_or_skip!("oversize-record");
     let topic = common::topic("oversize-record");
@@ -877,7 +871,6 @@ async fn the_producer_refuses_a_record_above_one_megabyte() {
 /// The container this suite starts must carry a traceable name and the suite
 /// label, so an operator can tell what left it behind.
 #[tokio::test(flavor = "multi_thread")]
-#[ignore = "reaches a Kafka broker. Run with `cargo test --test broker -- --ignored`."]
 async fn container_is_named_and_labelled() {
     let broker = broker_or_skip!("container-hygiene");
     if !broker.is_container() {

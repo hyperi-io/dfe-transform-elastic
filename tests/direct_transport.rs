@@ -6,7 +6,7 @@
 //! A record pushed at a listener comes back out of its own `recv`, with no
 //! broker anywhere. That is the transport half of issue #19: it proves the
 //! `grpc` feature wires scalo's listener and client through to this crate, and
-//! it needs no container, so it runs by default rather than behind `#[ignore]`.
+//! it needs no container.
 //!
 //! The batch loop runs over this transport too: the end-to-end test below
 //! pushes at the transform's listener and reads transformed events off a
