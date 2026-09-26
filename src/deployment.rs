@@ -17,6 +17,10 @@ use scalo::geoip_download::{AutoDownloadConfig, GeoIpConfig};
 
 use crate::config::{Config, SinkConfig, SourceConfig, Transport};
 
+/// The `source.transport` values that bind the Push listener: the name
+/// `Transport::Direct` serialises to, and the alias dfe-engine renders.
+const PUSH_TRANSPORTS: [&str; 2] = ["direct", "grpc"];
+
 /// Build the deployment contract for dfe-transform-elastic.
 #[must_use]
 pub fn contract() -> DeploymentContract {
@@ -38,10 +42,10 @@ pub fn contract() -> DeploymentContract {
         config_mount_path: "/etc/dfe-transform-elastic/config.yaml".into(),
         image_registry: "ghcr.io/hyperi-io".into(),
         base_image: base_image.clone(),
-        // Published only on the direct transport, the one arm that binds a Push listener.
+        // Published only on the direct transport, under either of its names: the one arm that binds a Push listener.
         extra_ports: vec![
             PortContract::tcp("push", 6000)
-                .when_equals("config.source.transport", "direct")
+                .when_one_of("config.source.transport", PUSH_TRANSPORTS)
                 .bound_from("source.listen"),
         ],
         unbound_listen_paths: vec![],
@@ -617,7 +621,8 @@ mod tests {
     }
 
     /// The push port follows `source.transport`: off on the shipped bus default,
-    /// on for direct, and the address it serves agrees with its number.
+    /// on for every name the config reads as direct and for no other, and the
+    /// address it serves agrees with its number.
     #[test]
     fn the_push_port_exists_on_the_direct_transport_only() {
         let mut c = contract();
@@ -633,10 +638,21 @@ mod tests {
         let mut config = c.default_config.clone().expect("default config");
         assert_eq!(gate.holds_in(&config), Some(false));
 
+        for name in ["direct", "grpc", "bus", "kafka"] {
+            let transport: Transport =
+                serde_json::from_value(serde_json::Value::from(name)).expect("a transport name");
+            config["source"]["transport"] = serde_json::Value::from(name);
+            assert_eq!(
+                gate.holds_in(&config),
+                Some(transport.is_direct()),
+                "transport {name}"
+            );
+        }
+        config["source"]["transport"] = serde_json::Value::from("tcp");
+        assert_eq!(gate.holds_in(&config), Some(false));
+
         config["source"]["transport"] =
             serde_json::to_value(Transport::Direct).expect("a transport serialises");
-        assert_eq!(gate.holds_in(&config), Some(true));
-
         c.default_config = Some(config);
         let undeclared = c.undeclared_listeners();
         assert!(undeclared.is_empty(), "{undeclared:?}");
@@ -792,6 +808,123 @@ mod tests {
             "nothing mounts {data_dir}"
         );
         assert!(deployment.contains("emptyDir"), "no writable volume at all");
+    }
+
+    /// True when this path answers `helm version`.
+    fn helm_runs(bin: &std::path::Path) -> bool {
+        std::process::Command::new(bin)
+            .arg("version")
+            .output()
+            .is_ok_and(|out| out.status.success())
+    }
+
+    /// Download a pinned helm into the gitignored cache and return its path.
+    ///
+    /// The script's own progress lines are replayed so a cold fetch is visible
+    /// in the test output.
+    fn fetch_helm() -> Result<std::path::PathBuf, String> {
+        let script = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("scripts/fetch-helm.sh");
+        let out = std::process::Command::new("bash")
+            .arg(&script)
+            .output()
+            .map_err(|err| format!("{} did not run: {err}", script.display()))?;
+        let log = String::from_utf8_lossy(&out.stderr);
+        if !out.status.success() {
+            return Err(format!("{} failed:\n{log}", script.display()));
+        }
+        eprint!("{log}");
+
+        let stdout = String::from_utf8_lossy(&out.stdout);
+        let printed = stdout
+            .trim_end()
+            .lines()
+            .next_back()
+            .ok_or_else(|| format!("{} printed no helm path", script.display()))?;
+        let bin = std::path::PathBuf::from(printed);
+        if !helm_runs(&bin) {
+            return Err(format!("{} is not a working helm", bin.display()));
+        }
+        Ok(bin)
+    }
+
+    /// A usable helm, or the reason this host has none.
+    ///
+    /// The render check below is the only proof the chart publishes the push
+    /// port where the binary binds it, so a runner without helm fetches one
+    /// instead of letting the check disappear with its environment.
+    fn helm_binary() -> Result<&'static std::path::PathBuf, &'static str> {
+        static HELM: std::sync::OnceLock<Result<std::path::PathBuf, String>> =
+            std::sync::OnceLock::new();
+        HELM.get_or_init(|| {
+            if helm_runs(std::path::Path::new("helm")) {
+                return Ok(std::path::PathBuf::from("helm"));
+            }
+            fetch_helm()
+        })
+        .as_ref()
+        .map_err(String::as_str)
+    }
+
+    /// Render the committed chart under `--set` overrides, returning helm's
+    /// stderr when the render is refused.
+    fn render_chart(helm_bin: &std::path::Path, overrides: &[&str]) -> Result<String, String> {
+        let mut helm = std::process::Command::new(helm_bin);
+        helm.arg("template").arg("guard").arg(chart_dir());
+        for set in overrides {
+            helm.arg("--set").arg(set);
+        }
+        let out = helm.output().expect("helm runs");
+        if out.status.success() {
+            Ok(String::from_utf8_lossy(&out.stdout).into_owned())
+        } else {
+            Err(String::from_utf8_lossy(&out.stderr).into_owned())
+        }
+    }
+
+    /// A usable helm, or `None` off CI when none could be had.
+    fn helm_or_skip() -> Option<&'static std::path::PathBuf> {
+        match helm_binary() {
+            Ok(bin) => Some(bin),
+            Err(reason) => {
+                assert!(
+                    std::env::var_os("CI").is_none(),
+                    "helm is missing on a CI runner and could not be fetched, so \
+                     the chart render goes unchecked: {reason}"
+                );
+                eprintln!("skipping chart render checks: {reason}");
+                None
+            }
+        }
+    }
+
+    /// The Service and Deployment publish the push port only where the binary
+    /// binds it, which is the direct transport under either of its names --
+    /// dfe-engine renders `grpc`.
+    #[test]
+    fn the_push_port_renders_only_on_the_direct_transport() {
+        let Some(helm_bin) = helm_or_skip() else {
+            return;
+        };
+
+        for name in ["direct", "grpc"] {
+            let set = format!("config.source.transport={name}");
+            let rendered = render_chart(helm_bin, &[&set])
+                .unwrap_or_else(|err| panic!("helm template failed:\n{err}"));
+            assert!(
+                rendered.contains("containerPort: 6000") && rendered.contains("port: 6000"),
+                "transport {name} binds the push listener, so port 6000 must render:\n{rendered}"
+            );
+        }
+
+        for name in ["bus", "kafka"] {
+            let set = format!("config.source.transport={name}");
+            let rendered = render_chart(helm_bin, &[&set])
+                .unwrap_or_else(|err| panic!("helm template failed:\n{err}"));
+            assert!(
+                !rendered.contains("containerPort: 6000") && !rendered.contains("port: 6000"),
+                "transport {name} is the bus, so no port 6000 may render:\n{rendered}"
+            );
+        }
     }
 
     #[test]

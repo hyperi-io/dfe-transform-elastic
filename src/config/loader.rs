@@ -355,6 +355,52 @@ mod tests {
         );
     }
 
+    /// dfe-engine renders a side's transport by its mechanism, so a config file
+    /// naming `grpc` or `kafka` must load through `--config` as the side it
+    /// names, not stop the process.
+    #[test]
+    fn a_config_file_may_name_the_transport_grpc_or_kafka() {
+        let direct = load_file(
+            "source:\n  name: filebeat.okta.default\n  transport: grpc\n  \
+             listen: 0.0.0.0:6000\n  topics: []\n  group_id: ''\n  brokers: []\n\
+             sink:\n  topic: okta_load\n  transport: grpc\n  endpoint: http://dfe-loader:6000\n",
+        )
+        .expect("an engine-rendered grpc config loads");
+        assert_eq!(direct.source.transport, crate::config::Transport::Direct);
+        assert_eq!(direct.sink.transport, crate::config::Transport::Direct);
+        direct
+            .validate()
+            .expect("and validates as the direct transport");
+
+        let bus = load_file(&FILE_BASE.replace("topics: [in]", "transport: kafka\n  topics: [in]"))
+            .expect("an engine-rendered kafka config loads");
+        assert_eq!(bus.source.transport, crate::config::Transport::Bus);
+
+        // The file still refuses a name it does not know.
+        assert!(
+            load_file(&FILE_BASE.replace("topics: [in]", "transport: tcp\n  topics: [in]"))
+                .is_err()
+        );
+
+        // An alias is a value, not a key, so it is never warned about as unread.
+        let aliased = format!(
+            "{}  transport: kafka\n",
+            FILE_BASE.replace("topics: [in]", "transport: grpc\n  topics: [in]")
+        );
+        assert!(
+            ignored_in(&aliased).is_empty(),
+            "{:?}",
+            ignored_in(&aliased)
+        );
+
+        // Written back, a transport always takes its own name.
+        assert_eq!(
+            serde_json::to_value(direct.source.transport).unwrap(),
+            "direct"
+        );
+        assert_eq!(serde_json::to_value(bus.source.transport).unwrap(), "bus");
+    }
+
     /// Collect the ignored keys a file would be warned about.
     fn ignored_in(body: &str) -> Vec<String> {
         let doc: serde_yaml_ng::Value = serde_yaml_ng::from_str(body).expect("the body parses");

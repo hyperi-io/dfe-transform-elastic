@@ -50,14 +50,44 @@ use serde::{Deserialize, Serialize};
 /// `bus` is Kafka between the stages; `direct` is a scalo Push listener inbound
 /// and a gRPC client outbound, needing no broker at all. The record and the
 /// transform are identical either way -- only who hands the record over changes.
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+/// `kafka` and `grpc` are read as the same two, the names dfe-engine renders,
+/// and a config always writes `bus` and `direct` back.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Transport {
     /// Kafka topics.
     #[default]
+    #[serde(alias = "kafka")]
     Bus,
     /// A scalo Push listener inbound, a gRPC client outbound.
+    #[serde(alias = "grpc")]
     Direct,
+}
+
+// Written by hand because the derive lists only the canonical names, and a
+// validator must take the `grpc` and `kafka` an engine render carries.
+impl JsonSchema for Transport {
+    fn schema_name() -> std::borrow::Cow<'static, str> {
+        "Transport".into()
+    }
+
+    fn json_schema(_: &mut schemars::SchemaGenerator) -> schemars::Schema {
+        schemars::json_schema!({
+            "description": "Which transport a side of the service uses.\n\n`bus` is Kafka between the stages; `direct` is a scalo Push listener inbound and a gRPC client outbound, needing no broker at all. The record and the transform are identical either way -- only who hands the record over changes. `kafka` and `grpc` are read as the same two, the names dfe-engine renders, and a config always writes `bus` and `direct` back.",
+            "oneOf": [
+                {
+                    "description": "Kafka topics.",
+                    "type": "string",
+                    "enum": ["bus", "kafka"]
+                },
+                {
+                    "description": "A scalo Push listener inbound, a gRPC client outbound.",
+                    "type": "string",
+                    "enum": ["direct", "grpc"]
+                }
+            ]
+        })
+    }
 }
 
 impl Transport {

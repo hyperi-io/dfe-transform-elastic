@@ -20,7 +20,7 @@ It covers every `source.*` and `sink.*` field. `geoip` is not among them: it is 
 
 ## `transport` selects the bus or a direct push, per side
 
-Each side carries a `transport` of `bus` (the default) or `direct`, and in a config file those two spellings are the only ones accepted. The flat env form also takes `kafka` for `bus` and `grpc` for `direct`, and an unrecognised env value keeps the configured transport rather than moving the deployment. Both transports are compiled in by default and both are constructed: on `direct` the service binds a scalo Push listener on `source.listen` (default `0.0.0.0:6000`) and pushes to `sink.endpoint` (default `http://dfe-loader:6000`). The listener answers a push only once its events are delivered, so a refused push is the upstream sender's to retry.
+Each side carries a `transport` of `bus` (the default) or `direct`. A config file and the flat env form also take `kafka` for `bus` and `grpc` for `direct`, the names dfe-engine renders, and a config always writes `bus` and `direct` back. A config file refuses any other name, and an unrecognised env value keeps the configured transport rather than moving the deployment. The chart publishes the push port 6000 when `source.transport` is `direct` or `grpc`. Both transports are compiled in by default and both are constructed: on `direct` the service binds a scalo Push listener on `source.listen` (default `0.0.0.0:6000`) and pushes to `sink.endpoint` (default `http://dfe-loader:6000`). The listener answers a push only once its events are delivered, so a refused push is the upstream sender's to retry.
 
     DFE_TRANSFORM_ELASTIC_SOURCE_TRANSPORT=direct
     DFE_TRANSFORM_ELASTIC_SOURCE_LISTEN=0.0.0.0:6000

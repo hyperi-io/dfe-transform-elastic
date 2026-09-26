@@ -139,16 +139,18 @@ $defs:
     description: |-
       Which transport a side of the service uses.
 
-      `bus` is Kafka between the stages; `direct` is a scalo Push listener inbound
-      and a gRPC client outbound, needing no broker at all. The record and the
-      transform are identical either way -- only who hands the record over changes.
+      `bus` is Kafka between the stages; `direct` is a scalo Push listener inbound and a gRPC client outbound, needing no broker at all. The record and the transform are identical either way -- only who hands the record over changes. `kafka` and `grpc` are read as the same two, the names dfe-engine renders, and a config always writes `bus` and `direct` back.
     oneOf:
     - description: Kafka topics.
       type: string
-      const: bus
+      enum:
+      - bus
+      - kafka
     - description: A scalo Push listener inbound, a gRPC client outbound.
       type: string
-      const: direct
+      enum:
+      - direct
+      - grpc
   EnvelopeSetting:
     description: |-
       What the operator said about the envelope.

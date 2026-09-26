@@ -19,9 +19,12 @@
       "port": 6000,
       "protocol": "TCP",
       "when": {
-        "kind": "equals",
+        "kind": "one_of",
         "path": "config.source.transport",
-        "value": "direct"
+        "values": [
+          "direct",
+          "grpc"
+        ]
       },
       "bound_from": "source.listen"
     }
@@ -259,17 +262,23 @@
         ]
       },
       "Transport": {
-        "description": "Which transport a side of the service uses.\n\n`bus` is Kafka between the stages; `direct` is a scalo Push listener inbound\nand a gRPC client outbound, needing no broker at all. The record and the\ntransform are identical either way -- only who hands the record over changes.",
+        "description": "Which transport a side of the service uses.\n\n`bus` is Kafka between the stages; `direct` is a scalo Push listener inbound and a gRPC client outbound, needing no broker at all. The record and the transform are identical either way -- only who hands the record over changes. `kafka` and `grpc` are read as the same two, the names dfe-engine renders, and a config always writes `bus` and `direct` back.",
         "oneOf": [
           {
             "description": "Kafka topics.",
             "type": "string",
-            "const": "bus"
+            "enum": [
+              "bus",
+              "kafka"
+            ]
           },
           {
             "description": "A scalo Push listener inbound, a gRPC client outbound.",
             "type": "string",
-            "const": "direct"
+            "enum": [
+              "direct",
+              "grpc"
+            ]
           }
         ]
       },
