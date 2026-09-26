@@ -50,6 +50,10 @@ enum AppCommand {
     /// Print the shipped default configuration as YAML.
     #[command(name = "emit-config")]
     EmitConfig,
+
+    /// Print the source catalogue (`sources.yaml`) dfe-engine offers.
+    #[command(name = "emit-catalogue")]
+    EmitCatalogue,
 }
 
 impl App {
@@ -83,6 +87,10 @@ impl App {
             }
             AppCommand::EmitConfig => {
                 print!("{}", crate::deployment::default_config_yaml());
+                Some(0)
+            }
+            AppCommand::EmitCatalogue => {
+                print!("{}", crate::deployment::SOURCE_CATALOGUE);
                 Some(0)
             }
             AppCommand::Standard(_) => None,
