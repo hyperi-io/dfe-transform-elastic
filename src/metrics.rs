@@ -38,7 +38,8 @@ pub struct TransformMetrics {
     /// Events whose transform returned an error. Counted, not fatal.
     pub events_errored: Counter,
 
-    /// NDJSON lines that would not parse as JSON. The line is skipped.
+    /// Input refused as not JSON and dead-lettered: a record no line of which
+    /// parsed, or one line of a record that otherwise did.
     pub parse_errors: Counter,
 
     /// Payloads that were not valid UTF-8 and were decoded with U+FFFD
@@ -117,7 +118,7 @@ impl TransformMetrics {
             ),
             parse_errors: manager.counter(
                 "parse_errors_total",
-                "NDJSON lines that would not parse as JSON",
+                "Input refused as not JSON and dead-lettered: a whole record, or one bad line of one",
             ),
             lossy_payloads: manager.counter(
                 "lossy_payloads_total",

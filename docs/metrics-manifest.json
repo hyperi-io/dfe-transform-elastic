@@ -706,7 +706,7 @@
     {
       "name": "parse_errors_total",
       "type": "counter",
-      "description": "NDJSON lines that would not parse as JSON",
+      "description": "Input refused as not JSON and dead-lettered: a whole record, or one bad line of one",
       "unit": "",
       "labels": [],
       "group": "custom"

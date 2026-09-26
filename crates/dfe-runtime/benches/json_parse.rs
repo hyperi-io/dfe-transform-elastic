@@ -75,10 +75,9 @@ fn parse(c: &mut Criterion) {
 
 /// The Kafka ingestion path, which is a different question again.
 ///
-/// `Event::from_bytes` builds a simd-json `OwnedValue` and then converts it to
-/// a `serde_json::Value` through `serde_json::to_value` -- two complete trees
-/// for one document. Whether that is worth it against parsing the bytes
-/// directly is what this asks.
+/// A simd-json `OwnedValue` converted to a `serde_json::Value` through
+/// `serde_json::to_value` is two complete trees for one document. Whether that
+/// is worth it against parsing the bytes directly is what this asks.
 fn ingest(c: &mut Criterion) {
     let mut group = c.benchmark_group("json_ingest");
 

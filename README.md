@@ -81,6 +81,8 @@ come through unchanged. What each family carries, and
 what a payload with no marker does, are in
 [docs/architecture.md](docs/architecture.md#envelopes-the-same-pipeline-a-different-wrapper).
 
+JSON is the only payload format. MessagePack, supported in DFE/XDR 2.0 and 2.1, is deprecated in DFE 2.2 and no longer accepted: the JSON path (SIMD parsing with sonic-rs, zstd on the wire) is fast enough that MessagePack gave no CPU saving.
+
 Each side also carries a `transport`: `bus`, the default, is Kafka, and
 `direct` is a scalo Push listener inbound and a gRPC push outbound. Where the
 values come from, which env spelling reaches a `--config` file, and which
@@ -95,8 +97,7 @@ rather than assumed:
 - **Invalid UTF-8** is decoded with U+FFFD replacements, matching what Beats
   itself substitutes for a file it cannot decode. The payload survives; the
   substitution is counted on `lossy_payloads_total`.
-- **A line that is not valid JSON** is skipped and counted on
-  `parse_errors_total`. The rest of the payload is unaffected.
+- **Input that is not JSON** is refused and dead-lettered with the reason `payload is not JSON`, and counted on `parse_errors_total`. A record no line of which parses -- MessagePack, or any other binary -- is refused whole, with the bytes the producer sent. In a record that is otherwise JSON, only the bad line is refused and the events beside it still go. This service configures no DLQ, so the dead letter is dropped and counted on `pipeline_dead_letters_dropped_total{reason="dead_letter"}`, and its record's source is released.
 - **An event whose transform errors** is counted on `events_errored_total` and
   left out of the output. The batch continues.
 - **An event too large for one Kafka record** is dropped and counted on

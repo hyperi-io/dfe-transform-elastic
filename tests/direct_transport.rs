@@ -225,7 +225,7 @@ async fn a_batch_pushed_over_grpc_comes_out_the_grpc_sink_transformed() {
     let consumer = AnyReceiver::Grpc(transform_listener);
     let manager = MetricsManager::new("dfe-transform-elastic-test");
     let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
-    let engine = BatchEngine::new(service::engine_config(&config));
+    let engine = service::with_dead_letters(BatchEngine::new(service::engine_config(&config)));
 
     let shutdown = CancellationToken::new();
     let loop_shutdown = shutdown.clone();
@@ -382,7 +382,8 @@ fn a_pushed_batch_is_counted_once_by_the_transform() {
             let consumer = AnyReceiver::Grpc(transform_listener);
             let manager = MetricsManager::with_config(scalo::metrics::MetricsConfig::offline(""));
             let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
-            let engine = BatchEngine::new(service::engine_config(&config));
+            let engine =
+                service::with_dead_letters(BatchEngine::new(service::engine_config(&config)));
             let shutdown = CancellationToken::new();
 
             let push = neighbours.spawn(async move {
@@ -426,6 +427,188 @@ fn a_pushed_batch_is_counted_once_by_the_transform() {
         ),
         (3, 1, wire_bytes, delivered_bytes),
         "three events in one pushed record, and each byte, read once"
+    );
+}
+
+/// `{"message": "hello", "n": 1}` as `MessagePack`: a fixmap of two entries,
+/// two fixstr keys, a fixstr value and a positive fixint.
+const MSGPACK_MAP: &[u8] = &[
+    0x82, 0xa7, b'm', b'e', b's', b's', b'a', b'g', b'e', 0xa5, b'h', b'e', b'l', b'l', b'o', 0xa1,
+    b'n', 0x01,
+];
+
+/// How each push was answered, and how many events reached the sink.
+struct Pushed {
+    answers: Vec<scalo::transport::SendResult>,
+    delivered: usize,
+}
+
+/// Push each payload in turn at a transform running on the engine `engine`
+/// builds, and read `expected` events off the downstream listener.
+///
+/// The service runs on this thread under `capture`, and the pusher and the
+/// listener on a runtime of their own, so only the service's series are read.
+fn push_through(
+    capture: &SeriesCapture,
+    engine: impl FnOnce(&Config) -> BatchEngine,
+    payloads: Vec<Vec<u8>>,
+    expected: usize,
+) -> Pushed {
+    let neighbours = tokio::runtime::Builder::new_multi_thread()
+        .worker_threads(1)
+        .enable_all()
+        .build()
+        .expect("neighbour runtime");
+    let (loader_endpoint, loader) = neighbours.block_on(start_listener());
+
+    let service = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .expect("service runtime");
+    metrics::with_local_recorder(capture, || {
+        service.block_on(async {
+            let (transform_endpoint, transform_listener) = start_listener().await;
+            let sink = AnySender::Grpc(
+                GrpcTransport::new(&GrpcConfig::client(&loader_endpoint))
+                    .await
+                    .expect("sink client"),
+            );
+            let listen = transform_endpoint
+                .strip_prefix("http://")
+                .expect("endpoint is http")
+                .to_string();
+            let config = direct_config(&listen, &loader_endpoint);
+            let consumer = AnyReceiver::Grpc(transform_listener);
+            let manager = MetricsManager::with_config(scalo::metrics::MetricsConfig::offline(""));
+            let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
+            let engine = engine(&config);
+            let shutdown = CancellationToken::new();
+
+            let push = neighbours.spawn(async move {
+                let pusher = GrpcTransport::new(&GrpcConfig::client(&transform_endpoint))
+                    .await
+                    .expect("push client");
+                let mut answers = Vec::new();
+                for payload in payloads {
+                    answers.push(pusher.send("elastic_in", Bytes::from(payload)).await);
+                }
+                answers
+            });
+            let delivered = neighbours.spawn(async move { drain(&loader, expected).await.len() });
+
+            let run = service::run_loop(
+                &config, &engine, &consumer, &sink, &shutdown, &metrics, None,
+            );
+            let stop = async {
+                let answers = push.await.expect("push task");
+                let delivered = delivered.await.expect("drain task");
+                shutdown.cancel();
+                Pushed { answers, delivered }
+            };
+            let (result, pushed) = tokio::join!(run, stop);
+            result.expect("a refusal must not stop the loop");
+            pushed
+        })
+    })
+}
+
+/// The engine the service runs, with no DLQ configured.
+fn service_engine(config: &Config) -> BatchEngine {
+    service::with_dead_letters(BatchEngine::new(service::engine_config(config)))
+}
+
+/// Input that is not JSON is a counted refusal, never a silent skip. With no
+/// DLQ it is dropped and counted, its push is answered, and the JSON pushed
+/// after it still goes.
+#[test]
+fn a_messagepack_push_is_refused_and_counted_without_a_dlq() {
+    let capture = SeriesCapture::default();
+    let pushed = push_through(
+        &capture,
+        service_engine,
+        vec![MSGPACK_MAP.to_vec(), okta_events(1)],
+        1,
+    );
+
+    for answer in &pushed.answers {
+        assert!(
+            matches!(answer, scalo::transport::SendResult::Ok),
+            "a refused push is still answered: {answer:?}"
+        );
+    }
+    assert_eq!(pushed.delivered, 1, "the JSON pushed after it still goes");
+    // (refused as not JSON, dead letters dropped, DLQ drops)
+    assert_eq!(
+        (
+            capture.total("parse_errors_total"),
+            capture.total("pipeline_dead_letters_dropped_total"),
+            capture.total("dlq_dropped_total"),
+        ),
+        (1, 1, 1),
+        "the MessagePack record is refused once and dropped once"
+    );
+}
+
+/// With a DLQ configured, the refused record lands in it whole, with the
+/// reason and the topic it was headed for.
+#[test]
+fn a_messagepack_push_lands_in_a_configured_dlq() {
+    let dir = tempfile::tempdir().expect("tempdir");
+    let dlq_config = scalo::dlq::DlqConfig {
+        enabled: true,
+        mode: scalo::dlq::DlqMode::FileOnly,
+        file: scalo::dlq::FileDlqConfig {
+            enabled: true,
+            path: dir.path().to_path_buf(),
+            compress_rotated: false,
+            ..scalo::dlq::FileDlqConfig::default()
+        },
+        ..scalo::dlq::DlqConfig::default()
+    };
+    let capture = SeriesCapture::default();
+    let pushed = push_through(
+        &capture,
+        |config| {
+            let dlq = scalo::dlq::Dlq::spawn(
+                &dlq_config,
+                "dfe-transform-elastic",
+                None,
+                CancellationToken::new(),
+            )
+            .expect("the file DLQ starts");
+            BatchEngine::new(service::engine_config(config)).with_dlq(Arc::new(dlq))
+        },
+        vec![MSGPACK_MAP.to_vec(), okta_events(1)],
+        1,
+    );
+
+    assert!(
+        matches!(pushed.answers[0], scalo::transport::SendResult::Ok),
+        "a dead-lettered push is answered once the DLQ holds it: {:?}",
+        pushed.answers[0]
+    );
+    assert_eq!(pushed.delivered, 1);
+
+    let written = std::fs::read_to_string(dir.path().join("dfe-transform-elastic/dlq.ndjson"))
+        .expect("the DLQ file exists");
+    let entries: Vec<scalo::dlq::DlqEntry> = written
+        .lines()
+        .map(|line| serde_json::from_str(line).expect("a DLQ line is an entry"))
+        .collect();
+    assert_eq!(entries.len(), 1, "{written}");
+    assert_eq!(entries[0].reason, dfe_transform_elastic::pipeline::NOT_JSON);
+    assert_eq!(
+        entries[0].payload, MSGPACK_MAP,
+        "the bytes the producer sent"
+    );
+    assert_eq!(entries[0].destination.as_deref(), Some(SINK_TOPIC));
+    assert_eq!(
+        (
+            capture.total("parse_errors_total"),
+            capture.total("pipeline_dead_letters_dropped_total"),
+        ),
+        (1, 0),
+        "refused once, and held rather than dropped"
     );
 }
 

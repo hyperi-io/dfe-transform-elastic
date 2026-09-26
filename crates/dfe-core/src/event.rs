@@ -74,6 +74,17 @@ impl Event {
         Ok(Self::new(value))
     }
 
+    /// Append the event to `out` as one JSON document, keys in insertion order.
+    /// The record path's encode, measured with the decode in `benches/codec.rs`.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`TransformError::Json`] if the document cannot be serialised.
+    pub fn write_json(&self, out: &mut Vec<u8>) -> Result<()> {
+        serde_json::to_writer(out, &self.inner)?;
+        Ok(())
+    }
+
     /// Borrow the inner value.
     pub fn as_value(&self) -> &Value {
         &self.inner
@@ -899,6 +910,37 @@ mod tests {
         let mut buf = br#"{"key": "value"}"#.to_vec();
         let event = Event::from_bytes(&mut buf).unwrap();
         assert_eq!(event.get_str("key"), Some("value"));
+    }
+
+    /// `levels` objects nested inside one another, each under key `a`.
+    fn nested(levels: usize) -> String {
+        format!("{}1{}", r#"{"a":"#.repeat(levels), "}".repeat(levels))
+    }
+
+    /// Run `f` on a thread with the 2 MiB stack a tokio worker gets.
+    fn on_a_2mib_stack<T: Send + 'static>(f: impl FnOnce() -> T + Send + 'static) -> T {
+        std::thread::Builder::new()
+            .stack_size(2 * 1024 * 1024)
+            .spawn(f)
+            .expect("spawn")
+            .join()
+            .expect("the decode overflowed the stack")
+    }
+
+    /// A document nested far past `serde_json`'s recursion limit is refused, on
+    /// the 2 MiB stack a tokio worker decodes on, rather than overflowing it.
+    #[test]
+    fn a_deeply_nested_document_is_refused_on_a_2mib_stack() {
+        for levels in [20_000, 100_000] {
+            let refused = on_a_2mib_stack(move || {
+                let objects = Event::from_json(&nested(levels)).is_err();
+                let arrays =
+                    Event::from_json(&format!("{}{}", "[".repeat(levels), "]".repeat(levels)))
+                        .is_err();
+                objects && arrays
+            });
+            assert!(refused, "{levels} levels were accepted");
+        }
     }
 
     #[test]

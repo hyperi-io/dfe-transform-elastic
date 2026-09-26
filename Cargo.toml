@@ -154,6 +154,8 @@ scalo = { version = ">=2.12.0, <3", features = [
     "config",
     "config-schema",
     "deployment",
+    # The pipeline's dead-letter path, which input that is not JSON takes.
+    "dlq",
     "geoip-download",
     "governor",
     "http-server",

@@ -20,15 +20,17 @@
 //! downstream must be idempotent, which is the contract every DFE stage carries.
 //!
 //! An event that cannot be delivered is dropped and counted, never counted
-//! delivered: one that will not parse, transform or serialise, one over
+//! delivered: one that will not transform or serialise, one over
 //! `sink.max_message_bytes`, and one the sink transport would refuse, which the
-//! pipeline screens out before the send and counts in
-//! `pipeline_dead_letters_dropped_total`.
+//! pipeline screens out before the send. Input that is not JSON is refused as a
+//! dead letter. Dead letters take scalo's DLQ path with no backend, so they are
+//! dropped and counted in `pipeline_dead_letters_dropped_total`.
 
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 use scalo::cli::ServiceRuntime;
+use scalo::transport::filter::FilteredDlqEntry;
 #[cfg(feature = "grpc")]
 use scalo::transport::grpc::{GrpcConfig, GrpcTransport};
 #[cfg(feature = "kafka")]
@@ -45,7 +47,8 @@ use tokio_util::sync::CancellationToken;
 use crate::config::{Config, Transport};
 use crate::metrics::TransformMetrics;
 use crate::pipeline::{
-    EnvelopeOutcome, message_budget, parse_batch, serialise_events, transform_batch_resolved,
+    EnvelopeOutcome, NOT_JSON, message_budget, parse_batch, serialise_events,
+    transform_batch_resolved,
 };
 
 /// The longest the loop goes without pushing scaling signals.
@@ -145,15 +148,28 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
 /// layer of, and this one takes it from `source.batch_size`.
 fn batch_engine(config: &Config, runtime: &ServiceRuntime) -> BatchEngine {
     let settings = engine_config(config);
-    let mut engine = match runtime.worker_pool.as_ref() {
+    let engine = match runtime.worker_pool.as_ref() {
         Some(pool) => BatchEngine::with_pool(Arc::clone(pool), settings),
         None => BatchEngine::new(settings),
     };
+    let mut engine = with_dead_letters(engine);
     engine.auto_wire(&runtime.metrics, Some(&runtime.memory_guard));
     if let Some(governor) = runtime.governor.as_ref() {
         engine.set_byte_budget(governor.budget());
     }
     engine
+}
+
+/// Route the engine's dead letters through scalo's DLQ path, with no backend.
+///
+/// This service configures no DLQ, so a dead letter -- input that is not
+/// JSON, or a record the sink would refuse -- is dropped, counted in
+/// `pipeline_dead_letters_dropped_total{reason}` and `dlq_dropped_total`, and
+/// its block released `Dropped`. Without it scalo's default policy stops the
+/// loop on the first dead letter.
+#[must_use]
+pub fn with_dead_letters(engine: BatchEngine) -> BatchEngine {
+    engine.with_dlq(Arc::new(scalo::dlq::Dlq::disabled()))
 }
 
 /// The engine settings this service decides: at most `source.batch_size`
@@ -455,7 +471,12 @@ pub async fn run_loop<S: TransportSender>(
             std::future::ready(Ok(()))
         })
         .run_with_pieces(
-            |block| Ok(block.map_records(|records| stage.transform(&records))),
+            |mut block: WorkBatch<AnyToken>| {
+                let (records, dead) = stage.transform(&block.records);
+                block.records = records;
+                block.dlq_entries.extend(dead);
+                Ok(block)
+            },
             |out: &WorkBatch<AnyToken>, pieces: &BlockPieces<'_>| {
                 send_blocks(
                     producer,
@@ -525,12 +546,12 @@ struct Stage<'a> {
 
 impl Stage<'_> {
     /// Parse, transform and serialise one block, returning a record per event
-    /// that survived.
+    /// that survived and a dead letter per input refused as not JSON.
     // Block and byte counts are bounded far below 2^53, so the f64 casts are exact.
     #[allow(clippy::cast_precision_loss)]
-    fn transform(&self, records: &[Record]) -> Vec<Record> {
+    fn transform(&self, records: &[Record]) -> (Vec<Record>, Vec<FilteredDlqEntry>) {
         if records.is_empty() {
-            return Vec::new();
+            return (Vec::new(), Vec::new());
         }
         let metrics = self.metrics;
 
@@ -540,16 +561,23 @@ impl Stage<'_> {
 
         let started = Instant::now();
         let mut events = Vec::with_capacity(records.len());
+        let mut dead = Vec::new();
         for record in records {
             let (parsed, parse_outcome) = parse_batch(&record.payload);
-            if parse_outcome.bad_lines > 0 {
-                metrics
-                    .parse_errors
-                    .increment(parse_outcome.bad_lines as u64);
-                metrics
-                    .app
-                    .records_error
-                    .increment(parse_outcome.bad_lines as u64);
+            if !parse_outcome.refused.is_empty() {
+                let refused = parse_outcome.refused.len() as u64;
+                metrics.parse_errors.increment(refused);
+                metrics.app.records_error.increment(refused);
+                dead.extend(
+                    parse_outcome
+                        .refused
+                        .into_iter()
+                        .map(|payload| FilteredDlqEntry {
+                            payload,
+                            key: Some(Arc::clone(&self.topic)),
+                            reason: NOT_JSON.to_string(),
+                        }),
+                );
             }
             if parse_outcome.lossy {
                 metrics.lossy_payloads.increment(1);
@@ -606,10 +634,11 @@ impl Stage<'_> {
                 .increment(serialised.failed as u64);
         }
 
-        payloads
+        let out = payloads
             .into_iter()
             .map(|payload| outbound_record(payload, &self.topic))
-            .collect()
+            .collect();
+        (out, dead)
     }
 
     /// Push a zero saturation when no block has pushed the signals for
@@ -1668,7 +1697,7 @@ mod tests {
         const REFUSALS: usize = 40;
 
         let config = config();
-        let engine = BatchEngine::new(engine_config(&config));
+        let engine = with_dead_letters(BatchEngine::new(engine_config(&config)));
         let consumer = memory_source(vec![okta_event("held", 0)]).await;
         let sink = Flaky::new(REFUSALS, usize::MAX);
         let shutdown = CancellationToken::new();
@@ -1700,7 +1729,7 @@ mod tests {
         const CEILING: usize = 16 * 1024;
 
         let config = config();
-        let engine = BatchEngine::new(engine_config(&config));
+        let engine = with_dead_letters(BatchEngine::new(engine_config(&config)));
         let consumer =
             memory_source(vec![okta_event("kept", 0), okta_event("big", 64 * 1024)]).await;
         let sink = Flaky::new(0, CEILING);

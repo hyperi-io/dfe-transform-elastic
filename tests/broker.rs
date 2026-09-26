@@ -94,7 +94,7 @@ fn start_loop(
     let shutdown = CancellationToken::new();
     let loop_shutdown = shutdown.clone();
     let service = tokio::spawn(async move {
-        let engine = BatchEngine::new(service::engine_config(&config));
+        let engine = service::with_dead_letters(BatchEngine::new(service::engine_config(&config)));
         service::run_loop(
             &config,
             &engine,
