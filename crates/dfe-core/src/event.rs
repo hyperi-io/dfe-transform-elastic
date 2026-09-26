@@ -901,6 +901,18 @@ mod tests {
         assert_eq!(event.get_str("key"), Some("value"));
     }
 
+    /// Elasticsearch reads a float as the nearest double, so the literal must
+    /// come back out with the same digits; a one-ulp misread writes `...444`.
+    #[test]
+    fn a_long_float_literal_leaves_with_the_digits_it_arrived_with() {
+        let mut buf = br#"{"score":0.10617876052856445}"#.to_vec();
+        let event = Event::from_bytes(&mut buf).unwrap();
+        assert_eq!(
+            serde_json::to_string(event.as_value()).unwrap(),
+            r#"{"score":0.10617876052856445}"#
+        );
+    }
+
     #[test]
     fn into_value_roundtrip() {
         let original = json!({"x": 1});

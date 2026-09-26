@@ -192,7 +192,10 @@ serde = { version = ">=1.0", features = ["derive"] }
 # Elasticsearch's LinkedHashMap-backed ingest documents hold: a Painless
 # `toString` of a map renders in that order, and sorted keys diverged on
 # every rendered copy aws's cloudtrail writes.
-serde_json = { version = ">=1.0", features = ["preserve_order"] }
+# float_roundtrip parses every float to the nearest double, as Elasticsearch's
+# Java parser does; without it a long literal such as 0.10617876052856445 reads
+# one ulp low and is written back as ...444.
+serde_json = { version = ">=1.0", features = ["preserve_order", "float_roundtrip"] }
 serde_yaml_ng = ">=0.10, <0.11"
 
 # SIMD byte search
