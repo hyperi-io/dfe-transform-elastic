@@ -110,7 +110,7 @@ transport.
 | Module | Responsibility |
 |---|---|
 | `main.rs` | Entry point, hands off to `cli.rs` |
-| `cli.rs` | Subcommands: `sources` (list registered transforms), `emit-dockerfile`, `emit-chart`, `emit-compose`, `emit-config`, plus scalo's `run`, `version`, `config-check`, `config-schema`, `generate-artefacts` and `metrics-manifest` |
+| `cli.rs` | Subcommands: `sources` (list registered transforms), `emit-dockerfile`, `emit-chart`, `emit-compose`, `emit-config`, `emit-catalogue`, plus scalo's `run`, `version`, `config-check`, `config-schema`, `generate-artefacts` and `metrics-manifest` |
 | `config.rs` | The config shape: `source.*`, `sink.*`, `geoip`, read once at startup, and `work_state`, which decides whether an instance has work or idles. Also `Transport`, the `bus`/`direct` selector on each side |
 | `config/loader.rs` | Reading it, from the scalo cascade or an explicit `--config` file, and `CASCADE_ONLY_SECTIONS` -- the scalo sections that file is warned for carrying |
 | `config/validate.rs` | Refusing a configuration that cannot work. The range checks run ahead of the idle gate, so a value someone set out of range still refuses while an unconfigured instance idles |

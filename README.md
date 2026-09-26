@@ -143,6 +143,8 @@ cp target/release/dfe-transform-elastic .
 docker build -t dfe-transform-elastic .
 ```
 
+The source catalogue, `sources.yaml`, is compiled into the binary. `dfe-transform-elastic emit-catalogue` prints it, so a deployment takes the catalogue dfe-engine offers from the image it already pulls, with no credential for this repo.
+
 ## Observability
 
 - `/livez`, `/readyz`, `/metrics` and `/metrics/manifest`, all served from the
