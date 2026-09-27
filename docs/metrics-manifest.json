@@ -186,18 +186,19 @@
     {
       "name": "pipeline_delivery_guarantee",
       "type": "gauge",
-      "description": "Delivery guarantee the pipeline gives (1 = active), with the reason",
+      "description": "Delivery guarantee the pipeline gives (1 = active), with the reason, and the listener when the app names one",
       "unit": "",
       "labels": [
         "guarantee",
-        "reason"
+        "reason",
+        "listener"
       ],
       "group": "platform"
     },
     {
       "name": "pipeline_dead_letters_dropped_total",
       "type": "counter",
-      "description": "Dead letters dropped with nowhere to go: no DLQ, a disabled DLQ, or a record a gRPC send_batch left out of a block it sent",
+      "description": "Dead letters dropped with nowhere to go: no DLQ, a disabled DLQ, a record a gRPC send_batch left out of a block, or one a downstream peer refused for good",
       "unit": "",
       "labels": [
         "reason"
@@ -219,6 +220,16 @@
       "type": "gauge",
       "description": "Payload bytes whose source acknowledgement is held until delivery",
       "unit": "bytes",
+      "labels": [
+        "transport"
+      ],
+      "group": "platform"
+    },
+    {
+      "name": "transport_ack_withheld",
+      "type": "gauge",
+      "description": "Kafka offsets released Errored and still held: each pins its partition's commit until a restart or a revoke",
+      "unit": "",
       "labels": [
         "transport"
       ],
@@ -346,6 +357,28 @@
       "description": "Available disk space for spool in bytes",
       "unit": "",
       "labels": [],
+      "group": "platform"
+    },
+    {
+      "name": "dlq_dropped_total",
+      "type": "counter",
+      "description": "Dead letters no DLQ backend holds, by reason",
+      "unit": "",
+      "labels": [
+        "reason"
+      ],
+      "group": "platform"
+    },
+    {
+      "name": "dlq_cascade_fallthrough_total",
+      "type": "counter",
+      "description": "Dead letters a later cascade backend took after an earlier one gave them up",
+      "unit": "",
+      "labels": [
+        "from",
+        "to",
+        "reason"
+      ],
       "group": "platform"
     },
     {

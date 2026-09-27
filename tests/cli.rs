@@ -58,6 +58,7 @@ fn help_lists_every_local_subcommand() {
         "emit-chart",
         "emit-compose",
         "emit-config",
+        "emit-catalogue",
     ] {
         assert!(
             help.contains(command),
@@ -113,6 +114,21 @@ fn emit_config_prints_a_config_the_binary_accepts() {
         out.status.success(),
         "the binary rejects its own emitted config: {}",
         String::from_utf8_lossy(&out.stderr)
+    );
+}
+
+/// A deployment runs this in the pinned image and writes stdout to the file
+/// dfe-engine reads, so it has to be the committed catalogue byte for byte.
+#[test]
+fn emit_catalogue_prints_the_committed_catalogue() {
+    let emitted = run_ok(&["emit-catalogue"]);
+    let committed = std::fs::read_to_string(concat!(env!("CARGO_MANIFEST_DIR"), "/sources.yaml"))
+        .expect("sources.yaml is committed");
+    assert!(
+        emitted == committed,
+        "emit-catalogue differs from sources.yaml ({} bytes emitted, {} committed)",
+        emitted.len(),
+        committed.len()
     );
 }
 

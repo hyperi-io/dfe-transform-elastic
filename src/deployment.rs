@@ -258,6 +258,13 @@ pub fn default_config_yaml() -> String {
     format!("{header}\n{body}")
 }
 
+/// The source catalogue, `sources.yaml`, compiled into the binary.
+///
+/// dfe-engine offers its entries as ready-made sources. A deployment takes it
+/// from the image it already pulls, through `emit-catalogue`, so it needs no
+/// credential for this repo; a build without the file fails to compile.
+pub const SOURCE_CATALOGUE: &str = include_str!("../sources.yaml");
+
 /// Capability catalogue: the transform sources this build can run.
 ///
 /// The child list is generated from [`crate::registry`], so it cannot drift

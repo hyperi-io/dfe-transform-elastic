@@ -147,9 +147,7 @@ dfe-transforms = { path = "crates/dfe-transforms" }
 
 # Batteries-included runtime (crates.io) — NEVER a path dependency.
 # Features are added when their API is actually referenced, not speculatively.
-# The floor admits 2.12.0 only while [patch.crates-io] below points at the scalo
-# branch, whose manifest carries 2.12.0; it rises to 2.13.0 when the patch goes.
-scalo = { version = ">=2.12.0, <3", features = [
+scalo = { version = ">=2.13.0, <3", features = [
     "cli-service",
     "config",
     "config-schema",
@@ -201,7 +199,10 @@ serde = { version = ">=1.0", features = ["derive"] }
 # Elasticsearch's LinkedHashMap-backed ingest documents hold: a Painless
 # `toString` of a map renders in that order, and sorted keys diverged on
 # every rendered copy aws's cloudtrail writes.
-serde_json = { version = ">=1.0", features = ["preserve_order"] }
+# float_roundtrip parses every float to the nearest double, as Elasticsearch's
+# Java parser does; without it a long literal such as 0.10617876052856445 reads
+# one ulp low and is written back as ...444.
+serde_json = { version = ">=1.0", features = ["preserve_order", "float_roundtrip"] }
 serde_yaml_ng = ">=0.10, <0.11"
 
 # SIMD byte search
@@ -273,13 +274,6 @@ rayon = ">=1.10, <2"
 # transform services.
 testcontainers = ">=0.27, <0.28"
 testcontainers-modules = { version = ">=0.15, <0.16", features = ["kafka"] }
-
-[patch.crates-io]
-# Temporary: the source acknowledgement pipeline (scalo::transport::ack and
-# BatchEngine::pipeline) until scalo 2.13.0 is on crates.io. Removed, with the
-# floor above raised to >=2.13.0 and deny.toml's allow-git dropped, before this
-# branch merges.
-scalo = { git = "https://github.com/hyperi-io/scalo-rs", branch = "fix/at-least-once" }
 
 [profile.release]
 lto = "thin"
