@@ -80,6 +80,9 @@ pub struct ScalingSignals {
     pub pressure: std::sync::Arc<scalo::ScalingPressure>,
     /// The cgroup-aware guard feeding the never-OOM hard gate.
     pub memory: std::sync::Arc<scalo::MemoryGuard>,
+    /// The byte budget the engine's receives are capped by, which batch
+    /// saturation is measured against. `None` when self-regulation is off.
+    pub budget: Option<std::sync::Arc<scalo::ByteBudgetController>>,
 }
 
 /// Build the transports and run until the shutdown token is cancelled.
@@ -124,6 +127,11 @@ pub async fn run(config: Config, runtime: ServiceRuntime) -> crate::Result<()> {
     let scaling = runtime.scaling.as_ref().map(|pressure| ScalingSignals {
         pressure: std::sync::Arc::clone(pressure),
         memory: std::sync::Arc::clone(&runtime.memory_guard),
+        // The same controller `batch_engine` wires into the engine.
+        budget: runtime
+            .governor
+            .as_ref()
+            .map(scalo::SelfRegulationGovernor::budget),
     });
     log_effective_scaling(runtime.scaling.as_deref());
 
@@ -173,7 +181,7 @@ pub fn with_dead_letters(engine: BatchEngine) -> BatchEngine {
 }
 
 /// The engine settings this service decides: at most `source.batch_size`
-/// records per receive.
+/// records per receive, which a wired byte budget's record cap can tighten.
 #[must_use]
 pub fn engine_config(config: &Config) -> BatchProcessingConfig {
     BatchProcessingConfig {
@@ -616,8 +624,13 @@ impl Stage<'_> {
 
         // Batch saturation: how full the pull came back. A consistently full
         // batch means the transform is the constraint, not the topic.
-        let saturation = records.len() as f64 / self.config.source.batch_size as f64;
-        push_scaling_signals(self.scaling, self.consumer, saturation.min(1.0));
+        let saturation = batch_saturation(
+            records.len(),
+            received_bytes,
+            self.config.source.batch_size,
+            self.scaling.and_then(|s| s.budget.as_deref()),
+        );
+        push_scaling_signals(self.scaling, self.consumer, saturation);
 
         let (payloads, serialised) =
             serialise_events(&transformed, self.config.sink.max_message_bytes);
@@ -656,6 +669,32 @@ impl Stage<'_> {
             push_scaling_signals(self.scaling, self.consumer, 0.0);
         }
     }
+}
+
+/// How full a received block came back, from 0.0 to 1.0, against the cap
+/// that bounded the receive.
+///
+/// With a byte budget the engine receives at most
+/// `min(batch_size, record_cap())` records and about `byte_budget()` bytes, so
+/// the block is measured against whichever of the two it came nearer. Without
+/// one, `batch_size` is the only cap.
+// Block and byte counts are bounded far below 2^53, so the f64 casts are exact.
+#[allow(clippy::cast_precision_loss)]
+fn batch_saturation(
+    records: usize,
+    bytes: usize,
+    batch_size: usize,
+    budget: Option<&scalo::ByteBudgetController>,
+) -> f64 {
+    let saturation = match budget {
+        None => records as f64 / batch_size as f64,
+        Some(budget) => {
+            let by_records = records as f64 / batch_size.min(budget.record_cap()) as f64;
+            let by_bytes = bytes as f64 / budget.byte_budget() as f64;
+            by_records.max(by_bytes)
+        }
+    };
+    saturation.min(1.0)
 }
 
 /// One event's payload, addressed at the sink topic.
@@ -1291,12 +1330,34 @@ mod tests {
         }
     }
 
-    /// The receive cap is the configured batch size, not the engine's default.
+    /// Saturation is measured against the cap that bounded the receive: the
+    /// governor's record cap or `batch_size`, whichever is tighter, or the byte
+    /// budget when the block reached that first. With no governor it is
+    /// `batch_size` alone.
     #[test]
-    fn the_engine_receives_at_most_batch_size_records() {
-        let mut c = config();
-        c.source.batch_size = 1_234;
-        assert_eq!(engine_config(&c).max_chunk_size, 1_234);
+    fn saturation_is_measured_against_the_cap_that_bounded_the_receive() {
+        let equal = |actual: f64, expected: f64| (actual - expected).abs() < f64::EPSILON;
+
+        let guard = Arc::new(scalo::MemoryGuard::new(scalo::MemoryGuardConfig::default()));
+        let governor = scalo::SelfRegulationConfig::default()
+            .build(guard)
+            .expect("self-regulation is on by default");
+        let budget = governor.budget();
+        let governed = Some(budget.as_ref());
+        let cap = budget.record_cap();
+        let bytes = usize::try_from(budget.byte_budget()).unwrap();
+        assert!(cap < 20_000, "the default profile caps below batch_size");
+
+        assert!(equal(batch_saturation(2_000, 0, 20_000, None), 0.1));
+        assert!(equal(batch_saturation(cap, 0, 20_000, governed), 1.0));
+        assert!(equal(batch_saturation(cap / 2, 0, 20_000, governed), 0.5));
+        // A batch_size under the record cap is the tighter bound.
+        assert!(equal(batch_saturation(100, 0, 100, governed), 1.0));
+        // A few large records reach the byte budget long before the record cap.
+        assert!(equal(batch_saturation(1, bytes, 20_000, governed), 1.0));
+        assert!(equal(batch_saturation(1, bytes / 2, 20_000, governed), 0.5));
+        // A receive keeps the record that crosses the byte budget.
+        assert!(equal(batch_saturation(2, bytes * 2, 20_000, governed), 1.0));
     }
 
     // -- What the sink answers --------------------------------------------
@@ -1676,10 +1737,14 @@ mod tests {
 
     /// An in-process source holding `events`, one record each.
     async fn memory_source(events: Vec<Vec<u8>>) -> AnyReceiver {
+        let defaults = scalo::transport::MemoryConfig::default();
+        // `inject` waits on a full channel, so the buffer holds every event.
+        let buffer_size = events.len().max(defaults.buffer_size);
         let source =
             scalo::transport::memory::MemoryTransport::new(&scalo::transport::MemoryConfig {
                 recv_timeout_ms: 50,
-                ..scalo::transport::MemoryConfig::default()
+                buffer_size,
+                ..defaults
             })
             .unwrap();
         for event in events {
@@ -1766,5 +1831,122 @@ mod tests {
                 "a refused record reached the sink"
             );
         }
+    }
+
+    /// A sink that takes every send and notes the batch saturation the loop
+    /// had pushed for the block the send came from.
+    struct Sampling {
+        pressure: Arc<scalo::ScalingPressure>,
+        saturations: std::sync::Mutex<Vec<f64>>,
+    }
+
+    impl Sampling {
+        fn new(pressure: Arc<scalo::ScalingPressure>) -> Self {
+            Self {
+                pressure,
+                saturations: std::sync::Mutex::new(Vec::new()),
+            }
+        }
+
+        fn saturations(&self) -> Vec<f64> {
+            self.saturations.lock().unwrap().clone()
+        }
+
+        /// Poll until `count` sends have arrived.
+        async fn wait_for(&self, count: usize) {
+            while self.saturations().len() < count {
+                tokio::time::sleep(Duration::from_millis(10)).await;
+            }
+        }
+    }
+
+    impl scalo::transport::TransportBase for Sampling {
+        fn close(&self) -> impl Future<Output = scalo::transport::TransportResult<()>> + Send {
+            std::future::ready(Ok(()))
+        }
+        fn is_healthy(&self) -> bool {
+            true
+        }
+        fn name(&self) -> &'static str {
+            "sampling"
+        }
+    }
+
+    impl TransportSender for Sampling {
+        fn send(
+            &self,
+            _destination: &str,
+            _payload: bytes::Bytes,
+        ) -> impl Future<Output = SendResult> + Send {
+            std::future::ready(SendResult::Fatal(TransportError::Internal(
+                "the loop sends blocks".into(),
+            )))
+        }
+
+        fn send_batch(&self, _records: &[Record]) -> impl Future<Output = SendResult> + Send {
+            let saturation = self
+                .pressure
+                .snapshot()
+                .components
+                .iter()
+                .find(|c| c.name == "batch_saturation")
+                .map_or(f64::NAN, |c| c.raw_value);
+            self.saturations.lock().unwrap().push(saturation);
+            std::future::ready(SendResult::Ok)
+        }
+    }
+
+    /// With the governor on, the engine receives at most the governor's record
+    /// cap -- 2,000 on the default profile -- however large `batch_size` is,
+    /// so a receive that reached that cap is a full one and reads as 1.0,
+    /// not as 2,000 of the 20,000 configured.
+    #[tokio::test(start_paused = true)]
+    async fn a_full_governed_receive_reads_as_saturated() {
+        let mut config = config();
+        config.source.batch_size = 20_000;
+        let guard = Arc::new(scalo::MemoryGuard::new(scalo::MemoryGuardConfig::default()));
+        let governor = scalo::SelfRegulationConfig::default()
+            .build(Arc::clone(&guard))
+            .expect("self-regulation is on by default");
+        let mut engine = with_dead_letters(BatchEngine::new(engine_config(&config)));
+        engine.set_byte_budget(governor.budget());
+
+        let pressure = Arc::new(scalo::ScalingPressure::new(
+            scalo::ScalingPressureConfig::default(),
+            vec![scalo::ScalingComponent::new("batch_saturation", 1.0, 1.0)],
+        ));
+        let scaling = ScalingSignals {
+            pressure: Arc::clone(&pressure),
+            memory: guard,
+            budget: Some(governor.budget()),
+        };
+        let consumer = memory_source(vec![okta_event("governed", 0); 5_000]).await;
+        let sink = Sampling::new(Arc::clone(&pressure));
+        let shutdown = CancellationToken::new();
+        let metrics = test_metrics();
+
+        let run = run_loop(
+            &config,
+            &engine,
+            &consumer,
+            &sink,
+            &shutdown,
+            &metrics,
+            Some(&scaling),
+        );
+        tokio::pin!(run);
+        tokio::select! {
+            result = &mut run => panic!("the loop stopped: {result:?}"),
+            () = sink.wait_for(1) => {}
+        }
+        shutdown.cancel();
+        run.await.expect("the loop stops cleanly on shutdown");
+
+        // The first receive takes 2,000 of the 5,000 queued: the record cap.
+        let first = sink.saturations()[0];
+        assert!(
+            (first - 1.0).abs() < f64::EPSILON,
+            "a full governed receive read as {first}"
+        );
     }
 }
