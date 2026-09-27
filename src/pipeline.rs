@@ -211,15 +211,21 @@ fn elided(value: &str) -> Cow<'_, str> {
     Cow::Owned(format!("{kept}... ({} bytes)", value.len()))
 }
 
+/// The dead-letter reason for input that is not JSON.
+pub const NOT_JSON: &str = "payload is not JSON";
+
 /// What a payload cost to decode.
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct ParseOutcome {
     /// Lines that produced an event.
     pub parsed: usize,
-    /// Lines that were not valid JSON and were skipped.
+    /// Lines that were not valid JSON.
     pub bad_lines: usize,
     /// The payload was not valid UTF-8 and was decoded with replacements.
     pub lossy: bool,
+    /// What is refused as not JSON, each one a dead letter: the whole payload
+    /// when no line of it parsed, otherwise each line that did not.
+    pub refused: Vec<Vec<u8>>,
 }
 
 /// Parse one NDJSON payload into events.
@@ -229,13 +235,15 @@ pub struct ParseOutcome {
 /// all, because every processor after the first reads fields that only exist
 /// once `message` has been unpacked.
 ///
-/// Nothing about a payload is fatal. Bytes that are not valid UTF-8 are
-/// replaced with U+FFFD, matching what Beats itself substitutes for a file it
-/// cannot decode; a line that is not valid JSON is skipped. Both are counted,
-/// so the damage is visible rather than silent.
+/// JSON is the only payload format. A payload no line of which parses --
+/// `MessagePack`, or any other binary -- is refused whole, with its original
+/// bytes, so a dead letter holds what the producer sent rather than fragments
+/// split at whatever newline bytes the binary happened to contain. In a payload
+/// that is otherwise JSON, each line that does not parse is refused on its own
+/// and the events beside it still go.
 ///
-/// Rejecting either would discard every event already parsed from the same
-/// payload -- up to a full batch for one bad byte.
+/// Bytes that are not valid UTF-8 are replaced with U+FFFD, matching what Beats
+/// itself substitutes for a file it cannot decode, and counted.
 pub fn parse_batch(payload: &[u8]) -> (Vec<Event>, ParseOutcome) {
     // Borrowed when the payload is already valid UTF-8, which is the common
     // case, so the hot path still reads straight out of the Kafka buffer.
@@ -249,6 +257,7 @@ pub fn parse_batch(payload: &[u8]) -> (Vec<Event>, ParseOutcome) {
     // `Vec` that reallocated its way up to 20,000 events on every batch.
     let lines = memchr::memchr_iter(b'\n', payload).count();
     let mut events = Vec::with_capacity(lines.max(1));
+    let mut bad: Vec<&str> = Vec::new();
     let mut first_bad: Option<String> = None;
     for line in text.lines() {
         if line.trim().is_empty() {
@@ -261,6 +270,7 @@ pub fn parse_batch(payload: &[u8]) -> (Vec<Event>, ParseOutcome) {
             }
             Err(e) => {
                 outcome.bad_lines += 1;
+                bad.push(line);
                 if first_bad.is_none() {
                     first_bad = Some(e.to_string());
                 }
@@ -268,15 +278,24 @@ pub fn parse_batch(payload: &[u8]) -> (Vec<Event>, ParseOutcome) {
         }
     }
 
+    let Some(sample) = first_bad else {
+        return (events, outcome);
+    };
+    outcome.refused = if outcome.parsed == 0 {
+        vec![payload.to_vec()]
+    } else {
+        bad.iter().map(|line| line.as_bytes().to_vec()).collect()
+    };
+
     // One line per payload, not one per bad line: a payload of 20,000 lines
     // that a producer wrote in the wrong format is 20,000 warns otherwise.
-    if let Some(sample) = first_bad {
-        tracing::warn!(
-            skipped = outcome.bad_lines,
-            sample = %sample,
-            "lines are not valid JSON, skipped"
-        );
-    }
+    tracing::warn!(
+        bad_lines = outcome.bad_lines,
+        refused = outcome.refused.len(),
+        whole_payload = outcome.parsed == 0,
+        sample = %sample,
+        "input is not JSON; refused and dead-lettered"
+    );
 
     (events, outcome)
 }
@@ -341,7 +360,7 @@ pub fn serialise_events(events: &[Event], max_bytes: usize) -> (Vec<Vec<u8>>, Se
 
     for event in events {
         let mut payload: Vec<u8> = Vec::with_capacity(hint);
-        if let Err(e) = serde_json::to_writer(&mut payload, event.as_value()) {
+        if let Err(e) = event.write_json(&mut payload) {
             outcome.failed += 1;
             tracing::warn!(error = %e, "event could not be serialised, dropped");
             continue;
@@ -438,6 +457,57 @@ mod tests {
         let (events, outcome) = parse_batch(b"{not json}\n");
         assert!(events.is_empty());
         assert_eq!(outcome.bad_lines, 1);
+    }
+
+    /// `{"message": "hello", "n": 1}` as `MessagePack`: a fixmap of two
+    /// entries, two fixstr keys, a fixstr value and a positive fixint.
+    const MSGPACK_MAP: &[u8] = &[
+        0x82, 0xa7, b'm', b'e', b's', b's', b'a', b'g', b'e', 0xa5, b'h', b'e', b'l', b'l', b'o',
+        0xa1, b'n', 0x01,
+    ];
+
+    /// A `MessagePack` record is refused whole, with the bytes the producer
+    /// sent, not split into fragments at newline bytes.
+    #[test]
+    fn a_messagepack_payload_is_refused_whole() {
+        let (events, outcome) = parse_batch(MSGPACK_MAP);
+        assert!(events.is_empty());
+        assert_eq!(outcome.refused, vec![MSGPACK_MAP.to_vec()]);
+        assert!(outcome.lossy, "MessagePack is not UTF-8");
+    }
+
+    /// In a payload that is otherwise JSON, only the bad line is refused, and
+    /// the events beside it still go.
+    #[test]
+    fn a_bad_line_among_good_ones_is_refused_on_its_own() {
+        let (events, outcome) = parse_batch(b"{\"a\":1}\n{not json}\n{\"a\":2}\n");
+        assert_eq!(events.len(), 2);
+        assert_eq!(outcome.refused, vec![b"{not json}".to_vec()]);
+    }
+
+    #[test]
+    fn a_json_payload_refuses_nothing() {
+        let (_, outcome) = parse_batch(b"{\"a\":1}\n");
+        assert!(outcome.refused.is_empty());
+    }
+
+    /// A record nested far past the decode's recursion limit is refused as not
+    /// JSON, on the 2 MiB stack a tokio worker runs the transform on, rather
+    /// than overflowing it.
+    #[test]
+    fn a_deeply_nested_record_is_refused_on_a_2mib_stack() {
+        let refused = std::thread::Builder::new()
+            .stack_size(2 * 1024 * 1024)
+            .spawn(|| {
+                let levels = 100_000;
+                let line = format!("{}1{}", r#"{"a":"#.repeat(levels), "}".repeat(levels));
+                let (events, outcome) = parse_batch(line.as_bytes());
+                events.is_empty() && outcome.refused.len() == 1
+            })
+            .expect("spawn")
+            .join()
+            .expect("the record path overflowed the stack");
+        assert!(refused, "a 100,000-level record was not refused");
     }
 
     #[test]

@@ -55,3 +55,8 @@ harness = false
 name = "date_formats"
 harness = false
 
+# The JSON codec on the record path: one decode in, one encode out, per record.
+[[bench]]
+name = "codec"
+harness = false
+

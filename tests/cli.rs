@@ -8,9 +8,7 @@
 //! subcommand that panics before it prints, an exit code that says success on a
 //! failure. A deploy finds those out; a test should.
 //!
-//! Everything here runs in CI by default. That is the point of it --
-//! `tests/broker.rs` is `#[ignore]`d because it reaches Kafka, and these
-//! subcommands are handled by `App::handle_local_command` BEFORE scalo's
+//! These subcommands are handled by `App::handle_local_command` BEFORE scalo's
 //! lifecycle loads any config, so they need neither a broker nor a config file.
 
 // A test asserts by panicking; the workspace lints ban that in library code.

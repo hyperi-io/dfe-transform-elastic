@@ -59,9 +59,12 @@
       "port": 6000,
       "protocol": "TCP",
       "when": {
-        "kind": "equals",
+        "kind": "one_of",
         "path": "config.source.transport",
-        "value": "direct"
+        "values": [
+          "direct",
+          "grpc"
+        ]
       }
     }
   ]

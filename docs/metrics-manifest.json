@@ -479,6 +479,240 @@
       "group": "app"
     },
     {
+      "name": "worker_pool_active_threads",
+      "type": "gauge",
+      "description": "Permits currently leased (in-flight worker count)",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "worker_pool_target_threads",
+      "type": "gauge",
+      "description": "Target thread count from scaler (admission ceiling)",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "worker_pool_available_threads",
+      "type": "gauge",
+      "description": "Headroom: leasable permits right now (target - leased)",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "worker_pool_max_threads",
+      "type": "gauge",
+      "description": "Maximum pool threads",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "worker_pool_cpu_utilisation",
+      "type": "gauge",
+      "description": "Current CPU utilisation sample",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "worker_pool_memory_utilisation",
+      "type": "gauge",
+      "description": "Effective memory pressure",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "worker_pool_saturation",
+      "type": "gauge",
+      "description": "Pool saturation ratio (active/max)",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "worker_pool_tasks_total",
+      "type": "counter",
+      "description": "Total tasks submitted to rayon pool",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "worker_pool_task_duration_seconds",
+      "type": "histogram",
+      "description": "Per-task execution time",
+      "unit": "seconds",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "worker_pool_batch_duration_seconds",
+      "type": "histogram",
+      "description": "End-to-end batch processing time",
+      "unit": "seconds",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "worker_pool_semaphore_wait_seconds",
+      "type": "histogram",
+      "description": "Time waiting for semaphore permit",
+      "unit": "seconds",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "worker_pool_scale_events_total",
+      "type": "counter",
+      "description": "Scaling events",
+      "unit": "",
+      "labels": [
+        "direction"
+      ],
+      "group": "custom"
+    },
+    {
+      "name": "worker_pool_async_inflight",
+      "type": "gauge",
+      "description": "Current async fan-out tasks in flight",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "batch_engine_messages_received_total",
+      "type": "counter",
+      "description": "Messages received from transport",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "batch_engine_messages_parsed_total",
+      "type": "counter",
+      "description": "Messages successfully SIMD-parsed",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "batch_engine_messages_filtered_total",
+      "type": "counter",
+      "description": "Messages filtered at pre-route",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "batch_engine_messages_dlq_total",
+      "type": "counter",
+      "description": "Messages routed to DLQ",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "batch_engine_parse_errors_total",
+      "type": "counter",
+      "description": "Parse failures",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "batch_engine_parse_duration_seconds",
+      "type": "histogram",
+      "description": "SIMD parse time per chunk",
+      "unit": "seconds",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "batch_engine_transform_duration_seconds",
+      "type": "histogram",
+      "description": "App transform time per chunk",
+      "unit": "seconds",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "batch_engine_chunk_size",
+      "type": "histogram",
+      "description": "Actual items per chunk",
+      "unit": "seconds",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "batch_engine_pre_route_duration_seconds",
+      "type": "histogram",
+      "description": "Pre-route extraction time per chunk",
+      "unit": "seconds",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "batch_engine_intern_table_size",
+      "type": "gauge",
+      "description": "Interned field name count",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "self_regulation_byte_budget",
+      "type": "gauge",
+      "description": "Current AIMD byte budget (inbound block size lever)",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "self_regulation_recv_block_bytes",
+      "type": "gauge",
+      "description": "Bytes in the most recent received block (vs the byte budget)",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "self_regulation_pressure_ratio",
+      "type": "gauge",
+      "description": "Combined self-regulation pressure level (0.0-1.0)",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "self_regulation_inbound_paused",
+      "type": "gauge",
+      "description": "1 while the inbound gate is holding under pressure, else 0 (per source)",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "self_regulation_inbound_pauses_total",
+      "type": "counter",
+      "description": "Inbound gate pause (rising-edge) events (per source)",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "self_regulation_kafka_gate_errors_total",
+      "type": "counter",
+      "description": "Kafka pause/resume actuator failures (brake degraded)",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
       "name": "events_transformed_total",
       "type": "counter",
       "description": "Events emitted by the transform",
@@ -505,7 +739,7 @@
     {
       "name": "parse_errors_total",
       "type": "counter",
-      "description": "NDJSON lines that would not parse as JSON",
+      "description": "Input refused as not JSON and dead-lettered: a whole record, or one bad line of one",
       "unit": "",
       "labels": [],
       "group": "custom"
@@ -561,7 +795,7 @@
     {
       "name": "send_failures_total",
       "type": "counter",
-      "description": "Sends that exhausted their retries, leaving the batch uncommitted",
+      "description": "Sends the sink refused permanently, stopping the loop with the block unreleased",
       "unit": "",
       "labels": [],
       "group": "custom"
@@ -569,7 +803,7 @@
     {
       "name": "send_backpressure_total",
       "type": "counter",
-      "description": "Sends the sink refused because its queue was full",
+      "description": "Sends the sink refused for now, retried until it takes them",
       "unit": "",
       "labels": [],
       "group": "custom"
@@ -577,7 +811,7 @@
     {
       "name": "send_filtered_dlq_total",
       "type": "counter",
-      "description": "Sends an outbound filter routed to a DLQ this service does not have",
+      "description": "Sends the sink transport dead-lettered, dropped with no DLQ to hold them",
       "unit": "",
       "labels": [],
       "group": "custom"
@@ -586,14 +820,6 @@
       "name": "events_oversize_total",
       "type": "counter",
       "description": "Events too large for one Kafka record, dropped",
-      "unit": "",
-      "labels": [],
-      "group": "custom"
-    },
-    {
-      "name": "commit_failures_total",
-      "type": "counter",
-      "description": "Offset commits that failed after a successful send",
       "unit": "",
       "labels": [],
       "group": "custom"

@@ -76,14 +76,17 @@ impl Config {
             }
         }
 
-        if self.sink.transport.is_direct() {
-            if self.sink.endpoint.trim().is_empty() {
-                return Err(crate::Error::Config(
-                    "sink.endpoint is empty on the direct transport".into(),
-                ));
-            }
-        } else if self.sink.topic.trim().is_empty() {
-            return Err(crate::Error::Config("sink.topic is empty".into()));
+        // On direct the topic is the routing key every push carries, and a push
+        // without one lands under the downstream loader's default topic.
+        if self.sink.topic.trim().is_empty() {
+            return Err(crate::Error::Config(
+                "sink.topic is empty; it names where the events land on both transports".into(),
+            ));
+        }
+        if self.sink.transport.is_direct() && self.sink.endpoint.trim().is_empty() {
+            return Err(crate::Error::Config(
+                "sink.endpoint is empty on the direct transport".into(),
+            ));
         }
 
         let intake = crate::registry::intake(&self.source.name)
@@ -191,13 +194,25 @@ mod tests {
         assert!(message.contains("sink.endpoint"), "{message}");
     }
 
-    /// A direct sink pushes to an endpoint rather than producing to a topic.
+    /// A direct push carries `sink.topic` as its routing key, so an empty one
+    /// would land every event under the loader's default topic.
     #[test]
-    fn a_direct_sink_needs_no_topic() {
+    fn a_direct_sink_refuses_an_empty_topic() {
         let mut c = valid();
         c.sink.transport = crate::config::Transport::Direct;
         c.sink.topic.clear();
-        assert!(c.validate().is_ok());
+        let message = c
+            .validate()
+            .expect_err("an empty topic must refuse on direct")
+            .to_string();
+        assert!(message.contains("sink.topic"), "{message}");
+    }
+
+    #[test]
+    fn a_bus_sink_refuses_an_empty_topic() {
+        let mut c = valid();
+        c.sink.topic = "  ".into();
+        assert!(c.validate().is_err());
     }
 
     /// The bus still needs its own fields, so the split must not relax them.

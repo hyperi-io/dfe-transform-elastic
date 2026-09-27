@@ -94,6 +94,8 @@ config:
     group_id: dfe-transform-elastic
     brokers:
     - kafka:9092
+    acknowledgements:
+      enabled: true
   sink:
     topic: normalised_events
     transport: bus
