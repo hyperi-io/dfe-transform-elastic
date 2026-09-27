@@ -909,6 +909,7 @@ dependencies = [
  "dfe-transforms",
  "memchr",
  "metrics",
+ "parking_lot",
  "scalo",
  "schemars 1.2.2",
  "serde",
@@ -1124,6 +1125,16 @@ dependencies = [
  "toml",
  "uncased",
  "version_check",
+]
+
+[[package]]
+name = "file-rotate"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6e8e2fa049328a1f3295991407a88585805d126dfaadf74b9fe8c194c730aafc"
+dependencies = [
+ "chrono",
+ "flate2",
 ]
 
 [[package]]
@@ -3513,9 +3524,11 @@ dependencies = [
  "bytes",
  "chrono",
  "clap",
+ "dashmap",
  "dirs",
  "dotenvy",
  "figment",
+ "file-rotate",
  "flate2",
  "governor",
  "hyper-util",
@@ -3532,6 +3545,7 @@ dependencies = [
  "prost",
  "prost-build",
  "prost-types",
+ "rayon",
  "rdkafka",
  "regex",
  "reqwest 0.13.5",

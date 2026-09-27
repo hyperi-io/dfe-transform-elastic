@@ -117,7 +117,7 @@ transport.
 | `registry.rs` | Source name to `Transform` lookup, plus each source's `Intake` (which envelopes it accepts), `Framing` and dataset |
 | `envelope.rs` | Detects which of the three producer families wrapped an event and unwraps it into the shape every transform expects |
 | `pipeline.rs` | Batch processing: NDJSON parse, envelope unwrap, transform, serialise, with per-batch outcome counts |
-| `service.rs` | Wires the scalo consumer and producer to `pipeline.rs` -- Kafka on the bus, a Push listener and a gRPC client on direct -- and owns the send/commit semantics below |
+| `service.rs` | Runs `pipeline.rs` on scalo's `BatchEngine` pipeline between the scalo consumer and producer -- Kafka on the bus, a Push listener and a gRPC client on direct -- and maps what the sink answers onto the delivery semantics below |
 | `deployment.rs` | The single deployment contract: Dockerfile, Helm chart, compose fragment and KEDA scaler are all generated from here. Its tests pin the Dockerfile, `config.example.yaml`, the chart's `config:` block and the `docs/` config artefacts against a fresh regen -- not every artefact, see the README |
 | `metrics.rs` | Metric definitions registered with scalo's `MetricsManager` |
 | `error.rs` | The service's top-level error type |
@@ -165,37 +165,30 @@ source's `Intake` -- okta is pulled from an API, so it accepts `beats` and `fetc
 `receiver`. `auto` cannot be checked that way, since there is no event yet, so the same
 mismatch is counted per batch instead.
 
-## Delivery: at-least-once, enforced by stopping
+## Delivery: at-least-once, held by the pipeline
 
-Kafka commits are **cumulative** -- the highest offset per partition -- so an uncommitted batch is
-only replayed if nothing after it commits. The loop therefore stops on a send it cannot complete
-rather than continuing to the next batch, whose commit would acknowledge the failed one. The
-process exits, and the restarted consumer resumes from the last committed offset. scalo's
-transport exposes no consumer seek, so stopping is the only way to keep the guarantee.
+The loop is scalo's `BatchEngine` pipeline (`service.rs::run_loop`): process is parse, transform and serialise, and the sink produces the result. The pipeline holds each block's source acknowledgement -- the Kafka offset commit on the bus, the answer to a push on direct -- until the sink has taken every event built from it. `source.acknowledgements.enabled: false` releases it at receipt instead, and a crash then loses what was in flight.
+
+A sink that refuses for now is retried for as long as it refuses, with the block held and nothing after it committed, so a broker outage is waited out rather than crashed on. Only a refusal no retry can fix stops the loop, with the block unreleased for the restarted consumer to read again. The direct listener is built armed, so a push that lands before the loop starts is held rather than answered at enqueue.
+
+A push is held at most 18 s (`PUSH_MAX_HOLD`), inside the 20 s the stage in front waits, and the bytes held are leased on the memory guard. Every send the held block waits on gives up sooner, at 15 s (`NEXT_HOP_SEND_TIMEOUT_MS`): a direct sink's gRPC deadline always, and on the bus the producer's `message.timeout.ms` while a direct source holds its pushes. A send that outlasted the hold would land after the push was answered `unavailable`, so the retry it provokes is a duplicate.
 
 All four `SendResult` variants are handled, and three of them are not delivery:
 
 | Variant | Meaning | Response |
 |---|---|---|
 | `Ok` | The broker accepted it | Count as delivered |
-| `Backpressured` | The local producer queue is full | Retry, bounded backoff to ~25s |
-| `Fatal` | The send failed | Retry, then stop uncommitted |
-| `FilteredDlq` | An outbound filter wants DLQ routing | Handled, not retried -- the same filter matches every time |
+| `Backpressured` | A full producer queue, or a broker or listener out of reach | Retried until the sink takes it |
+| `Fatal` | Recoverable (a timeout): as `Backpressured`. Otherwise authorisation, a missing topic, a closed transport | Stop, block unreleased |
+| `FilteredDlq` | The sink transport dead-lettered the send | Dropped and counted on `send_filtered_dlq_total` and `records_filtered_total`, block released as dropped, never counted delivered |
 
-Backpressure is the NORMAL response from a slow sink, so treating it as success would
-acknowledge batches that were never written.
+A record the sink transport would refuse -- over its `message.max.bytes`, or matched by an outbound `dlq` filter -- is screened out by the pipeline before the send. Input that is not JSON is refused in process as a dead letter with the reason `payload is not JSON`: a whole record when no line of it parses, otherwise the bad line alone. Both take scalo's DLQ path (`service.rs::with_dead_letters`) with no backend configured, so they are dropped and counted on `pipeline_dead_letters_dropped_total{reason}` and `dlq_dropped_total`, and the block is released rather than held behind something no retry can deliver.
 
-**One record per event.** `pipeline.rs::serialise_events` gives each event its own payload and
-`service.rs::publish` sends them via `TransportSender::send_batch`, because dfe-loader parses
-exactly one JSON document per message
-([#67](https://github.com/hyperi-io/dfe-transform-elastic/issues/67)).
-`sink.max_message_bytes` (default 900 KB) bounds each payload against librdkafka's
-1,000,000-byte producer default, and the `send_batch` block against gRPC's 16 MiB ceiling. An
-event over the budget is dropped and counted on `events_oversize_total`: no broker would take
-it, and retrying blocks the partition.
+JSON is the only payload format. MessagePack, supported in DFE/XDR 2.0 and 2.1, is deprecated in DFE 2.2 and no longer accepted: the JSON path (SIMD parsing with sonic-rs, zstd on the wire) is fast enough that MessagePack gave no CPU saving.
 
-Duplicates are the accepted cost: a batch that fails partway through replays the records that
-already landed, so every downstream consumer must be idempotent.
+**One record per event.** `pipeline.rs::serialise_events` gives each event its own payload and `service.rs::send_blocks` sends them via `TransportSender::send_batch`, because dfe-loader parses exactly one JSON document per message ([#67](https://github.com/hyperi-io/dfe-transform-elastic/issues/67)). `sink.max_message_bytes` (default 900 KB) bounds each payload against a stock broker's `message.max.bytes` of about 1 MB, and the `send_batch` block against gRPC's 16 MiB ceiling. An event over the budget is dropped and counted on `events_oversize_total`: no broker would take it, and retrying blocks the partition.
+
+Duplicates are the accepted cost: a retried block re-sends the records that already landed, so every downstream consumer must be idempotent.
 
 ---
 

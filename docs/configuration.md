@@ -20,15 +20,23 @@ It covers every `source.*` and `sink.*` field. `geoip` is not among them: it is 
 
 ## `transport` selects the bus or a direct push, per side
 
-Each side carries a `transport` of `bus` (the default) or `direct`, and in a config file those two spellings are the only ones accepted. The flat env form also takes `kafka` for `bus` and `grpc` for `direct`, and an unrecognised env value keeps the configured transport rather than moving the deployment. Both transports are compiled in by default and both are constructed: on `direct` the service binds a scalo Push listener on `source.listen` (default `0.0.0.0:6000`) and pushes to `sink.endpoint` (default `http://dfe-loader:6000`). `commit` is a documented no-op on that arm, so its replay guarantee is the upstream producer's, not this service's.
+Each side carries a `transport` of `bus` (the default) or `direct`. A config file and the flat env form also take `kafka` for `bus` and `grpc` for `direct`, the names dfe-engine renders, and a config always writes `bus` and `direct` back. A config file refuses any other name, and an unrecognised env value keeps the configured transport rather than moving the deployment. The chart publishes the push port 6000 when `source.transport` is `direct` or `grpc`. Both transports are compiled in by default and both are constructed: on `direct` the service binds a scalo Push listener on `source.listen` (default `0.0.0.0:6000`) and pushes to `sink.endpoint` (default `http://dfe-loader:6000`). The listener answers a push only once its events are delivered, so a refused push is the upstream sender's to retry.
 
     DFE_TRANSFORM_ELASTIC_SOURCE_TRANSPORT=direct
     DFE_TRANSFORM_ELASTIC_SOURCE_LISTEN=0.0.0.0:6000
     DFE_TRANSFORM_ELASTIC_SINK_ENDPOINT=http://dfe-loader:6000
 
-On `direct`, `source.brokers`, `source.group_id` and `sink.topic` are not required, and an instance with empty topics does not idle, because the listener is the work. The fleet routes over the bus until dfe-infra flips the selector (issue #19).
+On `direct`, `source.brokers`, `source.group_id` and `source.topics` may be empty, and an instance with empty topics does not idle, because the listener is the work. Their keys must still be present, because a `--config` file is the whole configuration. The fleet routes over the bus until dfe-infra flips the selector (issue #19).
+
+`sink.topic` is required on both transports. On `direct` it is the routing key every push carries, and dfe-loader routes a record with no `_source` on that key, so a push without one lands under the loader's `default_topic`.
 
 The listener speaks plaintext gRPC with no authentication of its own, and the push to the endpoint travels in the clear. Both belong behind the mesh route dfe-infra provisions for them, never on an interface reachable from outside the cluster.
+
+## `source.acknowledgements` holds the source until delivery
+
+`source.acknowledgements.enabled` (default `true`) holds the source's acknowledgement -- the Kafka offset commit on the bus, the answer to a push on direct -- until every event built from a record is delivered, or dropped and counted. A sink outage is then waited out, and a crash redelivers rather than loses. `false` acknowledges at receipt, before the transform runs, and a crash loses what was in flight. The flat env form is `DFE_TRANSFORM_ELASTIC_SOURCE_ACKNOWLEDGEMENTS_ENABLED`.
+
+On a direct source a push is held at most 18 s, so every send it waits on gives up at 15 s: a direct sink's gRPC deadline, and a bus sink's `message.timeout.ms` (librdkafka's default is 300 s).
 
 ## A section scalo resolves for itself cannot be set from the file
 

@@ -18,6 +18,15 @@ use testcontainers_modules::kafka::apache::Kafka;
 /// `docker rm -f $(docker ps -aq --filter label=io.hyperi.test.suite=dfe-transform-elastic-broker)`
 pub const TEST_SUITE_LABEL: (&str, &str) = ("io.hyperi.test.suite", "dfe-transform-elastic-broker");
 
+/// The host ports a test broker may publish on: fixed, below 10240, because a
+/// port Docker picks comes from the ephemeral range that other stacks on a
+/// shared host publish fixed ports in.
+const HOST_PORTS: std::ops::Range<u16> = 9400..10240;
+
+/// How many free ports a container start tries before giving up, since a port
+/// free when probed can be taken by a concurrent run before Docker binds it.
+const PORT_ATTEMPTS: usize = 8;
+
 /// A broker for one test, live or containerised.
 ///
 /// Dropping this stops any container it started.
@@ -53,42 +62,72 @@ impl Broker {
         }
     }
 
+    /// Start a container for one test, never a live broker: for a test that
+    /// stops the broker, which it must own.
+    pub async fn container(test: &str) -> Option<Self> {
+        match Self::spawn(test).await {
+            Ok(broker) => {
+                eprintln!("spawned Kafka container at {}", broker.brokers);
+                Some(broker)
+            }
+            Err(e) => {
+                eprintln!("could not spawn a Kafka container: {e}");
+                None
+            }
+        }
+    }
+
     async fn spawn(test: &str) -> Result<Self, String> {
-        use testcontainers::ImageExt;
-        use testcontainers::runners::AsyncRunner;
-        use testcontainers_modules::kafka::apache::KAFKA_PORT;
-
-        // Pinned here rather than left to the module default: a tag baked into
-        // a dependency's source is invisible to dependency review. The org
-        // Renovate preset caps this image at the version Strimzi runs, so the
-        // fixture cannot pass on a broker production cannot deploy.
-        // renovate: datasource=docker depName=apache/kafka-native
-        const KAFKA_TAG: &str = "4.2.0";
-
         let name = container_name(test);
-        reap_stale(&name);
+        let mut last_err = String::from("no free host port below 10240");
+        for port in free_host_ports().take(PORT_ATTEMPTS) {
+            reap_stale(&name);
+            match start_on(&name, port).await {
+                Ok(container) => {
+                    let host = container
+                        .get_host()
+                        .await
+                        .map_err(|e| format!("host: {e}"))?;
+                    return Ok(Self {
+                        brokers: format!("{host}:{port}"),
+                        container: Some(container),
+                    });
+                }
+                Err(e) => last_err = e,
+            }
+        }
+        Err(last_err)
+    }
 
-        let container = Kafka::default()
-            .with_tag(KAFKA_TAG)
-            .with_container_name(&name)
-            .with_labels(labels())
-            .start()
+    /// Stop the broker this test started, leaving its data and its port.
+    pub async fn stop(&self) {
+        let container = self.container.as_ref().expect("stop needs a container");
+        container
+            .stop_with_timeout(Some(10))
             .await
-            .map_err(|e| format!("start: {e}"))?;
+            .expect("the broker stops");
+    }
 
-        let host = container
-            .get_host()
-            .await
-            .map_err(|e| format!("host: {e}"))?;
-        let port = container
-            .get_host_port_ipv4(KAFKA_PORT)
-            .await
-            .map_err(|e| format!("port: {e}"))?;
+    /// Start the broker again after [`stop`](Self::stop), on the same port.
+    pub async fn start(&self) {
+        let container = self.container.as_ref().expect("start needs a container");
+        container.start().await.expect("the broker starts again");
+    }
 
-        Ok(Self {
-            brokers: format!("{host}:{port}"),
-            container: Some(container),
-        })
+    /// A producer whose librdkafka settings are overridden, for a test that
+    /// needs a delivery to fail fast or a record ceiling to be low.
+    pub async fn producer_with(&self, client: &str, overrides: &[(&str, &str)]) -> KafkaTransport {
+        let config = KafkaConfig {
+            profile: KafkaProfile::DevTest,
+            brokers: self.list(),
+            group: format!("{client}-producer"),
+            client_id: client.to_string(),
+            ..KafkaConfig::devtest()
+        }
+        .with_overrides(overrides);
+        KafkaTransport::new(&config)
+            .await
+            .expect("producer connects")
     }
 
     /// Broker list, as the config wants it.
@@ -140,6 +179,39 @@ fn live_brokers() -> Option<String> {
     std::net::TcpStream::connect_timeout(&addr, Duration::from_secs(3))
         .ok()
         .map(|_| brokers)
+}
+
+/// Start the broker container `name`, published on host `port`.
+async fn start_on(name: &str, port: u16) -> Result<ContainerAsync<Kafka>, String> {
+    use testcontainers::ImageExt;
+    use testcontainers::runners::AsyncRunner;
+    use testcontainers_modules::kafka::apache::KAFKA_PORT;
+
+    // Pinned here rather than left to the module default: a tag baked into
+    // a dependency's source is invisible to dependency review. The org
+    // Renovate preset caps this image at the version Strimzi runs, so the
+    // fixture cannot pass on a broker production cannot deploy.
+    // renovate: datasource=docker depName=apache/kafka-native
+    const KAFKA_TAG: &str = "4.2.0";
+
+    Kafka::default()
+        .with_tag(KAFKA_TAG)
+        .with_container_name(name)
+        .with_labels(labels())
+        .with_mapped_port(port, KAFKA_PORT)
+        .start()
+        .await
+        .map_err(|e| format!("start on port {port}: {e}"))
+}
+
+/// Host ports in [`HOST_PORTS`] that nothing is listening on, starting at an
+/// offset taken from the process id so concurrent runs start apart.
+fn free_host_ports() -> impl Iterator<Item = u16> {
+    let span = HOST_PORTS.end - HOST_PORTS.start;
+    let offset = u16::try_from(std::process::id() % u32::from(span)).unwrap_or(0);
+    (0..span)
+        .map(move |i| HOST_PORTS.start + (offset + i) % span)
+        .filter(|port| std::net::TcpListener::bind(("0.0.0.0", *port)).is_ok())
 }
 
 /// Container name: which repo, which suite, which test.

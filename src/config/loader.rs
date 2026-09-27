@@ -8,7 +8,9 @@
 //! section scalo resolves for itself reaches nothing when written there and is
 //! warned about rather than refused.
 
-use scalo::config::flat_env::{ApplyFlatEnv, flat_env_list, flat_env_parsed, flat_env_string};
+use scalo::config::flat_env::{
+    ApplyFlatEnv, flat_env_bool, flat_env_list, flat_env_parsed, flat_env_string,
+};
 use scalo::config::{self, ConfigOptions};
 
 use super::{Config, SinkConfig, SourceConfig};
@@ -29,8 +31,9 @@ pub const ENV_PREFIX: &str = "DFE_TRANSFORM_ELASTIC";
 /// anything", NOT "does scalo resolve it from the cascade for us". Two entries
 /// only make sense under the wider test. `memory` is read by
 /// `MemoryGuardConfig::from_env`, not from the cascade, and `batch_processing`
-/// is gated on scalo's `worker-batch`, which this binary does not enable --
-/// both are inert in that file either way, which is the thing worth saying.
+/// configures the runtime's own batch engine, which the service loop does not
+/// run -- its engine takes the record cap from `source.batch_size` -- so both
+/// are inert in that file either way, which is the thing worth saying.
 ///
 /// `geoip` is deliberately absent: it is declared on [`Config`] and handed to
 /// `scalo::geoip_download` explicitly, which is what makes it work from a file.
@@ -256,6 +259,9 @@ impl ApplyFlatEnv for SourceConfig {
         if let Some(brokers) = flat_env_list(prefix, "BROKERS") {
             self.brokers = brokers;
         }
+        if let Some(enabled) = flat_env_bool(prefix, "ACKNOWLEDGEMENTS_ENABLED") {
+            self.acknowledgements = scalo::transport::AcknowledgementsConfig::new(enabled);
+        }
     }
 }
 
@@ -347,6 +353,52 @@ mod tests {
             !CASCADE_ONLY_SECTIONS.contains(&"geoip"),
             "geoip reaches scalo explicitly, so refusing it would be wrong"
         );
+    }
+
+    /// dfe-engine renders a side's transport by its mechanism, so a config file
+    /// naming `grpc` or `kafka` must load through `--config` as the side it
+    /// names, not stop the process.
+    #[test]
+    fn a_config_file_may_name_the_transport_grpc_or_kafka() {
+        let direct = load_file(
+            "source:\n  name: filebeat.okta.default\n  transport: grpc\n  \
+             listen: 0.0.0.0:6000\n  topics: []\n  group_id: ''\n  brokers: []\n\
+             sink:\n  topic: okta_load\n  transport: grpc\n  endpoint: http://dfe-loader:6000\n",
+        )
+        .expect("an engine-rendered grpc config loads");
+        assert_eq!(direct.source.transport, crate::config::Transport::Direct);
+        assert_eq!(direct.sink.transport, crate::config::Transport::Direct);
+        direct
+            .validate()
+            .expect("and validates as the direct transport");
+
+        let bus = load_file(&FILE_BASE.replace("topics: [in]", "transport: kafka\n  topics: [in]"))
+            .expect("an engine-rendered kafka config loads");
+        assert_eq!(bus.source.transport, crate::config::Transport::Bus);
+
+        // The file still refuses a name it does not know.
+        assert!(
+            load_file(&FILE_BASE.replace("topics: [in]", "transport: tcp\n  topics: [in]"))
+                .is_err()
+        );
+
+        // An alias is a value, not a key, so it is never warned about as unread.
+        let aliased = format!(
+            "{}  transport: kafka\n",
+            FILE_BASE.replace("topics: [in]", "transport: grpc\n  topics: [in]")
+        );
+        assert!(
+            ignored_in(&aliased).is_empty(),
+            "{:?}",
+            ignored_in(&aliased)
+        );
+
+        // Written back, a transport always takes its own name.
+        assert_eq!(
+            serde_json::to_value(direct.source.transport).unwrap(),
+            "direct"
+        );
+        assert_eq!(serde_json::to_value(bus.source.transport).unwrap(), "bus");
     }
 
     /// Collect the ignored keys a file would be warned about.

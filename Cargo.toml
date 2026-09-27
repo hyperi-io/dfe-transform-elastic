@@ -44,6 +44,7 @@ metrics = { workspace = true }
 schemars = { workspace = true }
 chrono = { workspace = true }
 tikv-jemallocator = { workspace = true, optional = true }
+parking_lot = { workspace = true }
 
 [dev-dependencies]
 # `tests/unicode.rs` runs its sweeps through `dfe_runtime::testutil`, which is
@@ -51,9 +52,11 @@ tikv-jemallocator = { workspace = true, optional = true }
 # configured out whenever this package is built ALONE -- a whole-workspace
 # build only worked because dfe-transforms happens to ask for it.
 dfe-runtime = { workspace = true, features = ["testutil"] }
-# `start_paused` for the send-retry tests: the attempt budget spans ~25 seconds
-# of backoff, which a paused clock fast-forwards instead of waiting out.
+# `start_paused` for the loop tests: the pipeline's retry backoff is fast-forwarded
+# by a paused clock instead of waited out.
 tokio = { workspace = true, features = ["test-util"] }
+# An in-process source, so the loop's hold is tested without a broker.
+scalo = { workspace = true, features = ["transport-memory"] }
 tempfile = { workspace = true }
 testcontainers = { workspace = true }
 testcontainers-modules = { workspace = true }
@@ -149,6 +152,8 @@ scalo = { version = ">=2.13.0, <3", features = [
     "config",
     "config-schema",
     "deployment",
+    # The pipeline's dead-letter path, which input that is not JSON takes.
+    "dlq",
     "geoip-download",
     "governor",
     "http-server",
@@ -158,6 +163,8 @@ scalo = { version = ">=2.13.0, <3", features = [
     "scaling",
     "service-metrics",
     "version-check",
+    # BatchEngine and its pipeline builder, which runs the service loop.
+    "worker-batch",
 ] }
 
 # The metric handle types (Counter/Gauge/Histogram) that MetricsManager hands

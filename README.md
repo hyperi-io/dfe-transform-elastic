@@ -81,6 +81,8 @@ come through unchanged. What each family carries, and
 what a payload with no marker does, are in
 [docs/architecture.md](docs/architecture.md#envelopes-the-same-pipeline-a-different-wrapper).
 
+JSON is the only payload format. MessagePack, supported in DFE/XDR 2.0 and 2.1, is deprecated in DFE 2.2 and no longer accepted: the JSON path (SIMD parsing with sonic-rs, zstd on the wire) is fast enough that MessagePack gave no CPU saving.
+
 Each side also carries a `transport`: `bus`, the default, is Kafka, and
 `direct` is a scalo Push listener inbound and a gRPC push outbound. Where the
 values come from, which env spelling reaches a `--config` file, and which
@@ -95,20 +97,15 @@ rather than assumed:
 - **Invalid UTF-8** is decoded with U+FFFD replacements, matching what Beats
   itself substitutes for a file it cannot decode. The payload survives; the
   substitution is counted on `lossy_payloads_total`.
-- **A line that is not valid JSON** is skipped and counted on
-  `parse_errors_total`. The rest of the payload is unaffected.
+- **Input that is not JSON** is refused and dead-lettered with the reason `payload is not JSON`, and counted on `parse_errors_total`. A record no line of which parses -- MessagePack, or any other binary -- is refused whole, with the bytes the producer sent. In a record that is otherwise JSON, only the bad line is refused and the events beside it still go. This service configures no DLQ, so the dead letter is dropped and counted on `pipeline_dead_letters_dropped_total{reason="dead_letter"}`, and its record's source is released.
 - **An event whose transform errors** is counted on `events_errored_total` and
   left out of the output. The batch continues.
 - **An event too large for one Kafka record** is dropped and counted on
   `events_oversize_total`. No broker would accept it, and retrying it forever
   would block the partition behind it.
-- **A backpressured sink** is retried with a bounded backoff, counted on
-  `send_backpressure_total`. Backpressure is not delivery.
-- **A send that cannot be completed** STOPS the service with the batch
-  uncommitted, and the restarted consumer replays it. Carrying on would let the
-  next batch's commit acknowledge the failed one, because Kafka commits are
-  cumulative -- that is loss, not replay. Delivery is at-least-once, so a
-  downstream consumer must be idempotent.
+- **A sink that refuses for now** -- a full producer queue, a broker outage -- is retried for as long as it refuses, counted on `send_backpressure_total`. The Kafka offset commit, or the answer to a push, is held until the sink takes the block, so an outage is waited out and nothing after the block is committed past it.
+- **A send no retry can fix** STOPS the service with the block unreleased, and the restarted consumer reads it again. Delivery is at-least-once, so a downstream consumer must be idempotent.
+- **A record the sink transport would refuse** is dropped before the send and counted on `pipeline_dead_letters_dropped_total`, never counted delivered.
 
 Non-English text is a tested case, not an edge case. `tests/unicode.rs`
 runs every registered transform against seventeen scripts and a set of

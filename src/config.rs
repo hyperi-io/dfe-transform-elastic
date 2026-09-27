@@ -50,14 +50,44 @@ use serde::{Deserialize, Serialize};
 /// `bus` is Kafka between the stages; `direct` is a scalo Push listener inbound
 /// and a gRPC client outbound, needing no broker at all. The record and the
 /// transform are identical either way -- only who hands the record over changes.
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize, Serialize, JsonSchema)]
+/// `kafka` and `grpc` are read as the same two, the names dfe-engine renders,
+/// and a config always writes `bus` and `direct` back.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Transport {
     /// Kafka topics.
     #[default]
+    #[serde(alias = "kafka")]
     Bus,
     /// A scalo Push listener inbound, a gRPC client outbound.
+    #[serde(alias = "grpc")]
     Direct,
+}
+
+// Written by hand because the derive lists only the canonical names, and a
+// validator must take the `grpc` and `kafka` an engine render carries.
+impl JsonSchema for Transport {
+    fn schema_name() -> std::borrow::Cow<'static, str> {
+        "Transport".into()
+    }
+
+    fn json_schema(_: &mut schemars::SchemaGenerator) -> schemars::Schema {
+        schemars::json_schema!({
+            "description": "Which transport a side of the service uses.\n\n`bus` is Kafka between the stages; `direct` is a scalo Push listener inbound and a gRPC client outbound, needing no broker at all. The record and the transform are identical either way -- only who hands the record over changes. `kafka` and `grpc` are read as the same two, the names dfe-engine renders, and a config always writes `bus` and `direct` back.",
+            "oneOf": [
+                {
+                    "description": "Kafka topics.",
+                    "type": "string",
+                    "enum": ["bus", "kafka"]
+                },
+                {
+                    "description": "A scalo Push listener inbound, a gRPC client outbound.",
+                    "type": "string",
+                    "enum": ["direct", "grpc"]
+                }
+            ]
+        })
+    }
 }
 
 impl Transport {
@@ -143,16 +173,27 @@ pub struct SourceConfig {
 
     /// Broker list.
     pub brokers: Vec<String>,
+
+    /// When the source is told its records are safe: a Kafka offset commit on
+    /// the bus, the answer to a push on direct.
+    ///
+    /// `enabled: true`, the default, holds it until every event built from a
+    /// record is delivered, or dropped and counted, so a crash or a sink outage
+    /// redelivers rather than loses. `enabled: false` releases it at receipt,
+    /// before the transform runs, and loses what was in flight.
+    #[serde(default)]
+    pub acknowledgements: scalo::transport::AcknowledgementsConfig,
 }
 
 /// Outbound configuration.
 #[derive(Debug, Clone, Deserialize, Serialize, JsonSchema)]
 pub struct SinkConfig {
-    /// Topic to produce to.
+    /// Where the events land: the topic produced to on the bus, and the
+    /// routing key every push carries on direct. Required on both.
     pub topic: String,
 
     /// Which transport the outbound side uses: `bus` produces to `topic`,
-    /// `direct` pushes to `endpoint`.
+    /// `direct` pushes to `endpoint` with `topic` as the routing key.
     #[serde(default)]
     pub transport: Transport,
 
@@ -188,6 +229,7 @@ impl Default for SourceConfig {
             max_batch_bytes: default_max_batch_bytes(),
             group_id: String::new(),
             brokers: Vec::new(),
+            acknowledgements: scalo::transport::AcknowledgementsConfig::default(),
         }
     }
 }
@@ -284,6 +326,7 @@ fn valid() -> Config {
             max_batch_bytes: default_max_batch_bytes(),
             group_id: "g".into(),
             brokers: vec!["localhost:9092".into()],
+            acknowledgements: scalo::transport::AcknowledgementsConfig::default(),
         },
         sink: SinkConfig {
             topic: "out".into(),
@@ -359,19 +402,40 @@ mod tests {
         assert_eq!(parsed.sink.endpoint, "http://dfe-loader:6000");
     }
 
-    /// A direct deployment names no brokers, group or topics, and is valid.
+    /// A direct deployment names no brokers, group or source topics, and is
+    /// valid. It still names a sink topic, which is its routing key.
     #[test]
     fn the_direct_transport_round_trips_through_yaml() {
         let parsed: Config = serde_yaml_ng::from_str(
             "source:\n  name: filebeat.okta.default\n  transport: direct\n  \
              listen: 0.0.0.0:6000\n  topics: []\n  group_id: ''\n  brokers: []\n\
-             sink:\n  topic: ''\n  transport: direct\n  endpoint: http://loader:6000\n",
+             sink:\n  topic: okta_load\n  transport: direct\n  endpoint: http://loader:6000\n",
         )
         .expect("config parses with the direct transport");
         assert!(parsed.source.transport.is_direct());
         assert!(parsed.sink.transport.is_direct());
         assert!(!parsed.work_state().is_idle());
         assert!(parsed.validate().is_ok());
+    }
+
+    /// Holding the acknowledgement is the default, so a config written before
+    /// the key existed gets at-least-once without naming it.
+    #[test]
+    fn acknowledgements_are_held_unless_turned_off() {
+        let base = "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
+                    group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n";
+
+        let parsed: Config = serde_yaml_ng::from_str(base).expect("config parses without the key");
+        assert!(parsed.source.acknowledgements.enabled);
+
+        let off: Config = serde_yaml_ng::from_str(
+            "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
+             group_id: g\n  brokers: [b:9092]\n  acknowledgements:\n    enabled: false\n\
+             sink:\n  topic: out\n",
+        )
+        .expect("config parses with acknowledgements off");
+        assert!(!off.source.acknowledgements.enabled);
+        assert!(off.validate().is_ok());
     }
 
     #[test]

@@ -16,7 +16,10 @@
         "batch_size": 20000,
         "max_batch_bytes": 16777216,
         "group_id": "",
-        "brokers": []
+        "brokers": [],
+        "acknowledgements": {
+          "enabled": true
+        }
       }
     },
     "sink": {
@@ -104,6 +107,13 @@
           "items": {
             "type": "string"
           }
+        },
+        "acknowledgements": {
+          "description": "When the source is told its records are safe: a Kafka offset commit on\nthe bus, the answer to a push on direct.\n\n`enabled: true`, the default, holds it until every event built from a\nrecord is delivered, or dropped and counted, so a crash or a sink outage\nredelivers rather than loses. `enabled: false` releases it at receipt,\nbefore the transform runs, and loses what was in flight.",
+          "$ref": "#/$defs/AcknowledgementsConfig",
+          "default": {
+            "enabled": true
+          }
         }
       },
       "required": [
@@ -114,17 +124,23 @@
       ]
     },
     "Transport": {
-      "description": "Which transport a side of the service uses.\n\n`bus` is Kafka between the stages; `direct` is a scalo Push listener inbound\nand a gRPC client outbound, needing no broker at all. The record and the\ntransform are identical either way -- only who hands the record over changes.",
+      "description": "Which transport a side of the service uses.\n\n`bus` is Kafka between the stages; `direct` is a scalo Push listener inbound and a gRPC client outbound, needing no broker at all. The record and the transform are identical either way -- only who hands the record over changes. `kafka` and `grpc` are read as the same two, the names dfe-engine renders, and a config always writes `bus` and `direct` back.",
       "oneOf": [
         {
           "description": "Kafka topics.",
           "type": "string",
-          "const": "bus"
+          "enum": [
+            "bus",
+            "kafka"
+          ]
         },
         {
           "description": "A scalo Push listener inbound, a gRPC client outbound.",
           "type": "string",
-          "const": "direct"
+          "enum": [
+            "direct",
+            "grpc"
+          ]
         }
       ]
     },
@@ -153,16 +169,27 @@
         }
       ]
     },
+    "AcknowledgementsConfig": {
+      "description": "The `acknowledgements` section of an ack-capable transport.\n\nWith `enabled: true` (the default) a source releases its acknowledgement --\na Kafka offset commit, a gRPC or HTTP response -- only once every piece of\nwork built from the record has been delivered, dead-lettered with the DLQ's\nconfirmation, or dropped by policy. A failed delivery withholds it, so the\nrecord is delivered again: duplicates are possible, loss is not.\n\nWith `enabled: false` the source acknowledges at receipt, before the record\nis processed: a crash or a failed delivery loses what was acknowledged.\n\n```yaml\nkafka:\n  acknowledgements:\n    enabled: true\n```",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Hold the source acknowledgement until every piece is delivered.",
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
     "SinkConfig": {
       "description": "Outbound configuration.",
       "type": "object",
       "properties": {
         "topic": {
-          "description": "Topic to produce to.",
+          "description": "Where the events land: the topic produced to on the bus, and the\nrouting key every push carries on direct. Required on both.",
           "type": "string"
         },
         "transport": {
-          "description": "Which transport the outbound side uses: `bus` produces to `topic`,\n`direct` pushes to `endpoint`.",
+          "description": "Which transport the outbound side uses: `bus` produces to `topic`,\n`direct` pushes to `endpoint` with `topic` as the routing key.",
           "$ref": "#/$defs/Transport",
           "default": "bus"
         },
