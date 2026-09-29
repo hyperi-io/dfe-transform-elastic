@@ -17,10 +17,11 @@
 //! measures that. A high reach here means the next package is mostly a
 //! generate-and-verify job rather than a write-new-patterns job.
 //!
-//! Reads a clone it does not own, so it skips when the clone is absent.
+//! Reads a clone it does not own, so it skips unless `DFE_INTEGRATIONS` names
+//! one.
 //!
 //! ```text
-//! DFE_INTEGRATIONS=/projects/elastic-stuff/integrations \
+//! DFE_INTEGRATIONS=<path to an elastic/integrations clone> \
 //!     cargo test -p dfe-transforms --test pattern_reach -- --nocapture
 //! ```
 
@@ -29,12 +30,9 @@ use std::path::{Path, PathBuf};
 
 use dfe_runtime::painless_plan::PainlessPlan;
 
-/// Where the `elastic/integrations` clone lives.
-fn clone_root() -> PathBuf {
-    std::env::var_os("DFE_INTEGRATIONS").map_or_else(
-        || PathBuf::from("/projects/elastic-stuff/integrations"),
-        PathBuf::from,
-    )
+/// Where the `elastic/integrations` clone lives, from `DFE_INTEGRATIONS`.
+fn clone_root() -> Option<PathBuf> {
+    std::env::var_os("DFE_INTEGRATIONS").map(PathBuf::from)
 }
 
 /// The `<package>/<data stream>` pairs `sources.yaml` already declares.
@@ -134,7 +132,10 @@ struct Reach {
 
 #[test]
 fn how_far_the_ladder_reaches_into_unseen_packages() {
-    let root = clone_root();
+    let Some(root) = clone_root() else {
+        println!("DFE_INTEGRATIONS unset, skipping");
+        return;
+    };
     if !root.join("packages").is_dir() {
         println!("no integrations clone at {}, skipping", root.display());
         return;

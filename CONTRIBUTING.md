@@ -213,11 +213,11 @@ is cold and takes around twenty minutes, and every one after it is incremental.
 
 Two traps worth knowing before you burn a run on them:
 
-- **Never set `CARGO_BUILD_JOBS` by hand.** `~/.local/bin/cargo` derives it, and
-  a hand-set value beats both the shim and the project's own pinning.
+- **Never set `CARGO_BUILD_JOBS` by hand.** A hand-set value beats the project's
+  own pinning and any build governor on the host.
 - **The compat corpus is gitignored and its absence PASSES.** A run in a git
   worktree measures nothing and still reports success, so pass
-  `DFE_COMPAT_CORPUS=/projects/dfe-transform-elastic/testdata/compat` there.
+  `DFE_COMPAT_CORPUS=<main checkout>/testdata/compat` there.
 
 ## Questions
 
