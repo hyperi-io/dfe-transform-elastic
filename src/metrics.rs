@@ -72,8 +72,9 @@ pub struct TransformMetrics {
     pub send_backpressure: Counter,
 
     /// Sends the sink transport dead-lettered. This service has no DLQ, so
-    /// their records are dropped and not counted delivered; the pipeline
-    /// screens such records out before the send, so any value is a defect.
+    /// their records are dropped and not counted delivered. The pipeline
+    /// screens out what the producer would refuse, so a value here is a broker
+    /// or topic ceiling below `sink.max_message_bytes`.
     pub send_filtered_dlq: Counter,
 
     /// Events too large for one Kafka record even on their own. Dropped: no

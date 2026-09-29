@@ -11,7 +11,6 @@ name = "pgo-driver"
 description = "Load driver that feeds the committed Beats fixtures to a PGO-instrumented dfe-transform-elastic"
 version.workspace = true
 edition.workspace = true
-authors.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version.workspace = true

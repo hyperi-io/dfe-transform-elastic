@@ -75,8 +75,8 @@ newline scan. It covers 202 call sites over 37 distinct patterns, 4.7% of the
 4,299 grok sites in the generated tree (3,496 `cached_grok!` plus 803
 `cached_grok_mapped!`).
 
-Those are DERIVED, not typed: `.hyperi-ai/tmp/count_grok_sites.py` re-counts
-them. The previous pair -- 194 sites, 10.2% of 1,906 -- was measured before the
+Those are DERIVED, not typed: re-count them from the generated tree rather than
+editing them. The previous pair -- 194 sites, 10.2% of 1,906 -- was measured before the
 tree was regenerated whole, and the share fell because the denominator more
 than doubled, not because the native form lost ground.
 

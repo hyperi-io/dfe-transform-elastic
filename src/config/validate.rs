@@ -8,7 +8,7 @@
 //! someone SET out of range is refused whether or not there is work, and the
 //! rest run only once the configuration names work.
 
-use super::Config;
+use super::{Config, PIPELINE_MESSAGE_MAX_BYTES};
 
 /// The smallest inbound fetch budget librdkafka can honour here.
 const MIN_BATCH_BYTES: usize = 4 * 1024 * 1024;
@@ -42,12 +42,14 @@ impl Config {
                 self.source.max_batch_bytes
             )));
         }
-        // A budget under one event's worth would drop every event as oversize,
-        // and one over librdkafka's producer default would have every record
-        // rejected at the client before it reaches a broker.
-        if self.sink.max_message_bytes < 4096 || self.sink.max_message_bytes > 1_000_000 {
+        // A budget under one event's worth drops every event as oversize, and
+        // one over the stack's record ceiling admits records no layer carries.
+        if self.sink.max_message_bytes < 4096
+            || self.sink.max_message_bytes > PIPELINE_MESSAGE_MAX_BYTES
+        {
             return Err(crate::Error::Config(format!(
-                "sink.max_message_bytes must be between 4096 and 1000000, got {}",
+                "sink.max_message_bytes must be between 4096 and {PIPELINE_MESSAGE_MAX_BYTES}, \
+                 got {}",
                 self.sink.max_message_bytes
             )));
         }
@@ -123,6 +125,7 @@ impl Config {
 #[allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 mod tests {
     use super::super::valid;
+    use super::PIPELINE_MESSAGE_MAX_BYTES;
 
     #[test]
     fn accepts_a_complete_config() {
@@ -155,7 +158,7 @@ mod tests {
     fn a_structural_fault_refuses_even_when_idle() {
         let mut c = valid();
         c.source.topics.clear();
-        c.sink.max_message_bytes = 4_000_000;
+        c.sink.max_message_bytes = PIPELINE_MESSAGE_MAX_BYTES + 1;
         assert!(c.validate().is_err());
     }
 
@@ -230,16 +233,27 @@ mod tests {
         assert!(c.validate().is_err());
     }
 
-    /// The budget bounds one Kafka record, so a value above librdkafka's
-    /// producer default has every record rejected at the client.
+    /// The budget bounds one record, so a value above the stack's record
+    /// ceiling admits records no broker, topic or consumer carries.
     #[test]
-    fn rejects_a_message_budget_the_producer_cannot_honour() {
+    fn rejects_a_message_budget_the_stack_cannot_carry() {
         let mut c = valid();
-        c.sink.max_message_bytes = 4_000_000;
+        c.sink.max_message_bytes = PIPELINE_MESSAGE_MAX_BYTES + 1;
         assert!(c.validate().is_err());
 
         c.sink.max_message_bytes = 512;
         assert!(c.validate().is_err());
+    }
+
+    /// Anything up to the stack's ceiling is a budget the chain carries, so a
+    /// multi-megabyte value an operator sets is honoured.
+    #[test]
+    fn accepts_a_message_budget_up_to_the_stack_ceiling() {
+        let mut c = valid();
+        for budget in [4_000_000, PIPELINE_MESSAGE_MAX_BYTES] {
+            c.sink.max_message_bytes = budget;
+            assert!(c.validate().is_ok(), "{budget} was refused");
+        }
     }
 
     #[test]

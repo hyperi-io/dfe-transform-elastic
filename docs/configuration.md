@@ -38,6 +38,18 @@ The listener speaks plaintext gRPC with no authentication of its own, and the pu
 
 On a direct source a push is held at most 18 s, so every send it waits on gives up at 15 s: a direct sink's gRPC deadline, and a bus sink's `message.timeout.ms` (librdkafka's default is 300 s).
 
+## `sink.max_message_bytes` caps one outbound record
+
+The default is 15 MiB (15,728,640 bytes): the stack's 16 MiB record ceiling less 1 MiB for record framing, headers and gRPC routing metadata. The DFE stack's brokers and topics, the producer this service builds, and dfe-loader's consumer all carry 16 MiB, so an event up to the budget travels the whole path. An event that serialises larger is dropped, logged, counted on `events_oversize_total`, and its source is still acknowledged.
+
+Against a broker or topic whose `message.max.bytes` is lower -- a stock Kafka broker takes about 1 MB -- set `sink.max_message_bytes` below that limit. Left at the default, the broker refuses the events between the two instead: each is dropped as a dead letter, counted on `send_filtered_dlq_total`, and the partition moves on. Validation refuses a value under 4096 or over 16,777,216.
+
+    DFE_TRANSFORM_ELASTIC_SINK_MAX_MESSAGE_BYTES=900000
+
+## A record that will not parse or transform is dropped and counted
+
+There is no dead-letter backend. A record that is not JSON is dropped and counted on `parse_errors_total` and `pipeline_dead_letters_dropped_total`. An event whose transform returns an error, or that will not serialise, is dropped and counted on `events_errored_total`. Either way the source is acknowledged -- the offset commits on the bus, the push is answered on direct -- so the record is not redelivered. Holding the acknowledgement protects what the sink refuses for now, never what can never be delivered.
+
 ## A section scalo resolves for itself cannot be set from the file
 
 `scaling` is the one that bites. The container starts with `--config`, and scalo reads `scaling` from its own cascade, so a `scaling:` block in the named file reaches nothing and the defaults stand. Set `DFE_TRANSFORM_ELASTIC_SCALING__ENABLED` or `DFE_TRANSFORM_ELASTIC_SCALING__MEMORY_GATE_THRESHOLD` instead. The effective values are logged once at startup, with whether each came from the cascade or the default.

@@ -206,11 +206,13 @@ pub struct SinkConfig {
     #[serde(default)]
     pub brokers: Option<Vec<String>>,
 
-    /// Ceiling on one produced Kafka record. A batch is split into as many
-    /// records as it takes to stay under it.
+    /// Ceiling on one outbound record. An event that serialises larger is
+    /// dropped and counted on `events_oversize_total`.
     ///
-    /// Must sit below the LOWER of the broker's `message.max.bytes` and the
-    /// producer's -- raising the broker limit alone does nothing.
+    /// The default fits the stack's 16 MiB record ceiling. Against a broker or
+    /// topic whose `message.max.bytes` is lower, set this below that limit, or
+    /// the broker refuses those events instead and they count on
+    /// `send_filtered_dlq_total`.
     #[serde(default = "default_max_message_bytes")]
     pub max_message_bytes: usize,
 }
@@ -273,15 +275,23 @@ pub const fn default_max_batch_bytes() -> usize {
     16 * 1024 * 1024
 }
 
-/// Default ceiling on one produced Kafka record.
+/// The largest record the stack carries: the brokers' and topics'
+/// `message.max.bytes`, the producer's, and the consumer's fetch all share it.
 ///
-/// librdkafka's producer `message.max.bytes` defaults to 1,000,000 and scalo
-/// sets no override, so anything above that is rejected before it leaves the
-/// process. 900 KB leaves headroom for the key, headers and record framing,
-/// which count against the same limit.
+/// scalo's `MESSAGE_MAX_BYTES`, restated because that constant only exists
+/// with the `kafka` feature. A test holds the two equal.
+pub const PIPELINE_MESSAGE_MAX_BYTES: usize = 16 * 1024 * 1024;
+
+/// Room the default budget leaves under [`PIPELINE_MESSAGE_MAX_BYTES`] for
+/// what a payload's length does not count: record framing, headers, the gRPC
+/// routing metadata, and zstd's growth on an incompressible payload.
+pub const MESSAGE_HEADROOM_BYTES: usize = 1024 * 1024;
+
+/// Default ceiling on one outbound record: the stack's record ceiling less
+/// [`MESSAGE_HEADROOM_BYTES`], so 15 MiB.
 #[must_use]
 pub const fn default_max_message_bytes() -> usize {
-    900_000
+    PIPELINE_MESSAGE_MAX_BYTES - MESSAGE_HEADROOM_BYTES
 }
 
 impl Config {
@@ -364,7 +374,7 @@ mod tests {
         assert!(parsed.validate().is_ok());
         assert!(parsed.work_state().is_idle());
         assert_eq!(parsed.source.batch_size, 20_000);
-        assert_eq!(parsed.sink.max_message_bytes, 900_000);
+        assert_eq!(parsed.sink.max_message_bytes, default_max_message_bytes());
     }
 
     /// On the direct transport the listener is the work, so empty topics must
@@ -438,15 +448,29 @@ mod tests {
         assert!(off.validate().is_ok());
     }
 
+    /// The stack carries a 16 MiB record end to end, so the default budget is
+    /// 15 MiB and an event over a stock broker's 1 MB is carried, not dropped.
     #[test]
-    fn message_budget_defaults_under_the_librdkafka_ceiling() {
+    fn message_budget_defaults_to_the_stack_ceiling_less_headroom() {
         let parsed: Config = serde_yaml_ng::from_str(
             "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
              group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
         )
         .expect("config parses without a sink budget");
-        assert_eq!(parsed.sink.max_message_bytes, 900_000);
-        assert!(parsed.sink.max_message_bytes < 1_000_000);
+        assert_eq!(parsed.sink.max_message_bytes, 15 * 1024 * 1024);
+        assert!(parsed.sink.max_message_bytes > 1_000_000);
+        assert!(parsed.sink.max_message_bytes < PIPELINE_MESSAGE_MAX_BYTES);
+    }
+
+    /// The restated ceiling is scalo's, or the budget and the producer it is
+    /// paired with disagree about what fits.
+    #[cfg(feature = "kafka")]
+    #[test]
+    fn the_pipeline_ceiling_is_scalos() {
+        assert_eq!(
+            Ok(PIPELINE_MESSAGE_MAX_BYTES),
+            usize::try_from(scalo::transport::kafka::MESSAGE_MAX_BYTES)
+        );
     }
 
     /// A config written before the geoip section existed still loads, and

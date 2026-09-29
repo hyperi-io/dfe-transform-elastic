@@ -30,7 +30,7 @@
         "transport": "bus",
         "endpoint": "http://dfe-loader:6000",
         "brokers": null,
-        "max_message_bytes": 900000
+        "max_message_bytes": 15728640
       }
     },
     "geoip": {
@@ -210,11 +210,11 @@
           "default": null
         },
         "max_message_bytes": {
-          "description": "Ceiling on one produced Kafka record. A batch is split into as many\nrecords as it takes to stay under it.\n\nMust sit below the LOWER of the broker's `message.max.bytes` and the\nproducer's -- raising the broker limit alone does nothing.",
+          "description": "Ceiling on one outbound record. An event that serialises larger is\ndropped and counted on `events_oversize_total`.\n\nThe default fits the stack's 16 MiB record ceiling. Against a broker or\ntopic whose `message.max.bytes` is lower, set this below that limit, or\nthe broker refuses those events instead and they count on\n`send_filtered_dlq_total`.",
           "type": "integer",
           "format": "uint",
           "minimum": 0,
-          "default": 900000
+          "default": 15728640
         }
       },
       "required": [
