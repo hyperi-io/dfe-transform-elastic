@@ -37,8 +37,8 @@ test:
 # Building
 build:
   enabled: true
-  # GA release prep sets this false for every app together. Until then a stable release needs `release-unoptimized: true` at dispatch.
-  skip_optimize: true
+  # Optimisation is on for this measurement branch.
+  skip_optimize: false
   type: app
   strategies:
     - native
@@ -62,8 +62,8 @@ build:
         # hyperi-ci's timeout is this plus 600s, which has to cover the driver build and broker pull as well as the load.
         duration_secs: 900
       bolt:
-        # GA release prep turns this on with PGO for every app together.
-        enabled: false
+        # Optimisation is on for this measurement branch.
+        enabled: true
 
 # Publishing (on release). The stack pins every app by GHCR image digest, so
 # a release must land an image. The deployed chart is dfe-infra's, so the
