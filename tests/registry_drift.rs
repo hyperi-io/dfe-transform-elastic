@@ -97,19 +97,24 @@ const NOT_YET_ONBOARDED: &[&str] = &[
     "prometheus/remote_write",
 ];
 
-/// The dev tree holds the vendored pipelines this one is generated from. A
-/// data stream upstream has added shows up here as a name with no module,
-/// rather than as a line in a regeneration report nobody reads.
+/// `DFE_VENDORED_PIPELINES` names the vendored pipelines tree this one is
+/// generated from. A data stream upstream has added shows up here as a name
+/// with no module, rather than as a line in a regeneration report nobody reads.
 ///
-/// Skipped where the dev tree is absent, which is a fresh clone and every CI
+/// Skipped when the variable is unset, which is a fresh clone and every CI
 /// runner.
 #[test]
 fn every_vendored_pipeline_has_a_generated_module() {
-    let pipelines = Path::new("/projects/dfe-transform-elastic-dev/pipelines");
-    if !pipelines.is_dir() {
-        eprintln!("no dev tree at {} -- skipped", pipelines.display());
+    let Some(pipelines) = std::env::var_os("DFE_VENDORED_PIPELINES") else {
+        eprintln!("DFE_VENDORED_PIPELINES unset -- skipped");
         return;
-    }
+    };
+    let pipelines = Path::new(&pipelines);
+    assert!(
+        pipelines.is_dir(),
+        "DFE_VENDORED_PIPELINES={} is not a directory",
+        pipelines.display()
+    );
 
     let generated = data_stream_directories();
     let mut missing = Vec::new();

@@ -15,7 +15,7 @@
 #
 #   package      Integration package directory in elastic/integrations.
 #   data_stream  Data stream directory within that package.
-#   pipelines    Directory under -dev/pipelines/ holding the vendored copy.
+#   pipelines    Directory under the vendored pipelines tree holding the copy.
 #   fixtures     Directory under tests/fixtures/.
 #   beats        Beats module and fileset carrying the same source, if any.
 #   intakes      Every way this source's payload can reach the service. The

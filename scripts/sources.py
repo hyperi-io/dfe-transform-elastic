@@ -3,8 +3,8 @@
 # Copyright (c) 2026 HYPERI PTY LIMITED
 """`sources.yaml`, as every tool that needs the source list reads it.
 
-One declaration per source. The compat capture, the pipeline vendoring in -dev,
-the regeneration driver and the service registry all resolve against this, so
+One declaration per source. The compat capture, the pipeline vendoring, the
+regeneration driver and the service registry all resolve against this, so
 adding a source is one edit rather than four that silently drift apart.
 
     python3 scripts/sources.py            # print the table
@@ -35,7 +35,7 @@ class Source:
         name: Our module name, and the middle segment of every registry name.
         package: Integration package directory name.
         data_stream: Data stream directory name within the package.
-        pipelines: Directory under -dev/pipelines/ holding the vendored copy.
+        pipelines: Directory under the vendored pipelines tree holding the copy.
         fixture_dir: Fixture directory, relative to ``tests/fixtures``.
         intakes: Every way this source's payload can reach the service.
         framing: ``line`` or ``body`` for a syslog intake, else None.

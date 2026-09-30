@@ -25,7 +25,7 @@ pub mod prelude;
 pub mod transform;
 
 // The layers below, re-exported at their original paths. Over 2,800 generated
-// modules and the -dev generator name them through this crate, so the split
+// modules and the generator name them through this crate, so the split
 // stays invisible to both.
 pub use dfe_core::{date_formats, error, event, syslog_pri};
 pub use dfe_painless::{
