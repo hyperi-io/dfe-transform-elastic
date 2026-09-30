@@ -180,8 +180,8 @@ source files, so it compiles as a single `rustc` holding about 13 GiB whatever
 `-j` says, and the binary then links under fat LTO in one thread. Neither step
 spreads across cores, which is why a bigger runner buys very little.
 
-**PGO is enabled on the release build, and BOLT rejoins it once
-hyperi-io/hyperi-ci#136 lands.** PGO alone is two cargo passes around 600
+**PGO and BOLT are configured for the release build and switched on together
+at GA release prep.** PGO alone is two cargo passes around 600
 seconds of load, which measured 93 minutes. BOLT adds two more passes and
 another workload, and retries the pair on a failure, so the two together are
 roughly two hours per architecture and three with a retry.
@@ -217,7 +217,7 @@ Two traps worth knowing before you burn a run on them:
   a hand-set value beats both the shim and the project's own pinning.
 - **The compat corpus is gitignored and its absence PASSES.** A run in a git
   worktree measures nothing and still reports success, so pass
-  `DFE_COMPAT_CORPUS=/projects/dfe-transform-elastic/testdata/compat` there.
+  `DFE_COMPAT_CORPUS=<main checkout>/testdata/compat` there.
 
 ## Questions
 

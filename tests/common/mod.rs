@@ -50,7 +50,7 @@ impl Broker {
             });
         }
 
-        match Self::spawn(test).await {
+        match Self::spawn(test, &[]).await {
             Ok(broker) => {
                 eprintln!("spawned Kafka container at {}", broker.brokers);
                 Some(broker)
@@ -65,7 +65,18 @@ impl Broker {
     /// Start a container for one test, never a live broker: for a test that
     /// stops the broker, which it must own.
     pub async fn container(test: &str) -> Option<Self> {
-        match Self::spawn(test).await {
+        Self::container_with(test, &[]).await
+    }
+
+    /// A container whose broker takes records up to `ceiling` bytes, never a
+    /// live broker: a stock broker refuses anything over about 1 MB.
+    pub async fn container_with_ceiling(test: &str, ceiling: usize) -> Option<Self> {
+        let ceiling = ceiling.to_string();
+        Self::container_with(test, &[("KAFKA_MESSAGE_MAX_BYTES", ceiling.as_str())]).await
+    }
+
+    async fn container_with(test: &str, env: &[(&str, &str)]) -> Option<Self> {
+        match Self::spawn(test, env).await {
             Ok(broker) => {
                 eprintln!("spawned Kafka container at {}", broker.brokers);
                 Some(broker)
@@ -77,12 +88,12 @@ impl Broker {
         }
     }
 
-    async fn spawn(test: &str) -> Result<Self, String> {
+    async fn spawn(test: &str, env: &[(&str, &str)]) -> Result<Self, String> {
         let name = container_name(test);
         let mut last_err = String::from("no free host port below 10240");
         for port in free_host_ports().take(PORT_ATTEMPTS) {
             reap_stale(&name);
-            match start_on(&name, port).await {
+            match start_on(&name, port, env).await {
                 Ok(container) => {
                     let host = container
                         .get_host()
@@ -181,8 +192,13 @@ fn live_brokers() -> Option<String> {
         .map(|_| brokers)
 }
 
-/// Start the broker container `name`, published on host `port`.
-async fn start_on(name: &str, port: u16) -> Result<ContainerAsync<Kafka>, String> {
+/// Start the broker container `name`, published on host `port`, with `env` set
+/// on it as broker properties.
+async fn start_on(
+    name: &str,
+    port: u16,
+    env: &[(&str, &str)],
+) -> Result<ContainerAsync<Kafka>, String> {
     use testcontainers::ImageExt;
     use testcontainers::runners::AsyncRunner;
     use testcontainers_modules::kafka::apache::KAFKA_PORT;
@@ -194,11 +210,15 @@ async fn start_on(name: &str, port: u16) -> Result<ContainerAsync<Kafka>, String
     // renovate: datasource=docker depName=apache/kafka-native
     const KAFKA_TAG: &str = "4.2.0";
 
-    Kafka::default()
+    let mut image = Kafka::default()
         .with_tag(KAFKA_TAG)
         .with_container_name(name)
         .with_labels(labels())
-        .with_mapped_port(port, KAFKA_PORT)
+        .with_mapped_port(port, KAFKA_PORT);
+    for (key, value) in env {
+        image = image.with_env_var(*key, *value);
+    }
+    image
         .start()
         .await
         .map_err(|e| format!("start on port {port}: {e}"))

@@ -210,11 +210,11 @@ fn expected_uuids(prefix: &str, count: usize) -> BTreeSet<String> {
     (0..count).map(|i| format!("{prefix}-{i}")).collect()
 }
 
-/// Split an NDJSON payload into records the producer will actually accept.
+/// Split an NDJSON payload into records a stock broker will actually accept.
 ///
-/// The seed side has the same 1 MB ceiling as the service, so a multi-megabyte
-/// seed has to be produced as several records -- on LINE boundaries, or the
-/// service reads half an event.
+/// A stock broker refuses a record over about 1 MB, so a multi-megabyte seed
+/// has to be produced as several records -- on LINE boundaries, or the service
+/// reads half an event.
 fn as_records(payload: &[u8], max_bytes: usize) -> Vec<Vec<u8>> {
     let mut records = Vec::new();
     let mut current = Vec::new();
@@ -428,8 +428,8 @@ async fn offsets_commit_after_the_batch_is_sent() {
 /// ceiling; this one uses the default and seeds several MB.
 #[tokio::test(flavor = "multi_thread")]
 async fn a_batch_larger_than_one_kafka_record_arrives() {
-    /// 2,000 okta events is roughly 4 MB in and more out -- several records at
-    /// the 900 KB budget, without the elapsed time of a full 20,000.
+    /// 2,000 okta events is roughly 4 MB in and more out -- well past one
+    /// Kafka record, without the elapsed time of a full 20,000.
     const EVENTS: usize = 2_000;
 
     let broker = broker_or_skip!("oversize-batch");
@@ -845,16 +845,20 @@ fn incompressible(len: usize) -> Vec<u8> {
         .collect()
 }
 
-/// The premise the per-record budget rests on: a record above the broker's
-/// `message.max.bytes` default of about 1 MB is refused. If that ever stops
-/// being true, the budget can be raised -- but it should be raised
-/// deliberately, not discovered in production.
+/// A stock broker, whose `message.max.bytes` is about 1 MB, refuses a record
+/// the 15 MiB budget passes. The sink reports that as a dead letter, so the
+/// loop drops and counts the record rather than retrying the partition forever.
 ///
-/// The producer allows 16 MiB and compresses with lz4, and the broker judges
-/// the compressed batch, so only an incompressible record reaches it at size.
+/// The producer allows 16 MiB and compresses, and the broker judges the
+/// compressed batch, so only an incompressible record reaches it at size. A
+/// container, never a live broker: a live one may carry the stack's ceiling.
 #[tokio::test(flavor = "multi_thread")]
-async fn the_producer_refuses_a_record_above_one_megabyte() {
-    let broker = broker_or_skip!("oversize-record");
+async fn a_stock_broker_refuses_an_oversize_record_as_a_dead_letter() {
+    let Some(broker) = common::Broker::container("oversize-record").await else {
+        common::require_broker_in_ci();
+        eprintln!("SKIP: no container runtime.");
+        return;
+    };
     let topic = common::topic("oversize-record");
     let producer = broker.producer("oversize-record").await;
 
@@ -863,8 +867,68 @@ async fn the_producer_refuses_a_record_above_one_megabyte() {
         .await;
 
     assert!(
-        !matches!(sent, scalo::transport::SendResult::Ok),
-        "a 1.1 MB record was accepted, so the 900 KB budget is no longer needed: {sent:?}"
+        matches!(sent, scalo::transport::SendResult::FilteredDlq),
+        "a stock broker's refusal of a 1.1 MB record must come back as a dead letter: {sent:?}"
+    );
+}
+
+/// On a broker at the stack's 16 MiB ceiling, an event over a stock broker's
+/// 1 MB reaches the sink whole instead of being dropped as oversize.
+#[tokio::test(flavor = "multi_thread")]
+async fn an_event_over_one_megabyte_arrives_on_a_broker_at_the_stack_ceiling() {
+    /// Past a stock broker's ceiling, and well inside the shipped budget.
+    const PAD: usize = 2_000_000;
+
+    let Some(broker) = common::Broker::container_with_ceiling(
+        "large-event",
+        dfe_transform_elastic::config::PIPELINE_MESSAGE_MAX_BYTES,
+    )
+    .await
+    else {
+        common::require_broker_in_ci();
+        eprintln!("SKIP: no container runtime.");
+        return;
+    };
+    let source_topic = common::topic("large-src");
+    let sink_topic = common::topic("large-sink");
+    let group = common::topic("large-cg");
+
+    let seed = broker.producer("seed").await;
+    let sent = seed
+        .send(
+            &source_topic,
+            bytes::Bytes::from(okta_events_padded("large", 1, PAD)),
+        )
+        .await;
+    assert!(matches!(sent, scalo::transport::SendResult::Ok), "{sent:?}");
+
+    let config = config(broker.list(), &source_topic, &sink_topic, &group);
+    let consumer = AnyReceiver::Kafka(broker.consumer("service", &source_topic, &group).await);
+    let producer = AnySender::Kafka(broker.producer("service").await);
+    let manager = scraped_manager();
+    let metrics = TransformMetrics::register(&manager, "0.0.0-test", "test");
+    let (shutdown, service) = start_loop(config, consumer, producer, metrics);
+
+    let sink = broker
+        .consumer("verify", &sink_topic, &common::topic("large-verify-cg"))
+        .await;
+    let (out, _) = drain(&sink, 1).await;
+
+    stop_loop(&shutdown, service).await;
+
+    assert_eq!(
+        uuids(&out),
+        expected_uuids("large", 1),
+        "the large event did not arrive"
+    );
+    let carried = out[0]
+        .pointer("/okta/display_message")
+        .and_then(|v| v.as_str())
+        .map_or(0, str::len);
+    assert_eq!(carried, PAD, "the event arrived without its padding");
+    assert!(
+        scraped(&manager, "events_oversize_total", "").abs() < f64::EPSILON,
+        "the large event was counted oversize"
     );
 }
 

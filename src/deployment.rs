@@ -161,9 +161,8 @@ fn shipped_config() -> Config {
             transport: Transport::Bus,
             endpoint: "http://dfe-loader:6000".into(),
             brokers: Some(vec!["kafka:9092".into()]),
-            // A batch is split into as many records as this allows. librdkafka's
-            // producer ceiling is 1,000,000; the rest is headroom for the key,
-            // headers and framing.
+            // The stack's 16 MiB record ceiling less headroom for framing and
+            // headers. An event over it is dropped and counted.
             max_message_bytes: crate::config::default_max_message_bytes(),
         },
         // scalo provisions the MMDB databases, re-downloading a file older than
@@ -754,6 +753,68 @@ mod tests {
     /// The chart directory, which is committed alongside the generator output.
     fn chart_dir() -> std::path::PathBuf {
         std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("chart/dfe-transform-elastic")
+    }
+
+    /// Relative path to contents for a chart: its root files and `templates/`,
+    /// the whole shape `emit-chart` writes.
+    fn chart_files(dir: &std::path::Path) -> std::collections::BTreeMap<String, String> {
+        let mut files = std::collections::BTreeMap::new();
+        for sub in [None, Some("templates")] {
+            let here = sub.map_or_else(|| dir.to_path_buf(), |s| dir.join(s));
+            for entry in std::fs::read_dir(&here).expect("chart directory readable") {
+                let entry = entry.expect("chart directory entry");
+                if !entry.file_type().expect("file type").is_file() {
+                    continue;
+                }
+                let name = entry.file_name().to_string_lossy().into_owned();
+                let rel = sub.map_or_else(|| name.clone(), |s| format!("{s}/{name}"));
+                let body = std::fs::read_to_string(entry.path()).expect("chart file readable");
+                files.insert(rel, body);
+            }
+        }
+        files
+    }
+
+    /// Every chart file but the hand-fixed ones is exactly what `emit-chart`
+    /// writes. The hand-fixed ones carry what the generator does not model --
+    /// the Kafka wire protocol, a read-only root with its `GeoIP` and scratch
+    /// volumes, the log throttle and the resource sizing -- and must still
+    /// DIVERGE, so the day the generator converges the exemption is dropped.
+    #[test]
+    fn committed_chart_matches_the_generator() {
+        const HAND_FIXED: &[&str] = &["values.yaml", "templates/deployment.yaml"];
+
+        let generated = tempfile::tempdir().expect("temp dir");
+        scalo::deployment::generate_chart(
+            &contract(),
+            generated.path().to_str().expect("temp dir path is UTF-8"),
+            None,
+        )
+        .expect("chart generates");
+
+        let want = chart_files(generated.path());
+        let got = chart_files(&chart_dir());
+        assert_eq!(
+            want.keys().collect::<Vec<_>>(),
+            got.keys().collect::<Vec<_>>(),
+            "the chart holds a different set of files from `emit-chart`"
+        );
+
+        for (rel, fresh) in &want {
+            if HAND_FIXED.contains(&rel.as_str()) {
+                assert_ne!(
+                    &got[rel], fresh,
+                    "{rel} is listed as hand-fixed but now matches the generator -- \
+                     drop it from HAND_FIXED"
+                );
+                continue;
+            }
+            assert_eq!(
+                &got[rel], fresh,
+                "{rel} has drifted from `emit-chart` -- regenerate it, or list it in \
+                 HAND_FIXED if the edit is deliberate"
+            );
+        }
     }
 
     /// The chart's `config:` block IS the contract's default config, and a

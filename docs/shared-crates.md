@@ -56,10 +56,9 @@ When both sides settle:
 
 1. Diff the two copies to find what is genuinely common, rather than assuming.
 2. Stand up a shared private workspace repo. **The name `dfe-core` is not
-   available for it**, and there are now two reasons rather than one:
-   `hyperi-io/dfe-core` is an existing repo, and this workspace ships a crate
-   called `dfe-core` that is a different thing — workspace-internal, never
-   published. Anything extracted needs a third name.
+   available for it**: this workspace ships a crate called `dfe-core` that is a
+   different thing -- workspace-internal, never published. Anything extracted
+   needs another name.
 3. Move the common code there; project-specific code stays put.
 4. Both projects depend on it by git reference.
 

@@ -11,7 +11,6 @@ name = "dfe-transform-elastic"
 description = "Kafka-to-Kafka transform service for Beats and Elastic Agent data. Runs standalone or as part of the HyperI Data Fusion Engine."
 version.workspace = true
 edition.workspace = true
-authors.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
@@ -132,7 +131,6 @@ edition = "2024"
 # A black-box service, not a library. Nothing here goes to crates.io, and
 # saying so stops an accidental publish of BUSL-1.1 code.
 publish = false
-authors = ["HyperI <dev@hyperi.com.au>"]
 license = "BUSL-1.1"
 repository = "https://github.com/hyperi-io/dfe-transform-elastic"
 rust-version = "1.95"

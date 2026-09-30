@@ -12,7 +12,8 @@
 #
 # Drives the service's hot path (Kafka consume -> parse batch -> detect
 # envelope -> transform -> serialise -> Kafka produce) so a PGO-instrumented
-# binary accumulates a representative profile.
+# binary accumulates a representative profile. Exits non-zero when a source's
+# run transformed nothing or errored on more events than it transformed.
 #
 # Environment variables (all optional):
 #   PGO_WORKLOAD_DURATION_SECS   Total load duration (default 600, floor 60)
@@ -45,19 +46,20 @@ if [[ $# -lt 1 ]]; then
     exit 1
 fi
 
-SERVICE_BIN="$(realpath "$1")"
+SERVICE_BIN="$(cd "$(dirname "$1")" && pwd -P)/$(basename "$1")"
 if [[ ! -x "$SERVICE_BIN" ]]; then
     echo "error: $SERVICE_BIN is not executable" >&2
     exit 1
 fi
 
 DURATION="${PGO_WORKLOAD_DURATION_SECS:-600}"
-# The tag sits on its own line so the fleet's one Renovate regex can read it,
-# and the org preset bounds this image to the broker version dfe-infra pairs
-# with its Redpanda operator chart.
+# Equal to dfe-infra versions.yaml services.redpanda-version, pinned by digest
+# so a rebuilt tag cannot change the broker. The digest sits on its own line:
+# the Renovate regex stops at a colon.
 # renovate: datasource=docker depName=docker.redpanda.com/redpandadata/redpanda
-KAFKA_TAG="v26.1.8"
-KAFKA_IMAGE="${PGO_WORKLOAD_KAFKA_IMAGE:-docker.redpanda.com/redpandadata/redpanda:${KAFKA_TAG}}"
+KAFKA_TAG="v26.2.2"
+KAFKA_DIGEST="sha256:468bd13a9f2bd24794cb7fddc867c767fb1008b9a07b297b89fde48c564d7d96"
+KAFKA_IMAGE="${PGO_WORKLOAD_KAFKA_IMAGE:-docker.redpanda.com/redpandadata/redpanda:${KAFKA_TAG}@${KAFKA_DIGEST}}"
 KAFKA_PORT="${PGO_WORKLOAD_KAFKA_PORT:-19092}"
 METRICS_PORT="${PGO_WORKLOAD_METRICS_PORT:-9090}"
 KEEP="${PGO_WORKLOAD_KEEP:-0}"
@@ -127,6 +129,44 @@ find_driver() {
         return 1
     fi
     sed -n 's/.*"executable":"\([^"]*pgo-driver\)".*/\1/p' "$build_log" | tail -1
+}
+
+# Sum every series of the counter named $1 in the Prometheus text on stdin.
+counter_total() {
+    local name="$1" line series value total=0
+    while IFS= read -r line; do
+        [[ -z "$line" || "$line" == \#* ]] && continue
+        series="${line%% *}"
+        [[ "${series%%\{*}" == "$name" ]] || continue
+        value="${line##* }"
+        if [[ ! "$value" =~ ^[0-9]+$ ]]; then
+            echo "error: $name reads '$value', not a whole count" >&2
+            return 1
+        fi
+        total=$(( total + value ))
+    done
+    echo "$total"
+}
+
+# A profile is only worth keeping when the run spent its time transforming:
+# no transformed events, or more errors than transforms, profiles the wrong path.
+check_transformed() {
+    local source_name="$1" scrape transformed errored
+    if ! scrape="$(curl -sf --max-time 5 "http://127.0.0.1:$METRICS_PORT/metrics")"; then
+        echo "error: could not scrape /metrics for $source_name" >&2
+        return 1
+    fi
+    transformed="$(counter_total events_transformed_total <<<"$scrape")"
+    errored="$(counter_total events_errored_total <<<"$scrape")"
+    echo "pgo-workload: $source_name events_transformed_total=$transformed events_errored_total=$errored"
+    if [[ "$transformed" -eq 0 ]]; then
+        echo "error: $source_name transformed nothing, so its profile is of an idle service" >&2
+        return 1
+    fi
+    if [[ "$errored" -gt "$transformed" ]]; then
+        echo "error: $source_name errored on more events than it transformed, so its profile is of the error path" >&2
+        return 1
+    fi
 }
 
 # ----------------------------------------------------------------------------
@@ -291,7 +331,6 @@ sink:
   topic: $OUT_TOPIC
   brokers:
   - localhost:${KAFKA_PORT}
-  max_message_bytes: 900000
 geoip:
   enabled: false
   auto_download:
@@ -338,6 +377,7 @@ YAML
 
     # Let the service drain what is still queued before it is asked to stop.
     sleep 5
+    check_transformed "$SOURCE_NAME"
     stop_service
     echo "pgo-workload: $SOURCE_NAME done (log: $WORK_DIR/$SLUG.log)"
 done

@@ -346,9 +346,8 @@ pub const fn message_budget(max_bytes: usize) -> usize {
 /// (hyperi-io/dfe-transform-elastic#67).
 ///
 /// `max_bytes` bounds each payload on its own, because that is what a broker
-/// bounds: librdkafka's producer `message.max.bytes` defaults to 1,000,000, so
-/// an event above the budget can never be produced and is dropped rather than
-/// blocking the partition behind a record that can only fail.
+/// bounds: an event above the budget is dropped rather than blocking the
+/// partition behind a record no broker would take.
 #[must_use]
 pub fn serialise_events(events: &[Event], max_bytes: usize) -> (Vec<Vec<u8>>, SerialiseOutcome) {
     let budget = message_budget(max_bytes);
@@ -581,8 +580,8 @@ mod tests {
         }
     }
 
-    /// At the shipped `batch_size` of 20,000, every message still has to be one
-    /// librdkafka's producer default will accept.
+    /// At the shipped `batch_size` of 20,000, every message still has to fit
+    /// the shipped budget.
     #[test]
     fn a_default_sized_batch_produces_messages_the_broker_accepts() {
         let events = padded(20_000, 400);
@@ -593,11 +592,24 @@ mod tests {
         assert_eq!(payloads.len(), 20_000);
         for payload in &payloads {
             assert!(
-                payload.len() <= 1_000_000,
-                "message of {} bytes exceeds librdkafka's message.max.bytes default",
+                payload.len() <= budget,
+                "message of {} bytes exceeds the {budget}-byte budget",
                 payload.len()
             );
         }
+    }
+
+    /// The stack carries a 16 MiB record, so a 2 MB event goes out under the
+    /// shipped budget rather than being dropped as oversize.
+    #[test]
+    fn an_event_over_one_megabyte_fits_the_shipped_budget() {
+        let events = padded(1, 2_000_000);
+        let (payloads, outcome) =
+            serialise_events(&events, crate::config::default_max_message_bytes());
+
+        assert_eq!(outcome.oversize, 0, "a 2 MB event was dropped as oversize");
+        assert_eq!(outcome.serialised, 1);
+        assert!(payloads[0].len() > 2_000_000);
     }
 
     /// A record no broker can accept is dropped and counted, rather than

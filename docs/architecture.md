@@ -186,7 +186,7 @@ A record the sink transport would refuse -- over its `message.max.bytes`, or mat
 
 JSON is the only payload format. MessagePack, supported in DFE/XDR 2.0 and 2.1, is deprecated in DFE 2.2 and no longer accepted: the JSON path (SIMD parsing with sonic-rs, zstd on the wire) is fast enough that MessagePack gave no CPU saving.
 
-**One record per event.** `pipeline.rs::serialise_events` gives each event its own payload and `service.rs::send_blocks` sends them via `TransportSender::send_batch`, because dfe-loader parses exactly one JSON document per message ([#67](https://github.com/hyperi-io/dfe-transform-elastic/issues/67)). `sink.max_message_bytes` (default 900 KB) bounds each payload against a stock broker's `message.max.bytes` of about 1 MB, and the `send_batch` block against gRPC's 16 MiB ceiling. An event over the budget is dropped and counted on `events_oversize_total`: no broker would take it, and retrying blocks the partition.
+**One record per event.** `pipeline.rs::serialise_events` gives each event its own payload and `service.rs::send_blocks` sends them via `TransportSender::send_batch`, because dfe-loader parses exactly one JSON document per message ([#67](https://github.com/hyperi-io/dfe-transform-elastic/issues/67)). `sink.max_message_bytes` (default 15 MiB) bounds each payload under the stack's 16 MiB record ceiling, which the brokers, topics, producer and dfe-loader's consumer share, and the `send_batch` block under gRPC's 16 MiB ceiling. An event over the budget is dropped and counted on `events_oversize_total`: no broker would take it, and retrying blocks the partition.
 
 Duplicates are the accepted cost: a retried block re-sends the records that already landed, so every downstream consumer must be idempotent.
 
