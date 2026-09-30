@@ -5998,7 +5998,7 @@ fn camel_to_snake_writes_the_converted_object_to_its_target() {
 
 /// netskope derives its users from the addresses, and NAMES only one.
 ///
-/// Verbatim from `-dev/pipelines/netskope/events/default.yml:1077`.
+/// Verbatim from the vendored Elastic pipeline `netskope/events/default.yml:1077`.
 /// `user.name` was wrong on 27 events and `related.user` on 48.
 #[test]
 fn addresses_become_related_users_and_name_only_one() {
@@ -6036,7 +6036,7 @@ fn addresses_become_related_users_and_name_only_one() {
 
 /// netskope stores a single-valued field as a numbered map and flattens it.
 ///
-/// Verbatim from `-dev/pipelines/netskope/events/default.yml:1060`. Without
+/// Verbatim from the vendored Elastic pipeline `netskope/events/default.yml:1060`. Without
 /// the dedupe the same mime type landed three times and no event matched.
 #[test]
 fn a_maps_values_collect_into_a_deduplicated_list() {
@@ -6063,7 +6063,7 @@ fn a_maps_values_collect_into_a_deduplicated_list() {
 
 /// `ti_recordedfuture` snake-cases its evidence list with a REGEX rule.
 ///
-/// Verbatim from `-dev/pipelines/ti_recordedfuture/threat/default.yml:143`.
+/// Verbatim from the vendored Elastic pipeline `ti_recordedfuture/threat/default.yml:143`.
 /// The rule is [`SnakeRule::CamelBreak`]: the greedy `[A-Z]+` run and the "no
 /// lower-case before it, no match" case are what separate it from the walks.
 #[test]

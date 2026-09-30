@@ -17,8 +17,7 @@ That knowledge is published as ClickHouse schemas to
 |---|---|
 | `dfe-schemas` | The schemas themselves. Version-tree YAML, immutable published versions, 13 primitive types, the `@source:`/`@generated:` expression language. |
 | `dfe-engine` | Defines how schemas work: `SchemaLoader`, `SchemaBuilderV2`, `MetaSchema`, the Elastic index-template importer, and `fieldmap/` for the sigma/ecs/cim views. |
-| `dfe-transform-elastic` (here) | Generates the Elastic-side schemas and field maps. |
-| `dfe-transform-elastic-dev` | Where generation runs. Dev generates, main ships. |
+| `dfe-transform-elastic` (here) | Ships the generated Elastic-side transforms, schemas and field maps. The generator that produces them runs outside this repo. |
 
 ## The deployable unit is a data stream
 
@@ -53,7 +52,7 @@ The corpus gives JSON types only. It cannot separate `keyword` from `text`
 `scaled_float` — and those distinctions are exactly what drive the DDL.
 
 Types come from the integrations' `fields/*.yml`. The `elastic/integrations`
-clone the corpus reads already sits at
+clone named by `DFE_ELASTIC_SOURCES` is pinned at
 `2c934eb5223bdfcf0ea0db9e3230154933352bda`, the same `integrations_sha` every
 corpus `meta.json` records, so a generated schema and the parity corpus describe
 the same upstream commit without vendoring anything.

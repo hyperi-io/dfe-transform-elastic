@@ -8,9 +8,8 @@ authority on what a source should produce is Elastic's own engine --
 `scripts/compat.py` runs these through it and writes the confirmed documents to
 `testdata/compat/`, which is not committed. See [docs/compat.md](../../../docs/compat.md).
 
-The full corpus lives outside this repo, at `/projects/elastic-stuff/unencumbered`,
-with a per-file event count and byte size in its own `MANIFEST.md`. Three fortinet
-files are truncated to 5,000 lines here; the rest are copied whole.
+Three fortinet files are truncated to 5,000 lines here; the rest are copied whole
+from the upstreams below.
 
 ## Licences and attribution
 
@@ -27,8 +26,5 @@ files are truncated to 5,000 lines here; the rest are copied whole.
 | [napalm-automation/napalm-logs](https://github.com/napalm-automation/napalm-logs) | Apache-2.0 | `cisco_ios/*`, `cisco_nexus/*` |
 
 CC0 waives attribution; the MIT and Apache-2.0 material requires it, and this
-table is the record. Whether a root `NOTICE` is also needed is a licensing call,
-not an engineering one.
-
-Provenance for each upstream, with the proof read from each repo's own licence
-file, is in `/projects/elastic-stuff/unencumbered/MANIFEST.md` section 1.
+table is the record. Each upstream's licence is the licence file in the linked
+repository.

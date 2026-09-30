@@ -60,7 +60,6 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 # Clones of elastic/integrations and elastic/beats, located per machine.
 SOURCES_ENV = "DFE_ELASTIC_SOURCES"
-DEFAULT_SOURCES = Path("/projects/elastic-stuff")
 
 # Defaults inside the ignored testdata/ tree: the corpus derives from
 # Elastic-Licensed pipelines and committing it is not an engineering decision.
@@ -101,7 +100,7 @@ BEATS_PIPELINE_REF = re.compile(r'\{<\s*IngestPipeline\s+"([^"]+)"\s*>\}')
 
 
 # One declaration per source, shared with the vendoring and regeneration
-# drivers in -dev and asserted against the service registry.
+# drivers and asserted against the service registry.
 SOURCES = sources.SOURCES
 Source = sources.Source
 
@@ -123,15 +122,22 @@ class CompatError(Exception):
 
 @functools.cache
 def sources_root() -> Path:
-    """Locate the elastic clones, from the environment or the default.
+    """Locate the elastic clones from the environment.
 
     Returns:
         The directory holding ``integrations`` and ``beats``.
 
     Raises:
-        CompatError: If it is absent, naming the variable that overrides it.
+        CompatError: If the variable is unset or names no directory.
     """
-    root = Path(os.environ.get(SOURCES_ENV, DEFAULT_SOURCES))
+    configured = os.environ.get(SOURCES_ENV)
+    if not configured:
+        raise CompatError(
+            f"{SOURCES_ENV} is unset. Clone elastic/integrations and "
+            f"elastic/beats into one directory and set {SOURCES_ENV}, or pass "
+            f"--sources."
+        )
+    root = Path(configured)
     if not root.is_dir():
         raise CompatError(
             f"no elastic sources at {root}. Clone elastic/integrations and "
