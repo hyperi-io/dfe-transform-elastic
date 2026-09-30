@@ -51,9 +51,6 @@ build:
     targets:
       - x86_64-unknown-linux-gnu
       - aarch64-unknown-linux-gnu
-    # Four concurrent rustc for Quality and Test: the cap hyperi-ci derives from
-    # the runner's memory limit still let `dfe-transforms` OOM-kill the runner.
-    jobs: 4
     # The cost lands on a RELEASE and never on a PR: the build half only runs
     # behind the `Publish: true` trailer or a `hyperi-ci publish` dispatch, so
     # the day-to-day loop is untouched.
