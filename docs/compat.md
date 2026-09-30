@@ -81,7 +81,9 @@ against. Naming a `--fixture` that matches nothing is still an error.
 
 ## Choosing which unclaimed script to work next
 
-    scripts/next_targets.py <DFE_PAINLESS_UNHANDLED dump> <corpus run>
+```bash
+scripts/next_targets.py <DFE_PAINLESS_UNHANDLED dump> <corpus run>
+```
 
 The catalogue ranks by REACH and the corpus summary ranks by DEBT, and the two
 answer different questions. Ranking by reach alone once sent a delegate at the

@@ -11,7 +11,7 @@ means in the first place is [parity.md](parity.md).
 test prints the exact line for every source that improved.
 `scripts/raise_baseline.py` applies them:
 
-```
+```bash
 cargo test -p dfe-transforms --test compat_corpus -- --nocapture > /tmp/run.txt
 python3 scripts/raise_baseline.py /tmp/run.txt
 ```

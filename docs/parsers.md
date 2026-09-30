@@ -16,7 +16,7 @@ below is the current state, and widening it is the gap this architecture exists 
 
 ```mermaid
 flowchart TD
-    input[Grok Pattern String] --> expand[Expand grok aliases<br/>%{IP} → regex]
+    input[Grok Pattern String] --> expand["Expand grok aliases<br/>%{IP} -> regex"]
     expand --> analyse{Analyse each<br/>capture group}
 
     analyse -->|All replaceable| l1[Layer 1: Native Parsers<br/>parse_ipv4, parse_int, etc.<br/><b>10-20x faster</b>]
