@@ -32,7 +32,7 @@ properties:
       transport: bus
       endpoint: http://dfe-loader:6000
       brokers: null
-      max_message_bytes: 900000
+      max_message_bytes: 15728640
   geoip:
     description: |-
       Which MMDB databases the geoip processors read, and how to obtain them.
@@ -226,15 +226,17 @@ $defs:
         default: null
       max_message_bytes:
         description: |-
-          Ceiling on one produced Kafka record. A batch is split into as many
-          records as it takes to stay under it.
+          Ceiling on one outbound record. An event that serialises larger is
+          dropped and counted on `events_oversize_total`.
 
-          Must sit below the LOWER of the broker's `message.max.bytes` and the
-          producer's -- raising the broker limit alone does nothing.
+          The default fits the stack's 16 MiB record ceiling. Against a broker or
+          topic whose `message.max.bytes` is lower, set this below that limit, or
+          the broker refuses those events instead and they count on
+          `send_filtered_dlq_total`.
         type: integer
         format: uint
         minimum: 0
-        default: 900000
+        default: 15728640
     required:
     - topic
   GeoIpConfig:

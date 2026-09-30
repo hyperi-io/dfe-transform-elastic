@@ -277,7 +277,7 @@ fn with_acknowledgements(
 ///
 /// Braking the outbound drain would deadlock the loop, because a block cannot
 /// be released until it is sent. `sink.max_message_bytes` bounds each record
-/// on both arms and sits well under scalo's 16 MiB gRPC message ceiling.
+/// on both arms and sits under scalo's 16 MiB gRPC message ceiling.
 async fn build_sender(config: &Config) -> crate::Result<AnySender> {
     let transport = sink_transport(config)?;
     AnySender::from_transport_config(&transport)
@@ -722,10 +722,10 @@ fn outbound_record(payload: Vec<u8>, topic: &Arc<str>) -> Record {
 /// Split `records` into blocks of at most `max_bytes` of payload each.
 ///
 /// `max_bytes` is the per-MESSAGE budget on both arms, which is why one number
-/// bounds both halves: a Kafka record is one message, and a gRPC `send_batch`
-/// block is one RPC message against scalo's own 16 MiB ceiling. A block always
-/// takes at least one record, so a payload at the budget goes out alone rather
-/// than not at all.
+/// bounds both halves: a Kafka record is one message, and scalo sends a gRPC
+/// `send_batch` block as RPC messages it keeps under its own 16 MiB ceiling. A
+/// block always takes at least one record, so a payload at the budget goes out
+/// alone rather than not at all.
 fn blocks(records: &[Record], max_bytes: usize) -> Vec<&[Record]> {
     let mut blocks = Vec::new();
     let mut start = 0;
@@ -974,7 +974,18 @@ fn producer_config(config: &Config) -> KafkaConfig {
         ..transport_defaults()
     };
     let holds = config.source.transport.is_direct() && config.source.acknowledgements.enabled;
-    cap_delivery_timeout(producer, holds)
+    cap_delivery_timeout(pin_record_ceiling(producer), holds)
+}
+
+/// Set the producer's `message.max.bytes` to the stack's record ceiling, which
+/// `sink.max_message_bytes` defaults below, unless the producer config names one.
+#[cfg(feature = "kafka")]
+fn pin_record_ceiling(mut producer: KafkaConfig) -> KafkaConfig {
+    if producer.sizing.producer.message_max_bytes.is_none() {
+        producer.sizing.producer.message_max_bytes =
+            Some(scalo::transport::kafka::MESSAGE_MAX_BYTES);
+    }
+    producer
 }
 
 /// Cap `message.timeout.ms` at [`NEXT_HOP_SEND_TIMEOUT_MS`] while a direct
@@ -1160,6 +1171,35 @@ mod tests {
         fn consumer_and_producer_have_distinct_client_ids() {
             let c = config();
             assert_ne!(consumer_config(&c).client_id, producer_config(&c).client_id);
+        }
+
+        /// The producer puts on the wire what the default budget passes: its
+        /// `message.max.bytes` is the stack's record ceiling, above the budget.
+        #[test]
+        fn the_producer_carries_what_the_default_budget_passes() {
+            let resolved = producer_config(&config()).sizing.resolved_producer_map();
+            let ceiling: usize = resolved
+                .get("message.max.bytes")
+                .expect("the producer names a record ceiling")
+                .parse()
+                .unwrap();
+            assert_eq!(ceiling, crate::config::PIPELINE_MESSAGE_MAX_BYTES);
+            assert!(crate::config::default_max_message_bytes() < ceiling);
+        }
+
+        /// A ceiling the producer config already names is the operator's, for a
+        /// broker whose own limit is lower.
+        #[test]
+        fn an_explicit_producer_ceiling_is_kept() {
+            let mut explicit = KafkaConfig::default();
+            explicit.sizing.producer.message_max_bytes = Some(1_000_000);
+            assert_eq!(
+                pin_record_ceiling(explicit)
+                    .sizing
+                    .producer
+                    .message_max_bytes,
+                Some(1_000_000)
+            );
         }
 
         /// The `message.timeout.ms` the bus sink's producer is built with.

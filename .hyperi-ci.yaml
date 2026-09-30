@@ -37,7 +37,7 @@ test:
 # Building
 build:
   enabled: true
-  # PGO and BOLT stay off until the last rc.14 stage; a stable release meanwhile needs `release-unoptimized: true` at dispatch.
+  # GA release prep sets this false for every app together. Until then a stable release needs `release-unoptimized: true` at dispatch.
   skip_optimize: true
   type: app
   strategies:
@@ -57,16 +57,12 @@ build:
     optimize:
       pgo:
         enabled: true
-        # hyperi-ci hands `duration_secs` to nothing but its own timeout
-        # (hyperi-ci#135), so the script is told directly. 600 because the
-        # workload splits it across two sources and profiles each for 300s.
+        # 600s of load, 300s per source. The prefix holds it there over the duration_secs hyperi-ci exports.
         workload_cmd: "env PGO_WORKLOAD_DURATION_SECS=600 bash scripts/pgo-workload.sh"
-        # Sizes the timeout only: 900 leaves 25 minutes for the driver build,
-        # the broker pull and the 600s of load before hyperi-ci#135 lands.
+        # hyperi-ci's timeout is this plus 600s, which has to cover the driver build and broker pull as well as the load.
         duration_secs: 900
       bolt:
-        # Off until hyperi-ci#136 packages BOLT's output and keeps the target
-        # rustflags; today the stage ships a PGO-only binary without them.
+        # GA release prep turns this on with PGO for every app together.
         enabled: false
 
 # Publishing (on release). The stack pins every app by GHCR image digest, so
