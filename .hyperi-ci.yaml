@@ -51,8 +51,8 @@ build:
     targets:
       - x86_64-unknown-linux-gnu
       - aarch64-unknown-linux-gnu
-    # One rustc here peaks near 14 GiB, so a 24 GiB runner fits it beside one other job, not three. 12 GiB per job runs 2.
-    memory_per_job_gib: 12
+    # One rustc here peaks near 14 GiB, and clippy --all-targets builds the lib and its test target at once, so a 24 GiB runner fits one job.
+    memory_per_job_gib: 14
     # The cost lands on a RELEASE and never on a PR: the build half only runs
     # behind the `Publish: true` trailer or a `hyperi-ci publish` dispatch, so
     # the day-to-day loop is untouched.
