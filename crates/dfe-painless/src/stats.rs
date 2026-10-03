@@ -266,6 +266,6 @@ mod tests {
         enable_catalogue(false);
 
         assert_eq!(total(), 0);
-        assert!(catalogue().is_empty());
+        assert_eq!(catalogue(), [] as [(std::string::String, u64); 0]);
     }
 }

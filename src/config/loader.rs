@@ -431,8 +431,11 @@ mod tests {
     /// ignore it.
     #[test]
     fn a_config_the_service_reads_warns_about_nothing() {
-        assert!(ignored_in(FILE_BASE).is_empty());
-        assert!(ignored_in(&crate::deployment::default_config_yaml()).is_empty());
+        assert_eq!(ignored_in(FILE_BASE), [] as [std::string::String; 0]);
+        assert_eq!(
+            ignored_in(&crate::deployment::default_config_yaml()),
+            [] as [std::string::String; 0]
+        );
     }
 
     /// `sink.brokers` is an `Option` that defaults to `None`. A round trip that

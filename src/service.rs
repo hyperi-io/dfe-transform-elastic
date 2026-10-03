@@ -1666,7 +1666,7 @@ mod tests {
 
     #[test]
     fn no_records_is_no_blocks() {
-        assert!(blocks(&[], 100).is_empty());
+        assert_eq!(blocks(&[], 100), [] as [&[scalo::Record]; 0]);
     }
 
     // -- The loop over an in-process source ---------------------------------
