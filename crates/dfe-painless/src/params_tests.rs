@@ -160,14 +160,23 @@ fn ctx_locals_reads_both_spellings_and_declines_a_longer_word() {
 /// punctuation bound the local to `foo.bar`, a field the script never named.
 #[test]
 fn ctx_locals_declines_a_local_bound_to_something_that_merely_starts_with_ctx() {
-    assert!(ctx_locals("def a = ctxfoo.bar;").is_empty());
+    assert_eq!(
+        ctx_locals("def a = ctxfoo.bar;"),
+        [] as [(std::string::String, std::string::String); 0]
+    );
 }
 
 /// A call or a subscript is not a path this can resolve to a field.
 #[test]
 fn ctx_locals_declines_a_call_and_a_subscript() {
-    assert!(ctx_locals("def a = ctx.list.entrySet();").is_empty());
-    assert!(ctx_locals("def a = ctx.list[0];").is_empty());
+    assert_eq!(
+        ctx_locals("def a = ctx.list.entrySet();"),
+        [] as [(std::string::String, std::string::String); 0]
+    );
+    assert_eq!(
+        ctx_locals("def a = ctx.list[0];"),
+        [] as [(std::string::String, std::string::String); 0]
+    );
 }
 
 /// The two shared term readers are NOT interchangeable, and this is the pin
