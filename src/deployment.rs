@@ -690,7 +690,7 @@ mod tests {
         let c = contract();
         assert!(c.config_schema.is_some());
         assert_eq!(c.schema_version, 3);
-        assert!(!c.capabilities.is_empty());
+        assert_ne!(c.capabilities, [] as [scalo::Capability; 0]);
     }
 
     /// The committed `config-schema.*` and `capability-catalog.*` under

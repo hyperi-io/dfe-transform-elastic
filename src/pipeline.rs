@@ -487,7 +487,7 @@ mod tests {
     #[test]
     fn a_json_payload_refuses_nothing() {
         let (_, outcome) = parse_batch(b"{\"a\":1}\n");
-        assert!(outcome.refused.is_empty());
+        assert_eq!(outcome.refused, [] as [std::vec::Vec<u8>; 0]);
     }
 
     /// A record nested far past the decode's recursion limit is refused as not
@@ -667,7 +667,7 @@ mod tests {
     #[test]
     fn an_empty_batch_produces_no_messages() {
         let (payloads, outcome) = serialise_events(&[], 8192);
-        assert!(payloads.is_empty());
+        assert_eq!(payloads, [] as [std::vec::Vec<u8>; 0]);
         assert_eq!(outcome.serialised, 0);
     }
 }

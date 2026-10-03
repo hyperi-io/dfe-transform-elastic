@@ -268,7 +268,7 @@ mod tests {
 
     #[test]
     fn commit_is_never_empty() {
-        assert!(!TransformMetrics::commit().is_empty());
+        assert_ne!(TransformMetrics::commit(), "");
     }
 
     /// The runtime sets `metrics-manifest` lists beside this service's own
