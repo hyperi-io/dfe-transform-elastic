@@ -71,6 +71,8 @@ jobs:
       skip-optimize: ${{ inputs.skip-optimize || '' }}
       release-unoptimized: ${{ inputs.release-unoptimized || '' }}
       optimize-tier: ${{ inputs.optimize-tier || '' }}
+      # A PGO+BOLT release at one cargo job builds the binary three times and outruns the 135-minute default.
+      build-timeout-minutes: 240
     # Least privilege: the org carries 31+ secrets and this pipeline uses four.
     # Only names declared in rust-ci.yml's `workflow_call.secrets` can be
     # passed, so an addition there is needed before one can be added here.
