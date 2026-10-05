@@ -46,6 +46,11 @@ on:
         required: false
         default: ""
         description: "'true' to consent, for this run only, to shipping a skipped-optimisation build under a release tag."
+      optimize-tier:
+        type: string
+        required: false
+        default: ""
+        description: "'release' to build the release optimisation tier (PGO + BOLT) on a run that publishes nothing. Empty = the tier follows whether the run ships."
 
 permissions:
   contents: write
@@ -65,6 +70,9 @@ jobs:
       bump: ${{ inputs.bump || 'auto' }}
       skip-optimize: ${{ inputs.skip-optimize || '' }}
       release-unoptimized: ${{ inputs.release-unoptimized || '' }}
+      optimize-tier: ${{ inputs.optimize-tier || '' }}
+      # A PGO+BOLT release at one cargo job builds the binary three times and outruns the 135-minute default.
+      build-timeout-minutes: 240
     # Least privilege: the org carries 31+ secrets and this pipeline uses four.
     # Only names declared in rust-ci.yml's `workflow_call.secrets` can be
     # passed, so an addition there is needed before one can be added here.
