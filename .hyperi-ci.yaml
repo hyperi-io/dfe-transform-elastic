@@ -37,8 +37,6 @@ test:
 # Building
 build:
   enabled: true
-  # GA release prep sets this false for every app together. Until then a stable release needs `release-unoptimized: true` at dispatch.
-  skip_optimize: true
   type: app
   strategies:
     - native
@@ -54,8 +52,8 @@ build:
     # One rustc here peaks near 14 GiB, and clippy --all-targets builds the lib and its test target at once, so a 24 GiB runner fits one job.
     memory_per_job_gib: 14
     # The cost lands on a RELEASE and never on a PR: the build half only runs
-    # behind the `Publish: true` trailer or a `hyperi-ci publish` dispatch, so
-    # the day-to-day loop is untouched.
+    # behind the `Publish: true` trailer, a `hyperi-ci publish` dispatch, or a
+    # dispatch with `optimize-tier: release`, so the day-to-day loop is untouched.
     optimize:
       pgo:
         enabled: true
@@ -64,8 +62,7 @@ build:
         # hyperi-ci's timeout is this plus 600s, which has to cover the driver build and broker pull as well as the load.
         duration_secs: 900
       bolt:
-        # GA release prep turns this on with PGO for every app together.
-        enabled: false
+        enabled: true
 
 # Publishing (on release). The stack pins every app by GHCR image digest, so
 # a release must land an image. The deployed chart is dfe-infra's, so the
