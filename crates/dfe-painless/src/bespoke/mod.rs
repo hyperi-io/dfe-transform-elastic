@@ -320,7 +320,18 @@ pub fn script_hash(script: &str) -> String {
         hasher.update(ch.encode_utf8(&mut buf).as_bytes());
         started = true;
     }
-    format!("{:x}", hasher.finalize())
+    lower_hex(&hasher.finalize())
+}
+
+/// A digest as lower-case hex, the form Painless's `sha1()` and `sha256()` return.
+fn lower_hex(bytes: &[u8]) -> String {
+    const DIGITS: &[u8; 16] = b"0123456789abcdef";
+    let mut out = String::with_capacity(bytes.len() * 2);
+    for byte in bytes {
+        out.push(char::from(DIGITS[usize::from(byte >> 4)]));
+        out.push(char::from(DIGITS[usize::from(byte & 0x0f)]));
+    }
+    out
 }
 
 /// The transcription registered for a script, if any.

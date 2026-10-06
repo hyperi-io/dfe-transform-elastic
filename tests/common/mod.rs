@@ -204,16 +204,23 @@ async fn start_on(
     use testcontainers_modules::kafka::apache::KAFKA_PORT;
 
     // Pinned here rather than left to the module default: a tag baked into
-    // a dependency's source is invisible to dependency review. The org
-    // Renovate preset caps this image at the version Strimzi runs, so the
-    // fixture cannot pass on a broker production cannot deploy.
-    // renovate: datasource=docker depName=apache/kafka-native
-    const KAFKA_TAG: &str = "4.2.0";
+    // a dependency's source is invisible to dependency review. The JVM image,
+    // because `apache/kafka-native` before 4.4.0 segfaults in `getpwuid` on
+    // about 2% of starts.
+    // renovate: datasource=docker depName=apache/kafka
+    const KAFKA_TAG: &str = "4.3.1";
+    // Digest of `KAFKA_TAG`, apart from it because the Renovate regex stops at a colon.
+    const KAFKA_DIGEST: &str =
+        "sha256:77e3df9054047a88b520d0cc46e16696d3b22022e1d580aeccd2632df6532837";
+    // A JVM broker takes 5-12 s to become ready, longer on a busy runner.
+    const KAFKA_STARTUP_TIMEOUT: Duration = Duration::from_secs(180);
 
     let mut image = Kafka::default()
-        .with_tag(KAFKA_TAG)
+        .with_jvm_image()
+        .with_tag(format!("{KAFKA_TAG}@{KAFKA_DIGEST}"))
         .with_container_name(name)
         .with_labels(labels())
+        .with_startup_timeout(KAFKA_STARTUP_TIMEOUT)
         .with_mapped_port(port, KAFKA_PORT);
     for (key, value) in env {
         image = image.with_env_var(*key, *value);

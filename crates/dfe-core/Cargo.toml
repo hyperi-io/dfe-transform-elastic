@@ -33,7 +33,7 @@ fancy-regex = { workspace = true }
 criterion = { workspace = true }
 # `benches/hashing.rs` only. serde_json's preserve_order map is an IndexMap
 # with the std hasher, and that bench measures what the hasher costs.
-indexmap = { version = "2", default-features = false, features = ["std"] }
+indexmap = { version = "2.14.2", default-features = false, features = ["std"] }
 
 # The dotted-path accessors. Field plumbing is the hot path -- rename, set and
 # append outnumber script and grok by an order of magnitude in the vendored

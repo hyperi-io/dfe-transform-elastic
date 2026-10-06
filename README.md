@@ -125,10 +125,11 @@ dfe-transform-elastic generate-artefacts --output-dir docs
 
 `generate-artefacts` writes into `docs/`: `metrics-manifest.json`,
 `deployment-contract.json`, `container-manifest.json`, `Dockerfile.runtime`,
-`argocd-application.yaml`, and the reflectable config pair `config-schema.*` and
-`capability-catalog.*`.
+and the reflectable config pair `config-schema.*` and `capability-catalog.*`.
 
-**Not every artefact is pinned against a fresh regen.** `committed_config_artefacts_do_not_drift` in `src/deployment.rs` compares `config-schema.{json,yaml}` and `capability-catalog.{json,yaml}`, and its sibling tests do the same for the committed `deployment-contract.json`, `Dockerfile`, `config.example.yaml` and the chart's `config:` block. Nothing compares `container-manifest.json`, `Dockerfile.runtime` or `argocd-application.yaml`, so those can and do fall behind -- re-run the command when `src/deployment.rs` changes rather than assuming a test caught it.
+It writes an `argocd-application.yaml` only when `deployment.argocd.repo_url` is set in the config cascade, and this repo sets none. scalo writes that Application's source as `path: chart`, the chart here is `chart/dfe-transform-elastic`, and scalo has no setting for the path, so the Application would sync nothing. The file is gitignored so a local cascade that sets the URL cannot commit one.
+
+**Not every artefact is pinned against a fresh regen.** `committed_config_artefacts_do_not_drift` in `src/deployment.rs` compares `config-schema.{json,yaml}` and `capability-catalog.{json,yaml}`, and its sibling tests do the same for the committed `deployment-contract.json`, `Dockerfile`, `config.example.yaml` and the chart's `config:` block. Nothing compares `container-manifest.json` or `Dockerfile.runtime`, so those can and do fall behind -- re-run the command when `src/deployment.rs` changes rather than assuming a test caught it.
 
 `metrics-manifest.json` is compared by metric NAME SET in `src/metrics.rs`, not byte for byte, because it also records the version and commit of the build that wrote it.
 

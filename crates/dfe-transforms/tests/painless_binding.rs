@@ -16,6 +16,7 @@
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
 use std::collections::BTreeMap;
+use std::fmt::Write as _;
 use std::path::{Path, PathBuf};
 
 use dfe_runtime::painless_plan::PainlessPlan;
@@ -157,7 +158,10 @@ fn every_call_site_reports_the_matcher_it_binds_to() {
     // once.
     let mut scripts: BTreeMap<String, Script> = BTreeMap::new();
     for site in &sites {
-        let key = format!("{:x}", Sha256::digest(site.script.as_bytes()));
+        let mut key = String::with_capacity(64);
+        for byte in Sha256::digest(site.script.as_bytes()) {
+            let _ = write!(key, "{byte:02x}");
+        }
         scripts
             .entry(key)
             .or_insert_with(|| {

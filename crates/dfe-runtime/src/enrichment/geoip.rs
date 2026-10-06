@@ -39,7 +39,7 @@ impl GeoIpEnrichment {
         let reader =
             Reader::open_readfile(path).map_err(|e| format!("failed to open MMDB: {e}"))?;
 
-        let db_type = match reader.metadata.database_type.as_str() {
+        let db_type = match reader.metadata().database_type.as_str() {
             t if t.contains("City") => GeoIpDbType::City,
             t if t.contains("Country") => GeoIpDbType::Country,
             t if t.contains("ASN") => GeoIpDbType::Asn,

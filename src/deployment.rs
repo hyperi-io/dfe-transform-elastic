@@ -98,12 +98,14 @@ pub fn contract() -> DeploymentContract {
             .with_kafka_trigger(KafkaLagTrigger::disabled()),
         ),
         schema_version: 3,
+        // scalo writes no vendor, licence or copyright of its own, so the labels and the generated Dockerfile header carry exactly these.
         oci_labels: scalo::deployment::OciLabels {
             title: "dfe-transform-elastic".into(),
             description: "Beats and Elastic Agent JSON in, DFE-normalised events out".into(),
+            vendor: "HYPERI PTY LIMITED".into(),
+            label_namespace: "io.hyperi".into(),
             licenses: "BUSL-1.1".into(),
             copyright: "(c) 2026 HYPERI PTY LIMITED".into(),
-            ..Default::default()
         },
         config_schema: Some(scalo::deployment::config_schema_json::<crate::config::Config>()),
         capabilities: capabilities(),
@@ -726,8 +728,8 @@ mod tests {
     /// scalo's `check_config_artifact_drift` does NOT cover this file -- it
     /// renders `config-schema.*` and `capability-catalog.*` only -- so without
     /// this test a narrow regeneration leaves the contract stale in silence.
-    /// It is the artefact dfe-infra reads, and it had drifted across two
-    /// merges before this test existed.
+    /// It is the full contract a deployment tool can read without running the
+    /// binary, and it had drifted across two merges before this test existed.
     #[test]
     fn committed_deployment_contract_does_not_drift() {
         let path =

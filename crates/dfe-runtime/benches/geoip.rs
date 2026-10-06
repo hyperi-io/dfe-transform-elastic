@@ -20,7 +20,9 @@
 use std::net::IpAddr;
 use std::sync::Arc;
 
-use criterion::{Criterion, Throughput, black_box, criterion_group, criterion_main};
+use std::hint::black_box;
+
+use criterion::{Criterion, Throughput, criterion_group, criterion_main};
 use dfe_runtime::enrichment::geoip_cache::{Cache, Database, Fields};
 use serde_json::json;
 
