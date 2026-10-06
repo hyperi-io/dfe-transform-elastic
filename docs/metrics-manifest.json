@@ -99,6 +99,16 @@
       "group": "platform"
     },
     {
+      "name": "transport_message_too_large_total",
+      "type": "counter",
+      "description": "Records over a sender's size ceiling, refused before sending or by the receiver",
+      "unit": "",
+      "labels": [
+        "transport"
+      ],
+      "group": "platform"
+    },
+    {
       "name": "transport_recv_errors_total",
       "type": "counter",
       "description": "Receive failures by class (transient: retried, permanent: returned)",
@@ -106,6 +116,28 @@
       "labels": [
         "transport",
         "class"
+      ],
+      "group": "platform"
+    },
+    {
+      "name": "transport_consumer_rebuilds_total",
+      "type": "counter",
+      "description": "Consumers replaced after librdkafka flagged them fatal, by the protocol rejoined with",
+      "unit": "",
+      "labels": [
+        "transport",
+        "protocol"
+      ],
+      "group": "platform"
+    },
+    {
+      "name": "transport_revoke_discarded_total",
+      "type": "counter",
+      "description": "Records a revoke kept from a write, as the partition's next owner reads them again, by stage: receive (left out by recv) or buffer (discarded by the caller)",
+      "unit": "",
+      "labels": [
+        "transport",
+        "stage"
       ],
       "group": "platform"
     },
@@ -708,6 +740,14 @@
       "name": "self_regulation_kafka_gate_errors_total",
       "type": "counter",
       "description": "Kafka pause/resume actuator failures (brake degraded)",
+      "unit": "",
+      "labels": [],
+      "group": "custom"
+    },
+    {
+      "name": "self_regulation_max_hold_releases_total",
+      "type": "counter",
+      "description": "Inbound holds ended by max_hold with pressure above resume_below (per signal)",
       "unit": "",
       "labels": [],
       "group": "custom"

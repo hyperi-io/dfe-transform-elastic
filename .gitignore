@@ -52,6 +52,9 @@ cobertura.xml
 # Elastic upstream test corpus -- large, fetched not committed
 testdata/
 
+# scalo's Application points at `path: chart`, but the chart lives at chart/dfe-transform-elastic.
+docs/argocd-application.yaml
+
 # Python bytecode from the scripts/ tooling
 __pycache__/
 *.pyc

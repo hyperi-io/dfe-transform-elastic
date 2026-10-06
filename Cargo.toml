@@ -145,7 +145,8 @@ dfe-transforms = { path = "crates/dfe-transforms" }
 
 # Batteries-included runtime (crates.io) — NEVER a path dependency.
 # Features are added when their API is actually referenced, not speculatively.
-scalo = { version = ">=2.13.0, <3", features = [
+# The floor's contract carries no vendor defaults, so the app names its own.
+scalo = { version = "2.14.1", features = [
     "cli-service",
     "config",
     "config-schema",

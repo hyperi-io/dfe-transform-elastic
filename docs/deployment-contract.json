@@ -133,6 +133,7 @@
     "title": "dfe-transform-elastic",
     "description": "Beats and Elastic Agent JSON in, DFE-normalised events out",
     "vendor": "HYPERI PTY LIMITED",
+    "label_namespace": "io.hyperi",
     "licenses": "BUSL-1.1",
     "copyright": "(c) 2026 HYPERI PTY LIMITED"
   },
@@ -458,6 +459,7 @@
               "string",
               "null"
             ],
+            "x-scalo-secret": true,
             "x-dfe-secret": true,
             "writeOnly": true,
             "default": null
@@ -468,6 +470,7 @@
               "string",
               "null"
             ],
+            "x-scalo-secret": true,
             "x-dfe-secret": true,
             "writeOnly": true,
             "default": null
@@ -478,6 +481,7 @@
               "string",
               "null"
             ],
+            "x-scalo-secret": true,
             "x-dfe-secret": true,
             "writeOnly": true,
             "default": null

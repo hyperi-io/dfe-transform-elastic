@@ -3514,13 +3514,13 @@ dependencies = [
 
 [[package]]
 name = "scalo"
-version = "2.13.0"
+version = "2.14.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cce445668f2f9ca2d64ec96f3b16aa901ceba43560a6753b3babed02295aa1ba"
+checksum = "c91d0d04345fda3e6508b44d8478add090f8699946d13d16b31bd778cb1dc1e1"
 dependencies = [
  "axum",
  "backon",
- "base64 0.22.1",
+ "base64 0.23.1",
  "bytes",
  "chrono",
  "clap",
@@ -4503,6 +4503,7 @@ dependencies = [
  "futures-util",
  "http",
  "http-body",
+ "http-body-util",
  "pin-project-lite",
  "tokio",
  "tower",

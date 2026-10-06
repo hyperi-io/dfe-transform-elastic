@@ -15,6 +15,7 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -29,6 +30,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "dfe-transform-elastic.serviceAccountName" . }}
+      automountServiceAccountToken: false
       {{- with .Values.podSecurityContext }}
       securityContext:
         {{- toYaml . | nindent 8 }}
@@ -137,6 +139,9 @@ spec:
             - name: config
               mountPath: /etc/dfe-transform-elastic
               readOnly: true
+            - name: serviceaccount-files
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              readOnly: true
             {{- if (.Values.config.geoip).auto_download }}
             # The downloader writes here, and the root filesystem is read-only.
             - name: geoip
@@ -152,6 +157,19 @@ spec:
         - name: config
           configMap:
             name: {{ include "dfe-transform-elastic.fullname" . }}-config
+        - name: serviceaccount-files
+          projected:
+            sources:
+              - configMap:
+                  name: kube-root-ca.crt
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+              - downwardAPI:
+                  items:
+                    - path: namespace
+                      fieldRef:
+                        fieldPath: metadata.namespace
         {{- if (.Values.config.geoip).auto_download }}
         - name: geoip
           emptyDir:

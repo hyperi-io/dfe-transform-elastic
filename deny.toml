@@ -13,7 +13,6 @@
 # reported "issues found" while never actually running.
 
 [advisories]
-db-path = "~/.cargo/advisory-db"
 db-urls = ["https://github.com/rustsec/advisory-db"]
 # Advisories are errors by default in 0.20; only the scope of the
 # unmaintained check is still configurable.
