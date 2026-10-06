@@ -112,7 +112,7 @@ Both have been diagnosed as harness bugs and neither is one. `compat.py` holds
 no truncation code and applies no escaping pass of its own, so a captured value
 that looks mangled came out of Elasticsearch that way.
 
-- **` (truncated)` at 32,712 characters.** The vendor pipeline truncates: a
+- **`' (truncated)'` at 32,712 characters.** The vendor pipeline truncates: a
   `filterMassive` helper returns `src.substring(0, 32700)+' (truncated)'` for
   any string over 32,766, in `qualys_vmdr/asset_host_detection`,
   `qualys_vmdr/knowledge_base` and `servicenow/event`. Upstream's own

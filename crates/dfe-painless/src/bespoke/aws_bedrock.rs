@@ -163,7 +163,7 @@ fn count(length: usize) -> i64 {
 fn sha1_hex(text: &str) -> String {
     let mut hasher = Sha1::new();
     hasher.update(text.as_bytes());
-    format!("{:x}", hasher.finalize())
+    super::lower_hex(&hasher.finalize())
 }
 
 // -- the normalisers ------------------------------------------------------

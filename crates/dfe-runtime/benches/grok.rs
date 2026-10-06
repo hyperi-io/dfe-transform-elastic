@@ -14,7 +14,9 @@
 // should stop rather than report a number for the wrong thing.
 #![allow(clippy::expect_used)]
 
-use criterion::{Criterion, black_box, criterion_group, criterion_main};
+use std::hint::black_box;
+
+use criterion::{Criterion, criterion_group, criterion_main};
 
 /// A typical syslog body: one line, no newline in it.
 const LINE: &str = "Feb 11 13:12:45 fw01 kernel: a fairly typical syslog body with some detail";

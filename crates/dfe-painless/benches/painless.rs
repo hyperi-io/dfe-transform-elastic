@@ -11,7 +11,9 @@
 //!
 //! Run with: `cargo bench -p dfe-painless`
 
-use criterion::{BatchSize, Criterion, black_box, criterion_group, criterion_main};
+use std::hint::black_box;
+
+use criterion::{BatchSize, Criterion, criterion_group, criterion_main};
 use dfe_core::event::Event;
 use dfe_painless::common::normalise;
 use dfe_painless::plan::{

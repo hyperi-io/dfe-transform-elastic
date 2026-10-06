@@ -168,32 +168,32 @@ scalo = { version = "2.14.1", features = [
 
 # The metric handle types (Counter/Gauge/Histogram) that MetricsManager hands
 # back. scalo re-exports the manager, not the facade crate.
-metrics = ">=0.24.3, <0.25"
+metrics = ">=0.24.6, <0.25"
 
 # JSON Schema derivation for the reflectable config contract. Same range as
 # scalo's own so cargo unifies to one schemars.
-schemars = { version = ">=1.2.1, <2", default-features = false, features = [
+schemars = { version = ">=1.2.2, <2", default-features = false, features = [
     "std",
     "derive",
     "preserve_order",
 ] }
 
 # Async runtime
-tokio = { version = ">=1.48", features = ["full"] }
-tokio-util = ">=0.7, <0.8"
+tokio = { version = ">=1.53.2", features = ["full"] }
+tokio-util = ">=0.7.19, <0.8"
 
 # Zero-copy payload bytes -- the currency handed to the transport sender.
-bytes = ">=1.7, <2"
+bytes = ">=1.12.1, <2"
 
 # Global allocator for the binary; behind the `jemalloc` feature.
-tikv-jemallocator = ">=0.6, <0.7"
+tikv-jemallocator = ">=0.7.0, <0.8"
 
 # CLI surface for the service binary.
-clap = { version = ">=4.5", features = ["derive"] }
+clap = { version = ">=4.6.7", features = ["derive"] }
 
 # JSON parsing (SIMD-accelerated)
-simd-json = { version = ">=0.14, <0.15", features = ["known-key"] }
-serde = { version = ">=1.0", features = ["derive"] }
+simd-json = { version = ">=0.18.1, <0.19", features = ["known-key"] }
+serde = { version = ">=1.0.229", features = ["derive"] }
 # preserve_order keeps object keys in DOCUMENT order, which is what
 # Elasticsearch's LinkedHashMap-backed ingest documents hold: a Painless
 # `toString` of a map renders in that order, and sorted keys diverged on
@@ -201,11 +201,11 @@ serde = { version = ">=1.0", features = ["derive"] }
 # float_roundtrip parses every float to the nearest double, as Elasticsearch's
 # Java parser does; without it a long literal such as 0.10617876052856445 reads
 # one ulp low and is written back as ...444.
-serde_json = { version = ">=1.0", features = ["preserve_order", "float_roundtrip"] }
+serde_json = { version = ">=1.0.151", features = ["preserve_order", "float_roundtrip"] }
 serde_yaml_ng = ">=0.10, <0.11"
 
 # SIMD byte search
-memchr = ">=2.7"
+memchr = ">=2.8.3"
 
 # The lock in front of the GeoIP cache. std's RwLock carries poisoning and a
 # slower uncontended path, and this one is taken on the per-event path across
@@ -214,64 +214,60 @@ memchr = ">=2.7"
 parking_lot = ">=0.12.5, <0.13"
 
 # Pre-compiled DFA regex (serialisable, zero-cost startup)
-regex-automata = ">=0.4, <0.5"
-regex = ">=1.10"
+regex-automata = ">=0.4.18, <0.5"
+regex = ">=1.13.1"
 
 # Backtracking fallback for the vendor patterns `regex` rejects by design --
 # lookaround. Only reached when `regex` fails to compile, so the hot path is
 # unchanged; without it those patterns silently match nothing. Bounded because
 # 0.x minors break, and the floor is the line the tests actually run.
-fancy-regex = ">=0.19, <0.20"
+fancy-regex = ">=0.19.2, <0.20"
 
 # Mozilla's Public Suffix List, compiled in. Elasticsearch's registered_domain
 # processor is a PSL lookup, and the last-two-labels heuristic it replaced was
 # wrong in both directions: `a.co.uk` came out registered to `co.uk`, and
 # `host.tld` got a registered domain Elasticsearch writes nothing for.
-psl = ">=2.1"
+psl = ">=2.1.239"
 
 # Timestamp handling. chrono-tz carries the IANA database, which chrono
 # deliberately does not ship: a pipeline configured with `America/Denver`
 # needs the offset AT THE EVENT, and that moves with daylight saving.
-chrono = { version = ">=0.4, <0.5", features = ["serde"] }
-chrono-tz = { version = ">=0.10, <0.11" }
+chrono = { version = ">=0.4.45, <0.5", features = ["serde"] }
+chrono-tz = { version = ">=0.10.4, <0.11" }
 
-# GeoIP enrichment (mmap for long-running apps, simdutf8 for SIMD UTF-8 validation)
-# Upper bound because 0.x minors break: 0.30 turned `Reader::metadata` from a
-# field into a method, which `enrichment/geoip.rs` reads as a field.
-maxminddb = { version = ">=0.27, <0.28", features = ["mmap", "simdutf8"] }
+# GeoIP enrichment, memory-mapped for a long-running service. Upper bound
+# because 0.x minors break.
+maxminddb = { version = ">=0.32.0, <0.33", features = ["mmap"] }
 
 # Error handling
-thiserror = ">=2.0"
+thiserror = ">=2.0.21"
 
 # Logging
-tracing = ">=0.1, <0.2"
+tracing = ">=0.1.44, <0.2"
 
-# Hashing
-# The 0.11 line returns a `hybrid_array::Array` from `finalize()`, which has no
-# `LowerHex`, so the hex formatting these digests feed stops compiling. An open
-# upper bound let a fresh resolve pick it and broke the generator's build of
-# this crate.
-sha1 = ">=0.10, <0.11"
-sha2 = ">=0.10, <0.11"
+# Hashing. Upper bound because 0.x minors break: 0.11 returns a
+# `hybrid_array::Array` from `finalize()`, which has no `LowerHex`.
+sha1 = ">=0.11.0, <0.12"
+sha2 = ">=0.11.0, <0.12"
 # Bounded for the same reason: 0.x minors break, and 0.23 is what the tests run.
-base64 = ">=0.23, <0.24"
+base64 = ">=0.23.1, <0.24"
 
 # CSV parsing
-csv = ">=1.3"
+csv = ">=1.4.0"
 
 # Testing (used as dev-dependencies in member crates)
-criterion = { version = ">=0.5, <0.6", features = ["html_reports"] }
-tempfile = ">=3.10, <3.20"
+criterion = { version = ">=0.8.2, <0.9", features = ["html_reports"] }
+tempfile = ">=3.27.0, <4"
 
 # Scores the compat corpus across cores. A test-only dependency: the service
 # gets its parallelism from one transform thread per Kafka partition, and
 # nothing in the shipped path uses a work-stealing pool.
-rayon = ">=1.10, <2"
+rayon = ">=1.12.0, <2"
 
 # Ephemeral broker for the round-trip test. Same range as the rest of the
 # fleet so one version is shared across dfe-receiver, dfe-loader and the
 # transform services.
-testcontainers = ">=0.27, <0.28"
+testcontainers = ">=0.27.3, <0.28"
 testcontainers-modules = { version = ">=0.15, <0.16", features = ["kafka"] }
 
 [profile.release]
