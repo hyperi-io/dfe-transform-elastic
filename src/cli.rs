@@ -175,6 +175,10 @@ impl ServiceApp for App {
     }
 
     #[cfg(not(any(feature = "kafka", feature = "grpc")))]
+    #[allow(
+        clippy::unused_async_trait_impl,
+        reason = "the trait method is async, and a build with no transport has nothing to await"
+    )]
     async fn run_service(
         &self,
         _config: Config,

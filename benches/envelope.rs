@@ -41,7 +41,9 @@
 // setup by panicking the same way a test does.
 #![allow(missing_docs, clippy::expect_used)]
 
-use criterion::{BatchSize, Criterion, black_box, criterion_group, criterion_main};
+use std::hint::black_box;
+
+use criterion::{BatchSize, Criterion, criterion_group, criterion_main};
 use dfe_runtime::Event;
 use dfe_transform_elastic::envelope::{self, Envelope, EnvelopeSetting};
 use dfe_transform_elastic::registry::{self, Framing};
