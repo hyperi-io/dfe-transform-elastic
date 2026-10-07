@@ -6,19 +6,12 @@
 
 use dfe_transforms::filebeat::okta;
 
-const FIXTURE_DIR: &str = concat!(
-    env!("CARGO_MANIFEST_DIR"),
-    "/../../tests/fixtures/okta/system"
-);
-
 // The two unmatched events are a device_integrator JSON parse and a
 // target detailEntry edge case.
-#[test]
-fn okta_default_system_events() {
-    super::common::run_floor(
-        &okta::default::Default,
-        FIXTURE_DIR,
-        "test-okta-system-events",
-        0,
-    );
-}
+floor!(
+    okta_default_system_events,
+    okta::default::Default,
+    "okta/system",
+    "test-okta-system-events",
+    0
+);

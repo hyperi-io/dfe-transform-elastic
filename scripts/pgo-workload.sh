@@ -96,10 +96,11 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Two sources spanning the parser families the transforms divide into: cisco_ios
 # is grok over syslog lines, okta is Painless over JSON. Each entry is
-# "<source name>|<fixture path relative to the repo root>".
+# "<source name>|<fixture path relative to the repo root>", and every path is a
+# licence-clean sample because the release build runs from this repository alone.
 SOURCES=(
-    "filebeat.cisco_ios.default|tests/fixtures/cisco/ios/test-cisco-ios.log"
-    "filebeat.okta.default|tests/fixtures/okta/system/test-okta-system-events.log"
+    "filebeat.cisco_ios.default|tests/fixtures/unencumbered/cisco_ios/cisco-ios-syslog.log"
+    "filebeat.okta.default|tests/fixtures/unencumbered/okta/panther-okta-systemlog.ndjson"
 )
 
 SLICE=$(( DURATION / ${#SOURCES[@]} ))

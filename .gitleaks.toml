@@ -24,7 +24,7 @@ paths = [
     # Git submodules (have their own scanning)
     '''(^|/)ci/''',
     '''(^|/)ai/''',
-    # Elastic's upstream test corpus -- synthetic ids that trip the entropy rules.
+    # Vendor sample logs -- synthetic ids that trip the entropy rules.
     '''(^|/)tests/fixtures/''',
     '''(^|/)tests/pipelines/''',
 ]

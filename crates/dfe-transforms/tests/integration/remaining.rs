@@ -15,18 +15,6 @@
 
 use dfe_transforms::filebeat::{cisco_ios, cisco_meraki, cisco_nexus, fortinet, o365, panw};
 
-const FIXTURE_BASE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../tests/fixtures");
-
-macro_rules! floor {
-    ($name:ident, $transform:expr, $dir:literal, $fixture:literal, $max_errors:expr) => {
-        #[test]
-        fn $name() {
-            let dir = format!("{FIXTURE_BASE}/{}", $dir);
-            super::common::run_floor(&$transform, &dir, $fixture, $max_errors);
-        }
-    };
-}
-
 floor!(
     fortinet_default,
     fortinet::default::Default,
@@ -157,10 +145,11 @@ floor!(
 /// this asserts the fields that generation agrees on -- the router picked the
 /// sub-pipeline, and the CSV landed in the right columns.
 #[test]
+#[ignore = "reads Elastic test data from dfe-transform-elastic-dev: set DFE_ELASTIC_FIXTURES and run with --ignored"]
 fn panw_routes_and_parses_its_csv() {
     use dfe_runtime::transform::Transform;
 
-    let dir = format!("{FIXTURE_BASE}/panw/panos");
+    let dir = dfe_runtime::testutil::elastic_fixtures().join("panw/panos");
     let mut events = super::common::load_fixture_events(&dir, "traffic");
     let event = events.first_mut().expect("the fixture has events");
 
