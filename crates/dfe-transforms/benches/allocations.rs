@@ -336,9 +336,12 @@ fn main() {
     );
 
     const SOURCES: [(&str, &str); 3] = [
-        ("okta", "okta/system/test-okta-system-events.log"),
-        ("cisco_meraki", "cisco/meraki/logs/test-events.log"),
-        ("fortinet", "fortinet/fortigate/test-fortinet.log"),
+        ("okta", "unencumbered/okta/panther-okta-systemlog.ndjson"),
+        (
+            "cisco_meraki",
+            "unencumbered/cisco_meraki/meraki-events.log",
+        ),
+        ("fortinet", "unencumbered/fortinet/fortigate-event.log"),
     ];
 
     let transforms: [&dyn Transform; 3] = [

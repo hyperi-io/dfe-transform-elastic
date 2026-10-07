@@ -149,12 +149,14 @@ fn scraped(manager: &MetricsManager, name: &str, label: &str) -> f64 {
 /// non-ASCII survives the WIRE and not merely the in-process transform.
 const NON_ASCII_ACTOR: &str = "Björn Ärlig 日本語";
 
-/// `count` okta events from the committed fixture, in the shape the transform
+/// `count` okta events from the committed sample, in the shape the transform
 /// accepts: the raw vendor payload as a STRING in `message`, which is how
 /// Beats delivers it. A bare vendor object passes through barely touched.
 ///
-/// The fixture holds 24 lines; asking for more cycles through them, so a test
-/// can ask for a payload big enough to exceed one Kafka record.
+/// The 33 of the sample's 120 records shaped as Okta's API writes them -- an
+/// `actor` object, which the seed writes into, and a camelCase `eventType`,
+/// which the transform reads -- are used. Asking for more cycles through them,
+/// so a test can ask for a payload big enough to exceed one Kafka record.
 fn okta_events(count: usize) -> Vec<u8> {
     okta_events_named("seed", count)
 }
@@ -170,12 +172,18 @@ fn okta_events_named(prefix: &str, count: usize) -> Vec<u8> {
 fn okta_events_padded(prefix: &str, count: usize, pad: usize) -> Vec<u8> {
     let raw = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/tests/fixtures/okta/system/test-okta-system-events.log"
+        "/tests/fixtures/unencumbered/okta/panther-okta-systemlog.ndjson"
     ))
-    .expect("okta fixture is committed");
+    .expect("okta sample is committed");
 
-    let lines: Vec<&str> = raw.lines().filter(|l| !l.trim().is_empty()).collect();
-    assert!(!lines.is_empty(), "okta fixture is empty");
+    let lines: Vec<&str> = raw
+        .lines()
+        .filter(|l| {
+            serde_json::from_str::<serde_json::Value>(l)
+                .is_ok_and(|v| v["actor"].is_object() && v["eventType"].is_string())
+        })
+        .collect();
+    assert!(!lines.is_empty(), "okta sample has no API-shaped record");
 
     let mut out = Vec::new();
     for i in 0..count {
@@ -428,7 +436,7 @@ async fn offsets_commit_after_the_batch_is_sent() {
 /// ceiling; this one uses the default and seeds several MB.
 #[tokio::test(flavor = "multi_thread")]
 async fn a_batch_larger_than_one_kafka_record_arrives() {
-    /// 2,000 okta events is roughly 4 MB in and more out -- well past one
+    /// 2,000 okta events is roughly 2.6 MB in and more out -- well past one
     /// Kafka record, without the elapsed time of a full 20,000.
     const EVENTS: usize = 2_000;
 
@@ -659,29 +667,51 @@ const CISCO_IOS_SOURCE: &str = "filebeat.cisco_ios.default";
 const CISCO_IOS_VARIANT: &str = "cisco-ios";
 
 /// A `cisco_ios` syslog line unique to `i`, so a lost or duplicated event shows
-/// up by value and not only by count.
+/// up by value and not only by count. The shape is the napalm-logs sample in
+/// `tests/fixtures/unencumbered/cisco_ios/cisco-ios-syslog.log`.
 fn cisco_ios_line(i: usize) -> String {
     format!(
-        "<189>{}: Jan  6 2022 20:52:12.861: %SYS-5-CONFIG_I: Configured from console by \
-         akroh on vty0 (10.100.11.10)",
-        2_360_957 + i
+        "<189>{}: test-ztp: May 23 13:56:15.055: %SYS-5-CONFIG_I: Configured from console by \
+         admin on vty0 (10.31.0.24)",
+        30 + i
     )
+}
+
+/// The document an Elastic Agent hands the `cisco_ios` integration: the
+/// Agent's wrapper keys around the vendor line, which the caller sets. The
+/// values are made up.
+fn agent_cisco_ios_document() -> serde_json::Value {
+    serde_json::json!({
+        "@timestamp": "2026-02-19T00:00:00.000Z",
+        "agent": {
+            "ephemeral_id": "0b5d3f4e-8f61-4b8e-9d0e-3c1f2a7b6c5d",
+            "id": "6f1c2d3e-4b5a-4c6d-8e7f-9a0b1c2d3e4f",
+            "name": "edge-agent-01",
+            "type": "filebeat",
+            "version": "8.0.0"
+        },
+        "data_stream": {
+            "dataset": "cisco_ios.log",
+            "namespace": "default",
+            "type": "logs"
+        },
+        "elastic_agent": {
+            "id": "6f1c2d3e-4b5a-4c6d-8e7f-9a0b1c2d3e4f",
+            "snapshot": false,
+            "version": "8.0.0"
+        },
+        "event": { "agent_id_status": "verified" },
+        "input": { "type": "tcp" },
+        "log": { "source": { "address": "192.0.2.10:46792" } },
+        "tags": ["preserve_original_event", "cisco-ios", "forwarded"]
+    })
 }
 
 /// `count` Elastic Agent `cisco_ios` documents as dfe-receiver writes them to a
 /// source's land topic: the agent's own document with the receive stamp and
 /// the matched `_source` appended, one Kafka record per event.
 fn receiver_cisco_ios_records(count: usize) -> Vec<Vec<u8>> {
-    let raw = std::fs::read_to_string(concat!(
-        env!("CARGO_MANIFEST_DIR"),
-        "/tests/envelopes/beats/agent_cisco_ios.json"
-    ))
-    .expect("agent_cisco_ios fixture is committed");
-    let fixture: serde_json::Value = serde_json::from_str(&raw).expect("fixture is JSON");
-    let agent = fixture
-        .get("event")
-        .cloned()
-        .expect("the fixture carries the agent document under `event`");
+    let agent = agent_cisco_ios_document();
 
     (0..count)
         .map(|i| {

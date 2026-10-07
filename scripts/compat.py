@@ -61,6 +61,10 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # Clones of elastic/integrations and elastic/beats, located per machine.
 SOURCES_ENV = "DFE_ELASTIC_SOURCES"
 
+# The pipeline-test inputs and expectations, copied from Elastic and so kept in
+# dfe-transform-elastic-dev under fixtures/elastic, never in this repository.
+FIXTURES_ENV = "DFE_ELASTIC_FIXTURES"
+
 # Defaults inside the ignored testdata/ tree: the corpus derives from
 # Elastic-Licensed pipelines and committing it is not an engineering decision.
 CORPUS_ENV = "DFE_COMPAT_CORPUS"
@@ -143,6 +147,31 @@ def sources_root() -> Path:
             f"no elastic sources at {root}. Clone elastic/integrations and "
             f"elastic/beats into one directory and set {SOURCES_ENV}, or pass "
             f"--sources."
+        )
+    return root
+
+
+def fixtures_root() -> Path:
+    """Locate the Elastic test fixtures from the environment.
+
+    Returns:
+        The ``tests/fixtures`` directory under ``$DFE_ELASTIC_FIXTURES``.
+
+    Raises:
+        CompatError: If the variable is unset or names no fixtures directory.
+    """
+    configured = os.environ.get(FIXTURES_ENV)
+    if not configured:
+        raise CompatError(
+            f"{FIXTURES_ENV} is unset. The Elastic test fixtures live in "
+            f"dfe-transform-elastic-dev: set {FIXTURES_ENV} to its fixtures/elastic "
+            f"directory, or pass --fixtures."
+        )
+    root = Path(configured) / "tests" / "fixtures"
+    if not root.is_dir():
+        raise CompatError(
+            f"no tests/fixtures under {configured}. Set {FIXTURES_ENV} to "
+            f"dfe-transform-elastic-dev's fixtures/elastic directory, or pass --fixtures."
         )
     return root
 
@@ -1080,8 +1109,9 @@ def list_fixtures(source: Source) -> list[Path]:
 
     Raises:
         SystemExit: If any fixture with an expectation sits below the top level.
+        CompatError: If the Elastic test fixtures cannot be located.
     """
-    directory = REPO_ROOT / "tests" / "fixtures" / source.fixture_dir
+    directory = fixtures_root() / source.fixture_dir
     if not directory.is_dir():
         # Upstream ships no pipeline fixtures for this stream. The transform is
         # still generated and wired; it simply has nothing to be scored against.
@@ -1574,6 +1604,7 @@ def cmd_check(_args: argparse.Namespace) -> int:
             print(f"  {name:14s} {state}  {path}")
             if not path.is_dir():
                 problems.append(f"{name} clone missing at {path}")
+        print(f"elastic fixtures  {fixtures_root()}")
     except CompatError as exc:
         # Nothing below can succeed, and repeating it per source buries the fix.
         print(f"\nproblem:\n  - {exc}")
@@ -1655,6 +1686,10 @@ def main(argv: list[str] | None = None) -> int:
         help=f"directory holding the integrations and beats clones (${SOURCES_ENV})",
     )
     parser.add_argument(
+        "--fixtures",
+        help=f"dfe-transform-elastic-dev's fixtures/elastic directory (${FIXTURES_ENV})",
+    )
+    parser.add_argument(
         "--corpus", help=f"where confirmed output is written (${CORPUS_ENV})"
     )
     parser.add_argument(
@@ -1701,6 +1736,8 @@ def main(argv: list[str] | None = None) -> int:
     # Set before anything resolves a path, so the factories are the only reader.
     if args.sources:
         os.environ[SOURCES_ENV] = args.sources
+    if args.fixtures:
+        os.environ[FIXTURES_ENV] = args.fixtures
     if args.corpus:
         os.environ[CORPUS_ENV] = args.corpus
     if args.es_version:

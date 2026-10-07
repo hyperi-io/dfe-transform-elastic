@@ -160,9 +160,9 @@ fn direct_config(listen: &str, endpoint: &str) -> Config {
 fn okta_events(count: usize) -> Vec<u8> {
     let raw = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/tests/fixtures/okta/system/test-okta-system-events.log"
+        "/tests/fixtures/unencumbered/okta/panther-okta-systemlog.ndjson"
     ))
-    .expect("okta fixture is committed");
+    .expect("okta sample is committed");
     let lines: Vec<&str> = raw.lines().filter(|l| !l.trim().is_empty()).collect();
     assert!(!lines.is_empty(), "okta fixture is empty");
 

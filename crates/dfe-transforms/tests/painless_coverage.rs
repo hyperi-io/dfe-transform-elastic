@@ -10,8 +10,10 @@
 //! Raising the floor here is the point: every script the runtime learns to
 //! execute moves it up, and the assertion stops it sliding back.
 //!
-//! Run `cargo test -p dfe-transforms --test painless_coverage -- --nocapture`
-//! to see which scripts are still unhandled, most frequent first.
+//! The fixtures are Elastic-licensed and kept in `dfe-transform-elastic-dev`.
+//! Run `DFE_ELASTIC_FIXTURES=<that repo>/fixtures/elastic cargo test -p
+//! dfe-transforms --test painless_coverage -- --ignored --nocapture` to see
+//! which scripts are still unhandled, most frequent first.
 
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
@@ -99,18 +101,11 @@ fn beats_events(log: &Path) -> Vec<dfe_runtime::Event> {
         .collect()
 }
 
-/// The fixtures live at the repo root, two levels above this crate.
-fn fixtures_root() -> std::path::PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("../..")
-        .join("tests/fixtures")
-}
-
-/// Drive every fixture, returning how many files were read.
-fn drive_corpus() -> usize {
+/// Drive every fixture under `root`, returning how many files were read.
+fn drive_corpus(root: &Path) -> usize {
     let mut files = 0;
     for (dir, transform) in corpus() {
-        for log in logs_in(&fixtures_root().join(dir)) {
+        for log in logs_in(&root.join(dir)) {
             files += 1;
             for mut event in beats_events(&log) {
                 let _ = transform.transform(&mut event);
@@ -122,16 +117,18 @@ fn drive_corpus() -> usize {
 
 /// Drive the corpus and report what fraction of Painless actually executed.
 #[test]
+#[ignore = "reads Elastic test data from dfe-transform-elastic-dev: set DFE_ELASTIC_FIXTURES and run with --ignored"]
 fn painless_coverage_does_not_regress() {
+    let root = dfe_runtime::testutil::elastic_fixtures();
     painless_stats::reset();
     painless_stats::enable_catalogue(true);
-    let files = drive_corpus();
+    let files = drive_corpus(&root);
     painless_stats::enable_catalogue(false);
 
     assert!(
         files > 0,
         "no fixtures found under {} -- this test would pass vacuously",
-        fixtures_root().display()
+        root.display()
     );
 
     let handled = painless_stats::handled();

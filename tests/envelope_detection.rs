@@ -61,16 +61,44 @@ impl Fixture {
 }
 
 /// Every fixture, read from disk once for the whole binary.
+///
+/// The Beats shapes are read off Elastic's own test documents, so they sit with
+/// the Elastic data in `dfe-transform-elastic-dev` and join the set only where
+/// `DFE_ELASTIC_FIXTURES` names it.
 fn fixtures() -> &'static [Fixture] {
     static FIXTURES: LazyLock<Vec<Fixture>> = LazyLock::new(load_fixtures);
     &FIXTURES
 }
 
 fn load_fixtures() -> Vec<Fixture> {
-    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/envelopes");
+    let mut found = load_from(&Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/envelopes"));
+    assert!(
+        found.len() >= 14,
+        "only {} envelope fixtures found -- the directory did not load",
+        found.len()
+    );
+
+    if let Some(root) = dfe_runtime::testutil::elastic_root() {
+        let elastic = load_from(&root.join("tests/envelopes"));
+        assert!(
+            elastic.len() >= 5,
+            "only {} envelope fixtures under {} -- the Elastic data did not load",
+            elastic.len(),
+            root.display()
+        );
+        found.extend(elastic);
+    }
+
+    found.sort_by(|a, b| a.path.cmp(&b.path));
+    found
+}
+
+/// Every fixture under `root`, one directory per family.
+fn load_from(root: &Path) -> Vec<Fixture> {
     let mut found = Vec::new();
 
-    let families = std::fs::read_dir(&root).expect("tests/envelopes exists");
+    let families =
+        std::fs::read_dir(root).unwrap_or_else(|e| panic!("{} reads: {e}", root.display()));
     for family in families {
         let family = family.expect("directory entry reads").path();
         if !family.is_dir() {
@@ -88,13 +116,6 @@ fn load_fixtures() -> Vec<Fixture> {
             found.push(Fixture { path, doc });
         }
     }
-
-    found.sort_by(|a, b| a.path.cmp(&b.path));
-    assert!(
-        found.len() >= 19,
-        "only {} envelope fixtures found -- the directory did not load",
-        found.len()
-    );
     found
 }
 
@@ -116,6 +137,25 @@ fn unwrapped(name: &str) -> Value {
         .unwrap_into_beats(&mut event, None, &detected.variant)
         .expect("unwraps");
     event.as_value().clone()
+}
+
+/// The Beats shapes come from the Elastic data, and a run that asked for it
+/// must have every one of them in the set the tests below walk.
+#[test]
+#[ignore = "reads Elastic test data from dfe-transform-elastic-dev: set DFE_ELASTIC_FIXTURES and run with --ignored"]
+fn the_beats_shapes_load_from_the_elastic_data() {
+    let root = dfe_runtime::testutil::require_elastic_root().join("tests/envelopes");
+    let beats: Vec<String> = fixtures()
+        .iter()
+        .filter(|f| f.path.starts_with(&root) && f.family("shape") == Envelope::Beats)
+        .map(Fixture::name)
+        .collect();
+    assert!(
+        beats.len() >= 5,
+        "only {} Beats shapes under {}: {beats:?}",
+        beats.len(),
+        root.display()
+    );
 }
 
 /// The whole point: every shape a producer writes detects as the fixture says.

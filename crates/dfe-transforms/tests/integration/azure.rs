@@ -8,70 +8,50 @@
 
 use dfe_transforms::filebeat::{azure_activitylogs, azure_auditlogs, azure_signinlogs};
 
-const FIXTURE_BASE: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../tests/fixtures/azure");
+floor!(
+    azure_activitylogs_raw,
+    azure_activitylogs::default::Default,
+    "azure/activitylogs",
+    "test-activitylogs-raw",
+    0
+);
 
-#[test]
-fn azure_activitylogs_raw() {
-    let dir = format!("{FIXTURE_BASE}/activitylogs");
-    super::common::run_floor(
-        &azure_activitylogs::default::Default,
-        &dir,
-        "test-activitylogs-raw",
-        0,
-    );
-}
+floor!(
+    azure_activitylogs_identity,
+    azure_activitylogs::default::Default,
+    "azure/activitylogs",
+    "test-activitylogs-identity",
+    0
+);
 
-#[test]
-fn azure_activitylogs_identity() {
-    let dir = format!("{FIXTURE_BASE}/activitylogs");
-    super::common::run_floor(
-        &azure_activitylogs::default::Default,
-        &dir,
-        "test-activitylogs-identity",
-        0,
-    );
-}
+floor!(
+    azure_activitylogs_edgecases,
+    azure_activitylogs::default::Default,
+    "azure/activitylogs",
+    "test-activitylogs-edgecases",
+    0
+);
 
-#[test]
-fn azure_activitylogs_edgecases() {
-    let dir = format!("{FIXTURE_BASE}/activitylogs");
-    super::common::run_floor(
-        &azure_activitylogs::default::Default,
-        &dir,
-        "test-activitylogs-edgecases",
-        0,
-    );
-}
+floor!(
+    azure_auditlogs_raw,
+    azure_auditlogs::default::Default,
+    "azure/auditlogs",
+    "test-auditlogs-raw",
+    0
+);
 
-#[test]
-fn azure_auditlogs_raw() {
-    let dir = format!("{FIXTURE_BASE}/auditlogs");
-    super::common::run_floor(
-        &azure_auditlogs::default::Default,
-        &dir,
-        "test-auditlogs-raw",
-        0,
-    );
-}
+floor!(
+    azure_signinlogs_raw,
+    azure_signinlogs::default::Default,
+    "azure/signinlogs",
+    "test-signinlogs-raw",
+    0
+);
 
-#[test]
-fn azure_signinlogs_raw() {
-    let dir = format!("{FIXTURE_BASE}/signinlogs");
-    super::common::run_floor(
-        &azure_signinlogs::default::Default,
-        &dir,
-        "test-signinlogs-raw",
-        0,
-    );
-}
-
-#[test]
-fn azure_signinlogs_sample() {
-    let dir = format!("{FIXTURE_BASE}/signinlogs");
-    super::common::run_floor(
-        &azure_signinlogs::default::Default,
-        &dir,
-        "test-signinlogs-sample",
-        0,
-    );
-}
+floor!(
+    azure_signinlogs_sample,
+    azure_signinlogs::default::Default,
+    "azure/signinlogs",
+    "test-signinlogs-sample",
+    0
+);

@@ -153,8 +153,7 @@ fn wrap_event(raw: RawEvent, config_fields: &Map<String, Value>) -> Event {
 /// Load a fixture's events, wrapped exactly as [`run_floor`] would.
 ///
 /// For the checks that assert individual fields rather than a whole event.
-pub fn load_fixture_events(fixture_dir: &str, log_name: &str) -> Vec<Event> {
-    let dir = Path::new(fixture_dir);
+pub fn load_fixture_events(dir: &Path, log_name: &str) -> Vec<Event> {
     let (log_path, _) = find_fixture_pair(dir, log_name);
     let config_fields = load_config_fields(dir, log_name);
     load_and_wrap_events(&log_path, &config_fields)
@@ -167,8 +166,7 @@ pub fn load_fixture_events(fixture_dir: &str, log_name: &str) -> Vec<Event> {
 /// `tests/compat_corpus.rs` owns parity and this asserts only what is true
 /// regardless of expected output: the transform survives every event,
 /// `max_errors` does not rise, and at least one event gains a field.
-pub fn run_floor(transform: &dyn Transform, fixture_dir: &str, log_name: &str, max_errors: usize) {
-    let dir = Path::new(fixture_dir);
+pub fn run_floor(transform: &dyn Transform, dir: &Path, log_name: &str, max_errors: usize) {
     let (log_path, _) = find_fixture_pair(dir, log_name);
 
     assert!(

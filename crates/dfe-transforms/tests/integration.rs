@@ -23,8 +23,25 @@
 //! holding nothing but this note), which linked against a crate that compiles
 //! as one ~11.6 GB rustc and ran zero tests. A comment does not need a link
 //! cycle.
+//!
+//! These read Elastic-licensed fixtures kept in `dfe-transform-elastic-dev`,
+//! and run only where `DFE_ELASTIC_FIXTURES` names them. The floor over the
+//! licence-clean samples is `tests/unencumbered.rs`.
 
 mod common;
+
+/// One floor over an Elastic fixture, `$fixture` in `$dir` under the Elastic
+/// data's `tests/fixtures/`.
+macro_rules! floor {
+    ($name:ident, $transform:expr, $dir:literal, $fixture:literal, $max_errors:expr) => {
+        #[test]
+        #[ignore = "reads Elastic test data from dfe-transform-elastic-dev: set DFE_ELASTIC_FIXTURES and run with --ignored"]
+        fn $name() {
+            let dir = dfe_runtime::testutil::elastic_fixtures().join($dir);
+            crate::common::run_floor(&$transform, &dir, $fixture, $max_errors);
+        }
+    };
+}
 
 #[path = "integration/azure.rs"]
 mod azure;

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
-//! Per-event transform throughput, measured on committed fixtures.
+//! Per-event transform throughput, measured on the licence-clean samples.
 //!
 //! The number that matters is events per second through one transform, because
 //! that is what a 20,000-event batch multiplies. Anything a transform does per
@@ -13,16 +13,14 @@ use std::hint::black_box;
 use criterion::{Criterion, criterion_group, criterion_main};
 use dfe_runtime::{Event, Transform};
 
-/// Beats-shaped events from a committed fixture: the raw vendor payload as a
+/// Beats-shaped events from a committed sample: the raw vendor payload as a
 /// STRING in `message`, which is what the transforms are written for.
 ///
-/// The fixtures come in two shapes and only one of them needs wrapping. A
-/// syslog fixture is ALREADY `{"message": "<134>1 ..."}` per line, and
-/// wrapping that again gave the transform a `message` holding the TEXT of a
-/// JSON object -- no grok matched, nothing was set, and the benchmark timed a
-/// no-op. `cisco_meraki` and `fortinet` both read that way, which is why they
-/// looked cheaper than `okta`. A line that already carries `message` is used
-/// as it stands; anything else is the raw vendor payload and gets wrapped.
+/// A line that already carries `message` is used as it stands; anything else
+/// is the raw vendor payload and gets wrapped. Wrapping a line that is already
+/// `{"message": "<134>1 ..."}` gives the transform a `message` holding the TEXT
+/// of a JSON object -- no grok matches, nothing is set, and the benchmark
+/// times a no-op.
 fn fixture_events(relative: &str) -> Vec<Event> {
     let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../../tests/fixtures")
@@ -97,7 +95,7 @@ fn okta(c: &mut Criterion) {
     bench_source(
         c,
         "okta",
-        "okta/system/test-okta-system-events.log",
+        "unencumbered/okta/panther-okta-systemlog.ndjson",
         &dfe_transforms::filebeat::okta::default::Default,
     );
 }
@@ -108,7 +106,7 @@ fn cisco_meraki(c: &mut Criterion) {
     bench_source(
         c,
         "cisco_meraki",
-        "cisco/meraki/logs/test-events.log",
+        "unencumbered/cisco_meraki/meraki-events.log",
         &dfe_transforms::filebeat::cisco_meraki::default::Default,
     );
 }
@@ -118,7 +116,7 @@ fn fortinet(c: &mut Criterion) {
     bench_source(
         c,
         "fortinet",
-        "fortinet/fortigate/test-fortinet.log",
+        "unencumbered/fortinet/fortigate-event.log",
         &dfe_transforms::filebeat::fortinet::default::Default,
     );
 }

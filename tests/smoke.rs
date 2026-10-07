@@ -33,9 +33,9 @@ fn shipped_config() -> Config {
 fn shipped_source_event() -> Vec<u8> {
     let raw = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/tests/fixtures/okta/system/test-okta-system-events.log"
+        "/tests/fixtures/unencumbered/okta/panther-okta-systemlog.ndjson"
     ))
-    .expect("the okta fixture is committed");
+    .expect("the okta sample is committed");
     let line = raw
         .lines()
         .find(|l| !l.trim().is_empty())

@@ -9,7 +9,9 @@ authority on what a source should produce is Elastic's own engine --
 `testdata/compat/`, which is not committed. See [docs/compat.md](../../../docs/compat.md).
 
 Three fortinet files are truncated to 5,000 lines here; the rest are copied whole
-from the upstreams below.
+from the upstreams below. `o365/botsv3-o365audit.log` is the BOTS v3 records again, each nested under `o365audit` the way the filebeat o365 input delivers it.
+
+Elastic's own pipeline-test fixtures are Elastic License 2.0, so they live in `dfe-transform-elastic-dev` and never here.
 
 ## Licences and attribution
 
