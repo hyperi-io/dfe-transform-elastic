@@ -61,8 +61,8 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # Clones of elastic/integrations and elastic/beats, located per machine.
 SOURCES_ENV = "DFE_ELASTIC_SOURCES"
 
-# The pipeline-test inputs and expectations, copied from Elastic and so kept in
-# dfe-transform-elastic-dev under fixtures/elastic, never in this repository.
+# The pipeline-test inputs and expectations, copied from Elastic and so kept in a
+# fixtures/elastic directory outside this repository.
 FIXTURES_ENV = "DFE_ELASTIC_FIXTURES"
 
 # Defaults inside the ignored testdata/ tree: the corpus derives from
@@ -163,15 +163,15 @@ def fixtures_root() -> Path:
     configured = os.environ.get(FIXTURES_ENV)
     if not configured:
         raise CompatError(
-            f"{FIXTURES_ENV} is unset. The Elastic test fixtures live in "
-            f"dfe-transform-elastic-dev: set {FIXTURES_ENV} to its fixtures/elastic "
+            f"{FIXTURES_ENV} is unset. The Elastic test fixtures are kept outside "
+            f"this repository: set {FIXTURES_ENV} to their fixtures/elastic "
             f"directory, or pass --fixtures."
         )
     root = Path(configured) / "tests" / "fixtures"
     if not root.is_dir():
         raise CompatError(
             f"no tests/fixtures under {configured}. Set {FIXTURES_ENV} to "
-            f"dfe-transform-elastic-dev's fixtures/elastic directory, or pass --fixtures."
+            f"the Elastic test data's fixtures/elastic directory, or pass --fixtures."
         )
     return root
 
@@ -1687,7 +1687,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--fixtures",
-        help=f"dfe-transform-elastic-dev's fixtures/elastic directory (${FIXTURES_ENV})",
+        help=f"the Elastic test data's fixtures/elastic directory (${FIXTURES_ENV})",
     )
     parser.add_argument(
         "--corpus", help=f"where confirmed output is written (${CORPUS_ENV})"

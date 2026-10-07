@@ -63,7 +63,7 @@ impl Fixture {
 /// Every fixture, read from disk once for the whole binary.
 ///
 /// The Beats shapes are read off Elastic's own test documents, so they sit with
-/// the Elastic data in `dfe-transform-elastic-dev` and join the set only where
+/// the Elastic data kept outside this repository and join the set only where
 /// `DFE_ELASTIC_FIXTURES` names it.
 fn fixtures() -> &'static [Fixture] {
     static FIXTURES: LazyLock<Vec<Fixture>> = LazyLock::new(load_fixtures);
@@ -142,7 +142,7 @@ fn unwrapped(name: &str) -> Value {
 /// The Beats shapes come from the Elastic data, and a run that asked for it
 /// must have every one of them in the set the tests below walk.
 #[test]
-#[ignore = "reads Elastic test data from dfe-transform-elastic-dev: set DFE_ELASTIC_FIXTURES and run with --ignored"]
+#[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
 fn the_beats_shapes_load_from_the_elastic_data() {
     let root = dfe_runtime::testutil::require_elastic_root().join("tests/envelopes");
     let beats: Vec<String> = fixtures()

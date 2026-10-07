@@ -1914,19 +1914,6 @@ mod tests {
         assert_eq!(out, "2023-05-02T17:55:19.000Z");
     }
 
-    /// Verbatim from `tests/fixtures/cisco/nexus`: AEST is +10:00, and
-    /// treating an unrecognised abbreviation as UTC put the event ten hours
-    /// out rather than failing visibly.
-    #[test]
-    fn a_named_zone_shifts_the_instant() {
-        let out = parse_date(
-            "2023 May 3 13:55:35.928 AEST",
-            &["yyyy MMM d HH:mm:ss.SSS zzz"],
-            None,
-        );
-        assert_eq!(out.unwrap(), "2023-05-03T03:55:35.928Z");
-    }
-
     #[test]
     fn a_format_that_does_not_match_yields_nothing() {
         assert!(parse_date("not a date", &["yyyy MMM d HH:mm:ss"], None).is_none());

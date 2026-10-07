@@ -21,7 +21,7 @@ flowchart LR
         floors[unencumbered.rs<br/>untested_sources.rs public<br/>panic / error / enrichment]
     end
 
-    subgraph "Elastic floors -- dfe-transform-elastic-dev CI"
+    subgraph "Elastic floors -- where DFE_ELASTIC_FIXTURES is set"
         elastic[(fixtures/elastic<br/>DFE_ELASTIC_FIXTURES)]
         efloors[integration.rs<br/>untested_sources.rs elastic<br/>painless_coverage.rs]
     end
@@ -46,17 +46,20 @@ pointed at one.
 
 ## Elastic test data
 
-The pipeline-test fixtures and the Beats envelope shapes are copied from `elastic/integrations` and `elastic/beats`, which are Elastic License 2.0, so they live in the private `dfe-transform-elastic-dev` under `fixtures/elastic/`. That directory is laid out like this repository's root, so `tests/fixtures/okta/system/` names the same fixture in both.
+The pipeline-test fixtures and the Beats envelope shapes are copied from `elastic/integrations` and `elastic/beats`, which are Elastic License 2.0, so they are kept outside this repository, in a `fixtures/elastic/` directory. That directory is laid out like this repository's root, so `tests/fixtures/okta/system/` names the same fixture in both.
 
 Every test that reads them is `#[ignore]`d here and reaches the data through `dfe_runtime::testutil::elastic_fixtures()`, which panics when `DFE_ELASTIC_FIXTURES` is unset or names no `tests/fixtures`. A run that asks for them therefore fails rather than passing on nothing:
 
 ```bash
-DFE_ELASTIC_FIXTURES=<dfe-transform-elastic-dev>/fixtures/elastic \
-  cargo test -p dfe-transforms --test integration --test untested_sources \
-  --test painless_coverage -- --ignored
+export DFE_ELASTIC_FIXTURES=/path/to/fixtures/elastic
+cargo test -p dfe-transforms --test integration --test untested_sources \
+  --test painless_coverage --test grok_capture_paths -- --ignored
+cargo test -p dfe-runtime --all-features --lib --test date_repro -- --ignored
+cargo test --no-default-features --test envelope --test envelope_detection \
+  -- --include-ignored
 ```
 
-`dfe-transform-elastic-dev`'s `elastic-fixtures.yml` workflow runs that, plus the envelope and Python-tooling checks, nightly against `main` and on any change to the data. Only licence-clean samples go in `tests/fixtures/`, and `crates/dfe-transforms/tests/unencumbered.rs` fails on any file outside `unencumbered/`.
+A CI job with access to that data runs those, plus the Python-tooling checks, against `main` on a schedule and on any change to the data. Only licence-clean samples go in `tests/fixtures/`, and `crates/dfe-transforms/tests/unencumbered.rs` fails on any file outside `unencumbered/`.
 
 ---
 

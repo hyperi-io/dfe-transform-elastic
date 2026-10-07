@@ -157,7 +157,7 @@ ASN hit DB-IP Lite has where MaxMind's GeoLite2 does not makes that rename land
 on an occupied target -- which fails the document and skips the twenty-nine
 removes behind it, costing 262 events. Comparing against output built from a
 database we do not have means running without one. The fixture floors still
-exercise enrichment, over the Elastic fixtures in `dfe-transform-elastic-dev` and the samples in `tests/fixtures/unencumbered/`.
+exercise enrichment, over the Elastic fixtures kept outside this repository and the samples in `tests/fixtures/unencumbered/`.
 
 ## Correct beats bug-compatible
 
