@@ -1763,7 +1763,7 @@ mod tests {
     fn okta_event(uuid: &str, pad: usize) -> Vec<u8> {
         let raw = std::fs::read_to_string(concat!(
             env!("CARGO_MANIFEST_DIR"),
-            "/tests/fixtures/okta/system/test-okta-system-events.log"
+            "/tests/fixtures/unencumbered/okta/panther-okta-systemlog.ndjson"
         ))
         .unwrap();
         let line = raw.lines().find(|l| !l.trim().is_empty()).unwrap();

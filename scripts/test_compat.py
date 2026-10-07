@@ -14,6 +14,7 @@ Run with: python3 -m unittest discover -s scripts -p 'test_*.py'
 from __future__ import annotations
 
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -553,12 +554,17 @@ class SourceTable(unittest.TestCase):
     def test_the_source_table_is_loaded(self) -> None:
         self.assertGreaterEqual(len(compat.SOURCES), self.MIN_SOURCES)
 
+    @unittest.skipUnless(
+        os.environ.get(compat.FIXTURES_ENV),
+        f"reads the Elastic test fixtures in dfe-transform-elastic-dev: set {compat.FIXTURES_ENV}",
+    )
     def test_no_more_sources_lack_a_fixture_directory(self) -> None:
         self.assertGreaterEqual(len(compat.SOURCES), self.MIN_SOURCES)
+        root = compat.fixtures_root()
         missing = [
             name
             for name, source in compat.SOURCES.items()
-            if not (compat.REPO_ROOT / "tests" / "fixtures" / source.fixture_dir).is_dir()
+            if not (root / source.fixture_dir).is_dir()
         ]
         self.assertLessEqual(
             len(missing),

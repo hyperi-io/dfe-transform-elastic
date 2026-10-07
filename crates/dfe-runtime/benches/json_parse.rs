@@ -15,8 +15,8 @@
 //! measured here yet, and preserving object insertion order decides whether it
 //! can be.
 //!
-//! The payloads are the committed fixtures, so a fresh clone measures the same
-//! documents.
+//! The payloads come from the committed licence-clean samples, so a fresh clone
+//! measures the same documents.
 
 use std::hint::black_box;
 
@@ -24,20 +24,28 @@ use criterion::{Criterion, Throughput, criterion_group, criterion_main};
 use serde_json::Value;
 
 /// One representative payload per shape: a big nested vendor document, and a
-/// small flat one.
+/// small flat one -- a syslog line in the Beats `message` envelope.
 fn payloads() -> Vec<(&'static str, String)> {
-    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../tests/fixtures");
-    [
-        ("okta", "okta/system/test-okta-system-events.log"),
-        ("meraki", "cisco/meraki/logs/test-events.log"),
-    ]
-    .iter()
-    .filter_map(|(name, relative)| {
+    let root =
+        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../tests/fixtures/unencumbered");
+    let first_line = |relative: &str| -> Option<String> {
         let raw = std::fs::read_to_string(root.join(relative)).ok()?;
-        let line = raw.lines().find(|l| !l.trim().is_empty())?;
-        Some((*name, line.to_string()))
-    })
-    .collect()
+        raw.lines()
+            .find(|l| !l.trim().is_empty())
+            .map(str::to_string)
+    };
+
+    let mut out = Vec::new();
+    if let Some(okta) = first_line("okta/panther-okta-systemlog.ndjson") {
+        out.push(("okta", okta));
+    }
+    if let Some(meraki) = first_line("cisco_meraki/meraki-events.log") {
+        out.push((
+            "meraki",
+            serde_json::json!({ "message": meraki }).to_string(),
+        ));
+    }
+    out
 }
 
 /// The scratch-buffer copy plus simd-json, against `serde_json` straight off

@@ -24,7 +24,7 @@ secrets.yml
 
 # Build output
 *.log
-# Elastic fixture inputs are .log files and must survive the rule above.
+# Sample log inputs are .log files and must survive the rule above.
 !tests/fixtures/**/*.log
 dist/
 dist-bin/

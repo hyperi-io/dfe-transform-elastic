@@ -6,67 +6,50 @@
 
 use dfe_transforms::filebeat::crowdstrike;
 
-const FIXTURE_DIR: &str = concat!(
-    env!("CARGO_MANIFEST_DIR"),
-    "/../../tests/fixtures/crowdstrike/falcon"
+floor!(
+    crowdstrike_default_sample,
+    crowdstrike::default::Default,
+    "crowdstrike/falcon",
+    "test-falcon-sample",
+    0
 );
 
-#[test]
-fn crowdstrike_default_sample() {
-    super::common::run_floor(
-        &crowdstrike::default::Default,
-        FIXTURE_DIR,
-        "test-falcon-sample",
-        0,
-    );
-}
+floor!(
+    crowdstrike_default_events,
+    crowdstrike::default::Default,
+    "crowdstrike/falcon",
+    "test-falcon-events",
+    0
+);
 
-#[test]
-fn crowdstrike_default_events() {
-    super::common::run_floor(
-        &crowdstrike::default::Default,
-        FIXTURE_DIR,
-        "test-falcon-events",
-        0,
-    );
-}
+floor!(
+    crowdstrike_default_event_stream,
+    crowdstrike::default::Default,
+    "crowdstrike/falcon",
+    "test-event-stream",
+    0
+);
 
-#[test]
-fn crowdstrike_default_event_stream() {
-    super::common::run_floor(
-        &crowdstrike::default::Default,
-        FIXTURE_DIR,
-        "test-event-stream",
-        0,
-    );
-}
+floor!(
+    crowdstrike_default_audit_events,
+    crowdstrike::default::Default,
+    "crowdstrike/falcon",
+    "test-falcon-audit-events",
+    0
+);
 
-#[test]
-fn crowdstrike_default_audit_events() {
-    super::common::run_floor(
-        &crowdstrike::default::Default,
-        FIXTURE_DIR,
-        "test-falcon-audit-events",
-        0,
-    );
-}
+floor!(
+    crowdstrike_default_tags,
+    crowdstrike::default::Default,
+    "crowdstrike/falcon",
+    "test-falcon-tags",
+    0
+);
 
-#[test]
-fn crowdstrike_default_tags() {
-    super::common::run_floor(
-        &crowdstrike::default::Default,
-        FIXTURE_DIR,
-        "test-falcon-tags",
-        0,
-    );
-}
-
-#[test]
-fn crowdstrike_default_tags_list() {
-    super::common::run_floor(
-        &crowdstrike::default::Default,
-        FIXTURE_DIR,
-        "test-falcon-tags-list",
-        0,
-    );
-}
+floor!(
+    crowdstrike_default_tags_list,
+    crowdstrike::default::Default,
+    "crowdstrike/falcon",
+    "test-falcon-tags-list",
+    0
+);

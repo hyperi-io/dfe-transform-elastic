@@ -171,6 +171,42 @@ fn every_sample_directory_is_mapped_or_declared_unmapped() {
     );
 }
 
+/// `tests/fixtures/` holds the licence-clean samples and nothing else.
+///
+/// Elastic's pipeline-test fixtures are Elastic License 2.0 and live in
+/// `dfe-transform-elastic-dev`; a copy of one under any other directory here
+/// ships Elastic's material in this repository.
+#[test]
+fn nothing_but_the_licence_clean_samples_sits_under_tests_fixtures() {
+    let root = Path::new(SAMPLES)
+        .parent()
+        .expect("the samples sit in tests/fixtures");
+    let mut stray = Vec::new();
+    let mut pending: Vec<PathBuf> = std::fs::read_dir(root)
+        .unwrap_or_else(|e| panic!("{} reads: {e}", root.display()))
+        .flatten()
+        .filter(|entry| entry.file_name() != "unencumbered")
+        .map(|entry| entry.path())
+        .collect();
+    while let Some(path) = pending.pop() {
+        if path.is_dir() {
+            let Ok(entries) = std::fs::read_dir(&path) else {
+                panic!("{} reads", path.display());
+            };
+            pending.extend(entries.flatten().map(|entry| entry.path()));
+        } else {
+            stray.push(path);
+        }
+    }
+    stray.sort();
+
+    assert!(
+        stray.is_empty(),
+        "only tests/fixtures/unencumbered/ is committed here; Elastic's fixtures \
+         belong in dfe-transform-elastic-dev: {stray:?}"
+    );
+}
+
 /// The provenance record travels with the data: every source directory is
 /// named in it, so no file arrives without a licence.
 #[test]

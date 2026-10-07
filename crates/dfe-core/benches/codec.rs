@@ -10,14 +10,14 @@
 //! The JSON codec on the record path: `Event::from_json` decodes each inbound
 //! line and `Event::write_json` encodes each outbound event, once per record.
 //!
-//! Both halves run on the okta system fixture, all 24 events:
+//! Both halves run on the licence-clean okta System Log sample, all 120 events:
 //!
 //! - `decode` reads each event as it arrives, the vendor payload a STRING in a
 //!   Beats `message`;
 //! - `encode` writes each vendor document, parsed, as the nested object an ECS
 //!   output is.
 //!
-//! Throughput is per record, so criterion's time is per the 24 and its rate is
+//! Throughput is per record, so criterion's time is per the 120 and its rate is
 //! records a second.
 //!
 //! Run with: `cargo bench -p dfe-core --bench codec`
@@ -28,13 +28,13 @@ use criterion::{Criterion, Throughput, criterion_group, criterion_main};
 use dfe_core::Event;
 use serde_json::Value;
 
-/// The okta system fixture, one vendor document per line.
+/// The okta System Log sample, one vendor document per line.
 fn vendor_lines() -> Vec<String> {
     let raw = std::fs::read_to_string(concat!(
         env!("CARGO_MANIFEST_DIR"),
-        "/../../tests/fixtures/okta/system/test-okta-system-events.log"
+        "/../../tests/fixtures/unencumbered/okta/panther-okta-systemlog.ndjson"
     ))
-    .expect("the okta fixture is committed");
+    .expect("the okta sample is committed");
     raw.lines()
         .filter(|line| !line.trim().is_empty())
         .map(String::from)

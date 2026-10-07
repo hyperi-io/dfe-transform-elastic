@@ -8,6 +8,7 @@
 //! output against expected fixtures.
 
 pub mod diff;
+pub mod elastic;
 pub mod flatten;
 pub mod harness;
 pub mod policy;
@@ -45,6 +46,7 @@ pub fn on_a_deep_stack<F: FnOnce() + Send + 'static>(body: F) {
 }
 
 pub use diff::{JsonDiff, MatchMode};
+pub use elastic::{elastic_fixtures, elastic_root, require_elastic_root};
 pub use flatten::{flatten_value, unflatten_value};
 pub use harness::{
     load_expected_outputs, load_integration_events, load_integration_expected, load_test_events,
