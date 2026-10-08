@@ -556,7 +556,7 @@ class SourceTable(unittest.TestCase):
 
     @unittest.skipUnless(
         os.environ.get(compat.FIXTURES_ENV),
-        f"reads the Elastic test fixtures in dfe-transform-elastic-dev: set {compat.FIXTURES_ENV}",
+        f"reads Elastic test fixtures kept outside this repository: set {compat.FIXTURES_ENV}",
     )
     def test_no_more_sources_lack_a_fixture_directory(self) -> None:
         self.assertGreaterEqual(len(compat.SOURCES), self.MIN_SOURCES)

@@ -18,9 +18,9 @@
 //!    having done nothing is indistinguishable from a working one without
 //!    this.
 //!
-//! An `elastic` case reads Elastic-licensed data kept in
-//! `dfe-transform-elastic-dev` and runs only where `DFE_ELASTIC_FIXTURES`
-//! names it; a `public` case reads the licence-clean samples committed here.
+//! An `elastic` case reads Elastic-licensed data kept outside this repository
+//! and runs only where `DFE_ELASTIC_FIXTURES` names it; a `public` case reads
+//! the licence-clean samples committed here.
 
 use std::path::{Path, PathBuf};
 
@@ -153,7 +153,7 @@ fn check(
 macro_rules! source_case {
     (elastic, $name:ident, $transform:expr, $fixture:literal, $max_errors:expr, $min_enriched:expr) => {
         #[test]
-        #[ignore = "reads Elastic test data from dfe-transform-elastic-dev: set DFE_ELASTIC_FIXTURES and run with --ignored"]
+        #[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
         fn $name() {
             let path = dfe_runtime::testutil::elastic_fixtures().join($fixture);
             check(stringify!($name), &$transform, &path, $max_errors, $min_enriched);

@@ -3604,16 +3604,26 @@ mod tests {
         );
     }
 
-    /// Verbatim from `tests/fixtures/cisco/umbrella`: a space before the quote
-    /// of a field that itself holds commas.
+    /// A space before the quote of a field that itself holds commas, read off
+    /// the first line in the Elastic data's
+    /// `cisco/umbrella/test-umbrella-dnslogs.log` that has one.
+    #[cfg(feature = "testutil")]
     #[test]
+    #[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
     fn a_gap_before_a_quote_closes_so_the_field_reads_as_quoted() {
-        let line = r#""2015-01-16 17:48:41","AD", "AD,ADSite,Network", "10.10.1.100""#;
-        let closed = csv_close_quote_gap(line, ',', '"');
-        assert_eq!(
-            closed,
-            r#""2015-01-16 17:48:41","AD","AD,ADSite,Network","10.10.1.100""#
-        );
+        let path =
+            crate::testutil::elastic_fixtures().join("cisco/umbrella/test-umbrella-dnslogs.log");
+        let text = std::fs::read_to_string(&path)
+            .unwrap_or_else(|e| panic!("{} reads: {e}", path.display()));
+        let line = text
+            .lines()
+            .filter_map(|row| serde_json::from_str::<Value>(row).ok())
+            .filter_map(|row| row["message"].as_str().map(str::to_string))
+            .find(|message| message.contains(r#"", ""#))
+            .unwrap_or_else(|| panic!("{} has no gap before a quote", path.display()));
+
+        let closed = csv_close_quote_gap(&line, ',', '"');
+        assert_eq!(closed, line.replace(r#"", ""#, r#"",""#), "{line}");
     }
 
     /// Whitespace that is part of a value is content, not a gap.

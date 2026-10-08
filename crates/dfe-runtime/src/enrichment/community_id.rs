@@ -321,12 +321,51 @@ mod tests {
         assert_eq!(cid1, cid2);
     }
 
-    /// Verbatim from `tests/fixtures/cisco/ios`: a destination-unreachable
-    /// (type 3) has no counterpart, so the flow is hashed one-way.
+    /// The first flow over `transport` that carries a community id, in the
+    /// Elastic data's `cisco/ios/test-cisco-ios.log-expected.json`.
+    #[cfg(feature = "testutil")]
+    fn cisco_ios_flow(
+        transport: &str,
+        keep: impl Fn(&serde_json::Value) -> bool,
+    ) -> serde_json::Value {
+        let path =
+            crate::testutil::elastic_fixtures().join("cisco/ios/test-cisco-ios.log-expected.json");
+        let text = std::fs::read_to_string(&path)
+            .unwrap_or_else(|e| panic!("{} reads: {e}", path.display()));
+        let docs: Vec<serde_json::Value> = serde_json::from_str(&text)
+            .unwrap_or_else(|e| panic!("{}: not a JSON array: {e}", path.display()));
+        docs.into_iter()
+            .find(|doc| {
+                doc["network"]["transport"] == transport
+                    && doc["network"]["community_id"].is_string()
+                    && keep(doc)
+            })
+            .unwrap_or_else(|| panic!("{} has no matching {transport} flow", path.display()))
+    }
+
+    /// A destination-unreachable (type 3) has no counterpart, so the flow is
+    /// hashed one-way, to the id Elasticsearch wrote for it.
+    #[cfg(feature = "testutil")]
     #[test]
+    #[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
     fn icmp_without_a_counterpart_is_one_way() {
-        let cid = community_id_v1("192.168.100.1", "192.168.100.2", 3, 4, "icmp", 0).unwrap();
-        assert_eq!(cid, "1:qFmXhpjtK+/aneNSpMgRiI7dwi4=");
+        let flow = cisco_ios_flow("icmp", |doc| doc["icmp"]["type"] == "3");
+        let number = |field: &str| -> u16 {
+            flow["icmp"][field]
+                .as_str()
+                .and_then(|n| n.parse().ok())
+                .unwrap_or_else(|| panic!("icmp.{field} is a number: {flow}"))
+        };
+        let cid = community_id_v1(
+            flow["source"]["ip"].as_str().unwrap(),
+            flow["destination"]["ip"].as_str().unwrap(),
+            number("type"),
+            number("code"),
+            "icmp",
+            0,
+        )
+        .unwrap();
+        assert_eq!(Some(cid.as_str()), flow["network"]["community_id"].as_str());
     }
 
     /// An echo and its reply are the same flow, so they hash the same.
@@ -337,12 +376,23 @@ mod tests {
         assert_eq!(echo, reply);
     }
 
-    /// Verbatim from `tests/fixtures/cisco/ios`. IGMP has no ports, and
-    /// hashing a zero pair in their place yields a different id.
+    /// IGMP has no ports, and hashing a zero pair in their place yields a
+    /// different id from the one Elasticsearch wrote.
+    #[cfg(feature = "testutil")]
     #[test]
+    #[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
     fn a_protocol_without_ports_omits_the_port_bytes() {
-        let cid = community_id_v1("192.168.100.197", "224.0.0.22", 0, 0, "igmp", 0).unwrap();
-        assert_eq!(cid, "1:NCx7UOZoQUvxIB+uzqMmGnZTSzI=");
+        let flow = cisco_ios_flow("igmp", |_| true);
+        let cid = community_id_v1(
+            flow["source"]["ip"].as_str().unwrap(),
+            flow["destination"]["ip"].as_str().unwrap(),
+            0,
+            0,
+            "igmp",
+            0,
+        )
+        .unwrap();
+        assert_eq!(Some(cid.as_str()), flow["network"]["community_id"].as_str());
     }
 
     /// Verbatim from `testdata/compat/cisco_ios/log/test-asr920`: an ACL deny

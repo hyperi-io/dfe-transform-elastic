@@ -10,8 +10,8 @@
 //! Raising the floor here is the point: every script the runtime learns to
 //! execute moves it up, and the assertion stops it sliding back.
 //!
-//! The fixtures are Elastic-licensed and kept in `dfe-transform-elastic-dev`.
-//! Run `DFE_ELASTIC_FIXTURES=<that repo>/fixtures/elastic cargo test -p
+//! The fixtures are Elastic-licensed and kept outside this repository. Run
+//! `DFE_ELASTIC_FIXTURES=<their fixtures/elastic directory> cargo test -p
 //! dfe-transforms --test painless_coverage -- --ignored --nocapture` to see
 //! which scripts are still unhandled, most frequent first.
 
@@ -117,7 +117,7 @@ fn drive_corpus(root: &Path) -> usize {
 
 /// Drive the corpus and report what fraction of Painless actually executed.
 #[test]
-#[ignore = "reads Elastic test data from dfe-transform-elastic-dev: set DFE_ELASTIC_FIXTURES and run with --ignored"]
+#[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
 fn painless_coverage_does_not_regress() {
     let root = dfe_runtime::testutil::elastic_fixtures();
     painless_stats::reset();
