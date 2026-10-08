@@ -145,7 +145,7 @@ floor!(
 /// this asserts the fields that generation agrees on -- the router picked the
 /// sub-pipeline, and the CSV landed in the right columns.
 #[test]
-#[ignore = "reads Elastic test data from dfe-transform-elastic-dev: set DFE_ELASTIC_FIXTURES and run with --ignored"]
+#[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
 fn panw_routes_and_parses_its_csv() {
     use dfe_runtime::transform::Transform;
 

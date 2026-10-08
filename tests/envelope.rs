@@ -546,52 +546,41 @@ fn okta_produces_the_same_output_from_beats_or_the_fetcher() {
     );
 }
 
-/// The `cisco_ios` line from `tests/envelopes/beats/agent_cisco_ios.json`, which
-/// the package ships in its own `sample_event.json`.
-const AGENT_LINE: &str = "<189>2360957: Jan  6 2022 20:52:12.861: \
-%SYS-5-CONFIG_I: Configured from console by akroh on vty0 (10.100.11.10)";
-
-/// What an Elastic Agent wraps around that line, verbatim from the same file.
-fn agent_wrapped(line: &str) -> Value {
-    json!({
-        "@timestamp": "2022-01-06T20:52:12.861Z",
-        "agent": {
-            "ephemeral_id": "960a0fda-a7b7-4362-9018-34b1d0d119c4",
-            "id": "f00ff835-626e-4a18-a8a2-0bb3ebb7503f",
-            "name": "docker-fleet-agent",
-            "type": "filebeat",
-            "version": "8.0.0"
-        },
-        "data_stream": { "dataset": "cisco_ios.log", "namespace": "ep", "type": "logs" },
-        "elastic_agent": {
-            "id": "f00ff835-626e-4a18-a8a2-0bb3ebb7503f",
-            "snapshot": false,
-            "version": "8.0.0"
-        },
-        "event": { "agent_id_status": "verified", "ingested": "2023-07-13T09:20:48Z" },
-        "input": { "type": "tcp" },
-        "log": { "source": { "address": "172.25.0.4:46792" } },
-        "message": line,
-        "tags": ["preserve_original_event", "cisco-ios", "forwarded"]
-    })
+/// What an Elastic Agent hands the `cisco_ios` pipeline, from the Elastic
+/// data's `tests/envelopes/beats/agent_cisco_ios.json`.
+fn agent_wrapped() -> Value {
+    let path = dfe_runtime::testutil::require_elastic_root()
+        .join("tests/envelopes/beats/agent_cisco_ios.json");
+    let text =
+        std::fs::read_to_string(&path).unwrap_or_else(|e| panic!("{} reads: {e}", path.display()));
+    let doc: Value = serde_json::from_str(&text)
+        .unwrap_or_else(|e| panic!("{}: not valid JSON: {e}", path.display()));
+    doc["event"].clone()
 }
 
 /// The Agent path through a whole transform, which detection alone never
 /// tested: `data_stream` and `elastic_agent` appear ZERO times in the corpus,
 /// so every parity number was measured on the module shape.
 #[test]
+#[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
 fn cisco_ios_produces_the_same_output_from_beats_or_the_agent() {
+    let wrapped = agent_wrapped();
+    let line = wrapped["message"]
+        .as_str()
+        .expect("the Agent document carries a message")
+        .to_string();
+
     let via_beats = run(
         "filebeat.cisco_ios.default",
         Envelope::Beats,
-        json!({ "message": AGENT_LINE, "tags": ["preserve_original_event", "cisco-ios", "forwarded"] }),
+        json!({ "message": line, "tags": wrapped["tags"] }),
     )
     .expect("beats path emitted");
 
     let via_agent = run(
         "filebeat.cisco_ios.default",
         Envelope::Beats,
-        agent_wrapped(AGENT_LINE),
+        wrapped.clone(),
     )
     .expect("agent path emitted");
 
@@ -604,27 +593,23 @@ fn cisco_ios_produces_the_same_output_from_beats_or_the_agent() {
         );
     }
 
-    // A guard against both sides parsing nothing.
-    assert_eq!(
-        via_beats.pointer("/event/code").and_then(Value::as_str),
-        Some("CONFIG_I"),
-        "the transform did not parse the line at all"
+    // A guard against both sides parsing nothing: the mnemonic is read out of
+    // the line's `%FACILITY-SEVERITY-MNEMONIC:` tag.
+    let code = via_beats
+        .pointer("/event/code")
+        .and_then(Value::as_str)
+        .expect("the transform did not parse the line at all");
+    assert!(
+        !code.is_empty() && line.contains(&format!("-{code}:")),
+        "event.code `{code}` is not the mnemonic in `{line}`"
     );
 
     // The Agent's own wrapper survives, because it is the truth about the
     // delivery and nothing downstream can recover it.
-    assert_eq!(
-        via_agent
-            .pointer("/elastic_agent/version")
-            .and_then(Value::as_str),
-        Some("8.0.0")
-    );
-    assert_eq!(
-        via_agent
-            .pointer("/data_stream/dataset")
-            .and_then(Value::as_str),
-        Some("cisco_ios.log")
-    );
+    for pointer in ["/elastic_agent/version", "/data_stream/dataset"] {
+        let sent = wrapped.pointer(pointer).expect("the Agent sent it");
+        assert_eq!(via_agent.pointer(pointer), Some(sent), "{pointer}");
+    }
 }
 
 /// The delivery keys are the fetcher's own bookkeeping and must not reach the

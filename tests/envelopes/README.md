@@ -23,7 +23,7 @@ which shapes we are blind to.
 adding a shape is adding a file. These are committed, unlike `testdata/`, which
 holds the fetched Elastic corpus.
 
-The `beats` shapes are read off Elastic's own test documents, so they are Elastic License 2.0 and live in `dfe-transform-elastic-dev` under `fixtures/elastic/tests/envelopes/beats/`. They join the set where `DFE_ELASTIC_FIXTURES` names that directory, and `the_beats_shapes_load_from_the_elastic_data` fails a run that asked for them and found none.
+The `beats` shapes are read off Elastic's own test documents, so they are Elastic License 2.0 and kept outside this repository, under `tests/envelopes/beats/` in the Elastic test data's `fixtures/elastic/` directory. They join the set where `DFE_ELASTIC_FIXTURES` names that directory, and `the_beats_shapes_load_from_the_elastic_data` fails a run that asked for them and found none.
 
 ## The families
 

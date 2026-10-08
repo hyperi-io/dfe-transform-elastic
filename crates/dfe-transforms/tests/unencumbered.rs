@@ -173,9 +173,9 @@ fn every_sample_directory_is_mapped_or_declared_unmapped() {
 
 /// `tests/fixtures/` holds the licence-clean samples and nothing else.
 ///
-/// Elastic's pipeline-test fixtures are Elastic License 2.0 and live in
-/// `dfe-transform-elastic-dev`; a copy of one under any other directory here
-/// ships Elastic's material in this repository.
+/// Elastic's pipeline-test fixtures are Elastic License 2.0 and are kept
+/// outside this repository; a copy of one under any other directory here ships
+/// Elastic's material in it.
 #[test]
 fn nothing_but_the_licence_clean_samples_sits_under_tests_fixtures() {
     let root = Path::new(SAMPLES)
@@ -203,7 +203,7 @@ fn nothing_but_the_licence_clean_samples_sits_under_tests_fixtures() {
     assert!(
         stray.is_empty(),
         "only tests/fixtures/unencumbered/ is committed here; Elastic's fixtures \
-         belong in dfe-transform-elastic-dev: {stray:?}"
+         are kept outside this repository: {stray:?}"
     );
 }
 

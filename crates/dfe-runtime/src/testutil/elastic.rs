@@ -4,11 +4,11 @@
 //! Where the Elastic test data is, on a run that has it.
 //!
 //! Sample logs and expectations copied from Elastic's repositories are Elastic
-//! License 2.0 material and cannot ship in this repository. They live in the
-//! private `dfe-transform-elastic-dev`, under `fixtures/elastic/`, laid out the
-//! way this repository's root is: `tests/fixtures/` and `tests/envelopes/`
-//! beneath it. A test that reads them is `#[ignore]`d here and runs from that
-//! repository's CI with `DFE_ELASTIC_FIXTURES` pointed at the directory.
+//! License 2.0 material and cannot ship in this repository. They are kept
+//! outside it, in a `fixtures/elastic/` directory laid out the way this
+//! repository's root is: `tests/fixtures/` and `tests/envelopes/` beneath it. A
+//! test that reads them is `#[ignore]`d, and runs with `DFE_ELASTIC_FIXTURES`
+//! pointed at that directory and `--ignored`.
 
 use std::path::PathBuf;
 
@@ -50,7 +50,7 @@ pub fn require_elastic_root() -> PathBuf {
     elastic_root().unwrap_or_else(|| {
         panic!(
             "{ELASTIC_FIXTURES_ENV} is unset. This test reads Elastic-licensed data \
-             kept in dfe-transform-elastic-dev: set it to that repository's \
+             kept outside this repository: set it to that data's \
              fixtures/elastic directory"
         )
     })

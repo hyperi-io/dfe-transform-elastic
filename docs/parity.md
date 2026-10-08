@@ -68,7 +68,7 @@ real Elasticsearch and ratchets `tests/compat-baseline.json`, which holds every 
 corpus is generated, what `tests/compare-policy.yaml` excludes and why, and how the ratchet
 refuses to be lowered.
 
-The `.log` / `-expected.json` fixtures copied from Elastic predate the current pipelines and disagree with what Elasticsearch emits now, so **their parity assertions are retired**. They are Elastic-licensed and live in `dfe-transform-elastic-dev`, whose CI runs `integration/` and `untested_sources.rs` over them as panic, error and enrichment floors. On a fresh clone of this repository, where neither they nor the corpus exist, the floors that hold are `unencumbered.rs` and the `public` cases in `untested_sources.rs`, over the licence-clean samples in `tests/fixtures/unencumbered/`.
+The `.log` / `-expected.json` fixtures copied from Elastic predate the current pipelines and disagree with what Elasticsearch emits now, so **their parity assertions are retired**. They are Elastic-licensed and kept outside this repository, where a CI job runs `integration/` and `untested_sources.rs` over them as panic, error and enrichment floors. On a fresh clone of this repository, where neither they nor the corpus exist, the floors that hold are `unencumbered.rs` and the `public` cases in `untested_sources.rs`, over the licence-clean samples in `tests/fixtures/unencumbered/`.
 
 Per-processor runtime status and code pattern: see
 [Processor taxonomy](parsers.md#processor-taxonomy).

@@ -78,32 +78,49 @@ fn cisco_meraki_urls_writes_dotted_paths() {
 /// The dissect reads `event.original` and needs the whole key sequence, so a
 /// shortened line breaks at the first missing pair and the transform errors.
 ///
-/// This test used to pass a message carrying `signature=` alone. Nothing
-/// matched, so no capture leaked and the negative assertion held -- a
-/// transform that did nothing looks identical to one that did it right. The
-/// line here is from `tests/fixtures/cisco/meraki/logs/test-security-events.log`
-/// and the expected values are that fixture's own.
+/// A message carrying `signature=` alone matches nothing, so no capture leaks
+/// and the negative assertion holds -- a transform that did nothing looks
+/// identical to one that did it right. The line and the expected values are
+/// the first `ids-alerts` document in the Elastic data's
+/// `cisco/meraki/logs/test-security-events.log-expected.json`.
 #[test]
+#[ignore = "reads Elastic-licensed test data kept outside this repository: set DFE_ELASTIC_FIXTURES to its fixtures/elastic directory and run with --ignored"]
 fn cisco_meraki_idsalerts_writes_dotted_paths() {
-    const LINE: &str = "<134>1 1637783891.345984502 MX84 ids-alerts \
-        signature=129:4:1 priority=3 timestamp=1637783891.512569 \
-        direction=ingress protocol=tcp/ip src=67.43.156.15:80";
+    let path = dfe_runtime::testutil::elastic_fixtures()
+        .join("cisco/meraki/logs/test-security-events.log-expected.json");
+    let text =
+        std::fs::read_to_string(&path).unwrap_or_else(|e| panic!("{} reads: {e}", path.display()));
+    let expected: Vec<serde_json::Value> = serde_json::from_str(&text)
+        .unwrap_or_else(|e| panic!("{}: not a JSON array: {e}", path.display()));
+    let want = expected
+        .iter()
+        .find(|doc| doc["cisco_meraki"]["event_type"] == "ids-alerts")
+        .unwrap_or_else(|| panic!("{} has no ids-alerts document", path.display()));
+    let line = want["event"]["original"]
+        .as_str()
+        .expect("the document keeps event.original");
+    let signature = want["cisco_meraki"]["security"]["signature"]
+        .as_str()
+        .expect("the document carries a signature");
+    let source_ip = want["source"]["ip"]
+        .as_str()
+        .expect("the document carries a source.ip");
 
     let mut event = Event::new(serde_json::json!({
-        "message": LINE,
-        "event": { "original": LINE },
+        "message": line,
+        "event": { "original": line },
     }));
 
     let _ = dfe_transforms::filebeat::cisco_meraki::idsalerts::Idsalerts.transform(&mut event);
     assert_no_underscored_captures(&event, "cisco_meraki::idsalerts");
     assert_eq!(
         event.get_str("cisco_meraki.security.signature"),
-        Some("129:4:1"),
+        Some(signature),
         "the signature must reach its dotted path",
     );
     assert_eq!(
         event.get_str("source.ip"),
-        Some("67.43.156.15"),
+        Some(source_ip),
         "the address the grok captured must reach source.ip",
     );
 }
