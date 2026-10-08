@@ -9,9 +9,10 @@
 //! -- the transforms are compiled in, which is the whole design.
 
 use scalo::deployment::{
-    Capability, DeploymentContract, FieldSpec, HealthContract, ImageProfile, KafkaLagTrigger,
-    KedaConfig, KedaContract, NativeDepsContract, PortContract, SecretEnvContract,
-    SecretGroupContract, base_image_from_cascade,
+    CONTRACT_SCHEMA_VERSION, Capability, DeploymentContract, FieldSpec, HealthContract,
+    ImageProfile, KafkaLagTrigger, KedaConfig, KedaContract, NativeDepsContract, PortContract,
+    ResourceList, ResourcesContract, SecretEnvContract, SecretGroupContract, SecurityContract,
+    WritablePath, base_image_from_cascade,
 };
 use scalo::geoip_download::{AutoDownloadConfig, GeoIpConfig};
 
@@ -20,6 +21,10 @@ use crate::config::{Config, SinkConfig, SourceConfig, Transport};
 /// The `source.transport` values that bind the Push listener: the name
 /// `Transport::Direct` serialises to, and the alias dfe-engine renders.
 const PUSH_TRANSPORTS: [&str; 2] = ["direct", "grpc"];
+
+/// Where the shipped config downloads the `GeoIP` databases, and the writable
+/// volume the contract mounts there.
+const GEOIP_DATA_DIR: &str = "/var/lib/dfe/geoip";
 
 /// Build the deployment contract for dfe-transform-elastic.
 #[must_use]
@@ -33,9 +38,8 @@ pub fn contract() -> DeploymentContract {
         description: "Beats and Elastic Agent JSON in, DFE-normalised events out".into(),
         metrics_port: 9090,
         health: HealthContract {
-            liveness_path: "/livez".into(),
-            readiness_path: "/readyz".into(),
-            metrics_path: "/metrics".into(),
+            startup_budget_seconds: 120,
+            ..HealthContract::default()
         },
         env_prefix: "DFE_TRANSFORM_ELASTIC".into(),
         metric_prefix: "transform_elastic".into(),
@@ -46,28 +50,15 @@ pub fn contract() -> DeploymentContract {
         extra_ports: vec![
             PortContract::tcp("push", 6000)
                 .when_one_of("config.source.transport", PUSH_TRANSPORTS)
-                .bound_from("source.listen"),
+                .bound_from("source.listen")
+                .app_protocol("kubernetes.io/h2c"),
         ],
         unbound_listen_paths: vec![],
         entrypoint_args: vec![
             "--config".into(),
             "/etc/dfe-transform-elastic/config.yaml".into(),
         ],
-        secrets: vec![SecretGroupContract {
-            group_name: "kafka".into(),
-            env_vars: vec![
-                SecretEnvContract {
-                    env_var: "KAFKA_SASL_USERNAME".into(),
-                    key_name: "username".into(),
-                    secret_key: "kafka-username".into(),
-                },
-                SecretEnvContract {
-                    env_var: "KAFKA_SASL_PASSWORD".into(),
-                    key_name: "password".into(),
-                    secret_key: "kafka-password".into(),
-                },
-            ],
-        }],
+        secrets: secrets(),
         // Rendered from a [`Config`] value, so a field added to the type cannot
         // go missing from what ships -- see `shipped_config`. A `None` renders
         // as no key at all, which `strip_nulls` explains.
@@ -97,7 +88,7 @@ pub fn contract() -> DeploymentContract {
             })
             .with_kafka_trigger(KafkaLagTrigger::disabled()),
         ),
-        schema_version: 3,
+        schema_version: CONTRACT_SCHEMA_VERSION,
         // scalo writes no vendor, licence or copyright of its own, so the labels and the generated Dockerfile header carry exactly these.
         oci_labels: scalo::deployment::OciLabels {
             title: "dfe-transform-elastic".into(),
@@ -109,14 +100,48 @@ pub fn contract() -> DeploymentContract {
         },
         config_schema: Some(scalo::deployment::config_schema_json::<crate::config::Config>()),
         capabilities: capabilities(),
+        // The GeoIP downloader writes here, so the root filesystem stays read-only.
+        writable_paths: vec![WritablePath::new("geoip", GEOIP_DATA_DIR).size_limit("512Mi")],
+        termination_grace_seconds: 45,
+        resources: ResourcesContract {
+            requests: ResourceList {
+                cpu: "100m".into(),
+                memory: "128Mi".into(),
+            },
+            limits: ResourceList {
+                cpu: "500m".into(),
+                memory: "512Mi".into(),
+            },
+        },
+        security: SecurityContract::default(),
+        singleton: false,
     }
+}
+
+/// The Secrets the chart mounts as env vars.
+///
+/// `KafkaConfig::from_env` reads these bare `KAFKA_*` names when the
+/// `DFE_TRANSFORM_ELASTIC_`-prefixed ones are unset.
+fn secrets() -> Vec<SecretGroupContract> {
+    let env = |env_var: &str, key_name: &str, secret_key: &str| SecretEnvContract {
+        env_var: env_var.into(),
+        key_name: key_name.into(),
+        secret_key: secret_key.into(),
+    };
+    vec![SecretGroupContract::new(
+        "kafka",
+        vec![
+            env("KAFKA_SASL_USERNAME", "username", "username"),
+            env("KAFKA_SASL_PASSWORD", "password", "password"),
+        ],
+    )]
 }
 
 /// The configuration this image ships, as a [`Config`] value.
 ///
 /// Four artefacts render from it -- the contract's `default_config`, the
-/// committed `config.example.yaml`, the config schema and the chart's `config:`
-/// block -- so it is built as a VALUE rather than a JSON literal: a field added
+/// committed `config.example.yaml`, the config schema and the `config:` block
+/// `emit-chart` writes -- so it is built as a VALUE rather than a JSON literal: a field added
 /// to [`Config`] stops this file compiling until someone gives it a shipped
 /// value. A literal carried only the keys somebody had typed, and the transport
 /// fields shipped missing from the example while every test stayed green.
@@ -173,7 +198,7 @@ fn shipped_config() -> Config {
         // serves both stages; scalo's own default is `/var/lib/geoip`.
         geoip: GeoIpConfig {
             auto_download: AutoDownloadConfig {
-                data_dir: "/var/lib/dfe/geoip".into(),
+                data_dir: GEOIP_DATA_DIR.into(),
                 ..Default::default()
             },
             ..Default::default()
@@ -184,7 +209,7 @@ fn shipped_config() -> Config {
 /// Drop every null-valued key from a rendered configuration.
 ///
 /// A null configures nothing, and this value is written verbatim into the
-/// chart's `ConfigMap` -- where `geoip.auto_download.maxmind_license_key: null`
+/// `ConfigMap` `emit-chart` writes -- where `geoip.auto_download.maxmind_license_key: null`
 /// invites a credential into a `ConfigMap`. scalo's `GeoIpConfig` serialises all
 /// five of its unset `Option`s, so dropping them is what keeps them out.
 ///
@@ -210,15 +235,15 @@ fn strip_nulls(value: serde_json::Value) -> serde_json::Value {
 /// came from.
 ///
 /// Rendered from the contract rather than hand-written, so the committed
-/// `config.example.yaml` cannot drift from what a deployment actually gets.
+/// `config.example.yaml` cannot drift from the contract's `default_config`.
 #[must_use]
 pub fn default_config_yaml() -> String {
     let header = "\
 # dfe-transform-elastic example configuration.
 #
 # AUTOGENERATED -- do not edit by hand.
-# Rendered from the deployment contract, which is also what the Helm chart
-# ships as its ConfigMap.
+# Rendered from the deployment contract's `default_config`. The chart assembled
+# at release mounts the `config` its deployment sets, not this file.
 # Regenerate with: `dfe-transform-elastic emit-config > config.example.yaml`
 #
 # Every value here is the default. Override what you need; `source.name`,
@@ -380,7 +405,7 @@ fn capabilities() -> Vec<Capability> {
             )
             .field(
                 FieldSpec::string("geoip.auto_download.data_dir")
-                    .default_value("/var/lib/dfe/geoip")
+                    .default_value(GEOIP_DATA_DIR)
                     .description("Directory the downloaded databases are written to."),
             )
             .field(
@@ -465,7 +490,7 @@ mod tests {
         config.validate().expect("the shipped config validates");
     }
 
-    /// The chart renders `default_config` verbatim into its `ConfigMap`, and
+    /// `emit-chart` renders `default_config` verbatim into its `ConfigMap`, and
     /// scalo's `GeoIpConfig` serialises five unset `Option`s -- three of them
     /// credentials. The raw serialisation carries them; what ships must not.
     #[test]
@@ -691,7 +716,7 @@ mod tests {
     fn contract_carries_the_reflectable_config() {
         let c = contract();
         assert!(c.config_schema.is_some());
-        assert_eq!(c.schema_version, 3);
+        assert_eq!(c.schema_version, CONTRACT_SCHEMA_VERSION);
         assert_ne!(c.capabilities, [] as [scalo::Capability; 0]);
     }
 
@@ -752,248 +777,81 @@ mod tests {
         assert_eq!(committed.trim_end(), fresh.trim_end());
     }
 
-    /// The chart directory, which is committed alongside the generator output.
-    fn chart_dir() -> std::path::PathBuf {
-        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("chart/dfe-transform-elastic")
-    }
-
-    /// Relative path to contents for a chart: its root files and `templates/`,
-    /// the whole shape `emit-chart` writes.
-    fn chart_files(dir: &std::path::Path) -> std::collections::BTreeMap<String, String> {
-        let mut files = std::collections::BTreeMap::new();
-        for sub in [None, Some("templates")] {
-            let here = sub.map_or_else(|| dir.to_path_buf(), |s| dir.join(s));
-            for entry in std::fs::read_dir(&here).expect("chart directory readable") {
-                let entry = entry.expect("chart directory entry");
-                if !entry.file_type().expect("file type").is_file() {
-                    continue;
-                }
-                let name = entry.file_name().to_string_lossy().into_owned();
-                let rel = sub.map_or_else(|| name.clone(), |s| format!("{s}/{name}"));
-                let body = std::fs::read_to_string(entry.path()).expect("chart file readable");
-                files.insert(rel, body);
-            }
-        }
-        files
-    }
-
-    /// Every chart file but the hand-fixed ones is exactly what `emit-chart`
-    /// writes. The hand-fixed ones carry what the generator does not model --
-    /// the Kafka wire protocol, a read-only root with its `GeoIP` and scratch
-    /// volumes, the log throttle and the resource sizing -- and must still
-    /// DIVERGE, so the day the generator converges the exemption is dropped.
-    #[test]
-    fn committed_chart_matches_the_generator() {
-        const HAND_FIXED: &[&str] = &["values.yaml", "templates/deployment.yaml"];
-
-        let generated = tempfile::tempdir().expect("temp dir");
-        scalo::deployment::generate_chart(
-            &contract(),
-            generated.path().to_str().expect("temp dir path is UTF-8"),
-            None,
-        )
-        .expect("chart generates");
-
-        let want = chart_files(generated.path());
-        let got = chart_files(&chart_dir());
-        assert_eq!(
-            want.keys().collect::<Vec<_>>(),
-            got.keys().collect::<Vec<_>>(),
-            "the chart holds a different set of files from `emit-chart`"
-        );
-
-        for (rel, fresh) in &want {
-            if HAND_FIXED.contains(&rel.as_str()) {
-                assert_ne!(
-                    &got[rel], fresh,
-                    "{rel} is listed as hand-fixed but now matches the generator -- \
-                     drop it from HAND_FIXED"
-                );
-                continue;
-            }
-            assert_eq!(
-                &got[rel], fresh,
-                "{rel} has drifted from `emit-chart` -- regenerate it, or list it in \
-                 HAND_FIXED if the edit is deliberate"
-            );
-        }
-    }
-
-    /// The chart's `config:` block IS the contract's default config, and a
-    /// drifted one ships a `ConfigMap` the binary refuses at startup. The
-    /// Dockerfile and `config.example.yaml` already have this guard; the chart
-    /// did not. Refresh with `dfe-transform-elastic emit-chart`.
-    #[test]
-    fn the_chart_config_block_matches_the_contract() {
-        let text = std::fs::read_to_string(chart_dir().join("values.yaml"))
-            .expect("the chart values are committed");
-        let values: serde_json::Value =
-            serde_yaml_ng::from_str(&text).expect("values.yaml parses as YAML");
-
-        let contract = contract();
-        assert_eq!(
-            values.get("config"),
-            contract.default_config.as_ref(),
-            "chart values.yaml has drifted from the contract"
-        );
-    }
-
-    /// librdkafka only presents SASL credentials when the protocol names a SASL
-    /// mechanism, so a chart that never stamps the protocol connects
-    /// anonymously in the clear with the secret mounted and unused.
-    #[test]
-    fn the_chart_stamps_the_kafka_wire_protocol() {
-        let values = std::fs::read_to_string(chart_dir().join("values.yaml"))
-            .expect("the chart values are committed");
-        let deployment = std::fs::read_to_string(chart_dir().join("templates/deployment.yaml"))
-            .expect("the deployment template is committed");
-
-        assert!(values.contains("securityProtocol:"), "no securityProtocol");
-        assert!(values.contains("saslMechanism:"), "no saslMechanism");
-        for stamped in ["KAFKA_SECURITY_PROTOCOL", "KAFKA_SASL_MECHANISM"] {
-            assert!(
-                deployment.contains(stamped),
-                "{stamped} never reaches the pod"
-            );
-        }
-    }
-
     /// The downloader writes to `geoip.auto_download.data_dir` under a
-    /// read-only root filesystem, so that path needs a writable volume or 14 of
-    /// the source pipelines enrich to nothing and nothing says so.
+    /// read-only root filesystem, so that path needs an ungated writable path or
+    /// 14 of the source pipelines enrich to nothing and nothing says so.
     #[test]
-    fn the_chart_gives_the_geoip_downloader_somewhere_to_write() {
-        let deployment = std::fs::read_to_string(chart_dir().join("templates/deployment.yaml"))
-            .expect("the deployment template is committed");
-
-        let data_dir = contract()
+    fn the_geoip_downloader_has_somewhere_to_write() {
+        let c = contract();
+        let data_dir = c
             .default_config
             .as_ref()
-            .and_then(|c| c.pointer("/geoip/auto_download/data_dir").cloned())
-            .and_then(|d| d.as_str().map(str::to_string))
+            .and_then(|config| config.pointer("/geoip/auto_download/data_dir"))
+            .and_then(serde_json::Value::as_str)
             .expect("the contract names a geoip data_dir");
 
+        assert!(c.security.read_only_root_filesystem);
         assert!(
-            deployment.contains(&data_dir) || deployment.contains("auto_download.data_dir"),
-            "nothing mounts {data_dir}"
+            c.writable_paths
+                .iter()
+                .any(|writable| writable.when.is_none()
+                    && std::path::Path::new(data_dir).starts_with(&writable.path)),
+            "no writable path covers {data_dir}: {:?}",
+            c.writable_paths
         );
-        assert!(deployment.contains("emptyDir"), "no writable volume at all");
     }
 
-    /// True when this path answers `helm version`.
-    fn helm_runs(bin: &std::path::Path) -> bool {
-        std::process::Command::new(bin)
-            .arg("version")
-            .output()
-            .is_ok_and(|out| out.status.success())
-    }
-
-    /// Download a pinned helm into the gitignored cache and return its path.
+    /// The chart mounts a Secret under every declared name, so a name the
+    /// transport never reads leaves the credential silently unused.
     ///
-    /// The script's own progress lines are replayed so a cold fetch is visible
-    /// in the test output.
-    fn fetch_helm() -> Result<std::path::PathBuf, String> {
-        let script = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("scripts/fetch-helm.sh");
-        let out = std::process::Command::new("bash")
-            .arg(&script)
-            .output()
-            .map_err(|err| format!("{} did not run: {err}", script.display()))?;
-        let log = String::from_utf8_lossy(&out.stderr);
-        if !out.status.success() {
-            return Err(format!("{} failed:\n{log}", script.display()));
-        }
-        eprint!("{log}");
-
-        let stdout = String::from_utf8_lossy(&out.stdout);
-        let printed = stdout
-            .trim_end()
-            .lines()
-            .next_back()
-            .ok_or_else(|| format!("{} printed no helm path", script.display()))?;
-        let bin = std::path::PathBuf::from(printed);
-        if !helm_runs(&bin) {
-            return Err(format!("{} is not a working helm", bin.display()));
-        }
-        Ok(bin)
-    }
-
-    /// A usable helm, or the reason this host has none.
-    ///
-    /// The render check below is the only proof the chart publishes the push
-    /// port where the binary binds it, so a runner without helm fetches one
-    /// instead of letting the check disappear with its environment.
-    fn helm_binary() -> Result<&'static std::path::PathBuf, &'static str> {
-        static HELM: std::sync::OnceLock<Result<std::path::PathBuf, String>> =
-            std::sync::OnceLock::new();
-        HELM.get_or_init(|| {
-            if helm_runs(std::path::Path::new("helm")) {
-                return Ok(std::path::PathBuf::from("helm"));
-            }
-            fetch_helm()
-        })
-        .as_ref()
-        .map_err(String::as_str)
-    }
-
-    /// Render the committed chart under `--set` overrides, returning helm's
-    /// stderr when the render is refused.
-    fn render_chart(helm_bin: &std::path::Path, overrides: &[&str]) -> Result<String, String> {
-        let mut helm = std::process::Command::new(helm_bin);
-        helm.arg("template").arg("guard").arg(chart_dir());
-        for set in overrides {
-            helm.arg("--set").arg(set);
-        }
-        let out = helm.output().expect("helm runs");
-        if out.status.success() {
-            Ok(String::from_utf8_lossy(&out.stdout).into_owned())
-        } else {
-            Err(String::from_utf8_lossy(&out.stderr).into_owned())
-        }
-    }
-
-    /// A usable helm, or `None` off CI when none could be had.
-    fn helm_or_skip() -> Option<&'static std::path::PathBuf> {
-        match helm_binary() {
-            Ok(bin) => Some(bin),
-            Err(reason) => {
-                assert!(
-                    std::env::var_os("CI").is_none(),
-                    "helm is missing on a CI runner and could not be fetched, so \
-                     the chart render goes unchecked: {reason}"
-                );
-                eprintln!("skipping chart render checks: {reason}");
-                None
-            }
-        }
-    }
-
-    /// The Service and Deployment publish the push port only where the binary
-    /// binds it, which is the direct transport under either of its names --
-    /// dfe-engine renders `grpc`.
+    /// `std::env::set_var` is unsafe in edition 2024 and this crate forbids
+    /// unsafe, so each name is set on a child run of this same test, which
+    /// passes only when `KafkaConfig::from_env` read the sentinel for the
+    /// service prefix.
+    #[cfg(feature = "kafka")]
     #[test]
-    fn the_push_port_renders_only_on_the_direct_transport() {
-        let Some(helm_bin) = helm_or_skip() else {
+    fn every_declared_secret_env_var_reaches_the_config() {
+        const PROBE: &str = "TRANSFORM_ELASTIC_SECRET_PROBE";
+        if let Ok(sentinel) = std::env::var(PROBE) {
+            let kafka = scalo::transport::kafka::KafkaConfig::from_env(crate::config::ENV_PREFIX);
+            let read = kafka.sasl_username.as_deref() == Some(sentinel.as_str())
+                || kafka
+                    .sasl_password
+                    .as_ref()
+                    .is_some_and(|password| password.expose() == sentinel);
+            assert!(read, "the Kafka transport did not read the sentinel");
             return;
-        };
-
-        for name in ["direct", "grpc"] {
-            let set = format!("config.source.transport={name}");
-            let rendered = render_chart(helm_bin, &[&set])
-                .unwrap_or_else(|err| panic!("helm template failed:\n{err}"));
-            assert!(
-                rendered.contains("containerPort: 6000") && rendered.contains("port: 6000"),
-                "transport {name} binds the push listener, so port 6000 must render:\n{rendered}"
-            );
         }
 
-        for name in ["bus", "kafka"] {
-            let set = format!("config.source.transport={name}");
-            let rendered = render_chart(helm_bin, &[&set])
-                .unwrap_or_else(|err| panic!("helm template failed:\n{err}"));
-            assert!(
-                !rendered.contains("containerPort: 6000") && !rendered.contains("port: 6000"),
-                "transport {name} is the bus, so no port 6000 may render:\n{rendered}"
-            );
+        let contract = contract();
+        assert!(
+            !contract.secrets.is_empty(),
+            "the contract declares no secrets"
+        );
+        let path = concat!(
+            module_path!(),
+            "::every_declared_secret_env_var_reaches_the_config"
+        );
+        let name = path.split_once("::").map_or(path, |(_, name)| name);
+        let exe = std::env::current_exe().expect("test binary path");
+        for group in &contract.secrets {
+            for env in &group.env_vars {
+                let sentinel = format!("sentinel-{}", env.key_name);
+                let out = std::process::Command::new(&exe)
+                    .args([name, "--exact", "--nocapture"])
+                    .env(PROBE, &sentinel)
+                    .env(&env.env_var, &sentinel)
+                    .output()
+                    .expect("the test binary runs");
+                let ran = String::from_utf8_lossy(&out.stdout).contains("1 passed");
+                // The message carries the env var and group names only, never a value.
+                assert!(
+                    out.status.success() && ran,
+                    "{} ({}) was set and the Kafka transport did not read it",
+                    env.env_var,
+                    group.group_name
+                );
+            }
         }
     }
 

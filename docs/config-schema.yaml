@@ -344,7 +344,6 @@ $defs:
         - string
         - 'null'
         x-scalo-secret: true
-        x-dfe-secret: true
         writeOnly: true
         default: null
       maxmind_license_key:
@@ -355,7 +354,6 @@ $defs:
         - string
         - 'null'
         x-scalo-secret: true
-        x-dfe-secret: true
         writeOnly: true
         default: null
       ipinfo_token:
@@ -364,7 +362,6 @@ $defs:
         - string
         - 'null'
         x-scalo-secret: true
-        x-dfe-secret: true
         writeOnly: true
         default: null
       max_age_days:

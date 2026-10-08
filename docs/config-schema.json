@@ -321,7 +321,6 @@
             "null"
           ],
           "x-scalo-secret": true,
-          "x-dfe-secret": true,
           "writeOnly": true,
           "default": null
         },
@@ -332,7 +331,6 @@
             "null"
           ],
           "x-scalo-secret": true,
-          "x-dfe-secret": true,
           "writeOnly": true,
           "default": null
         },
@@ -343,7 +341,6 @@
             "null"
           ],
           "x-scalo-secret": true,
-          "x-dfe-secret": true,
           "writeOnly": true,
           "default": null
         },
