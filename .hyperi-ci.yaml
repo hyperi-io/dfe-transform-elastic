@@ -39,7 +39,6 @@ test:
 # Building
 build:
   enabled: true
-  type: app
   strategies:
     - native
   rust:
@@ -67,15 +66,18 @@ build:
         enabled: true
 
 # Publishing (on release). The stack pins every app by GHCR image digest, so
-# a release must land an image. The deployed chart is dfe-infra's, so the
-# in-repo chart stays unpublished.
+# a release must land an image, and the thin chart assembled from the emitted
+# contract ships beside it.
 release:
   enabled: true
+  # Keep `library` at the scalo version in Cargo.toml: the library renders only the contract version its scalo release writes.
+  helm:
+    enabled: true
+    contract: emit
+    library: "2.14.3"
   container:
     enabled: true
     dockerfile: Dockerfile
     platforms:
       - linux/amd64
       - linux/arm64
-  helm:
-    enabled: false

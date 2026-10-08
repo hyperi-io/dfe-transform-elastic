@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "app_name": "dfe-transform-elastic",
   "binary_name": "dfe-transform-elastic",
   "description": "Beats and Elastic Agent JSON in, DFE-normalised events out",
@@ -7,7 +7,8 @@
   "health": {
     "liveness_path": "/livez",
     "readiness_path": "/readyz",
-    "metrics_path": "/metrics"
+    "metrics_path": "/metrics",
+    "startup_budget_seconds": 120
   },
   "env_prefix": "DFE_TRANSFORM_ELASTIC",
   "metric_prefix": "transform_elastic",
@@ -26,7 +27,8 @@
           "grpc"
         ]
       },
-      "bound_from": "source.listen"
+      "bound_from": "source.listen",
+      "app_protocol": "kubernetes.io/h2c"
     }
   ],
   "entrypoint_args": [
@@ -40,12 +42,12 @@
         {
           "env_var": "KAFKA_SASL_USERNAME",
           "key_name": "username",
-          "secret_key": "kafka-username"
+          "secret_key": "username"
         },
         {
           "env_var": "KAFKA_SASL_PASSWORD",
           "key_name": "password",
-          "secret_key": "kafka-password"
+          "secret_key": "password"
         }
       ]
     }
@@ -460,7 +462,6 @@
               "null"
             ],
             "x-scalo-secret": true,
-            "x-dfe-secret": true,
             "writeOnly": true,
             "default": null
           },
@@ -471,7 +472,6 @@
               "null"
             ],
             "x-scalo-secret": true,
-            "x-dfe-secret": true,
             "writeOnly": true,
             "default": null
           },
@@ -482,7 +482,6 @@
               "null"
             ],
             "x-scalo-secret": true,
-            "x-dfe-secret": true,
             "writeOnly": true,
             "default": null
           },
@@ -7170,5 +7169,31 @@
         }
       ]
     }
-  ]
+  ],
+  "writable_paths": [
+    {
+      "name": "geoip",
+      "path": "/var/lib/dfe/geoip",
+      "size_limit": "512Mi",
+      "size": "1Gi"
+    }
+  ],
+  "termination_grace_seconds": 45,
+  "resources": {
+    "requests": {
+      "cpu": "100m",
+      "memory": "128Mi"
+    },
+    "limits": {
+      "cpu": "500m",
+      "memory": "512Mi"
+    }
+  },
+  "security": {
+    "run_as_user": 1000,
+    "run_as_group": 1000,
+    "fs_group": 1000,
+    "read_only_root_filesystem": true
+  },
+  "singleton": false
 }
