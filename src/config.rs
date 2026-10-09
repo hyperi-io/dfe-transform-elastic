@@ -9,13 +9,11 @@
 //!
 //! Two ways in, and they are not equivalent. With no `--config` the whole scalo
 //! cascade applies. With `--config` -- which is what the container passes --
-//! the named file IS the configuration: scalo has no way to merge an
-//! arbitrarily-named file into the cascade as a layer
-//! (`ConfigOptions::config_paths` searches for `defaults`/`settings` by name,
-//! and `merge_cli` sits above the environment), so the file is read directly.
-//! The cascade is still installed either way, because the rest of scalo reads
-//! it. Kafka credentials are unaffected: `KafkaConfig::from_env` reads
-//! `KAFKA_*` separately.
+//! the named file IS the configuration: `loader` reads it directly and installs
+//! the cascade with an empty `ConfigOptions::config_paths`, so the file is not
+//! one of the cascade's layers. The cascade is still installed either way,
+//! because the rest of scalo reads it. Kafka credentials are unaffected:
+//! `KafkaConfig::from_env` reads `KAFKA_*` separately.
 //!
 //! **Two env spellings, and only one of them reaches a `--config` file.** The
 //! FLAT, single-underscore form -- `DFE_TRANSFORM_ELASTIC_SOURCE_TOPICS` -- is

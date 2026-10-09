@@ -6,7 +6,7 @@ Where the values come from, which env spelling reaches a `--config` file, how th
 
 `Config::load` reads the configuration once and hands it to the batch loop by reference, so every value needs a restart to change. There is no hot reload: the broker connections, the resolved transform, the GeoIP databases and the metrics labels are all fixed at startup.
 
-The two ways in are not equivalent. With no `--config` the scalo cascade applies: `defaults`, `settings` and `settings.<env>` files, `.yaml` or `.yml`, searched in `./`, `./config/`, `/config/` and `~/.config/dfe-transform-elastic/`, then the `DFE_TRANSFORM_ELASTIC_*` environment. With `--config`, which is what the container passes, the named file IS the configuration, because scalo cannot merge an arbitrarily-named file into the cascade as a layer. Kafka credentials are unaffected either way: they are read from `KAFKA_*` separately.
+The two ways in are not equivalent. With no `--config` the scalo cascade applies: `defaults`, `settings` and `settings.<env>` files, `.yaml` or `.yml`, searched in `./`, `./config/`, `/config/` and `~/.config/dfe-transform-elastic/`, then the `DFE_TRANSFORM_ELASTIC_*` environment. With `--config`, which is what the container passes, the named file IS the configuration: `Config::load` reads it directly and installs the scalo cascade without it, so the file is not one of the cascade's layers. Kafka credentials are unaffected either way: they are read from `KAFKA_*` separately.
 
 ## Only the flat env spelling reaches a `--config` file
 
