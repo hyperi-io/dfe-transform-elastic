@@ -73,7 +73,7 @@ jobs:
       optimize-tier: ${{ inputs.optimize-tier || '' }}
       # A PGO+BOLT release builds the binary three times, ending in a single-threaded LTO pass; one build took over three hours.
       build-timeout-minutes: 360
-    # Least privilege: the org carries 31+ secrets and this pipeline uses four.
+    # Least privilege: the org carries 31+ secrets and this pipeline uses seven.
     # Only names declared in rust-ci.yml's `workflow_call.secrets` can be
     # passed, so an addition there is needed before one can be added here.
     # No crates.io token: the package has binary targets and publishes no
@@ -84,6 +84,8 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
       CONTAINER_MGT_APP_PRIVATE_KEY: ${{ secrets.CONTAINER_MGT_APP_PRIVATE_KEY }}
       GH_APP_PRIVATE_KEY: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
 
   # The engine offers `sources.yaml` as its source catalogue and content-pins it
   # the way it pins dfe-schemas, so a release has to carry the file (issue #18).
