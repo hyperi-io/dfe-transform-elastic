@@ -118,7 +118,7 @@ transport.
 | `envelope.rs` | Detects which of the three producer families wrapped an event and unwraps it into the shape every transform expects |
 | `pipeline.rs` | Batch processing: NDJSON parse, envelope unwrap, transform, serialise, with per-batch outcome counts |
 | `service.rs` | Runs `pipeline.rs` on scalo's `BatchEngine` pipeline between the scalo consumer and producer -- Kafka on the bus, a Push listener and a gRPC client on direct -- and maps what the sink answers onto the delivery semantics below |
-| `deployment.rs` | The single deployment contract: Dockerfile, Helm chart, compose fragment and KEDA scaler are all generated from here. Its tests pin the Dockerfile, `config.example.yaml`, the chart's `config:` block and the `docs/` config artefacts against a fresh regen -- not every artefact, see the README |
+| `deployment.rs` | The single deployment contract: Dockerfile, Helm chart, compose fragment and KEDA scaler are all generated from here. Its tests pin the Dockerfile, `config.example.yaml`, `docs/deployment-contract.json` and the `docs/` config artefacts against a fresh regen -- not every artefact, see the README |
 | `metrics.rs` | Metric definitions registered with scalo's `MetricsManager` |
 | `error.rs` | The service's top-level error type |
 

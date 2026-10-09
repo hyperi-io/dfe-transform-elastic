@@ -20,12 +20,11 @@ pub const ENV_PREFIX: &str = "DFE_TRANSFORM_ELASTIC";
 
 /// Sections that reach NOTHING when written into a `--config` file.
 ///
-/// scalo discovers cascade files by fixed base name -- `defaults.yaml`,
-/// `settings.yaml`, `settings.{env}.yaml` -- so a file named with `--config` is
-/// not one of its layers. Every section here is resolved by scalo itself, from
-/// that cascade or from the environment, and each resolver falls back to the
-/// type's `Default` when the key is absent. So the operator gets defaults while
-/// believing otherwise.
+/// [`Config::load`] installs scalo's cascade with no `config_paths`, so a file
+/// named with `--config` is not one of its layers. Every section here is
+/// resolved by scalo itself, from that cascade or from the environment, and
+/// each resolver falls back to the type's `Default` when the key is absent. So
+/// the operator gets defaults while believing otherwise.
 ///
 /// The test for membership is "does writing it into the `--config` file reach
 /// anything", NOT "does scalo resolve it from the cascade for us". Two entries
@@ -159,8 +158,8 @@ impl Config {
             }
         }
 
-        // An explicit file is the whole configuration -- see the module docs
-        // for why it cannot be a cascade layer on scalo 2.11.1.
+        // An explicit file is the whole configuration, read here and never
+        // handed to the cascade above.
         let mut config: Self = if let Some(path) = config_path {
             let text = std::fs::read_to_string(path).map_err(|e| {
                 crate::Error::Config(format!("config file not found at '{path}': {e}"))
@@ -320,6 +319,32 @@ mod tests {
         // Loading past it must not disturb what the file DOES configure.
         assert_eq!(loaded.source.name, "filebeat.okta.default");
         assert_eq!(loaded.sink.topic, "out");
+    }
+
+    /// `load` installs scalo's cascade without the named file, which is what
+    /// makes the [`CASCADE_ONLY_SECTIONS`] warning true: a `scaling` block there
+    /// leaves scalo's own reader on its default.
+    #[test]
+    fn a_config_file_is_not_a_layer_of_the_scalo_cascade() {
+        load_file(&format!(
+            "{FILE_BASE}scaling:\n  enabled: false\n  memory_gate_threshold: 0.5\n"
+        ))
+        .expect("a surplus cascade section is warned about, not refused");
+
+        let cascade = scalo::config::try_get().expect("load installs the cascade");
+        assert!(
+            !cascade.contains("scaling"),
+            "the --config file reached scalo's cascade"
+        );
+        let scaling = scalo::scaling::ScalingPressureConfig::from_cascade();
+        assert!(
+            scaling.enabled,
+            "scaling.enabled came from the --config file"
+        );
+        assert!(
+            (scaling.memory_gate_threshold - 0.5).abs() > f64::EPSILON,
+            "scaling.memory_gate_threshold came from the --config file"
+        );
     }
 
     /// No name on the list stops a config from loading, so adding one to the
