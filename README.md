@@ -113,12 +113,11 @@ degenerate inputs.
 
 ## Deployment
 
-The container image, Helm chart, compose fragment and KEDA scaler are all
-generated from one deployment contract in `src/deployment.rs`:
+The container image, compose fragment and released chart are all generated
+from one deployment contract in `src/deployment.rs`:
 
 ```bash
 dfe-transform-elastic emit-dockerfile > Dockerfile
-dfe-transform-elastic emit-chart chart/dfe-transform-elastic
 dfe-transform-elastic emit-compose
 dfe-transform-elastic generate-artefacts --output-dir docs
 ```
@@ -127,9 +126,7 @@ dfe-transform-elastic generate-artefacts --output-dir docs
 `deployment-contract.json`, `container-manifest.json`, `Dockerfile.runtime`,
 and the reflectable config pair `config-schema.*` and `capability-catalog.*`.
 
-`generate-artefacts` writes an `argocd-application.yaml` only when `deployment.argocd.repo_url` is set in the config cascade, and this repo sets none. That Application's source is `path: chart`, which this repo does not hold, so it would sync nothing. The file is gitignored so a local cascade that sets the URL cannot commit one.
-
-The deployed chart is not committed here. At release, hyperi-ci runs `generate-artefacts` for the deployment contract and assembles a thin chart from it on the scalo-service library chart, at the version `release.helm.library` names in `.hyperi-ci.yaml`. Keep that version at the scalo version in `Cargo.toml`: a library renders only the contract version its scalo release writes. `emit-chart` still writes scalo's full chart for local use.
+The deployed chart is not committed here. At release, hyperi-ci runs `generate-artefacts` for the deployment contract and assembles a thin chart from it on the scalo-service library chart, at the version `release.helm.library` names in `.hyperi-ci.yaml`. Keep that version at the scalo version in `Cargo.toml`: a library renders only the contract version its scalo release writes.
 
 **Not every artefact is pinned against a fresh regen.** `committed_config_artefacts_do_not_drift` in `src/deployment.rs` compares `config-schema.{json,yaml}` and `capability-catalog.{json,yaml}`, and its sibling tests do the same for the committed `deployment-contract.json`, `Dockerfile` and `config.example.yaml`. Nothing compares `container-manifest.json` or `Dockerfile.runtime`, so those can and do fall behind -- re-run the command when `src/deployment.rs` changes rather than assuming a test caught it.
 

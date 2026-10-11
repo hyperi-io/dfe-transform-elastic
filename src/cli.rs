@@ -6,7 +6,7 @@
 use clap::{Parser, Subcommand};
 use scalo::ScalingComponent;
 use scalo::cli::{CliError, CommonArgs, ServiceApp, StandardCommand, VersionInfo};
-use scalo::deployment::{generate_chart, generate_compose_fragment, generate_dockerfile};
+use scalo::deployment::{generate_compose_fragment, generate_dockerfile};
 
 use crate::config::Config;
 
@@ -34,14 +34,6 @@ enum AppCommand {
     /// Print the deployment contract's Dockerfile to stdout.
     #[command(name = "emit-dockerfile")]
     EmitDockerfile,
-
-    /// Write the deployment contract's Helm chart into `dir`.
-    #[command(name = "emit-chart")]
-    EmitChart {
-        /// Directory to write the chart into.
-        #[arg(default_value = "chart/dfe-transform-elastic")]
-        dir: String,
-    },
 
     /// Print the deployment contract's docker-compose fragment to stdout.
     #[command(name = "emit-compose")]
@@ -77,7 +69,6 @@ impl App {
                 );
                 Some(0)
             }
-            AppCommand::EmitChart { dir } => Some(Self::emit_chart(dir)),
             AppCommand::EmitCompose => {
                 println!(
                     "{}",
@@ -95,16 +86,6 @@ impl App {
             }
             AppCommand::Standard(_) => None,
         }
-    }
-
-    /// Generate the chart into `dir`, reporting the exit code.
-    fn emit_chart(dir: &str) -> i32 {
-        if let Err(e) = generate_chart(&crate::deployment::contract(), dir, None) {
-            eprintln!("error: failed to generate Helm chart: {e}");
-            return 1;
-        }
-        eprintln!("Helm chart generated in {dir}/");
-        0
     }
 }
 

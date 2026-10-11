@@ -15,7 +15,7 @@ license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
 publish.workspace = true
-exclude = [".github/", "chart/", "docs/", ".tmp/", "tests/fixtures/"]
+exclude = [".github/", "docs/", ".tmp/", "tests/fixtures/"]
 
 [lib]
 name = "dfe_transform_elastic"
@@ -145,8 +145,9 @@ dfe-transforms = { path = "crates/dfe-transforms" }
 
 # Batteries-included runtime (crates.io) — NEVER a path dependency.
 # Features are added when their API is actually referenced, not speculatively.
-# The floor's contract carries no vendor defaults, so the app names its own.
-scalo = { version = "2.14.3", features = [
+# The floor moves with `release.helm.library` in .hyperi-ci.yaml: the library
+# renders only the contract version its scalo release writes.
+scalo = { version = "2.14.6", features = [
     "cli-service",
     "config",
     "config-schema",

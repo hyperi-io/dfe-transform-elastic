@@ -55,7 +55,6 @@ fn help_lists_every_local_subcommand() {
     for command in [
         "sources",
         "emit-dockerfile",
-        "emit-chart",
         "emit-compose",
         "emit-config",
         "emit-catalogue",
@@ -144,28 +143,6 @@ fn emit_compose_prints_a_service_fragment() {
     assert!(
         out.contains("dfe-transform-elastic"),
         "the fragment does not name the service:\n{out}"
-    );
-}
-
-/// `emit-chart` is the one local command that can fail, and it reports the
-/// failure through its EXIT CODE rather than a panic -- so a success here has
-/// to mean the chart actually landed, not merely that the process ended.
-#[test]
-fn emit_chart_writes_a_chart_and_says_so_in_its_exit_code() {
-    let dir = tempfile::tempdir().expect("temp dir");
-    let target = dir.path().join("chart");
-    let target_str = target.to_str().expect("utf-8 path");
-
-    let out = run(&["emit-chart", target_str]);
-    assert!(
-        out.status.success(),
-        "emit-chart exited {:?}: {}",
-        out.status.code(),
-        String::from_utf8_lossy(&out.stderr)
-    );
-    assert!(
-        target.join("Chart.yaml").is_file(),
-        "emit-chart exited 0 without writing Chart.yaml"
     );
 }
 
