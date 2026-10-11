@@ -2,8 +2,8 @@
 // Copyright (c) 2026 HYPERI PTY LIMITED
 
 //! The deployment contract: one description of the container, from which
-//! scalo generates the Dockerfile, Helm chart, compose fragment and KEDA
-//! scaler.
+//! scalo generates the Dockerfile and compose fragment, and the release
+//! assembles the thin chart and its KEDA scaler.
 //!
 //! The image is just this Rust binary. There is no sidecar and no interpreter
 //! -- the transforms are compiled in, which is the whole design.
@@ -12,7 +12,7 @@ use scalo::deployment::{
     CONTRACT_SCHEMA_VERSION, Capability, DeploymentContract, FieldSpec, HealthContract,
     ImageProfile, KafkaLagTrigger, KedaConfig, KedaContract, NativeDepsContract, PortContract,
     ResourceList, ResourcesContract, SecretEnvContract, SecretGroupContract, SecurityContract,
-    WritablePath, base_image_from_cascade,
+    ServiceAccount, WritablePath, base_image_from_cascade,
 };
 use scalo::geoip_download::{AutoDownloadConfig, GeoIpConfig};
 
@@ -115,6 +115,7 @@ pub fn contract() -> DeploymentContract {
         },
         security: SecurityContract::default(),
         singleton: false,
+        service_account: ServiceAccount::Own,
     }
 }
 
@@ -141,7 +142,7 @@ fn secrets() -> Vec<SecretGroupContract> {
 ///
 /// Four artefacts render from it -- the contract's `default_config`, the
 /// committed `config.example.yaml`, the config schema and the `config:` block
-/// `emit-chart` writes -- so it is built as a VALUE rather than a JSON literal: a field added
+/// the released chart renders -- so it is built as a VALUE rather than a JSON literal: a field added
 /// to [`Config`] stops this file compiling until someone gives it a shipped
 /// value. A literal carried only the keys somebody had typed, and the transport
 /// fields shipped missing from the example while every test stayed green.
@@ -209,7 +210,7 @@ fn shipped_config() -> Config {
 /// Drop every null-valued key from a rendered configuration.
 ///
 /// A null configures nothing, and this value is written verbatim into the
-/// `ConfigMap` `emit-chart` writes -- where `geoip.auto_download.maxmind_license_key: null`
+/// `ConfigMap` the released chart writes -- where `geoip.auto_download.maxmind_license_key: null`
 /// invites a credential into a `ConfigMap`. scalo's `GeoIpConfig` serialises all
 /// five of its unset `Option`s, so dropping them is what keeps them out.
 ///
@@ -490,7 +491,7 @@ mod tests {
         config.validate().expect("the shipped config validates");
     }
 
-    /// `emit-chart` renders `default_config` verbatim into its `ConfigMap`, and
+    /// The released chart renders `default_config` verbatim into its `ConfigMap`, and
     /// scalo's `GeoIpConfig` serialises five unset `Option`s -- three of them
     /// credentials. The raw serialisation carries them; what ships must not.
     #[test]
@@ -639,8 +640,8 @@ mod tests {
         assert!(unresolved.is_empty(), "{unresolved:?}");
     }
 
-    /// `generate-artefacts` and `generate_chart` refuse a contract that fails
-    /// these checks, and write nothing.
+    /// `generate-artefacts` refuses a contract that fails these checks, and
+    /// writes nothing.
     #[test]
     fn the_contract_passes_the_generator_checks() {
         contract()
