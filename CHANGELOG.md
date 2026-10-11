@@ -3,6 +3,13 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.11](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.10...v1.1.11) (2026-10-11)
+
+### Bug Fixes
+
+* move to scalo 2.14.6, drop emit-chart ([a2aa95b](https://github.com/hyperi-io/dfe-transform-elastic/commit/a2aa95bba540a999b8431a555a5aab54a3f60280))
+* pass the R2 credentials so a release publishes its binaries ([#113](https://github.com/hyperi-io/dfe-transform-elastic/issues/113)) ([25fe566](https://github.com/hyperi-io/dfe-transform-elastic/commit/25fe5663c83fd226fcbfffd634520d93825c73cd))
+
 ## [1.1.10](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.9...v1.1.10) (2026-10-09)
 
 ### Bug Fixes
