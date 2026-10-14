@@ -33,7 +33,6 @@ tokio = { workspace = true }
 tokio-util = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
-serde_yaml_ng = { workspace = true }
 thiserror = { workspace = true }
 tracing = { workspace = true }
 clap = { workspace = true }
@@ -147,7 +146,7 @@ dfe-transforms = { path = "crates/dfe-transforms" }
 # Features are added when their API is actually referenced, not speculatively.
 # The floor moves with `release.helm.library` in .hyperi-ci.yaml: the library
 # renders only the contract version its scalo release writes.
-scalo = { version = "2.14.9", features = [
+scalo = { version = "2.14.13", features = [
     "cli-service",
     "config",
     "config-schema",
@@ -203,7 +202,6 @@ serde = { version = ">=1.0.229", features = ["derive"] }
 # Java parser does; without it a long literal such as 0.10617876052856445 reads
 # one ulp low and is written back as ...444.
 serde_json = { version = ">=1.0.151", features = ["preserve_order", "float_roundtrip"] }
-serde_yaml_ng = ">=0.10, <0.11"
 
 # SIMD byte search
 memchr = ">=2.8.3"

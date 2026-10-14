@@ -2326,7 +2326,9 @@ fn every_declared_source_reaches_a_transform() {
 
     const PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../sources.yaml");
     let text = std::fs::read_to_string(PATH).expect("read sources.yaml");
-    let declaration: Declaration = serde_yaml_ng::from_str(&text).expect("parse sources.yaml");
+    let declaration: Declaration =
+        scalo::yaml::from_str(&text, "sources.yaml", scalo::yaml::Profile::Trusted)
+            .expect("parse sources.yaml");
 
     for (name, declared) in &declaration.sources {
         assert!(
@@ -2356,7 +2358,9 @@ fn no_package_answers_for_a_stream_it_was_not_declared_with() {
 
     const PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/../../sources.yaml");
     let text = std::fs::read_to_string(PATH).expect("read sources.yaml");
-    let declaration: Declaration = serde_yaml_ng::from_str(&text).expect("parse sources.yaml");
+    let declaration: Declaration =
+        scalo::yaml::from_str(&text, "sources.yaml", scalo::yaml::Profile::Trusted)
+            .expect("parse sources.yaml");
 
     let packages: std::collections::BTreeSet<&str> = declaration
         .sources

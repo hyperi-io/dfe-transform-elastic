@@ -41,7 +41,8 @@ rayon = { workspace = true }
 # writes them to, so the linear-time engine is the matching one -- and none of
 # them needs lookaround.
 regex = { workspace = true }
-serde_yaml_ng = { workspace = true }
+# Fixture and pipeline YAML parses with the rules the service reads YAML by.
+scalo = { workspace = true }
 
 # Per-event transform throughput. A 20k batch multiplies whatever one event
 # costs, so anything done per event has to be measured, not reasoned about.

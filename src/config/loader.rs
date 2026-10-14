@@ -63,12 +63,9 @@ pub const CASCADE_ONLY_SECTIONS: &[&str] = &[
 ///
 /// Every offending section is reported, not just the first -- a config with
 /// three of them should not need three restarts to discover that.
-fn warn_unreachable_cascade_sections(path: &str, doc: &serde_yaml_ng::Value) {
-    let Some(map) = doc.as_mapping() else {
-        return;
-    };
+fn warn_unreachable_cascade_sections(path: &str, unknown_keys: &[String]) {
     for section in CASCADE_ONLY_SECTIONS {
-        if map.contains_key(*section) {
+        if unknown_keys.iter().any(|key| key == section) {
             tracing::warn!(
                 section = *section,
                 path = path,
@@ -81,25 +78,13 @@ fn warn_unreachable_cascade_sections(path: &str, doc: &serde_yaml_ng::Value) {
     }
 }
 
-/// Warn for every key in `doc` that the service does not read.
+/// Warn for every key the parse skipped that the service does not read.
 ///
 /// serde drops an unknown field in silence, so a typo costs the whole setting
 /// with no message -- `source.topic` for `source.topics` leaves the instance
 /// idle and says nothing about why.
-///
-/// The comparison is a ROUND TRIP rather than a list of valid keys: what
-/// survives [`Config`] and comes back out is what the service read, so a field
-/// added or removed later needs no maintenance here.
-///
-/// A [`CASCADE_ONLY_SECTIONS`] entry is skipped, having its own warning that
-/// names the environment variable which would reach it.
-fn warn_ignored_keys(path: &str, doc: &serde_yaml_ng::Value, parsed: &Config) {
-    let Ok(kept) = serde_yaml_ng::to_value(parsed) else {
-        return;
-    };
-    let mut ignored = Vec::new();
-    collect_ignored(doc, &kept, "", &mut ignored);
-    for key in ignored {
+fn warn_ignored_keys(path: &str, unknown_keys: &[String]) {
+    for key in ignored_keys(unknown_keys) {
         tracing::warn!(
             key = %key,
             path = path,
@@ -108,31 +93,18 @@ fn warn_ignored_keys(path: &str, doc: &serde_yaml_ng::Value, parsed: &Config) {
     }
 }
 
-/// Collect dotted paths present in `doc` and absent from `kept`.
-fn collect_ignored(
-    doc: &serde_yaml_ng::Value,
-    kept: &serde_yaml_ng::Value,
-    prefix: &str,
-    out: &mut Vec<String>,
-) {
-    let (Some(doc_map), Some(kept_map)) = (doc.as_mapping(), kept.as_mapping()) else {
-        return;
-    };
-    for (key, value) in doc_map {
-        let Some(name) = key.as_str() else { continue };
-        if prefix.is_empty() && CASCADE_ONLY_SECTIONS.contains(&name) {
-            continue;
-        }
-        let dotted = if prefix.is_empty() {
-            name.to_string()
-        } else {
-            format!("{prefix}.{name}")
-        };
-        match kept_map.get(key) {
-            None => out.push(dotted),
-            Some(kept_value) => collect_ignored(value, kept_value, &dotted, out),
-        }
-    }
+/// The dotted paths no [`Config`] field took, less the [`CASCADE_ONLY_SECTIONS`]
+/// entries, which have their own warning naming the environment variable that
+/// would reach them.
+fn ignored_keys(unknown_keys: &[String]) -> Vec<&str> {
+    unknown_keys
+        .iter()
+        .map(String::as_str)
+        .filter(|key| {
+            let section = key.split('.').next().unwrap_or_default();
+            !CASCADE_ONLY_SECTIONS.contains(&section)
+        })
+        .collect()
 }
 
 impl Config {
@@ -164,13 +136,12 @@ impl Config {
             let text = std::fs::read_to_string(path).map_err(|e| {
                 crate::Error::Config(format!("config file not found at '{path}': {e}"))
             })?;
-            let doc: serde_yaml_ng::Value = serde_yaml_ng::from_str(&text)
-                .map_err(|e| crate::Error::Config(format!("invalid config at '{path}': {e}")))?;
-            warn_unreachable_cascade_sections(path, &doc);
-            let parsed: Self = serde_yaml_ng::from_value(doc.clone())
-                .map_err(|e| crate::Error::Config(format!("invalid config at '{path}': {e}")))?;
-            warn_ignored_keys(path, &doc, &parsed);
-            parsed
+            let loaded =
+                scalo::yaml::from_str_reporting::<Self>(&text, path, scalo::yaml::Profile::Config)
+                    .map_err(|e| crate::Error::Config(format!("invalid config: {e}")))?;
+            warn_unreachable_cascade_sections(path, &loaded.unknown_keys);
+            warn_ignored_keys(path, &loaded.unknown_keys);
+            loaded.value
         } else {
             config::get()
                 .unmarshal()
@@ -234,7 +205,7 @@ impl ApplyFlatEnv for SourceConfig {
         // An unknown name keeps the configured envelope rather than failing the
         // load, because detection is the default and still works.
         if let Some(raw) = flat_env_string(prefix, "ENVELOPE") {
-            match serde_yaml_ng::from_str(&raw) {
+            match scalo::yaml::from_str(&raw, "envelope", scalo::yaml::Profile::Config) {
                 Ok(envelope) => self.envelope = envelope,
                 Err(e) => tracing::warn!(
                     value = %raw,
@@ -428,12 +399,16 @@ mod tests {
 
     /// Collect the ignored keys a file would be warned about.
     fn ignored_in(body: &str) -> Vec<String> {
-        let doc: serde_yaml_ng::Value = serde_yaml_ng::from_str(body).expect("the body parses");
-        let parsed: Config = serde_yaml_ng::from_value(doc.clone()).expect("it deserialises");
-        let kept = serde_yaml_ng::to_value(&parsed).expect("it re-serialises");
-        let mut out = Vec::new();
-        collect_ignored(&doc, &kept, "", &mut out);
-        out
+        let loaded = scalo::yaml::from_str_reporting::<Config>(
+            body,
+            "config.yaml",
+            scalo::yaml::Profile::Config,
+        )
+        .expect("the body parses");
+        ignored_keys(&loaded.unknown_keys)
+            .into_iter()
+            .map(String::from)
+            .collect()
     }
 
     /// A typo costs the whole setting and serde says nothing, so the warning is
@@ -451,9 +426,8 @@ mod tests {
         assert_eq!(ignored, ["source.topic"], "got {ignored:?}");
     }
 
-    /// The other half, and the one a round trip can get wrong: every key the
-    /// service DOES read must stay silent, or the warning trains an operator to
-    /// ignore it.
+    /// The other half: every key the service DOES read must stay silent, or the
+    /// warning trains an operator to ignore it.
     #[test]
     fn a_config_the_service_reads_warns_about_nothing() {
         assert_eq!(ignored_in(FILE_BASE), [] as [std::string::String; 0]);
@@ -463,9 +437,8 @@ mod tests {
         );
     }
 
-    /// `sink.brokers` is an `Option` that defaults to `None`. A round trip that
-    /// omitted it rather than writing null would report a broker list the
-    /// service had just read as ignored.
+    /// `sink.brokers` is an `Option` that defaults to `None`, and a broker list a
+    /// file sets is read, so it is not reported as ignored.
     #[test]
     fn an_optional_field_a_file_sets_is_not_called_ignored() {
         let ignored = ignored_in(&format!("{FILE_BASE}  brokers: [b:9092]\n"));
