@@ -11,24 +11,24 @@ properties:
       reaches the idle gate. Without it the process dies on a missing
       `source` field before `ServiceRuntime::build`, so no `/livez` or
       `/readyz` is serving when it exits and the pod crash-loops.
-    $ref: '#/$defs/SourceConfig'
+    $ref: "#/$defs/SourceConfig"
     default:
-      name: ''
+      name: ""
       transport: bus
       listen: 0.0.0.0:6000
       envelope: auto
       topics: []
       batch_size: 20000
       max_batch_bytes: 16777216
-      group_id: ''
+      group_id: ""
       brokers: []
       acknowledgements:
         enabled: true
   sink:
     description: Outbound side.
-    $ref: '#/$defs/SinkConfig'
+    $ref: "#/$defs/SinkConfig"
     default:
-      topic: ''
+      topic: ""
       transport: bus
       endpoint: http://dfe-loader:6000
       brokers: null
@@ -40,7 +40,7 @@ properties:
       scalo's type verbatim: provisioning is shared across the fleet, and the
       lookup engine and its cache stay in `dfe-runtime`. Read once at startup,
       so a change needs a restart.
-    $ref: '#/$defs/GeoIpConfig'
+    $ref: "#/$defs/GeoIpConfig"
     default:
       enabled: true
       provider: db_ip_lite
@@ -65,7 +65,7 @@ $defs:
         description: |-
           Which transport the inbound side uses: `bus` consumes `topics`, `direct`
           accepts pushes on `listen`.
-        $ref: '#/$defs/Transport'
+        $ref: "#/$defs/Transport"
         default: bus
       listen:
         description: |-
@@ -83,7 +83,7 @@ $defs:
           Defaults to `auto`, which reads it off each event. Naming a family
           instead pins it, and validation then rejects one the source cannot
           actually arrive in.
-        $ref: '#/$defs/EnvelopeSetting'
+        $ref: "#/$defs/EnvelopeSetting"
         default: auto
       topics:
         description: Topics to consume.
@@ -127,7 +127,7 @@ $defs:
           record is delivered, or dropped and counted, so a crash or a sink outage
           redelivers rather than loses. `enabled: false` releases it at receipt,
           before the transform runs, and loses what was in flight.
-        $ref: '#/$defs/AcknowledgementsConfig'
+        $ref: "#/$defs/AcknowledgementsConfig"
         default:
           enabled: true
     required:
@@ -208,7 +208,7 @@ $defs:
         description: |-
           Which transport the outbound side uses: `bus` produces to `topic`,
           `direct` pushes to `endpoint` with `topic` as the routing key.
-        $ref: '#/$defs/Transport'
+        $ref: "#/$defs/Transport"
         default: bus
       endpoint:
         description: |-
@@ -220,7 +220,7 @@ $defs:
         description: Broker list. Defaults to the source brokers when unset.
         type:
         - array
-        - 'null'
+        - "null"
         items:
           type: string
         default: null
@@ -258,7 +258,7 @@ $defs:
         default: true
       provider:
         description: Where the databases come from.
-        $ref: '#/$defs/GeoIpProvider'
+        $ref: "#/$defs/GeoIpProvider"
         default: db_ip_lite
       city_db_path:
         description: |-
@@ -266,17 +266,17 @@ $defs:
           bypassed entirely -- nothing is downloaded and nothing is checked.
         type:
         - string
-        - 'null'
+        - "null"
         default: null
       asn_db_path:
         description: Explicit ASN MMDB path. See [`city_db_path`](Self::city_db_path).
         type:
         - string
-        - 'null'
+        - "null"
         default: null
       auto_download:
         description: Auto-download settings.
-        $ref: '#/$defs/AutoDownloadConfig'
+        $ref: "#/$defs/AutoDownloadConfig"
         default:
           enabled: true
           data_dir: /var/lib/geoip
@@ -342,7 +342,7 @@ $defs:
           [`GeoIpProvider::MaxMindGeoLite2`].
         type:
         - string
-        - 'null'
+        - "null"
         x-scalo-secret: true
         writeOnly: true
         default: null
@@ -352,7 +352,7 @@ $defs:
           [`GeoIpProvider::MaxMindGeoLite2`].
         type:
         - string
-        - 'null'
+        - "null"
         x-scalo-secret: true
         writeOnly: true
         default: null
@@ -360,7 +360,7 @@ $defs:
         description: IPinfo API token, required by [`GeoIpProvider::IpInfoLite`].
         type:
         - string
-        - 'null'
+        - "null"
         x-scalo-secret: true
         writeOnly: true
         default: null

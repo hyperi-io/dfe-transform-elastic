@@ -38,7 +38,9 @@ fn load_config_fields(dir: &Path, log_name: &str) -> Map<String, Value> {
     };
 
     let content = std::fs::read_to_string(&config_path).unwrap_or_default();
-    let yaml: Value = serde_yaml_ng::from_str(&content).unwrap_or(Value::Null);
+    let origin = config_path.display().to_string();
+    let yaml: Value =
+        scalo::yaml::from_str(&content, &origin, scalo::yaml::Profile::Data).unwrap_or(Value::Null);
 
     yaml.get("fields")
         .and_then(|v| v.as_object())

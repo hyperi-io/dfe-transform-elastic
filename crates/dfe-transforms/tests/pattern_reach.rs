@@ -41,20 +41,21 @@ fn onboarded() -> BTreeSet<String> {
     let Ok(text) = std::fs::read_to_string(&path) else {
         return BTreeSet::new();
     };
-    let Ok(doc) = serde_yaml_ng::from_str::<serde_yaml_ng::Value>(&text) else {
+    let Ok(doc) = scalo::yaml::from_str::<serde_json::Value>(
+        &text,
+        "sources.yaml",
+        scalo::yaml::Profile::Trusted,
+    ) else {
         return BTreeSet::new();
     };
 
     let mut pairs = BTreeSet::new();
-    if let Some(sources) = doc
-        .get("sources")
-        .and_then(serde_yaml_ng::Value::as_mapping)
-    {
+    if let Some(sources) = doc.get("sources").and_then(serde_json::Value::as_object) {
         for source in sources.values() {
-            let package = source.get("package").and_then(serde_yaml_ng::Value::as_str);
+            let package = source.get("package").and_then(serde_json::Value::as_str);
             let stream = source
                 .get("data_stream")
-                .and_then(serde_yaml_ng::Value::as_str);
+                .and_then(serde_json::Value::as_str);
             if let (Some(package), Some(stream)) = (package, stream) {
                 pairs.insert(format!("{package}/{stream}"));
             }
@@ -67,19 +68,19 @@ fn onboarded() -> BTreeSet<String> {
 ///
 /// A `foreach` wraps its processor, and an `on_failure` holds a list of them,
 /// so the walk is recursive rather than a scan of the top-level `processors`.
-fn scripts_in(value: &serde_yaml_ng::Value, found: &mut Vec<String>) {
+fn scripts_in(value: &serde_json::Value, found: &mut Vec<String>) {
     match value {
-        serde_yaml_ng::Value::Mapping(map) => {
+        serde_json::Value::Object(map) => {
             for (key, held) in map {
-                if key.as_str() == Some("script")
-                    && let Some(source) = held.get("source").and_then(serde_yaml_ng::Value::as_str)
+                if key == "script"
+                    && let Some(source) = held.get("source").and_then(serde_json::Value::as_str)
                 {
                     found.push(source.to_string());
                 }
                 scripts_in(held, found);
             }
         }
-        serde_yaml_ng::Value::Sequence(items) => {
+        serde_json::Value::Array(items) => {
             for item in items {
                 scripts_in(item, found);
             }
@@ -169,7 +170,11 @@ fn how_far_the_ladder_reaches_into_unseen_packages() {
                 let Ok(text) = std::fs::read_to_string(file.path()) else {
                     continue;
                 };
-                let Ok(doc) = serde_yaml_ng::from_str::<serde_yaml_ng::Value>(&text) else {
+                let Ok(doc) = scalo::yaml::from_str::<serde_json::Value>(
+                    &text,
+                    "pipeline.yml",
+                    scalo::yaml::Profile::Data,
+                ) else {
                     continue;
                 };
 

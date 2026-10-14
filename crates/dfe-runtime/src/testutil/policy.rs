@@ -121,8 +121,8 @@ pub fn policy() -> &'static Policy {
     static LOADED: OnceLock<Policy> = OnceLock::new();
     LOADED.get_or_init(|| {
         let text = std::fs::read_to_string(POLICY).unwrap_or_else(|e| panic!("read {POLICY}: {e}"));
-        let file: PolicyFile =
-            serde_yaml_ng::from_str(&text).unwrap_or_else(|e| panic!("parse {POLICY}: {e}"));
+        let file: PolicyFile = scalo::yaml::from_str(&text, POLICY, scalo::yaml::Profile::Config)
+            .unwrap_or_else(|e| panic!("parse {POLICY}: {e}"));
 
         let skip = file
             .nondeterministic

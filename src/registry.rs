@@ -6774,7 +6774,9 @@ mod tests {
 
         const PATH: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/sources.yaml");
         let text = std::fs::read_to_string(PATH).expect("read sources.yaml");
-        let declaration: Declaration = serde_yaml_ng::from_str(&text).expect("parse sources.yaml");
+        let declaration: Declaration =
+            scalo::yaml::from_str(&text, "sources.yaml", scalo::yaml::Profile::Trusted)
+                .expect("parse sources.yaml");
 
         // Compared as text: the declaration is the readable form, and a
         // mismatch has to name what it saw rather than a struct's Debug.

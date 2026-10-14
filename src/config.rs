@@ -368,7 +368,9 @@ mod tests {
     /// `ServiceRuntime::build`, so no probe is serving when it exits.
     #[test]
     fn an_empty_document_parses_and_idles() {
-        let parsed: Config = serde_yaml_ng::from_str("{}").expect("an empty config parses");
+        let parsed: Config =
+            scalo::yaml::from_str("{}", "config.yaml", scalo::yaml::Profile::Config)
+                .expect("an empty config parses");
         assert!(parsed.validate().is_ok());
         assert!(parsed.work_state().is_idle());
         assert_eq!(parsed.source.batch_size, 20_000);
@@ -399,9 +401,11 @@ mod tests {
     /// parses onto the bus.
     #[test]
     fn a_config_without_a_transport_is_on_the_bus() {
-        let parsed: Config = serde_yaml_ng::from_str(
+        let parsed: Config = scalo::yaml::from_str(
             "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
              group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
+            "config.yaml",
+            scalo::yaml::Profile::Config,
         )
         .expect("config parses without a transport key");
         assert_eq!(parsed.source.transport, Transport::Bus);
@@ -414,10 +418,12 @@ mod tests {
     /// valid. It still names a sink topic, which is its routing key.
     #[test]
     fn the_direct_transport_round_trips_through_yaml() {
-        let parsed: Config = serde_yaml_ng::from_str(
+        let parsed: Config = scalo::yaml::from_str(
             "source:\n  name: filebeat.okta.default\n  transport: direct\n  \
              listen: 0.0.0.0:6000\n  topics: []\n  group_id: ''\n  brokers: []\n\
              sink:\n  topic: okta_load\n  transport: direct\n  endpoint: http://loader:6000\n",
+            "config.yaml",
+            scalo::yaml::Profile::Config,
         )
         .expect("config parses with the direct transport");
         assert!(parsed.source.transport.is_direct());
@@ -433,13 +439,17 @@ mod tests {
         let base = "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
                     group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n";
 
-        let parsed: Config = serde_yaml_ng::from_str(base).expect("config parses without the key");
+        let parsed: Config =
+            scalo::yaml::from_str(base, "config.yaml", scalo::yaml::Profile::Config)
+                .expect("config parses without the key");
         assert!(parsed.source.acknowledgements.enabled);
 
-        let off: Config = serde_yaml_ng::from_str(
+        let off: Config = scalo::yaml::from_str(
             "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
              group_id: g\n  brokers: [b:9092]\n  acknowledgements:\n    enabled: false\n\
              sink:\n  topic: out\n",
+            "config.yaml",
+            scalo::yaml::Profile::Config,
         )
         .expect("config parses with acknowledgements off");
         assert!(!off.source.acknowledgements.enabled);
@@ -450,9 +460,11 @@ mod tests {
     /// 15 MiB and an event over a stock broker's 1 MB is carried, not dropped.
     #[test]
     fn message_budget_defaults_to_the_stack_ceiling_less_headroom() {
-        let parsed: Config = serde_yaml_ng::from_str(
+        let parsed: Config = scalo::yaml::from_str(
             "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
              group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
+            "config.yaml",
+            scalo::yaml::Profile::Config,
         )
         .expect("config parses without a sink budget");
         assert_eq!(parsed.sink.max_message_bytes, 15 * 1024 * 1024);
@@ -480,7 +492,8 @@ mod tests {
                     group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n";
 
         let parsed: Config =
-            serde_yaml_ng::from_str(base).expect("config parses without a geoip section");
+            scalo::yaml::from_str(base, "config.yaml", scalo::yaml::Profile::Config)
+                .expect("config parses without a geoip section");
         assert!(parsed.geoip.enabled);
         assert!(parsed.geoip.auto_download.enabled);
         assert_eq!(
@@ -488,8 +501,12 @@ mod tests {
             scalo::geoip_download::GeoIpProvider::DbIpLite
         );
 
-        let off: Config = serde_yaml_ng::from_str(&format!("{base}geoip:\n  enabled: false\n"))
-            .expect("config parses with geoip disabled");
+        let off: Config = scalo::yaml::from_str(
+            &format!("{base}geoip:\n  enabled: false\n"),
+            "config.yaml",
+            scalo::yaml::Profile::Config,
+        )
+        .expect("config parses with geoip disabled");
         assert!(!off.geoip.enabled);
     }
 
@@ -497,9 +514,11 @@ mod tests {
     /// so a deployment that changes producer needs no config change.
     #[test]
     fn defaults_to_detecting_the_envelope() {
-        let parsed: Config = serde_yaml_ng::from_str(
+        let parsed: Config = scalo::yaml::from_str(
             "source:\n  name: filebeat.okta.default\n  topics: [in]\n  \
              group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
+            "config.yaml",
+            scalo::yaml::Profile::Config,
         )
         .expect("config parses without an envelope key");
         assert_eq!(
@@ -520,10 +539,14 @@ mod tests {
             ("fetcher", crate::envelope::EnvelopeSetting::Fetcher),
             ("auto", crate::envelope::EnvelopeSetting::Auto),
         ] {
-            let parsed: Config = serde_yaml_ng::from_str(&format!(
-                "source:\n  name: filebeat.fortinet.default\n  envelope: {written}\n  \
+            let parsed: Config = scalo::yaml::from_str(
+                &format!(
+                    "source:\n  name: filebeat.fortinet.default\n  envelope: {written}\n  \
                  topics: [in]\n  group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n"
-            ))
+                ),
+                "config.yaml",
+                scalo::yaml::Profile::Config,
+            )
             .expect("config parses");
             assert_eq!(parsed.source.envelope, expected, "envelope: {written}");
         }
@@ -531,9 +554,11 @@ mod tests {
 
     #[test]
     fn envelope_round_trips_through_yaml() {
-        let parsed: Config = serde_yaml_ng::from_str(
+        let parsed: Config = scalo::yaml::from_str(
             "source:\n  name: filebeat.fortinet.default\n  envelope: syslog\n  \
              topics: [in]\n  group_id: g\n  brokers: [b:9092]\nsink:\n  topic: out\n",
+            "config.yaml",
+            scalo::yaml::Profile::Config,
         )
         .expect("config parses");
         assert_eq!(
