@@ -279,7 +279,7 @@ pub fn default_config_yaml() -> String {
     let body = contract()
         .default_config
         .as_ref()
-        .and_then(|value| serde_yaml_ng::to_string(value).ok())
+        .and_then(|value| scalo::yaml::to_string(value).ok())
         .unwrap_or_default();
 
     format!("{header}\n{body}")
@@ -744,7 +744,8 @@ mod tests {
     fn the_config_example_validates() {
         let yaml = default_config_yaml();
         let config: crate::config::Config =
-            serde_yaml_ng::from_str(&yaml).expect("example parses as Config");
+            scalo::yaml::from_str(&yaml, "config.yaml", scalo::yaml::Profile::Config)
+                .expect("example parses as Config");
         config.validate().expect("example validates");
     }
 
