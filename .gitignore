@@ -13,7 +13,8 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
-!.env.example
+.env.*
+!.env*.example
 *.key
 *.pem
 *.p12
@@ -44,6 +45,9 @@ coverage-html/
 coverage.lcov
 tarpaulin-report.json
 cobertura.xml
+# bacon (cargo watcher) state
+.bacon-locations
+.bacon.pid
 
 # cargo -- glob the contents, not the directory, so the negation applies.
 .cargo/*
@@ -65,10 +69,15 @@ docs/superpowers/
 .codex/
 .cursor/
 .gemini/
+.superpowers/
+.playwright-mcp/
 .cursorrules
 hyperi-ai/
 .mcp.json
+.hyperi-ai
 .worktrees/
+.kube/
+.secrets/
 CLAUDE.md
 STATE.md
 TODO.md
