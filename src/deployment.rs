@@ -54,6 +54,7 @@ pub fn contract() -> DeploymentContract {
                 .app_protocol("kubernetes.io/h2c"),
         ],
         unbound_listen_paths: vec![],
+        hot_paths: vec![],
         entrypoint_args: vec![
             "--config".into(),
             "/etc/dfe-transform-elastic/config.yaml".into(),
