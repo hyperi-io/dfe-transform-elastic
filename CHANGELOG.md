@@ -3,6 +3,12 @@
 Rendered by CI and committed back at the end of a release -- do not edit by
 hand. Release notes also appear on the GitHub Releases page, one per tag.
 
+## [1.1.16](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.15...v1.1.16) (2026-10-20)
+
+### Bug Fixes
+
+* make source and sink config fields optional ([#122](https://github.com/hyperi-io/dfe-transform-elastic/issues/122)) ([0b4ead3](https://github.com/hyperi-io/dfe-transform-elastic/commit/0b4ead3a229cc8a05ec87cb07d7d00e4a23cfcf9))
+
 ## [1.1.15](https://github.com/hyperi-io/dfe-transform-elastic/compare/v1.1.14...v1.1.15) (2026-10-17)
 
 ### Bug Fixes
